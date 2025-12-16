@@ -7,7 +7,7 @@ import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import VFieldListItem from './v-field-list-item.vue';
+import VFieldListItem from './VFieldListItem.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';

@@ -32,7 +32,7 @@ import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import ImportErrorDialog from './import-error-dialog.vue';
-import sidebarDetail from './sidebar-detail.vue';
+import SidebarDetail from './sidebar-detail.vue';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -391,7 +391,7 @@ async function exportDataFiles() {
 </script>
 
 <template>
-	<sidebar-detail id="export" icon="import_export" :title="$t('import_export')">
+	<SidebarDetail id="export" icon="import_export" :title="$t('import_export')">
 		<div class="fields">
 			<template v-if="createAllowed">
 				<div class="field full">
@@ -623,7 +623,7 @@ async function exportDataFiles() {
 		</VDrawer>
 
 		<ImportErrorDialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

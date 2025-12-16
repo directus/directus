@@ -226,7 +226,7 @@ function stageEdits(item: Record<string, any>) {
 					@input="stageEdits"
 					@deselect="remove(element)"
 				/>
-				<nested-draggable
+				<NestedDraggable
 					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
 					:model-value="element[field]"
 					:template="template"

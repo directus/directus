@@ -75,7 +75,7 @@ function onGroupClick(item: Option) {
 		</template>
 
 		<template v-for="(childItem, index) in item.children" :key="index">
-			<select-list-item-group
+			<SelectListItemGroup
 				v-if="childItem.children"
 				:item="childItem"
 				:item-label-font-family="itemLabelFontFamily"

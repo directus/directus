@@ -114,7 +114,7 @@ function getChildBookmarks(collection: Collection) {
 				:color="collection.color"
 			/>
 		</template>
-		<navigation-item
+		<NavigationItem
 			v-for="childCollection in childCollections"
 			:key="childCollection.collection"
 			:show-hidden="showHidden"

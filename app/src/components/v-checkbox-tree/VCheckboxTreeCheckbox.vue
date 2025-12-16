@@ -399,7 +399,7 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 			</VCheckbox>
 		</template>
 
-		<v-checkbox-tree-checkbox
+		<VCheckboxTreeCheckbox
 			v-for="choice in children"
 			:key="choice[itemValue]"
 			v-model="treeValue"

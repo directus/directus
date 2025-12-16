@@ -2,7 +2,7 @@
 import type { FieldNode } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import FieldListItem from './field-list-item.vue';
+import FieldListItem from './FieldListItem.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';

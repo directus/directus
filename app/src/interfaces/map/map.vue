@@ -426,7 +426,7 @@ function handleKeyDown(event: any) {
 				projection!.y
 			}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
 		></div>
-		<transition name="fade">
+		<Transition name="fade">
 			<div
 				v-if="tooltipVisible"
 				class="tooltip top"
@@ -434,12 +434,12 @@ function handleKeyDown(event: any) {
 			>
 				{{ tooltipMessage }}
 			</div>
-		</transition>
+		</Transition>
 		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
 			<VIcon name="map" />
 			<VSelect v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 		</div>
-		<transition name="fade">
+		<Transition name="fade">
 			<VInfo
 				v-if="geometryOptionsError"
 				icon="error"
@@ -468,7 +468,7 @@ function handleKeyDown(event: any) {
 					</VCardActions>
 				</template>
 			</VInfo>
-		</transition>
+		</Transition>
 	</div>
 </template>
 

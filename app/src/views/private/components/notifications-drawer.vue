@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import useDatetime from '@/components/use-datetime.vue';
+import UseDatetime from '@/components/use-datetime.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -231,11 +231,11 @@ function clearFilters() {
 		@apply="toggleArchive"
 	>
 		<template #actions:prepend>
-			<transition name="fade">
+			<Transition name="fade">
 				<span v-if="showingCount" class="item-count">
 					{{ showingCount }}
 				</span>
-			</transition>
+			</Transition>
 		</template>
 
 		<template #actions>
@@ -370,9 +370,9 @@ function clearFilters() {
 								@update:model-value="toggleSelected(notification.id)"
 							/>
 							<VTextOverflow class="title" :highlight="search" :text="notification.subject" />
-							<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
+							<UseDatetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
 								<VTextOverflow class="datetime" :text="datetime" />
-							</use-datetime>
+							</UseDatetime>
 							<VIcon
 								v-if="notification.to"
 								v-tooltip="$t('goto_collection_content')"

@@ -14,7 +14,7 @@ import { Placement } from '@popperjs/core';
 import { debounce, get, isArray } from 'lodash';
 import { computed, Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SelectListItemGroup from './select-list-item-group.vue';
+import SelectListItemGroup from './SelectListItemGroup.vue';
 import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
 

@@ -9,7 +9,7 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
-import NestedDraggable from './nested-draggable.vue';
+import NestedDraggable from './NestedDraggable.vue';
 
 const props = withDefaults(
 	defineProps<{

@@ -142,7 +142,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			<template #prepend>
 				<span v-if="loading" class="activator-loading-placeholder" />
 
-				<transition
+				<Transition
 					v-else
 					:name="transition ? (item ? 'rotate-in' : 'rotate-out') : null"
 					:duration="transition ? null : 0"
@@ -163,7 +163,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 						@mousedown="onMousedown"
 						@mouseup="onMouseup"
 					/>
-				</transition>
+				</Transition>
 			</template>
 
 			<template #controls="{ active, toggle }">

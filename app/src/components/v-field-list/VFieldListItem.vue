@@ -109,7 +109,7 @@ const openWhileSearching = computed(() => {
 			<VDivider />
 		</template>
 
-		<v-field-list-item
+		<VFieldListItem
 			v-for="childField in field.children"
 			:key="childField.key"
 			:field="childField"

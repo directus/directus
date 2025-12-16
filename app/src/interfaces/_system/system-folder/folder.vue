@@ -11,7 +11,7 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { Folder, useFolders } from '@/composables/use-folders';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import FolderListItem from './folder-list-item.vue';
+import FolderListItem from './FolderListItem.vue';
 
 const props = defineProps<{
 	value: string | null;

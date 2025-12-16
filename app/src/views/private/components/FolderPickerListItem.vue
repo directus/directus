@@ -45,7 +45,7 @@ defineProps<{
 				</VListItemIcon>
 				<VListItemContent>{{ folder.name }}</VListItemContent>
 			</template>
-			<folder-picker-list-item
+			<FolderPickerListItem
 				v-for="childFolder in folder.children"
 				:key="childFolder.id"
 				:folder="childFolder"

@@ -108,7 +108,7 @@ function useOverlayFocusTrap() {
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
 
-		<teleport to="#dialog-outlet">
+		<Teleport to="#dialog-outlet">
 			<TransitionDialog @after-leave="leave">
 				<component
 					:is="placement === 'center' ? 'span' : 'div'"
@@ -121,7 +121,7 @@ function useOverlayFocusTrap() {
 					<slot />
 				</component>
 			</TransitionDialog>
-		</teleport>
+		</Teleport>
 	</div>
 </template>
 

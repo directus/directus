@@ -242,7 +242,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				</template>
 
 				<template #item="{ element }">
-					<field-select :field="element" :fields="fields" @set-nested-sort="$emit('setNestedSort', $event)" />
+					<FieldSelect :field="element" :fields="fields" @set-nested-sort="$emit('setNestedSort', $event)" />
 				</template>
 			</Draggable>
 

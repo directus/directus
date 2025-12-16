@@ -471,7 +471,7 @@ function usePopper(
 			/>
 		</div>
 
-		<teleport to="#menu-outlet">
+		<Teleport to="#menu-outlet">
 			<TransitionBounce>
 				<div
 					v-if="isActive"
@@ -510,7 +510,7 @@ function usePopper(
 					</div>
 				</div>
 			</TransitionBounce>
-		</teleport>
+		</Teleport>
 	</div>
 </template>
 

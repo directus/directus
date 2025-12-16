@@ -382,7 +382,7 @@ function isExistingField(node: Record<string, any>): boolean {
 							/>
 						</span>
 					</div>
-					<nodes
+					<Nodes
 						:filter="element[filterInfo[index].name]"
 						:collection="collection"
 						:depth="depth + 1"

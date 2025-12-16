@@ -213,7 +213,7 @@ function pointerLeave() {
 			>
 				<VIcon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
 			</div>
-			<transition name="fade">
+			<Transition name="fade">
 				<div
 					v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
 					class="hint resolve-hint"
@@ -222,7 +222,7 @@ function pointerLeave() {
 						<VIcon v-tooltip="$t('operation_handle_resolve')" name="add_circle_outline" />
 					</div>
 				</div>
-			</transition>
+			</Transition>
 			<div
 				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
 				x-small
@@ -233,7 +233,7 @@ function pointerLeave() {
 			>
 				<VIcon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
 			</div>
-			<transition name="fade">
+			<Transition name="fade">
 				<div
 					v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
 					class="hint reject-hint"
@@ -242,7 +242,7 @@ function pointerLeave() {
 						<VIcon v-tooltip="$t('operation_handle_reject')" name="add_circle_outline" />
 					</div>
 				</div>
-			</transition>
+			</Transition>
 
 			<div
 				v-if="panel.id !== '$trigger'"

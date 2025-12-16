@@ -4,7 +4,7 @@ import VList from '@/components/v-list.vue';
 import VNotice from '@/components/v-notice.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import renderTemplate from '@/views/private/components/render-template.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import { computed, toRefs } from 'vue';
 import useDisplayItems from './use-display-items';
 
@@ -45,7 +45,7 @@ function deleteItem(elem: Record<string, any>) {
 
 		<VList v-else>
 			<VListItem v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
-				<render-template :collection="collection" :item="element" :template="displayTemplate" />
+				<RenderTemplate :collection="collection" :item="element" :template="displayTemplate" />
 
 				<div class="spacer" />
 

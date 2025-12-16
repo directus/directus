@@ -481,7 +481,7 @@ onUnmounted(() => {
 						@scrolled-to-bottom="onScrollBottom"
 					/>
 				</div>
-				<transition name="fade">
+				<Transition name="fade">
 					<div v-show="logDetailVisible" class="log-detail">
 						<div class="log-detail-controls">
 							<VButton class="close-button" x-large secondary icon @click="minimizeLog">
@@ -511,7 +511,7 @@ onUnmounted(() => {
 							<VCheckbox v-model="softWrap" :label="$t('soft_wrap_lines')" />
 						</div>
 					</div>
-				</transition>
+				</Transition>
 			</div>
 		</div>
 	</PrivateView>

@@ -69,11 +69,11 @@ const userFullName = userStore.fullName ?? undefined;
 		<div class="space-bar">
 			<VDialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
-					<transition name="sign-out">
+					<Transition name="sign-out">
 						<VButton v-tooltip.right="$t('sign_out')" tile icon x-large class="sign-out" @click="on">
 							<VIcon name="logout" />
 						</VButton>
-					</transition>
+					</Transition>
 				</template>
 
 				<VCard>

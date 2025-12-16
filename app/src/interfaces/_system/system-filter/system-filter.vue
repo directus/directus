@@ -19,7 +19,7 @@ import {
 } from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
-import Nodes from './nodes.vue';
+import Nodes from './Nodes.vue';
 import { getNodeName } from './utils';
 
 interface Props {

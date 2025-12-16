@@ -10,7 +10,7 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
-import NavigationRole from './navigation-role.vue';
+import NavigationRole from './NavigationRole.vue';
 
 const props = defineProps<{
 	currentRole?: string;

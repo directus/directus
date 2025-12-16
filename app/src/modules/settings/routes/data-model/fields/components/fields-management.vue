@@ -14,7 +14,7 @@ import { isNil, orderBy } from 'lodash';
 import { computed, onBeforeMount, onBeforeUnmount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
-import FieldSelect from './field-select.vue';
+import FieldSelect from './FieldSelect.vue';
 
 const props = defineProps<{
 	collection: string;

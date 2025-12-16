@@ -90,9 +90,9 @@ const logoURL = computed<string | null>(() => {
 
 			<video v-else-if="customBackgroundIsVideo" :src="customBackgroundUrl" autoplay muted loop />
 
-			<transition name="scale">
+			<Transition name="scale">
 				<VImage v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
-			</transition>
+			</Transition>
 			<div class="note-container">
 				<div v-if="info?.project?.public_note" v-md="info?.project.public_note" class="note" />
 			</div>

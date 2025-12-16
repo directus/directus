@@ -145,7 +145,7 @@ function isAppExtension(type?: ExtensionType) {
 	</VListItem>
 
 	<VList v-if="children.length > 0" class="nested" :class="{ partial: isPartialAllowed }">
-		<extension-item v-for="item in children" :key="item.id" :extension="item" />
+		<ExtensionItem v-for="item in children" :key="item.id" :extension="item" />
 	</VList>
 </template>
 

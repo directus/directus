@@ -34,7 +34,7 @@ defineEmits(['add']);
 	</VListItem>
 	<VListGroup v-else :value="field.key" clickable @click="$emit('add', field)">
 		<template #activator>{{ field.name || formatTitle(field.field) }}</template>
-		<field-list-item
+		<FieldListItem
 			v-for="childField in field.children"
 			:key="childField.key"
 			:field="childField"

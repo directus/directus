@@ -133,7 +133,10 @@ export default typescriptEslint.config(
 				},
 			],
 			// Require <PascalCase /> components in templates
-			'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+			'vue/component-name-in-template-casing': ['error', 'PascalCase', {
+				// Check global component uses as well
+				registeredComponentsOnly: false,
+			}],
 		},
 	},
 

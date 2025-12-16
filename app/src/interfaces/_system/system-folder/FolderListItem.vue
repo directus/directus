@@ -44,7 +44,7 @@ defineEmits<{
 			</VListItemIcon>
 			<VListItemContent>{{ folder.name }}</VListItemContent>
 		</template>
-		<folder-list-item
+		<FolderListItem
 			v-for="childFolder in folder.children"
 			:key="childFolder.id!"
 			:folder="childFolder"

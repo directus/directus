@@ -57,7 +57,7 @@ const settingLink = computed(() => ({
 			</VListItemContent>
 		</template>
 
-		<navigation-role
+		<NavigationRole
 			v-for="child in role.children"
 			:key="child.id"
 			:role="child"

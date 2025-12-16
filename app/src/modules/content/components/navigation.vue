@@ -13,7 +13,7 @@ import { useUserStore } from '@/stores/user';
 import { isNil, orderBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useNavigation } from '../composables/use-navigation';
-import NavigationItem from './navigation-item.vue';
+import NavigationItem from './NavigationItem.vue';
 
 const props = defineProps<{
 	currentCollection?: string;

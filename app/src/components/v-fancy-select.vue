@@ -57,7 +57,7 @@ function toggle(item: Record<string, any>) {
 
 <template>
 	<div class="v-fancy-select">
-		<transition-group tag="div" name="option">
+		<TransitionGroup tag="div" name="option">
 			<template v-for="(item, index) in visibleItems" :key="item[props.itemValue]">
 				<VDivider v-if="item.divider === true" />
 				<button
@@ -89,7 +89,7 @@ function toggle(item: Record<string, any>) {
 					<VIcon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
 				</button>
 			</template>
-		</transition-group>
+		</TransitionGroup>
 	</div>
 </template>
 

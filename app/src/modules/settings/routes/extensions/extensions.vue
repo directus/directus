@@ -10,7 +10,7 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
-import ExtensionItem from './components/extension-item.vue';
+import ExtensionItem from './components/ExtensionItem.vue';
 import { ExtensionType } from './types';
 
 type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;

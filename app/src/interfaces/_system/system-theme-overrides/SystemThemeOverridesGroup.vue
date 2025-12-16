@@ -50,7 +50,7 @@ const hasValue = computed(() => {
 		<TransitionExpand>
 			<div v-if="root || !collapsed" class="group-contents">
 				<template v-for="(ruleValue, ruleKey) in rulesGrouped" :key="ruleKey">
-					<system-theme-overrides-group
+					<SystemThemeOverridesGroup
 						v-if="isPlainObject(ruleValue)"
 						:group="ruleKey === '$root' ? undefined : ruleKey"
 						:rules="ruleValue as Record<string, unknown>"

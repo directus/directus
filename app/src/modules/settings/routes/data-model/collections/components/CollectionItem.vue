@@ -98,7 +98,7 @@ function onGroupSortChange(collections: Collection[]) {
 				@update:model-value="onGroupSortChange"
 			>
 				<template #item="{ element }">
-					<collection-item
+					<CollectionItem
 						:collection="element"
 						:collections="collections"
 						:is-collapsed="element.isCollapsed"

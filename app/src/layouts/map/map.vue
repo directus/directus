@@ -82,7 +82,7 @@ limitWritable.value = selectedSize;
 			@updateitempopup="updateItemPopup"
 		/>
 
-		<transition name="fade">
+		<Transition name="fade">
 			<div
 				v-if="itemPopup!.item"
 				class="popup"
@@ -90,9 +90,9 @@ limitWritable.value = selectedSize;
 			>
 				<RenderTemplate :template="template" :item="itemPopup!.item" :collection="collection" />
 			</div>
-		</transition>
+		</Transition>
 
-		<transition name="fade">
+		<Transition name="fade">
 			<slot v-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 			<VInfo
 				v-else-if="geojsonError"
@@ -104,7 +104,7 @@ limitWritable.value = selectedSize;
 				{{ geojsonError }}
 			</VInfo>
 			<VProgressCircular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
-		</transition>
+		</Transition>
 
 		<template v-if="loading || (totalCount ?? 0) > 0">
 			<div class="footer">

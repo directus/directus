@@ -9,7 +9,7 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { computed, ref } from 'vue';
-import FolderPickerListItem from './folder-picker-list-item.vue';
+import FolderPickerListItem from './FolderPickerListItem.vue';
 
 type FolderRaw = {
 	id: string;
