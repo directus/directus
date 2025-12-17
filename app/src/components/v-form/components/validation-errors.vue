@@ -72,7 +72,14 @@ function getErrorKey(validationError: (typeof validationErrorsWithDetails.value)
 									<span class="field-message">
 										{{ validationError.customValidationMessage ?? $t('validation_value_is_invalid') }}
 									</span>
-									<button type="button" class="field-toggle" :class="{ 'is-collapsed': !active }" @click.stop="toggle">
+									<button
+										type="button"
+										class="field-toggle"
+										:class="{ 'is-collapsed': !active }"
+										:aria-label="$t('toggle')"
+										:aria-expanded="active"
+										@click.stop="toggle"
+									>
 										<v-icon name="expand_circle_down" small />
 									</button>
 								</div>
