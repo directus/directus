@@ -6,38 +6,6 @@ import type { ForeignKey } from '../types/foreign-key.js';
 import { stripQuotes } from '../utils/strip-quotes.js';
 import type { SchemaOverview } from '../types/overview.js';
 
-type RawTable = {
-	table_name: string;
-	table_schema: 'public' | string;
-	table_comment: string | null;
-};
-
-type RawColumn = {
-	name: string;
-	table: string;
-	schema: string;
-	data_type: string;
-	is_nullable: boolean;
-	index_name: null | string;
-	generation_expression: null | string;
-	default_value: null | string;
-	is_generated: boolean;
-	max_length: null | number;
-	comment: null | string;
-	numeric_precision: null | number;
-	numeric_scale: null | number;
-};
-
-type Constraint = {
-	type: 'f' | 'p' | 'u';
-	table: string;
-	column: string;
-	foreign_key_schema: null | string;
-	foreign_key_table: null | string;
-	foreign_key_column: null | string;
-	has_auto_increment: null | boolean;
-};
-
 /**
  * Converts CockroachDB default value to JS
  * Eg `'example'::character varying` => `example`
@@ -56,7 +24,8 @@ export function parseDefaultValue(value: string | null) {
 export default class CockroachDB implements SchemaInspector {
 	knex: Knex;
 	schema: string;
-	explodedSchema: string[];
+	protected explodedSchema: string[];
+	protected databaseName: string | undefined;
 
 	constructor(knex: Knex) {
 		this.knex = knex;
@@ -77,6 +46,16 @@ export default class CockroachDB implements SchemaInspector {
 	// CockroachDB specific
 	// ===============================================================================================
 
+	private async getDatabaseName(): Promise<string> {
+		// dont query the database multiple times if we need the db name multiple times
+		if (!this.databaseName) {
+			const result = await this.knex.raw<{ rows: { db: string }[] }>(`SELECT current_database() AS db`);
+			this.databaseName = result.rows[0]!.db;
+		}
+
+		return this.databaseName;
+	}
+
 	private async resolveTableSchema(table: string): Promise<string> {
 		// If you know you only ever introspect the current schema, you can skip this and just use search_path.
 		const row = await this.knex
@@ -89,12 +68,11 @@ export default class CockroachDB implements SchemaInspector {
 		return row?.table_schema ?? this.explodedSchema[0]!;
 	}
 
-	private qname(schema: string, name: string) {
-		// schema-qualified + safely quoted identifier
-		// Produces: "schema"."name"
-		const s = this.knex.client.wrapIdentifier(schema);
-		const n = this.knex.client.wrapIdentifier(name);
-		return `${s}.${n}`;
+	private safeIdentifier(schema: string, name: string): string {
+		// safely quoted identifier
+		const wrappedSchema = this.knex.client.wrapIdentifier(schema);
+		const wrapperName = this.knex.client.wrapIdentifier(name);
+		return `${wrappedSchema}.${wrapperName}`;
 	}
 
 	/**
@@ -259,23 +237,28 @@ export default class CockroachDB implements SchemaInspector {
 	/**
 	 * List all existing tables in the current schema/database
 	 */
-	async tables() {
-		// Cockroach-native list of tables. Faster than pg_catalog.pg_tables. :contentReference[oaicite:5]{index=5}
+	async tables(): Promise<string[]> {
+		const dbName = await this.getDatabaseName();
+
 		const results = await Promise.all(
 			this.explodedSchema.map((schema) =>
 				this.knex.raw<{ rows: { schema_name: string; table_name: string; type: string }[] }>(
-					`SHOW TABLES FROM ${this.qname(this.knex.client.database?.() ?? 'current_database()', schema)}`,
+					`SHOW TABLES FROM ${this.safeIdentifier(dbName, schema)}`,
 				),
 			),
 		);
 
-		const tables = results
-			.flatMap((r) => r.rows)
-			.filter((r) => r.type === 'table')
-			.map((r) => r.table_name);
-
 		// de-dupe (in case multiple schemas / search_path overlap)
-		return [...new Set(tables)];
+		const tables = new Set<string>();
+
+		for (const result of results) {
+			for (const table of result.rows) {
+				if (table.type !== 'table') continue;
+				tables.add(table.table_name);
+			}
+		}
+
+		return Array.from(tables);
 	}
 
 	/**
@@ -285,14 +268,13 @@ export default class CockroachDB implements SchemaInspector {
 	tableInfo(): Promise<Table[]>;
 	tableInfo(table: string): Promise<Table>;
 	async tableInfo(table?: string) {
-		// Cockroach-native table comments: SHOW TABLES ... WITH COMMENT :contentReference[oaicite:6]{index=6}
-		const db = (await this.knex.raw<{ rows: { db: string }[] }>(`SELECT current_database() AS db`)).rows[0]!.db;
+		const dbName = await this.getDatabaseName();
 
 		const results = await Promise.all(
 			this.explodedSchema.map((schema) =>
 				this.knex.raw<{
 					rows: { schema_name: string; table_name: string; type: string; comment?: string | null }[];
-				}>(`SHOW TABLES FROM ${this.qname(db, schema)} WITH COMMENT`),
+				}>(`SHOW TABLES FROM ${this.safeIdentifier(dbName, schema)} WITH COMMENT`),
 			),
 		);
 
@@ -300,7 +282,10 @@ export default class CockroachDB implements SchemaInspector {
 
 		if (table) {
 			const row = rows.find((r) => r.table_name === table);
-			if (!row) return null as any;
+
+			if (!row) {
+				throw new Error('Table not found');
+			}
 
 			return {
 				name: row.table_name,
@@ -311,17 +296,20 @@ export default class CockroachDB implements SchemaInspector {
 
 		return rows
 			.sort((a, b) => a.table_name.localeCompare(b.table_name))
-			.map((r) => ({
-				name: r.table_name,
-				schema: r.schema_name,
-				comment: r.comment ?? null,
-			}));
+			.map(
+				(r) =>
+					({
+						name: r.table_name,
+						schema: r.schema_name,
+						comment: r.comment ?? null,
+					}) as Table,
+			);
 	}
 
 	/**
 	 * Check if a table exists in the current schema/database
 	 */
-	async hasTable(table: string) {
+	async hasTable(table: string): Promise<boolean> {
 		const subquery = this.knex
 			.select()
 			.from('information_schema.tables')
@@ -329,7 +317,7 @@ export default class CockroachDB implements SchemaInspector {
 			.andWhere({ table_name: table });
 
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
-		return record?.exists || false;
+		return Boolean(record?.exists);
 	}
 
 	// Columns
@@ -338,7 +326,7 @@ export default class CockroachDB implements SchemaInspector {
 	/**
 	 * Get all the available columns in the current schema/database. Can be filtered to a specific table
 	 */
-	async columns(table?: string) {
+	async columns(table?: string): Promise<{ table: string; column: string }[]> {
 		const query = this.knex
 			.select<{ table_name: string; column_name: string }[]>('table_name', 'column_name')
 			.from('information_schema.columns')
@@ -363,8 +351,6 @@ export default class CockroachDB implements SchemaInspector {
 	columnInfo(table: string): Promise<Column[]>;
 	columnInfo(table: string, column: string): Promise<Column>;
 	async columnInfo(table?: string, column?: string) {
-		const db = (await this.knex.raw<{ rows: { db: string }[] }>(`SELECT current_database() AS db`)).rows[0]!.db;
-
 		// Pull constraints once (fast, structured). No pg_catalog.
 		const constraints = await this.knex.raw<{
 			rows: Array<{
@@ -450,7 +436,7 @@ export default class CockroachDB implements SchemaInspector {
 					is_hidden: boolean | string;
 					comment?: string | null;
 				}>;
-			}>(`SHOW COLUMNS FROM ${this.qname(schema, t)} WITH COMMENT`);
+			}>(`SHOW COLUMNS FROM ${this.safeIdentifier(schema, t)} WITH COMMENT`);
 
 			return res.rows.map((r): Column => {
 				const key = `${schema}.${t}.${r.column_name}`;
@@ -507,9 +493,9 @@ export default class CockroachDB implements SchemaInspector {
 
 		// Otherwise introspect all tables in the configured schema list.
 		// (You can add a concurrency limit here if you have thousands of tables.)
-		const tableInfos = (await this.tableInfo()) as Table[];
+		const tableInfos = await this.tableInfo();
 
-		const all = await Promise.all(tableInfos.map((t) => fetchForOneTable(t.schema, t.name)));
+		const all = await Promise.all(tableInfos.map((t) => fetchForOneTable(t.schema!, t.name)));
 		const flattened = all.flat();
 
 		if (column) {
@@ -523,7 +509,7 @@ export default class CockroachDB implements SchemaInspector {
 	/**
 	 * Check if the given table contains the given column
 	 */
-	async hasColumn(table: string, column: string) {
+	async hasColumn(table: string, column: string): Promise<boolean> {
 		const subquery = this.knex
 			.select()
 			.from('information_schema.columns')
@@ -534,7 +520,7 @@ export default class CockroachDB implements SchemaInspector {
 			});
 
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
-		return record?.exists || false;
+		return Boolean(record?.exists);
 	}
 
 	/**
@@ -556,12 +542,18 @@ export default class CockroachDB implements SchemaInspector {
 			})
 			.first();
 
-		return result ? result.column_name : null;
+		if (!result) {
+			// TODO what error do we throw? because returning null is not an issue
+			throw new Error('No primary?');
+		}
+
+		return result.column_name;
 	}
 
 	// Foreign Keys
 	// ===============================================================================================
-	async foreignKeys(table?: string) {
+
+	async foreignKeys(table?: string): Promise<ForeignKey[]> {
 		const bindings: any[] = [this.explodedSchema];
 		let tableFilterSql = '';
 
@@ -622,14 +614,12 @@ export default class CockroachDB implements SchemaInspector {
 		`,
 			[
 				// Note we bind the schema-array three times because we used ANY(?) three times.
-				bindings[0],
-				bindings[0],
-				bindings[0],
+				this.explodedSchema,
+				this.explodedSchema,
+				this.explodedSchema,
 				...(table ? [bindings[1]] : []),
 			],
 		);
-
-		// console.log(result);
 
 		return result.rows;
 	}
