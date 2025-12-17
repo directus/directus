@@ -32,7 +32,7 @@ useHead({
 </script>
 
 <template>
-	<public-view>
+	<PublicView>
 		<div class="header">
 			<h1 class="type-title">{{ wasSuccessful ? $t('registration_successful_headline') : $t('register') }}</h1>
 		</div>
@@ -45,32 +45,32 @@ useHead({
 						: $t('registration_successful_note')
 				"
 			></div>
-			<v-button large to="/login">{{ $t('sign_in') }}</v-button>
+			<VButton large to="/login">{{ $t('sign_in') }}</VButton>
 		</div>
 
-		<register-form v-else @was-successful="wasSuccessful = $event" />
+		<RegisterForm v-else @was-successful="wasSuccessful = $event" />
 
 		<div v-if="wasSuccessful == false" class="login-wrapper">
 			{{ $t('already_have_an_account') }}
-			<router-link to="/login" class="login-link">
+			<RouterLink to="/login" class="login-link">
 				{{ $t('sign_in') }}
-			</router-link>
+			</RouterLink>
 		</div>
 
 		<template #notice>
 			<template v-if="authenticated">
-				<v-icon name="lock_open" left />
+				<VIcon name="lock_open" left />
 				{{ $t('authenticated') }}
 			</template>
 			<template v-else-if="logoutReason && te(`logoutReason.${logoutReason}`)">
 				{{ $t(`logoutReason.${logoutReason}`) }}
 			</template>
 			<template v-else>
-				<v-icon name="lock" left />
+				<VIcon name="lock" left />
 				{{ $t('not_authenticated') }}
 			</template>
 		</template>
-	</public-view>
+	</PublicView>
 </template>
 
 <style lang="scss" scoped>

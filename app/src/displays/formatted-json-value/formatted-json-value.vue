@@ -42,8 +42,8 @@ function renderValue(input: Record<string, any> | Record<string, any>[]) {
 </script>
 
 <template>
-	<value-null v-if="!displayValue" />
-	<v-menu v-else-if="displayValue.length > 1" show-arrow>
+	<ValueNull v-if="!displayValue" />
+	<VMenu v-else-if="displayValue.length > 1" show-arrow>
 		<template #activator="{ toggle }">
 			<span class="toggle" @click.stop="toggle">
 				<span class="label">
@@ -53,14 +53,14 @@ function renderValue(input: Record<string, any> | Record<string, any>[]) {
 			</span>
 		</template>
 
-		<v-list class="links">
-			<v-list-item v-for="(item, index) in displayValue" :key="index">
-				<v-list-item-content>
+		<VList class="links">
+			<VListItem v-for="(item, index) in displayValue" :key="index">
+				<VListItemContent>
 					{{ item }}
-				</v-list-item-content>
-			</v-list-item>
-		</v-list>
-	</v-menu>
+				</VListItemContent>
+			</VListItem>
+		</VList>
+	</VMenu>
 	<span v-else>
 		{{ displayValue[0] }}
 	</span>

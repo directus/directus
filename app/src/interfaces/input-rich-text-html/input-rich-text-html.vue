@@ -416,7 +416,7 @@ onMounted(() => {
 
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
-		<editor
+		<Editor
 			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"
@@ -439,37 +439,37 @@ onMounted(() => {
 				{{ softLength - count }}
 			</span>
 		</template>
-		<v-dialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
-			<v-card>
-				<v-card-title>{{ $t('wysiwyg_options.link') }}</v-card-title>
-				<v-card-text>
+		<VDialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
+			<VCard>
+				<VCardTitle>{{ $t('wysiwyg_options.link') }}</VCardTitle>
+				<VCardText>
 					<div class="grid">
 						<div class="field">
 							<div class="type-label">{{ $t('url') }}</div>
-							<v-input v-model="linkSelection.url" :placeholder="$t('url_placeholder')" autofocus></v-input>
+							<VInput v-model="linkSelection.url" :placeholder="$t('url_placeholder')" autofocus></VInput>
 						</div>
 						<div class="field">
 							<div class="type-label">{{ $t('display_text') }}</div>
-							<v-input v-model="linkSelection.displayText" :placeholder="$t('display_text_placeholder')"></v-input>
+							<VInput v-model="linkSelection.displayText" :placeholder="$t('display_text_placeholder')"></VInput>
 						</div>
 						<div class="field half">
 							<div class="type-label">{{ $t('tooltip') }}</div>
-							<v-input v-model="linkSelection.title" :placeholder="$t('tooltip_placeholder')"></v-input>
+							<VInput v-model="linkSelection.title" :placeholder="$t('tooltip_placeholder')"></VInput>
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ $t('open_link_in') }}</div>
-							<v-checkbox v-model="linkSelection.newTab" block :label="$t('new_tab')"></v-checkbox>
+							<VCheckbox v-model="linkSelection.newTab" block :label="$t('new_tab')"></VCheckbox>
 						</div>
 					</div>
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="closeLinkDrawer">{{ $t('cancel') }}</v-button>
-					<v-button :disabled="!isLinkSaveable" @click="saveLink">{{ $t('save') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="closeLinkDrawer">{{ $t('cancel') }}</VButton>
+					<VButton :disabled="!isLinkSaveable" @click="saveLink">{{ $t('save') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-drawer
+		<VDrawer
 			v-model="codeDrawerOpen"
 			:title="$t('wysiwyg_options.source_code')"
 			icon="code"
@@ -477,20 +477,20 @@ onMounted(() => {
 			@apply="saveCode"
 		>
 			<div class="content">
-				<interface-input-code
+				<InterfaceInputCode
 					:value="code"
 					language="htmlmixed"
 					line-wrapping
 					@input="code = $event"
-				></interface-input-code>
+				></InterfaceInputCode>
 			</div>
 
 			<template #actions>
 				<PrivateViewHeaderBarActionButton icon="check" @click="saveCode" />
 			</template>
-		</v-drawer>
+		</VDrawer>
 
-		<v-drawer
+		<VDrawer
 			v-model="imageDrawerOpen"
 			:title="$t('wysiwyg_options.image')"
 			icon="image"
@@ -503,29 +503,29 @@ onMounted(() => {
 					<div class="grid">
 						<div class="field half">
 							<div class="type-label">{{ $t('image_url') }}</div>
-							<v-input v-model="imageSelection.imageUrl" />
+							<VInput v-model="imageSelection.imageUrl" />
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ $t('alt_text') }}</div>
-							<v-input v-model="imageSelection.alt" :nullable="false" />
+							<VInput v-model="imageSelection.alt" :nullable="false" />
 						</div>
 						<template v-if="storageAssetTransform === 'all'">
 							<div class="field half">
 								<div class="type-label">{{ $t('width') }}</div>
-								<v-input v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
+								<VInput v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
 							</div>
 							<div class="field half-right">
 								<div class="type-label">{{ $t('height') }}</div>
-								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
+								<VInput v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
 							</div>
 						</template>
 						<div class="field half">
 							<div class="type-label">{{ $t('wysiwyg_options.lazy_loading') }}</div>
-							<v-checkbox v-model="imageSelection.lazy" block :label="$t('wysiwyg_options.lazy_loading_label')" />
+							<VCheckbox v-model="imageSelection.lazy" block :label="$t('wysiwyg_options.lazy_loading_label')" />
 						</div>
 						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
 							<div class="type-label">{{ $t('transformation_preset_key') }}</div>
-							<v-select
+							<VSelect
 								v-model="imageSelection.transformationKey"
 								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
 								show-deselect
@@ -533,15 +533,15 @@ onMounted(() => {
 						</div>
 					</div>
 				</template>
-				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
+				<VUpload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
 			</div>
 
 			<template #actions>
 				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_image')" icon="check" @click="saveImage" />
 			</template>
-		</v-drawer>
+		</VDrawer>
 
-		<v-drawer
+		<VDrawer
 			v-model="mediaDrawerOpen"
 			:title="$t('wysiwyg_options.media')"
 			icon="slideshow"
@@ -549,15 +549,15 @@ onMounted(() => {
 			@apply="saveMedia"
 		>
 			<template #sidebar>
-				<v-tabs v-model="openMediaTab" vertical>
-					<v-tab value="video">{{ $t('media') }}</v-tab>
-					<v-tab value="embed">{{ $t('embed') }}</v-tab>
-				</v-tabs>
+				<VTabs v-model="openMediaTab" vertical>
+					<VTab value="video">{{ $t('media') }}</VTab>
+					<VTab value="embed">{{ $t('embed') }}</VTab>
+				</VTabs>
 			</template>
 
 			<div class="content">
-				<v-tabs-items v-model="openMediaTab">
-					<v-tab-item value="video">
+				<VTabsItems v-model="openMediaTab">
+					<VTabItem value="video">
 						<template v-if="mediaSelection">
 							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
 								<source :src="mediaSelection.previewUrl" />
@@ -571,35 +571,35 @@ onMounted(() => {
 							<div class="grid">
 								<div class="field">
 									<div class="type-label">{{ $t('source') }}</div>
-									<v-input v-model="mediaSource" />
+									<VInput v-model="mediaSource" />
 								</div>
 								<div class="field half">
 									<div class="type-label">{{ $t('width') }}</div>
-									<v-input v-model="mediaWidth" />
+									<VInput v-model="mediaWidth" />
 								</div>
 								<div class="field half-right">
 									<div class="type-label">{{ $t('height') }}</div>
-									<v-input v-model="mediaHeight" />
+									<VInput v-model="mediaHeight" />
 								</div>
 							</div>
 						</template>
-						<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
-					</v-tab-item>
-					<v-tab-item value="embed">
+						<VUpload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
+					</VTabItem>
+					<VTabItem value="embed">
 						<div class="grid">
 							<div class="field">
 								<div class="type-label">{{ $t('embed') }}</div>
-								<v-textarea v-model="embed" :nullable="false" />
+								<VTextarea v-model="embed" :nullable="false" />
 							</div>
 						</div>
-					</v-tab-item>
-				</v-tabs-items>
+					</VTabItem>
+				</VTabsItems>
 			</div>
 
 			<template #actions>
 				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_media')" icon="check" @click="saveMedia" />
 			</template>
-		</v-drawer>
+		</VDrawer>
 	</div>
 </template>
 

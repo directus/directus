@@ -170,24 +170,24 @@ watch(selectedProviderName, (val) => {
 <template>
 	<div class="sso-links">
 		<template v-if="ssoProviders.length > 0">
-			<v-divider />
+			<VDivider />
 
-			<v-notice v-if="errorFormatted" type="warning">
+			<VNotice v-if="errorFormatted" type="warning">
 				{{ errorFormatted }}
-			</v-notice>
+			</VNotice>
 
 			<template v-for="provider in ssoProviders" :key="provider.name">
 				<a class="sso-link" @click.prevent="() => handleSSOClick(provider)">
 					<div class="sso-icon">
-						<v-icon :name="provider.icon" />
+						<VIcon :name="provider.icon" />
 					</div>
 					<div class="sso-title">
-						<v-text-overflow :text="$t('log_in_with', { provider: provider.label })" />
+						<VTextOverflow :text="$t('log_in_with', { provider: provider.label })" />
 					</div>
 				</a>
 
-				<transition-expand>
-					<v-input
+				<TransitionExpand>
+					<VInput
 						v-if="requiresTFA && originalProviderName === provider.name"
 						v-model="otp"
 						autofocus
@@ -198,16 +198,16 @@ watch(selectedProviderName, (val) => {
 						@keydown.enter.prevent="onSubmitOTP"
 					>
 						<template #append>
-							<v-progress-circular v-if="submitting" indeterminate />
+							<VProgressCircular v-if="submitting" indeterminate />
 						</template>
-					</v-input>
-				</transition-expand>
+					</VInput>
+				</TransitionExpand>
 
-				<transition-expand>
+				<TransitionExpand>
 					<div v-if="requiresTFA && originalProviderName === provider.name" class="signin-actions">
-						<v-notice v-if="otpInlineError" type="warning">{{ otpInlineError }}</v-notice>
+						<VNotice v-if="otpInlineError" type="warning">{{ otpInlineError }}</VNotice>
 					</div>
-				</transition-expand>
+				</TransitionExpand>
 			</template>
 		</template>
 	</div>

@@ -52,9 +52,9 @@ async function addFolder() {
 </script>
 
 <template>
-	<v-dialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
+	<VDialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
 		<template #activator="{ on }">
-			<v-button
+			<VButton
 				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
 				rounded
 				icon
@@ -63,21 +63,21 @@ async function addFolder() {
 				:disabled="disabled"
 				@click="on"
 			>
-				<v-icon small name="create_new_folder" outline />
-			</v-button>
+				<VIcon small name="create_new_folder" outline />
+			</VButton>
 		</template>
 
-		<v-card>
-			<v-card-title>{{ $t('create_folder') }}</v-card-title>
-			<v-card-text>
-				<v-input v-model="newFolderName" autofocus :placeholder="$t('folder_name')" />
-			</v-card-text>
-			<v-card-actions>
-				<v-button secondary @click="dialogActive = false">{{ $t('cancel') }}</v-button>
-				<v-button ref="saveBtn" :disabled="newFolderName === null" :loading="saving" @click="addFolder">
+		<VCard>
+			<VCardTitle>{{ $t('create_folder') }}</VCardTitle>
+			<VCardText>
+				<VInput v-model="newFolderName" autofocus :placeholder="$t('folder_name')" />
+			</VCardText>
+			<VCardActions>
+				<VButton secondary @click="dialogActive = false">{{ $t('cancel') }}</VButton>
+				<VButton ref="saveBtn" :disabled="newFolderName === null" :loading="saving" @click="addFolder">
 					{{ $t('save') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>

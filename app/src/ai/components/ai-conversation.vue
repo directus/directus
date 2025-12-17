@@ -74,18 +74,18 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 <template>
 	<div class="ai-conversation">
-		<ai-header v-if="hasProviders" />
+		<AiHeader v-if="hasProviders" />
 		<div ref="messages-container" class="messages-container">
-			<ai-message-list :messages="aiStore.messages" :status="aiStore.status" />
+			<AiMessageList :messages="aiStore.messages" :status="aiStore.status" />
 
-			<v-info v-if="emptyState" icon="magic_button" type="primary" :title="$t(emptyState.title)" class="empty-state">
+			<VInfo v-if="emptyState" icon="magic_button" type="primary" :title="$t(emptyState.title)" class="empty-state">
 				{{ $t(emptyState.description) }}
 				<template v-if="emptyState.showSettings" #append>
-					<v-button to="/settings/ai">{{ $t('ai.go_to_settings') }}</v-button>
+					<VButton to="/settings/ai">{{ $t('ai.go_to_settings') }}</VButton>
 				</template>
-			</v-info>
+			</VInfo>
 
-			<v-notice v-if="aiStore.error" multiline type="danger" class="error-notice">
+			<VNotice v-if="aiStore.error" multiline type="danger" class="error-notice">
 				<template #title>
 					{{ $t('ai.error') }}
 				</template>
@@ -93,27 +93,27 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 				<p class="error-message">{{ aiStore.error?.message ?? $t('ai.unknown_error') }}</p>
 
 				<div class="error-buttons-container">
-					<v-button outlined class="retry-button" x-small danger @click="aiStore.retry()">
-						<v-icon name="refresh" x-small />
+					<VButton outlined class="retry-button" x-small danger @click="aiStore.retry()">
+						<VIcon name="refresh" x-small />
 						{{ $t('ai.retry') }}
-					</v-button>
-					<v-button class="clear-button" outline x-small danger @click="aiStore.reset()">
+					</VButton>
+					<VButton class="clear-button" outline x-small danger @click="aiStore.reset()">
 						{{ $t('ai.clear_conversation') }}
-					</v-button>
+					</VButton>
 				</div>
-			</v-notice>
+			</VNotice>
 
 			<div id="scroll-anchor"></div>
 		</div>
 
 		<div v-if="hasProviders" class="input-container">
 			<div v-show="showScrollButton" class="scroll-to-bottom-container">
-				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
-					<v-icon small name="arrow_downward" />
-				</v-button>
+				<VButton icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
+					<VIcon small name="arrow_downward" />
+				</VButton>
 			</div>
 
-			<ai-input />
+			<AiInput />
 		</div>
 	</div>
 </template>

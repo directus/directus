@@ -44,13 +44,13 @@ const hasValue = computed(() => {
 			@click="collapsed = !collapsed"
 		>
 			<span>{{ group ?? 'globals' }}</span>
-			<v-icon class="icon" name="expand_more" small />
+			<VIcon class="icon" name="expand_more" small />
 		</button>
 
-		<transition-expand>
+		<TransitionExpand>
 			<div v-if="root || !collapsed" class="group-contents">
 				<template v-for="(ruleValue, ruleKey) in rulesGrouped" :key="ruleKey">
-					<system-theme-overrides-group
+					<SystemThemeOverridesGroup
 						v-if="isPlainObject(ruleValue)"
 						:group="ruleKey === '$root' ? undefined : ruleKey"
 						:rules="ruleValue as Record<string, unknown>"
@@ -59,7 +59,7 @@ const hasValue = computed(() => {
 						:path="ruleKey === '$root' ? path : [...path, ruleKey]"
 					/>
 
-					<system-theme-overrides-rule
+					<SystemThemeOverridesRule
 						v-else
 						:rule="ruleKey"
 						type="color"
@@ -70,7 +70,7 @@ const hasValue = computed(() => {
 					/>
 				</template>
 			</div>
-		</transition-expand>
+		</TransitionExpand>
 	</div>
 </template>
 

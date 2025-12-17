@@ -11,7 +11,7 @@ function initState() {
 <template>
 	<Story title="VProgressCircular" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-progress-circular v-bind="state" />
+			<VProgressCircular v-bind="state" />
 		</template>
 	</Story>
 </template>

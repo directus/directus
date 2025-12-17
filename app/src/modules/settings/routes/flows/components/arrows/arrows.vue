@@ -58,7 +58,7 @@ const arrows = computed(() => {
 <template>
 	<div class="arrow-container">
 		<svg :width="size.width" :height="size.height" class="arrows" :class="{ mirrored: isRTL }">
-			<transition-group name="fade">
+			<TransitionGroup name="fade">
 				<path
 					v-for="arrow in arrows"
 					:key="arrow.id"
@@ -66,7 +66,7 @@ const arrows = computed(() => {
 					:d="arrow.d"
 					stroke-linecap="round"
 				/>
-			</transition-group>
+			</TransitionGroup>
 		</svg>
 	</div>
 </template>

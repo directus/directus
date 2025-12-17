@@ -12,9 +12,9 @@ withDefaults(defineProps<UseDatetimeProps>(), {
 </script>
 
 <template>
-	<use-datetime v-slot="{ datetime }" v-bind="$props">
+	<UseDatetime v-slot="{ datetime }" v-bind="$props">
 		<span class="datetime">{{ datetime }}</span>
-	</use-datetime>
+	</UseDatetime>
 </template>
 
 <style lang="scss" scoped>

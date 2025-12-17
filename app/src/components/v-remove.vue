@@ -133,26 +133,26 @@ function useConfirmation() {
 </script>
 
 <template>
-	<v-button v-if="button" v-tooltip="tooltip" v-bind="$attrs" icon rounded :disabled @click.stop="onClick">
-		<v-icon :name="icon" :disabled />
-	</v-button>
+	<VButton v-if="button" v-tooltip="tooltip" v-bind="$attrs" icon rounded :disabled @click.stop="onClick">
+		<VIcon :name="icon" :disabled />
+	</VButton>
 
-	<v-icon v-else v-tooltip="tooltip" v-bind="$attrs" :name="icon" :disabled clickable @click.stop="onClick" />
+	<VIcon v-else v-tooltip="tooltip" v-bind="$attrs" :name="icon" :disabled clickable @click.stop="onClick" />
 
-	<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="onConfirmDelete">
-		<v-card>
-			<v-card-title>{{ $t('batch_delete_confirm', 1) }}</v-card-title>
+	<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="onConfirmDelete">
+		<VCard>
+			<VCardTitle>{{ $t('batch_delete_confirm', 1) }}</VCardTitle>
 
-			<v-card-actions>
-				<v-button secondary @click="confirmDelete = false">
+			<VCardActions>
+				<VButton secondary @click="confirmDelete = false">
 					{{ $t('cancel') }}
-				</v-button>
-				<v-button kind="danger" @click="onConfirmDelete">
+				</VButton>
+				<VButton kind="danger" @click="onConfirmDelete">
 					{{ $t('delete_label') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>

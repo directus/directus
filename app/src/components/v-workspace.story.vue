@@ -29,7 +29,7 @@ function initState() {
 <template>
 	<Story title="VWorkspace" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-workspace v-bind="state" />
+			<VWorkspace v-bind="state" />
 		</template>
 	</Story>
 </template>

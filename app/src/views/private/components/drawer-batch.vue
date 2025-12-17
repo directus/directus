@@ -120,7 +120,7 @@ function useActions() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		v-model="internalActive"
 		:title="$t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
@@ -132,7 +132,7 @@ function useActions() {
 		</template>
 
 		<div class="drawer-batch-content">
-			<v-form
+			<VForm
 				v-model="internalEdits"
 				:collection="collection"
 				batch-mode
@@ -140,7 +140,7 @@ function useActions() {
 				:validation-errors="validationErrors"
 			/>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

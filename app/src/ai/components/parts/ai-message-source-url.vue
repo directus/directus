@@ -10,7 +10,7 @@ defineProps<{
 <template>
 	<div class="message-source">
 		<a :href="part.url" target="_blank" rel="noopener noreferrer">
-			<v-icon name="link" x-small />
+			<VIcon name="link" x-small />
 			<span>{{ part.title || part.url }}</span>
 		</a>
 	</div>

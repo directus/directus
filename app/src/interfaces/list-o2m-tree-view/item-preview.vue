@@ -32,21 +32,21 @@ const editActive = ref(false);
 
 <template>
 	<div class="preview" :class="{ open, deleted }">
-		<v-icon
+		<VIcon
 			v-if="relationInfo.relatedPrimaryKeyField.field in item"
 			:name="props.open ? 'expand_more' : 'chevron_right'"
 			clickable
 			@click="emit('update:open', !props.open)"
 		/>
 
-		<render-template :collection="collection" :template="template" :item="item" />
+		<RenderTemplate :collection="collection" :template="template" :item="item" />
 
 		<div class="spacer" />
 
 		<div class="item-actions">
-			<v-icon v-tooltip="$t('edit_item')" name="edit" clickable @click="editActive = true" />
+			<VIcon v-tooltip="$t('edit_item')" name="edit" clickable @click="editActive = true" />
 
-			<v-remove
+			<VRemove
 				v-if="!disabled"
 				:item-type="item.$type"
 				:item-info="relationInfo"
@@ -56,7 +56,7 @@ const editActive = ref(false);
 			/>
 		</div>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="editActive"
 			:disabled
 			:non-editable

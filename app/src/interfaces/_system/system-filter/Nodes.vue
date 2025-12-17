@@ -289,7 +289,7 @@ function isExistingField(node: Record<string, any>): boolean {
 </script>
 
 <template>
-	<draggable
+	<Draggable
 		tag="ul"
 		draggable=".row"
 		handle=".drag-handle"
@@ -305,18 +305,18 @@ function isExistingField(node: Record<string, any>): boolean {
 			<li class="row">
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline, 'raw-field-names': rawFieldNames }">
-						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
+						<VIcon name="drag_indicator" class="drag-handle" small></VIcon>
 						<span v-if="field || !isExistingField(element)" class="plain-name">
 							{{ getFieldPreview(element) }}
 						</span>
-						<v-menu v-else placement="bottom-start" show-arrow>
+						<VMenu v-else placement="bottom-start" show-arrow>
 							<template #activator="{ toggle }">
 								<button class="name" @click="toggle">
 									<span>{{ getFieldPreview(element) }}</span>
 								</button>
 							</template>
 
-							<v-field-list
+							<VFieldList
 								:collection="collection"
 								:field="field"
 								include-functions
@@ -326,8 +326,8 @@ function isExistingField(node: Record<string, any>): boolean {
 								:raw-field-names="rawFieldNames"
 								@add="updateField(index, $event[0])"
 							/>
-						</v-menu>
-						<v-select
+						</VMenu>
+						<VSelect
 							inline
 							class="comparator"
 							placement="bottom-start"
@@ -335,14 +335,14 @@ function isExistingField(node: Record<string, any>): boolean {
 							:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
 							@update:model-value="updateComparator(index, $event)"
 						/>
-						<input-group
+						<InputGroup
 							:field="element"
 							:collection="collection"
 							:variable-input-enabled="variableInputEnabled"
 							@update:field="replaceNode(index, $event)"
 						/>
 						<span class="delete">
-							<v-icon
+							<VIcon
 								v-tooltip="$t('delete_label')"
 								name="close"
 								small
@@ -355,7 +355,7 @@ function isExistingField(node: Record<string, any>): boolean {
 
 				<div v-else class="node logic">
 					<div class="header" :class="{ inline }">
-						<v-icon name="drag_indicator" class="drag-handle" small />
+						<VIcon name="drag_indicator" class="drag-handle" small />
 						<div class="logic-type" :class="{ or: filterInfo[index].name === '_or' }">
 							<span class="key" @click="toggleLogic(index)">
 								{{
@@ -373,7 +373,7 @@ function isExistingField(node: Record<string, any>): boolean {
 							</span>
 						</div>
 						<span class="delete">
-							<v-icon
+							<VIcon
 								v-tooltip="$t('delete_label')"
 								name="close"
 								small
@@ -382,7 +382,7 @@ function isExistingField(node: Record<string, any>): boolean {
 							/>
 						</span>
 					</div>
-					<nodes
+					<Nodes
 						:filter="element[filterInfo[index].name]"
 						:collection="collection"
 						:depth="depth + 1"
@@ -396,7 +396,7 @@ function isExistingField(node: Record<string, any>): boolean {
 				</div>
 			</li>
 		</template>
-	</draggable>
+	</Draggable>
 </template>
 
 <style lang="scss" scoped>

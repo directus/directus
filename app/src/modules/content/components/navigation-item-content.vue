@@ -18,8 +18,8 @@ withDefaults(
 </script>
 
 <template>
-	<v-list-item-icon>
-		<v-icon :name="icon" :color="color" />
-	</v-list-item-icon>
-	<v-list-item-content><v-text-overflow :text="name" :highlight="search" /></v-list-item-content>
+	<VListItemIcon>
+		<VIcon :name="icon" :color="color" />
+	</VListItemIcon>
+	<VListItemContent><VTextOverflow :text="name" :highlight="search" /></VListItemContent>
 </template>

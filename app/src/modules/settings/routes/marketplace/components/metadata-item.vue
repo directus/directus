@@ -20,12 +20,12 @@ withDefaults(
 </script>
 
 <template>
-	<v-list-item :class="[color, { 'has-tooltip': hasTooltip }]" :clickable="!!href || !!to" :href="href" :to="to">
-		<v-list-item-icon>
-			<slot name="icon"><v-icon :name="icon" small /></slot>
-		</v-list-item-icon>
-		<v-list-item-content :class="{ monospace }"><slot /></v-list-item-content>
-	</v-list-item>
+	<VListItem :class="[color, { 'has-tooltip': hasTooltip }]" :clickable="!!href || !!to" :href="href" :to="to">
+		<VListItemIcon>
+			<slot name="icon"><VIcon :name="icon" small /></slot>
+		</VListItemIcon>
+		<VListItemContent :class="{ monospace }"><slot /></VListItemContent>
+	</VListItem>
 </template>
 
 <style scoped lang="scss">
