@@ -290,7 +290,7 @@ export default class CockroachDB implements SchemaInspector {
 			return {
 				name: row.table_name,
 				schema: row.schema_name,
-				comment: row.comment ?? null,
+				comment: row.comment || null,
 			} as Table;
 		}
 
@@ -301,7 +301,7 @@ export default class CockroachDB implements SchemaInspector {
 					({
 						name: r.table_name,
 						schema: r.schema_name,
-						comment: r.comment ?? null,
+						comment: r.comment || null,
 					}) as Table,
 			);
 	}
@@ -554,14 +554,6 @@ export default class CockroachDB implements SchemaInspector {
 	// ===============================================================================================
 
 	async foreignKeys(table?: string): Promise<ForeignKey[]> {
-		const bindings: any[] = [this.explodedSchema];
-		let tableFilterSql = '';
-
-		if (table) {
-			tableFilterSql = 'AND tc.table_name = ?';
-			bindings.push(table);
-		}
-
 		const result = await this.knex.raw<{ rows: ForeignKey[] }>(
 			`
 			WITH fk AS (
@@ -577,7 +569,7 @@ export default class CockroachDB implements SchemaInspector {
 			AND rc.constraint_schema = tc.table_schema
 			WHERE tc.table_schema = ANY(?)
 				AND tc.constraint_type = 'FOREIGN KEY'
-				${tableFilterSql}
+				${table ? 'AND tc.table_name = ?' : ''}
 			),
 			src AS (
 			SELECT
@@ -617,7 +609,7 @@ export default class CockroachDB implements SchemaInspector {
 				this.explodedSchema,
 				this.explodedSchema,
 				this.explodedSchema,
-				...(table ? [bindings[1]] : []),
+				...(table ? [table] : []),
 			],
 		);
 
