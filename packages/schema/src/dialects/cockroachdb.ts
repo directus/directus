@@ -77,6 +77,26 @@ export default class CockroachDB implements SchemaInspector {
 	// CockroachDB specific
 	// ===============================================================================================
 
+	private async resolveTableSchema(table: string): Promise<string> {
+		// If you know you only ever introspect the current schema, you can skip this and just use search_path.
+		const row = await this.knex
+			.select<{ table_schema: string }>('table_schema')
+			.from('information_schema.tables')
+			.whereIn('table_schema', this.explodedSchema)
+			.andWhere({ table_name: table, table_type: 'BASE TABLE' })
+			.first();
+
+		return row?.table_schema ?? this.explodedSchema[0]!;
+	}
+
+	private qname(schema: string, name: string) {
+		// schema-qualified + safely quoted identifier
+		// Produces: "schema"."name"
+		const s = this.knex.client.wrapIdentifier(schema);
+		const n = this.knex.client.wrapIdentifier(name);
+		return `${s}.${n}`;
+	}
+
 	/**
 	 * Set the schema to be used in other methods
 	 */
@@ -240,12 +260,22 @@ export default class CockroachDB implements SchemaInspector {
 	 * List all existing tables in the current schema/database
 	 */
 	async tables() {
-		const records = await this.knex
-			.select<{ tablename: string }[]>('tablename')
-			.from('pg_catalog.pg_tables')
-			.whereIn('schemaname', this.explodedSchema);
+		// Cockroach-native list of tables. Faster than pg_catalog.pg_tables. :contentReference[oaicite:5]{index=5}
+		const results = await Promise.all(
+			this.explodedSchema.map((schema) =>
+				this.knex.raw<{ rows: { schema_name: string; table_name: string; type: string }[] }>(
+					`SHOW TABLES FROM ${this.qname(this.knex.client.database?.() ?? 'current_database()', schema)}`,
+				),
+			),
+		);
 
-		return records.map(({ tablename }) => tablename);
+		const tables = results
+			.flatMap((r) => r.rows)
+			.filter((r) => r.type === 'table')
+			.map((r) => r.table_name);
+
+		// de-dupe (in case multiple schemas / search_path overlap)
+		return [...new Set(tables)];
 	}
 
 	/**
@@ -255,42 +285,37 @@ export default class CockroachDB implements SchemaInspector {
 	tableInfo(): Promise<Table[]>;
 	tableInfo(table: string): Promise<Table>;
 	async tableInfo(table?: string) {
-		const query = this.knex
-			.select(
-				'table_name',
-				'table_schema',
-				this.knex
-					.select(this.knex.raw('obj_description(oid)'))
-					.from('pg_class')
-					.where({ relkind: 'r' })
-					.andWhere({ relname: 'table_name' })
-					.as('table_comment'),
-			)
-			.from('information_schema.tables')
-			.whereIn('table_schema', this.explodedSchema)
-			.andWhereRaw(`"table_catalog" = current_database()`)
-			.andWhere({ table_type: 'BASE TABLE' })
-			.orderBy('table_name', 'asc');
+		// Cockroach-native table comments: SHOW TABLES ... WITH COMMENT :contentReference[oaicite:6]{index=6}
+		const db = (await this.knex.raw<{ rows: { db: string }[] }>(`SELECT current_database() AS db`)).rows[0]!.db;
+
+		const results = await Promise.all(
+			this.explodedSchema.map((schema) =>
+				this.knex.raw<{
+					rows: { schema_name: string; table_name: string; type: string; comment?: string | null }[];
+				}>(`SHOW TABLES FROM ${this.qname(db, schema)} WITH COMMENT`),
+			),
+		);
+
+		const rows = results.flatMap((r) => r.rows).filter((r) => r.type === 'table');
 
 		if (table) {
-			const rawTable: RawTable = await query.andWhere({ table_name: table }).limit(1).first();
+			const row = rows.find((r) => r.table_name === table);
+			if (!row) return null as any;
 
 			return {
-				name: rawTable.table_name,
-				schema: rawTable.table_schema,
-				comment: rawTable.table_comment,
+				name: row.table_name,
+				schema: row.schema_name,
+				comment: row.comment ?? null,
 			} as Table;
 		}
 
-		const records = await query;
-
-		return records.map((rawTable: RawTable): Table => {
-			return {
-				name: rawTable.table_name,
-				schema: rawTable.table_schema,
-				comment: rawTable.table_comment,
-			};
-		});
+		return rows
+			.sort((a, b) => a.table_name.localeCompare(b.table_name))
+			.map((r) => ({
+				name: r.table_name,
+				schema: r.schema_name,
+				comment: r.comment ?? null,
+			}));
 	}
 
 	/**
@@ -338,206 +363,161 @@ export default class CockroachDB implements SchemaInspector {
 	columnInfo(table: string): Promise<Column[]>;
 	columnInfo(table: string, column: string): Promise<Column>;
 	async columnInfo(table?: string, column?: string) {
-		const { knex } = this;
+		const db = (await this.knex.raw<{ rows: { db: string }[] }>(`SELECT current_database() AS db`)).rows[0]!.db;
 
-		const bindings: any[] = [];
-		if (table) bindings.push(table);
-		if (column) bindings.push(column);
+		// Pull constraints once (fast, structured). No pg_catalog.
+		const constraints = await this.knex.raw<{
+			rows: Array<{
+				table_name: string;
+				table_schema: string;
+				column_name: string;
+				constraint_type: 'PRIMARY KEY' | 'UNIQUE' | 'FOREIGN KEY';
+				foreign_key_table?: string | null;
+				foreign_key_schema?: string | null;
+				foreign_key_column?: string | null;
+			}>;
+		}>(
+			`
+  WITH
+    pk_uq AS (
+      SELECT
+        tc.table_schema,
+        tc.table_name,
+        kcu.column_name,
+        tc.constraint_type,
+        NULL::STRING AS foreign_key_schema,
+        NULL::STRING AS foreign_key_table,
+        NULL::STRING AS foreign_key_column
+      FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu
+        ON tc.constraint_name = kcu.constraint_name
+       AND tc.table_schema = kcu.table_schema
+       AND tc.table_name = kcu.table_name
+      WHERE tc.table_schema = ANY(?)
+        AND tc.constraint_type IN ('PRIMARY KEY', 'UNIQUE')
+    ),
+    fk_single_col AS (
+      SELECT
+        tc.table_schema,
+        tc.table_name,
+        kcu.column_name,
+        'FOREIGN KEY'::STRING AS constraint_type,
+        ccu.table_schema AS foreign_key_schema,
+        ccu.table_name   AS foreign_key_table,
+        ccu.column_name  AS foreign_key_column
+      FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu
+        ON tc.constraint_name = kcu.constraint_name
+       AND tc.table_schema = kcu.table_schema
+      JOIN information_schema.constraint_column_usage ccu
+        ON ccu.constraint_name = tc.constraint_name
+       AND ccu.table_schema = tc.table_schema
+      WHERE tc.table_schema = ANY(?)
+        AND tc.constraint_type = 'FOREIGN KEY'
+        AND (
+          SELECT COUNT(*)
+          FROM information_schema.key_column_usage kcu2
+          WHERE kcu2.constraint_name = tc.constraint_name
+            AND kcu2.table_schema = tc.table_schema
+        ) = 1
+    )
+  SELECT * FROM pk_uq
+  UNION ALL
+  SELECT * FROM fk_single_col
+`,
+			[this.explodedSchema, this.explodedSchema],
+		);
 
-		const schemaIn = this.explodedSchema.map((schemaName) => `${this.knex.raw('?', [schemaName])}::regnamespace`);
+		const constraintsByKey = new Map<string, typeof constraints.rows>();
 
-		const [columns, constraints] = await Promise.all([
-			knex.raw<{ rows: RawColumn[] }>(
-				`
-         SELECT *, CASE WHEN res.is_generated THEN (
-          SELECT
-            generation_expression
-          FROM
-            information_schema.columns
-          WHERE
-            table_schema = res.schema
-            AND table_name = res.table
-            AND column_name = res.name
-          ) ELSE NULL END AS generation_expression
-         FROM (
-         SELECT
-           att.attname AS name,
-           rel.relname AS table,
-           rel.relnamespace::regnamespace::text AS schema,
-           format_type(att.atttypid, null) AS data_type,
-           ix_rel.relname as index_name,
-           NOT att.attnotnull AS is_nullable,
-           CASE WHEN att.attgenerated = '' THEN pg_get_expr(ad.adbin, ad.adrelid) ELSE null END AS default_value,
-           att.attgenerated = 's' AS is_generated,
-           CASE
-             WHEN att.atttypid IN (1042, 1043) THEN (att.atttypmod - 4)::int4
-             WHEN att.atttypid IN (1560, 1562) THEN (att.atttypmod)::int4
-             ELSE NULL
-           END AS max_length,
-           des.description AS comment,
-           CASE att.atttypid
-             WHEN 21 THEN 16
-             WHEN 23 THEN 32
-             WHEN 20 THEN 64
-             WHEN 1700 THEN
-               CASE WHEN atttypmod = -1 THEN NULL
-                 ELSE (((atttypmod - 4) >> 16) & 65535)::int4
-               END
-             WHEN 700 THEN 24
-             WHEN 701 THEN 53
-             ELSE NULL
-           END AS numeric_precision,
-           CASE
-             WHEN atttypid IN (21, 23, 20) THEN 0
-             WHEN atttypid = 1700 THEN
-               CASE
-                 WHEN atttypmod = -1 THEN NULL
-                 ELSE ((atttypmod - 4) & 65535)::int4
-               END
-             ELSE null
-           END AS numeric_scale
-         FROM
-           pg_attribute att
-           LEFT JOIN pg_class rel ON att.attrelid = rel.oid
-           LEFT JOIN pg_attrdef ad ON (att.attrelid, att.attnum) = (ad.adrelid, ad.adnum)
-           LEFT JOIN pg_description des ON (att.attrelid, att.attnum) = (des.objoid, des.objsubid)
-           LEFT JOIN LATERAL (
-              SELECT
-                indexrelid
-              FROM
-                pg_index ix
-              WHERE
-                att.attrelid = ix.indrelid
-                AND att.attnum = ALL(ix.indkey)
-                AND ix.indisunique = false
-              LIMIT 1
-           ) ix ON true
-           LEFT JOIN pg_class ix_rel ON ix_rel.oid=ix.indexrelid
-         WHERE
-           rel.relnamespace IN (${schemaIn})
-           ${table ? 'AND rel.relname = ?' : ''}
-           ${column ? 'AND att.attname = ?' : ''}
-           AND rel.relkind = 'r'
-           AND att.attnum > 0
-           AND NOT att.attisdropped
-         ORDER BY rel.relname, att.attnum) res;
-       `,
-				bindings,
-			),
-			knex.raw<{ rows: Constraint[] }>(
-				`
-         SELECT
-           con.contype AS type,
-           rel.relname AS table,
-           att.attname AS column,
-           frel.relnamespace::regnamespace::text AS foreign_key_schema,
-           frel.relname AS foreign_key_table,
-           fatt.attname AS foreign_key_column
-         FROM
-           pg_constraint con
-         LEFT JOIN pg_class rel ON con.conrelid = rel.oid
-         LEFT JOIN pg_class frel ON con.confrelid = frel.oid
-         LEFT JOIN pg_attribute att ON att.attrelid = con.conrelid AND att.attnum = con.conkey[1]
-         LEFT JOIN pg_attribute fatt ON fatt.attrelid = con.confrelid AND fatt.attnum = con.confkey[1]
-         WHERE con.connamespace IN (${schemaIn})
-           AND array_length(con.conkey, 1) <= 1
-           AND (con.confkey IS NULL OR array_length(con.confkey, 1) = 1)
-           ${table ? 'AND rel.relname = ?' : ''}
-           ${column ? 'AND att.attname = ?' : ''}
-         `,
-				bindings,
-			),
-		]);
-
-		const parsedColumns: Column[] = columns.rows.map((col): Column => {
-			const constraintsForColumn = constraints.rows.filter(
-				(constraint) => constraint.table === col.table && constraint.column === col.name,
-			);
-
-			const foreignKeyConstraint = constraintsForColumn.find((constraint) => constraint.type === 'f');
-
-			return {
-				name: col.name,
-				table: col.table,
-				data_type: col.data_type,
-				default_value: parseDefaultValue(col.default_value),
-				generation_expression: col.generation_expression,
-				max_length: col.max_length,
-				numeric_precision: col.numeric_precision,
-				numeric_scale: col.numeric_scale,
-				is_generated: col.is_generated,
-				is_nullable: col.is_nullable,
-				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
-				is_indexed: !!col.index_name?.length && col.index_name.length > 0,
-				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
-				has_auto_increment:
-					['integer', 'bigint'].includes(col.data_type) && (col.default_value?.startsWith('nextval(') ?? false),
-				foreign_key_schema: foreignKeyConstraint?.foreign_key_schema ?? null,
-				foreign_key_table: foreignKeyConstraint?.foreign_key_table ?? null,
-				foreign_key_column: foreignKeyConstraint?.foreign_key_column ?? null,
-				comment: col.comment,
-			};
-		});
-
-		for (const column of parsedColumns) {
-			if (['point', 'polygon'].includes(column.data_type)) {
-				column.data_type = 'unknown';
-			}
+		for (const c of constraints.rows) {
+			const key = `${c.table_schema}.${c.table_name}.${c.column_name}`;
+			const list = constraintsByKey.get(key) ?? [];
+			list.push(c);
+			constraintsByKey.set(key, list);
 		}
 
-		const hasPostGIS =
-			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
+		const fetchForOneTable = async (schema: string, t: string) => {
+			// SHOW COLUMNS includes indices array, generation_expression, is_hidden and supports WITH COMMENT :contentReference[oaicite:7]{index=7}
+			const res = await this.knex.raw<{
+				rows: Array<{
+					column_name: string;
+					data_type: string;
+					is_nullable: boolean | string;
+					column_default: string | null;
+					generation_expression: string | null;
+					indices: string[] | null;
+					is_hidden: boolean | string;
+					comment?: string | null;
+				}>;
+			}>(`SHOW COLUMNS FROM ${this.qname(schema, t)} WITH COMMENT`);
 
-		if (!hasPostGIS) {
-			if (table && column) return parsedColumns[0];
-			return parsedColumns;
-		}
+			return res.rows.map((r): Column => {
+				const key = `${schema}.${t}.${r.column_name}`;
+				const cons = constraintsByKey.get(key) ?? [];
+				const fk = cons.find((x) => x.constraint_type === 'FOREIGN KEY');
 
-		const query = this.knex
-			.with(
-				'geometries',
-				this.knex.raw(`
-				select * from geometry_columns
-				union
-				select * from geography_columns
-		`),
-			)
-			.select<Column[]>({
-				table: 'f_table_name',
-				name: 'f_geometry_column',
-				data_type: 'type',
-			})
-			.from('geometries')
-			.whereIn('f_table_schema', this.explodedSchema);
+				const indices = Array.isArray(r.indices) ? r.indices : [];
+				const isPrimary = cons.some((x) => x.constraint_type === 'PRIMARY KEY');
+				const isUnique = cons.some((x) => x.constraint_type === 'UNIQUE') || isPrimary;
 
+				const defaultVal = r.column_default ? parseDefaultValue(r.column_default) : null;
+
+				const hasAutoIncrement =
+					typeof defaultVal === 'string' &&
+					(defaultVal.includes('unique_rowid()') || defaultVal.startsWith('nextval('));
+
+				return {
+					table: t,
+					name: r.column_name,
+					data_type: r.data_type,
+					default_value: defaultVal,
+					generation_expression: r.generation_expression || null,
+					is_generated: !!r.generation_expression,
+					is_nullable: r.is_nullable === true || r.is_nullable === 'true',
+					is_primary_key: isPrimary,
+					is_unique: isUnique,
+					is_indexed: indices.length > 0,
+					has_auto_increment: hasAutoIncrement,
+					foreign_key_schema: fk?.foreign_key_schema ?? null,
+					foreign_key_table: fk?.foreign_key_table ?? null,
+					foreign_key_column: fk?.foreign_key_column ?? null,
+					comment: r.comment ?? null,
+
+					// Keep parity with your existing shape (these weren't in SHOW COLUMNS):
+					max_length: null,
+					numeric_precision: null,
+					numeric_scale: null,
+				};
+			});
+		};
+
+		// If a table was provided, introspect just that table (fast path).
 		if (table) {
-			query.andWhere('f_table_name', table);
+			const schema = await this.resolveTableSchema(table);
+			const cols = await fetchForOneTable(schema, table);
+
+			if (column) {
+				const c = cols.find((x) => x.name === column);
+				return c as any;
+			}
+
+			return cols;
 		}
+
+		// Otherwise introspect all tables in the configured schema list.
+		// (You can add a concurrency limit here if you have thousands of tables.)
+		const tableInfos = (await this.tableInfo()) as Table[];
+
+		const all = await Promise.all(tableInfos.map((t) => fetchForOneTable(t.schema, t.name)));
+		const flattened = all.flat();
 
 		if (column) {
-			const parsedColumn = parsedColumns[0]!;
-			const geometry = await query.andWhere('f_geometry_column', column).first();
-
-			if (geometry) {
-				parsedColumn.data_type = geometry.data_type;
-			}
-
-			return parsedColumn;
+			// no table + column is ambiguous; keep prior behavior: return first match
+			return flattened.find((c) => c.name === column) as any;
 		}
 
-		const geometries = await query;
-
-		for (const column of parsedColumns) {
-			const geometry = geometries.find((geometry) => {
-				return column.name == geometry.name && column.table == geometry.table;
-			});
-
-			if (geometry) {
-				column.data_type = geometry.data_type;
-			}
-		}
-
-		return parsedColumns;
+		return flattened;
 	}
 
 	/**
@@ -581,105 +561,76 @@ export default class CockroachDB implements SchemaInspector {
 
 	// Foreign Keys
 	// ===============================================================================================
-
 	async foreignKeys(table?: string) {
-		const result = await this.knex.raw<{ rows: ForeignKey[] }>(`
-      SELECT
-        c.conrelid::regclass::text AS "table",
-        (
-          SELECT
-            STRING_AGG(a.attname, ','
-            ORDER BY
-              t.seq)
-          FROM (
-            SELECT
-              ROW_NUMBER() OVER (ROWS UNBOUNDED PRECEDING) AS seq,
-              attnum
-            FROM
-              UNNEST(c.conkey) AS t (attnum)) AS t
-          INNER JOIN pg_attribute AS a ON a.attrelid = c.conrelid
-            AND a.attnum = t.attnum) AS "column",
-        tt.name AS foreign_key_table,
-        (
-          SELECT
-            STRING_AGG(QUOTE_IDENT(a.attname), ','
-            ORDER BY
-              t.seq)
-          FROM (
-            SELECT
-              ROW_NUMBER() OVER (ROWS UNBOUNDED PRECEDING) AS seq,
-              attnum
-            FROM
-              UNNEST(c.confkey) AS t (attnum)) AS t
-        INNER JOIN pg_attribute AS a ON a.attrelid = c.confrelid
-          AND a.attnum = t.attnum) AS foreign_key_column,
-        tt.schema AS foreign_key_schema,
-        c.conname AS constraint_name,
-        CASE confupdtype
-        WHEN 'r' THEN
-          'RESTRICT'
-        WHEN 'c' THEN
-          'CASCADE'
-        WHEN 'n' THEN
-          'SET NULL'
-        WHEN 'd' THEN
-          'SET DEFAULT'
-        WHEN 'a' THEN
-          'NO ACTION'
-        ELSE
-          NULL
-        END AS on_update,
-        CASE confdeltype
-        WHEN 'r' THEN
-          'RESTRICT'
-        WHEN 'c' THEN
-          'CASCADE'
-        WHEN 'n' THEN
-          'SET NULL'
-        WHEN 'd' THEN
-          'SET DEFAULT'
-        WHEN 'a' THEN
-          'NO ACTION'
-        ELSE
-          NULL
-        END AS
-        on_delete
-      FROM
-        pg_catalog.pg_constraint AS c
-        INNER JOIN (
-          SELECT
-            pg_class.oid,
-            QUOTE_IDENT(pg_namespace.nspname) AS SCHEMA,
-            QUOTE_IDENT(pg_class.relname) AS name
-          FROM
-            pg_class
-            INNER JOIN pg_namespace ON pg_class.relnamespace = pg_namespace.oid) AS tf ON tf.oid = c.conrelid
-        INNER JOIN (
-          SELECT
-            pg_class.oid,
-            QUOTE_IDENT(pg_namespace.nspname) AS SCHEMA,
-            QUOTE_IDENT(pg_class.relname) AS name
-          FROM
-            pg_class
-            INNER JOIN pg_namespace ON pg_class.relnamespace = pg_namespace.oid) AS tt ON tt.oid = c.confrelid
-      WHERE
-        c.contype = 'f';
-    `);
-
-		const rowsWithoutQuotes = result.rows.map(stripRowQuotes);
+		const bindings: any[] = [this.explodedSchema];
+		let tableFilterSql = '';
 
 		if (table) {
-			return rowsWithoutQuotes.filter((row) => row.table === table);
+			tableFilterSql = 'AND tc.table_name = ?';
+			bindings.push(table);
 		}
 
-		return rowsWithoutQuotes;
+		const result = await this.knex.raw<{ rows: ForeignKey[] }>(
+			`
+			WITH fk AS (
+			SELECT
+				tc.table_schema,
+				tc.table_name,
+				tc.constraint_name,
+				rc.update_rule AS on_update,
+				rc.delete_rule AS on_delete
+			FROM information_schema.table_constraints tc
+			JOIN information_schema.referential_constraints rc
+				ON rc.constraint_name = tc.constraint_name
+			AND rc.constraint_schema = tc.table_schema
+			WHERE tc.table_schema = ANY(?)
+				AND tc.constraint_type = 'FOREIGN KEY'
+				${tableFilterSql}
+			),
+			src AS (
+			SELECT
+				kcu.table_schema,
+				kcu.table_name,
+				kcu.constraint_name,
+				STRING_AGG(kcu.column_name, ',' ORDER BY kcu.ordinal_position) AS "column"
+			FROM information_schema.key_column_usage kcu
+			WHERE kcu.table_schema = ANY(?)
+			GROUP BY 1,2,3
+			),
+			ref AS (
+			SELECT
+				ccu.table_schema AS foreign_key_schema,
+				ccu.table_name   AS foreign_key_table,
+				ccu.constraint_name,
+				STRING_AGG(ccu.column_name, ',' ORDER BY ccu.column_name) AS foreign_key_column
+			FROM information_schema.constraint_column_usage ccu
+			WHERE ccu.table_schema = ANY(?)
+			GROUP BY 1,2,3
+			)
+			SELECT
+			fk.table_name AS "table",
+			src."column",
+			ref.foreign_key_table,
+			ref.foreign_key_column,
+			ref.foreign_key_schema,
+			fk.constraint_name,
+			fk.on_update,
+			fk.on_delete
+			FROM fk
+			JOIN src USING (table_schema, table_name, constraint_name)
+			JOIN ref USING (constraint_name)
+		`,
+			[
+				// Note we bind the schema-array three times because we used ANY(?) three times.
+				bindings[0],
+				bindings[0],
+				bindings[0],
+				...(table ? [bindings[1]] : []),
+			],
+		);
 
-		function stripRowQuotes(row: ForeignKey): ForeignKey {
-			return Object.fromEntries(
-				Object.entries(row).map(([key, value]) => {
-					return [key, stripQuotes(value)];
-				}),
-			) as ForeignKey;
-		}
+		// console.log(result);
+
+		return result.rows;
 	}
 }
