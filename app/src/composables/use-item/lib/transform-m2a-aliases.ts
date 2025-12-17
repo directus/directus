@@ -16,25 +16,22 @@ export function transformM2AAliases<T>(data: T, m2aAliasMap: M2AAliasMap): T {
 		return data;
 	}
 
-	return transformItem(data, m2aAliasMap, null) as T;
+	return transformItem(data, m2aAliasMap, null, null) as T;
 }
 
 function transformItem(
 	item: unknown,
 	m2aAliasMap: M2AAliasMap,
-	activeM2AConfig: {
-		fieldPath: string;
-		collectionField: string;
-		aliases: Record<string, Record<string, string>>;
-		collection?: string;
-	} | null,
+	fieldPath: string | null,
+	parentCollection: string | null = null,
 ): unknown {
 	if (item === null || item === undefined) {
 		return item;
 	}
 
 	if (Array.isArray(item)) {
-		return item.map((element) => transformItem(element, m2aAliasMap, activeM2AConfig));
+		// For arrays, pass the field path through so junction items know which config to use
+		return item.map((element) => transformItem(element, m2aAliasMap, fieldPath, null));
 	}
 
 	if (typeof item !== 'object') {
@@ -44,31 +41,32 @@ function transformItem(
 	const obj = item as Record<string, unknown>;
 	const result: Record<string, unknown> = {};
 
-	// Try to detect if this is a junction item by checking for collection fields from any M2A config
-	let detectedM2AConfig: {
-		fieldPath: string;
-		collectionField: string;
-		aliases: Record<string, Record<string, string>>;
-		collection?: string;
-	} | null = activeM2AConfig;
+	// If we have a field path, look up the config directly to avoid collisions
+	// when multiple M2A fields share the same junction table/column
+	let m2aConfig = fieldPath ? m2aAliasMap[fieldPath] : null;
+	let effectiveFieldPath = fieldPath;
 
-	if (!detectedM2AConfig) {
-		// Check if this object has a collection field that matches any M2A config
-		for (const [fieldPath, config] of Object.entries(m2aAliasMap)) {
+	// If no config found by path, we need to detect which M2A field this belongs to
+	// Only scan if we don't have a field path (to avoid collisions when paths share same collectionField)
+	if (!m2aConfig && !fieldPath) {
+		// Check if this is a junction item (has a collectionField)
+		// Find the matching config by checking all possible paths
+		// This should only happen at the root level when we first encounter a junction item
+		for (const [path, config] of Object.entries(m2aAliasMap)) {
 			if (config.collectionField in obj) {
-				detectedM2AConfig = { fieldPath, ...config };
+				m2aConfig = config;
+				effectiveFieldPath = path;
 				break;
 			}
 		}
 	}
 
-	// Get the collection value - either from this object or from the active config (for nested items)
-	const itemCollection = detectedM2AConfig
-		? ((obj[detectedM2AConfig.collectionField] as string | undefined) ?? detectedM2AConfig.collection)
+	// Get the collection value - either from this object (junction item) or from parent (nested item)
+	const itemCollection = m2aConfig
+		? ((obj[m2aConfig.collectionField] as string | undefined) ?? parentCollection)
 		: undefined;
 
-	const aliasesForCollection =
-		detectedM2AConfig && itemCollection ? detectedM2AConfig.aliases[itemCollection] : undefined;
+	const aliasesForCollection = m2aConfig && itemCollection ? m2aConfig.aliases[itemCollection] : undefined;
 
 	for (const [key, value] of Object.entries(obj)) {
 		// Skip internal GraphQL fields
@@ -84,22 +82,36 @@ function transformItem(
 			newKey = aliasesForCollection[key]!;
 		}
 
-		// Determine the M2A config for nested items
-		// If we're entering the 'item' field of a junction, we stay with the same config and pass the collection value
-		// Otherwise, we clear it (not in an M2A context anymore)
-		let nextM2AConfig: typeof activeM2AConfig = null;
+		// Determine the field path and collection for nested items
+		let nextFieldPath: string | null = null;
+		let nextParentCollection: string | null = null;
 
-		if (detectedM2AConfig && key === 'item') {
-			// Entering the nested item - keep the same config and pass the collection value
-			nextM2AConfig = { ...detectedM2AConfig, collection: itemCollection };
-		} else if (detectedM2AConfig && key !== detectedM2AConfig.collectionField) {
-			// Still in the same M2A context (junction item fields other than collection field)
-			nextM2AConfig = detectedM2AConfig;
+		if (effectiveFieldPath) {
+			// We're in an M2A context - pass the path through
+			if (key === 'item') {
+				// Entering the nested item - keep the same field path and pass the collection value
+				nextFieldPath = effectiveFieldPath;
+				nextParentCollection = itemCollection ?? null;
+			} else {
+				// Still in the junction item context - keep the same path
+				nextFieldPath = effectiveFieldPath;
+			}
+		} else {
+			// At root level - check if this key is an M2A field
+			// Find the full path that starts with this key (e.g., "items2" -> "items2.item")
+			const matchingPath = Object.keys(m2aAliasMap).find((path) => {
+				const pathParts = path.split('.');
+				return pathParts[0] === key;
+			});
+
+			if (matchingPath) {
+				nextFieldPath = matchingPath;
+			}
 		}
 
 		// Recursively transform nested objects/arrays
 		if (typeof value === 'object' && value !== null) {
-			newValue = transformItem(value, m2aAliasMap, nextM2AConfig);
+			newValue = transformItem(value, m2aAliasMap, nextFieldPath, nextParentCollection);
 		}
 
 		result[newKey] = newValue;

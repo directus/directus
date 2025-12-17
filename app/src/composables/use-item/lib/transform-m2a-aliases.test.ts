@@ -400,4 +400,75 @@ describe('transformM2AAliases', () => {
 			],
 		});
 	});
+
+	it('should handle multiple M2A fields sharing same junction column by using field path', () => {
+		// This test addresses the issue where items2 and items3 share the same junction table/column
+		// (both use 'collection' field) but alias different fields (child1__bar vs child1__foo)
+		// Without field path tracking, the first matching config would be reused everywhere
+		const aliasMap: M2AAliasMap = {
+			'items2.item': {
+				collectionField: 'collection', // Same junction column as items3
+				aliases: {
+					child1: { child1__bar: 'bar' }, // Different aliased field
+				},
+			},
+			'items3.item': {
+				collectionField: 'collection', // Same junction column as items2
+				aliases: {
+					child1: { child1__foo: 'foo' }, // Different aliased field
+				},
+			},
+		};
+
+		const data = {
+			id: 'parent-1',
+			items2: [
+				{
+					id: 'junction-1',
+					collection: 'child1', // Same collection field name
+					item: {
+						id: 'child1-item-1',
+						child1__bar: 'value from items2', // Should transform to 'bar'
+					},
+				},
+			],
+			items3: [
+				{
+					id: 'junction-2',
+					collection: 'child1', // Same collection field name
+					item: {
+						id: 'child1-item-2',
+						child1__foo: 'value from items3', // Should transform to 'foo'
+					},
+				},
+			],
+		};
+
+		const result = transformM2AAliases(data, aliasMap);
+
+		// Each relation should be transformed independently using its own field path
+		expect(result).toEqual({
+			id: 'parent-1',
+			items2: [
+				{
+					id: 'junction-1',
+					collection: 'child1',
+					item: {
+						id: 'child1-item-1',
+						bar: 'value from items2', // Correctly transformed using items2.item config
+					},
+				},
+			],
+			items3: [
+				{
+					id: 'junction-2',
+					collection: 'child1',
+					item: {
+						id: 'child1-item-2',
+						foo: 'value from items3', // Correctly transformed using items3.item config
+					},
+				},
+			],
+		});
+	});
 });
