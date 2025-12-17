@@ -323,6 +323,60 @@ export default class CockroachDB implements SchemaInspector {
 	// Columns
 	// ===============================================================================================
 
+	private extractColumnTypeMetadata(sqlType: string): {
+		max_length: number | null;
+		numeric_precision: number | null;
+		numeric_scale: number | null;
+	} {
+		const t = sqlType.trim().toUpperCase();
+
+		const stringMatch = t.match(/^(STRING|VARCHAR|CHAR)\((\d+)\)$/);
+
+		if (stringMatch) {
+			return {
+				max_length: Number(stringMatch[2]),
+				numeric_precision: null,
+				numeric_scale: null,
+			};
+		}
+
+		const decimalMatch = t.match(/^(DECIMAL|NUMERIC)\((\d+)(?:\s*,\s*(\d+))?\)$/);
+
+		if (decimalMatch) {
+			return {
+				max_length: null,
+				numeric_precision: Number(decimalMatch[2]),
+				numeric_scale: Number(decimalMatch[3] ?? 0),
+			};
+		}
+
+		const intMatch = t.match(/^(INT2|INT4|INT8|INT|INTEGER|SMALLINT|BIGINT)$/);
+
+		if (intMatch) {
+			const precisionByType: Record<string, number> = {
+				INT2: 16,
+				SMALLINT: 16,
+				INT4: 32,
+				INT: 64,
+				INTEGER: 64,
+				INT8: 64,
+				BIGINT: 64,
+			};
+
+			return {
+				max_length: null,
+				numeric_precision: precisionByType[intMatch[1]!]!,
+				numeric_scale: 0,
+			};
+		}
+
+		return {
+			max_length: null,
+			numeric_precision: null,
+			numeric_scale: null,
+		};
+	}
+
 	/**
 	 * Get all the available columns in the current schema/database. Can be filtered to a specific table
 	 */
@@ -342,6 +396,33 @@ export default class CockroachDB implements SchemaInspector {
 			table: table_name,
 			column: column_name,
 		}));
+	}
+
+	private mapDataType(data_type: string): string {
+		// probably shouldnt force postgres naming here
+		const typeMap: [string | RegExp, string][] = [
+			['timestamptz', 'timestamp with time zone'],
+			['string', 'text'],
+			['bool', 'boolean'],
+			[/varchar\(\d+\)/, 'character varying'],
+			[/int\d+/, 'integer'],
+		];
+
+		const type = data_type.toLowerCase();
+
+		for (const [key, val] of typeMap) {
+			if (typeof key === 'string') {
+				if (key === type) {
+					return val;
+				}
+			} else {
+				if (key.test(type)) {
+					return val;
+				}
+			}
+		}
+
+		return type;
 	}
 
 	/**
@@ -444,6 +525,7 @@ export default class CockroachDB implements SchemaInspector {
 				const fk = cons.find((x) => x.constraint_type === 'FOREIGN KEY');
 
 				const indices = Array.isArray(r.indices) ? r.indices : [];
+				// console.log(r.column_name, { indices, cons });
 				const isPrimary = cons.some((x) => x.constraint_type === 'PRIMARY KEY');
 				const isUnique = cons.some((x) => x.constraint_type === 'UNIQUE') || isPrimary;
 
@@ -456,24 +538,22 @@ export default class CockroachDB implements SchemaInspector {
 				return {
 					table: t,
 					name: r.column_name,
-					data_type: r.data_type,
+					data_type: this.mapDataType(r.data_type),
 					default_value: defaultVal,
 					generation_expression: r.generation_expression || null,
 					is_generated: !!r.generation_expression,
 					is_nullable: r.is_nullable === true || r.is_nullable === 'true',
 					is_primary_key: isPrimary,
 					is_unique: isUnique,
-					is_indexed: indices.length > 0,
+					is_indexed: cons.length - indices.length > 0, // wait does this really make sense?
 					has_auto_increment: hasAutoIncrement,
 					foreign_key_schema: fk?.foreign_key_schema ?? null,
 					foreign_key_table: fk?.foreign_key_table ?? null,
 					foreign_key_column: fk?.foreign_key_column ?? null,
-					comment: r.comment ?? null,
+					comment: r.comment || null,
 
 					// Keep parity with your existing shape (these weren't in SHOW COLUMNS):
-					max_length: null,
-					numeric_precision: null,
-					numeric_scale: null,
+					...this.extractColumnTypeMetadata(r.data_type),
 				};
 			});
 		};
