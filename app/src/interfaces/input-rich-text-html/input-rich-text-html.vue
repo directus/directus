@@ -7,7 +7,6 @@ import VCard from '@/components/v-card.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawer from '@/components/v-drawer.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTabItem from '@/components/v-tab-item.vue';
@@ -40,7 +39,7 @@ import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
 
 import 'tinymce/tinymce';
-
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/autoresize/plugin';
@@ -474,7 +473,6 @@ onMounted(() => {
 		</template>
 		<Editor
 			v-else
-		<Editor
 			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"
@@ -544,9 +542,7 @@ onMounted(() => {
 			</div>
 
 			<template #actions>
-				<VButton icon rounded @click="saveCode">
-					<VIcon name="check" />
-				</VButton>
+				<PrivateViewHeaderBarActionButton icon="check" @click="saveCode" />
 			</template>
 		</VDrawer>
 
@@ -597,9 +593,7 @@ onMounted(() => {
 			</div>
 
 			<template #actions>
-				<VButton v-tooltip.bottom="$t('save_image')" icon rounded @click="saveImage">
-					<VIcon name="check" />
-				</VButton>
+				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_image')" icon="check" @click="saveImage" />
 			</template>
 		</VDrawer>
 
@@ -659,9 +653,7 @@ onMounted(() => {
 			</div>
 
 			<template #actions>
-				<VButton v-tooltip.bottom="$t('save_media')" icon rounded @click="saveMedia">
-					<VIcon name="check" />
-				</VButton>
+				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_media')" icon="check" @click="saveMedia" />
 			</template>
 		</VDrawer>
 	</div>

@@ -24,14 +24,45 @@ describe('useComparisonDiff - HTML Diff', () => {
 		expect(changes[1]?.added).toBe(true);
 	});
 
-	it('should highlight formatting changes created by html tags', () => {
-		const baseValue = '<p>Hello <strong>beautiful</strong> world</p>';
-		const incomingValue = '<p>Hello <em>beautiful</em> world</p>';
+	it.each(['B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'DEL', 'A', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'])(
+		'should highlight formatting changes created by the <%s> tag',
+		(tag) => {
+			const baseValue = `<p>Hello beautiful world</p>`;
+			const incomingValue = `<p>Hello <${tag.toLowerCase()}>beautiful</${tag.toLowerCase()}> world</p>`;
+
+			const changes = computeDiff(baseValue, incomingValue);
+
+			expect(changes.length).toBe(2);
+			expect(changes[0]?.removed).toBe(true);
+			expect(changes[1]?.added).toBe(true);
+			expect(changes[1]?.value).toContain(`class="comparison-diff--added"`);
+			expect(changes[1]?.value).toContain(`beautiful`);
+		},
+	);
+
+	it('should highlight formatting changes created by CSS text-decoration: underline', () => {
+		const baseValue = '<p>Hello beautiful world</p>';
+		const incomingValue = '<p>Hello <span style="text-decoration: underline;">beautiful</span> world</p>';
 
 		const changes = computeDiff(baseValue, incomingValue);
 
-		expect(changes.length).toBeGreaterThan(0);
+		expect(changes.length).toBe(2);
 		expect(changes[0]?.removed).toBe(true);
 		expect(changes[1]?.added).toBe(true);
+		expect(changes[1]?.value).toContain('comparison-diff--added');
+		expect(changes[1]?.value).toContain('beautiful');
+	});
+
+	it('should highlight formatting changes created by CSS text-decoration-line: underline', () => {
+		const baseValue = '<p>Hello beautiful world</p>';
+		const incomingValue = '<p>Hello <span style="text-decoration-line: underline;">beautiful</span> world</p>';
+
+		const changes = computeDiff(baseValue, incomingValue);
+
+		expect(changes.length).toBe(2);
+		expect(changes[0]?.removed).toBe(true);
+		expect(changes[1]?.added).toBe(true);
+		expect(changes[1]?.value).toContain('comparison-diff--added');
+		expect(changes[1]?.value).toContain('beautiful');
 	});
 });
