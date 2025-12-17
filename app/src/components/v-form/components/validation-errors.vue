@@ -64,10 +64,11 @@ function getErrorKey(validationError: (typeof validationErrorsWithDetails.value)
 											}}
 										</template>
 										<template v-else-if="validationError.field && validationError.hidden">
-											{{ `${validationError.fieldName} (${$t('hidden')})` }}:
+											{{ `${validationError.fieldName} (${$t('hidden')})` }}
 										</template>
-										<template v-else-if="validationError.field">{{ validationError.fieldName }}:</template>
+										<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
 									</strong>
+									<span v-if="validationError.field">:</span>
 									<span class="field-message">
 										{{ validationError.customValidationMessage ?? $t('validation_value_is_invalid') }}
 									</span>
@@ -95,7 +96,7 @@ function getErrorKey(validationError: (typeof validationErrorsWithDetails.value)
 							</template>
 							<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
 						</strong>
-						<strong>{{ ': ' }}</strong>
+						<span v-if="validationError.field">:</span>
 
 						<template v-if="validationError.customValidationMessage">
 							{{ validationError.customValidationMessage }}
