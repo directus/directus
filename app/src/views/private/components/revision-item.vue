@@ -6,6 +6,7 @@ import { userName } from '@/utils/user-name';
 import { format } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import UserPopover from './user-popover.vue';
 
 const props = defineProps<{
 	revision: Revision;
@@ -66,13 +67,13 @@ const user = computed(() => {
 		<div class="content">
 			<span class="time">{{ time }}</span>
 			–
-			<user-popover
+			<UserPopover
 				v-if="revision.activity.user"
 				class="user"
 				:user="typeof revision.activity.user === 'string' ? revision.activity.user : revision.activity.user.id"
 			>
 				<span>{{ user }}</span>
-			</user-popover>
+			</UserPopover>
 
 			<span v-else>{{ $t('private_user') }}</span>
 		</div>

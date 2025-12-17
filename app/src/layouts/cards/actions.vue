@@ -7,11 +7,11 @@ defineProps<{
 </script>
 
 <template>
-	<transition name="fade">
+	<Transition name="fade">
 		<span v-if="showingCount" class="item-count">
 			{{ showingCount }}
 		</span>
-	</transition>
+	</Transition>
 </template>
 
 <style lang="scss" scoped>

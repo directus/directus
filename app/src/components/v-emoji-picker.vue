@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { EmojiButton } from '@joeattardi/emoji-button';
 import { onUnmounted } from 'vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 const emojiPicker = new EmojiButton({
 	theme: 'auto',
@@ -21,7 +23,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<v-button class="emoji-button" x-small secondary icon @click="emojiPicker.togglePicker($event.target as HTMLElement)">
-		<v-icon name="insert_emoticon" />
-	</v-button>
+	<VButton class="emoji-button" x-small secondary icon @click="emojiPicker.togglePicker($event.target as HTMLElement)">
+		<VIcon name="insert_emoticon" />
+	</VButton>
 </template>

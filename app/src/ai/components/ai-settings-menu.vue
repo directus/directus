@@ -4,6 +4,16 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAiStore, type ToolApprovalMode } from '../stores/use-ai';
 import { SystemTool } from '../types/system-tool';
+import VButton from '@/components/v-button.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VList from '@/components/v-list.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 
 const { t } = useI18n();
 const aiStore = useAiStore();
@@ -73,41 +83,41 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 
 <template>
 	<div class="ai-settings-menu">
-		<v-menu v-model="menuOpen" placement="top-start" show-arrow :close-on-content-click="false" full-height>
+		<VMenu v-model="menuOpen" placement="top-start" show-arrow :close-on-content-click="false" full-height>
 			<template #activator="{ toggle }">
-				<v-button v-tooltip.left="$t('ai.settings')" x-small icon secondary @click="toggle">
-					<v-icon name="settings" small />
-				</v-button>
+				<VButton v-tooltip.left="$t('ai.settings')" x-small icon secondary @click="toggle">
+					<VIcon name="settings" small />
+				</VButton>
 			</template>
 
 			<div class="settings-container">
 				<div class="search-header">
-					<v-input v-model="searchQuery" :placeholder="$t('search')" small autofocus>
+					<VInput v-model="searchQuery" :placeholder="$t('search')" small autofocus>
 						<template #prepend>
-							<v-icon name="search" small />
+							<VIcon name="search" small />
 						</template>
-					</v-input>
+					</VInput>
 				</div>
 
-				<v-list>
+				<VList>
 					<!-- Enabled Tools -->
 					<template v-if="enabledTools.length > 0">
-						<v-list-item class="tool-item section-header" disabled>
-							<v-list-item-content>
+						<VListItem class="tool-item section-header" disabled>
+							<VListItemContent>
 								<span class="section-title">{{ $t('ai.enabled_tools') }}</span>
-							</v-list-item-content>
-						</v-list-item>
+							</VListItemContent>
+						</VListItem>
 
-						<v-list-item v-for="toolName in enabledTools" :key="toolName" class="tool-item">
-							<v-list-item-icon>
-								<v-icon :name="toolOptions.get(toolName)?.icon ?? 'build'" small />
-							</v-list-item-icon>
-							<v-list-item-content>
+						<VListItem v-for="toolName in enabledTools" :key="toolName" class="tool-item">
+							<VListItemIcon>
+								<VIcon :name="toolOptions.get(toolName)?.icon ?? 'build'" small />
+							</VListItemIcon>
+							<VListItemContent>
 								<div class="tool-row">
 									<span v-tooltip="$t(`ai.tool_descriptions.${toolName}`)" class="tool-name">
 										{{ $t(`ai_tools.${toolName}`) }}
 									</span>
-									<v-select
+									<VSelect
 										:model-value="aiStore.getToolApprovalMode(toolName)"
 										:items="approvalModeOptions"
 										item-icon="icon"
@@ -117,36 +127,36 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 									>
 										<template #preview>
 											<div class="approval-preview" :style="{ color: toolOptions.get(toolName)?.approval?.color }">
-												<v-icon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
+												<VIcon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
 												{{ toolOptions.get(toolName)?.approval?.text }}
 											</div>
 										</template>
-									</v-select>
+									</VSelect>
 								</div>
-							</v-list-item-content>
-						</v-list-item>
+							</VListItemContent>
+						</VListItem>
 					</template>
 
 					<!-- Disabled Tools -->
 					<template v-if="disabledTools.length > 0">
-						<v-divider v-if="enabledTools.length > 0" />
+						<VDivider v-if="enabledTools.length > 0" />
 
-						<v-list-item class="tool-item section-header" disabled>
-							<v-list-item-content>
+						<VListItem class="tool-item section-header" disabled>
+							<VListItemContent>
 								<span class="section-title">{{ $t('ai.disabled_tools') }}</span>
-							</v-list-item-content>
-						</v-list-item>
+							</VListItemContent>
+						</VListItem>
 
-						<v-list-item v-for="toolName in disabledTools" :key="toolName" class="tool-item">
-							<v-list-item-icon>
-								<v-icon :name="toolOptions.get(toolName)?.icon ?? 'build'" small />
-							</v-list-item-icon>
-							<v-list-item-content>
+						<VListItem v-for="toolName in disabledTools" :key="toolName" class="tool-item">
+							<VListItemIcon>
+								<VIcon :name="toolOptions.get(toolName)?.icon ?? 'build'" small />
+							</VListItemIcon>
+							<VListItemContent>
 								<div class="tool-row">
 									<span v-tooltip="$t(`ai.tool_descriptions.${toolName}`)" class="tool-name">
 										{{ formatTitle(toolName) }}
 									</span>
-									<v-select
+									<VSelect
 										:model-value="aiStore.getToolApprovalMode(toolName)"
 										:items="approvalModeOptions"
 										item-icon="icon"
@@ -156,18 +166,18 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 									>
 										<template #preview>
 											<div class="approval-preview" :style="{ color: toolOptions.get(toolName)?.approval?.color }">
-												<v-icon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
+												<VIcon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
 												{{ toolOptions.get(toolName)?.approval?.text }}
 											</div>
 										</template>
-									</v-select>
+									</VSelect>
 								</div>
-							</v-list-item-content>
-						</v-list-item>
+							</VListItemContent>
+						</VListItem>
 					</template>
-				</v-list>
+				</VList>
 			</div>
-		</v-menu>
+		</VMenu>
 	</div>
 </template>
 

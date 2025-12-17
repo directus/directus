@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListGroup from '@/components/v-list-group.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+
 type Folder = {
 	id: string;
 	name: string;
@@ -16,17 +22,17 @@ defineProps<{
 
 <template>
 	<div class="folder-picker-list-item">
-		<v-list-item
+		<VListItem
 			v-if="folder.children.length === 0"
 			clickable
 			:active="currentFolder === folder.id"
 			:disabled="disabled"
 			@click="clickHandler?.(folder.id)"
 		>
-			<v-list-item-icon><v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" /></v-list-item-icon>
-			<v-list-item-content>{{ folder.name }}</v-list-item-content>
-		</v-list-item>
-		<v-list-group
+			<VListItemIcon><VIcon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" /></VListItemIcon>
+			<VListItemContent>{{ folder.name }}</VListItemContent>
+		</VListItem>
+		<VListGroup
 			v-else
 			clickable
 			:active="currentFolder === folder.id"
@@ -34,12 +40,12 @@ defineProps<{
 			@click="clickHandler?.(folder.id)"
 		>
 			<template #activator>
-				<v-list-item-icon>
-					<v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
-				</v-list-item-icon>
-				<v-list-item-content>{{ folder.name }}</v-list-item-content>
+				<VListItemIcon>
+					<VIcon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
+				</VListItemIcon>
+				<VListItemContent>{{ folder.name }}</VListItemContent>
 			</template>
-			<folder-picker-list-item
+			<FolderPickerListItem
 				v-for="childFolder in folder.children"
 				:key="childFolder.id"
 				:folder="childFolder"
@@ -48,6 +54,6 @@ defineProps<{
 				:disabled="disabledFolders?.includes(childFolder.id)"
 				:disabled-folders="disabledFolders"
 			/>
-		</v-list-group>
+		</VListGroup>
 	</div>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
@@ -263,7 +264,7 @@ function updateSort(newSort: Sort) {
 <template>
 	<div class="v-table" :class="{ loading, inline, disabled }">
 		<table :summary="internalHeaders.map((header) => header.text).join(', ')">
-			<table-header
+			<TableHeader
 				v-model:headers="internalHeaders"
 				v-model:reordering="reordering"
 				:sort="internalSort"
@@ -291,11 +292,11 @@ function updateSort(newSort: Sort) {
 				<template v-if="hasHeaderContextMenuSlot" #header-context-menu="{ header }">
 					<slot name="header-context-menu" v-bind="{ header }" />
 				</template>
-			</table-header>
+			</TableHeader>
 			<thead v-if="loading" :class="{ sticky: fixedHeader }">
 				<tr class="loading-indicator">
 					<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
-						<v-progress-linear v-if="loading" indeterminate />
+						<VProgressLinear v-if="loading" indeterminate />
 					</th>
 				</tr>
 			</thead>
@@ -309,7 +310,7 @@ function updateSort(newSort: Sort) {
 					<td :style="{ gridColumn: fullColSpan }">{{ noItemsText || $t('no_items') }}</td>
 				</tr>
 			</tbody>
-			<draggable
+			<Draggable
 				v-else
 				v-model="internalItems"
 				:item-key="itemKey"
@@ -321,7 +322,7 @@ function updateSort(newSort: Sort) {
 				@end="onSortChange"
 			>
 				<template #item="{ element }">
-					<table-row
+					<TableRow
 						:headers="internalHeaders"
 						:item="element"
 						:show-select="disabled ? 'none' : showSelect"
@@ -346,9 +347,9 @@ function updateSort(newSort: Sort) {
 						<template v-if="hasItemAppendSlot" #item-append>
 							<slot name="item-append" :item="element" />
 						</template>
-					</table-row>
+					</TableRow>
 				</template>
-			</draggable>
+			</Draggable>
 		</table>
 		<slot name="footer" />
 	</div>

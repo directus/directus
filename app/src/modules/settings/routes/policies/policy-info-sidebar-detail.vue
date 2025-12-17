@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useClipboard } from '@/composables/use-clipboard';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { Policy } from '@directus/types';
 
 defineProps<{
@@ -10,12 +12,12 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
 <template>
-	<sidebar-detail v-if="policy" id="policy" icon="info" :title="$t('information')">
+	<SidebarDetail v-if="policy" id="policy" icon="info" :title="$t('information')">
 		<dl>
 			<div class="description-list">
 				<dt>{{ $t('primary_key') }}</dt>
 				<dd>{{ policy.id }}</dd>
-				<v-icon
+				<VIcon
 					v-if="isCopySupported"
 					name="content_copy"
 					small
@@ -25,7 +27,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 				/>
 			</div>
 		</dl>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

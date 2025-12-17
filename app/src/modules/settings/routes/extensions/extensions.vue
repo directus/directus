@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VInfo from '@/components/v-info.vue';
+import VList from '@/components/v-list.vue';
 import { useExtensionsStore } from '@/stores/extensions';
+import { PrivateView } from '@/views/private';
 import { ApiOutput } from '@directus/types';
 import { groupBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
-import ExtensionItem from './components/extension-item.vue';
+import ExtensionItem from './components/ExtensionItem.vue';
 import { ExtensionType } from './types';
 
 type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;
@@ -31,36 +35,36 @@ const extensionsByType = computed(() => {
 </script>
 
 <template>
-	<private-view :title="$t('extensions')" icon="category">
-		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
+	<PrivateView :title="$t('extensions')" icon="category">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
-					<extension-group-divider class="group-divider" :type="type" />
+					<ExtensionGroupDivider class="group-divider" :type="type" />
 
-					<v-list>
+					<VList>
 						<template v-for="extension in list" :key="extension.name">
-							<extension-item
+							<ExtensionItem
 								:extension
 								:children="
 									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.id) : []
 								"
 							/>
 						</template>
-					</v-list>
+					</VList>
 				</div>
 			</template>
 
-			<v-info v-else icon="error" center :title="$t('no_extensions')">
+			<VInfo v-else icon="error" center :title="$t('no_extensions')">
 				{{ $t('no_extensions_copy') }}
-			</v-info>
+			</VInfo>
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIconFile from '@/components/v-icon-file.vue';
+import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import type { File } from '@directus/types';
@@ -54,7 +56,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 <template>
 	<div class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }" @click="$emit('click')">
 		<div v-if="type === 'image'" class="image">
-			<v-image :src="src" :width="file.width" :height="file.height" :alt="file.title" />
+			<VImage :src="src" :width="file.width" :height="file.height" :alt="file.title" />
 		</div>
 
 		<div v-else-if="type === 'video'" class="video">
@@ -64,7 +66,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		<audio v-else-if="type === 'audio'" controls :src="src" />
 
 		<div v-else class="fallback">
-			<v-icon-file :ext="type" />
+			<VIconFile :ext="type" />
 		</div>
 	</div>
 </template>

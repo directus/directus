@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
 import type { FileUIPart } from 'ai';
 
 defineProps<{
@@ -8,9 +10,9 @@ defineProps<{
 
 <template>
 	<div class="message-file">
-		<v-image v-if="part.mediaType?.startsWith('image/')" :src="part.url" :alt="part.filename" />
+		<VImage v-if="part.mediaType?.startsWith('image/')" :src="part.url" :alt="part.filename" />
 		<div v-else class="file-attachment">
-			<v-icon name="attach_file" small />
+			<VIcon name="attach_file" small />
 			<span>{{ part.filename || $t('file') }}</span>
 		</div>
 	</div>

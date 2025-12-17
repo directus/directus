@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VList from '@/components/v-list.vue';
 import { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
 import MetadataItem from '../../../components/metadata-item.vue';
@@ -31,7 +32,7 @@ const maintainers = computed(() => {
 
 <template>
 	<div class="metadata">
-		<v-list class="list">
+		<VList class="list">
 			<div class="grid buttons">
 				<ExtensionInstall :extension-id="extension.id" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
@@ -52,8 +53,8 @@ const maintainers = computed(() => {
 					:github-avatar-url="maintainer.github_avatar_url"
 				/>
 			</div>
-		</v-list>
-		<v-list class="list">
+		</VList>
+		<VList class="list">
 			<div class="grid">
 				<ExtensionMetadataDownloadsSparkline
 					v-if="extension.downloads"
@@ -76,7 +77,7 @@ const maintainers = computed(() => {
 					{{ $t('report_an_issue') }}
 				</MetadataItem>
 			</div>
-		</v-list>
+		</VList>
 	</div>
 </template>
 
