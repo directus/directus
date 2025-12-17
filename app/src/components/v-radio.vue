@@ -55,7 +55,7 @@ function emitValue(): void {
 		:class="{ checked: isChecked, block, 'non-editable': nonEditable }"
 		@click="emitValue"
 	>
-		<v-icon :name="icon" />
+		<VIcon :name="icon" />
 		<span class="label type-text">
 			<slot name="label">{{ label }}</slot>
 		</span>

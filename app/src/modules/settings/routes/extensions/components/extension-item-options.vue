@@ -39,13 +39,13 @@ const stateActions = computed(() => {
 </script>
 
 <template>
-	<v-menu placement="bottom-start" show-arrow>
+	<VMenu placement="bottom-start" show-arrow>
 		<template #activator="{ toggle }">
-			<v-icon name="more_vert" clickable class="menu-toggle" @click.prevent="toggle" />
+			<VIcon name="more_vert" clickable class="menu-toggle" @click.prevent="toggle" />
 		</template>
-		<v-list>
+		<VList>
 			<template v-if="type !== 'missing'">
-				<v-list-item
+				<VListItem
 					v-for="(action, index) in stateActions"
 					:key="index"
 					v-tooltip.left="stateLocked ? $t('enabled_dev_tooltip') : null"
@@ -53,55 +53,55 @@ const stateActions = computed(() => {
 					clickable
 					@click="$emit('toggleState', action.enabled)"
 				>
-					<v-list-item-icon>
-						<v-icon name="mode_off_on" />
-					</v-list-item-icon>
-					<v-list-item-content>
+					<VListItemIcon>
+						<VIcon name="mode_off_on" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ action.text }}
-					</v-list-item-content>
-				</v-list-item>
+					</VListItemContent>
+				</VListItem>
 				<template v-if="!extension.bundle">
-					<v-divider />
-					<v-list-item
+					<VDivider />
+					<VListItem
 						v-tooltip.left="uninstallLocked ? $t('uninstall_locked') : null"
 						:disabled="uninstallLocked"
 						class="uninstall"
 						clickable
 						@click="$emit('uninstall')"
 					>
-						<v-list-item-icon>
-							<v-icon name="delete" />
-						</v-list-item-icon>
-						<v-list-item-content>
+						<VListItemIcon>
+							<VIcon name="delete" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ $t('uninstall') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 				</template>
 			</template>
 
 			<template v-else>
 				<template v-if="props.extension.meta.source === 'registry'">
-					<v-list-item clickable @click="$emit('reinstall')">
-						<v-list-item-icon>
-							<v-icon name="download" />
-						</v-list-item-icon>
-						<v-list-item-content>
+					<VListItem clickable @click="$emit('reinstall')">
+						<VListItemIcon>
+							<VIcon name="download" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ $t('reinstall') }}
-						</v-list-item-content>
-					</v-list-item>
-					<v-divider />
+						</VListItemContent>
+					</VListItem>
+					<VDivider />
 				</template>
-				<v-list-item clickable @click="$emit('remove')">
-					<v-list-item-icon>
-						<v-icon name="delete" />
-					</v-list-item-icon>
-					<v-list-item-content>
+				<VListItem clickable @click="$emit('remove')">
+					<VListItemIcon>
+						<VIcon name="delete" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ $t('remove') }}
-					</v-list-item-content>
-				</v-list-item>
+					</VListItemContent>
+				</VListItem>
 			</template>
-		</v-list>
-	</v-menu>
+		</VList>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>

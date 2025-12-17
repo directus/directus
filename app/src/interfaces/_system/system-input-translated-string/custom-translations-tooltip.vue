@@ -49,9 +49,9 @@ const clicked = (toggleTooltip: () => void) => {
 
 <template>
 	<div class="custom-translations-display">
-		<v-menu class="menu" show-arrow>
+		<VMenu class="menu" show-arrow>
 			<template #activator="{ toggle, deactivate, active }">
-				<v-icon
+				<VIcon
 					v-tooltip.bottom="translations && translations.length === 0 && $t('translations')"
 					:small="false"
 					class="icon"
@@ -60,33 +60,33 @@ const clicked = (toggleTooltip: () => void) => {
 					clickable
 					@click.stop="clicked(toggle)"
 					@blur="deactivate"
-				></v-icon>
+				></VIcon>
 			</template>
 
-			<v-list class="translations">
-				<v-list-item v-if="translations.length === 0">
-					<v-list-item-content>
+			<VList class="translations">
+				<VListItem v-if="translations.length === 0">
+					<VListItemContent>
 						<div class="header">
 							<div class="lang">
 								{{ $t('loading') }}
 							</div>
 						</div>
-					</v-list-item-content>
-				</v-list-item>
-				<v-list-item v-for="item in translations" v-else :key="item.language">
-					<v-list-item-content>
+					</VListItemContent>
+				</VListItem>
+				<VListItem v-for="item in translations" v-else :key="item.language">
+					<VListItemContent>
 						<div class="header">
 							<div class="lang">
-								<v-icon name="translate" small />
+								<VIcon name="translate" small />
 								{{ item.language }}
 							</div>
 						</div>
 						<ValueNull v-if="!item.value" />
 						<div v-else class="translation-item-text">{{ item.value }}</div>
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 

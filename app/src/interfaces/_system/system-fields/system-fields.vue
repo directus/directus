@@ -90,15 +90,15 @@ const removeField = (field: string) => {
 
 <template>
 	<template v-if="!collectionName">
-		<v-notice>
+		<VNotice>
 			{{ $t('interfaces.system-fields.select_a_collection') }}
-		</v-notice>
+		</VNotice>
 	</template>
 	<template v-else>
-		<v-list v-if="fields.length === 0">
-			<v-notice class="no-fields">{{ $t('interfaces.system-fields.no_fields') }}</v-notice>
-		</v-list>
-		<draggable
+		<VList v-if="fields.length === 0">
+			<VNotice class="no-fields">{{ $t('interfaces.system-fields.no_fields') }}</VNotice>
+		</VList>
+		<Draggable
 			v-else
 			v-model="fields"
 			tag="v-list"
@@ -107,29 +107,29 @@ const removeField = (field: string) => {
 			v-bind="{ 'force-fallback': true }"
 		>
 			<template #item="{ element: field }">
-				<v-list-item block>
-					<v-icon name="drag_handle" class="drag-handle" left />
+				<VListItem block>
+					<VIcon name="drag_handle" class="drag-handle" left />
 					<div class="name">{{ field.displayName }}</div>
 					<div class="spacer" />
-					<v-icon name="close" clickable @click="removeField(field.key)" />
-				</v-list-item>
+					<VIcon name="close" clickable @click="removeField(field.key)" />
+				</VListItem>
 			</template>
-		</draggable>
-		<v-menu placement="bottom-start" show-arrow>
+		</Draggable>
+		<VMenu placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
 				<button class="toggle" @click="toggle">
 					{{ $t('add_field') }}
-					<v-icon name="expand_more" />
+					<VIcon name="expand_more" />
 				</button>
 			</template>
 
-			<v-field-list
+			<VFieldList
 				:disabled-fields="value"
 				:collection="collectionName"
 				:allow-select-all="allowSelectAll"
 				@add="addFields"
 			/>
-		</v-menu>
+		</VMenu>
 	</template>
 </template>
 

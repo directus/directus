@@ -46,23 +46,23 @@ const searchDebounced = ref('');
 </script>
 
 <template>
-	<v-notice v-if="items.length === 0" type="info">
+	<VNotice v-if="items.length === 0" type="info">
 		{{ $t('no_options_available') }}
-	</v-notice>
+	</VNotice>
 	<div v-else class="select-multiple-checkbox-tree">
 		<div v-if="items.length > 10" class="search">
-			<v-input v-model="search" class="input" type="text" :placeholder="$t('search')">
+			<VInput v-model="search" class="input" type="text" :placeholder="$t('search')">
 				<template #prepend>
-					<v-icon name="search" />
+					<VIcon name="search" />
 				</template>
 
 				<template v-if="search" #append>
-					<v-icon name="clear" clickable @click="search = ''" />
+					<VIcon name="clear" clickable @click="search = ''" />
 				</template>
-			</v-input>
+			</VInput>
 		</div>
 
-		<v-checkbox-tree
+		<VCheckboxTree
 			:model-value="value"
 			:search="searchDebounced"
 			:disabled

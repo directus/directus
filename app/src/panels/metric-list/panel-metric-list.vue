@@ -156,8 +156,8 @@ function getColor(input?: number) {
 <template>
 	<div class="metric-list" :class="{ 'has-header': showHeader }">
 		<div>
-			<v-list class="metric-list">
-				<v-list-item v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
+			<VList class="metric-list">
+				<VListItem v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
 					<div
 						v-if="row[aggregateFunction]?.[aggregateField]"
 						class="metric-bar"
@@ -167,7 +167,7 @@ function getColor(input?: number) {
 						}"
 					>
 						<div class="metric-bar-text">
-							<render-template
+							<RenderTemplate
 								:item="{ [groupByField]: row['group'][groupByField] }"
 								:collection="collection"
 								:template="`{{${groupByField}}}`"
@@ -187,8 +187,8 @@ function getColor(input?: number) {
 					</div>
 
 					<div class="spacer" />
-				</v-list-item>
-			</v-list>
+				</VListItem>
+			</VList>
 		</div>
 	</div>
 </template>

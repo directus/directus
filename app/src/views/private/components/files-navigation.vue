@@ -89,16 +89,16 @@ function setOpenFolders() {
 </script>
 
 <template>
-	<v-list nav>
+	<VList nav>
 		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
-			<v-list-item v-for="n in 4" :key="n">
-				<v-skeleton-loader type="list-item-icon" />
-			</v-list-item>
+			<VListItem v-for="n in 4" :key="n">
+				<VSkeletonLoader type="list-item-icon" />
+			</VListItem>
 		</template>
 
 		<div class="folders">
-			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
-				<v-list-group
+			<VItemGroup v-model="openFolders" scope="files-navigation" multiple>
+				<VListGroup
 					clickable
 					:active="(!currentFolder && !currentSpecial) || (currentFolder !== undefined && currentFolder === rootFolder)"
 					:value="rootFolder ?? 'root'"
@@ -109,16 +109,16 @@ function setOpenFolders() {
 					@click="onClick(rootFolder ? { folder: rootFolder } : {})"
 				>
 					<template #activator>
-						<v-list-item-icon>
-							<v-icon name="folder_special" outline />
-						</v-list-item-icon>
-						<v-list-item-content>
-							<v-text-overflow v-if="rootFolderInfo" :text="rootFolderInfo.name" />
-							<v-text-overflow v-else :text="$t('file_library')" />
-						</v-list-item-content>
+						<VListItemIcon>
+							<VIcon name="folder_special" outline />
+						</VListItemIcon>
+						<VListItemContent>
+							<VTextOverflow v-if="rootFolderInfo" :text="rootFolderInfo.name" />
+							<VTextOverflow v-else :text="$t('file_library')" />
+						</VListItemContent>
 					</template>
 
-					<navigation-folder
+					<NavigationFolder
 						v-for="folder in nestedFolders"
 						:key="folder.id"
 						:click-handler="onClick"
@@ -126,33 +126,33 @@ function setOpenFolders() {
 						:current-folder="currentFolder"
 						:actions-disabled="actionsDisabled"
 					/>
-				</v-list-group>
-			</v-item-group>
+				</VListGroup>
+			</VItemGroup>
 		</div>
 
-		<v-divider />
+		<VDivider />
 
-		<v-list-item clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
-			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('all_files')" />
-			</v-list-item-content>
-		</v-list-item>
+		<VListItem clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
+			<VListItemIcon><VIcon name="file_copy" outline /></VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('all_files')" />
+			</VListItemContent>
+		</VListItem>
 
-		<v-list-item clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
-			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('my_files')" />
-			</v-list-item-content>
-		</v-list-item>
+		<VListItem clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
+			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('my_files')" />
+			</VListItemContent>
+		</VListItem>
 
-		<v-list-item clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
-			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('recent_files')" />
-			</v-list-item-content>
-		</v-list-item>
-	</v-list>
+		<VListItem clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
+			<VListItemIcon><VIcon name="history" /></VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('recent_files')" />
+			</VListItemContent>
+		</VListItem>
+	</VList>
 </template>
 
 <style lang="scss" scoped>

@@ -32,7 +32,7 @@ defineEmits(['apply']);
 
 <template>
 	<div class="group-raw">
-		<v-form
+		<VForm
 			:initial-values="initialValues"
 			:fields="fields"
 			:model-value="values"

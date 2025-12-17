@@ -103,35 +103,35 @@ function isAppExtension(type?: ExtensionType) {
 </script>
 
 <template>
-	<v-list-item block>
-		<v-list-item-icon v-tooltip="$t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
-		<v-list-item-content>
+	<VListItem block>
+		<VListItemIcon v-tooltip="$t(`extension_${type}`)"><VIcon :name="icon" small /></VListItemIcon>
+		<VListItemContent>
 			<span class="meta" :class="{ disabled }">
-				<router-link
+				<RouterLink
 					v-if="extension.meta.source === 'registry' && !extension.bundle"
 					v-tooltip="$t('open_in_marketplace')"
 					class="marketplace-link"
 					:to="`/settings/marketplace/extension/${extension.id}`"
 				>
 					{{ name }}
-				</router-link>
+				</RouterLink>
 				<span v-else>{{ name }}</span>
 				{{ ' ' }}
-				<v-chip v-if="version" class="version" small>
+				<VChip v-if="version" class="version" small>
 					{{ version }}
-				</v-chip>
+				</VChip>
 			</span>
-		</v-list-item-content>
+		</VListItemContent>
 
 		<span v-if="loading" class="spinner">
-			<v-progress-circular indeterminate small />
+			<VProgressCircular indeterminate small />
 		</span>
 
-		<v-chip v-if="type !== 'missing'" class="state" :class="state.value" small>
+		<VChip v-if="type !== 'missing'" class="state" :class="state.value" small>
 			{{ state.text }}
-		</v-chip>
+		</VChip>
 
-		<extension-item-options
+		<ExtensionItemOptions
 			class="options"
 			:extension
 			:type
@@ -142,11 +142,11 @@ function isAppExtension(type?: ExtensionType) {
 			@reinstall="reinstall"
 			@remove="remove"
 		/>
-	</v-list-item>
+	</VListItem>
 
-	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialAllowed }">
-		<extension-item v-for="item in children" :key="item.id" :extension="item" />
-	</v-list>
+	<VList v-if="children.length > 0" class="nested" :class="{ partial: isPartialAllowed }">
+		<ExtensionItem v-for="item in children" :key="item.id" :extension="item" />
+	</VList>
 </template>
 
 <style lang="scss" scoped>

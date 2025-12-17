@@ -9,7 +9,7 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
-import NestedDraggable from './nested-draggable.vue';
+import NestedDraggable from './NestedDraggable.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -116,14 +116,14 @@ const fields = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
+	<VNotice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
 		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
-	</v-notice>
-	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+	</VNotice>
+	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}
-	</v-notice>
+	</VNotice>
 	<div v-else class="tree-view">
-		<nested-draggable
+		<NestedDraggable
 			v-model="_value"
 			:template="template"
 			:collection="collection"

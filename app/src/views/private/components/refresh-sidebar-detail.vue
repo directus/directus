@@ -68,14 +68,14 @@ const items = computed(() => {
 </script>
 
 <template>
-	<sidebar-detail id="refresh" :icon="active ? 'sync' : 'sync_disabled'" :title="$t('auto_refresh')" :badge="active">
+	<SidebarDetail id="refresh" :icon="active ? 'sync' : 'sync_disabled'" :title="$t('auto_refresh')" :badge="active">
 		<div class="fields">
 			<div class="field full">
 				<p class="type-label">{{ $t('refresh_interval') }}</p>
-				<v-select v-model="model" :items="items" />
+				<VSelect v-model="model" :items="items" />
 			</div>
 		</div>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

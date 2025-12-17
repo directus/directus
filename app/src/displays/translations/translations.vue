@@ -96,16 +96,16 @@ const translations = computed(() => {
 </script>
 
 <template>
-	<value-null v-if="!relationInfo?.junctionCollection?.collection" />
+	<ValueNull v-if="!relationInfo?.junctionCollection?.collection" />
 	<div v-else class="display-translations">
-		<render-template
+		<RenderTemplate
 			:template="internalTemplate"
 			:item="displayItem"
 			:collection="relationInfo.junctionCollection.collection"
 		/>
-		<v-menu class="menu" show-arrow :disabled="value.length === 0">
+		<VMenu class="menu" show-arrow :disabled="value.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
-				<v-icon
+				<VIcon
 					small
 					class="icon"
 					:class="{ active }"
@@ -113,28 +113,28 @@ const translations = computed(() => {
 					clickable
 					@click.stop="toggle"
 					@focusout="deactivate"
-				></v-icon>
+				></VIcon>
 			</template>
 
-			<v-list class="links">
-				<v-list-item v-for="item in translations" :key="item.id">
-					<v-list-item-content>
+			<VList class="links">
+				<VListItem v-for="item in translations" :key="item.id">
+					<VListItemContent>
 						<div class="header">
 							<div class="lang">
-								<v-icon name="translate" small />
+								<VIcon name="translate" small />
 								{{ item.lang }}
 							</div>
-							<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
+							<VProgressLinear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
 						</div>
-						<render-template
+						<RenderTemplate
 							:template="internalTemplate"
 							:item="item.item"
 							:collection="relationInfo.junctionCollection.collection"
 						/>
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 

@@ -176,25 +176,25 @@ function getLinkForItem() {
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo" type="warning">
+	<VNotice v-if="!relationInfo" type="warning">
 		{{ $t('relationship_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+	</VNotice>
+	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}
-	</v-notice>
-	<v-notice v-else-if="!displayTemplate" type="warning">
+	</VNotice>
+	<VNotice v-else-if="!displayTemplate" type="warning">
 		{{ $t('display_template_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="!enableCreate && !enableSelect && !displayItem">
+	</VNotice>
+	<VNotice v-else-if="!enableCreate && !enableSelect && !displayItem">
 		{{ $t('no_items') }}
-	</v-notice>
+	</VNotice>
 
 	<div v-else class="many-to-one">
-		<v-skeleton-loader v-if="loading" type="input" />
+		<VSkeletonLoader v-if="loading" type="input" />
 
-		<v-list-item v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
+		<VListItem v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
 			<div v-if="displayItem" class="preview">
-				<render-template
+				<RenderTemplate
 					:collection="relationInfo.relatedCollection.collection"
 					:item="displayItem"
 					:template="displayTemplate"
@@ -206,19 +206,19 @@ function getLinkForItem() {
 
 			<div class="item-actions">
 				<template v-if="displayItem">
-					<router-link
+					<RouterLink
 						v-if="enableLink && !nonEditable"
 						v-tooltip="$t('navigate_to_item')"
 						:to="getLinkForItem()"
 						class="item-link"
 						@click.stop
 					>
-						<v-icon name="launch" />
-					</router-link>
+						<VIcon name="launch" />
+					</RouterLink>
 
-					<v-icon v-tooltip="$t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+					<VIcon v-tooltip="$t('edit_item')" name="edit" clickable @click="editModalActive = true" />
 
-					<v-remove
+					<VRemove
 						v-if="!disabled"
 						deselect
 						:item-info="relationInfo"
@@ -228,7 +228,7 @@ function getLinkForItem() {
 				</template>
 
 				<template v-else>
-					<v-icon
+					<VIcon
 						v-if="!disabled && createAllowed && enableCreate"
 						v-tooltip="$t('create_item')"
 						class="add"
@@ -237,12 +237,12 @@ function getLinkForItem() {
 						@click="editModalActive = true"
 					/>
 
-					<v-icon v-if="enableSelect" class="expand" name="expand_more" />
+					<VIcon v-if="enableSelect" class="expand" name="expand_more" />
 				</template>
 			</div>
-		</v-list-item>
+		</VListItem>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="editModalActive"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
@@ -253,7 +253,7 @@ function getLinkForItem() {
 			@input="onDrawerItemInput"
 		/>
 
-		<drawer-collection
+		<DrawerCollection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"

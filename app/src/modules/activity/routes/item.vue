@@ -97,23 +97,23 @@ function close() {
 </script>
 
 <template>
-	<v-drawer :model-value="isOpen" :title="$t('activity_item')" @update:model-value="close" @cancel="close">
-		<v-progress-circular v-if="loading" indeterminate />
+	<VDrawer :model-value="isOpen" :title="$t('activity_item')" @update:model-value="close" @cancel="close">
+		<VProgressCircular v-if="loading" indeterminate />
 
 		<div v-else-if="error" class="content">
-			<v-notice type="danger">
+			<VNotice type="danger">
 				{{ error }}
-			</v-notice>
+			</VNotice>
 		</div>
 
 		<div v-else-if="item" class="content">
 			<!-- @TODO add final design -->
 			<p class="type-label">{{ $t('user') }}:</p>
-			<user-popover v-if="item.user" :user="item.user.id">
+			<UserPopover v-if="item.user" :user="item.user.id">
 				<span>
 					{{ userName(item.user) }}
 				</span>
-			</user-popover>
+			</UserPopover>
 
 			<p class="type-label">{{ $t('action') }}:</p>
 			<p>{{ item.action_translated }}</p>
@@ -145,7 +145,7 @@ function close() {
 				icon="launch"
 			/>
 		</template>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

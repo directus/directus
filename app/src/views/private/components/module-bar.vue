@@ -49,10 +49,10 @@ const modules = computed(() => {
 
 <template>
 	<div class="module-bar">
-		<module-bar-logo />
+		<ModuleBarLogo />
 
 		<div class="modules">
-			<v-button
+			<VButton
 				v-for="modulePart in modules"
 				:key="modulePart.id"
 				v-tooltip.right="modulePart.name"
@@ -62,11 +62,11 @@ const modules = computed(() => {
 				:href="modulePart.href"
 				tile
 			>
-				<v-icon :name="modulePart.icon" />
-			</v-button>
+				<VIcon :name="modulePart.icon" />
+			</VButton>
 		</div>
 
-		<module-bar-avatar />
+		<ModuleBarAvatar />
 	</div>
 </template>
 

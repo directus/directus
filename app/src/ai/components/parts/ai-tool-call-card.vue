@@ -69,20 +69,20 @@ const handleAlwaysAllow = () => {
 			:disabled="isApprovalRequested"
 		>
 			<div class="card-title" :class="{ streaming: isStreaming }">
-				<v-icon :name="icon || 'build'" x-small />
+				<VIcon :name="icon || 'build'" x-small />
 				<slot name="title" />
 			</div>
 			<div class="card-meta">
 				<span v-if="isStreaming" class="card-status">
-					<v-progress-circular indeterminate x-small />
+					<VProgressCircular indeterminate x-small />
 				</span>
 				<slot v-else name="status">
-					<v-chip class="status-chip" :class="statusConfig.class" x-small :label="false">
-						<v-icon :name="statusConfig.icon" x-small />
+					<VChip class="status-chip" :class="statusConfig.class" x-small :label="false">
+						<VIcon :name="statusConfig.icon" x-small />
 						{{ statusConfig.label }}
-					</v-chip>
+					</VChip>
 				</slot>
-				<v-icon v-if="!isApprovalRequested" name="expand_more" x-small class="chevron" />
+				<VIcon v-if="!isApprovalRequested" name="expand_more" x-small class="chevron" />
 			</div>
 		</CollapsibleTrigger>
 
@@ -94,16 +94,16 @@ const handleAlwaysAllow = () => {
 			<div v-if="isApprovalRequested" class="card-approval-actions">
 				<p class="approval-message">{{ t('ai.approve_tool_execution') }}</p>
 				<div class="approval-buttons">
-					<v-button x-small danger @click="handleDeny">
+					<VButton x-small danger @click="handleDeny">
 						{{ t('ai.deny') }}
 						<span class="keyboard-hint">Esc</span>
-					</v-button>
-					<v-button x-small outlined @click="handleAlwaysAllow">
+					</VButton>
+					<VButton x-small outlined @click="handleAlwaysAllow">
 						{{ t('ai.always_allow') }}
-					</v-button>
-					<v-button x-small @click="handleApprove">
+					</VButton>
+					<VButton x-small @click="handleApprove">
 						{{ t('ai.approve') }}
-					</v-button>
+					</VButton>
 				</div>
 			</div>
 		</div>

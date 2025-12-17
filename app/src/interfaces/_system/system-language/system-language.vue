@@ -26,7 +26,7 @@ if (props.includeProjectDefault) {
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:items="languages"
 		:disabled="disabled"

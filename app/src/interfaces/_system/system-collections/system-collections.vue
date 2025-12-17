@@ -44,10 +44,10 @@ const items = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="items.length === 0">
+	<VNotice v-if="items.length === 0">
 		{{ $t('no_collections') }}
-	</v-notice>
-	<interface-select-multiple-checkbox
+	</VNotice>
+	<InterfaceSelectMultipleCheckbox
 		v-else
 		:choices="items"
 		:value="value"

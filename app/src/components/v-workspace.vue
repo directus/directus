@@ -108,7 +108,7 @@ const workspaceBoxSize = computed(() => {
 			}"
 		>
 			<template v-if="!$slots.tile">
-				<v-workspace-tile
+				<VWorkspaceTile
 					v-for="tile in tiles"
 					:key="tile.id"
 					v-bind="tile"
@@ -122,7 +122,7 @@ const workspaceBoxSize = computed(() => {
 					@duplicate="$emit('duplicate', tile)"
 				>
 					<slot :tile="tile"></slot>
-				</v-workspace-tile>
+				</VWorkspaceTile>
 			</template>
 			<template v-else>
 				<template v-for="tile in tiles" :key="tile.id">

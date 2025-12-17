@@ -9,12 +9,12 @@ const userStore = useUserStore();
 </script>
 
 <template>
-	<private-view class="content-overview" :title="$t('content')" icon="box">
+	<PrivateView class="content-overview" :title="$t('content')" icon="box">
 		<template #navigation>
-			<content-navigation />
+			<ContentNavigation />
 		</template>
 
-		<v-info icon="box" :title="$t('no_collections')" center>
+		<VInfo icon="box" :title="$t('no_collections')" center>
 			<template v-if="userStore.isAdmin">
 				{{ $t('no_collections_copy_admin') }}
 			</template>
@@ -24,10 +24,10 @@ const userStore = useUserStore();
 			</template>
 
 			<template v-if="userStore.isAdmin" #append>
-				<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+				<VButton to="/settings/data-model/+">{{ $t('create_collection') }}</VButton>
 			</template>
-		</v-info>
-	</private-view>
+		</VInfo>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

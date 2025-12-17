@@ -26,40 +26,40 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 </script>
 
 <template>
-	<v-list-item class="extension-list-item" block grow clickable :to="`/settings/marketplace/extension/${extension.id}`">
-		<div class="icon"><v-icon :name="icon" /></div>
-		<v-list-item-content>
+	<VListItem class="extension-list-item" block grow clickable :to="`/settings/marketplace/extension/${extension.id}`">
+		<div class="icon"><VIcon :name="icon" /></div>
+		<VListItemContent>
 			<div class="name">
 				{{ formatName(extension) }}
-				<v-chip v-if="showType" outlined x-small class="chip">{{ chip }}</v-chip>
-				<v-chip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip">
+				<VChip v-if="showType" outlined x-small class="chip">{{ chip }}</VChip>
+				<VChip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip">
 					{{ $t('installed') }}
-				</v-chip>
+				</VChip>
 			</div>
 			<div class="author">
 				{{ extension.publisher.github_name ?? extension.publisher.username }}
-				<v-icon v-if="extension.publisher.verified" name="verified" x-small />
+				<VIcon v-if="extension.publisher.verified" name="verified" x-small />
 			</div>
 			<div v-if="extension.description" class="description">{{ extension.description }}</div>
 			<div v-else class="description">{{ $t('no_description') }}</div>
-		</v-list-item-content>
+		</VListItemContent>
 		<div class="meta">
 			<div class="published">
 				{{ localizedFormatDistanceStrict(new Date(extension.last_updated), new Date()) }}
-				<v-icon small name="event" />
+				<VIcon small name="event" />
 			</div>
 
 			<div class="downloads">
 				{{ abbreviateNumber(extension.total_downloads) }}
-				<v-icon small name="download" />
+				<VIcon small name="download" />
 			</div>
 
 			<div class="license" :class="{ known: !!props.extension.license }">
 				{{ props.extension.license ?? $t('unknown') }}
-				<v-icon small name="policy" />
+				<VIcon small name="policy" />
 			</div>
 		</div>
-	</v-list-item>
+	</VListItem>
 </template>
 
 <style scoped>

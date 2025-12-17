@@ -36,94 +36,94 @@ function clearNavFilter() {
 </script>
 
 <template>
-	<v-list nav>
-		<v-list-item clickable :active="!filterField" @click="clearNavFilter">
-			<v-list-item-icon>
-				<v-icon name="access_time" />
-			</v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('all_activity')" />
-			</v-list-item-content>
-		</v-list-item>
+	<VList nav>
+		<VListItem clickable :active="!filterField" @click="clearNavFilter">
+			<VListItemIcon>
+				<VIcon name="access_time" />
+			</VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('all_activity')" />
+			</VListItemContent>
+		</VListItem>
 
-		<v-list-item
+		<VListItem
 			clickable
 			:active="filterField === 'user' && filterValue === currentUserID"
 			@click="setNavFilter('user', currentUserID)"
 		>
-			<v-list-item-icon>
-				<v-icon name="face" />
-			</v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('my_activity')" />
-			</v-list-item-content>
-		</v-list-item>
+			<VListItemIcon>
+				<VIcon name="face" />
+			</VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('my_activity')" />
+			</VListItemContent>
+		</VListItem>
 
-		<v-divider />
+		<VDivider />
 
-		<v-list-item
+		<VListItem
 			clickable
 			:active="filterField === 'action' && filterValue === 'create'"
 			@click="setNavFilter('action', 'create')"
 		>
-			<v-list-item-icon>
-				<v-icon name="add" />
-			</v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('create')" />
-			</v-list-item-content>
-		</v-list-item>
+			<VListItemIcon>
+				<VIcon name="add" />
+			</VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('create')" />
+			</VListItemContent>
+		</VListItem>
 
-		<v-list-item
+		<VListItem
 			clickable
 			:active="filterField === 'action' && filterValue === 'update'"
 			@click="setNavFilter('action', 'update')"
 		>
-			<v-list-item-icon>
-				<v-icon name="check" />
-			</v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('update')" />
-			</v-list-item-content>
-		</v-list-item>
+			<VListItemIcon>
+				<VIcon name="check" />
+			</VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('update')" />
+			</VListItemContent>
+		</VListItem>
 
-		<v-list-item
+		<VListItem
 			clickable
 			:active="filterField === 'action' && filterValue === 'delete'"
 			@click="setNavFilter('action', 'delete')"
 		>
-			<v-list-item-icon>
-				<v-icon name="clear" />
-			</v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('delete_label')" />
-			</v-list-item-content>
-		</v-list-item>
+			<VListItemIcon>
+				<VIcon name="clear" />
+			</VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('delete_label')" />
+			</VListItemContent>
+		</VListItem>
 
-		<v-list-item
+		<VListItem
 			clickable
 			:active="filterField === 'action' && filterValue === 'comment'"
 			@click="setNavFilter('action', 'comment')"
 		>
-			<v-list-item-icon>
-				<v-icon name="chat_bubble_outline" />
-			</v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('comment')" />
-			</v-list-item-content>
-		</v-list-item>
+			<VListItemIcon>
+				<VIcon name="chat_bubble_outline" />
+			</VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('comment')" />
+			</VListItemContent>
+		</VListItem>
 
-		<v-list-item
+		<VListItem
 			clickable
 			:active="filterField === 'action' && filterValue === 'login'"
 			@click="setNavFilter('action', 'login')"
 		>
-			<v-list-item-icon>
-				<v-icon name="login" />
-			</v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="$t('login')" />
-			</v-list-item-content>
-		</v-list-item>
-	</v-list>
+			<VListItemIcon>
+				<VIcon name="login" />
+			</VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('login')" />
+			</VListItemContent>
+		</VListItem>
+	</VList>
 </template>

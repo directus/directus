@@ -126,7 +126,7 @@ function getRelatedFieldsFromTemplates() {
 <template>
 	<div class="presentation-links">
 		<template v-for="(link, index) in linksParsed" :key="index">
-			<v-button
+			<VButton
 				v-if="link.actionType !== 'flow' || isActiveFlow(link.flow!)"
 				class="action"
 				:class="[link.type]"
@@ -138,12 +138,12 @@ function getRelatedFieldsFromTemplates() {
 				:disabled="link.actionType === 'flow' && (props.disabled || props.primaryKey === '+')"
 				@click="() => runManualFlow(link.flow!)"
 			>
-				<v-icon v-if="!link.icon && !link.label" name="smart_button" />
+				<VIcon v-if="!link.icon && !link.label" name="smart_button" />
 
-				<v-icon v-if="link.icon" :left="link.label" :name="link.icon" />
+				<VIcon v-if="link.icon" :left="link.label" :name="link.icon" />
 
 				<span v-if="link.label">{{ link.label }}</span>
-			</v-button>
+			</VButton>
 		</template>
 	</div>
 </template>

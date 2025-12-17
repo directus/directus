@@ -207,9 +207,9 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 </script>
 
 <template>
-	<private-view :title="$t('public_label')" show-back>
+	<PrivateView :title="$t('public_label')" show-back>
 		<template #headline>
-			<v-breadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
+			<VBreadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
 
 		<template #actions>
@@ -221,7 +221,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 				@click="saveAndQuit"
 			>
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -233,30 +233,30 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="content">
-			<v-form v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" :loading />
+			<VForm v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" :loading />
 		</div>
 
 		<template #sidebar>
-			<role-info-sidebar-detail :role="null" />
+			<RoleInfoSidebarDetail :role="null" />
 		</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

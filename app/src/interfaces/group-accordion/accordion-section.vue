@@ -98,7 +98,7 @@ function useComparisonIndicator() {
 </script>
 
 <template>
-	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
+	<VItem v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
 			<div
 				:class="{
@@ -113,22 +113,16 @@ function useComparisonIndicator() {
 					@click="handleModifier($event, toggle)"
 				>
 					<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot"></span>
-					<v-icon class="icon" :class="{ active }" name="expand_more" />
+					<VIcon class="icon" :class="{ active }" name="expand_more" />
 					<span class="field-name">{{ field.name }}</span>
-					<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
-					<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-					<v-icon
-						v-if="!active && validationMessage"
-						v-tooltip="validationMessage"
-						class="warning"
-						name="error"
-						small
-					/>
+					<VIcon v-if="field.meta?.required === true" class="required" sup name="star" filled />
+					<VChip v-if="badge" x-small>{{ badge }}</VChip>
+					<VIcon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
 				</button>
 
-				<transition-expand>
+				<TransitionExpand>
 					<div v-if="active">
-						<v-form
+						<VForm
 							class="fields"
 							:initial-values="initialValues"
 							:fields="fieldsInSection"
@@ -147,10 +141,10 @@ function useComparisonIndicator() {
 							@update:model-value="$emit('apply', $event)"
 						/>
 					</div>
-				</transition-expand>
+				</TransitionExpand>
 			</div>
 		</template>
-	</v-item>
+	</VItem>
 </template>
 
 <style lang="scss" scoped>

@@ -19,19 +19,19 @@ defineEmits<{
 </script>
 
 <template>
-	<v-list-item
+	<VListItem
 		v-if="!folder.children || folder.children.length === 0"
 		:active="currentFolder === folder.id"
 		:disabled="disabled"
 		clickable
 		@click="$emit('click', folder.id)"
 	>
-		<v-list-item-icon>
-			<v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
-		</v-list-item-icon>
-		<v-list-item-content>{{ folder.name }}</v-list-item-content>
-	</v-list-item>
-	<v-list-group
+		<VListItemIcon>
+			<VIcon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
+		</VListItemIcon>
+		<VListItemContent>{{ folder.name }}</VListItemContent>
+	</VListItem>
+	<VListGroup
 		v-else
 		clickable
 		:active="currentFolder === folder.id"
@@ -39,12 +39,12 @@ defineEmits<{
 		@click="$emit('click', folder.id)"
 	>
 		<template #activator>
-			<v-list-item-icon>
-				<v-icon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
-			</v-list-item-icon>
-			<v-list-item-content>{{ folder.name }}</v-list-item-content>
+			<VListItemIcon>
+				<VIcon :name="currentFolder === folder.id ? 'folder_open' : 'folder'" />
+			</VListItemIcon>
+			<VListItemContent>{{ folder.name }}</VListItemContent>
 		</template>
-		<folder-list-item
+		<FolderListItem
 			v-for="childFolder in folder.children"
 			:key="childFolder.id!"
 			:folder="childFolder"
@@ -53,5 +53,5 @@ defineEmits<{
 			:disabled-folders="disabledFolders"
 			@click="$emit('click', $event)"
 		/>
-	</v-list-group>
+	</VListGroup>
 </template>

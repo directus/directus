@@ -5,7 +5,7 @@ import { useGroupable, useSizeClass } from '@directus/composables';
 import { isEqual, isNil } from 'lodash';
 import { computed } from 'vue';
 import { RouteLocationRaw, useLink, useRoute } from 'vue-router';
-import vProgressCircular from './v-progress-circular.vue';
+import VProgressCircular from './v-progress-circular.vue';
 
 interface Props {
 	/** Automatically focuses on the button */
@@ -171,7 +171,7 @@ async function onClick(event: MouseEvent) {
 			</span>
 			<div class="spinner">
 				<slot v-if="loading" name="loading">
-					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
+					<VProgressCircular :x-small="xSmall" :small="small" indeterminate />
 				</slot>
 			</div>
 		</component>

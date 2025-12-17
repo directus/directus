@@ -11,7 +11,7 @@ defineProps<Props>();
 
 <template>
 	<div class="icon" :class="{ right: ext.length >= 4 }">
-		<v-icon name="insert_drive_file" />
+		<VIcon name="insert_drive_file" />
 		<span class="label">{{ ext }}</span>
 	</div>
 </template>

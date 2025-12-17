@@ -177,22 +177,22 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 <template>
 	<div class="image" :class="[width, { crop }]">
-		<v-skeleton-loader v-if="loading" type="input-tall" />
+		<VSkeletonLoader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
+		<VNotice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
 			{{ $t('no_image_selected') }}
-		</v-notice>
+		</VNotice>
 
 		<div v-else-if="image" class="image-preview">
 			<div v-if="imageError || !src" class="image-error">
-				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
+				<VIcon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
 					{{ src ? $t(`errors.${imageError}`) : $t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 
-			<v-image
+			<VImage
 				v-else-if="image.type?.startsWith('image') && isImage"
 				:src="src"
 				:class="{ 'is-letterbox': letterbox }"
@@ -204,42 +204,42 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			/>
 
 			<div v-else class="fallback">
-				<v-icon-file :ext="ext" />
+				<VIconFile :ext="ext" />
 			</div>
 
 			<div class="shadow" />
 
 			<div class="actions">
-				<v-button v-tooltip="$t('zoom')" icon rounded @click="lightboxActive = true">
-					<v-icon name="zoom_in" />
-				</v-button>
+				<VButton v-tooltip="$t('zoom')" icon rounded @click="lightboxActive = true">
+					<VIcon name="zoom_in" />
+				</VButton>
 
-				<v-button
+				<VButton
 					v-tooltip="$t('download')"
 					icon
 					rounded
 					:href="getAssetUrl(image.id, { isDownload: true })"
 					:download="image.filename_download"
 				>
-					<v-icon name="download" />
-				</v-button>
+					<VIcon name="download" />
+				</VButton>
 
 				<template v-if="!internalDisabled || nonEditable">
-					<v-button v-tooltip="$t('edit_item')" icon rounded @click="editImageDetails = true">
-						<v-icon name="edit" />
-					</v-button>
+					<VButton v-tooltip="$t('edit_item')" icon rounded @click="editImageDetails = true">
+						<VIcon name="edit" />
+					</VButton>
 
-					<v-button
+					<VButton
 						v-if="updateAllowed && !nonEditable"
 						v-tooltip="$t('edit_image')"
 						icon
 						rounded
 						@click="editImageEditor = true"
 					>
-						<v-icon name="tune" />
-					</v-button>
+						<VIcon name="tune" />
+					</VButton>
 
-					<v-remove
+					<VRemove
 						v-if="!nonEditable"
 						button
 						deselect
@@ -255,7 +255,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<div class="meta">{{ meta }}</div>
 			</div>
 
-			<drawer-item
+			<DrawerItem
 				v-if="image"
 				v-model:active="editImageDetails"
 				:disabled="internalDisabled"
@@ -266,23 +266,23 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				@input="update"
 			>
 				<template #actions>
-					<v-button
+					<VButton
 						secondary
 						rounded
 						icon
 						:download="image.filename_download"
 						:href="getAssetUrl(image.id, { isDownload: true })"
 					>
-						<v-icon name="download" />
-					</v-button>
+						<VIcon name="download" />
+					</VButton>
 				</template>
-			</drawer-item>
+			</DrawerItem>
 
-			<image-editor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<ImageEditor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
-			<file-lightbox v-model="lightboxActive" :file="image" />
+			<FileLightbox v-model="lightboxActive" :file="image" />
 		</div>
-		<v-upload
+		<VUpload
 			v-else
 			from-url
 			:from-user="createAllowed && enableCreate"

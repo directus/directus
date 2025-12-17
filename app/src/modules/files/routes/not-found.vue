@@ -5,17 +5,17 @@ import { PrivateView } from '@/views/private';
 </script>
 
 <template>
-	<private-view :title="$t('page_not_found')">
+	<PrivateView :title="$t('page_not_found')">
 		<template #navigation>
-			<files-navigation />
+			<FilesNavigation />
 		</template>
 
 		<div class="not-found">
-			<v-info :title="$t('page_not_found')" icon="not_interested">
+			<VInfo :title="$t('page_not_found')" icon="not_interested">
 				{{ $t('page_not_found_body') }}
-			</v-info>
+			</VInfo>
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

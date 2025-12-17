@@ -83,7 +83,7 @@ function onCloseClick(event: MouseEvent) {
 		<span class="chip-content">
 			<slot />
 			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
-				<v-icon class="close" :name="closeIcon" x-small />
+				<VIcon class="close" :name="closeIcon" x-small />
 			</span>
 		</span>
 	</component>

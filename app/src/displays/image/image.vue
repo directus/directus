@@ -30,8 +30,8 @@ const src = computed(() => {
 </script>
 
 <template>
-	<v-icon v-if="imageError" name="image" />
-	<v-image
+	<VIcon v-if="imageError" name="image" />
+	<VImage
 		v-else-if="src"
 		:src="src"
 		role="presentation"
@@ -39,7 +39,7 @@ const src = computed(() => {
 		:class="{ circle }"
 		@error="imageError = true"
 	/>
-	<value-null v-else />
+	<ValueNull v-else />
 </template>
 
 <style lang="scss" scoped>

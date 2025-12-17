@@ -23,15 +23,15 @@ function close() {
 </script>
 
 <template>
-	<v-dialog :model-value="isOpen" @update:model-value="close" @esc="close">
-		<v-card>
-			<v-card-title>{{ $t('add_file') }}</v-card-title>
-			<v-card-text>
-				<v-upload :folder="props.folder" multiple from-url @input="close" />
-			</v-card-text>
-			<v-card-actions>
-				<v-button secondary @click="close">{{ $t('done') }}</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+	<VDialog :model-value="isOpen" @update:model-value="close" @esc="close">
+		<VCard>
+			<VCardTitle>{{ $t('add_file') }}</VCardTitle>
+			<VCardText>
+				<VUpload :folder="props.folder" multiple from-url @input="close" />
+			</VCardText>
+			<VCardActions>
+				<VButton secondary @click="close">{{ $t('done') }}</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>

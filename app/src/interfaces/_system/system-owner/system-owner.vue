@@ -55,16 +55,16 @@ async function reset() {
 
 <template>
 	<div class="system-owner">
-		<v-list-item type="text" block clickable @click="editing = true">
+		<VListItem type="text" block clickable @click="editing = true">
 			{{ form.project_owner ?? initialValues.project_owner }}
 			<div class="spacer" />
 			<div class="item-actions">
-				<v-icon v-tooltip="$t('interfaces.system-owner.edit')" name="edit" clickable />
+				<VIcon v-tooltip="$t('interfaces.system-owner.edit')" name="edit" clickable />
 			</div>
-		</v-list-item>
+		</VListItem>
 	</div>
 
-	<v-drawer v-model="editing" :title="$t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
+	<VDrawer v-model="editing" :title="$t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
 		<template #actions>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
@@ -76,16 +76,16 @@ async function reset() {
 		</template>
 
 		<div class="drawer-content">
-			<setup-form
+			<SetupForm
 				v-model="form"
 				:initial-values="initialValues"
 				:errors="errors"
 				:register="false"
 				skip-license
 				utm-location="settings"
-			></setup-form>
+			></SetupForm>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

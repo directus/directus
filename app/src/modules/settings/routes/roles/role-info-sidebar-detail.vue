@@ -12,12 +12,12 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
 <template>
-	<sidebar-detail v-if="role" id="role" icon="info" :title="$t('information')">
+	<SidebarDetail v-if="role" id="role" icon="info" :title="$t('information')">
 		<dl>
 			<div class="description-list">
 				<dt>{{ $t('primary_key') }}</dt>
 				<dd>{{ role.id }}</dd>
-				<v-icon
+				<VIcon
 					v-if="isCopySupported"
 					name="content_copy"
 					small
@@ -27,7 +27,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 				/>
 			</div>
 		</dl>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

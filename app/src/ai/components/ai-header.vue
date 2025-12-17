@@ -10,12 +10,12 @@ const aiStore = useAiStore();
 
 <template>
 	<div class="ai-header">
-		<ai-model-selector />
+		<AiModelSelector />
 		<div class="spacer" />
-		<v-button v-tooltip.left="$t('ai.clear_conversation')" x-small icon secondary @click="aiStore.reset">
-			<v-icon clickable name="delete_history" small />
-		</v-button>
-		<ai-settings-menu class="settings-menu" />
+		<VButton v-tooltip.left="$t('ai.clear_conversation')" x-small icon secondary @click="aiStore.reset">
+			<VIcon clickable name="delete_history" small />
+		</VButton>
+		<AiSettingsMenu class="settings-menu" />
 	</div>
 </template>
 

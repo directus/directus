@@ -424,13 +424,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<private-view :title="$t('settings_system_logs')" icon="terminal">
-		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
+	<PrivateView :title="$t('settings_system_logs')" icon="terminal">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
-				<v-progress-circular small indeterminate />
-			</v-button>
+			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
+				<VProgressCircular small indeterminate />
+			</VButton>
 
 			<PrivateViewHeaderBarActionButton
 				v-else-if="!shouldStream"
@@ -456,7 +456,7 @@ onUnmounted(() => {
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="logs-container">
@@ -470,7 +470,7 @@ onUnmounted(() => {
 			/>
 			<div class="split-view">
 				<div class="logs-display">
-					<logs-display
+					<LogsDisplay
 						ref="logsDisplay"
 						:logs="filteredLogs"
 						:log-levels="allowedLogLevels"
@@ -481,13 +481,13 @@ onUnmounted(() => {
 						@scrolled-to-bottom="onScrollBottom"
 					/>
 				</div>
-				<transition name="fade">
+				<Transition name="fade">
 					<div v-show="logDetailVisible" class="log-detail">
 						<div class="log-detail-controls">
-							<v-button class="close-button" x-large secondary icon @click="minimizeLog">
-								<v-icon name="close" />
-							</v-button>
-							<interface-input
+							<VButton class="close-button" x-large secondary icon @click="minimizeLog">
+								<VIcon name="close" />
+							</VButton>
+							<InterfaceInput
 								:value="logDetailSearch"
 								class="full"
 								:placeholder="$t('log_detail_filter_paths')"
@@ -497,24 +497,24 @@ onUnmounted(() => {
 							/>
 						</div>
 						<div ref="codemirrorEl" class="raw-log">
-							<v-button
+							<VButton
 								v-if="isCopySupported"
 								class="copy-button"
 								secondary
 								icon
 								@click="copyToClipboard(codemirror?.getValue())"
 							>
-								<v-icon name="content_copy" />
-							</v-button>
+								<VIcon name="content_copy" />
+							</VButton>
 						</div>
 						<div class="actions">
-							<v-checkbox v-model="softWrap" :label="$t('soft_wrap_lines')" />
+							<VCheckbox v-model="softWrap" :label="$t('soft_wrap_lines')" />
 						</div>
 					</div>
-				</transition>
+				</Transition>
 			</div>
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
