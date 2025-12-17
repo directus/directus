@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useClipboard } from '@/composables/use-clipboard';
 import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { localizedFormat } from '@/utils/localized-format';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { userName } from '@/utils/user-name';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import UserPopover from '@/views/private/components/user-popover.vue';
+import type { File } from '@directus/types';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { File } from '@directus/types';
-import { useClipboard } from '@/composables/use-clipboard';
+import { RouterLink } from 'vue-router';
 
 const props = defineProps<{
 	file: File | null;
@@ -187,7 +193,7 @@ async function copyFileId() {
 </script>
 
 <template>
-	<sidebar-detail id="file-info" icon="info" :title="$t('file_details')">
+	<SidebarDetail id="file-info" icon="info" :title="$t('file_details')">
 		<dl v-if="file">
 			<div v-if="file.type">
 				<dt>{{ $t('type') }}</dt>
@@ -229,9 +235,9 @@ async function copyFileId() {
 			<div v-if="userCreated">
 				<dt>{{ $t('owner') }}</dt>
 				<dd>
-					<user-popover :user="userCreated.id">
-						<router-link :to="userCreated.link">{{ userCreated.name }}</router-link>
-					</user-popover>
+					<UserPopover :user="userCreated.id">
+						<RouterLink :to="userCreated.link">{{ userCreated.name }}</RouterLink>
+					</UserPopover>
 				</dd>
 			</div>
 
@@ -252,9 +258,9 @@ async function copyFileId() {
 			<div v-if="userModified">
 				<dt>{{ $t('edited_by') }}</dt>
 				<dd>
-					<user-popover :user="userModified.id">
-						<router-link :to="userModified.link">{{ userModified.name }}</router-link>
-					</user-popover>
+					<UserPopover :user="userModified.id">
+						<RouterLink :to="userModified.link">{{ userModified.name }}</RouterLink>
+					</UserPopover>
 				</dd>
 			</div>
 
@@ -268,23 +274,23 @@ async function copyFileId() {
 			<div>
 				<dt>{{ $t('folder') }}</dt>
 				<dd>
-					<router-link :to="folderLink">
+					<RouterLink :to="folderLink">
 						{{ $t('open_folder', { folder: folder ? folder.name : $t('file_library') }) }}
-					</router-link>
+					</RouterLink>
 				</dd>
 			</div>
 
 			<div v-if="file?.id" class="copy-id">
 				<dt>{{ $t('copy_id') }}</dt>
 				<dd>
-					<v-button icon secondary small class="copy-id-button" @click="copyFileId">
-						<v-icon small name="content_copy" outline />
-					</v-button>
+					<VButton icon secondary small class="copy-id-button" @click="copyFileId">
+						<VIcon small name="content_copy" outline />
+					</VButton>
 				</dd>
 			</div>
 
 			<template v-if="imageMetadata">
-				<v-divider />
+				<VDivider />
 
 				<div v-if="imageMetadata.Make && imageMetadata.Model">
 					<dt>{{ $t('camera') }}</dt>
@@ -312,7 +318,7 @@ async function copyFileId() {
 				</div>
 			</template>
 		</dl>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

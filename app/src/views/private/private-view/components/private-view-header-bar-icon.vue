@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 defineProps<{
 	icon?: string;
@@ -10,11 +11,11 @@ defineProps<{
 
 <template>
 	<VButton v-if="showBack" class="back-button" rounded icon secondary exact small @click="$router.back()">
-		<v-icon name="arrow_back" small />
+		<VIcon name="arrow_back" small />
 	</VButton>
 
 	<div v-else class="icon">
-		<v-icon :name="icon" :color="iconColor" small />
+		<VIcon :name="icon" :color="iconColor" small />
 	</div>
 </template>
 

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import TransitionExpand from '@/components/transition/expand.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
@@ -56,11 +59,11 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 
 <template>
 	<div class="module">
-		<transition-expand x-axis>
-			<module-bar v-if="moduleBarOpen" />
-		</transition-expand>
+		<TransitionExpand x-axis>
+			<ModuleBar v-if="moduleBarOpen" />
+		</TransitionExpand>
 
-		<live-preview
+		<LivePreview
 			:url="urls"
 			:invalid-url
 			:dynamic-url
@@ -73,7 +76,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 			@select-url="onSelectUrl"
 		>
 			<template #prepend-header>
-				<v-button
+				<VButton
 					v-tooltip.bottom.end="$t('toggle_navigation')"
 					x-small
 					rounded
@@ -81,10 +84,10 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 					secondary
 					@click="moduleBarOpen = !moduleBarOpen"
 				>
-					<v-icon small :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
-				</v-button>
+					<VIcon small :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
+				</VButton>
 
-				<v-button
+				<VButton
 					v-tooltip.bottom.end="$t('toggle_editable_elements')"
 					x-small
 					rounded
@@ -93,17 +96,17 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 					secondary
 					@click="showEditableElements = !showEditableElements"
 				>
-					<v-icon small name="edit" outline />
-				</v-button>
+					<VIcon small name="edit" outline />
+				</VButton>
 			</template>
 
 			<template #overlay="{ frameEl, frameSrc }">
-				<editing-layer :frame-src :frame-el :show-editable-elements @navigation="onNavigation" />
+				<EditingLayer :frame-src :frame-el :show-editable-elements @navigation="onNavigation" />
 			</template>
-		</live-preview>
+		</LivePreview>
 
-		<notification-dialogs />
-		<notifications-group />
+		<NotificationDialogs />
+		<NotificationsGroup />
 	</div>
 </template>
 

@@ -67,8 +67,8 @@ const showLicenseBanner = computed(
 		<slot />
 	</PrivateViewRoot>
 
-	<notifications-drawer />
-	<notification-dialogs />
+	<NotificationsDrawer />
+	<NotificationDialogs />
 
-	<license-banner v-model="showLicenseBanner" />
+	<LicenseBanner v-model="showLicenseBanner" />
 </template>

@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListGroup from '@/components/v-list-group.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
@@ -88,7 +96,7 @@ function getChildBookmarks(collection: Collection) {
 </script>
 
 <template>
-	<v-list-group
+	<VListGroup
 		v-if="isGroup && matchesSearch"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
@@ -99,50 +107,45 @@ function getChildBookmarks(collection: Collection) {
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
 	>
 		<template #activator>
-			<navigation-item-content
+			<NavigationItemContent
 				:search="search"
 				:name="collection.name"
 				:icon="collection.icon"
 				:color="collection.color"
 			/>
 		</template>
-		<navigation-item
+		<NavigationItem
 			v-for="childCollection in childCollections"
 			:key="childCollection.collection"
 			:show-hidden="showHidden"
 			:collection="childCollection"
 			:search="search"
 		/>
-		<navigation-bookmark v-for="bookmark in childBookmarks" :key="bookmark.id" :bookmark="bookmark" />
-	</v-list-group>
+		<NavigationBookmark v-for="bookmark in childBookmarks" :key="bookmark.id" :bookmark="bookmark" />
+	</VListGroup>
 
-	<v-list-item
+	<VListItem
 		v-else-if="matchesSearch"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 	>
-		<navigation-item-content
-			:search="search"
-			:name="collection.name"
-			:icon="collection.icon"
-			:color="collection.color"
-		/>
-	</v-list-item>
+		<NavigationItemContent :search="search" :name="collection.name" :icon="collection.icon" :color="collection.color" />
+	</VListItem>
 
-	<v-menu v-if="hasContextMenu" ref="contextMenu" show-arrow placement="bottom-start">
-		<v-list>
-			<v-list-item v-if="isAdmin" clickable :to="`/settings/data-model/${collection.collection}`">
-				<v-list-item-icon>
-					<v-icon name="database" />
-				</v-list-item-icon>
-				<v-list-item-content>
-					<v-text-overflow :text="$t('edit_collection')" />
-				</v-list-item-content>
-			</v-list-item>
-		</v-list>
-	</v-menu>
+	<VMenu v-if="hasContextMenu" ref="contextMenu" show-arrow placement="bottom-start">
+		<VList>
+			<VListItem v-if="isAdmin" clickable :to="`/settings/data-model/${collection.collection}`">
+				<VListItemIcon>
+					<VIcon name="database" />
+				</VListItemIcon>
+				<VListItemContent>
+					<VTextOverflow :text="$t('edit_collection')" />
+				</VListItemContent>
+			</VListItem>
+		</VList>
+	</VMenu>
 </template>
 
 <style scoped>

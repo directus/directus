@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import ValueNull from '@/views/private/components/value-null.vue';
 import { computed, ref } from 'vue';
 
 type Image = {
@@ -27,8 +30,8 @@ const src = computed(() => {
 </script>
 
 <template>
-	<v-icon v-if="imageError" name="image" />
-	<v-image
+	<VIcon v-if="imageError" name="image" />
+	<VImage
 		v-else-if="src"
 		:src="src"
 		role="presentation"
@@ -36,7 +39,7 @@ const src = computed(() => {
 		:class="{ circle }"
 		@error="imageError = true"
 	/>
-	<value-null v-else />
+	<ValueNull v-else />
 </template>
 
 <style lang="scss" scoped>

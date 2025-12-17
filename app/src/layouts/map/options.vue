@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+import VCollectionFieldTemplate from '@/components/v-collection-field-template.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useSync } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
@@ -33,18 +37,18 @@ const { basemap } = toRefs(appStore);
 <template>
 	<div class="field">
 		<div class="type-label">{{ $t('layouts.map.basemap') }}</div>
-		<v-select v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+		<VSelect v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 	</div>
 
 	<template v-if="geometryFields.length == 0">
 		<div class="field">
-			<v-input type="text" disabled :prefix="$t('layouts.map.no_compatible_fields')"></v-input>
+			<VInput type="text" disabled :prefix="$t('layouts.map.no_compatible_fields')"></VInput>
 		</div>
 	</template>
 	<template v-else>
 		<div class="field">
 			<div class="type-label">{{ $t('layouts.map.field') }}</div>
-			<v-select
+			<VSelect
 				v-model="geometryFieldWritable"
 				:items="geometryFields.map(({ name, field }) => ({ text: name, value: field }))"
 			/>
@@ -53,7 +57,7 @@ const { basemap } = toRefs(appStore);
 
 	<div class="field">
 		<div class="type-label">{{ $t('display_template') }}</div>
-		<v-collection-field-template
+		<VCollectionFieldTemplate
 			v-model="displayTemplateWritable"
 			:collection="collection"
 			:placeholder="$t('layouts.map.default_template')"
@@ -61,7 +65,7 @@ const { basemap } = toRefs(appStore);
 	</div>
 
 	<div class="field">
-		<v-checkbox
+		<VCheckbox
 			v-model="clusterDataWritable"
 			:label="$t('layouts.map.cluster')"
 			:disabled="geometryOptions && geometryOptions.geometryType !== 'Point'"

@@ -1,5 +1,21 @@
 <script setup lang="ts">
 import { useAiStore } from '@/ai/stores/use-ai';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemHint from '@/components/v-list-item-hint.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
@@ -12,11 +28,12 @@ import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import PrivateView from '@/views/private';
+import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
@@ -539,7 +556,7 @@ function useCollectionRoute() {
 </script>
 
 <template>
-	<content-not-found
+	<ContentNotFound
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
@@ -558,10 +575,10 @@ function useCollectionRoute() {
 		</template>
 
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
-			<v-skeleton-loader v-if="loading" class="title-loader" type="text" />
+			<VSkeletonLoader v-if="loading" class="title-loader" type="text" />
 
 			<h1 v-else class="type-title">
-				<render-template
+				<RenderTemplate
 					:collection="collectionInfo.collection"
 					:item="templateData"
 					:template="collectionInfo.meta!.display_template"
@@ -571,14 +588,14 @@ function useCollectionRoute() {
 
 		<template #headline>
 			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
-				<v-breadcrumb
+				<VBreadcrumb
 					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
 					:items="[{ name: $t('content'), to: '/content' }]"
 					class="headline-breadcrumb"
 				/>
-				<v-breadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
+				<VBreadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
 
-				<version-menu
+				<VersionMenu
 					v-if="shouldShowVersioning"
 					:collection="collection"
 					:primary-key="internalPrimaryKey!"
@@ -597,7 +614,7 @@ function useCollectionRoute() {
 		<template #title-outer:append></template>
 
 		<template #actions>
-			<v-button
+			<VButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
 				rounded
@@ -607,10 +624,10 @@ function useCollectionRoute() {
 				small
 				@click="livePreviewCollapsed = !livePreviewCollapsed"
 			>
-				<v-icon name="visibility" outline small />
-			</v-button>
+				<VIcon name="visibility" outline small />
+			</VButton>
 
-			<v-dialog
+			<VDialog
 				v-if="!isNew && currentVersion === null"
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
@@ -618,7 +635,7 @@ function useCollectionRoute() {
 				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<VButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						rounded
@@ -629,25 +646,25 @@ function useCollectionRoute() {
 						small
 						@click="on"
 					>
-						<v-icon name="delete" outline small />
-					</v-button>
+						<VIcon name="delete" outline small />
+					</VButton>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-dialog
+			<VDialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew && currentVersion === null"
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
@@ -655,7 +672,7 @@ function useCollectionRoute() {
 				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<VButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
 						rounded
@@ -665,25 +682,25 @@ function useCollectionRoute() {
 						small
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline small />
-					</v-button>
+						<VIcon :name="isArchived ? 'unarchive' : 'archive'" outline small />
+					</VButton>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmArchive = false">
+					<VCardActions>
+						<VButton secondary @click="confirmArchive = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
+						</VButton>
+						<VButton kind="warning" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? $t('unarchive') : $t('archive') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-button
+			<VButton
 				v-if="currentVersion === null"
 				rounded
 				icon
@@ -693,10 +710,10 @@ function useCollectionRoute() {
 				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" small />
+				<VIcon name="check" small />
 
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
 						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
@@ -705,8 +722,8 @@ function useCollectionRoute() {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
-			<v-button
+			</VButton>
+			<VButton
 				v-else
 				rounded
 				icon
@@ -716,39 +733,39 @@ function useCollectionRoute() {
 				small
 				@click="saveVersionAction('stay')"
 			>
-				<v-icon name="beenhere" small />
+				<VIcon name="beenhere" small />
 
 				<template #append-outer>
-					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
+					<VMenu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
 						<template #activator="{ toggle }">
-							<v-icon class="version-more-options" name="more_vert" clickable @click="toggle" />
+							<VIcon class="version-more-options" name="more_vert" clickable @click="toggle" />
 						</template>
 
-						<v-list>
-							<v-list-item clickable @click="saveVersionAction('main')">
-								<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('save_and_return_to_main') }}</v-list-item-content>
-								<v-list-item-hint>{{ translateShortcut(['meta', 'alt', 's']) }}</v-list-item-hint>
-							</v-list-item>
-							<v-list-item clickable @click="saveVersionAction('quit')">
-								<v-list-item-icon><v-icon name="done_all" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('save_and_quit') }}</v-list-item-content>
-								<v-list-item-hint>{{ translateShortcut(['meta', 'shift', 's']) }}</v-list-item-hint>
-							</v-list-item>
-							<v-list-item clickable @click="discardAndStay">
-								<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('discard_all_changes') }}</v-list-item-content>
-							</v-list-item>
-						</v-list>
-					</v-menu>
+						<VList>
+							<VListItem clickable @click="saveVersionAction('main')">
+								<VListItemIcon><VIcon name="check" /></VListItemIcon>
+								<VListItemContent>{{ $t('save_and_return_to_main') }}</VListItemContent>
+								<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>
+							</VListItem>
+							<VListItem clickable @click="saveVersionAction('quit')">
+								<VListItemIcon><VIcon name="done_all" /></VListItemIcon>
+								<VListItemContent>{{ $t('save_and_quit') }}</VListItemContent>
+								<VListItemHint>{{ translateShortcut(['meta', 'shift', 's']) }}</VListItemHint>
+							</VListItem>
+							<VListItem clickable @click="discardAndStay">
+								<VListItemIcon><VIcon name="undo" /></VListItemIcon>
+								<VListItemContent>{{ $t('discard_all_changes') }}</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
 				</template>
-			</v-button>
+			</VButton>
 
-			<flow-dialogs v-bind="flowDialogsContext" />
+			<FlowDialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
-			<content-navigation :current-collection="collection" />
+			<ContentNavigation :current-collection="collection" />
 		</template>
 
 		<SplitPanel
@@ -767,7 +784,7 @@ function useCollectionRoute() {
 			:disabled="isMobile"
 		>
 			<template #start>
-				<v-form
+				<VForm
 					ref="form"
 					v-model="edits"
 					:autofocus="isNew"
@@ -787,30 +804,26 @@ function useCollectionRoute() {
 			</template>
 
 			<template #end>
-				<live-preview
-					v-if="livePreviewActive && previewUrl"
-					:url="previewUrl"
-					@new-window="livePreviewMode = 'popup'"
-				/>
+				<LivePreview v-if="livePreviewActive && previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 			</template>
 		</SplitPanel>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<template #sidebar>
 			<template v-if="isNew === false && actualPrimaryKey">
-				<revisions-sidebar-detail
+				<RevisionsSidebarDetail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsSidebarDetailRef"
 					:collection="collection"
@@ -819,18 +832,18 @@ function useCollectionRoute() {
 					:scope="accountabilityScope"
 					@revert="revert"
 				/>
-				<comments-sidebar-detail
+				<CommentsSidebarDetail
 					v-if="currentVersion === null"
 					:collection="collection"
 					:primary-key="actualPrimaryKey"
 				/>
-				<shares-sidebar-detail
+				<SharesSidebarDetail
 					v-if="currentVersion === null"
 					:collection="collection"
 					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<flow-sidebar-detail v-if="currentVersion === null" :manual-flows />
+				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
 	</PrivateView>

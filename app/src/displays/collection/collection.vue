@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 import { useCollection } from '@directus/composables';
 import { toRefs } from 'vue';
 
@@ -18,9 +20,9 @@ const { info } = useCollection(collection);
 </script>
 
 <template>
-	<value-null v-if="value === null || !info" />
+	<ValueNull v-if="value === null || !info" />
 	<div v-else>
-		<v-icon v-if="icon" :name="info.icon" left small />
+		<VIcon v-if="icon" :name="info.icon" left small />
 		{{ info.name }}
 	</div>
 </template>

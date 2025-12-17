@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { readableMimeType } from '@/utils/readable-mime-type';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
 
 type File = {
@@ -40,7 +42,7 @@ const imageThumbnail = computed(() => {
 </script>
 
 <template>
-	<v-image
+	<VImage
 		v-if="imageThumbnail && !imgError"
 		:src="imageThumbnail"
 		:class="{ 'is-svg': value && value.type?.includes('svg') }"
@@ -52,7 +54,7 @@ const imageThumbnail = computed(() => {
 			{{ fileExtension }}
 		</span>
 
-		<v-icon v-else name="folder_open" />
+		<VIcon v-else name="folder_open" />
 	</div>
 </template>
 

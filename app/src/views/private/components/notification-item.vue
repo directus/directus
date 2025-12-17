@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 
 const props = withDefaults(
@@ -37,9 +39,9 @@ const done = async () => {
 <template>
 	<div class="notification-item" :class="[type, { 'show-text': alwaysShowText }]" @click="done">
 		<div v-if="loading || progress || icon" class="icon">
-			<v-progress-circular v-if="loading" indeterminate small />
-			<v-progress-circular v-else-if="progress" small :value="progress" />
-			<v-icon v-else :name="icon" />
+			<VProgressCircular v-if="loading" indeterminate small />
+			<VProgressCircular v-else-if="progress" small :value="progress" />
+			<VIcon v-else :name="icon" />
 		</div>
 
 		<div class="content">
@@ -47,7 +49,7 @@ const done = async () => {
 			<p v-if="text" class="text">{{ text }}</p>
 		</div>
 
-		<v-icon
+		<VIcon
 			v-if="showClose"
 			v-tooltip="dismissText"
 			:name="dismissIcon ?? 'close'"

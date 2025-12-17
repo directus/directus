@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useUserStore } from '@/stores/user';
 import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
 import { StyleValue, computed, reactive, ref } from 'vue';
-import { useUserStore } from '@/stores/user';
 
 export type AppTile = {
 	id: string;
@@ -276,45 +283,45 @@ function useDragDrop() {
 		@pointerdown="onPointerDown('move', $event)"
 	>
 		<div v-if="showHeader" class="header">
-			<v-icon class="icon" :style="iconColor" :name="icon" small />
-			<v-text-overflow class="name" :text="name || ''" />
+			<VIcon class="icon" :style="iconColor" :name="icon" small />
+			<VTextOverflow class="name" :text="name || ''" />
 			<div class="spacer" />
-			<v-icon v-if="note" v-tooltip="note" class="note" name="info" />
+			<VIcon v-if="note" v-tooltip="note" class="note" name="info" />
 		</div>
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<v-icon v-tooltip="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
+			<VIcon v-tooltip="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
 
-			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
+			<VMenu v-if="showOptions" placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
-					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
+					<VIcon class="more-icon" name="more_vert" clickable @click="toggle" />
 				</template>
 
-				<v-list>
-					<v-list-item clickable :disabled="id.startsWith('_')" @click="$emit('move')">
-						<v-list-item-icon>
-							<v-icon class="move-icon" name="input" />
-						</v-list-item-icon>
-						<v-list-item-content>
+				<VList>
+					<VListItem clickable :disabled="id.startsWith('_')" @click="$emit('move')">
+						<VListItemIcon>
+							<VIcon class="move-icon" name="input" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ $t('copy_to') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item clickable @click="$emit('duplicate')">
-						<v-list-item-icon>
-							<v-icon name="control_point_duplicate" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ $t('duplicate') }}</v-list-item-content>
-					</v-list-item>
+					<VListItem clickable @click="$emit('duplicate')">
+						<VListItemIcon>
+							<VIcon name="control_point_duplicate" />
+						</VListItemIcon>
+						<VListItemContent>{{ $t('duplicate') }}</VListItemContent>
+					</VListItem>
 
-					<v-list-item class="delete-action" clickable @click="$emit('delete')">
-						<v-list-item-icon>
-							<v-icon name="delete" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ $t('delete') }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+					<VListItem class="delete-action" clickable @click="$emit('delete')">
+						<VListItemIcon>
+							<VIcon name="delete" />
+						</VListItemIcon>
+						<VListItemContent>{{ $t('delete') }}</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
 		</div>
 
 		<div class="resize-details">

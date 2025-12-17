@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import InterfaceSystemInputTranslatedString from '@/interfaces/_system/system-input-translated-string/input-translated-string.vue';
+import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { reactive } from 'vue';
 
 const props = defineProps<{
@@ -40,7 +49,7 @@ function cancel() {
 </script>
 
 <template>
-	<v-dialog
+	<VDialog
 		:model-value="modelValue"
 		persistent
 		keep-behind
@@ -52,12 +61,12 @@ function cancel() {
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
-		<v-card>
-			<v-card-title>{{ $t('create_bookmark') }}</v-card-title>
+		<VCard>
+			<VCardTitle>{{ $t('create_bookmark') }}</VCardTitle>
 
-			<v-card-text>
+			<VCardText>
 				<div class="fields">
-					<interface-system-input-translated-string
+					<InterfaceSystemInputTranslatedString
 						:value="bookmarkValue.name"
 						class="full"
 						autofocus
@@ -65,21 +74,21 @@ function cancel() {
 						:placeholder="$t('bookmark_name')"
 						@input="bookmarkValue.name = $event"
 					/>
-					<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
-					<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />
+					<InterfaceSelectIcon width="half" :value="bookmarkValue.icon" @input="setIcon" />
+					<InterfaceSelectColor width="half" :value="bookmarkValue.color" @input="setColor" />
 				</div>
-			</v-card-text>
+			</VCardText>
 
-			<v-card-actions>
-				<v-button secondary @click="cancel">
+			<VCardActions>
+				<VButton secondary @click="cancel">
 					{{ $t('cancel') }}
-				</v-button>
-				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="save">
+				</VButton>
+				<VButton :disabled="bookmarkValue.name === null" :loading="saving" @click="save">
 					{{ $t('save') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>

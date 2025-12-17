@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
 import { useFlows } from '@/composables/use-flows';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
@@ -15,6 +25,8 @@ import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vu
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { useCollection, useLayout } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
@@ -306,9 +318,9 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<content-not-found v-if="!currentCollection || isSystemCollection(collection)" />
+		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection)" />
 
-		<private-view
+		<PrivateView
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
 			:icon="archive ? 'archive' : currentCollection.icon"
@@ -316,13 +328,13 @@ function clearFilters() {
 			:sidebar-shadow="layoutState.sidebarShadow"
 		>
 			<template #headline>
-				<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
-				<v-breadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
+				<VBreadcrumb v-if="bookmark" :items="breadcrumb" />
+				<VBreadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
 			</template>
 
 			<template #title-outer:append>
 				<div class="bookmark-controls">
-					<bookmark-add
+					<BookmarkAdd
 						v-if="!bookmark"
 						v-model="bookmarkDialogActive"
 						class="add"
@@ -330,7 +342,7 @@ function clearFilters() {
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon
+							<VIcon
 								v-tooltip.right="$t('create_bookmark')"
 								small
 								class="toggle"
@@ -339,12 +351,12 @@ function clearFilters() {
 								@click="on"
 							/>
 						</template>
-					</bookmark-add>
+					</BookmarkAdd>
 
-					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled small />
+					<VIcon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled small />
 
 					<template v-else-if="bookmarkIsMine">
-						<v-icon
+						<VIcon
 							v-tooltip.bottom="$t('update_bookmark')"
 							class="save"
 							clickable
@@ -354,7 +366,7 @@ function clearFilters() {
 						/>
 					</template>
 
-					<bookmark-add
+					<BookmarkAdd
 						v-else
 						v-model="bookmarkDialogActive"
 						class="add"
@@ -362,7 +374,7 @@ function clearFilters() {
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon
+							<VIcon
 								v-tooltip.bottom="$t('create_bookmark')"
 								small
 								class="toggle"
@@ -371,9 +383,9 @@ function clearFilters() {
 								@click="on"
 							/>
 						</template>
-					</bookmark-add>
+					</BookmarkAdd>
 
-					<v-icon
+					<VIcon
 						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
 						v-tooltip.bottom="$t('reset_bookmark')"
 						name="settings_backup_restore"
@@ -390,39 +402,35 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
+				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button
+						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							rounded
-							icon
 							class="action-delete"
+							icon="delete"
 							secondary
-							small
 							@click="on"
-						>
-							<v-icon name="delete" outline small />
-						</v-button>
+						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="batchDelete">
 								{{ $t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
-				<v-dialog
+				<VDialog
 					v-if="
 						selection.length > 0 &&
 						currentCollection.meta &&
@@ -434,65 +442,53 @@ function clearFilters() {
 					@apply="archiveItems"
 				>
 					<template #activator="{ on }">
-						<v-button
+						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchArchiveAllowed ? $t('archive') : $t('not_allowed')"
 							:disabled="batchArchiveAllowed !== true"
-							rounded
-							icon
+							icon="archive"
 							secondary
-							small
 							@click="on"
-						>
-							<v-icon name="archive" outline small />
-						</v-button>
+						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('archive_confirm_count', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('archive_confirm_count', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmArchive = false">
+						<VCardActions>
+							<VButton secondary @click="confirmArchive = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button kind="warning" :loading="archiving" @click="archiveItems">
+							</VButton>
+							<VButton kind="warning" :loading="archiving" @click="archiveItems">
 								{{ $t('archive') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					rounded
-					icon
 					secondary
 					:disabled="batchEditAllowed === false"
-					small
+					icon="edit"
 					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline small />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
-					rounded
-					icon
+					icon="add"
 					:to="addNewLink"
 					:disabled="createAllowed === false"
-					small
-				>
-					<v-icon name="add" small />
-				</v-button>
+				/>
 
-				<flow-dialogs v-bind="flowDialogsContext" />
+				<FlowDialogs v-bind="flowDialogsContext" />
 			</template>
 
 			<template #navigation>
-				<content-navigation :current-collection="collection" />
+				<ContentNavigation :current-collection="collection" />
 			</template>
 
-			<v-info
+			<VInfo
 				v-if="bookmark && bookmarkExists === false"
 				type="warning"
 				:title="$t('bookmark_doesnt_exist')"
@@ -502,49 +498,49 @@ function clearFilters() {
 				{{ $t('bookmark_doesnt_exist_copy') }}
 
 				<template #append>
-					<v-button :to="currentCollectionLink">
+					<VButton :to="currentCollectionLink">
 						{{ $t('bookmark_doesnt_exist_cta') }}
-					</v-button>
+					</VButton>
 				</template>
-			</v-info>
+			</VInfo>
 
 			<component :is="`layout-${layout || 'tabular'}`" v-else v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="$t('no_results')" icon="search" center>
+					<VInfo :title="$t('no_results')" icon="search" center>
 						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+							<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="$t('item_count', 0)" :icon="currentCollection.icon" center>
+					<VInfo :title="$t('item_count', 0)" :icon="currentCollection.icon" center>
 						{{ $t('no_items_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<v-button :to="getItemRoute(collection, '+')">{{ $t('create_item') }}</v-button>
+							<VButton :to="getItemRoute(collection, '+')">{{ $t('create_item') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #error="{ error, reset }">
-					<v-info type="danger" :title="$t('unexpected_error')" icon="error" center>
+					<VInfo type="danger" :title="$t('unexpected_error')" icon="error" center>
 						{{ $t('unexpected_error_copy') }}
 
 						<template #append>
-							<v-error :error="error" />
+							<VError :error="error" />
 
-							<v-button small class="reset-preset" @click="reset">
+							<VButton small class="reset-preset" @click="reset">
 								{{ $t('reset_page_preferences') }}
-							</v-button>
+							</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 			</component>
 
-			<drawer-batch
+			<DrawerBatch
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				:collection="collection"
@@ -552,13 +548,13 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<layout-sidebar-detail v-model="layout">
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
-				<archive-sidebar-detail v-if="hasArchive" :collection="collection" :archive="archive" />
-				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
-				<export-sidebar-detail
+				<ArchiveSidebarDetail v-if="hasArchive" :collection="collection" :archive="archive" />
+				<RefreshSidebarDetail v-model="refreshInterval" @refresh="refresh" />
+				<ExportSidebarDetail
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
@@ -566,21 +562,21 @@ function clearFilters() {
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail :manual-flows />
+				<FlowSidebarDetail :manual-flows />
 			</template>
 
-			<v-dialog :model-value="deleteError !== null" @esc="deleteError = null">
-				<v-card>
-					<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
-					<v-card-text>
-						<v-error :error="deleteError" />
-					</v-card-text>
-					<v-card-actions>
-						<v-button @click="deleteError = null">{{ $t('done') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</private-view>
+			<VDialog :model-value="deleteError !== null" @esc="deleteError = null">
+				<VCard>
+					<VCardTitle>{{ $t('something_went_wrong') }}</VCardTitle>
+					<VCardText>
+						<VError :error="deleteError" />
+					</VCardText>
+					<VCardActions>
+						<VButton @click="deleteError = null">{{ $t('done') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
+		</PrivateView>
 	</component>
 </template>
 

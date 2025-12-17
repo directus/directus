@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { Revision } from '@/types/revisions';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -163,7 +171,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 </script>
 
 <template>
-	<v-dialog
+	<VDialog
 		:model-value="active"
 		persistent
 		keep-behind
@@ -175,7 +183,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			<div class="scrollable-container">
 				<div class="columns">
 					<div class="col left">
-						<comparison-header
+						<ComparisonHeader
 							:loading="modalLoading"
 							:title="baseDisplayName"
 							:date-updated="$t('latest')"
@@ -186,14 +194,14 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						<div class="comparison-content">
 							<template v-if="modalLoading">
 								<div class="form-skeleton">
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
 								</div>
 							</template>
 							<template v-else>
-								<v-form
+								<VForm
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
@@ -212,7 +220,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					</div>
 
 					<div class="col right vertical-divider">
-						<comparison-header
+						<ComparisonHeader
 							:loading="modalLoading"
 							:title="deltaDisplayName"
 							:date-updated="normalizedData?.incoming.date.dateObject || null"
@@ -227,14 +235,14 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						<div class="comparison-content">
 							<template v-if="modalLoading">
 								<div class="form-skeleton">
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
 								</div>
 							</template>
 							<template v-else>
-								<v-form
+								<VForm
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"
@@ -263,25 +271,25 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					<div class="col right">
 						<div class="footer-actions">
 							<div class="select-all-container">
-								<v-checkbox
+								<VCheckbox
 									v-if="availableFieldsCount > 0"
 									:model-value="allFieldsSelected"
 									:indeterminate="someFieldsSelected && !allFieldsSelected"
 									@update:model-value="toggleSelectAll"
 								>
 									{{ $t('select_all_differences') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
-								</v-checkbox>
+								</VCheckbox>
 							</div>
 							<div class="buttons-container">
-								<v-button
+								<VButton
 									v-tooltip.top="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 									secondary
 									@click="$emit('cancel')"
 								>
-									<v-icon name="close" left />
+									<VIcon name="close" left />
 									<span class="button-text">{{ $t('cancel') }}</span>
-								</v-button>
-								<v-button
+								</VButton>
+								<VButton
 									v-tooltip.top="
 										selectedComparisonFields.length === 0
 											? undefined
@@ -291,11 +299,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									:loading="promoting"
 									@click="onPromoteClick"
 								>
-									<v-icon :name="'arrow_upload_progress'" left />
+									<VIcon :name="'arrow_upload_progress'" left />
 									<span class="button-text">
 										{{ $t('apply') }}
 									</span>
-								</v-button>
+								</VButton>
 							</div>
 						</div>
 					</div>
@@ -303,24 +311,24 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			</div>
 		</div>
 
-		<v-dialog
+		<VDialog
 			v-model="confirmDeleteOnPromoteDialogActive"
 			@esc="confirmDeleteOnPromoteDialogActive = false"
 			@apply="promote(true)"
 		>
-			<v-card>
-				<v-card-title>
+			<VCard>
+				<VCardTitle>
 					{{ $t('delete_on_apply_copy', { version: deltaDisplayName }) }}
-				</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="promote(false)">{{ $t('keep') }}</v-button>
-					<v-button :loading="promoting" kind="danger" @click="promote(true)">
+				</VCardTitle>
+				<VCardActions>
+					<VButton secondary @click="promote(false)">{{ $t('keep') }}</VButton>
+					<VButton :loading="promoting" kind="danger" @click="promote(true)">
 						{{ $t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>
