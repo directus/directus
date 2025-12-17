@@ -82,8 +82,8 @@ function getLinkForItem(item: any) {
 </script>
 
 <template>
-	<value-null v-if="!relatedCollection" />
-	<v-menu
+	<ValueNull v-if="!relatedCollection" />
+	<VMenu
 		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType!.toLowerCase())"
 		show-arrow
 		:disabled="value?.length === 0"
@@ -98,22 +98,22 @@ function getLinkForItem(item: any) {
 			</span>
 		</template>
 
-		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath!]">
-				<v-list-item-content>
-					<render-template
+		<VList class="links">
+			<VListItem v-for="item in value" :key="item[primaryKeyFieldPath!]">
+				<VListItemContent>
+					<RenderTemplate
 						:template="internalTemplate"
 						:item="item"
 						:collection="junctionCollection ?? relatedCollection"
 					/>
-				</v-list-item-content>
-				<v-list-item-icon>
-					<router-link :to="getLinkForItem(item)!"><v-icon name="launch" small /></router-link>
-				</v-list-item-icon>
-			</v-list-item>
-		</v-list>
-	</v-menu>
-	<render-template v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
+				</VListItemContent>
+				<VListItemIcon>
+					<RouterLink :to="getLinkForItem(item)!"><VIcon name="launch" small /></RouterLink>
+				</VListItemIcon>
+			</VListItem>
+		</VList>
+	</VMenu>
+	<RenderTemplate v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
 </template>
 
 <style lang="scss" scoped>

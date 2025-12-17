@@ -41,7 +41,7 @@ function updateValue(value: string[]) {
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		multiple
 		:model-value="value"
 		:items="items"
@@ -55,7 +55,7 @@ function updateValue(value: string[]) {
 		@update:model-value="updateValue($event)"
 	>
 		<template v-if="icon" #prepend>
-			<v-icon :name="icon" />
+			<VIcon :name="icon" />
 		</template>
-	</v-select>
+	</VSelect>
 </template>

@@ -146,8 +146,8 @@ const parts = computed(() =>
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
 			<template v-for="(subPart, subIndex) in part" :key="subIndex">
-				<v-error-boundary>
-					<value-null v-if="subPart === null || (typeof subPart === 'object' && subPart.value === null)" />
+				<VErrorBoundary>
+					<ValueNull v-if="subPart === null || (typeof subPart === 'object' && subPart.value === null)" />
 					<template v-else-if="subPart?.component">
 						<component
 							:is="`display-${subPart.component}`"
@@ -166,7 +166,7 @@ const parts = computed(() =>
 					<template #fallback>
 						<span>{{ subPart?.value || subPart }}</span>
 					</template>
-				</v-error-boundary>
+				</VErrorBoundary>
 			</template>
 		</template>
 	</div>

@@ -85,16 +85,16 @@ const optionsFields = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!selectedInterface">
+	<VNotice v-if="!selectedInterface">
 		{{ $t('select_interface') }}
-	</v-notice>
+	</VNotice>
 
-	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
+	<VNotice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
 		{{ $t('no_options_available') }}
-	</v-notice>
+	</VNotice>
 
 	<div v-else class="inset">
-		<v-form
+		<VForm
 			v-if="usesCustomComponent === false"
 			v-model="options"
 			class="extension-options"

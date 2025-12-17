@@ -77,11 +77,11 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="$t('marketplace')" icon="storefront">
-		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
+	<PrivateView :title="$t('marketplace')" icon="storefront">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="page-container">
@@ -111,29 +111,29 @@ watchEffect(async () => {
 				class="filter"
 			/>
 
-			<v-error v-if="error && !loading" :error="error" />
+			<VError v-if="error && !loading" :error="error" />
 
-			<v-progress-circular v-if="!error && extensions === null && loading" class="spinner" indeterminate />
+			<VProgressCircular v-if="!error && extensions === null && loading" class="spinner" indeterminate />
 
-			<v-list v-if="!error && extensions !== null" class="results" :class="{ loading }">
+			<VList v-if="!error && extensions !== null" class="results" :class="{ loading }">
 				<ExtensionListItem
 					v-for="extension in extensions"
 					:key="extension.id"
 					:extension="extension"
 					:show-type="!type"
 				/>
-			</v-list>
+			</VList>
 
-			<v-info
+			<VInfo
 				v-if="extensions?.length === 0 && !loading && !error"
 				:title="$t('no_results')"
 				class="no-results"
 				icon="extension"
 			>
 				{{ $t('no_results_copy') }}
-			</v-info>
+			</VInfo>
 
-			<v-pagination
+			<VPagination
 				v-if="pageCount > 1"
 				v-model="page"
 				class="pagination"
@@ -142,9 +142,9 @@ watchEffect(async () => {
 				show-first-last
 			/>
 
-			<router-view />
+			<RouterView />
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

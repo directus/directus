@@ -27,11 +27,11 @@ const hasMeta = computed(() => {
 		<template v-if="hasMeta" #subtitle>
 			<p class="meta">
 				<span v-if="account.github_location">
-					<v-icon class="icon" small name="location_on" />
+					<VIcon class="icon" small name="location_on" />
 					{{ account.github_location }}
 				</span>
 				<span v-if="account.github_company">
-					<v-icon class="icon" small name="work" />
+					<VIcon class="icon" small name="work" />
 					{{ account.github_company }}
 				</span>
 			</p>

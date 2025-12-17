@@ -142,5 +142,5 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 </script>
 
 <template>
-	<v-form v-model="conditionsSync" :initial-values="conditionsInitial" :fields="fields" :loading="loading" />
+	<VForm v-model="conditionsSync" :initial-values="conditionsInitial" :fields="fields" :loading="loading" />
 </template>

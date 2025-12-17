@@ -256,12 +256,12 @@ const sortFields = computed(() => {
 	<div class="grid">
 		<div class="grid-element half">
 			<p class="type-label">{{ $t('template') }}</p>
-			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
+			<VInput v-model="template" class="input" :placeholder="`{{ field }}`" />
 		</div>
 
 		<div class="grid-element half">
 			<p class="type-label">{{ $t('interfaces.list.add_label') }}</p>
-			<interface-system-input-translated-string
+			<InterfaceSystemInputTranslatedString
 				:value="addLabel"
 				class="input"
 				:placeholder="$t('create_new')"
@@ -270,7 +270,7 @@ const sortFields = computed(() => {
 		</div>
 		<div class="grid-element half-left">
 			<p class="type-label">{{ $t('interfaces.list.sort') }}</p>
-			<v-select
+			<VSelect
 				v-model="sort"
 				class="input"
 				:items="sortFields"
@@ -281,7 +281,7 @@ const sortFields = computed(() => {
 
 		<div class="grid-element full">
 			<p class="type-label">{{ $t('interfaces.list.edit_fields') }}</p>
-			<repeater
+			<Repeater
 				:value="repeaterValue"
 				template="{{ field }} — {{ interface }}"
 				:fields="repeaterFields"

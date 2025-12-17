@@ -128,14 +128,14 @@ function useExpandCollapseAll() {
 
 <template>
 	<div>
-		<v-notice>
+		<VNotice>
 			{{
 				$t('fields_for_policy', {
 					policy: policy ? policy.name : $t('public_label'),
 					action: $t(permission.action).toLowerCase(),
 				})
 			}}
-		</v-notice>
+		</VNotice>
 
 		<div class="label-wrapper">
 			<div :id="labelId" class="type-label">{{ $t('field', 0) }}</div>
@@ -148,7 +148,7 @@ function useExpandCollapseAll() {
 			</div>
 		</div>
 
-		<v-checkbox-tree
+		<VCheckboxTree
 			class="permissions-field-tree"
 			:model-value="selectedValues"
 			:aria-labelledby="labelId"
@@ -159,7 +159,7 @@ function useExpandCollapseAll() {
 			@group-toggle="openGroups = null"
 		/>
 
-		<app-minimal :value="appMinimal" />
+		<AppMinimal :value="appMinimal" />
 	</div>
 </template>
 

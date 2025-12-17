@@ -72,7 +72,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 			'--v-checkbox-color': color,
 		}"
 	>
-		<v-checkbox
+		<VCheckbox
 			v-for="item in choicesDisplayed"
 			:key="item.value"
 			block
@@ -85,19 +85,19 @@ function onBlurCustomInput(otherVal: OtherValue) {
 			:model-value="value || []"
 			@update:model-value="$emit('input', $event)"
 		/>
-		<v-detail
+		<VDetail
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
 			:label="$t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
 			@update:model-value="showAll = true"
-		></v-detail>
+		></VDetail>
 
-		<v-notice v-if="items.length === 0 && !allowOther" type="info">
+		<VNotice v-if="items.length === 0 && !allowOther" type="info">
 			{{ $t('no_options_available') }}
-		</v-notice>
+		</VNotice>
 
 		<template v-if="allowOther">
-			<v-checkbox
+			<VCheckbox
 				v-for="otherValue in otherValues"
 				:key="otherValue.key"
 				block
@@ -114,9 +114,9 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
 				<template v-if="!nonEditable" #append>
-					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
+					<VIcon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
 				</template>
-			</v-checkbox>
+			</VCheckbox>
 
 			<button
 				v-if="allowOther && !nonEditable"
@@ -125,7 +125,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				class="add-new custom"
 				@click="addOtherValue('', true)"
 			>
-				<v-icon name="add" />
+				<VIcon name="add" />
 				{{ $t('other') }}
 			</button>
 		</template>

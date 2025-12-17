@@ -47,14 +47,14 @@ function onFolderChange(target: FolderTarget) {
 </script>
 
 <template>
-	<drawer-collection
+	<DrawerCollection
 		v-bind="$attrs"
 		:collection="collection"
 		:drawer-props="drawerProps"
 		:filter="mergeFilters(filter ?? null, folderFilter ?? null)"
 	>
 		<template #sidebar>
-			<files-navigation
+			<FilesNavigation
 				:custom-target-handler="onFolderChange"
 				:current-folder="currentFolder"
 				:current-special="currentSpecial"
@@ -63,5 +63,5 @@ function onFolderChange(target: FolderTarget) {
 				actions-disabled
 			/>
 		</template>
-	</drawer-collection>
+	</DrawerCollection>
 </template>

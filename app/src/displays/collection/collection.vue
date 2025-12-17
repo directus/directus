@@ -20,9 +20,9 @@ const { info } = useCollection(collection);
 </script>
 
 <template>
-	<value-null v-if="value === null || !info" />
+	<ValueNull v-if="value === null || !info" />
 	<div v-else>
-		<v-icon v-if="icon" :name="info.icon" left small />
+		<VIcon v-if="icon" :name="info.icon" left small />
 		{{ info.name }}
 	</div>
 </template>

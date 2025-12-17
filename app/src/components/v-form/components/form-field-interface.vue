@@ -52,9 +52,9 @@ const value = computed(() =>
 			subdued: batchMode && batchActive === false,
 		}"
 	>
-		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
+		<VSkeletonLoader v-if="loading && field.hideLoader !== true" />
 
-		<v-error-boundary v-if="interfaceExists && !rawEditorActive" :name="componentName">
+		<VErrorBoundary v-if="interfaceExists && !rawEditorActive" :name="componentName">
 			<component
 				:is="componentName"
 				v-bind="(field.meta && field.meta.options) || {}"
@@ -81,20 +81,20 @@ const value = computed(() =>
 			/>
 
 			<template #fallback>
-				<v-notice type="warning">{{ $t('unexpected_error') }}</v-notice>
+				<VNotice type="warning">{{ $t('unexpected_error') }}</VNotice>
 			</template>
-		</v-error-boundary>
+		</VErrorBoundary>
 
-		<interface-system-raw-editor
+		<InterfaceSystemRawEditor
 			v-else-if="rawEditorEnabled && rawEditorActive"
 			:value="value"
 			:type="field.type"
 			@input="$emit('update:modelValue', $event)"
 		/>
 
-		<v-notice v-else type="warning">
+		<VNotice v-else type="warning">
 			{{ $t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
-		</v-notice>
+		</VNotice>
 	</div>
 </template>
 

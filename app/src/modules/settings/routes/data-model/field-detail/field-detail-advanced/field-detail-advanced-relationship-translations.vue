@@ -40,42 +40,39 @@ const relatedPrimaryKey = computed(
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :model-value="collection" />
+				<VInput disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
 				<div class="type-label">{{ $t('translations_collection') }}</div>
-				<related-collection-select
-					v-model="junctionCollection"
-					:disabled="autoGenerateJunctionRelation || isExisting"
-				/>
+				<RelatedCollectionSelect v-model="junctionCollection" :disabled="autoGenerateJunctionRelation || isExisting" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('languages_collection') }}</div>
-				<related-collection-select v-model="relatedCollection" :disabled="type === 'files' || isExisting" />
+				<RelatedCollectionSelect v-model="relatedCollection" :disabled="type === 'files' || isExisting" />
 			</div>
-			<v-input disabled :model-value="currentPrimaryKey" />
-			<related-field-select
+			<VInput disabled :model-value="currentPrimaryKey" />
+			<RelatedFieldSelect
 				v-model="junctionFieldCurrent"
 				:collection="junctionCollection"
 				:disabled="autoGenerateJunctionRelation || isExisting"
 			/>
 			<div class="spacer" />
 			<div class="spacer" />
-			<related-field-select
+			<RelatedFieldSelect
 				v-model="junctionFieldRelated"
 				:collection="junctionCollection"
 				:disabled="autoGenerateJunctionRelation || isExisting"
 			/>
-			<v-input v-model="relatedPrimaryKey" disabled :placeholder="$t('primary_key') + '...'" />
+			<VInput v-model="relatedPrimaryKey" disabled :placeholder="$t('primary_key') + '...'" />
 			<div class="spacer" />
-			<v-checkbox v-model="autoGenerateJunctionRelation" :disabled="isExisting" block :label="$t('auto_fill')" />
-			<v-icon class="arrow" name="arrow_forward" />
-			<v-icon class="arrow" name="arrow_back" />
+			<VCheckbox v-model="autoGenerateJunctionRelation" :disabled="isExisting" block :label="$t('auto_fill')" />
+			<VIcon class="arrow" name="arrow_forward" />
+			<VIcon class="arrow" name="arrow_back" />
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+			<VDivider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</VDivider>
 
 			<div class="field">
 				<div class="type-label">
@@ -85,7 +82,7 @@ const relatedPrimaryKey = computed(
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="deselectAction"
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
@@ -115,7 +112,7 @@ const relatedPrimaryKey = computed(
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeleteCurrent"
 					:disabled="junctionCollection === collection"
 					:placeholder="$t('choose_action') + '...'"
@@ -151,7 +148,7 @@ const relatedPrimaryKey = computed(
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeleteRelated"
 					:disabled="junctionCollection === relatedCollection"
 					:placeholder="$t('choose_action') + '...'"

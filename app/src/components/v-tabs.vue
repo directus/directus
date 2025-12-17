@@ -39,9 +39,9 @@ function update(newSelection: readonly (string | number)[]) {
 </script>
 
 <template>
-	<v-list v-if="vertical" class="v-tabs vertical alt-colors" nav>
+	<VList v-if="vertical" class="v-tabs vertical alt-colors" nav>
 		<slot />
-	</v-list>
+	</VList>
 	<div v-else class="v-tabs horizontal">
 		<slot />
 	</div>

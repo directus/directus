@@ -34,7 +34,7 @@ const addBorder = computed(() => {
 
 <template>
 	<div class="color-dot">
-		<value-null v-if="value === null && defaultColor === null" />
+		<ValueNull v-if="value === null && defaultColor === null" />
 		<div class="dot" :class="{ 'with-border': addBorder }" />
 	</div>
 </template>

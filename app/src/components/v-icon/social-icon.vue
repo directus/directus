@@ -9,7 +9,7 @@ const props = defineProps<{
 	name: IconName;
 }>();
 
-const render = () => {
+const Render = () => {
 	const socialIcon = icon(findIconDefinition({ prefix: 'fab', iconName: props.name }));
 
 	if (socialIcon && socialIcon.abstract[0] && socialIcon.abstract[0].children && socialIcon.abstract[0].children[0]) {
@@ -27,5 +27,5 @@ const render = () => {
 </script>
 
 <template>
-	<render />
+	<Render />
 </template>

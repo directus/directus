@@ -10,7 +10,7 @@ onMounted(() => {
 
 <template>
 	<div class="logout">
-		<v-progress-circular indeterminate />
+		<VProgressCircular indeterminate />
 	</div>
 </template>
 

@@ -211,13 +211,13 @@ async function batchDelete() {
 </script>
 
 <template>
-	<private-view :title="$t('insights')" icon="insights">
+	<PrivateView :title="$t('insights')" icon="insights">
 		<template #navigation>
-			<insights-navigation @create="createDialogActive = true" />
+			<InsightsNavigation @create="createDialogActive = true" />
 		</template>
 
 		<template #actions>
-			<search-input
+			<SearchInput
 				v-if="insightsStore.dashboards.length > 0"
 				v-model="search"
 				:show-filter="false"
@@ -235,7 +235,7 @@ async function batchDelete() {
 				@click="exportDashboard(selection)"
 			/>
 
-			<v-dialog
+			<VDialog
 				v-if="selection.length > 0"
 				v-model="confirmBatchDelete"
 				@esc="confirmBatchDelete = false"
@@ -252,21 +252,21 @@ async function batchDelete() {
 					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmBatchDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmBatchDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="batchDeleting" @click="batchDelete">
+						</VButton>
+						<VButton kind="danger" :loading="batchDeleting" @click="batchDelete">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<dashboard-dialog v-model="createDialogActive">
+			<DashboardDialog v-model="createDialogActive">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')"
@@ -275,14 +275,14 @@ async function batchDelete() {
 						@click="on"
 					/>
 				</template>
-			</dashboard-dialog>
+			</DashboardDialog>
 		</template>
 
 		<template #sidebar>
-			<basic-import-sidebar-detail collection="directus_dashboards" @refresh="refresh" />
+			<BasicImportSidebarDetail collection="directus_dashboards" @refresh="refresh" />
 		</template>
 
-		<v-table
+		<VTable
 			v-if="dashboards.length > 0"
 			v-model:headers="tableHeaders"
 			v-model="selection"
@@ -297,17 +297,17 @@ async function batchDelete() {
 			@update:sort="updateSort($event)"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon" :color="item.color" />
+				<VIcon class="icon" :name="item.icon" :color="item.color" />
 			</template>
 
 			<template #item-append="{ item }">
-				<v-menu placement="left-start" show-arrow :close-on-content-click="false">
+				<VMenu placement="left-start" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
-						<v-icon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
+						<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
 					</template>
 					<template #default="{ toggle }">
-						<v-list>
-							<v-list-item
+						<VList>
+							<VListItem
 								class="warning"
 								:disabled="!updateAllowed"
 								clickable
@@ -316,34 +316,34 @@ async function batchDelete() {
 									toggle();
 								"
 							>
-								<v-list-item-icon>
-									<v-icon name="edit" />
-								</v-list-item-icon>
-								<v-list-item-content>
+								<VListItemIcon>
+									<VIcon name="edit" />
+								</VListItemIcon>
+								<VListItemContent>
 									{{ $t('edit_dashboard') }}
-								</v-list-item-content>
-							</v-list-item>
+								</VListItemContent>
+							</VListItem>
 
-							<v-list-item class="warning" clickable @click="duplicateDashboard(item.id, toggle)">
-								<v-list-item-icon>
-									<v-progress-circular v-if="duplicating === item.id" indeterminate small />
-									<v-icon v-if="duplicating !== item.id" name="content_copy" />
-								</v-list-item-icon>
-								<v-list-item-content>
+							<VListItem class="warning" clickable @click="duplicateDashboard(item.id, toggle)">
+								<VListItemIcon>
+									<VProgressCircular v-if="duplicating === item.id" indeterminate small />
+									<VIcon v-if="duplicating !== item.id" name="content_copy" />
+								</VListItemIcon>
+								<VListItemContent>
 									{{ $t('duplicate_dashboard') }}
-								</v-list-item-content>
-							</v-list-item>
+								</VListItemContent>
+							</VListItem>
 
-							<v-list-item class="warning" clickable @click="exportDashboard([item.id])">
-								<v-list-item-icon>
-									<v-icon name="download" />
-								</v-list-item-icon>
-								<v-list-item-content>
+							<VListItem class="warning" clickable @click="exportDashboard([item.id])">
+								<VListItemIcon>
+									<VIcon name="download" />
+								</VListItemIcon>
+								<VListItemContent>
 									{{ $t('export_dashboard') }}
-								</v-list-item-content>
-							</v-list-item>
+								</VListItemContent>
+							</VListItem>
 
-							<v-list-item
+							<VListItem
 								class="danger"
 								:disabled="!deleteAllowed"
 								clickable
@@ -352,62 +352,62 @@ async function batchDelete() {
 									toggle();
 								"
 							>
-								<v-list-item-icon>
-									<v-icon name="delete" />
-								</v-list-item-icon>
-								<v-list-item-content>
+								<VListItemIcon>
+									<VIcon name="delete" />
+								</VListItemIcon>
+								<VListItemContent>
 									{{ $t('delete_dashboard') }}
-								</v-list-item-content>
-							</v-list-item>
-						</v-list>
+								</VListItemContent>
+							</VListItem>
+						</VList>
 					</template>
-				</v-menu>
+				</VMenu>
 			</template>
-		</v-table>
+		</VTable>
 
-		<v-info v-else-if="search" icon="search" :title="$t('no_results')" center>
+		<VInfo v-else-if="search" icon="search" :title="$t('no_results')" center>
 			{{ $t('no_results_copy') }}
 
 			<template #append>
-				<v-button @click="search = null">{{ $t('clear_filters') }}</v-button>
+				<VButton @click="search = null">{{ $t('clear_filters') }}</VButton>
 			</template>
-		</v-info>
+		</VInfo>
 
-		<v-info v-else icon="space_dashboard" :title="$t('no_dashboards')" center>
+		<VInfo v-else icon="space_dashboard" :title="$t('no_dashboards')" center>
 			{{ $t('no_dashboards_copy') }}
 
 			<template v-if="createAllowed" #append>
-				<dashboard-dialog v-model="createDialogActive">
+				<DashboardDialog v-model="createDialogActive">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')" @click="on">
+						<VButton v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')" @click="on">
 							{{ $t('create_dashboard') }}
-						</v-button>
+						</VButton>
 					</template>
-				</dashboard-dialog>
+				</DashboardDialog>
 			</template>
-		</v-info>
+		</VInfo>
 
-		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteDashboard">
-			<v-card>
-				<v-card-title>{{ $t('dashboard_delete_confirm') }}</v-card-title>
+		<VDialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteDashboard">
+			<VCard>
+				<VCardTitle>{{ $t('dashboard_delete_confirm') }}</VCardTitle>
 
-				<v-card-actions>
-					<v-button secondary @click="confirmDelete = null">
+				<VCardActions>
+					<VButton secondary @click="confirmDelete = null">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button danger :loading="deletingDashboard" @click="deleteDashboard">
+					</VButton>
+					<VButton danger :loading="deletingDashboard" @click="deleteDashboard">
 						{{ $t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<dashboard-dialog
+		<DashboardDialog
 			:model-value="!!editDashboard"
 			:dashboard="editDashboard"
 			@update:model-value="editDashboard = undefined"
 		/>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">

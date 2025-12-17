@@ -25,7 +25,7 @@ withDefaults(defineProps<Props>(), {
 			<div class="text" />
 		</template>
 		<template v-if="type === 'pagination'">
-			<v-button v-for="page in 3" :key="page" class="page" small disabled></v-button>
+			<VButton v-for="page in 3" :key="page" class="page" small disabled></VButton>
 		</template>
 	</div>
 </template>

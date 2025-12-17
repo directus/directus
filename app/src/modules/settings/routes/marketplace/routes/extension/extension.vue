@@ -36,9 +36,9 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="$t('marketplace')" show-back>
+	<PrivateView :title="$t('marketplace')" show-back>
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="extension-content">
@@ -52,14 +52,14 @@ watchEffect(async () => {
 				</div>
 			</template>
 
-			<v-banner v-else-if="loading" icon="plugin">
-				<template #avatar><v-progress-circular indeterminate /></template>
+			<VBanner v-else-if="loading" icon="plugin">
+				<template #avatar><VProgressCircular indeterminate /></template>
 				{{ $t('loading') }}
-			</v-banner>
+			</VBanner>
 
-			<v-error v-else :error="error" />
+			<VError v-else :error="error" />
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">

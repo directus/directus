@@ -116,9 +116,9 @@ async function loadItemName() {
 
 <template>
 	<div>
-		<v-skeleton-loader v-if="loading"></v-skeleton-loader>
-		<v-select v-else :model-value="value" :items="options" @update:model-value="onSelect" />
-		<drawer-collection
+		<VSkeletonLoader v-if="loading"></VSkeletonLoader>
+		<VSelect v-else :model-value="value" :items="options" @update:model-value="onSelect" />
+		<DrawerCollection
 			v-if="collection !== null"
 			:active="collection !== null"
 			:collection="collection"

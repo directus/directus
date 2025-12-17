@@ -19,17 +19,17 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 </script>
 
 <template>
-	<v-dialog v-model="internalModelValue" @esc="internalModelValue = false">
+	<VDialog v-model="internalModelValue" @esc="internalModelValue = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<file-preview :file="file" :preset="null" in-modal @click="internalModelValue = false" />
+		<FilePreview :file="file" :preset="null" in-modal @click="internalModelValue = false" />
 
-		<v-button class="close" icon rounded @click="internalModelValue = false">
-			<v-icon name="close" />
-		</v-button>
-	</v-dialog>
+		<VButton class="close" icon rounded @click="internalModelValue = false">
+			<VIcon name="close" />
+		</VButton>
+	</VDialog>
 </template>
 
 <style scoped>

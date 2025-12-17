@@ -87,18 +87,18 @@ const options = computed({
 
 <template>
 	<div>
-		<v-skeleton-loader v-if="loading" />
-		<v-fancy-select v-else v-model="display" class="select" :items="selectItems" />
+		<VSkeletonLoader v-if="loading" />
+		<VFancySelect v-else v-model="display" class="select" :items="selectItems" />
 
-		<v-skeleton-loader v-if="loading" />
+		<VSkeletonLoader v-if="loading" />
 		<template v-else>
-			<v-notice v-if="display && !selectedDisplay" class="not-found" type="danger">
+			<VNotice v-if="display && !selectedDisplay" class="not-found" type="danger">
 				{{ $t('display_not_found', { display: display }) }}
 				<div class="spacer" />
 				<button @click="display = null">{{ $t('reset_display') }}</button>
-			</v-notice>
+			</VNotice>
 
-			<extension-options
+			<ExtensionOptions
 				v-if="display && selectedDisplay"
 				v-model="options"
 				type="display"

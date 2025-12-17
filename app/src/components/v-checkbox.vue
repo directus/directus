@@ -121,7 +121,7 @@ function onClickIcon(e: MouseEvent): void {
 		@click.stop="toggleInput"
 	>
 		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" :disabled :clickable="customValue" @click="onClickIcon" />
+		<VIcon class="checkbox" :name="icon" :disabled :clickable="customValue" @click="onClickIcon" />
 		<span class="label type-text">
 			<slot v-if="!customValue">{{ label }}</slot>
 			<input

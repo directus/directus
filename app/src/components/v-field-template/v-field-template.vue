@@ -2,7 +2,7 @@
 import type { FieldNode } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import FieldListItem from './field-list-item.vue';
+import FieldListItem from './FieldListItem.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';
@@ -279,9 +279,9 @@ function setContent() {
 </script>
 
 <template>
-	<v-menu v-model="menuActive" attached>
+	<VMenu v-model="menuActive" attached>
 		<template #activator="{ toggle }">
-			<v-input :disabled="disabled">
+			<VInput :disabled="disabled">
 				<template #input>
 					<span
 						ref="contentEl"
@@ -297,15 +297,15 @@ function setContent() {
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
+					<VIcon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
 				</template>
-			</v-input>
+			</VInput>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false" @toggle="loadPathLevel?.($event.value)">
-			<field-list-item v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
-		</v-list>
-	</v-menu>
+		<VList v-if="!disabled" :mandatory="false" @toggle="loadPathLevel?.($event.value)">
+			<FieldListItem v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
+		</VList>
+	</VMenu>
 </template>
 
 <style scoped lang="scss">

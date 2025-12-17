@@ -207,7 +207,7 @@ function useUrls() {
 			<div class="group">
 				<slot name="prepend-header" />
 
-				<v-button
+				<VButton
 					v-if="!hidePopupButton"
 					v-tooltip.bottom.end="$t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
 					x-small
@@ -216,10 +216,10 @@ function useUrls() {
 					secondary
 					@click="emit('new-window')"
 				>
-					<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
-				</v-button>
+					<VIcon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
+				</VButton>
 
-				<v-button
+				<VButton
 					v-if="!hideRefreshButton"
 					v-tooltip.bottom.end="$t('live_preview.refresh')"
 					x-small
@@ -229,13 +229,13 @@ function useUrls() {
 					:disabled="isRefreshing || !frameSrc || invalidUrl"
 					@click="refresh(null)"
 				>
-					<v-progress-circular v-if="isRefreshing" indeterminate x-small />
-					<v-icon v-else small name="refresh" />
-				</v-button>
+					<VProgressCircular v-if="isRefreshing" indeterminate x-small />
+					<VIcon v-else small name="refresh" />
+				</VButton>
 
 				<div v-if="centered" class="spacer" />
 
-				<v-menu
+				<VMenu
 					v-if="urls.length"
 					class="url"
 					:class="{ disabled: singleUrlSubdued, clickable: multipleUrls }"
@@ -250,25 +250,25 @@ function useUrls() {
 							class="activator"
 							@click="toggle"
 						>
-							<v-text-overflow :text="urlDisplay" placement="bottom" />
-							<v-icon v-if="multipleUrls" name="expand_more" />
+							<VTextOverflow :text="urlDisplay" placement="bottom" />
+							<VIcon v-if="multipleUrls" name="expand_more" />
 						</component>
 					</template>
 
-					<v-list v-if="multipleUrls">
-						<v-list-item
+					<VList v-if="multipleUrls">
+						<VListItem
 							v-for="(urlItem, index) in urls"
 							:key="index"
 							:active="urlItem === dynamicUrl"
 							clickable
 							@click="selectUrl(urlItem)"
 						>
-							<v-list-item-content :class="{ dynamic: !dynamicUrlIncluded && urlItem === dynamicUrl }">
+							<VListItemContent :class="{ dynamic: !dynamicUrlIncluded && urlItem === dynamicUrl }">
 								{{ urlItem }}
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
+							</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
 			</div>
 
 			<div class="spacer" />
@@ -280,14 +280,14 @@ function useUrls() {
 					:disabled="fullscreen"
 					@input="width = Number(($event as any).target.value)"
 				/>
-				<v-icon x-small name="close" />
+				<VIcon x-small name="close" />
 				<input
 					:value="displayHeight"
 					class="height"
 					:disabled="fullscreen"
 					@input="height = Number(($event as any).target.value)"
 				/>
-				<v-select
+				<VSelect
 					v-model="zoom"
 					inline
 					:items="[
@@ -301,7 +301,7 @@ function useUrls() {
 					:disabled="fullscreen"
 				/>
 			</div>
-			<v-button
+			<VButton
 				v-tooltip.bottom.start="$t('live_preview.change_size')"
 				x-small
 				icon
@@ -311,17 +311,17 @@ function useUrls() {
 				:disabled="!frameSrc || invalidUrl"
 				@click="toggleFullscreen"
 			>
-				<v-icon small name="devices" />
-			</v-button>
+				<VIcon small name="devices" />
+			</VButton>
 		</div>
 
-		<v-info v-if="!frameSrc" :title="$t('no_url')" icon="edit_square" center>
+		<VInfo v-if="!frameSrc" :title="$t('no_url')" icon="edit_square" center>
 			{{ $t('no_url_copy') }}
-		</v-info>
+		</VInfo>
 
-		<v-info v-else-if="invalidUrl" :title="$t('invalid_url')" type="danger" icon="edit_square" center>
+		<VInfo v-else-if="invalidUrl" :title="$t('invalid_url')" type="danger" icon="edit_square" center>
 			{{ $t('invalid_url_copy') }}
-		</v-info>
+		</VInfo>
 
 		<div v-else class="container">
 			<div class="iframe-view" :style="iframeViewStyle">

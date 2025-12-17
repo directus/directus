@@ -44,12 +44,12 @@ const atLimit = computed(() => {
 </script>
 
 <template>
-	<v-button v-if="installed" class="install" align="left" full-width to="/settings/extensions">
-		<v-icon name="settings" left />
+	<VButton v-if="installed" class="install" align="left" full-width to="/settings/extensions">
+		<VIcon name="settings" left />
 		{{ $t('manage') }}
-	</v-button>
+	</VButton>
 
-	<v-button
+	<VButton
 		v-else
 		v-tooltip="atLimit ? $t('reached_maximum_number_of_extensions', { n: limit }) : null"
 		:loading="installing"
@@ -59,9 +59,9 @@ const atLimit = computed(() => {
 		full-width
 		@click="install"
 	>
-		<v-icon name="download" left />
+		<VIcon name="download" left />
 		{{ $t('install_extension') }}
-	</v-button>
+	</VButton>
 </template>
 
 <style scoped>
