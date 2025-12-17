@@ -1,7 +1,21 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VFancySelect from '@/components/v-fancy-select.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTabItem from '@/components/v-tab-item.vue';
+import VTab from '@/components/v-tab.vue';
+import VTabsItems from '@/components/v-tabs-items.vue';
+import VTabs from '@/components/v-tabs.vue';
+import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import type { TriggerType } from '@directus/types';
 import { computed, reactive, ref, watch } from 'vue';
 import { getTriggers } from './triggers';
@@ -164,7 +178,7 @@ function onApply() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:title="isNew ? $t('creating_new_flow') : $t('updating_flow')"
 		class="new-flow"
 		persistent
@@ -174,27 +188,27 @@ function onApply() {
 		@apply="onApply"
 	>
 		<template #sidebar>
-			<v-tabs v-model="currentTab" vertical>
-				<v-tab value="flow_setup">{{ $t('flow_setup') }}</v-tab>
-				<v-tab value="trigger_setup" :disabled="!values.name">
+			<VTabs v-model="currentTab" vertical>
+				<VTab value="flow_setup">{{ $t('flow_setup') }}</VTab>
+				<VTab value="trigger_setup" :disabled="!values.name">
 					{{ $t('trigger_setup') }}
-				</v-tab>
-			</v-tabs>
+				</VTab>
+			</VTabs>
 		</template>
 
-		<v-tabs-items v-model="currentTab" class="content">
-			<v-tab-item value="flow_setup">
+		<VTabsItems v-model="currentTab" class="content">
+			<VTabItem value="flow_setup">
 				<div class="fields">
 					<div class="field half">
 						<div class="type-label">
 							{{ $t('flow_name') }}
-							<v-icon v-tooltip="$t('required')" class="required" name="star" sup filled />
+							<VIcon v-tooltip="$t('required')" class="required" name="star" sup filled />
 						</div>
-						<v-input v-model="values.name" autofocus :placeholder="$t('flow_name')" />
+						<VInput v-model="values.name" autofocus :placeholder="$t('flow_name')" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('status') }}</div>
-						<v-select
+						<VSelect
 							v-model="values.status"
 							:items="[
 								{
@@ -210,20 +224,20 @@ function onApply() {
 					</div>
 					<div class="field full">
 						<div class="type-label">{{ $t('description') }}</div>
-						<v-input v-model="values.description" :placeholder="$t('description')" />
+						<VInput v-model="values.description" :placeholder="$t('description')" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('icon') }}</div>
-						<interface-select-icon :value="values.icon" @input="values.icon = $event" />
+						<InterfaceSelectIcon :value="values.icon" @input="values.icon = $event" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('color') }}</div>
-						<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
+						<InterfaceSelectColor width="half" :value="values.color" @input="values.color = $event" />
 					</div>
-					<v-divider class="full" />
+					<VDivider class="full" />
 					<div class="field full">
 						<div class="type-label">{{ $t('flow_tracking') }}</div>
-						<v-select
+						<VSelect
 							v-model="values.accountability"
 							:items="[
 								{
@@ -242,47 +256,40 @@ function onApply() {
 						/>
 					</div>
 				</div>
-			</v-tab-item>
-			<v-tab-item value="trigger_setup">
-				<v-fancy-select v-model="values.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
+			</VTabItem>
+			<VTabItem value="trigger_setup">
+				<VFancySelect v-model="values.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
 
-				<v-form
+				<VForm
 					v-if="values.trigger"
 					v-model="values.options"
 					class="extension-options"
 					:fields="currentTriggerOptionFields"
 					primary-key="+"
 				/>
-			</v-tab-item>
-		</v-tabs-items>
+			</VTabItem>
+		</VTabsItems>
 
 		<template #actions>
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'flow_setup'"
 				v-tooltip.bottom="isNew ? $t('next') : $t('save')"
 				:disabled="isFlowSetupDisabled"
 				:loading="saving"
-				icon
-				rounded
-				small
+				:icon="isNew ? 'arrow_forward' : 'check'"
 				@click="onApplyFlowSetup"
-			>
-				<v-icon :name="isNew ? 'arrow_forward' : 'check'" small />
-			</v-button>
-			<v-button
+			/>
+
+			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'trigger_setup'"
 				v-tooltip.bottom="isNew ? $t('finish_setup') : $t('save')"
 				:disabled="isFlowTriggerDisabled"
 				:loading="saving"
-				icon
-				rounded
-				small
+				icon="check"
 				@click="save"
-			>
-				<v-icon name="check" small />
-			</v-button>
+			/>
 		</template>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

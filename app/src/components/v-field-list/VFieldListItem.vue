@@ -3,6 +3,13 @@ import { FieldNode } from '@/composables/use-field-tree';
 import formatTitle from '@directus/format-title';
 import { getFunctionsForType } from '@directus/utils';
 import { computed } from 'vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListGroup from '@/components/v-list-group.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 
 type FieldInfo = FieldNode & {
 	disabled?: boolean;
@@ -54,7 +61,7 @@ const openWhileSearching = computed(() => {
 </script>
 
 <template>
-	<v-list-group
+	<VListGroup
 		v-if="field.children || supportedFunctions.length > 0"
 		:clickable="!field.disabled && (relationalFieldSelectable || !field.relatedCollection)"
 		:open="openWhileSearching"
@@ -64,45 +71,45 @@ const openWhileSearching = computed(() => {
 		@click="$emit('add', [field.key])"
 	>
 		<template #activator>
-			<v-list-item-content>
-				<v-text-overflow
+			<VListItemContent>
+				<VTextOverflow
 					:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
 					:highlight="search"
 				/>
-			</v-list-item-content>
+			</VListItemContent>
 		</template>
 
 		<div v-if="supportedFunctions.length > 0" class="functions">
-			<v-list-item
+			<VListItem
 				v-for="fn of supportedFunctions"
 				:key="fn"
 				:disabled="field.disabled"
 				clickable
 				@click="$emit('add', [`${fn}(${field.key})`])"
 			>
-				<v-list-item-icon>
-					<v-icon name="auto_awesome" small color="var(--theme--primary)" />
-				</v-list-item-icon>
-				<v-list-item-content>
-					<v-text-overflow
+				<VListItemIcon>
+					<VIcon name="auto_awesome" small color="var(--theme--primary)" />
+				</VListItemIcon>
+				<VListItemContent>
+					<VTextOverflow
 						:text="`${$t(`functions.${fn}`)} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
 						:highlight="search"
 					/>
-				</v-list-item-content>
-			</v-list-item>
+				</VListItemContent>
+			</VListItem>
 
-			<v-divider v-if="field.children && field.children.length > 0" />
+			<VDivider v-if="field.children && field.children.length > 0" />
 		</div>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
+			<VListItem clickable :disabled="selectAllDisabled" @click="addAll">
 				{{ $t('select_all') }}
-			</v-list-item>
+			</VListItem>
 
-			<v-divider />
+			<VDivider />
 		</template>
 
-		<v-field-list-item
+		<VFieldListItem
 			v-for="childField in field.children"
 			:key="childField.key"
 			:field="childField"
@@ -115,25 +122,22 @@ const openWhileSearching = computed(() => {
 			:parent-open="openWhileSearching"
 			@add="$emit('add', $event)"
 		/>
-	</v-list-group>
+	</VListGroup>
 
-	<v-list-item
+	<VListItem
 		v-else
 		:disabled="field.disabled"
 		:class="{ 'raw-field-names': rawFieldNames }"
 		clickable
 		@click="$emit('add', [field.key])"
 	>
-		<v-list-item-icon v-if="field.field.startsWith('$')">
-			<v-icon name="auto_awesome" small color="var(--theme--primary)" />
-		</v-list-item-icon>
-		<v-list-item-content>
-			<v-text-overflow
-				:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
-				:highlight="search"
-			/>
-		</v-list-item-content>
-	</v-list-item>
+		<VListItemIcon v-if="field.field.startsWith('$')">
+			<VIcon name="auto_awesome" small color="var(--theme--primary)" />
+		</VListItemIcon>
+		<VListItemContent>
+			<VTextOverflow :text="rawFieldNames ? field.field : field.name || formatTitle(field.field)" :highlight="search" />
+		</VListItemContent>
+	</VListItem>
 </template>
 
 <style lang="scss" scoped>

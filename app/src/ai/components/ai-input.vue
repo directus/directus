@@ -36,7 +36,7 @@ function handleSubmit() {
 <template>
 	<div class="ai-input-container">
 		<div class="input-wrapper" @click="textareaComponent?.focus()">
-			<ai-textarea
+			<AiTextarea
 				ref="textarea-component"
 				v-model="aiStore.input"
 				:placeholder="$t('ai.prompt_input_placeholder')"
@@ -44,7 +44,7 @@ function handleSubmit() {
 				@keydown.enter="handleKeydown"
 			/>
 			<div class="input-controls">
-				<ai-input-submit
+				<AiInputSubmit
 					:status="aiStore.status"
 					:can-submit="canSubmit"
 					@stop="aiStore.stop"

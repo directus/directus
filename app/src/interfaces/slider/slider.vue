@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VSlider from '@/components/v-slider.vue';
 import { computed } from 'vue';
 
 interface BaseProps {
@@ -34,7 +35,7 @@ defineEmits(['input']);
 </script>
 
 <template>
-	<v-slider
+	<VSlider
 		:model-value="value"
 		:disabled="disabled"
 		:non-editable="nonEditable"

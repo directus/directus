@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VDatePicker from '@/components/v-date-picker.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { isDynamicVariable } from '@directus/utils';
 import { computed, onMounted, onUpdated, ref, watch } from 'vue';
 
@@ -132,7 +136,7 @@ defineExpose({
 </script>
 
 <template>
-	<v-icon
+	<VIcon
 		v-if="type === 'boolean'"
 		:name="value === null ? 'indeterminate_check_box' : value ? 'check_box' : 'check_box_outline_blank'"
 		clickable
@@ -152,7 +156,7 @@ defineExpose({
 		@keydown="onKeyDown"
 		@paste="onPaste"
 	/>
-	<v-select
+	<VSelect
 		v-else-if="is === 'select'"
 		inline
 		:items="choices"
@@ -171,23 +175,23 @@ defineExpose({
 			placeholder="--"
 			@input="onInput(($event.target as HTMLInputElement).value)"
 		/>
-		<v-menu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
+		<VMenu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
-				<v-icon class="preview" name="event" small clickable @click="toggle" />
+				<VIcon class="preview" name="event" small clickable @click="toggle" />
 			</template>
 			<div class="date-input">
-				<v-date-picker
+				<VDatePicker
 					:type="type"
 					:model-value="value"
 					@update:model-value="onInput"
 					@close="dateTimeMenu?.deactivate"
 				/>
 			</div>
-		</v-menu>
+		</VMenu>
 	</template>
-	<v-menu v-else :close-on-content-click="false" show-arrow placement="bottom-start">
+	<VMenu v-else :close-on-content-click="false" show-arrow placement="bottom-start">
 		<template #activator="{ toggle }">
-			<v-icon
+			<VIcon
 				v-if="type.startsWith('geometry') || type === 'json'"
 				class="preview"
 				:name="type === 'json' ? 'integration_instructions' : 'map'"
@@ -199,7 +203,7 @@ defineExpose({
 		<div class="input" :class="type">
 			<component :is="is" class="input-component" small :type="type" :value="value" @input="onInput($event)" />
 		</div>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>

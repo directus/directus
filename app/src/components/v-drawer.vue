@@ -5,6 +5,11 @@ import { useScroll } from '@vueuse/core';
 import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
+import VButton from '@/components/v-button.vue';
+import VDetail from '@/components/v-detail.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VOverlay from '@/components/v-overlay.vue';
 
 export interface Props {
 	title: string;
@@ -58,7 +63,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 </script>
 
 <template>
-	<v-dialog
+	<VDialog
 		v-model="internalActive"
 		:persistent="persistent"
 		placement="right"
@@ -71,7 +76,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		</template>
 
 		<article class="v-drawer">
-			<v-button
+			<VButton
 				v-if="cancelable"
 				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel"
@@ -81,13 +86,13 @@ const showHeaderShadow = computed(() => y.value > 0);
 				small
 				@click="$emit('cancel')"
 			>
-				<v-icon name="close" small />
-			</v-button>
+				<VIcon name="close" small />
+			</VButton>
 
 			<div class="content">
-				<v-overlay v-if="$slots.sidebar" absolute />
+				<VOverlay v-if="$slots.sidebar" absolute />
 
-				<v-resizeable
+				<VResizeable
 					v-if="$slots.sidebar"
 					:disabled="!sidebarResizeable"
 					:width="sidebarWidth"
@@ -98,10 +103,10 @@ const showHeaderShadow = computed(() => y.value > 0);
 							<slot name="sidebar" />
 						</div>
 					</nav>
-				</v-resizeable>
+				</VResizeable>
 
 				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<v-drawer-header :title :shadow="showHeaderShadow" :icon :icon-color @cancel="$emit('cancel')">
+					<VDrawerHeader :title :shadow="showHeaderShadow" :icon :icon-color @cancel="$emit('cancel')">
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
@@ -117,19 +122,19 @@ const showHeaderShadow = computed(() => y.value > 0);
 						<template #actions><slot name="actions" /></template>
 						<template #actions:append><slot name="actions:append" /></template>
 						<template #title:append><slot name="header:append" /></template>
-					</v-drawer-header>
+					</VDrawerHeader>
 
-					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
+					<VDetail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
 						<nav>
 							<slot name="sidebar" />
 						</nav>
-					</v-detail>
+					</VDetail>
 
 					<slot />
 				</main>
 			</div>
 		</article>
-	</v-dialog>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>

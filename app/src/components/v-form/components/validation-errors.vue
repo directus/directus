@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { ValidationError, Field } from '@directus/types';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
+import VDetail from '@/components/v-detail.vue';
 import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
+import { Field, ValidationError } from '@directus/types';
 import ValidationNestedGroups from './validation-nested-groups.vue';
 import { computed, toRef } from 'vue';
 
@@ -39,7 +42,7 @@ function getErrorKey(validationError: (typeof validationErrorsWithDetails.value)
 </script>
 
 <template>
-	<v-notice type="danger" class="full">
+	<VNotice type="danger" class="full">
 		<div class="validation-errors">
 			<p>{{ $t('validation_errors_notice') }}</p>
 			<ul class="validation-errors-list">
@@ -49,7 +52,7 @@ function getErrorKey(validationError: (typeof validationErrorsWithDetails.value)
 					class="validation-error"
 				>
 					<template v-if="validationError.hasNestedValidation && validationError.validationStructure">
-						<v-detail class="field-detail" start-open>
+						<VDetail class="field-detail" start-open>
 							<template #activator="{ active, toggle }">
 								<div class="field-row">
 									<strong
@@ -80,13 +83,13 @@ function getErrorKey(validationError: (typeof validationErrorsWithDetails.value)
 										:aria-expanded="active"
 										@click.stop="toggle"
 									>
-										<v-icon name="expand_circle_down" small />
+										<VIcon name="expand_circle_down" small />
 									</button>
 								</div>
 							</template>
 
-							<validation-nested-groups :node="validationError.validationStructure" />
-						</v-detail>
+							<ValidationNestedGroups :node="validationError.validationStructure" />
+						</VDetail>
 					</template>
 
 					<template v-else>
@@ -114,7 +117,7 @@ function getErrorKey(validationError: (typeof validationErrorsWithDetails.value)
 				</li>
 			</ul>
 		</div>
-	</v-notice>
+	</VNotice>
 </template>
 
 <style lang="scss" scoped>

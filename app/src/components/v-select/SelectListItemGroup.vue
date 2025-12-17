@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Option } from './types';
+import VCheckbox from '../v-checkbox.vue';
+import VIcon from '../v-icon/v-icon.vue';
+import VListGroup from '../v-list-group.vue';
+import VListItemContent from '../v-list-item-content.vue';
+import VListItemIcon from '../v-list-item-icon.vue';
 import SelectListItem from './select-list-item.vue';
+import { Option } from './types';
 
 const props = withDefaults(
 	defineProps<{
@@ -44,7 +49,7 @@ function onGroupClick(item: Option) {
 </script>
 
 <template>
-	<v-list-group
+	<VListGroup
 		v-show="!item.hidden"
 		:active="isActive"
 		:clickable="(groupSelectable || item.selectable) && !nonEditable"
@@ -52,12 +57,12 @@ function onGroupClick(item: Option) {
 		@click="onGroupClick(item)"
 	>
 		<template #activator>
-			<v-list-item-icon v-if="multiple === false && allowOther === false && item.icon">
-				<v-icon :name="item.icon" />
-			</v-list-item-icon>
-			<v-list-item-content>
+			<VListItemIcon v-if="multiple === false && allowOther === false && item.icon">
+				<VIcon :name="item.icon" />
+			</VListItemIcon>
+			<VListItemContent>
 				<span v-if="multiple === false || item.selectable === false" class="item-text">{{ item.text }}</span>
-				<v-checkbox
+				<VCheckbox
 					v-else
 					:model-value="modelValue || []"
 					:label="item.text"
@@ -66,11 +71,11 @@ function onGroupClick(item: Option) {
 					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 				/>
-			</v-list-item-content>
+			</VListItemContent>
 		</template>
 
 		<template v-for="(childItem, index) in item.children" :key="index">
-			<select-list-item-group
+			<SelectListItemGroup
 				v-if="childItem.children"
 				:item="childItem"
 				:item-label-font-family="itemLabelFontFamily"
@@ -81,7 +86,7 @@ function onGroupClick(item: Option) {
 				:non-editable="nonEditable"
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
-			<select-list-item
+			<SelectListItem
 				v-else
 				:model-value="modelValue"
 				:item="childItem"
@@ -92,5 +97,5 @@ function onGroupClick(item: Option) {
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
 		</template>
-	</v-list-group>
+	</VListGroup>
 </template>

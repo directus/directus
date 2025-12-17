@@ -8,9 +8,9 @@ const queue = toRefs(notificationsStore).queue;
 </script>
 
 <template>
-	<transition-group class="notifications-group" name="slide-fade" tag="div">
+	<TransitionGroup class="notifications-group" name="slide-fade" tag="div">
 		<slot />
-		<notification-item
+		<NotificationItem
 			v-for="notification in queue"
 			:id="notification.id"
 			:key="notification.id"
@@ -26,7 +26,7 @@ const queue = toRefs(notificationsStore).queue;
 			:dismiss-text="notification.dismissText"
 			:dismiss-action="notification.dismissAction"
 		/>
-	</transition-group>
+	</TransitionGroup>
 </template>
 
 <style lang="scss" scoped>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { computed } from 'vue';
 
@@ -44,7 +45,7 @@ const items = computed(() => {
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:disabled="disabled"
 		:show-deselect="allowNone"

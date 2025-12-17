@@ -380,6 +380,24 @@ describe('#stat', () => {
 		});
 	});
 
+	test('Uses empty string instead of "." when root is the empty string', async () => {
+		const filename = 'test.png';
+
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: [{ metadata: { contentLength: sample.file.size, lastModified: sample.file.modified } }],
+				error: null,
+			}),
+		} as any;
+
+		await driver.stat(filename);
+
+		expect(driver['bucket'].list).toHaveBeenCalledWith('', {
+			limit: 1,
+			search: filename,
+		});
+	});
+
 	test('Throws an error no file is returned by list', async () => {
 		driver['bucket'] = {
 			list: vi.fn().mockReturnValue({
