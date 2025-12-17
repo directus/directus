@@ -67,6 +67,15 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		});
 	}
 
+	async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
+		const primaryColumns = Array.isArray(columns) ? columns : [columns];
+
+		await this.knex.schema.alterTable(table, (builder) => {
+			builder.dropPrimary();
+			builder.primary(primaryColumns);
+		});
+	}
+
 	protected async changeToTypeByCopy(
 		table: string,
 		column: string,

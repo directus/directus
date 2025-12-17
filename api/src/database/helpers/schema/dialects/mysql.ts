@@ -14,6 +14,16 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		return getDefaultIndexName(type, collection, fields, { maxLength: 64 });
 	}
 
+	override async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
+		const primaryColumns = Array.isArray(columns) ? columns : [columns];
+		const columnsSql = primaryColumns.map(() => '??').join(', ');
+
+		await this.knex.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [
+			table,
+			...primaryColumns,
+		]);
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = (await this.knex

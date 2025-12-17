@@ -3,11 +3,13 @@ import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getDatabaseClient } from '../index.js';
+import { getHelpers } from '../helpers/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function up(knex: Knex): Promise<void> {
+	const helpers = getHelpers(knex);
+
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.uuid('id').nullable();
 		table.string('folder');
@@ -75,15 +77,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').alter().notNullable();
 	});
 
-	// MySQL with sql_require_primary_key=ON rejects dropping PK and adding it separately,
-	if (getDatabaseClient(knex) === 'mysql') {
-		await knex.raw('ALTER TABLE `directus_extensions` DROP PRIMARY KEY, ADD PRIMARY KEY (`id`)');
-	} else {
-		await knex.schema.alterTable('directus_extensions', (table) => {
-			table.dropPrimary();
-			table.primary(['id']);
-		});
-	}
+	await helpers.schema.changePrimaryKey('directus_extensions', ['id']);
 
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.dropColumn('name');
@@ -98,11 +92,13 @@ export async function up(knex: Knex): Promise<void> {
  * But we still need to do the name convertion, in order for the migration to succeed.
  */
 export async function down(knex: Knex): Promise<void> {
+	const helpers = getHelpers(knex);
+
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.string('name');
 	});
 
-	const installedExtensions = await knex.select(['id', 'folder', 'bundle']).from('directus_extensions');
+	const installedExtensions = await knex.select(['id', 'folder', 'bundle', 'source']).from('directus_extensions');
 
 	const idMap = new Map<string, string>(installedExtensions.map((extension) => [extension.id, extension.folder]));
 
@@ -123,22 +119,10 @@ export async function down(knex: Knex): Promise<void> {
 		await knex('directus_extensions').update({ name }).where({ id });
 	}
 
-	// MySQL with sql_require_primary_key=ON rejects dropping PK column without immediately adding a new PK
-	if (getDatabaseClient(knex) === 'mysql') {
-		await knex.raw(`
-			ALTER TABLE \`directus_extensions\`
-			DROP PRIMARY KEY,
-			DROP COLUMN \`id\`,
-			DROP COLUMN \`folder\`,
-			DROP COLUMN \`source\`,
-			DROP COLUMN \`bundle\`,
-			MODIFY \`name\` VARCHAR(255) NOT NULL,
-			ADD PRIMARY KEY (\`name\`)
-		`);
-	} else {
-		await knex.schema.alterTable('directus_extensions', (table) => {
-			table.dropColumns('id', 'folder', 'source', 'bundle');
-			table.string('name').alter().primary().notNullable();
-		});
-	}
+	await helpers.schema.changePrimaryKey('directus_extensions', ['name']);
+
+	await knex.schema.alterTable('directus_extensions', (table) => {
+		table.dropColumns('id', 'folder', 'source', 'bundle');
+		table.string('name').alter().notNullable();
+	});
 }
