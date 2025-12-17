@@ -36,7 +36,7 @@ export function reconstructComparisonHtml(
 		const isChanged = part.added || part.removed;
 
 		if (isChanged) {
-			const highlightClass = side === 'incoming' ? 'diff-added' : 'diff-removed';
+			const highlightClass = side === 'incoming' ? 'comparison--diff-added' : 'comparison--diff-removed';
 			htmlParts.push(`<span class="${highlightClass}">${value}</span>`);
 		} else {
 			htmlParts.push(value);

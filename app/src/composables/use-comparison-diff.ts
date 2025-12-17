@@ -235,7 +235,7 @@ function applyTextDiffToHtml(
 	formattingRanges: { start: number; end: number }[],
 ): string {
 	const clone = container.cloneNode(true) as HTMLElement;
-	const highlightClass = isIncoming ? 'diff-added' : 'diff-removed';
+	const highlightClass = isIncoming ? 'comparison-diff--added' : 'comparison-diff--removed';
 
 	function collectTextNodes(
 		node: Node,

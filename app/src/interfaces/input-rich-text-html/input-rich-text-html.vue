@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -8,6 +7,7 @@ import VCard from '@/components/v-card.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTabItem from '@/components/v-tab-item.vue';
@@ -41,7 +41,6 @@ import './tinymce-overrides.css';
 
 import 'tinymce/tinymce';
 
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/autoresize/plugin';
@@ -545,7 +544,7 @@ onMounted(() => {
 
 			<template #actions>
 				<v-button icon rounded @click="saveCode">
-					<v-icon name="check" />
+					<VIcon name="check" />
 				</v-button>
 			</template>
 		</v-drawer>

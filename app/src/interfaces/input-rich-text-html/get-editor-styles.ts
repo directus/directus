@@ -181,17 +181,17 @@ figure figcaption {
 }${
 		includeDiffStyles
 			? `
-.diff-added {
+.comparison-diff--added {
 	color: ${cssVar('--theme--success')};
-	background-color: ${cssVar('--success-10')};
+	background-color: ${cssVar('--theme--success-background')};
 	padding: 2px;
 	border-radius: ${cssVar('--theme--border-radius')};
 	margin-inline-end: 0.2em;
 }
 
-.diff-removed {
+.comparison-diff--removed {
 	color: ${cssVar('--theme--danger')};
-	background-color: ${cssVar('--danger-10')};
+	background-color: ${cssVar('--theme--danger-background')};
 	padding: 2px;
 	border-radius: ${cssVar('--theme--border-radius')};
 	margin-inline-end: 0.2em;
