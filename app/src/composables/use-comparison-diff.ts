@@ -315,6 +315,24 @@ function applyTextDiffToHtml(
 
 		if (rangesForNode.length === 0) continue;
 
+		rangesForNode.sort((a, b) => a.start - b.start);
+
+		const mergedRanges: { start: number; end: number }[] = [];
+
+		for (const range of rangesForNode) {
+			if (mergedRanges.length === 0) {
+				mergedRanges.push({ ...range });
+			} else {
+				const lastMerged = mergedRanges[mergedRanges.length - 1]!;
+
+				if (range.start <= lastMerged.end) {
+					lastMerged.end = Math.max(lastMerged.end, range.end);
+				} else {
+					mergedRanges.push({ ...range });
+				}
+			}
+		}
+
 		const text = textNodeInfo.node.textContent || '';
 		const parent = textNodeInfo.node.parentNode;
 		if (!parent) continue;
@@ -322,7 +340,7 @@ function applyTextDiffToHtml(
 		const fragments: Node[] = [];
 		let lastIndex = 0;
 
-		for (const range of rangesForNode) {
+		for (const range of mergedRanges) {
 			const nodeStart = Math.max(0, range.start - textNodeInfo.start);
 			const nodeEnd = Math.min(text.length, range.end - textNodeInfo.start);
 
