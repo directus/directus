@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { translate } from '@/utils/translate-object-values';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
 import { assign } from 'lodash';
 import { nanoid } from 'nanoid';

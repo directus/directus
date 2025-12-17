@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';

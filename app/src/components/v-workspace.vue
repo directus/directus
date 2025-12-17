@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, inject, ref } from 'vue';
+import VWorkspaceTile from '@/components/v-workspace-tile.vue';
 import { useElementSize } from '@directus/composables';
-import { AppTile } from './v-workspace-tile.vue';
 import { cssVar } from '@directus/utils/browser';
+import { computed, inject, ref } from 'vue';
+import { AppTile } from './v-workspace-tile.vue';
 
 interface Props {
 	/** What tiles to render inside the workspace */

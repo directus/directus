@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+
 withDefaults(
 	defineProps<{
 		value: boolean | null;

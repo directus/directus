@@ -4,6 +4,7 @@ import slugify from '@sindresorhus/slugify';
 import { isNil, omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VIcon from './v-icon/v-icon.vue';
 
 defineOptions({ inheritAttrs: false });
 

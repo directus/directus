@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+
 withDefaults(
 	defineProps<{
 		name: string;

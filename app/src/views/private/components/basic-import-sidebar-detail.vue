@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import VRemove from '@/components/v-remove.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import type { APIError } from '@/types/error';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -8,7 +14,7 @@ import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ImportErrorDialog from './import-error-dialog.vue';
-import type { APIError } from '@/types/error';
+import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection: string;

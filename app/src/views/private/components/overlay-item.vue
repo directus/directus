@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import api from '@/api';
-import { type ApplyShortcut } from '@/components/v-dialog.vue';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog, { type ApplyShortcut } from '@/components/v-dialog.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useNestedValidation } from '@/composables/use-nested-validation';
@@ -24,6 +34,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import OverlayItemContent from './overlay-item-content.vue';
+import RenderTemplate from './render-template.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';

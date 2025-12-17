@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
 import { appRecommendedPermissions, disabledActions } from '@/app-permissions.js';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDivider from '@/components/v-divider.vue';
+import VNotice from '@/components/v-notice.vue';
 import { DisplayItem } from '@/composables/use-relation-multiple';
 import { RelationO2M, useRelationO2M } from '@/composables/use-relation-o2m';
 import { useCollectionsStore } from '@/stores/collections';

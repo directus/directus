@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VSelect from '@/components/v-select/v-select.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { GEOMETRY_TYPES } from '@directus/constants';

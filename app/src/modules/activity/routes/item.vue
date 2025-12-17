@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { i18n } from '@/lang';
 import { getItemRoute } from '@/utils/get-route';
 import { userName } from '@/utils/user-name';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import UserPopover from '@/views/private/components/user-popover.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

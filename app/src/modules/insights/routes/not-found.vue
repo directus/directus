@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VInfo from '@/components/v-info.vue';
+import { PrivateView } from '@/views/private';
 import InsightsNavigation from '../components/navigation.vue';
 </script>
 

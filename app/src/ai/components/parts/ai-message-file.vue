@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
 import type { FileUIPart } from 'ai';
 
 defineProps<{

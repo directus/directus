@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import VBadge from './v-badge.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 function initState() {
 	return {

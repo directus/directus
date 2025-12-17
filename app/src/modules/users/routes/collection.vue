@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import api from '@/api';
 import { logout } from '@/auth';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInfo from '@/components/v-info.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';

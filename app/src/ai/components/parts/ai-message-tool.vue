@@ -4,6 +4,8 @@ import { computed } from 'vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import formatTitle from '@directus/format-title';
 import AiToolCallCard from './ai-tool-call-card.vue';
+import VNotice from '@/components/v-notice.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 
 const aiStore = useAiStore();
 

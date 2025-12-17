@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { ValidationError } from '@directus/types';
@@ -6,11 +8,11 @@ import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { ComparisonContext, FormField } from '../types';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import type { ComparisonContext, FormField } from '../types';
 
 const props = withDefaults(
 	defineProps<{

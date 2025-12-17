@@ -5,6 +5,11 @@ import { useScroll } from '@vueuse/core';
 import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
+import VButton from '@/components/v-button.vue';
+import VDetail from '@/components/v-detail.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VOverlay from '@/components/v-overlay.vue';
 
 export interface Props {
 	title: string;

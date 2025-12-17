@@ -1,14 +1,21 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
 import { Header as TableHeader } from '@/components/v-table/types';
+import VTable from '@/components/v-table/v-table.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { Policy } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
 type PolicyBaseFields = 'id' | 'name' | 'icon' | 'description';

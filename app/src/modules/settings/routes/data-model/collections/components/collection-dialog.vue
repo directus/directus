@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { ref, reactive, watch } from 'vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInput from '@/components/v-input.vue';
+import InterfaceList from '@/interfaces/list/list.vue';
+import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { isEqual } from 'lodash';
 import { Collection } from '@/types/collections';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { isEqual } from 'lodash';
+import { reactive, ref, watch } from 'vue';
 
 const props = defineProps<{
 	modelValue?: boolean;

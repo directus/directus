@@ -3,6 +3,7 @@ import { remove as removeDiacritics } from 'diacritics';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
+import VList from '@/components/v-list.vue';
 
 const props = withDefaults(
 	defineProps<{

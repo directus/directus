@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+
 interface Props {
 	/** Name of another component to mirror */
 	type?:

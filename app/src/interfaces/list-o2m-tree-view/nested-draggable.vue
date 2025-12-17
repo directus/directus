@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import {
 	ChangesItem,
 	DisplayItem,

@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import ModuleBarLogo from './module-bar-logo.vue';
-import ModuleBarAvatar from './module-bar-avatar.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { MODULE_BAR_DEFAULT } from '@/constants';
+import { useExtensions } from '@/extensions';
 import { useSettingsStore } from '@/stores/settings';
 import { translate } from '@/utils/translate-object-values';
-import { MODULE_BAR_DEFAULT } from '@/constants';
 import { omit } from 'lodash';
-import { useExtensions } from '@/extensions';
+import { computed } from 'vue';
+import ModuleBarAvatar from './module-bar-avatar.vue';
+import ModuleBarLogo from './module-bar-logo.vue';
 
 const settingsStore = useSettingsStore();
 const { modules: registeredModules } = useExtensions();

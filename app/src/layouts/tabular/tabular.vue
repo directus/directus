@@ -1,10 +1,23 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VFieldList from '@/components/v-field-list/v-field-list.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { HeaderRaw } from '@/components/v-table/types';
+import VTable from '@/components/v-table/v-table.vue';
 import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
 import { usePageSize } from '@/composables/use-page-size';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
+import RenderDisplay from '@/views/private/components/render-display.vue';
 import { useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, inject, ref, toRefs, watch } from 'vue';

@@ -1,6 +1,26 @@
 <script setup lang="ts">
 import api from '@/api';
 import useDatetime from '@/components/use-datetime.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemHint from '@/components/v-list-item-hint.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VTab from '@/components/v-tab.vue';
+import VTabs from '@/components/v-tabs.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';

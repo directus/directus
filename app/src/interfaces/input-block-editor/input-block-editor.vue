@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VUpload from '@/components/v-upload.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';

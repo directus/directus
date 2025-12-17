@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useSync } from '@directus/composables';
 import type { Permission, Policy } from '@directus/types';
-import { ref, computed, useId } from 'vue';
+import { computed, ref, useId } from 'vue';
 import AppMinimal from './app-minimal.vue';
 
 type TreeChoice = {

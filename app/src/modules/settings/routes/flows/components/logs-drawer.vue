@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import VDetail from '@/components/v-detail.vue';
+import VDrawer from '@/components/v-drawer.vue';
 import { useExtensions } from '@/extensions';
+import { Revision } from '@/types/revisions';
+import { FlowRaw } from '@directus/types';
 import { computed, toRefs, unref } from 'vue';
 import { getTriggers } from '../triggers';
-import { FlowRaw } from '@directus/types';
-import VDetail from '@/components/v-detail.vue';
-import { Revision } from '@/types/revisions';
 
 const props = defineProps<{
 	flow: FlowRaw;

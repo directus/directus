@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VChip from '@/components/v-chip.vue';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { useElementHover } from '@vueuse/core';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';

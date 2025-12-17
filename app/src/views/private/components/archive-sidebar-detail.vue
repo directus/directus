@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import VRadio from '@/components/v-radio.vue';
 import { computed, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection?: string;

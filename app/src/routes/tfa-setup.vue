@@ -1,13 +1,19 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useTFASetup } from '@/composables/use-tfa-setup';
+import { DEFAULT_AUTH_DRIVER } from '@/constants';
 import { router } from '@/router';
 import { useUserStore } from '@/stores/user';
+import PublicView from '@/views/public/public-view.vue';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { DEFAULT_AUTH_DRIVER } from '@/constants';
 
 const { t } = useI18n();
 const appStore = useAppStore();

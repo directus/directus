@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appAccessMinimalPermissions } from '@directus/system-data';

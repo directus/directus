@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { watch, computed, toRefs } from 'vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VItemGroup from '@/components/v-item-group.vue';
+import VListGroup from '@/components/v-list-group.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFolders } from '@/composables/use-folders';
-import NavigationFolder from './files-navigation-folder.vue';
+import { FolderTarget, SpecialFolder } from '@/types/folders';
 import { isEqual } from 'lodash';
+import { computed, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { SpecialFolder, FolderTarget } from '@/types/folders';
+import NavigationFolder from './files-navigation-folder.vue';
 
 const router = useRouter();
 

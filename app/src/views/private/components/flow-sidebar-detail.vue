@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectRunManualFlow, type ManualFlow } from '@/composables/use-flows';
+import SidebarDetail from './sidebar-detail.vue';
 
 defineProps<{
 	manualFlows: ManualFlow[];

@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTextarea from '@/components/v-textarea.vue';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/types';

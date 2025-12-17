@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { DeepPartial, Field } from '@directus/types';
 import { isEqual } from 'lodash';
 import { storeToRefs } from 'pinia';

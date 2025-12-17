@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import VBanner from '@/components/v-banner.vue';
+import VChip from '@/components/v-chip.vue';
 import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';

@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import api from '@/api';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
 import axios from 'axios';
 import { debounce, get, throttle } from 'lodash';
 import { render } from 'micromustache';

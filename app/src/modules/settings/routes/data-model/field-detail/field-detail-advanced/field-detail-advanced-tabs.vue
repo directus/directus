@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VTab from '@/components/v-tab.vue';
+import VTabs from '@/components/v-tabs.vue';
 import { useSync } from '@directus/composables';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
 import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
 import { useExtensionsStore } from '@/stores/extensions';
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';

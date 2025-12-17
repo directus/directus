@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+
 withDefaults(
 	defineProps<{
 		/** The value that will be displayed inside the badge Only 2 characters allowed) */

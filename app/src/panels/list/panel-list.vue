@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import api from '@/api';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useInsightsStore } from '@/stores/insights';
 import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import { getEndpoint } from '@directus/utils';
+import { computed, ref } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

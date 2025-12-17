@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { isHex } from '@/utils/is-hex';
 import { computed } from 'vue';
 

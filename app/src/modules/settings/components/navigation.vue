@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import VChip from '@/components/v-chip.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { DEFAULT_REPORT_BUG_URL, DEFAULT_REPORT_FEATURE_URL } from '@/constants.js';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';

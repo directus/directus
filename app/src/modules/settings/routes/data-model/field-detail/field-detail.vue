@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { ref, computed, toRefs, watch } from 'vue';
-import { LocalType } from '@directus/types';
-import { useFieldDetailStore } from './store/';
-import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
-import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
-import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
-import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
-import { useRouter } from 'vue-router';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useI18n } from 'vue-i18n';
-import formatTitle from '@directus/format-title';
-import { useDialogRoute } from '@/composables/use-dialog-route';
-import { storeToRefs } from 'pinia';
 import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
+import { LocalType } from '@directus/types';
+import { storeToRefs } from 'pinia';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
+import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
+import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
+import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
+import { useFieldDetailStore } from './store/';
 
 const props = withDefaults(
 	defineProps<{

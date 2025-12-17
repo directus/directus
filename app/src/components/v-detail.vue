@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	modelValue?: boolean;

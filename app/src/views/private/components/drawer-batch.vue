@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VForm from '@/components/v-form/v-form.vue';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';

@@ -1,5 +1,14 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
 import { useExtension } from '@/composables/use-extension';
+import InterfaceSystemCollection from '@/interfaces/_system/system-collection/system-collection.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
@@ -11,7 +20,7 @@ import type { Field, Width } from '@directus/types';
 import { cloneDeep } from 'lodash';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import FieldSelectMenu from './field-select-menu.vue';
 

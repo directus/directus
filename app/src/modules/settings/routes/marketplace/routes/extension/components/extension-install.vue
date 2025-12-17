@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useExtensionsStore } from '@/stores/extensions';
 import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';

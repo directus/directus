@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useExtension } from '@/composables/use-extension';
+import InterfaceSystemRawEditor from '@/interfaces/_system/system-raw-editor/system-raw-editor.vue';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { computed } from 'vue';
-import type { FormField, ComparisonContext } from './types';
+import type { ComparisonContext, FormField } from '../types';
 
 const props = defineProps<{
 	field: FormField;

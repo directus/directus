@@ -1,6 +1,24 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTabItem from '@/components/v-tab-item.vue';
+import VTab from '@/components/v-tab.vue';
+import VTabsItems from '@/components/v-tabs-items.vue';
+import VTabs from '@/components/v-tabs.vue';
+import VTextarea from '@/components/v-textarea.vue';
+import VUpload from '@/components/v-upload.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
+import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
@@ -23,6 +41,7 @@ import './tinymce-overrides.css';
 
 import 'tinymce/tinymce';
 
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/autoresize/plugin';

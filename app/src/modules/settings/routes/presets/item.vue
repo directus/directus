@@ -1,12 +1,24 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { unexpectedError } from '@/utils/unexpected-error';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';

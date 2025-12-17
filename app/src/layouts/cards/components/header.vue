@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { useSync } from '@directus/composables';
 import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';

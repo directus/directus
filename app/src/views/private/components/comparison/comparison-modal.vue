@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { Revision } from '@/types/revisions';
 import { translateShortcut } from '@/utils/translate-shortcut';

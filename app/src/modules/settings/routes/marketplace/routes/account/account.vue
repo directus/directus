@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
+import VError from '@/components/v-error.vue';
+import VList from '@/components/v-list.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { PrivateView } from '@/views/private';
 import type { RegistryAccountResponse, RegistryListResponse } from '@directus/extensions-registry';
 import { computed, ref, watchEffect } from 'vue';
 import SettingsNavigation from '../../../../components/navigation.vue';

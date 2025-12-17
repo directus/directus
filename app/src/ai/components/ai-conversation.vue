@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { useTemplateRef, computed, onMounted, nextTick } from 'vue';
-import { useScroll } from '@vueuse/core';
-import { useAiStore } from '../stores/use-ai';
-import { useUserStore } from '@/stores/user';
-import AiMessageList from './ai-message-list.vue';
-import AiInput from './ai-input.vue';
-import AiHeader from './ai-header.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
+import { useUserStore } from '@/stores/user';
+import { useScroll } from '@vueuse/core';
+import { computed, nextTick, onMounted, useTemplateRef } from 'vue';
+import { useAiStore } from '../stores/use-ai';
+import AiHeader from './ai-header.vue';
+import AiInput from './ai-input.vue';
+import AiMessageList from './ai-message-list.vue';
 
 const aiStore = useAiStore();
 const userStore = useUserStore();

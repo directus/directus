@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { Collection } from '@/types/collections';
 import ValueNull from '@/views/private/components/value-null.vue';
 import { Permission, PermissionsAction } from '@directus/types';
-import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
 import PermissionsToggle from './permissions-toggle.vue';
 
 defineProps<{

@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import TransitionExpand from '@/components/transition/expand.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { translateAPIError } from '@/lang';
 import { AuthProvider } from '@/types/login';
