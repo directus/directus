@@ -86,9 +86,10 @@ function transformItem(
 		let nextFieldPath: string | null = null;
 		let nextParentCollection: string | null = null;
 
-		if (effectiveFieldPath) {
+		if (effectiveFieldPath && m2aConfig) {
 			// We're in an M2A context - pass the path through
-			if (key === 'item') {
+			// Use the actual junction field name instead of hardcoding 'item'
+			if (key === m2aConfig.junctionField) {
 				// Entering the nested item - keep the same field path and pass the collection value
 				nextFieldPath = effectiveFieldPath;
 				nextParentCollection = itemCollection ?? null;

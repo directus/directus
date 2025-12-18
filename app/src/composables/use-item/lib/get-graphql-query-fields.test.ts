@@ -199,6 +199,7 @@ it('should work with m2a fields and use aliases for nested fields', () => {
 	expect(result.m2aAliasMap).toEqual({
 		'sub_blocks.different_field_for_test': {
 			collectionField: 'collection',
+			junctionField: 'different_field_for_test',
 			aliases: {
 				block_paragraph: {
 					block_paragraph__id: 'id',
@@ -307,6 +308,7 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 		expect(result.m2aAliasMap).toEqual({
 			'children.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__items: 'items' },
 					child2: { child2__items: 'items' },
@@ -465,6 +467,7 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 		// Each should have its own collectionField and aliases
 		expect(result.m2aAliasMap['items.item']).toEqual({
 			collectionField: 'collection',
+			junctionField: 'item',
 			aliases: {
 				child1: { child1__items: 'items' },
 				child2: { child2__items: 'items' },
@@ -473,6 +476,7 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 
 		expect(result.m2aAliasMap['items2.item']).toEqual({
 			collectionField: 'collection',
+			junctionField: 'item',
 			aliases: {
 				child1: { child1__items: 'items' },
 				child2: { child2__items: 'items' },
@@ -509,6 +513,70 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 		// The alias map should use the custom collection field name
 		expect(result.m2aAliasMap['children.item']).toEqual({
 			collectionField: 'collection_ref', // Should use the custom field name
+			junctionField: 'item',
+			aliases: {
+				child1: { child1__items: 'items' },
+				child2: { child2__items: 'items' },
+			},
+		});
+	});
+
+	it('should store custom junction field name (e.g., value instead of item)', () => {
+		// This test verifies that when the junction field is renamed (e.g., 'value' instead of 'item'),
+		// the junctionField is correctly extracted and stored in the alias map
+		vi.mocked(getRelatedCollection).mockImplementation((collection, field) => {
+			if (collection === 'parent' && field === 'children') {
+				return { relatedCollection: 'parent_children' };
+			}
+
+			if (collection === 'child1' && field === 'items') {
+				return null; // JSON field - not a relation
+			}
+
+			if (collection === 'child2' && field === 'items') {
+				return { relatedCollection: 'child2_items' }; // 1:N relation
+			}
+
+			return null;
+		});
+
+		const fieldsStore = mockedStore(useFieldsStore());
+
+		fieldsStore.getPrimaryKeyFieldForCollection.mockImplementation((collection) => {
+			switch (collection) {
+				case 'parent_children':
+				case 'child1':
+				case 'child2':
+				case 'child2_items':
+					return { field: 'id' } as Field;
+				default:
+					return null;
+			}
+		});
+
+		const relationsStore = mockedStore(useRelationsStore());
+
+		relationsStore.getRelationForField.mockImplementation((currentCollection, sourceField) => {
+			// Mock for 'value' junction field instead of 'item'
+			if (currentCollection === 'parent_children' && sourceField === 'value') {
+				return {
+					meta: { one_collection_field: 'collection' },
+				} as Relation;
+			}
+
+			return null;
+		});
+
+		const fields: string[] = ['children.collection', 'children.value:child1.items', 'children.value:child2.items'];
+
+		const collection = 'parent';
+
+		const result = getGraphqlQueryFields(fields, collection);
+
+		// The alias map should use 'value' as the junctionField, not hardcode 'item'
+		expect(result.m2aAliasMap['children.value']).toEqual({
+			collectionField: 'collection',
+			junctionField: 'value', // Should use the actual field name from the specification
 			aliases: {
 				child1: { child1__items: 'items' },
 				child2: { child2__items: 'items' },

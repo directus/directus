@@ -19,6 +19,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'children.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__items: 'items' },
 					child2: { child2__items: 'items' },
@@ -77,6 +78,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'blocks.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					block_text: { block_text__content: 'content' },
 					block_image: { block_image__content: 'content', block_image__url: 'url' },
@@ -127,6 +129,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'children.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__items: 'items' },
 				},
@@ -151,6 +154,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'items.item': {
 				collectionField: 'type', // Custom collection field name
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__data: 'data' },
 				},
@@ -178,6 +182,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'children.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__items: 'items' },
 				},
@@ -218,6 +223,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'items.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__field: 'field' },
 				},
@@ -241,6 +247,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'items.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__special: 'special' },
 				},
@@ -276,6 +283,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'items.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__items: 'items' },
 					child2: { child2__items: 'items' },
@@ -283,6 +291,7 @@ describe('transformM2AAliases', () => {
 			},
 			'items2.item': {
 				collectionField: 'collection',
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__items: 'items' },
 					child2: { child2__items: 'items' },
@@ -347,6 +356,7 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'items.item': {
 				collectionField: 'collection_ref', // Custom field name
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__items: 'items' },
 					child2: { child2__items: 'items' },
@@ -408,12 +418,14 @@ describe('transformM2AAliases', () => {
 		const aliasMap: M2AAliasMap = {
 			'items2.item': {
 				collectionField: 'collection', // Same junction column as items3
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__bar: 'bar' }, // Different aliased field
 				},
 			},
 			'items3.item': {
 				collectionField: 'collection', // Same junction column as items2
+				junctionField: 'item',
 				aliases: {
 					child1: { child1__foo: 'foo' }, // Different aliased field
 				},
@@ -466,6 +478,70 @@ describe('transformM2AAliases', () => {
 					item: {
 						id: 'child1-item-2',
 						foo: 'value from items3', // Correctly transformed using items3.item config
+					},
+				},
+			],
+		});
+	});
+
+	it('should handle renamed junction field (e.g., value instead of item)', () => {
+		// This test addresses the issue where the junction M2O field is renamed in advanced mode
+		// (e.g., from 'item' to 'value'). The transformer should use the actual junction field name
+		// instead of hardcoding 'item'
+		const aliasMap: M2AAliasMap = {
+			'items.value': {
+				collectionField: 'collection',
+				junctionField: 'value', // Renamed junction field
+				aliases: {
+					child1: { child1__items: 'items' },
+					child2: { child2__items: 'items' },
+				},
+			},
+		};
+
+		const data = {
+			id: 'parent-1',
+			items: [
+				{
+					id: 'junction-1',
+					collection: 'child1',
+					value: {
+						// Using 'value' instead of 'item'
+						id: 'child1-item-1',
+						child1__items: 'test value',
+					},
+				},
+				{
+					id: 'junction-2',
+					collection: 'child2',
+					value: {
+						// Using 'value' instead of 'item'
+						id: 'child2-item-1',
+						child2__items: 'test value 2',
+					},
+				},
+			],
+		};
+
+		const result = transformM2AAliases(data, aliasMap);
+
+		expect(result).toEqual({
+			id: 'parent-1',
+			items: [
+				{
+					id: 'junction-1',
+					collection: 'child1',
+					value: {
+						id: 'child1-item-1',
+						items: 'test value', // Correctly transformed
+					},
+				},
+				{
+					id: 'junction-2',
+					collection: 'child2',
+					value: {
+						id: 'child2-item-1',
+						items: 'test value 2', // Correctly transformed
 					},
 				},
 			],

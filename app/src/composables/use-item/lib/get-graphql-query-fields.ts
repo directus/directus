@@ -12,13 +12,15 @@ type QueryFields = { [key: string]: any };
  * {
  *   "items.item": {
  *     "collectionField": "collection_ref",  // The actual field name in junction table
+ *     "junctionField": "item",              // The junction M2O field name (can be renamed, e.g., "value")
  *     "aliases": {
  *       "child1": { "child1__items": "items" },
  *       "child2": { "child2__items": "items" }
  *     }
  *   },
- *   "items2.item": {
+ *   "items2.value": {
  *     "collectionField": "collection",
+ *     "junctionField": "value",             // Custom junction field name
  *     "aliases": {
  *       "child1": { "child1__items": "items" },
  *       "child2": { "child2__items": "items" }
@@ -30,6 +32,7 @@ export type M2AAliasMap = Record<
 	string,
 	{
 		collectionField: string;
+		junctionField: string;
 		aliases: Record<string, Record<string, string>>;
 	}
 >;
@@ -63,6 +66,7 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 		let inM2AFragment: string | null = null;
 		const m2aFieldPath: string[] = []; // Track full path to M2A junction (e.g., ["items", "item"])
 		let m2aCollectionField: string | null = null; // Track collection field name for this M2A relation
+		let m2aJunctionField: string | null = null; // Track junction field name (e.g., "item" or "value")
 
 		while (fieldParts.length > 1) {
 			const m2a = adjustForM2A(currentField, currentCollection, currentPath);
@@ -71,10 +75,11 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 				currentCollection = m2a.relatedCollection;
 				currentPath = m2a.currentPath;
 				inM2AFragment = m2a.relatedCollection;
-				// Extract the field name before the ":" (e.g., "item" from "item:child1")
+				// Extract the field name before the ":" (e.g., "item" from "item:child1" or "value" from "value:child1")
 				const fieldName = currentField.split(':')[0]!;
 				m2aFieldPath.push(fieldName);
 				m2aCollectionField = m2a.collectionField;
+				m2aJunctionField = fieldName; // Store the junction field name
 			} else {
 				const relatedCollection = getRelatedCollection(currentCollection, currentField);
 				currentCollection = relatedCollection!.junctionCollection ?? relatedCollection!.relatedCollection;
@@ -93,6 +98,7 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 					if (!m2aAliasMap[fieldPathKey]) {
 						m2aAliasMap[fieldPathKey] = {
 							collectionField: m2aCollectionField!,
+							junctionField: m2aJunctionField!,
 							aliases: {},
 						};
 					}
@@ -121,6 +127,7 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 			const fieldName = currentField.split(':')[0]!;
 			m2aFieldPath.push(fieldName);
 			m2aCollectionField = m2a.collectionField;
+			m2aJunctionField = fieldName; // Store the junction field name
 		} else {
 			const maybeRelatedCollection = getRelatedCollection(currentCollection, currentField);
 
@@ -142,6 +149,7 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 				if (!m2aAliasMap[fieldPathKey]) {
 					m2aAliasMap[fieldPathKey] = {
 						collectionField: m2aCollectionField!,
+						junctionField: m2aJunctionField!,
 						aliases: {},
 					};
 				}
@@ -162,6 +170,7 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 				if (!m2aAliasMap[fieldPathKey]) {
 					m2aAliasMap[fieldPathKey] = {
 						collectionField: m2aCollectionField!,
+						junctionField: m2aJunctionField!,
 						aliases: {},
 					};
 				}
