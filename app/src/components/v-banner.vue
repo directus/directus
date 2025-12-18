@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+
 defineProps<{
 	icon: string;
 	hideAvatarBackground?: boolean;
@@ -8,7 +10,7 @@ defineProps<{
 <template>
 	<div class="v-banner">
 		<div class="avatar" :class="{ 'no-bg': hideAvatarBackground }">
-			<slot name="avatar"><v-icon :name="icon" large /></slot>
+			<slot name="avatar"><VIcon :name="icon" large /></slot>
 		</div>
 
 		<div class="content">

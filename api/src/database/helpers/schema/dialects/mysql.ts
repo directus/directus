@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type SortRecord } from '../types.js';
+import { SchemaHelper, type CreateIndexOptions, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
@@ -69,5 +69,38 @@ export class SchemaHelperMySQL extends SchemaHelper {
 
 			groupByFields.push(...sortRecords.map(({ alias }) => alias));
 		}
+	}
+
+	override async createIndex(
+		collection: string,
+		field: string,
+		options: CreateIndexOptions = {},
+	): Promise<Knex.SchemaBuilder> {
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+
+		const blockingQuery = this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [
+			constraintName,
+			collection,
+			field,
+		]);
+
+		if (options.attemptConcurrentIndex) {
+			/*
+			Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
+			so we're just going to send it and fall back to blocking index creation on error
+			
+			https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
+			*/
+			return this.knex
+				.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??) ALGORITHM=INPLACE LOCK=NONE`, [
+					constraintName,
+					collection,
+					field,
+				])
+				.catch(() => blockingQuery);
+		}
+
+		return blockingQuery;
 	}
 }

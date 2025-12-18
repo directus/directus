@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { Share } from '@directus/types';
 import { format } from 'date-fns';
@@ -48,46 +55,46 @@ const formattedTime = computed(() => {
 			<span class="type-label">{{ share.name }}</span>
 
 			<div class="header-right">
-				<v-menu show-arrow placement="bottom-end">
+				<VMenu show-arrow placement="bottom-end">
 					<template #activator="{ toggle, active }">
-						<v-icon class="more" :class="{ active }" name="more_horiz" clickable @click="toggle" />
+						<VIcon class="more" :class="{ active }" name="more_horiz" clickable @click="toggle" />
 						<div class="date">
 							{{ formattedTime }}
 						</div>
 					</template>
 
-					<v-list>
-						<v-list-item clickable @click="$emit('copy')">
-							<v-list-item-icon><v-icon name="content_copy" /></v-list-item-icon>
-							<v-list-item-content>{{ t('share_copy_link') }}</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable @click="$emit('invite')">
-							<v-list-item-icon><v-icon name="send" /></v-list-item-icon>
-							<v-list-item-content>{{ t('share_send_link') }}</v-list-item-content>
-						</v-list-item>
-						<v-divider v-if="deleteAllowed || updateAllowed" />
-						<v-list-item v-if="updateAllowed" clickable @click="$emit('edit')">
-							<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-							<v-list-item-content>{{ t('edit') }}</v-list-item-content>
-						</v-list-item>
-						<v-list-item v-if="deleteAllowed" clickable class="danger" @click="$emit('delete')">
-							<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-							<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
+					<VList>
+						<VListItem clickable @click="$emit('copy')">
+							<VListItemIcon><VIcon name="content_copy" /></VListItemIcon>
+							<VListItemContent>{{ $t('share_copy_link') }}</VListItemContent>
+						</VListItem>
+						<VListItem clickable @click="$emit('invite')">
+							<VListItemIcon><VIcon name="send" /></VListItemIcon>
+							<VListItemContent>{{ $t('share_send_link') }}</VListItemContent>
+						</VListItem>
+						<VDivider v-if="deleteAllowed || updateAllowed" />
+						<VListItem v-if="updateAllowed" clickable @click="$emit('edit')">
+							<VListItemIcon><VIcon name="edit" /></VListItemIcon>
+							<VListItemContent>{{ $t('edit') }}</VListItemContent>
+						</VListItem>
+						<VListItem v-if="deleteAllowed" clickable class="danger" @click="$emit('delete')">
+							<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+							<VListItemContent>{{ $t('delete_label') }}</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
 			</div>
 		</div>
 
 		<div class="item-info">
 			<span class="share-uses" :class="{ 'no-left': usesLeft === 0 }">
-				<template v-if="usesLeft === null">{{ t('unlimited_usage') }}</template>
-				<template v-else>{{ t('uses_left', usesLeft) }}</template>
+				<template v-if="usesLeft === null">{{ $t('unlimited_usage') }}</template>
+				<template v-else>{{ $t('uses_left', usesLeft) }}</template>
 			</span>
-			<v-icon v-if="share.password" small name="lock" />
+			<VIcon v-if="share.password" small name="lock" />
 			<span class="spacer"></span>
 			<span v-if="status" class="share-status" :class="{ [status]: true }">
-				{{ t(status) }}
+				{{ $t(status) }}
 			</span>
 		</div>
 	</div>

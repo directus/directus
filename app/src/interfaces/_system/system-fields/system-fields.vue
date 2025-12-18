@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import VFieldList from '@/components/v-field-list/v-field-list.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useFieldsStore } from '@/stores/fields';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field } from '@directus/types';
 import { computed } from 'vue';
 import Draggable from 'vuedraggable';
-import { useI18n } from 'vue-i18n';
-import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 
 interface Props {
 	collectionName: string;
@@ -67,8 +72,6 @@ const fields = computed<(Field & { key: string })[]>({
 	},
 });
 
-const { t } = useI18n();
-
 const addFields = (fields: string[]) => {
 	const uniqueFields = new Set([...(props.value ?? []), ...fields]);
 	emit('input', Array.from(uniqueFields));
@@ -87,15 +90,15 @@ const removeField = (field: string) => {
 
 <template>
 	<template v-if="!collectionName">
-		<v-notice>
-			{{ t('interfaces.system-fields.select_a_collection') }}
-		</v-notice>
+		<VNotice>
+			{{ $t('interfaces.system-fields.select_a_collection') }}
+		</VNotice>
 	</template>
 	<template v-else>
-		<v-list v-if="fields.length === 0">
-			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
-		</v-list>
-		<draggable
+		<VList v-if="fields.length === 0">
+			<VNotice class="no-fields">{{ $t('interfaces.system-fields.no_fields') }}</VNotice>
+		</VList>
+		<Draggable
 			v-else
 			v-model="fields"
 			tag="v-list"
@@ -104,29 +107,29 @@ const removeField = (field: string) => {
 			v-bind="{ 'force-fallback': true }"
 		>
 			<template #item="{ element: field }">
-				<v-list-item block>
-					<v-icon name="drag_handle" class="drag-handle" left />
+				<VListItem block>
+					<VIcon name="drag_handle" class="drag-handle" left />
 					<div class="name">{{ field.displayName }}</div>
 					<div class="spacer" />
-					<v-icon name="close" clickable @click="removeField(field.key)" />
-				</v-list-item>
+					<VIcon name="close" clickable @click="removeField(field.key)" />
+				</VListItem>
 			</template>
-		</draggable>
-		<v-menu placement="bottom-start" show-arrow>
+		</Draggable>
+		<VMenu placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
 				<button class="toggle" @click="toggle">
-					{{ t('add_field') }}
-					<v-icon name="expand_more" />
+					{{ $t('add_field') }}
+					<VIcon name="expand_more" />
 				</button>
 			</template>
 
-			<v-field-list
+			<VFieldList
 				:disabled-fields="value"
 				:collection="collectionName"
 				:allow-select-all="allowSelectAll"
 				@add="addFields"
 			/>
-		</v-menu>
+		</VMenu>
 	</template>
 </template>
 

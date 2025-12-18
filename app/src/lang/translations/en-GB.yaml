@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: About
+first_name: First Name
+last_name: Last Name
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -103,7 +105,6 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
-promote_version_preview: Preview
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -329,6 +330,7 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
+subtitle: Subtitle
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
@@ -595,7 +597,6 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   VALUE_TOO_LONG: Value is too long
 security: Security
-value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
 edit_bookmark: Edit Bookmark
@@ -757,7 +758,6 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
-run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
 trigger: Trigger
 trigger_options: Trigger Options
 view_trigger: View Trigger
@@ -936,37 +936,6 @@ discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
 keep_editing: Keep Editing
-page_help_collections_overview: '**Collections Overview** — List of all collections you have access to.'
-page_help_collections_collection: >-
-  **Browse Items** — Lists all {collection} items you have access to. Customise layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.
-page_help_collections_item: >-
-  **Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions, and embedded comments.
-page_help_activity_collection: >-
-  **Browse Activity** — A comprehensive listing of all your user's system and content activity.
-page_help_docs_global: >-
-  **Documentation Overview** — Docs tailored specifically to this project's version and schema.
-page_help_files_collection: >-
-  **File Library** — Lists all file assets uploaded to this project. Customise layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.
-page_help_files_item: >-
-  **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_datamodel_collections: >-
-  **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
-page_help_settings_datamodel_fields: >-
-  **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
-page_help_settings_presets_collection: >-
-  **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default views.
-page_help_settings_presets_item: >-
-  **Preset Detail** — A form for managing bookmarks and default collection presets.
-page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
-page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
-page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
-page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
-page_help_users_collection: '**User Directory** — Lists all system users within this project.'
-page_help_users_item: >-
-  **User Detail** — Manage your account information, or view the details of other users.
-page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
-page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -989,7 +958,6 @@ directus_collection:
   directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
-  directus_flows: Automation flows
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
   directus_notifications: Notifications sent to users
@@ -1279,6 +1247,19 @@ shares: Shares
 unlimited_usage: Unlimited usage
 no_shares: No shares to show
 new_share: New Share
+ai:
+  input: Input
+  settings: Settings
+  tool_approval:
+    disabled: Disabled
+ai_tools:
+  items: Items
+  files: Files
+  flows: Flows
+  trigger-flow: Trigger Flow
+  schema: Schema
+  collections: Collections
+  fields: Fields
 mcp_prompts_collection_schema:
   messages_role_user: User
 expired: Expired
@@ -1427,9 +1408,7 @@ interfaces:
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
   presentation-links:
-    presentation-links: Button Links
-    links: Links
-    description: Configurable link buttons for launching dynamic URLs
+    presentation-links: Buttons
     style: Style
     primary: Primary
     link: Links
@@ -1719,6 +1698,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values
+  header:
+    header: Header
+    links: Links
 displays:
   translations:
     translations: Translations
@@ -2017,11 +1999,9 @@ triggers:
 a_flow_uuid: Select a Flow to trigger...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
-operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Route a flow based on If / Else logic
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
@@ -2093,7 +2073,6 @@ operations:
     description: Alter the Flow's JSON payload
   trigger:
     name: Trigger Flow
-    description: Pass this data to another flow
     flows: Flows
     flow: Flow
     data: Data

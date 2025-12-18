@@ -71,9 +71,11 @@ import metricsSchedule from './schedules/metrics.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
 import tusSchedule from './schedules/tus.js';
+import projectSchedule from './schedules/project.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
+import { aiChatRouter } from './ai/chat/router.js';
 
 const require = createRequire(import.meta.url);
 
@@ -96,6 +98,12 @@ export default async function createApp(): Promise<express.Application> {
 	if (!env['SECRET']) {
 		logger.warn(
 			`"SECRET" env variable is missing. Using a random value instead. Tokens will not persist between restarts. This is not appropriate for production usage.`,
+		);
+	}
+
+	if (typeof env['SECRET'] === 'string' && Buffer.byteLength(env['SECRET']) < 32) {
+		logger.warn(
+			'"SECRET" env variable is shorter than 32 bytes which is insecure. This is not appropriate for production usage.',
 		);
 	}
 
@@ -303,6 +311,8 @@ export default async function createApp(): Promise<express.Application> {
 		app.use('/mcp', mcpRouter);
 	}
 
+	app.use('/ai/chat', aiChatRouter);
+
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);
 	}
@@ -340,6 +350,7 @@ export default async function createApp(): Promise<express.Application> {
 	await telemetrySchedule();
 	await tusSchedule();
 	await metricsSchedule();
+	await projectSchedule();
 
 	await emitter.emitInit('app.after', { app });
 

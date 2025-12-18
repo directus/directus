@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 defineEmits(['create']);
 
-const { t } = useI18n();
 const insightsStore = useInsightsStore();
 const { createAllowed } = useCollectionPermissions('directus_dashboards');
 
@@ -22,16 +27,16 @@ const navItems = computed(() =>
 </script>
 
 <template>
-	<v-list nav>
-		<v-button v-if="navItems.length === 0 && createAllowed" full-width outlined dashed @click="$emit('create')">
-			{{ t('create_dashboard') }}
-		</v-button>
+	<VList nav>
+		<VButton v-if="navItems.length === 0 && createAllowed" full-width outlined dashed @click="$emit('create')">
+			{{ $t('create_dashboard') }}
+		</VButton>
 
-		<v-list-item v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">
-			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="navItem.name" />
-			</v-list-item-content>
-		</v-list-item>
-	</v-list>
+		<VListItem v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">
+			<VListItemIcon><VIcon :name="navItem.icon" :color="navItem.color" /></VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="navItem.name" />
+			</VListItemContent>
+		</VListItem>
+	</VList>
 </template>

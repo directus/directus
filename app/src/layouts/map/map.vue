@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import VInfo from '@/components/v-info.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { usePageSize } from '@/composables/use-page-size';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import { useSync } from '@directus/composables';
 import { GeometryOptions } from '@directus/types';
 import { useI18n } from 'vue-i18n';
@@ -43,7 +48,7 @@ const props = withDefaults(
 
 const emit = defineEmits(['update:cameraOptions', 'update:limit']);
 
-const { t, n } = useI18n();
+const { n } = useI18n();
 
 const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
 const limitWritable = useSync(props, 'limit', emit);
@@ -59,7 +64,7 @@ limitWritable.value = selectedSize;
 
 <template>
 	<div class="layout-map">
-		<map-component
+		<MapComponent
 			ref="map"
 			class="mapboxgl-map"
 			:class="{ loading, error: error || geojsonError || !geometryOptions }"
@@ -77,34 +82,34 @@ limitWritable.value = selectedSize;
 			@updateitempopup="updateItemPopup"
 		/>
 
-		<transition name="fade">
+		<Transition name="fade">
 			<div
 				v-if="itemPopup!.item"
 				class="popup"
 				:style="{ insetBlockStart: itemPopup!.position!.y + 'px', insetInlineStart: itemPopup!.position!.x + 'px' }"
 			>
-				<render-template :template="template" :item="itemPopup!.item" :collection="collection" />
+				<RenderTemplate :template="template" :item="itemPopup!.item" :collection="collection" />
 			</div>
-		</transition>
+		</Transition>
 
-		<transition name="fade">
+		<Transition name="fade">
 			<slot v-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
-			<v-info
+			<VInfo
 				v-else-if="geojsonError"
 				type="warning"
 				icon="wrong_location"
 				center
-				:title="t('layouts.map.invalid_geometry')"
+				:title="$t('layouts.map.invalid_geometry')"
 			>
 				{{ geojsonError }}
-			</v-info>
-			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
-		</transition>
+			</VInfo>
+			<VProgressCircular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
+		</Transition>
 
 		<template v-if="loading || (totalCount ?? 0) > 0">
 			<div class="footer">
 				<div v-if="totalPages > 1" class="pagination">
-					<v-pagination
+					<VPagination
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
@@ -113,8 +118,8 @@ limitWritable.value = selectedSize;
 					/>
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
-					<span>{{ t('limit') }}</span>
-					<v-select :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
+					<span>{{ $t('limit') }}</span>
+					<VSelect :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -148,7 +153,7 @@ limitWritable.value = selectedSize;
 .layout-map {
 	position: relative;
 	inline-size: 100%;
-	block-size: calc(100% - 60px);
+	block-size: 100%;
 }
 
 .center {

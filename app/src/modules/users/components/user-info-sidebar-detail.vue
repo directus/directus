@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useClipboard } from '@/composables/use-clipboard';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { localizedFormat } from '@/utils/localized-format';
 import type { User } from '@directus/types';
 import { ref, watch } from 'vue';
+import { RouterLink } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -30,12 +33,12 @@ watch(
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
+	<SidebarDetail id="user-info" icon="info" :title="$t('information')">
 		<dl v-if="isNew === false && user">
 			<div v-if="user.id" class="description-list">
-				<dt>{{ t('key') }}</dt>
+				<dt>{{ $t('key') }}</dt>
 				<dd>{{ user.id }}</dd>
-				<v-icon
+				<VIcon
 					v-if="isCopySupported"
 					name="content_copy"
 					small
@@ -45,21 +48,17 @@ watch(
 				/>
 			</div>
 			<div v-if="user.last_page">
-				<dt>{{ t('last_page') }}</dt>
+				<dt>{{ $t('last_page') }}</dt>
 				<dd>
-					<router-link :to="user.last_page">{{ user.last_page }}</router-link>
+					<RouterLink :to="user.last_page">{{ user.last_page }}</RouterLink>
 				</dd>
 			</div>
 			<div v-if="user.last_access">
-				<dt>{{ t('last_access') }}</dt>
+				<dt>{{ $t('last_access') }}</dt>
 				<dd>{{ lastAccessDate }}</dd>
 			</div>
 		</dl>
-
-		<v-divider />
-
-		<div v-md="t('page_help_users_item')" class="page-description" />
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

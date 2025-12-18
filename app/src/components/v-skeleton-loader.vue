@@ -1,7 +1,16 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+
 interface Props {
 	/** Name of another component to mirror */
-	type?: 'input' | 'input-tall' | 'block-list-item' | 'block-list-item-dense' | 'list-item-icon' | 'text';
+	type?:
+		| 'input'
+		| 'input-tall'
+		| 'block-list-item'
+		| 'block-list-item-dense'
+		| 'list-item-icon'
+		| 'text'
+		| 'pagination';
 }
 
 withDefaults(defineProps<Props>(), {
@@ -14,6 +23,9 @@ withDefaults(defineProps<Props>(), {
 		<template v-if="type === 'list-item-icon'">
 			<div class="icon" />
 			<div class="text" />
+		</template>
+		<template v-if="type === 'pagination'">
+			<VButton v-for="page in 3" :key="page" class="page" small disabled></VButton>
 		</template>
 	</div>
 </template>
@@ -139,6 +151,38 @@ withDefaults(defineProps<Props>(), {
 		border-radius: 6px;
 
 		@include loader;
+	}
+}
+
+.pagination {
+	display: flex;
+
+	.gap {
+		display: none;
+		margin: 0 4px;
+		line-height: 2em;
+	}
+
+	@media (min-width: 640px) {
+		.gap {
+			display: inline;
+		}
+	}
+
+	.v-button {
+		margin: 0 2px;
+		@include loader;
+		border-radius: var(--theme--border-radius);
+		inline-size: 36px;
+		block-size: 36px;
+	}
+
+	.v-button:first-child {
+		margin-inline-start: 0;
+	}
+
+	.v-button:last-child {
+		margin-inline-end: 0;
 	}
 }
 

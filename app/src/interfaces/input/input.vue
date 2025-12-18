@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
 import { APP_NUMERIC_TYPES } from '@/constants';
 import { computed } from 'vue';
 
@@ -8,6 +10,7 @@ const props = withDefaults(
 		type?: string;
 		clear?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		placeholder?: string;
 		masked?: boolean;
 		iconLeft?: string;
@@ -66,12 +69,13 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 </script>
 
 <template>
-	<v-input
+	<VInput
 		:autofocus="autofocus"
 		:model-value="value"
 		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:trim="trim"
 		:type="inputType"
 		:class="font"
@@ -87,7 +91,7 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 		:autocomplete="masked ? 'new-password' : 'off'"
 		@update:model-value="$emit('input', $event)"
 	>
-		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
+		<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
 		<template v-if="(percentageRemaining !== null && percentageRemaining <= 20) || iconRight || softLength" #append>
 			<span
 				v-if="(percentageRemaining !== null && percentageRemaining <= 20) || softLength"
@@ -99,9 +103,9 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 			>
 				{{ charsRemaining }}
 			</span>
-			<v-icon v-if="iconRight" :class="{ hide: percentageRemaining && percentageRemaining <= 20 }" :name="iconRight" />
+			<VIcon v-if="iconRight" :class="{ hide: percentageRemaining && percentageRemaining <= 20 }" :name="iconRight" />
 		</template>
-	</v-input>
+	</VInput>
 </template>
 
 <style lang="scss" scoped>

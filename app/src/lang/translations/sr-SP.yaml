@@ -1,4 +1,6 @@
 ---
+first_name: Име
+last_name: Презиме
 identifier: Identifikator
 avatar: Аватар
 application: Апликација
@@ -105,6 +107,7 @@ confirm_revert_body: Ovo će vratiti stavku u izabrano stanje.
 display: Pokazatelj
 settings_update_success: Podešavanja su ažurirana
 title: Наслов
+subtitle: Поднаслов
 revision_delta_created: Napravljeno
 revision_delta_created_externally: Spoljna kreacija
 revision_delta_updated: 'Ažurirano 1 polje'
@@ -244,6 +247,8 @@ field_options:
   directus_webhooks:
     actions_create: Креирај
 comment: Коментар
+ai_tools:
+  files: Фајлови
 description: Опис
 done: Завршено
 email: Имејл

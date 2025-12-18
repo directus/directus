@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { ref, reactive, watch } from 'vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInput from '@/components/v-input.vue';
+import InterfaceList from '@/interfaces/list/list.vue';
+import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { useI18n } from 'vue-i18n';
-import { isEqual } from 'lodash';
 import { Collection } from '@/types/collections';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { isEqual } from 'lodash';
+import { reactive, ref, watch } from 'vue';
 
 const props = defineProps<{
 	modelValue?: boolean;
@@ -13,8 +22,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['update:modelValue']);
-
-const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
@@ -69,7 +76,7 @@ async function save() {
 </script>
 
 <template>
-	<v-dialog
+	<VDialog
 		:model-value="modelValue"
 		persistent
 		keep-behind
@@ -81,33 +88,33 @@ async function save() {
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
-		<v-card>
-			<v-card-title v-if="!collection">{{ t('create_folder') }}</v-card-title>
-			<v-card-title v-else>{{ t('edit_folder') }}</v-card-title>
+		<VCard>
+			<VCardTitle v-if="!collection">{{ $t('create_folder') }}</VCardTitle>
+			<VCardTitle v-else>{{ $t('edit_folder') }}</VCardTitle>
 
-			<v-card-text>
+			<VCardText>
 				<div class="fields">
-					<v-input
+					<VInput
 						v-model="values.collection"
 						:disabled="!!collection"
 						class="full collection-key"
 						db-safe
 						autofocus
-						:placeholder="t('folder_key')"
+						:placeholder="$t('folder_key')"
 					/>
-					<interface-select-icon width="half" :value="values.icon" @input="values.icon = $event" />
-					<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
-					<v-input v-model="values.note" class="full" :placeholder="t('note')" />
-					<interface-list
+					<InterfaceSelectIcon width="half" :value="values.icon" @input="values.icon = $event" />
+					<InterfaceSelectColor width="half" :value="values.color" @input="values.color = $event" />
+					<VInput v-model="values.note" class="full" :placeholder="$t('note')" />
+					<InterfaceList
 						width="full"
 						class="full"
 						:value="values.translations"
-						:placeholder="t('no_translations')"
+						:placeholder="$t('no_translations')"
 						template="{{ translation }} ({{ language }})"
 						:fields="[
 							{
 								field: 'language',
-								name: t('language'),
+								name: $t('language'),
 								type: 'string',
 								schema: {
 									default_value: 'en-US',
@@ -119,7 +126,7 @@ async function save() {
 							},
 							{
 								field: 'translation',
-								name: t('field_options.directus_collections.collection_name'),
+								name: $t('field_options.directus_collections.collection_name'),
 								type: 'string',
 								meta: {
 									interface: 'input',
@@ -133,18 +140,18 @@ async function save() {
 						@input="values.translations = $event"
 					/>
 				</div>
-			</v-card-text>
+			</VCardText>
 
-			<v-card-actions>
-				<v-button secondary @click="cancel">
-					{{ t('cancel') }}
-				</v-button>
-				<v-button :disabled="!values.collection" :loading="saving" @click="save">
-					{{ t('save') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			<VCardActions>
+				<VButton secondary @click="cancel">
+					{{ $t('cancel') }}
+				</VButton>
+				<VButton :disabled="!values.collection" :loading="saving" @click="save">
+					{{ $t('save') }}
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style scoped>

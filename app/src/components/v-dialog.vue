@@ -3,6 +3,8 @@ import { ref, computed, useTemplateRef, watch, nextTick } from 'vue';
 import { useFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
+import TransitionDialog from '@/components/transition/dialog.vue';
+import VOverlay from '@/components/v-overlay.vue';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 
 export type ApplyShortcut = 'meta+enter' | 'meta+s';
@@ -10,7 +12,7 @@ export type ApplyShortcut = 'meta+enter' | 'meta+s';
 interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
-	placement?: 'right' | 'center';
+	placement?: 'left' | 'right' | 'center';
 	/** Lets other overlays (drawer) open on top */
 	keepBehind?: boolean;
 	applyShortcut?: ApplyShortcut;
@@ -106,20 +108,20 @@ function useOverlayFocusTrap() {
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
 
-		<teleport to="#dialog-outlet">
-			<transition-dialog @after-leave="leave">
+		<Teleport to="#dialog-outlet">
+			<TransitionDialog @after-leave="leave">
 				<component
-					:is="placement === 'right' ? 'div' : 'span'"
+					:is="placement === 'center' ? 'span' : 'div'"
 					v-if="internalActive"
 					ref="overlayEl"
 					class="container"
 					:class="[className, placement, keepBehind ? 'keep-behind' : null]"
 				>
-					<v-overlay active absolute @click="emitToggle" />
+					<VOverlay active absolute @click="emitToggle" />
 					<slot />
 				</component>
-			</transition-dialog>
-		</teleport>
+			</TransitionDialog>
+		</Teleport>
 	</div>
 </template>
 
@@ -163,9 +165,24 @@ function useOverlayFocusTrap() {
 	animation: nudge 200ms;
 }
 
+.container.left {
+	align-items: center;
+	justify-content: flex-start;
+}
+
 .container.right {
 	align-items: center;
 	justify-content: flex-end;
+}
+
+.container.left.nudge > :slotted(*:not(:first-child)) {
+	transform-origin: left;
+
+	html[dir='rtl'] & {
+		transform-origin: right;
+	}
+
+	animation: shake 200ms;
 }
 
 .container.right.nudge > :slotted(*:not(:first-child)) {
@@ -214,7 +231,7 @@ function useOverlayFocusTrap() {
 	--v-overlay-z-index: 1;
 }
 
-@media (min-width: 600px) {
+@media (width > 640px) {
 	.container :slotted(.v-card) {
 		--v-card-min-width: 540px;
 	}

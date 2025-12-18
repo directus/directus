@@ -18,6 +18,11 @@ export type SortRecord = {
 	column: Knex.Raw;
 };
 
+export type CreateIndexOptions = {
+	attemptConcurrentIndex?: boolean;
+	unique?: boolean;
+};
+
 export abstract class SchemaHelper extends DatabaseHelper {
 	isOneOfClients(clients: DatabaseClient[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
@@ -178,5 +183,13 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 	getTableNameMaxLength() {
 		return 64;
+	}
+
+	async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+		// fall back to concurrent index creation
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }

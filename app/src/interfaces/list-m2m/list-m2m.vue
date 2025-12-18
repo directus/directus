@@ -1,5 +1,14 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VNotice from '@/components/v-notice.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { Sort } from '@/components/v-table/types';
+import VTable from '@/components/v-table/v-table.vue';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
@@ -13,6 +22,7 @@ import { parseFilter } from '@/utils/parse-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
@@ -20,6 +30,7 @@ import { clamp, get, isEmpty, isNil, merge, set } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
 import Draggable from 'vuedraggable';
 
 const props = withDefaults(
@@ -35,6 +46,7 @@ const props = withDefaults(
 		fields?: Array<string>;
 		template?: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		filter?: Filter | null;
@@ -52,6 +64,7 @@ const props = withDefaults(
 		fields: () => ['id'],
 		template: null,
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		filter: null,
@@ -464,12 +477,12 @@ function getLinkForItem(item: DisplayItem) {
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo" type="warning">
-		{{ t('relationship_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
-	</v-notice>
+	<VNotice v-if="!relationInfo" type="warning">
+		{{ $t('relationship_not_setup') }}
+	</VNotice>
+	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ $t('no_singleton_relations') }}
+	</VNotice>
 	<div v-else class="many-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
 			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
@@ -479,48 +492,50 @@ function getLinkForItem(item: DisplayItem) {
 					{{ showingCount }}
 				</div>
 
-				<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
-					<search-input
-						v-model="search"
-						v-model:filter="searchFilter"
-						:collection="relationInfo.junctionCollection.collection"
-					/>
-				</div>
+				<template v-if="!nonEditable">
+					<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
+						<SearchInput
+							v-model="search"
+							v-model:filter="searchFilter"
+							:collection="relationInfo.junctionCollection.collection"
+						/>
+					</div>
 
-				<v-button
-					v-if="!disabled && updateAllowed && selectedKeys.length"
-					v-tooltip.bottom="t('edit')"
-					rounded
-					icon
-					secondary
-					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline />
-				</v-button>
+					<VButton
+						v-if="!disabled && updateAllowed && selectedKeys.length"
+						v-tooltip.bottom="$t('edit')"
+						rounded
+						icon
+						secondary
+						@click="batchEditActive = true"
+					>
+						<VIcon name="edit" outline />
+					</VButton>
 
-				<v-button
-					v-if="!disabled && enableSelect && selectAllowed"
-					v-tooltip.bottom="selectAllowed ? t('add_existing') : t('not_allowed')"
-					rounded
-					icon
-					:secondary="enableCreate"
-					@click="selectModalActive = true"
-				>
-					<v-icon name="playlist_add" />
-				</v-button>
+					<VButton
+						v-if="!disabled && enableSelect && selectAllowed"
+						v-tooltip.bottom="selectAllowed ? $t('add_existing') : $t('not_allowed')"
+						rounded
+						icon
+						:secondary="enableCreate"
+						@click="selectModalActive = true"
+					>
+						<VIcon name="playlist_add" />
+					</VButton>
 
-				<v-button
-					v-if="!disabled && enableCreate && createAllowed && selectAllowed"
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
-					rounded
-					icon
-					@click="createItem"
-				>
-					<v-icon name="add" />
-				</v-button>
+					<VButton
+						v-if="!disabled && enableCreate && createAllowed && selectAllowed"
+						v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+						rounded
+						icon
+						@click="createItem"
+					>
+						<VIcon name="add" />
+					</VButton>
+				</template>
 			</div>
 
-			<v-table
+			<VTable
 				v-if="layout === LAYOUTS.TABLE"
 				v-model:sort="sort"
 				v-model:headers="headers"
@@ -538,7 +553,7 @@ function getLinkForItem(item: DisplayItem) {
 				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
-					<render-template
+					<RenderTemplate
 						:title="header.value"
 						:collection="relationInfo.junctionCollection.collection"
 						:item="item"
@@ -546,21 +561,21 @@ function getLinkForItem(item: DisplayItem) {
 					/>
 				</template>
 
-				<template #item-append="{ item }">
+				<template v-if="!nonEditable" #item-append="{ item }">
 					<div class="item-actions">
-						<router-link
+						<RouterLink
 							v-if="enableLink"
-							v-tooltip="t('navigate_to_item')"
+							v-tooltip="$t('navigate_to_item')"
 							:to="getLinkForItem(item)!"
 							class="item-link"
 							:class="{ disabled: item.$type === 'created' }"
 							@click.stop
 							@keydown.stop
 						>
-							<v-icon name="launch" />
-						</router-link>
+							<VIcon name="launch" />
+						</RouterLink>
 
-						<v-remove
+						<VRemove
 							v-if="!disabled && (deleteAllowed || isLocalItem(item))"
 							:class="{ deleted: item.$type === 'deleted' }"
 							:item-type="item.$type"
@@ -572,10 +587,10 @@ function getLinkForItem(item: DisplayItem) {
 						/>
 					</div>
 				</template>
-			</v-table>
+			</VTable>
 
 			<template v-else-if="loading">
-				<v-skeleton-loader
+				<VSkeletonLoader
 					v-for="num in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
 					:key="num"
 					:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
@@ -583,11 +598,11 @@ function getLinkForItem(item: DisplayItem) {
 			</template>
 
 			<template v-else>
-				<v-notice v-if="displayItems.length === 0">
-					{{ t('no_items') }}
-				</v-notice>
+				<VNotice v-if="displayItems.length === 0">
+					{{ $t('no_items') }}
+				</VNotice>
 
-				<draggable
+				<Draggable
 					:model-value="displayItems"
 					tag="v-list"
 					item-key="id"
@@ -597,17 +612,16 @@ function getLinkForItem(item: DisplayItem) {
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">
-						<v-list-item
+						<VListItem
 							block
 							clickable
-							:disabled="disabled"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
 						>
-							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+							<VIcon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
-							<render-template
+							<RenderTemplate
 								:collection="relationInfo.junctionCollection.collection"
 								:item="element"
 								:template="templateWithDefaults"
@@ -615,18 +629,18 @@ function getLinkForItem(item: DisplayItem) {
 
 							<div class="spacer" />
 
-							<div class="item-actions">
-								<router-link
+							<div v-if="!nonEditable" class="item-actions">
+								<RouterLink
 									v-if="enableLink && element.$type !== 'created'"
-									v-tooltip="t('navigate_to_item')"
+									v-tooltip="$t('navigate_to_item')"
 									:to="getLinkForItem(element)!"
 									class="item-link"
 									@click.stop
 								>
-									<v-icon name="launch" />
-								</router-link>
+									<VIcon name="launch" />
+								</RouterLink>
 
-								<v-remove
+								<VRemove
 									v-if="!disabled && (deleteAllowed || isLocalItem(element))"
 									:item-type="element.$type"
 									:item-info="relationInfo"
@@ -635,48 +649,51 @@ function getLinkForItem(item: DisplayItem) {
 									@action="deleteItem(element)"
 								/>
 							</div>
-						</v-list-item>
+						</VListItem>
 					</template>
-				</draggable>
+				</Draggable>
 			</template>
 
-			<div class="actions">
-				<template v-if="layout === LAYOUTS.TABLE">
-					<template v-if="pageCount > 1">
-						<v-pagination
-							v-model="page"
-							:length="pageCount"
-							:total-visible="width.includes('half') ? 1 : 2"
-							show-first-last
-						/>
-
-						<div class="spacer" />
-
-						<div v-if="loading === false" class="per-page">
-							<span>{{ t('per_page') }}</span>
-							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
-						</div>
-					</template>
-				</template>
-				<template v-else>
-					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
-						{{ t('create_new') }}
-					</v-button>
-
-					<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
-						{{ t('add_existing') }}
-					</v-button>
+			<template v-if="layout === LAYOUTS.TABLE">
+				<div v-if="pageCount > 1" class="actions">
+					<VPagination
+						v-model="page"
+						:length="pageCount"
+						:total-visible="width.includes('half') ? 1 : 2"
+						show-first-last
+					/>
 
 					<div class="spacer" />
 
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
-				</template>
-			</div>
+					<div v-if="loading === false" class="per-page">
+						<span>{{ $t('per_page') }}</span>
+						<VSelect v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
+					</div>
+				</div>
+			</template>
+			<template v-else>
+				<div v-if="!nonEditable || pageCount > 1" class="actions">
+					<template v-if="!nonEditable">
+						<VButton v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
+							{{ $t('create_new') }}
+						</VButton>
+
+						<VButton v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
+							{{ $t('add_existing') }}
+						</VButton>
+					</template>
+
+					<div class="spacer" />
+
+					<VPagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
+				</div>
+			</template>
 		</div>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="editModalActive"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -687,7 +704,7 @@ function getLinkForItem(item: DisplayItem) {
 			@input="stageEdits"
 		/>
 
-		<drawer-collection
+		<DrawerCollection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
@@ -696,7 +713,7 @@ function getLinkForItem(item: DisplayItem) {
 			@input="select"
 		/>
 
-		<drawer-batch
+		<DrawerBatch
 			v-model:active="batchEditActive"
 			:primary-keys="selectedKeys"
 			:collection="relationInfo.relatedCollection.collection"

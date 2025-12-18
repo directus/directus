@@ -1,4 +1,6 @@
 ---
+first_name: Nama Depan
+last_name: Nama belakang
 identifier: Pengenal
 avatar: Avatar
 application: Aplikasi
@@ -94,7 +96,6 @@ version: Versi
 version_key: Versi kunci
 version_name: Nama Versi
 main_version: Utama
-promote_version_preview: Pratinjau
 reset_bookmark: Hapus Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
@@ -327,6 +328,7 @@ confirm_revert_body: Ini akan mengembalikan item ke keadaaan yang dipilih.
 display: Tampilkan
 settings_update_success: Pengaturan telah diperbarui
 title: Judul
+subtitle: Subjudul
 revision_delta_created: Dibuat
 revision_delta_created_externally: Buat secara Eksternal
 revision_delta_updated: 'Diperbarui 1 Baris | Diperbarui {count} Baris'
@@ -594,7 +596,6 @@ errors:
   VALUE_OUT_OF_RANGE: Nilai di luar rentang
   VALUE_TOO_LONG: Nilai terlalu panjang
 security: Keamanan
-value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
 edit_bookmark: Sunting Bookmark
@@ -757,10 +758,8 @@ label: Label
 flows: Kumpulan Alur
 flow: Alur
 select_a_flow: Pilih Alur
-run_flow_confirm: Apakah Anda yakin ingin menjalankan Flow ini?
 run_flow_on_current_collection: Jalankan Flow pada Koleksi Ini
 run_flow_on_current: Jalankan Flow pada Item Ini
-run_flow_on_current_edited_confirm: Item ini mungkin akan diperbarui sesuai dengan alur ini, apakah anda yakin akan menjalankannya?
 run_flow_on_selected: Pilih Satu atau Lebih Item Terlebih Dahulu | Jalankan Flow pada 1 Item Terpilih | Jalankan Flow pada {n} Item yang Dipilih
 run_flow: Jalankan Flow
 field_name_placeholder: Masukkan Nama Kolom...
@@ -943,37 +942,6 @@ discard_changes_copy: Apakah Anda yakin ingin membatalkan semua perubahan yang d
 show_x_axis: Menunjukkan Sumbu X
 show_y_axis: Menunjukkan Sumbu Y
 keep_editing: Tetap Mengedit
-page_help_collections_overview: '**Ikhtisar Koleksi** - — Daftar semua koleksi yang perlu anda akses.'
-page_help_collections_collection: >-
-  **Jelajahi Item** — Daftar semua {collection} item yang perlu Anda akses. Sesuaikan tata letak, filter, dan pengurutan untuk menyesuaikan tampilan Anda, dan bahkan simpan markah dari konfigurasi yang berbeda ini untuk akses cepat.
-page_help_collections_item: >-
-  **Detail Item** — Sebuah formulir untuk melihat dan mengelola item. Sidebar ini juga berisi riwayat, revisi, dan komentar yang disematkan.
-page_help_activity_collection: >-
-  ***Jelajahi Aktivitas** - Daftar lengkap dari seluruh aktivitas content dan pengguna system.
-page_help_docs_global: >-
-  **Gambaran Dokumentasi ** — Dokumen yang disesuaikan khusus untuk versi dan skema proyek ini.
-page_help_files_collection: >-
-  **Berkas Pustaka** — Daftar semua aset berkas yang diunggah ke proyek ini. Sesuaikan tata letak, filter, dan penyortiran untuk menyesuaikan tampilan Anda, dan bahkan simpan bookmark dari konfigurasi yang berbeda ini untuk akses cepat.
-page_help_files_item: >-
-  **Detail Berkas** — Sebuah formulir untuk mengelola metadata berkas, mengedit aset asli, dan memperbarui pengaturan akses.
-page_help_settings_datamodel_collections: >-
-  **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
-page_help_settings_datamodel_fields: >-
-  **Model Data: Collection** — Formulir untuk mengelola Collection ini dan fieldnya.
-page_help_settings_roles_item: "**Detail Peran** — Mengelola izin peran dan pengaturan lainnya."
-page_help_settings_presets_collection: >-
-  **Jelajahi Preset** — Mencantumkan semua preset dalam proyek, termasuk: pengguna, peran, dan bookmark global, serta tampilan default.
-page_help_settings_presets_item: >-
-  **Detail Preset** — Formulir untuk mengelola bookmark dan preset koleksi default.
-page_help_settings_webhooks_collection: '**Jelajahi Webhook** — Mencantumkan semua webhook dalam project.'
-page_help_settings_webhooks_item: '**Detail Webhook** — Formulir untuk membuat dan mengelola webhook proyek.'
-page_help_settings_flows_collection: '**Jelajahi Flow** — Mencantumkan semua Flow dalam proyek.'
-page_help_settings_flows_item: '**Detail Flow** — Ruang kerja untuk mengelola satu atau beberapa operasi.'
-page_help_users_collection: '**Direktori Pengguna** — Daftar seluruh pengguna dalam sistem proyek ini.'
-page_help_users_item: >-
-  **Detail Pengguna** — Kelola informasi akun Anda, atau lihat detail pengguna lain.
-page_help_insights_overview: '**Wawasan** — Daftar dasbor yang dapat Anda akses.'
-page_help_insights_dashboard: '**Dasbor** — Ruang kerja untuk mengelola satu atau beberapa panel'
 activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
@@ -996,7 +964,6 @@ directus_collection:
   directus_dashboards: Dasbor dalam modul Wawasan
   directus_fields: Isian konfigurasi tambahan dan metadata
   directus_files: Metadata untuk semua aset file terkelola
-  directus_flows: Otomatisasi mengalir
   directus_folders: Menyediakan direktori virtual untuk file
   directus_migrations: Versi database apa yang Anda gunakan
   directus_notifications: Notifikasi dikirim ke pengguna
@@ -1241,6 +1208,16 @@ live_preview:
   disable: Nonaktifkan Pratinjau
   refresh: Segarkan pratinjau
   new_window: Buka di Jendela Baru
+ai:
+  settings: Pengaturan
+  tool_approval:
+    disabled: Dinonaktifkan
+ai_tools:
+  items: Barang-barang
+  files: Berkas
+  flows: Kumpulan Alur
+  schema: Skema
+  collections: Pengumpulan
 mcp_prompts_collection_schema:
   messages_role_user: Pengguna
 expired: Kedaluwarsa
@@ -1340,9 +1317,7 @@ interfaces:
     accordion_mode: Mode Akordeon
     max_one_section_open: Maks 1 Bagian Dibuka
   presentation-links:
-    presentation-links: Tautan Tombol
-    links: Tautan
-    description: Tombol tautan yang dapat dikonfigurasi untuk meluncurkan URL dinamis
+    presentation-links: Tombol
     style: Gaya
     primary: Primer
     link: Tautan
@@ -1444,6 +1419,8 @@ interfaces:
       underline: Garis Bawah
   system-token:
     system-token: Token
+  header:
+    links: Tautan
 displays:
   translations:
     translations: Terjemahan

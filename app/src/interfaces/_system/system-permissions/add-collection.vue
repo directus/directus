@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { isSystemCollection } from '@directus/system-data';
 import { orderBy } from 'lodash';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	excludeCollections?: string[];
@@ -14,7 +16,6 @@ defineEmits<{
 	select: [string];
 }>();
 
-const { t } = useI18n();
 const collectionsStore = useCollectionsStore();
 
 const availableCollections = computed(() => {
@@ -51,7 +52,7 @@ function notExcluded({ collection }: Collection) {
 
 <template>
 	<div>
-		<v-select
+		<VSelect
 			:items="displayItems"
 			item-text="collection"
 			item-value="collection"
@@ -60,11 +61,11 @@ function notExcluded({ collection }: Collection) {
 			@update:model-value="$emit('select', $event)"
 		>
 			<template #preview="{ toggle }">
-				<v-button @click="toggle">
-					{{ t('permission_add_collection') }}
-					<v-icon name="arrow_drop_down" right />
-				</v-button>
+				<VButton @click="toggle">
+					{{ $t('permission_add_collection') }}
+					<VIcon name="arrow_drop_down" right />
+				</VButton>
 			</template>
-		</v-select>
+		</VSelect>
 	</div>
 </template>

@@ -9,7 +9,7 @@ import VListGroup from '../v-list-group.vue';
 import VListItemIcon from '../v-list-item-icon.vue';
 import VListItem from '../v-list-item.vue';
 import VList from '../v-list.vue';
-import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
+import VCheckboxTreeCheckbox from './VCheckboxTreeCheckbox.vue';
 import VCheckboxTree from './v-checkbox-tree.vue';
 
 let router: Router;
