@@ -8,8 +8,6 @@ import { getHelpers } from '../helpers/index.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function up(knex: Knex): Promise<void> {
-	const helpers = getHelpers(knex);
-
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.uuid('id').nullable();
 		table.string('folder');
@@ -78,7 +76,9 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.transaction(async (trx) => {
-		await helpers.schema.changePrimaryKey('directus_extensions', ['id'], trx);
+		const helpers = getHelpers(trx);
+
+		await helpers.schema.changePrimaryKey('directus_extensions', ['id']);
 
 		await trx.schema.alterTable('directus_extensions', (table) => {
 			table.dropColumn('name');
@@ -94,8 +94,6 @@ export async function up(knex: Knex): Promise<void> {
  * But we still need to do the name convertion, in order for the migration to succeed.
  */
 export async function down(knex: Knex): Promise<void> {
-	const helpers = getHelpers(knex);
-
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.string('name');
 	});
@@ -122,7 +120,9 @@ export async function down(knex: Knex): Promise<void> {
 	}
 
 	await knex.transaction(async (trx) => {
-		await helpers.schema.changePrimaryKey('directus_extensions', ['name'], trx);
+		const helpers = getHelpers(trx);
+
+		await helpers.schema.changePrimaryKey('directus_extensions', ['name']);
 
 		await trx.schema.alterTable('directus_extensions', (table) => {
 			table.dropColumns('id', 'folder', 'source', 'bundle');

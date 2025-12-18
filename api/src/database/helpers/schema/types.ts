@@ -67,11 +67,10 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		});
 	}
 
-	async changePrimaryKey(table: string, columns: string | string[], trx?: Knex.Transaction): Promise<void> {
+	async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
 		const primaryColumns = Array.isArray(columns) ? columns : [columns];
-		const runner = trx ?? this.knex;
 
-		await runner.schema.alterTable(table, (builder) => {
+		await this.knex.schema.alterTable(table, (builder) => {
 			builder.dropPrimary();
 			builder.primary(primaryColumns);
 		});
