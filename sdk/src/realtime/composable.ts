@@ -17,6 +17,7 @@ import type {
 } from './types.js';
 import { generateUid } from './utils/generate-uid.js';
 import { messageCallback } from './utils/message-callback.js';
+import { parseQueryParams } from './utils/parse-query-params.js';
 
 type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -371,6 +372,11 @@ export function realtime(config: WebSocketConfig = {}) {
 				options = {} as Options,
 			) {
 				if ('uid' in options === false) options.uid = uid.next().value;
+
+				if ('query' in options) {
+					options.query = parseQueryParams(options.query);
+				}
+
 				subscriptions.add({ ...options, collection, type: 'subscribe' });
 
 				if (state.code !== 'open') {
