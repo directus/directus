@@ -5,6 +5,7 @@ import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../utils/get-default-index-name.js';
 import { getDatabaseClient } from '../../index.js';
 import { DatabaseHelper } from '../types.js';
+import { toArray } from '@directus/utils';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
 
@@ -68,7 +69,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	}
 
 	async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
-		const primaryColumns = Array.isArray(columns) ? columns : [columns];
+		const primaryColumns = toArray(columns);
 
 		await this.knex.schema.alterTable(table, (builder) => {
 			builder.dropPrimary();

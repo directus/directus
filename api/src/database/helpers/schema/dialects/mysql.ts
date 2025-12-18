@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { SchemaHelper, type CreateIndexOptions, type SortRecord } from '../types.js';
+import { toArray } from '@directus/utils';
 
 const env = useEnv();
 
@@ -15,7 +16,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 	}
 
 	override async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
-		const primaryColumns = Array.isArray(columns) ? columns : [columns];
+		const primaryColumns = toArray(columns);
 		const columnsSql = primaryColumns.map(() => '??').join(', ');
 
 		await this.knex.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [table, ...primaryColumns]);
