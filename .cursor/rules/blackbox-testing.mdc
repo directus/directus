@@ -1,0 +1,112 @@
+---
+alwaysApply: false
+description: "Blackbox testing guide for Directus - testing against real databases"
+globs: ["tests/blackbox/**"]
+---
+
+# Blackbox Testing Guide
+
+## Overview
+
+Directus has a comprehensive blackbox testing setup that runs tests against **real databases** using Docker.
+
+## Supported Databases
+
+All vendors are defined in `tests/blackbox/common/get-dbs-to-test.ts`:
+
+- `postgres` (13)
+- `postgres10`
+- `mysql` (8)
+- `mysql5`
+- `mysql-strict`
+- `maria` (11.4)
+- `mssql` (2022)
+- `oracle` (18)
+- `cockroachdb`
+- `sqlite3`
+
+## Running Blackbox Tests
+
+### Start databases
+```bash
+cd tests/blackbox
+docker-compose up -d
+```
+
+### Run all tests
+```bash
+pnpm --filter tests-blackbox test
+```
+
+### Run tests for specific DB
+```bash
+TEST_DB=postgres pnpm --filter tests-blackbox test
+```
+
+### Run specific test file
+```bash
+pnpm --filter tests-blackbox test -- tests/db/routes/schema/schema.test.ts
+```
+
+## Test Structure
+
+```
+tests/blackbox/
+├── common/
+│   ├── config.ts          # URL/port config per vendor
+│   ├── functions.ts       # Helper functions (CreateCollection, etc.)
+│   ├── get-dbs-to-test.ts # Vendor list
+│   └── variables.ts       # Test users, tokens
+├── docker-compose.yml     # All database containers
+├── setup/
+│   ├── migrations/        # Test migrations
+│   └── seeds/             # Test seed data
+└── tests/
+    ├── common/            # Tests that run once (not per-DB)
+    └── db/                # Tests that run against each DB
+        ├── routes/        # API endpoint tests
+        ├── schema/        # Field type tests (string/, integer/, etc.)
+        └── websocket/     # WebSocket tests
+```
+
+## Writing a Blackbox Test
+
+```typescript
+import vendors from '@common/get-dbs-to-test';
+import { getUrl } from '@common/config';
+import request from 'supertest';
+import { describe, expect, it } from 'vitest';
+
+describe('My Feature', () => {
+  it.each(vendors)('%s - test description', async (vendor) => {
+    const response = await request(getUrl(vendor))
+      .get('/some/endpoint')
+      .set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+    
+    expect(response.statusCode).toEqual(200);
+  });
+});
+```
+
+## Key Helper Functions
+
+From `@common/functions`:
+- `CreateCollection(vendor, { collection })` - Create a collection
+- `CreateField(vendor, { collection, field, type })` - Create a field
+- `CreateItem(vendor, { collection, item })` - Create an item
+- `DeleteCollection(vendor, { collection })` - Delete a collection
+- `ClearCaches()` - Clear caches between test groups
+
+## Database Ports
+
+| Vendor | Port |
+|--------|------|
+| postgres | 6100 |
+| postgres10 | 6101 |
+| mysql | 6102 |
+| mysql5 | 6103 |
+| maria | 6104 |
+| mssql | 6105 |
+| oracle | 6106 |
+| cockroachdb | 6107 |
+| sqlite3 | file |

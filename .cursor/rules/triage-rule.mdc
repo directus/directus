@@ -1,0 +1,92 @@
+---
+alwaysApply: false
+description: "Triage rule for estimating GitHub issues"
+globs: []
+---
+
+# Issue Triage Instructions
+
+When asked to estimate or triage a GitHub issue:
+
+## Research Requirements (MANDATORY)
+
+1. **Always do deep research first** - Search the codebase thoroughly to understand the issue
+2. **Explain your findings** - Detail what you found, which files are involved, and your reasoning
+3. **Distinguish user error from bugs** - Many issues are configuration problems, not Directus bugs
+4. **Consider scope** - High priority = impacts ALL users. If it's a config issue or edge case, it's Low/Medium
+5. **Check if it's reproducible** - "Works locally but not in production" often means user config issue
+
+## Structured Assessment
+
+## Required Output Format
+
+### Priority
+Select ONE: `Urgent` | `High` | `Medium` | `Low`
+
+### Estimate  
+Select ONE: `XS` (< 1h) | `S` (1-4h) | `M` (4h-1d) | `L` (1-3d) | `XL` (3d+)
+
+### Labels
+
+**Integration** (if applicable):
+MySQL, AWS S3, Azure, Cloudinary, CockroachDB, GCS, Local, MariaDB, MS SQL Server, Oracle, Postgres, SQLite, Supabase
+
+**Type** (select ONE):
+Bug, Feature, Improvement, Spike, Task
+
+**Impact** (select ONE):
+High Impact, Med Impact, Low Impact
+
+**Product** (select ONE or more):
+Core, Docs, Studio (App)
+
+**Core Component** (select relevant):
+Assets/Files, Auth, Comments, Content Comparison, Content Workflow, CRUD, Data Modeling, Emailing, Extensions, Flows, GraphQL, Infra, Insights, Integrations, Logs, Monetization, Observability, Onboarding, Permissions, Presets, Sharing, Telemetry, UX/DX, Validation, Versioning
+
+**Enterprise**: Yes/No (if it requires enterprise features)
+
+## Example Output
+
+```
+📋 TRIAGE SUMMARY
+─────────────────
+Priority:    Medium
+Estimate:    S (1-4h)
+
+Labels:
+├─ Integration:     MySQL
+├─ Type:            Bug
+├─ Impact:          Med Impact
+├─ Product:         Core
+├─ Core Component:  Infra
+└─ Enterprise:      No
+```
+
+## Issue Comment
+
+Also provide a short, natural comment ready to paste on the issue. This comment should:
+- Be written like a developer writing quickly to help a colleague
+- NO formal structure, NO headers, NO bullet points lists
+- Straight to the point: what's the problem, where is it, how to fix it
+- Include file paths and line numbers when relevant
+- Mention if other integrations/DBs are affected or not
+- Sound human, not like ChatGPT
+
+**Good example:**
+```
+Quick look at this - the issue is in `api/src/migrations/xxx.ts` around line 45. 
+It does X then Y which breaks when Z is enabled.
+
+Fix should be simple: do X and Y in a single statement for MySQL. We already 
+have this pattern in other migrations.
+
+Only affects MySQL 8+ with this specific setting, other DBs are fine.
+```
+
+**Bad example (too ChatGPT):**
+```
+## Investigation Summary
+**Root Cause**: The migration executes...
+**Suggested Fix**: Implement a conditional...
+**Impact Assessment**: This issue affects...
+```
