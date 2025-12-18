@@ -14,12 +14,11 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		return getDefaultIndexName(type, collection, fields, { maxLength: 64 });
 	}
 
-	override async changePrimaryKey(table: string, columns: string | string[], trx?: Knex.Transaction): Promise<void> {
+	override async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
 		const primaryColumns = Array.isArray(columns) ? columns : [columns];
 		const columnsSql = primaryColumns.map(() => '??').join(', ');
-		const runner = trx ?? this.knex;
 
-		await runner.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [table, ...primaryColumns]);
+		await this.knex.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [table, ...primaryColumns]);
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {
