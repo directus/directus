@@ -1,13 +1,4 @@
-import type { Item, WebSocketClient, WebSocketCollabMessage } from '@directus/types';
-
-export type CollabRoom = {
-	uid: string;
-	collection: string;
-	item: string | number;
-	version: string | undefined;
-	changes: Item;
-	clients: WebSocketClient[];
-};
+import type { WebSocketCollabMessage } from '@directus/types';
 
 export type JoinMessage = Extract<WebSocketCollabMessage, { action: 'join' }>;
 export type LeaveMessage = Extract<WebSocketCollabMessage, { action: 'leave' }>;
