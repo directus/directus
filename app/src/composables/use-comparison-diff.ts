@@ -1,5 +1,5 @@
 import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
-import { isEqual } from 'lodash';
+import { isArray, isEqual, isNil, isPlainObject, isString } from 'lodash';
 import dompurify from 'dompurify';
 import type { Field } from '@directus/types';
 
@@ -388,7 +388,7 @@ export function useComparisonDiff() {
 		let changes: Change[];
 
 		if (isEqual(baseValue, incomingValue)) {
-			if (field?.meta?.special && field.meta.special.includes('conceal')) {
+			if (field?.meta?.special?.includes('conceal')) {
 				changes = [
 					{
 						updated: true,
@@ -399,29 +399,16 @@ export function useComparisonDiff() {
 				return [];
 			}
 		} else if (
-			typeof baseValue === 'string' &&
-			typeof incomingValue === 'string' &&
-			isHtmlString(baseValue) &&
-			isHtmlString(incomingValue)
+			(isHtmlString(baseValue) || isHtmlString(incomingValue)) &&
+			(isString(baseValue) || isNil(baseValue)) &&
+			(isString(incomingValue) || isNil(incomingValue))
 		) {
-			changes = computeHtmlDiff(baseValue, incomingValue);
-		} else if (
-			typeof baseValue === 'string' &&
-			typeof incomingValue === 'string' &&
-			!isHtmlString(baseValue) &&
-			!isHtmlString(incomingValue)
-		) {
+			changes = computeHtmlDiff(baseValue || '', incomingValue || '');
+		} else if (isString(baseValue) && isString(incomingValue)) {
 			changes = diffWordsWithSpace(baseValue, incomingValue);
-		} else if (Array.isArray(baseValue) && Array.isArray(incomingValue)) {
+		} else if (isArray(baseValue) && isArray(incomingValue)) {
 			changes = diffArrays(baseValue, incomingValue);
-		} else if (
-			baseValue &&
-			incomingValue &&
-			typeof baseValue === 'object' &&
-			typeof incomingValue === 'object' &&
-			!Array.isArray(baseValue) &&
-			!Array.isArray(incomingValue)
-		) {
+		} else if (isPlainObject(baseValue) && isPlainObject(incomingValue)) {
 			changes = diffJson(baseValue, incomingValue);
 		} else {
 			changes = [

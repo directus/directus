@@ -255,14 +255,11 @@ export function useComparison(options: UseComparisonOptions) {
 			const baseValue = base[fieldKey];
 			const incomingValue = incoming[fieldKey];
 
-			if (baseValue === undefined && incomingValue === undefined) {
-				continue;
-			}
+			if (baseValue === undefined && incomingValue === undefined) continue;
 
 			if (
 				shouldShowComparisonDiff(true, 'base', baseValue, incomingValue) &&
-				isHtmlString(baseValue) &&
-				isHtmlString(incomingValue)
+				(isHtmlString(baseValue) || isHtmlString(incomingValue))
 			) {
 				const changes = computeDiff(baseValue, incomingValue, field);
 

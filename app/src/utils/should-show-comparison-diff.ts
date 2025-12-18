@@ -1,3 +1,5 @@
+import { isArray, isNil, isPlainObject, isString } from 'lodash';
+
 export function shouldShowComparisonDiff(
 	comparisonMode: boolean | undefined,
 	comparisonSide: 'base' | 'incoming' | undefined,
@@ -5,29 +7,18 @@ export function shouldShowComparisonDiff(
 	comparisonIncomingValue: any,
 ): boolean {
 	if (!comparisonMode || !comparisonSide) return false;
-	if (comparisonBaseValue === undefined && comparisonIncomingValue === undefined) return false;
+	if (isNil(comparisonBaseValue) && isNil(comparisonIncomingValue)) return false;
 
-	const baseValue = comparisonBaseValue ?? null;
-	const incomingValue = comparisonIncomingValue ?? null;
+	if (comparisonBaseValue === comparisonIncomingValue) return false;
 
-	if (typeof baseValue === 'string' && typeof incomingValue === 'string') {
-		return true;
-	}
+	const isStringOrNil = (val: any) => isString(val) || isNil(val);
+	if (isStringOrNil(comparisonBaseValue) && isStringOrNil(comparisonIncomingValue)) return true;
 
-	if (Array.isArray(baseValue) && Array.isArray(incomingValue)) {
-		return true;
-	}
+	const isArrayOrNil = (val: any) => isArray(val) || isNil(val);
+	if (isArrayOrNil(comparisonBaseValue) && isArrayOrNil(comparisonIncomingValue)) return true;
 
-	if (
-		baseValue &&
-		incomingValue &&
-		typeof baseValue === 'object' &&
-		typeof incomingValue === 'object' &&
-		!Array.isArray(baseValue) &&
-		!Array.isArray(incomingValue)
-	) {
-		return true;
-	}
+	const isObjectOrNil = (val: any) => isPlainObject(val) || isNil(val);
+	if (isObjectOrNil(comparisonBaseValue) && isObjectOrNil(comparisonIncomingValue)) return true;
 
 	return false;
 }

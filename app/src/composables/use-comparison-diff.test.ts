@@ -65,4 +65,28 @@ describe('useComparisonDiff - HTML Diff', () => {
 		expect(changes[1]?.value).toContain('comparison-diff--added');
 		expect(changes[1]?.value).toContain('beautiful');
 	});
+
+	it('highlights all content on incoming side when base is empty', () => {
+		const { computeDiff } = useComparisonDiff();
+		const base = null;
+		const incoming = '<p>Hello World</p>';
+
+		const changes = computeDiff(base, incoming);
+
+		expect(changes).toHaveLength(2);
+		expect(changes[1]?.added).toBe(true);
+		expect(changes[1]?.value).toContain('<span class="comparison-diff--added">Hello World</span>');
+	});
+
+	it('highlights all content on base side when incoming is empty', () => {
+		const { computeDiff } = useComparisonDiff();
+		const base = '<p>Hello World</p>';
+		const incoming = null;
+
+		const changes = computeDiff(base, incoming);
+
+		expect(changes).toHaveLength(2);
+		expect(changes[0]?.removed).toBe(true);
+		expect(changes[0]?.value).toContain('<span class="comparison-diff--removed">Hello World</span>');
+	});
 });
