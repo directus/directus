@@ -19,10 +19,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		const columnsSql = primaryColumns.map(() => '??').join(', ');
 		const runner = trx ?? this.knex;
 
-		await runner.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [
-			table,
-			...primaryColumns,
-		]);
+		await runner.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [table, ...primaryColumns]);
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {
