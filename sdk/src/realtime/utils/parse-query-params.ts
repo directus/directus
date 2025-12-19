@@ -1,4 +1,4 @@
-import { queryToParams } from '../../rest/index.js';
+import { queryToParams } from '../../utils/query-to-params.js';
 
 function parseItemToQueryParams(query: Record<string, unknown>) {
 	return queryToParams(query);

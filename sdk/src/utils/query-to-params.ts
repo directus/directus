@@ -1,4 +1,4 @@
-import type { AggregationTypes, GroupByFields, Query } from '../../types/index.js';
+import type { AggregationTypes, GroupByFields, Query } from '../types/index.js';
 
 type ExtendedQuery<Schema, Item> = Query<Schema, Item> & {
 	aggregate?: Partial<Record<keyof AggregationTypes, string>>;

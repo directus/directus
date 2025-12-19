@@ -373,7 +373,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			) {
 				if ('uid' in options === false) options.uid = uid.next().value;
 
-				if ('query' in options) {
+				if ('query' in options && options.query) {
 					options.query = parseQueryParams(options.query);
 				}
 
