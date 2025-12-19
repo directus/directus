@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ValidationNestedGroupsList from './validation-nested-groups-list.vue';
 export type RenderItem =
 	| {
 			kind: 'rule';
@@ -40,7 +41,7 @@ const props = defineProps<{
 					{{ item.text }}
 				</template>
 			</span>
-			<validation-nested-groups-list
+			<ValidationNestedGroupsList
 				v-if="item.kind === 'group' && item.children && item.children.length > 0"
 				:items="item.children"
 				:depth="props.depth + 1"

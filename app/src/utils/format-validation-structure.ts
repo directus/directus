@@ -1,3 +1,5 @@
+import { i18n } from '@/lang';
+
 export type ValidationNode = {
 	type: 'and' | 'or' | 'rule';
 	children?: ValidationNode[];
@@ -7,7 +9,7 @@ export type ValidationNode = {
 };
 
 export function parseValidationStructure(validation: any): ValidationNode | null {
-	if (!validation || typeof validation !== 'object') return null;
+	if (validation == null || typeof validation !== 'object' || Array.isArray(validation)) return null;
 
 	if (validation._and && Array.isArray(validation._and)) {
 		const children = validation._and
@@ -92,6 +94,12 @@ export function formatValidationRule(node: ValidationNode, t: (key: string, para
 			params.invalid = Array.isArray(value) ? value.map(quote).join(', ') : quote(value);
 		} else if (operator === 'in') {
 			params.valid = Array.isArray(value) ? value.map(quote).join(', ') : quote(value);
+		}
+
+		const translationExists = i18n.global.te(key);
+
+		if (!translationExists) {
+			return t('validation_value_is_invalid');
 		}
 
 		return t(key, params);
