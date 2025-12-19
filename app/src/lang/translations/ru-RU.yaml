@@ -1389,6 +1389,8 @@ fields:
     mcp_enabled_note: 'Подключите инструменты AI/LLM к вашему проекту Directus через <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Это позволяет ИИ ассистентам безопасно считывать и взаимодействовать с данными Directus.'
     mcp_notice: 'Model Context Protocol — это стандарт для подключения LLM к таким приложениям, как Directus. Единожды настроенный, Directus MCP сервер будет доступен по `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Узнать больше про MCP и его установку.</a>'
     mcp_allow_deletes: Разрешить удаления
+    mcp_allow_deletes_note:
+      - 
     mcp_prompts_collection: AI Prompts Collection
   directus_shares:
     name: Название
