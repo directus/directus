@@ -4,7 +4,6 @@ import { useRelationsStore } from '@/stores/relations.js';
 import { getRelatedCollection } from '@/utils/get-related-collection.js';
 import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getGraphqlQueryFields } from './get-graphql-query-fields.js';
@@ -233,8 +232,8 @@ it('should work with m2a fields and use aliases for nested fields', () => {
  *   ... on child1 { child1__items: items }
  *   ... on child2 { child2__items: items { id } }
  */
-describe('m2a fields with conflicting field types (issue #25476)', () => {
-	function setupMocksForIssue25476() {
+describe('m2a fields with conflicting field types', () => {
+	function setupConflictingM2AScenario() {
 		vi.mocked(getRelatedCollection).mockImplementation((collection, field) => {
 			if (collection === 'parent' && field === 'children') {
 				return { relatedCollection: 'parent_children' };
@@ -279,7 +278,7 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 	}
 
 	it('should use aliases to avoid GraphQL validation errors when collections have same field names', () => {
-		setupMocksForIssue25476();
+		setupConflictingM2AScenario();
 
 		// These are the duplication fields from the issue:
 		// ["children.collection", "children.item:child2.items", "children.item:child1.items"]
@@ -317,36 +316,35 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 		});
 	});
 
-	it('should generate valid GraphQL query with aliased fields that avoids type conflicts', () => {
-		setupMocksForIssue25476();
+	it('should generate valid GraphQL query structure with aliased fields that avoids type conflicts', () => {
+		setupConflictingM2AScenario();
 
 		const fields: string[] = ['children.collection', 'children.item:child1.items', 'children.item:child2.items'];
 
 		const { queryFields } = getGraphqlQueryFields(fields, 'parent');
 
-		// Generate the actual GraphQL query string
-		const graphqlQuery = jsonToGraphQLQuery({
-			query: {
-				parent_by_id: {
-					__args: { id: '123' },
-					...queryFields,
-				},
-			},
-		});
+		// Verify the JSON structure contains aliased fields in inline fragments
+		// We assert on the structure, not the serialized GraphQL string
+		expect(queryFields.children).toBeDefined();
+		expect(queryFields.children.item).toBeDefined();
+		expect(queryFields.children.item.__on).toBeDefined();
 
-		// The query should use aliases to avoid field conflicts
-		// child1__items: items (for the JSON field)
-		// child2__items: items { id } (for the relation field)
-		expect(graphqlQuery).toContain('child1__items: items');
-		expect(graphqlQuery).toContain('child2__items: items');
+		const fragments = queryFields.children.item.__on as any[];
 
-		// Verify the inline fragments are present
-		expect(graphqlQuery).toContain('... on child1');
-		expect(graphqlQuery).toContain('... on child2');
+		const child1Fragment = fragments.find((f) => f.__typeName === 'child1');
+		const child2Fragment = fragments.find((f) => f.__typeName === 'child2');
+
+		expect(child1Fragment).toBeDefined();
+		expect(child1Fragment.child1__items).toBeDefined();
+		expect(child1Fragment.child1__items.__aliasFor).toBe('items');
+
+		expect(child2Fragment).toBeDefined();
+		expect(child2Fragment.child2__items).toBeDefined();
+		expect(child2Fragment.child2__items.__aliasFor).toBe('items');
 	});
 
 	it('should correctly transform aliased response data back to original field names', () => {
-		setupMocksForIssue25476();
+		setupConflictingM2AScenario();
 
 		const fields: string[] = ['children.collection', 'children.item:child1.items', 'children.item:child2.items'];
 
@@ -489,9 +487,9 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 	});
 
 	it('should use custom collection field name from relation meta', () => {
-		setupMocksForIssue25476();
+		setupConflictingM2AScenario();
 
-		// Mock a relation with custom collection field name
+		// Override the relation mock to use a custom collection field name
 		const relationsStore = mockedStore(useRelationsStore());
 
 		relationsStore.getRelationForField.mockImplementation((currentCollection, sourceField) => {
@@ -524,40 +522,12 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 	it('should store custom junction field name (e.g., value instead of item)', () => {
 		// This test verifies that when the junction field is renamed (e.g., 'value' instead of 'item'),
 		// the junctionField is correctly extracted and stored in the alias map
-		vi.mocked(getRelatedCollection).mockImplementation((collection, field) => {
-			if (collection === 'parent' && field === 'children') {
-				return { relatedCollection: 'parent_children' };
-			}
+		setupConflictingM2AScenario();
 
-			if (collection === 'child1' && field === 'items') {
-				return null; // JSON field - not a relation
-			}
-
-			if (collection === 'child2' && field === 'items') {
-				return { relatedCollection: 'child2_items' }; // 1:N relation
-			}
-
-			return null;
-		});
-
-		const fieldsStore = mockedStore(useFieldsStore());
-
-		fieldsStore.getPrimaryKeyFieldForCollection.mockImplementation((collection) => {
-			switch (collection) {
-				case 'parent_children':
-				case 'child1':
-				case 'child2':
-				case 'child2_items':
-					return { field: 'id' } as Field;
-				default:
-					return null;
-			}
-		});
-
+		// Override the relation mock for the 'value' junction field instead of 'item'
 		const relationsStore = mockedStore(useRelationsStore());
 
 		relationsStore.getRelationForField.mockImplementation((currentCollection, sourceField) => {
-			// Mock for 'value' junction field instead of 'item'
 			if (currentCollection === 'parent_children' && sourceField === 'value') {
 				return {
 					meta: { one_collection_field: 'collection' },
