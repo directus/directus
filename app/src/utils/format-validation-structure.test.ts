@@ -1,6 +1,11 @@
 import { test, expect, vi, beforeEach } from 'vitest';
 import { createI18n } from 'vue-i18n';
-import { formatValidationRule, parseValidationStructure, type ValidationNode } from './format-validation-structure';
+import {
+	formatValidationRule,
+	parseValidationStructure,
+	hasNestedGroups,
+	type ValidationNode,
+} from './format-validation-structure';
 
 vi.mock('@/lang', () => {
 	const i18n = createI18n({
@@ -133,4 +138,56 @@ test('parseValidationStructure returns null for null input', () => {
 	const result = parseValidationStructure(validation);
 
 	expect(result).toBeNull();
+});
+
+test('hasNestedGroups returns false for single rule', () => {
+	const validation = {
+		name: {
+			_eq: 'test',
+		},
+	};
+
+	expect(hasNestedGroups(validation)).toBe(false);
+});
+
+test('hasNestedGroups returns true for multiple rules at same level', () => {
+	const validation = {
+		_and: [
+			{
+				name: {
+					_eq: 'test',
+				},
+			},
+			{
+				email: {
+					_contains: '@',
+				},
+			},
+		],
+	};
+
+	expect(hasNestedGroups(validation)).toBe(true);
+});
+
+test('hasNestedGroups returns true for single item that contains nested groups', () => {
+	const validation = {
+		_and: [
+			{
+				_and: [
+					{
+						name: {
+							_eq: 'test',
+						},
+					},
+					{
+						email: {
+							_contains: '@',
+						},
+					},
+				],
+			},
+		],
+	};
+
+	expect(hasNestedGroups(validation)).toBe(true);
 });
