@@ -8,9 +8,9 @@ import { getExtensionCount, type ExtensionCount } from '../utils/get-extension-c
 import { getFieldCount, type FieldCount } from '../utils/get-field-count.js';
 import { getFilesizeSum, type FilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
+import { getSettings, type TelemetrySettings } from '../utils/get-settings.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
 import { getReport } from './get-report.js';
-import { getProjectId } from '../utils/get-project-id.js';
 
 vi.mock('../../database/index.js');
 
@@ -37,7 +37,7 @@ vi.mock('../utils/get-field-count.js');
 vi.mock('../utils/get-extension-count.js');
 vi.mock('../../utils/fetch-user-count/fetch-user-count.js');
 vi.mock('../utils/get-filesize-sum.js');
-vi.mock('../utils/get-project-id.js');
+vi.mock('../utils/get-settings.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
@@ -46,7 +46,7 @@ let mockUserItemCounts: UserItemCount;
 let mockFieldCounts: FieldCount;
 let mockExtensionCounts: ExtensionCount;
 let mockFilesizeSums: FilesizeSum;
-let mockProjectId: string | null;
+let mockSettings: TelemetrySettings;
 
 beforeEach(() => {
 	mockEnv = {
@@ -65,7 +65,13 @@ beforeEach(() => {
 
 	mockFilesizeSums = { total: 10 };
 
-	mockProjectId = 'test-project-id';
+	mockSettings = {
+		project_id: 'test-project-id',
+		mcp_enabled: true,
+		mcp_allow_deletes: false,
+		mcp_system_prompt_enabled: true,
+		visual_editor_urls: 2,
+	};
 
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
@@ -76,7 +82,7 @@ beforeEach(() => {
 	vi.mocked(getFieldCount).mockResolvedValue(mockFieldCounts);
 	vi.mocked(getExtensionCount).mockResolvedValue(mockExtensionCounts);
 	vi.mocked(getFilesizeSum).mockResolvedValue(mockFilesizeSums);
-	vi.mocked(getProjectId).mockResolvedValue(mockProjectId);
+	vi.mocked(getSettings).mockResolvedValue(mockSettings);
 });
 
 afterEach(() => {
@@ -91,7 +97,6 @@ test('Returns environment information', async () => {
 	expect(report.url).toBe(mockEnv['PUBLIC_URL']);
 	expect(report.database).toBe('test-db');
 	expect(report.version).toBe(version);
-	expect(report.project_id).toBe(mockProjectId);
 });
 
 test('Runs and returns basic counts', async () => {
@@ -164,4 +169,16 @@ test('Runs and returns extension counts', async () => {
 	expect(getFilesizeSum).toHaveBeenCalledWith(mockDb);
 
 	expect(report.files_size_total).toBe(mockFilesizeSums.total);
+});
+
+test('Runs and returns settings', async () => {
+	const report = await getReport();
+
+	expect(getSettings).toHaveBeenCalledWith(mockDb);
+
+	expect(report.project_id).toBe(mockSettings.project_id);
+	expect(report.mcp_enabled).toBe(mockSettings.mcp_enabled);
+	expect(report.mcp_allow_deletes).toBe(mockSettings.mcp_allow_deletes);
+	expect(report.mcp_system_prompt_enabled).toBe(mockSettings.mcp_system_prompt_enabled);
+	expect(report.visual_editor_urls).toBe(mockSettings.visual_editor_urls);
 });

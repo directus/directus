@@ -1,5 +1,7 @@
 import { useEnv } from '@directus/env';
 import {
+	createError,
+	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
@@ -10,30 +12,33 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	DirectusError,
 	ExportFormat,
 	File,
 	Query,
 	SchemaOverview,
 } from '@directus/types';
-import { parseJSON, toArray } from '@directus/utils';
+import { getDateTimeFormatted, parseJSON, toArray } from '@directus/utils';
 import { createTmpFile } from '@directus/utils/node';
+import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import { queue } from 'async';
 import destroyStream from 'destroy';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
+import { set } from 'lodash-es';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
 import type { Readable, Stream } from 'node:stream';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
+import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { FunctionFieldNode, FieldNode, NestedCollectionNode } from '../types/index.js';
-import { getDateFormatted } from '../utils/get-date-formatted.js';
+import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
@@ -41,11 +46,155 @@ import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
-import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
-import { set } from 'lodash-es';
 
 const env = useEnv();
 const logger = useLogger();
+
+const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
+
+type CapturedErrorData = {
+	message: string;
+	rowNumbers: number[];
+};
+
+export function createErrorTracker() {
+	let genericError: DirectusError | undefined;
+	// For errors with field / type (joi validation or DB with field)
+	const fieldErrors: Map<ErrorCode, Map<string, CapturedErrorData>> = new Map();
+	let capturedErrorCount = 0;
+	let isLimitReached = false;
+
+	function convertToRanges(rows: number[], minRangeSize = 4): Array<ImportRowLines | ImportRowRange> {
+		const sorted = Array.from(new Set(rows)).sort((a, b) => a - b);
+		const result: Array<ImportRowLines | ImportRowRange> = [];
+
+		if (sorted.length === 0) return [];
+
+		let start = sorted[0] as number;
+		let prev = sorted[0] as number;
+		let count = 1;
+		const nonConsecutive: number[] = [];
+
+		const flush = () => {
+			if (count >= minRangeSize) {
+				result.push({ type: 'range', start, end: prev });
+			} else {
+				for (let i = start; i <= prev; i++) {
+					nonConsecutive.push(i);
+				}
+			}
+		};
+
+		for (let i = 1; i < sorted.length; i++) {
+			const current = sorted[i] as number;
+
+			if (current === prev + 1) {
+				prev = current;
+				count++;
+			} else {
+				flush();
+				start = prev = current;
+				count = 1;
+			}
+		}
+
+		flush();
+
+		// Add non-consecutive rows as a single "lines" entry
+		if (nonConsecutive.length > 0) {
+			result.push({ type: 'lines', rows: nonConsecutive });
+		}
+
+		return result;
+	}
+
+	function addCapturedError(err: any, rowNumber: number) {
+		const field = err.extensions?.field;
+
+		if (field) {
+			const type = err.extensions?.type;
+			const substring = err.extensions?.substring;
+			const valid = err.extensions?.valid;
+			const invalid = err.extensions?.invalid;
+			let key = type ? `${field}|${type}` : field;
+
+			if (substring !== undefined) key += `|substring:${substring}`;
+			if (valid !== undefined) key += `|valid:${JSON.stringify(valid)}`;
+			if (invalid !== undefined) key += `|invalid:${JSON.stringify(invalid)}`;
+
+			if (!fieldErrors.has(err.code)) {
+				fieldErrors.set(err.code, new Map());
+			}
+
+			const errorsByCode = fieldErrors.get(err.code)!;
+
+			if (!errorsByCode.has(key)) {
+				errorsByCode.set(key, {
+					message: err.message,
+					rowNumbers: [],
+				});
+			}
+
+			errorsByCode.get(key)!.rowNumbers.push(rowNumber);
+		} else {
+			genericError = err;
+		}
+
+		capturedErrorCount++;
+
+		if (capturedErrorCount >= MAX_IMPORT_ERRORS) {
+			isLimitReached = true;
+		}
+	}
+
+	function hasGenericError() {
+		return genericError !== undefined;
+	}
+
+	function buildFinalErrors() {
+		if (genericError) {
+			return [genericError];
+		}
+
+		return Array.from(fieldErrors.entries()).flatMap(([code, fieldMap]) =>
+			Array.from(fieldMap.entries()).map(([compositeKey, errorData]) => {
+				const parts = compositeKey.split('|');
+				const field = parts[0];
+				const type = parts[1];
+
+				const extensions: any = {};
+
+				for (let i = 2; i < parts.length; i++) {
+					const [paramType, paramValue] = parts[i]?.split(':', 2) ?? [];
+					if (!paramType || paramValue === undefined) continue;
+
+					try {
+						extensions[paramType] = JSON.parse(paramValue);
+					} catch {
+						extensions[paramType] = paramValue;
+					}
+				}
+
+				const ErrorClass = createError<any>(code, errorData.message, 400);
+				return new ErrorClass({
+					field,
+					type,
+					...extensions,
+					rows: convertToRanges(errorData.rowNumbers),
+				});
+			}),
+		);
+	}
+
+	return {
+		addCapturedError,
+		buildFinalErrors,
+		getCount: () => capturedErrorCount,
+		hasErrors: () => capturedErrorCount > 0 || hasGenericError(),
+		shouldStop: () => isLimitReached || hasGenericError(),
+		hasGenericError,
+	};
+}
 
 export class ImportService {
 	knex: Knex;
@@ -101,46 +250,104 @@ export class ImportService {
 	async importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
+		const errorTracker = createErrorTracker();
+		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 
-		return transaction(this.knex, (trx) => {
+		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
 				schema: this.schema,
 				accountability: this.accountability,
 			});
 
-			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value, { bypassEmitAction: (params) => nestedActionEvents.push(params) });
-			});
+			try {
+				await new Promise<void>((resolve, reject) => {
+					let rowNumber = 1;
 
-			return new Promise<void>((resolve, reject) => {
-				stream.pipe(extractJSON);
+					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						if (errorTracker.shouldStop()) return;
 
-				extractJSON.on('data', ({ value }: Record<string, any>) => {
-					saveQueue.push(value);
-				});
+						try {
+							if (isSingleton) {
+								return await service.upsertSingleton(task.data, {
+									bypassEmitAction: (params) => nestedActionEvents.push(params),
+								});
+							} else {
+								return await service.upsertOne(task.data, {
+									bypassEmitAction: (params) => nestedActionEvents.push(params),
+								});
+							}
+						} catch (error) {
+							for (const err of toArray(error)) {
+								errorTracker.addCapturedError(err, task.rowNumber);
 
-				extractJSON.on('error', (err: Error) => {
-					destroyStream(stream);
-					destroyStream(extractJSON);
+								if (errorTracker.shouldStop()) {
+									break;
+								}
+							}
 
-					reject(new InvalidPayloadError({ reason: err.message }));
-				});
+							if (errorTracker.shouldStop()) {
+								saveQueue.kill();
+								destroyStream(stream);
+								destroyStream(extractJSON);
+								reject();
+							}
 
-				saveQueue.error((err) => {
-					reject(err);
-				});
+							return;
+						}
+					});
 
-				extractJSON.on('end', () => {
-					saveQueue.drain(() => {
-						for (const nestedActionEvent of nestedActionEvents) {
-							emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+					stream.pipe(extractJSON);
+
+					extractJSON.on('data', ({ value }: Record<string, any>) => {
+						if (isSingleton && rowNumber > 1) {
+							saveQueue.kill();
+							destroyStream(stream);
+							destroyStream(extractJSON);
+
+							reject(
+								new InvalidPayloadError({
+									reason: `Cannot import multiple records into singleton collection ${collection}`,
+								}),
+							);
+
+							return;
 						}
 
-						return resolve();
+						saveQueue.push({ data: value, rowNumber: rowNumber++ });
+					});
+
+					extractJSON.on('error', (err: Error) => {
+						destroyStream(stream);
+						destroyStream(extractJSON);
+
+						reject(new InvalidPayloadError({ reason: err.message }));
+					});
+
+					extractJSON.on('end', () => {
+						// In case of empty JSON file
+						if (!saveQueue.started) return resolve();
+
+						saveQueue.drain(() => {
+							if (errorTracker.hasErrors()) {
+								return reject();
+							}
+
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
+
+							return resolve();
+						});
 					});
 				});
-			});
+			} catch (error) {
+				if (!error && errorTracker.hasErrors()) {
+					throw errorTracker.buildFinalErrors();
+				}
+
+				throw error;
+			}
 		});
 	}
 
@@ -149,116 +356,170 @@ export class ImportService {
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
 		const nestedActionEvents: ActionEventParams[] = [];
+		const errorTracker = createErrorTracker();
+		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 
-		return transaction(this.knex, (trx) => {
+		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
 				schema: this.schema,
 				accountability: this.accountability,
 			});
 
-			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
-			});
+			try {
+				await new Promise<void>((resolve, reject) => {
+					const streams: Stream[] = [stream];
+					let rowNumber = 0;
 
-			const transform = (value: string) => {
-				if (value.length === 0) return;
-
-				try {
-					const parsedJson = parseJSON(value);
-
-					if (typeof parsedJson === 'number') {
-						return value;
-					}
-
-					return parsedJson;
-				} catch {
-					return value;
-				}
-			};
-
-			const PapaOptions: Papa.ParseConfig = {
-				header: true,
-				// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
-				transformHeader: (header) => header.trim(),
-				transform,
-			};
-
-			return new Promise<void>((resolve, reject) => {
-				const streams: Stream[] = [stream];
-
-				const cleanup = (destroy = true) => {
-					if (destroy) {
-						for (const stream of streams) {
-							destroyStream(stream);
+					const cleanup = (destroy = true) => {
+						if (destroy) {
+							for (const stream of streams) {
+								destroyStream(stream);
+							}
 						}
-					}
 
-					tmpFile.cleanup().catch(() => {
-						logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+						tmpFile.cleanup().catch(() => {
+							logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+						});
+					};
+
+					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						if (errorTracker.shouldStop()) return;
+
+						try {
+							if (isSingleton) {
+								return await service.upsertSingleton(task.data, {
+									bypassEmitAction: (action) => nestedActionEvents.push(action),
+								});
+							} else {
+								return await service.upsertOne(task.data, {
+									bypassEmitAction: (action) => nestedActionEvents.push(action),
+								});
+							}
+						} catch (error: any) {
+							for (const err of toArray(error)) {
+								errorTracker.addCapturedError(err, task.rowNumber);
+
+								if (errorTracker.shouldStop()) {
+									break;
+								}
+							}
+
+							if (errorTracker.shouldStop()) {
+								saveQueue.kill();
+								cleanup(true);
+								reject();
+							}
+
+							return;
+						}
 					});
-				};
 
-				saveQueue.error((error) => {
-					reject(error);
-				});
-
-				const fileWriteStream = createWriteStream(tmpFile.path)
-					.on('error', (error) => {
-						cleanup();
-						reject(new Error('Error while writing import data to temporary file', { cause: error }));
-					})
-					.on('finish', () => {
-						const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+					const fileWriteStream = createWriteStream(tmpFile.path)
+						.on('error', (error) => {
 							cleanup();
-							reject(new Error('Error while reading import data from temporary file', { cause: error }));
+							reject(new Error('Error while writing import data to temporary file', { cause: error }));
+						})
+						.on('finish', () => {
+							const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+								cleanup();
+								reject(new Error('Error while reading import data from temporary file', { cause: error }));
+							});
+
+							streams.push(fileReadStream);
+
+							fileReadStream
+								.pipe(
+									Papa.parse(Papa.NODE_STREAM_INPUT, {
+										header: true,
+										transformHeader: (header) => header.trim(),
+										transform: (value: string) => {
+											if (value.length === 0) return;
+
+											try {
+												const parsedJson = parseJSON(value);
+
+												if (typeof parsedJson === 'number') {
+													return value;
+												}
+
+												return parsedJson;
+											} catch {
+												return value;
+											}
+										},
+									}),
+								)
+								.on('data', (obj: Record<string, unknown>) => {
+									rowNumber++;
+
+									if (isSingleton && rowNumber > 1) {
+										saveQueue.kill();
+										cleanup(true);
+
+										reject(
+											new InvalidPayloadError({
+												reason: `Cannot import multiple records into singleton collection ${collection}`,
+											}),
+										);
+
+										return;
+									}
+
+									const result: Record<string, unknown> = {};
+
+									for (const field in obj) {
+										if (obj[field] !== undefined) {
+											set(result, field, obj[field]);
+										}
+									}
+
+									saveQueue.push({ data: result, rowNumber });
+								})
+								.on('error', (error: Error) => {
+									cleanup();
+									reject(new InvalidPayloadError({ reason: error.message }));
+								})
+								.on('end', () => {
+									// In case of empty CSV file
+									if (!saveQueue.started) {
+										cleanup(false);
+
+										return resolve();
+									}
+
+									saveQueue.drain(() => {
+										if (!errorTracker.shouldStop()) cleanup(false);
+
+										if (errorTracker.hasErrors()) {
+											return reject();
+										}
+
+										for (const nestedActionEvent of nestedActionEvents) {
+											emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+										}
+
+										return resolve();
+									});
+								});
 						});
 
-						streams.push(fileReadStream);
+					streams.push(fileWriteStream);
 
-						fileReadStream
-							.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
-							.on('data', (obj: Record<string, unknown>) => {
-								const result = {};
+					stream
+						.on('error', (error) => {
+							cleanup();
+							reject(new Error('Error while retrieving import data', { cause: error }));
+						})
+						.pipe(fileWriteStream);
+				});
+			} catch (error) {
+				if (!error && errorTracker.hasErrors()) {
+					throw errorTracker.buildFinalErrors();
+				}
 
-								// Filter out all undefined fields
-								for (const field in obj) {
-									if (obj[field] !== undefined) {
-										set(result, field, obj[field]);
-									}
-								}
-
-								saveQueue.push(result);
-							})
-							.on('error', (error) => {
-								cleanup();
-								reject(new InvalidPayloadError({ reason: error.message }));
-							})
-							.on('end', () => {
-								cleanup(false);
-
-								// In case of empty CSV file
-								if (!saveQueue.started) return resolve();
-
-								saveQueue.drain(() => {
-									for (const nestedActionEvent of nestedActionEvents) {
-										emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-									}
-
-									return resolve();
-								});
-							});
-					});
-
-				streams.push(fileWriteStream);
-
-				stream
-					.on('error', (error) => {
-						cleanup();
-						reject(new Error('Error while retrieving import data', { cause: error }));
-					})
-					.pipe(fileWriteStream);
-			});
+				throw error;
+			}
 		});
 	}
 }
@@ -295,6 +556,7 @@ export class ExportService {
 
 			const mimeTypes = {
 				csv: 'text/csv',
+				csv_utf8: 'text/csv; charset=utf-8',
 				json: 'application/json',
 				xml: 'text/xml',
 				yaml: 'text/yaml',
@@ -352,7 +614,7 @@ export class ExportService {
 					if (result.length) {
 						let csvHeadings = null;
 
-						if (format === 'csv') {
+						if (format.startsWith('csv')) {
 							if (!query.fields) query.fields = ['*'];
 
 							// to ensure the all headings are included in the CSV file, all possible fields need to be determined.
@@ -392,7 +654,7 @@ export class ExportService {
 
 			const storage: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 
-			const title = `export-${collection}-${getDateFormatted()}`;
+			const title = `export-${collection}-${getDateTimeFormatted()}`;
 			const filename = `${title}.${format}`;
 
 			const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {
@@ -495,15 +757,16 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 			return string;
 		}
 
-		if (format === 'csv') {
+		if (format.startsWith('csv')) {
 			if (input.length === 0) return '';
 
 			const transforms = [CSVTransforms.flatten({ separator: '.' })];
 			const header = options?.includeHeader !== false;
+			const withBOM = format === 'csv_utf8';
 
 			const transformOptions = options?.fields
-				? { transforms, header, fields: options?.fields }
-				: { transforms, header };
+				? { transforms, header, fields: options?.fields, withBOM }
+				: { transforms, header, withBOM };
 
 			let string = new CSVParser(transformOptions).parse(input);
 

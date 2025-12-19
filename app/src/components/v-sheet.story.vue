@@ -4,6 +4,6 @@ import VSheet from './v-sheet.vue';
 
 <template>
 	<Story title="VSheet">
-		<v-sheet>This is some wanky sheet that is not even used inside Directus.</v-sheet>
+		<VSheet>This is some wanky sheet that is not even used inside Directus.</VSheet>
 	</Story>
 </template>

@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import { ref, computed, toRefs, watch } from 'vue';
-import { LocalType } from '@directus/types';
-import { useFieldDetailStore } from './store/';
-import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
-import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
-import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
-import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
-import { useRouter } from 'vue-router';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useI18n } from 'vue-i18n';
-import formatTitle from '@directus/format-title';
-import { useDialogRoute } from '@/composables/use-dialog-route';
-import { storeToRefs } from 'pinia';
 import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
+import { LocalType } from '@directus/types';
+import { storeToRefs } from 'pinia';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
+import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
+import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
+import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
+import { useFieldDetailStore } from './store/';
 
 const props = withDefaults(
 	defineProps<{
 		collection: string;
 		field: string;
-		type: LocalType | null;
+		type?: LocalType | null;
 	}>(),
 	{
 		type: null,
@@ -91,8 +94,8 @@ async function save() {
 </script>
 
 <template>
-	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @apply="save" @update:model-value="cancel">
-		<field-detail-simple
+	<VDrawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @apply="save" @update:model-value="cancel">
+		<FieldDetailSimple
 			v-if="!showAdvanced"
 			:collection="collectionInfo"
 			:search="search"
@@ -101,33 +104,33 @@ async function save() {
 		/>
 
 		<template v-if="showAdvanced" #sidebar>
-			<field-detail-advanced-tabs v-model:current-tab="currentTab" />
+			<FieldDetailAdvancedTabs v-model:current-tab="currentTab" />
 		</template>
 
 		<template v-if="showAdvanced" #actions>
-			<field-detail-advanced-actions @save="save" />
+			<FieldDetailAdvancedActions @save="save" />
 		</template>
 		<template v-else #actions>
-			<v-input
+			<VInput
 				v-model="search"
 				class="search"
 				small
 				autofocus
 				type="search"
-				:placeholder="t('search_field')"
+				:placeholder="$t('search_field')"
 				:full-width="false"
 			>
 				<template #prepend>
-					<v-icon name="search" outline />
+					<VIcon name="search" outline />
 				</template>
 				<template #append>
-					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+					<VIcon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
 				</template>
-			</v-input>
+			</VInput>
 		</template>
 
-		<field-detail-advanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
-	</v-drawer>
+		<FieldDetailAdvanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>
@@ -140,7 +143,7 @@ async function save() {
 	inline-size: 200px;
 	margin-inline-start: auto;
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		inline-size: 300px;
 		margin-block-start: 0;
 	}

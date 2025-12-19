@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
+import VRadio from '@/components/v-radio.vue';
+import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 import { useCustomSelection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 
 type Option = {
 	text: string;
@@ -13,11 +15,10 @@ const props = withDefaults(
 	defineProps<{
 		value: string | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Option[];
-
 		allowOther?: boolean;
 		width?: string;
-
 		iconOn?: string;
 		iconOff?: string;
 		color?: string;
@@ -30,8 +31,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { choices, value } = toRefs(props);
 
@@ -49,9 +48,9 @@ const customIcon = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!items" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
+	<VNotice v-if="!items" type="warning">
+		{{ $t('choices_option_configured_incorrectly') }}
+	</VNotice>
 	<div
 		v-else
 		class="radio-buttons"
@@ -60,31 +59,33 @@ const customIcon = computed(() => {
 			'--v-radio-color': color,
 		}"
 	>
-		<v-radio
+		<VRadio
 			v-for="item in items"
 			:key="item.value"
 			block
 			:value="item.value"
 			:label="item.text"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
 			:model-value="value"
 			@update:model-value="$emit('input', $event)"
 		/>
-		<v-notice v-if="items.length === 0 && !allowOther" type="info">
-			{{ t('no_options_available') }}
-		</v-notice>
+		<VNotice v-if="items.length === 0 && !allowOther" type="info">
+			{{ $t('no_options_available') }}
+		</VNotice>
 		<div
-			v-if="allowOther"
+			v-if="allowOther && !(nonEditable && !usesOtherValue && !otherValue)"
 			class="custom"
 			:class="{
-				active: !disabled && usesOtherValue,
-				'has-value': !disabled && otherValue,
+				active: (!disabled || nonEditable) && usesOtherValue,
+				'has-value': (!disabled || nonEditable) && otherValue,
 				disabled,
+				'non-editable': nonEditable,
 			}"
 		>
-			<v-icon
+			<VIcon
 				:name="customIcon"
 				class="radio-icon"
 				:disabled="disabled"
@@ -94,7 +95,7 @@ const customIcon = computed(() => {
 			<input
 				ref="customInput"
 				v-model="otherValue"
-				:placeholder="t('other')"
+				:placeholder="$t('other')"
 				:disabled="disabled"
 				@change="$emit('input', otherValue)"
 			/>
@@ -112,19 +113,19 @@ const customIcon = computed(() => {
 }
 
 .grid-2 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 4;
 	}
 }
@@ -184,13 +185,20 @@ const customIcon = computed(() => {
 	}
 
 	&.disabled {
+		cursor: not-allowed;
+
+		input,
+		.radio-icon {
+			cursor: not-allowed;
+		}
+	}
+
+	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
-		cursor: not-allowed;
 
 		input {
 			color: var(--theme--form--field--input--foreground-subdued);
-			cursor: not-allowed;
 
 			&::placeholder {
 				color: var(--theme--form--field--input--foreground-subdued);

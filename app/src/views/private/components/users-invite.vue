@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTextarea from '@/components/v-textarea.vue';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/types';
 import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	modelValue: boolean;
@@ -14,8 +22,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
 }>();
-
-const { t } = useI18n();
 
 const emails = ref<string>('');
 const roles = ref<Record<string, any>[]>([]);
@@ -86,46 +92,46 @@ async function loadRoles() {
 </script>
 
 <template>
-	<v-dialog
+	<VDialog
 		:model-value="modelValue"
 		@update:model-value="$emit('update:modelValue', $event)"
 		@esc="$emit('update:modelValue', false)"
 		@apply="inviteUsers"
 	>
-		<v-card>
-			<v-card-title>{{ t('invite_users') }}</v-card-title>
+		<VCard>
+			<VCardTitle>{{ $t('invite_users') }}</VCardTitle>
 
-			<v-card-text>
+			<VCardText>
 				<div class="grid">
 					<div class="field">
-						<div class="type-label">{{ t('emails') }}</div>
-						<v-textarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
+						<div class="type-label">{{ $t('emails') }}</div>
+						<VTextarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 					</div>
 					<div v-if="!role" class="field">
-						<div class="type-label">{{ t('role') }}</div>
-						<v-select v-model="roleSelected" :items="roles" />
+						<div class="type-label">{{ $t('role') }}</div>
+						<VSelect v-model="roleSelected" :items="roles" />
 					</div>
-					<v-notice v-if="uniqueValidationErrors.length > 0" class="field" type="danger">
+					<VNotice v-if="uniqueValidationErrors.length > 0" class="field" type="danger">
 						<div v-for="(err, i) in uniqueValidationErrors" :key="i">
 							<template v-if="(err as any).extensions.invalid">
-								{{ t('email_already_invited', { email: (err as any).extensions.invalid }) }}
+								{{ $t('email_already_invited', { email: (err as any).extensions.invalid }) }}
 							</template>
 							<template v-else-if="i === 0">
-								{{ t('validationError.unique') }}
+								{{ $t('validationError.unique') }}
 							</template>
 						</div>
-					</v-notice>
+					</VNotice>
 				</div>
-			</v-card-text>
+			</VCardText>
 
-			<v-card-actions>
-				<v-button secondary @click="$emit('update:modelValue', false)">{{ t('cancel') }}</v-button>
-				<v-button :disabled="emails.length === 0" :loading="loading" @click="inviteUsers">
-					{{ t('invite') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			<VCardActions>
+				<VButton secondary @click="$emit('update:modelValue', false)">{{ $t('cancel') }}</VButton>
+				<VButton :disabled="emails.length === 0" :loading="loading" @click="inviteUsers">
+					{{ $t('invite') }}
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VTextarea from '@/components/v-textarea.vue';
 import { computed } from 'vue';
 
 const props = withDefaults(
@@ -42,7 +43,7 @@ const percentageRemaining = computed(() => {
 </script>
 
 <template>
-	<v-textarea
+	<VTextarea
 		v-bind="{ placeholder, trim }"
 		:model-value="value"
 		:nullable="!clear"
@@ -63,7 +64,7 @@ const percentageRemaining = computed(() => {
 				{{ charsRemaining }}
 			</span>
 		</template>
-	</v-textarea>
+	</VTextarea>
 </template>
 
 <style lang="scss" scoped>

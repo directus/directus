@@ -1,6 +1,16 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useItem } from '@/composables/use-item';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
+import { PrivateView } from '@/views/private';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -16,7 +26,7 @@ const router = useRouter();
 
 const { primaryKey } = toRefs(props);
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { isNew, edits, item, loading, remove, deleting, validationErrors } = useItem(
 	ref('directus_webhooks'),
@@ -41,51 +51,45 @@ async function deleteAndQuit() {
 </script>
 
 <template>
-	<private-view :title="title">
+	<PrivateView :title="title" show-back>
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_webhooks'), to: '/settings/webhooks' }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
-				<v-icon name="arrow_back" />
-			</v-button>
+			<VBreadcrumb :items="[{ name: $t('settings_webhooks'), to: '/settings/webhooks' }]" />
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
-						<v-icon name="delete" />
-					</v-button>
+					<VButton rounded icon class="action-delete" :disabled="item === null" small @click="on">
+						<VIcon name="delete" small />
+					</VButton>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
+							{{ $t('cancel') }}
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ $t('delete_label') }}
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="deprecation-notice-wrapper">
-			<v-notice type="danger">
-				<span v-md="{ value: t('webhooks_deprecation_notice'), target: '_blank' }"></span>
-			</v-notice>
+			<VNotice type="danger">
+				<span v-md="{ value: $t('webhooks_deprecation_notice'), target: '_blank' }"></span>
+			</VNotice>
 		</div>
 
-		<v-form
+		<VForm
 			v-model="edits"
 			:loading="loading"
 			:initial-values="item"
@@ -95,17 +99,14 @@ async function deleteAndQuit() {
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
-			</sidebar-detail>
-			<revisions-drawer-detail
+			<RevisionsSidebarDetail
 				v-if="isNew === false"
-				ref="revisionsDrawerDetailRef"
+				ref="revisionsSidebarDetailRef"
 				collection="directus_webhooks"
 				:primary-key="primaryKey"
 			/>
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

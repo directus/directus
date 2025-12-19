@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import { HeaderRaw, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
@@ -34,6 +35,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
 
+		const aiStore = useAiStore();
+
+		aiStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
@@ -55,6 +64,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const {
 			items,
 			loading,
+			loadingItemCount,
 			error,
 			totalPages,
 			itemCount,
@@ -95,6 +105,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			tableHeaders,
 			items,
 			loading,
+			loadingItemCount,
 			error,
 			totalPages,
 			tableSort,

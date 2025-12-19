@@ -32,6 +32,24 @@ fields:
       placeholder: en-US
     width: half
 
+  - field: project_owner
+    interface: system-owner
+    width: half
+
+  - field: project_usage
+    hidden: true
+
+  - field: org_name
+    hidden: true
+
+  - field: product_updates
+    hidden: true
+    special:
+      - cast-boolean
+
+  - field: project_status
+    hidden: true
+
   - field: modules_divider
     interface: presentation-divider
     options:
@@ -557,15 +575,6 @@ fields:
   - field: project_id
     hidden: true
 
-  - field: accepted_terms
-    interface: boolean
-    width: half
-    hidden: true
-    options:
-      label: $t:accepted
-    special:
-      - cast-boolean
-
   ### Appearance Settings ###
   # The theming_group is rendered on the Appearance page in the app
 
@@ -701,6 +710,58 @@ fields:
       - alias
       - no-data
       - group
+
+  - field: ai_divider
+    interface: presentation-divider
+    options:
+      icon: chat
+      title: $t:ai_chat
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.ai_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_openai_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_anthropic_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_system_prompt
+    interface: input-rich-text-md
+    group: ai_group
+    width: full
+    note: $t:fields.directus_settings.ai_system_prompt_note
+    options:
+      label: $t:fields.directus_settings.ai_system_prompt
 
   - field: mcp_divider
     interface: presentation-divider

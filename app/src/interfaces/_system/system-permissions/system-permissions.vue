@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
 import { appRecommendedPermissions, disabledActions } from '@/app-permissions.js';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDivider from '@/components/v-divider.vue';
+import VNotice from '@/components/v-notice.vue';
 import { DisplayItem } from '@/composables/use-relation-multiple';
 import { RelationO2M, useRelationO2M } from '@/composables/use-relation-o2m';
 import { useCollectionsStore } from '@/stores/collections';
@@ -12,7 +19,6 @@ import { type Alterations, Filter, Permission, PermissionsAction } from '@direct
 import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
 import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import AddCollection from './add-collection.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
@@ -41,7 +47,6 @@ const emit = defineEmits<{
 }>();
 
 const { collection, primaryKey, field } = toRefs(props);
-const { t } = useI18n();
 
 const contentEl = inject<Ref<Element | null>>('main-element');
 const permissionsTable = ref<HTMLTableElement | null>(null);
@@ -585,22 +590,22 @@ function useGroupedPermissions() {
 
 <template>
 	<div>
-		<v-notice v-if="adminAccess">
-			{{ t('admins_have_all_permissions') }}
-		</v-notice>
+		<VNotice v-if="adminAccess">
+			{{ $t('admins_have_all_permissions') }}
+		</VNotice>
 
 		<div v-else-if="!loading || allPermissions.length > 0" class="permissions-list">
 			<table ref="permissionsTable">
-				<permissions-header />
+				<PermissionsHeader />
 
 				<tbody>
 					<tr v-if="allPermissions.length === 0">
 						<td class="empty-state" colspan="7">
-							{{ t('no_permissions') }}
+							{{ $t('no_permissions') }}
 						</td>
 					</tr>
 
-					<permissions-row
+					<PermissionsRow
 						v-for="group in regularPermissions"
 						:key="group.collection.collection"
 						:permissions="group.permissions"
@@ -615,13 +620,13 @@ function useGroupedPermissions() {
 
 					<tr v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
 						<td colspan="7" class="system-divider">
-							<v-divider>
-								{{ t('system_collections') }}
-							</v-divider>
+							<VDivider>
+								{{ $t('system_collections') }}
+							</VDivider>
 						</td>
 					</tr>
 
-					<permissions-row
+					<PermissionsRow
 						v-for="group in systemPermissions"
 						:key="group.collection.collection"
 						:permissions="group.permissions"
@@ -648,17 +653,17 @@ function useGroupedPermissions() {
 					<tr v-if="appAccess">
 						<td colspan="7" class="reset-toggle">
 							<span>
-								{{ t('reset_system_permissions_to') }}
-								<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
+								{{ $t('reset_system_permissions_to') }}
+								<button @click="resetActive = 'minimum'">{{ $t('app_access_minimum') }}</button>
 								/
-								<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
+								<button @click="resetActive = 'recommended'">{{ $t('recommended_defaults') }}</button>
 							</span>
 						</td>
 					</tr>
 				</tfoot>
 			</table>
 
-			<add-collection
+			<AddCollection
 				class="add-collection"
 				:exclude-collections="
 					[...regularPermissions, ...systemPermissions].map(({ collection }) => collection.collection)
@@ -667,7 +672,7 @@ function useGroupedPermissions() {
 			/>
 		</div>
 
-		<permissions-detail
+		<PermissionsDetail
 			:active="currentlyEditingKey !== null"
 			:edits="editsAtStart"
 			:permission-key="currentlyEditingKey"
@@ -677,19 +682,19 @@ function useGroupedPermissions() {
 			@update:active="cancelEdit"
 		/>
 
-		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
-			<v-card>
-				<v-card-title>
-					{{ t('reset_system_permissions_copy') }}
-				</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
-					<v-button @click="resetSystemPermissions(resetActive === 'recommended')">
-						{{ t('reset') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<VDialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
+			<VCard>
+				<VCardTitle>
+					{{ $t('reset_system_permissions_copy') }}
+				</VCardTitle>
+				<VCardActions>
+					<VButton secondary @click="resetActive = false">{{ $t('cancel') }}</VButton>
+					<VButton @click="resetSystemPermissions(resetActive === 'recommended')">
+						{{ $t('reset') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 

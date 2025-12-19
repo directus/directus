@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VError from '@/components/v-error.vue';
 import { DEFAULT_REPORT_BUG_URL } from '@/constants';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useSettingsStore } from '@/stores/settings';
@@ -7,10 +14,7 @@ import { Snackbar } from '@/types/notifications';
 import { render } from 'micromustache';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-
-const { t } = useI18n();
 
 const notificationsStore = useNotificationsStore();
 const { isAdmin, currentUser } = useUserStore();
@@ -76,24 +80,24 @@ const done = async (notification: Snackbar) => {
 
 <template>
 	<div class="notification-dialogs">
-		<v-dialog v-for="notification in notifications" :key="notification.id" model-value persist>
-			<v-card :class="[notification.type]">
-				<v-card-title>{{ notification.title }}</v-card-title>
-				<v-card-text v-if="notification.text || notification.error" class="notification-text">
+		<VDialog v-for="notification in notifications" :key="notification.id" model-value persist>
+			<VCard :class="[notification.type]">
+				<VCardTitle>{{ notification.title }}</VCardTitle>
+				<VCardText v-if="notification.text || notification.error" class="notification-text">
 					{{ notification.text }}
 
-					<v-error v-if="notification.error" :error="notification.error" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button v-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
+					<VError v-if="notification.error" :error="notification.error" />
+				</VCardText>
+				<VCardActions>
+					<VButton v-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
 						<a target="_blank" :href="getErrorUrl(notification.error)">
-							{{ t('report_error') }}
+							{{ $t('report_error') }}
 						</a>
-					</v-button>
-					<v-button @click="done(notification)">{{ notification.dismissText ?? t('dismiss') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="done(notification)">{{ notification.dismissText ?? $t('dismiss') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 

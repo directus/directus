@@ -20,6 +20,31 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 关于
+directus_bsl: Directus BSL 1.1 许可证
+privacy_policy: 隐私政策
+contact_our_team: 联系我们团队
+setup_welcome: 欢迎使用 Directus
+setup_info: 让我们创建您的管理员帐户并启动您的项目。
+setup_license_notice: >
+  Directus对年收入、资金或经营预算低于500万美元的实体免费开放。
+setup_license_follow_up: >
+  超过此阈值的实体需要付费许可证。您现在可以继续评估 Directus，并在准备讨论生产使用时{contactOurTeam}。
+setup_save_accept_license: >
+  点击保存即表示您接受 {directusBsl} 和 {privacyPolicy} 的条款。
+setup_accept_license: 我接受 {directusBsl} 和 {privacyPolicy} 的条款
+setup_marketing_emails: 向我发送产品更新和发行说明
+setup_launch: 启动 Directus
+setup_project: 设置项目
+first_name: 名
+last_name: 姓
+admin_email: 管理员邮箱
+owner_email: 所有者邮箱
+email_address: 邮箱地址
+organization_name: 组织名称
+how_do_you_use_directus: 您使用 Directus 的用途是什么？
+usage_personal: 个人使用/学习
+usage_commercial: 商业 / 商用
+usage_community: 开源 / 社区
 identifier: 标识符（identifier）
 avatar: 头像
 application: 应用程序
@@ -32,6 +57,8 @@ marketplace: 扩展集市
 extensions: 扩展
 skip_link_nav: 跳转至导航
 skip_link_module_nav: 跳转至导航
+skip_link_main: 跳转到主要内容
+skip_link_sidebar: 跳到侧边栏
 modules: 模块
 module_bar: 模块栏
 logs: 日志
@@ -44,6 +71,8 @@ location: 地理位置
 collection_names_are_case_sensitive: 集合名称是区分大小写
 condition_rules: 条件规则
 input: 输入
+invalid_input: 无效的输入
+not_a_number: 不是一个数字
 maps: 地图
 switch_user: 切换用户
 item_creation: 新建
@@ -55,6 +84,8 @@ full_width: 全宽
 group: 分组
 popular: 热门
 recent: 最近
+latest: 最近
+updated: 已更新
 export_items: 导出
 and: 与
 or: 或
@@ -110,6 +141,12 @@ hook: 钩子
 fill_width: 全宽
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
+sso_tfa_setup_notice: 您将注销您的帐户并需要重新登录。任何未保存的更改都将被丢弃。
+enable_tfa: 启用 2FA
+cancel_tfa_setup: 取消 2FA 设置
+cancel_tfa_setup_notice: 您确定要取消2FA 设置吗？
+keep_setup: 保持设置
+cancel_setup: 取消设置
 add_field: 添加字段
 role_name: 角色名称
 policy_name: 策略名称
@@ -166,19 +203,14 @@ rename_version: 重命名版本
 compare_version: 对比版本
 save_version: 保存版本
 promote_version: 推广版本
-promote_version_disabled: 无变化
-promote_version_drawer_title: 将版本"{version}"推入主干
-promote_version_changes: 更改
-promote_version_preview: 预览
-outdated_notice: >-
-  自此版本创建以来，主条目已更新。 请查看下面的所有字段值，并确认在将此版本推广到主干时应使用哪个版本。
-promote_notice: >-
-  请查看下面的所有字段值，并确认在将此版本推广到主干时应使用哪个版本。
+apply: 应用
+select_all_differences: 选择所有差异
+main_updated_notice: 自此版本创建以来，主条目已更新。
 delete_version: 删除版本
 delete_version_copy: >-
   你确定要删除"{version}" 这个版本吗? 此操作无法撤销。
-delete_on_promote_copy: >-
-  你想在并入之后删除还是保留 " {version} " 版本？
+delete_on_apply_copy: >-
+  您即将将 "{version}" 提升为主版本。提升后 "{version}" 应该如何处理？
 reset_bookmark: 重置书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签
@@ -239,6 +271,8 @@ validationError:
   iends_with: 值必须以"{substring}"结尾
   nends_with: 值不能以"{substring}"结尾
   niends_with: 值不能以"{substring}"结尾
+  confirm_password: 密码不匹配
+  org_name: 请包含组织名称
 all_access: 允许所有
 no_access: 禁止访问
 use_custom: 自定义
@@ -318,6 +352,9 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 重置页面首选项
 hidden_field: 隐藏字段
 hidden_on_detail: 在详情中隐藏
+clear_hidden_field: 清除数据
+clear_value_on_save_when_hidden: 保存时清除隐藏数据
+readonly_field_label: 在应用中禁用该字段
 required_readonly_field_warning: 启用只读和必填字段可以防止保存一个值为空的项目。
 key: 关键字
 alias: 别名
@@ -416,6 +453,8 @@ precision_scale: 精度和缩放
 readonly: 只读
 unique: 唯一
 index: 索引
+searchable: 可搜索的
+field_searchable: 在搜索中包含字段
 updated_on: 更新于
 updated_by: 更新，由
 primary_key: 主键
@@ -424,6 +463,7 @@ field_key: 字段键
 finish_setup: 完成安装
 dismiss: 关闭
 toggle_raw_editor: 切换原始编辑器
+toggle_variable_input: 切换变量输入
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: 原始值
 copy_raw_value: 复制原始值
@@ -450,15 +490,18 @@ confirm_revert_body: 此操作会使条目恢复至选中状态
 display: 显示
 settings_update_success: 设置已更新
 title: 标题
+subtitle: 副标题
 revision_delta_created: 已创建
 revision_delta_created_externally: 外部创建
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
 revision_delta_deleted: 已删除
-revision_delta_version_saved: '版本保存（更新了1个字段）| 版本保存（更新了"{count}"个字段）'
 revision_delta_reverted: Reverted
 revision_delta_update_message: 此字段已更新，但由于安全原因，其值被隐藏。
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
+updated_in_revision: 在本修订版中更新
+updated_in_revision_matches_latest: 在此修订版中已更新但，与最新版本匹配
+differences_count: '无差异 | 1 处差异 | {count} 处差异'
 presentation_text_values_cannot_be_reimported: '仅包含当前页面中展示的字段和数据，且无法被重新导入'
 download_page_as_csv: '导出当前页面数据为CSV格式'
 download_page_as_csv_unsupported: 此布局不支持下载当前页面。
@@ -481,7 +524,14 @@ import_data_input_placeholder: CSV 或 JSON
 import_data_button: 开始导入
 import_data_indeterminate: 导入数据中
 import_data_success: 成功从 {filename} 导入数据
+import_data_errors: 导入错误
 import_data_error: 此文件的数据结构与模型不匹配。
+import_data_validation_errors_notice: '以下行记录有无效数据：'
+import_data_error_row: '行 {rows}{field}：'
+snapshot:
+  export: 导出Schema
+  download: 下载快照 (JSON)
+  info: 仅导出Schema用于共享或调试
 label_import: 导入
 label_export: 导出
 import_export: 导入 / 导出
@@ -555,6 +605,9 @@ original: 原始
 url: URl
 import_label: 导入
 file_details: 文件信息
+copy_id: 复制ID
+copy_id_success: ID已复制
+copy_id_fail: ID未复制
 dimensions: 尺寸
 size: 大小
 created: 已创建
@@ -718,6 +771,7 @@ enabled_dev_tooltip: 应用程序扩展总是在开发模式下启用
 disable_tfa: 停用双重认证
 admin_disable_tfa_text: 您确定要为此用户禁用2FA吗？
 tfa_setup: 设置 2FA
+tfa_setup_description: 设置双重身份验证以保护您的帐户
 tfa_scan_code: 扫描您的身份验证程序中的代码来完成设置 2FA
 enter_otp_to_disable_tfa: 输入OTP以禁用双重认证
 create_account: 创建账号
@@ -763,7 +817,6 @@ errors:
   VALUE_OUT_OF_RANGE: 数值超出范围
   VALUE_TOO_LONG: 数值太长
 security: 安全
-value_hashed: 哈希值
 bookmark_name: 书签名称
 create_bookmark: 创建书签
 edit_bookmark: 编辑书签
@@ -939,10 +992,9 @@ label: 标签
 flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
-run_flow_confirm: 您确定要执行此流程吗？
+run_flow_anyway: 仍然运行流程
 run_flow_on_current_collection: 在当前集合上运行流程
 run_flow_on_current: 在当前项目上运行流程
-run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
 run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上运行 | 在 {n} 个选定项目 上运行
 run_flow: 运行流程
 trigger_flow_success: 流程 "{flow}" 已成功触发
@@ -1094,6 +1146,7 @@ wysiwyg_options:
   h4: 四级标题
   h5: 五级标题
   h6: 六级标题
+  pre: 预格式化
   fontselect: 选择字体
   fontsizeselect: 选择字体大小
   indent: 缩进
@@ -1124,6 +1177,8 @@ appearance_dark: 深色
 other: 其他...
 adding_user: 添加用户
 unknown_user: 未知用户
+unknown_version: 未知的版本
+unknown_revision: 未知的修订版
 creating_in: '在 {collection} 中创建条目'
 editing_in: '在 {collection} 中编辑条目'
 viewing_in: '在 {collection} 中查看条目'
@@ -1136,6 +1191,8 @@ settings_roles: 用户角色
 settings_permissions: 访问策略
 settings_project: 设置
 settings_appearance: 外观
+settings_ai: AI
+model_context_protocol: 模型上下文协议
 settings_webhooks: Webhook
 settings_flows: 流程
 settings_system_logs: 系统日志
@@ -1164,48 +1221,6 @@ discard_changes_copy: 您确定要放弃所有更改吗？
 show_x_axis: 显示 X 轴
 show_y_axis: 显示 Y 轴
 keep_editing: 继续编辑
-page_help_collections_overview: '**模型总览** - 您可以访问的所有模型列表。'
-page_help_collections_collection: >-
-  **浏览条目** - 列出所有 {collection} 集合中你可以访问的条级数据。 可以通过设置自定义布局、过滤器和排序来调整视图，甚至将不同的设置保存为书签以便快速访问。
-page_help_collections_item: >-
-  **条目详情** - 查看和管理此条目的表单。侧边栏还包含完整的修改历史和评论。
-page_help_activity_collection: >-
-  **浏览活动** - 您所有用户的系统和内容活动的完整列表。
-page_help_docs_global: >-
-  **文档概述** - 专为本项目的版本和模式设计的文档。
-page_help_files_collection: >-
-  **文件库** - 列出上传到此项目的所有相关内容。自定义布局、过滤器、排序以及调整视图，还可以保存这些不同配置的书签以便快速访问。
-page_help_files_item: >-
-  **文件详情** - 管理文件元数据、编辑原始资产和更新访问设置的表格。
-page_help_settings_project: "**设置** - 您项目的全局配置选项。"
-page_help_settings_appearance: "**外观** - 您的项目外观和主题选项。"
-page_help_settings_extensions: '**Extensions** — 在您的项目中安装的扩展。'
-page_help_settings_datamodel_collections: >-
-  **数据模型: ** - 列出所有可用的模型。这包括可见、隐藏和系统模型，以及可以添加的数据库表（包括还未加入并管理的）。
-page_help_settings_datamodel_fields: >-
-  **数据模型: Collection** — 用于管理此模型及其字段的表单
-page_help_settings_system_logs: '**系统日志** — 访问系统日志的实时流。'
-page_help_settings_policies_collection: '**浏览策略** - 列出项目内的所有策略。'
-page_help_settings_roles_collection: '**Browse Roles** - 列出项目中所有用户角色。'
-page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
-page_help_settings_presets_collection: >-
-  **Browse Presets** - 列出项目中的所有预设，包括：用户、角色、全局书签以及默认视图。
-page_help_settings_presets_item: >-
-  **预设详细信息** - 管理书签和默认模型预设的表单。
-page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
-page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
-page_help_settings_flows_collection: '**Browse Webhooks** - 列出项目内的所有流。'
-page_help_settings_flows_item: '**流程详情** - 管理一个或多个操作面板的工作空间。'
-page_help_settings_translations_collection: '**浏览自定义翻译** - 列出项目中的所有自定义翻译。'
-page_help_settings_translations_item: '**自定义翻译详细信息** - 用于查看和管理此项目的表单。'
-page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
-page_help_users_item: >-
-  **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
-page_help_insights_overview: '**Insights** — 您可以访问的工作台列表。'
-page_help_insights_dashboard: '**仪表盘** — 管理工作区面板'
-page_help_marketplace_account: '**Account** - 发布者或已发布扩展的维护者。'
-page_help_marketplace_registry: '**Registry** — Directus 市场中提供的扩展。'
-page_help_marketplace_extension: '**Extension** — Directus 市场中提供的扩展。'
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
@@ -1241,7 +1256,6 @@ directus_collection:
   directus_dashboards: Insights模块中的仪表板
   directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
-  directus_flows: 自动化流程
   directus_folders: 虚拟文件目录
   directus_migrations: 您的数据库版本是
   directus_notifications: 发送给用户的通知
@@ -1328,6 +1342,7 @@ fields:
     tags: 标签
     user_preferences: 用户设置
     language: 语言
+    text_direction: 文字方向
     tfa_secret: 2FA（双因素身份验证）
     admin_options: 管理员设置
     status: 状态
@@ -1406,6 +1421,19 @@ fields:
     public_registration_verify_email: 验证电子邮件
     public_registration_verify_email_note: 向注册用户发送一封电子邮件，请他们在登录前点击验证链接。
     visual_editor_urls: 可视化编辑器网址
+    mcp_enabled: MCP服务器
+    mcp_enabled_note: '通过 <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">模型上下文协议 (MCP)</a> 将 AI/LLM 工具连接到您的 Directus 项目。这使 AI 助手能够安全地读取您的 Directus 数据并与之交互。'
+    mcp_notice: '模型上下文协议（Model Context Protocol）是将大型语言模型（LLM）连接到像 Directus 这样的应用的标准。启用后，Directus MCP 服务器将在 /mcp 可用。<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">了解有关 MCP 及如何连接的更多信息。</a>'
+    mcp_allow_deletes: 允许删除
+    mcp_allow_deletes_note:
+      - 可能会导致数据丢失。</strong>出于安全考虑，默认禁用。
+    mcp_prompts_collection: AI 提示词集合
+    mcp_prompts_collection_note: '选择用于存储 AI 交互<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">可重复使用的提示词模板</a>的集合。'
+    mcp_system_prompt_divider: 系统提示配置
+    mcp_system_prompt_enabled: 使用系统提示
+    mcp_system_prompt_enabled_note: "使用<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型（LLM）的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
+    mcp_system_prompt: 自定义系统提示
+    mcp_system_prompt_note: '自定义系统提示替换默认值。留空则使用默认值(如果已启用)。'
   directus_shares:
     name: 名称
     role: 角色
@@ -1583,19 +1611,59 @@ live_preview:
   new_window: 在新窗口中打开
   close_window: 在分割视图中打开
   toggle_3d: 切换 3D
+  iframe_title: 实时网站预览
 shares: 共享
 unlimited_usage: 无限使用
 uses_left: 无剩余使用次数 | 剩余一次使用次数 | 剩余 {n} 次使用次数
 no_shares: 没有要显示的共享
 new_share: 新建分享
+ai:
+  input: Input
+  unknown: 未知
+  settings: 设置
+  tool_approval:
+    disabled: 禁用
+ai_tools:
+  items: 条目
+  files: 多个文件
+  folders: 文件夹
+  flows: 流程
+  trigger-flow: 触发流程
+  operations: 操作
+  schema: Schema
+  collections: 数据模型
+  fields: 字段
+mcp_prompts_collection:
+  no_collection_selected: 无选择的集合
+  no_collection_selected_copy: 选择一个集合来启用可重复使用的提示词模板。
+  collection_not_found: 集合未找到
+  collection_not_found_description: 集合 "{collection}" 在数据库中不存在。
+  generate: 生成 AI 提示词集合...
+  already_exists: AI 提示词集合已存在
+  generate_collection_dialog_title: 生成 AI 提示词集合
+  generate_fields_dialog_title: 生成 AI 提示词字段
+  generate_collection_dialog_description: '这将创建一个新集合 "{collection}"，其中包含存储可重复使用的提示词模板所需的字段和设置。'
+  generate_fields_dialog_description: '这将在您的 "{collection}" 集合上创建所需的字段。'
+  validation_success: '集合已准备好用作"AI 提示词"集合。'
+  validation_error_invalid: 集合不能被使用
+  validation_error_missing: 集合仍不能被使用
+  invalid_fields: '以下字段存在但类型不兼容：'
+  missing_fields: '以下字段是必需的，但丢失：'
+  generate_missing: 生成缺失的字段……
 mcp_prompts_collection_schema:
+  system_prompt_note: 塑造大型语言模型（LLM）响应方式的指令。
+  messages_note: '可选：定义用户与大型语言模型（LLM）之间的对话结构。用于添加上下文并改进输出。'
   messages_role_user: 用户
+  messages_role_assistant: 助理
+  messages_role_note: 谁正在这个信息中说话。
+  meta_prompts_notice: '提示词是可重复使用的模板，您可以通过 Directus MCP 服务器、流程或其他 AI 应用程序与大型语言模型（LLM）一起使用。<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">了解更多关于创建有效提示词的信息。</a>'
 expired: 已过期
 upcoming: 即将到来的
 share: 分享
 share_item: 分享条目
 shared_with_you: 已与您分享一个条目
 shared_enter_passcode: 输入您的密码以继续...
+generate: 生成
 shared_leave_blank_for_passwordless_access: 留空以无密码访问
 shared_leave_blank_for_unlimited: 留空表示无限制
 shared_times_remaining: 此链接只能使用 {n} 次
@@ -1677,6 +1745,8 @@ reset_password: 重置密码
 revisions: 修订版本
 no_revisions: 尚未更新
 no_logs: 暂无记录
+show_failed_only: 仅显示失败
+no_logs_on_page: 此页面没有日志
 revert: 还原
 save: 保存
 schema: Schema
@@ -1756,9 +1826,7 @@ interfaces:
     accordion_mode: 折叠模式
     max_one_section_open: 最多展开 1 项
   presentation-links:
-    presentation-links: 按钮链接
-    links: 链接
-    description: 启动动态URL的可配置链接按钮
+    presentation-links: 按钮
     style: 样式
     primary: 主要的
     link: 链接
@@ -1787,6 +1855,11 @@ interfaces:
     collection: 数据模型
     description: 在现有模型之间选择
     include_system_collections: 包含系统模型
+  system-owner:
+    update: 更新项目所有者
+    edit: 编辑项目所有者
+    system-owner: 系统所有者
+    description: 系统所有者接口
   system-collections:
     collections: 数据模型
     description: 在现有模型之间选择
@@ -2025,6 +2098,7 @@ interfaces:
     folder_note: 用于上传文件的文件夹。不影响现有文件。
     imageToken: 静态访问令牌
     imageToken_label: 静态访问令牌已被附加到资源的 URL
+    media_preview_iframe_title: 媒体预览
   input-block-editor:
     input-block-editor: 块编辑器
     description: 用于富媒体故事的块式编辑器，使用 Editor.js 以 JSON 格式输出干净的数据
@@ -2080,6 +2154,9 @@ interfaces:
   input-password:
     input-password: 输入密码
     description: 带有隐藏值切换的密码输入
+  header:
+    header: 报头
+    links: 链接
 displays:
   translations:
     translations: 翻译
@@ -2295,6 +2372,7 @@ show_legend: 显示图例
 right: 右
 left: 左
 start: 开始
+end: 结束
 donut: 圆环图
 continuous: 继续
 gap: 间隙
@@ -2387,11 +2465,9 @@ triggers:
 a_flow_uuid: 选择要触发的流...
 any_string_or_json: 任意字符串或JSON对象...
 item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
-operation_variables_note: 您可以通过变量引用访问流程数据，例如**{'{'}{'{'}$last{'}'}{'}'}**， **{'{'}{'{'}$trigger{'}'}{'}'}** 和 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
 operations:
   condition:
     name: 条件
-    description: 基于 if /Else 逻辑路由的流程
   exec:
     name: 运行脚本
     description: 执行任意代码来修改有效负载
@@ -2477,12 +2553,17 @@ operations:
     name: 休眠
     description: 等待给定的毫秒数
     milliseconds: 毫秒
+  throw-error:
+    name: 抛出错误
+    description: 在拒绝情况抛出错误
+    code: 错误代码
+    status: HTTP 状态码
+    message: 错误信息
   transform:
     name: 转换有效负载
     description: 修改流程的JSON格式负载
   trigger:
     name: 触发流程
-    description: 将此数据传递到另一个流程
     flows: 流程
     flow: 流程
     data: 数据
@@ -2537,7 +2618,12 @@ percent: 百分比
 show_password: 显示密码
 hide_password: 隐藏密码
 bsl_banner:
-  welcome_to_directus: 欢迎使用 Directus！
-  directus_free_use: Directus对年收入、资金或经营预算低于500万美元的实体免费开放。
-  organization_threshold: 超过这一限额的实体需要付费许可证。
-  directus_bsl: Directus BSL 1.1
+  title: 您没有设置项目的所有者。
+  license: 我们需要此信息以确保符合我们的 BSL 1.1 许可证。这应该是负责您项目的主要联系人。
+  set_owner: 设置所有者
+  remind_later: 稍后提醒
+  remind_next_login: 我们会在您下次登录时再次提醒。
+accepted: 已接受
+text_direction_auto: 自动(匹配语言)
+text_direction_ltr: 从左到右 (LTR)
+text_direction_rtl: 从右到左 (RTL)

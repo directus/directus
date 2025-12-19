@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import api from '@/api';
-import type { File, Filter } from '@directus/types';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
@@ -8,10 +16,11 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
+import type { File, Filter } from '@directus/types';
 import { sum } from 'lodash';
+import type { Upload } from 'tus-js-client';
 import { computed, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Upload } from 'tus-js-client';
 
 export type UploadController = {
 	start(): void;
@@ -372,8 +381,8 @@ defineExpose({ abort });
 		@drop.stop.prevent="onDrop"
 	>
 		<template v-if="dragging && fromUser">
-			<v-icon class="upload-icon" x-large name="file_upload" />
-			<p class="type-label">{{ t('drop_to_upload') }}</p>
+			<VIcon class="upload-icon" x-large name="file_upload" />
+			<p class="type-label">{{ $t('drop_to_upload') }}</p>
 		</template>
 
 		<template v-else-if="uploading">
@@ -381,16 +390,16 @@ defineExpose({ abort });
 			<p class="type-text">
 				{{
 					multiple && numberOfFiles > 1
-						? t('upload_files_indeterminate', { done: done, total: numberOfFiles })
-						: t('upload_file_indeterminate')
+						? $t('upload_files_indeterminate', { done: done, total: numberOfFiles })
+						: $t('upload_file_indeterminate')
 				}}
 			</p>
-			<v-progress-linear :value="progress" rounded />
+			<VProgressLinear :value="progress" rounded />
 		</template>
 
 		<template v-else>
 			<div class="actions">
-				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+				<VButton v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
 					<input
 						ref="input"
 						class="browse"
@@ -400,34 +409,34 @@ defineExpose({ abort });
 						:accept="accept"
 						@input="onBrowseSelect"
 					/>
-					<v-icon name="file_upload" />
-				</v-button>
-				<v-button
+					<VIcon name="file_upload" />
+				</VButton>
+				<VButton
 					v-if="fromLibrary"
-					v-tooltip="t('choose_from_library')"
+					v-tooltip="$t('choose_from_library')"
 					icon
 					rounded
 					secondary
 					@click="activeDialog = 'choose'"
 				>
-					<v-icon name="folder_open" />
-				</v-button>
-				<v-button
+					<VIcon name="folder_open" />
+				</VButton>
+				<VButton
 					v-if="fromUrl && fromUser"
-					v-tooltip="t('import_from_url')"
+					v-tooltip="$t('import_from_url')"
 					icon
 					rounded
 					secondary
 					@click="activeDialog = 'url'"
 				>
-					<v-icon name="link" />
-				</v-button>
+					<VIcon name="link" />
+				</VButton>
 			</div>
 
-			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
+			<p class="type-label">{{ $t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<drawer-files
+				<DrawerFiles
 					:active="activeDialog === 'choose'"
 					:multiple="multiple"
 					:folder="folder"
@@ -436,28 +445,28 @@ defineExpose({ abort });
 					@input="setSelection"
 				/>
 
-				<v-dialog
+				<VDialog
 					:model-value="activeDialog === 'url'"
 					:persistent="urlLoading"
 					@esc="activeDialog = null"
 					@apply="importFromURL"
 					@update:model-value="activeDialog = null"
 				>
-					<v-card>
-						<v-card-title>{{ t('import_from_url') }}</v-card-title>
-						<v-card-text>
-							<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
-						</v-card-text>
-						<v-card-actions>
-							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button :loading="urlLoading" :disabled="!isValidURL" @click="importFromURL">
-								{{ t('import_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+					<VCard>
+						<VCardTitle>{{ $t('import_from_url') }}</VCardTitle>
+						<VCardText>
+							<VInput v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
+						</VCardText>
+						<VCardActions>
+							<VButton :disabled="urlLoading" secondary @click="activeDialog = null">
+								{{ $t('cancel') }}
+							</VButton>
+							<VButton :loading="urlLoading" :disabled="!isValidURL" @click="importFromURL">
+								{{ $t('import_label') }}
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 			</template>
 		</template>
 	</div>

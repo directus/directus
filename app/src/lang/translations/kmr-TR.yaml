@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Derbarê
+first_name: Navê Pêşîn
+last_name: Navê Paşîn
 identifier: Nasname
 avatar: Avatar
 application: Serlêdan
@@ -164,19 +166,9 @@ rename_version: Navê Guhertoye Biguherîne
 compare_version: Guhertoyê Berhev Bike
 save_version: Guhertoye Tomar Bike
 promote_version: Guhertoye Bilind Bike
-promote_version_disabled: Ti Guhertin Nîne
-promote_version_drawer_title: '{version} bilind bike bo Sereke'
-promote_version_changes: Guhertin
-promote_version_preview: Pêşdîtin
-outdated_notice: >-
-  Hêmana sereke ji dema ku ev guherto hatiye afirandin ve hatiye nûkirin. Ji kerema xwe hemû nirxên qadê yên jêrîn binirxînin, û tesdîq bikin ka kîjan guherto divê were bikaranîn gava ku ev guherto tê bilindkirin bo hêmana sereke.
-promote_notice: >-
-  Ji kerema xwe hemû nirxên qadê yên jêrîn binirxînin, û tesdîq bikin ka kîjan guherto divê were bikaranîn gava ku ev guherto tê bilindkirin bo hêmana sereke.
 delete_version: Guhertoye Jê Bibe
 delete_version_copy: >-
   Tu bi rastî dixwazî guhertoya "{version}" jê bibî? Ev çalakî nayê vegerandin.
-delete_on_promote_copy: >-
-  Tu dixwazî piştî bilindkirinê, guhertoya "{version}" jê bibî an bihêlî?
 reset_bookmark: Nîşankê Vegerîne
 update_bookmark: Nîşankê Nûbike
 delete_bookmark: Nîşankê Jê Bibe
@@ -447,11 +439,11 @@ confirm_revert_body: Ev wê hêmanê vegerîne rewşa hilbijartî.
 display: Nîşandan
 settings_update_success: Mîhengkarî hate nûkirin
 title: Sernav
+subtitle: Binsernav
 revision_delta_created: Hate afirandin
 revision_delta_created_externally: Ji Derve Hate Afirandin
 revision_delta_updated: '1 Qad Hate Nûkirin | {count} Qad Hatin Nûkirin'
 revision_delta_deleted: Hate jêbirin
-revision_delta_version_saved: 'Tomarkirina Guhertoyê (1 Qad Hate Nûkirin) | Tomarkirina Guhertoyê ({count} Qad Hatin Nûkirin)'
 revision_delta_reverted: Hate Vegerandin
 revision_delta_update_message: Ev qad hate nûkirin lê nirxa wê ji ber sedemên ewlehiyê tê veşartin.
 revision_delta_other: Sererastkirin
@@ -759,7 +751,6 @@ errors:
   VALUE_OUT_OF_RANGE: Nirx ji navberê derketiye
   VALUE_TOO_LONG: Nirx zêde dirêj e
 security: Ewlehî
-value_hashed: Nirx bi Ewlehî Hatiye Heshkirin
 bookmark_name: Navê nîşankê...
 create_bookmark: Nîşankê Çêke
 edit_bookmark: Nîşankê Biguherîne
@@ -935,10 +926,8 @@ label: Nîşane
 flows: Herikîn
 flow: Herikîn
 select_a_flow: Herikînekê Hilbijêre
-run_flow_confirm: Tu bi rastî dixwazî vê herikînê bixebitînî?
 run_flow_on_current_collection: Herikînê li ser Koleksiyona Heyî Bixebitîne
 run_flow_on_current: Herikînê li ser Hêmana Heyî Bixebitîne
-run_flow_on_current_edited_confirm: Dibe ku ev hêman ji aliyê vê herikînê ve were nûkirin, tu bi rastî dixwazî vê bixebitînî?
 run_flow_on_selected: Pêşî Yek an Zêdetir Hêmanan Hilbijêre | Herikînê li ser 1 Hêmana Hilbijartî Bixebitîne | Herikînê li ser {n} Hêmanên Hilbijartî Bixebitîne
 run_flow: Herikînê Bixebitîne
 trigger_flow_success: Herikîna "{flow}" bi serkeftî hate kirin
@@ -1158,48 +1147,6 @@ discard_changes_copy: Tu bi rastî dixwazî hemû guherînên ku hatine kirin pa
 show_x_axis: Eksena X Nîşan Bide
 show_y_axis: Eksena Y Nîşan Bide
 keep_editing: Berdewam Bikin
-page_help_collections_overview: '**Dîmena Koleksiyonan** — Lîsteya hemû koleksiyonên ku tu gihîştina wan heyî.'
-page_help_collections_collection: >-
-  **Hêmanan Bigere** — Lîsteya hemû hêmanên {collection} ên ku tu gihîştina wan heyî. Mîhengkirin, parzûn, û rêzkirinê biguhêre da ku dîtina xwe li gorî hewcedariyên xwe bikî, û heta jî nîşankan ji bo van mîhengkirinên cuda ji bo gihîştina lezgîn tomar bikî.
-page_help_collections_item: >-
-  **Hûrgiliyên Hêmanê** — Formek ji bo dîtin û birêvebirina vê hêmanê. Ev darika kêlekê her weha dîrokek temam a serastkirinê, û şîroveyên navxweyî dihewîne.
-page_help_activity_collection: >-
-  **Çalakiyê Bigere** — Lîsteyek berfireh a hemû çalakiyên pergal û naveroka bikarhênerên te.
-page_help_docs_global: >-
-  **Dîmena Belgeyê** — Belgeyên taybet ji bo guherto û şêmaya vê projeyê.
-page_help_files_collection: >-
-  **Pirtûkxaneya Pelan** — Lîsteya hemû tiştên pelê ku li vê projeyê hatine barkirin. Mîhengkirin, parzûn, û rêzkirinê biguhêre da ku dîtina xwe li gorî hewcedariyên xwe bikî, û heta jî nîşankan ji bo van mîhengkirinên cuda ji bo gihîştina lezgîn tomar bikî.
-page_help_files_item: >-
-  **Hûrgiliyên Pelê** — Formek ji bo birêvebirina metadataya pelê, guhertina tiştê orîjînal, û nûkirina mîhengkariyên gihîştinê.
-page_help_settings_project: "**Mîhengkarî** — Vebijêrkên veavakirina gerdûnî ya projeyê."
-page_help_settings_appearance: "**Xuyang** — Vebijêrkên xuyang û temaya projeyê."
-page_help_settings_extensions: '**Pêvek** — Pêvekên ku li projeyê hatine sazkirin.'
-page_help_settings_datamodel_collections: >-
-  **Modela Daneyê: Koleksiyon** — Lîsteya hemû koleksiyonên berdest. Ev koleksiyonên xuya, veşartî, û pergalê, di gel tabloyên databeysa nemîhengkirî ku dikarin werin zêdekirin dihewîne.
-page_help_settings_datamodel_fields: >-
-  **Modela Daneyê: Koleksiyon** — Formek ji bo birêvebirina vê koleksiyon û qadên wê.
-page_help_settings_system_logs: '**Têketinên Pergalê** — Gihîştina herikîna zindî ya têketinên pergalê.'
-page_help_settings_policies_collection: '**Polîtîkayan Bigere** — Lîsteya hemû polîtîkayên di projeyê de.'
-page_help_settings_roles_collection: '**Rolan Bigere** — Lîsteya hemû rolên bikarhêner di projeyê de.'
-page_help_settings_roles_item: "**Hûrgiliyên Rolê** — Destûr û mîhengkariyên din ên rolekê birêve bibe."
-page_help_settings_presets_collection: >-
-  **Pêşmîhengkiriyan Bigere** — Lîsteya hemû pêşmîhengkiriyên di projeyê de, di nav de: nîşankên bikarhêner, rol, û gerdûnî, di gel dîtinên standard.
-page_help_settings_presets_item: >-
-  **Hûrgiliyên Pêşmîhengkiriyê** — Formek ji bo birêvebirina nîşank û pêşmîhengkiriyên standard ên koleksiyonê.
-page_help_settings_webhooks_collection: '**Webhookan Bigere** — Lîsteya hemû webhookên di projeyê de.'
-page_help_settings_webhooks_item: '**Hûrgiliyên Webhookê** — Formek ji bo afirandin û birêvebirina webhookên projeyê.'
-page_help_settings_flows_collection: '**Herikînan Bigere** — Lîsteya hemû Herikînên di projeyê de.'
-page_help_settings_flows_item: '**Hûrgiliyên Herikînê** — Qada xebatê ji bo birêvebirina yek an zêdetir operasyonan.'
-page_help_settings_translations_collection: '**Wergerînanên Taybet Bigere** — Lîsteya hemû wergerînên taybet di projeyê de.'
-page_help_settings_translations_item: '**Hûrgiliyên Wergerînên Taybet** — Formek ji bo dîtin û birêvebirina vê hêmanê.'
-page_help_users_collection: '**Peldanka Bikarhêneran** — Lîsteya hemû bikarhênerên pergalê di vê projeyê de.'
-page_help_users_item: >-
-  **Hûrgiliyên Bikarhêner** — Agahdariya hesabê xwe birêve bibe, an jî hûrgiliyên bikarhênerên din bibîne.
-page_help_insights_overview: '**Têgihiştin** — Lîsteya daşbordan ku tu gihîştina wan heyî.'
-page_help_insights_dashboard: '**Daşbord** — Qada xebatê ji bo birêvebirina yek an zêdetir panelan'
-page_help_marketplace_account: '**Hesab** — Weşanger an gerînendeyê pêvekeke weşandî.'
-page_help_marketplace_registry: '**Qeyd** — Pêvekên berdest di Marketplaceya Directus de.'
-page_help_marketplace_extension: '**Pêvek** — Pêveka di Marketplaceya Directus de.'
 activity_feed: Xwarina Çalakiyê
 add_new: Nû Zêde Bike
 create_new: Nû Biafirîne
@@ -1235,7 +1182,6 @@ directus_collection:
   directus_dashboards: Daşbordên di Modula Têgihiştinan de
   directus_fields: Veavakirin û metadaneyên zêde yên qadê
   directus_files: Metadaneya ji bo hemû tiştên pelê yên birêvebirî
-  directus_flows: Herikînên otomatîkkirinê
   directus_folders: Peldankên virtual ji bo pelan peyda dike
   directus_migrations: Tu kîjan guhertoya databeysa bi kar tînî
   directus_notifications: Agahdariyên şandî ji bikarhêneran re
@@ -1582,6 +1528,22 @@ unlimited_usage: Bikaranîna bêsînor
 uses_left: Ti bikaranînên mayî tune ne | Yek bikaranîna mayî | {n} bikaranînên mayî
 no_shares: Ti parvekirî tune ne ji bo nîşandanê
 new_share: Parvekirina Nû
+ai:
+  input: Têketin
+  unknown: Nenas
+  settings: Mîhengkarî
+  tool_approval:
+    disabled: Neçalak
+ai_tools:
+  items: Hêman
+  files: Pel
+  folders: Peldank
+  flows: Herikîn
+  trigger-flow: Herikînê Tetîk Bike
+  operations: Operasyon
+  schema: Şêma
+  collections: Koleksiyon
+  fields: Qad
 mcp_prompts_collection_schema:
   messages_role_user: Bikarhêner
 expired: Derbasbûyî
@@ -1750,9 +1712,7 @@ interfaces:
     accordion_mode: Moda Akordionê
     max_one_section_open: Herî Zêde 1 Beş Vekirî
   presentation-links:
-    presentation-links: Girêdanên Bişkokê
-    links: Girêdan
-    description: Bişkokên girêdanê yên veavakirî ji bo destpêkirina URLên dînamîk
+    presentation-links: Bişkok
     style: Şêwaz
     primary: Sereke
     link: Girêdan
@@ -2074,6 +2034,9 @@ interfaces:
   input-password:
     input-password: Têketina Şîfreyê
     description: Têketina şîfreyê bi bişkoka vejartina nirx
+  header:
+    header: Sernav
+    links: Girêdan
 displays:
   translations:
     translations: Wergerîn
@@ -2381,11 +2344,9 @@ triggers:
 a_flow_uuid: Herikînekê hilbijêre ji bo tetîkkirinê...
 any_string_or_json: Her rêzek an JSON...
 item_payload_placeholder: Ev e JSONa ku tê bikaranîn ji bo nûkirina nirxên qadê yên hêmanê...
-operation_variables_note: Tu dikarî bigihî daneya herikînê bi guherokên wekî **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** û **{'{'}{'{'}$accountability{'}'}{'}'}**, an jî referansê bidî operasyonên berê bi **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Merc
-    description: Herikînekê rêbike li gorî lojîka If / Else
   exec:
     name: Koda Bixebitîne
     description: Koda kêfî bixebitîne ji bo guherandina payloadê
@@ -2476,7 +2437,6 @@ operations:
     description: JSONa Herikînê biguherîne
   trigger:
     name: Herikînê Tetîk Bike
-    description: Vê daneyê bişîne herikîneke din
     flows: Herikîn
     flow: Herikîn
     data: Dane

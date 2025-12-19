@@ -1,27 +1,19 @@
 import { Focus } from '@/__utils__/focus';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
-import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
-import { describe, expect, test, vi, afterEach } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import VInput from './v-input.vue';
+import { i18n } from '@/lang';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
 	plugins: [i18n],
 	directives: {
 		focus: Focus,
+		tooltip: Tooltip,
 	},
 };
-
-test('Mount component', () => {
-	expect(VInput).toBeTruthy();
-
-	const wrapper = mount(VInput, {
-		global,
-	});
-
-	expect(wrapper.html()).toMatchSnapshot();
-});
 
 test('modelValue prop', async () => {
 	const wrapper = mount(VInput, {
@@ -175,6 +167,36 @@ describe('emitValue', () => {
 		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([1]);
 	});
 
+	test('should replace "," with "." for decimal separator when decimal types marked as text', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+				modelValue: '1,22',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1.22']);
+	});
+
+	test('should emit number without a thousandths separator', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+				modelValue: '1,222,220',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1.222220']);
+	});
+
 	test('should turn ending space into slug separator for slug input', async () => {
 		const wrapper = mount(VInput, {
 			props: {
@@ -232,7 +254,7 @@ describe('emitValue', () => {
 	});
 });
 
-describe('invalid warning', () => {
+describe('inline warning', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
 	});
@@ -265,15 +287,17 @@ describe('invalid warning', () => {
 		const validitySpy = vi.spyOn(inputEl, 'validity', 'get').mockReturnValue({ ...validityMock, badInput: true });
 
 		expect(inputEl.validity.badInput).toBe(true);
-		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+		expect((wrapper.vm as any).isBadInput).toBe(false);
 
 		await input.trigger('input');
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidInput).toBe(true);
+		expect((wrapper.vm as any).isBadInput).toBe(true);
 		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
-		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(true);
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
 		expect(validitySpy).toHaveBeenCalledTimes(2);
+
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('not_a_number'));
 
 		expect(wrapper.html()).toMatchSnapshot();
 	});
@@ -292,16 +316,295 @@ describe('invalid warning', () => {
 		const validitySpy = vi.spyOn(inputEl, 'validity', 'get').mockReturnValue(validityMock);
 
 		expect(inputEl.validity.badInput).toBe(false);
-		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+		expect((wrapper.vm as any).isBadInput).toBe(false);
 
 		await input.trigger('input');
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+		expect((wrapper.vm as any).isBadInput).toBe(false);
 		expect(wrapper.find('.v-input.invalid').exists()).toBe(false);
-		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(false);
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(false);
 		expect(validitySpy).toHaveBeenCalledTimes(2);
 
 		expect(wrapper.html()).toMatchSnapshot();
+	});
+
+	test('should appear when value exceeds maximum', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 15,
+				min: 0,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).inlineWarning).toBeDefined();
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_max', { value: 10 }));
+	});
+
+	test('should appear when value is below minimum', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: -5,
+				min: 0,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).inlineWarning).toBeDefined();
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_min', { value: 0 }));
+	});
+
+	test('should not appear when value is within range', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				min: 0,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).inlineWarning).toBeUndefined();
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(false);
+	});
+
+	test('should work with decimal values for float type', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 10.5,
+				min: 0.5,
+				max: 10,
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).inlineWarning).toBeDefined();
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_max', { value: 10 }));
+	});
+
+	test('should show invalid_input key for non-number type', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+			},
+			global,
+		});
+
+		const input = wrapper.find('input');
+		const inputEl = input.element as HTMLInputElement;
+
+		vi.spyOn(inputEl, 'validity', 'get').mockReturnValue({
+			badInput: true,
+		} as ValidityState);
+
+		await input.trigger('input');
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_input'));
+	});
+
+	test('useInvalidInput takes priority over useInvalidRange', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 15,
+				min: 0,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		const input = wrapper.find('input');
+		const inputEl = input.element as HTMLInputElement;
+
+		vi.spyOn(inputEl, 'validity', 'get').mockReturnValue({
+			badInput: true,
+		} as ValidityState);
+
+		await input.trigger('input');
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).isBadInput).toBe(true);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
+	});
+});
+
+describe('step controls', () => {
+	test('isStepUpAllowed should work with integer values', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
+	});
+
+	test('isStepUpAllowed should work with float values', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5.5,
+				max: 10,
+				float: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
+	});
+
+	test('isStepUpAllowed should be false when at max', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 10,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
+	});
+
+	test('isStepUpAllowed should be false when exceeding max', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 10.5,
+				max: 10,
+				float: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
+	});
+
+	test('isStepDownAllowed should work with integer values', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				min: 0,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
+	});
+
+	test('isStepDownAllowed should work with float values', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5.5,
+				min: 0,
+				float: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
+	});
+
+	test('isStepDownAllowed should be false when at min', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 0,
+				min: 0,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
+	});
+
+	test('isStepDownAllowed should be false when below min', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: -0.5,
+				min: 0,
+				float: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
+	});
+
+	test('isStepUpAllowed should be true when no max is set', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 100,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
+	});
+
+	test('isStepDownAllowed should be true when no min is set', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: -100,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
+	});
+
+	test('step controls should be disabled when input is disabled', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				min: 0,
+				max: 10,
+				disabled: true,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
 	});
 });

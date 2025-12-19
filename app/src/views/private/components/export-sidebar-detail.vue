@@ -1,7 +1,23 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import InterfaceSystemField from '@/interfaces/_system/system-field/system-field.vue';
+import InterfaceSystemFields from '@/interfaces/_system/system-fields/system-fields.vue';
+import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-filter.vue';
 import { useServerStore } from '@/stores/server';
+import type { APIError } from '@/types/error';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -14,6 +30,9 @@ import type { AxiosProgressEvent } from 'axios';
 import { debounce, pick } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
+import ImportErrorDialog from './import-error-dialog.vue';
+import SidebarDetail from './sidebar-detail.vue';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -31,7 +50,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['refresh']);
 
-const { t, n, te } = useI18n();
+const { t, n } = useI18n();
 
 const { collection } = toRefs(props);
 
@@ -41,6 +60,9 @@ const file = ref<File | null>(null);
 const { uploading, progress, importing, uploadFile } = useUpload();
 
 const exportDialogActive = ref(false);
+
+const errorDialogActive = ref(false);
+const errorDialogRows = ref<APIError[]>([]);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -284,14 +306,13 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (error: any) {
-			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
+			const errors = error?.response?.data?.errors;
+			const code = errors?.[0]?.extensions?.code;
 
-			notify({
-				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
-				type: 'error',
-			});
-
-			if (code === 'INTERNAL_SERVER_ERROR') {
+			if (code === 'FAILED_VALIDATION' && Array.isArray(errors)) {
+				errorDialogRows.value = errors;
+				errorDialogActive.value = true;
+			} else {
 				unexpectedError(error);
 			}
 		} finally {
@@ -370,29 +391,29 @@ async function exportDataFiles() {
 </script>
 
 <template>
-	<sidebar-detail icon="import_export" :title="t('import_export')">
+	<SidebarDetail id="export" icon="import_export" :title="$t('import_export')">
 		<div class="fields">
 			<template v-if="createAllowed">
 				<div class="field full">
 					<div v-if="uploading || importing" class="uploading">
 						<div class="type-text">
-							<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
+							<span>{{ importing ? $t('import_data_indeterminate') : $t('upload_file_indeterminate') }}</span>
 							<span v-if="!importing">{{ progress }}%</span>
 						</div>
-						<v-progress-linear :indeterminate="importing" :value="progress" rounded />
+						<VProgressLinear :indeterminate="importing" :value="progress" rounded />
 					</div>
 					<template v-else>
-						<p class="type-label">{{ t('label_import') }}</p>
+						<p class="type-label">{{ $t('label_import') }}</p>
 
-						<v-list-item v-tooltip="file && file.name" block clickable @click="openFileBrowser">
-							<v-list-item-icon>
+						<VListItem v-tooltip="file && file.name" block clickable @click="openFileBrowser">
+							<VListItemIcon>
 								<div class="preview" :class="{ 'has-file': file }">
 									<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
-									<v-icon v-else name="folder_open" />
+									<VIcon v-else name="folder_open" />
 								</div>
-							</v-list-item-icon>
+							</VListItemIcon>
 
-							<v-list-item-content>
+							<VListItemContent>
 								<input
 									id="import-file"
 									ref="fileInput"
@@ -403,85 +424,86 @@ async function exportDataFiles() {
 								/>
 
 								<span class="import-file-text" :class="{ 'no-file': !file }">
-									{{ file ? file.name : t('import_data_input_placeholder') }}
+									{{ file ? file.name : $t('import_data_input_placeholder') }}
 								</span>
-							</v-list-item-content>
+							</VListItemContent>
 
 							<div class="item-actions">
-								<v-remove v-if="file" deselect @action="clearFileInput" />
+								<VRemove v-if="file" deselect @action="clearFileInput" />
 
-								<v-icon v-else name="attach_file" />
+								<VIcon v-else name="attach_file" />
 							</div>
-						</v-list-item>
+						</VListItem>
 					</template>
 				</div>
 
 				<div class="field full">
-					<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
-						{{ t('import_data_button') }}
-					</v-button>
+					<VButton small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
+						{{ $t('import_data_button') }}
+					</VButton>
 				</div>
 
-				<v-divider />
+				<VDivider />
 			</template>
 
 			<div class="field full">
-				<v-button small full-width @click="openExportDialog">
-					{{ t('export_items') }}
-				</v-button>
+				<VButton small full-width @click="openExportDialog">
+					{{ $t('export_items') }}
+				</VButton>
 
 				<button
 					v-tooltip.bottom="
-						!!onDownload ? t('presentation_text_values_cannot_be_reimported') : t('download_page_as_csv_unsupported')
+						!!onDownload ? $t('presentation_text_values_cannot_be_reimported') : $t('download_page_as_csv_unsupported')
 					"
 					class="download-local"
 					:disabled="!onDownload"
 					@click="onDownload"
 				>
-					{{ t('download_page_as_csv') }}
+					{{ $t('download_page_as_csv') }}
 				</button>
 			</div>
 		</div>
 
-		<v-drawer
+		<VDrawer
 			v-model="exportDialogActive"
-			:title="t('export_items')"
+			:title="$t('export_items')"
 			icon="import_export"
 			persistent
 			@cancel="exportDialogActive = false"
 			@apply="startExport"
 		>
 			<template #actions>
-				<v-button
-					v-tooltip.bottom="location === 'download' ? t('download_file') : t('start_export')"
-					rounded
-					icon
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="location === 'download' ? $t('download_file') : $t('start_export')"
 					:loading="exporting"
+					:icon="location === 'download' ? 'download' : 'start'"
 					@click="startExport"
-				>
-					<v-icon :name="location === 'download' ? 'download' : 'start'" />
-				</v-button>
+				/>
 			</template>
 			<div class="export-fields">
 				<div class="field half-left">
-					<p class="type-label">{{ t('format') }}</p>
-					<v-select
+					<p class="type-label">{{ $t('format') }}</p>
+					<VSelect
 						v-model="format"
 						:items="[
 							{
-								text: t('csv'),
+								text: $t('csv'),
 								value: 'csv',
 							},
 							{
-								text: t('json'),
+								text: $t('csv_utf8'),
+								value: 'csv_utf8',
+							},
+							{
+								text: $t('json'),
 								value: 'json',
 							},
 							{
-								text: t('xml'),
+								text: $t('xml'),
 								value: 'xml',
 							},
 							{
-								text: t('yaml'),
+								text: $t('yaml'),
 								value: 'yaml',
 							},
 						]"
@@ -489,41 +511,41 @@ async function exportDataFiles() {
 				</div>
 
 				<div class="field half-right">
-					<p class="type-label">{{ t('limit') }}</p>
-					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="t('unlimited')" />
+					<p class="type-label">{{ $t('limit') }}</p>
+					<VInput v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="$t('unlimited')" />
 				</div>
 
 				<div class="field half-left">
-					<p class="type-label">{{ t('export_location') }}</p>
-					<v-select
+					<p class="type-label">{{ $t('export_location') }}</p>
+					<VSelect
 						v-model="location"
 						:disabled="lockedToFiles !== null"
 						:items="[
-							{ value: 'download', text: t('download_file') },
-							{ value: 'files', text: t('file_library') },
+							{ value: 'download', text: $t('download_file') },
+							{ value: 'files', text: $t('file_library') },
 						]"
 					/>
 				</div>
 
 				<div class="field half-right">
-					<p class="type-label">{{ t('folder') }}</p>
-					<folder-picker v-if="location === 'files'" v-model="folder" />
-					<v-notice v-else>{{ t('not_available_for_local_downloads') }}</v-notice>
+					<p class="type-label">{{ $t('folder') }}</p>
+					<FolderPicker v-if="location === 'files'" v-model="folder" />
+					<VNotice v-else>{{ $t('not_available_for_local_downloads') }}</VNotice>
 				</div>
 
-				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
+				<VNotice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p v-if="itemCountLoading">
-							{{ t('loading') }}
+							{{ $t('loading') }}
 						</p>
 
 						<p v-else-if="exportCount === 0">
-							{{ t('exporting_no_items_to_export') }}
+							{{ $t('exporting_no_items_to_export') }}
 						</p>
 
 						<p v-else-if="itemCountTotal && exportCount >= itemCountTotal">
 							{{
-								t('exporting_all_items_in_collection', {
+								$t('exporting_all_items_in_collection', {
 									total: itemCountTotal ? n(itemCountTotal) : '??',
 									collection: collectionInfo?.name,
 								})
@@ -532,7 +554,7 @@ async function exportDataFiles() {
 
 						<p v-else-if="itemCountTotal && exportCount < itemCountTotal">
 							{{
-								t('exporting_limited_items_in_collection', {
+								$t('exporting_limited_items_in_collection', {
 									count: n(exportCount),
 									total: itemCountTotal ? n(itemCountTotal) : '??',
 									collection: collectionInfo?.name,
@@ -541,24 +563,24 @@ async function exportDataFiles() {
 						</p>
 
 						<p v-if="lockedToFiles">
-							{{ t('exporting_library_hint_forced', { format: t(format) }) }}
+							{{ $t('exporting_library_hint_forced', { format: $t(format) }) }}
 						</p>
 
 						<p v-else-if="location === 'files'">
-							{{ t('exporting_library_hint', { format: t(format) }) }}
+							{{ $t('exporting_library_hint', { format: $t(format) }) }}
 						</p>
 
 						<p v-else>
-							{{ t('exporting_download_hint', { format: t(format) }) }}
+							{{ $t('exporting_download_hint', { format: $t(format) }) }}
 						</p>
 					</div>
-				</v-notice>
+				</VNotice>
 
-				<v-divider />
+				<VDivider />
 
 				<div class="field half-left">
-					<p class="type-label">{{ t('sort_field') }}</p>
-					<interface-system-field
+					<p class="type-label">{{ $t('sort_field') }}</p>
+					<InterfaceSystemField
 						:value="sortField"
 						:collection-name="collection"
 						allow-primary-key
@@ -566,31 +588,31 @@ async function exportDataFiles() {
 					/>
 				</div>
 				<div class="field half-right">
-					<p class="type-label">{{ t('sort_direction') }}</p>
-					<v-select
+					<p class="type-label">{{ $t('sort_direction') }}</p>
+					<VSelect
 						v-model="sortDirection"
 						:items="[
-							{ value: 'ASC', text: t('sort_asc') },
-							{ value: 'DESC', text: t('sort_desc') },
+							{ value: 'ASC', text: $t('sort_asc') },
+							{ value: 'DESC', text: $t('sort_desc') },
 						]"
 					/>
 				</div>
 
 				<div class="field full">
-					<p class="type-label">{{ t('full_text_search') }}</p>
-					<v-input v-model="exportSettings.search" :placeholder="t('search')" />
+					<p class="type-label">{{ $t('full_text_search') }}</p>
+					<VInput v-model="exportSettings.search" :placeholder="$t('search')" />
 				</div>
 				<div class="field full">
-					<p class="type-label">{{ t('filter') }}</p>
-					<interface-system-filter
+					<p class="type-label">{{ $t('filter') }}</p>
+					<InterfaceSystemFilter
 						:value="exportSettings.filter"
 						:collection-name="collection"
 						@input="exportSettings.filter = $event"
 					/>
 				</div>
 				<div class="field full">
-					<p class="type-label">{{ t('field', 2) }}</p>
-					<interface-system-fields
+					<p class="type-label">{{ $t('field', 2) }}</p>
+					<InterfaceSystemFields
 						:value="exportSettings.fields"
 						:collection-name="collection"
 						allow-select-all
@@ -598,8 +620,10 @@ async function exportDataFiles() {
 					/>
 				</div>
 			</div>
-		</v-drawer>
-	</sidebar-detail>
+		</VDrawer>
+
+		<ImportErrorDialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+first_name: Fornavn
+last_name: Etternavn
 identifier: Identifikator
 avatar: Profilbilde
 application: Applikasjon
@@ -365,6 +367,7 @@ confirm_revert_body: Dette vil reversere elementet til valgte tilstand.
 display: Visning
 settings_update_success: Innstillingene er oppdatert
 title: Tittel
+subtitle: Undertittel
 revision_delta_created: Opprettet
 revision_delta_created_externally: Opprettet eksternt
 revision_delta_updated: 'Oppdatert 1 felt | Oppdatert {count} felter'
@@ -609,7 +612,6 @@ errors:
   VALUE_OUT_OF_RANGE: Verdien er utenfor gyldig område
   VALUE_TOO_LONG: Verdien er for lang
 security: Sikkerhet
-value_hashed: Sikker verdi Hastet
 bookmark_name: Bokmerkenavn...
 create_bookmark: Lag bokmerke
 edit_bookmark: Rediger bokmerke
@@ -797,6 +799,18 @@ field_options:
 comment: Kommenter
 live_preview:
   new_window: Åpne i nytt vindu
+ai:
+  unknown: Ukjent
+  settings: Innstillinger
+  tool_approval:
+    disabled: Deaktivert
+ai_tools:
+  items: Elementer
+  files: Filer
+  folders: Mapper
+  operations: Operasjoner
+  schema: Skjema
+  collections: Kolleksjoner
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
 description: Beskrivelse

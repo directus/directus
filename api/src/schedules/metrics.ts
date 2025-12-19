@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
-import { scheduleJob } from 'node-schedule';
+import { CronJob } from 'cron';
 import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';
 import { validateCron } from '../utils/schedule.js';
@@ -47,7 +47,11 @@ export default async function schedule(): Promise<boolean> {
 		return false;
 	}
 
-	scheduleJob('metrics', String(env['METRICS_SCHEDULE']), handleMetricsJob);
+	CronJob.from({
+		cronTime: String(env['METRICS_SCHEDULE']),
+		onTick: handleMetricsJob,
+		start: true,
+	});
 
 	return true;
 }

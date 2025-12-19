@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Über
+first_name: Vorname
+last_name: Nachname
 identifier: Identifikator
 avatar: Avatar
 application: Anwendung
@@ -168,19 +170,9 @@ rename_version: Version umbenennen
 compare_version: Version vergleichen
 save_version: Version speichern
 promote_version: Version überführen
-promote_version_disabled: Keine Änderungen
-promote_version_drawer_title: Version {version} in Main überführen
-promote_version_changes: Änderungen
-promote_version_preview: Vorschau
-outdated_notice: >-
-  Das Main-Element wurde seit der Erstellung dieser Version abgeändert. Bitte überprüfen Sie alle untenstehenden Feldwerte und bestätigen Sie, welche Version verwendet werden soll, wenn diese Version in Main überführt wird.
-promote_notice: >-
-  Bitte überprüfen Sie alle untenstehenden Feldwerte und bestätigen Sie, welche Version verwendet werden soll, wenn diese Version in Main überführt wird.
 delete_version: Version löschen
 delete_version_copy: >-
   Möchten Sie die "{version}" Version wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-delete_on_promote_copy: >-
-  Möchten Sie die "{version}" Version nach der Überführung löschen oder beibehalten?
 reset_bookmark: Lesezeichen zurücksetzen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
@@ -453,11 +445,11 @@ confirm_revert_body: Dadurch wird das Element auf den ausgewählten Zustand zur�
 display: Anzeige
 settings_update_success: Einstellungen aktualisiert
 title: Titel
+subtitle: Untertitel
 revision_delta_created: Erstellt
 revision_delta_created_externally: Extern erstellt
 revision_delta_updated: '1 Feld aktualisiert | {count} Felder aktualisiert'
 revision_delta_deleted: Gelöscht
-revision_delta_version_saved: 'Version (1 Feld aktualisiert) | Version ({count} Felder aktualisiert)'
 revision_delta_reverted: Zurückgesetzt
 revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
@@ -765,7 +757,6 @@ errors:
   VALUE_OUT_OF_RANGE: Wert ist außerhalb des gültigen Bereichs
   VALUE_TOO_LONG: Wert ist zu lang
 security: Sicherheit
-value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
@@ -941,10 +932,8 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
-run_flow_confirm: Sind Sie sicher, dass Sie diesen Flow ausführen wollen?
 run_flow_on_current_collection: Flow in der aktuellen Sammlung ausführen
 run_flow_on_current: Flow beim aktuellen Element ausführen
-run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
 run_flow: Flow ausführen
 trigger_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
@@ -1161,48 +1150,6 @@ discard_changes_copy: Möchten Sie wirklich alle Änderungen verwerfen?
 show_x_axis: X-Achse anzeigen
 show_y_axis: Y-Achse anzeigen
 keep_editing: Weiter bearbeiten
-page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
-page_help_collections_collection: >-
-  **Elemente durchstöbern** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
-page_help_collections_item: >-
-  **Elementdetails** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
-page_help_activity_collection: >-
-  **Aktivität durchstöbern** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
-page_help_docs_global: >-
-  **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
-page_help_files_collection: >-
-  **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
-page_help_files_item: >-
-  **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
-page_help_settings_project: "**Einstellungen** — Die globalen Konfigurationsoptionen Ihres Projekts."
-page_help_settings_appearance: "**Erscheinung** — Aussehen und Design-Optionen des Projekts."
-page_help_settings_extensions: '**Erweiterungen** — Die Erweiterungen, welche in dem Projekt installiert sind.'
-page_help_settings_datamodel_collections: >-
-  **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
-page_help_settings_datamodel_fields: >-
-  **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
-page_help_settings_system_logs: '**Systemprotokolle** — Greifen Sie auf einen Live-Stream der Systemprotokolle zu.'
-page_help_settings_policies_collection: '**Richtlinien durchstöbern** — Auflistung aller Richtlinien innerhalb des Projekts.'
-page_help_settings_roles_collection: '**Rollen durchstöbern** — Auflistung aller Benutzerrollen innerhalb des Projekts.'
-page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
-page_help_settings_presets_collection: >-
-  **Vorlagen durchstöbern** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
-page_help_settings_presets_item: >-
-  **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
-page_help_settings_webhooks_collection: '**Webhooks durchstöbern** — Auflistung aller Webhooks innerhalb des Projektes.'
-page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
-page_help_settings_flows_collection: '**Flows durchstöbern** — Auflistung aller Flows innerhalb des Projektes.'
-page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
-page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchstöbern** — Auflistung aller benutzerdefinierten Übersetzungen innerhalb des Projektes.'
-page_help_settings_translations_item: '**Detailansicht Benutzerdefinierte Übersetzungen** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
-page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
-page_help_users_item: >-
-  **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
-page_help_insights_overview: '**Einblicke** — Liste der Dashboards, auf welche Sie Zugriff haben.'
-page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwaltung von einer oder mehreren Panels'
-page_help_marketplace_account: '**Benutzerkonto** — Herausgeber oder Betreuer einer veröffentlichten Erweiterung.'
-page_help_marketplace_registry: '**Registry** — Im Directus Marketplace verfügbare Erweiterungen.'
-page_help_marketplace_extension: '**Erweiterung** — Erweiterung im Directus Marketplace.'
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
 create_new: Neu anlegen
@@ -1238,7 +1185,6 @@ directus_collection:
   directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
-  directus_flows: Automation Flows
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_notifications: Benachrichtigungen an Benutzer gesendet
@@ -1584,6 +1530,22 @@ unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | Eine Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
+ai:
+  input: Eingabe
+  unknown: Unbekannt
+  settings: Einstellungen
+  tool_approval:
+    disabled: Deaktiviert
+ai_tools:
+  items: Elemente
+  files: Dateien
+  folders: Ordner
+  flows: Flows
+  trigger-flow: Flow auslösen
+  operations: Operationen
+  schema: Schema
+  collections: Sammlungen
+  fields: Felder
 mcp_prompts_collection_schema:
   messages_role_user: Benutzer
 expired: Abgelaufen
@@ -1752,9 +1714,7 @@ interfaces:
     accordion_mode: Akkordeon-Modus
     max_one_section_open: Max. einen Abschnitt öffnen
   presentation-links:
-    presentation-links: Button-Links
-    links: Links
-    description: Konfigurierbare Link-Buttons für dynamische URLs
+    presentation-links: Buttons
     style: Stil
     primary: Primär
     link: Links
@@ -2076,6 +2036,9 @@ interfaces:
   input-password:
     input-password: Passwort eingeben
     description: Passwort-Eingabe mit Schalter zum Verstecken des Wertes
+  header:
+    header: Header
+    links: Links
 displays:
   translations:
     translations: Übersetzungen
@@ -2382,11 +2345,9 @@ triggers:
 a_flow_uuid: Auszulösenden Flow auswählen...
 any_string_or_json: Ein String oder JSON...
 item_payload_placeholder: Dies ist der JSON-Wert um die Feldwerte des Elements zu aktualisieren...
-operation_variables_note: Du kannst auf Flow-Daten mit Variablen wie **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** und **{'{'}{'{'}$accountability{'}'}{'}'}**, oder vorherige Operationen mit **{'{'}{'{'}operation_key{'}'}{'}'}**.' referenzieren
 operations:
   condition:
     name: Kondition
-    description: Leiten eines Flows basierend auf If / Else Logik
   exec:
     name: Skript ausführen
     description: Führe beliebigen Code aus, um die Nutzlast zu ändern
@@ -2477,7 +2438,6 @@ operations:
     description: JSON Payload des Flows bearbeiten
   trigger:
     name: Flow auslösen
-    description: Daten an anderen Flow übergeben
     flows: Flows
     flow: Flow
     data: Daten

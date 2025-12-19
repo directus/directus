@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import VList from '@/components/v-list.vue';
 import { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import MetadataItem from '../../../components/metadata-item.vue';
 import ExtensionInstall from './extension-install.vue';
 import ExtensionMetadataAuthor from './extension-metadata-author.vue';
@@ -16,8 +16,6 @@ import ExtensionMetadataVersion from './extension-metadata-version.vue';
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
 }>();
-
-const { t } = useI18n();
 
 const latestVersion = computed(() => props.extension.versions.at(0)!);
 
@@ -34,7 +32,7 @@ const maintainers = computed(() => {
 
 <template>
 	<div class="metadata">
-		<v-list class="list">
+		<VList class="list">
 			<div class="grid buttons">
 				<ExtensionInstall :extension-id="extension.id" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
@@ -55,8 +53,8 @@ const maintainers = computed(() => {
 					:github-avatar-url="maintainer.github_avatar_url"
 				/>
 			</div>
-		</v-list>
-		<v-list class="list">
+		</VList>
+		<VList class="list">
 			<div class="grid">
 				<ExtensionMetadataDownloadsSparkline
 					v-if="extension.downloads"
@@ -70,16 +68,16 @@ const maintainers = computed(() => {
 				<ExtensionMetadataLicense :license="extension.license" />
 				<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
 				<MetadataItem v-if="latestVersion.url_homepage" icon="link" :href="latestVersion.url_homepage">
-					{{ t('homepage') }}
+					{{ $t('homepage') }}
 				</MetadataItem>
 				<MetadataItem v-if="latestVersion.url_repository" icon="commit" :href="latestVersion.url_repository">
-					{{ t('repository') }}
+					{{ $t('repository') }}
 				</MetadataItem>
 				<MetadataItem v-if="latestVersion.url_bugs" icon="bug_report" :href="latestVersion.url_bugs">
-					{{ t('report_an_issue') }}
+					{{ $t('report_an_issue') }}
 				</MetadataItem>
 			</div>
-		</v-list>
+		</VList>
 	</div>
 </template>
 

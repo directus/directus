@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
+first_name: Primeiro Nome
+last_name: Sobrenome
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -170,19 +172,9 @@ rename_version: Renomear Versão
 compare_version: Comparar Versão
 save_version: Salvar Versão
 promote_version: Promover Versão
-promote_version_disabled: Sem alterações
-promote_version_drawer_title: Promover {version} para a Main
-promote_version_changes: Mudanças
-promote_version_preview: Pré-visualizar
-outdated_notice: >-
-  O item principal foi atualizado desde que esta versão foi criada. Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
-promote_notice: >-
-  Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
 delete_version: Deletar Versão
 delete_version_copy: >-
   Tem certeza que deseja excluir a versão "{version}"? Esta ação não pode ser desfeita.
-delete_on_promote_copy: >-
-  Você quer apagar ou manter a versão "{version}" após a promoção?
 reset_bookmark: Redefinir Favoritos
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
@@ -457,11 +449,11 @@ confirm_revert_body: Isto irá reverter o item para o estado selecionado.
 display: Exibir
 settings_update_success: Configurações atualizadas
 title: Título
+subtitle: Subtítulo
 revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo atualizado | {count} campos atualizados'
 revision_delta_deleted: Excluído
-revision_delta_version_saved: 'Salvar Versão (Atualizado 1 Campo) | Salvar Versão (Atualizado em {count} Campos)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi actualizado, mas o seu valor está a ser ocultado por razões de segurança.
 revision_delta_other: Revisão
@@ -768,7 +760,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fora de alcance
   VALUE_TOO_LONG: Valor é muito longo
 security: Segurança
-value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
 create_bookmark: Criar marcador
 edit_bookmark: Editar marcador
@@ -944,10 +935,8 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
-run_flow_confirm: Tem certeza que deseja excluir este fluxo?
 run_flow_on_current_collection: Executar fluxo na coleção atual
 run_flow_on_current: Executar fluxo no Item atual
-run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
 run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow: Executar Fluxo
 trigger_flow_success: Fluxo "{flow}" ativado com sucesso
@@ -1169,48 +1158,6 @@ discard_changes_copy: Tem certeza que deseja descartar todas as alterações?
 show_x_axis: Mostrar eixo X
 show_y_axis: Mostrar eixo Y
 keep_editing: Continuar editando
-page_help_collections_overview: '**Visão Geral das Coleções** — Lista de todas as coleções às quais você tem acesso.'
-page_help_collections_collection: >-
-  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
-page_help_collections_item: >-
-  **Detalhes do Item** — Um formulário para visualizar e gerenciar este item. Esta barra lateral também contém um histórico completo de revisões e comentários incorporados.
-page_help_activity_collection: >-
-  **Navegando em atividades** — Uma listagem abrangente do sistema de todos os seus usuários e atividade de conteúdo.
-page_help_docs_global: >-
-  **Visão geral de documentação** — Documentação feita especificamente para esta versão e esquema deste projeto.
-page_help_files_collection: >-
-  **Biblioteca de Arquivos** - Lista todos os arquivos enviados para este projeto. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
-page_help_files_item: >-
-  **Detalhe do Arquivo** — Um formulário para gerenciar os metadados do arquivo, editar o asset original e atualizar as configurações de acesso.
-page_help_settings_project: "**Configurações** — Opções de configuração globais do seu projeto."
-page_help_settings_appearance: "**Aparência** — Opções de aparência do seu projeto."
-page_help_settings_extensions: '**Extensões** — Extensões instaladas no seu projeto.'
-page_help_settings_datamodel_collections: >-
-  **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
-page_help_settings_datamodel_fields: >-
-  **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
-page_help_settings_system_logs: '** Sistema de Registros** — Acesse um fluxo ao vivo dos registros do sistema.'
-page_help_settings_policies_collection: '**Pesquisar Políticas** — Lista todas as políticas no projeto.'
-page_help_settings_roles_collection: 'Navegar por funções, listar todas as funções de usuário no projeto.'
-page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
-page_help_settings_presets_collection: >-
-  **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
-page_help_settings_presets_item: >-
-  **Detalhe da predefinição** — Um formulário para gerenciar marcadores e predefinições de coleção padrão.
-page_help_settings_webhooks_collection: '**Navegando em Webhooks** — Lista todos os webhooks dentro do projeto.'
-page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário para criar e gerenciar os webhooks do projeto.'
-page_help_settings_flows_collection: '**Navegue fluxos** — Lista todos os fluxos dentro do projeto.'
-page_help_settings_flows_item: '**Detalhes do fluxo** — Área para gerenciar uma ou mais operações.'
-page_help_settings_translations_collection: '**Ver Traduções Personalizadas** — Lista todas as traduções personalizadas no projeto.'
-page_help_settings_translations_item: '**Detalhe de Tradução Personalizado** — Uma maneira de visualizar e gerenciar este item.'
-page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
-page_help_users_item: >-
-  **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
-page_help_insights_overview: '**Visões** — Lista de painéis que aos quais você tem acesso.'
-page_help_insights_dashboard: '**Dashboard** — Área de trabalho para gerenciar um ou mais painéis'
-page_help_marketplace_account: '**Conta** — Criador ou atual desenvolvedor de uma extensão publicada.'
-page_help_marketplace_registry: '**Registro** — Extensões disponíveis no Directus Marketplace.'
-page_help_marketplace_extension: '**Extensão** — Extensão do Directus.'
 activity_feed: Feed de atividade
 add_new: Adicionar Novo
 create_new: Criar novo
@@ -1246,7 +1193,6 @@ directus_collection:
   directus_dashboards: Painéis dentro do módulo Insights
   directus_fields: Configurações e metadados adicionais do campo
   directus_files: Metadados de todos os arquivos gerenciados
-  directus_flows: Fluxos de automação
   directus_folders: Fornece diretórios virtuais para arquivos
   directus_migrations: Qual versão do banco de dados você está utilizando
   directus_notifications: Notificações enviadas aos usuários
@@ -1593,6 +1539,22 @@ unlimited_usage: Uso Ilimitado
 uses_left: Nenhum uso restante | Um uso restante |  {n} usos restantes
 no_shares: Nenhum compartilhamento para mostrar
 new_share: Novo Compartilhamento
+ai:
+  input: Entrada
+  unknown: Desconhecido
+  settings: Configurações
+  tool_approval:
+    disabled: Desabilitado
+ai_tools:
+  items: Itens
+  files: Arquivos
+  folders: Pastas
+  flows: Fluxos
+  trigger-flow: Ativar Fluxo
+  operations: Operações
+  schema: Esquema
+  collections: Coleções
+  fields: Campos
 mcp_prompts_collection_schema:
   messages_role_user: Usuário
 expired: Expirado
@@ -1763,9 +1725,7 @@ interfaces:
     accordion_mode: Modo do Acordeão
     max_one_section_open: Máximo 1 Seção Aberta
   presentation-links:
-    presentation-links: Links do botão
-    links: Links
-    description: Botões de link configuráveis para iniciar URLs dinâmicos
+    presentation-links: Botões
     style: Estilo
     primary: Primário
     link: Links
@@ -2087,6 +2047,9 @@ interfaces:
   input-password:
     input-password: Insira sua Senha
     description: Entrada de senha com alternância para ocultar o valor
+  header:
+    header: Cabeçalho
+    links: Links
 displays:
   translations:
     translations: Traduções
@@ -2394,11 +2357,9 @@ triggers:
 a_flow_uuid: Selecione um Fluxo para acionamento...
 any_string_or_json: Qualquer texto ou JSON...
 item_payload_placeholder: Este é o JSON utilizado para atualizar os campos do item...
-operation_variables_note: Você pode acessar dados do fluxo com variáveis como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, ou referenciar operações prévias utilizando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condição
-    description: Direciona um fluxo utilizando lógica Se / Se não
   exec:
     name: Executar Script
     description: Executa código arbitrário para modificação do payload
@@ -2483,7 +2444,6 @@ operations:
     description: Altere a carga JSON do Flow
   trigger:
     name: Ativar Fluxo
-    description: Passar estes dados para outro fluxo
     flows: Fluxos
     flow: Fluxo
     data: Dados
@@ -2537,14 +2497,6 @@ search_flow: Procurar Fluxo...
 percent: Porcentagem
 show_password: Mostrar senha
 hide_password: Ocultar Senha
-bsl_banner:
-  welcome_to_directus: Boas-vindas ao Directus!
-  organization_threshold: Entidades acima dessa limiar necessitam de uma licença paga.
-  license_agreement: Ao clicar em "Aceito", você concorda com {directusBsl} e {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Políticas de Privacidade
-  accept_terms: Aceitar
-  get_license: Obtenha a sua licença
 accepted: Aceitado
 text_direction_auto: Automático (Adequar o Idioma)
 text_direction_ltr: Da Esquerda para a Direita (EPD)

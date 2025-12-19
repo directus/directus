@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VForm from '@/components/v-form/v-form.vue';
 import { DeepPartial, Field } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -141,5 +142,5 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 </script>
 
 <template>
-	<v-form v-model="conditionsSync" :initial-values="conditionsInitial" :fields="fields" :loading="loading" />
+	<VForm v-model="conditionsSync" :initial-values="conditionsInitial" :fields="fields" :loading="loading" />
 </template>

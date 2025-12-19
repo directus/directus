@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useExtension } from '@/composables/use-extension';
 import type { ExtensionOptionsContext } from '@directus/extensions';
 import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: Record<string, unknown> | null;
@@ -18,8 +19,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: 'input', value: Record<string, unknown> | null): void;
 }>();
-
-const { t } = useI18n();
 
 const options = computed({
 	get() {
@@ -86,16 +85,16 @@ const optionsFields = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!selectedInterface">
-		{{ t('select_interface') }}
-	</v-notice>
+	<VNotice v-if="!selectedInterface">
+		{{ $t('select_interface') }}
+	</VNotice>
 
-	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ t('no_options_available') }}
-	</v-notice>
+	<VNotice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
+		{{ $t('no_options_available') }}
+	</VNotice>
 
 	<div v-else class="inset">
-		<v-form
+		<VForm
 			v-if="usesCustomComponent === false"
 			v-model="options"
 			class="extension-options"

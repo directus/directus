@@ -20,6 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
+privacy_policy: Политика конфиденциальности
+contact_our_team: Связаться с нашей командой
+setup_welcome: Добро пожаловать в Directus
+setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
+setup_launch: Запустить Directus
+first_name: Имя
+last_name: Фамилия
+admin_email: Почта админа
+owner_email: Почта владельца
+email_address: Адрес электронной почты
+organization_name: Название организации
+how_do_you_use_directus: Для чего вы используете Directus?
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -46,6 +58,8 @@ location: Расположение
 collection_names_are_case_sensitive: Названия коллекций чувствительны к регистру
 condition_rules: Правила условий
 input: Ввод текста
+invalid_input: Некорректное значение
+not_a_number: Не число
 maps: Карты
 switch_user: Сменить пользователя
 item_creation: Создание элемента
@@ -113,6 +127,11 @@ fill_width: В ширину
 field_name_translations: Переводы названия поля
 enter_password_to_enable_tfa: Введите свой пароль для включения двухфакторной аутентификации
 sso_tfa_setup_notice: Вы будете отключены от своего аккаунта и вам потребуется снова войти в систему. Любые несохранённые изменения будут потеряны.
+enable_tfa: Включить 2FA
+cancel_tfa_setup: Отменить установку 2FA
+cancel_tfa_setup_notice: Вы уверены что хотите отменить установку 2FA?
+keep_setup: Продолжить установку
+cancel_setup: Отменить установку
 add_field: Добавить поле
 role_name: Название роли
 policy_name: Название политики
@@ -169,19 +188,10 @@ rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
 promote_version: Повысить версию
-promote_version_disabled: Без изменений
-promote_version_drawer_title: Сделать {version} главной
-promote_version_changes: Изменения
-promote_version_preview: Предпросмотр
-outdated_notice: >-
-  Главный пункт был обновлен с момента создания этой версии. Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
-promote_notice: >-
-  Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
+apply: Применить
 delete_version: Удалить версию
 delete_version_copy: >-
   Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
-delete_on_promote_copy: >-
-  Вы хотите удалить или сохранить версию «{version}» после продвижения?
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -321,6 +331,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Сбросить настройки страницы
 hidden_field: Скрытое поле
 hidden_on_detail: Скрывать в карточке
+clear_hidden_field: Очистить значение(я)
+clear_value_on_save_when_hidden: При сохранении очистить скрытые значения
 readonly_field_label: Отключите это поле в приложении
 required_readonly_field_warning: Включение для поля режимов readonly и required предотвращает сохранение элемента, если его значение пусто.
 key: Ключ
@@ -455,11 +467,11 @@ confirm_revert_body: Это вернёт элемент в выбранное с
 display: Отображение
 settings_update_success: Настройки обновлены
 title: Заголовок
+subtitle: Подзаголовок
 revision_delta_created: Создано
 revision_delta_created_externally: Создано извне
 revision_delta_updated: 'Обновлено 1 поле | Обновлено {count} полей'
 revision_delta_deleted: Удалено
-revision_delta_version_saved: 'Версия Сохранена (Обновлено 1 поле) | Версия Сохранена (Обновлено {count} полей)'
 revision_delta_reverted: Восстановлено
 revision_delta_update_message: Это поле было обновлено, но его значение скрывается по соображениям безопасности.
 revision_delta_other: Редакция
@@ -560,6 +572,9 @@ original: Исходный
 url: URL-адрес
 import_label: Импорт
 file_details: Информация о файле
+copy_id: Скопировать ID
+copy_id_success: ID скопирован
+copy_id_fail: ID не скопирован
 dimensions: Размеры
 size: Размер
 created: Создано
@@ -723,6 +738,7 @@ enabled_dev_tooltip: Расширения приложения всегда вк
 disable_tfa: Отключить 2FA
 admin_disable_tfa_text: Вы уверены, что хотите отключить 2FA для этого пользователя?
 tfa_setup: Настроить двухфакторную аутентификацию (2FA)
+tfa_setup_description: Установите двухфакторную аутентификацию для защиты вашей учетной записи
 tfa_scan_code: Сканируйте код в приложении-аутентификаторе для завершения настройки 2FA
 enter_otp_to_disable_tfa: Введите OTP для отключения 2FA
 create_account: Создать учётную запись
@@ -768,7 +784,6 @@ errors:
   VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
   VALUE_TOO_LONG: Значение слишком длинное
 security: Безопасность
-value_hashed: Надёжно зашифрованное значение
 bookmark_name: Название закладки...
 create_bookmark: Создать закладку
 edit_bookmark: Редактировать закладку
@@ -944,10 +959,8 @@ label: Описание
 flows: Процессы
 flow: Процесс
 select_a_flow: Выберите процесс
-run_flow_confirm: Вы уверены, что хотите выполнить этот процесс?
 run_flow_on_current_collection: Запустить процесс с текущей коллекцией
 run_flow_on_current: Запустить процесс с текущим элементом
-run_flow_on_current_edited_confirm: Этот элемент может быть обновлен этим процессом — вы уверены, что хотите выполнить его?
 run_flow_on_selected: Сначала выберите один или несколько элементов | Запустить процесс с выбранным элементом | Запустить процесс с {n} выбранными элементами
 run_flow: Запуск потока
 trigger_flow_success: Поток «{flow}» сработал успешно
@@ -1099,6 +1112,7 @@ wysiwyg_options:
   h4: Заголовок 4
   h5: Заголовок 5
   h6: Заголовок 6
+  pre: Предварительно отформатировано
   fontselect: Выберите шрифт
   fontsizeselect: Выберите размер шрифта
   indent: Отступ
@@ -1141,6 +1155,8 @@ settings_roles: Роли пользователей
 settings_permissions: Политики доступа
 settings_project: Настройки
 settings_appearance: Внешний вид
+settings_ai: ИИ
+model_context_protocol: Model Context Protocol
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
 settings_system_logs: Системные логи
@@ -1169,48 +1185,6 @@ discard_changes_copy: Вы хотите отменить все внесённы
 show_x_axis: Показать ось X
 show_y_axis: Показать ось Y
 keep_editing: Продолжить редакт.
-page_help_collections_overview: '**Обзор коллекций** — список всех коллекций, к которым у вас есть доступ.'
-page_help_collections_collection: >-
-  **Просмотр элементов** — список всех элементов в {collection}, к которым у вас есть доступ. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
-page_help_collections_item: >-
-  **Карточка элемента** — форма для просмотра и управления этим элементом. Эта панель также содержит полную историю редакций и встроенные комментарии.
-page_help_activity_collection: >-
-  **Просмотр действий** — полный список всех действий пользователя, связанных с системой или содержанием.
-page_help_docs_global: >-
-  **Обзор документации** — документация, специально созданная к версии и схеме этого проекта.
-page_help_files_collection: >-
-  **Библиотека файлов** — список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
-page_help_files_item: >-
-  **Карточка файла** — форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
-page_help_settings_project: "**Настройки проекта** — глобальные параметры конфигурации проекта."
-page_help_settings_appearance: "**Вид** — внешний вид вашего проекта и возможности его оформления."
-page_help_settings_extensions: '**Расширения** — расширения, установленные в вашем проекте.'
-page_help_settings_datamodel_collections: >-
-  **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
-page_help_settings_datamodel_fields: >-
-  **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
-page_help_settings_system_logs: '**Системные журналы** — доступ к потоку системных журналов.'
-page_help_settings_policies_collection: '**Просмотреть политики** — список всех политик проекта.'
-page_help_settings_roles_collection: '**Обзор ролей** — список всех ролей в проекте.'
-page_help_settings_roles_item: "**Карточка роли** — управление разрешениями роли и другими настройками."
-page_help_settings_presets_collection: >-
-  **Просмотр шаблонов** — список всех шаблонов в проекте, включая: пользователей, роли и глобальные закладки, а также представления по умолчанию.
-page_help_settings_presets_item: >-
-  **Карточка шаблона** — форма для управления шаблонами закладок и коллекций по умолчанию.
-page_help_settings_webhooks_collection: '**Просмотр веб-хуков** — список всех веб-хуков в проекте.'
-page_help_settings_webhooks_item: '**Карточка веб-хука** — форма для создания и управления веб-хуками проекта.'
-page_help_settings_flows_collection: '**Просмотреть процессы** — список всех процессов в проекте.'
-page_help_settings_flows_item: '**Карточка процесса** — рабочее пространство для управления одной или несколькими операциями.'
-page_help_settings_translations_collection: '**Просмотр Пользовательских Переводов** — список всех пользовательских переводов в проекте.'
-page_help_settings_translations_item: '**Информация о Пользовательском Переводе** — форма для просмотра и управления этим элементом.'
-page_help_users_collection: '**Пользователи** — список всех системных пользователей в этом проекте.'
-page_help_users_item: >-
-  **Карточка пользователя** — управляйте данными вашей учётной записи или просматривайте данные других пользователей.
-page_help_insights_overview: '**Аналитика** — список досок, к которым у вас есть доступ.'
-page_help_insights_dashboard: '**Доска** — рабочее пространство для управления одной или несколькими панелями'
-page_help_marketplace_account: '**Учётная запись** — издатель или разработчик опубликованного расширения.'
-page_help_marketplace_registry: '**Реестр** — расширения, доступные в Магазине Directus.'
-page_help_marketplace_extension: '**Расширение** — расширения, доступные в Магазине Directus.'
 activity_feed: Лента действий
 add_new: Создать
 create_new: Создать
@@ -1246,7 +1220,6 @@ directus_collection:
   directus_dashboards: Панели инструментов в модуле Аналитика
   directus_fields: Дополнительные настройки полей и метаданные
   directus_files: Метаданные для всех управляемых файлов
-  directus_flows: Автоматизированные процессы
   directus_folders: Предоставляет виртуальные папки для файлов
   directus_migrations: Какую версию базы данных вы используете
   directus_notifications: Уведомления, отправленные пользователям
@@ -1333,6 +1306,7 @@ fields:
     tags: Теги
     user_preferences: Пользовательские настройки
     language: Язык
+    text_direction: Направление текста
     tfa_secret: Двухфакторная аутентификация
     admin_options: Параметры администратора
     status: Статус
@@ -1411,6 +1385,11 @@ fields:
     public_registration_verify_email: Подтвердить эл. почту
     public_registration_verify_email_note: Отправить письмо регистрирующему пользователю с просьбой нажать на ссылку подтверждения, прежде чем они смогут войти.
     visual_editor_urls: URL-адреса визуального редактора
+    mcp_enabled: MCP сервер
+    mcp_enabled_note: 'Подключите инструменты AI/LLM к вашему проекту Directus через <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Это позволяет ИИ ассистентам безопасно считывать и взаимодействовать с данными Directus.'
+    mcp_notice: 'Model Context Protocol — это стандарт для подключения LLM к таким приложениям, как Directus. Единожды настроенный, Directus MCP сервер будет доступен по `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Узнать больше про MCP и его установку.</a>'
+    mcp_allow_deletes: Разрешить удаления
+    mcp_prompts_collection: AI Prompts Collection
   directus_shares:
     name: Название
     role: Роль
@@ -1593,6 +1572,22 @@ unlimited_usage: Неограниченное использование
 uses_left: Не осталось использования | 1 использование осталось | осталось {n} использований
 no_shares: Нет элементов Общего доступа
 new_share: Новая публикация
+ai:
+  input: Ввод
+  unknown: Неизвестно
+  settings: Настройки
+  tool_approval:
+    disabled: Отключено
+ai_tools:
+  items: Элементы
+  files: Файлы
+  folders: Папки
+  flows: Процессы
+  trigger-flow: Запустить процесс
+  operations: Операции
+  schema: Схема
+  collections: Коллекции
+  fields: Поля
 mcp_prompts_collection_schema:
   messages_role_user: Пользователь
 expired: Истекло
@@ -1763,9 +1758,7 @@ interfaces:
     accordion_mode: Вид аккордеона
     max_one_section_open: 1 открытая секция
   presentation-links:
-    presentation-links: Кнопки-ссылки
-    links: Ссылки
-    description: Настраиваемые кнопки-ссылки для динамических URL-адресов
+    presentation-links: Кнопки
     style: Стиль
     primary: Первичный
     link: Ссылки
@@ -2087,6 +2080,9 @@ interfaces:
   input-password:
     input-password: Введите пароль
     description: Ввод пароля с переключением, чтобы скрыть значение
+  header:
+    header: HTTP-заголовок
+    links: Ссылки
 displays:
   translations:
     translations: Переводы
@@ -2394,11 +2390,9 @@ triggers:
 a_flow_uuid: Выберите процесс для запуска...
 any_string_or_json: Любая строка или JSON...
 item_payload_placeholder: Это JSON, используемый для обновления значений полей элемента...
-operation_variables_note: Вы можете получить доступ к данным процесса с такими переменными как **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или ссылаться на предыдущие операции, используя **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Условие
-    description: Маршрутизировать процесс на основе логики If / Else
   exec:
     name: Выполнить скрипт
     description: Выполнить произвольный код для изменения полезной нагрузки
@@ -2484,12 +2478,13 @@ operations:
     name: Сон
     description: Ожидать заданное количество миллисекунд
     milliseconds: Миллисекунды
+  throw-error:
+    message: Сообщение об ошибке
   transform:
     name: Содержание преобразования
     description: Изменить JSON-содержимое процесса
   trigger:
     name: Запустить процесс
-    description: Передать данные другому процессу
     flows: Процессы
     flow: Процесс
     data: Данные
@@ -2543,13 +2538,4 @@ search_flow: Последовательность поиска...
 percent: Процент
 show_password: Показать пароль
 hide_password: Скрыть пароль
-bsl_banner:
-  welcome_to_directus: Добро пожаловать в Directus!
-  directus_free_use: Directus бесплатен для организаций с годовым доходом, финансированием или операционным бюджетом менее 5 миллионов долларов.
-  organization_threshold: Для организаций, превышающих этот порог, требуется платная лицензия.
-  license_agreement: Нажимая кнопку «Принять», вы соглашаетесь с {directusBsl} и {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Политика конфиденциальности
-  accept_terms: Принять
-  get_license: Получить лицензию
 accepted: Принято

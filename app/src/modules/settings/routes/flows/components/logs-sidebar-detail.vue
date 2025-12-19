@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import VDetail from '@/components/v-detail.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { useGroupable } from '@directus/composables';
@@ -67,26 +70,27 @@ function onToggle(open: boolean) {
 </script>
 
 <template>
-	<sidebar-detail
+	<SidebarDetail
+		id="logs"
 		:title
 		icon="fact_check"
-		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
+		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : undefined"
 		@toggle="onToggle"
 	>
-		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
+		<VProgressLinear v-if="!revisionsByDate && loading" indeterminate />
 
-		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
+		<div v-else-if="revisionsCount === 0" class="empty">{{ $t('no_logs') }}</div>
 
 		<template v-else>
 			<button class="toggle-failed" :class="{ active: showFailedOnly }" @click="showFailedOnly = !showFailedOnly">
-				<v-icon v-if="!showFailedOnly" name="circle" small />
-				<v-icon v-else name="cancel" small />
-				{{ t('show_failed_only') }}
+				<VIcon v-if="!showFailedOnly" name="circle" small />
+				<VIcon v-else name="cancel" small />
+				{{ $t('show_failed_only') }}
 			</button>
 
-			<div v-if="!revisionsByDate?.length" class="empty">{{ t('no_logs_on_page') }}</div>
+			<div v-if="!revisionsByDate?.length" class="empty">{{ $t('no_logs_on_page') }}</div>
 
-			<v-detail
+			<VDetail
 				v-for="group in revisionsByDate"
 				:key="group.dateFormatted"
 				:label="group.dateFormatted"
@@ -96,19 +100,19 @@ function onToggle(open: boolean) {
 				<div class="scroll-container">
 					<div v-for="revision in group.revisions" :key="revision.id" class="log">
 						<button @click="selectedRevision = revision">
-							<v-icon v-if="revision.status === 'resolve'" name="check_circle" color="var(--theme--primary)" small />
-							<v-icon v-else name="cancel" color="var(--theme--secondary)" small />
+							<VIcon v-if="revision.status === 'resolve'" name="check_circle" color="var(--theme--primary)" small />
+							<VIcon v-else name="cancel" color="var(--theme--secondary)" small />
 							{{ revision.timeRelative }}
 						</button>
 					</div>
 				</div>
-			</v-detail>
+			</VDetail>
 		</template>
 
-		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
-	</sidebar-detail>
+		<VPagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
+	</SidebarDetail>
 
-	<logs-drawer :flow="flow" :revision="selectedRevision" @close="selectedRevision = null"></logs-drawer>
+	<LogsDrawer :flow="flow" :revision="selectedRevision" @close="selectedRevision = null"></LogsDrawer>
 </template>
 
 <style lang="scss" scoped>

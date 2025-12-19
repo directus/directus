@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 關於
+first_name: 名字
+last_name: 姓氏
 identifier: 識別
 avatar: 頭像
 application: 應用程式
@@ -168,10 +170,6 @@ rename_version: 重新命名版本
 compare_version: 比較版本
 save_version: 儲存版本
 promote_version: 發布版本
-promote_version_disabled: 沒有更改
-promote_version_drawer_title: 將 {version} 升級為主要版本
-promote_version_changes: 變更
-promote_version_preview: 預覽
 delete_version: 刪除版本
 reset_bookmark: 重設書籤
 update_bookmark: 更新書籤
@@ -414,6 +412,7 @@ confirm_revert_body: 這將復原項目到所選狀態
 display: 顯示
 settings_update_success: 設定已更新
 title: 標題
+subtitle: 副標題
 revision_delta_created: 已建立
 revision_delta_created_externally: 由外部建立
 revision_delta_updated: '更新 1 個欄位 | 更新 {count} 個欄位'
@@ -672,7 +671,6 @@ errors:
   VALUE_OUT_OF_RANGE: 內容值超出範圍
   VALUE_TOO_LONG: 數值過長
 security: 安全
-value_hashed: 值已安全加密
 bookmark_name: 書籤名稱...
 create_bookmark: 建立書籤
 edit_bookmark: 編輯書籤
@@ -834,7 +832,6 @@ label: 標籤
 flows: 流程
 flow: 流程
 select_a_flow: 選擇流程
-run_flow_on_current_edited_confirm: 有些項目可能會被這個工作流程更新，是否確定要執行？
 trigger: 觸發條件
 trigger_options: 觸發條件選項
 view_trigger: 檢視觸發條件
@@ -1013,29 +1010,6 @@ discard_changes_copy: 您確定要放棄所有變更嗎？
 show_x_axis: 顯示 X 軸
 show_y_axis: 顯示 Y 軸
 keep_editing: 繼續編輯
-page_help_collections_overview: '**資料集一覽** - 列出所有您有權存取的資料集。'
-page_help_collections_collection: >-
-  **瀏覽資料項目** - 列出在 {collection} 中所有您有權存取的資料項目。自訂顯示方式、篩選器以及排序方式。您也可將不同的顯示方式建立為書籤以供日後快速存取。
-page_help_collections_item: >-
-  **資料項目細節** - 顯示與編輯資料項目的畫面。側邊欄同時包含有完整的修訂歷史以及其他人的意見。
-page_help_activity_collection: >-
-  **瀏覽歷史** - 所有使用者的系統及內容操作記錄。
-page_help_docs_global: >-
-  **文件概覽** - 本專案的版本及資料結構說明文件。
-page_help_files_collection: >-
-  **檔案庫** - 列出所有上傳至此專案的檔案。自訂顯示方式、篩選器以及排序方式。您也可將不同的顯示方式建立為書籤以供日後快速存取。
-page_help_files_item: >-
-  **檔案細節** - 管理檔案元資料、編輯原始資源以及更新存取設定。
-page_help_settings_datamodel_collections: >-
-  **資料模型：資料集** - 列出所有可用的資料集。包含可見、隱藏以及系統資料集，以及尚未加入管理介面的資料庫。
-page_help_settings_datamodel_fields: >-
-  **數據模型: 資料集** - 管理此資料集及欄位
-page_help_settings_roles_item: "**角色詳情** - 管理角色權限和其他設定"
-page_help_settings_flows_collection: '瀏覽流程 - 列出在此項目中的所有流程'
-page_help_settings_flows_item: '流程細節 - 管理各項操作'
-page_help_users_collection: '**使用者目錄** - 列出在此項目中的所有系統用戶。'
-page_help_users_item: >-
-  **用戶細節** - 管理您的帳戶資料或查閱其他用戶細節
 activity_feed: 活動紀錄
 add_new: 新增
 create_new: 新增
@@ -1059,7 +1033,6 @@ directus_collection:
   directus_dashboards: 儀表板以及預測模組
   directus_fields: 額外的資料集設定以及元資料
   directus_files: 所有檔案資源的元資料
-  directus_flows: 自動流程
   directus_folders: 提供虛擬資料夾供存放檔案。
   directus_migrations: 您使用的資料庫類型
   directus_notifications: 傳送給使用者的通知
@@ -1347,6 +1320,21 @@ shares: 分享
 unlimited_usage: 無限制使用
 no_shares: 目前沒有分享
 new_share: 新增分享
+ai:
+  input: 輸入
+  unknown: 未知
+  settings: 設定
+  tool_approval:
+    disabled: 已停用
+ai_tools:
+  items: 項目
+  files: 檔案
+  flows: 流程
+  trigger-flow: 觸發流程
+  operations: 操作
+  schema: 架構
+  collections: 資料集
+  fields: 欄位
 mcp_prompts_collection_schema:
   messages_role_user: 用戶
 expired: 已過期
@@ -1495,9 +1483,7 @@ interfaces:
     accordion_mode: 收合模式
     max_one_section_open: 最多開啟一個區塊
   presentation-links:
-    presentation-links: 連結按鈕
-    links: 連結
-    description: 可修改的連結按鈕，可連結至動態網址
+    presentation-links: 按鈕
     style: 樣式
     primary: 主要
     link: 連結
@@ -1786,6 +1772,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: 原始資料編輯器
     description: 讓您透過編輯器編輯範本
+  header:
+    header: 標題
+    links: 連結
 displays:
   translations:
     translations: 翻譯
@@ -2032,11 +2021,9 @@ triggers:
 a_flow_uuid: 選擇要觸發的流程...
 any_string_or_json: 任何字串或 JSON...
 item_payload_placeholder: 這個JSON用來更新資料項目各欄位的值
-operation_variables_note: 您可透過這些方法存取流程中的資料 **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** 及 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或呼叫之前的操作如 **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: 條件
-    description: 透過判斷邏輯來操作流程
   exec:
     name: 執行程式
     description: 透過自訂程式修改傳入資料
@@ -2107,7 +2094,6 @@ operations:
     description: 修改 JSON 內文
   trigger:
     name: 觸發流程
-    description: 將資料傳送給其他流程
     flows: 流程
     flow: 流程
     data: 資料

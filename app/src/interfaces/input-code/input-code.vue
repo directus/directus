@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
 import CodeMirror, { ModeSpec } from 'codemirror';
 import { Ref, computed, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import importCodemirrorMode from './import-codemirror-mode';
 
 import 'codemirror/mode/meta';
@@ -26,6 +27,7 @@ const props = withDefaults(
 	defineProps<{
 		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		altOptions?: Record<string, any>;
 		template?: string;
 		lineNumber?: boolean;
@@ -41,8 +43,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { width } = useWindowSize();
 
@@ -297,12 +297,12 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
-		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
-			<v-icon name="playlist_add" />
-		</v-button>
+		<VButton v-if="template" v-tooltip.left="$t('fill_template')" small icon secondary @click="fillTemplate">
+			<VIcon name="playlist_add" />
+		</VButton>
 	</div>
 </template>
 

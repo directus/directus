@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useFieldTree } from '@/composables/use-field-tree';
 import { toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
+import VFieldTemplate from '@/components/v-field-template/v-field-template.vue';
+import VNotice from '@/components/v-notice.vue';
 
 const value = defineModel<string>();
 
@@ -11,8 +12,6 @@ const props = defineProps<{
 	collection: string | null;
 }>();
 
-const { t } = useI18n();
-
 const { collection } = toRefs(props);
 
 const { treeList, loadFieldRelations } = useFieldTree(collection);
@@ -20,10 +19,10 @@ const { treeList, loadFieldRelations } = useFieldTree(collection);
 
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="collection === null">
-			{{ t('interfaces.system-display-template.select_a_collection') }}
-		</v-notice>
-		<v-field-template
+		<VNotice v-if="collection === null">
+			{{ $t('interfaces.system-display-template.select_a_collection') }}
+		</VNotice>
+		<VFieldTemplate
 			v-else
 			v-model="value"
 			:tree="treeList"

@@ -1,4 +1,6 @@
 ---
+first_name: Fornafn
+last_name: Eftirnafn
 identifier: Auðkenni
 avatar: Auðkennismynd
 application: Forrit
@@ -48,7 +50,6 @@ emails: Tölvupóstar
 primary: Aðal
 delete_folder: Eyða Möppu
 prefix: Forskeyti
-promote_version_preview: Forskoða
 reset_bookmark: Endursetja Bókamerki
 update_bookmark: Uppfæra bókamerki
 delete_bookmark: Eyða bókamerki
@@ -406,6 +407,13 @@ do_nothing: Gera Ekkert
 comment: Athugasemd
 live_preview:
   new_window: Opna í Nýjum Glugga
+ai:
+  settings: Stillingar
+  tool_approval:
+    disabled: Óvirkt
+ai_tools:
+  files: Skrár
+  flows: Flæðir
 mcp_prompts_collection_schema:
   messages_role_user: Notandi
 share_copy_link: Afrita Hlekk
@@ -484,6 +492,8 @@ interfaces:
       code: Kóði
       image: Mynd
       table: Tafla
+  header:
+    header: Haus
 displays:
   translations:
     translations: Þýðingar

@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { storeToRefs } from 'pinia';
@@ -81,27 +87,24 @@ const unsortableJunctionFields = computed(() => {
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ t('this_collection') }}</div>
-				<v-input disabled :model-value="collection" />
+				<div class="type-label">{{ $t('this_collection') }}</div>
+				<VInput disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('junction_collection') }}</div>
+				<div class="type-label">{{ $t('junction_collection') }}</div>
 
-				<related-collection-select
-					v-model="junctionCollection"
-					:disabled="autoGenerateJunctionRelation || isExisting"
-				/>
+				<RelatedCollectionSelect v-model="junctionCollection" :disabled="autoGenerateJunctionRelation || isExisting" />
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('related_collection') }}</div>
-				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
+				<div class="type-label">{{ $t('related_collection') }}</div>
+				<RelatedCollectionSelect v-model="relatedCollection" :disabled="isExisting" />
 			</div>
 
-			<v-input disabled :model-value="currentPrimaryKey" />
+			<VInput disabled :model-value="currentPrimaryKey" />
 
-			<related-field-select
+			<RelatedFieldSelect
 				v-model="junctionFieldCurrent"
 				:collection="junctionCollection"
 				:disabled="autoGenerateJunctionRelation || isExisting"
@@ -110,77 +113,77 @@ const unsortableJunctionFields = computed(() => {
 			<div class="spacer" />
 			<div class="spacer" />
 
-			<related-field-select
+			<RelatedFieldSelect
 				v-model="junctionFieldRelated"
 				:collection="junctionCollection"
 				:disabled="autoGenerateJunctionRelation || isExisting"
 			/>
 
-			<v-input v-model="relatedPrimaryKey" disabled :placeholder="t('primary_key') + '...'" />
+			<VInput v-model="relatedPrimaryKey" disabled :placeholder="$t('primary_key') + '...'" />
 
 			<div class="spacer" />
 
-			<v-checkbox v-if="!isExisting" v-model="autoGenerateJunctionRelation" block :label="t('auto_fill')" />
+			<VCheckbox v-if="!isExisting" v-model="autoGenerateJunctionRelation" block :label="$t('auto_fill')" />
 
-			<v-icon class="arrow" name="arrow_forward" />
-			<v-icon class="arrow" name="arrow_back" />
+			<VIcon class="arrow" name="arrow_forward" />
+			<VIcon class="arrow" name="arrow_back" />
 		</div>
 
-		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>
+		<VDivider v-if="!isExisting" large :inline-title="false">{{ $t('corresponding_field') }}</VDivider>
 
 		<div v-if="!isExisting" class="corresponding">
 			<div class="field">
-				<div class="type-label">{{ t('create_field') }}</div>
-				<v-checkbox v-model="hasCorresponding" block :label="correspondingLabel" />
+				<div class="type-label">{{ $t('create_field') }}</div>
+				<VCheckbox v-model="hasCorresponding" block :label="correspondingLabel" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ t('field_name') }}</div>
-				<v-input
+				<div class="type-label">{{ $t('field_name') }}</div>
+				<VInput
 					v-model="correspondingFieldKey"
 					:disabled="hasCorresponding === false"
-					:placeholder="t('field_name') + '...'"
+					:placeholder="$t('field_name') + '...'"
 					db-safe
 				/>
 			</div>
-			<v-icon name="arrow_forward" class="arrow" />
+			<VIcon name="arrow_forward" class="arrow" />
 		</div>
 
 		<div class="sort-field">
-			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
-			<related-field-select
+			<VDivider large :inline-title="false">{{ $t('sort_field') }}</VDivider>
+			<RelatedFieldSelect
 				v-model="sortField"
 				:collection="junctionCollection"
 				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
 				:disabled-fields="unsortableJunctionFields"
-				:placeholder="t('add_sort_field') + '...'"
+				:placeholder="$t('add_sort_field') + '...'"
 				nullable
 			/>
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ t('relational_triggers') }}</v-divider>
+			<VDivider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</VDivider>
 
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_o2m', {
+						$t('referential_action_field_label_o2m', {
 							collection: junctionCollection || '',
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="deselectAction"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', {
+							text: $t('referential_action_set_null', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
 							value: 'nullify',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
@@ -193,33 +196,33 @@ const unsortableJunctionFields = computed(() => {
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_m2o', {
+						$t('referential_action_field_label_m2o', {
 							collection: collection || 'related',
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeleteCurrent"
 					:disabled="junctionCollection === collection"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: junctionFieldCurrent }),
+							text: $t('referential_action_set_null', { field: junctionFieldCurrent }),
 							value: 'SET NULL',
 						},
 						{
-							text: t('referential_action_set_default', { field: junctionFieldCurrent }),
+							text: $t('referential_action_set_default', { field: junctionFieldCurrent }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: t('referential_action_no_action'),
+							text: $t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"
@@ -229,33 +232,33 @@ const unsortableJunctionFields = computed(() => {
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_m2o', {
+						$t('referential_action_field_label_m2o', {
 							collection: relatedCollection || 'related',
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeleteRelated"
 					:disabled="junctionCollection === relatedCollection"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: junctionFieldRelated }),
+							text: $t('referential_action_set_null', { field: junctionFieldRelated }),
 							value: 'SET NULL',
 						},
 						{
-							text: t('referential_action_set_default', { field: junctionFieldRelated }),
+							text: $t('referential_action_set_default', { field: junctionFieldRelated }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldRelated,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: t('referential_action_no_action'),
+							text: $t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"
@@ -263,9 +266,9 @@ const unsortableJunctionFields = computed(() => {
 			</div>
 		</div>
 
-		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
+		<VNotice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
-				{{ t('new_data_alert') }}
+				{{ $t('new_data_alert') }}
 
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
@@ -273,7 +276,7 @@ const unsortableJunctionFields = computed(() => {
 					</li>
 				</ul>
 			</span>
-		</v-notice>
+		</VNotice>
 	</div>
 </template>
 
@@ -288,7 +291,6 @@ const unsortableJunctionFields = computed(() => {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 12px 28px;
-	margin-block-start: 48px;
 
 	.v-icon.arrow {
 		--v-icon-color: var(--theme--primary);

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { LOCAL_TYPES } from '@directus/constants';
 import { computed } from 'vue';
@@ -38,60 +40,60 @@ const availableCollections = computed(() => {
 	<div class="relationship">
 		<div v-if="localType === 'm2o'" class="field full">
 			<div class="label type-label">
-				{{ t('related_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+				{{ $t('related_collection') }}
+				<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
-			<related-collection-select v-model="relatedCollectionM2O" />
+			<RelatedCollectionSelect v-model="relatedCollectionM2O" />
 		</div>
 
 		<template v-else-if="localType === 'o2m'">
 			<div class="field half-left">
 				<div class="label type-label">
-					{{ t('related_collection') }}
-					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+					{{ $t('related_collection') }}
+					<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 				</div>
 
-				<related-collection-select v-model="o2mCollection" />
+				<RelatedCollectionSelect v-model="o2mCollection" />
 			</div>
 
 			<div class="field half-right">
 				<div class="label type-label">
-					{{ t('foreign_key') }}
-					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+					{{ $t('foreign_key') }}
+					<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 				</div>
 
-				<related-field-select v-model="o2mField" :collection="o2mCollection" :disabled="!o2mCollection" />
+				<RelatedFieldSelect v-model="o2mField" :collection="o2mCollection" :disabled="!o2mCollection" />
 			</div>
 		</template>
 
 		<div v-if="localType === 'm2m'" class="field full">
 			<div class="label type-label">
-				{{ t('related_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+				{{ $t('related_collection') }}
+				<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
-			<related-collection-select v-model="relatedCollectionM2O" />
+			<RelatedCollectionSelect v-model="relatedCollectionM2O" />
 		</div>
 
 		<div v-if="localType === 'translations'" class="field full">
 			<div class="label type-label">
-				{{ t('languages_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+				{{ $t('languages_collection') }}
+				<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
-			<related-collection-select v-model="relatedCollectionM2O" />
+			<RelatedCollectionSelect v-model="relatedCollectionM2O" />
 		</div>
 
 		<div v-if="localType === 'm2a'" class="field full">
 			<div class="label type-label">
-				{{ t('related_collections') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+				{{ $t('related_collections') }}
+				<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
-			<v-select
+			<VSelect
 				v-model="oneAllowedCollections"
-				:placeholder="t('collection') + '...'"
+				:placeholder="$t('collection') + '...'"
 				:items="availableCollections"
 				item-value="collection"
 				item-text="collection"
