@@ -1,13 +1,9 @@
 import { queryToParams } from '../../utils/query-to-params.js';
 
-function parseItemToQueryParams(query: Record<string, unknown>) {
-	return queryToParams(query);
-}
-
-export const parseQueryParams = <Input>(query: Input): Input => {
+export function parseQueryParams<Input>(query: Input): Input {
 	try {
-		return parseItemToQueryParams(query as any) as Input;
+		return queryToParams(query as Record<string, unknown>) as Input;
 	} catch {
 		return query;
 	}
-};
+}
