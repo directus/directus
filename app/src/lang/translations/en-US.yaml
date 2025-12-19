@@ -74,6 +74,10 @@ collection_names_are_case_sensitive: Collection names are case sensitive
 condition_rules: Condition Rules
 input: Input
 invalid_input: Invalid Input
+invalid_file_type: Invalid File Type
+invalid_files_selected: 'No invalid files | Invalid File Selected | {count} Invalid Files Selected'
+files_wrong_type: 'Files {files} have invalid types, expecting {expected} type.'
+files_are_empty: 'The following files are empty and cannot be uploaded: {files}'
 not_a_number: Not a Number
 invalid_range_min: Value is below minimum of {value}
 invalid_range_max: Value exceeds maximum of {value}
