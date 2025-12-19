@@ -124,7 +124,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 	const userStore = useUserStore();
-	const requireTfaSetup = useLocalStorage<string | null>('require_tfa_setup', null);
+	const requireTfaSetup = useLocalStorage<string | null>('directus-require_tfa_setup', null);
 
 	// First load
 	if (firstLoad) {
