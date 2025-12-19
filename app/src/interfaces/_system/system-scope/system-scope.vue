@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -114,9 +116,9 @@ async function loadItemName() {
 
 <template>
 	<div>
-		<v-skeleton-loader v-if="loading"></v-skeleton-loader>
-		<v-select v-else :model-value="value" :items="options" @update:model-value="onSelect" />
-		<drawer-collection
+		<VSkeletonLoader v-if="loading"></VSkeletonLoader>
+		<VSelect v-else :model-value="value" :items="options" @update:model-value="onSelect" />
+		<DrawerCollection
 			v-if="collection !== null"
 			:active="collection !== null"
 			:collection="collection"

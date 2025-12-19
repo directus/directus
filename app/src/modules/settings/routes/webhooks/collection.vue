@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -68,69 +78,69 @@ function clearFilters() {
 		:search="search"
 		collection="directus_webhooks"
 	>
-		<private-view :title="$t('webhooks')" icon="anchor">
-			<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
+		<PrivateView :title="$t('webhooks')" icon="anchor">
+			<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 			<template #navigation>
-				<settings-navigation />
+				<SettingsNavigation />
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" collection="directus_webhooks" small />
+				<SearchInput v-model="search" collection="directus_webhooks" small />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
+				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button rounded icon class="action-delete" secondary small @click="on">
-							<v-icon name="delete" small />
-						</v-button>
+						<VButton rounded icon class="action-delete" secondary small @click="on">
+							<VIcon name="delete" small />
+						</VButton>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="batchDelete">
 								{{ $t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 			</template>
 
 			<div class="deprecation-notice-wrapper">
-				<v-notice type="danger">
+				<VNotice type="danger">
 					<span v-md="{ value: $t('webhooks_deprecation_notice'), target: '_blank' }"></span>
-				</v-notice>
+				</VNotice>
 			</div>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="$t('no_results')" icon="search" center>
+					<VInfo :title="$t('no_results')" icon="search" center>
 						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+							<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="$t('webhooks_count', 0)" icon="anchor" center>
+					<VInfo :title="$t('webhooks_count', 0)" icon="anchor" center>
 						{{ $t('no_webhooks_copy') }}
-					</v-info>
+					</VInfo>
 				</template>
 			</component>
 
 			<template #sidebar>
-				<layout-sidebar-detail v-model="layout">
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
 			</template>
-		</private-view>
+		</PrivateView>
 	</component>
 </template>
 

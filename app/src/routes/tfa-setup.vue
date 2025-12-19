@@ -1,13 +1,19 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useTFASetup } from '@/composables/use-tfa-setup';
+import { DEFAULT_AUTH_DRIVER } from '@/constants';
 import { router } from '@/router';
 import { useUserStore } from '@/stores/user';
+import PublicView from '@/views/public/public-view.vue';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { DEFAULT_AUTH_DRIVER } from '@/constants';
 
 const { t } = useI18n();
 const appStore = useAppStore();
@@ -114,7 +120,7 @@ useHead({
 </script>
 
 <template>
-	<public-view>
+	<PublicView>
 		<div class="header">
 			<h1 class="type-title">{{ $t('tfa_setup') }}</h1>
 		</div>
@@ -124,16 +130,16 @@ useHead({
 				{{ canSkipPassword ? $t('tfa_setup_description') : $t('enter_password_to_enable_tfa') }}
 			</div>
 			<div v-if="!canSkipPassword">
-				<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" autofocus />
+				<VInput v-model="password" :nullable="false" type="password" :placeholder="$t('password')" autofocus />
 			</div>
-			<v-error v-if="error" :error="error" />
+			<VError v-if="error" :error="error" />
 			<div class="actions">
 				<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ $t('cancel') }}</button>
-				<v-button type="submit" :loading="loading" large>{{ $t('next') }}</v-button>
+				<VButton type="submit" :loading="loading" large>{{ $t('next') }}</VButton>
 			</div>
 		</form>
 
-		<v-progress-circular v-else-if="loading === true" class="loader" indeterminate />
+		<VProgressCircular v-else-if="loading === true" class="loader" indeterminate />
 
 		<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
 			<form @submit.prevent="enable">
@@ -143,21 +149,21 @@ useHead({
 				<div>
 					<canvas :id="canvasID" class="qr" />
 					<output class="secret">{{ secret }}</output>
-					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="$t('otp')" :nullable="false" />
-					<v-error v-if="error" :error="error" />
+					<VInput ref="inputOTP" v-model="otp" type="text" :placeholder="$t('otp')" :nullable="false" />
+					<VError v-if="error" :error="error" />
 				</div>
 				<div class="actions">
 					<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ $t('cancel') }}</button>
-					<v-button type="submit" :disabled="otp.length !== 6" large @click="enable">{{ $t('done') }}</v-button>
+					<VButton type="submit" :disabled="otp.length !== 6" large @click="enable">{{ $t('done') }}</VButton>
 				</div>
 			</form>
 		</div>
 
 		<template #notice>
-			<v-icon name="lock" left />
+			<VIcon name="lock" left />
 			{{ $t('not_authenticated') }}
 		</template>
-	</public-view>
+	</PublicView>
 </template>
 
 <style lang="scss" scoped>

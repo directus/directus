@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
+import VError from '@/components/v-error.vue';
+import VList from '@/components/v-list.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { PrivateView } from '@/views/private';
 import type { RegistryAccountResponse, RegistryListResponse } from '@directus/extensions-registry';
 import { computed, ref, watchEffect } from 'vue';
 import SettingsNavigation from '../../../../components/navigation.vue';
@@ -52,9 +57,9 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="$t('marketplace')" show-back>
+	<PrivateView :title="$t('marketplace')" show-back>
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="account-content">
@@ -63,11 +68,11 @@ watchEffect(async () => {
 					<div class="grid">
 						<AccountBanner class="banner" :account="account" />
 						<AccountMetadata class="metadata" :account="account" />
-						<v-list>
+						<VList>
 							<ExtensionListItem v-for="extension in extensions" :key="extension.id" :extension="extension" />
-						</v-list>
+						</VList>
 
-						<v-pagination
+						<VPagination
 							v-if="pageCount > 1"
 							v-model="page"
 							class="pagination"
@@ -78,14 +83,14 @@ watchEffect(async () => {
 				</div>
 			</template>
 
-			<v-banner v-else-if="loading" icon="plugin">
-				<template #avatar><v-progress-circular indeterminate /></template>
+			<VBanner v-else-if="loading" icon="plugin">
+				<template #avatar><VProgressCircular indeterminate /></template>
 				{{ $t('loading') }}
-			</v-banner>
+			</VBanner>
 
-			<v-error v-else :error="error" />
+			<VError v-else :error="error" />
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">

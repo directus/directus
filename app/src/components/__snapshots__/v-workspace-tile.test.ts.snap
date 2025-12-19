@@ -3,8 +3,8 @@
 exports[`Mount component 1`] = `
 "<div data-v-a110deb5="" class="v-workspace-tile draggable br-tl br-tr br-br br-bl" style="--pos-x: 1; --pos-y: 1; --width: 10; --height: 10;" data-move="">
   <div data-v-a110deb5="" class="header">
-    <v-icon-stub data-v-a110deb5="" class="icon" style="--v-icon-color: var(--theme--primary);" name="space_dashboard" small=""></v-icon-stub>
-    <v-text-overflow-stub data-v-a110deb5="" class="name" text=""></v-text-overflow-stub>
+    <v-icon-stub data-v-a110deb5="" name="space_dashboard" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false" class="icon" style="--v-icon-color: var(--theme--primary);"></v-icon-stub>
+    <v-text-overflow-stub data-v-a110deb5="" text="" placement="top" class="name"></v-text-overflow-stub>
     <div data-v-a110deb5="" class="spacer"></div>
     <!--v-if-->
   </div>

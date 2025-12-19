@@ -7,9 +7,9 @@ const show = ref(true);
 
 <template>
 	<Story title="Transition/TransitionExpand">
-		<transition-expand>
+		<TransitionExpand>
 			<div v-if="show" class="box">This is inside transition expand.</div>
-		</transition-expand>
+		</TransitionExpand>
 
 		<template #controls>
 			<HstCheckbox v-model="show" title="Toggle" />

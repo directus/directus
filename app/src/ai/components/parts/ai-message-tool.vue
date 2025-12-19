@@ -4,6 +4,8 @@ import { computed } from 'vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import formatTitle from '@directus/format-title';
 import AiToolCallCard from './ai-tool-call-card.vue';
+import VNotice from '@/components/v-notice.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 
 const aiStore = useAiStore();
 
@@ -46,15 +48,15 @@ const approval = computed(() => props.part.approval);
 		:default-open="state === 'approval-requested'"
 	>
 		<template #title>
-			<v-text-overflow :text="toolDisplayName" />
+			<VTextOverflow :text="toolDisplayName" />
 		</template>
 		<template #error>
-			<v-notice v-if="'errorText' in part && part.state === 'output-error'" type="danger" class="tool-error" multiline>
+			<VNotice v-if="'errorText' in part && part.state === 'output-error'" type="danger" class="tool-error" multiline>
 				<template #title>
 					{{ $t('ai.error_message') }}
 				</template>
 				<span>{{ part.errorText }}</span>
-			</v-notice>
+			</VNotice>
 		</template>
 		<template #content>
 			<div v-if="'input' in part && part.input" class="tool-input">

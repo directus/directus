@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ValidationError, Field } from '@directus/types';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
+import { Field, ValidationError } from '@directus/types';
 import { toRef } from 'vue';
 
 const props = defineProps<{
@@ -17,7 +19,7 @@ const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidati
 </script>
 
 <template>
-	<v-notice type="danger" class="full">
+	<VNotice type="danger" class="full">
 		<div>
 			<p>{{ $t('validation_errors_notice') }}</p>
 			<ul class="validation-errors-list">
@@ -39,14 +41,14 @@ const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidati
 
 					<template v-if="validationError.customValidationMessage">
 						{{ validationError.customValidationMessage }}
-						<v-icon v-tooltip="getDefaultValidationMessage(validationError)" small right name="help" />
+						<VIcon v-tooltip="getDefaultValidationMessage(validationError)" small right name="help" />
 					</template>
 
 					<template v-else>{{ getDefaultValidationMessage(validationError) }}</template>
 				</li>
 			</ul>
 		</div>
-	</v-notice>
+	</VNotice>
 </template>
 
 <style lang="scss" scoped>

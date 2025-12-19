@@ -1,13 +1,41 @@
-import { describe, it, expect, vi } from 'vitest';
-import { mount, flushPromises } from '@vue/test-utils';
-import Kanban from './kanban.vue';
-import type { Field } from '@directus/types';
-import { createI18n } from 'vue-i18n';
 import DisplayDateTime from '@/displays/datetime/datetime.vue';
+import type { Field } from '@directus/types';
+import { flushPromises, mount } from '@vue/test-utils';
+import { createPinia } from 'pinia';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createI18n } from 'vue-i18n';
+import { createMemoryHistory, createRouter } from 'vue-router';
+import Kanban from './kanban.vue';
 
 const i18n = createI18n({ legacy: false, missingWarn: false });
 
 describe('Kanban layout', () => {
+	let pinia: ReturnType<typeof createPinia>;
+	let router: ReturnType<typeof createRouter>;
+
+	beforeEach(() => {
+		pinia = createPinia();
+
+		router = createRouter({
+			history: createMemoryHistory(),
+			routes: [],
+		});
+
+		// Setup Teleport targets
+		const dialogOutlet = document.createElement('div');
+		dialogOutlet.id = 'dialog-outlet';
+		document.body.appendChild(dialogOutlet);
+	});
+
+	afterEach(() => {
+		// Cleanup
+		const dialogOutlet = document.getElementById('dialog-outlet');
+
+		if (dialogOutlet) {
+			document.body.removeChild(dialogOutlet);
+		}
+	});
+
 	it('applies custom date format when date exists and format is specified', async () => {
 		const fieldsInCollection: Field[] = [
 			{
@@ -42,12 +70,16 @@ describe('Kanban layout', () => {
 
 		const wrapper = mount(Kanban, {
 			global: {
-				plugins: [i18n],
+				plugins: [i18n, pinia, router],
 				directives: {
 					tooltip: vi.fn(),
 				},
 				components: {
 					'display-datetime': DisplayDateTime,
+				},
+				stubs: {
+					'v-menu': true,
+					'v-dialog': true,
 				},
 				mocks: {
 					$t: (key: string) => key,
@@ -55,9 +87,6 @@ describe('Kanban layout', () => {
 				},
 				config: {
 					warnHandler: () => null,
-					compilerOptions: {
-						isCustomElement: (tag) => tag.startsWith('v-'),
-					},
 				},
 			},
 			props: {
@@ -148,12 +177,16 @@ describe('Kanban layout', () => {
 
 		const wrapper = mount(Kanban, {
 			global: {
-				plugins: [i18n],
+				plugins: [i18n, pinia, router],
 				directives: {
 					tooltip: vi.fn(),
 				},
 				components: {
 					'display-datetime': DisplayDateTime,
+				},
+				stubs: {
+					'v-menu': true,
+					'v-dialog': true,
 				},
 				mocks: {
 					$t: (key: string) => key,
@@ -161,9 +194,6 @@ describe('Kanban layout', () => {
 				},
 				config: {
 					warnHandler: () => null,
-					compilerOptions: {
-						isCustomElement: (tag) => tag.startsWith('v-'),
-					},
 				},
 			},
 			props: {

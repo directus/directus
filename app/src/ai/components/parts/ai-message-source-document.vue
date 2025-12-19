@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import type { SourceDocumentUIPart } from 'ai';
 
 defineProps<{
@@ -9,7 +10,7 @@ defineProps<{
 <template>
 	<div class="message-source">
 		<div class="source-document">
-			<v-icon name="description" x-small />
+			<VIcon name="description" x-small />
 			<span>{{ part.title }}</span>
 			<small v-if="part.filename">{{ part.filename }}</small>
 		</div>

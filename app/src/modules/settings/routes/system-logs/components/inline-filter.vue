@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { watchDebounced } from '@vueuse/core';
 import { computed, ref } from 'vue';
 
@@ -45,8 +47,8 @@ const sortOptions = computed(() => {
 <template>
 	<div class="inline-filter">
 		<div class="field">
-			<v-icon class="icon" small name="filter_list" />
-			<v-select
+			<VIcon class="icon" small name="filter_list" />
+			<VSelect
 				v-model="type"
 				menu-full-height
 				class="type"
@@ -60,8 +62,8 @@ const sortOptions = computed(() => {
 		</div>
 
 		<div class="field">
-			<v-icon class="icon" small name="grid_3x3" />
-			<v-select
+			<VIcon class="icon" small name="grid_3x3" />
+			<VSelect
 				v-model="sort"
 				class="sort"
 				all-items-translation="all_instances"
@@ -74,7 +76,7 @@ const sortOptions = computed(() => {
 		</div>
 
 		<div class="field">
-			<v-icon class="icon" small name="search" />
+			<VIcon class="icon" small name="search" />
 			<input v-model="searchInputValue" v-focus="true" :placeholder="$t('search_logs')" class="search-input" />
 		</div>
 	</div>
