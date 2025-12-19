@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-useLocalStorage from vue-use
+Replaced the local useLocalStorage composable with the VueUse equivalent
