@@ -1,5 +1,5 @@
 ---
-'@directus/app': major
+'@directus/app': patch
 ---
 
 useLocalStorage from vue-use
