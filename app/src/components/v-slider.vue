@@ -19,7 +19,7 @@ interface Props {
 	/** Always the current selected value */
 	alwaysShowValue?: boolean;
 	/** Model the current selected value */
-	modelValue?: number;
+	modelValue?: number | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -48,3 +48,20 @@ test('max prop', async () => {
 
 	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([40]);
 });
+
+test('uses stepped midpoint when modelValue is undefined', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			modelValue: null,
+			min: 0,
+			max: 5,
+			step: 1,
+		},
+	});
+
+	const slider = wrapper.find('.v-slider');
+	expect(slider.exists()).toBe(true);
+
+	const style = slider.attributes('style');
+	expect(style).toContain('--_v-slider-percentage: 60');
+});
