@@ -547,7 +547,6 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	border-radius: var(--theme--border-radius);
 	outline: 2px dashed var(--theme--primary);
 
-
 	> * {
 		opacity: 0;
 	}

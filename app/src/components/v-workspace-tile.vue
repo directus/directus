@@ -388,7 +388,7 @@ function useDragDrop() {
 			z-index: 3 !important;
 			border-color: var(--theme--form--field--input--border-color-focus);
 			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
-    		-webkit-user-select: none;
+			-webkit-user-select: none;
 			user-select: none;
 		}
 
