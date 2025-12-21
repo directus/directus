@@ -37,9 +37,21 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['change', 'update:modelValue']);
 
 const styles = computed(() => {
-	if (props.modelValue === null) return { '--_v-slider-percentage': 50 };
+	const min = props.min;
+	const max = props.max;
+	const step = props.step;
 
-	let percentage = ((props.modelValue - props.min) / (props.max - props.min)) * 100;
+	let value = props.modelValue;
+	if (value === null || value === undefined) {
+		const mid = min + (max - min) / 2;
+		value = Math.round((mid - min) / step) * step + min;
+	}
+
+	if (max === min) {
+		return { '--_v-slider-percentage': 0 };
+	}
+	
+	let percentage = ((value - min) / (max - min)) * 100;
 	if (isNaN(percentage)) percentage = 0;
 	return { '--_v-slider-percentage': percentage };
 });
