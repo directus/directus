@@ -42,6 +42,7 @@ const styles = computed(() => {
 	const step = props.step;
 
 	let value = props.modelValue;
+
 	if (value === null || value === undefined) {
 		const mid = min + (max - min) / 2;
 		value = Math.round((mid - min) / step) * step + min;
@@ -50,7 +51,7 @@ const styles = computed(() => {
 	if (max === min) {
 		return { '--_v-slider-percentage': 0 };
 	}
-	
+
 	let percentage = ((value - min) / (max - min)) * 100;
 	if (isNaN(percentage)) percentage = 0;
 	return { '--_v-slider-percentage': percentage };
