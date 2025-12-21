@@ -8,6 +8,7 @@ import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
+import isVNodeEmpty from '@/utils/is-vnode-empty';
 
 const props = defineProps<{
 	title?: string;
@@ -51,7 +52,7 @@ const showSidebarToggle = computed(() => {
 			/>
 
 			<PrivateViewHeaderBarIcon
-				v-if="icon || showBack"
+				v-if="(icon || showBack) && isVNodeEmpty($slots['title-outer:prepend']?.())"
 				v-tooltip.bottom="$t('back')"
 				class="icon"
 				:icon
@@ -59,7 +60,7 @@ const showSidebarToggle = computed(() => {
 				:icon-color
 			/>
 
-			<div class="title-outer-prepend">
+			<div v-else class="title-outer-prepend">
 				<slot name="title-outer:prepend" />
 			</div>
 
