@@ -347,6 +347,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 .field-select {
 	--input-height: 40px;
 	--theme--form--field--input--padding: 8px;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .full,
@@ -544,6 +546,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 .sortable-ghost {
 	border-radius: var(--theme--border-radius);
 	outline: 2px dashed var(--theme--primary);
+
 
 	> * {
 		opacity: 0;
