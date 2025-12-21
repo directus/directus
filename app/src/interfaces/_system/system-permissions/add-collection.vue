@@ -27,7 +27,9 @@ const availableCollections = computed(() => {
 
 const systemCollections = computed(() =>
 	orderBy(
-		collectionsStore.collections.filter(({ collection }) => isSystemCollection(collection)).map(disableSelectedCollection),
+		collectionsStore.collections
+			.filter(({ collection }) => isSystemCollection(collection))
+			.map(disableSelectedCollection),
 		['collection'],
 	),
 );
@@ -49,9 +51,9 @@ const displayItems = computed(() => {
 
 function disableSelectedCollection(collection: Collection) {
 	return {
-			...collection,
-			disabled: props.excludeCollections?.includes(collection.collection) ?? false,
-		};
+		...collection,
+		disabled: props.excludeCollections?.includes(collection.collection) ?? false,
+	};
 }
 </script>
 
