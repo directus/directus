@@ -58,6 +58,7 @@ function notExcluded({ collection }: Collection) {
 			item-value="collection"
 			placement="bottom-start"
 			item-label-font-family="var(--theme--fonts--monospace--font-family)"
+			:close-on-content-click="false"
 			@update:model-value="$emit('select', $event)"
 		>
 			<template #preview="{ toggle }">
