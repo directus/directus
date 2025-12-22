@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VSlider from '@/components/v-slider.vue';
 import { computed } from 'vue';
+import VSlider from '@/components/v-slider.vue';
 
 interface BaseProps {
 	disabled?: boolean;
@@ -41,7 +41,9 @@ const value = computed<number | null>(() => {
 	return props.value;
 });
 
-defineEmits(['input']);
+defineEmits<{
+	(e: 'input', value: number | null): void;
+}>();
 </script>
 
 <template>
@@ -51,7 +53,6 @@ defineEmits(['input']);
 	-->
 	<VSlider
 		class="directus-slider-fix"
-	<VSlider
 		:model-value="value"
 		:min="minValue"
 		:max="maxValue"
@@ -69,23 +70,23 @@ defineEmits(['input']);
  * Slider interaction fixes.
  */
 .directus-slider-fix {
-	cursor: pointer !important;
+	cursor: pointer;
 
 	:deep(.v-slider),
 	:deep(.v-slider__container),
 	:deep(.v-slider-track),
 	:deep(.v-slider-track__background),
 	:deep(.v-slider-track__fill) {
-		cursor: pointer !important;
-		transition: none !important;
+		cursor: pointer;
+		transition: none;
 	}
 
 	/**
 	 * Thumb interaction fixes.
 	 */
 	:deep(.v-slider-thumb) {
-		cursor: pointer !important;
-		transition: inset-inline-start 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+		cursor: pointer;
+		transition: inset-inline-start 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 		will-change: inset-inline-start;
 	}
 
@@ -99,13 +100,6 @@ defineEmits(['input']);
 		font-size: 12px;
 		padding: 2px 6px;
 		border-radius: 6px;
-	}
-
-	/**
-	 * Safety net to prevent unexpected cursor changes.
-	 */
-	* {
-		cursor: pointer !important;
 	}
 }
 </style>
