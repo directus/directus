@@ -49,7 +49,7 @@ defineEmits(['input']);
 		Custom wrapper class used to fix cursor behavior,
 		thumb label visibility, and interaction smoothness.
 	-->
-	<v-slider
+	<VSlider
 		class="directus-slider-fix"
 	<VSlider
 		:model-value="value"
@@ -66,23 +66,14 @@ defineEmits(['input']);
 
 <style lang="scss" scoped>
 /**
- * Slider interaction fixes:
+ * Slider interaction fixes.
  */
 .directus-slider-fix {
 	cursor: pointer !important;
 
-	:deep(.v-slider) {
-		cursor: pointer !important;
-	}
-
-	:deep(.v-slider__container) {
-		cursor: pointer !important;
-	}
-
-	:deep(.v-slider-track) {
-		cursor: pointer !important;
-	}
-
+	:deep(.v-slider),
+	:deep(.v-slider__container),
+	:deep(.v-slider-track),
 	:deep(.v-slider-track__background),
 	:deep(.v-slider-track__fill) {
 		cursor: pointer !important;
@@ -90,22 +81,19 @@ defineEmits(['input']);
 	}
 
 	/**
-	 * Thumb interaction fixes:
+	 * Thumb interaction fixes.
 	 */
 	:deep(.v-slider-thumb) {
 		cursor: pointer !important;
-		transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-		will-change: left;
-
-		&:hover,
-		&:active {
-			cursor: pointer !important;
-		}
+		transition: inset-inline-start 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+		will-change: inset-inline-start;
 	}
 
-	
+	/**
+	 * Always-visible value label above thumb.
+	 */
 	:deep(.v-slider-thumb__label) {
-		top: -28px;
+		inset-block-start: -28px;
 		background: var(--v-theme-primary);
 		color: white;
 		font-size: 12px;
@@ -114,8 +102,7 @@ defineEmits(['input']);
 	}
 
 	/**
-	 * Safety net to ensure no nested element
-	 * triggers an unexpected cursor change.
+	 * Safety net to prevent unexpected cursor changes.
 	 */
 	* {
 		cursor: pointer !important;
