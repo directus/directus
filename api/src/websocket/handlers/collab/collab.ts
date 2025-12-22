@@ -9,7 +9,6 @@ import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allo
 import getDatabase from '../../../database/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { InvalidPayloadError } from '@directus/errors';
-import { hasFieldPermision } from './field-permissions.js';
 import { Messenger } from './messenger.js';
 
 /**
@@ -48,8 +47,17 @@ export class CollabHandler {
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
 	}
 
+	/**
+	 * Join a collaboration room
+	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
 		try {
+			if (client.accountability?.share) {
+				throw new InvalidPayloadError({
+					reason: 'Collaboration is not supported for shares',
+				});
+			}
+
 			this.messenger.addClient(client);
 			const schema = await getSchema();
 
@@ -81,6 +89,9 @@ export class CollabHandler {
 		}
 	}
 
+	/**
+	 * Leave a collaboration room
+	 */
 	async onLeave(client: WebSocketClient, message?: LeaveMessage) {
 		try {
 			if (message) {
@@ -111,6 +122,9 @@ export class CollabHandler {
 		}
 	}
 
+	/**
+	 * Save the room state
+	 */
 	async onSave(client: WebSocketClient, message: SaveMessage) {
 		try {
 			const room = await this.rooms.getRoom(message.room);
@@ -131,6 +145,9 @@ export class CollabHandler {
 		}
 	}
 
+	/**
+	 * Update a field value
+	 */
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
 		try {
 			const room = await this.rooms.getRoom(message.room);
@@ -145,9 +162,9 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			if (
-				(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field, 'update')) === false
-			)
+			const allowedFields = await room.verifyPermissions(client, room.collection, room.item, 'update');
+
+			if (allowedFields.some((f) => f === message.field || f === '*') === false)
 				throw new InvalidPayloadError({
 					reason: `No permission to update field ${message.field} or field does not exist`,
 				});
@@ -162,6 +179,9 @@ export class CollabHandler {
 		}
 	}
 
+	/**
+	 * Update focus state
+	 */
 	async onFocus(client: WebSocketClient, message: FocusMessage) {
 		try {
 			const room = await this.rooms.getRoom(message.room);
@@ -176,13 +196,15 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			if (
-				message.field &&
-				(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field)) === false
-			)
-				throw new InvalidPayloadError({
-					reason: `No permission to focus on field ${message.field} or field does not exist`,
-				});
+			if (message.field) {
+				const allowedFields = await room.verifyPermissions(client, room.collection, room.item, 'read');
+
+				if (allowedFields.some((f) => f === message.field || f === '*') === false) {
+					throw new InvalidPayloadError({
+						reason: `No permission to focus on field ${message.field} or field does not exist`,
+					});
+				}
+			}
 
 			room.focus(client, message.field);
 		} catch (err) {

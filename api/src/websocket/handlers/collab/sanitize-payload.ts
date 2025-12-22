@@ -6,24 +6,34 @@ import { asyncDeepMapWithSchema } from '../../../utils/versioning/deep-map-with-
 import { isEmpty } from 'lodash-es';
 import { getService } from '../../../utils/get-service.js';
 
+/**
+ * Sanitizes a payload based on the user's permissions.
+ * Optionally accepts a list of pre-verified allowed fields.
+ */
 export async function sanitizePayload(
 	collection: string,
 	payload: Record<string, unknown>,
 	ctx: { knex: Knex; schema: SchemaOverview; accountability: Accountability },
+	allowedFields?: string[],
 ) {
 	const { accountability, schema } = ctx;
-	const policies = await fetchPolicies(accountability, { knex: ctx.knex, schema: ctx.schema });
 
-	const permissions = await fetchPermissions(
-		{ policies, accountability, action: 'read', bypassDynamicVariableProcessing: true },
-		{ knex: ctx.knex, schema: ctx.schema },
-	);
+	let permissionsByCollection: Record<string, Permission[]> = {};
 
-	const permissionsByCollection = permissions.reduce<Record<string, Permission[]>>((acc, perm) => {
-		if (!(perm.collection in acc)) acc[perm.collection] = [];
-		acc[perm.collection]!.push(perm);
-		return acc;
-	}, {});
+	if (!allowedFields) {
+		const policies = await fetchPolicies(accountability, { knex: ctx.knex, schema: ctx.schema });
+
+		const permissions = await fetchPermissions(
+			{ policies, accountability, action: 'read', bypassDynamicVariableProcessing: true },
+			{ knex: ctx.knex, schema: ctx.schema },
+		);
+
+		permissionsByCollection = permissions.reduce<Record<string, Permission[]>>((acc, perm) => {
+			if (!(perm.collection in acc)) acc[perm.collection] = [];
+			acc[perm.collection]!.push(perm);
+			return acc;
+		}, {});
+	}
 
 	return await asyncDeepMapWithSchema(
 		payload,
@@ -41,20 +51,23 @@ export async function sanitizePayload(
 			}
 
 			const readAllowed =
-				(accountability.admin === true ||
-					permissionsByCollection[context.collection.collection]?.some(
-						(perm) => perm.fields && (perm.fields.includes(String(key)) || perm.fields.includes('*')),
-					)) ??
-				false;
+				accountability.admin === true ||
+				(allowedFields
+					? allowedFields.includes(String(key)) || allowedFields.includes('*')
+					: (permissionsByCollection[context.collection.collection]?.some(
+							(perm) => perm.fields && (perm.fields.includes(String(key)) || perm.fields.includes('*')),
+						) ?? false));
 
 			if (!readAllowed) return;
 
-			try {
-				const service = getService(context.collection.collection, ctx);
-				const pk = context.object[context.collection.primary];
-				if (pk) await service.readOne(pk, { fields: [String(key)] });
-			} catch {
-				return;
+			if (!allowedFields) {
+				try {
+					const service = getService(context.collection.collection, ctx);
+					const pk = context.object[context.collection.primary] as string | number | undefined;
+					if (pk) await service.readOne(pk, { fields: [String(key)] });
+				} catch {
+					return;
+				}
 			}
 
 			return [key, value];
