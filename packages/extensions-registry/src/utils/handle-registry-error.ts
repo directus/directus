@@ -51,4 +51,3 @@ export function handleRegistryError(error: unknown): never {
 		}
 	});
 }
-
