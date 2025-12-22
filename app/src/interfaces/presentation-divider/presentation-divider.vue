@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+
 defineProps<{
 	color?: string;
 	icon?: string;
@@ -8,7 +11,7 @@ defineProps<{
 </script>
 
 <template>
-	<v-divider
+	<VDivider
 		class="presentation-divider"
 		:class="{ 'add-margin-block-start': icon || title }"
 		:style="{
@@ -18,9 +21,9 @@ defineProps<{
 		large
 		:inline-title="inlineTitle"
 	>
-		<template v-if="icon" #icon><v-icon :name="icon" /></template>
+		<template v-if="icon" #icon><VIcon :name="icon" /></template>
 		<template v-if="title" #default>{{ title }}</template>
-	</v-divider>
+	</VDivider>
 </template>
 
 <style lang="scss" scoped>

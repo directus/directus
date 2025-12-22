@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { storeToRefs } from 'pinia';
@@ -39,25 +44,25 @@ const unsortableJunctionFields = computed(() => {
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :model-value="collection" />
+				<VInput disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
+				<RelatedCollectionSelect v-model="relatedCollection" :disabled="isExisting" />
 			</div>
 
-			<v-input disabled :model-value="currentPrimaryKey" />
+			<VInput disabled :model-value="currentPrimaryKey" />
 
-			<related-field-select v-model="relatedField" :collection="relatedCollection" />
+			<RelatedFieldSelect v-model="relatedField" :collection="relatedCollection" />
 
-			<v-icon class="arrow" name="arrow_forward" />
+			<VIcon class="arrow" name="arrow_forward" />
 		</div>
 
 		<div class="sort-field">
-			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
+			<VDivider large :inline-title="false">{{ $t('sort_field') }}</VDivider>
 
-			<related-field-select
+			<RelatedFieldSelect
 				v-model="sortField"
 				:collection="relatedCollection"
 				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
@@ -68,7 +73,7 @@ const unsortableJunctionFields = computed(() => {
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+			<VDivider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</VDivider>
 
 			<div class="field">
 				<div class="type-label">
@@ -78,7 +83,7 @@ const unsortableJunctionFields = computed(() => {
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeselect"
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
@@ -105,7 +110,7 @@ const unsortableJunctionFields = computed(() => {
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDelete"
 					:disabled="collection === relatedCollection"
 					:placeholder="$t('choose_action') + '...'"
@@ -134,7 +139,7 @@ const unsortableJunctionFields = computed(() => {
 			</div>
 		</div>
 
-		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
+		<VNotice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
 				{{ $t('new_data_alert') }}
 
@@ -144,7 +149,7 @@ const unsortableJunctionFields = computed(() => {
 					</li>
 				</ul>
 			</span>
-		</v-notice>
+		</VNotice>
 	</div>
 </template>
 
@@ -159,7 +164,6 @@ const unsortableJunctionFields = computed(() => {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 12px 32px;
-	margin-block-start: 48px;
 
 	.v-icon.arrow {
 		--v-icon-color: var(--theme--primary);

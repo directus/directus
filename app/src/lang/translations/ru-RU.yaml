@@ -20,8 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
+privacy_policy: Политика конфиденциальности
+contact_our_team: Связаться с нашей командой
+setup_welcome: Добро пожаловать в Directus
+setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
+setup_launch: Запустить Directus
 first_name: Имя
 last_name: Фамилия
+admin_email: Почта админа
+owner_email: Почта владельца
+email_address: Адрес электронной почты
+organization_name: Название организации
+how_do_you_use_directus: Для чего вы используете Directus?
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -178,6 +188,7 @@ rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
 promote_version: Повысить версию
+apply: Применить
 delete_version: Удалить версию
 delete_version_copy: >-
   Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
@@ -456,6 +467,7 @@ confirm_revert_body: Это вернёт элемент в выбранное с
 display: Отображение
 settings_update_success: Настройки обновлены
 title: Заголовок
+subtitle: Подзаголовок
 revision_delta_created: Создано
 revision_delta_created_externally: Создано извне
 revision_delta_updated: 'Обновлено 1 поле | Обновлено {count} полей'
@@ -772,7 +784,6 @@ errors:
   VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
   VALUE_TOO_LONG: Значение слишком длинное
 security: Безопасность
-value_hashed: Надёжно зашифрованное значение
 bookmark_name: Название закладки...
 create_bookmark: Создать закладку
 edit_bookmark: Редактировать закладку
@@ -948,10 +959,8 @@ label: Описание
 flows: Процессы
 flow: Процесс
 select_a_flow: Выберите процесс
-run_flow_confirm: Вы уверены, что хотите выполнить этот процесс?
 run_flow_on_current_collection: Запустить процесс с текущей коллекцией
 run_flow_on_current: Запустить процесс с текущим элементом
-run_flow_on_current_edited_confirm: Этот элемент может быть обновлен этим процессом — вы уверены, что хотите выполнить его?
 run_flow_on_selected: Сначала выберите один или несколько элементов | Запустить процесс с выбранным элементом | Запустить процесс с {n} выбранными элементами
 run_flow: Запуск потока
 trigger_flow_success: Поток «{flow}» сработал успешно
@@ -1176,50 +1185,6 @@ discard_changes_copy: Вы хотите отменить все внесённы
 show_x_axis: Показать ось X
 show_y_axis: Показать ось Y
 keep_editing: Продолжить редакт.
-page_help_collections_overview: '**Обзор коллекций** — список всех коллекций, к которым у вас есть доступ.'
-page_help_collections_collection: >-
-  **Просмотр элементов** — список всех элементов в {collection}, к которым у вас есть доступ. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
-page_help_collections_item: >-
-  **Карточка элемента** — форма для просмотра и управления этим элементом. Эта панель также содержит полную историю редакций и встроенные комментарии.
-page_help_activity_collection: >-
-  **Просмотр действий** — полный список всех действий пользователя, связанных с системой или содержанием.
-page_help_docs_global: >-
-  **Обзор документации** — документация, специально созданная к версии и схеме этого проекта.
-page_help_files_collection: >-
-  **Библиотека файлов** — список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
-page_help_files_item: >-
-  **Карточка файла** — форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
-page_help_settings_project: "**Настройки проекта** — глобальные параметры конфигурации проекта."
-page_help_settings_appearance: "**Вид** — внешний вид вашего проекта и возможности его оформления."
-page_help_settings_extensions: '**Расширения** — расширения, установленные в вашем проекте.'
-page_help_settings_ai: "**ИИ** — параметры конфигурации искусственного интеллекта вашего проекта."
-page_help_settings_datamodel_collections: >-
-  **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
-page_help_settings_datamodel_fields: >-
-  **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
-page_help_settings_system_logs: '**Системные журналы** — доступ к потоку системных журналов.'
-page_help_settings_policies_collection: '**Просмотреть политики** — список всех политик проекта.'
-page_help_settings_policies_item: '**Настройка прав ** — Управление разрешениями прав и другими настройками.'
-page_help_settings_roles_collection: '**Обзор ролей** — список всех ролей в проекте.'
-page_help_settings_roles_item: "**Карточка роли** — управление разрешениями роли и другими настройками."
-page_help_settings_presets_collection: >-
-  **Просмотр шаблонов** — список всех шаблонов в проекте, включая: пользователей, роли и глобальные закладки, а также представления по умолчанию.
-page_help_settings_presets_item: >-
-  **Карточка шаблона** — форма для управления шаблонами закладок и коллекций по умолчанию.
-page_help_settings_webhooks_collection: '**Просмотр веб-хуков** — список всех веб-хуков в проекте.'
-page_help_settings_webhooks_item: '**Карточка веб-хука** — форма для создания и управления веб-хуками проекта.'
-page_help_settings_flows_collection: '**Просмотреть процессы** — список всех процессов в проекте.'
-page_help_settings_flows_item: '**Карточка процесса** — рабочее пространство для управления одной или несколькими операциями.'
-page_help_settings_translations_collection: '**Просмотр Пользовательских Переводов** — список всех пользовательских переводов в проекте.'
-page_help_settings_translations_item: '**Информация о Пользовательском Переводе** — форма для просмотра и управления этим элементом.'
-page_help_users_collection: '**Пользователи** — список всех системных пользователей в этом проекте.'
-page_help_users_item: >-
-  **Карточка пользователя** — управляйте данными вашей учётной записи или просматривайте данные других пользователей.
-page_help_insights_overview: '**Аналитика** — список досок, к которым у вас есть доступ.'
-page_help_insights_dashboard: '**Доска** — рабочее пространство для управления одной или несколькими панелями'
-page_help_marketplace_account: '**Учётная запись** — издатель или разработчик опубликованного расширения.'
-page_help_marketplace_registry: '**Реестр** — расширения, доступные в Магазине Directus.'
-page_help_marketplace_extension: '**Расширение** — расширения, доступные в Магазине Directus.'
 activity_feed: Лента действий
 add_new: Создать
 create_new: Создать
@@ -1255,7 +1220,6 @@ directus_collection:
   directus_dashboards: Панели инструментов в модуле Аналитика
   directus_fields: Дополнительные настройки полей и метаданные
   directus_files: Метаданные для всех управляемых файлов
-  directus_flows: Автоматизированные процессы
   directus_folders: Предоставляет виртуальные папки для файлов
   directus_migrations: Какую версию базы данных вы используете
   directus_notifications: Уведомления, отправленные пользователям
@@ -1608,6 +1572,22 @@ unlimited_usage: Неограниченное использование
 uses_left: Не осталось использования | 1 использование осталось | осталось {n} использований
 no_shares: Нет элементов Общего доступа
 new_share: Новая публикация
+ai:
+  input: Ввод
+  unknown: Неизвестно
+  settings: Настройки
+  tool_approval:
+    disabled: Отключено
+ai_tools:
+  items: Элементы
+  files: Файлы
+  folders: Папки
+  flows: Процессы
+  trigger-flow: Запустить процесс
+  operations: Операции
+  schema: Схема
+  collections: Коллекции
+  fields: Поля
 mcp_prompts_collection_schema:
   messages_role_user: Пользователь
 expired: Истекло
@@ -1778,9 +1758,7 @@ interfaces:
     accordion_mode: Вид аккордеона
     max_one_section_open: 1 открытая секция
   presentation-links:
-    presentation-links: Кнопки-ссылки
-    links: Ссылки
-    description: Настраиваемые кнопки-ссылки для динамических URL-адресов
+    presentation-links: Кнопки
     style: Стиль
     primary: Первичный
     link: Ссылки
@@ -2102,6 +2080,9 @@ interfaces:
   input-password:
     input-password: Введите пароль
     description: Ввод пароля с переключением, чтобы скрыть значение
+  header:
+    header: HTTP-заголовок
+    links: Ссылки
 displays:
   translations:
     translations: Переводы
@@ -2409,11 +2390,9 @@ triggers:
 a_flow_uuid: Выберите процесс для запуска...
 any_string_or_json: Любая строка или JSON...
 item_payload_placeholder: Это JSON, используемый для обновления значений полей элемента...
-operation_variables_note: Вы можете получить доступ к данным процесса с такими переменными как **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или ссылаться на предыдущие операции, используя **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Условие
-    description: Маршрутизировать процесс на основе логики If / Else
   exec:
     name: Выполнить скрипт
     description: Выполнить произвольный код для изменения полезной нагрузки
@@ -2506,7 +2485,6 @@ operations:
     description: Изменить JSON-содержимое процесса
   trigger:
     name: Запустить процесс
-    description: Передать данные другому процессу
     flows: Процессы
     flow: Процесс
     data: Данные

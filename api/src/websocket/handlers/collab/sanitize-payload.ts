@@ -51,7 +51,7 @@ export async function sanitizePayload(
 
 			try {
 				const service = getService(context.collection.collection, ctx);
-				const pk = context.object[context.collection.primary];
+				const pk = context.object[context.collection.primary] as string;
 				if (pk) await service.readOne(pk, { fields: [String(key)] });
 			} catch {
 				return;

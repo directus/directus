@@ -17,11 +17,12 @@ export default defineInterface({
 	options: ({ collection }) => [
 		{
 			field: 'links',
-			name: '$t:interfaces.presentation-links.links',
+			name: '$t:interfaces.presentation-links.presentation-links',
 			type: 'json',
 			meta: {
 				interface: 'list',
 				options: {
+					template: '{{ actionType }} {{ label }}',
 					fields: [
 						{
 							field: 'label',
@@ -54,8 +55,8 @@ export default defineInterface({
 								default_value: 'normal',
 								options: {
 									choices: [
-										{ text: '$t:primary', value: 'primary' },
 										{ text: '$t:normal', value: 'normal' },
+										{ text: '$t:primary', value: 'primary' },
 										{ text: '$t:info', value: 'info' },
 										{ text: '$t:success', value: 'success' },
 										{ text: '$t:warning', value: 'warning' },
@@ -65,6 +66,24 @@ export default defineInterface({
 							},
 							schema: {
 								default_value: 'normal',
+							},
+						},
+						{
+							field: 'actionType',
+							type: 'string',
+							name: '$t:interfaces.presentation-links.action_type',
+							schema: {
+								default_value: 'url',
+							},
+							meta: {
+								interface: 'select-dropdown',
+								options: {
+									choices: [
+										{ text: '$t:url', value: 'url' },
+										{ text: '$t:flow', value: 'flow' },
+									],
+								},
+								display: 'labels',
 							},
 						},
 						{
@@ -79,6 +98,40 @@ export default defineInterface({
 									font: 'monospace',
 									placeholder: 'https://example.com/articles/{{ id }}/{{ slug }}',
 								},
+								conditions: [
+									{
+										rule: {
+											actionType: {
+												_eq: 'flow',
+											},
+										},
+										hidden: true,
+									},
+								],
+							},
+						},
+						{
+							field: 'flow',
+							type: 'string',
+							name: '$t:flow',
+							meta: {
+								width: 'full',
+								interface: 'system-manual-flow-select',
+								hidden: true,
+								note: '$t:interfaces.presentation-links.select_manual_flow_note',
+								options: {
+									collectionName: collection,
+								},
+								conditions: [
+									{
+										rule: {
+											actionType: {
+												_eq: 'flow',
+											},
+										},
+										hidden: false,
+									},
+								],
 							},
 						},
 					],

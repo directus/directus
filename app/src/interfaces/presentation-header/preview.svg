@@ -1,0 +1,7 @@
+<svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="18" y="41" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect x="28" y="41" width="50" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect opacity=".25" x="112" y="41" width="12" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect opacity=".25" x="126" y="41" width="12" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect opacity=".25" x="18" y="53" width="120" height="2" rx="1" fill="var(--theme--primary)"/>
+</svg>

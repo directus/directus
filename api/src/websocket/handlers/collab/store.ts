@@ -1,5 +1,4 @@
 import { createCache, type CacheConfig } from '@directus/memory';
-import { COLLAB } from '@directus/types';
 import { redisConfigAvailable, useRedis } from '../../../redis/index.js';
 
 export type RedisStore<T> = {
@@ -17,7 +16,7 @@ const config: CacheConfig = localOnly
 		}
 	: {
 			type: 'redis',
-			namespace: COLLAB,
+			namespace: 'collab',
 			redis: useRedis(),
 		};
 

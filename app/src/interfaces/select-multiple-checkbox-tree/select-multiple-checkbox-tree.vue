@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 
@@ -10,7 +14,7 @@ export type Choice = {
 
 const props = withDefaults(
 	defineProps<{
-		value: string[] | null;
+		value?: string[] | null;
 		disabled?: boolean;
 		nonEditable?: boolean;
 		choices?: Choice[];
@@ -42,23 +46,23 @@ const searchDebounced = ref('');
 </script>
 
 <template>
-	<v-notice v-if="items.length === 0" type="info">
+	<VNotice v-if="items.length === 0" type="info">
 		{{ $t('no_options_available') }}
-	</v-notice>
+	</VNotice>
 	<div v-else class="select-multiple-checkbox-tree">
 		<div v-if="items.length > 10" class="search">
-			<v-input v-model="search" class="input" type="text" :placeholder="$t('search')">
+			<VInput v-model="search" class="input" type="text" :placeholder="$t('search')">
 				<template #prepend>
-					<v-icon name="search" />
+					<VIcon name="search" />
 				</template>
 
 				<template v-if="search" #append>
-					<v-icon name="clear" clickable @click="search = ''" />
+					<VIcon name="clear" clickable @click="search = ''" />
 				</template>
-			</v-input>
+			</VInput>
 		</div>
 
-		<v-checkbox-tree
+		<VCheckboxTree
 			:model-value="value"
 			:search="searchDebounced"
 			:disabled

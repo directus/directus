@@ -1,13 +1,4 @@
-import {
-	COLLAB,
-	COLLAB_COLORS,
-	type Accountability,
-	type ClientBaseCollabMessage,
-	type ClientID,
-	type CollabColor,
-	type Item,
-	type WebSocketClient,
-} from '@directus/types';
+import { WS_TYPE, type Accountability, type Item, type WebSocketClient } from '@directus/types';
 import { createHash } from 'crypto';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
@@ -18,6 +9,7 @@ import { hasFieldPermision } from './field-permissions.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { Messenger } from './messenger.js';
 import { useStore } from './store.js';
+import { ACTION, COLORS, type BaseServerMessage, type ClientID, type Color } from '@directus/types/collab';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
@@ -96,7 +88,7 @@ type RoomData = {
 	version: string | null;
 	changes: Item;
 	clients: { uid: ClientID; accountability: Accountability }[];
-	clientColors: Record<ClientID, CollabColor>;
+	clientColors: Record<ClientID, Color>;
 	focuses: Record<ClientID, string>;
 };
 
@@ -156,7 +148,7 @@ export class Room {
 				if (client.accountability?.user === accountability?.user) continue;
 
 				this.send(client.uid, {
-					action: 'save',
+					action: ACTION.SERVER.SAVE,
 				});
 			}
 		});
@@ -184,10 +176,10 @@ export class Room {
 
 	async join(client: WebSocketClient) {
 		if (!(await this.hasClient(client.uid))) {
-			const clientColor = COLLAB_COLORS[random(COLLAB_COLORS.length - 1)]!;
+			const clientColor = COLORS[random(COLORS.length - 1)]!;
 
 			this.sendAll({
-				action: 'join',
+				action: ACTION.SERVER.JOIN,
 				user: client.accountability!.user!,
 				connection: client.uid,
 				color: clientColor,
@@ -217,7 +209,7 @@ export class Room {
 		});
 
 		this.send(client.uid, {
-			action: 'init',
+			action: ACTION.SERVER.INIT,
 			collection: collection,
 			item: item,
 			version: version,
@@ -255,7 +247,7 @@ export class Room {
 		});
 
 		this.sendAll({
-			action: 'leave',
+			action: ACTION.SERVER.LEAVE,
 			connection: client.uid,
 		});
 	}
@@ -267,7 +259,7 @@ export class Room {
 
 		this.sendExcluding(
 			{
-				action: 'save',
+				action: ACTION.SERVER.SAVE,
 			},
 			sender.uid,
 		);
@@ -297,7 +289,7 @@ export class Room {
 
 			if (field in item) {
 				this.send(client.uid, {
-					action: 'update',
+					action: ACTION.SERVER.UPDATE,
 					field,
 					changes: item[field],
 				});
@@ -318,7 +310,7 @@ export class Room {
 			if (field && !(await hasFieldPermision(client.accountability, collection, field))) continue;
 
 			this.send(client.uid, {
-				action: 'update',
+				action: ACTION.SERVER.UPDATE,
 				field: field,
 			});
 		}
@@ -343,39 +335,40 @@ export class Room {
 			if (field && !(await hasFieldPermision(client.accountability, collection, field))) continue;
 
 			this.send(client.uid, {
-				action: 'focus',
+				action: ACTION.SERVER.FOUCS,
 				connection: sender.uid,
 				field,
 			});
 		}
 	}
 
-	sendAll(message: ClientBaseCollabMessage) {
+	sendAll(message: BaseServerMessage) {
 		(async () => {
 			const clients = await this.store(async (store) => {
 				return await store.get('clients');
 			});
 
 			for (const client of clients) {
-				this.messenger.sendClient(client.uid, { ...message, type: COLLAB, room: this.uid });
+				this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
 			}
 		})();
 	}
 
-	sendExcluding(message: ClientBaseCollabMessage, exclude: ClientID) {
+	sendExcluding(message: BaseServerMessage, exclude: ClientID) {
 		(async () => {
 			const clients = await this.store(async (store) => {
 				return await store.get('clients');
 			});
 
 			for (const client of clients) {
-				if (client.uid !== exclude) this.messenger.sendClient(client.uid, { ...message, type: COLLAB, room: this.uid });
+				if (client.uid !== exclude)
+					this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
 			}
 		})();
 	}
 
-	send(client: ClientID, message: ClientBaseCollabMessage) {
-		this.messenger.sendClient(client, { ...message, type: COLLAB, room: this.uid });
+	send(client: ClientID, message: BaseServerMessage) {
+		this.messenger.sendClient(client, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
 	}
 
 	async close() {

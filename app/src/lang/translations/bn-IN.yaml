@@ -130,6 +130,8 @@ fields:
 field_options:
   directus_collections:
     archive_divider: সংরক্ষণাগার
+ai:
+  unknown: অজানা
 interfaces:
   presentation-links:
     primary: প্রাথমিক

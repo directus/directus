@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VInfo from '@/components/v-info.vue';
+import { PrivateView } from '@/views/private';
 import { useHead } from '@unhead/vue';
 import { useI18n } from 'vue-i18n';
 
@@ -10,13 +12,13 @@ useHead({
 </script>
 
 <template>
-	<private-view :title="$t('page_not_found')">
+	<PrivateView :title="$t('page_not_found')">
 		<div class="not-found">
-			<v-info :title="$t('page_not_found')" icon="not_interested">
+			<VInfo :title="$t('page_not_found')" icon="not_interested">
 				{{ $t('page_not_found_body') }}
-			</v-info>
+			</VInfo>
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

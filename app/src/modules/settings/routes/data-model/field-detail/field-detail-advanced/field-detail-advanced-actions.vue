@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { storeToRefs } from 'pinia';
 import { useFieldDetailStore } from '../store';
 
@@ -9,14 +10,11 @@ const { saving, readyToSave } = storeToRefs(fieldDetailStore);
 </script>
 
 <template>
-	<v-button
+	<PrivateViewHeaderBarActionButton
 		v-tooltip.bottom="$t('save')"
 		:disabled="readyToSave === false"
 		:loading="saving"
-		icon
-		rounded
+		icon="check"
 		@click="$emit('save')"
-	>
-		<v-icon name="check" />
-	</v-button>
+	/>
 </template>

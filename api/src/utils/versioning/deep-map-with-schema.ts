@@ -36,7 +36,7 @@ export function deepMapWithSchema(
 		/** If set to true, will throw away fields that are not in the schema */
 		omitUnknownFields?: boolean;
 	},
-): unknown {
+): any {
 	const collection = context.schema.collections[context.collection]!;
 	let primaryKeyMapped = false;
 
@@ -188,7 +188,7 @@ export async function asyncDeepMapWithSchema(
 		/** If set to true, will throw away fields that are not in the schema */
 		omitUnknownFields?: boolean;
 	},
-): Promise<unknown> {
+): Promise<any> {
 	const collection = context.schema.collections[context.collection]!;
 	let primaryKeyMapped = false;
 

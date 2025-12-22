@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useExtensions } from '@/extensions';
 import type { InterfaceConfig } from '@directus/extensions';
 import { computed, inject, ref, watch } from 'vue';
@@ -42,10 +44,10 @@ const items = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="selectedType === undefined">
+	<VNotice v-if="selectedType === undefined">
 		{{ $t('select_field_type') }}
-	</v-notice>
-	<v-select
+	</VNotice>
+	<VSelect
 		v-else
 		:items="items"
 		:model-value="value"
