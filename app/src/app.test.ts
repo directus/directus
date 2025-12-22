@@ -13,9 +13,11 @@ import App from './app.vue';
 
 vi.mock('@/utils/generate-favicon');
 vi.mock('@/utils/get-asset-url');
+
 vi.mock('@/composables/use-system', () => ({
 	useSystem: vi.fn(),
 }));
+
 vi.mock('./idle', () => ({
 	startIdleTracking: vi.fn(),
 	stopIdleTracking: vi.fn(),
