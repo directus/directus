@@ -11,10 +11,10 @@ import themeDefaultLight from '../themes/light/default.js';
 const props = withDefaults(
 	defineProps<{
 		darkMode: boolean;
-		themeLight: string | null;
-		themeLightOverrides: DeepPartial<Theme['rules']>;
-		themeDark: string | null;
-		themeDarkOverrides: DeepPartial<Theme['rules']>;
+		themeLight?: string | null;
+		themeLightOverrides?: DeepPartial<Theme['rules']>;
+		themeDark?: string | null;
+		themeDarkOverrides?: DeepPartial<Theme['rules']>;
 	}>(),
 	{
 		themeLight: themeDefaultLight.name,
@@ -65,5 +65,5 @@ const cssString = computed(() => {
 </script>
 
 <template>
-	<teleport to="#theme">{{ cssString }}</teleport>
+	<Teleport to="#theme">{{ cssString }}</Teleport>
 </template>

@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import type { Field, Width } from '@directus/types';
 import { computed } from 'vue';
@@ -22,81 +29,81 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 </script>
 
 <template>
-	<v-menu show-arrow placement="bottom-end" full-height>
+	<VMenu show-arrow placement="bottom-end" full-height>
 		<template #activator="{ toggle }">
-			<v-icon clickable name="more_vert" @click="toggle" />
+			<VIcon clickable name="more_vert" @click="toggle" />
 		</template>
 
-		<v-list>
-			<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
-				<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-				<v-list-item-content>
+		<VList>
+			<VListItem :to="`/settings/data-model/${field.collection}/${field.field}`">
+				<VListItemIcon><VIcon name="edit" /></VListItemIcon>
+				<VListItemContent>
 					{{ $t('edit_field') }}
-				</v-list-item-content>
-			</v-list-item>
+				</VListItemContent>
+			</VListItem>
 
-			<v-list-item :disabled="duplicable === false" clickable @click="$emit('duplicate')">
-				<v-list-item-icon>
-					<v-icon name="content_copy" />
-				</v-list-item-icon>
-				<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
-			</v-list-item>
+			<VListItem :disabled="duplicable === false" clickable @click="$emit('duplicate')">
+				<VListItemIcon>
+					<VIcon name="content_copy" />
+				</VListItemIcon>
+				<VListItemContent>{{ $t('duplicate_field') }}</VListItemContent>
+			</VListItem>
 
-			<v-list-item clickable @click="$emit('toggleVisibility')">
+			<VListItem clickable @click="$emit('toggleVisibility')">
 				<template v-if="field.meta?.hidden === false">
-					<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
+					<VListItemIcon><VIcon name="visibility_off" /></VListItemIcon>
+					<VListItemContent>{{ $t('hide_field_on_detail') }}</VListItemContent>
 				</template>
 				<template v-else>
-					<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('show_field_on_detail') }}</v-list-item-content>
+					<VListItemIcon><VIcon name="visibility" /></VListItemIcon>
+					<VListItemContent>{{ $t('show_field_on_detail') }}</VListItemContent>
 				</template>
-			</v-list-item>
+			</VListItem>
 
-			<v-divider />
+			<VDivider />
 
-			<v-list-item
+			<VListItem
 				clickable
 				:disabled="field.meta?.width === 'half' || localType === 'group'"
 				@click="$emit('setWidth', 'half')"
 			>
-				<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
-				<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
-			</v-list-item>
+				<VListItemIcon><VIcon name="border_vertical" /></VListItemIcon>
+				<VListItemContent>{{ $t('half_width') }}</VListItemContent>
+			</VListItem>
 
-			<v-list-item
+			<VListItem
 				clickable
 				:disabled="field.meta?.width === 'full' || localType === 'group'"
 				@click="$emit('setWidth', 'full')"
 			>
-				<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
-				<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
-			</v-list-item>
+				<VListItemIcon><VIcon name="border_right" /></VListItemIcon>
+				<VListItemContent>{{ $t('full_width') }}</VListItemContent>
+			</VListItem>
 
-			<v-list-item
+			<VListItem
 				clickable
 				:disabled="field.meta?.width === 'fill' || localType === 'group'"
 				@click="$emit('setWidth', 'fill')"
 			>
-				<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-				<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
-			</v-list-item>
+				<VListItemIcon><VIcon name="aspect_ratio" /></VListItemIcon>
+				<VListItemContent>{{ $t('fill_width') }}</VListItemContent>
+			</VListItem>
 
-			<v-divider />
+			<VDivider />
 
-			<v-list-item
+			<VListItem
 				clickable
 				class="danger"
 				:disabled="field.schema?.is_primary_key === true || noDelete"
 				@click="$emit('delete')"
 			>
-				<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-				<v-list-item-content>
+				<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+				<VListItemContent>
 					{{ $t('delete_field') }}
-				</v-list-item-content>
-			</v-list-item>
-		</v-list>
-	</v-menu>
+				</VListItemContent>
+			</VListItem>
+		</VList>
+	</VMenu>
 </template>
 
 <style scoped>

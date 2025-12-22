@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ComparisonContext } from '@/components/v-form/types';
+import VItemGroup from '@/components/v-item-group.vue';
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
 import { ref, watch } from 'vue';
@@ -114,8 +115,8 @@ function useComputedGroup() {
 </script>
 
 <template>
-	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
-		<accordion-section
+	<VItemGroup v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
+		<AccordionSection
 			v-for="accordionField in groupFields"
 			:key="accordionField.field"
 			:field="accordionField"
@@ -139,7 +140,7 @@ function useComputedGroup() {
 			@apply="$emit('apply', $event)"
 			@toggle-all="toggleAll"
 		/>
-	</v-item-group>
+	</VItemGroup>
 </template>
 
 <style lang="scss" scoped>

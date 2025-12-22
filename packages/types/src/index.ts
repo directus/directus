@@ -11,6 +11,7 @@ export * from './fields.js';
 export * from './files.js';
 export * from './filter.js';
 export * from './flows.js';
+export * from './folders.js';
 export * from './geometry.js';
 export * from './graphql.js';
 export * from './import-export.js';

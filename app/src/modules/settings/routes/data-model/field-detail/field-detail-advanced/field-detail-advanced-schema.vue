@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTextarea from '@/components/v-textarea.vue';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { translate } from '@/utils/translate-object-values';
 import { Type } from '@directus/types';
 import { storeToRefs } from 'pinia';
@@ -323,10 +329,10 @@ function useOnUpdate() {
 			<div class="field">
 				<div class="label type-label">
 					{{ $t('key') }}
-					<v-icon class="required" sup name="star" filled />
+					<VIcon class="required" sup name="star" filled />
 				</div>
 
-				<v-input
+				<VInput
 					v-model="field"
 					:disabled="isExisting"
 					autofocus
@@ -342,10 +348,10 @@ function useOnUpdate() {
 			<div class="field half">
 				<div class="label type-label">
 					{{ $t('type') }}
-					<v-icon class="required" sup name="star" filled />
+					<VIcon class="required" sup name="star" filled />
 				</div>
-				<v-input v-if="isAlias" :model-value="$t('alias')" disabled />
-				<v-select
+				<VInput v-if="isAlias" :model-value="$t('alias')" disabled />
+				<VSelect
 					v-else
 					v-model="type"
 					:disabled="typeDisabled || isExisting"
@@ -357,7 +363,7 @@ function useOnUpdate() {
 			<template v-if="['decimal', 'float'].includes(type) === false">
 				<div v-if="!isAlias" class="field half">
 					<div class="label type-label">{{ $t('length') }}</div>
-					<v-input
+					<VInput
 						v-model="maxLength"
 						type="number"
 						:min="1"
@@ -371,8 +377,8 @@ function useOnUpdate() {
 				<div v-if="!isAlias" class="field half">
 					<div class="label type-label">{{ $t('precision_scale') }}</div>
 					<div class="precision-scale">
-						<v-input v-model="numericPrecision" type="number" :placeholder="10" />
-						<v-input v-model="numericScale" type="number" :placeholder="5" />
+						<VInput v-model="numericPrecision" type="number" :placeholder="10" />
+						<VInput v-model="numericScale" type="number" :placeholder="5" />
 					</div>
 				</div>
 			</template>
@@ -380,35 +386,35 @@ function useOnUpdate() {
 			<template v-if="hasCreateUpdateTriggers">
 				<div class="field half-left">
 					<div class="label type-label">{{ $t('on_create') }}</div>
-					<v-select v-model="onCreateValue" :items="onCreateOptions" />
+					<VSelect v-model="onCreateValue" :items="onCreateOptions" />
 				</div>
 
 				<div class="field half-right">
 					<div class="label type-label">{{ $t('on_update') }}</div>
-					<v-select v-model="onUpdateValue" :items="onUpdateOptions" />
+					<VSelect v-model="onUpdateValue" :items="onUpdateOptions" />
 				</div>
 			</template>
 
 			<div v-if="!isAlias && !isPrimaryKey && !isGenerated" class="field full">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 
-				<v-input v-if="['string', 'uuid'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
+				<VInput v-if="['string', 'uuid'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
 
-				<v-textarea v-else-if="['text'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
-				<v-input
+				<VTextarea v-else-if="['text'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
+				<VInput
 					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(type)"
 					v-model="defaultValue"
 					type="number"
 					class="monospace"
 					placeholder="NULL"
 				/>
-				<v-input
+				<VInput
 					v-else-if="['timestamp', 'dateTime', 'date', 'time'].includes(type)"
 					v-model="defaultValue"
 					class="monospace"
 					placeholder="NULL"
 				/>
-				<v-select
+				<VSelect
 					v-else-if="type === 'boolean'"
 					v-model="defaultValue"
 					class="monospace"
@@ -427,7 +433,7 @@ function useOnUpdate() {
 						},
 					]"
 				/>
-				<interface-input-code
+				<InterfaceInputCode
 					v-else-if="type === 'json'"
 					:value="defaultValue"
 					language="JSON"
@@ -435,22 +441,22 @@ function useOnUpdate() {
 					type="json"
 					@input="defaultValue = $event"
 				/>
-				<v-input v-else v-model="defaultValue" class="monospace" disabled placeholder="NULL" />
+				<VInput v-else v-model="defaultValue" class="monospace" disabled placeholder="NULL" />
 			</div>
 
 			<div v-if="!isAlias" class="field half-left">
 				<div class="label type-label">{{ $t('nullable') }}</div>
-				<v-checkbox v-model="nullable" :disabled="isGenerated || isPrimaryKey" :label="$t('allow_null_value')" block />
+				<VCheckbox v-model="nullable" :disabled="isGenerated || isPrimaryKey" :label="$t('allow_null_value')" block />
 			</div>
 
 			<div v-if="!isAlias" class="field half-right">
 				<div class="label type-label">{{ $t('unique') }}</div>
-				<v-checkbox v-model="unique" :disabled="isGenerated || isPrimaryKey" :label="$t('value_unique')" block />
+				<VCheckbox v-model="unique" :disabled="isGenerated || isPrimaryKey" :label="$t('value_unique')" block />
 			</div>
 
 			<div v-if="!isAlias" class="field half-left">
 				<div class="label type-label">{{ $t('index') }}</div>
-				<v-checkbox v-model="indexed" :disabled="isGenerated || isPrimaryKey" :label="$t('value_index')" block />
+				<VCheckbox v-model="indexed" :disabled="isGenerated || isPrimaryKey" :label="$t('value_index')" block />
 			</div>
 		</div>
 	</div>

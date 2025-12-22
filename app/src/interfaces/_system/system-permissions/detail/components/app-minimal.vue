@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VNotice from '@/components/v-notice.vue';
+
 defineProps<{
 	value?: any;
 }>();
@@ -6,8 +9,8 @@ defineProps<{
 
 <template>
 	<div v-if="value" class="app-minimal">
-		<v-divider />
-		<v-notice type="warning">{{ $t('the_following_are_minimum_permissions') }}</v-notice>
+		<VDivider />
+		<VNotice type="warning">{{ $t('the_following_are_minimum_permissions') }}</VNotice>
 		<pre class="app-minimal-preview">{{ value }}</pre>
 	</div>
 </template>

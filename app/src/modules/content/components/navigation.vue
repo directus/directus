@@ -1,10 +1,19 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useUserStore } from '@/stores/user';
 import { isNil, orderBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useNavigation } from '../composables/use-navigation';
-import NavigationItem from './navigation-item.vue';
+import NavigationItem from './NavigationItem.vue';
 
 const props = defineProps<{
 	currentCollection?: string;
@@ -39,10 +48,10 @@ const hasHiddenCollections = computed(
 <template>
 	<div class="content-navigation-wrapper">
 		<div v-if="showSearch" class="search-input">
-			<v-input v-model="search" type="search" :placeholder="$t('search_collection')" />
+			<VInput v-model="search" type="search" :placeholder="$t('search_collection')" />
 		</div>
 
-		<v-list
+		<VList
 			v-model="activeGroups"
 			v-context-menu="'contextMenu'"
 			scope="content-navigation"
@@ -52,7 +61,7 @@ const hasHiddenCollections = computed(
 			:mandatory="false"
 			:dense="dense"
 		>
-			<v-button
+			<VButton
 				v-if="userStore.isAdmin && collectionsStore.allCollections.length === 0"
 				full-width
 				outlined
@@ -60,9 +69,9 @@ const hasHiddenCollections = computed(
 				to="/settings/data-model/+"
 			>
 				{{ $t('create_collection') }}
-			</v-button>
+			</VButton>
 
-			<navigation-item
+			<NavigationItem
 				v-for="collection in rootItems"
 				:key="collection.collection"
 				:show-hidden="showHidden"
@@ -70,19 +79,19 @@ const hasHiddenCollections = computed(
 				:search="search"
 			/>
 
-			<v-menu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
-				<v-list>
-					<v-list-item clickable @click="showHidden = !showHidden">
-						<v-list-item-icon>
-							<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
-						</v-list-item-icon>
-						<v-list-item-content>
-							<v-text-overflow :text="showHidden ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-		</v-list>
+			<VMenu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
+				<VList>
+					<VListItem clickable @click="showHidden = !showHidden">
+						<VListItemIcon>
+							<VIcon :name="showHidden ? 'visibility_off' : 'visibility'" />
+						</VListItemIcon>
+						<VListItemContent>
+							<VTextOverflow :text="showHidden ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
+						</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
+		</VList>
 	</div>
 </template>
 
@@ -131,11 +140,11 @@ const hasHiddenCollections = computed(
 }
 
 .search-input {
-	--input-height: 40px;
+	--theme--form--field--input--height: 40px;
 
 	position: sticky;
 	inset-block-start: 0;
-	z-index: 2;
+	z-index: 1;
 	padding: 12px;
 	padding-block-end: 0;
 	background-color: var(--theme--navigation--background);

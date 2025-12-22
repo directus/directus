@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { useThemeConfiguration } from '@/composables/use-theme-configuration';
-import chroma from 'chroma-js';
-import { useI18n } from 'vue-i18n';
-import { cssVar } from '@directus/utils/browser';
-import { isNil } from 'lodash';
+import type { Notation, Style, Unit } from '@/utils/format-number';
 import { formatNumber } from '@/utils/format-number';
+import RenderTemplate from '@/views/private/components/render-template.vue';
+import { cssVar } from '@directus/utils/browser';
+import chroma from 'chroma-js';
+import { isNil } from 'lodash';
 import { computed, unref } from 'vue';
-import type { Style, Notation, Unit } from '@/utils/format-number';
+import { useI18n } from 'vue-i18n';
 
 export interface Group {
 	[groupByField: string]: string;
@@ -23,9 +26,9 @@ type DataPoint = Aggregate & { group: Group };
 const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
-		groupByField: string;
-		aggregateField: string;
-		aggregateFunction: string;
+		groupByField?: string;
+		aggregateField?: string;
+		aggregateFunction?: string;
 		sortDirection?: string;
 
 		notation?: Notation;
@@ -38,7 +41,7 @@ const props = withDefaults(
 		conditionalFormatting?: Record<string, any>[];
 		collection: string;
 		dashboard: string;
-		data: Array<DataPoint>;
+		data?: Array<DataPoint>;
 	}>(),
 	{
 		showHeader: false,
@@ -153,8 +156,8 @@ function getColor(input?: number) {
 <template>
 	<div class="metric-list" :class="{ 'has-header': showHeader }">
 		<div>
-			<v-list class="metric-list">
-				<v-list-item v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
+			<VList class="metric-list">
+				<VListItem v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
 					<div
 						v-if="row[aggregateFunction]?.[aggregateField]"
 						class="metric-bar"
@@ -164,7 +167,7 @@ function getColor(input?: number) {
 						}"
 					>
 						<div class="metric-bar-text">
-							<render-template
+							<RenderTemplate
 								:item="{ [groupByField]: row['group'][groupByField] }"
 								:collection="collection"
 								:template="`{{${groupByField}}}`"
@@ -184,8 +187,8 @@ function getColor(input?: number) {
 					</div>
 
 					<div class="spacer" />
-				</v-list-item>
-			</v-list>
+				</VListItem>
+			</VList>
 		</div>
 	</div>
 </template>
