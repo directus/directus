@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import { computed } from 'vue';
 
@@ -26,13 +27,13 @@ const expandedText = computed(() => {
 <template>
 	<CollapsibleRoot v-model:open="open" class="message-reasoning">
 		<CollapsibleTrigger class="reasoning-header" :aria-label="$t('ai.thinking')">
-			<v-icon
+			<VIcon
 				:name="state === 'streaming' ? 'lightbulb' : 'check_circle'"
 				:aria-label="state === 'streaming' ? $t('ai.thinking') : $t('ai.complete')"
 				x-small
 			/>
 			<span v-md="summaryText || $t('ai.thinking')" class="reasoning-summary" :class="state" />
-			<v-icon name="expand_more" x-small class="chevron" aria-hidden="true" />
+			<VIcon name="expand_more" x-small class="chevron" aria-hidden="true" />
 		</CollapsibleTrigger>
 		<CollapsibleContent class="reasoning-content-wrapper">
 			<div v-md="expandedText" class="reasoning-content"></div>

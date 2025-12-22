@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VFancySelect from '@/components/v-fancy-select.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { FlowRaw, TriggerType } from '@directus/types';
 import { computed, ref } from 'vue';
 import { getTriggers } from '../triggers';
@@ -49,7 +52,7 @@ const currentTriggerOptionFields = computed(() => {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:model-value="open"
 		:title="$t('change_trigger')"
 		:subtitle="$t('trigger_options')"
@@ -67,9 +70,9 @@ const currentTriggerOptionFields = computed(() => {
 		</template>
 
 		<div class="content">
-			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
+			<VFancySelect v-model="flowEdits.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
 
-			<v-form
+			<VForm
 				v-if="flowEdits.trigger"
 				v-model="flowEdits.options"
 				class="extension-options"
@@ -78,7 +81,7 @@ const currentTriggerOptionFields = computed(() => {
 				primary-key="+"
 			/>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style scoped lang="scss">

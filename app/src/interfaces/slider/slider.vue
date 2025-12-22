@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VSlider from '@/components/v-slider.vue';
 import { computed } from 'vue';
 
 interface BaseProps {
@@ -50,6 +51,7 @@ defineEmits(['input']);
 	-->
 	<v-slider
 		class="directus-slider-fix"
+	<VSlider
 		:model-value="value"
 		:min="minValue"
 		:max="maxValue"

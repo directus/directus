@@ -5,6 +5,9 @@ export default {
 </script>
 
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDetail from '@/components/v-detail.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useSync } from '@directus/extensions-sdk';
 
 const props = withDefaults(
@@ -68,7 +71,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 <template>
 	<div class="field">
 		<div class="type-label">{{ $t('layouts.kanban.group_field') }}</div>
-		<v-select
+		<VSelect
 			v-model="groupFieldSync"
 			item-value="field"
 			item-text="name"
@@ -79,7 +82,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 	<div v-if="groupFieldSync && isRelational" class="field">
 		<div class="type-label">{{ $t('layouts.kanban.group_title') }}</div>
-		<v-select
+		<VSelect
 			v-model="groupTitleSync"
 			item-value="field"
 			item-text="name"
@@ -90,7 +93,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 	<div class="field">
 		<div class="type-label">{{ $t('layouts.kanban.title') }}</div>
-		<v-select
+		<VSelect
 			v-model="titleFieldSync"
 			:items="fieldGroups.title"
 			item-value="field"
@@ -102,7 +105,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 	<div class="field">
 		<div class="type-label">{{ $t('layouts.kanban.text') }}</div>
-		<v-select
+		<VSelect
 			v-model="textFieldSync"
 			:items="fieldGroups.text"
 			item-value="field"
@@ -112,13 +115,13 @@ const userFieldSync = useSync(props, 'userField', emit);
 		/>
 	</div>
 
-	<v-detail class="field">
+	<VDetail class="field">
 		<template #title>{{ $t('layouts.kanban.advanced') }}</template>
 
 		<div class="nested-options">
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.kanban.tags') }}</div>
-				<v-select
+				<VSelect
 					v-model="tagsFieldSync"
 					:items="fieldGroups.tags"
 					item-value="field"
@@ -130,7 +133,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.kanban.date') }}</div>
-				<v-select
+				<VSelect
 					v-model="dateFieldSync"
 					:items="fieldGroups.date"
 					item-value="field"
@@ -142,7 +145,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.kanban.image') }}</div>
-				<v-select
+				<VSelect
 					v-model="imageSourceSync"
 					show-deselect
 					item-value="field"
@@ -154,12 +157,12 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.kanban.image_fit') }}</div>
-				<v-checkbox v-model="cropSync" block :label="$t('layouts.kanban.crop')" />
+				<VCheckbox v-model="cropSync" block :label="$t('layouts.kanban.crop')" />
 			</div>
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.kanban.user') }}</div>
-				<v-select
+				<VSelect
 					v-model="userFieldSync"
 					:items="fieldGroups.user"
 					item-value="field"
@@ -171,15 +174,10 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.kanban.show_ungrouped') }}</div>
-				<v-checkbox
-					v-model="showUngroupedSync"
-					block
-					:disabled="ungroupedDisabled"
-					:label="$t('layouts.kanban.show')"
-				/>
+				<VCheckbox v-model="showUngroupedSync" block :disabled="ungroupedDisabled" :label="$t('layouts.kanban.show')" />
 			</div>
 		</div>
-	</v-detail>
+	</VDetail>
 </template>
 
 <style lang="scss" scoped>

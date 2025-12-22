@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import VNotice from '@/components/v-notice.vue';
 import { useInsightsStore } from '@/stores/insights';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import SingleRelation from './single-relation.vue';
+import { computed, ref } from 'vue';
 import MultipleRelation from './multiple-relation.vue';
+import SingleRelation from './single-relation.vue';
 
 const props = defineProps<{
 	field: string;
@@ -60,11 +61,11 @@ function onSelection(data: (number | string)[] | null) {
 
 <template>
 	<div class="relational-variable" :class="{ 'show-header': showHeader, centered: !multiple }">
-		<v-notice v-if="!collection" type="warning">
+		<VNotice v-if="!collection" type="warning">
 			{{ $t('collection_field_not_setup') }}
-		</v-notice>
+		</VNotice>
 
-		<multiple-relation
+		<MultipleRelation
 			v-else-if="multiple"
 			:collection="collection"
 			:template="displayTemplate"
@@ -74,7 +75,7 @@ function onSelection(data: (number | string)[] | null) {
 			@input="value = $event"
 			@select="selectModalOpen = true"
 		/>
-		<single-relation
+		<SingleRelation
 			v-else
 			:collection="collection"
 			:template="displayTemplate"
@@ -84,7 +85,7 @@ function onSelection(data: (number | string)[] | null) {
 			@select="selectModalOpen = true"
 		/>
 
-		<drawer-collection
+		<DrawerCollection
 			:active="selectModalOpen"
 			:collection="collection"
 			:selection="value"

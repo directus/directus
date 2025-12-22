@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from './v-icon/v-icon.vue';
 
 interface Props {
 	/** Renders the components in each of it styles */
@@ -43,7 +44,7 @@ const iconName = computed(() => {
 <template>
 	<div class="v-notice" :class="[type, { center }, { multiline }]">
 		<div class="v-notice-title">
-			<v-icon v-if="icon !== false" :name="iconName" left></v-icon>
+			<VIcon v-if="icon !== false" :name="iconName" left></VIcon>
 			<slot name="title"></slot>
 		</div>
 		<div v-if="$slots.default" class="v-notice-content" :class="{ indent: indentContent && icon !== false }">

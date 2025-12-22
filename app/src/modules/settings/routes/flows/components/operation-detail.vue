@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VFancySelect from '@/components/v-fancy-select.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { translate } from '@/utils/translate-object-values';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { Field, FlowRaw } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { customAlphabet } from 'nanoid/non-secure';
@@ -137,7 +143,7 @@ function saveOperation() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:model-value="isOpen"
 		:title="$t(operationId === '+' ? 'create_operation' : 'edit_operation')"
 		:subtitle="flow.name"
@@ -161,50 +167,50 @@ function saveOperation() {
 					<div class="type-label">
 						{{ $t('name') }}
 					</div>
-					<v-input v-model="operationName" autofocus :placeholder="generatedName">
+					<VInput v-model="operationName" autofocus :placeholder="generatedName">
 						<template #append>
-							<v-icon name="title" />
+							<VIcon name="title" />
 						</template>
-					</v-input>
+					</VInput>
 				</div>
 				<div class="field half">
 					<div class="type-label">
 						{{ $t('key') }}
 					</div>
-					<v-input v-model="operationKey" db-safe :placeholder="generatedKey">
+					<VInput v-model="operationKey" db-safe :placeholder="generatedKey">
 						<template #append>
-							<v-icon name="vpn_key" />
+							<VIcon name="vpn_key" />
 						</template>
-					</v-input>
+					</VInput>
 					<small v-if="!isOperationKeyUnique" class="error">{{ $t('operation_key_unique_error') }}</small>
 				</div>
 			</div>
 
-			<v-divider />
+			<VDivider />
 
-			<v-fancy-select v-model="operationType" class="select" :items="displayOperations" />
+			<VFancySelect v-model="operationType" class="select" :items="displayOperations" />
 
-			<v-notice v-if="operationType && !selectedOperation" class="not-found" type="danger">
+			<VNotice v-if="operationType && !selectedOperation" class="not-found" type="danger">
 				{{ $t('operation_not_found', { operation: operationType }) }}
 				<div class="spacer" />
 				<button @click="operationType = null">{{ $t('reset_interface') }}</button>
-			</v-notice>
+			</VNotice>
 
-			<extension-options
+			<ExtensionOptions
 				v-if="operationType && selectedOperation && operationOptions"
 				v-model="options"
 				:extension="operationType"
 				:options="operationOptions"
 				raw-editor-enabled
 				type="operation"
-			></extension-options>
+			></ExtensionOptions>
 			<component
 				:is="`operation-options-${operationType}`"
 				v-else-if="operationType && selectedOperation"
 				:options="operation"
 			/>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

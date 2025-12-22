@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInfo from '@/components/v-info.vue';
 import { useEventListener } from '@/composables/use-event-listener';
 import { Folder, useFolders } from '@/composables/use-folders';
 import { useCollectionPermissions } from '@/composables/use-permissions';
@@ -13,17 +21,19 @@ import { getFolderFilter } from '@/utils/get-folder-filter';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { getDateTimeFormatted, mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, RouterView, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
 
 const props = defineProps<{
@@ -399,9 +409,9 @@ async function downloadFiles() {
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
-		<private-view :title="title" icon="folder" :class="{ dragging }">
+		<PrivateView :title="title" icon="folder" :class="{ dragging }">
 			<template v-if="breadcrumb" #headline>
-				<v-breadcrumb :items="breadcrumb" />
+				<VBreadcrumb :items="breadcrumb" />
 			</template>
 
 			<template #actions:prepend>
@@ -409,11 +419,11 @@ async function downloadFiles() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_files" small />
+				<SearchInput v-model="search" v-model:filter="filter" collection="directus_files" small />
 
-				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
+				<AddFolder :parent="folder" :disabled="createFolderAllowed !== true" />
 
-				<v-dialog
+				<VDialog
 					v-if="selection.length > 0"
 					v-model="moveToDialogActive"
 					@esc="moveToDialogActive = false"
@@ -430,25 +440,25 @@ async function downloadFiles() {
 						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 
-						<v-card-text>
-							<folder-picker v-model="selectedFolder" />
-						</v-card-text>
+						<VCardText>
+							<FolderPicker v-model="selectedFolder" />
+						</VCardText>
 
-						<v-card-actions>
-							<v-button secondary @click="moveToDialogActive = false">
+						<VCardActions>
+							<VButton secondary @click="moveToDialogActive = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button :loading="moving" @click="moveToFolder">
+							</VButton>
+							<VButton :loading="moving" @click="moveToFolder">
 								{{ $t('move') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
+				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
@@ -460,19 +470,19 @@ async function downloadFiles() {
 						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="batchDelete">
 								{{ $t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
@@ -500,50 +510,50 @@ async function downloadFiles() {
 			</template>
 
 			<template #navigation>
-				<files-navigation :current-folder="folder" :current-special="special" />
+				<FilesNavigation :current-folder="folder" :current-special="special" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info v-if="!filter && !search" :title="$t('file_count', 0)" icon="folder" center>
+					<VInfo v-if="!filter && !search" :title="$t('file_count', 0)" icon="folder" center>
 						{{ $t('no_files_copy') }}
 
 						<template #append>
-							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
+							<VButton :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
 								{{ $t('add_file') }}
-							</v-button>
+							</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 
-					<v-info v-else :title="$t('no_results')" icon="search" center>
+					<VInfo v-else :title="$t('no_results')" icon="search" center>
 						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+							<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="$t('file_count', 0)" icon="folder" center>
+					<VInfo :title="$t('file_count', 0)" icon="folder" center>
 						{{ $t('no_files_copy') }}
 
 						<template #append>
-							<v-button
+							<VButton
 								v-tooltip.bottom="createAllowed ? $t('add_file') : $t('not_allowed')"
 								:disabled="createAllowed === false"
 								:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 							>
 								{{ $t('add_file') }}
-							</v-button>
+							</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 			</component>
 
-			<router-view name="addNew" :folder="folder" @upload="refresh" />
+			<RouterView name="addNew" :folder="folder" @upload="refresh" />
 
-			<drawer-batch
+			<DrawerBatch
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				collection="directus_files"
@@ -551,11 +561,11 @@ async function downloadFiles() {
 			/>
 
 			<template #sidebar>
-				<layout-sidebar-detail v-model="layout">
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
-				<export-sidebar-detail
+				<ExportSidebarDetail
 					collection="directus_files"
 					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, folderFilter)"
@@ -570,7 +580,7 @@ async function downloadFiles() {
 				<div class="drop-border bottom" />
 				<div class="drop-border left" />
 			</template>
-		</private-view>
+		</PrivateView>
 	</component>
 </template>
 

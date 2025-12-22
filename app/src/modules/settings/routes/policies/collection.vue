@@ -1,14 +1,21 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
 import { Header as TableHeader } from '@/components/v-table/types';
+import VTable from '@/components/v-table/v-table.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { Policy } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
 type PolicyBaseFields = 'id' | 'name' | 'icon' | 'description';
@@ -141,11 +148,11 @@ function navigateToPolicy({ item }: { item: Policy }) {
 </script>
 
 <template>
-	<private-view :title="$t('settings_permissions')" icon="admin_panel_settings">
-		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
+	<PrivateView :title="$t('settings_permissions')" icon="admin_panel_settings">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<search-input
+			<SearchInput
 				v-if="!loading"
 				v-model="search"
 				:autofocus="policies.length > 25"
@@ -158,11 +165,11 @@ function navigateToPolicy({ item }: { item: Policy }) {
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div v-if="!search || filteredPolicies.length > 0" class="policies">
-			<v-table
+			<VTable
 				v-model:headers="tableHeaders"
 				show-resize
 				:items="filteredPolicies"
@@ -172,29 +179,29 @@ function navigateToPolicy({ item }: { item: Policy }) {
 				@click:row="navigateToPolicy"
 			>
 				<template #[`item.icon`]="{ item }">
-					<v-icon class="icon" :name="item.icon" />
+					<VIcon class="icon" :name="item.icon" />
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow v-if="item.name" :text="item.name" class="name" :highlight="search" />
+					<VTextOverflow v-if="item.name" :text="item.name" class="name" :highlight="search" />
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<v-text-overflow v-if="item.description" :text="item.description" class="description" :highlight="search" />
+					<VTextOverflow v-if="item.description" :text="item.description" class="description" :highlight="search" />
 				</template>
-			</v-table>
+			</VTable>
 		</div>
 
-		<v-info v-else icon="search" :title="$t('no_results')" center>
+		<VInfo v-else icon="search" :title="$t('no_results')" center>
 			{{ $t('no_results_copy') }}
 
 			<template #append>
-				<v-button @click="search = null">{{ $t('clear_filters') }}</v-button>
+				<VButton @click="search = null">{{ $t('clear_filters') }}</VButton>
 			</template>
-		</v-info>
+		</VInfo>
 
-		<router-view name="add" />
-	</private-view>
+		<RouterView name="add" />
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

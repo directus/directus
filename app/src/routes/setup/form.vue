@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useServerStore } from '@/stores/server';
-import { storeToRefs } from 'pinia';
-import { defaultValues, useFormFields } from './form';
 import { SetupForm } from '@directus/types';
+import { storeToRefs } from 'pinia';
+import { computed, toRef } from 'vue';
+import { I18nT } from 'vue-i18n';
+import { defaultValues, useFormFields } from './form';
 
 const { info } = storeToRefs(useServerStore());
 
@@ -56,18 +60,18 @@ const fields = useFormFields(props.register, value, initialValues);
 			<h1>{{ $t('setup_welcome') }}</h1>
 			<p>{{ $t('setup_info') }}</p>
 		</template>
-		<v-form
+		<VForm
 			v-model="value"
 			:initial-values="initialValues"
 			:validation-errors="errors"
 			:show-validation-errors="false"
 			:fields="fields"
 			disabled-menu
-		></v-form>
-		<v-notice>
+		></VForm>
+		<VNotice>
 			<span v-md="$t('setup_license_notice')"></span>
 			<br />
-			<i18n-t keypath="setup_license_follow_up" tag="span">
+			<I18nT keypath="setup_license_follow_up" tag="span">
 				<template #contactOurTeam>
 					<a
 						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_contact_our_team_link`"
@@ -76,11 +80,11 @@ const fields = useFormFields(props.register, value, initialValues);
 						{{ $t('contact_our_team') }}
 					</a>
 				</template>
-			</i18n-t>
+			</I18nT>
 			<br />
 			<span v-if="skipLicense">
 				<br />
-				<i18n-t v-if="skipLicense" keypath="setup_save_accept_license" tag="span">
+				<I18nT v-if="skipLicense" keypath="setup_save_accept_license" tag="span">
 					<template #directusBsl>
 						<a
 							:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_bsl_1.1_link`"
@@ -97,12 +101,12 @@ const fields = useFormFields(props.register, value, initialValues);
 							{{ $t('privacy_policy') }}
 						</a>
 					</template>
-				</i18n-t>
+				</I18nT>
 			</span>
-		</v-notice>
+		</VNotice>
 
-		<v-checkbox v-if="!skipLicense" v-model="license">
-			<i18n-t keypath="setup_accept_license" tag="span">
+		<VCheckbox v-if="!skipLicense" v-model="license">
+			<I18nT keypath="setup_accept_license" tag="span">
 				<template #directusBsl>
 					<a
 						:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=bsl_1.1_link`"
@@ -119,11 +123,11 @@ const fields = useFormFields(props.register, value, initialValues);
 						{{ $t('privacy_policy') }}
 					</a>
 				</template>
-			</i18n-t>
-		</v-checkbox>
-		<v-checkbox v-model="product_updates">
+			</I18nT>
+		</VCheckbox>
+		<VCheckbox v-model="product_updates">
 			<span v-md="$t('setup_marketing_emails')"></span>
-		</v-checkbox>
+		</VCheckbox>
 	</div>
 </template>
 

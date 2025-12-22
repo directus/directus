@@ -1,19 +1,33 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
+import VWorkspace from '@/components/v-workspace.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
+import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { FlowRaw, OperationRaw } from '@directus/types';
 import { cloneDeep, isEmpty, merge, omit } from 'lodash';
 import { customAlphabet, nanoid } from 'nanoid/non-secure';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import SettingsNotFound from '../not-found.vue';
 import Arrows from './components/arrows/arrows.vue';
@@ -593,14 +607,14 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<settings-not-found v-if="!flow && !loading" />
-	<private-view v-else :title="flow?.name ?? $t('loading')" show-back>
+	<SettingsNotFound v-if="!flow && !loading" />
+	<PrivateView v-else :title="flow?.name ?? $t('loading')" show-back>
 		<template #headline>
-			<v-breadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
+			<VBreadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
 		</template>
 
 		<template #title:append>
-			<display-color
+			<DisplayColor
 				v-tooltip="flow?.status === 'active' ? $t('active') : $t('inactive')"
 				class="status-dot"
 				:value="flow?.status === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
@@ -644,18 +658,18 @@ function discardAndLeave() {
 		</template>
 
 		<template #sidebar>
-			<logs-sidebar-detail v-if="flow" :flow="flow" />
+			<LogsSidebarDetail v-if="flow" :flow="flow" />
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div v-if="loading || !flow" class="container center">
-			<v-progress-circular indeterminate />
+			<VProgressCircular indeterminate />
 		</div>
 		<div v-else class="container">
-			<arrows
+			<Arrows
 				:panels="panels"
 				:arrow-info="arrowInfo"
 				:parent-panels="parentPanels"
@@ -663,9 +677,9 @@ function discardAndLeave() {
 				:hovered-panel="hoveredPanelID"
 				:subdued="flow.status === 'inactive'"
 			/>
-			<v-workspace :tiles="panels" :edit-mode="editMode">
+			<VWorkspace :tiles="panels" :edit-mode="editMode">
 				<template #tile="{ tile }">
-					<operation
+					<Operation
 						v-if="flow"
 						:edit-mode="editMode"
 						:panel="tile"
@@ -688,10 +702,10 @@ function discardAndLeave() {
 						@flow-status="stagedFlow.status = $event"
 					/>
 				</template>
-			</v-workspace>
+			</VWorkspace>
 		</div>
 
-		<flow-drawer
+		<FlowDrawer
 			v-if="flow"
 			:active="triggerDetailOpen"
 			:primary-key="flow.id"
@@ -700,74 +714,74 @@ function discardAndLeave() {
 			@done="triggerDetailOpen = false"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">{{ $t('discard_changes') }}</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">{{ $t('discard_changes') }}</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('discard_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="cancelChanges">{{ $t('discard_changes') }}</v-button>
-					<v-button @click="confirmCancel = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="cancelChanges">{{ $t('discard_changes') }}</VButton>
+					<VButton @click="confirmCancel = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false" @apply="deleteFlow">
-			<v-card>
-				<v-card-title>{{ $t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
+		<VDialog :model-value="confirmDelete" @esc="confirmDelete = false" @apply="deleteFlow">
+			<VCard>
+				<VCardTitle>{{ $t('flow_delete_confirm', { flow: flow?.name }) }}</VCardTitle>
 
-				<v-card-actions>
-					<v-button secondary @click="confirmDelete = false">{{ $t('cancel') }}</v-button>
-					<v-button danger :loading="deleting" @click="deleteFlow">{{ $t('delete_label') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+				<VCardActions>
+					<VButton secondary @click="confirmDelete = false">{{ $t('cancel') }}</VButton>
+					<VButton danger :loading="deleting" @click="deleteFlow">{{ $t('delete_label') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-dialog
+		<VDialog
 			:model-value="!!copyPanelId"
 			@update:model-value="copyPanelId = undefined"
 			@esc="copyPanelId = undefined"
 			@apply="copyPanel"
 		>
-			<v-card>
-				<v-card-title>{{ $t('copy_to') }}</v-card-title>
+			<VCard>
+				<VCardTitle>{{ $t('copy_to') }}</VCardTitle>
 
-				<v-card-text>
-					<v-notice v-if="copyPanelChoices.length === 0">
+				<VCardText>
+					<VNotice v-if="copyPanelChoices.length === 0">
 						{{ $t('no_other_flows_copy') }}
-					</v-notice>
-					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
-				</v-card-text>
+					</VNotice>
+					<VSelect v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
+				</VCardText>
 
-				<v-card-actions>
-					<v-button secondary @click="copyPanelId = undefined">
+				<VCardActions>
+					<VButton secondary @click="copyPanelId = undefined">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button :loading="copyPanelLoading" :disabled="copyPanelChoices.length === 0" @click="copyPanel">
+					</VButton>
+					<VButton :loading="copyPanelLoading" :disabled="copyPanelChoices.length === 0" @click="copyPanel">
 						{{ $t('copy') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<router-view
+		<RouterView
 			:operation="currentOperation"
 			:existing-operation-keys="existingOperationKeys"
 			:flow="flow"
 			@save="stageOperation"
 			@cancel="cancelOperation"
 		/>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">

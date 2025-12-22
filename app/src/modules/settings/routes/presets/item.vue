@@ -1,12 +1,24 @@
 <script setup lang="ts">
 import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { unexpectedError } from '@/utils/unexpected-error';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';
@@ -467,17 +479,17 @@ function discardAndLeave() {
 		:collection="values.collection"
 		readonly
 	>
-		<private-view :title="$t('editing_preset')" show-back>
+		<PrivateView :title="$t('editing_preset')" show-back>
 			<template #headline>
-				<v-breadcrumb :items="[{ name: $t('settings_presets'), to: '/settings/presets' }]" />
+				<VBreadcrumb :items="[{ name: $t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
 
 			<template #navigation>
-				<settings-navigation />
+				<SettingsNavigation />
 			</template>
 
 			<template #actions>
-				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+				<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 					<template #activator="{ on }">
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="$t('delete_label')"
@@ -489,19 +501,19 @@ function discardAndLeave() {
 						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 								{{ $t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
@@ -513,26 +525,26 @@ function discardAndLeave() {
 			</template>
 
 			<div class="preset-item">
-				<v-form v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
+				<VForm v-model="edits" :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" />
 
 				<div class="layout">
 					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
 						<template #no-results>
-							<v-info :title="$t('no_results')" icon="search" center>
+							<VInfo :title="$t('no_results')" icon="search" center>
 								{{ $t('no_results_copy') }}
-							</v-info>
+							</VInfo>
 						</template>
 
 						<template #no-items>
-							<v-info :title="$t('item_count', 0)" center>
+							<VInfo :title="$t('item_count', 0)" center>
 								{{ $t('no_items_copy') }}
-							</v-info>
+							</VInfo>
 						</template>
 					</component>
 
-					<v-notice v-else>
+					<VNotice v-else>
 						{{ $t('no_layout_collection_selected_yet') }}
-					</v-notice>
+					</VNotice>
 				</div>
 			</div>
 
@@ -544,7 +556,7 @@ function discardAndLeave() {
 						v-bind="layoutState"
 					/>
 
-					<sidebar-detail id="layout-options" icon="layers" :title="$t('layout_options')">
+					<SidebarDetail id="layout-options" icon="layers" :title="$t('layout_options')">
 						<div class="layout-options">
 							<component
 								:is="`layout-options-${values.layout}`"
@@ -552,23 +564,23 @@ function discardAndLeave() {
 								v-bind="layoutState"
 							/>
 						</div>
-					</sidebar-detail>
+					</SidebarDetail>
 				</div>
 			</template>
 
-			<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-				<v-card>
-					<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-					<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-					<v-card-actions>
-						<v-button secondary @click="discardAndLeave">
+			<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+				<VCard>
+					<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+					<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+					<VCardActions>
+						<VButton secondary @click="discardAndLeave">
 							{{ $t('discard_changes') }}
-						</v-button>
-						<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</private-view>
+						</VButton>
+						<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
+		</PrivateView>
 	</component>
 </template>
 

@@ -1,5 +1,24 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import VUpload from '@/components/v-upload.vue';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -178,12 +197,12 @@ function useURLImport() {
 
 <template>
 	<div class="file">
-		<v-menu attached :disabled="loading || internalDisabled">
+		<VMenu attached :disabled="loading || internalDisabled">
 			<template #activator="{ toggle, active, deactivate }">
 				<div>
-					<v-skeleton-loader v-if="loading" type="input" />
+					<VSkeletonLoader v-if="loading" type="input" />
 
-					<v-list-item
+					<VListItem
 						v-else
 						class="activator"
 						clickable
@@ -196,7 +215,7 @@ function useURLImport() {
 						:model-value="file && file.title"
 						@click="toggle"
 					>
-						<v-list-item-icon>
+						<VListItemIcon>
 							<div
 								class="preview"
 								:class="{
@@ -204,7 +223,7 @@ function useURLImport() {
 									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
-								<v-image
+								<VImage
 									v-if="imageThumbnail && !imageThumbnailError"
 									:src="imageThumbnail"
 									:alt="file?.title"
@@ -213,18 +232,18 @@ function useURLImport() {
 								<span v-else-if="fileExtension" class="extension">
 									{{ fileExtension }}
 								</span>
-								<v-icon v-else name="folder_open" />
+								<VIcon v-else name="folder_open" />
 							</div>
-						</v-list-item-icon>
+						</VListItemIcon>
 
-						<v-list-item-content>
-							<v-text-overflow v-if="file?.title" :text="file.title" />
-							<v-text-overflow v-else class="placeholder" :text="$t('no_file_selected')" />
-						</v-list-item-content>
+						<VListItemContent>
+							<VTextOverflow v-if="file?.title" :text="file.title" />
+							<VTextOverflow v-else class="placeholder" :text="$t('no_file_selected')" />
+						</VListItemContent>
 
 						<div class="item-actions">
 							<template v-if="file">
-								<v-icon
+								<VIcon
 									v-tooltip="$t('edit_item')"
 									name="edit"
 									clickable
@@ -234,7 +253,7 @@ function useURLImport() {
 									"
 								/>
 
-								<v-remove
+								<VRemove
 									v-if="!internalDisabled"
 									:item-info="relationInfo"
 									:item-edits="edits"
@@ -243,47 +262,47 @@ function useURLImport() {
 								/>
 							</template>
 
-							<v-icon v-else name="attach_file" />
+							<VIcon v-else name="attach_file" />
 						</div>
-					</v-list-item>
+					</VListItem>
 				</div>
 			</template>
 
-			<v-list>
+			<VList>
 				<template v-if="file">
-					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, { isDownload: true })">
-						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('download_file') }}</v-list-item-content>
-					</v-list-item>
+					<VListItem clickable :download="file.filename_download" :href="getAssetUrl(file.id, { isDownload: true })">
+						<VListItemIcon><VIcon name="get_app" /></VListItemIcon>
+						<VListItemContent>{{ $t('download_file') }}</VListItemContent>
+					</VListItem>
 
-					<v-divider v-if="!internalDisabled" />
+					<VDivider v-if="!internalDisabled" />
 				</template>
 				<template v-if="!internalDisabled">
-					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'upload'">
-						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
-						<v-list-item-content>
+					<VListItem v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'upload'">
+						<VListItemIcon><VIcon name="phonelink" /></VListItemIcon>
+						<VListItemContent>
 							{{ $t(file ? 'replace_from_device' : 'upload_from_device') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item v-if="enableSelect" clickable @click="activeDialog = 'choose'">
-						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
-						<v-list-item-content>
+					<VListItem v-if="enableSelect" clickable @click="activeDialog = 'choose'">
+						<VListItemIcon><VIcon name="folder_open" /></VListItemIcon>
+						<VListItemContent>
 							{{ $t(file ? 'replace_from_library' : 'choose_from_library') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'url'">
-						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
-						<v-list-item-content>
+					<VListItem v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'url'">
+						<VListItemIcon><VIcon name="link" /></VListItemIcon>
+						<VListItemContent>
 							{{ $t(file ? 'replace_from_url' : 'import_from_url') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 				</template>
-			</v-list>
-		</v-menu>
+			</VList>
+		</VMenu>
 
-		<drawer-item
+		<DrawerItem
 			v-if="file"
 			v-model:active="editDrawerActive"
 			collection="directus_files"
@@ -294,35 +313,35 @@ function useURLImport() {
 			@input="update"
 		>
 			<template #actions>
-				<v-button
+				<VButton
 					secondary
 					rounded
 					icon
 					:download="file.filename_download"
 					:href="getAssetUrl(file.id, { isDownload: true })"
 				>
-					<v-icon name="download" />
-				</v-button>
+					<VIcon name="download" />
+				</VButton>
 			</template>
-		</drawer-item>
+		</DrawerItem>
 
-		<v-dialog
+		<VDialog
 			:model-value="activeDialog === 'upload'"
 			@esc="activeDialog = null"
 			@update:model-value="activeDialog = null"
 		>
-			<v-card>
-				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
-				<v-card-text>
-					<v-upload from-url :folder="folder" @input="onUpload" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="activeDialog = null">{{ $t('cancel') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+			<VCard>
+				<VCardTitle>{{ $t('upload_from_device') }}</VCardTitle>
+				<VCardText>
+					<VUpload from-url :folder="folder" @input="onUpload" />
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="activeDialog = null">{{ $t('cancel') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<drawer-files
+		<DrawerFiles
 			v-if="activeDialog === 'choose'"
 			:folder="folder"
 			:active="activeDialog === 'choose'"
@@ -331,27 +350,27 @@ function useURLImport() {
 			@input="setSelection"
 		/>
 
-		<v-dialog
+		<VDialog
 			:model-value="activeDialog === 'url'"
 			:persistent="urlLoading"
 			@update:model-value="activeDialog = null"
 			@esc="activeDialog = null"
 		>
-			<v-card>
-				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
-				<v-card-text>
-					<v-input v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
+			<VCard>
+				<VCardTitle>{{ $t('import_from_url') }}</VCardTitle>
+				<VCardText>
+					<VInput v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
+				</VCardText>
+				<VCardActions>
+					<VButton :disabled="urlLoading" secondary @click="activeDialog = null">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+					</VButton>
+					<VButton :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
 						{{ $t('import_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 

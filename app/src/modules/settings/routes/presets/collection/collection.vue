@@ -1,12 +1,23 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VError from '@/components/v-error.vue';
+import VInfo from '@/components/v-info.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { usePresetsStore } from '@/stores/presets';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { useCollection, useLayout } from '@directus/composables';
 import { ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
@@ -101,9 +112,9 @@ function clearFilters() {
 		:collection="collection"
 		:clear-filters="clearFilters"
 	>
-		<private-view :title="$t('settings_presets')" icon="bookmark">
+		<PrivateView :title="$t('settings_presets')" icon="bookmark">
 			<template #headline>
-				<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
+				<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 			</template>
 
 			<template #actions:prepend>
@@ -111,9 +122,9 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" small />
+				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" small />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
+				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
@@ -125,19 +136,19 @@ function clearFilters() {
 						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="batchDelete">
 								{{ $t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
@@ -157,32 +168,32 @@ function clearFilters() {
 			</template>
 
 			<template #navigation>
-				<settings-navigation />
+				<SettingsNavigation />
 			</template>
 
 			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="$t('no_results')" icon="bookmark" center>
+					<VInfo :title="$t('no_results')" icon="bookmark" center>
 						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+							<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="$t('no_presets')" icon="bookmark" center>
+					<VInfo :title="$t('no_presets')" icon="bookmark" center>
 						{{ $t('no_presets_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<v-button :to="`/settings/presets/+`">{{ $t('create_preset') }}</v-button>
+							<VButton :to="`/settings/presets/+`">{{ $t('create_preset') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 			</component>
 
-			<drawer-batch
+			<DrawerBatch
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				:collection="collection"
@@ -190,27 +201,27 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<presets-info-sidebar-detail />
-				<layout-sidebar-detail v-model="layout">
+				<PresetsInfoSidebarDetail />
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
-				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
-				<export-sidebar-detail :collection="collection" :filter="filter" :search="search" @refresh="refresh" />
+				<RefreshSidebarDetail v-model="refreshInterval" @refresh="refresh" />
+				<ExportSidebarDetail :collection="collection" :filter="filter" :search="search" @refresh="refresh" />
 			</template>
 
-			<v-dialog :model-value="deleteError !== null">
-				<v-card>
-					<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
-					<v-card-text>
-						<v-error :error="deleteError" />
-					</v-card-text>
-					<v-card-actions>
-						<v-button @click="deleteError = null">{{ $t('done') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</private-view>
+			<VDialog :model-value="deleteError !== null">
+				<VCard>
+					<VCardTitle>{{ $t('something_went_wrong') }}</VCardTitle>
+					<VCardText>
+						<VError :error="deleteError" />
+					</VCardText>
+					<VCardActions>
+						<VButton @click="deleteError = null">{{ $t('done') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
+		</PrivateView>
 	</component>
 </template>
 

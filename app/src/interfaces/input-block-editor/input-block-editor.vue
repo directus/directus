@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VUpload from '@/components/v-upload.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
@@ -158,7 +160,7 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 	<div class="input-block-editor">
 		<div ref="editorElement" :class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"></div>
 
-		<v-drawer
+		<VDrawer
 			v-if="haveFilesAccess && !disabled"
 			:model-value="fileHandler !== null"
 			icon="image"
@@ -171,7 +173,7 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 				<div v-if="currentPreview" class="uploader-preview-image">
 					<img :src="currentPreview" />
 				</div>
-				<v-upload
+				<VUpload
 					:ref="uploaderComponentElement"
 					:multiple="false"
 					:folder="folder"
@@ -180,7 +182,7 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 					@input="handleFile"
 				/>
 			</div>
-		</v-drawer>
+		</VDrawer>
 	</div>
 </template>
 

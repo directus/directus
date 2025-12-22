@@ -21,7 +21,7 @@ const value = ref('Hey ho everyone, I am a new comment!');
 <template>
 	<Story title="VTemplateInput" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-template-input
+			<VTemplateInput
 				v-model="value"
 				v-bind="state"
 				@trigger="logEvent('trigger', $event)"

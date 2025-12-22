@@ -1,4 +1,18 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -67,102 +81,102 @@ async function update(updates: DeepPartial<Collection>) {
 
 <template>
 	<div v-if="isSystemCollection(collection.collection) === false">
-		<v-menu placement="left-start" show-arrow>
+		<VMenu placement="left-start" show-arrow>
 			<template #activator="{ toggle }">
-				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
+				<VIcon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
-			<v-list>
-				<v-list-item v-if="collection.schema" clickable :to="getCollectionRoute(collection.collection)">
-					<v-list-item-icon>
-						<v-icon name="box" />
-					</v-list-item-icon>
-					<v-list-item-content>
+			<VList>
+				<VListItem v-if="collection.schema" clickable :to="getCollectionRoute(collection.collection)">
+					<VListItemIcon>
+						<VIcon name="box" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ $t('goto_collection_content') }}
-					</v-list-item-content>
-				</v-list-item>
+					</VListItemContent>
+				</VListItem>
 
-				<v-list-item clickable @click="update({ meta: { hidden: !collection.meta?.hidden } })">
+				<VListItem clickable @click="update({ meta: { hidden: !collection.meta?.hidden } })">
 					<template v-if="collection.meta?.hidden === false">
-						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
-						<v-list-item-content>
+						<VListItemIcon><VIcon name="visibility_off" /></VListItemIcon>
+						<VListItemContent>
 							{{ collection.schema ? $t('make_collection_hidden') : $t('make_folder_hidden') }}
-						</v-list-item-content>
+						</VListItemContent>
 					</template>
 					<template v-else>
-						<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
-						<v-list-item-content>
+						<VListItemIcon><VIcon name="visibility" /></VListItemIcon>
+						<VListItemContent>
 							{{ collection.schema ? $t('make_collection_visible') : $t('make_folder_visible') }}
-						</v-list-item-content>
+						</VListItemContent>
 					</template>
-				</v-list-item>
+				</VListItem>
 
 				<template v-if="collection.type === 'alias' || hasNestedCollections">
-					<v-divider />
+					<VDivider />
 
-					<v-list-item
+					<VListItem
 						:active="collection.meta?.collapse === 'open'"
 						clickable
 						@click="update({ meta: { collapse: 'open' } })"
 					>
-						<v-list-item-icon>
-							<v-icon name="folder_open" />
-						</v-list-item-icon>
-						<v-list-item-content>
+						<VListItemIcon>
+							<VIcon name="folder_open" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ $t('start_open') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item
+					<VListItem
 						:active="collection.meta?.collapse === 'closed'"
 						clickable
 						@click="update({ meta: { collapse: 'closed' } })"
 					>
-						<v-list-item-icon>
-							<v-icon name="folder" />
-						</v-list-item-icon>
-						<v-list-item-content>
+						<VListItemIcon>
+							<VIcon name="folder" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ $t('start_collapsed') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item
+					<VListItem
 						:active="collection.meta?.collapse === 'locked'"
 						clickable
 						@click="update({ meta: { collapse: 'locked' } })"
 					>
-						<v-list-item-icon>
-							<v-icon name="folder_lock" />
-						</v-list-item-icon>
-						<v-list-item-content>
+						<VListItemIcon>
+							<VIcon name="folder_lock" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ $t('always_open') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 
-					<v-divider />
+					<VDivider />
 				</template>
 
-				<v-list-item clickable class="danger" @click="deleteActive = true">
-					<v-list-item-icon>
-						<v-icon name="delete" />
-					</v-list-item-icon>
-					<v-list-item-content>
+				<VListItem clickable class="danger" @click="deleteActive = true">
+					<VListItemIcon>
+						<VIcon name="delete" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ collection.schema ? $t('delete_collection') : $t('delete_folder') }}
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 
-		<v-dialog v-model="deleteActive" @esc="deleteActive = false" @apply="deleteCollection">
-			<v-card>
-				<v-card-title>
+		<VDialog v-model="deleteActive" @esc="deleteActive = false" @apply="deleteCollection">
+			<VCard>
+				<VCardTitle>
 					{{
 						collection.schema
 							? $t('delete_collection_are_you_sure', { collection: collection.collection })
 							: $t('delete_folder_are_you_sure', { folder: collection.collection })
 					}}
-				</v-card-title>
-				<v-card-text v-if="peerDependencies.length > 0">
-					<v-notice type="danger">
+				</VCardTitle>
+				<VCardText v-if="peerDependencies.length > 0">
+					<VNotice type="danger">
 						<div class="delete-dependencies">
 							{{ $t('delete_collection_peer_dependencies') }}
 							<ul>
@@ -171,18 +185,18 @@ async function update(updates: DeepPartial<Collection>) {
 								</li>
 							</ul>
 						</div>
-					</v-notice>
-				</v-card-text>
-				<v-card-actions>
-					<v-button :disabled="deleting" secondary @click="deleteActive = false">
+					</VNotice>
+				</VCardText>
+				<VCardActions>
+					<VButton :disabled="deleting" secondary @click="deleteActive = false">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button :loading="deleting" kind="danger" @click="deleteCollection">
+					</VButton>
+					<VButton :loading="deleting" kind="danger" @click="deleteCollection">
 						{{ collection.schema ? $t('delete_collection') : $t('delete_folder') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 

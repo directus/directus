@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
 import { computed } from 'vue';
 import { useNavBarStore } from '../stores/nav-bar';
@@ -14,8 +15,8 @@ const navBarStore = useNavBarStore();
 <template>
 	<div class="project-info">
 		<div class="name-container">
-			<v-text-overflow class="name" :text="name" placement="bottom" />
-			<v-text-overflow v-if="descriptor" class="descriptor" :text="descriptor" placement="bottom" />
+			<VTextOverflow class="name" :text="name" placement="bottom" />
+			<VTextOverflow v-if="descriptor" class="descriptor" :text="descriptor" placement="bottom" />
 		</div>
 
 		<VIcon

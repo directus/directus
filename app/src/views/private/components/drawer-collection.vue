@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VInfo from '@/components/v-info.vue';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
@@ -151,7 +154,7 @@ function useActions() {
 		select-mode
 		:show-select="multiple ? 'multiple' : 'one'"
 	>
-		<v-drawer
+		<VDrawer
 			v-model="internalActive"
 			:title="$t('select_item')"
 			:icon="collectionInfo!.icon"
@@ -164,13 +167,13 @@ function useActions() {
 			</template>
 
 			<template #subtitle>
-				<v-breadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
+				<VBreadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
 			</template>
 
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
+				<SearchInput v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
@@ -183,15 +186,15 @@ function useActions() {
 			<div class="layout">
 				<component :is="`layout-${localLayout}`" v-bind="layoutState">
 					<template #no-results>
-						<v-info :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
+						<VInfo :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 
 					<template #no-items>
-						<v-info :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
+						<VInfo :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 				</component>
 			</div>
-		</v-drawer>
+		</VDrawer>
 	</component>
 </template>
 

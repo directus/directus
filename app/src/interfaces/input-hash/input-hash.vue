@@ -7,6 +7,8 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -53,7 +55,7 @@ function emitValue(newValue: string) {
 </script>
 
 <template>
-	<v-input
+	<VInput
 		:placeholder="internalPlaceholder"
 		:disabled
 		:non-editable
@@ -64,9 +66,9 @@ function emitValue(newValue: string) {
 		@update:model-value="emitValue"
 	>
 		<template #append>
-			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
+			<VIcon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
 		</template>
-	</v-input>
+	</VInput>
 </template>
 
 <style lang="scss" scoped>

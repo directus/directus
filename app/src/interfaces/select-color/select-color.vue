@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSlider from '@/components/v-slider.vue';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
@@ -304,9 +311,9 @@ function useColor() {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
+	<VMenu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
 		<template #activator="{ activate, toggle }">
-			<v-input
+			<VInput
 				v-model="input"
 				:disabled
 				:non-editable
@@ -319,7 +326,7 @@ function useColor() {
 				@keydown="onKeydownInput($event, activate)"
 			>
 				<template #prepend>
-					<v-input
+					<VInput
 						ref="htmlColorInput"
 						:model-value="hex ? hex.slice(0, 7) : null"
 						type="color"
@@ -327,7 +334,7 @@ function useColor() {
 						@click.stop
 						@update:model-value="setSwatchValue($event)"
 					/>
-					<v-button
+					<VButton
 						class="swatch"
 						icon
 						:style="{
@@ -340,18 +347,18 @@ function useColor() {
 						}"
 						@click="activateColorPicker"
 					>
-						<v-icon v-if="!isValidColor" name="colorize" />
-						<v-icon v-else-if="!showSwatch" name="question_mark" />
-					</v-button>
+						<VIcon v-if="!isValidColor" name="colorize" />
+						<VIcon v-else-if="!showSwatch" name="question_mark" />
+					</VButton>
 				</template>
 				<template #append>
 					<div v-if="!nonEditable" class="item-actions">
-						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
+						<VRemove v-if="isValidColor" deselect @action="unsetColor" />
 
-						<v-icon v-else name="palette" clickable @click="toggle" />
+						<VIcon v-else name="palette" clickable @click="toggle" />
 					</div>
 				</template>
-			</v-input>
+			</VInput>
 		</template>
 
 		<div
@@ -379,10 +386,10 @@ function useColor() {
 							: '1 / span 2',
 				}"
 			>
-				<v-select v-model="colorType" :items="colorTypes" />
+				<VSelect v-model="colorType" :items="colorTypes" />
 			</div>
 			<template v-if="colorType === 'RGB' || colorType === 'RGBA'">
-				<v-input
+				<VInput
 					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
 					:key="i"
 					:hidden="i === 3"
@@ -396,7 +403,7 @@ function useColor() {
 					maxlength="3"
 					@update:model-value="setValue('rgb', i, $event)"
 				/>
-				<v-input
+				<VInput
 					v-if="opacity"
 					type="number"
 					:model-value="alpha"
@@ -410,7 +417,7 @@ function useColor() {
 				/>
 			</template>
 			<template v-if="colorType === 'HSL' || colorType === 'HSLA'">
-				<v-input
+				<VInput
 					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
 					:key="i"
 					type="number"
@@ -423,7 +430,7 @@ function useColor() {
 					maxlength="3"
 					@update:model-value="setValue('hsl', i, $event)"
 				/>
-				<v-input
+				<VInput
 					v-if="opacity"
 					type="number"
 					:model-value="alpha"
@@ -439,7 +446,7 @@ function useColor() {
 		</div>
 		<div v-if="opacity" class="color-data-alphas">
 			<div class="color-data-alpha">
-				<v-slider
+				<VSlider
 					:model-value="alpha"
 					:min="0"
 					:max="100"
@@ -459,7 +466,7 @@ function useColor() {
 			</div>
 		</div>
 		<div v-if="presetsWithDefaults" class="presets">
-			<v-button
+			<VButton
 				v-for="preset in presetsWithDefaults"
 				:key="preset.color"
 				v-tooltip="preset.name"
@@ -471,7 +478,7 @@ function useColor() {
 				@click="() => (hex = preset.color)"
 			/>
 		</div>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style scoped lang="scss">

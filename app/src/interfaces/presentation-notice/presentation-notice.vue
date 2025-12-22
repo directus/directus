@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
+
 withDefaults(
 	defineProps<{
 		color?: string;
@@ -14,9 +16,9 @@ withDefaults(
 
 <template>
 	<div class="presentation-notice">
-		<v-notice :icon="icon" :type="color">
+		<VNotice :icon="icon" :type="color">
 			<div v-md="text ?? $t('interfaces.presentation-notice.no_text')" />
-		</v-notice>
+		</VNotice>
 	</div>
 </template>
 

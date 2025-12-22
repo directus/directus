@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { BREAKPOINTS } from '@/constants';
 import { useNavBarStore } from '@/views/private/private-view/stores/nav-bar';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
@@ -63,12 +65,12 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 </script>
 
 <template>
-	<v-list
+	<VList
 		v-if="items.length"
 		class="skip-menu"
 		:class="{ right: section === 'sidebar', center: section === 'main-content' }"
 	>
-		<v-list-item
+		<VListItem
 			v-for="item in items"
 			:key="item.key"
 			:href="$router.resolve(item.hash).href"
@@ -76,8 +78,8 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 			@click="item.action"
 		>
 			{{ item.text }}
-		</v-list-item>
-	</v-list>
+		</VListItem>
+	</VList>
 </template>
 
 <style lang="scss" scoped>

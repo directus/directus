@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -7,7 +15,8 @@ import { useUserStore } from '@/stores/user';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { Role } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
@@ -113,13 +122,13 @@ function discardAndStay() {
 </script>
 
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })" show-back>
+	<PrivateView :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })" show-back>
 		<template #headline>
-			<v-breadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
+			<VBreadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
@@ -131,19 +140,19 @@ function discardAndStay() {
 					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
 			<PrivateViewHeaderBarActionButton
 				v-if="canInviteUsers"
@@ -161,7 +170,7 @@ function discardAndStay() {
 				@click="saveAndQuit"
 			>
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -173,13 +182,13 @@ function discardAndStay() {
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
-		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
+		<UsersInvite v-model="userInviteModalActive" :role="primaryKey" />
 
 		<div class="content">
-			<v-form
+			<VForm
 				v-model="edits"
 				collection="directus_roles"
 				:primary-key="primaryKey"
@@ -190,23 +199,23 @@ function discardAndStay() {
 		</div>
 
 		<template #sidebar>
-			<role-info-sidebar-detail :role="item" />
-			<revisions-sidebar-detail ref="revisionsSidebarDetailRef" collection="directus_roles" :primary-key="primaryKey" />
+			<RoleInfoSidebarDetail :role="item" />
+			<RevisionsSidebarDetail ref="revisionsSidebarDetailRef" collection="directus_roles" :primary-key="primaryKey" />
 		</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

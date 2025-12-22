@@ -1,5 +1,19 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
+import VWorkspace from '@/components/v-workspace.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -9,10 +23,12 @@ import { useInsightsStore } from '@/stores/insights';
 import { pointOnLine } from '@/utils/point-on-line';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
+import { RouterView } from 'vue-router';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
 
@@ -190,10 +206,10 @@ const refreshInterval = computed({
 </script>
 
 <template>
-	<insights-not-found v-if="!currentDashboard" />
-	<private-view v-else :title="currentDashboard.name" :icon="currentDashboard.icon">
+	<InsightsNotFound v-if="!currentDashboard" />
+	<PrivateView v-else :title="currentDashboard.name" :icon="currentDashboard.icon">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
+			<VBreadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
 		</template>
 
 		<template #actions>
@@ -244,16 +260,16 @@ const refreshInterval = computed({
 		</template>
 
 		<template #sidebar>
-			<comments-sidebar-detail :key="primaryKey" collection="directus_dashboards" :primary-key="primaryKey" />
+			<CommentsSidebarDetail :key="primaryKey" collection="directus_dashboards" :primary-key="primaryKey" />
 
-			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
+			<RefreshSidebarDetail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
 		</template>
 
 		<template #navigation>
-			<insights-navigation />
+			<InsightsNavigation />
 		</template>
 
-		<v-workspace
+		<VWorkspace
 			:edit-mode="editMode"
 			:tiles="tiles"
 			:zoom-to-fit="zoomToFit"
@@ -264,7 +280,7 @@ const refreshInterval = computed({
 			@move="copyPanelID = $event"
 		>
 			<template #default="{ tile }">
-				<v-progress-circular
+				<VProgressCircular
 					v-if="loading.includes(tile.id) && !data[tile.id]"
 					:class="{ 'header-offset': tile.showHeader }"
 					class="panel-loading"
@@ -272,9 +288,9 @@ const refreshInterval = computed({
 				/>
 				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
 					<div v-if="errors[tile.id]" class="panel-error">
-						<v-icon name="warning" />
+						<VIcon name="warning" />
 						{{ $t('unexpected_error') }}
-						<v-error :error="errors[tile.id]" />
+						<VError :error="errors[tile.id]" />
 					</div>
 					<div
 						v-else-if="tile.id in data && isEmpty(data[tile.id])"
@@ -283,7 +299,7 @@ const refreshInterval = computed({
 					>
 						{{ $t('no_data') }}
 					</div>
-					<v-error-boundary v-else :name="`panel-${tile.data.type}`">
+					<VErrorBoundary v-else :name="`panel-${tile.data.type}`">
 						<component
 							:is="`panel-${tile.data.type}`"
 							v-bind="tile.data.options"
@@ -298,72 +314,72 @@ const refreshInterval = computed({
 
 						<template #fallback="{ error }">
 							<div class="panel-error">
-								<v-icon name="warning" />
+								<VIcon name="warning" />
 								{{ $t('unexpected_error') }}
-								<v-error :error="error" />
+								<VError :error="error" />
 							</div>
 						</template>
-					</v-error-boundary>
+					</VErrorBoundary>
 				</div>
 			</template>
-		</v-workspace>
+		</VWorkspace>
 
-		<router-view name="detail" :dashboard-key="primaryKey" :panel-key="panelKey" />
+		<RouterView name="detail" :dashboard-key="primaryKey" :panel-key="panelKey" />
 
-		<v-dialog
+		<VDialog
 			:model-value="!!copyPanelID"
 			@update:model-value="copyPanelID = null"
 			@esc="copyPanelID = null"
 			@apply="copyPanel"
 		>
-			<v-card>
-				<v-card-title>{{ $t('copy_to') }}</v-card-title>
+			<VCard>
+				<VCardTitle>{{ $t('copy_to') }}</VCardTitle>
 
-				<v-card-text>
-					<v-notice v-if="!copyPanelChoices.length">
+				<VCardText>
+					<VNotice v-if="!copyPanelChoices.length">
 						{{ $t('no_other_dashboards_copy') }}
-					</v-notice>
-					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
-				</v-card-text>
+					</VNotice>
+					<VSelect v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
+				</VCardText>
 
-				<v-card-actions>
-					<v-button secondary @click="copyPanelID = null">
+				<VCardActions>
+					<VButton secondary @click="copyPanelID = null">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button :disabled="!copyPanelChoices.length" @click="copyPanel">
+					</VButton>
+					<VButton :disabled="!copyPanelChoices.length" @click="copyPanel">
 						{{ $t('copy') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges(true)">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('discard_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="cancelChanges(true)">
+		<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges(true)">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="cancelChanges(true)">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmCancel = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="confirmCancel = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
+					</VButton>
 
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">
