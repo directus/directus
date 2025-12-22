@@ -186,7 +186,6 @@ figure figcaption {
 	background-color: ${cssVar('--theme--success-background')};
 	padding: 2px;
 	border-radius: ${cssVar('--theme--border-radius')};
-	margin-inline-end: 0.2em;
 }
 
 .comparison-diff--removed {
@@ -194,7 +193,6 @@ figure figcaption {
 	background-color: ${cssVar('--theme--danger-background')};
 	padding: 2px;
 	border-radius: ${cssVar('--theme--border-radius')};
-	margin-inline-end: 0.2em;
 }`
 			: ''
 	}`;
