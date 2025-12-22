@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { appAccessMinimalPermissions } from '@directus/system-data';
@@ -190,7 +191,7 @@ function save() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		v-model="internalActive"
 		:title="modalTitle"
 		class="new-collection"
@@ -200,40 +201,40 @@ function save() {
 		@apply="save"
 	>
 		<template v-if="!loading" #sidebar>
-			<tabs v-model:current-tab="currentTab" :tabs="tabsValue" />
+			<Tabs v-model:current-tab="currentTab" :tabs="tabsValue" />
 		</template>
 
 		<div v-if="!loading && permission && policy" class="content">
-			<permissions
+			<Permissions
 				v-if="currentTab === 'permissions'"
 				v-model:permission="permission"
 				:policy="policy"
 				:app-minimal="appMinimal?.permissions"
 			/>
-			<fields
+			<Fields
 				v-if="currentTab === 'fields'"
 				v-model:permission="permission"
 				:policy="policy"
 				:app-minimal="appMinimal?.fields"
 			/>
-			<validation
+			<Validation
 				v-if="currentTab === 'validation'"
 				v-model:permission="permission"
 				:policy="policy"
 				:app-minimal="appMinimal?.validation"
 			/>
-			<presets v-if="currentTab === 'presets'" v-model:permission="permission" :policy="policy" />
+			<Presets v-if="currentTab === 'presets'" v-model:permission="permission" :policy="policy" />
 		</div>
 
 		<template v-if="!loading && permission" #actions>
-			<actions :policy-key="policyKey" :permission="permission" @save="save" />
+			<Actions :policy-key="policyKey" :permission="permission" @save="save" />
 		</template>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 </style>

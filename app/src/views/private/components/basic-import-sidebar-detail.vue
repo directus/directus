@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import VRemove from '@/components/v-remove.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import type { APIError } from '@/types/error';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -8,7 +14,7 @@ import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ImportErrorDialog from './import-error-dialog.vue';
-import type { APIError } from '@/types/error';
+import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -103,24 +109,24 @@ function useUpload() {
 </script>
 
 <template>
-	<sidebar-detail icon="publish" :title="t('label_import')">
+	<SidebarDetail id="import" icon="publish" :title="$t('label_import')">
 		<div class="fields">
 			<template v-if="createAllowed">
 				<div class="field full">
 					<div v-if="uploading || importing" class="uploading">
 						<div class="type-text">
-							<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
+							<span>{{ importing ? $t('import_data_indeterminate') : $t('upload_file_indeterminate') }}</span>
 							<span v-if="!importing">{{ progress }}%</span>
 						</div>
-						<v-progress-linear :indeterminate="importing" :value="progress" rounded />
+						<VProgressLinear :indeterminate="importing" :value="progress" rounded />
 					</div>
 					<template v-else>
-						<p class="type-label">{{ t('label_import') }}</p>
-						<v-input clickable>
+						<p class="type-label">{{ $t('label_import') }}</p>
+						<VInput clickable>
 							<template #prepend>
 								<div class="preview" :class="{ 'has-file': file }">
 									<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
-									<v-icon v-else name="folder_open" />
+									<VIcon v-else name="folder_open" />
 								</div>
 							</template>
 							<template #input>
@@ -134,30 +140,30 @@ function useUpload() {
 									/>
 								</label>
 								<span class="import-file-text" :class="{ 'no-file': !file }">
-									{{ file ? file.name : t('import_data_input_placeholder') }}
+									{{ file ? file.name : $t('import_data_input_placeholder') }}
 								</span>
 							</template>
 							<template #append>
 								<div class="item-actions">
-									<v-remove v-if="file" deselect @action="clearFileInput" />
+									<VRemove v-if="file" deselect @action="clearFileInput" />
 
-									<v-icon v-else name="attach_file" />
+									<VIcon v-else name="attach_file" />
 								</div>
 							</template>
-						</v-input>
+						</VInput>
 					</template>
 				</div>
 
 				<div class="field full">
-					<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
-						{{ t('import_data_button') }}
-					</v-button>
+					<VButton small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
+						{{ $t('import_data_button') }}
+					</VButton>
 				</div>
 			</template>
 		</div>
 
-		<import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
-	</sidebar-detail>
+		<ImportErrorDialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

@@ -1,19 +1,25 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VNotice from '@/components/v-notice.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { useCollectionsStore } from '@/stores/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import { Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { getItemRoute } from '@/utils/get-route';
+import { RouterLink } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{
@@ -23,6 +29,7 @@ const props = withDefaults(
 		template?: string | null;
 		selectMode?: 'auto' | 'dropdown' | 'modal';
 		disabled?: boolean;
+		nonEditable?: boolean;
 		filter?: Filter | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
@@ -33,6 +40,7 @@ const props = withDefaults(
 		value: null,
 		selectMode: 'auto',
 		disabled: false,
+		nonEditable: false,
 		template: null,
 		filter: null,
 		enableCreate: true,
@@ -59,7 +67,6 @@ const customFilter = computed(() => {
 	);
 });
 
-const { t } = useI18n();
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
 
@@ -169,49 +176,49 @@ function getLinkForItem() {
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo" type="warning">
-		{{ t('relationship_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
-	</v-notice>
-	<v-notice v-else-if="!displayTemplate" type="warning">
-		{{ t('display_template_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="!enableCreate && !enableSelect && !displayItem">
-		{{ t('no_items') }}
-	</v-notice>
+	<VNotice v-if="!relationInfo" type="warning">
+		{{ $t('relationship_not_setup') }}
+	</VNotice>
+	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ $t('no_singleton_relations') }}
+	</VNotice>
+	<VNotice v-else-if="!displayTemplate" type="warning">
+		{{ $t('display_template_not_setup') }}
+	</VNotice>
+	<VNotice v-else-if="!enableCreate && !enableSelect && !displayItem">
+		{{ $t('no_items') }}
+	</VNotice>
 
 	<div v-else class="many-to-one">
-		<v-skeleton-loader v-if="loading" type="input" />
+		<VSkeletonLoader v-if="loading" type="input" />
 
-		<v-list-item v-else block clickable :disabled @click="onPreviewClick">
+		<VListItem v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
 			<div v-if="displayItem" class="preview">
-				<render-template
+				<RenderTemplate
 					:collection="relationInfo.relatedCollection.collection"
 					:item="displayItem"
 					:template="displayTemplate"
 				/>
 			</div>
-			<div v-else class="placeholder">{{ t(enableSelect ? 'select_an_item' : 'create_item') }}</div>
+			<div v-else class="placeholder">{{ $t(enableSelect ? 'select_an_item' : 'create_item') }}</div>
 
 			<div class="spacer" />
 
 			<div class="item-actions">
 				<template v-if="displayItem">
-					<router-link
-						v-if="enableLink"
-						v-tooltip="t('navigate_to_item')"
+					<RouterLink
+						v-if="enableLink && !nonEditable"
+						v-tooltip="$t('navigate_to_item')"
 						:to="getLinkForItem()"
 						class="item-link"
 						@click.stop
 					>
-						<v-icon name="launch" />
-					</router-link>
+						<VIcon name="launch" />
+					</RouterLink>
 
-					<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+					<VIcon v-tooltip="$t('edit_item')" name="edit" clickable @click="editModalActive = true" />
 
-					<v-remove
+					<VRemove
 						v-if="!disabled"
 						deselect
 						:item-info="relationInfo"
@@ -221,31 +228,32 @@ function getLinkForItem() {
 				</template>
 
 				<template v-else>
-					<v-icon
+					<VIcon
 						v-if="!disabled && createAllowed && enableCreate"
-						v-tooltip="t('create_item')"
+						v-tooltip="$t('create_item')"
 						class="add"
 						name="add"
 						clickable
 						@click="editModalActive = true"
 					/>
 
-					<v-icon v-if="enableSelect" class="expand" name="expand_more" />
+					<VIcon v-if="enableSelect" class="expand" name="expand_more" />
 				</template>
 			</div>
-		</v-list-item>
+		</VListItem>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="editModalActive"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			@input="onDrawerItemInput"
 		/>
 
-		<drawer-collection
+		<DrawerCollection
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
@@ -272,8 +280,14 @@ function getLinkForItem() {
 }
 
 .v-list-item {
-	&:focus-within,
-	&:focus-visible {
+	&.disabled:not(.non-editable) {
+		--v-list-item-color: var(--theme--foreground-subdued);
+		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+		--v-list-item-border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
+	}
+
+	&:focus-within:not(.disabled),
+	&:focus-visible:not(.disabled) {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		--v-list-item-border-color-hover: var(--v-list-item-border-color);
 

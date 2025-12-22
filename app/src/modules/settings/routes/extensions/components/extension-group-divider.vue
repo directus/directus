@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { pluralize } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -17,10 +19,10 @@ const icon = computed(() => extensionTypeIconMap[props.type]);
 </script>
 
 <template>
-	<v-divider class="divider" large :inline-title="false">
-		<template #icon><v-icon :name="icon" /></template>
+	<VDivider class="divider" large :inline-title="false">
+		<template #icon><VIcon :name="icon" /></template>
 		{{ label }}
-	</v-divider>
+	</VDivider>
 </template>
 
 <style scoped lang="scss">

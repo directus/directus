@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import type { Translation } from '@/stores/translations';
 import { fetchAll } from '@/utils/fetch-all';
+import ValueNull from '@/views/private/components/value-null.vue';
 import { Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
 	translationKey: string;
@@ -12,8 +17,6 @@ const props = defineProps<Props>();
 
 const translations: Ref<Translation[]> = ref([]);
 const loading = ref(false);
-
-const { t } = useI18n();
 
 const fetchTranslation = async () => {
 	loading.value = true;
@@ -46,10 +49,10 @@ const clicked = (toggleTooltip: () => void) => {
 
 <template>
 	<div class="custom-translations-display">
-		<v-menu class="menu" show-arrow>
+		<VMenu class="menu" show-arrow>
 			<template #activator="{ toggle, deactivate, active }">
-				<v-icon
-					v-tooltip.bottom="translations && translations.length === 0 && t('translations')"
+				<VIcon
+					v-tooltip.bottom="translations && translations.length === 0 && $t('translations')"
 					:small="false"
 					class="icon"
 					:class="{ active }"
@@ -57,33 +60,33 @@ const clicked = (toggleTooltip: () => void) => {
 					clickable
 					@click.stop="clicked(toggle)"
 					@blur="deactivate"
-				></v-icon>
+				></VIcon>
 			</template>
 
-			<v-list class="translations">
-				<v-list-item v-if="translations.length === 0">
-					<v-list-item-content>
+			<VList class="translations">
+				<VListItem v-if="translations.length === 0">
+					<VListItemContent>
 						<div class="header">
 							<div class="lang">
-								{{ t('loading') }}
+								{{ $t('loading') }}
 							</div>
 						</div>
-					</v-list-item-content>
-				</v-list-item>
-				<v-list-item v-for="item in translations" v-else :key="item.language">
-					<v-list-item-content>
+					</VListItemContent>
+				</VListItem>
+				<VListItem v-for="item in translations" v-else :key="item.language">
+					<VListItemContent>
 						<div class="header">
 							<div class="lang">
-								<v-icon name="translate" small />
+								<VIcon name="translate" small />
 								{{ item.language }}
 							</div>
 						</div>
 						<ValueNull v-if="!item.value" />
 						<div v-else class="translation-item-text">{{ item.value }}</div>
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 

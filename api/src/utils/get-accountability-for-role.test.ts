@@ -69,8 +69,8 @@ describe('getAccountabilityForRole', async () => {
 			ip: null,
 		});
 
-		expect(fetchRolesTree).toHaveBeenCalledWith('123-456', {});
-		expect(fetchGlobalAccess).toHaveBeenCalledWith({ roles, user: null, ip: null }, {});
+		expect(fetchRolesTree).toHaveBeenCalledWith('123-456', { knex: {} });
+		expect(fetchGlobalAccess).toHaveBeenCalledWith({ roles, user: null, ip: null }, { knex: {} });
 	});
 
 	test('invalid role throws error', async () => {

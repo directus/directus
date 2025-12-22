@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ComparisonContext } from '@/components/v-form/types';
+import VItemGroup from '@/components/v-item-group.vue';
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
 import { ref, watch } from 'vue';
@@ -12,6 +13,7 @@ const props = withDefaults(
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
 		comparison?: ComparisonContext;
@@ -111,8 +113,8 @@ function useComputedGroup() {
 </script>
 
 <template>
-	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
-		<accordion-section
+	<VItemGroup v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
+		<AccordionSection
 			v-for="accordionField in groupFields"
 			:key="accordionField.field"
 			:field="accordionField"
@@ -120,6 +122,7 @@ function useComputedGroup() {
 			:values="groupValues"
 			:initial-values="initialValues"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:batch-mode="batchMode"
 			:batch-active-fields="batchActiveFields"
 			:comparison="comparison"
@@ -134,7 +137,7 @@ function useComputedGroup() {
 			@apply="$emit('apply', $event)"
 			@toggle-all="toggleAll"
 		/>
-	</v-item-group>
+	</VItemGroup>
 </template>
 
 <style lang="scss" scoped>

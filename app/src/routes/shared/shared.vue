@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { login, logout } from '@/auth';
+import VButton from '@/components/v-button.vue';
+import VError from '@/components/v-error.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationsStore } from '@/stores/relations';
 import { getItemRoute } from '@/utils/get-route';
+import SharedView from '@/views/shared/shared-view.vue';
 import { useCollection } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Share } from '@directus/types';
@@ -10,10 +20,6 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import ShareItem from './components/share-item.vue';
-import { useFieldsStore } from '@/stores/fields';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useRelationsStore } from '@/stores/relations';
-import { useCollectionsStore } from '@/stores/collections';
 
 type ShareInfo = Pick<
 	Share,
@@ -154,43 +160,43 @@ useHead({ title });
 
 <template>
 	<div v-if="loading" class="hydrating">
-		<v-progress-circular indeterminate />
+		<VProgressCircular indeterminate />
 	</div>
 
-	<shared-view v-else :inline="!authenticated" :title="title">
+	<SharedView v-else :inline="!authenticated" :title="title">
 		<div v-if="notFound">
-			<strong>{{ t('share_access_not_found') }}</strong>
-			{{ t('share_access_not_found_desc') }}
+			<strong>{{ $t('share_access_not_found') }}</strong>
+			{{ $t('share_access_not_found_desc') }}
 		</div>
 
-		<v-error v-else-if="error" :error="error" />
+		<VError v-else-if="error" :error="error" />
 
 		<template v-else-if="share">
 			<template v-if="!authenticated">
-				<v-notice v-if="usesLeft !== undefined && usesLeft !== null" :type="usesLeftNoticeType">
-					{{ t('shared_uses_left', usesLeft) }}
-				</v-notice>
+				<VNotice v-if="usesLeft !== undefined && usesLeft !== null" :type="usesLeftNoticeType">
+					{{ $t('shared_uses_left', usesLeft) }}
+				</VNotice>
 
 				<template v-if="usesLeft !== 0">
-					<v-input
+					<VInput
 						v-if="share.password"
 						class="password"
 						:class="{ invalid: passwordWrong }"
 						type="password"
-						:placeholder="t('shared_enter_passcode')"
+						:placeholder="$t('shared_enter_passcode')"
 						@update:model-value="password = $event"
 					/>
-					<v-button :busy="authenticating" @click="authenticate">
-						{{ t('share_access_page') }}
-					</v-button>
+					<VButton :busy="authenticating" @click="authenticate">
+						{{ $t('share_access_page') }}
+					</VButton>
 				</template>
 			</template>
 
 			<template v-else>
-				<share-item :collection="share.collection" :primary-key="share.item" />
+				<ShareItem :collection="share.collection" :primary-key="share.item" />
 			</template>
 		</template>
-	</shared-view>
+	</SharedView>
 </template>
 
 <style lang="scss" scoped>

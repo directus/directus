@@ -18,25 +18,27 @@ import type {
 	Query,
 	SchemaOverview,
 } from '@directus/types';
-import { parseJSON, toArray } from '@directus/utils';
+import { getDateTimeFormatted, parseJSON, toArray } from '@directus/utils';
 import { createTmpFile } from '@directus/utils/node';
+import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import { queue } from 'async';
 import destroyStream from 'destroy';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
+import { set } from 'lodash-es';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
 import type { Readable, Stream } from 'node:stream';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
+import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { FunctionFieldNode, FieldNode, NestedCollectionNode } from '../types/index.js';
-import { getDateFormatted } from '../utils/get-date-formatted.js';
+import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
@@ -44,9 +46,6 @@ import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
-import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
-import { set } from 'lodash-es';
-import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 
 const env = useEnv();
 const logger = useLogger();
@@ -557,6 +556,7 @@ export class ExportService {
 
 			const mimeTypes = {
 				csv: 'text/csv',
+				csv_utf8: 'text/csv; charset=utf-8',
 				json: 'application/json',
 				xml: 'text/xml',
 				yaml: 'text/yaml',
@@ -614,7 +614,7 @@ export class ExportService {
 					if (result.length) {
 						let csvHeadings = null;
 
-						if (format === 'csv') {
+						if (format.startsWith('csv')) {
 							if (!query.fields) query.fields = ['*'];
 
 							// to ensure the all headings are included in the CSV file, all possible fields need to be determined.
@@ -654,7 +654,7 @@ export class ExportService {
 
 			const storage: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 
-			const title = `export-${collection}-${getDateFormatted()}`;
+			const title = `export-${collection}-${getDateTimeFormatted()}`;
 			const filename = `${title}.${format}`;
 
 			const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {
@@ -757,15 +757,16 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 			return string;
 		}
 
-		if (format === 'csv') {
+		if (format.startsWith('csv')) {
 			if (input.length === 0) return '';
 
 			const transforms = [CSVTransforms.flatten({ separator: '.' })];
 			const header = options?.includeHeader !== false;
+			const withBOM = format === 'csv_utf8';
 
 			const transformOptions = options?.fields
-				? { transforms, header, fields: options?.fields }
-				: { transforms, header };
+				? { transforms, header, fields: options?.fields, withBOM }
+				: { transforms, header, withBOM };
 
 			let string = new CSVParser(transformOptions).parse(input);
 

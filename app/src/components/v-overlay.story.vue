@@ -11,7 +11,7 @@ function initState() {
 <template>
 	<Story title="VOverlay" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-overlay v-bind="state" />
+			<VOverlay v-bind="state" />
 			<div>This is hidden behind the overlay.</div>
 		</template>
 	</Story>

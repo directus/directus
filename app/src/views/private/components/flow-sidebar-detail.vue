@@ -1,40 +1,35 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { FlowRaw } from '@directus/types';
-import { injectRunManualFlow } from '@/composables/use-flows';
-
-const { t } = useI18n();
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useInjectRunManualFlow, type ManualFlow } from '@/composables/use-flows';
+import SidebarDetail from './sidebar-detail.vue';
 
 defineProps<{
-	manualFlows: (FlowRaw & {
-		tooltip: string;
-		isFlowDisabled: boolean;
-		isFlowRunning: boolean;
-	})[];
+	manualFlows: ManualFlow[];
 }>();
 
-const { runManualFlow } = injectRunManualFlow();
+const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
-	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="t('flows')">
+	<SidebarDetail v-if="manualFlows.length > 0" id="flows" icon="bolt" :title="$t('flows')">
 		<div class="fields">
 			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
-				<v-button
+				<VButton
 					v-tooltip="manualFlow.tooltip"
 					small
 					full-width
 					:style="{ '--v-button-background-color': manualFlow.color }"
-					:loading="manualFlow.isFlowRunning"
+					:loading="runningFlows.includes(manualFlow.id)"
 					:disabled="manualFlow.isFlowDisabled"
 					@click="runManualFlow(manualFlow.id)"
 				>
-					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
+					<VIcon :name="manualFlow.icon ?? 'bolt'" small left />
 					{{ manualFlow.name }}
-				</v-button>
+				</VButton>
 			</div>
 		</div>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

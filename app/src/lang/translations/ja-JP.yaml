@@ -350,6 +350,7 @@ confirm_revert_body: 選択した状態へ戻す
 display: ディスプレイ
 settings_update_success: 設定が更新されました
 title: タイトル
+subtitle: サブタイトル
 revision_delta_created: 作成
 revision_delta_created_externally: 外部で作成
 revision_delta_updated: '1フィールド更新 |  {count} フィールド更新'
@@ -607,7 +608,6 @@ errors:
   VALUE_OUT_OF_RANGE: 値が範囲外です
   VALUE_TOO_LONG: 値が長すぎます
 security: セキュリティ
-value_hashed: 値が安全にハッシュされました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
@@ -761,10 +761,8 @@ label: ラベル
 flows: フロー
 flow: フロー
 select_a_flow: フローを選択
-run_flow_confirm: このフローを実行しますか？
 run_flow_on_current_collection: 現在のコレクションでフローを実行
 run_flow_on_current: 現在のアイテムでフローを実行
-run_flow_on_current_edited_confirm: フローを実行するとこのアイテムは更新される可能性があります。実行しますか？
 run_flow_on_selected: 項目を1つ以上選択してください | 選択項目の実行フロー | {n}つの選択項目の実行フロー
 run_flow: フローを実行
 field_name_placeholder: フィールド名を入力
@@ -926,30 +924,6 @@ discard_changes_copy: 全ての変更を破棄しますか？
 show_x_axis: X軸を表示
 show_y_axis: Y軸を表示
 keep_editing: 編集を続ける
-page_help_collections_overview: '**コレクションの概要** — アクセスできるすべてのコレクション一覧です'
-page_help_collections_collection: >-
-  **アイテムを参照** — アクセスできるすべての {collection} アイテム一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
-page_help_collections_item: >-
-  **アイテムの詳細** — アイテムを表示および管理するためのフォーム。このサイドバーには、リビジョンと埋め込みコメントの全履歴も含まれます。
-page_help_activity_collection: >-
-  **アクティビティをブラウズ** — ユーザーのシステムとコンテンツアクティビティの包括的なリスト。
-page_help_docs_global: >-
-  **ドキュメントの概要** — このプロジェクトのバージョンとスキーマに特化したドキュメント。
-page_help_files_collection: >-
-  **ファイルのライブラリー** — このプロジェクトにアップロードされたすべてのファイルアセットを一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
-page_help_files_item: >-
-  **ファイルの詳細** — ファイルメタデータの管理、元のアセットの編集、アクセス設定の更新のためのフォーム。
-page_help_settings_datamodel_collections: >-
-  **データモデル: コレクション** — 利用可能なすべてのコレクション一覧です。表示、非表示、システムコレクション、および追加可能な管理されていないデータベーステーブルを含みます。
-page_help_settings_datamodel_fields: >-
-  **データモデル: コレクション** — このコレクションとそのフィールドを管理するためのフォーム。
-page_help_settings_roles_item: "**ロールの詳細** : ロールの権限とその他の設定を管理します。"
-page_help_settings_presets_collection: >-
-  **プリセットの検索** — プリセットの一覧です。ユーザー、ロール、ブックマーク、デフォルトのビューなどを含みます。
-page_help_settings_presets_item: >-
-  *プリセットの詳細** — ブックマーク、デフォルトコレクションのプリセットを管理するフォームです。
-page_help_settings_webhooks_collection: '**Webhooksを検索** — プロジェクト内にあるWebhookの一覧です。'
-page_help_settings_webhooks_item: '**Webhookの詳細** — プロジェクトのWebhookを作成と管理するためのフォーム。'
 add_new: 新規追加
 create_new: 新規作成
 all: すべて
@@ -1176,6 +1150,16 @@ inline: インライン
 comment: コメント
 live_preview:
   new_window: 新しいウィンドウで開く
+ai:
+  settings: 設定
+  tool_approval:
+    disabled: 無効
+ai_tools:
+  items: アイテム
+  files: ファイル
+  flows: フロー
+  schema: スキーマ
+  collections: コレクション
 mcp_prompts_collection_schema:
   messages_role_user: ユーザー
 referential_action_set_null: '{field} フィールドを Null にする'

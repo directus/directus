@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { localizedFormat } from '@/utils/localized-format';
 import { nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -19,7 +21,7 @@ const emit = defineEmits(['logSelected', 'scrolledToBottom', 'scrolledToTop', 's
 
 defineExpose({ clearUnreadLogs, incrementUnreadLogs, scrollToBottom, scrollToTop, scrollDownByOne, scrollUpByOne });
 
-const { n, t } = useI18n();
+const { n } = useI18n();
 const scroller = ref();
 const unreadLogsChipVisible = ref(true);
 const unreadLogsCount = ref(0);
@@ -195,7 +197,7 @@ function selectLog(index: number) {
 </script>
 
 <template>
-	<dynamic-scroller
+	<DynamicScroller
 		ref="scroller"
 		:items="logs"
 		key-field="index"
@@ -204,15 +206,15 @@ function selectLog(index: number) {
 		@scroll="onScroll"
 	>
 		<template #before>
-			<div class="notice">{{ t('logs_beginning') }}</div>
+			<div class="notice">{{ $t('logs_beginning') }}</div>
 		</template>
 		<template #after>
-			<div v-if="streamConnected" class="notice">{{ t('logs_waiting') }}</div>
+			<div v-if="streamConnected" class="notice">{{ $t('logs_waiting') }}</div>
 		</template>
 		<template #default="{ item, index, active }">
-			<dynamic-scroller-item :item="item" :active="active" :data-index="index" :data-active="active">
+			<DynamicScrollerItem :item="item" :active="active" :data-index="index" :data-active="active">
 				<div :class="['log-entry', { selected: item.selected }]" @click="selectLog(item.index)">
-					<span class="timestamp">[{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}]</span>
+					<span class="timestamp">[{{ localizedFormat(item.data.time, `${$t('date-fns_time_24hour')}`) }}]</span>
 					<span v-if="!item.notice" :class="getMessageClasses(['instance'], item)">
 						[#{{ instances.indexOf(item.instance) + 1 }}]
 					</span>
@@ -230,11 +232,11 @@ function selectLog(index: number) {
 						{{ item.data.msg }}
 					</span>
 				</div>
-			</dynamic-scroller-item>
+			</DynamicScrollerItem>
 		</template>
-	</dynamic-scroller>
+	</DynamicScroller>
 	<div class="unread-logs">
-		<v-chip
+		<VChip
 			class="unread-chip"
 			:active="unreadLogsChipVisible && unreadLogsCount > 0"
 			small
@@ -243,9 +245,9 @@ function selectLog(index: number) {
 			@click="scrollToBottom"
 			@close="unreadLogsChipVisible = false"
 		>
-			<v-icon name="arrow_downward" x-small />
-			<span class="label">{{ t('logs_unread_count', { count: n(unreadLogsCount) }) }}</span>
-		</v-chip>
+			<VIcon name="arrow_downward" x-small />
+			<span class="label">{{ $t('logs_unread_count', { count: n(unreadLogsCount) }) }}</span>
+		</VChip>
 	</div>
 </template>
 

@@ -1,15 +1,15 @@
 import { schemaPermissions } from '@directus/system-data';
 import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
 import { set, uniq } from 'lodash-es';
-import { fetchAllowedFieldMap } from '../modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import type { Context } from '../types.js';
-import { fetchShareInfo } from './fetch-share-info.js';
-import { mergePermissions } from './merge-permissions.js';
+import { reduceSchema } from '../../utils/reduce-schema.js';
 import { fetchPermissions } from '../lib/fetch-permissions.js';
 import { fetchPolicies } from '../lib/fetch-policies.js';
 import { fetchRolesTree } from '../lib/fetch-roles-tree.js';
-import { reduceSchema } from '../../utils/reduce-schema.js';
+import { fetchAllowedFieldMap } from '../modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchGlobalAccess } from '../modules/fetch-global-access/fetch-global-access.js';
+import type { Context } from '../types.js';
+import { fetchShareInfo } from './fetch-share-info.js';
+import { mergePermissions } from './merge-permissions.js';
 
 export async function getPermissionsForShare(
 	accountability: Pick<Accountability, 'share' | 'ip'>,
@@ -31,7 +31,7 @@ export async function getPermissionsForShare(
 	const userAccountability: Accountability = {
 		user: user_created.id,
 		role: user_created.role,
-		roles: await fetchRolesTree(user_created.role, context.knex),
+		roles: await fetchRolesTree(user_created.role, { knex: context.knex }),
 		admin: false,
 		app: false,
 		ip: accountability.ip,
@@ -41,7 +41,7 @@ export async function getPermissionsForShare(
 	const shareAccountability: Accountability = {
 		user: null,
 		role: role,
-		roles: await fetchRolesTree(role, context.knex),
+		roles: await fetchRolesTree(role, { knex: context.knex }),
 		admin: false,
 		app: false,
 		ip: accountability.ip,
@@ -55,8 +55,8 @@ export async function getPermissionsForShare(
 		shareFieldMap,
 		userFieldMap,
 	] = await Promise.all([
-		fetchGlobalAccess(shareAccountability, context.knex),
-		fetchGlobalAccess(userAccountability, context.knex),
+		fetchGlobalAccess(shareAccountability, { knex: context.knex }),
+		fetchGlobalAccess(userAccountability, { knex: context.knex }),
 		getPermissionsForAccountability(userAccountability, context),
 		getPermissionsForAccountability(shareAccountability, context),
 		fetchAllowedFieldMap(

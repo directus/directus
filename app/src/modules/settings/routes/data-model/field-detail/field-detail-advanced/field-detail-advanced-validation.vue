@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { DeepPartial, Field } from '@directus/types';
 import { isEqual } from 'lodash';
 import { storeToRefs } from 'pinia';
@@ -57,9 +59,9 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 </script>
 
 <template>
-	<v-notice v-if="!field.field">{{ t('configure_field_key_to_continue') }}</v-notice>
+	<VNotice v-if="!field.field">{{ $t('configure_field_key_to_continue') }}</VNotice>
 
-	<v-form v-else v-model="validationSync" :initial-values="validationInitial" :fields="fields" :loading="loading" />
+	<VForm v-else v-model="validationSync" :initial-values="validationInitial" :fields="fields" :loading="loading" />
 </template>
 
 <style lang="scss" scoped>
