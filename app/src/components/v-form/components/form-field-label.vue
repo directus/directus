@@ -127,7 +127,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</component>
-		<header-collab :model-value="focusedBy" hide-current x-small />
+		<HeaderCollab :model-value="focusedBy" hide-current x-small />
 	</div>
 </template>
 

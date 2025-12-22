@@ -583,6 +583,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VBreadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
 		</template>
 
+		<template #actions:prepend>
+			<HeaderCollab :model-value="collabUsers" :connected="connected" small />
+		</template>
+
 		<template #actions>
 			<slot name="actions" />
 
@@ -760,7 +764,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .header-collab {
-	margin-right: 16px;
+	margin-inline-end: 16px;
 }
 
 .modal-title-icon {
