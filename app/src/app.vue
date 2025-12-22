@@ -89,6 +89,7 @@ watchEffect(() => {
 		nextTick(() => {
 			// Remove temporary transparent favicon
 			const tempFavicon = document.getElementById('temp-favicon');
+
 			if (tempFavicon) {
 				tempFavicon.remove();
 			}
@@ -96,6 +97,7 @@ watchEffect(() => {
 			// Remove ALL existing favicon links to prevent browser from showing cached favicon
 			// This includes both the temp favicon and any previously set favicons
 			const existingFavicons = document.querySelectorAll('link[rel="icon"]');
+
 			existingFavicons.forEach((link) => {
 				link.remove();
 			});
