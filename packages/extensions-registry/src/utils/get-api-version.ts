@@ -1,6 +1,7 @@
 import ky from 'ky';
 import { DEFAULT_REGISTRY } from '../constants.js';
 import { RegistryVersionResponse } from '../schemas/registry-version-response.js';
+import { handleRegistryError } from './handle-registry-error.js';
 
 export interface GetApiVersionOptions {
 	registry?: string;
@@ -15,14 +16,18 @@ export const getApiVersion = async (options?: GetApiVersionOptions) => {
 		return _cache.get(registry)!;
 	}
 
-	const response = await ky.get(new URL('/version', registry)).json();
+	try {
+		const response = await ky.get(new URL('/version', registry)).json();
 
-	const { version } = await RegistryVersionResponse.parseAsync(response);
+		const { version } = await RegistryVersionResponse.parseAsync(response);
 
-	_cache.set(registry, version);
+		_cache.set(registry, version);
 
-	// Invalidate the memoization at least every 6 hours
-	setTimeout(() => _cache.delete(registry), 6 * 60 * 60 * 1000);
+		// Invalidate the memoization at least every 6 hours
+		setTimeout(() => _cache.delete(registry), 6 * 60 * 60 * 1000);
 
-	return _cache.get(registry)!;
+		return _cache.get(registry)!;
+	} catch (error) {
+		handleRegistryError(error);
+	}
 };
