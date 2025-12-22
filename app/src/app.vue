@@ -10,7 +10,7 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
-import { computed, onMounted, onUnmounted, toRefs } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, toRefs, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
@@ -54,11 +54,17 @@ useHead({
 		];
 	}),
 	link: computed(() => {
+		// Don't set any favicon until server info is loaded to prevent
+		// flash of default favicon before custom favicon loads
+		if (!serverStore.info) {
+			return [];
+		}
+
 		let href: string;
 
-		if (serverStore.info?.project?.public_favicon) {
-			href = getAssetUrl(serverStore.info.project.public_favicon);
-		} else if (serverStore.info?.project?.project_color) {
+		if (serverStore.info.project?.public_favicon) {
+			href = getAssetUrl(serverStore.info.project.public_favicon, { cacheBuster: true });
+		} else if (serverStore.info.project?.project_color) {
 			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
 		} else {
 			href = '/favicon.ico';
@@ -68,10 +74,33 @@ useHead({
 			{
 				rel: 'icon',
 				href,
+				key: 'app-favicon', // Key to ensure unhead replaces the favicon correctly
 			},
 		];
 	}),
 	bodyAttrs: computed(() => ({ class: [darkMode.value ? 'dark' : 'light'] })),
+});
+
+// Remove all existing favicon links (including temporary transparent one) once server info is loaded
+// This ensures old favicon is removed before new one is added
+watchEffect(() => {
+	if (serverStore.info) {
+		// Use nextTick to ensure DOM is ready, then remove old favicons
+		nextTick(() => {
+			// Remove temporary transparent favicon
+			const tempFavicon = document.getElementById('temp-favicon');
+			if (tempFavicon) {
+				tempFavicon.remove();
+			}
+
+			// Remove ALL existing favicon links to prevent browser from showing cached favicon
+			// This includes both the temp favicon and any previously set favicons
+			const existingFavicons = document.querySelectorAll('link[rel="icon"]');
+			existingFavicons.forEach((link) => {
+				link.remove();
+			});
+		});
+	}
 });
 
 onMounted(() => startIdleTracking());
