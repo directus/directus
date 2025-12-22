@@ -2,6 +2,7 @@ import z from 'zod';
 import type { Item } from '../items.js';
 import { TYPE } from './type.js';
 
+export const COLLAB_BUS = 'collab';
 export const COLORS = ['purple', 'pink', 'blue', 'green', 'yellow', 'orange', 'red'] as const;
 
 export const ACTION = {
