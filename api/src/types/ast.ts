@@ -78,6 +78,8 @@ export type FieldNode = {
 	type: 'field';
 	name: string;
 	fieldKey: string;
+	/** If the field was created through alias query parameters */
+	alias: boolean;
 
 	/**
 	 * Which permission cases have to be met on the current item for this field to return a value

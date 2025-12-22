@@ -1,6 +1,6 @@
 {
 	"name": "create-directus-extension",
-	"version": "11.0.15",
+	"version": "11.0.24",
 	"description": "A small util that will scaffold a Directus extension",
 	"keywords": [
 		"directus",
@@ -32,9 +32,17 @@
 	"files": [
 		"lib/index.js"
 	],
+	"scripts": {
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
+	},
 	"dependencies": {
 		"@directus/extensions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
-		"inquirer": "12.4.2"
+		"inquirer": "catalog:"
+	},
+	"devDependencies": {
+		"@vitest/coverage-v8": "catalog:",
+		"vitest": "catalog:"
 	}
 }

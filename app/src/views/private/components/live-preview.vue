@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { CSSProperties, computed, onMounted, ref, watch, nextTick } from 'vue';
-import { useI18n } from 'vue-i18n';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useElementSize } from '@directus/composables';
+import { CSSProperties, computed, nextTick, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 declare global {
 	interface Window {
@@ -61,21 +71,21 @@ const iframeViewStyle = computed(() => {
 
 	if (zoom.value > 1 && width.value && height.value) {
 		const paddingWidth = (livePreviewSize.width.value - width.value * zoom.value) / 2;
-		const paddingLeft = Math.max((livePreviewSize.width.value - width.value * zoom.value) / 2, 48);
-		style.paddingLeft = `${paddingLeft}px`;
+		const paddingInlineStart = Math.max((livePreviewSize.width.value - width.value * zoom.value) / 2, 48);
+		style.paddingInlineStart = `${paddingInlineStart}px`;
 
 		if (paddingWidth < 48) {
 			const iframeViewWidth = 48 + width.value * zoom.value + 48;
-			style.width = `${iframeViewWidth}px`;
+			style.inlineSize = `${iframeViewWidth}px`;
 		}
 
 		const paddingHeight = (livePreviewSize.height.value - 44 - height.value * zoom.value) / 2;
-		const paddingTop = Math.max(paddingHeight, 48);
-		style.paddingTop = `${paddingTop}px`;
+		const paddingBlockStart = Math.max(paddingHeight, 48);
+		style.paddingBlockStart = `${paddingBlockStart}px`;
 
 		if (paddingHeight < 48) {
 			const iframeViewHeight = 48 + height.value * zoom.value + 48;
-			style.height = `${iframeViewHeight}px`;
+			style.blockSize = `${iframeViewHeight}px`;
 		}
 	}
 
@@ -197,21 +207,21 @@ function useUrls() {
 			<div class="group">
 				<slot name="prepend-header" />
 
-				<v-button
+				<VButton
 					v-if="!hidePopupButton"
-					v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
+					v-tooltip.bottom.end="$t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
 					x-small
 					rounded
 					icon
 					secondary
 					@click="emit('new-window')"
 				>
-					<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
-				</v-button>
+					<VIcon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
+				</VButton>
 
-				<v-button
+				<VButton
 					v-if="!hideRefreshButton"
-					v-tooltip.bottom.end="t('live_preview.refresh')"
+					v-tooltip.bottom.end="$t('live_preview.refresh')"
 					x-small
 					icon
 					rounded
@@ -219,13 +229,13 @@ function useUrls() {
 					:disabled="isRefreshing || !frameSrc || invalidUrl"
 					@click="refresh(null)"
 				>
-					<v-progress-circular v-if="isRefreshing" indeterminate x-small />
-					<v-icon v-else small name="refresh" />
-				</v-button>
+					<VProgressCircular v-if="isRefreshing" indeterminate x-small />
+					<VIcon v-else small name="refresh" />
+				</VButton>
 
 				<div v-if="centered" class="spacer" />
 
-				<v-menu
+				<VMenu
 					v-if="urls.length"
 					class="url"
 					:class="{ disabled: singleUrlSubdued, clickable: multipleUrls }"
@@ -240,25 +250,25 @@ function useUrls() {
 							class="activator"
 							@click="toggle"
 						>
-							<v-text-overflow :text="urlDisplay" placement="bottom" />
-							<v-icon v-if="multipleUrls" name="expand_more" />
+							<VTextOverflow :text="urlDisplay" placement="bottom" />
+							<VIcon v-if="multipleUrls" name="expand_more" />
 						</component>
 					</template>
 
-					<v-list v-if="multipleUrls">
-						<v-list-item
+					<VList v-if="multipleUrls">
+						<VListItem
 							v-for="(urlItem, index) in urls"
 							:key="index"
 							:active="urlItem === dynamicUrl"
 							clickable
 							@click="selectUrl(urlItem)"
 						>
-							<v-list-item-content :class="{ dynamic: !dynamicUrlIncluded && urlItem === dynamicUrl }">
+							<VListItemContent :class="{ dynamic: !dynamicUrlIncluded && urlItem === dynamicUrl }">
 								{{ urlItem }}
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
+							</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
 			</div>
 
 			<div class="spacer" />
@@ -270,14 +280,14 @@ function useUrls() {
 					:disabled="fullscreen"
 					@input="width = Number(($event as any).target.value)"
 				/>
-				<v-icon x-small name="close" />
+				<VIcon x-small name="close" />
 				<input
 					:value="displayHeight"
 					class="height"
 					:disabled="fullscreen"
 					@input="height = Number(($event as any).target.value)"
 				/>
-				<v-select
+				<VSelect
 					v-model="zoom"
 					inline
 					:items="[
@@ -291,8 +301,8 @@ function useUrls() {
 					:disabled="fullscreen"
 				/>
 			</div>
-			<v-button
-				v-tooltip.bottom.start="t('live_preview.change_size')"
+			<VButton
+				v-tooltip.bottom.start="$t('live_preview.change_size')"
 				x-small
 				icon
 				rounded
@@ -301,17 +311,17 @@ function useUrls() {
 				:disabled="!frameSrc || invalidUrl"
 				@click="toggleFullscreen"
 			>
-				<v-icon small name="devices" />
-			</v-button>
+				<VIcon small name="devices" />
+			</VButton>
 		</div>
 
-		<v-info v-if="!frameSrc" :title="t('no_url')" icon="edit_square" center>
-			{{ t('no_url_copy') }}
-		</v-info>
+		<VInfo v-if="!frameSrc" :title="$t('no_url')" icon="edit_square" center>
+			{{ $t('no_url_copy') }}
+		</VInfo>
 
-		<v-info v-else-if="invalidUrl" :title="t('invalid_url')" type="danger" icon="edit_square" center>
-			{{ t('invalid_url_copy') }}
-		</v-info>
+		<VInfo v-else-if="invalidUrl" :title="$t('invalid_url')" type="danger" icon="edit_square" center>
+			{{ $t('invalid_url_copy') }}
+		</VInfo>
 
 		<div v-else class="container">
 			<div class="iframe-view" :style="iframeViewStyle">
@@ -319,14 +329,20 @@ function useUrls() {
 					ref="resizeHandle"
 					class="resize-handle"
 					:style="{
-						width: width ? `${width}px` : '100%',
-						height: height ? `${height}px` : '100%',
+						inlineSize: width ? `${width}px` : '100%',
+						blockSize: height ? `${height}px` : '100%',
 						resize: fullscreen ? 'none' : 'both',
 						transform: `scale(${zoom})`,
 						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
 					}"
 				>
-					<iframe id="frame" ref="frameEl" :src="frameSrc" @load="onIframeLoad" />
+					<iframe
+						id="frame"
+						ref="frameEl"
+						:src="frameSrc"
+						:title="$t('live_preview.iframe_title')"
+						@load="onIframeLoad"
+					/>
 					<slot name="overlay" :frame-el :frame-src />
 				</div>
 			</div>
@@ -342,7 +358,7 @@ function useUrls() {
 
 <style scoped lang="scss">
 .live-preview {
-	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #ffffff);
+	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #fff);
 	--preview--color-disabled: color-mix(
 		in srgb,
 		var(--theme--navigation--modules--background),
@@ -354,8 +370,8 @@ function useUrls() {
 	--preview--header--height: 44px;
 
 	container-type: inline-size;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	&.header-expanded {
 		--preview--header--height: 60px;
@@ -368,19 +384,19 @@ function useUrls() {
 	.header {
 		--focus-ring-color: var(--theme--navigation--modules--button--background-active);
 
-		width: 100%;
+		inline-size: 100%;
 		color: var(--preview--color);
 		background-color: var(--preview--header--background-color);
-		border-bottom: var(--preview--header--border-width) solid var(--preview--header--border-color);
-		height: var(--preview--header--height);
+		border-block-end: var(--preview--header--border-width) solid var(--preview--header--border-color);
+		block-size: var(--preview--header--height);
 		display: flex;
 		align-items: center;
 		z-index: 10;
 		gap: 8px;
-		padding: 0px 8px;
+		padding: 0 8px;
 		transition:
 			padding var(--medium) var(--transition),
-			height var(--medium) var(--transition);
+			block-size var(--medium) var(--transition);
 
 		:deep(.v-button.secondary) {
 			--v-button-color: var(--theme--navigation--modules--button--foreground-active);
@@ -396,7 +412,7 @@ function useUrls() {
 
 			.button {
 				&.active {
-					box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
+					box-shadow: 0 0 8px 0 rgb(0 0 0 / 0.15);
 				}
 
 				&:focus:not(:hover) {
@@ -428,10 +444,10 @@ function useUrls() {
 			.activator {
 				display: flex;
 				align-items: center;
-				min-width: 0;
+				min-inline-size: 0;
 
 				.v-icon {
-					top: 1px;
+					inset-block-start: 1px;
 				}
 			}
 		}
@@ -451,11 +467,11 @@ function useUrls() {
 
 		input {
 			border: none;
-			width: 50px;
+			inline-size: 50px;
 			background-color: transparent;
 
 			&:first-child {
-				text-align: right;
+				text-align: end;
 			}
 		}
 
@@ -471,27 +487,27 @@ function useUrls() {
 	}
 
 	.container {
-		width: 100%;
-		height: calc(100% - var(--preview--header--height));
+		inline-size: 100%;
+		block-size: calc(100% - var(--preview--header--height));
 		overflow: auto;
 	}
 
 	.iframe-view {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		overflow: auto;
 		display: grid;
 		padding: 48px;
 
 		#frame {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 			border: 0;
 		}
 
 		.resize-handle {
 			overflow: hidden;
-			box-shadow: 0px 4px 12px -4px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.2);
 		}
 	}
 

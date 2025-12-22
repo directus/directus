@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { Field, PrimaryKey } from '@directus/types';
-import { computed, useTemplateRef } from 'vue';
-import { useI18n } from 'vue-i18n';
-import ValidationErrors from '@/components/v-form/validation-errors.vue';
+import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VInfo from '@/components/v-info.vue';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
+import type { Field, PrimaryKey } from '@directus/types';
+import { cloneDeep } from 'lodash';
+import { computed, useTemplateRef } from 'vue';
 
 const {
 	collection,
@@ -13,6 +15,7 @@ const {
 	initialValues,
 	fields,
 	junctionFieldLocation = 'bottom',
+	relatedPrimaryKeyField,
 } = defineProps<{
 	collection: string;
 	primaryKey: PrimaryKey | null;
@@ -21,20 +24,20 @@ const {
 	initialValues: Record<string, any> | null;
 	fields: Field[];
 	disabled: boolean;
+	nonEditable: boolean;
 	loading: boolean;
 	validationErrors: any[];
 	junctionFieldLocation?: string;
 	relatedCollectionFields: Field[];
 	relatedPrimaryKey: PrimaryKey;
+	relatedPrimaryKeyField: string | null;
 	refresh: () => void;
 }>();
 
 const internalEdits = defineModel<Record<string, any>>('internal-edits');
 
-const { t } = useI18n();
-
+const { mainInitialValues, junctionInitialValues } = useInitialValues();
 const { file } = useFile();
-
 const { scrollToField } = useValidationScrollToField();
 
 const swapFormOrder = computed(() => junctionFieldLocation === 'top');
@@ -48,15 +51,37 @@ function setRelationEdits(edits: any) {
 	internalEdits.value[junctionField] = edits;
 }
 
+function useInitialValues() {
+	const mainInitialValues = computed(() => {
+		if (!initialValues) return null;
+		if (!junctionField || !initialValues[junctionField] || !relatedPrimaryKeyField) return initialValues;
+
+		const tempInitialValues = cloneDeep(initialValues);
+		tempInitialValues[junctionField] = initialValues[junctionField][relatedPrimaryKeyField];
+
+		return tempInitialValues;
+	});
+
+	const junctionInitialValues = computed(() => {
+		if (!initialValues || !junctionField || !initialValues[junctionField]) return null;
+		return initialValues[junctionField];
+	});
+
+	return {
+		mainInitialValues,
+		junctionInitialValues,
+	};
+}
+
 function useFile() {
 	const isDirectusFiles = computed(() => {
 		return collection === 'directus_files' || relatedCollection === 'directus_files';
 	});
 
 	const file = computed(() => {
-		if (isDirectusFiles.value === false || !initialValues) return null;
+		if (isDirectusFiles.value === false) return null;
 
-		const fileData = junctionField ? initialValues?.[junctionField] : initialValues;
+		const fileData = junctionField ? junctionInitialValues.value : mainInitialValues.value;
 
 		return fileData || null;
 	});
@@ -85,14 +110,14 @@ function useValidationScrollToField() {
 
 <template>
 	<div class="overlay-item-content" :class="{ empty: emptyForm }">
-		<file-preview-replace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
+		<FilePreviewReplace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
 
-		<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
-			{{ t('no_visible_fields_copy') }}
-		</v-info>
+		<VInfo v-if="emptyForm" :title="$t('no_visible_fields')" icon="search" center>
+			{{ $t('no_visible_fields_copy') }}
+		</VInfo>
 
 		<div v-else class="overlay-item-order" :class="{ swap: swapFormOrder }">
-			<validation-errors
+			<ValidationErrors
 				v-if="validationErrors?.length"
 				class="validation-errors"
 				:validation-errors
@@ -100,14 +125,15 @@ function useValidationScrollToField() {
 				@scroll-to-field="scrollToField"
 			/>
 
-			<v-form
+			<VForm
 				v-if="junctionField"
 				ref="junctionForm"
 				:model-value="internalEdits?.[junctionField]"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:loading="loading"
 				:show-no-visible-fields="false"
-				:initial-values="initialValues?.[junctionField]"
+				:initial-values="junctionInitialValues"
 				:autofocus="!swapFormOrder"
 				:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
 				:primary-key="relatedPrimaryKey"
@@ -115,13 +141,14 @@ function useValidationScrollToField() {
 				@update:model-value="setRelationEdits"
 			/>
 
-			<v-form
+			<VForm
 				ref="mainForm"
 				v-model="internalEdits"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:loading="loading"
 				:show-no-visible-fields="false"
-				:initial-values="initialValues"
+				:initial-values="mainInitialValues"
 				:autofocus="swapFormOrder"
 				:show-divider="swapFormOrder && hasVisibleFieldsRelated"
 				:primary-key="primaryKey"
@@ -138,14 +165,14 @@ function useValidationScrollToField() {
 
 .overlay-item-content {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 
 	.preview {
-		margin-bottom: var(--theme--form--row-gap);
+		margin-block-end: var(--theme--form--row-gap);
 	}
 
 	.validation-errors {
-		margin-bottom: var(--theme--form--row-gap);
+		margin-block-end: var(--theme--form--row-gap);
 	}
 
 	.overlay-item-order {

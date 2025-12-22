@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import api from '@/api';
+import VAvatar from '@/components/v-avatar.vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	user: string;
 }>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -23,7 +26,10 @@ const avatarSrc = computed(() => {
 	if (data.value === null) return null;
 
 	if (data.value.avatar?.id) {
-		return getAssetUrl(`${data.value.avatar.id}?key=system-medium-cover`);
+		return getAssetUrl(data.value.avatar.id, {
+			imageKey: 'system-medium-cover',
+			cacheBuster: data.value.avatar.modified_on,
+		});
 	}
 
 	return null;
@@ -50,7 +56,7 @@ async function fetchUser() {
 	try {
 		const response = await api.get(`/users/${props.user}`, {
 			params: {
-				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
+				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on', 'role.name', 'status', 'email'],
 			},
 		});
 
@@ -68,15 +74,15 @@ function navigateToUser() {
 </script>
 
 <template>
-	<v-menu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
+	<VMenu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
 		<template #activator><slot /></template>
 
 		<div v-if="loading" class="loading">
-			<v-skeleton-loader class="avatar" />
+			<VSkeletonLoader class="avatar" />
 			<div>
-				<v-skeleton-loader type="text" />
-				<v-skeleton-loader type="text" />
-				<v-skeleton-loader type="text" />
+				<VSkeletonLoader type="text" />
+				<VSkeletonLoader type="text" />
+				<VSkeletonLoader type="text" />
 			</div>
 		</div>
 
@@ -85,39 +91,39 @@ function navigateToUser() {
 		</div>
 
 		<div v-else-if="data" class="user-box" @click.stop="navigateToUser">
-			<v-avatar x-large class="avatar">
-				<v-image v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
-				<v-icon v-else name="person" />
-			</v-avatar>
+			<VAvatar x-large class="avatar">
+				<VImage v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
+				<VIcon v-else name="person" />
+			</VAvatar>
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>
-				<v-chip class="status" :class="data.status" small>
-					{{ t(`fields.directus_users.status_${data.status}`) }}
-				</v-chip>
-				<v-chip v-if="data.role?.name" small>{{ data.role.name }}</v-chip>
+				<VChip class="status" :class="data.status" small>
+					{{ $t(`fields.directus_users.status_${data.status}`) }}
+				</VChip>
+				<VChip v-if="data.role?.name" small>{{ data.role.name }}</VChip>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>
 .hover-trigger {
-	width: max-content;
+	inline-size: max-content;
 }
 
 .user-box {
 	display: flex;
-	min-width: 300px;
+	min-inline-size: 300px;
 	padding: 8px 4px;
 	cursor: pointer;
 
 	.v-avatar {
-		margin-right: 16px;
+		margin-inline-end: 16px;
 	}
 
 	.status {
-		margin-right: 4px;
+		margin-inline-end: 4px;
 
 		&.active {
 			--v-chip-color: var(--theme--success);
@@ -154,7 +160,7 @@ function navigateToUser() {
 	cursor: help;
 
 	&:hover {
-		border-bottom: 2px dotted var(--theme--foreground-subdued);
+		border-block-end: 2px dotted var(--theme--foreground-subdued);
 	}
 }
 
@@ -163,20 +169,20 @@ function navigateToUser() {
 
 	display: flex;
 	align-items: center;
-	height: 80px;
+	block-size: 80px;
 	margin: 8px 4px;
 
 	.avatar {
-		width: 80px;
-		height: 80px;
-		margin-right: 16px;
+		inline-size: 80px;
+		block-size: 80px;
+		margin-inline-end: 16px;
 	}
 
 	div {
-		width: 140px;
+		inline-size: 140px;
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-bottom: 12px;
+			margin-block-end: 12px;
 		}
 	}
 }

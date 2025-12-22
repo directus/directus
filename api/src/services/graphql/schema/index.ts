@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { isSystemCollection } from '@directus/system-data';
-import type { SchemaOverview } from '@directus/types';
+import type { GraphQLParams, SchemaOverview } from '@directus/types';
 import { Semaphore } from 'async-mutex';
 import { GraphQLSchema } from 'graphql';
 import type { ObjectTypeComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from 'graphql-compose';
@@ -10,7 +10,6 @@ import {
 	type FieldMap,
 } from '../../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchInconsistentFieldMap } from '../../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
-import type { GraphQLParams } from '../../../types/index.js';
 import { reduceSchema } from '../../../utils/reduce-schema.js';
 import { GraphQLService } from '../index.js';
 import { injectSystemResolvers } from '../resolvers/system.js';

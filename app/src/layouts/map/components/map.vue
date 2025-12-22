@@ -2,9 +2,11 @@
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
-import type { ShowSelect } from '@directus/extensions';
 import { useAppStore } from '@directus/stores';
+import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import { useResizeObserver } from '@vueuse/core';
+import { debounce } from 'lodash';
 import maplibre, {
 	AnyLayer,
 	AttributionControl,
@@ -18,7 +20,7 @@ import maplibre, {
 	MapboxGeoJSONFeature,
 	NavigationControl,
 } from 'maplibre-gl';
-import { WatchStopHandle, computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
+import { WatchStopHandle, computed, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -52,9 +54,9 @@ let map: Map;
 const hoveredFeature = ref<MapboxGeoJSONFeature>();
 const hoveredCluster = ref<boolean>();
 const selectMode = ref<boolean>();
-const container = ref<HTMLElement>();
+const container = useTemplateRef('container');
 const unwatchers = [] as WatchStopHandle[];
-const { sidebarOpen, basemap } = toRefs(appStore);
+const { basemap } = toRefs(appStore);
 const mapboxKey = settingsStore.settings?.mapbox_key;
 const basemaps = getBasemapSources();
 
@@ -105,6 +107,13 @@ onMounted(() => {
 onUnmounted(() => {
 	map.remove();
 });
+
+useResizeObserver(
+	container,
+	debounce(() => {
+		map.resize();
+	}, 50),
+);
 
 function setupMap() {
 	map = new Map({
@@ -161,15 +170,6 @@ function setupMap() {
 
 		startWatchers();
 	});
-
-	watch(
-		() => sidebarOpen.value,
-		(opened) => {
-			if (!opened) setTimeout(() => map.resize(), 300);
-		},
-	);
-
-	setTimeout(() => map.resize(), 300);
 }
 
 function fitBounds() {
@@ -357,7 +357,7 @@ function hoverCluster(event: MapLayerMouseEvent) {
 
 #map-container {
 	position: relative;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>

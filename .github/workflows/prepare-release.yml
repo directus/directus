@@ -1,0 +1,214 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (eg: 11.12.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  NODE_OPTIONS: --max_old_space_size=6144
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Validate version format and existence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          TAG="v$VERSION"
+          REPO="${{ github.repository }}"
+
+          # Check for semver format
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            echo "❌ Invalid version format for '$VERSION'. Expected: x.y.z or x.y.z-prerelease"
+            exit 1
+          fi
+
+          # Check for tag existence
+          if gh api repos/$REPO/git/refs/tags/$TAG \
+               --silent >/dev/null 2>&1; then
+            echo "❌ Tag '$TAG' already exists"
+            exit 1
+          fi
+
+          echo "✅ Version '$VERSION' is valid and available"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check Crowdin PRs
+        id: crowdin-check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Fetch open Crowdin PR
+          OPEN=$(gh pr list --state open --search "New Crowdin updates" --json url --limit 10)
+          # Fetch merged Crowdin PR in Next Release milestone
+          MERGED=$(gh pr list --state merged --search "New Crowdin updates milestone:\"Next Release\"" --json url --limit 10)
+
+          # Build URL lists
+          OPEN_LIST=$(echo "$OPEN" | jq -r '.[] .url' | paste -sd ", " -)
+          MERGED_LIST=$(echo "$MERGED" | jq -r '.[] .url' | paste -sd ", " -)
+
+          # Determine checkbox: checked if no open PR
+          if [ -z "$OPEN_LIST" ]; then
+            CHECKBOX="[x]"
+          else
+            CHECKBOX="[ ]"
+          fi
+
+          # Combine lists
+          if [ -n "$OPEN_LIST" ] && [ -n "$MERGED_LIST" ]; then
+            PRS="$OPEN_LIST, $MERGED_LIST"
+          else
+            PRS="${OPEN_LIST}${MERGED_LIST}"
+          fi
+
+          # If list is empty
+          if [ -z "$PRS" ]; then
+            PRS="No Crowdin PR found"
+            CHECKBOX="[x]"
+          fi
+
+          echo "crowdin_task=- $CHECKBOX Merge Crowdin PR: $PRS" >> $GITHUB_OUTPUT
+
+          echo "✅ Crowdin PR check completed"
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Generate release notes and update versions
+        id: changeset-version
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DIRECTUS_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          echo "🔄 Running changeset version..."
+
+          # Capture the changeset version output
+          OUTPUT=$(pnpm changeset version 2>&1)
+          echo "$OUTPUT"
+
+          # Extract release notes from the output
+          # The release notes generator outputs between the divider lines
+          RELEASE_NOTES=$(echo "$OUTPUT" | awk -v RS="==============================================================" 'NR==3 {print}' | sed '1{/^$/d}')
+
+          # Output release notes
+          {
+            echo "release_notes<<EOF"
+            echo "$RELEASE_NOTES"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+          # Verify version was updated in main package
+          PACKAGE_VERSION=$(node -p "require('./directus/package.json').version")
+          if [ "$PACKAGE_VERSION" != "${{ github.event.inputs.version }}" ]; then
+            echo "❌ Version mismatch: package.json shows $PACKAGE_VERSION, expected ${{ github.event.inputs.version }}"
+            exit 1
+          fi
+
+          echo "✅ Version updated successfully to ${{ github.event.inputs.version }}"
+
+      - name: Verify changeset cleanup
+        run: |
+          # Count remaining changeset files (excluding config)
+          CHANGESET_COUNT=$(find .changeset -name "*.md" -not -name "config.json" | wc -l)
+          if [ $CHANGESET_COUNT -ne 0 ]; then
+            echo "❌ Changesets not properly cleared. Found $CHANGESET_COUNT remaining files:"
+            find .changeset -name "*.md" -not -name "config.json"
+            exit 1
+          fi
+          echo "✅ Changesets cleared successfully"
+
+      - name: Create release PR
+        id: create-pr
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          TAG="v$VERSION"
+          BRANCH_NAME="release-$VERSION"
+          PR_TITLE="Release $VERSION"
+
+          # Build the PR body content
+          PR_BODY=$(cat <<'EOF'
+          ### ✅ Release Checklist
+          - [x] Changesets processed and cleared
+          - [x] Package versions updated
+          - [x] Release notes generated
+          ${{ steps.crowdin-check.outputs.crowdin_task }}
+          - [ ] PR reviewed and approved
+          - [ ] Blackbox tests passed
+
+          ### 🚀 Release Notes
+          ```md
+          ${{ steps.changeset-version.outputs.release_notes }}
+          ```
+          EOF
+          )
+
+          # Configure git and commit changes
+          git checkout -b "$BRANCH_NAME"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Release $VERSION"
+          git push origin "$BRANCH_NAME" --force
+
+          # Look for existing open PR with this branch
+          EXISTING_PR=$(gh pr list \
+            --state open \
+            --head "$BRANCH_NAME" \
+            --json number \
+            --jq '.[0].number' || echo "")
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "🔄 Updating existing PR #$EXISTING_PR"
+            gh pr edit $EXISTING_PR \
+              --title "$PR_TITLE" \
+              --body "$PR_BODY"
+            echo "pr_number=$EXISTING_PR" >> $GITHUB_OUTPUT
+            echo "new_pr=false" >> $GITHUB_OUTPUT
+          else
+            echo "✨ Creating new PR"
+            NEW_PR=$(gh pr create \
+              --title "$PR_TITLE" \
+              --body "$PR_BODY" \
+              --label "Release" \
+              --label "Run Blackbox" \
+              --label "No Changeset" \
+              --head "$BRANCH_NAME" \
+              --base "main" \
+              --draft=false \
+              | grep -o '[0-9]\+$')
+            echo "pr_number=$NEW_PR" >> $GITHUB_OUTPUT
+            echo "new_pr=true" >> $GITHUB_OUTPUT
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Notify Slack
+        if: steps.create-pr.outputs.new_pr == 'true'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_CMS_FREEZE }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg tag "${{ steps.create-pr.outputs.tag }}" \
+            --arg pr_number "${{ steps.create-pr.outputs.pr_number }}" \
+            '{tag: $tag, pr_number: $pr_number}')
+          curl -X POST -H 'Content-Type: application/json' \
+            --data "$PAYLOAD" \
+            "$SLACK_WEBHOOK_URL"

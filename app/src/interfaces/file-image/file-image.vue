@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIconFile from '@/components/v-icon-file.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VNotice from '@/components/v-notice.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VUpload from '@/components/v-upload.vue';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -20,6 +28,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | Record<string, any> | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		loading?: boolean;
 		folder?: string;
 		filter?: Filter;
@@ -35,6 +44,7 @@ const props = withDefaults(
 		crop: true,
 		enableCreate: true,
 		enableSelect: true,
+		nonEditable: false,
 	},
 );
 
@@ -68,7 +78,7 @@ const {
 
 const isImage = ref(true);
 
-const { t, n, te } = useI18n();
+const { n, te } = useI18n();
 
 const lightboxActive = ref(false);
 const editDrawerActive = ref(false);
@@ -83,8 +93,11 @@ const src = computed(() => {
 
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		const url = getAssetUrl(`${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`);
-		return url;
+
+		return getAssetUrl(image.value.id, {
+			imageKey: `system-large-${fit}`,
+			cacheBuster: image.value.modified_on,
+		});
 	}
 
 	return null;
@@ -127,8 +140,15 @@ async function imageErrorHandler() {
 
 const values = inject('values', ref<Record<string, unknown>>({}));
 
+// Image-only filter for file library
+const imageFilter = {
+	type: {
+		_starts_with: 'image/',
+	},
+};
+
 const customFilter = computed(() => {
-	return parseFilter(
+	const filter = parseFilter(
 		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
@@ -137,6 +157,12 @@ const customFilter = computed(() => {
 			return val;
 		}),
 	);
+
+	if (!filter) return imageFilter;
+
+	return {
+		_and: [filter, imageFilter],
+	};
 });
 
 function onUpload(image: any) {
@@ -164,22 +190,22 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 <template>
 	<div class="image" :class="[width, { crop }]">
-		<v-skeleton-loader v-if="loading" type="input-tall" />
+		<VSkeletonLoader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
-			{{ t('no_image_selected') }}
-		</v-notice>
+		<VNotice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
+			{{ $t('no_image_selected') }}
+		</VNotice>
 
 		<div v-else-if="image" class="image-preview">
 			<div v-if="imageError || !src" class="image-error">
-				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
+				<VIcon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
-					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+					{{ src ? $t(`errors.${imageError}`) : $t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 
-			<v-image
+			<VImage
 				v-else-if="image.type?.startsWith('image') && isImage"
 				:src="src"
 				:class="{ 'is-letterbox': letterbox }"
@@ -191,36 +217,49 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			/>
 
 			<div v-else class="fallback">
-				<v-icon-file :ext="ext" />
+				<VIconFile :ext="ext" />
 			</div>
 
 			<div class="shadow" />
 
 			<div class="actions">
-				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
-					<v-icon name="zoom_in" />
-				</v-button>
+				<VButton v-tooltip="$t('zoom')" icon rounded @click="lightboxActive = true">
+					<VIcon name="zoom_in" />
+				</VButton>
 
-				<v-button
-					v-tooltip="t('download')"
+				<VButton
+					v-tooltip="$t('download')"
 					icon
 					rounded
-					:href="getAssetUrl(image.id, true)"
+					:href="getAssetUrl(image.id, { isDownload: true })"
 					:download="image.filename_download"
 				>
-					<v-icon name="download" />
-				</v-button>
+					<VIcon name="download" />
+				</VButton>
 
-				<template v-if="!internalDisabled">
-					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
-						<v-icon name="edit" />
-					</v-button>
+				<template v-if="!internalDisabled || nonEditable">
+					<VButton v-tooltip="$t('edit_item')" icon rounded @click="editImageDetails = true">
+						<VIcon name="edit" />
+					</VButton>
 
-					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
-						<v-icon name="tune" />
-					</v-button>
+					<VButton
+						v-if="updateAllowed && !nonEditable"
+						v-tooltip="$t('edit_image')"
+						icon
+						rounded
+						@click="editImageEditor = true"
+					>
+						<VIcon name="tune" />
+					</VButton>
 
-					<v-remove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
+					<VRemove
+						v-if="!nonEditable"
+						button
+						deselect
+						:item-info="relationInfo"
+						:item-edits="edits"
+						@action="deselect"
+					/>
 				</template>
 			</div>
 
@@ -229,53 +268,52 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<div class="meta">{{ meta }}</div>
 			</div>
 
-			<drawer-item
+			<DrawerItem
 				v-if="image"
 				v-model:active="editImageDetails"
 				:disabled="internalDisabled"
+				:non-editable="nonEditable"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
 				@input="update"
 			>
 				<template #actions>
-					<v-button secondary rounded icon :download="image.filename_download" :href="getAssetUrl(image.id, true)">
-						<v-icon name="download" />
-					</v-button>
+					<VButton
+						secondary
+						rounded
+						icon
+						:download="image.filename_download"
+						:href="getAssetUrl(image.id, { isDownload: true })"
+					>
+						<VIcon name="download" />
+					</VButton>
 				</template>
-			</drawer-item>
+			</DrawerItem>
 
-			<image-editor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<ImageEditor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
-			<file-lightbox v-model="lightboxActive" :file="image" />
+			<FileLightbox v-model="lightboxActive" :file="image" />
 		</div>
-		<v-upload
+		<VUpload
 			v-else
 			from-url
 			:from-user="createAllowed && enableCreate"
 			:from-library="enableSelect"
 			:folder="folder"
 			:filter="customFilter"
+			accept="image/*"
 			@input="onUpload"
 		/>
 	</div>
 </template>
 
 <style lang="scss" scoped>
-.image-preview {
-	position: relative;
-	width: 100%;
-	height: var(--input-height-tall);
-	overflow: hidden;
-	background-color: var(--theme--background-normal);
-	border-radius: var(--theme--border-radius);
-}
-
 img {
 	z-index: 1;
-	width: 100%;
-	height: 100%;
-	max-height: inherit;
+	inline-size: 100%;
+	block-size: 100%;
+	max-block-size: inherit;
 	object-fit: contain;
 }
 
@@ -288,36 +326,43 @@ img {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 100%;
+	block-size: 100%;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--theme--background-normal);
 	padding: 32px;
 
 	.v-icon {
-		margin-bottom: 6px;
+		margin-block-end: 6px;
 	}
 
 	.message {
-		max-width: 300px;
+		max-inline-size: 300px;
 		padding: 0 16px;
 		text-align: center;
 	}
 }
 
 .image-preview {
+	position: relative;
+	inline-size: 100%;
+	block-size: var(--input-height-tall);
+	overflow: hidden;
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
+
 	.shadow {
 		position: absolute;
-		bottom: 0;
-		left: 0;
+		inset-block-end: 0;
+		inset-inline-start: 0;
 		z-index: 2;
-		width: 100%;
-		height: 40px;
+		inline-size: 100%;
+		block-size: 40px;
 		overflow: hidden;
 		line-height: 1;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
-		transition: height var(--fast) var(--transition);
+		transition: block-size var(--fast) var(--transition);
 	}
 
 	.actions {
@@ -327,19 +372,19 @@ img {
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;
-		top: calc(50% - 32px);
-		left: 0;
+		inset-block-start: calc(50% - 32px);
+		inset-inline-start: 0;
 		z-index: 3;
 		display: flex;
 		justify-content: center;
-		width: 100%;
+		inline-size: 100%;
 		gap: 12px;
 
 		::v-deep(.v-button) {
 			transform: translateY(10px);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
-			transition-property: opacity transform;
+			transition-property: opacity, transform;
 
 			@for $i from 0 through 4 {
 				&:nth-of-type(#{$i + 1}) {
@@ -351,10 +396,10 @@ img {
 
 	.info {
 		position: absolute;
-		bottom: 0;
-		left: 0;
+		inset-block-end: 0;
+		inset-inline-start: 0;
 		z-index: 3;
-		width: 100%;
+		inline-size: 100%;
 		padding: 8px 12px;
 		line-height: 1.2;
 	}
@@ -364,28 +409,28 @@ img {
 	}
 
 	.meta {
-		height: 17px;
-		max-height: 0;
+		block-size: 17px;
+		max-block-size: 0;
 		overflow: hidden;
 		color: rgb(255 255 255 / 0.75);
-		transition: max-height var(--fast) var(--transition);
+		transition: max-block-size var(--fast) var(--transition);
 	}
 }
 
 .image-preview:focus-within,
 .image-preview:hover {
 	.shadow {
-		height: 100%;
+		block-size: 100%;
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
 	.actions ::v-deep(.v-button) {
-		transform: translateY(0px);
+		transform: translateY(0);
 		opacity: 1;
 	}
 
 	.meta {
-		max-height: 17px;
+		max-block-size: 17px;
 	}
 }
 
@@ -393,8 +438,8 @@ img {
 	&.full,
 	&.fill {
 		.image-preview {
-			height: auto;
-			max-height: 400px;
+			block-size: auto;
+			max-block-size: 400px;
 		}
 	}
 
@@ -408,7 +453,7 @@ img {
 }
 
 .disabled-placeholder {
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 }
 
 .fallback {
@@ -416,7 +461,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 	border-radius: var(--theme--border-radius);
 }
 </style>

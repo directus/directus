@@ -323,7 +323,7 @@ function setupChart() {
 						: n(value, 'decimal', {
 								minimumFractionDigits: props.decimals ?? 0,
 								maximumFractionDigits: props.decimals ?? 0,
-						  } as any);
+							} as any);
 				},
 				yaxis: {
 					show: props.showYAxis ?? true,
@@ -340,7 +340,7 @@ function setupChart() {
 								: n(value, 'decimal', {
 										minimumFractionDigits: props.decimals ?? 0,
 										maximumFractionDigits: props.decimals ?? 0,
-								  } as any);
+									} as any);
 						},
 						style: {
 							fontFamily: 'var(--theme--fonts--sans--font-family)',
@@ -390,8 +390,8 @@ function setupChart() {
 
 <style scoped>
 .time-series {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>
 
@@ -402,7 +402,7 @@ function setupChart() {
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
-	margin-bottom: 0;
+	margin-block-end: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
@@ -421,6 +421,6 @@ function setupChart() {
 }
 
 .apexcharts-tooltip-series-group:last-child {
-	padding-bottom: 0;
+	padding-block-end: 0;
 }
 </style>

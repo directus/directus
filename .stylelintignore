@@ -1,0 +1,5 @@
+*.*
+!*.scss
+!*.css
+!*.vue
+Dockerfile

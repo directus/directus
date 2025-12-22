@@ -16,9 +16,7 @@
 
 .v-list-item-content {
 	display: flex;
-	flex-basis: 0;
-	flex-grow: 1;
-	flex-shrink: 1;
+	flex: 1 1 0;
 	flex-wrap: wrap;
 	align-items: center;
 	align-self: center;
@@ -33,14 +31,12 @@
 }
 
 .v-list-item-content > :deep(*) {
-	flex-basis: 100%;
-	flex-grow: 1;
-	flex-shrink: 0;
+	flex: 1 0 100%;
 	line-height: 1.4;
 }
 
 .v-list-item-content > :slotted(*:not(:last-child)) {
-	margin-bottom: 2px;
+	margin-block-end: 2px;
 }
 
 .v-list:not(.nav) .v-list-item-content,

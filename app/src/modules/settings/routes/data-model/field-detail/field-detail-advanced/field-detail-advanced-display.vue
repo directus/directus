@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { FancySelectItem } from '@/components/v-fancy-select.vue';
+import VFancySelect, { FancySelectItem } from '@/components/v-fancy-select.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useExtension } from '@/composables/use-extension';
 import { clone } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '../shared/extension-options.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
-
-const { t } = useI18n();
 
 const fieldDetailStore = useFieldDetailStore();
 
@@ -88,18 +87,18 @@ const options = computed({
 
 <template>
 	<div>
-		<v-skeleton-loader v-if="loading" />
-		<v-fancy-select v-else v-model="display" class="select" :items="selectItems" />
+		<VSkeletonLoader v-if="loading" />
+		<VFancySelect v-else v-model="display" class="select" :items="selectItems" />
 
-		<v-skeleton-loader v-if="loading" />
+		<VSkeletonLoader v-if="loading" />
 		<template v-else>
-			<v-notice v-if="display && !selectedDisplay" class="not-found" type="danger">
-				{{ t('display_not_found', { display: display }) }}
+			<VNotice v-if="display && !selectedDisplay" class="not-found" type="danger">
+				{{ $t('display_not_found', { display: display }) }}
 				<div class="spacer" />
-				<button @click="display = null">{{ t('reset_display') }}</button>
-			</v-notice>
+				<button @click="display = null">{{ $t('reset_display') }}</button>
+			</VNotice>
 
-			<extension-options
+			<ExtensionOptions
 				v-if="display && selectedDisplay"
 				v-model="options"
 				type="display"
@@ -113,7 +112,7 @@ const options = computed({
 <style lang="scss" scoped>
 .type-title,
 .select {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 
 .not-found {
@@ -128,6 +127,6 @@ const options = computed({
 
 .v-notice,
 .v-skeleton-loader {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 </style>

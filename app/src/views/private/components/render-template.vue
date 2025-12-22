@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VErrorBoundary from '@/components/v-error-boundary.vue';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -7,6 +8,7 @@ import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
 import { get } from '@directus/utils';
 import { computed, ref } from 'vue';
+import ValueNull from './value-null.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -144,8 +146,8 @@ const parts = computed(() =>
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
 			<template v-for="(subPart, subIndex) in part" :key="subIndex">
-				<v-error-boundary>
-					<value-null v-if="subPart === null || (typeof subPart === 'object' && subPart.value === null)" />
+				<VErrorBoundary>
+					<ValueNull v-if="subPart === null || (typeof subPart === 'object' && subPart.value === null)" />
 					<template v-else-if="subPart?.component">
 						<component
 							:is="`display-${subPart.component}`"
@@ -164,7 +166,7 @@ const parts = computed(() =>
 					<template #fallback>
 						<span>{{ subPart?.value || subPart }}</span>
 					</template>
-				</v-error-boundary>
+				</VErrorBoundary>
 			</template>
 		</template>
 	</div>
@@ -174,16 +176,16 @@ const parts = computed(() =>
 @use '@/styles/mixins';
 
 .render-template {
-	height: 100%;
+	block-size: 100%;
 	position: relative;
-	max-width: 100%;
-	padding-right: 8px;
+	max-inline-size: 100%;
+	padding-inline-end: 8px;
 	@include mixins.no-wrap;
 
 	.vertical-aligner {
 		display: inline-block;
-		width: 0;
-		height: 100%;
+		inline-size: 0;
+		block-size: 100%;
 		vertical-align: middle;
 	}
 

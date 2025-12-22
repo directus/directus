@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
 import { isPlainObject } from 'lodash';
 import { useClipboard } from '@/composables/use-clipboard';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	error: Record<string, any>;
 }
 
 const props = defineProps<Props>();
-
-const { t } = useI18n();
 
 const code = computed(() => {
 	return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
@@ -43,11 +41,11 @@ async function copyError() {
 </script>
 
 <template>
-	<div class="v-error selectable">
+	<div class="v-error">
 		<output>[{{ code }}] {{ message }}</output>
-		<v-icon
+		<VIcon
 			v-if="isCopySupported"
-			v-tooltip="t('copy_details')"
+			v-tooltip="$t('copy_details')"
 			small
 			class="copy-error"
 			:name="copied ? 'check' : 'content_copy'"
@@ -59,7 +57,7 @@ async function copyError() {
 
 <style lang="scss" scoped>
 .v-error {
-	max-height: 50vh;
+	max-block-size: 50vh;
 	padding: 6px 12px;
 	overflow: auto;
 	color: var(--theme--danger);
@@ -68,7 +66,7 @@ async function copyError() {
 	border-radius: var(--theme--border-radius);
 
 	.copy-error {
-		margin-left: 12px;
+		margin-inline-start: 12px;
 	}
 }
 </style>

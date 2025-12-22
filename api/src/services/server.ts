@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
@@ -15,7 +15,6 @@ import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions } from '../types/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
 import { SettingsService } from './settings.js';
 
@@ -35,8 +34,13 @@ export class ServerService {
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
+	async isSetupCompleted(): Promise<boolean> {
+		return Boolean(await this.knex('directus_users').first());
+	}
+
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
+		const setupComplete = await this.isSetupCompleted();
 
 		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
@@ -62,6 +66,10 @@ export class ServerService {
 		});
 
 		info['project'] = projectInfo;
+
+		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+
+		info['setupCompleted'] = setupComplete;
 
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {
@@ -98,14 +106,14 @@ export class ServerService {
 					? {
 							authentication: env['WEBSOCKETS_REST_AUTH'],
 							path: env['WEBSOCKETS_REST_PATH'],
-					  }
+						}
 					: false;
 
 				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
 					? {
 							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
 							path: env['WEBSOCKETS_GRAPHQL_PATH'],
-					  }
+						}
 					: false;
 
 				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
@@ -116,7 +124,7 @@ export class ServerService {
 					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
 						? {
 								allowedLogLevels: getAllowedLogLevels((env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info'),
-						  }
+							}
 						: false;
 			} else {
 				info['websocket'] = false;
@@ -127,9 +135,9 @@ export class ServerService {
 					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
 				};
 			}
-
-			info['version'] = version;
 		}
+
+		if (this.accountability?.user || !setupComplete) info['version'] = version;
 
 		return info;
 	}
@@ -285,8 +293,8 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await cache!.set(`health-${checkID}`, true, 5);
-				await cache!.delete(`health-${checkID}`);
+				await cache!.set(`directus-health-${checkID}`, true, 5);
+				await cache!.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
 				checks['cache:responseTime']![0]!.status = 'error';
 				checks['cache:responseTime']![0]!.output = err;
@@ -325,8 +333,8 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await rateLimiter.consume(`health-${checkID}`, 1);
-				await rateLimiter.delete(`health-${checkID}`);
+				await rateLimiter.consume(`directus-health-${checkID}`, 1);
+				await rateLimiter.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
 				checks['rateLimiter:responseTime']![0]!.status = 'error';
 				checks['rateLimiter:responseTime']![0]!.output = err;
@@ -367,8 +375,8 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await rateLimiterGlobal.consume(`health-${checkID}`, 1);
-				await rateLimiterGlobal.delete(`health-${checkID}`);
+				await rateLimiterGlobal.consume(`directus-health-${checkID}`, 1);
+				await rateLimiterGlobal.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
 				checks['rateLimiterGlobal:responseTime']![0]!.status = 'error';
 				checks['rateLimiterGlobal:responseTime']![0]!.output = err;
@@ -410,17 +418,7 @@ export class ServerService {
 				const startTime = performance.now();
 
 				try {
-					await disk.write(`health-${checkID}`, Readable.from(['check']));
-					const fileStream = await disk.read(`health-${checkID}`);
-
-					fileStream.on('data', async () => {
-						try {
-							fileStream.destroy();
-							await disk.delete(`health-${checkID}`);
-						} catch (error) {
-							logger.error(error);
-						}
-					});
+					await disk.write('directus-health-file', Readable.from([checkID]));
 				} catch (err: any) {
 					checks[`storage:${location}:responseTime`]![0]!.status = 'error';
 					checks[`storage:${location}:responseTime`]![0]!.output = err;

@@ -21,12 +21,17 @@ export const request = async <Output = any>(
 
 	return fetcher(url, options).then((response) => {
 		return extractData(response).catch((reason) => {
-			const result: { response: unknown; errors: any; data?: any } = {
+			const result: { response: unknown; message: string; errors: any; data?: any } = {
+				message: '',
 				errors: reason && typeof reason === 'object' && 'errors' in reason ? reason.errors : reason,
 				response,
 			};
 
 			if (reason && typeof reason === 'object' && 'data' in reason) result.data = reason.data;
+
+			if (Array.isArray(result.errors) && result.errors[0]?.message) {
+				result.message = result.errors[0].message;
+			}
 
 			return Promise.reject(result);
 		});

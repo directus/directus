@@ -4,7 +4,7 @@ import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Filter, Item } from '@directus/types';
+import { ContentVersion, Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
 import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
 import { Ref, computed, ref, watch } from 'vue';
@@ -32,16 +32,29 @@ export type ChangesItem = {
 };
 
 export function useRelationMultiple(
-	value: Ref<Record<string, any> | any[] | undefined>,
+	value: Ref<Record<string, any> | any[] | undefined | null>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
 	itemId: Ref<string | number | null>,
+	version: Ref<ContentVersion | null>,
 ) {
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
 	const { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty } = useUtil();
+
+	const targetPKField = computed(() => {
+		if (!relation.value) return 'id';
+
+		return relation.value.type === 'o2m'
+			? relation.value.relatedPrimaryKeyField.field
+			: relation.value.junctionPrimaryKeyField.field;
+	});
+
+	const fetchedItemsPKs = computed(() => {
+		return fetchedItems.value.map((item) => item[targetPKField.value]);
+	});
 
 	const _value = computed<ChangesItem>({
 		get() {
@@ -57,6 +70,13 @@ export function useRelationMultiple(
 		},
 		set(newValue) {
 			if (newValue.create.length === 0 && newValue.update.length === 0 && newValue.delete.length === 0) {
+				const isVersion = version.value !== null;
+
+				if (isVersion) {
+					value.value = fetchedItemsPKs.value;
+					return;
+				}
+
 				value.value = undefined;
 				return;
 			}
@@ -118,16 +138,11 @@ export function useRelationMultiple(
 	const displayItems = computed(() => {
 		if (!relation.value) return [];
 
-		const targetPKField =
-			relation.value.type === 'o2m'
-				? relation.value.relatedPrimaryKeyField.field
-				: relation.value.junctionPrimaryKeyField.field;
-
 		const items: DisplayItem[] = fetchedItems.value.map((item: Record<string, any>) => {
 			let edits;
 
 			for (const [index, value] of _value.value.update.entries()) {
-				if (typeof value === 'object' && value[targetPKField] === item[targetPKField]) {
+				if (typeof value === 'object' && value[targetPKField.value] === item[targetPKField.value]) {
 					edits = { index, value };
 					break;
 				}
@@ -153,7 +168,7 @@ export function useRelationMultiple(
 				updatedItem.$edits = edits.index;
 			}
 
-			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
+			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField.value]);
 
 			if (deleteIndex !== -1) {
 				merge(updatedItem, { $type: 'deleted', $index: deleteIndex });
@@ -166,7 +181,7 @@ export function useRelationMultiple(
 			const fetchedItem = fetchedSelectItems.value.find((item) => {
 				switch (relation.value?.type) {
 					case 'o2m':
-						return edit[targetPKField] === item[targetPKField];
+						return edit[targetPKField.value] === item[targetPKField.value];
 					case 'm2m':
 						return (
 							edit[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field] ===
@@ -262,21 +277,16 @@ export function useRelationMultiple(
 		function remove(...items: DisplayItem[]) {
 			if (!relation.value) return;
 
-			const pkField =
-				relation.value.type === 'o2m'
-					? relation.value.relatedPrimaryKeyField.field
-					: relation.value.junctionPrimaryKeyField.field;
-
 			for (const item of items) {
 				if (item.$type === undefined || item.$index === undefined) {
-					target.value.delete.push(item[pkField]);
+					target.value.delete.push(item[targetPKField.value]);
 				} else if (item.$type === 'created') {
 					target.value.create.splice(item.$index, 1);
 				} else if (item.$type === 'updated') {
 					if (isItemSelected(item)) {
 						target.value.update.splice(item.$index, 1);
 					} else {
-						target.value.delete.push(item[pkField]);
+						target.value.delete.push(item[targetPKField.value]);
 					}
 				} else if (item.$type === 'deleted') {
 					target.value.delete.splice(item.$index, 1);
@@ -373,6 +383,8 @@ export function useRelationMultiple(
 			loading.value = true;
 
 			if (itemId.value !== '+') {
+				const currentItemId = itemId.value;
+
 				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
 
 				if (previewQuery.value.filter) {
@@ -389,6 +401,14 @@ export function useRelationMultiple(
 						sort: previewQuery.value.sort,
 					},
 				});
+
+				// if itemId changed during the request, we wan't to avoid updating items with incorrect data.
+				// This can happen if the user navigates to a different item while the request is in progress.
+				// The assumption here is that there is another request that started after this one started
+				// and this one is no longer relevant.
+				if (itemId.value !== currentItemId) {
+					return;
+				}
 
 				fetchedItems.value = response.data.data;
 			}
@@ -428,21 +448,17 @@ export function useRelationMultiple(
 		}
 
 		let targetCollection: string;
-		let targetPKField: string;
 		const reverseJunctionField = relation.value.reverseJunctionField.field;
 
 		switch (relation.value.type) {
 			case 'm2a':
 				targetCollection = relation.value.junctionCollection.collection;
-				targetPKField = relation.value.junctionPrimaryKeyField.field;
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
-				targetPKField = relation.value.junctionPrimaryKeyField.field;
 				break;
 			case 'o2m':
 				targetCollection = relation.value.relatedCollection.collection;
-				targetPKField = relation.value.relatedPrimaryKeyField.field;
 				break;
 		}
 
@@ -456,13 +472,13 @@ export function useRelationMultiple(
 			params: {
 				search: previewQuery.value.search,
 				aggregate: {
-					count: targetPKField,
+					count: targetPKField.value,
 				},
 				filter,
 			},
 		});
 
-		existingItemCount.value = Number(response.data.data[0].count[targetPKField]);
+		existingItemCount.value = Number(response.data.data[0].count[targetPKField.value]);
 	}
 
 	function useSelected() {
@@ -545,13 +561,12 @@ export function useRelationMultiple(
 			if (relation.sortField) fields.add(relation.sortField);
 
 			const targetCollection = relation.relatedCollection.collection;
-			const targetPKField = relation.relatedPrimaryKeyField.field;
 
 			fetchedSelectItems.value = await fetchAll(getEndpoint(targetCollection), {
 				params: {
 					fields: Array.from(fields),
 					filter: {
-						[targetPKField]: {
+						[targetPKField.value]: {
 							_in: selectedOnPage.value.map(getRelatedIDs),
 						},
 					},

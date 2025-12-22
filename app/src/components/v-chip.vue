@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSizeClass } from '@directus/composables';
 import { computed, ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	/** Model the active state */
@@ -82,7 +83,7 @@ function onCloseClick(event: MouseEvent) {
 		<span class="chip-content">
 			<slot />
 			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
-				<v-icon class="close" :name="closeIcon" x-small />
+				<VIcon class="close" :name="closeIcon" x-small />
 			</span>
 		</span>
 	</component>
@@ -109,7 +110,7 @@ function onCloseClick(event: MouseEvent) {
 .v-chip {
 	display: inline-flex;
 	align-items: center;
-	height: 36px;
+	block-size: 36px;
 	padding: var(--v-chip-padding, 0 8px);
 	color: var(--v-chip-color, var(--theme--foreground));
 	font-weight: var(--weight-normal);
@@ -131,6 +132,8 @@ function onCloseClick(event: MouseEvent) {
 	}
 
 	&.disabled {
+		cursor: auto;
+
 		color: var(--v-chip-color, var(--theme--foreground));
 		background-color: var(--v-chip-background-color, var(--theme--background-normal));
 		border-color: var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));
@@ -143,28 +146,28 @@ function onCloseClick(event: MouseEvent) {
 	}
 
 	&.x-small {
-		height: 20px;
+		block-size: 20px;
 		padding: var(--v-chip-padding, 0 6px);
 		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
-		height: 24px;
+		block-size: 24px;
 		padding: var(--v-chip-padding, 0 8px);
 		font-size: 14px;
 		border-radius: 12px;
 	}
 
 	&.large {
-		height: 44px;
+		block-size: 44px;
 		padding: var(--v-chip-padding, 0 20px);
 		font-size: 16px;
 		border-radius: 22px;
 	}
 
 	&.x-large {
-		height: 48px;
+		block-size: 48px;
 		padding: var(--v-chip-padding, 0 20px);
 		font-size: 18px;
 		border-radius: 24px;
@@ -181,13 +184,13 @@ function onCloseClick(event: MouseEvent) {
 
 		.close-outline {
 			position: relative;
-			right: -4px;
+			inset-inline-end: -4px;
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			width: 14px;
-			height: 14px;
-			margin-left: 4px;
+			inline-size: 14px;
+			block-size: 14px;
+			margin-inline-start: 4px;
 			background-color: var(--v-chip-close-color, var(--theme--danger));
 			border-radius: 10px;
 

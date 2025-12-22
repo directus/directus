@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VIconFile from '@/components/v-icon-file.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
@@ -58,7 +62,10 @@ const imageInfo = computed(() => {
 		key = 'system-medium-contain';
 	}
 
-	const source = getAssetUrl(`${props.file.id}?key=${key}&modified=${props.file.modified_on}`);
+	const source = getAssetUrl(props.file.id, {
+		imageKey: key,
+		cacheBuster: props.file.modified_on,
+	});
 
 	return { source, fileType };
 });
@@ -101,14 +108,14 @@ function handleClick() {
 		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
 		@click="handleClick"
 	>
-		<v-icon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
+		<VIcon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
 		<div class="header">
 			<div class="selection-fade"></div>
-			<v-skeleton-loader v-if="loading" />
+			<VSkeletonLoader v-if="loading" />
 			<template v-else>
-				<v-icon-file v-if="type || imgError" :ext="type ?? ''" />
+				<VIconFile v-if="type || imgError" :ext="type ?? ''" />
 				<template v-else>
-					<v-image
+					<VImage
 						v-if="showThumbnail"
 						:class="imageInfo?.fileType"
 						:src="imageInfo?.source"
@@ -116,11 +123,11 @@ function handleClick() {
 						role="presentation"
 						@error="imgError = true"
 					/>
-					<v-icon v-else large :name="icon" />
+					<VIcon v-else large :name="icon" />
 				</template>
 			</template>
 		</div>
-		<v-skeleton-loader v-if="loading" type="text" />
+		<VSkeletonLoader v-if="loading" type="text" />
 		<template v-else>
 			<div v-if="$slots.title" class="title"><slot name="title" /></div>
 			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
@@ -131,7 +138,7 @@ function handleClick() {
 <style lang="scss" scoped>
 .loading {
 	.header {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 	}
 }
 
@@ -145,34 +152,34 @@ function handleClick() {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 100%;
+		inline-size: 100%;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border-color: var(--theme--primary-subdued);
 		border-style: solid;
-		border-width: 0px;
+		border-width: 0;
 		border-radius: var(--theme--border-radius);
 		transition: border-width var(--fast) var(--transition);
 
 		&::after {
 			display: block;
-			padding-bottom: 100%;
+			padding-block-end: 100%;
 			content: '';
 		}
 
 		.image {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: 100%;
 			object-fit: contain;
 		}
 
 		.svg {
 			position: absolute;
-			width: 75%;
-			height: 75%;
+			inline-size: 75%;
+			block-size: 75%;
 			object-fit: contain;
 		}
 
@@ -187,28 +194,28 @@ function handleClick() {
 
 		.v-skeleton-loader {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: 100%;
 		}
 
 		.selection-fade {
 			position: absolute;
-			top: 0;
-			left: 0;
+			inset-block-start: 0;
+			inset-inline-start: 0;
 			z-index: 1;
-			width: 100%;
-			height: 48px;
+			inline-size: 100%;
+			block-size: 48px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
 			&::before {
 				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
+				inset-block-start: 0;
+				inset-inline-start: 0;
+				inline-size: 100%;
+				block-size: 100%;
 				background-image: linear-gradient(-180deg, rgb(38 50 56 / 0.1) 10%, rgb(38 50 56 / 0));
 				content: '';
 			}
@@ -217,11 +224,11 @@ function handleClick() {
 
 	&::before {
 		position: absolute;
-		top: 7px;
-		left: 7px;
+		inset-block-start: 7px;
+		inset-inline-start: 7px;
 		z-index: 2;
-		width: 18px;
-		height: 18px;
+		inline-size: 18px;
+		block-size: 18px;
 		background-color: var(--theme--background);
 		border-radius: 24px;
 		opacity: 0;
@@ -235,8 +242,8 @@ function handleClick() {
 		--focus-ring-offset: 0;
 
 		position: absolute;
-		top: 0px;
-		left: 0px;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		z-index: 3;
 		margin: 4px;
 		opacity: 0;
@@ -309,21 +316,21 @@ function handleClick() {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: 26px;
-	margin-top: 2px;
+	inline-size: 100%;
+	block-size: 26px;
+	margin-block-start: 2px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 
 	:deep(.render-template) {
-		height: 100%;
+		block-size: 100%;
 	}
 }
 
 .subtitle {
-	margin-top: 0px;
+	margin-block-start: 0;
 	color: var(--theme--foreground-subdued);
 }
 </style>

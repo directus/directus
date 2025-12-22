@@ -41,7 +41,7 @@ describe('Wait for messages', () => {
 			}, 10);
 		});
 
-		expect(() => waitForAnyMessage(fakeClient, TEST_TIMEOUT)).rejects.toBe(undefined);
+		await expect(() => waitForAnyMessage(fakeClient, TEST_TIMEOUT)).rejects.toBe(undefined);
 	});
 
 	test('should fail parsing', async () => {
@@ -53,7 +53,7 @@ describe('Wait for messages', () => {
 			}, 10);
 		});
 
-		expect(() => waitForAnyMessage(fakeClient, TEST_TIMEOUT)).rejects.toBe(undefined);
+		await expect(() => waitForAnyMessage(fakeClient, TEST_TIMEOUT)).rejects.toBe(undefined);
 	});
 });
 
@@ -79,7 +79,7 @@ describe('Wait for specific types messages', () => {
 			}, 5);
 		});
 
-		expect(() => waitForMessageType(fakeClient, 'test', 10)).rejects.toBe(undefined);
+		await expect(() => waitForMessageType(fakeClient, 'test', 10)).rejects.toBe(undefined);
 	});
 
 	test('should fail parsing', async () => {
@@ -89,6 +89,6 @@ describe('Wait for specific types messages', () => {
 			}, 5);
 		});
 
-		expect(() => waitForMessageType(fakeClient, 'test', 10)).rejects.toBe(undefined);
+		await expect(() => waitForMessageType(fakeClient, 'test', 10)).rejects.toBe(undefined);
 	});
 });

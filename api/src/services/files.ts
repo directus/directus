@@ -1,7 +1,15 @@
 import { useEnv } from '@directus/env';
 import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
-import type { BusboyFileStream, File, PrimaryKey, Query } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	BusboyFileStream,
+	File,
+	MutationOptions,
+	PrimaryKey,
+	Query,
+	QueryOptions,
+} from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
@@ -18,9 +26,8 @@ import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
-import { ItemsService, type QueryOptions } from './items.js';
+import { ItemsService } from './items.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -79,16 +86,18 @@ export class FilesService extends ItemsService<File> {
 		const fileExtension =
 			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
+		const filenameDisk = primaryKey + (fileExtension || '');
+
 		// The filename_disk is the FINAL filename on disk
-		payload.filename_disk ||= primaryKey + (fileExtension || '');
+		payload.filename_disk ||= filenameDisk;
 
 		// If the filename_disk extension doesn't match the new mimetype, update it
 		if (isReplacement === true && path.extname(payload.filename_disk!) !== fileExtension) {
-			payload.filename_disk = primaryKey + (fileExtension || '');
+			payload.filename_disk = filenameDisk;
 		}
 
 		// Temp filename is used for replacements
-		const tempFilenameDisk = 'temp_' + payload.filename_disk;
+		const tempFilenameDisk = 'temp_' + filenameDisk;
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';
@@ -147,15 +156,20 @@ export class FilesService extends ItemsService<File> {
 
 		// If the file is a replacement, we need to update the DB record with the new payload, delete the old files, and upgrade the temp file
 		if (isReplacement === true) {
-			await this.updateOne(primaryKey, payload, { emitEvents: false });
+			try {
+				await this.updateOne(primaryKey, payload, { emitEvents: false });
 
-			// delete the previously saved file and thumbnails to ensure they're generated fresh
-			for await (const filepath of disk.list(String(primaryKey))) {
-				await disk.delete(filepath);
+				// delete the previously saved file and thumbnails to ensure they're generated fresh
+				for await (const filepath of disk.list(String(primaryKey))) {
+					await disk.delete(filepath);
+				}
+
+				// Upgrade the temp file to the final filename
+				await disk.move(tempFilenameDisk, payload.filename_disk);
+			} catch (err: any) {
+				await cleanUp();
+				throw err;
 			}
-
-			// Upgrade the temp file to the final filename
-			await disk.move(tempFilenameDisk, payload.filename_disk);
 		}
 
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);

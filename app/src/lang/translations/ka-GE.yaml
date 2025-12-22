@@ -1,47 +1,1275 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: შესახებ
+first_name: სახელი
+last_name: გვარი
+identifier: იდენტიფიკატორი
 avatar: პროფილის ფოტო
+application: აპლიკაცია
+default_provider: ნაგულისხმები
+method: მეთოდი
+published: გამოქვეყნებული
+draft: მონახაზი
+archived: დაარქივებული
+marketplace: მარკეტი
+extensions: გაფართოებები
+skip_link_nav: ნავიგაციაზე გადასვლა
+skip_link_module_nav: ნავიგაციის მოდულში გადასვლა
+skip_link_main: ძირითად კონტენტზე გადასვლა
+skip_link_sidebar: გვერდით პანელზე გადასვლა
+modules: მოდულები
+module_bar: მოდულის პანელი
+logs: ლოგები
+unknown: უცნობი
+reset_width: სიგანის დაბრუნება
+tile_size: ფილის ზომა
+edit_field: ველის ცვლილება
+conditions: პირობები
 location: მდებარეობა
+collection_names_are_case_sensitive: კოლექციების სახელები რეგისტრის მიმართ მგრძნობიარეა
+condition_rules: პირობითი წესები
+input: შეყვანა
+maps: რუკა
+switch_user: მომხმარებლის ცვლილება
+item_creation: ჩანაწერის შექმნა
+item_revision: ჩანაწერზე გადახედვა
+enter_a_name: შეიყვანეთ სახელი...
+duplicate_field: დუბლირებული ველი
+half_width: სრული სიგანის ნახევარი
+full_width: სრული სიგანე
+group: ჯგუფი
+popular: პოპულარული
+recent: უახლესი
+export_items: ჩანაწერების ექსპორტი
+and: და
+or: ან
+init: ინიცირება
+dataset_too_large_currently_showing_n_items: მონაცემები ზედმეტად დიდია. ნაჩვენებია პირველი {n} ჩანაწერი.
+modifier: მოდიფიკატორი
+extension_interface: ინტერფეისი
+extension_display: ჩვენება
+extension_layout: განლაგება
+extension_module: მოდული
+extension_panel: პანელი
+extension_theme: თემა
+extension_hook: ჰუკი
+extension_endpoint: ენდპოინტი
+extension_operation: ოპერაცია
+extension_bundle: ნაკრები
+extension_interfaces: ინტერფეისი
+extension_displays: ჩვენებები
+extension_layouts: განლაგებები
+extension_modules: მოდულები
+extension_panels: პანელები
+extension_themes: თემები
+extension_hooks: ჰუკები
+extension_endpoints: ენდპოინტები
+extension_operations: ოპერაციები
+extension_bundles: ნაკრებები
+extension_missing: გამოტოვებული
+extension_reload_required: საჭიროა გვერდის ხელმეორედ ჩატვირთვა
+extension_reload_required_copy: აპლიკაციის გაფართოებების ჩართვის ან გამორთვის შემდეგ, ცვლილებების სანახავად აუცილებელია გვერდის განახლება.
+extension_reload_now: გვერდის განახლება
+published_relative: გამოქვეყნებულია {relativeTime} - ზე
+compatible_with_your_project: თავსებადია თქვენს პროექტთან
+compatible_with_your_project_copy: ავტორის მითითებით, ამ გაფართოების თავსებადი ვერსიაა {hostVersion}, რაც ემთხვევა თქვენი პროექტის ვერსიას ({currentVersion})
+last_updated_relative: ბოლოს განახლებულია {relativeTime} - ზე
+n_files: '{n} ფაილი'
+verified: დადასტურებულია
+homepage: მთავარი გვერდი
+repository: საცავი
+reload_page: გვერდის განახლება
+reload_required: საჭიროა გვერდის განახლება
+report_an_issue: შეტყობინება ხარვეზის შესახებ
+website: ვებგვერდი
+github: გითჰაბი
+beta: ბეტა
+n_downloads: '{n} ჩამოტვირთვა'
+downloads: ჩამოტვირთვები
+compatibility_not_guaranteed: თავსებადობა არ არის გარანტირებული
+compatibility_not_guaranteed_copy: ავტორის მითითებით, ამ გაფართოების თავსებადი ვერსიაა {hostVersion}, რაც არ ემთხვევა თქვენი პროექტის ვერსიას ({currentVersion})
+enable: ჩართვა
+disable: გამორთვა
+custom: მორგებული
+hook: ჰუკი
+fill_width: სიგანის შევსება
+field_name_translations: ველის სახელის თარგმანები
+enter_password_to_enable_tfa: შეიყვანეთ თქვენი პაროლი ორფაქტორიანი ავთენტიფიკაციის ჩასართავად
+add_field: ველის დამატება
+role_name: როლის სახელი
+policy_name: პოლიტიკის სახელი
+branch: ტოტი
+leaf: ფოთოლი
+indeterminate: განუსაზღვრელი
+edit_collection: კოლექციის რედაქტირება
+exclusive: ექსკლუზიური
+children: შვილობილები
+db_only_click_to_configure: 'მხოლოდ მონაცემთა ბაზისთვის: დასაკონფიგურებლად დააკლიკეთ'
+show_active_items: აქტიური ჩანაწერების ჩვენება
+show_archived_items: დაარქივებული ჩანაწერების ჩვენება
+show_all_items: ყველა ჩანაწერის ჩვენება
+edited: მნიშვნელობა რედაქტირდა
+required: აუცილებელი
+required_for_app_access: აუცილებელია აპლიკაციაზე წვდომისთვის
+requires_value: მნიშვნელობა აუცილებელია
+create_preset: პრესეტის შექმნა
+create_panel: პანელის შექმნა
 create_role: შექმენით როლი
+create_policy: პოლიტიკის შექმნა
+create_user: მომხმარებლის შექმნა
+message: შეტყობინება
+delete_panel: პანელის წაშლა
+create_webhook: ვებჰუკის შექმნა
+create_custom_translation: მორგებული თარგმანის შექმნა
+edit_custom_translation: მორგებული თარგმანის რედაქტირება
+no_custom_translations: მორგებული თარგმანები არ არის
+no_custom_translations_copy: მორგებული თარგმანები ჯერ არ არის.
+invite_users: მოიწვიე მომხმარებელი
+invite: მოწვევა
+email_already_invited: ელ.ფოსტა "{email}" უკვე მოწვეულია
+subject: საგანი
+inbox: შემოსული
+emails: ელ.ფოსტები
+connection_excellent: იდეალური კავშირი
+connection_good: კარგი კავშირი
+connection_fair: საშუალო კავშირი
+connection_poor: ცუდი კავშირი
+primary: პირველადი
+rename_folder: საქაღალდის გადარქმევა
+delete_folder: საქაღალდის წაშლა
+prefix: პრეფიქსი
+suffix: სუფიქსი
+keep: შენარჩუნება
+version: ვერსია
+version_key: ვერსიის გასაღები
+version_name: ვერსიის სახელი
+main_version: მთავარი
+switch_version: ვერსიის ცვლილება
+switch_version_copy: დარწმუნებული ხართ, რომ გსურთ "{version}" ვერსიაზე გადართვა? შეუნახავი ცვლილებები დაიკარგება.
+create_version: ვერსიის შექმნა
+rename_version: ვერსიის სახელის გადარქმევა
+compare_version: ვერსიების შეადარება
+save_version: ვერსიის შენახვა
+promote_version: ვერსიის დაწინაურება
+delete_version: ვერსიის წაშლა
+delete_version_copy: >-
+  დარწმუნებული ხართ, რომ გსურთ წაშალოთ "{version}" ვერსია? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
+reset_bookmark: სანიშნის აღდგენა
+update_bookmark: სანიშნის განახლება
+delete_bookmark: სანიშნის წაშლა
+delete_bookmark_copy: >-
+  დარწმუნებული ხართ, რომ გსურთ წაშალოთ სანიშნი "{bookmark}"? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
+delete_personal_bookmark: პირადი სანიშნის წაშლა
+delete_role_bookmark: როლის სანიშნის წაშლა
+delete_global_bookmark: გლობალური სანიშნის წაშლა
+logoutReason:
+  SIGN_OUT: სისტემიდან გასული
+  SESSION_EXPIRED: სესიას ვადა გაუვიდა
+public_label: საჯარო
+public_description: განსაზღვრავს, რომელი API მონაცემებია ხელმისაწვდომი ავთენტიფიკაციის გარეშე.
+public_role_info: >-
+  საჯარო როლი განსაზღვრავს, რომელი API მონაცემებია ხელმისაწვდომი არაავთენტიფიცირებული ან უროლო მომხმარებლებისთვის. საჯარო როლით გაკეთებულ მოთხოვნებს არ ექნებათ წვდომა აპლიკაციასა და ადმინისტრაციულ ნაწილზე. თუ საჯარო როლისთვის განკუთვნილ პოლიტიკას მიენიჭება აპლიკაციაზე ან ადმინისტრატორზე წვდომა, ეს პარამეტრები იგნორირებული იქნება.
+admin_description: საწყისი ადმინისტრაციული როლი, აპლიკაციასა და API-ზე შეუზღუდავი წვდომით.
+admin_policy_description: საწყისი ადმინისტრაციული პოლიტიკა, აპლიკაციასა და API-ზე შეუზღუდავი წვდომით.
+no_description: აღწერის გარეშე...
+reached_maximum_number_of_extensions: თქვენ მიაღწიეთ გაფართოებების მაქსიმალურ რაოდენობას ამ პროექტისთვის ({n}). დამატებითი ინფორმაციისთვის დაუკავშირდით სისტემის ადმინისტრატორს.
+not_allowed: დაუშვებელი
+archive: დაარქივება
+archive_confirm: დარწმუნებული ხართ, რომ გსურთ ამ ჩანაწერის დაარქივება?
+archive_confirm_count: >-
+  ჩანაწერი არ გაქვთ არჩეული | დარწმუნებული ხართ, რომ გსურთ ამ ჩანაწერის დაარქივება? | დარწმუნებული ხართ, რომ გსურთ ამ {count} ჩანაწერის დაარქივება?
+reset_system_permissions_to: 'სისტემის უფლებების აღდგენა:'
+reset_system_permissions_copy: ეს მოქმედება გადააწერს სისტემურ კოლექციებზე თქვენ მიერ მინიჭებულ ნებისმიერ მორგებულ უფლებას. გსურთ გაგრძელება?
+the_following_are_minimum_permissions: '„აპლიკაციაზე წვდომის“ ჩართვისას, ქვემოთ მოცემული მინიმალური უფლებები ავტომატურად მიენიჭება. საჭიროებისამებრ შეგიძლიათ დამატებითი უფლებების მინიჭება, მაგრამ არა მინიმალურის შემცირება.'
+app_access_minimum: მინიმალური წვდომა აპლიკაციაზე
+recommended_defaults: რეკომენდებული ნაგულისხმევი პარამეტრები
+unarchive: არქივიდან აღდგენა
+unarchive_confirm: დარწმუნებული ხართ, რომ გსურთ ამ ჩანაწერის არქივიდან აღდგენა?
+nested_files_folders_will_be_moved: ჩადგმული ფაილები და საქაღალდეები ერთი დონით ზემოთ იქნება გადატანილი.
+validation_errors_notice: 'ქვემოთ მოცემულ ველებს არასწორი მნიშვნელობები აქვთ:'
+validationError:
+  eq: მნიშვნელობა უნდა იყოს {valid}
+  neq: მნიშვნელობა არ შეიძლება იყოს {invalid}
+  in: 'მნიშვნელობა უნდა იყოს ერთ-ერთი ჩამონათვალიდან: {valid}'
+  nin: 'მნიშვნელობა არ შეიძლება იყოს ერთ-ერთი ჩამონათვალიდან: {invalid}'
+  contains: მნიშვნელობა უნდა შეიცავდეს {substring} - ს
+  ncontains: მნიშვნელობა არ უნდა შეიცავდეს {substring} - ს
+  gt: მნიშვნელობა უნა აღემატებოდეს {valid} - ს
+  gte: მნიშვნელობა ტოლი უნდა იყოს ან აღემატებოდეს {valid} - ს
+  lt: მნიშვნელობა ნაკლები უნდა იყოს {valid} - ზე
+  lte: მნიშვნელობა ტოლი უნდა იყოს ან ნაკლები {valid} - ზე
+  empty: მნიშვნელობა უნდა იყოს ცარიელი
+  nempty: მნიშვნელობა უნდა იყოს ცარიელი
+  null: მნიშვნელობა უნდა იყოს ნალი
+  nnull: მნიშვნელობა არ შეიძლება იყოს ცარიელი(null)
+  required: მნიშვნელობა აუცილებელია
+  unique: მნიშვნელობა უნდა იყოს უნიკალური
+  email: მნიშვნელობა უნდა იყოს ვალიდური ელ. ფოსტის მისამართი
+  regex: მნიშვნელობა არასწორი ფორმატისაა
+  starts_with: მნიშვნელობა უნდა იწყებოდეს {substring} - ით
+  istarts_with: მნიშვნელობა უნდა იწყებოდეს {substring} - ით
+  nstarts_with: მნიშვნელობა არუნდა იწყებოდეს {substring} - ით
+  nistarts_with: მნიშვნელობა არუნდა იწყებოდეს {substring} - ით
+  ends_with: მნიშვნელობა უნდა მთავრდებოდეს {substring} - ით
+  iends_with: მნიშვნელობა უნდა მთავრდებოდეს {substring} - ით
+  nends_with: მნიშვნელობა არუნდა მთავრდებოდეს {substring} - ით
+  niends_with: მნიშვნელობა არუნდა მთავრდებოდეს {substring} - ით
+all_access: სრული წვდომა
+no_access: წვდომის გარეშე
+use_custom: მორგებულის გამოყენება
+nullable: შესაძლო ცარიელი(nullable)
+allow_null_value: ცარიელის(null) დაშვება
+allow_multiple: მრავლობითის დაშვება
+allow_multiple_to_be_open: ერთდროულად რამდენიმეს გახსნის დაშვება
+enter_value_to_replace_nulls: გთხოვთ, შეიყვანეთ ახალი მნიშვნელობა ამ ველში არსებული ცარიელის(null) ჩასანაცვლებლად.
+field_standard: სტანდარტული
+field_presentation: წარმოდგენა და ალიასები
+field_file: ერთი ფაილი
+field_files: მრავალი ფაილი
+field_m2o: M2O კავშირი
+field_m2a: M2A კავშირი
+field_o2m: O2M კავშირი
+field_m2m: M2M კავშირი
+field_translations: თარგმანები
+field_group: ველების ჯგუფი
+item_permissions: ჩანაწერის უფლებები
+field_permissions: ველის უფლებები
+field_validation: ველის ვალიდაცია
+field_presets: ველის პრესეტები
+permissions_for_role: '{role} როლს შეუძლია ჩანაწერების {action}.'
+permissions_for_policy: '{policy} პოლიტიკას შეუძლია ჩანაწერების {action}.'
+fields_for_role: '{role} როლს შეუძლია ველების {action}.'
+fields_for_policy: '{policy} პოლიტიკას შეუძლია ველების {action}.'
+validation_for_role: 'ველის {action} წესები, რომელსაც {role} როლი უნდა დაემორჩილოს.'
+validation_for_policy: 'ველის {action} წესები, რომელსაც {policy} პოლიტიკა უნდა დაემორჩილოს.'
+presets_for_role: 'ველის მნიშვნელობის ნაგულისხმევი პარამეტრები {role} როლისთვის.'
+presets_for_policy: 'ველის მნიშვნელობის ნაგულისხმევი პარამეტრები {policy} პოლიტიკისთვის.'
+presets_field_warning: '"{field}" ველის რელაციური პრესეტები უნდა დაკონფიგურდეს "დეტალური" სინტაქსით.'
+presentation_and_aliases: წარმოდგენა და მეტსახელი
+revision_post_create: ასე გამოიყურებოდა ჩანაწერი შექმნისას.
+revision_post_update: ასე გამოიყურებოდა ჩანაწერი განახლების შემდეგ.
+changes_made: ქვემოთ მოცემულია ამ რევიზიაში განხორციელებული კონკრეტული ცვლილებები.
+no_relational_data: გაითვალისწინეთ, რომ რელაციური მონაცემები აქ არ შედის.
+junction_field_location: მაკავშირებელი ველების მდებარეობა
+top: ზემოთ
+bottom: ქვემოთ
+hide_field: ველის დამალვა
+hide_field_on_detail: ველის დამალვა დეტალებში
+show_field_on_detail: ველის ჩვენება დეტალებში
+delete_field: ველის წაშლა
+fields_and_layout: ველები და განლაგება
+field_create_success: 'შექმნილი ველი: "{field}"'
+field_update_success: 'განახლებული ველი: "{field}"'
+duplicate_where_to: სად გსურთ ამ ველის დუბლირება?
+language: ენა
+language_placeholder: აირჩიეთ ენა...
+aggregate_function: აგრეგაციის ფუნქცია
+aggregate_precision: აგრეგაციის სიზუსტე
+group_aggregation: ჯგუფის აგრეგაცია
+group_precision: ჯგუფის სიზუსტე
+global: გლობალური
+admins_have_all_permissions: ადმინისტრატორებს აქვთ ყველა უფლება
+camera: კამერა
+show_zero: ნულის ჩვენება
+create_in_advanced_field_creation_mode: ველის შექმნა გაფართოებულ რეჟიმში
+continue_in_advanced_field_creation_mode: გაგრძელება გაფართოებული ველის შექმნის რეჟიმში
+validation: ვალიდაცია
+sum: ჯამი
+sum_distinct: განსხვავებულების ჯამი
+avg: საშუალო
+avg_distinct: განსხვავებულების საშუალო
+count: რაოდენობა
+count_distinct: განსხვავებულების რაოდენობა
+min: მინიმუმი
+max: მაქსიმუმი
+exposure: ექსპოზიცია
+shutter: ჩამკეტი
+iso: ISO
+focal_length: ფოკუსური მანძილი
+schema_setup_key: ამ ველის მონაცემთა ბაზის სვეტის სახელი და API გასაღები
 create_field: შექმენით ველი
+creating_new_field: 'ახალი ველი ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: გვერდის პარამეტრების აღდგენა
+hidden_field: დამალული ველი
+hidden_on_detail: დამალულია დეტალებში
+readonly_field_label: ველის გამორთვა აპლიკაციაში
+required_readonly_field_warning: ველზე ერთდროულად წაკითხვადი და აუცილებლის-ის ჩართვა ხელს უშლის ჩანაწერის შენახვას, თუ მნიშვნელობა ცარიელია.
+key: გასაღები
+alias: მეტსახელი
+bigInteger: დიდი მთელი რიცხვი
+boolean: ლოგიკური
+date: თარიღი
+date_range: თარიღების დიაპაზონი
+translation_key_placeholder: შეიყვანეთ გასაღები...
+datetime: თარიღი და დრო
+dateTime: თარიღი და დრო
+precision: სიზუსტე
+decimal: ათწილადი
+float: მცურავწერტილიანი რიცხვი
+integer: მთელი რიცხვი
+json: JSON
+xml: XML
+yaml: YAML
+string: სტრიქონი
+text: ტექსტი
+time: დრო
+timestamp: დროის ნიშნული
+uuid: UUID
+hash: ჰეში
+geometry:
+  All: გეომეტრია (ყველა)
+  Point: წერტილი
+  LineString: ხაზოვანი სტრიქონი
+  Polygon: პოლიგონი
+  MultiPoint: მულტიწერტილი
+  MultiLineString: მულტიხაზოვანი სტრიქონი
+  MultiPolygon: მულტიპოლიგონი
+theme_auto: ავტომატური (სისტემის მიხედვით)
+theme_light: ნათელი რეჟიმი
+theme_dark: ბნელი რეჟიმი
+theme_directus_default: Directus-ის ნაგულისხმევი
+theme_directus_minimal: Directus-ის მინიმალური
+theme_directus_colormatch: Directus-ის ფერების შეხამება
+not_available_for_type: ამ ტიპისთვის ხელმისაწვდომი არ არის
+create_translations: თარგმანების შექმნა
+auto_refresh: ავტომატური განახლება
+refresh_interval: განახლების ინტერვალი
+no_refresh: არ განაახლო
+refresh_interval_seconds: მყისიერად განახლება | ყოველ წამს | ყოველ {seconds} წამში
+refresh_interval_minutes: ყოველ წუთს | ყოველ {minutes} წუთში
 auto_generate: ავტო-გენერირება
+this_will_auto_setup_fields_relations: ეს ავტომატურად დააკონფიგურირებს ყველა საჭირო ველსა და დამოკიდებულებას.
+click_here: დააკლიკეთ აქ
+to_manually_setup_translations: თარგმანების ხელით დასაკონფიგურებლად.
+manage: მართვა
+click_to_manage_translated_fields: >-
+  თარგმნილი ველები ჯერ არ არის. მათ შესაქმნელად დააკლიკეთ აქ. | არის ერთი თარგმნილი ველი. სამართავად დააკლიკეთ აქ. | არის {count} თარგმნილი ველი. სამართავად დააკლიკეთ აქ.
+fields_group: ველების ჯგუფი
+no_collections_found: კოლექციები ვერ მოიძებნა.
+new_data_alert: 'შემდეგი შეიქმნება თქვენს მონაცემთა მოდელში:'
+search_collection: კოლექციის ძებნა...
+search_role: როლის ძებნა...
+search_policy: პოლიტიკის ძებნა...
+search_field: ველის ძებნა...
+new_field: 'ახალი ველი'
+new_collection: 'ახალი კოლექცია'
+add_m2o_to_collection: 'M2O-ს დამატება "{collection}"-ში'
+add_o2m_to_collection: 'O2M-ის დამატება "{collection}"-ში'
+add_m2m_to_collection: 'M2M-ის დამატება "{collection}"-ში'
+choose_a_type: აირჩიეთ ტიპი...
+determined_by_relationship: განისაზღვრება კავშირით
+add_note: დაამატეთ სასარგებლო შენიშვნა მომხმარებლებისთვის...
+add_link: ბმულის დამატება
+custom_link: მორგებული ბმული
+default_value: ნაგულისხმევი მნიშვნელობა
+standard_field: სტანდარტული ველი
+single_file: ერთი ფაილი
+multiple_files: მრავალი ფაილი
+m2o_relationship: მრავალი ერთთან კავშირი
+o2m_relationship: ერთი მრავალთან კავშირი
+m2m_relationship: მრავალი მრავალთან კავშირი
+m2a_relationship: მრავალი ნებისმიერთან კავშირი
+invalid_item: არასწორი ჩანაწერი
+require_confirmation: დადასტურების მოთხოვნა
+dialog: დიალოგი
+modal: მოდალი
+confirmation_dialog: დადასტურების დიალოგი
+confirmation_description: დადასტურების აღწერა
+confirmation_input_fields: დადასტურების შესაყვანი ველები
+next: შემდეგი
+field_name: ველის სახელი
+translations: თარგმანები
+no_translations: თარგმანის გარეშე
+left_to_right: მარცხნიდან მარჯვნივ
+right_to_left: მარჯვნიდან მარცხნივ
+note: შენიშვნა
+enter_a_value: შეიყვანეთ მნიშვნელობა...
+enter_a_placeholder: შეიყვანეთ დამხმარე ტექსტი...
+length: სიგრძე
+soft_length: ლიმიტი (არა აუცილებელი)
+precision_scale: სიზუსტე და მასშტაბი
+readonly: მხოლოდ წაკითხვადი
+unique: უნიკალური
+index: ინდექსი
+updated_on: განახლდა
+updated_by: განახლდა-ს მიერ
+primary_key: პირველადი გასაღები
+foreign_key: გარე გასაღები
+field_key: ველის გასაღები
+finish_setup: კონფიგურაციის დასრულება
+dismiss: დახურვა
+toggle_raw_editor: პირველადი რედაქტორის გადართვა
+toggle_variable_input: ცვლადის შეყვანის გადართვა
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: პირველადი მნიშვნელობა
+copy_raw_value: პირველადი მნიშვნელობის კოპირება
+copy_raw_value_success: დაკოპირდა
+copy_raw_value_fail: კოპირება ვერ მოხერხდა
+paste_raw_value: პირველადი მნიშვნელობის ჩასმა
+paste_raw_value_success: ჩაისვა
+paste_raw_value_fail: ჩასმა ვერ მოხერხდა
+view_raw_value: პირველადი მნიშვნელობის ნახვა
+edit_raw_value: პირველადი მნიშვნელობის რედაქტირება
+enter_raw_value: შეიყვანეთ პირველადი მნიშვნელობა...
+clear_value: მნიშვნელობის გასუფთავება
+clear_changes: ცვლილებების გასუფთავება
+clear_items: ჩანაწერების გასუფთავება
+reset_to_default: ნაგულისხმევზე დაბრუნება
+undo_changes: ცვლილებების გაუქმება
+notifications: შეტყობინებები
+archive_all: ყველას დაარქივება
+show_all_activity: ყველა აქტივობის ჩვენება
+page_not_found: გვერდი ვერ მოიძებნა
+page_not_found_body: გვერდი, რომელსაც ეძებთ, არ არსებობს.
+confirm_revert: დაბრუნების დადასტურება
+confirm_revert_body: ეს დააბრუნებს ჩანაწერს არჩეულ მდგომარეობაში.
+display: ჩვენება
+settings_update_success: პარამეტრები განახლდა
 title: სათაური
+subtitle: ქვესათაური
+revision_delta_created: შეიქმნა
+revision_delta_created_externally: შეიქმნა გარედან
+revision_delta_updated: 'განახლდა 1 ველი | განახლდა {count} ველი'
+revision_delta_deleted: წაიშალა
+revision_delta_reverted: დაბრუნდა
+revision_delta_update_message: ეს ველი განახლდა, მაგრამ მისი მნიშვნელობა უსაფრთხოების მიზნით დამალულია.
+revision_delta_other: რევიზია
+revision_delta_by: '{date} {user}-ის მიერ'
+presentation_text_values_cannot_be_reimported: 'იყენებს წარმოდგენის ტექსტს, მნიშვნელობების ხელახლა იმპორტირება შეუძლებელია.'
+download_page_as_csv: 'გვერდის გადმოწერა CSV ფორმატში'
+download_page_as_csv_unsupported: ეს განლაგება არ უჭერს მხარს მიმდინარე გვერდის გადმოწერას.
+private_user: პირადი მომხმარებელი
+creation_preview: შექმნის გადახედვა
+revision_preview: რევიზიის გადახედვა
+updates_made: განხორციელებული განახლებები
+leave_comment: დატოვეთ კომენტარი...
+post_comment_success: კომენტარი გამოქვეყნდა
+post_comment_updated: კომენტარი განახლდა
+item_create_success: ჩანაწერი შეიქმნა | ჩანაწერები შეიქმნა
+item_update_success: ჩანაწერი განახლდა | ჩანაწერები განახლდა
+item_delete_success: ჩანაწერი წაიშალა | ჩანაწერები წაიშალა
+this_collection: ეს კოლექცია
+related_collection: დაკავშირებული კოლექცია
+related_collections: დაკავშირებული კოლექციები
+translations_collection: თარგმანების კოლექცია
+languages_collection: ენების კოლექცია
+import_data_input_placeholder: CSV ან JSON...
+import_data_button: იმპორტის დაწყება
+import_data_indeterminate: მონაცემების იმპორტი...
+import_data_success: მონაცემები წარმატებით იმპორტირდა {filename}-დან
+import_data_error: ამ ფაილის მონაცემთა სტრუქტურა არ ემთხვევა კოლექციას.
+label_import: იმპორტი
+label_export: ექსპორტი
+import_export: იმპორტი / ექსპორტი
+format: ფორმატი
+last_page: ბოლო გვერდი
+last_access: ბოლო წვდომა
+fill_template: შაბლონის მნიშვნელობით შევსება
+a_unique_table_name: უნიკალური ცხრილის სახელი...
+a_unique_column_name: უნიკალური სვეტის სახელი...
+enable_custom_values: მორგებული მნიშვნელობების ჩართვა
+submit: გაგზავნა
+move_to_folder: საქაღალდეში გადატანა
+move: გადატანა
+system: სისტემა
+add_field_related: ველის დამატება დაკავშირებულ კოლექციაში
+interface_label: ინტერფეისი
+display_label: ჩვენება
+today: დღეს
+yesterday: გუშინ
+delete_comment: კომენტარის წაშლა
+delete_share: გაზიარების წაშლა
+functions:
+  year: წელი
+  month: თვე
+  week: კვირა
+  day: დღე
+  weekday: კვირის დღე
+  hour: საათი
+  minute: წუთი
+  second: წამი
+  count: რაოდენობა
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'd MMM, u'
+date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
+date-fns_date_short_no_year: d MMM
+minutes: წუთები
+hours: საათები
+month: თვე
+year: წელი
+select_all: ყველას არჩევა
+permissionsLevel:
+  all: სრული {action} წვდომა
+  partial: ნაწილობრივი {action} წვდომა
+  custom: ნაწილობრივი {action} წვდომა
+  none: '{action} წვდომის გარეშე'
+months:
+  january: იანვარი
+  february: თებერვალი
+  march: მარტი
+  april: აპრილი
+  may: მაისი
+  june: ივნისი
+  july: ივლისი
+  august: აგვისტო
+  september: სექტემბერი
+  october: ოქტომბერი
+  november: ნოემბერი
+  december: დეკემბერი
+drag_mode: გადათრევის რეჟიმი
+move_tool: გადაადგილების ხელსაწყო
+crop_tool: მოჭრის ხელსაწყო
+focal_point_tool: ფოკუსური წერტილის ხელსაწყო
+cancel_crop: მოჭრის გაუქმება
+cancel_selection: არჩევანის გაუქმება
+original: ორიგინალი
+url: URL
+import_label: იმპორტი
+file_details: ფაილის დეტალები
+copy_id: ID-ის კოპირება
+copy_id_success: ID დაკოპირდა
+copy_id_fail: ID არ დაკოპირდა
+dimensions: ზომები
+size: ზომა
+created: შეიქმნა
+uploaded: აიტვირთა
+modified: შეიცვალა
 owner: მფლობელი
+edited_by: რედაქტირებულია-ს მიერ
+folder: საქაღალდე
+folders: საქაღალდეები
+zoom: მასშტაბი
+download: გადმოწერა
+open: გახსნა
+open_in_new_window: ახალ ფანჯარაში გახსნა
+open_folder: გახსენით "{folder}" საქაღალდე
+foreground_color: წინა პლანის ფერი
+background_color: ფონის ფერი
+upload_from_device: ფაილის ატვირთვა მოწყობილობიდან
+choose_from_library: ფაილის არჩევა ბიბლიოთეკიდან
+import_from_url: ფაილის იმპორტი URL-დან
+replace_from_device: ფაილის ჩანაცვლება მოწყობილობიდან
+replace_from_library: ფაილის ჩანაცვლება ბიბლიოთეკიდან
+replace_from_url: ფაილის ჩანაცვლება URL-დან
+no_image_selected: სურათი არ არის არჩეული
+no_file_selected: ფაილი არ არის არჩეული
+download_file: ფაილის გადმოწერა
+open_file_in_tab: ფაილის გახსნა ახალ ჩანართში
+start_export: ექსპორტის დაწყება
+not_available_for_local_downloads: ლოკალური გადმოწერებისთვის ხელმისაწვდომი არ არის
+exporting_all_items_in_collection: '{collection}-ში ყველა ({total}) ჩანაწერის ექსპორტი მიმდინარეობს.'
+exporting_limited_items_in_collection: '{collection}-ში {total}-დან {count} ჩანაწერი იქნება ექსპორტირებული.'
+exporting_no_items_to_export: საექსპორტო ჩანაწერები არ არის. შეცვალეთ ექსპორტის კონფიგურაცია და/ან დაამატეთ ჩანაწერები კოლექციაში.
+exporting_download_hint: '{format} ფაილის შექმნის შემდეგ, ის თქვენს მოწყობილობაში ჩამოიტვირთება.'
+exporting_library_hint: '{format} ფაილის შექმნის შემდეგ, ის ფაილების ბიბლიოთეკაში შეინახება.'
+exporting_library_hint_forced: ეს ექსპორტი უნდა დამუშავდეს ნაწილ-ნაწილ. დასრულების შემდეგ, {format} ფაილი ფაილების ბიბლიოთეკაში შეინახება.
+collection_key: კოლექციის გასაღები
+name: სახელი
+primary_key_field: პირველადი გასაღების ველი
+type: ტიპი
+creating_new_collection: ახალი კოლექციის შექმნა
+created_by: შეიქმნა-ს მიერ
+created_on: შეიქმნა
+creating_collection_info: დაასახელეთ კოლექცია და დააკონფიგურირეთ მისი უნიკალური „გასაღების“ ველი...
+creating_collection_system: ჩართეთ და გადაარქვით სახელი ნებისმიერ ამ არჩევით ველს.
+auto_increment_integer: ავტომატურად მზარდი მთელი რიცხვი
+auto_increment_big_integer: ავტომატურად მზარდი დიდი მთელი რიცხვი
+generated_uuid: გენერირებული UUID
+manual_string: ხელით შეყვანილი სტრიქონი
+save_and_create_new: შენახვა და ახლის შექმნა
+save_and_stay: შენახვა და დარჩენა
+save_and_quit: შენახვა და გასვლა
+save_and_return_to_main: შენახვა და მთავარზე დაბრუნება
+save_as_copy: ასლად შენახვა
+add_existing: არსებულის დამატება
+creating_items: ჩანაწერების შექმნა
+enable_create_button: შექმნის ღილაკის ჩართვა
+selecting_items: ჩანაწერების არჩევა
+enable_select_button: არჩევის ღილაკის ჩართვა
+allow_duplicates: დუბლიკატების დაშვება
 comments: კომენტარები
+no_comments: კომენტარები ჯერ არ არის
+expand: გაშლა
+expand_all: ყველას გაშლა
+expand_none: არცერთის გაშლა
+collapse: შეკუმშვა
+collapse_all: ყველას შეკუმშვა
+select_item: ჩანაწერის არჩევა
+no_items: ჩანაწერები არ არის
+search_items: ჩანაწერების ძებნა...
+search_extensions: გაფართოებების ძებნა...
+disabled: გამორთულია
+information: ინფორმაცია
+report_bug: ხარვეზის შეტყობინება
+request_feature: ფუნქციის მოთხოვნა
+request_body: მოთხოვნის ტანი
+interface_not_found: 'ინტერფეისი "{interface}" ვერ მოიძებნა.'
+operation_not_found: 'ოპერაცია "{operation}" ვერ მოიძებნა.'
+reset_interface: ინტერფეისის აღდგენა
+display_not_found: 'ჩვენება "{display}" ვერ მოიძებნა.'
+reset_display: ჩვენების აღდგენა
+list-m2a: მშენებელი (M2A)
+item_count: 'ჩანაწერი არ არის | ერთი ჩანაწერი | {count} ჩანაწერი'
+filtered_item_count: 'გაფილტრული ჩანაწერი არ არის | ერთი გაფილტრული ჩანაწერი | {count} გაფილტრული ჩანაწერი'
+no_items_copy: ამ კოლექციაში ჩანაწერები ჯერ არ არის.
+file_count: 'ფაილი არ არის | ერთი ფაილი | {count} ფაილი'
+no_files_copy: აქ ფაილები არ არის.
+user_count: 'მომხმარებელი არ არის | ერთი მომხმარებელი | {count} მომხმარებელი'
+no_users_copy: ამ როლში მომხმარებლები ჯერ არ არიან.
+webhooks_count: 'ვებჰუკი არ არის | ერთი ვებჰუკი | {count} ვებჰუკი'
+webhooks_deprecation_notice: |
+  ვებჰუკები მოძველებულია და მათი შემდგომი გამოყენება არ არის რეკომენდებული.
+
+  გთხოვთ, გამოიყენოთ **ნაკადები** [ვებჰუკი / მოთხოვნის URL ოპერაციით](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
+no_webhooks_copy: ვებჰუკები ჯერ არ არის დაკონფიგურირებული. დასაწყებად შექმენით ერთი ქვემოთ.
+no_notifications: შეტყობინებები არ არის
+no_notifications_copy: ყველაფერი წესრიგშია!
+activity_log: აქტივობის ჟურნალი
+all_items: ყველა ჩანაწერი
+any: ნებისმიერი
+csv: CSV
+no_collections: კოლექციები არ არის
 create_collection: შექმენით კოლექცია
+no_collections_copy_admin: თქვენ ჯერ არ გაქვთ კოლექციები. დასაწყებად დააკლიკეთ ქვემოთ მოცემულ ღილაკს.
+no_collections_copy: თქვენ ჯერ არ გაქვთ კოლექციები. გთხოვთ, დაუკავშირდეთ თქვენს სისტემის ადმინისტრატორს.
+relationship_not_setup: დამოკიდებულება სწორად არ არის დაკონფიგურირებული
+no_singleton_relations: სინგლტონებთან დამოკიდებულებები არ არის მხარდაჭერილი
+display_template_not_setup: ჩვენების შაბლონის ოფცია არასწორად არის დაკონფიგურირებული
+collection_field_not_setup: კოლექციის ველის ოფცია არასწორად არის დაკონფიგურირებული
+select_a_collection: აირჩიეთ კოლექცია
+select_a_field: აირჩიეთ ველი
+active: აქტიური
+move_to: გადატანა...
+copy: კოპირება
+copy_to: კოპირება...
+no_other_dashboards_copy: თქვენ ჯერ სხვა დაფები არ გაქვთ.
+inactive: არააქტიური
 users: მომხმარებლები
+roles: როლები
+activity: აქტივობა
+activity_item: აქტივობის ჩანაწერი
 action: მოქმედება
 ip_address: IP მისამართი
 user_agent: მომხმარებლის აგენტი
+origin: წყარო
+webhooks: ვებჰუკები
+decimals: ათწილადები
+value_decimals: მნიშვნელობის ათწილადები
+min_value: მინ. მნიშვნელობა
+max_value: მაქს. მნიშვნელობა
+automatic: ავტომატური
+field_width: ველის სიგანე
+add_filter: ფილტრის დამატება
+upper_limit: ზედა ზღვარი...
+lower_limit: ქვედა ზღვარი...
+user_directory: მომხმარებელთა კატალოგი
+documentation: დოკუმენტაცია
+sidebar: გვერდითი პანელი
 duration: ხანგრძლივობა
+charset: სიმბოლოთა ნაკრები
+second: წამი
+file_moved: ფაილი გადატანილია
+collection_created: კოლექცია შეიქმნა
+modified_on: შეიცვალა
+card_size: ბარათის ზომა
+sort_field: დალაგების ველი
+add_sort_field: დალაგების ველის დამატება
+sort: დალაგება
 status: სტატუსი
+remove: წაშლა
+toggle_manual_sorting: ხელით დალაგების გადართვა
+bookmark_doesnt_exist: სანიშნი არ არსებობს
+bookmark_doesnt_exist_copy: სანიშნი, რომლის გახსნასაც ცდილობთ, ვერ მოიძებნა.
+bookmark_doesnt_exist_cta: კოლექციაში დაბრუნება
+select_an_item: აირჩიეთ ჩანაწერი...
+edit: რედაქტირება
+edit_item: ჩანაწერის რედაქტირება
+enabled: ჩართულია
+partially_enabled: ნაწილობრივ ჩართულია
+enable_all: ყველას ჩართვა
+disable_all: ყველას გამორთვა
+enabled_dev_tooltip: აპლიკაციის გაფართოებები ყოველთვის ჩართულია დეველოპერის რეჟიმში
+disable_tfa: 2FA-ს გამორთვა
+admin_disable_tfa_text: დარწმუნებული ხართ, რომ გსურთ ამ მომხმარებლისთვის 2FA-ს გამორთვა?
+tfa_setup: 2FA-ს დაყენება
+tfa_scan_code: დაასკანერეთ კოდი თქვენს ავთენტიფიკატორის აპლიკაციაში 2FA-ს დაყენების დასასრულებლად
+enter_otp_to_disable_tfa: შეიყვანეთ OTP 2FA-ს გამოსართავად
+create_account: ანგარიშის შექმნა
+account_created_successfully: ანგარიში წარმატებით შეიქმნა
+auto_fill: ავტომატური შევსება
+corresponding_field: შესაბამისი ველი
+errors:
+  COLLECTION_NOT_FOUND: "კოლექცია არ არსებობს"
+  CONTAINS_NULL_VALUES: ველი შეიცავს null მნიშვნელობებს
+  CONTENT_TOO_LARGE: გაგზავნილი ჩანაწერი/ფაილი ძალიან დიდია
+  FAILED_VALIDATION: ვალიდაცია ვერ მოხერხდა
+  FIELD_NOT_FOUND: ველი ვერ მოიძებნა
+  FORBIDDEN: აკრძალულია
+  GRAPHQL_VALIDATION: GraphQL ვალიდაცია
+  ILLEGAL_ASSET_TRANSFORMATION: სურათის წყარო ძალიან დიდია გადასახედად
+  INTERNAL_SERVER_ERROR: მოულოდნელი შეცდომა
+  INVALID_CONFIG: არასწორი კონფიგურაცია
+  INVALID_CREDENTIALS: არასწორი მომხმარებლის სახელი ან პაროლი
+  INVALID_FOREIGN_KEY: არასწორი გარე გასაღები
+  INVALID_IP: IP მისამართი დაუშვებელია
+  INVALID_OTP: არასწორი ერთჯერადი პაროლი
+  INVALID_PAYLOAD: არასწორი მონაცემები
+  INVALID_PROVIDER: მომხმარებელი ეკუთვნის სხვა ავთენტიფიკაციის პროვაიდერს
+  INVALID_QUERY: არასწორი მოთხოვნა
+  INVALID_TOKEN: არასწორი თოქენი
+  INVALID_USER: მომხმარებლის ავთენტიფიკაცია ვერ მოხერხდა
+  ITEM_LIMIT_REACHED: ჩანაწერების ლიმიტს მიაღწია
+  ITEM_NOT_FOUND: ჩანაწერი ვერ მოიძებნა
+  LIMIT_EXCEEDED: 'ლიმიტი გადაჭარბებულია'
+  METHOD_NOT_ALLOWED: მეთოდი დაუშვებელია
+  NOT_NULL_VIOLATION: მნიშვნელობა არ შეიძლება იყოს ცარიელი(null)
+  RANGE_NOT_SATISFIABLE: არასწორი დიაპაზონი
+  RECORD_NOT_UNIQUE: დუბლიკატი მნიშვნელობა აღმოჩენილია
+  REQUESTS_EXCEEDED: მოთხოვნების ლიმიტს მიაღწია
+  ROUTE_NOT_FOUND: ვერ მოიძებნა
+  SERVICE_UNAVAILABLE: სერვისი მიუწვდომელია
+  TOKEN_EXPIRED: თოქენს ვადა გაუვიდა
+  UNEXPECTED_RESPONSE: მოულოდნელი პასუხი
+  UNKNOWN: მოულოდნელი შეცდომა
+  UNPROCESSABLE_CONTENT: დაუმუშავებელი კონტენტი
+  UNSUPPORTED_MEDIA_TYPE: არასასურველი მედია ტიპი
+  USER_SUSPENDED: მომხმარებელი შეჩერებულია
+  VALUE_OUT_OF_RANGE: მნიშვნელობა დიაპაზონს სცდება
+  VALUE_TOO_LONG: მნიშვნელობა ძალიან გრძელია
+security: უსაფრთხოება
+bookmark_name: სანიშნის სახელი...
+create_bookmark: სანიშნის შექმნა
+edit_bookmark: სანიშნის რედაქტირება
+edit_personal_bookmark: პირადი სანიშნის რედაქტირება
+edit_role_bookmark: როლის სანიშნის რედაქტირება
+edit_global_bookmark: გლობალური სანიშნის რედაქტირება
+cannot_edit_role_bookmarks: როლის სანიშნების რედაქტირება შეუძლებელია
+cannot_edit_global_bookmarks: გლობალური სანიშნების რედაქტირება შეუძლებელია
+bookmarks: სანიშნები
+presets: პრესეტები
+unexpected_error: მოულოდნელი შეცდომა
+unexpected_error_copy: მოულოდნელი შეცდომა მოხდა. გთხოვთ, სცადოთ ხელახლა.
+copy_details: დეტალების კოპირება
+no_app_access: აპლიკაციაზე წვდომა არ არის
+no_app_access_copy: ამ მომხმარებელს არ აქვს ადმინისტრატორის აპლიკაციის გამოყენების უფლება.
+password_reset_sent: თუ გაქვთ ანგარიში, გამოგიგზავნეთ უსაფრთხო ბმული პაროლის აღსადგენად
+password_reset_successful: პაროლი წარმატებით აღდგა
 back: უკან დაბრუნება
+filter: ფილტრი
+edit_image: სურათის რედაქტირება
+editing_image: სურათის რედაქტირება
+square: კვადრატი
+free: თავისუფალი
+flip_horizontal: ჰორიზონტალურად გადაბრუნება
+flip_vertical: ვერტიკალურად გადაბრუნება
+aspect_ratio: ასპექტის თანაფარდობა
+rotate: მობრუნება
+all_users: ყველა მომხმარებელი
+delete_collection: კოლექციის წაშლა
+update_collection_success: კოლექცია განახლდა
+delete_collection_success: კოლექცია წაიშალა
+make_collection_visible: კოლექციის ხილულად ქცევა
+make_collection_hidden: კოლექციის დამალვა
+make_folder_visible: საქაღალდის ხილულად ქცევა
+make_folder_hidden: საქაღალდის დამალვა
+goto_collection_content: კონტენტის ნახვა
+count_of_total_items: '{count} / {total} ჩანაწერი'
+start_end_of_count_items: '{start}-{end} / {count} ჩანაწერი'
+start_end_of_count_filtered_items: '{start}-{end} / {count} გაფილტრული ჩანაწერი'
+delete_collection_are_you_sure: >-
+  დარწმუნებული ხართ, რომ გსურთ "{collection}" კოლექციის წაშლა? ეს წაშლის კოლექციას და მასში არსებულ ყველა ჩანაწერს. ეს მოქმედება შეუქცევადია.
+delete_folder_are_you_sure: დარწმუნებული ხართ, რომ გსურთ "{folder}" საქაღალდის წაშლა? ჩადგმული საქაღალდეები და კოლექციები გადავა უმაღლეს დონეზე.
+delete_collection_peer_dependencies: შემდეგი ველებიც წაიშლება, რადგან ისინი დაკავშირებულია მიმდინარე კოლექციასთან.
+collections_shown: ნაჩვენები კოლექციები
+visible_collections: ხილული კოლექციები
+hidden_collections: დამალული კოლექციები
+show_hidden_collections: დამალული კოლექციების ჩვენება
+hide_hidden_collections: დამალული კოლექციების დამალვა
+show_header: თავსართის ჩვენება
+unmanaged_collections: დაუკონფიგურირებელი კოლექციები
+system_collections: სისტემური კოლექციები
+placeholder: დამხმარე ტექსტი
+icon_left: ხატულა მარცხნივ
+icon_right: ხატულა მარჯვნივ
+count_other_revisions: '{count} სხვა რევიზია'
+font: შრიფტი
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: გამყოფი
+color: ფერი
+circle: წრე
+empty_item: ცარიელი ჩანაწერი
+log_in_with: '{provider}-ით შესვლა'
+conditional_styles: პირობითი სტილები
+advanced_settings: გაფართოებული პარამეტრები
+advanced_filter: გაფართოებული ფილტრი
+delete_advanced_filter: ფილტრის წაშლა
+change_advanced_filter_operator: ოპერატორის შეცვლა
+advanced: გაფართოებული
+operators:
+  eq: უდრის
+  neq: არ უდრის
+  lt: ნაკლებია
+  gt: მეტია
+  lte: ნაკლებია ან ტოლია
+  gte: მეტია ან ტოლია
+  in: არის ერთ-ერთი
+  nin: არ არის ერთ-ერთი
+  null: არის null
+  nnull: არ არის null
+  contains: შეიცავს
+  ncontains: არ შეიცავს
+  icontains: შეიცავს (რეგისტრის გარეშე)
+  starts_with: იწყება-ით
+  nstarts_with: არ იწყება-ით
+  istarts_with: იწყება-ით (რეგისტრის გარეშე)
+  nistarts_with: არ იწყება-ით (რეგისტრის გარეშე)
+  ends_with: მთავრდება-ით
+  nends_with: არ მთავრდება-ით
+  iends_with: მთავრდება-ით (რეგისტრის გარეშე)
+  niends_with: არ მთავრდება-ით (რეგისტრის გარეშე)
+  between: არის შორის
+  nbetween: არ არის შორის
+  empty: ცარიელია
+  nempty: არ არის ცარიელი
+  all: შეიცავს ამ გასაღებებს
+  has: შეიცავს ზოგიერთ ამ გასაღებს
+  intersects: კვეთს
+  nintersects: არ კვეთს
+  intersects_bbox: კვეთს შემოსაზღვრულ ყუთს
+  nintersects_bbox: არ კვეთს შემოსაზღვრულ ყუთს
+  regex: ემთხვევა RegExp-ს
+custom_validation_message: მორგებული ვალიდაციის შეტყობინება
+loading: იტვირთება...
+extension_readme_missing: ამ გაფართოებას არ აქვს README ფაილი.
+drop_to_upload: ჩააგდეთ ასატვირთად
+item: ჩანაწერი
+items: ჩანაწერები
+upload_file: ფაილის ატვირთვა
+upload_file_indeterminate: ფაილის ატვირთვა...
+upload_file_success: ფაილი აიტვირთა
+upload_files_indeterminate: 'ფაილების ატვირთვა {done}/{total}'
+upload_files_success: '{count} ფაილი აიტვირთა'
+upload_pending: ატვირთვა მომლოდინეა
+drag_file_here: გადაათრიეთ ფაილი აქ
+click_to_browse: დააკლიკეთ ასარჩევად
+interface_options: ინტერფეისის ოფციები
+display_options: ჩვენების ოფციები
+layout_options: განლაგების ოფციები
+rows: სტრიქონები
+columns: სვეტები
+collection_setup: კოლექციის კონფიგურაცია
+optional_system_fields: არჩევითი ველები
+value_unique: მნიშვნელობა უნდა იყოს უნიკალური
+value_index: ველი ინდექსირებულია
+all_activity: ყველა აქტივობა
+create_item: ჩანაწერის შექმნა
+display_template: ჩვენების შაბლონი
+language_display_template: ენის ჩვენების შაბლონი
+translations_display_template: თარგმანების ჩვენების შაბლონი
+n_items_selected: 'ჩანაწერი არ არის არჩეული | ერთი ჩანაწერია არჩეული | {n} ჩანაწერია არჩეული'
+per_page: გვერდზე
+all_files: ყველა ფაილი
+my_files: ჩემი ფაილები
+recent_files: ბოლო ფაილები
+create_folder: საქაღალდის შექმნა
+edit_folder: საქაღალდის რედაქტირება
+folder_name: საქაღალდის სახელი...
+folder_key: საქაღალდის გასაღები...
+add_file: ფაილის დამატება
+replace_file: ფაილის ჩანაცვლება
+no_results: შედეგები არ არის
+no_results_copy: შედეგების სანახავად შეცვალეთ ან გაასუფთავეთ ძებნის ფილტრები.
+no_visible_fields: ცარიელი ფორმა
+no_visible_fields_copy: ამ ფორმას ხილული ველები არ აქვს.
+clear_filters: ფილტრების გასუფთავება
+saves_automatically: ავტომატურად ინახება
 role: როლი
+edit_role: როლის რედაქტირება
+rule: წესი
+user: მომხმარებელი
+no_presets: პრესეტები არ არის
+no_presets_copy: პრესეტები ან სანიშნები ჯერ არ არის შენახული.
+no_presets_cta: პრესეტის დამატება
+presets_only: მხოლოდ პრესეტები
 create: შექმნა
+on_create: შექმნაზე
+on_update: განახლებაზე
+read: წაკითხვა
+update: განახლება
+delete: წაშლა
+select_fields: ველების არჩევა
+format_text: ტექსტის ფორმატირება
+format_value: მნიშვნელობის ფორმატირება
+abbreviate_value: მნიშვნელობის შემოკლება
+operator: ოპერატორი
+bold: მსხვილი
+toggle: გადამრთველი
+icon_on: ხატულა ჩართული
+icon_off: ხატულა გამორთული
+label: იარლიყი
+flows: ნაკადები
+flow: ნაკადი
+select_a_flow: აირჩიეთ ნაკადი
+run_flow_on_current_collection: პროცესის გაშვება მიმდინარე კოლექციაზე
+run_flow_on_current: პროცესის გაშვება მიმდინარე ჩანაწერზე
+run_flow_on_selected: ჯერ აირჩიეთ ერთი ან მეტი ჩანაწერი | პროცესის გაშვება 1 არჩეულ ჩანაწერზე | პროცესის გაშვება {n} არჩეულ ჩანაწერზე
+run_flow: პროცესის გაშვება
+trigger_flow_success: პროცესი "{flow}" წარმატებით გაეშვა
+field_name_placeholder: შეიყვანეთ ველის სახელი...
+field_key_placeholder: შეიყვანეთ ველის გასაღები...
+trigger: ტრიგერი
+trigger_options: ტრიგერის ოფციები
+view_trigger: ტრიგერის ნახვა
+create_trigger: ტრიგერის შექმნა
+trigger_setup: ტრიგერის კონფიგურაცია
+change_trigger: ტრიგერის შეცვლა
+flow_delete_confirm: დარწმუნებული ხართ, რომ გსურთ "{flow}" პროცესის წაშლა? ამ მოქმედების გაუქმება შეუძლებელია.
+set_flow_active: პროცესის აქტიურად დაყენება
+set_flow_inactive: პროცესის არააქტიურად დაყენება
+edit_flow: პროცესის რედაქტირება
+delete_flow: პროცესის წაშლა
+no_other_flows_copy: თქვენ ჯერ სხვა პროცესი არ გაქვთ.
+no_flows: პროცესები არ არის
+no_flows_copy: თქვენ ჯერ არ გაქვთ პროცესები.
+create_flow: პროცესის შექმნა
+creating_new_flow: ახალი პროცესის შექმნა
+updating_flow: პროცესის განახლება
+flow_setup: პროცესის კონფიგურაცია
+flow_name: სახელი
+flow_tracking: აქტივობისა და ჟურნალების თვალყურის დევნება
+flow_tracking_all: აქტივობისა და ჟურნალების თვალყურის დევნება
+flow_tracking_activity: მხოლოდ აქტივობის თვალყურის დევნება
+flow_tracking_null: არაფრის თვალყურის დევნება
+start_flow: პროცესის დაწყება
+stop_flow: პროცესის შეჩერება
+create_operation: ოპერაციის შექმნა
+edit_operation: ოპერაციის რედაქტირება
+code: კოდი
+operation_options: ოპერაციის ოფციები
+operation_name: ოპერაციის სახელი...
+operation_key: იდენტიფიკატორი მითითებისთვის...
+operation_key_unique_error: ოპერაციის გასაღებები უნიკალური უნდა იყოს ნაკადში
+operation_handle_resolve: 'დამუშავება: დააკლიკეთ დასამატებლად ან გადაათრიეთ გადასამისამართებლად'
+operation_handle_reject: 'უარყოფა: დააკლიკეთ დასამატებლად ან გადაათრიეთ გადასამისამართებლად'
+visual_editor: ვიზუალური რედაქტორი
+toggle_navigation: ნავიგაციის გადართვა
+toggle_editable_elements: რედაქტირებადი ელემენტების გადართვა
+no_url: URL არ არის მითითებული
+no_url_copy: გთხოვთ, დაამატეთ URL პარამეტრებში.
+invalid_url: არასწორი URL
+invalid_url_copy: მითითებული URL არ ემთხვევა პარამეტრებში მითითებულ არცერთ URL-ს.
+insights: ანალიტიკა
+dashboard: დაფა
+panel: პანელი
+panel_options: პანელის ოფციები
+panel_header: პანელის თავსართი
+panel_name_placeholder: დაასახელეთ ეს პანელი...
+panel_note_placeholder: არჩევითი დეტალები ამ პანელის შესახებ...
+panel_delete_confirm: დარწმუნებული ხართ, რომ გსურთ ამ პანელის წაშლა? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
+list_panel_allow_edit: შიდა რედაქტირების დაშვება
+dashboard_delete_confirm: დარწმუნებული ხართ, რომ გსურთ ამ დაფის წაშლა? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
+edit_dashboard: დაფის რედაქტირება
+delete_dashboard: დაფის წაშლა
+visible: ხილული
+prefix_placeholder: ტექსტი მნიშვნელობამდე...
+suffix_placeholder: ტექსტი მნიშვნელობის შემდეგ...
+decimals_placeholder: ათწილადების რაოდენობა...
+no_dashboards: დაფები არ არის
+no_dashboards_copy: თქვენ ჯერ არ გაქვთ დაფები.
+create_dashboard: დაფის შექმნა
+dashboard_name: დაფის სახელი
+no_data: მონაცემები არ არის
+no_data_in_flow: ამ პროცესში მონაცემები არ წარმოქმნილა ან არ იყო წვდომადი
+accountability: ანგარიშვალდებულება
+payload: მონაცემები
+details: დეტალები
+resume_streaming_logs: ჟურნალების სტრიმინგის განახლება
+pause_streaming_logs: ჟურნალების სტრიმინგის დაპაუზება
+logs_session_resumed: ჟურნალების სესია განახლდა...
+logs_session_paused: ჟურნალების სესია დაპაუზდა...
+logs_stream_disconnected: ჟურნალების სტრიმი გაითიშა...
+log_detail_filter_paths: 'მისამართების გაფილტვრა (მაგ: მოთხოვნის მეთოდი, მოთხოვნის სტატუს კოდი)'
+logs_beginning: ეს თქვენი ჟურნალების სესიის დასაწყისია...
+logs_waiting: 'ველოდები მეტ ჟურნალს...'
+logs_unread_count: '{count} წაუკითხავი'
+clear_logs: ჟურნალების გასუფთავება
+search_logs: ჟურნალების ძებნა...
+all_instances: ყველა ინსტანცია
+instance_count: 'ინსტანცია არ არის | ერთი ინსტანცია | {count} ინსტანცია'
+all_log_levels: ყველა ჟურნალის დონე
+log_level_count: 'ჟურნალის დონე არ არის | ერთი ჟურნალის დონე | {count} ჟურნალის დონე'
+soft_wrap_lines: რბილი გადატანა
+full_screen: სრული ეკრანი
+full_text_search: სრული ტექსტური ძებნა
+edit_panels: პანელების რედაქტირება
+center_align: ცენტრში გასწორება
+left_align: მარცხნივ გასწორება
+right_align: მარჯვნივ გასწორება
+fit_to_screen: ეკრანზე მორგება
+image_url: სურათის მისამართი
+alt_text: ალტერნატიული ტექსტი
+media: მედია
+quality: ხარისხი
 width: სიგანე
 height: სიმაღლე
+transformation_preset_key: ტრანსფორმაციის პრესეტის გასაღები
+source: წყარო
+url_placeholder: შეიყვანეთ მისამართი...
+display_text: საჩვენებელი ტექსტი
+display_text_placeholder: შეიყვანეთ საჩვენებელი ტექსტი...
+interface_group_text_and_numbers: ტექსტი და რიცხვები
+interface_group_selection: არჩევანი
+interface_group_relational: დამოკიდებულებითი
+interface_group_presentation: წარმოდგენა
+interface_group_groups: ჯგუფები
+interface_group_other: სხვა
+tooltip: მინიშნება
+tooltip_placeholder: შეიყვანეთ მინიშნება...
+unlimited: შეუზღუდავი
+open_link_in: ბმულის გახსნა
+new_tab: ახალ ჩანართში
+save_image: სურათის შენახვა
+save_media: მედიის შენახვა
+wysiwyg_options:
+  aligncenter: ცენტრში გასწორება
+  alignjustify: სიგანეზე გასწორება
+  alignleft: მარცხნივ გასწორება
+  alignnone: გასწორების გარეშე
+  alignright: მარჯვნივ გასწორება
+  forecolor: წინა პლანის ფერი
+  backcolor: ფონის ფერი
+  bold: მსხვილი
+  italic: დახრილი
+  underline: ხაზგასმული
+  strikethrough: გადახაზული
+  subscript: ქვედა ინდექსი
+  superscript: ზედა ინდექსი
+  codeblock: კოდის ბლოკი
+  blockquote: ციტატა
+  bullist: პუნქტებიანი სია
+  numlist: დანომრილი სია
+  hr: ჰორიზონტალური ხაზი
+  link: ბმულის დამატება/რედაქტირება
+  unlink: ბმულის წაშლა
+  media: მედიის დამატება/რედაქტირება
+  image: სურათის დამატება/რედაქტირება
+  copy: კოპირება
+  cut: ამოჭრა
+  paste: ჩასმა
+  heading: სათაური
+  h1: სათაური 1
+  h2: სათაური 2
+  h3: სათაური 3
+  h4: სათაური 4
+  h5: სათაური 5
+  h6: სათაური 6
+  pre: წინასწარ ფორმატირებული
+  fontselect: შრიფტის არჩევა
+  fontsizeselect: შრიფტის ზომის არჩევა
+  indent: შეწევა
+  outdent: გამოწევა
+  undo: გაუქმება
+  redo: გამეორება
+  remove: წაშლა
+  removeformat: ფორმატის წაშლა
+  selectall: ყველას არჩევა
+  table: ცხრილი
+  visualaid: უხილავი ელემენტების ნახვა
+  source_code: წყაროს კოდის რედაქტირება
+  fullscreen: სრული ეკრანი
+  directionality: მიმართულება
+  lazy_loading: ზარმაცი ჩატვირთვა
+  lazy_loading_label: ზარმაცი ჩატვირთვის ჩართვა
+dropdown: ჩამოსაშლელი
+choices: არჩევანი
+choices_option_configured_incorrectly: არჩევანის ოფცია არასწორად არის დაკონფიგურირებული
+deselect: არჩევანის მოხსნა
+deselect_all: ყველას არჩევანის მოხსნა
+theme: თემა
+select_a_theme: აირჩიეთ თემა
+default_sync_with_project: ნაგულისხმევი (პროექტთან სინქრონიზაცია)
+appearance_auto: ავტომატური (სისტემასთან სინქრონიზაცია)
+appearance_light: ნათელი
+appearance_dark: ბნელი
+other: სხვა...
+adding_user: მომხმარებლის დამატება
+unknown_user: უცნობი მომხმარებელი
+creating_in: 'ჩანაწერის შექმნა {collection}-ში'
+editing_in: 'ჩანაწერის რედაქტირება {collection}-ში'
+viewing_in: 'ჩანაწერის ნახვა {collection}-ში'
+creating_unit: '{unit}-ის შექმნა'
+editing_unit: '{unit}-ის რედაქტირება'
+editing_in_batch: '{count} ჩანაწერის ჯგუფური რედაქტირება'
+no_options_available: ოფციები არ არის ხელმისაწვდომი
+settings_data_model: მონაცემთა მოდელი
+settings_roles: მომხმარებლის როლები
+settings_permissions: წვდომის პოლიტიკები
+settings_project: პარამეტრები
+settings_appearance: გარეგნობა
+settings_webhooks: ვებჰუკები
+settings_flows: ნაკადები
+settings_system_logs: სისტემის ჟურნალები
+settings_presets: სანიშნები
+settings_translations: თარგმანები
+one_or_more_options_are_missing: ერთი ან მეტი ოფცია აკლია
+configure_field_key_to_continue: გასაგრძელებლად დააკონფიგურირეთ ველის გასაღები
+scope: მასშტაბი
+actions: მოქმედებები
+select: არჩევა...
+layout: განლაგება
+tree_view: ხისებრი ხედი
+changes_are_permanent: ცვლილებები მუდმივია
+preset_name_placeholder: ცარიელი ველის შემთხვევაში გამოიყენება როგორც ნაგულისხმევი...
+preset_search_placeholder: ძებნის მოთხოვნა...
+editing_preset: პრესეტის რედაქტირება
+layout_preview: განლაგების გადახედვა
+layout_setup: განლაგების კონფიგურაცია
+data: მონაცემები
+theme-overrides: თემის გადაფარვები
+unsaved_changes: შეუნახავი ცვლილებები
+unsaved_changes_copy: დარწმუნებული ხართ, რომ გსურთ ამ გვერდის დატოვება?
+discard_changes: ცვლილებების გაუქმება
+discard_all_changes: ყველა ცვლილების გაუქმება
+discard_changes_copy: დარწმუნებული ხართ, რომ გსურთ ყველა განხორციელებული ცვლილების გაუქმება?
+show_x_axis: X ღერძის ჩვენება
+show_y_axis: Y ღერძის ჩვენება
+keep_editing: რედაქტირება
+activity_feed: აქტივობის ლენტი
+add_new: ახლის დამატება
+create_new: ახლის შექმნა
 all: ყველა
+none: არცერთი
+no_layout_collection_selected_yet: განლაგება/კოლექცია ჯერ არ არის არჩეული
+batch_delete_confirm: >-
+  ჩანაწერი არ არის არჩეული | დარწმუნებული ხართ, რომ გსურთ ამ ჩანაწერის წაშლა? ამ მოქმედების გაუქმება შეუძლებელია. | დარწმუნებული ხართ, რომ გსურთ ამ {count} ჩანაწერის წაშლა? ამ მოქმედების გაუქმება შეუძლებელია.
 cancel: გაუქმება
+no_upscale: არ გაადიდოთ სურათები
+no_extensions: გაფართოებები არ არის
+no_extensions_copy: გაფართოებები ჯერ არ არის დაინსტალირებული.
+install_extension: გაფართოების დაყენება
+uninstall_locked: მარკეტის მეშვეობით არ დაყენებული გაფართოებების დეინსტალაცია შეუძლებელია
+uninstall: დეინსტალაცია
+installed: დაყენებულია
+reinstall: ხელახლა დაყენება
+open_in_marketplace: მარკეტში გახსნა
+source_registry: მარკეტი
+source_local: ლოკალური
+source_module: Node მოდული
 collection: კოლექცია
+collections: კოლექციები
+content: კონტენტი
+singleton: სინგლტონი
+singleton_label: ერთ ობიექტად განხილვა
+system_fields_locked: სისტემური ველები ჩაკეტილია და მათი რედაქტირება შეუძლებელია
+directus_collection:
+  directus_access: პოლიტიკის დანართები
+  directus_activity: ანგარიშვალდებულების ჟურნალები ყველა მოვლენისთვის
+  directus_collections: დამატებითი კოლექციის კონფიგურაცია და მეტამონაცემები
+  directus_comments: კომენტარები ჩანაწერებისთვის
+  directus_dashboards: დაფები ანალიტიკის მოდულში
+  directus_fields: დამატებითი ველის კონფიგურაცია და მეტამონაცემები
+  directus_files: მეტამონაცემები ყველა მართული ფაილური რესურსისთვის
+  directus_folders: უზრუნველყოფს ვირტუალურ დირექტორიებს ფაილებისთვის
+  directus_migrations: მონაცემთა ბაზის ვერსია, რომელსაც იყენებთ
+  directus_notifications: მომხმარებლებისთვის გაგზავნილი შეტყობინებები
+  directus_operations: ოპერაციები, რომლებიც მუშაობს ნაკადებში
+  directus_panels: ინდივიდუალური პანელები ანალიტიკის დაფებში
+  directus_permissions: წვდომის უფლებები თითოეული პოლიტიკისთვის
+  directus_policies: წვდომის კონტროლის პოლიტიკები
+  directus_presets: პრესეტები კოლექციის ნაგულისხმევი პარამეტრებისა და სანიშნებისთვის
+  directus_relations: დამოკიდებულების კონფიგურაცია და მეტამონაცემები
+  directus_revisions: მონაცემთა სნეპშოტები ყველა აქტივობისთვის
+  directus_roles: უფლებების ჯგუფები სისტემის მომხმარებლებისთვის
+  directus_sessions: მომხმარებლის სესიის ინფორმაცია
+  directus_settings: პროექტის კონფიგურაციის ოფციები
+  directus_shares: თვალყურს ადევნებს გარედან გაზიარებულ ჩანაწერებს
+  directus_users: სისტემის მომხმარებლები პლატფორმისთვის
+  directus_webhooks: კონფიგურაცია მოვლენებზე დაფუძნებული HTTP მოთხოვნებისთვის
+  directus_translations: მორგებული თარგმანები
+  directus_versions: კონტენტის ვერსიები ჩანაწერებისთვის
+  directus_extensions: გაფართოებების კონფიგურაცია
 fields:
   directus_activity:
+    item: ჩანაწერის პირველადი გასაღები
     action: მოქმედება
     collection: კოლექცია
+    timestamp: მოქმედება შესრულდა
+    user: მოქმედება შესრულდა-ს მიერ
     comment: კომენტარი
     user_agent: მომხმარებლის აგენტი
+    origin: წყარო
     ip: IP მისამართი
+    revisions: რევიზიები
   directus_collections:
     collection: კოლექცია
+    icon: ხატულა
+    note: შენიშვნა
+    color: ფერი
+    display_template: ჩვენების შაბლონი
+    hidden: დამალული
+    singleton: სინგლტონი
+    translations: კოლექციის სახელის თარგმანები
+    archive_app_filter: აპლიკაციის არქივის ფილტრი
+    archive_value: არქივირებისას დაყენებული მნიშვნელობა
+    unarchive_value: არქივიდან აღდგენისას დაყენებული მნიშვნელობა
+    sort_field: დალაგების ველი
+    accountability: აქტივობის და რევიზიის თვალყურის დევნება
+    versioning: ვერსიების კონტროლი
+    archive_field: არქივის ველი
+    item_duplication_fields: ჩანაწერის დუბლირების ველები
   directus_files:
+    $thumbnail: მინიატურა
     title: სათაური
     description: აღწერა
     tags: იარლიყები
     location: მდებარეობა
+    storage: საცავი
+    filename_disk: ფაილის სახელი (დისკზე)
+    filename_download: ფაილის სახელი (გადმოწერისას)
     metadata: მეტა ინფორმაცია
+    type: Mime ტიპი
     filesize: ფაილის ზომა
+    modified_by: შეიცვალა-ს მიერ
+    modified_on: შეიცვალა
+    created_on: შეიქმნა
+    created_by: შეიქმნა-ს მიერ
+    embed: ჩაშენება
+    uploaded_by: აიტვირთა-ს მიერ
+    folder: საქაღალდე
     width: სიგანე
     uploaded_on: ატვირთვის თარიღი
     height: სიმაღლე
+    charset: სიმბოლოთა ნაკრები
     duration: ხანგრძლივობა
+    focal_point_x: X-კოორდინატი
+    focal_point_y: Y-კოორდინატი
   directus_users:
     first_name: სახელი
     last_name: გვარი
@@ -52,47 +1280,1231 @@ fields:
     title: სათაური
     description: აღწერა
     tags: იარლიყები
+    user_preferences: მომხმარებლის პარამეტრები
+    language: ენა
     tfa_secret: ორფაქტორიანი იდენტიფიკაცია
+    admin_options: ადმინისტრატორის ოფციები
     status: სტატუსი
+    status_draft: მონახაზი
+    status_invited: მოწვეული
+    status_unverified: დაუდასტურებელი
+    status_active: აქტიური
+    status_suspended: შეჩერებული
+    status_archived: დაარქივებული
     role: როლი
+    token: ტოკენი
+    provider: პროვაიდერი
+    external_identifier: გარე იდენტიფიკატორი
+    last_page: ბოლო გვერდი
+    last_access: ბოლო წვდომა
+    email_notifications: ელფოსტის შეტყობინებები
+    appearance: გარეგნობა
+    theme_light: ნათელი თემა
+    theme_dark: ბნელი თემა
+    theme_light_overrides: ნათელი თემის მორგება
+    theme_dark_overrides: ბნელი თემის მორგება
+  directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    reporting: რეპორტინგი
+    mapping: რუკების შედგენა
+    basemaps: საბაზისო რუკები
+    basemaps_raster: რასტრული
+    basemaps_tile: რასტრული TileJSON
+    basemaps_style: Mapbox სტილი
+    mapbox_key: Mapbox წვდომის ტოკენი
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: ატრიბუცია
+    attribution_placeholder: '© OpenStreetMap contributors'
+    transforms_note: Sharp მეთოდის სახელი და მისი არგუმენტები. დამატებითი ინფორმაციისთვის იხილეთ https://sharp.pixelplumbing.com/api-constructor.
+    additional_transforms: დამატებითი ტრანსფორმაციები
+    project_name: პროექტის სახელი
+    project_descriptor: პროექტის აღმწერი
+    project_url: პროექტის URL
+    project_color: პროექტის ფერი
+    project_logo: პროექტის ლოგო
+    default_language: ნაგულისხმევი ენა
+    branding: ბრენდინგი
+    public_foreground: საჯარო წინა პლანი
+    public_background: საჯარო ფონი
+    public_note: საჯარო შენიშვნა
+    theming: თემების ნაგულისხმევი პარამეტრები
+    default_appearance: ნაგულისხმევი გარეგნობა
+    default_theme_light: ნაგულისხმევი ნათელი თემა
+    default_theme_dark: ნაგულისხმევი ბნელი თემა
+    auth_password_policy: ავთენტიფიკაციის პაროლის პოლიტიკა
+    auth_login_attempts: ავთენტიფიკაციის შესვლის მცდელობები
+    files_and_thumbnails: ფაილები და საცავი
+    storage_default_folder: ნაგულისხმევი საქაღალდე
+    storage_asset_presets: ტრანსფორმაციის პრესეტები
+    storage_asset_transform: დაშვებული ტრანსფორმაციები
+    overrides: აპლიკაციის გადაფარვები
+    custom_css: მორგებული CSS
+    module_bar: მოდულის პანელი
+    transformations_all: ყველა ტრანსფორმაციის დაშვება
+    transformations_none: ტრანსფორმაციების გამორთვა
+    transformations_presets: ტრანსფორმაციების შეზღუდვა ქვემოთ მოცემული პრესეტებით
+    image_editor: სურათის რედაქტორი
+    custom_aspect_ratios: მორგებული ასპექტის თანაფარდობები
+    theme_light_overrides: ნათელი თემის მორგება
+    theme_dark_overrides: ბნელი თემის მორგება
+    public_registration: მომხმარებლის რეგისტრაცია
+    public_registration_note: მომხმარებლებს საშუალებას აძლევს დარეგისტრირდნენ [რეგისტრაციის მარშრუტით](/admin/register).
+    public_registration_role: მომხმარებლის როლი
+    public_registration_role_note: ეს როლი ენიჭება მომხმარებლებს, რომლებიც ამ მეთოდით რეგისტრირდებიან. არ მოქმედებს უკვე რეგისტრირებულ მომხმარებლებზე.
+    public_registration_email_filter: ელფოსტის მისამართის ფილტრი
+    public_registration_email_filter_note: მხოლოდ ამ ფილტრის შესაბამისი ელფოსტის მისამართები შეძლებენ რეგისტრაციას.
+    public_registration_verify_email: ელფოსტის დადასტურება
+    public_registration_verify_email_note: აგზავნის ელფოსტას რეგისტრირებულ მომხმარებელთან და სთხოვს დააჭიროს დამადასტურებელ ბმულს, სანამ შეძლებს შესვლას.
+    visual_editor_urls: ვიზუალური რედაქტორის URL-ები
   directus_shares:
+    name: სახელი
     role: როლი
     password: პაროლი
+    date_start: დაწყების თარიღი
+    date_end: დასრულების თარიღი
+    max_uses: მაქს. გამოყენება
+    times_used: გამოყენებულია ჯერ
+  directus_fields:
+    collection: კოლექციის სახელი
+    icon: კოლექციის ხატულა
+    note: შენიშვნა
+    hidden: დამალული
+    singleton: სინგლტონი
+    translation: ველის სახელების თარგმანი
+    display_template: შაბლონი
   directus_roles:
+    name: როლის სახელი
+    icon: როლის ხატულა
     description: აღწერა
+    users: მომხმარებლები როლში
+    parent: მშობელი როლი
+    children: შვილობილი როლები
   directus_policies:
+    name: პოლიტიკის სახელი
     description: აღწერა
+    app_access: აპლიკაციაზე წვდომა
+    admin_access: ადმინისტრატორზე წვდომა
+    ip_access: IP წვდომა
+    enforce_tfa: 2FA-ს მოთხოვნა
   directus_webhooks:
+    name: სახელი
+    method: მეთოდი
     status: სტატუსი
+    data: მონაცემები
+    header: თავსართი
+    value: მნიშვნელობა
+    headers: მოთხოვნის თავსართები
+    data_label: მოვლენის მონაცემების გაგზავნა
+    triggers: ტრიგერები
+    actions: მოქმედებები
+    collections: კოლექციები
 field_options:
+  directus_settings:
+    project_name_placeholder: ჩემი პროექტი...
+    project_color_note: შესვლის და ლოგოს ფონი
+    project_logo_note: თეთრი 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
+    public_note_placeholder: მოკლე, საჯარო შეტყობინება, რომელიც მხარს უჭერს markdown ფორმატირებას...
+    security_divider_title: უსაფრთხოება
+    auth_password_policy:
+      none_text: არცერთი – არ არის რეკომენდებული
+      weak_text: სუსტი – მინიმუმ 8 სიმბოლო
+      strong_text: ძლიერი – დიდი / პატარა ასოები / რიცხვები / სპეციალური სიმბოლოები
+    storage_asset_presets:
+      fit_label: მორგება
+      upscaling: გადიდება
+      fit:
+        contain_text: ჩატევა (ასპექტის თანაფარდობის შენარჩუნება)
+        cover_text: დაფარვა (აიძულებს ზუსტ ზომას)
+        fit_text: შიგნით მორგება
+        outside_text: გარეთ მორგება
+    additional_transforms: დამატებითი ტრანსფორმაციები
+    transforms_note: Sharp მეთოდის სახელი და მისი არგუმენტები. დამატებითი ინფორმაციისთვის იხილეთ https://sharp.pixelplumbing.com/api-constructor.
+    mapbox_key: Mapbox წვდომის ტოკენი
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: საბაზისო რუკები
+    basemaps_name_placeholder: შეიყვანეთ საბაზისო რუკის სახელი...
+    basemaps_raster: რასტრული
+    basemaps_tile: რასტრული TileJSON
+    basemaps_style: Mapbox სტილი
+    files_divider_title: ფაილები და მინიატურები
+    overrides_divider_title: აპლიკაციის გადაფარვები
   directus_activity:
+    login: შესვლა
     create: შექმნა
+    update: განახლება
+    delete: წაშლა
+  directus_collections:
+    track_activity_revisions: აქტივობის და რევიზიების თვალყურის დევნება
+    only_track_activity: მხოლოდ აქტივობის თვალყურის დევნება
+    do_not_track_anything: არაფრის თვალყურის დევნება
+    collection_setup: კოლექციის კონფიგურაცია
+    note_placeholder: ამ კოლექციის აღწერა...
+    hidden_label: აპლიკაციაში დამალვა
+    singleton: ერთ ობიექტად განხილვა
+    language: ენა
+    translation: თარგმანი
+    translation_placeholder: შეიყვანეთ თარგმანი...
+    collection_name: კოლექციის სახელი
+    singular_unit: მხოლობითი ერთეული
+    plural_unit: მრავლობითი ერთეული
+    archive_divider: დაარქივება
+    archive_field_placeholder: აირჩიეთ ველი...
+    archive_app_filter: აპლიკაციის არქივის ფილტრის ჩართვა
+    archive_value: არქივირებისას დაყენებული მნიშვნელობა...
+    unarchive_value: არქივიდან აღდგენისას დაყენებული მნიშვნელობა...
+    sort_divider: დალაგება
+    sort_field: აირჩიეთ ველი...
+    accountability_divider: ანგარიშვალდებულება
+    duplication_divider: დუბლირება
+    preview_divider: გადახედვა
+    content_versioning_divider: კონტენტის ვერსიების კონტროლი
+    enable_versioning: ვერსიების კონტროლის ჩართვა
+  directus_files:
+    title: უნიკალური სათაური...
+    description: არჩევითი აღწერა...
+    location: არჩევითი მდებარეობა...
+    storage_divider: ფაილის დასახელება
+    focal_point_divider: ფოკუსური წერტილი
+    filename_disk: სახელი დისკის საცავში...
+    filename_download: სახელი გადმოწერისას...
+  directus_policies:
+    name: უნიკალური სახელი ამ პოლიტიკისთვის...
+    description: ამ პოლიტიკის აღწერა...
+    ip_access: დაამატეთ დაშვებული IP მისამართები, IP დიაპაზონები და CIDR ბლოკები. დატოვეთ ცარიელი ყველას დასაშვებად...
+    enforce_tfa: ორფაქტორიანი ავთენტიფიკაციის მოთხოვნა
+    assigned_to: მინიჭებულია
+  directus_roles:
+    name: უნიკალური სახელი ამ როლისთვის...
+    description: ამ როლის აღწერა...
+    fields:
+      icon_name: ხატულა
+      name_name: სახელი
+      name_placeholder: შეიყვანეთ სათაური...
+      link_name: ბმული
+      link_placeholder: ფარდობითი ან აბსოლუტური URL...
+    parent_note: არჩევითი მშობელი როლი, საიდანაც ეს როლი მემკვიდრეობით იღებს უფლებებს
+    children_note: ჩადგმული შვილობილი როლები, რომლებიც მემკვიდრეობით იღებენ ამ როლის უფლებებს
+    collections_name: კოლექციები
+    collections_addLabel: კოლექციის დამატება...
+  directus_users:
+    preferences_divider: მომხმარებლის პარამეტრები
+    dropdown_auto: ავტომატური (სისტემის მიხედვით)
+    dropdown_light: ნათელი რეჟიმი
+    dropdown_dark: ბნელი რეჟიმი
+    admin_divider: ადმინისტრატორის ოფციები
+    status_dropdown_draft: მონახაზი
+    status_dropdown_invited: მოწვეული
+    status_dropdown_active: აქტიური
+    status_dropdown_suspended: შეჩერებული
+    status_dropdown_archived: დაარქივებული
+    token: შეიყვანეთ უსაფრთხო წვდომის ტოკენი...
   directus_webhooks:
+    status_options_active: აქტიური
+    status_options_inactive: არააქტიური
+    data_label: მოვლენის მონაცემების გაგზავნა
+    triggers_divider: ტრიგერები
     actions_create: შექმნა
+    actions_update: განახლება
+    actions_delete: წაშლა
+    actions_login: შესვლა
+    headers:
+      header: თავსართი
+      value: მნიშვნელობა
+      add: თავსართის დამატება
+no_fields_in_collection: '"{collection}"-ში ველები ჯერ არ არის'
+no_value: მნიშვნელობა არ არის
+do_nothing: არაფრის გაკეთება
+generate_and_save_uuid: UUID-ის გენერირება და შენახვა
+save_current_user_id: მიმდინარე მომხმარებლის ID-ის შენახვა
+save_current_user_role: მიმდინარე მომხმარებლის როლის შენახვა
+save_current_datetime: მიმდინარე თარიღის/დროის შენახვა
+always_open: ყოველთვის ღია
+start_open: ღიად დაწყება
+start_collapsed: შეკუმშულად დაწყება
+block: ბლოკი
+inline: შიდა
 comment: კომენტარი
+live_preview:
+  enable: გადახედვის ჩართვა
+  disable: გადახედვის გამორთვა
+  change_size: ჩვენების ზომების შეცვლა
+  refresh: გადახედვის განახლება
+  new_window: ახალ ფანჯარაში გახსნა
+  close_window: გაყოფილ ხედში გახსნა
+  toggle_3d: 3D-ს გადართვა
+shares: გაზიარებები
+unlimited_usage: შეუზღუდავი გამოყენება
+uses_left: გამოყენება არ დარჩა | ერთი გამოყენება დარჩა | {n} გამოყენება დარჩა
+no_shares: საჩვენებელი გაზიარებები არ არის
+new_share: ახალი გაზიარება
+ai:
+  input: შეყვანა
+  unknown: უცნობი
+  settings: პარამეტრები
+  tool_approval:
+    disabled: გამორთულია
+ai_tools:
+  items: ჩანაწერები
+  files: ფაილები
+  folders: საქაღალდეები
+  flows: ნაკადები
+  trigger-flow: Flow-ს გაშვება
+  operations: ოპერაციები
+  schema: სქემა
+  collections: კოლექციები
+  fields: ველები
+mcp_prompts_collection_schema:
+  messages_role_user: მომხმარებელი
+expired: ვადაგასული
+upcoming: მომავალი
+share: გაზიარება
+share_item: ჩანაწერის გაზიარება
+shared_with_you: ჩანაწერი გაზიარდა თქვენთან
+shared_enter_passcode: გასაგრძელებლად შეიყვანეთ თქვენი პაროლი...
+shared_leave_blank_for_passwordless_access: დატოვეთ ცარიელი უპაროლო წვდომისთვის
+shared_leave_blank_for_unlimited: დატოვეთ ცარიელი შეუზღუდავი გამოყენებისთვის
+shared_times_remaining: ამ ბმულის გამოყენება შესაძლებელია მხოლოდ {n} ჯერ
+shared_last_remaining: ამ ბმულის გამოყენება შესაძლებელია მხოლოდ ერთხელ
+shared_uses_left: დამატებითი უსაფრთხოებისთვის, ეს გაზიარებული გვერდი დაკონფიგურირებულია შეზღუდული რაოდენობის ნახვებით. ამჟამად დარჩენილია {n} ნახვა, რის შემდეგაც გვერდი აღარ იქნება ხელმისაწვდომი.
+share_access_page: გაზიარებულ გვერდზე წვდომა
+share_access_not_found: ეს გაზიარებული გვერდი ან არ არსებობს, ან უკვე გადააჭარბა დაშვებული გამოყენების მაქსიმალურ რაოდენობას.
+share_access_not_found_desc: გთხოვთ, დაუკავშირდეთ ამ პროექტის ავტორიზებულ მომხმარებელს წვდომის მოთხოვნით.
+share_access_not_found_title: უცნობი გაზიარებული გვერდი
+share_copy_link: ბმულის კოპირება
+share_copy_link_success: ბმული დაკოპირდა
+share_copy_link_error: ბმულის კოპირება ვერ მოხერხდა
+share_send_link: ბმულის გაგზავნა
+relational_triggers: დამოკიდებულებითი ტრიგერები
+referential_action_field_label_m2o: '{collection}-ის წაშლისას...'
+referential_action_field_label_o2m: '{collection}-ის არჩევანის მოხსნისას...'
+referential_action_no_action: წაშლის თავიდან აცილება
+referential_action_cascade: '{collection} ჩანაწერის წაშლა (კასკადი)'
+referential_action_set_null: '{field} ველის განულება'
+referential_action_set_default: '{field}-ის ნაგულისხმევ მნიშვნელობაზე დაყენება'
+choose_action: აირჩიეთ მოქმედება
+continue_label: გაგრძელება
+continue_as: >-
+  {name} ამჟამად ავთენტიფიცირებულია. თუ ცნობთ ამ ანგარიშს, დააჭირეთ გაგრძელებას.
+editing_role: '{role} როლი'
+editing_policy: '{policy} პოლიტიკა'
+no_permissions: უფლებები არ არის
+permission_add_collection: კოლექციის დამატება
+creating_webhook: ვებჰუკის შექმნა
+default_label: ნაგულისხმევი
+delete_label: წაშლა
+delete_are_you_sure: >-
+  ეს მოქმედება მუდმივია და მისი გაუქმება შეუძლებელია. დარწმუნებული ხართ, რომ გსურთ გაგრძელება?
+delete_field_are_you_sure: >-
+  დარწმუნებული ხართ, რომ გსურთ "{field}" ველის წაშლა? ამ მოქმედების გაუქმება შეუძლებელია.
 description: აღწერა
+done: შესრულებულია
+duplicate: დუბლირება
+limit: ლიმიტი
 email: ელ-ფოსტა
+embed: ჩაშენება
+fallback_icon: სარეზერვო ხატულა
+field: ველი | ველები
+file: ფაილი
+file_library: ფაილების ბიბლიოთეკა
+forgot_password: დაგავიწყდათ პაროლი
+hidden: დამალული
+hidden_in_group: დამალულია {group}-ში
+icon: ხატულა
+info: ინფორმაცია
+normal: ნორმალური
+success: წარმატება
+warning: გაფრთხილება
+danger: საფრთხე
+colors:
+  purple: იასამნისფერი
+  blue: ლურჯი
+  green: მწვანე
+  yellow: ყვითელი
+  orange: ნარინჯისფერი
+  red: წითელი
+  black: შავი
+  gray: ნაცრისფერი
+  white: თეთრი
+junction_collection: გადაკვეთის კოლექცია
+latency: შეყოვნება
+login: შესვლა
+my_activity: ჩემი აქტივობა
+not_authenticated: არ არის ავთენტიფიცირებული
+authenticated: ავთენტიფიცირებულია
+options: ოფციები
+otp: ერთჯერადი პაროლი
 password: პაროლი
+confirm_password: პაროლის დადასტურება
+permissions: უფლებები
+relationship: დამოკიდებულება
+reset: აღდგენა
+reset_password: პაროლის აღდგენა
+revisions: რევიზიები
+no_revisions: რევიზიები ჯერ არ არის
+no_logs: ჟურნალები ჯერ არ არის
+show_failed_only: მხოლოდ წარუმატებლების ჩვენება
+no_logs_on_page: ამ გვერდზე ჟურნალები არ არის
+revert: დაბრუნება
+save: შენახვა
+schema: სქემა
+search: ძებნა
+select_existing: არსებულის არჩევა
+select_field_type: აირჩიეთ ველის ტიპი
+select_interface: აირჩიეთ ინტერფეისი
+select_display: აირჩიეთ ჩვენება
+settings: პარამეტრები
+register: რეგისტრაცია
+registration_successful_headline: წარმატება!
+registration_successful_note: ახლა შეგიძლიათ გადახვიდეთ შესვლის გვერდზე.
+registration_successful_check_email_note: |
+  გთხოვთ, გაითვალისწინოთ, რომ შესვლამდე დაგჭირდებათ თქვენი ელფოსტის მისამართის დადასტურება გამოგზავნილ დამადასტურებელ ბმულზე დაჭერით.
+dont_have_an_account: არ გაქვთ ანგარიში?
+already_have_an_account: უკვე გაქვთ ანგარიში?
+sign_up_now: დარეგისტრირდით ახლა
+sign_in: შესვლა
+sign_out: გასვლა
+sign_out_confirm: დარწმუნებული ხართ, რომ გსურთ გასვლა?
+something_went_wrong: რაღაც შეცდომა მოხდა.
+sort_direction: დალაგების მიმართულება
+export_location: ექსპორტის მდებარეობა
+export_started: ექსპორტი დაიწყო
+export_started_copy: თქვენი ექსპორტი დაიწყო. შეგატყობინებთ, როდესაც ის მზად იქნება გადმოსაწერად.
+sort_asc: ზრდადობით დალაგება
+sort_desc: კლებადობით დალაგება
+disable_sort: დალაგების გამორთვა
+template: შაბლონი
+require_value_to_be_set: შექმნისას მნიშვნელობის დაყენების მოთხოვნა
+translation: თარგმანი
+translation_placeholder: შეიყვანეთ თარგმანი...
+value: მნიშვნელობა
+view_project: პროექტის ნახვა
+report_error: შეცდომის შეტყობინება
+table: ცხრილი
+list: სია
+search_filter: ძებნა და ფილტრი
+enable_search_filter: ძებნისა და ფილტრაციის ჩართვა
+item_link: ჩანაწერის ბმული
+show_link_to_item: ჩანაწერის ბმულის ჩვენება
+navigate_to_item: ჩანაწერზე გადასვლა
+undo_removed_item: წაშლილი ჩანაწერის გაუქმება
+remove_item: ჩანაწერის წაშლა
+delete_item: ჩანაწერის წაშლა
+pause: პაუზა
+resume: განახლება
 interfaces:
+  list-m2a:
+    prefix_note: ნაგულისხმევად იყენებს დაკავშირებული ჩანაწერის კოლექციის სახელს.
+    sorting_disabled: დალაგება გამორთულია, რადგან ერთ გვერდზე მეტი ჩანაწერია.
   filter:
+    name: ფილტრი
+    description: ფილტრის ობიექტის კონფიგურაცია.
+    add_filter: ფილტრის დამატება
+    add_group: და / ან ჯგუფი
+    add_value: მნიშვნელობის დამატება
+    logic_type_and: და
+    logic_type_or: ან
     all: ყველა
+    any: ნებისმიერი
+    and: და
+    of_the_following: შემდეგიდან
+    no_rules: დაკონფიგურირებული წესები არ არის
+    change_value: დააკლიკეთ მნიშვნელობის შესაცვლელად
+    placeholder: გადაათრიეთ წესები აქ
+    add_key_placeholder: დაამატეთ გასაღები და დააჭირეთ Enter-ს...
+  fields:
+    name: ველები
+  group-accordion:
+    name: აკორდეონი
+    description: ველების ან ჯგუფების ჩვენება აკორდეონის სექციებად
+    start: დაწყება
+    all_closed: ყველა დახურულია
+    first_opened: პირველი გახსნილია
+    all_opened: ყველა გახსნილია
+    accordion_mode: აკორდეონის რეჟიმი
+    max_one_section_open: მაქს. 1 სექცია ღია
+  presentation-links:
+    presentation-links: ღილაკები
+    style: სტილი
+    primary: პირველადი
+    link: ბმულები
+    button: ღილაკები
+    error: მოქმედების შესრულება შეუძლებელია
+  select-multiple-checkbox:
+    checkboxes: მოსანიშნი უჯრები
+    description: აირჩიეთ მრავალი ოფციიდან მოსანიშნი უჯრების მეშვეობით
+    allow_other: სხვის დაშვება
+    show_more: '{count} მეტის ჩვენება'
+    items_shown: ნაჩვენები ჩანაწერები
+  select-multiple-checkbox-tree:
+    name: მოსანიშნი უჯრები (ხე)
+    description: აირჩიეთ მრავალი ოფციიდან ჩადგმული მოსანიშნი უჯრების მეშვეობით
+    value_combining: მნიშვნელობის გაერთიანება
+    value_combining_note: აკონტროლებს, თუ რა მნიშვნელობა ინახება, როდესაც ჩადგმული არჩევანი კეთდება.
+    show_all: ყველას ჩვენება
+    show_selected: არჩეულის ჩვენება
+  input-code:
+    code: კოდი
+    description: დაწერეთ ან გააზიარეთ კოდის ფრაგმენტები
+    line_number: ხაზის ნომერი
+    line_wrapping: ხაზის გადატანა
+    placeholder: შეიყვანეთ კოდი აქ...
   system-collection:
     collection: კოლექცია
+    description: აირჩიეთ არსებულ კოლექციებს შორის
+    include_system_collections: სისტემური კოლექციების ჩათვლით
+  system-collections:
+    collections: კოლექციები
+    description: აირჩიეთ არსებულ კოლექციებს შორის
+    include_system_collections: სისტემური კოლექციების ჩათვლით
+  select-color:
+    color: ფერი
+    description: შეიყვანეთ ან აირჩიეთ ფერის მნიშვნელობა
+    placeholder: აირჩიეთ ფერი...
+    preset_colors: წინასწარ დაყენებული ფერები
+    opacity: გამჭვირვალობა
+    preset_colors_add_label: ახალი ფერის დამატება...
+    name_placeholder: შეიყვანეთ ფერის სახელი...
+  datetime:
+    datetime: თარიღი და დრო
+    description: შეიყვანეთ თარიღები და დროები
+    include_seconds: წამების ჩათვლით
+    set_to_now: ახლანდელ დროზე დაყენება
+    use_24: 24-საათიანი ფორმატის გამოყენება
+    placeholder: აირჩიეთ თარიღი და დრო...
+  system-fields:
+    select_a_collection: აირჩიეთ კოლექცია
+    no_fields: ველები არ არის
+  system-display-template:
+    display-template: ჩვენების შაბლონი
+    description: შეურიეთ სტატიკური ტექსტი და დინამიური ველის მნიშვნელობები
+    collection_field: კოლექციის ველი
+    collection_field_not_setup: კოლექციის ველის ოფცია არასწორად არის დაკონფიგურირებული
+    select_a_collection: აირჩიეთ კოლექცია
+  presentation-divider:
+    divider: გამყოფი
+    description: დააიარლიყეთ და დაყავით ველები სექციებად
+    title_placeholder: შეიყვანეთ სათაური, ან დატოვეთ ცარიელი მხოლოდ ხაზის საჩვენებლად...
+    inline_title: შიდა სათაური
+    inline_title_label: სათაურის ჩვენება ხაზის შიგნით
+    margin_top: ზედა დაშორება
+    margin_top_label: ზედა დაშორების გაზრდა
+  select-dropdown:
+    description: აირჩიეთ მნიშვნელობა ჩამოსაშლელიდან
+    choices_placeholder: დაამატეთ ახალი არჩევანი
+    allow_other: სხვის დაშვება
+    allow_other_label: სხვა მნიშვნელობების დაშვება
+    allow_none: არცერთის დაშვება
+    allow_none_label: არჩევანის არქონის დაშვება
+    choices_name_placeholder: შეიყვანეთ სახელი...
+    choices_value_placeholder: შეიყვანეთ მნიშვნელობა...
+    preview_threshold: გადახედვის ზღვარი
+  select-multiple-dropdown:
+    select-multiple-dropdown: ჩამოსაშლელი (მრავალი)
+    description: აირჩიეთ მრავალი მნიშვნელობა ჩამოსაშლელიდან
+  file:
+    file: ფაილი
+    description: აირჩიეთ ან ატვირთეთ ფაილი
   files:
     files: ფაილები
+    description: აირჩიეთ ან ატვირთეთ მრავალი ფაილი
+  input-hash:
+    hash: ჰეში
+    description: შეიყვანეთ დასაჰეში მნიშვნელობა
+    masked: ნიღბიანი
+    masked_label: ნამდვილი მნიშვნელობების დამალვა
+  select-icon:
+    icon: ხატულა
+    description: აირჩიეთ ხატულა ჩამოსაშლელიდან
+    search_for_icon: მოძებნეთ ხატულა...
+  file-image:
+    image: სურათი
+    description: აირჩიეთ ან ატვირთეთ სურათი
+    crop: მორგებით მოჭრა
+    crop_label: საჭიროებისამებრ სურათის მოჭრა
+    letterbox: საფოსტო ყუთი
+    letterbox_label: დაამატეთ დაშორება სურათის გადახედვას
+  system-interface:
+    interface: ინტერფეისი
+    description: აირჩიეთ არსებული ინტერფეისი
+    placeholder: აირჩიეთ ინტერფეისი...
+  system-interface-options:
+    interface-options: ინტერფეისის ოფციები
+    description: მოდალი ინტერფეისის ოფციების ასარჩევად
+  system-display:
+    display: ჩვენება
+    description: აირჩიეთ არსებული ჩვენება
+    placeholder: აირჩიეთ ჩვენება...
+  system-display-options:
+    display-options: ჩვენების ოფციები
+    description: მოდალი ჩვენების ოფციების ასარჩევად
+  list-m2m:
+    many-to-many: მრავალი მრავალთან
+    description: აირჩიეთ მრავალი დაკავშირებული გადაკვეთის ჩანაწერი
+    columns_configure_notice: სვეტების კონფიგურაცია შეგიძლიათ ამ ველის შექმნის შემდეგ.
+    display_template_configure_notice: ჩვენების შაბლონის კონფიგურაცია შეგიძლიათ ამ ველის შექმნის შემდეგ.
+  select-dropdown-m2o:
+    many-to-one: მრავალი ერთთან
+    description: აირჩიეთ ერთი დაკავშირებული ჩანაწერი
+    display_template: ჩვენების შაბლონი
+  collection-item-dropdown:
+    collection-item-dropdown: კოლექციის ჩანაწერის ჩამოსაშლელი
+    description: აირჩიეთ ჩანაწერი კოლექციიდან JSON ფორმატში
+  input-rich-text-md:
+    markdown: Markdown
+    description: შეიყვანეთ და გადახედეთ markdown-ს
+    edit: რედაქტირება
+    preview: გადახედვა
+    editorFont: რედაქტორის შრიფტი
+    previewFont: გადახედვის შრიფტი
+    default_view: ნაგულისხმევი ხედი
+    default_view_editor: რედაქტორი
+    default_view_preview: გადახედვა
+    customSyntax: მორგებული ბლოკები
+    customSyntax_label: დაამატეთ მორგებული სინტაქსის ტიპები
+    customSyntax_add: მორგებული სინტაქსის დამატება
+    box: ბლოკი / შიდა
+    imageToken: სტატიკური წვდომის ტოკენი
+    imageToken_label: სტატიკური წვდომის ტოკენი ემატება რესურსების URL-ს
+  map:
+    map: რუკა
+    description: აირჩიეთ მდებარეობა რუკაზე
+    zoom: მასშტაბი
+    geometry_type: გეომეტრიის ტიპი
+    geometry_format: გეომეტრიის ფორმატი
+    default_view: ნაგულისხმევი ხედი
+    invalid_options: არასწორი ოფციები
+    invalid_format: არასწორი ფორმატი ({format})
+    unexpected_geometry: მოსალოდნელი იყო {expected}, მივიღეთ {got}.
+    fit_bounds: ხედვის მორგება მონაცემებზე
+    native: ნატიური
+    geojson: GeoJSON
+    lnglat: გრძედი, განედი
+    wkt: WKT
+    wkb: WKB
+    click_to_select: დააკლიკეთ {geometry}-ის ასარჩევად
+  presentation-notice:
+    notice: შეტყობინება
+    description: მოკლე შეტყობინების ჩვენება
+    text: შეიყვანეთ შეტყობინების კონტენტი აქ...
+    no_text: ტექსტი არ არის დაკონფიგურირებული...
+  list-o2m:
+    one-to-many: ერთი მრავალთან
+    description: აირჩიეთ მრავალი დაკავშირებული ჩანაწერი
+    no_collection: კოლექცია ვერ მოიძებნა
+  system-folder:
+    folder: ძირეული საქაღალდე
+    description: აირჩიეთ საქაღალდე
+    field_hint: ნაგულისხმევი საქაღალდე ატვირთული ფაილებისთვის საქაღალდის მითითების გარეშე. არ მოქმედებს არსებულ ფაილებზე.
+    root_name: ფაილების ბიბლიოთეკის ძირი
+    system_default: სისტემის ნაგულისხმევი
+  select-radio:
+    radio-buttons: რადიო ღილაკები
+    description: აირჩიეთ ერთი მრავალი არჩევანიდან
+  list:
+    repeater: გამეორება
+    description: შექმენით ერთი და იგივე სტრუქტურის მრავალი ჩანაწერი
+    edit_fields: ველების რედაქტირება
+    add_label: '"ახლის შექმნა" იარლიყი'
+    sort: დალაგება
+    sort_placeholder: ხელით
+    field_note_placeholder: შეიყვანეთ ველის შენიშვნა...
+    incompatible_data: მიმდინარე მონაცემები არ არის თავსებადი გამეორების ინტერფეისთან და გადაიწერება გამეორებაში ჩანაწერების დამატებისას
+    interface_group: ინტერფეისის ოფციები
+    display_group: ჩვენების ოფციები
+  slider:
+    slider: სლაიდერი
+    description: აირჩიეთ რიცხვი სლაიდერის გამოყენებით
+    always_show_value: ყოველთვის აჩვენე მნიშვნელობა
   tags:
     tags: იარლიყები
+    description: აირჩიეთ ან დაამატეთ იარლიყები
+    whitespace: ცარიელი ადგილი
+    hyphen: დეფისით ჩანაცვლება
+    underscore: ქვედა ტირეთი ჩანაცვლება
+    remove: ცარიელი ადგილის წაშლა
+    capitalization: კაპიტალიზაცია
+    uppercase: დიდ ასოებად გადაქცევა
+    lowercase: პატარა ასოებად გადაქცევა
+    auto_formatter: სათაურის ავტო-ფორმატერის გამოყენება
+    alphabetize: ანბანის მიხედვით დალაგება
+    alphabetize_label: ანბანური რიგის იძულება
+    add_tags: დაამატეთ იარლიყი და დააჭირეთ Enter-ს...
+  input:
+    input: შეყვანა
+    description: ხელით შეიყვანეთ მნიშვნელობა
+    trim: მოჭრა
+    trim_label: დასაწყისისა და დასასრულის მოჭრა
+    mask: ნიღბიანი
+    mask_label: ნამდვილი მნიშვნელობის დამალვა
+    clear: გასუფთავებული მნიშვნელობა
+    clear_label: ცარიელ სტრიქონად შენახვა
+    minimum_value: მინიმალური მნიშვნელობა
+    maximum_value: მაქსიმალური მნიშვნელობა
+    step_interval: ნაბიჯის ინტერვალი
+    slug: სლაგიფიკაცია
+    slug_label: შეყვანილი მნიშვნელობის URL-უსაფრთხოდ ქცევა
+  input-multiline:
+    textarea: ტექსტური არე
+    description: შეიყვანეთ მრავალხაზიანი უბრალო ტექსტი
+  input-translated-string:
+    input-translated-string: თარგმნილი სტრიქონები
+    description: აირჩიეთ ან დაამატეთ მორგებული თარგმანი
+    search_placeholder: ძებნა...
+    new_custom_translation: ახალი მორგებული თარგმანი
+  boolean:
+    toggle: გადამრთველი
+    description: ჩართულ და გამორთულ მდგომარეობებს შორის გადართვა
+    color_on: ფერი ჩართულზე
+    color_off: ფერი გამორთულზე
+    label_placeholder: შეიყვანეთ იარლიყი...
+    label_default: ჩართულია
+  translations:
+    display_template: ჩვენების შაბლონი
+    no_collection: კოლექცია არ არის
+    toggle_split_view: გაყოფილი ხედვის გადართვა
+    enable: ჩართვა
+    default_split_view_state: ნაგულისხმევი გაყოფილი ხედვის მდგომარეობა
+    user_language: მიმდინარე მომხმარებლის ენის გამოყენება
+    default_language: ნაგულისხმევი ენა
+    language_field: ენის ინდიკატორის ველი
+    language_direction_field: ენის მიმართულების ველი
+  list-o2m-tree-view:
+    description: ხისებრი ხედი ჩადგმული რეკურსიული ერთი-მრავალთან ჩანაწერებისთვის
+    recursive_only: ხისებრი ხედვის ინტერფეისი მუშაობს მხოლოდ რეკურსიულ დამოკიდებულებებზე.
+  user:
+    user: მომხმარებელი
+    description: აირჩიეთ არსებული directus მომხმარებელი
+    select_mode: არჩევის რეჟიმი
+    modes:
+      auto: ავტო
+      dropdown: ჩამოსაშლელი
+      modal: მოდალი
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: მდიდარი ტექსტის რედაქტორი HTML კონტენტის დასაწერად
+    toolbar: ხელსაწყოთა პანელი
+    custom_formats: მორგებული ფორმატები
+    custom_formats_note: TinyMCE კონტენტის ფორმატების სია. დამატებითი ინფორმაციისთვის იხილეთ TinyMCE დოკუმენტაცია [კონტენტის ფორმატირების](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) შესახებ.
+    options_override: ოფციების გადაფარვა
+    options_override_note: TinyMCE მომხმარებლის ფორმატირების გასაღებები და მათი მნიშვნელობები. დამატებითი ინფორმაციისთვის იხილეთ TinyMCE დოკუმენტაცია [მომხმარებლის ფორმატირების](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) შესახებ.
+    folder_note: საქაღალდე ატვირთული ფაილებისთვის. არ მოქმედებს არსებულ ფაილებზე.
+    imageToken: სტატიკური წვდომის ტოკენი
+    imageToken_label: სტატიკური წვდომის ტოკენი ემატება რესურსების URL-ს
+  input-block-editor:
+    input-block-editor: ბლოკის რედაქტორი
+    description: ბლოკის სტილის რედაქტორი მდიდარი მედია ისტორიებისთვის, გამოაქვს სუფთა მონაცემები JSON-ში Editor.js-ის გამოყენებით
+    tools: ხელსაწყოთა პანელი
+    tools_options:
+      header: სათაური
+      nestedlist: სია
+      embed: ჩაშენება
+      paragraph: პარაგრაფი
+      code: კოდი
+      image: სურათი
+      attaches: დანართები
+      table: ცხრილი
+      quote: ციტატა
+      underline: ხაზგასმული
+      inlinecode: შიდა კოდი
+      delimiter: გამყოფი
+      checklist: მოსანიშნი სია
+      toggle: გადამრთველი ბლოკი
+      alignment: გასწორება
+      raw: პირველადი HTML
+  input-autocomplete-api:
+    input-autocomplete-api: ავტომატური შევსების შეყვანა (API)
+    description: ძებნის ტიპის შეთავაზება გარე API მნიშვნელობებისთვის.
+    results_path: შედეგების გზა
+    value_path: მნიშვნელობის გზა
+    text_path: ტექსტის გზა
+    trigger: ტრიგერი
+    rate: სიხშირე
+  group-raw:
+    name: პირველადი ჯგუფი
+    description: ველების ისე ჩვენება, როგორც არის
+  group-detail:
+    name: დეტალების ჯგუფი
+    description: ველების ჩვენება როგორც ჩაკეცვადი სექცია
+    show_header: ჯგუფის თავსართის ჩვენება
+    header_icon: თავსართის ხატულა
+    header_color: თავსართის ფერი
+    start_open: ღიად დაწყება
+    start_closed: დახურულად დაწყება
+  system-token:
+    system-token: ტოკენი
+    description: სტატიკური წვდომის ტოკენის მართვა
+    placeholder: დააკლიკეთ "ტოკენის გენერირება" ახალი სტატიკური წვდომის ტოკენის შესაქმნელად
+    value_securely_saved: მნიშვნელობა უსაფრთხოდ შეინახა
+    generate: ტოკენის გენერირება
+    regenerate: ტოკენის ხელახლა გენერირება
+    generate_success_copy: აუცილებლად შექმენით სარეზერვო ასლი და დააკოპირეთ ზემოთ მოცემული ტოკენი. უსაფრთხოების მიზნით, თქვენ ვეღარ შეძლებთ ტოკენის ნახვას შენახვისა და ამ გვერდიდან გასვლის შემდეგ.
+    remove_token: ტოკენის წაშლა
+  system-raw-editor:
+    system-raw-editor: პირველადი რედაქტორი
+    description: პირველადი ან mustache შაბლონური მნიშვნელობების შეყვანის დაშვება
+  input-password:
+    input-password: პაროლის შეყვანა
+    description: პაროლის შეყვანა მნიშვნელობის დამალვის გადამრთველით
+  header:
+    header: თავსართი
+    links: ბმულები
 displays:
+  translations:
+    translations: თარგმანები
+    description: თარგმანების გადახედვა
+    enable: ჩართვა
+    user_language: მიმდინარე მომხმარებლის ენის გამოყენება
+    default_language: ნაგულისხმევი ენა
+    language_field: ენის ინდიკატორის ველი
+  boolean:
+    boolean: ბულის ტიპი
+    description: ჩართული და გამორთული მდგომარეობების ჩვენება
+    label_on: იარლიყი ჩართულზე
+    label_on_placeholder: შეიყვანეთ ჩართულის იარლიყი...
+    label_off: იარლიყი გამორთულზე
+    label_off_placeholder: შეიყვანეთ გამორთულის იარლიყი...
+    icon_on: ხატულა ჩართულზე
+    icon_off: ხატულა გამორთულზე
+    color_on: ფერი ჩართულზე
+    color_off: ფერი გამორთულზე
   collection:
     collection: კოლექცია
+    description: კოლექციის ჩვენება
+    icon_label: კოლექციის ხატულის ჩვენება
+  color:
+    color: ფერი
+    description: ფერადი წერტილის ჩვენება
+    default_color: ნაგულისხმევი ფერი
+  datetime:
+    datetime: თარიღი და დრო
+    description: დროსთან დაკავშირებული მნიშვნელობების ჩვენება
+    format: ფორმატი
+    format_note: >-
+      მორგებული ფორმატი იღებს __[თარიღის ველის სიმბოლოების ცხრილს](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: გრძელი
+    short: მოკლე
+    relative: ფარდობითი
+    relative_label: 'ფარდობითი დროის ჩვენება, მაგ: 5 წუთის წინ'
+    suffix: სუფიქსი
+    suffix_label: ფარდობითი ინდიკატორის ჩვენება
+    suffix_note: იყენებს სიტყვებს, როგორიცაა 'ში' და 'წინ'
+    strict: მკაცრი
+    strict_label: მკაცრი ერთეულების გამოყენება
+    strict_note: შლის სიტყვებს, როგორიცაა 'თითქმის', 'მეტი', 'ნაკლები'
+    round: დამრგვალება
+    round_note: აირჩიეთ გამოსაყენებელი დამრგვალების ფუნქცია
+    down: ქვემოთ
+    nearest: უახლოესი
+    up: ზემოთ
+  file:
+    file: ფაილი
+    description: ფაილების ჩვენება
+  filesize:
+    filesize: ფაილის ზომა
+    description: ფაილის ზომის ჩვენება
+  formatted-value:
+    formatted-value: ფორმატირებული მნიშვნელობა
+    description: ტექსტის ფორმატირებული ვერსიის ჩვენება
+    format: ფორმატი
+    format_label: ავტო ფორმატირება
+    font: შრიფტი
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: მსხვილი
+    bold_label: მსხვილი სტილის გამოყენება
+    italic: დახრილი
+    italic_label: დახრილი სტილის გამოყენება
+    prefix: პრეფიქსი
+    prefix_label: ტექსტის წინ დამატება
+    suffix: სუფიქსი
+    suffix_label: დამატებული ტექსტი
+    color: ფერი
+    background: ფონი
+    icon: ხატულა
+    border: ჩარჩო
+    border_label: ჩარჩოს ჩვენება
+    mask: ნიღბიანი
+    mask_label: ნამდვილი მნიშვნელობის დამალვა
+    text: ტექსტი
+    text_placeholder: არჩევითი მნიშვნელობის გადაფარვა...
+  formatted-json-value:
+    formatted-json-value: ფორმატირებული JSON მნიშვნელობა
+    description: ობიექტის ფორმატირებული ვერსიის ჩვენება
+  hash:
+    hash: ჰეში
+    description: მნიშვნელობის რედაქტირებული ვერსიის ჩვენება
+  icon:
+    icon: ხატულა
+    description: ხატულის ჩვენება
+    filled: შევსებული
+    filled_label: შევსებული ვარიანტის გამოყენება
+  image:
+    image: სურათი
+    description: პატარა სურათის გადახედვის ჩვენება
+    circle: წრე
+    circle_label: წრედ ჩვენება
+  labels:
+    labels: იარლიყები
+    description: ერთი ან მრავალი იარლიყის ჩვენება
+    default_foreground: ნაგულისხმევი წინა პლანი
+    default_background: ნაგულისხმევი ფონი
+    format_label: თითოეული იარლიყის ფორმატირება
+    show_as_dot: წერტილად ჩვენება
+    choices_value_placeholder: შეიყვანეთ მნიშვნელობა...
+    choices_text_placeholder: შეიყვანეთ ტექსტი...
+  mime-type:
+    mime-type: MIME ტიპი
+    description: ფაილის MIME-ტიპის ჩვენება
+    extension_only: მხოლოდ გაფართოება
+    extension_only_label: მხოლოდ ფაილის გაფართოების ჩვენება
+  rating:
+    rating: რეიტინგი
+    description: რიცხვის ვიზუალიზაცია ვარსკვლავებად მაქს-მნიშვნელობასთან შედარებით
+    simple: მარტივი
+    simple_label: ვარსკვლავების მარტივ ფორმატში ჩვენება
+  raw:
+    raw: პირველადი მნიშვნელობა
+  related-values:
+    related-values: დაკავშირებული მნიშვნელობები
+    description: ფარდობითი მნიშვნელობების ჩვენება
+    display_template_configure_notice: ჩვენების შაბლონის კონფიგურაცია შეგიძლიათ ამ ველის შექმნის შემდეგ.
   user:
+    user: მომხმარებელი
+    description: directus მომხმარებლის ჩვენება
     avatar: პროფილის ფოტო
+    name: სახელი
     both: ორივე
+    circle_label: მომხმარებლის წრეში ჩვენება
 layouts:
   cards:
+    cards: ბარათები
+    image_source: სურათის წყარო
+    image_fit: სურათის მორგება
+    crop: მოჭრა
+    contain: ჩატევა
     title: სათაური
+    subtitle: ქვესათაური
   tabular:
+    tabular: ცხრილი
+    spacing: დაშორება
     comfortable: კომფორტული
     compact: კომპაქტური
+    cozy: მყუდრო
+  calendar:
+    calendar: კალენდარი
+    start_date_field: დაწყების თარიღის ველი
+    end_date_field: დასრულების თარიღის ველი
+    optional: არჩევითი
+    first_day: კვირის პირველი დღე
+  map:
+    map: რუკა
+    basemap: საბაზისო რუკა
+    layers: ფენები
+    cluster_options: კლასტერიზაციის ოფციები
+    cluster: ახლომდებარე მონაცემების კლასტერიზაცია
+    cluster_radius: კლასტერის რადიუსი
+    cluster_minpoints: კლასტერის მინიმალური ზომა
+    cluster_maxzoom: მაქსიმალური მასშტაბი კლასტერიზაციისთვის
+    field: გეოსივრცითი ველი
+    invalid_geometry: არასწორი გეომეტრია
+    find_location: მდებარეობის პოვნა...
+    default_template: კოლექციის ნაგულისხმევის გამოყენება...
+    no_compatible_fields: თავსებადი ველები არ არის
+  kanban:
+    name: კანბანი
+    group_field: ველი დაჯგუფებისთვის
+    group_field_placeholder: ველი, რომლითაც დაჯგუფდება...
+    group_title: ჯგუფის სათაური
+    group_title_placeholder: ველი ჯგუფის სათაურებისთვის...
+    title: ბარათის სათაური
+    title_placeholder: სათაურის ველი (არასავალდებულო)...
+    text: ბარათის ტექსტი
+    text_placeholder: ტექსტის ველი (არასავალდებულო)...
+    date: ბარათის თარიღი
+    date_placeholder: თარიღის ველი (არასავალდებულო)...
+    tags: ბარათის თეგები
+    tags_placeholder: თეგების ველი (არასავალდებულო)...
+    user: ბარათის მომხმარებელი
+    user_placeholder: მომხმარებლის ველი (არასავალდებულო)...
+    image: ბარათის სურათი
+    image_placeholder: სურათის ველი (არასავალდებულო)...
+    image_fit: სურათის მორგება
+    crop: მოჭრა
+    advanced: გაფართოებული
+    edit_group: ჯგუფის რედაქტირება
+    delete_group: ჯგუფის წაშლა
+    add_group: ჯგუფის დამატება
+    add_group_placeholder: შეიყვანეთ ახალი ჯგუფის სათაური...
+    show_ungrouped: დაუჯგუფებლების ჩვენება
+    show: ჩვენება
+    no_group: ჯგუფის გარეშე
+horizontal: ჰორიზონტალური
+vertical: ვერტიკალური
+axis: ღერძი
+x_axis: X-ღერძი
+y_axis: Y-ღერძი
+y_axis_function: Y-ღერძის ფუნქცია
+show_x_only: მხოლოდ X-ღერძის ჩვენება
+show_y_only: მხოლოდ Y-ღერძის ჩვენება
+show_data_label: მონაცემის იარლიყის ჩვენება
 both: ორივე
+show_axis_labels: ღერძის იარლიყების ჩვენება
+function: ფუნქცია
+half_circle: ნახევარწრე
+full_circle: სრული წრე
+stroke_width: ხაზის სისქე
+rounded_stroke: მომრგვალებული ხაზი
+thin: თხელი
+medium: საშუალო
+broad: ფართო
+show_labels: იარლიყების ჩვენება
+show_legend: ლეგენდის ჩვენება
+right: მარჯვნივ
+left: მარცხნივ
+start: დასაწყისი
+end: დასასრული
+donut: დონატი
+continuous: უწყვეტი
+gap: დაშორება
+panels:
+  metric:
+    name: მეტრიკა
+    description: აჩვენებს ერთ მნიშვნელობას მოთხოვნის საფუძველზე
+    field: ველი
+  metric_list:
+    name: მეტრიკების სია
+    description: აჩვენებს და ვიზუალურად გამოსახავს აგრეგირებულ მეტრიკებს კოლექციიდან
+  time_series:
+    name: დროითი მწკრივი
+    description: ქმნის ხაზოვან დიაგრამას დროთა განმავლობაში არსებული მნიშვნელობების მიხედვით
+    date_field: თარიღის ველი
+    value_field: მნიშვნელობის ველი
+    fill_type: შევსების ტიპი
+    curve_type: მრუდის ტიპი
+    missing_data: გამოტოვებული მონაცემები
+  label:
+    name: იარლიყი
+    description: აჩვენებს ტექსტს
+  list:
+    name: სია
+    description: ფილტრავს და სიის სახით გამოაქვს ველები კოლექციიდან
+  barchart:
+    name: სვეტოვანი დიაგრამა
+    description: სვეტოვანი დიაგრამები მნიშვნელობათა ჯგუფების შესადარებლად
+    horizontal: ჰორიზონტალური
+    select_collection: უნდა აირჩიოთ კოლექცია.
+  linechart:
+    name: ხაზოვანი დიაგრამა
+    description: ხაზოვანი დიაგრამა ველის ცვლილების შესადარებლად
+    disabled_grouping: გათიშულია, როდესაც დაჯგუფება არჩეულია.
+    disabled_no_grouping: გათიშულია, როდესაც დაჯგუფება არ არის არჩეული.
+    show_marker: მინიშნების მარკერის ჩვენება
+    curve_type: მრუდის ტიპი
+    smooth: გლუვი
+    straight: სწორი
+    step_line: საფეხურებრივი ხაზი
+    show_legend: ლეგენდის ჩვენება
+  meter:
+    name: მრიცხველი
+    description: მრიცხველი მნიშვნელობების სათვალთვალოდ
+  piechart:
+    name: წრიული ან დონატის დიაგრამა
+    description: წრიული დიაგრამა, რომელიც აჩვენებს სვეტზე ჯგუფების თანაფარდობას
+  variable:
+    name: გლობალური ცვლადი
+    description: აყენებს გლობალურ მნიშვნელობას სხვა პანელების ფილტრებში გამოსაყენებლად
+    variable_key: ცვლადის გასაღები
+  relational-variable:
+    name: გლობალური დამოკიდებულების ცვლადი
+    description: აყენებს გლობალურ დამოკიდებულების მნიშვნელობას სხვა პანელების ფილტრებში გამოსაყენებლად
+    variable_key: ცვლადის გასაღები
+    multiple: მრავლობითი
+    multiple-label: აირჩიეთ რამდენიმე ჩანაწერი
+triggers:
+  common:
+    response_body: პასუხის ტანი
+    response_body_all: ყველა მონაცემი
+    response_body_last: ბოლო ოპერაციის მონაცემები
+  event:
+    name: ივენთ ჰუკი
+    description: აქტიურდება პლატფორმის ან მონაცემთა ივენთებზე
+    action: 'მოქმედება (არაბლოკირებადი)'
+    filter: 'ფილტრი (ბლოკირებადი)'
+  webhook:
+    name: ვებჰუკი
+    error_on_reject: შეცდომა უარყოფისას
+    description: აქტიურდება შემომავალ HTTP მოთხოვნაზე
+    method: მეთოდი
+    async: ასინქრონული
+  operation:
+    name: სხვა Flow
+    description: აქტიურდება სხვა Flow-ს მიერ, ჯაჭვის შესაქმნელად
+    preview: აქტიურდება სხვა Flow-ში ოპერაციის მიერ
+  schedule:
+    name: განრიგი (CRON)
+    description: აქტიურდება დროის რეგულარულ მონაკვეთებში
+    cron: ინტერვალი
+  manual:
+    name: ხელით გაშვება
+    description: აქტიურდება არჩეულ კოლექცია(ებ)ში ხელით გაშვებისას
+    collection_and_item: კოლექციისა და ჩანაწერის გვერდები
+    collection_only: მხოლოდ კოლექციის გვერდი
+    item_only: მხოლოდ ჩანაწერის გვერდი
+    collection_page: კოლექციის გვერდი
+    require_selection: მოითხოვს არჩევას
+a_flow_uuid: აირჩიეთ გასააქტიურებელი Flow...
+any_string_or_json: ნებისმიერი სტრიქონი ან JSON...
+item_payload_placeholder: ეს არის JSON, რომელიც გამოიყენება ჩანაწერის ველების მნიშვნელობების განახლებისთვის...
+operations:
+  condition:
+    name: პირობა
+  exec:
+    name: სკრიპტის გაშვება
+    description: შეასრულეთ ნებისმიერი კოდი payload-ის შესაცვლელად
+    modules: 'შესაძლებელია შემდეგი **Node მოდულების** გამოყენება:'
+  item-create:
+    name: მონაცემების შექმნა
+    description: შექმენით ჩანაწერები მონაცემთა ბაზაში
+    payload: Payload
+    emit_events: ივენთების გენერირება
+  item-delete:
+    name: მონაცემების წაშლა
+    description: წაშალეთ ჩანაწერები მონაცემთა ბაზიდან
+    emit_events: ივენთების გენერირება
+    key: ID-ები
+    query: მოთხოვნა
+  item-read:
+    name: მონაცემების წაკითხვა
+    description: წაიკითხეთ ჩანაწერები მონაცემთა ბაზიდან
+    key: ID-ები
+    query: მოთხოვნა
+    emit_events: ივენთების გენერირება
+  item-update:
+    name: მონაცემების განახლება
+    description: განაახლეთ ჩანაწერები მონაცემთა ბაზაში
+    emit_events: ივენთების გენერირება
+    key: ID-ები
+    payload: Payload
+    query: მოთხოვნა
+  json-web-token:
+    name: JSON Web Token (JWT)
+    description: ხელი მოაწერეთ და შეამოწმეთ JSON Web Token-ები
+    operation: ოპერაცია
+    secret: საიდუმლო კოდი
+    secret_placeholder: შეიყვანეთ საიდუმლო კოდი...
+    payload: Payload
+    token: ტოკენი
+    token_placeholder: eyJhbGciOi......
+    options: ოფციები
+    options_placeholder: 'ხელმისაწვდომი ოფციებისთვის იხილეთ https://www.npmjs.com/package/jsonwebtoken#usage'
+    sign: ტოკენზე ხელმოწერა
+    verify: ტოკენის შემოწმება
+    decode: ტოკენის დეკოდირება
+  log:
+    name: კონსოლში ჩაწერა
+    description: გამოიტანეთ რაიმე კონსოლში
+    message: შეტყობინება
+    message_placeholder: შეიყვანეთ კონსოლში გამოსატანი შეტყობინება...
+  mail:
+    name: იმეილის გაგზავნა
+    description: გაუგზავნეთ იმეილი ერთ ან მეტ ადამიანს
+    to: მიმღები
+    to_placeholder: დაამატეთ იმეილის მისამართები და დააჭირეთ enter...
+    body: ტექსტი
+    template: შაბლონი
+    data: მონაცემები
+    cc: ასლი
+    cc_placeholder: დაამატეთ CC იმეილის მისამართები და დააჭირეთ enter...
+    bcc: ფარული ასლი
+    bcc_placeholder: დაამატეთ BCC იმეილის მისამართები და დააჭირეთ enter...
+    reply_to: საპასუხო მისამართი
+    reply_to_placeholder: დაამატეთ საპასუხო იმეილის მისამართები და დააჭირეთ enter...
+  notification:
+    name: შეტყობინების გაგზავნა
+    description: გაუგზავნეთ აპლიკაციის შეტყობინება ერთ ან მეტ მომხმარებელს
+    recipient: მომხმარებელი
+    recipient_placeholder: შეიყვანეთ UUID...
+    recipient_note: დაამატეთ მომხმარებლის UUID და დააჭირეთ enter...
+    item_note: ჩანაწერის გასაღები ან ფარდობითი URL
+    message: შეტყობინება
+    subject: საგანი
+  request:
+    name: ვებჰუკი / URL მოთხოვნა
+    description: 'გააკეთეთ მოთხოვნა URL-ზე'
+    url: URL
+    url_placeholder: https://example.com/example
+    method: მეთოდი
+    data: მონაცემები
+    headers: სათაურები
+    header: სათაური
+    header_placeholder: Authorization...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: დაყოვნება
+    description: დაელოდეთ მოცემული რაოდენობის მილიწამს
+    milliseconds: მილიწამები
+  transform:
+    name: Payload-ის ტრანსფორმაცია
+    description: შეცვალეთ Flow-ს JSON payload-ი
+  trigger:
+    name: Flow-ს გაშვება
+    flows: Flow-ები
+    flow: Flow
+    data: მონაცემები
+    iteration_mode: იტერაციის რეჟიმი
+    iteration_mode_note: რეჟიმი მასივების იტერაციისთვის.
+    serial: სერიული
+    parallel: პარალელური
+    batch: პაკეტი
+    batch_size: პაკეტის ზომა
+    cache: ქეში
+unit: ერთეული
+standard: სტანდარტული
+scientific: სამეცნიერო
+engineering: საინჟინრო
 compact: კომპაქტური
+currency: ვალუტა
+notation: აღნიშვნა
+style: სტილი
+fonts:
+  thin: თხელი
+  extra_light: ძალიან ღია
+  light: ღია
+  normal: ნორმალური
+  medium: საშუალო
+  semi_bold: ნახევრად მუქი
+  bold: მუქი
+  extra_bold: ძალიან მუქი
+  black: შავი
+  italic: დახრილი (Italic)
+  oblique: დახრილი (Oblique)
+  small: პატარა
+  large: დიდი
+  auto: ავტო
+text_wrap: ტექსტის გადატანა
+center: ცენტრი
+justify: სიგანეზე გასწორება
+text_align: ტექსტის სწორება
+font_weight: შრიფტის სისქე
+font_style: შრიფტის სტილი
+font_size: შრიფტის ზომა
+minimum_fraction_digits: მინიმალური ათწილადები
+maximum_fraction_digits: მაქსიმალური ათწილადები
+show_percentage: პროცენტის ჩვენება
+aggregation: აგრეგაცია
+series_grouping: სერიების დაჯგუფება
+date_precision: თარიღის სიზუსტე
+export_dashboard: დაფის ექსპორტი
+duplicate_dashboard: დაფის დუბლირება
+search_dashboard: დაფის ძებნა...
+search_flow: Flow-ს ძებნა...
+percent: პროცენტი
+show_password: პაროლის ჩვენება
+hide_password: პაროლის დამალვა
+accepted: დათანხმება

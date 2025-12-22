@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { usePermissionsStore } from '@/stores/permissions';
@@ -10,7 +11,7 @@ import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
-import { Field, User, PermissionsAction } from '@directus/types';
+import { Field, PermissionsAction, User } from '@directus/types';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { uniq } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
@@ -26,13 +27,21 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	icon: 'view_week',
 	component: KanbanLayout,
 	headerShadow: false,
-	sidebarShadow: true,
+	sidebarShadow: false,
 	slots: {
 		options: KanbanOptions,
 		sidebar: () => undefined,
 		actions: KanbanActions,
 	},
 	setup(props, { emit }) {
+		const aiStore = useAiStore();
+
+		aiStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const { t, n } = useI18n();
 		const permissionsStore = usePermissionsStore();
 		const relationsStore = useRelationsStore();
@@ -531,7 +540,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				search: ref(null),
 			});
 
-			const choices = computed(() => (isRelational.value ? [] : selectedGroup.value?.meta?.options?.choices ?? []));
+			const choices = computed(() => (isRelational.value ? [] : (selectedGroup.value?.meta?.options?.choices ?? [])));
 
 			watch(
 				() => groupField.value,
@@ -555,8 +564,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (groupOrder.value.groupField !== groupField.value || !groupOrder.value.sortMap) return choices.value;
 
 				choices.value.sort((a: Record<string, string>, b: Record<string, string>) => {
-					const aOrder = a.value ? groupOrder.value.sortMap[a.value] ?? 0 : 0;
-					const bOrder = b.value ? groupOrder.value.sortMap[b.value] ?? 0 : 0;
+					const aOrder = a.value ? (groupOrder.value.sortMap[a.value] ?? 0) : 0;
+					const bOrder = b.value ? (groupOrder.value.sortMap[b.value] ?? 0) : 0;
 					return aOrder - bOrder;
 				});
 

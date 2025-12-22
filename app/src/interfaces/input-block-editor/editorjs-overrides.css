@@ -39,7 +39,7 @@
 
 .codex-editor .cdx-loader::before {
 	border: 3px solid var(--theme--background-accent);
-	border-left-color: var(--theme--primary);
+	border-inline-start-color: var(--theme--primary);
 }
 
 .codex-editor .cdx-search-field {
@@ -53,7 +53,7 @@
 	border-color: var(--theme--form--field--input--border-color-hover);
 }
 
-.codex-editor .ce-popover {
+.codex-editor .ce-popover__container {
 	background: var(--theme--form--field--input--background-subdued);
 	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
@@ -98,6 +98,7 @@
 	background: transparent;
 	box-shadow: unset;
 	border: 1px solid var(--theme--foreground-subdued);
+	border-radius: 4px;
 }
 
 .codex-editor .ce-popover-item--active .ce-popover-item__icon {
@@ -138,8 +139,8 @@
 	box-shadow: none;
 }
 
-.ct:before,
-.ct:after {
+.ct::before,
+.ct::after {
 	background-color: var(--background-inverted);
 }
 
@@ -226,7 +227,7 @@
 
 .codex-editor .ce-inline-tool-input {
 	background: var(--theme--background-normal);
-	border-top-color: var(--theme--form--field--input--border-color);
+	border-block-start-color: var(--theme--form--field--input--border-color);
 }
 
 /* Buttons */
@@ -262,11 +263,11 @@
 /* Quote block */
 
 .codex-editor .cdx-block.cdx-quote {
-	padding-left: 22px;
+	padding-inline-start: 22px;
 }
 
 .codex-editor .ce-block blockquote {
-	border-left: 2px dashed var(--theme--form--field--input--border-color);
+	border-inline-start: 2px dashed var(--theme--form--field--input--border-color);
 }
 
 /* Image Tool */
@@ -279,9 +280,6 @@
 
 .codex-editor .image-tool--loading .image-tool__image {
 	background: var(--theme--background-normal);
-}
-
-.codex-editor .image-tool--loading .image-tool__image {
 	border-color: var(--theme--form--field--input--border-color);
 }
 
@@ -319,15 +317,8 @@
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
-	top: 4px;
-	left: 3px;
-}
-
-/* Lists */
-
-.codex-editor .ce-block ul,
-.codex-editor .ce-block ol {
-	font-size: inherit !important;
+	inset-block-start: 4px;
+	inset-inline-start: 3px;
 }
 
 /* Attaches */
@@ -345,23 +336,23 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height: 36px;
-	width: 36px;
-	margin-right: 12px;
+	block-size: 36px;
+	inline-size: 36px;
+	margin-inline-end: 12px;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
-	height: 100%;
-	width: 100%;
-	margin-right: 0;
+	block-size: 100%;
+	inline-size: 100%;
+	margin-inline-end: 0;
 	background-color: var(--overlay-color);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-label {
-	top: unset;
-	left: unset;
+	inset-block-start: unset;
+	inset-inline-start: unset;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
@@ -461,13 +452,12 @@
 
 .ce-toolbar__content,
 .ce-block__content {
-	max-width: unset;
-	margin-right: 34px;
-	margin-left: 34px;
+	max-inline-size: unset;
+	margin-inline: 34px;
 }
 
 .codex-editor .ce-align-left {
-	text-align: left;
+	text-align: start;
 }
 
 .codex-editor .ce-align-center {
@@ -475,7 +465,7 @@
 }
 
 .codex-editor .ce-align-right {
-	text-align: right;
+	text-align: end;
 }
 
 .codex-editor .ce-align-buttons .cdx-settings-button svg {
@@ -499,8 +489,8 @@
 }
 
 .codex-editor .ce-block {
-	margin-top: 1.5em;
-	margin-bottom: 1.5em;
+	margin-block: 1.5em;
+
 	/* Editor.js expect this to default to light */
 	font-weight: 400;
 	font-family: inherit;
@@ -550,10 +540,12 @@
 	background-color: var(--theme--background-accent) !important;
 }
 
+/* Lists */
+
 .codex-editor .ce-block ul,
 .codex-editor .ce-block ol {
 	margin: 24px 0;
-	font-size: 18px;
+	font-size: inherit;
 	line-height: 34px;
 }
 
@@ -582,14 +574,13 @@
 .codex-editor .ce-block video,
 .codex-editor .ce-block iframe,
 .codex-editor .ce-block img {
-	max-width: 100%;
-	height: auto;
+	max-inline-size: 100%;
+	block-size: auto;
 	border-radius: 4px;
 }
 
 .codex-editor .ce-block hr {
-	margin-top: 52px;
-	margin-bottom: 56px;
+	margin-block: 52px 56px;
 	text-align: center;
 	border: 0;
 }
@@ -622,7 +613,7 @@
 
 .codex-editor .ce-block figure figcaption {
 	display: block;
-	margin-top: 0.25rem;
+	margin-block-start: 0.25rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	text-align: center;
 }

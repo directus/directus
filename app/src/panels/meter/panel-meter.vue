@@ -163,13 +163,12 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 
 <style scoped>
 .panel-meter {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	position: relative;
 	padding: 12px;
 	display: grid;
-	align-items: center;
-	justify-items: center;
+	place-items: center center;
 	justify-content: center;
 }
 
@@ -179,7 +178,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 }
 
 .panel-meter.has-header {
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .panel-meter output {
@@ -191,8 +190,9 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 
 .panel-meter.size-half output {
 	position: relative;
-	top: v-bind(halfSizeOutputOffset);
+	inset-block-start: v-bind(halfSizeOutputOffset);
 }
+
 .panel-meter svg circle:last-child {
 	transform-origin: center center;
 	transform: rotate(-90deg);

@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
 <template>
 	<div
 		ref="labelContainer"
-		class="label type-title selectable"
+		class="label type-title"
 		:class="[font, { 'has-header': showHeader }]"
 		:style="{ color: color }"
 	>
@@ -117,15 +117,16 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .label-text {
-	min-width: min-content;
-	min-height: min-content;
-	width: 100%;
+	min-inline-size: min-content;
+	min-block-size: min-content;
+	inline-size: 100%;
 }
+
 .label {
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	color: var(--color-text);
 	font-weight: 500;
 	line-height: 1.2;

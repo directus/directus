@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, computed, ref } from 'vue';
+import VNotice from '@/components/v-notice.vue';
+import type { ShowSelect } from '@directus/types';
+import { useResizeObserver } from '@vueuse/core';
+import { debounce } from 'lodash';
+import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { ShowSelect } from '@directus/extensions';
 
 import '@fullcalendar/core';
 
@@ -12,14 +15,15 @@ defineOptions({
 interface Props {
 	createCalendar: (calendarElement: HTMLElement) => void;
 	destroyCalendar: () => void;
-	itemCount: number | null;
+	itemCount?: number | null;
 	totalCount: number | null;
 	isFiltered: boolean;
 	limit: number;
 	resetPresetAndRefresh: () => Promise<void>;
 	error?: any;
 	selectMode: boolean;
-	showSelect: ShowSelect;
+	showSelect?: ShowSelect;
+	resize: () => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -29,9 +33,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits(['update:selection']);
 
-const { n, t } = useI18n();
+const { n } = useI18n();
 
-const calendarElement = ref<HTMLElement>();
+const calendarElement = useTemplateRef('calendar-element');
 
 onMounted(() => {
 	props.createCalendar(calendarElement.value!);
@@ -41,6 +45,11 @@ onUnmounted(() => {
 	props.destroyCalendar();
 });
 
+useResizeObserver(
+	calendarElement,
+	debounce(() => props.resize(), 50),
+);
+
 const atLimit = computed(() => {
 	const count = (props.isFiltered ? props.itemCount : props.totalCount) ?? 0;
 	return count > props.limit;
@@ -49,22 +58,22 @@ const atLimit = computed(() => {
 
 <template>
 	<div class="calendar-layout" :class="{ 'select-mode': selectMode, 'select-one': showSelect === 'one' }">
-		<v-notice v-if="atLimit" type="warning">
-			{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.limit) }) }}
-		</v-notice>
-		<div v-if="!error" ref="calendarElement" />
+		<VNotice v-if="atLimit" type="warning">
+			{{ $t('dataset_too_large_currently_showing_n_items', { n: n(props.limit) }) }}
+		</VNotice>
+		<div v-if="!error" ref="calendar-element" />
 		<slot v-else name="error" :error="error" :reset="resetPresetAndRefresh" />
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .calendar-layout {
-	height: calc(100% - calc(var(--header-bar-height) + 2 * 24px));
+	block-size: 100%;
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .v-notice {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 </style>

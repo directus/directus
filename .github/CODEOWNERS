@@ -1,42 +1,36 @@
-/packages/constants @directus/web @directus/server
-/packages/extensions @directus/web @directus/server
-/packages/tsconfig @directus/web @directus/server
-/packages/types @directus/web @directus/server
-/packages/utils @directus/web @directus/server
+/api/ @AlexGaillard
+/app/ @AlexGaillard
+/directus/ @AlexGaillard
+/sdk/ @licitdev
+/tests/blackbox @licitdev
 
-/app/ @directus/web
-/packages/components @directus/web
-/packages/composables @directus/web
-/packages/format-title @directus/web
-/packages/stores @directus/web
-/packages/themes @directus/web
-
-/api/ @directus/server
-/packages/env @directus/server
-/packages/errors @directus/server
-/packages/extensions-registry @directus/server
-/packages/memory @directus/server
-/packages/pressure @directus/server
-/packages/random @directus/server
-/packages/schema @directus/server
-/packages/storage/ @directus/server
-/packages/storage/storage-driver-azure @directus/server
-/packages/storage/storage-driver-cloudinary @directus/server
-/packages/storage/storage-driver-gcs @directus/server
-/packages/storage/storage-driver-local @directus/server
-/packages/storage/storage-driver-s3 @directus/server
-/packages/storage/storage-driver-supabase @directus/server
-/packages/system-data @directus/server
-/packages/validation @directus/server
-
-/sdk/ @directus/server
-/packages/create-directus-extension @directus/dx
-/packages/create-directus-project @directus/dx
-/packages/extensions-sdk @directus/dx
-/packages/specs @directus/dx
-
-/.github/actions/ @directus/infra
-/.github/workflows/ @directus/infra
-/Dockerfile @directus/infra
-/packages/release-notes-generator @directus/infra
-/packages/update-check @directus/infra
+/packages/composables @AlexGaillard
+/packages/constants @AlexGaillard
+/packages/create-directus-extension @licitdev
+/packages/create-directus-project @licitdev
+/packages/env @AlexGaillard
+/packages/errors @AlexGaillard
+/packages/extensions-registry @licitdev
+/packages/extensions-sdk @licitdev
+/packages/extensions @licitdev
+/packages/format-title @licitdev
+/packages/memory @AlexGaillard
+/packages/pressure @AlexGaillard
+/packages/release-notes-generator @licitdev
+/packages/schema-builder @licitdev
+/packages/schema @AlexGaillard
+/packages/specs @licitdev
+/packages/storage-driver-azure @AlexGaillard
+/packages/storage-driver-cloudinary @AlexGaillard
+/packages/storage-driver-gcs @AlexGaillard
+/packages/storage-driver-local @AlexGaillard
+/packages/storage-driver-s3 @AlexGaillard
+/packages/storage-driver-supabase @AlexGaillard
+/packages/storage @AlexGaillard
+/packages/stores @AlexGaillard
+/packages/system-data @AlexGaillard
+/packages/themes @AlexGaillard
+/packages/types @AlexGaillard
+/packages/update-check @licitdev
+/packages/utils @AlexGaillard
+/packages/validation @AlexGaillard

@@ -1,15 +1,6 @@
 import { useEnv } from '@directus/env';
-import type {
-	ApiExtension,
-	BundleExtension,
-	EndpointConfig,
-	Extension,
-	ExtensionSettings,
-	HookConfig,
-	HybridExtension,
-	OperationApiConfig,
-} from '@directus/extensions';
-import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES } from '@directus/extensions';
+import { APP_SHARED_DEPS } from '@directus/extensions';
+import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
 	ActionHandler,
@@ -18,6 +9,16 @@ import type {
 	InitHandler,
 	PromiseCallback,
 	ScheduleHandler,
+	ApiExtension,
+	BundleExtension,
+	EndpointConfig,
+	Extension,
+	ExtensionSettings,
+	HookConfig,
+	HybridExtension,
+	OperationApiConfig,
+	BundleConfig,
+	ExtensionManagerOptions,
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
 import { pathToRelativeUrl, processId } from '@directus/utils/node';
@@ -30,9 +31,11 @@ import ivm from 'isolated-vm';
 import { clone, debounce, isPlainObject } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
 import os from 'node:os';
-import { dirname } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { ReadStream } from 'node:fs';
 import path from 'path';
+import { rolldown } from 'rolldown';
 import { rollup } from 'rollup';
 import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
@@ -54,9 +57,9 @@ import { getInstallationManager } from './lib/installation/index.js';
 import type { InstallationManager } from './lib/installation/manager.js';
 import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
-import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
-import type { BundleConfig, ExtensionManagerOptions } from './types.js';
+import DriverLocal from '@directus/storage-driver-local';
+import { syncExtensions, type ExtensionSyncOptions } from './lib/sync/sync.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -95,16 +98,10 @@ export class ExtensionManager {
 	private extensionsSettings: ExtensionSettings[] = [];
 
 	/**
-	 * App extensions rolled up into a single bundle. Any chunks from the bundle will be available
-	 * under appExtensionChunks
-	 */
-	private appExtensionsBundle: string | null = null;
-
-	/**
 	 * Individual filename chunks from the rollup bundle. Used to improve the performance by allowing
 	 * extensions to split up their bundle into multiple smaller chunks
 	 */
-	private appExtensionChunks: Map<string, string> = new Map();
+	private appExtensionChunks: string[] = [];
 
 	/**
 	 * Callbacks to be able to unregister extensions
@@ -139,6 +136,11 @@ export class ExtensionManager {
 	 * sequence.
 	 */
 	private reloadQueue: JobQueue = new JobQueue();
+
+	/**
+	 * Used to prevent race condition when reading extension data while reloading extensions
+	 */
+	private reloadPromise: Promise<void> = Promise.resolve();
 
 	/**
 	 * Optional file system watcher to auto-reload extensions when the local file system changes
@@ -201,7 +203,7 @@ export class ExtensionManager {
 		}
 
 		if (!this.isLoaded) {
-			await this.load();
+			await this.load({ forceSync: true });
 
 			if (this.extensions.length > 0) {
 				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
@@ -215,7 +217,11 @@ export class ExtensionManager {
 		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
 			// Ignore requests for reloading that were published by the current process
 			if (isPlainObject(payload) && 'origin' in payload && payload['origin'] === this.processId) return;
-			this.reload();
+			// Reload extensions with event options
+			const options: ExtensionSyncOptions = {};
+			if (typeof payload['forceSync'] === 'boolean') options.forceSync = payload['forceSync'];
+			if (typeof payload['partialSync'] === 'string') options.partialSync = payload['partialSync'];
+			this.reload(options);
 		});
 	}
 
@@ -226,7 +232,12 @@ export class ExtensionManager {
 		const logger = useLogger();
 
 		await this.installationManager.install(versionId);
-		await this.reload({ forceSync: true });
+
+		const resolvedFolder = relative(sep, resolve(sep, versionId));
+		const syncFolder = join('.registry', resolvedFolder);
+
+		await this.broadcastReloadNotification({ partialSync: syncFolder });
+		await this.reload({ skipSync: true });
 
 		emitter.emitAction('extensions.installed', {
 			extensions: this.extensions,
@@ -234,15 +245,18 @@ export class ExtensionManager {
 		});
 
 		logger.info(`Installed extension: ${versionId}`);
-
-		await this.broadcastReloadNotification();
 	}
 
 	public async uninstall(folder: string) {
 		const logger = useLogger();
 
 		await this.installationManager.uninstall(folder);
-		await this.reload({ forceSync: true });
+
+		const resolvedFolder = relative(sep, resolve(sep, folder));
+		const syncFolder = join('.registry', resolvedFolder);
+
+		await this.broadcastReloadNotification({ partialSync: syncFolder });
+		await this.reload({ skipSync: true });
 
 		emitter.emitAction('extensions.uninstalled', {
 			extensions: this.extensions,
@@ -250,23 +264,21 @@ export class ExtensionManager {
 		});
 
 		logger.info(`Uninstalled extension: ${folder}`);
-
-		await this.broadcastReloadNotification();
 	}
 
-	public async broadcastReloadNotification() {
-		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
+	public async broadcastReloadNotification(options?: ExtensionSyncOptions) {
+		await this.messenger.publish(this.reloadChannel, { ...options, origin: this.processId });
 	}
 
 	/**
 	 * Load all extensions from disk and register them in their respective places
 	 */
-	private async load(options?: { forceSync: boolean }): Promise<void> {
+	private async load(options?: ExtensionSyncOptions): Promise<void> {
 		const logger = useLogger();
 
 		if (env['EXTENSIONS_LOCATION']) {
 			try {
-				await syncExtensions({ force: options?.forceSync ?? false });
+				await syncExtensions(options);
 			} catch (error) {
 				logger.error(`Failed to sync extensions`);
 				logger.error(error);
@@ -289,7 +301,7 @@ export class ExtensionManager {
 		await Promise.all([this.registerInternalOperations(), this.registerApiExtensions()]);
 
 		if (env['SERVE_APP']) {
-			this.appExtensionsBundle = await this.generateExtensionBundle();
+			await this.generateExtensionBundle();
 		}
 
 		this.isLoaded = true;
@@ -309,8 +321,6 @@ export class ExtensionManager {
 
 		this.localEmitter.offAll();
 
-		this.appExtensionsBundle = null;
-
 		this.isLoaded = false;
 
 		emitter.emitAction('extensions.unload', {
@@ -325,7 +335,7 @@ export class ExtensionManager {
 	/**
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
-	public reload(options?: { forceSync: boolean }): Promise<unknown> {
+	public reload(options?: ExtensionSyncOptions): Promise<unknown> {
 		if (this.reloadQueue.size > 0) {
 			// The pending job in the queue will already handle the additional changes
 			return Promise.resolve();
@@ -333,10 +343,10 @@ export class ExtensionManager {
 
 		const logger = useLogger();
 
-		let resolve: (val?: unknown) => void;
+		let resolve: () => void;
 		let reject: (val?: unknown) => void;
 
-		const promise = new Promise((res, rej) => {
+		this.reloadPromise = new Promise((res, rej) => {
 			resolve = res;
 			reject = rej;
 		});
@@ -384,21 +394,34 @@ export class ExtensionManager {
 			}
 		});
 
-		return promise;
+		return this.reloadPromise;
+	}
+
+	public isReloading(): Promise<void> {
+		return this.reloadPromise;
 	}
 
 	/**
-	 * Return the previously generated app extensions bundle
+	 * Return the previously generated app extension bundle chunk by name.
+	 * Providing no name will return the entry bundle.
 	 */
-	public getAppExtensionsBundle(): string | null {
-		return this.appExtensionsBundle;
-	}
+	public async getAppExtensionChunk(name?: string): Promise<ReadStream | null> {
+		let file: string | undefined;
 
-	/**
-	 * Return the previously generated app extension bundle chunk by name
-	 */
-	public getAppExtensionChunk(name: string): string | null {
-		return this.appExtensionChunks.get(name) ?? null;
+		if (!name) {
+			file = this.appExtensionChunks[0];
+		} else if (this.appExtensionChunks.includes(name)) {
+			file = name;
+		}
+
+		if (!file) return null;
+
+		const tempDir = join(env['TEMP_PATH'] as string, 'app-extensions');
+		const tmpStorage = new DriverLocal({ root: tempDir });
+
+		if ((await tmpStorage.exists(file)) === false) return null;
+
+		return await tmpStorage.read(file);
 	}
 
 	/**
@@ -483,7 +506,7 @@ export class ExtensionManager {
 						? [
 								path.resolve(extension.path, extension.entrypoint.app),
 								path.resolve(extension.path, extension.entrypoint.api),
-						  ]
+							]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
@@ -495,8 +518,9 @@ export class ExtensionManager {
 	 * Uses rollup to bundle the app extensions together into a single file the app can download and
 	 * run.
 	 */
-	private async generateExtensionBundle(): Promise<string | null> {
+	private async generateExtensionBundle(): Promise<void> {
 		const logger = useLogger();
+		const env = useEnv();
 
 		const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
 
@@ -511,30 +535,34 @@ export class ExtensionManager {
 		);
 
 		try {
-			const bundle = await rollup({
+			/** Opt In for now. Should be @deprecated later to always use rolldown! */
+			const rollDirection = (env['EXTENSIONS_ROLLDOWN'] ?? false) ? rolldown : rollup;
+
+			const bundle = await rollDirection({
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
 				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
 
-			const { output } = await bundle.generate({ format: 'es', compact: true });
+			const tempDir = join(env['TEMP_PATH'] as string, 'app-extensions');
 
-			for (const out of output) {
-				if (out.type === 'chunk') {
-					this.appExtensionChunks.set(out.fileName, out.code);
-				}
-			}
+			const { output } = await bundle.write({
+				format: 'es',
+				dir: tempDir,
+			});
+
+			this.appExtensionChunks = output.reduce<string[]>((acc, chunk) => {
+				if (chunk.type === 'chunk') acc.push(chunk.fileName);
+
+				return acc;
+			}, []);
 
 			await bundle.close();
-
-			return output[0].code;
 		} catch (error) {
 			logger.warn(`Couldn't bundle App extensions`);
 			logger.warn(error);
 		}
-
-		return null;
 	}
 
 	private async registerSandboxedApiExtension(extension: ApiExtension | HybridExtension) {
@@ -561,6 +589,7 @@ export class ExtensionManager {
 		});
 
 		const context = await isolate.createContext();
+		context.global.setSync('process', { env: { NODE_ENV: process.env['NODE_ENV'] ?? 'production' } }, { copy: true });
 
 		const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
 

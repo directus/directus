@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
 import { useGroupable } from '@directus/composables';
+import { computed, watch } from 'vue';
+import VIcon from './v-icon/v-icon.vue';
+import VListItemIcon from './v-list-item-icon.vue';
+import VListItem from './v-list-item.vue';
 
 interface Props {
 	/** If enabled, multiple elements can be selected */
@@ -75,7 +78,7 @@ function onClick(event: MouseEvent) {
 
 <template>
 	<li class="v-list-group">
-		<v-list-item
+		<VListItem
 			class="activator"
 			:active="active"
 			:to="to"
@@ -84,27 +87,27 @@ function onClick(event: MouseEvent) {
 			:disabled="disabled"
 			:dense="dense"
 			:clickable="Boolean(clickable || to || !open)"
-			:activator="!clickable && $slots.default && arrowPlacement"
+			:activator="Boolean(!clickable && $slots.default && arrowPlacement)"
 			@click="onClick"
 		>
-			<v-list-item-icon
+			<VListItemIcon
 				v-if="$slots.default && arrowPlacement && arrowPlacement === 'before'"
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
-				<v-icon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
-			</v-list-item-icon>
+				<VIcon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
+			</VListItemIcon>
 
 			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon
+			<VListItemIcon
 				v-if="$slots.default && arrowPlacement && arrowPlacement === 'after'"
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
-				<v-icon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
-			</v-list-item-icon>
-		</v-list-item>
+				<VIcon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
+			</VListItemIcon>
+		</VListItem>
 
 		<ul v-if="groupActive" class="items">
 			<slot />
@@ -114,16 +117,16 @@ function onClick(event: MouseEvent) {
 
 <style lang="scss" scoped>
 .v-list-group {
-	margin-bottom: 4px;
+	margin-block-end: 4px;
 
 	&:last-child {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 
 	.activator-icon {
 		--focus-ring-offset: 0;
 
-		margin-right: 0 !important;
+		margin-inline-end: 0 !important;
 		color: var(--theme--foreground-subdued);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
@@ -138,7 +141,7 @@ function onClick(event: MouseEvent) {
 	}
 
 	.items {
-		padding-left: 18px;
+		padding-inline-start: 18px;
 		list-style: none;
 	}
 }

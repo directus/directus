@@ -1,20 +1,34 @@
 <script setup lang="ts">
+import { logout } from '@/auth';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VChip from '@/components/v-chip.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
-import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
+import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { useCollection } from '@directus/composables';
 import type { User } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
@@ -40,7 +54,7 @@ const { breadcrumb } = useBreadcrumb();
 
 const { info: collectionInfo } = useCollection('directus_users');
 
-const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetail = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
 	isNew,
@@ -64,8 +78,8 @@ const {
 	primaryKey,
 	props.primaryKey !== '+'
 		? {
-				fields: ['*', 'role.*'],
-		  }
+				fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
+			}
 		: undefined,
 );
 
@@ -90,9 +104,17 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
-const avatarSrc = computed(() =>
-	item.value?.avatar ? getAssetUrl(`${item.value.avatar}?key=system-medium-cover`) : null,
-);
+// Provide the discard functionality to field interfaces
+provide('discardAllChanges', discardAndStay);
+
+const avatarSrc = computed(() => {
+	if (!item.value?.avatar) return null;
+
+	return getAssetUrl(item.value.avatar.id, {
+		imageKey: 'system-medium-cover',
+		cacheBuster: item.value.avatar.modified_on,
+	});
+});
 
 const avatarError = ref(null);
 
@@ -130,17 +152,6 @@ const archiveTooltip = computed(() => {
 useShortcut('meta+s', saveAndStay, form);
 useShortcut('meta+shift+s', saveAndAddNew, form);
 
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push('/users');
-}
-
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
@@ -173,7 +184,7 @@ async function saveAndStay() {
 			const newPrimaryKey = savedItem.id;
 			router.replace(`/users/${newPrimaryKey}`);
 		} else {
-			revisionsDrawerDetail.value?.refresh?.();
+			revisionsSidebarDetail.value?.refresh?.();
 			refresh();
 		}
 	} catch {
@@ -205,6 +216,15 @@ async function deleteAndQuit() {
 	if (deleting.value) return;
 
 	try {
+		const currentUserId = userStore.currentUser && 'id' in userStore.currentUser ? userStore.currentUser.id : null;
+
+		// If the deleted user is the current user, we want to log them out
+		if (currentUserId && currentUserId === item.value?.id) {
+			await remove();
+			await logout();
+			return;
+		}
+
 		await remove();
 		edits.value = {};
 		router.replace(`/users`);
@@ -219,8 +239,6 @@ async function setLang(user: Record<string, any>) {
 	const newLang = user?.language ?? serverStore.info?.project?.default_language;
 
 	if (newLang && newLang !== locale.value) {
-		await setLanguage(newLang);
-
 		await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
 	}
 }
@@ -264,53 +282,44 @@ function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<private-view :title="title">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
+	<PrivateView :title="title" show-back>
 		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
+			<VBreadcrumb :items="breadcrumb" />
 		</template>
 
 		<template #actions>
-			<v-dialog
+			<VDialog
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
 				@esc="confirmDelete = false"
 				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
-					<v-button
-						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
-						rounded
-						icon
+					<PrivateViewHeaderBarActionButton
+						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
+							{{ $t('cancel') }}
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ $t('delete_label') }}
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-dialog
+			<VDialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
@@ -318,45 +327,39 @@ function revert(values: Record<string, any>) {
 				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
-						rounded
-						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
+						:icon="isArchived ? 'unarchive' : 'archive'"
 						@click="on"
-					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmArchive = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
-							{{ isArchived ? t('unarchive') : t('archive') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+					<VCardActions>
+						<VButton secondary @click="confirmArchive = false">
+							{{ $t('cancel') }}
+						</VButton>
+						<VButton kind="warning" :loading="archiving" @click="toggleArchive">
+							{{ isArchived ? $t('unarchive') : $t('archive') }}
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-button
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
-				rounded
-				icon
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
+				icon="check"
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
-
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="isSavable"
 						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -365,30 +368,30 @@ function revert(values: Record<string, any>) {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>
-			<users-navigation :current-role="item?.role?.id ?? role" />
+			<UsersNavigation :current-role="item?.role?.id ?? role" />
 		</template>
 
 		<div class="user-item">
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
-					<v-skeleton-loader v-if="loading" />
-					<v-image
+					<VSkeletonLoader v-if="loading" />
+					<VImage
 						v-else-if="avatarSrc && !avatarError"
 						:src="avatarSrc"
-						:alt="t('avatar')"
+						:alt="$t('avatar')"
 						@error="avatarError = $event"
 					/>
-					<v-icon v-else name="account_circle" x-large />
+					<VIcon v-else name="account_circle" x-large />
 				</div>
 				<div class="user-box-content">
 					<template v-if="loading">
-						<v-skeleton-loader type="text" />
-						<v-skeleton-loader type="text" />
-						<v-skeleton-loader type="text" />
+						<VSkeletonLoader type="text" />
+						<VSkeletonLoader type="text" />
+						<VSkeletonLoader type="text" />
 					</template>
 					<template v-else-if="isNew === false && item">
 						<div class="name type-label">
@@ -396,19 +399,19 @@ function revert(values: Record<string, any>) {
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
 						<div v-if="item.email" class="email">
-							<v-icon name="alternate_email" small />
+							<VIcon name="alternate_email" small />
 							{{ item.email }}
 						</div>
 						<div v-if="item.location" class="location">
-							<v-icon name="place" small />
+							<VIcon name="place" small />
 							{{ item.location }}
 						</div>
-						<v-chip v-if="item.role?.name" :class="item.status" small>{{ item.role.name }}</v-chip>
+						<VChip v-if="item.role?.name" :class="item.status" small>{{ item.role.name }}</VChip>
 					</template>
 				</div>
 			</div>
 
-			<v-form
+			<VForm
 				ref="form"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
@@ -420,31 +423,31 @@ function revert(values: Record<string, any>) {
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<template #sidebar>
-			<user-info-sidebar-detail :is-new="isNew" :user="item" />
-			<revisions-drawer-detail
+			<UserInfoSidebarDetail :is-new="isNew" :user="item" />
+			<RevisionsSidebarDetail
 				v-if="isNew === false && revisionsAllowed"
-				ref="revisionsDrawerDetail"
+				ref="revisionsSidebarDetail"
 				collection="directus_users"
 				:primary-key="primaryKey"
 				@revert="revert"
 			/>
-			<comments-sidebar-detail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
+			<CommentsSidebarDetail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
@@ -459,7 +462,7 @@ function revert(values: Record<string, any>) {
 
 .user-item {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .user-box {
@@ -467,9 +470,9 @@ function revert(values: Record<string, any>) {
 
 	display: flex;
 	align-items: center;
-	max-width: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
-	height: 112px;
-	margin-bottom: var(--theme--form--row-gap);
+	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
+	block-size: 112px;
+	margin-block-end: var(--theme--form--row-gap);
 	padding: 20px;
 	background-color: var(--theme--background-normal);
 	border-radius: calc(var(--theme--border-radius) + 4px);
@@ -481,29 +484,29 @@ function revert(values: Record<string, any>) {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		width: 84px;
-		height: 84px;
-		margin-right: 16px;
+		inline-size: 84px;
+		block-size: 84px;
+		margin-inline-end: 16px;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
 		border-radius: 100%;
 
 		.v-skeleton-loader {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 		}
 
 		img {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 			object-fit: cover;
 		}
 
-		@media (min-width: 600px) {
-			width: 144px;
-			height: 144px;
-			margin-right: 22px;
+		@media (width > 640px) {
+			inline-size: 144px;
+			block-size: 144px;
+			margin-inline-end: 22px;
 		}
 	}
 
@@ -512,11 +515,11 @@ function revert(values: Record<string, any>) {
 		overflow: hidden;
 
 		.v-skeleton-loader {
-			width: 175px;
+			inline-size: 175px;
 		}
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-bottom: 16px;
+			margin-block-end: 16px;
 		}
 
 		.v-chip {
@@ -525,7 +528,7 @@ function revert(values: Record<string, any>) {
 			--v-chip-color-hover: var(--theme--foreground-subdued);
 			--v-chip-background-color-hover: var(--theme--background-subdued);
 
-			margin-top: 4px;
+			margin-block-start: 4px;
 
 			&.active {
 				--v-chip-color: var(--theme--primary);
@@ -550,8 +553,8 @@ function revert(values: Record<string, any>) {
 		}
 	}
 
-	@media (min-width: 600px) {
-		height: 188px;
+	@media (width > 640px) {
+		block-size: 188px;
 
 		.user-box-content .location {
 			display: block;

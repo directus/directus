@@ -1,16 +1,25 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import formatTitle from '@directus/format-title';
+import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
-import { isSystemCollection } from '@directus/system-data';
 
 const props = defineProps<{
 	collection: string;
@@ -18,8 +27,6 @@ const props = defineProps<{
 	field?: string;
 	type?: string;
 }>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -71,75 +78,64 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="formatTitle(collection)">
+	<PrivateView :title="formatTitle(collection)" show-back>
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
-		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
-				<v-icon name="arrow_back" />
-			</v-button>
+			<VBreadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-if="isSystemCollection(collection) === false"
-						v-tooltip.bottom="t('delete_collection')"
-						rounded
-						icon
+						v-tooltip.bottom="$t('delete_collection')"
 						class="action-delete"
 						secondary
 						:disabled="!item"
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
+							{{ $t('cancel') }}
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ $t('delete_label') }}
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-button
-				v-tooltip.bottom="t('save')"
-				rounded
-				icon
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
 				:loading="saving"
 				:disabled="hasEdits === false"
+				icon="check"
 				@click="saveAndQuit"
-			>
-				<v-icon name="check" />
-			</v-button>
+			/>
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="collections-item">
 			<div class="fields">
 				<h2 class="title type-label">
-					{{ t('fields_and_layout') }}
-					<span class="instant-save">{{ t('saves_automatically') }}</span>
+					{{ $t('fields_and_layout') }}
+					<span class="instant-save">{{ $t('saves_automatically') }}</span>
 				</h2>
-				<fields-management :collection="collection" />
+				<FieldsManagement :collection="collection" />
 			</div>
 
-			<router-view name="field" :collection="collection" :field="field" :type="type" />
+			<RouterView name="field" :collection="collection" :field="field" :type="type" />
 
-			<v-form
+			<VForm
 				v-model="edits.meta"
 				collection="directus_collections"
 				:loading="loading"
@@ -149,46 +145,39 @@ function discardAndLeave() {
 			/>
 		</div>
 
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_datamodel_fields')" class="page-description" />
-			</sidebar-detail>
-		</template>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
 .title {
-	margin-bottom: 12px;
+	margin-block-end: 12px;
 
 	.instant-save {
-		margin-left: 4px;
+		margin-inline-start: 4px;
 		color: var(--theme--warning);
 	}
 }
 
 .collections-item {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .fields {
-	max-width: 800px;
-	margin-bottom: 48px;
+	max-inline-size: 800px;
+	margin-block-end: 48px;
 }
 
 .header-icon {

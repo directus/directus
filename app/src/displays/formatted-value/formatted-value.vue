@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { APP_NUMERIC_STRING_TYPES } from '@/constants';
+import ValueNull from '@/views/private/components/value-null.vue';
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';
@@ -165,7 +167,7 @@ function matchNumber(left: number, right: number, operator: string) {
 </script>
 
 <template>
-	<value-null v-if="displayValue === null || displayValue === undefined" />
+	<ValueNull v-if="displayValue === null || displayValue === undefined" />
 
 	<div
 		v-else
@@ -177,7 +179,7 @@ function matchNumber(left: number, right: number, operator: string) {
 		]"
 		:style="computedStyle"
 	>
-		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
+		<VIcon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
 
 		<span class="value">
 			{{ displayValue }}
@@ -193,7 +195,7 @@ function matchNumber(left: number, right: number, operator: string) {
 
 	&.has-background,
 	&.has-border {
-		height: 28px;
+		block-size: 28px;
 		padding: 0 10px;
 		font-size: 14px;
 		line-height: 28px;

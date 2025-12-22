@@ -4,28 +4,45 @@
 	"homepage": "https://directus.io",
 	"type": "module",
 	"scripts": {
-		"build": "pnpm --recursive --filter '!docs' run build",
+		"build": "pnpm --recursive run build",
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
+		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
-		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
+		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --legacy --prod dist && pnpm --filter tests-blackbox test",
+		"test:coverage": "pnpm --recursive --filter '!tests-blackbox' test:coverage"
 	},
 	"devDependencies": {
-		"@changesets/cli": "2.28.1",
+		"@changesets/cli": "catalog:",
 		"@directus/release-notes-generator": "workspace:*",
-		"@eslint/js": "9.21.0",
-		"eslint": "9.21.0",
-		"eslint-config-prettier": "9.1.0",
-		"eslint-plugin-vue": "9.32.0",
-		"globals": "15.15.0",
-		"prettier": "3.1.0",
-		"rimraf": "6.0.1",
-		"typescript": "5.8.2",
-		"typescript-eslint": "8.25.0"
+		"@eslint/js": "catalog:",
+		"eslint": "catalog:",
+		"eslint-config-prettier": "catalog:",
+		"eslint-plugin-vue": "catalog:",
+		"globals": "catalog:",
+		"postcss-html": "catalog:",
+		"prettier": "catalog:",
+		"rimraf": "catalog:",
+		"stylelint": "catalog:",
+		"stylelint-config-standard": "catalog:",
+		"stylelint-config-standard-scss": "catalog:",
+		"stylelint-config-standard-vue": "catalog:",
+		"stylelint-use-logical": "catalog:",
+		"typescript": "catalog:",
+		"typescript-eslint": "catalog:"
 	},
-	"packageManager": "pnpm@9.15.6",
+	"pnpm": {
+		"overrides": {
+			"tar-fs": "2.1.4",
+			"@yarnpkg/shell>cross-spawn": "7.0.6",
+			"jws": "4.0.1",
+			"glob@10.4.5": "10.5.0",
+			"glob@11.0.3": "11.1.0"
+		}
+	},
+	"packageManager": "pnpm@10.14.0",
 	"engines": {
 		"node": "22",
-		"pnpm": "9"
+		"pnpm": ">=10 <11"
 	}
 }

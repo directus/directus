@@ -276,7 +276,8 @@ export default class MySQL implements SchemaInspector {
 					.andOn('rc.CONSTRAINT_SCHEMA', '=', 'fk.CONSTRAINT_SCHEMA');
 			})
 			.leftJoin('INFORMATION_SCHEMA.STATISTICS as stats', function () {
-				this.on('stats.TABLE_NAME', '=', 'c.TABLE_NAME')
+				this.on('stats.TABLE_SCHEMA', '=', 'c.TABLE_SCHEMA')
+					.andOn('stats.TABLE_NAME', '=', 'c.TABLE_NAME')
 					.andOn('stats.COLUMN_NAME', '=', 'c.COLUMN_NAME')
 					.andOnVal('stats.NON_UNIQUE', 1)
 					.andOnVal('stats.SEQ_IN_INDEX', 1);

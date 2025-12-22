@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { getItemRoute } from '@/utils/get-route';
@@ -30,6 +31,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
+		const aiStore = useAiStore();
+
+		aiStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const router = useRouter();
 		const { t, n } = useI18n();
 
@@ -232,7 +241,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		const featureId = computed(() => {
-			return props.readonly ? null : primaryKeyField.value?.field ?? null;
+			return props.readonly ? null : (primaryKeyField.value?.field ?? null);
 		});
 
 		const showingCount = computed(() => {
@@ -265,7 +274,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function updateItemPopup(update: Partial<ItemPopup>) {
 			if ('item' in update) {
 				const field = primaryKeyField.value?.field;
-				update.item = !field ? null : items.value.find((i) => i[field] === update.item) ?? null;
+				update.item = !field ? null : (items.value.find((i) => i[field] === update.item) ?? null);
 			}
 
 			itemPopup.value = merge({}, itemPopup.value, update);

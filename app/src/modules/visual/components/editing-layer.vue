@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, useTemplateRef } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useEventListener } from '@vueuse/core';
-import { useCollection } from '@directus/composables';
-import { PrimaryKey } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useNotificationsStore } from '@/stores/notifications';
-import { getItemRoute, getCollectionRoute } from '@/utils/get-route';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
+import { useCollection } from '@directus/composables';
+import { PrimaryKey } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { useEventListener } from '@vueuse/core';
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { EditConfig, NavigationData, ReceiveData, SavedData, SendAction } from '../types';
 import { sameOrigin } from '../utils/same-origin';
-import type { EditConfig, ReceiveData, NavigationData, SendAction, SavedData } from '../types';
 
 const { frameSrc, frameEl, showEditableElements } = defineProps<{
 	frameSrc: string;
@@ -247,7 +249,7 @@ function usePopoverWidth() {
 
 <template>
 	<div ref="editing-layer" class="editing-layer" :class="{ editing: editOverlayActive }">
-		<overlay-item
+		<OverlayItem
 			v-if="collection"
 			v-model:active="editOverlayActive"
 			:overlay="mode"
@@ -264,8 +266,8 @@ function usePopoverWidth() {
 				<div
 					class="popover-rect"
 					:style="{
-						width: `${position.width}px`,
-						height: `${position.height}px`,
+						inlineSize: `${position.width}px`,
+						blockSize: `${position.height}px`,
 						transform: `translate(${position.left}px,${position.top}px)`,
 					}"
 				></div>
@@ -273,25 +275,26 @@ function usePopoverWidth() {
 
 			<template #actions>
 				<template v-if="primaryKey">
-					<v-button v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
+					<VButton v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
 						{{ t('navigate_to_item') }}
-					</v-button>
+					</VButton>
 
-					<v-button
+					<VButton
 						v-else
 						v-tooltip:[tooltipPlacement]="t('navigate_to_item')"
 						:to="itemRoute"
 						:disabled="isNew"
 						:x-small="mode === 'popover'"
+						:small="mode !== 'popover'"
 						secondary
 						icon
 						rounded
 					>
-						<v-icon name="launch" :small="mode === 'popover'" />
-					</v-button>
+						<VIcon name="launch" small />
+					</VButton>
 				</template>
 			</template>
-		</overlay-item>
+		</OverlayItem>
 	</div>
 </template>
 
@@ -309,8 +312,8 @@ function usePopoverWidth() {
 	.popover-rect {
 		pointer-events: none;
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 	}
 }
 </style>

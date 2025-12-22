@@ -2,10 +2,10 @@ import { cssVar } from '@directus/utils/browser';
 import { get } from 'lodash-es';
 import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
-import type { Theme } from '../schemas/theme.js';
-import { ThemeSchema } from '../schemas/theme.js';
+import type { DeepPartial, Theme } from '@directus/types';
+import { ThemeSchema } from '@directus/types';
 
-export const useFonts = (theme: MaybeRef<Theme>) => {
+export const useFonts = (theme: MaybeRef<Theme | DeepPartial<Theme>>) => {
 	const paths = computed(() => {
 		const paths: Map<string[], { family: string | null; weight: string | null }> = new Map();
 
@@ -92,47 +92,15 @@ export const useFonts = (theme: MaybeRef<Theme>) => {
 			const localFonts = ['Inter', 'Merriweather', 'Fira Mono'];
 
 			if (localFonts.includes(family) === false) {
-				const weightsParam = Array.from(weights).join(';');
-				families.push(`${family.replace(' ', '+')}:wght@${weightsParam}`);
+				const weightsParam = Array.from(weights)
+					.sort((a, b) => Number(a) - Number(b))
+					.join(';');
+
+				families.push(`${family.replaceAll(' ', '+')}:wght@${weightsParam}`);
 			}
 		}
 
 		return families;
-
-		// return fonts.value
-		// 	.filter((font) => {
-		// 		/**
-		// 		 * I (Rijk)'d like the definition to remain valid CSS, so we can't introduce new characters
-		// 		 * to differentiate. However, both `"font"` and `font` are valid font identifiers, so we
-		// 		 * could rely on the existence of `""` as a sneaky way to differentiate between Google Font
-		// 		 * and "regular" font.
-		// 		 *
-		// 		 * There's no way in JS to check what fonts exist, so we'll have to assume all custom fonts
-		// 		 * are coming from Google Fonts.
-		// 		 */
-
-		// 		if (font.startsWith('"') && font.endsWith('"') && font.includes('var(') === false) {
-		// 			/* While Inter/Merriweather/Fira Mono are Google Fonts, we ship them locally as they're
-		// 			 * used in the default theme. They shouldn't be double-loaded so they're filtered out here.
-		// 			 */
-		// 			const localFonts = ['Inter', 'Merriweather', 'Fira Mono'];
-
-		// 			if (localFonts.includes(font) || localFonts.map((font) => `"${font}"`).includes(font)) {
-		// 				return false;
-		// 			}
-
-		// 			return true;
-		// 		}
-
-		// 		return false;
-		// 	})
-		// 	.map((font) => {
-		// 		if (font.startsWith('"') && font.endsWith('"')) {
-		// 			font = font.slice(1, -1);
-		// 		}
-
-		// 		return font.replace(' ', '+');
-		// 	});
 	});
 
 	return { googleFonts };

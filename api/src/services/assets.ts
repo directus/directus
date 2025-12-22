@@ -2,15 +2,25 @@ import { useEnv } from '@directus/env';
 import {
 	ForbiddenError,
 	IllegalAssetTransformationError,
+	InvalidPayloadError,
 	InvalidQueryError,
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
 } from '@directus/errors';
-import type { Range, Stat } from '@directus/storage';
-import type { Accountability, File, SchemaOverview } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	File,
+	Range,
+	SchemaOverview,
+	Stat,
+	Transformation,
+	TransformationSet,
+} from '@directus/types';
+import archiver from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
-import { contentType } from 'mime-types';
+import { contentType, extension } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
@@ -20,12 +30,13 @@ import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
+import { NameDeduper } from './assets/name-deduper.js';
 import { FilesService } from './files.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
+import { FoldersService } from './folders.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -34,13 +45,126 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	filesService: FilesService;
+	sudoFilesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.filesService = new FilesService({ ...options, accountability: null });
+		this.sudoFilesService = new FilesService({ ...options, accountability: null });
+	}
+
+	private zip(options: { folders?: Map<string, string>; files: Pick<File, 'id' | 'folder' | 'filename_download'>[] }) {
+		if (options.files.length === 0) {
+			throw new InvalidPayloadError({ reason: 'No files found in the selected folders tree' });
+		}
+
+		const archive = archiver('zip');
+
+		const complete = async () => {
+			const deduper = new NameDeduper();
+			const storage = await getStorage();
+
+			for (const { id, folder, filename_download } of options.files) {
+				const file = await this.sudoFilesService.readOne(id, {
+					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
+				});
+
+				const exists = await storage.location(file.storage).exists(file.filename_disk);
+
+				if (!exists) throw new ForbiddenError();
+
+				const version = file.modified_on ? (new Date(file.modified_on).getTime() / 1000).toFixed() : undefined;
+
+				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
+
+				const fileExtension = path.extname(file.filename_download) || (file.type && '.' + extension(file.type)) || '';
+
+				const dedupedFileName = deduper.add(filename_download, { group: folder, fallback: file.id + fileExtension });
+
+				const folderName = folder ? options.folders?.get(folder) : undefined;
+
+				archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
+			}
+
+			// add any empty folders, does not override already filled folder
+			if (options.folders) {
+				for (const [, folder] of options.folders) {
+					archive.append('', { name: folder + '/' });
+				}
+			}
+
+			await archive.finalize();
+		};
+
+		return { archive, complete };
+	}
+
+	async zipFiles(files: string[]) {
+		const filesService = new FilesService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const filesToZip = await filesService.readByQuery({
+			filter: {
+				id: {
+					_in: files,
+				},
+			},
+			limit: -1,
+		});
+
+		return this.zip({
+			files: filesToZip.map((file) => ({
+				id: file['id'],
+				folder: file['folder'],
+				filename_download: file['filename_download'],
+			})),
+		});
+	}
+
+	async zipFolder(root: string) {
+		const foldersService = new FoldersService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const folderTree = await foldersService.buildTree(root);
+
+		const filesService = new FilesService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const filesToZip = await filesService.readByQuery({
+			filter: {
+				folder: {
+					_in: Array.from(folderTree.keys()),
+				},
+			},
+			limit: -1,
+		});
+
+		const { archive, complete } = this.zip({
+			folders: folderTree,
+			files: filesToZip.map((file) => ({
+				id: file['id'],
+				folder: file['folder'],
+				filename_download: file['filename_download'],
+			})),
+		});
+
+		return {
+			archive,
+			complete,
+			metadata: {
+				name: folderTree.get(root),
+			},
+		};
 	}
 
 	async getAsset(
@@ -91,7 +215,7 @@ export class AssetsService {
 			);
 		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
+		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 

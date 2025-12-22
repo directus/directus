@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIconFile from '@/components/v-icon-file.vue';
+import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import type { File } from '@directus/types';
@@ -19,7 +21,10 @@ defineEmits<{
 const file = toRef(props, 'file');
 
 const src = computed(() =>
-	getAssetUrl(`${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`),
+	getAssetUrl(file.value.id, {
+		imageKey: props.preset ?? undefined,
+		cacheBuster: file.value.modified_on,
+	}),
 );
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {
@@ -51,7 +56,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 <template>
 	<div class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }" @click="$emit('click')">
 		<div v-if="type === 'image'" class="image">
-			<v-image :src="src" :width="file.width" :height="file.height" :alt="file.title" />
+			<VImage :src="src" :width="file.width" :height="file.height" :alt="file.title" />
 		</div>
 
 		<div v-else-if="type === 'video'" class="video">
@@ -61,7 +66,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		<audio v-else-if="type === 'audio'" controls :src="src" />
 
 		<div v-else class="fallback">
-			<v-icon-file :ext="type" />
+			<VIconFile :ext="type" />
 		</div>
 	</div>
 </template>
@@ -69,23 +74,23 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 <style lang="scss" scoped>
 .file-preview {
 	position: relative;
-	max-width: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
+	max-inline-size: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
 
 	img,
 	video {
-		width: auto;
-		height: auto;
+		inline-size: auto;
+		block-size: auto;
 	}
 
 	audio {
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	img,
 	video,
 	audio {
-		max-width: 100%;
-		max-height: v-bind(maxHeight);
+		max-inline-size: 100%;
+		max-block-size: v-bind(maxHeight);
 		object-fit: contain;
 		border-radius: var(--theme--border-radius);
 	}
@@ -109,8 +114,8 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		justify-content: center;
 
 		video {
-			min-height: 80px;
-			min-width: 80px;
+			min-block-size: 80px;
+			min-inline-size: 80px;
 		}
 	}
 
@@ -119,7 +124,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: var(--input-height-tall);
+		block-size: var(--input-height-tall);
 		border-radius: var(--theme--border-radius);
 	}
 

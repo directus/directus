@@ -2,7 +2,14 @@ import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
 import { isSystemCollection } from '@directus/system-data';
-import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	FieldOverview,
+	Permission,
+	SchemaOverview,
+	Type,
+} from '@directus/types';
 import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
@@ -20,7 +27,6 @@ import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
@@ -254,7 +260,7 @@ class OASSpecsService implements SpecificationSubService {
 														},
 													},
 												},
-										  },
+											},
 									responses: {
 										'200': {
 											description: 'Successful request',
@@ -268,17 +274,17 @@ class OASSpecsService implements SpecificationSubService {
 																		data: schema.collections[collection]?.singleton
 																			? {
 																					$ref: `#/components/schemas/${tag.name}`,
-																			  }
+																				}
 																			: {
 																					type: 'array',
 																					items: {
 																						$ref: `#/components/schemas/${tag.name}`,
 																					},
-																			  },
+																				},
 																	},
 																},
 															},
-													  },
+														},
 										},
 									},
 								},
@@ -307,7 +313,7 @@ class OASSpecsService implements SpecificationSubService {
 														},
 													},
 												},
-										  },
+											},
 									responses: {
 										'200': {
 											content:
@@ -323,7 +329,7 @@ class OASSpecsService implements SpecificationSubService {
 																	},
 																},
 															},
-													  },
+														},
 										},
 									},
 								},

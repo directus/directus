@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { computed } from 'vue';
 
 const props = withDefaults(
@@ -22,38 +27,33 @@ const displayValue = computed(() => {
 </script>
 
 <template>
-	<v-menu attached class="language-select" :class="{ secondary, danger }">
+	<VMenu attached class="language-select" :class="{ secondary, danger }">
 		<template #activator="{ toggle, active }">
 			<button class="toggle" type="button" @click="toggle">
 				<slot name="prepend" />
 				<span class="display-value">{{ displayValue }}</span>
 				<span class="controls"><slot name="controls" :active :toggle /></span>
-				<v-icon class="expand" name="expand_more" :class="{ active }" />
+				<VIcon class="expand" name="expand_more" :class="{ active }" />
 			</button>
 		</template>
 
-		<v-list v-if="items">
-			<v-list-item
-				v-for="(item, index) in items"
-				:key="index"
-				clickable
-				@click="$emit('update:modelValue', item.value)"
-			>
+		<VList v-if="items">
+			<VListItem v-for="(item, index) in items" :key="index" clickable @click="$emit('update:modelValue', item.value)">
 				<div class="start">
 					<div class="dot" :class="{ show: item.edited }"></div>
 					{{ item.text }}
 				</div>
 				<div class="end">
-					<v-progress-linear
+					<VProgressLinear
 						v-tooltip="`${Math.round((item.current / item.max) * 100)}%`"
 						:value="item.progress"
 						rounded
 						colorful
 					/>
 				</div>
-			</v-list-item>
-		</v-list>
-	</v-menu>
+			</VListItem>
+		</VList>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>
@@ -63,11 +63,11 @@ const displayValue = computed(() => {
 
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: var(--theme--form--field--input--height);
+	inline-size: 100%;
+	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
 	color: var(--theme--primary);
-	text-align: left;
+	text-align: start;
 	background-color: var(--theme--primary-background);
 	border-radius: var(--theme--border-radius);
 
@@ -82,11 +82,11 @@ const displayValue = computed(() => {
 
 	.display-value {
 		flex-grow: 1;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 
 	.controls > * + * {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 
 	.secondary & {
@@ -109,11 +109,11 @@ const displayValue = computed(() => {
 .v-input .input {
 	color: var(--theme--primary);
 	background-color: var(--theme--primary-background);
-	border: 0px;
+	border: 0;
 }
 
 .v-icon {
-	margin-left: 6px;
+	margin-inline-start: 6px;
 }
 
 .v-list {
@@ -145,13 +145,13 @@ const displayValue = computed(() => {
 		}
 
 		.dot {
-			width: 8px;
-			height: 100%;
+			inline-size: 8px;
+			block-size: 100%;
 
 			&.show::before {
 				display: block;
-				width: 4px;
-				height: 4px;
+				inline-size: 4px;
+				block-size: 4px;
 				background-color: var(--theme--form--field--input--foreground-subdued);
 				border-radius: 2px;
 				content: '';
@@ -159,7 +159,7 @@ const displayValue = computed(() => {
 		}
 
 		.v-progress-linear {
-			max-width: 100px;
+			max-inline-size: 100px;
 		}
 	}
 }

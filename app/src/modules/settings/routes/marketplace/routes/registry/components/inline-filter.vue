@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
-import { EXTENSION_TYPES } from '@directus/extensions';
+import { EXTENSION_TYPES } from '@directus/constants';
 import { watchDebounced } from '@vueuse/core';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -74,18 +76,18 @@ const sortOptions = [
 <template>
 	<div class="inline-filter">
 		<div class="field">
-			<v-icon class="icon" small name="category" />
-			<v-select v-model="type" menu-full-height class="type" inline :items="typeOptions" />
+			<VIcon class="icon" small name="category" />
+			<VSelect v-model="type" menu-full-height class="type" inline :items="typeOptions" />
 		</div>
 
 		<div class="field">
-			<v-icon class="icon" small name="sort" />
-			<v-select v-model="sort" class="sort" inline :items="sortOptions" />
+			<VIcon class="icon" small name="sort" />
+			<VSelect v-model="sort" class="sort" inline :items="sortOptions" />
 		</div>
 
 		<div class="field">
-			<v-icon class="icon" small name="search" />
-			<input v-model="searchInputValue" v-focus="true" :placeholder="t('search_extensions')" class="search-input" />
+			<VIcon class="icon" small name="search" />
+			<input v-model="searchInputValue" v-focus="true" :placeholder="$t('search_extensions')" class="search-input" />
 		</div>
 
 		<div v-show="filterCount !== 0" class="item-count">{{ showingCount }}</div>
@@ -97,15 +99,15 @@ const sortOptions = [
 	display: flex;
 	gap: 4px 32px;
 	flex-wrap: wrap;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .search-input {
 	appearance: none;
 	border: none;
 	border-radius: 0;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
-	width: 180px;
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
+	inline-size: 180px;
 	background: transparent;
 
 	&::placeholder {

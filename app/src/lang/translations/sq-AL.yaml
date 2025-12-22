@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rreth
+first_name: Emri
+last_name: Mbiemri
 identifier: Identifikues
 avatar: Avatar
 application: Aplikacion
@@ -164,19 +166,9 @@ rename_version: Riemërto Versionin
 compare_version: Krahaso Versionin
 save_version: Ruaj Versionin
 promote_version: Promovo Versionin
-promote_version_disabled: Pa Ndryshime
-promote_version_drawer_title: Promovo {version} në Kryesore
-promote_version_changes: Ndryshimet
-promote_version_preview: Parashiko
-outdated_notice: >-
-  Artikulli kryesor është përditësuar që nga krijimi i këtij versioni. Ju lutemi shqyrtoni të gjitha vlerat e fushave më poshtë dhe konfirmoni cilin version duhet të përdorni kur promovoni këtë version në artikullin kryesor.
-promote_notice: >-
-  Ju lutemi shqyrtoni të gjitha vlerat e fushave më poshtë dhe konfirmoni cilin version duhet të përdorni kur promovoni këtë version në artikullin kryesor.
 delete_version: Fshi Versionin
 delete_version_copy: >-
   A jeni i sigurt që doni të fshini versionin "{version}"? Kjo veprim nuk mund të zhbëhet.
-delete_on_promote_copy: >-
-  Dëshironi të fshini apo të ruani versionin "{version}" pas promovimit?
 reset_bookmark: Rikthe Shënuesin
 update_bookmark: Përditëso Shënuesin
 delete_bookmark: Fshi Shënuesin
@@ -447,11 +439,11 @@ confirm_revert_body: Kjo do të rikthejë artikullin në gjendjen e zgjedhur.
 display: Shfaq
 settings_update_success: Cilësimet u përditësuan
 title: Titulli
+subtitle: Nëntitull
 revision_delta_created: U krijua
 revision_delta_created_externally: U krijua Jashtë
 revision_delta_updated: '''Përditësoi 1 Fushë | Përditësoi {count} Fusha'''
 revision_delta_deleted: U fshi
-revision_delta_version_saved: 'Ruajtja e Versionit (Përditësuar 1 Fushë) | Ruajtja e Versionit (Përditësuar {count} Fusha)'
 revision_delta_reverted: U rikthye
 revision_delta_update_message: Kjo fushë është përditësuar por vlera e saj është e fshehur për arsye sigurie.
 revision_delta_other: Rishikim
@@ -755,7 +747,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
   VALUE_TOO_LONG: Vlera është shumë e gjatë
 security: Siguria
-value_hashed: Vlera është Hashuar Sigurisht
 bookmark_name: Emri i Faqerojtësit...
 create_bookmark: Krijo Faqerojtës
 edit_bookmark: Modifiko Faqerojtësin
@@ -931,10 +922,8 @@ label: Etiketë
 flows: Rrjedha
 flow: Rrjedh
 select_a_flow: Zgjidh një Rrjedhë
-run_flow_confirm: A je i sigurtë që dëshiron të ekzekutosh këtë rrjedhë?
 run_flow_on_current_collection: Zbato Rrjedhën në Koleksionin Aktual
 run_flow_on_current: Zbato Rrjedhën në Artikullin Aktual
-run_flow_on_current_edited_confirm: Ky artikull mund të përditësohet nga kjo rrjedhë, a je i sigurtë që dëshiron të ekzekutosh atë?
 run_flow_on_selected: Zgjidh Një ose më Shumë Artikuj Së Pari | Zbato Rrjedhën në 1 Artikull të Zgjedhur | Zbato Rrjedhën në {n} Artikuj të Zgjedhur
 run_flow: Zbato Rrjedhën
 field_name_placeholder: Shkruaj emrin e fushës...
@@ -1148,49 +1137,6 @@ discard_changes_copy: Je i sigurt që dëshiron të anulosh të gjitha ndryshime
 show_x_axis: Shfaq Aksin X
 show_y_axis: Shfaq Aksin Y
 keep_editing: Vazhdo të Modifikosh
-page_help_collections_overview: '**Përmbledhje e Koleksioneve** — Lista e të gjitha koleksioneve të cilave ke qasje.'
-page_help_collections_collection: >-
-  **Shfleto Artikujt** — Liston të gjitha artikujt {collection} të cilave ke qasje. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
-page_help_collections_item: >-
-  **Detajet e Artikullit** — Një formë për shikimin dhe menaxhimin e këtij artikulli. Kjo anësore gjithashtu përmban një histori të plotë të rishikimeve, dhe komente të përmbysura.
-page_help_activity_collection: >-
-  **Shfleto Aktivitetin** — Një listë e plotë e të gjitha aktiviteteve të sistemit dhe të përmbajtjes së përdoruesit tënd.
-page_help_docs_global: >-
-  **Përmbledhje e Dokumentacionit** — Dokumente të përshtatura specifikisht për versionin dhe skemën e këtij projekti.
-page_help_files_collection: >-
-  **Biblioteka e Skedarëve** — Liston të gjitha aktet e skedarëve të ngarkuara në këtë projekt. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
-page_help_files_item: >-
-  **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
-page_help_settings_project: "**Cilësimet** — Opsionet e konfigurimit global të projektit tuaj."
-page_help_settings_appearance: "**Pamja** — Opsionet e pamjes dhe temave të projektit tuaj."
-page_help_settings_extensions: '**Zgjerime** — Zgjerimet e instaluara në projektin tuaj.'
-page_help_settings_datamodel_collections: >-
-  **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
-page_help_settings_datamodel_fields: >-
-  **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
-page_help_settings_system_logs: '**Regjistrat e Sistemit** — Aksesoni një transmetim të drejtpërdrejtë të regjistrave të sistemit.'
-page_help_settings_policies_collection: '**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit.'
-page_help_settings_policies_item: "**Detajet e Drejtimit** — Menaxho lejet dhe cilësimet e tjera të një drejtimi."
-page_help_settings_roles_collection: '**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit.'
-page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
-page_help_settings_presets_collection: >-
-  **Shfleto Cilësimet e Paracaktuara** — Liston të gjitha cilësimet e paracaktuara në projekt, duke përfshirë: faqerojtësit e përdoruesit, rolit dhe globalë, si dhe pamjet e paracaktuara.
-page_help_settings_presets_item: >-
-  **Detajet e Cilësimeve të Paracaktuara** — Një formë për menaxhimin e faqerojtësve dhe cilësimeve të paracaktuara të koleksionit.
-page_help_settings_webhooks_collection: '**Shfleto Webhooks** — Liston të gjitha webhooks brenda projektit.'
-page_help_settings_webhooks_item: '**Detajet e Webhook** — Një formë për krijimin dhe menaxhimin e webhooks të projektit.'
-page_help_settings_flows_collection: '**Shfleto Flujot** — Liston të gjitha flujot brenda projektit.'
-page_help_settings_flows_item: '**Detajet e Flujos** — Hapësira për menaxhimin e një ose më shumë operacionesh.'
-page_help_settings_translations_collection: '**Shfleto Përkthimet e Personalizuara** — Liston të gjitha përkthimet e personalizuara brenda projektit.'
-page_help_settings_translations_item: '**Detajet e Përkthimit të Personalizuar** — Një formë për shikimin dhe menaxhimin e këtij artikulli.'
-page_help_users_collection: '**Drejtoria e Përdoruesve** — Liston të gjithë përdoruesit e sistemit brenda këtij projekti.'
-page_help_users_item: >-
-  **Detajet e Përdoruesit** — Menaxho informacionin e llogarisë sënde, ose shiko detajet e përdoruesve të tjerë.
-page_help_insights_overview: '**Insights** — Lista e kokpitëve të cilave ke qasje.'
-page_help_insights_dashboard: '**Dashboard** — Hapësira për menaxhimin e një ose më shumë paneleve'
-page_help_marketplace_account: '**Llogari** — Botues ose mirëmbajtës i një zgjerimi të publikuar.'
-page_help_marketplace_registry: '**Regjistri** — Zgjerime të disponueshme në Tregun e Directus.'
-page_help_marketplace_extension: '**Zgjerim** — Zgjerim në Tregun e Directus.'
 activity_feed: Feed Aktiviteti
 add_new: Shto të Ri
 create_new: Krijo të Ri
@@ -1226,7 +1172,6 @@ directus_collection:
   directus_dashboards: Dashboards brenda modulit të Insights
   directus_fields: Konfigurimi shtesë i fushave dhe metadata
   directus_files: Metadata për të gjitha asetet e menaxhuara të skedarëve
-  directus_flows: Flujot e automatizimit
   directus_folders: Ofron drejtoritë virtuale për skedarë
   directus_migrations: Cila version i bazës së të dhënave që po përdorni
   directus_notifications: Njoftimet e dërguara për përdoruesit
@@ -1572,6 +1517,24 @@ unlimited_usage: Përdorim i Pakufizuar
 uses_left: Asnjë përdorim i mbetur | Një përdorim i mbetur | {n} përdorime të mbetura
 no_shares: Asnjë ndarje për t'u shfaqur
 new_share: Ndarje e Re
+ai:
+  input: Input
+  unknown: Panjohur
+  settings: Parametra
+  tool_approval:
+    disabled: I Çaktivizuar
+ai_tools:
+  items: Artikuj
+  files: Skedarë
+  folders: Dosjet
+  flows: Rrjedha
+  trigger-flow: Shkakto Rrjedhën
+  operations: Operacione
+  schema: Skemë
+  collections: Koleksione
+  fields: Fusha
+mcp_prompts_collection_schema:
+  messages_role_user: Përdorues
 expired: Skaduar
 upcoming: E Ardhshme
 share: Ndaj
@@ -1694,7 +1657,6 @@ translation_placeholder: Shkruani një përkthim...
 value: Vlerë
 view_project: Shiko Projektin
 report_error: Raporto Gabimin
-start: Fillim
 table: Tabela
 list: Listë
 search_filter: Kërko & Filro
@@ -1739,9 +1701,7 @@ interfaces:
     accordion_mode: Modaliteti i Akordionit
     max_one_section_open: Maksimum 1 Seksion i Hapur
   presentation-links:
-    presentation-links: Lidhje Butonash
-    links: Lidhje
-    description: Butonat e lidhjeve konfigurues për lansimin e URL-ve dinamike
+    presentation-links: Butonat
     style: Stil
     primary: Primar
     link: Lidhje
@@ -2063,6 +2023,9 @@ interfaces:
   input-password:
     input-password: Fut Fjalëkalimin
     description: Hyrja e fjalëkalimit me mundësi për të fshehur vlerën
+  header:
+    header: Header
+    links: Lidhje
 displays:
   translations:
     translations: Përkthimet
@@ -2277,6 +2240,7 @@ show_labels: Shfaq etiketat
 show_legend: Shfaq legjendën
 right: Djathtas
 left: Majtas
+start: Fillim
 donut: Petull
 panels:
   metric:
@@ -2365,11 +2329,9 @@ triggers:
 a_flow_uuid: Zgjidh një rrjedhë për të shkaktuar...
 any_string_or_json: Çdo varg ose JSON...
 item_payload_placeholder: Kjo është JSON që përdoret për të përditësuar vlerat e fushës së artikullit...
-operation_variables_note: Mund të aksesosh të dhënat e rrjedhës me variabla si {'{'}{'{'}$last{'}'}{'}'}, {'{'}{'{'}$trigger{'}'}{'}'} dhe {'{'}{'{'}$accountability{'}'}{'}'}, ose referohu në operacionet e mëparshme duke përdorur {'{'}{'{'}operation_key{'}'}{'}'}.'
 operations:
   condition:
     name: Kusht
-    description: Drejto një rrjedhë bazuar në logjikën Nëse / Përndryshe
   exec:
     name: Ekzekuto Skript
     description: Ekzekuto kod të papërcaktuar për të ndryshuar ngarkesën
@@ -2454,7 +2416,6 @@ operations:
     description: Ndrysho ngarkesën JSON të rrjedhës
   trigger:
     name: Shkakto Rrjedhën
-    description: Kaloni këtë të dhënë në një rrjedhë tjetër
     flows: Rrjedha
     flow: Rrjedh
     data: Të Dhënat

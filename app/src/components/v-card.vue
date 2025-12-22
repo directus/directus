@@ -32,10 +32,10 @@ withDefaults(defineProps<Props>(), {
 .v-card {
 	--theme--form--row-gap: 52px;
 
-	min-width: var(--v-card-min-width, none);
-	max-width: 400px;
-	height: auto;
-	max-height: 90vh;
+	min-inline-size: var(--v-card-min-width, none);
+	max-inline-size: 400px;
+	block-size: auto;
+	max-block-size: 90vh;
 	overflow: auto;
 
 	/* Page Content Spacing */
@@ -45,8 +45,8 @@ withDefaults(defineProps<Props>(), {
 	border-radius: var(--theme--border-radius);
 
 	& > :first-child {
-		border-top-left-radius: var(--theme--border-radius);
-		border-top-right-radius: var(--theme--border-radius);
+		border-start-start-radius: var(--theme--border-radius);
+		border-start-end-radius: var(--theme--border-radius);
 	}
 
 	&.disabled {

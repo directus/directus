@@ -1,5 +1,4 @@
 import { InvalidPayloadError } from '@directus/errors';
-import { randomInteger, randomUUID } from '@directus/random';
 import { Driver, StorageManager } from '@directus/storage';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -97,8 +96,8 @@ describe('Integration Tests', () => {
 				});
 
 				sample = {
-					id: randomUUID(),
-					filesize: randomInteger(0, 1000),
+					id: 'test-file-id-123',
+					filesize: 500,
 				};
 
 				const mockDriver: Partial<Driver> = {

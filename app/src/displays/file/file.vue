@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { readableMimeType } from '@/utils/readable-mime-type';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
 
 type File = {
 	id: string;
 	type: string;
 	title: string;
+	modified_on: Date;
 };
 
 const props = withDefaults(
 	defineProps<{
-		value: File | null;
+		value?: File | null;
 	}>(),
 	{
 		value: null,
@@ -30,12 +33,16 @@ const imageThumbnail = computed(() => {
 	if (!props.value) return null;
 	if (props.value.type?.includes('svg')) return getAssetUrl(props.value.id);
 	if (props.value.type?.includes('image') === false) return null;
-	return getAssetUrl(`${props.value.id}?key=system-small-cover`);
+
+	return getAssetUrl(props.value.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: props.value.modified_on,
+	});
 });
 </script>
 
 <template>
-	<v-image
+	<VImage
 		v-if="imageThumbnail && !imgError"
 		:src="imageThumbnail"
 		:class="{ 'is-svg': value && value.type?.includes('svg') }"
@@ -47,13 +54,13 @@ const imageThumbnail = computed(() => {
 			{{ fileExtension }}
 		</span>
 
-		<v-icon v-else name="folder_open" />
+		<VIcon v-else name="folder_open" />
 	</div>
 </template>
 
 <style lang="scss" scoped>
 img {
-	height: 100%;
+	block-size: 100%;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 	aspect-ratio: 1;
@@ -66,7 +73,7 @@ img {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height: 100%;
+	block-size: 100%;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);

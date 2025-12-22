@@ -1,19 +1,10 @@
 import api, { replaceQueue } from '@/api';
 import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { i18n } from '@/lang';
-import { setLanguage } from '@/lang/set-language';
-import { useUserStore } from '@/stores/user';
 import { AuthProvider } from '@/types/login';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { computed, reactive, unref } from 'vue';
-
-type HydrateOptions = {
-	/**
-	 * Allow setting current admin language only when default language gets updated.
-	 */
-	isLanguageUpdated?: boolean;
-};
+import { computed, reactive } from 'vue';
 
 export type Info = {
 	project: null | {
@@ -35,6 +26,8 @@ export type Info = {
 		public_registration: boolean | null;
 		public_registration_verify_email: boolean | null;
 	};
+	mcp_enabled: boolean;
+	setupCompleted: boolean;
 	rateLimit?:
 		| false
 		| {
@@ -90,6 +83,8 @@ export type Auth = {
 export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
+		mcp_enabled: true,
+		setupCompleted: false,
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
@@ -118,13 +113,15 @@ export const useServerStore = defineStore('serverStore', () => {
 		return options;
 	});
 
-	const hydrate = async (options?: HydrateOptions) => {
+	const hydrate = async () => {
 		const [serverInfoResponse, authResponse] = await Promise.all([
 			api.get(`/server/info`),
 			api.get('/auth?sessionOnly'),
 		]);
 
 		info.project = serverInfoResponse.data.data?.project;
+		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
+		info.setupCompleted = serverInfoResponse.data.data?.setupCompleted;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.websocket = serverInfoResponse.data.data?.websocket;
@@ -133,18 +130,6 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
-
-		const { currentUser } = useUserStore();
-
-		// set language as default locale before login
-		// or reset language for admin when they update it without having their own language set
-		if (
-			!currentUser ||
-			(options?.isLanguageUpdated &&
-				(!('language' in currentUser) || ('language' in currentUser && !currentUser?.language)))
-		) {
-			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
-		}
 
 		if (serverInfoResponse.data.data?.rateLimit !== undefined) {
 			if (serverInfoResponse.data.data?.rateLimit === false) {

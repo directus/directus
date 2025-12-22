@@ -13,6 +13,9 @@ on:
       - .github/workflows/blackbox.yml
   workflow_call:
 
+permissions:
+  contents: read
+
 concurrency:
   group: blackbox-${{ github.ref }}
   cancel-in-progress: true
@@ -27,7 +30,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -37,7 +40,7 @@ jobs:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=sqlite3 pnpm run test:blackbox -- --project common
+        run: TEST_DB=sqlite3 pnpm run test:blackbox --project common
 
   db:
     name: ${{ matrix.vendor }}
@@ -56,7 +59,7 @@ jobs:
           # - cockroachdb
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -86,4 +89,4 @@ jobs:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox -- --project db
+        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox --project db

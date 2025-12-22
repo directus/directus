@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { DeepPartial } from '@directus/types';
+import type { DeepPartial, Theme } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, toRefs, unref } from 'vue';
 import { useFonts, useTheme } from '../composables/index.js';
-import type { Theme } from '../schemas/index.js';
 import { rulesToCssVars } from '../utils/index.js';
 
 import themeDefaultDark from '../themes/dark/default.js';
@@ -12,10 +11,10 @@ import themeDefaultLight from '../themes/light/default.js';
 const props = withDefaults(
 	defineProps<{
 		darkMode: boolean;
-		themeLight: string | null;
-		themeLightOverrides: DeepPartial<Theme['rules']>;
-		themeDark: string | null;
-		themeDarkOverrides: DeepPartial<Theme['rules']>;
+		themeLight?: string | null;
+		themeLightOverrides?: DeepPartial<Theme['rules']>;
+		themeDark?: string | null;
+		themeDarkOverrides?: DeepPartial<Theme['rules']>;
 	}>(),
 	{
 		themeLight: themeDefaultLight.name,
@@ -51,7 +50,7 @@ useHead({
 						rel: 'stylesheet',
 						href: fontsImport,
 					},
-			  ]
+				]
 			: [];
 	}),
 });
@@ -66,5 +65,5 @@ const cssString = computed(() => {
 </script>
 
 <template>
-	<teleport to="#theme">{{ cssString }}</teleport>
+	<Teleport to="#theme">{{ cssString }}</Teleport>
 </template>

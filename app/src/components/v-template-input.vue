@@ -301,9 +301,9 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 <style scoped lang="scss">
 .v-template-input {
 	position: relative;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-bottom: 32px;
+	padding-block-end: 32px;
 	overflow: hidden;
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
@@ -320,7 +320,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&.multiline {
-		height: var(--input-height-tall);
+		block-size: var(--input-height-tall);
 		overflow-y: auto;
 		white-space: pre-wrap;
 	}
@@ -335,7 +335,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 
 	:deep(.preview) {
 		display: inline-block;
-		margin: 0px;
+		margin: 0;
 		padding: 2px 4px;
 		color: var(--theme--primary);
 		font-size: 0;
@@ -343,8 +343,6 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		vertical-align: -2px;
 		background: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);
-		-webkit-user-select: text;
-		user-select: text;
 
 		&::before {
 			display: block;

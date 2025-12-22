@@ -1,19 +1,13 @@
-import type {
-	ApiExtensionType,
-	AppExtensionType,
-	ExtensionOptionsBundleEntry,
-	ExtensionManifest as TExtensionManifest,
-} from '@directus/extensions';
+import type { ExtensionOptionsBundleEntry, ExtensionManifest as TExtensionManifest } from '@directus/extensions';
 import {
 	API_SHARED_DEPS,
-	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
-	HYBRID_EXTENSION_TYPES,
 } from '@directus/extensions';
+import type { AppExtensionType, ApiExtensionType } from '@directus/types';
+import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn, isTypeIn } from '@directus/utils';
 import commonjsDefault from '@rollup/plugin-commonjs';
 import jsonDefault from '@rollup/plugin-json';
@@ -71,7 +65,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 		let extensionManifestFile: string;
 
 		try {
-			extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+			extensionManifestFile = (await fse.readFile(packagePath, 'utf8')) as string;
 		} catch {
 			log(`Failed to read "package.json" file from current directory.`, 'error');
 			process.exit(1);
@@ -545,15 +539,21 @@ function getRollupOptions({
 			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
 			...plugins,
-			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
+			nodeResolve({
+				browser: mode === 'browser',
+				exportConditions: mode === 'node' ? ['node'] : [],
+				preferBuiltins: mode === 'node',
+			}),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
-			replace({
-				values: {
-					'process.env.NODE_ENV': JSON.stringify('production'),
-				},
-				preventAssignment: true,
-			}),
+			mode === 'browser'
+				? replace({
+						values: {
+							'process.env.NODE_ENV': JSON.stringify('production'),
+						},
+						preventAssignment: true,
+					})
+				: null,
 			minify ? terser() : null,
 		],
 		onwarn(warning, warn) {

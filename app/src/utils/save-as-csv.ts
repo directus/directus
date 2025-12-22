@@ -55,7 +55,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
 							field: fieldsUsed[key] ?? undefined,
 							collection: collection,
-					  })
+						})
 					: value;
 			} else {
 				parsedItem[name] = value;

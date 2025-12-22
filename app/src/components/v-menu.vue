@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import TransitionBounce from '@/components/transition/bounce.vue';
 import { useShortcut } from '@/composables/use-shortcut';
+import { useUserStore } from '@/stores/user';
 import { Instance, Modifier, Placement, detectOverflow } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
@@ -12,7 +14,7 @@ import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
-import { onUnmounted, ref, computed, watch, useTemplateRef, nextTick, type Ref } from 'vue';
+import { computed, nextTick, onUnmounted, ref, useTemplateRef, watch, type Ref } from 'vue';
 
 interface Props {
 	/** Where to position the popper */
@@ -64,6 +66,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['update:modelValue']);
+
+const userStore = useUserStore();
+
+const isRTL = computed(() => userStore.textDirection === 'rtl');
 
 const activator = ref<HTMLElement | null>(null);
 const reference = ref<HTMLElement | null>(null);
@@ -281,11 +287,23 @@ function usePopper(
 		stop();
 	});
 
+	function getPlacement() {
+		if (isRTL.value) {
+			if (options.value.attached) {
+				return 'bottom-end';
+			} else if (options.value.placement.includes('start') || options.value.placement.includes('end')) {
+				return options.value.placement.replace(/start|end/g, (match) => (match === 'start' ? 'end' : 'start'));
+			}
+		}
+
+		return options.value.attached ? 'bottom-start' : options.value.placement;
+	}
+
 	watch(
 		options,
 		() => {
 			popperInstance.value?.setOptions({
-				placement: options.value.attached ? 'bottom-start' : options.value.placement,
+				placement: getPlacement() as Placement,
 				modifiers: getModifiers(),
 			});
 		},
@@ -301,7 +319,7 @@ function usePopper(
 	function start() {
 		return new Promise((resolve) => {
 			popperInstance.value = createPopper(reference.value!, popper.value!, {
-				placement: options.value.attached ? 'bottom-start' : options.value.placement,
+				placement: getPlacement() as Placement,
 				modifiers: getModifiers(resolve),
 				strategy: 'fixed',
 			});
@@ -395,6 +413,10 @@ function usePopper(
 								case 'bottom-start':
 									x = props.arrowPadding;
 									break;
+								case 'top-end':
+								case 'bottom-end':
+									x = props.arrowPadding * -1;
+									break;
 								case 'left-start':
 								case 'right-start':
 									y = props.arrowPadding;
@@ -402,6 +424,11 @@ function usePopper(
 							}
 
 							state.styles.arrow.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+							if (isRTL.value) {
+								state.styles.arrow.right = state.styles.arrow.left;
+								state.styles.arrow.left = `unset`;
+							}
 						}
 
 						arrowStyles.value = state.styles.arrow;
@@ -444,8 +471,8 @@ function usePopper(
 			/>
 		</div>
 
-		<teleport to="#menu-outlet">
-			<transition-bounce>
+		<Teleport to="#menu-outlet">
+			<TransitionBounce>
 				<div
 					v-if="isActive"
 					:id="id"
@@ -482,8 +509,8 @@ function usePopper(
 						/>
 					</div>
 				</div>
-			</transition-bounce>
-		</teleport>
+			</TransitionBounce>
+		</Teleport>
 	</div>
 </template>
 
@@ -498,9 +525,9 @@ function usePopper(
 
 .v-menu-popper {
 	position: fixed;
-	left: -999px;
+	inset-inline-start: -999px;
 	z-index: 600;
-	min-width: 100px;
+	min-inline-size: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 
@@ -518,21 +545,19 @@ function usePopper(
 .arrow-triangle::before,
 .arrow-triangle::after {
 	position: absolute;
-	width: 10px;
-	height: 10px;
+	inline-size: 10px;
+	block-size: 10px;
 }
 
 .arrow {
 	z-index: 1;
 
 	.arrow-triangle {
-		overflow-x: visible;
-		overflow-y: clip;
+		overflow: visible clip;
 
 		[data-placement^='left'] &,
 		[data-placement^='right'] & {
-			overflow-x: clip;
-			overflow-y: visible;
+			overflow: clip visible;
 		}
 
 		&::before,
@@ -560,54 +585,73 @@ function usePopper(
 }
 
 [data-placement^='top'] .arrow {
-	bottom: -10px;
+	inset-block-end: -10px;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			bottom: 7px;
+			inset-block-end: 7px;
 		}
 	}
 }
 
 [data-placement^='bottom'] .arrow {
-	top: -10px;
+	inset-block-start: -10px;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			top: 7px;
+			inset-block-start: 7px;
 		}
 	}
 }
 
 [data-placement^='right'] .arrow {
-	left: -10px;
+	inset-inline-start: -10px;
+
+	html[dir='rtl'] & {
+		inset-inline-start: unset;
+		inset-inline-end: -10px;
+	}
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			left: 7px;
+			inset-inline-start: 7px;
+
+			html[dir='rtl'] & {
+				inset-inline-start: unset;
+				inset-inline-end: 7px;
+			}
 		}
 	}
 }
 
 [data-placement^='left'] .arrow {
-	right: -10px;
+	inset-inline-end: -10px;
+
+	html[dir='rtl'] & {
+		inset-inline-end: unset;
+		inset-inline-start: -10px;
+	}
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			right: 7px;
+			inset-inline-end: 7px;
+
+			html[dir='rtl'] & {
+				inset-inline-end: unset;
+				inset-inline-start: 7px;
+			}
 		}
 	}
 }
 
 .v-menu-content {
-	max-height: v-bind(maxHeight);
+	max-block-size: v-bind(maxHeight);
 	padding: 0 4px;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: hidden auto;
 	background-color: var(--theme--popover--menu--background);
 	border: none;
 	border-radius: var(--theme--popover--menu--border-radius);

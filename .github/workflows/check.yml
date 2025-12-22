@@ -4,7 +4,13 @@ on:
   pull_request:
     branches:
       - main
-      - v11-rc
+
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
 
 concurrency:
   group: check-${{ github.ref }}
@@ -18,12 +24,12 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v45
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: tj-actions/changed-files@v47
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -33,16 +39,35 @@ jobs:
       - name: Run Linter
         run: pnpm exec eslint ${{ steps.changed-files.outputs.all_changed_files }}
 
+  stylelint:
+    name: Stylelint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v47
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
+      - name: Run Stylelinter
+        run: pnpm exec stylelint ${{ steps.changed-files.outputs.all_changed_files }} --allow-empty-input
+
   format:
     name: Format
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v45
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: tj-actions/changed-files@v47
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -57,14 +82,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
-          # Vitest uses `git diff` under the hood to find the changed files in it's `--changed`
-          # option, which in turn means we need to fetch the full git history so git is able to diff
           fetch-depth: 0
 
+        # This currently builds all packages in the repo. Ideally we add build: false here as well
+        # to save minutes building the repo, but that'd require us refactoring the tests to stop
+        # using @directus/* packages within tests
       - name: Prepare
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        run: pnpm test -- -- --changed origin/${{ github.base_ref }} --passWithNoTests
+        run: pnpm test:coverage --passWithNoTests
+
+      - name: Upload coverage to Codecov
+        run: |
+          # Download and install Codecov uploader
+          curl -Os https://cli.codecov.io/latest/linux/codecov
+          chmod +x codecov
+
+          # Find all coverage files and upload them with flags based on folder names
+          find . -name "coverage-final.json" -path "*/coverage/*" | while read -r coverage_file; do
+            # Extract the folder name that contains the coverage directory
+            folder_name=$(echo "$coverage_file" | sed -E 's|.*/(.*)/coverage/.*|\1|')
+            echo "Uploading coverage for $folder_name from $coverage_file"
+
+            # Upload to codecov with folder name as flag
+            ./codecov upload-coverage -f "$coverage_file" -F "$folder_name" -Z --disable-search
+          done

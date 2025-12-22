@@ -436,6 +436,11 @@ field_options:
     actions_update: Update
 live_preview:
   new_window: नए विंडो में खोलें
+ai:
+  tool_approval:
+    disabled: निष्क्रिय
+mcp_prompts_collection_schema:
+  messages_role_user: यूज़र
 interfaces:
   presentation-links:
     primary: प्राइमरी

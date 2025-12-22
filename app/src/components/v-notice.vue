@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from './v-icon/v-icon.vue';
 
 interface Props {
 	/** Renders the components in each of it styles */
@@ -8,12 +9,17 @@ interface Props {
 	icon?: string | boolean | null;
 	/** Render notice content centered */
 	center?: boolean;
+	/** Allow text wrapping within notice */
+	multiline?: boolean;
+	/** Align the default slot’s content with the title slot’s content */
+	indentContent?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	icon: null,
 	type: 'info',
 	center: false,
+	multiline: false,
 });
 
 const iconName = computed(() => {
@@ -36,9 +42,14 @@ const iconName = computed(() => {
 </script>
 
 <template>
-	<div class="v-notice" :class="[type, { center }]">
-		<v-icon v-if="icon !== false" :name="iconName" left />
-		<slot />
+	<div class="v-notice" :class="[type, { center }, { multiline }]">
+		<div class="v-notice-title">
+			<VIcon v-if="icon !== false" :name="iconName" left></VIcon>
+			<slot name="title"></slot>
+		</div>
+		<div v-if="$slots.default" class="v-notice-content" :class="{ indent: indentContent && icon !== false }">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
@@ -54,12 +65,15 @@ const iconName = computed(() => {
 */
 
 .v-notice {
+	--icon-padding-inline-end: 16px;
+	--icon-size-default: 24px;
+
 	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: auto;
-	min-height: var(--theme--form--field--input--height);
+	inline-size: auto;
+	min-block-size: var(--theme--form--field--input--height);
 	padding: 12px 16px;
 	color: var(--v-notice-color, var(--theme--foreground));
 	line-height: 22px;
@@ -72,11 +86,18 @@ const iconName = computed(() => {
 	content: '';
 	display: block;
 	position: absolute;
-	top: 0;
-	left: 0;
-	width: 4px;
-	height: 100%;
+	inset-block-start: 0;
+	inset-inline-start: 0;
+	inline-size: 4px;
+	block-size: 100%;
 	background-color: var(--v-notice-border-color, var(--theme--primary));
+}
+
+.v-notice-title {
+	display: flex;
+	align-items: center;
+	font-weight: var(--theme--form--field--label--font-weight);
+	color: var(--v-notice-color, var(--theme--foreground));
 }
 
 .v-icon {
@@ -84,7 +105,11 @@ const iconName = computed(() => {
 }
 
 .v-icon.left {
-	margin-right: 16px;
+	margin-inline-end: var(--icon-padding-inline-end);
+}
+
+.v-notice-content.indent {
+	padding-inline-start: calc(var(--icon-padding-inline-end) + var(--v-icon-size, var(--icon-size-default)));
 }
 
 .success {
@@ -116,5 +141,9 @@ const iconName = computed(() => {
 
 :slotted(a) {
 	text-decoration: underline;
+}
+
+.multiline {
+	flex-wrap: wrap;
 }
 </style>

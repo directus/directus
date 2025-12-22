@@ -1,4 +1,6 @@
 ---
+first_name: Anv bihan
+last_name: Anv
 edit_field: Kemm ar vaezienn
 location: Lec'h
 input: Enkas
@@ -206,6 +208,7 @@ confirm_revert_body: Adsavet e vo an elfenn d'ar stad dibabet.
 display: Diskwel
 settings_update_success: Arventennoù enrollet
 title: Titl
+subtitle: Istitl
 revision_delta_created: Krouet
 revision_delta_created_externally: Krouet en diavaez
 revision_delta_updated: '1 vaezienn hizivaet | {count} maezienn hizivaet'
@@ -394,7 +397,6 @@ errors:
   ROUTE_NOT_FOUND: Dibosupl da gavout
   UNKNOWN: Fazi dianav
   USER_SUSPENDED: Implijer lakaet a gostez
-value_hashed: Talvoud hashet en un doare sur
 bookmark_name: Anv ar pennroll
 create_bookmark: Ouzhpenn e-giz pennroll
 edit_bookmark: Kemm ar pennroll
@@ -612,33 +614,6 @@ unsaved_changes: N'eo ket bet enrollet ar c'hemmoù
 unsaved_changes_copy: Sur oc'h ho peus c'hoant da guitaat ar bajenn-mañ?
 discard_changes: Dizober ar c'hemmoù
 keep_editing: Derc'hel gant an embann
-page_help_collections_overview: '**Alberzh an dastumadoù** — Roll an holl dastumadoù aotret evitoc''h.'
-page_help_collections_collection: >-
-  **Mont a-dreuz an elfennoù** - Listennañ an holl elfennoù e {collection} aotret evitoc'h. Personelaat ar pajennaozañ, ar siloù hag ar rummañ hag enrollañ e pennroll meur a reoliañ evit adkavout pep tra buan.
-page_help_collections_item: >-
-  **Munudoù an elfenn** — Ur furmskrid evit gwelet ha merañ an elfenn-mañ. E-barzh ar varenn gostez-mañ e kavoc'h ur roll eus ar c'hemmoù hag ar c'hemennadennoù.
-page_help_activity_collection: >-
-  **Mont a-dreuz an obererezh** — Roll klok ho sistem en e bezh hag oberezh an implijer.
-page_help_docs_global: >-
-  **Arberzh an teulioù** — Teulioù azasaet da stumm ha steuñv ar raktres-mañ.
-page_help_files_collection: >-
-  **Teuliaoueg** — Roll an holl restroù treuzkaset d'ar raktres-mañ. Personelaat ar pajennaozañ, ar siloù hag ar rummañ hag enrollañ e pennroll meur a reoliañ evit adkavout pep tra buan.
-page_help_files_item: >-
-  **Munudoù ar restr** — Feurmskrid evit merañ metaroadennoù ar restrooù, kemm ar restr orin ha hizivaat an arventennoù aotre.
-page_help_settings_datamodel_collections: >-
-  **Patrom roadennoù : Dastumadoù** — Roll an holl dastumadoù hegerz. Da lâret eo an dastumadoù a c'heller gwelet, ar re kuzhet ha sistem, hag an taolennoù gant diazoù roadennoù nann meret a c'hell bezañ ouzhpennet.
-page_help_settings_datamodel_fields: >-
-  **Patrom roadennoù : Dastumadoù** — Furmskrid evit merañ an dastumad hag e vaeziennoù.
-page_help_settings_roles_item: "**Mundoù ar roll** — Merañ an aotreoù hag arventennoù all ur roll."
-page_help_settings_presets_collection: >-
-  **Mont a-dreuz ar rakreoliñ** - Roll holl rakreoliñ ar raktres gant : an implijer, ar roll, ar pennrolloù hollek hag ar gweloù dre ziouer.
-page_help_settings_presets_item: >-
-  **Munudoù ar rakreoliñ** — Ur furmskrid evit merañ ar pennrolloù ha rakreoliñ an dastumad dre ziouer.
-page_help_settings_webhooks_collection: '**Mont a-dreuz ar Webhookioù** — Roll holl webhookioù ar raktres.'
-page_help_settings_webhooks_item: '**Munudoù ar Webhook** — Ur furmskrid evit krouiñ ha merañ webhookioù ar raktres.'
-page_help_users_collection: '**Roll implijerien** — Roll an holl implijerien sistem er raktres-mañ.'
-page_help_users_item: >-
-  **Munudoù an implijer** — Merañ titouroù ho kont pe sellet munudoù an implijerien all.
 activity_feed: Froudad keleier
 add_new: Nevez
 create_new: Nevez
@@ -792,6 +767,18 @@ inline: En linenn
 comment: Evezhiadenn
 live_preview:
   new_window: Digeriñ e-barzh ur prenestr nevez
+ai:
+  input: Enkas
+  settings: Arventennoù
+  tool_approval:
+    disabled: Diaktivet
+ai_tools:
+  items: Elfennoù
+  files: Restroù
+  schema: Brastres
+  collections: Dastumadoù
+mcp_prompts_collection_schema:
+  messages_role_user: Implijer
 relational_triggers: Distegneroù darempred
 referential_action_field_label_m2o: Pa vez dilemet un {collection} ...
 referential_action_field_label_o2m: Pa vez diziuzet un {collection} ...
@@ -864,9 +851,7 @@ interfaces:
     add_filter: Ouzhpenn ur sil
     all: Holl
   presentation-links:
-    presentation-links: Bouton al liammoù
-    links: Liammoù
-    description: Boutonoù liamm da reoliañ evit luskañ an URLoù dinamek
+    presentation-links: Boutonoù
     style: Stil
     primary: Diazez
     link: Liammoù
@@ -1071,6 +1056,8 @@ interfaces:
   group-raw:
     name: Maeziennoù kriz
     description: Diskwel ar maeziennoù e-giz normal.
+  header:
+    links: Liammoù
 displays:
   translations:
     translations: Troidigezhioù

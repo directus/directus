@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "13.2.0",
+	"version": "13.5.0",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -27,23 +27,66 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@types/geojson": "7946.0.16"
+		"@sinclair/typebox": "catalog:",
+		"@types/express": "catalog:",
+		"@types/geojson": "catalog:",
+		"@types/nodemailer": "catalog:",
+		"@types/ws": "catalog:",
+		"@types/archiver": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"knex": "3.1.0",
-		"typescript": "5.8.2",
-		"vue": "3.5.13"
+		"@directus/tsconfig": "catalog:",
+		"@types/deep-diff": "catalog:",
+		"knex": "catalog:",
+		"typescript": "catalog:",
+		"vue": "catalog:",
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
-		"knex": "3",
-		"vue": "^3.4"
+		"deep-diff": "catalog:",
+		"express": "catalog:",
+		"graphql": "catalog:",
+		"knex": "catalog:",
+		"nodemailer": "catalog:",
+		"openapi3-ts": "catalog:",
+		"pino": "catalog:",
+		"sharp": "catalog:",
+		"vue": "catalog:",
+		"vue-router": "catalog:",
+		"ws": "catalog:"
 	},
 	"peerDependenciesMeta": {
+		"deep-diff": {
+			"optional": true
+		},
+		"express": {
+			"optional": true
+		},
+		"graphql": {
+			"optional": true
+		},
 		"knex": {
 			"optional": true
 		},
+		"pino": {
+			"optional": true
+		},
+		"nodemailer": {
+			"optional": true
+		},
+		"openapi3-ts": {
+			"optional": true
+		},
+		"sharp": {
+			"optional": true
+		},
 		"vue": {
+			"optional": true
+		},
+		"vue-router": {
+			"optional": true
+		},
+		"ws": {
 			"optional": true
 		}
 	}

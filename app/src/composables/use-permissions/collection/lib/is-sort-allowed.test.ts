@@ -3,7 +3,6 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { ActionPermission } from '@/types/permissions';
 import { useCollection } from '@directus/composables';
-import { randomIdentifier } from '@directus/random';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -27,8 +26,8 @@ beforeEach(() => {
 	);
 
 	sample = {
-		collection: randomIdentifier(),
-		sortField: randomIdentifier(),
+		collection: 'test_collection',
+		sortField: 'test_sort_field',
 	};
 });
 

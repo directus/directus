@@ -17,11 +17,11 @@
 	--fc-list-event-hover-bg-color: var(--theme--form--field--input--background-subdued);
 
 	.fc-more-popover {
-		max-width: var(--form-column-width);
-		max-height: 330px;
+		max-inline-size: var(--form-column-width);
+		max-block-size: 330px;
 
 		.fc-popover-body {
-			max-height: 270px;
+			max-block-size: 270px;
 			overflow: auto;
 		}
 	}
@@ -65,7 +65,7 @@
 	}
 
 	.fc-daygrid-block-event {
-		padding: 0px 3px;
+		padding: 0 3px;
 		line-height: 1.5;
 
 		.fc-event-time,
@@ -88,8 +88,7 @@
 			&.fc-prev-button,
 			&.fc-next-button,
 			&.fc-nextYear-button {
-				padding-right: 4px;
-				padding-left: 4px;
+				padding-inline: 4px;
 			}
 
 			&:focus {
@@ -120,17 +119,17 @@
 	.fc-toolbar {
 		&.fc-header-toolbar {
 			position: sticky;
-			top: var(--layout-offset-top);
+			inset-block-start: var(--layout-offset-top);
 			z-index: 4;
-			width: 100%;
-			height: 52px;
-			margin-bottom: 36px;
+			inline-size: 100%;
+			block-size: 52px;
+			margin-block-end: 36px;
 			padding: 0 8px;
 			font-weight: inherit !important;
 			font-size: inherit !important;
 			background-color: var(--theme--background);
-			border-top: 2px solid var(--theme--border-color-subdued);
-			border-bottom: 2px solid var(--theme--border-color-subdued);
+			border-block-start: 2px solid var(--theme--border-color-subdued);
+			border-block-end: 2px solid var(--theme--border-color-subdued);
 			box-shadow: 0 0 0 2px var(--theme--background);
 		}
 	}
@@ -150,7 +149,7 @@
 		&.fc-daygrid-event .fc-event-main-frame,
 		// view: month && start_date: datetime (single day)
 		&.fc-daygrid-dot-event {
-			&:before {
+			&::before {
 				@content;
 			}
 		}
@@ -161,7 +160,7 @@
 			content: 'check_box_outline_blank';
 			color: var(--fc-event-text-color);
 			vertical-align: -0.25em;
-			margin-right: 0.1em;
+			margin-inline-end: 0.1em;
 			font-family: 'Material Symbols';
 			font-weight: normal;
 			font-size: 1.4em;
@@ -180,7 +179,7 @@
 
 		&.fc-daygrid-dot-event:has(.fc-event-time),
 		.fc-list-event-title {
-			&:before {
+			&::before {
 				color: var(--theme--primary);
 			}
 		}

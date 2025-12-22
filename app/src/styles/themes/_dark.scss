@@ -4,7 +4,7 @@
 
 // Dark Mode
 @mixin dark {
-	$purple: #8866ff;
+	$purple: #86f;
 	$color-mapping: map.merge(
 		colors.$color-mapping,
 		(
@@ -23,11 +23,9 @@
 	--background-page-rgb: 13, 17, 23;
 	--background-inverted: #fff;
 	--background-mark: var(--theme--primary-subdued);
-
-	--overlay-color: rgba(0, 0, 0, 0.9);
-
-	--navigation-shadow: 0px 0px 12px var(--black);
-	--sidebar-shadow: var(--navigation-shadow);
+	--overlay-color: rgb(0 0 0 / 0.9);
+	--sidebar-shadow: 4px 0 7px -4px var(--black);
+	--shadow-color: var(--black);
 
 	// Generate color variations
 	@include mixins.generate-colors($color-mapping, colors.$dark-theme-shade, colors.$dark-theme-tint);

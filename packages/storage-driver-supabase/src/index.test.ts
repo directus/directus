@@ -1,23 +1,24 @@
-import { StorageClient } from '@supabase/storage-js';
 import {
 	randAlphaNumeric,
 	randGitBranch as randBucket,
 	randDirectoryPath,
 	randDomainName,
+	randFileName,
 	randFilePath,
 	randFileType,
 	randNumber,
 	randPastDate,
 	randText,
 	randGitShortSha as randUnique,
-	randFileName,
 } from '@ngneat/falso';
-import { Response, fetch } from 'undici';
+import { StorageClient } from '@supabase/storage-js';
 import { Readable } from 'node:stream';
+import { ReadableStream } from 'node:stream/web';
+import { Response, fetch } from 'undici';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
-import { ReadableStream } from 'node:stream/web';
+import { basename, dirname, join } from 'node:path';
 
 vi.mock('@supabase/storage-js');
 vi.mock('undici');
@@ -52,6 +53,7 @@ beforeEach(() => {
 			projectId: randAlphaNumeric({ length: 10 }).join(''),
 			root: randUnique() + randDirectoryPath(),
 			endpoint: randDomainName(),
+			tus: { chunkSize: 1024 * 1024 },
 		},
 		path: {
 			input: randUnique() + randFilePath(),
@@ -349,9 +351,9 @@ describe('#stat', () => {
 			modified: sample.file.modified,
 		});
 
-		expect(driver['bucket'].list).toHaveBeenCalledWith('', {
+		expect(driver['bucket'].list).toHaveBeenCalledWith(dirname(sample.path.input), {
 			limit: 1,
-			search: sample.path.input,
+			search: basename(sample.path.input),
 		});
 	});
 
@@ -372,9 +374,27 @@ describe('#stat', () => {
 			modified: sample.file.modified,
 		});
 
-		expect(driver['bucket'].list).toHaveBeenCalledWith('root', {
+		expect(driver['bucket'].list).toHaveBeenCalledWith(join('root', dirname(sample.path.input)), {
 			limit: 1,
-			search: sample.path.input,
+			search: basename(sample.path.input),
+		});
+	});
+
+	test('Uses empty string instead of "." when root is the empty string', async () => {
+		const filename = 'test.png';
+
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: [{ metadata: { contentLength: sample.file.size, lastModified: sample.file.modified } }],
+				error: null,
+			}),
+		} as any;
+
+		await driver.stat(filename);
+
+		expect(driver['bucket'].list).toHaveBeenCalledWith('', {
+			limit: 1,
+			search: filename,
 		});
 	});
 
@@ -448,7 +468,7 @@ describe('#copy', () => {
 describe('#write', () => {
 	beforeEach(() => {
 		driver['bucket'] = {
-			upload: vi.fn(),
+			upload: vi.fn().mockResolvedValue({ data: null, error: null }),
 		} as any;
 	});
 
@@ -479,6 +499,18 @@ describe('#write', () => {
 			duplex: 'half',
 			upsert: true,
 		});
+	});
+
+	test('Throws error when upload fails', async () => {
+		const uploadError = new Error('Upload failed');
+
+		driver['bucket'] = {
+			upload: vi.fn().mockResolvedValue({ data: null, error: uploadError }),
+		} as any;
+
+		await expect(driver.write(sample.path.input, sample.stream)).rejects.toThrow(
+			new Error(`Error uploading file "${sample.path.input}"`, { cause: uploadError }),
+		);
 	});
 });
 

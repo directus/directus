@@ -42,8 +42,8 @@ const sizeClass = useSizeClass(props);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: var(--v-avatar-size, 48px);
-	height: var(--v-avatar-size, 48px);
+	inline-size: var(--v-avatar-size, 48px);
+	block-size: var(--v-avatar-size, 48px);
 	overflow: hidden;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
@@ -75,8 +75,8 @@ const sizeClass = useSizeClass(props);
 }
 
 :slotted(img) {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	object-fit: cover;
 }
 </style>

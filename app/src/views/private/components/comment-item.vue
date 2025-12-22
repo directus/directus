@@ -15,7 +15,7 @@ const props = withDefaults(
 		refresh: () => Promise<void>;
 		collection: string;
 		primaryKey: string | number;
-		userPreviews: Record<string, any>;
+		userPreviews?: Record<string, any>;
 	}>(),
 	{
 		userPreviews: () => ({}),
@@ -62,9 +62,9 @@ function useEdits() {
 
 <template>
 	<div class="comment-item">
-		<comment-item-header :refresh="refresh" :comment="comment" @edit="editing = true" />
+		<CommentItemHeader :refresh="refresh" :comment="comment" @edit="editing = true" />
 
-		<comment-input
+		<CommentInput
 			v-if="editing"
 			:existing-comment="comment"
 			:primary-key="primaryKey"
@@ -74,41 +74,41 @@ function useEdits() {
 			@cancel="cancelEditing"
 		/>
 
-		<div v-else v-md="{ value: comment.display, target: '_blank' }" class="content selectable" />
+		<div v-else v-md="{ value: comment.display, target: '_blank' }" class="content" />
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .comment-item {
 	position: relative;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 	padding: 8px;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 }
 
 .comment-item:last-of-type {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .comment-item .content {
 	display: inline-block;
-	max-height: 300px;
+	max-block-size: 300px;
 	overflow-y: auto;
-	min-width: 100%;
-	max-width: 100%;
-	margin-bottom: -6px;
+	min-inline-size: 100%;
+	max-inline-size: 100%;
+	margin-block-end: -6px;
 	line-height: 1.4;
 }
 
 .comment-item .content :deep(> *:first-child),
 .comment-item .content :deep(p > *:first-child) {
-	margin-top: 0;
+	margin-block-start: 0;
 }
 
 .comment-item .content :deep(> *:last-child),
 .comment-item .content :deep(p > *:last-child) {
-	margin-bottom: 0;
+	margin-block-end: 0;
 }
 
 .comment-item .content :deep(a) {
@@ -117,24 +117,24 @@ function useEdits() {
 
 .comment-item .content :deep(blockquote) {
 	margin: 8px 0;
-	padding-left: 6px;
+	padding-inline-start: 6px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
-	border-left: 2px solid var(--theme--form--field--input--border-color);
+	border-inline-start: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(img) {
-	max-width: 100%;
+	max-inline-size: 100%;
 	margin: 8px 0;
 	border-radius: var(--theme--border-radius);
 	display: block;
 }
 
 .comment-item .content :deep(hr) {
-	height: 2px;
+	block-size: 2px;
 	margin: 12px 0;
 	border: 0;
-	border-top: 2px solid var(--theme--form--field--input--border-color);
+	border-block-start: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(mark) {
@@ -144,8 +144,6 @@ function useEdits() {
 	line-height: 1;
 	background: var(--theme--primary-background);
 	border-radius: var(--theme--border-radius);
-	-webkit-user-select: text;
-	user-select: text;
 	pointer-events: none;
 }
 
@@ -157,7 +155,7 @@ function useEdits() {
 	margin: 2px 0;
 	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
-	max-width: 100%;
+	max-inline-size: 100%;
 	overflow-x: auto;
 }
 
@@ -177,7 +175,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
-	margin-top: 12px;
+	margin-block-start: 12px;
 	font-weight: 600;
 	font-size: 16px;
 	color: var(--theme--foreground-accent);
@@ -185,11 +183,10 @@ function useEdits() {
 
 .comment-item.expand .content::after {
 	position: absolute;
-	right: 0;
-	bottom: 4px;
-	left: 0;
+	inset-inline: 0;
+	inset-block-end: 4px;
 	z-index: 1;
-	height: 40px;
+	block-size: 40px;
 	background: linear-gradient(
 		180deg,
 		rgb(var(--background-page-rgb), 0) 0%,
@@ -201,11 +198,10 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text {
 	position: absolute;
-	right: 0;
-	bottom: 8px;
-	left: 0;
+	inset-inline: 0;
+	inset-block-end: 8px;
 	z-index: 2;
-	height: 24px;
+	block-size: 24px;
 	text-align: center;
 	cursor: pointer;
 }
@@ -243,11 +239,11 @@ function useEdits() {
 
 .buttons {
 	position: absolute;
-	right: 8px;
-	bottom: 8px;
+	inset-inline-end: 8px;
+	inset-block-end: 8px;
 }
 
 .cancel {
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 </style>

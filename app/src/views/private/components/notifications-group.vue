@@ -3,19 +3,15 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { toRefs } from 'vue';
 import NotificationItem from './notification-item.vue';
 
-defineProps<{
-	sidebarOpen?: boolean;
-}>();
-
 const notificationsStore = useNotificationsStore();
 const queue = toRefs(notificationsStore).queue;
 </script>
 
 <template>
-	<transition-group class="notifications-group" :class="{ 'sidebar-open': sidebarOpen }" name="slide-fade" tag="div">
+	<TransitionGroup class="notifications-group" name="slide-fade" tag="div">
 		<slot />
-		<notification-item
-			v-for="(notification, index) in queue"
+		<NotificationItem
+			v-for="notification in queue"
 			:id="notification.id"
 			:key="notification.id"
 			:title="notification.title"
@@ -24,45 +20,25 @@ const queue = toRefs(notificationsStore).queue;
 			:type="notification.type"
 			:loading="notification.loading"
 			:progress="notification.progress"
-			:tail="index === queue.length - 1"
-			:dense="sidebarOpen === false"
 			:show-close="notification.persist === true && notification.closeable !== false"
 			:always-show-text="notification.alwaysShowText"
 			:dismiss-icon="notification.dismissIcon"
 			:dismiss-text="notification.dismissText"
 			:dismiss-action="notification.dismissAction"
 		/>
-	</transition-group>
+	</TransitionGroup>
 </template>
 
 <style lang="scss" scoped>
 .notifications-group {
-	position: fixed;
-	top: 0;
-	right: 8px;
-	left: 8px;
+	position: absolute;
+	inset-block-end: 16px;
+	inset-inline-end: 16px;
 	z-index: 50;
-	width: 256px;
-	direction: rtl;
-
-	> *,
-	> :deep(*) {
-		direction: ltr;
-	}
-
-	&.sidebar-open {
-		top: auto;
-		right: 12px;
-		bottom: 76px;
-		left: auto;
-	}
-
-	@media (min-width: 960px) {
-		top: auto;
-		right: 12px;
-		bottom: 76px;
-		left: auto;
-	}
+	display: flex;
+	flex-direction: column;
+	align-items: end;
+	inline-size: 256px;
 }
 
 .notification-item {
@@ -70,12 +46,8 @@ const queue = toRefs(notificationsStore).queue;
 }
 
 .slide-fade-enter-active {
-	transform: translateX(0px) scaleY(1) scaleX(1);
+	transform: translateX(0) scaleY(1) scaleX(1);
 	opacity: 1;
-}
-
-.slide-fade-leave-active {
-	position: absolute;
 }
 
 .slide-fade-enter-from {

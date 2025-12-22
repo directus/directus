@@ -16,12 +16,12 @@ import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
-import { UsersService } from '../../services/users.js';
 import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
-import { LocalAuthDriver } from './local.js';
+import { getSchema } from '../../utils/get-schema.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
+import { LocalAuthDriver } from './local.js';
 
 // Register the samlify schema validator
 samlify.setSchemaValidator(validator);
@@ -29,14 +29,12 @@ samlify.setSchemaValidator(validator);
 export class SAMLAuthDriver extends LocalAuthDriver {
 	sp: samlify.ServiceProviderInstance;
 	idp: samlify.IdentityProviderInstance;
-	usersService: UsersService;
 	config: Record<string, any>;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
 		this.config = config;
-		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 
 		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_SP`));
 		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_IDP`));
@@ -86,17 +84,20 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 			role: this.config['defaultRoleId'],
 		};
 
+		const schema = await getSchema();
+
 		// Run hook so the end user has the chance to augment the
 		// user that is about to be created
 		const updatedUserPayload = await emitter.emitFilter(
 			`auth.create`,
 			userPayload,
 			{ identifier: identifier.toLowerCase(), provider: this.config['provider'], providerPayload: { ...payload } },
-			{ database: getDatabase(), schema: this.schema, accountability: null },
+			{ database: getDatabase(), schema, accountability: null },
 		);
 
 		try {
-			return await this.usersService.createOne(updatedUserPayload);
+			const usersService = this.getUsersService(schema);
+			return await usersService.createOne(updatedUserPayload);
 		} catch (error) {
 			if (isDirectusError(error, ErrorCode.RecordNotUnique)) {
 				logger.warn(error, '[SAML] Failed to register user. User not unique');
@@ -173,6 +174,10 @@ export function createSAMLAuthRouter(providerName: string) {
 			const relayState: string | undefined = req.body?.RelayState;
 
 			const authMode = (env[`AUTH_${providerName.toUpperCase()}_MODE`] ?? 'session') as string;
+
+			if (relayState && isLoginRedirectAllowed(relayState, providerName) === false) {
+				throw new InvalidPayloadError({ reason: `URL "${relayState}" can't be used to redirect after login` });
+			}
 
 			try {
 				const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;

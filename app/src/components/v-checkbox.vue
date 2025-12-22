@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, useTemplateRef } from 'vue';
 import { useSync } from '@directus/composables';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	/** If the `modelValue` is an array of strings, activates the checkbox if the value is inside it */
@@ -11,6 +12,8 @@ interface Props {
 	label?: string | null;
 	/** Disable the checkbox */
 	disabled?: boolean;
+	/** Set the non-editable state for the checkbox */
+	nonEditable?: boolean;
 	/** Renders the checkbox neither selected nor unselected */
 	indeterminate?: boolean;
 	/** What icon to use for the on state */
@@ -34,6 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	label: null,
 	disabled: false,
+	nonEditable: false,
 	indeterminate: false,
 	iconOn: 'check_box',
 	iconOff: 'check_box_outline_blank',
@@ -112,12 +116,12 @@ function onClickIcon(e: MouseEvent): void {
 		type="button"
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled
-		:class="{ checked: isChecked, indeterminate, block }"
+		:disabled="disabled && !customValue"
+		:class="{ checked: isChecked, indeterminate, block, disabled, 'non-editable': nonEditable }"
 		@click.stop="toggleInput"
 	>
 		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" :disabled :clickable="customValue" @click="onClickIcon" />
+		<VIcon class="checkbox" :name="icon" :disabled :clickable="customValue" @click="onClickIcon" />
 		<span class="label type-text">
 			<slot v-if="!customValue">{{ label }}</slot>
 			<input
@@ -126,6 +130,7 @@ function onClickIcon(e: MouseEvent): void {
 				v-model="internalValue"
 				type="text"
 				class="custom-input"
+				:disabled
 				@click.stop
 				@blur="$emit('blur:custom-input')"
 			/>
@@ -154,7 +159,7 @@ function onClickIcon(e: MouseEvent): void {
 	display: flex;
 	align-items: center;
 	font-size: 0;
-	text-align: left;
+	text-align: start;
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
@@ -162,15 +167,15 @@ function onClickIcon(e: MouseEvent): void {
 
 	.label:not(:empty) {
 		flex-grow: 1;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 		transition: color var(--fast) var(--transition);
 		@include mixins.no-wrap;
 
 		input {
-			width: 100%;
+			inline-size: 100%;
 			background-color: transparent;
 			border: none;
-			border-bottom: 2px solid var(--theme--form--field--input--border-color);
+			border-block-end: 2px solid var(--theme--form--field--input--border-color);
 			border-radius: 0;
 		}
 	}
@@ -181,15 +186,17 @@ function onClickIcon(e: MouseEvent): void {
 		transition: color var(--fast) var(--transition);
 	}
 
-	&:disabled {
+	&.disabled {
 		cursor: not-allowed;
 
-		.label {
-			color: var(--theme--foreground-subdued);
-		}
+		&:not(.non-editable) {
+			.label {
+				color: var(--theme--foreground-subdued);
+			}
 
-		.checkbox {
-			--v-icon-color: var(--theme--foreground-subdued);
+			.checkbox {
+				--v-icon-color: var(--theme--foreground-subdued);
+			}
 		}
 	}
 
@@ -197,25 +204,25 @@ function onClickIcon(e: MouseEvent): void {
 		--focus-ring-offset: var(--focus-ring-offset-invert);
 
 		position: relative;
-		width: 100%;
-		height: var(--theme--form--field--input--height);
+		inline-size: 100%;
+		block-size: var(--theme--form--field--input--height);
 		padding: 10px; // 14 - 4 (border)
 		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		transition: all var(--fast) var(--transition);
 
-		&:disabled {
+		&.disabled:not(.non-editable) {
 			background-color: var(--theme--form--field--input--background-subdued);
 		}
 
 		&::before {
 			position: absolute;
-			top: 0;
-			left: 0;
+			inset-block-start: 0;
+			inset-inline-start: 0;
 			z-index: 0;
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}
@@ -225,7 +232,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):hover {
+	&:not(.disabled):hover {
 		.checkbox {
 			--v-icon-color: var(--theme--primary);
 		}
@@ -235,7 +242,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):not(.indeterminate) {
+	&:not(.disabled):not(.indeterminate) {
 		.label {
 			color: var(--theme--foreground);
 		}
@@ -247,14 +254,17 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):not(.indeterminate).checked {
-		.checkbox {
-			--v-icon-color: var(--v-checkbox-color, var(--theme--primary));
-		}
+	&.checked {
+		&.disabled.non-editable:not(.indeterminate),
+		&:not(.disabled):not(.indeterminate) {
+			.checkbox {
+				--v-icon-color: var(--v-checkbox-color, var(--theme--primary));
+			}
 
-		&.block {
-			.label {
-				color: var(--v-checkbox-color, var(--theme--primary));
+			&.block {
+				.label {
+					color: var(--v-checkbox-color, var(--theme--primary));
+				}
 			}
 		}
 	}
@@ -266,7 +276,7 @@ function onClickIcon(e: MouseEvent): void {
 	}
 
 	.append {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 }
 </style>

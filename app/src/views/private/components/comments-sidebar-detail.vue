@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDivider from '@/components/v-divider.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
 import { useGroupable } from '@directus/composables';
 import type { Comment, PrimaryKey, User } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
+import dompurify from 'dompurify';
 import { flatten, groupBy, orderBy } from 'lodash';
 import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import dompurify from 'dompurify';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
+import SidebarDetail from './sidebar-detail.vue';
 
 type CommentsByDateDisplay = {
 	date: Date;
@@ -93,6 +96,7 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 							'user_created.first_name',
 							'user_created.last_name',
 							'user_created.avatar.id',
+							'user_created.avatar.modified_on',
 						],
 					},
 				})
@@ -224,25 +228,26 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 </script>
 
 <template>
-	<sidebar-detail
+	<SidebarDetail
+		id="comments"
 		:title
 		icon="chat_bubble_outline"
 		:badge="!loadingCount && commentsCount > 0 ? abbreviateNumber(commentsCount) : null"
 		@toggle="onToggle"
 	>
-		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
+		<CommentInput :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
-		<v-progress-linear v-if="loading" indeterminate />
+		<VProgressLinear v-if="loading" indeterminate />
 
 		<div v-else-if="!comments || comments.length === 0" class="empty">
-			<div class="content">{{ t('no_comments') }}</div>
+			<div class="content">{{ $t('no_comments') }}</div>
 		</div>
 
 		<template v-for="group in comments" v-else :key="group.date.toString()">
-			<v-divider>{{ group.dateFormatted }}</v-divider>
+			<VDivider>{{ group.dateFormatted }}</VDivider>
 
 			<template v-for="item in group.comments" :key="item.id">
-				<comment-item
+				<CommentItem
 					:refresh="refresh"
 					:comment="item"
 					:user-previews="userPreviews"
@@ -251,7 +256,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 				/>
 			</template>
 		</template>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>
@@ -261,21 +266,19 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 .v-divider {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
-	margin-top: 12px;
-	margin-bottom: 2px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+	margin-block: 12px 2px;
+	padding-block: 4px;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);
+
 	--v-divider-label-color: var(--theme--foreground-subdued);
 }
 
 .empty {
-	margin-top: 16px;
-	margin-bottom: 8px;
-	margin-left: 2px;
+	margin-block: 16px 8px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

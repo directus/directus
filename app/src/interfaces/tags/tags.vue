@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
 		value: string[] | string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		placeholder?: string;
 		whitespace?: string | null;
 		capitalization?: string | null;
@@ -24,8 +27,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const presetVals = computed<string[]>(() => {
 	if (props.presets !== undefined) return processArray(props.presets);
@@ -84,7 +85,7 @@ function processArray(array: string[]): string[] {
 }
 
 function onInput(event: KeyboardEvent) {
-	if (event.target && (event.key === 'Enter' || event.key === ',')) {
+	if (event.target && (event.key === 'Enter' || event.key === ',' || (event.type === 'blur' && document.hasFocus()))) {
 		event.preventDefault();
 		addTag((event.target as HTMLInputElement).value);
 		(event.target as HTMLInputElement).value = '';
@@ -120,19 +121,21 @@ function emitValue() {
 
 <template>
 	<div class="interface-tags">
-		<v-input
+		<VInput
 			v-if="allowCustom"
-			:placeholder="placeholder || t('interfaces.tags.add_tags')"
-			:disabled="disabled"
+			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
+			:disabled
+			:non-editable
 			:dir="direction"
 			@keydown="onInput"
+			@blur="onInput"
 		>
-			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-			<template #append><v-icon :name="iconRight" /></template>
-		</v-input>
+			<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
+			<template #append><VIcon :name="iconRight" /></template>
+		</VInput>
 		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
 			<span v-if="presetVals.length > 0" class="presets tag-container">
-				<v-chip
+				<VChip
 					v-for="preset in presetVals"
 					:key="preset"
 					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
@@ -144,11 +147,11 @@ function emitValue() {
 					@click="toggleTag(preset)"
 				>
 					{{ preset }}
-				</v-chip>
+				</VChip>
 			</span>
 			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
-				<v-chip
+				<VIcon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
+				<VChip
 					v-for="val in customVals"
 					:key="val"
 					:disabled="disabled"
@@ -160,7 +163,7 @@ function emitValue() {
 					@click="removeTag(val)"
 				>
 					{{ val }}
-				</v-chip>
+				</VChip>
 			</span>
 		</div>
 	</div>
@@ -172,7 +175,7 @@ function emitValue() {
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 4px 0px 0px;
+	padding: 4px 0 0;
 
 	span.tag-container {
 		display: contents;
@@ -180,8 +183,8 @@ function emitValue() {
 
 	.custom-tags-delimiter,
 	.tag {
-		margin-top: 8px;
-		margin-right: 8px;
+		margin-block-start: 8px;
+		margin-inline-end: 8px;
 	}
 
 	.presets {

@@ -3,6 +3,7 @@ import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/ty
 import type { Context } from '../../types.js';
 import { validateCollectionAccess } from './lib/validate-collection-access.js';
 import { validateItemAccess } from './lib/validate-item-access.js';
+import { createCollectionForbiddenError } from '../process-ast/utils/validate-path/create-error.js';
 
 export interface ValidateAccessOptions {
 	accountability: Accountability;
@@ -21,9 +22,7 @@ export interface ValidateAccessOptions {
 export async function validateAccess(options: ValidateAccessOptions, context: Context) {
 	// Skip further validation if the collection does not exist
 	if (!options.skipCollectionExistsCheck && options.collection in context.schema.collections === false) {
-		throw new ForbiddenError({
-			reason: `You don't have permission to "${options.action}" from collection "${options.collection}" or it does not exist.`,
-		});
+		throw createCollectionForbiddenError('', options.collection);
 	}
 
 	if (options.accountability.admin === true) {

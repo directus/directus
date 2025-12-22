@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "14.0.0",
+	"version": "17.0.4",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -28,7 +28,8 @@
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@directus/composables": "workspace:*",
@@ -37,37 +38,37 @@
 		"@directus/themes": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@rollup/plugin-commonjs": "25.0.8",
-		"@rollup/plugin-json": "6.1.0",
-		"@rollup/plugin-node-resolve": "15.3.1",
-		"@rollup/plugin-replace": "5.0.7",
-		"@rollup/plugin-terser": "0.4.4",
-		"@rollup/plugin-virtual": "3.0.2",
-		"@vitejs/plugin-vue": "5.2.3",
-		"chalk": "5.4.1",
-		"commander": "10.0.1",
-		"esbuild": "0.25.0",
-		"execa": "7.2.0",
-		"fs-extra": "11.3.0",
-		"inquirer": "12.4.2",
-		"ora": "6.3.1",
-		"rollup": "4.34.9",
-		"rollup-plugin-esbuild": "6.2.1",
-		"rollup-plugin-styler": "2.0.0",
-		"semver": "7.7.1",
-		"vite": "4.5.14",
-		"vue": "3.5.13"
+		"@rollup/plugin-commonjs": "catalog:",
+		"@rollup/plugin-json": "catalog:",
+		"@rollup/plugin-node-resolve": "catalog:",
+		"@rollup/plugin-replace": "catalog:",
+		"@rollup/plugin-terser": "catalog:",
+		"@rollup/plugin-virtual": "catalog:",
+		"@vitejs/plugin-vue": "catalog:",
+		"chalk": "catalog:",
+		"commander": "catalog:",
+		"esbuild": "catalog:",
+		"execa": "catalog:",
+		"fs-extra": "catalog:",
+		"inquirer": "catalog:",
+		"ora": "catalog:",
+		"rollup": "catalog:",
+		"rollup-plugin-esbuild": "catalog:",
+		"rollup-plugin-styler": "catalog:",
+		"semver": "catalog:",
+		"vite": "catalog:",
+		"vue": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"@types/fs-extra": "11.0.4",
-		"@types/inquirer": "9.0.7",
-		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "2.1.9",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9"
+		"@directus/tsconfig": "catalog:",
+		"@types/fs-extra": "catalog:",
+		"@types/inquirer": "catalog:",
+		"@types/semver": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"engines": {
-		"node": ">=12.20.0"
+		"node": ">=20.19.0"
 	}
 }

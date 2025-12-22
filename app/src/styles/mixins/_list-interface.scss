@@ -47,7 +47,7 @@
 }
 
 @mixin list-interface-actions($pagination: false) {
-	margin-top: 12px;
+	margin-block-start: 12px;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -55,7 +55,7 @@
 
 	@if $pagination {
 		.v-pagination {
-			margin-left: auto;
+			margin-inline-start: auto;
 
 			::v-deep(.v-button) {
 				display: inline-flex;

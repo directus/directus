@@ -32,11 +32,11 @@ withDefaults(defineProps<Props>(), {
 
 	&:not(:only-child) {
 		&:first-child {
-			margin-right: 12px;
+			margin-inline-end: 12px;
 		}
 
 		&:last-child {
-			margin-left: 12px;
+			margin-inline-start: 12px;
 		}
 	}
 
@@ -46,16 +46,15 @@ withDefaults(defineProps<Props>(), {
 			#{$this} {
 				--v-icon-color: var(--v-list-item-icon-color, var(--theme--foreground-subdued));
 
-				margin-top: 4px;
-				margin-bottom: 4px;
+				margin-block: 4px;
 
 				&:not(:only-child) {
 					&:first-child {
-						margin-right: 8px;
+						margin-inline-end: 8px;
 					}
 
 					&:last-child {
-						margin-left: 8px;
+						margin-inline-start: 8px;
 					}
 				}
 			}

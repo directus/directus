@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import type { ShowSelect } from '@directus/extensions';
+import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
@@ -53,8 +53,6 @@ const props = withDefaults(
 		modelValue: () => [],
 		fixedHeader: false,
 		loading: false,
-		loadingText: i18n.global.t('loading'),
-		noItemsText: i18n.global.t('no_items'),
 		rowHeight: 48,
 		selectionUseKeys: false,
 		inline: false,
@@ -163,7 +161,7 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	function generate(useVal?: 'auto') {
 		let gridTemplateColumns = internalHeaders.value
 			.map((header) => {
-				return header.width ? useVal ?? `${header.width}px` : '160px';
+				return header.width ? (useVal ?? `${header.width}px`) : '160px';
 			})
 			.reduce((acc, val) => (acc += ' ' + val), '');
 
@@ -266,7 +264,7 @@ function updateSort(newSort: Sort) {
 <template>
 	<div class="v-table" :class="{ loading, inline, disabled }">
 		<table :summary="internalHeaders.map((header) => header.text).join(', ')">
-			<table-header
+			<TableHeader
 				v-model:headers="internalHeaders"
 				v-model:reordering="reordering"
 				:sort="internalSort"
@@ -294,25 +292,25 @@ function updateSort(newSort: Sort) {
 				<template v-if="hasHeaderContextMenuSlot" #header-context-menu="{ header }">
 					<slot name="header-context-menu" v-bind="{ header }" />
 				</template>
-			</table-header>
+			</TableHeader>
 			<thead v-if="loading" :class="{ sticky: fixedHeader }">
 				<tr class="loading-indicator">
 					<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
-						<v-progress-linear v-if="loading" indeterminate />
+						<VProgressLinear v-if="loading" indeterminate />
 					</th>
 				</tr>
 			</thead>
 			<tbody v-if="loading && items.length === 0">
 				<tr class="loading-text">
-					<td :style="{ gridColumn: fullColSpan }">{{ loadingText }}</td>
+					<td :style="{ gridColumn: fullColSpan }">{{ loadingText || $t('loading') }}</td>
 				</tr>
 			</tbody>
 			<tbody v-if="!loading && items.length === 0">
 				<tr class="no-items-text">
-					<td :style="{ gridColumn: fullColSpan }">{{ noItemsText }}</td>
+					<td :style="{ gridColumn: fullColSpan }">{{ noItemsText || $t('no_items') }}</td>
 				</tr>
 			</tbody>
-			<draggable
+			<Draggable
 				v-else
 				v-model="internalItems"
 				:item-key="itemKey"
@@ -324,7 +322,7 @@ function updateSort(newSort: Sort) {
 				@end="onSortChange"
 			>
 				<template #item="{ element }">
-					<table-row
+					<TableRow
 						:headers="internalHeaders"
 						:item="element"
 						:show-select="disabled ? 'none' : showSelect"
@@ -349,9 +347,9 @@ function updateSort(newSort: Sort) {
 						<template v-if="hasItemAppendSlot" #item-append>
 							<slot name="item-append" :item="element" />
 						</template>
-					</table-row>
+					</TableRow>
 				</template>
-			</draggable>
+			</Draggable>
 		</table>
 		<slot name="footer" />
 	</div>
@@ -370,12 +368,12 @@ function updateSort(newSort: Sort) {
 
 .v-table {
 	position: relative;
-	height: auto;
+	block-size: auto;
 	overflow-y: auto;
 }
 
 table {
-	min-width: 100%;
+	min-inline-size: 100%;
 	border-collapse: collapse;
 	border-spacing: 0;
 }
@@ -404,7 +402,7 @@ table :deep(tr) {
 
 table :deep(td.align-left),
 table :deep(th.align-left) {
-	text-align: left;
+	text-align: start;
 	justify-content: start;
 }
 
@@ -416,7 +414,7 @@ table :deep(th.align-center) {
 
 table :deep(td.align-right),
 table :deep(th.align-right) {
-	text-align: right;
+	text-align: end;
 	justify-content: end;
 }
 
@@ -426,7 +424,7 @@ table :deep(.loading-indicator) {
 }
 
 table :deep(.loading-indicator > th) {
-	margin-right: var(--content-padding);
+	margin-inline-end: var(--content-padding);
 }
 
 table :deep(.sortable-ghost .cell) {
@@ -438,7 +436,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .loading .loading-indicator {
-	height: auto;
+	block-size: auto;
 	padding: 0;
 	border: none;
 }
@@ -448,9 +446,9 @@ table :deep(.sortable-ghost .cell) {
 	--v-progress-linear-color: var(--theme--form--field--input--border-color-hover);
 
 	position: absolute;
-	top: -2px;
-	left: 0;
-	width: 100%;
+	inset-block-start: -2px;
+	inset-inline-start: 0;
+	inline-size: 100%;
 }
 
 .loading .loading-indicator th {
@@ -459,7 +457,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator.sticky th {
 	position: sticky;
-	top: 48px;
+	inset-block-start: 48px;
 	z-index: 2;
 }
 
@@ -481,7 +479,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline table :deep(.table-row:last-of-type .cell) {
-	border-bottom: none;
+	border-block-end: none;
 }
 
 .disabled {

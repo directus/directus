@@ -8,8 +8,8 @@ import { getExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount } from '../utils/get-field-count.js';
 import { getFilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
+import { getSettings } from '../utils/get-settings.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
-import { getProjectId } from '../utils/get-project-id.js';
 
 const basicCountTasks = [
 	{ collection: 'directus_dashboards' },
@@ -30,7 +30,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	const env = useEnv();
 	const helpers = getHelpers(db);
 
-	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize, filesizes, projectId] =
+	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize, filesizes, settings] =
 		await Promise.all([
 			getItemCount(db, basicCountTasks),
 			fetchUserCount({ knex: db }),
@@ -39,7 +39,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 			getExtensionCount(db),
 			helpers.schema.getDatabaseSize(),
 			getFilesizeSum(db),
-			getProjectId(db),
+			getSettings(db),
 		]);
 
 	return {
@@ -67,6 +67,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 		database_size: databaseSize ?? 0,
 		files_size_total: filesizes.total,
-		project_id: projectId,
+
+		...settings,
 	};
 };

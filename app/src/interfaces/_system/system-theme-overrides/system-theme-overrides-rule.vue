@@ -77,30 +77,30 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 
 		&::before {
 			content: '';
-			width: 4px;
-			height: 4px;
+			inline-size: 4px;
+			block-size: 4px;
 			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 4px;
 			position: absolute;
-			top: 11px;
-			left: -10px;
+			inset-block-start: 11px;
+			inset-inline-start: -10px;
 			display: block;
 		}
 	}
 
 	p {
-		margin-right: 1ch;
+		margin-inline-end: 1ch;
 
 		color: var(--theme--form--field--input--foreground);
 	}
 
 	.value {
-		margin-right: 1ch;
+		margin-inline-end: 1ch;
 		border: none;
-		border-bottom: 1px solid var(--theme--form--field--input--border-color);
-		min-width: 5ch;
-		width: v-bind(valueLength);
-		max-width: 100%;
+		border-block-end: 1px solid var(--theme--form--field--input--border-color);
+		min-inline-size: 5ch;
+		inline-size: v-bind(valueLength);
+		max-inline-size: 100%;
 		background: transparent;
 
 		&::placeholder {
@@ -109,8 +109,8 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 	}
 
 	.swatch {
-		width: 1.2ch;
-		height: 1.2ch;
+		inline-size: 1.2ch;
+		block-size: 1.2ch;
 		background-color: v-bind(swatchValue);
 		border: 1px solid var(--theme--form--field--input--foreground);
 	}

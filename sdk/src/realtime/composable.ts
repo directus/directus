@@ -24,6 +24,9 @@ const defaultRealTimeConfig: WebSocketConfig = {
 	authMode: 'handshake',
 	heartbeat: true,
 	debug: false,
+	connect: {
+		timeout: 10000, // 10 seconds
+	},
 	reconnect: {
 		delay: 1000, // 1 second
 		retries: 10,
@@ -243,19 +246,28 @@ export function realtime(config: WebSocketConfig = {}) {
 					let resolved = false;
 					const ws = new client.globals.WebSocket(url);
 
+					let connectTimeout: ReturnType<typeof setTimeout> | undefined;
+
+					if (config.connect) {
+						connectTimeout = setTimeout(() => {
+							reject('Connection attempt timed out.');
+						}, config.connect.timeout ?? 10000);
+					}
+
 					ws.addEventListener('open', async (evt: Event) => {
 						debug('info', `Connection open.`);
 
 						state = { code: 'open', connection: ws, firstMessage: true };
 						reconnectState.attempts = 0;
 						reconnectState.active = false;
+						clearTimeout(connectTimeout);
 						handleMessages(self);
 
 						if (config.authMode === 'handshake' && hasAuth(self)) {
 							const access_token = await self.getToken();
 
 							if (!access_token) {
-								throw Error(
+								return reject(
 									'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
 								);
 							}

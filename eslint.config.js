@@ -22,7 +22,7 @@ export default typescriptEslint.config(
 
 	// Ignored files
 	{
-		ignores: ['**/dist/', 'packages/extensions-sdk/templates/', 'docs/.vitepress/cache/', 'api/extensions/'],
+		ignores: ['**/dist/', 'packages/extensions-sdk/templates/', 'api/extensions/'],
 	},
 
 	// Enable recommended rules for JS files
@@ -108,7 +108,7 @@ export default typescriptEslint.config(
 		files: ['**/*.vue'],
 		rules: {
 			// Same ordering of component tags everywhere
-			'vue/component-tags-order': [
+			'vue/block-order': [
 				'error',
 				{
 					order: ['script', 'template', 'style'],
@@ -124,6 +124,23 @@ export default typescriptEslint.config(
 			'vue/prefer-true-attribute-shorthand': 'error',
 			// Allow unused variables when they begin with an underscore
 			'vue/no-unused-vars': ['error', { ignorePattern: '^_' }],
+			// Require components to be imported in the script block
+			'vue/no-undef-components': [
+				'error',
+				{
+					// Histoire components in *.story.vue files
+					ignorePatterns: ['Story', 'Variant', 'Hst*'],
+				},
+			],
+			// Require <PascalCase /> components in templates
+			'vue/component-name-in-template-casing': [
+				'error',
+				'PascalCase',
+				{
+					// Check global component uses as well
+					registeredComponentsOnly: false,
+				},
+			],
 		},
 	},
 

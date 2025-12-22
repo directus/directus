@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { ShowSelect } from '@directus/extensions';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
+import type { ShowSelect } from '@directus/types';
 import { computed } from 'vue';
 import type { Header, Item } from './types';
 
@@ -7,7 +11,7 @@ const props = withDefaults(
 	defineProps<{
 		headers: Header[];
 		item: Item;
-		showSelect: ShowSelect;
+		showSelect?: ShowSelect;
 		showManualSort?: boolean;
 		isSelected?: boolean;
 		subdued?: boolean;
@@ -50,11 +54,11 @@ function onKeydown(e: KeyboardEvent) {
 		@keydown="onKeydown"
 	>
 		<td v-if="showManualSort" class="manual cell" @click.stop>
-			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
+			<VIcon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
 		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
-			<v-checkbox
+			<VCheckbox
 				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
 				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
 				:model-value="isSelected"
@@ -64,7 +68,7 @@ function onKeydown(e: KeyboardEvent) {
 
 		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
 			<slot :name="`item.${header.value}`" :item="item">
-				<v-text-overflow
+				<VTextOverflow
 					v-if="
 						header.value.split('.').reduce((acc, val) => {
 							return acc[val];
@@ -76,7 +80,7 @@ function onKeydown(e: KeyboardEvent) {
 						}, item)
 					"
 				/>
-				<value-null v-else />
+				<ValueNull v-else />
 			</slot>
 		</td>
 
@@ -91,7 +95,7 @@ function onKeydown(e: KeyboardEvent) {
 .table-row {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
-	height: v-bind('cssHeight.tableRow');
+	block-size: v-bind('cssHeight.tableRow');
 
 	.cell {
 		display: flex;
@@ -101,7 +105,7 @@ function onKeydown(e: KeyboardEvent) {
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color, transparent);
-		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&:last-child {
 			padding: 0 12px;
@@ -141,10 +145,10 @@ function onKeydown(e: KeyboardEvent) {
 	}
 
 	:deep(.render-template) {
-		height: v-bind('cssHeight.tableRow');
+		block-size: v-bind('cssHeight.tableRow');
 
 		img {
-			height: v-bind('cssHeight.renderTemplateImage');
+			block-size: v-bind('cssHeight.renderTemplateImage');
 		}
 	}
 }

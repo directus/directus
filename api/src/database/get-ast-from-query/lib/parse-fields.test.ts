@@ -2,7 +2,6 @@ import { SchemaBuilder } from '@directus/schema-builder';
 
 import { expect, test, vi } from 'vitest';
 import { Client_SQLite3 } from '../../run-ast/lib/apply-query/mock.js';
-import { convertWildcards } from './convert-wildcards.js';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import type { Accountability } from '@directus/types';
 import knex from 'knex';
@@ -48,12 +47,14 @@ test('parse fields with id and title', async () => {
 
 	expect(result).toEqual([
 		{
+			alias: false,
 			fieldKey: 'id',
 			name: 'id',
 			type: 'field',
 			whenCase: [],
 		},
 		{
+			alias: false,
 			fieldKey: 'title',
 			name: 'title',
 			type: 'field',
@@ -87,6 +88,7 @@ test('parse fields with m2o relation', async () => {
 
 	expect(result).toEqual([
 		{
+			alias: false,
 			fieldKey: 'id',
 			name: 'id',
 			type: 'field',
@@ -96,6 +98,7 @@ test('parse fields with m2o relation', async () => {
 			cases: [],
 			children: [
 				{
+					alias: false,
 					fieldKey: 'name',
 					name: 'name',
 					type: 'field',
@@ -124,6 +127,7 @@ test('parse fields with o2m relation', async () => {
 
 	expect(result).toEqual([
 		{
+			alias: false,
 			fieldKey: 'id',
 			name: 'id',
 			type: 'field',
@@ -133,6 +137,7 @@ test('parse fields with o2m relation', async () => {
 			cases: [],
 			children: [
 				{
+					alias: false,
 					fieldKey: 'id',
 					name: 'id',
 					type: 'field',
@@ -163,6 +168,7 @@ test('parse fields with m2m relation', async () => {
 
 	expect(result).toEqual([
 		{
+			alias: false,
 			fieldKey: 'id',
 			name: 'id',
 			type: 'field',
@@ -175,6 +181,7 @@ test('parse fields with m2m relation', async () => {
 					cases: [],
 					children: [
 						{
+							alias: false,
 							fieldKey: 'id',
 							name: 'id',
 							type: 'field',
@@ -215,18 +222,21 @@ test('parse fields with *.*.*', async () => {
 
 	expect(result).toEqual([
 		{
+			alias: false,
 			fieldKey: 'id',
 			name: 'id',
 			type: 'field',
 			whenCase: [],
 		},
 		{
+			alias: false,
 			fieldKey: 'title',
 			name: 'title',
 			type: 'field',
 			whenCase: [],
 		},
 		{
+			alias: false,
 			fieldKey: 'date',
 			name: 'date',
 			type: 'field',
@@ -236,12 +246,14 @@ test('parse fields with *.*.*', async () => {
 			cases: [],
 			children: [
 				{
+					alias: false,
 					fieldKey: 'id',
 					name: 'id',
 					type: 'field',
 					whenCase: [],
 				},
 				{
+					alias: false,
 					fieldKey: 'name',
 					name: 'name',
 					type: 'field',
@@ -261,6 +273,7 @@ test('parse fields with *.*.*', async () => {
 			cases: [],
 			children: [
 				{
+					alias: false,
 					fieldKey: 'id',
 					name: 'id',
 					type: 'field',
@@ -270,24 +283,28 @@ test('parse fields with *.*.*', async () => {
 					cases: [],
 					children: [
 						{
+							alias: false,
 							fieldKey: 'id',
 							name: 'id',
 							type: 'field',
 							whenCase: [],
 						},
 						{
+							alias: false,
 							fieldKey: 'title',
 							name: 'title',
 							type: 'field',
 							whenCase: [],
 						},
 						{
+							alias: false,
 							fieldKey: 'date',
 							name: 'date',
 							type: 'field',
 							whenCase: [],
 						},
 						{
+							alias: false,
 							fieldKey: 'author',
 							name: 'author',
 							type: 'field',
@@ -347,6 +364,7 @@ test('parse fields with *.*.*', async () => {
 			cases: [],
 			children: [
 				{
+					alias: false,
 					fieldKey: 'id',
 					name: 'id',
 					type: 'field',
@@ -356,24 +374,28 @@ test('parse fields with *.*.*', async () => {
 					cases: [],
 					children: [
 						{
+							alias: false,
 							fieldKey: 'id',
 							name: 'id',
 							type: 'field',
 							whenCase: [],
 						},
 						{
+							alias: false,
 							fieldKey: 'title',
 							name: 'title',
 							type: 'field',
 							whenCase: [],
 						},
 						{
+							alias: false,
 							fieldKey: 'date',
 							name: 'date',
 							type: 'field',
 							whenCase: [],
 						},
 						{
+							alias: false,
 							fieldKey: 'author',
 							name: 'author',
 							type: 'field',
@@ -421,6 +443,7 @@ test('parse fields with *.*.*', async () => {
 					cases: [],
 					children: [
 						{
+							alias: false,
 							fieldKey: 'id',
 							name: 'id',
 							type: 'field',
@@ -464,12 +487,14 @@ test('parse fields with links.*.* and backlinks disabled', async () => {
 			cases: [],
 			children: [
 				{
+					alias: false,
 					fieldKey: 'id',
 					name: 'id',
 					type: 'field',
 					whenCase: [],
 				},
 				{
+					alias: false,
 					fieldKey: 'article_id',
 					name: 'article_id',
 					type: 'field',

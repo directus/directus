@@ -2,7 +2,13 @@
 	display: grid;
 	grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
 	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
+	container-type: inline-size;
 
+	> * {
+		min-inline-size: var(--form-column-min-width);
+	}
+
+	/* stylelint-disable-next-line */
 	&.with-fill {
 		grid-template-columns:
 			[start] minmax(0, var(--form-column-max-width)) [half] minmax(0, var(--form-column-max-width))
@@ -10,13 +16,13 @@
 	}
 
 	.type-label {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 	}
 
 	.field {
 		grid-column: start / fill;
 
-		@media (min-width: 960px) {
+		@container (inline-size >= 556px) {
 			grid-column: start / full;
 		}
 	}
@@ -26,7 +32,7 @@
 	.half-space {
 		grid-column: start / fill;
 
-		@media (min-width: 960px) {
+		@container (inline-size >= 556px) {
 			grid-column: start / half;
 		}
 	}
@@ -35,7 +41,7 @@
 	.half-right {
 		grid-column: start / fill;
 
-		@media (min-width: 960px) {
+		@container (inline-size >= 556px) {
 			grid-column: half / full;
 		}
 	}
@@ -43,7 +49,7 @@
 	.full {
 		grid-column: start / fill;
 
-		@media (min-width: 960px) {
+		@container (inline-size >= 556px) {
 			grid-column: start / full;
 		}
 	}

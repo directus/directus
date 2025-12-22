@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import PublicView from '@/views/public';
 import { useHead } from '@unhead/vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -18,21 +20,21 @@ useHead({
 </script>
 
 <template>
-	<public-view>
-		<h1 class="type-title">{{ t('reset_password') }}</h1>
+	<PublicView>
+		<h1 class="type-title">{{ $t('reset_password') }}</h1>
 
-		<request-form v-if="!resetToken" />
-		<reset-form v-else :token="resetToken" />
+		<RequestForm v-if="!resetToken" />
+		<ResetForm v-else :token="resetToken" />
 
 		<template #notice>
-			<v-icon name="lock" left />
-			{{ t('not_authenticated') }}
+			<VIcon name="lock" left />
+			{{ $t('not_authenticated') }}
 		</template>
-	</public-view>
+	</PublicView>
 </template>
 
 <style lang="scss" scoped>
 h1 {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 </style>

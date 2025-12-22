@@ -1,13 +1,27 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Mount component 1`] = `
+exports[`inline warning > should appear for invalid input 1`] = `
+"<div data-v-418390f4="" class="v-input full-width invalid">
+  <!--v-if-->
+  <div data-v-418390f4="" class="input">
+    <!--v-if-->
+    <!--v-if--><input data-v-418390f4="" autocomplete="off" type="number" step="1" value="">
+    <v-icon-stub data-v-418390f4="" name="warning" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="false" large="false" xlarge="false" class="inline-warning"></v-icon-stub>
+    <!--v-if--><span data-v-418390f4=""><v-icon-stub data-v-418390f4="" name="keyboard_arrow_up" filled="false" sup="false" left="false" right="false" disabled="false" clickable="true" xsmall="false" small="false" large="false" xlarge="false" class="step-up" tabindex="-1"></v-icon-stub><v-icon-stub data-v-418390f4="" name="keyboard_arrow_down" filled="false" sup="false" left="false" right="false" disabled="false" clickable="true" xsmall="false" small="false" large="false" xlarge="false" class="step-down" tabindex="-1"></v-icon-stub></span>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+</div>"
+`;
+
+exports[`inline warning > should not appear for valid input 1`] = `
 "<div data-v-418390f4="" class="v-input full-width">
   <!--v-if-->
   <div data-v-418390f4="" class="input">
     <!--v-if-->
-    <!--v-if--><input data-v-418390f4="" autocomplete="off" type="text" step="1" value="">
+    <!--v-if--><input data-v-418390f4="" autocomplete="off" type="number" step="1" value="">
     <!--v-if-->
-    <!--v-if-->
+    <!--v-if--><span data-v-418390f4=""><v-icon-stub data-v-418390f4="" name="keyboard_arrow_up" filled="false" sup="false" left="false" right="false" disabled="false" clickable="true" xsmall="false" small="false" large="false" xlarge="false" class="step-up" tabindex="-1"></v-icon-stub><v-icon-stub data-v-418390f4="" name="keyboard_arrow_down" filled="false" sup="false" left="false" right="false" disabled="false" clickable="true" xsmall="false" small="false" large="false" xlarge="false" class="step-down" tabindex="-1"></v-icon-stub></span>
     <!--v-if-->
   </div>
   <!--v-if-->

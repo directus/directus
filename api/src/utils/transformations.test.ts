@@ -1,6 +1,5 @@
-import type { File } from '@directus/types';
+import type { File, Transformation, TransformationParams } from '@directus/types';
 import { describe, expect, test } from 'vitest';
-import type { Transformation, TransformationParams } from '../types/assets.js';
 import { maybeExtractFormat, resolvePreset } from './transformations.js';
 
 const inputFile = {
@@ -27,6 +26,9 @@ const inputFile = {
 	modified_on: '',
 	focal_point_x: null,
 	focal_point_y: null,
+	created_on: '',
+	tus_data: null,
+	tus_id: null,
 } satisfies File;
 
 describe('resolvePreset', () => {

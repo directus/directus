@@ -1,5 +1,5 @@
 import type { DirectusComment } from '../../../schema/comment.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -20,7 +20,7 @@ export type UpdateCommentOutput<
 export const updateComments =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
 		keysOrQuery: DirectusComment<Schema>['id'][] | Query<Schema, DirectusComment<Schema>>,
-		item: Partial<DirectusComment<Schema>>,
+		item: NestedPartial<DirectusComment<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -45,6 +45,24 @@ export const updateComments =
 	};
 
 /**
+ * Update multiple comments as batch.
+ * @param items
+ * @param query
+ * @returns Returns the comment objects for the updated comments.
+ */
+export const updateCommentsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
+		items: NestedPartial<DirectusComment<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/comments`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
+
+/**
  * Update an existing comment.
  * @param key
  * @param item
@@ -55,7 +73,7 @@ export const updateComments =
 export const updateComment =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
 		key: DirectusComment<Schema>['id'],
-		item: Partial<DirectusComment<Schema>>,
+		item: NestedPartial<DirectusComment<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>, Schema> =>
 	() => {

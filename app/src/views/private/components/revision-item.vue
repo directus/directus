@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useFieldsStore } from '@/stores/fields';
 import { Revision } from '@/types/revisions';
+import { getRevisionFields } from '@/utils/get-revision-fields';
 import { userName } from '@/utils/user-name';
 import { format } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import UserPopover from './user-popover.vue';
 
 const props = defineProps<{
 	revision: Revision;
@@ -16,7 +19,14 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => (props.revision.delta ? Object.keys(props.revision.delta).length : 0));
+const fieldsStore = useFieldsStore();
+const fields = fieldsStore.getFieldsForCollection(props.revision.collection);
+
+const revisionCount = computed(() => {
+	const revisionDelta = Object.keys(props.revision.delta ?? {});
+	const revisionFields = getRevisionFields(revisionDelta, fields);
+	return revisionFields.length;
+});
 
 const headerMessage = computed(() => {
 	switch (props.revision.activity.action.toLowerCase()) {
@@ -27,7 +37,7 @@ const headerMessage = computed(() => {
 		case 'delete':
 			return t('revision_delta_deleted');
 		case 'version_save':
-			return t('revision_delta_version_saved', revisionCount.value);
+			return t('revision_delta_updated', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
@@ -57,15 +67,15 @@ const user = computed(() => {
 		<div class="content">
 			<span class="time">{{ time }}</span>
 			–
-			<user-popover
+			<UserPopover
 				v-if="revision.activity.user"
 				class="user"
 				:user="typeof revision.activity.user === 'string' ? revision.activity.user : revision.activity.user.id"
 			>
 				<span>{{ user }}</span>
-			</user-popover>
+			</UserPopover>
 
-			<span v-else>{{ t('private_user') }}</span>
+			<span v-else>{{ $t('private_user') }}</span>
 		</div>
 	</button>
 </template>
@@ -74,10 +84,10 @@ const user = computed(() => {
 .revision-item {
 	position: relative;
 	display: block;
-	width: 100%;
-	margin-bottom: 12px;
-	margin-left: 16px;
-	text-align: left;
+	inline-size: 100%;
+	margin-block-end: 12px;
+	padding-inline-start: 16px;
+	text-align: start;
 
 	.header {
 		position: relative;
@@ -86,11 +96,11 @@ const user = computed(() => {
 
 		.dot {
 			position: absolute;
-			top: 6px;
-			left: -18px;
+			inset-block-start: 6px;
+			inset-inline-start: -18px;
 			z-index: 2;
-			width: 12px;
-			height: 12px;
+			inline-size: 11px;
+			block-size: 11px;
 			background-color: var(--theme--warning);
 			border: var(--theme--border-width) solid var(--theme--background-normal);
 			border-radius: 8px;
@@ -113,30 +123,30 @@ const user = computed(() => {
 		}
 	}
 
-	&:not(.last)::after {
-		position: absolute;
-		top: 12px;
-		left: -13px;
-		z-index: 1;
-		width: 2px;
-		height: calc(100% + 12px);
-		background-color: var(--theme--background-accent);
-		content: '';
-	}
-
 	&::before {
 		position: absolute;
-		top: -4px;
-		left: -24px;
+		inset-block-start: -4px;
+		inset-inline-start: 12px;
 		z-index: 1;
-		width: calc(100% + 32px);
-		height: calc(100% + 10px);
+		inline-size: calc(100% - 12px);
+		block-size: calc(100% + 10px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		content: '';
 		pointer-events: none;
+	}
+
+	&:not(.last)::after {
+		position: absolute;
+		inset-block-start: 12px;
+		inset-inline-start: 3px;
+		z-index: 1;
+		inline-size: 1px;
+		block-size: calc(100% + 12px);
+		background-color: var(--theme--background-accent);
+		content: '';
 	}
 
 	&:hover {
@@ -150,11 +160,12 @@ const user = computed(() => {
 
 		&::before {
 			opacity: 1;
+			transition: none;
 		}
 	}
 
 	& + & {
-		margin-top: 12px;
+		margin-block-start: 12px;
 	}
 }
 

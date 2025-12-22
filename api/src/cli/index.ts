@@ -18,6 +18,7 @@ import { loadExtensions } from './load-extensions.js';
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();
+	program.allowExcessArguments();
 
 	await loadExtensions();
 

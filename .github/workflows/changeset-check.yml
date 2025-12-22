@@ -1,0 +1,176 @@
+name: Changeset Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  changeset-check:
+    name: Changeset Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Label
+        if: contains(github.event.pull_request.labels.*.name, 'No Changeset')
+        run: |
+          echo "✅ No Changeset label present"
+          exit 0
+
+      - name: Fetch Changesets
+        if: ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') }}
+        id: cs
+        uses: tj-actions/changed-files@v47
+        with:
+          files_yaml: |
+            changeset:
+              - '.changeset/*.md'
+          separator: ','
+
+      - name: Found Changeset
+        id: found_changeset
+        if:
+          ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') &&
+          steps.cs.outputs.changeset_added_files != '' }}
+        run: |
+          echo "✅ Found changeset file"
+          echo "found=true" >> $GITHUB_OUTPUT
+
+      - name: Missing Changeset
+        if:
+          ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') &&
+          steps.cs.outputs.changeset_added_files == '' }}
+        run: |
+          echo "❌ Pull request must add a changeset or have the 'No Changeset' label."
+          exit 1
+
+      - name: Checkout Repository
+        if: steps.found_changeset.outputs.found == 'true'
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Prepare
+        if: steps.found_changeset.outputs.found == 'true'
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
+      - name: Install Workflow Dependency
+        if: steps.found_changeset.outputs.found == 'true'
+        run: pnpm add @changesets/git@3 --workspace-root
+
+      - name: Validate Changeset Coverage
+        if: steps.found_changeset.outputs.found == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const { getChangedPackagesSinceRef } = require('@changesets/git');
+
+            try {
+              const cwd = process.cwd();
+              
+              // 1. Get packages that actually changed in this PR/branch
+              core.info('🔍 Detecting changed packages since main...');
+              const changedPackages = await getChangedPackagesSinceRef({
+                cwd,
+                ref: 'origin/main'
+              });
+              
+              // 2. Filter out private packages
+              const publicChangedPackages = changedPackages.filter(pkg => {
+                const isPrivate = pkg.packageJson.private === true;
+                if (isPrivate) {
+                  core.info(`🔒 Skipping private package: ${pkg.packageJson.name}`);
+                }
+                return !isPrivate;
+              });
+              
+              const publicChangedPackageNames = publicChangedPackages.map(pkg => pkg.packageJson.name);
+              core.info(`📦 Public changed packages: ${JSON.stringify(publicChangedPackageNames)}`);
+              
+              // 3. Parse changeset files added in this PR
+              const changesetFiles = `${{ steps.cs.outputs.changeset_added_files }}`.split(',').filter(f => f);
+              core.info(`📝 Added changeset files: ${JSON.stringify(changesetFiles)}`);
+              
+              const packagesInChangesets = new Set();
+              
+              for (const file of changesetFiles) {
+                if (!fs.existsSync(file)) {
+                  core.warning(`⚠️ Changeset file not found: ${file}`);
+                  continue;
+                }
+                
+                const content = fs.readFileSync(file, 'utf8');
+                const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+                
+                if (frontmatterMatch) {
+                  const frontmatter = frontmatterMatch[1];
+                  // Parse YAML frontmatter to extract package names
+                  const packageLines = frontmatter.split('\n').filter(line => 
+                    line.trim() && !line.startsWith('#') && line.includes(':')
+                  );
+                  
+                  packageLines.forEach(line => {
+                    // Match valid npm package names (scoped or unscoped)
+                    // Scoped: @scope/package-name, Unscoped: package-name
+                    const packageMatch = line.match(/["']?(@[a-z0-9-_.]+\/[a-z0-9-_.]+|[a-z0-9-_.]+)["']?\s*:/i);
+                    if (packageMatch) {
+                      packagesInChangesets.add(packageMatch[1].trim());
+                    }
+                  });
+                }
+              }
+              
+              core.info(`📋 Packages covered by changesets: ${JSON.stringify(Array.from(packagesInChangesets))}`);
+              
+              // 4. Compare: find public packages that changed but aren't in changesets
+              const uncoveredPackages = publicChangedPackageNames.filter(pkg => 
+                !packagesInChangesets.has(pkg)
+              );
+              
+              if (uncoveredPackages.length > 0) {
+                const errorMessage = [
+                  '❌ The following public packages are changed but NOT covered by changesets:',
+                  ...uncoveredPackages.map(pkg => `  - ${pkg}`),
+                  '',
+                  '💡 Please add these packages to your changeset or create additional changesets'
+                ].join('\n');
+                
+                core.setFailed(errorMessage);
+                return;
+              }
+              
+              // 5. Also check for packages in changesets that didn't actually change (optional warning)
+              const extraPackages = Array.from(packagesInChangesets).filter(pkg =>
+                !publicChangedPackageNames.includes(pkg)
+              );
+              
+              if (extraPackages.length > 0) {
+                const warningMessage = [
+                  '⚠️ The following packages are in changesets but have no changes:',
+                  ...extraPackages.map(pkg => `  - ${pkg}`),
+                  'This is usually okay for dependency bumps or cross-package updates'
+                ].join('\n');
+                
+                core.warning(warningMessage);
+              }
+              
+              core.info(publicChangedPackageNames.length === 0 
+                ? '✅ No public packages changed - validation passed'
+                : '✅ All public changed packages are covered by changesets!'
+              );
+              
+            } catch (error) {
+              core.setFailed(`❌ Error validating changeset coverage: ${error.message}\n${error.stack}`);
+            }

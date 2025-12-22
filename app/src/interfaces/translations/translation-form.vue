@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { isEmpty } from 'lodash';
+import VDivider from '@/components/v-divider.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VRemove from '@/components/v-remove.vue';
 import { usePermissions } from '@/composables/use-permissions';
-import { type DisplayItem } from '@/composables/use-relation-multiple';
 import { type RelationM2M } from '@/composables/use-relation-m2m';
+import { type DisplayItem } from '@/composables/use-relation-multiple';
+import { isEmpty } from 'lodash';
+import { computed, ref, watch } from 'vue';
 import LanguageSelect from './language-select.vue';
 
 const {
 	languageOptions,
 	disabled,
+	nonEditable,
 	relationInfo,
 	getItemWithLang,
 	displayItems,
@@ -22,6 +26,7 @@ const {
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
+	nonEditable?: boolean;
 	autofocus?: boolean;
 	relationInfo?: RelationM2M;
 	getItemWithLang: (items: Record<string, any>[], lang: string | undefined) => DisplayItem | undefined;
@@ -36,8 +41,6 @@ const {
 }>();
 
 const lang = defineModel<string>('lang');
-
-const { t } = useI18n();
 
 const selectedLanguage = computed(() => languageOptions.find((optLang) => lang.value === optLang.value));
 
@@ -135,11 +138,11 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 <template>
 	<div :class="{ secondary }">
-		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
+		<LanguageSelect v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
 				<span v-if="loading" class="activator-loading-placeholder" />
 
-				<transition
+				<Transition
 					v-else
 					:name="transition ? (item ? 'rotate-in' : 'rotate-out') : null"
 					:duration="transition ? null : 0"
@@ -147,11 +150,11 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 					@after-leave="onTransitionEnd"
 					@leave-cancelled="onTransitionEnd"
 				>
-					<v-icon v-if="item" name="translate" :disabled="activatorDisabled" />
+					<VIcon v-if="item" name="translate" :disabled="activatorDisabled" />
 
-					<v-icon
+					<VIcon
 						v-else
-						v-tooltip="!activatorDisabled ? t('enable') : null"
+						v-tooltip="!activatorDisabled ? $t('enable') : null"
 						:class="{ disabled: activatorDisabled }"
 						:name="iconName"
 						:disabled="activatorDisabled"
@@ -160,12 +163,12 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 						@mousedown="onMousedown"
 						@mouseup="onMouseup"
 					/>
-				</transition>
+				</Transition>
 			</template>
 
 			<template #controls="{ active, toggle }">
-				<v-remove
-					v-if="item"
+				<VRemove
+					v-if="item && !(nonEditable && item.$type !== 'deleted')"
 					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
 					:item-type="item.$type"
@@ -177,16 +180,15 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 				<slot name="split-view" :active :toggle />
 			</template>
-		</language-select>
+		</LanguageSelect>
 
-		<v-form
+		<VForm
 			v-if="selectedLanguage"
 			:key="selectedLanguage.value"
-			:primary-key="
-				relationInfo?.junctionPrimaryKeyField.field ? itemInitial?.[relationInfo?.junctionPrimaryKeyField.field] : null
-			"
+			:primary-key="itemPrimaryKey ?? '+'"
 			:class="{ unselected: !item }"
 			:disabled="disabled || !saveAllowed || item?.$type === 'deleted'"
+			:non-editable
 			:loading="loading"
 			:fields="fields"
 			:model-value="item"
@@ -198,7 +200,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			@update:model-value="updateValue($event, lang)"
 		/>
 
-		<v-divider />
+		<VDivider />
 	</div>
 </template>
 
@@ -207,8 +209,8 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 	--size: 24px;
 
 	display: inline-block;
-	width: var(--size);
-	height: var(--size);
+	inline-size: var(--size);
+	block-size: var(--size);
 }
 
 .v-icon.disabled {
@@ -220,7 +222,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-background);
 
-	margin-top: 32px;
+	margin-block-start: 32px;
 
 	&.unselected {
 		opacity: 0.5;
@@ -234,7 +236,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 .v-divider {
 	--v-divider-color: var(--theme--primary-subdued);
-	margin-top: var(--theme--form--row-gap);
+	margin-block-start: var(--theme--form--row-gap);
 }
 
 .secondary {

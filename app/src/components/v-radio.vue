@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from './v-icon/v-icon.vue';
 
 interface Props {
 	/** What value to represent when selected */
@@ -10,6 +11,8 @@ interface Props {
 	label?: string | null;
 	/** Disable the radio button */
 	disabled?: boolean;
+	/** Set the non-editable state for the radio */
+	nonEditable?: boolean;
 	/** Change the icon to display when enabled */
 	iconOn?: string;
 	/** Change the icon to display when disabled */
@@ -22,6 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	label: null,
 	disabled: false,
+	nonEditable: false,
 	iconOn: 'radio_button_checked',
 	iconOff: 'radio_button_unchecked',
 	block: false,
@@ -48,10 +52,10 @@ function emitValue(): void {
 		type="button"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
-		:class="{ checked: isChecked, block }"
+		:class="{ checked: isChecked, block, 'non-editable': nonEditable }"
 		@click="emitValue"
 	>
-		<v-icon :name="icon" />
+		<VIcon :name="icon" />
 		<span class="label type-text">
 			<slot name="label">{{ label }}</slot>
 		</span>
@@ -73,14 +77,14 @@ function emitValue(): void {
 	display: flex;
 	align-items: center;
 	font-size: 0;
-	text-align: left;
+	text-align: start;
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
 	appearance: none;
 
 	.label:not(:empty) {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 
 		@include mixins.no-wrap;
 	}
@@ -92,29 +96,31 @@ function emitValue(): void {
 	&:disabled {
 		cursor: not-allowed;
 
-		.label {
-			color: var(--theme--foreground-subdued);
-		}
+		&:not(.non-editable) {
+			.label {
+				color: var(--theme--foreground-subdued);
+			}
 
-		.v-icon {
-			--v-icon-color: var(--theme--foreground-subdued);
+			.v-icon {
+				--v-icon-color: var(--theme--foreground-subdued);
+			}
 		}
 	}
 
 	&.block {
 		position: relative;
-		width: 100%;
-		height: var(--theme--form--field--input--height);
+		inline-size: 100%;
+		block-size: var(--theme--form--field--input--height);
 		padding: calc(14px - 2 * var(--theme--border-width));
 		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
 		border-radius: var(--theme--border-radius);
 
 		&::before {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: 100%;
 			background-color: var(--theme--form--field--input--background-subdued);
 			border-radius: var(--theme--border-radius);
 			content: '';
@@ -131,7 +137,8 @@ function emitValue(): void {
 		}
 	}
 
-	&:not(:disabled).checked {
+	&:not(:disabled).checked,
+	&.checked.non-editable {
 		.v-icon {
 			--v-icon-color: var(--v-radio-color, var(--theme--primary));
 		}

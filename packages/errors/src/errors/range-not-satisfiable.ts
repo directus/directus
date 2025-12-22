@@ -1,4 +1,4 @@
-import type { Range } from '@directus/storage';
+import type { Range } from '@directus/types';
 import { createError, ErrorCode } from '../index.js';
 
 export interface RangeNotSatisfiableErrorExtensions {

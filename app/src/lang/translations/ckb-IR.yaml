@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: دەربارە
+first_name: ناوی یەکەم
+last_name: ناوی باوک
 identifier: ناسەرەوە
 avatar: وێنۆچکە
 application: ئەپڵیکەیشن
@@ -164,19 +166,9 @@ rename_version: ناوی وەشان بگۆڕە
 compare_version: بەراوردکردنی وەشان
 save_version: پاشەکەوتکردنی وەشان
 promote_version: پەرەپێدانی وەشان
-promote_version_disabled: هیچ گۆڕانکارییەک نییە
-promote_version_drawer_title: گەرەنتیکردنی {version} بۆ ناو سەرەکی
-promote_version_changes: گۆڕانکاریەکان
-promote_version_preview: بینین
-outdated_notice: >-
-  مادەی سەرەکی نوێکراوەتەوە لەوەتەی ئەم وەشانە دروستکراوە. تکایە هەموو بەهای خانەکان پێداچونەوەی بۆ بکە لە خوارەوە، و پشتڕاستی بکەوە کە کام وەشانە بەکار بهێنرێت کاتێک ئەم وەشانە گەرەنتی دەکەیت بۆ مادەی سەرەکی.
-promote_notice: >-
-  تکایە هەموو بەهای خانەکان پێداچونەوەی بۆ بکە لە خوارەوە، و پشتڕاستی بکەوە کە کام وەشانە بەکار بهێنرێت کاتێک ئەم وەشانە گەرەنتی دەکەیت بۆ مادەی سەرەکی.
 delete_version: سڕینەوەی وەشان
 delete_version_copy: >-
   ئایا دڵنیای دەتەوێت وەشانی "{version}" بسڕیتەوە؟ ئەم کردارە گەڕانەوەی نییە.
-delete_on_promote_copy: >-
-  ئایا دەتەوێت وەشانی "{version}" بسڕیتەوە یان بیپارێزیت دوای گەرەنتیکردنی؟
 reset_bookmark: ڕێکخستنەوەی نیشانکەر
 update_bookmark: نوێکردنەوەی نیشانکەر
 delete_bookmark: سڕینەوەی نیشانکەر
@@ -447,11 +439,11 @@ confirm_revert_body: ئەمە مادەکە دەگەڕێنێتەوە بۆ دۆخ�
 display: پیشاندان
 settings_update_success: ڕێکخستنەکان نوێکراونەتەوە
 title: ناونیشان
+subtitle: ژێرنوس
 revision_delta_created: دروستکرا
 revision_delta_created_externally: لە دەرەوە دروست کرا
 revision_delta_updated: 'یەک خانە نوێکرایەوە | {count} خانە نوێکرانەوە'
 revision_delta_deleted: سڕایەوە
-revision_delta_version_saved: 'خەزنکردنی وەشان (1 خانە نوێکراوەتەوە) | پاراستنی وەشان ({count} خانە نوێکراوەتەوە)'
 revision_delta_reverted: گەڕێندرایەوە
 revision_delta_update_message: ئەم خانەیە نوێ کراوەتەوە بەڵام بەهاکەی بە هۆکاری ئەمنی دەشاردرێتەوە.
 revision_delta_other: پێداچونەوە
@@ -759,7 +751,6 @@ errors:
   VALUE_OUT_OF_RANGE: بەها لە دەرەوەی سنوری دیاریکراوە
   VALUE_TOO_LONG: بەها زۆر گەورەیە
 security: پارێزراوی
-value_hashed: بەها بە پارێزراوی هاشكراوە
 bookmark_name: ناوی نیشانکردن...
 create_bookmark: نیشانکردن دروستبکە
 edit_bookmark: دەستکاری نیشانکردن
@@ -935,10 +926,8 @@ label: پێناس
 flows: لێشاوەکان
 flow: لێشاو
 select_a_flow: لێشاوێک دیاری بکە
-run_flow_confirm: ئایا دڵنیای دەتەوێت ئەم لێشاوە جێبەجێ بکەیت؟
 run_flow_on_current_collection: جێبەجێکردنی لێشاو لەسەر کۆمەڵەی ئێستا
 run_flow_on_current: جێبەجێکردنی لێشاو لەسەر مادەی ئێستا
-run_flow_on_current_edited_confirm: لەوانەیە ئەم مادەیە بەهۆی ئەم لێشاوەوە نوێ بکرێتەوە، ئایا دڵنیای کە دەتەوێت جێبەجێی بکەیت؟
 run_flow_on_selected: سەرەتا یەک یان چەند مادەیەک دیاری بکە | جێبەجێکردنی لێشاو لەسەر ١ مادەی دیاریکراو | جێبەجێکردنی لێشاو لەسەر {n} مادەی دیاریکراو
 run_flow: جێبەجێکردنی لێشاو
 trigger_flow_success: لێشاوی "{flow}" بە سەرکەوتووی جێبەجێکرا
@@ -1159,49 +1148,6 @@ discard_changes_copy: ئایا دڵنیای هەموو گۆڕانکاریەکا�
 show_x_axis: نیشاندانی تەوەری X
 show_y_axis: نیشاندانی تەوەری Y
 keep_editing: بەردەوامبوون
-page_help_collections_overview: '**تێڕوانینی گشتی بۆ کۆمەڵەکان** — لیستی هەموو کۆمەڵەکان کە دەسەڵاتت هەیە بەسەریاندا.'
-page_help_collections_collection: >-
-  **گەڕان بە مادەکاندا** — لیستی هەموو مادەکانی {collection} کە دەسەڵاتت بەسەریاندا هەیە. خوازراوکردنی خشتە، پاڵاوتنەکان، وە ڕیزکردنی بەپێی خواستی خۆت، وە تەنانەت پاشەکەوتکردنی نیشانکردنەکانی ئەم ڕێکخستنە جیاوازانە بۆ دەستگەیشتینی خێرا.
-page_help_collections_item: >-
-  **وردەکاری مادە** — شێوەیەکە بۆ بینین و بەڕێوەبردنی ئەم مادەیە. ئەم شریتی لایە سەرجەم مێژووی هەموو پێداچونەوەکان و لێدوانە جێگیرکراوەکان لە خۆدەگرێت.
-page_help_activity_collection: >-
-  **گەڕانی چالاکی** — لیستێکی گشتگیر لە هەموو چالاکییەکانی سیستەم و ناوەڕۆکی بەکارهێنەرەکەت.
-page_help_docs_global: >-
-  **تێبینی گشتی بەڵگەنامەکان** — بەڵگەنامەکان کە بە تایبەتی بۆ وەشان و سکیمای ئەم پڕۆژەیە دروستکراون.
-page_help_files_collection: >-
-  **پێشانگای پەڕگەکان** — هەموو پەڕگەکان دەخاتە ڕوو کە بۆ ئەم پڕۆژەیە بارکراون. شێواز و پاڵاوتن و ڕیزکردن بەپێی خواستی خۆت دابنێ بۆ ئەوەی دیمەنەکەت بەپێی خواستی خۆت بێت، تەنانەت ئنیشانکردنەکانی ئەم ڕێکخستنە جیاوازانە پاشەکەوت بکە بۆ دەستگەیشتنێکی خێرا.
-page_help_files_item: >-
-  **وردەکاری پەڕگە** — شێوەیەکە بۆ بەڕێوەبردنی مێتاداتای پەڕگە، دەستکاریکردنی پەڕگەی ڕەسەن، وە نوێکردنەوەی ڕێکخستنەکانی دەستگەیشتن.
-page_help_settings_project: "**ڕێکخستنەکان** — بژاردەکانی ڕێکخستنی گشتی پڕۆژەکەت."
-page_help_settings_appearance: "**ڕوکار** — بژاردەکانی ڕوکار و ڕواڵەتی پڕۆژەکەت."
-page_help_settings_extensions: '**زیادکراوەکان** — ئەو زیادکراوانەی لە پڕۆژەکەتدا دامەزراون.'
-page_help_settings_datamodel_collections: >-
-  **مۆدێلی داتا: کۆمەڵەکان** — لیستی هەموو کۆمەڵەکان بەردەستە. ئەمە دیار و نادیار و کۆمەڵەکانی سیستەمیش لەخۆ دەگرێت، هەروەها خشتە بەڕێوەنەبراوەکانی بنکەدراویش دەتوانرێت زیادبکرێن.
-page_help_settings_datamodel_fields: >-
-  **مۆدێلی داتا: کۆمەڵەکان** —شێوەیەکە بۆ بەڕێوەبردنی کۆمەڵەکان و خانەکانیان.
-page_help_settings_system_logs: '**تۆمارەکانی سیستەم** — دەستگەیشتن بە ڕۆیشتنی ڕاستەوخۆی تۆمارەکانی سیستەم.'
-page_help_settings_policies_collection: '**گەڕانی سیاسەتەکان** — لیستی سەرجەم سیاسەتەکان لە پڕۆژەکەدا.'
-page_help_settings_policies_item: "**وردەکاری سیاسەت** — بەڕێوەبردنی دەسەڵاتەکانی سیاسەت و ڕێکخستنەکانی تر."
-page_help_settings_roles_collection: '**گەڕانی پلەکان** — لیستی سەرجەم پلەکانی بەکارهێنەر لە پڕۆژەکەدا.'
-page_help_settings_roles_item: "**وردەکاری پلە** — بەڕێوەبردنی دەسەڵاتەکانی پلە و ڕێکخستنەکانی تر."
-page_help_settings_presets_collection: >-
-  **گەڕانی پێشسێتەکان** — لیستی هەموو پێشسێتەکان لە پڕۆژەکەدا، لەوانە: بەکارهێنەر، پلە، و نیشانکردنە گشتیەکان، هەروەها بینینە بنەڕەتیەکان.
-page_help_settings_presets_item: >-
-  **وردەکاری پێشسێت** — شێوەیەکە بۆ بەڕێوەبردنی نیشنکردنەکان و بنەڕەتی پێشسێتەکانی کۆمەڵە.
-page_help_settings_webhooks_collection: '**گەڕانی وێبهووکەکان** — لیستی هەموو وێبهووکەکان لەم پڕۆژەیەدا.'
-page_help_settings_webhooks_item: '**وردەکاری وێبهووک** —شێوەیەکە بۆ بەڕێوەبردنی و دروستکردنی وێبهووکەکانی پڕۆژە.'
-page_help_settings_flows_collection: '**گەڕانی لێشاوەکان** — لیستی سەرجەم لێشاوەکان لە پڕۆژەدا.'
-page_help_settings_flows_item: '**وردەکاری لێشاو** — ناوچەی کارە بۆ بەڕێوەبردنی یەک کردار یان زیاتر.'
-page_help_settings_translations_collection: '**گەڕانی وەرگێڕانە تایبەتەکان** — لیستی هەموو وەرگێڕانە تایبەتەکان لەم پڕۆژەیەدا.'
-page_help_settings_translations_item: '**وردەکاری وەرگێڕانە تایبەتەکان** — فۆرمێکە بۆ بینین و بەڕێوەبردنی ئەم مادەیە.'
-page_help_users_collection: '**بەڕێوبەرایەتی بەکارهێنەر** — لیستی سەرجەم بەکارهێنەرانی سیستەم لە پڕۆژەدا.'
-page_help_users_item: >-
-  **وردەکاری بەکارهێنەر** — بەڕێوەبردنی زانیاریەکانی هەژمار، یان بینینی وردەکاری بەکارهێنەرەکانی تر.
-page_help_insights_overview: '**تێڕوانینەکان** — لیستی سەرجەم ئەو داشبۆردانەی کە دەسەڵاتت هەیە بەسەریاندا.'
-page_help_insights_dashboard: '**داشبۆرد** — ناوچەی کارە بۆ بەڕێوەبردنی یەک پانێڵ یان زیاتر'
-page_help_marketplace_account: '**هەژمار** — بڵاوکەرەوە یان چاودێری زیادکراوەیەکی بڵاوکراوە.'
-page_help_marketplace_registry: '**کۆگا** — زیادکراوەکانی بەردەست لە کۆگای دایرێکتەس.'
-page_help_marketplace_extension: '**زیادکراوە** — زیادکراوە لە کۆگای دایرێکتەس.'
 activity_feed: لیستی چالاکی
 add_new: زیادکردنی نوێ
 create_new: دروستکردنی نوێ
@@ -1237,7 +1183,6 @@ directus_collection:
   directus_dashboards: داشبۆردەکان لە یەکەی تێڕوانینەکان
   directus_fields: ڕێکخستن و مێتادەیتای زیادەی خانە
   directus_files: مێتادەیتا بۆ هەموو پەڕگە بەڕێوەبراوەکان
-  directus_flows: خۆکارکردنی لێشاوەکان
   directus_folders: دابینکردنی بەڕێوەبردنی خەیاڵی بۆ پەڕگەکان
   directus_migrations: کام وەشانی بنکەدراو بەکاردەهێنیت
   directus_notifications: ئاگادارکەرەوەکان نێردران بۆ بەکارهێنەران
@@ -1584,6 +1529,24 @@ unlimited_usage: بەکارهێنانی بێسنور
 uses_left: هیچ بەکارهێنانی نەماوە | یەک بەکارهێنان ماوە | {n} بەکارهێنان ماوە
 no_shares: هیچ هاوبەشیکردنێک نییە بۆ نیشاندان
 new_share: هاوبەشی نوێ
+ai:
+  input: تێچون
+  unknown: نەناسراو
+  settings: ڕێکخستنەکان
+  tool_approval:
+    disabled: ناکاراکراو
+ai_tools:
+  items: ماددەکان
+  files: پەڕگەکان
+  folders: فۆڵدەرەکان
+  flows: لێشاوەکان
+  trigger-flow: وروژاندنی لێشاو
+  operations: کردارەکان
+  schema: سکیما
+  collections: کۆمەڵەکان
+  fields: خانەکان
+mcp_prompts_collection_schema:
+  messages_role_user: بەکارهێنەر
 expired: بەسەرچوو
 upcoming: داهاتوو
 share: هاوبەشیکردن
@@ -1706,7 +1669,6 @@ translation_placeholder: وەرگێڕانێک بنوسە...
 value: بەها
 view_project: بینینی پڕۆژە
 report_error: ڕاپۆرتی هەڵە
-start: دەستپێکردن
 table: خشتە
 list: لیست
 search_filter: گەڕان و پاڵاوتن
@@ -1751,9 +1713,7 @@ interfaces:
     accordion_mode: دۆخی ئەکۆردیۆن
     max_one_section_open: ئەوپەڕی یەک بەشی کراوە
   presentation-links:
-    presentation-links: دوگمە بەستەرەکان
-    links: بەستەرەکان
-    description: ڕێکخستنی دوگمەی بەستەرەکان بۆ کردنەوەی بەستەرە گۆڕاوەکان
+    presentation-links: دوگمەکان
     style: شێواز
     primary: سەرەکی
     link: بەستەرەکان
@@ -2075,6 +2035,9 @@ interfaces:
   input-password:
     input-password: تێپەڕەوشە داخڵبکە
     description: خانەی تێپەڕەوشە لەگەڵ دوگمەی شاردنەوەی بەها
+  header:
+    header: سەرپەڕە
+    links: بەستەرەکان
 displays:
   translations:
     translations: وەرگێڕانەکان
@@ -2289,6 +2252,7 @@ show_labels: نیشاندانی پێناسەکان
 show_legend: نیشاندانی ڕێبەر
 right: ڕاست
 left: چەپ
+start: دەستپێکردن
 donut: دۆنەت
 continuous: بەردەوام
 gap: بۆشایی
@@ -2381,11 +2345,9 @@ triggers:
 a_flow_uuid: لێشاوێک دیاری بکە بۆ وروژاندن...
 any_string_or_json: هەر دەقێک یان JSONێک...
 item_payload_placeholder: ئەمە ئەو JSONەیە کە بەکاردێت بۆ نوێکردنەوەی بەهاکانی خانەی مادەکە...
-operation_variables_note: دەتوانیت دەستت بە داتای لێشاو بگات بە بەکارهێنانی گۆڕاوەکانی وەک **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** و **{'{'}{'{'}$accountability{'}'}{'}'}**, یان ئاماژە بە کردارە پێشوەکان بکەیت بە بەکارهێنانی **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: مەرج
-    description: ڕێڕەوی لێشاوێک بەپێی ئەگەر / ئەگینا
   exec:
     name: جێبەجێکردنی سکریپت
     description: جێبەجێکردنی کۆدی دڵخواز بۆ گۆڕینی سودبارەکە
@@ -2476,7 +2438,6 @@ operations:
     description: گۆڕینی سودباری JSONی لێشاو
   trigger:
     name: وروژاندنی لێشاو
-    description: گواستنەوەی ئەم داتایە بۆ لێشاوێکی تر
     flows: لێشاوەکان
     flow: لێشاو
     data: داتا

@@ -1,21 +1,32 @@
 <script setup lang="ts">
 import api from '@/api';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VDetail from '@/components/v-detail.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
+import { saveAs } from 'file-saver';
 import { merge } from 'lodash';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { RouterLink, RouterView } from 'vue-router';
 import Draggable from 'vuedraggable';
 import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
-import CollectionItem from './components/collection-item.vue';
+import CollectionItem from './components/CollectionItem.vue';
 import CollectionOptions from './components/collection-options.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
-
-const { t } = useI18n();
 
 const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);
@@ -128,64 +139,73 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		unexpectedError(error);
 	}
 }
+
+async function downloadSnapshot() {
+	const snapshot = await api.get(`/schema/snapshot`);
+
+	saveAs(
+		new Blob([JSON.stringify(snapshot.data, null, 2)], { type: 'application/json;charset=utf-8' }),
+		`snapshot.json`,
+	);
+}
 </script>
 
 <template>
-	<private-view :title="t('settings_data_model')">
+	<PrivateView :title="$t('settings_data_model')" icon="database">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="database" />
-			</v-button>
+			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 		</template>
 
 		<template #actions>
-			<search-input
+			<SearchInput
 				v-model="search"
 				:show-filter="false"
 				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
-				:placeholder="t('search_collection')"
+				:placeholder="$t('search_collection')"
+				small
 			/>
 
-			<collection-dialog v-model="collectionDialogActive">
+			<CollectionDialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
-						<v-icon name="create_new_folder" />
-					</v-button>
+					<PrivateViewHeaderBarActionButton
+						v-tooltip.bottom="$t('create_folder')"
+						secondary
+						icon="create_new_folder"
+						@click="on"
+					/>
 				</template>
-			</collection-dialog>
+			</CollectionDialog>
 
-			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
-				<v-icon name="add" />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('create_collection')"
+				to="/settings/data-model/+"
+				icon="add"
+			/>
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
-				{{ t('no_collections_copy_admin') }}
+			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
+				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
-					<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
+					<VButton to="/settings/data-model/+">{{ $t('create_collection') }}</VButton>
 				</template>
-			</v-info>
+			</VInfo>
 
 			<template v-else>
-				<transition-expand>
+				<TransitionExpand>
 					<div v-if="hasExpandableCollections" class="expand-collapse-button">
-						{{ t('expand') }}
-						<button @click="expandAll">{{ t('all') }}</button>
+						{{ $t('expand') }}
+						<button @click="expandAll">{{ $t('all') }}</button>
 						/
-						<button @click="collapseAll">{{ t('none') }}</button>
+						<button @click="collapseAll">{{ $t('none') }}</button>
 					</div>
-				</transition-expand>
-				<draggable
+				</TransitionExpand>
+				<Draggable
 					tag="v-list"
 					:model-value="rootCollections"
 					:group="{ name: 'collections' }"
@@ -197,7 +217,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					@update:model-value="onSort($event, true)"
 				>
 					<template #item="{ element }">
-						<collection-item
+						<CollectionItem
 							:collection="element"
 							:collections="collections"
 							:is-collapsed="element.isCollapsed"
@@ -207,38 +227,38 @@ async function onSort(updates: Collection[], removeGroup = false) {
 							@toggle-collapse="toggleCollapse"
 						/>
 					</template>
-				</draggable>
+				</Draggable>
 			</template>
 
-			<v-list class="db-only">
-				<v-list-item
+			<VList class="db-only">
+				<VListItem
 					v-for="collection of tableCollections"
 					v-show="findVisibilityChild(collection.collection)!.visible"
 					:key="collection.collection"
-					v-tooltip="t('db_only_click_to_configure')"
+					v-tooltip="$t('db_only_click_to_configure')"
 					class="collection-row hidden"
 					block
 					dense
 					clickable
 				>
-					<v-list-item-icon>
-						<v-icon name="add" />
-					</v-list-item-icon>
+					<VListItemIcon>
+						<VIcon name="add" />
+					</VListItemIcon>
 
-					<router-link class="collection-name" :to="`/settings/data-model/${collection.collection}`">
-						<v-icon class="collection-icon" name="dns" />
+					<RouterLink class="collection-name" :to="`/settings/data-model/${collection.collection}`">
+						<VIcon class="collection-icon" name="dns" />
 						<span class="collection-name">{{ collection.name }}</span>
-					</router-link>
+					</RouterLink>
 
-					<collection-options :collection="collection" :has-nested-collections="false" />
-				</v-list-item>
-			</v-list>
+					<CollectionOptions :collection="collection" :has-nested-collections="false" />
+				</VListItem>
+			</VList>
 
-			<v-detail
+			<VDetail
 				v-show="systemCollections.some((collection) => findVisibilityChild(collection.collection)?.visible)"
-				:label="t('system_collections')"
+				:label="$t('system_collections')"
 			>
-				<collection-item
+				<CollectionItem
 					v-for="collection of systemCollections"
 					:key="collection.collection"
 					:collection="collection"
@@ -247,29 +267,31 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					:is-collapsed="false"
 					disable-drag
 				/>
-			</v-detail>
+			</VDetail>
 		</div>
 
-		<router-view name="add" />
+		<RouterView name="add" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
-			</sidebar-detail>
+			<SidebarDetail id="download-snapshot" icon="download" :title="$t('snapshot.export')">
+				<div v-md="$t('snapshot.info')" class="page-description" />
+				<VButton small full-width class="snapshot-download" @click="downloadSnapshot">
+					{{ $t('snapshot.download') }}
+				</VButton>
+			</SidebarDetail>
 		</template>
 
-		<collection-dialog
+		<CollectionDialog
 			:model-value="!!editCollection"
 			:collection="editCollection"
 			@update:model-value="editCollection = null"
 		/>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">
 .padding-box {
 	padding: var(--content-padding);
-	padding-top: 0;
 }
 
 .v-info {
@@ -293,7 +315,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .collection-icon {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .hidden .collection-name {
@@ -315,13 +337,12 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .db-only {
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 }
 
 .expand-collapse-button {
-	padding-top: 4px;
-	padding-bottom: 8px;
-	text-align: right;
+	padding-block: 4px 8px;
+	text-align: end;
 	color: var(--theme--foreground-subdued);
 
 	button {
@@ -336,6 +357,10 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .v-list.draggable-list {
-	padding-top: 0;
+	padding-block-start: 0;
+}
+
+.snapshot-download {
+	margin-block-start: 12px;
 }
 </style>

@@ -204,7 +204,7 @@ const color = computed(() => {
 </script>
 
 <template>
-	<div ref="labelContainer" class="metric type-title selectable" :class="[font, { 'has-header': showHeader }]">
+	<div ref="labelContainer" class="metric type-title" :class="[font, { 'has-header': showHeader }]">
 		<p
 			ref="labelText"
 			class="metric-text"
@@ -219,15 +219,16 @@ const color = computed(() => {
 
 <style lang="scss" scoped>
 .metric-text {
-	min-width: min-content;
-	min-height: min-content;
-	width: 100%;
+	min-inline-size: min-content;
+	min-block-size: min-content;
+	inline-size: 100%;
 }
+
 .metric {
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	font-weight: 800;
 	white-space: nowrap;
 	line-height: 1.2;

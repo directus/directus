@@ -77,10 +77,10 @@ useGroupableParent(
 .v-list {
 	position: static;
 	display: block;
-	min-width: var(--v-list-min-width, 220px);
-	max-width: var(--v-list-max-width, none);
-	min-height: var(--v-list-min-height, none);
-	max-height: var(--v-list-max-height, none);
+	min-inline-size: var(--v-list-min-width, 220px);
+	max-inline-size: var(--v-list-max-width, none);
+	min-block-size: var(--v-list-min-height, none);
+	max-block-size: var(--v-list-max-height, none);
 	padding: var(--v-list-padding, 4px 0);
 	overflow: auto;
 	color: var(--v-list-color, var(--theme--foreground-accent));
@@ -94,7 +94,7 @@ useGroupableParent(
 }
 
 :slotted(.v-divider) {
-	max-width: calc(100% - 16px);
+	max-inline-size: calc(100% - 16px);
 	margin: 8px;
 }
 </style>

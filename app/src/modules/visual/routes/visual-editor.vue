@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { useHead } from '@unhead/vue';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
 import NotificationsGroup from '@/views/private/components/notifications-group.vue';
-import LivePreview from '@/views/private/components/live-preview.vue';
+import { useHead } from '@unhead/vue';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import EditingLayer from '../components/editing-layer.vue';
+import type { NavigationData } from '../types';
 import { getUrlRoute } from '../utils/get-url-route';
 import { sameOrigin } from '../utils/same-origin';
-import type { NavigationData } from '../types';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
 	urls: string[];
@@ -56,11 +59,11 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 
 <template>
 	<div class="module">
-		<transition-expand x-axis>
-			<module-bar v-if="moduleBarOpen" />
-		</transition-expand>
+		<TransitionExpand x-axis>
+			<ModuleBar v-if="moduleBarOpen" />
+		</TransitionExpand>
 
-		<live-preview
+		<LivePreview
 			:url="urls"
 			:invalid-url
 			:dynamic-url
@@ -73,19 +76,19 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 			@select-url="onSelectUrl"
 		>
 			<template #prepend-header>
-				<v-button
-					v-tooltip.bottom.end="t('toggle_navigation')"
+				<VButton
+					v-tooltip.bottom.end="$t('toggle_navigation')"
 					x-small
 					rounded
 					icon
 					secondary
 					@click="moduleBarOpen = !moduleBarOpen"
 				>
-					<v-icon small :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
-				</v-button>
+					<VIcon small :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
+				</VButton>
 
-				<v-button
-					v-tooltip.bottom.end="t('toggle_editable_elements')"
+				<VButton
+					v-tooltip.bottom.end="$t('toggle_editable_elements')"
 					x-small
 					rounded
 					icon
@@ -93,17 +96,17 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 					secondary
 					@click="showEditableElements = !showEditableElements"
 				>
-					<v-icon small name="edit" outline />
-				</v-button>
+					<VIcon small name="edit" outline />
+				</VButton>
 			</template>
 
 			<template #overlay="{ frameEl, frameSrc }">
-				<editing-layer :frame-src :frame-el :show-editable-elements @navigation="onNavigation" />
+				<EditingLayer :frame-src :frame-el :show-editable-elements @navigation="onNavigation" />
 			</template>
-		</live-preview>
+		</LivePreview>
 
-		<notification-dialogs />
-		<notifications-group />
+		<NotificationDialogs />
+		<NotificationsGroup />
 	</div>
 </template>
 
@@ -111,32 +114,18 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 .module {
 	position: relative;
 	display: flex;
-	height: 100%;
-	width: 100%;
+	block-size: 100%;
+	inline-size: 100%;
 	overflow: hidden;
 }
 
 .live-preview {
-	height: 100%;
-	width: 100%;
-	min-width: 0;
+	block-size: 100%;
+	inline-size: 100%;
+	min-inline-size: 0;
 }
 
 .spacer {
 	flex: 1;
-}
-
-.notifications-group {
-	top: auto;
-	right: 12px;
-	bottom: 12px;
-	left: auto;
-
-	@media (min-width: 960px) {
-		top: auto;
-		right: 12px;
-		bottom: 12px;
-		left: auto;
-	}
 }
 </style>

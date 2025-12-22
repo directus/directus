@@ -30,6 +30,7 @@ draft: Qaralama
 archived: Arxiv
 marketplace: Marketplace
 extensions: Əlavələr
+skip_link_nav:
 modules: Modullar
 module_bar: Modul çərçivəsi
 logs: Loglar
@@ -91,6 +92,7 @@ n_files: '{n} fayl'
 verified: Təsdiqlənib
 homepage: Ana Səhifə
 repository: Repository
+reload_page: Səhifəni yenidən yüklə
 reload_required: Səhifənin yenilənməsi tələb olunur
 report_an_issue: Problem bildirin
 website: Vebsayt
@@ -109,6 +111,7 @@ field_name_translations: Sütun adlarının tərcüməsi
 enter_password_to_enable_tfa: İki faktorlu autentifikasiyanı aktivləşdirmək üçün şifrənizi daxil edin
 add_field: Sütun əlavə et
 role_name: Rol adı
+policy_name:
 branch: Branch
 leaf: Yarpaq
 indeterminate: Qeyri-müəyyən
@@ -161,14 +164,6 @@ rename_version: Versiyanın adını dəyiş
 compare_version: Versiyaları müqayisə et
 save_version: Versiyanı yadda saxla
 promote_version: Versiyanı promote et
-promote_version_disabled: Dəyişiklik yoxdur
-promote_version_drawer_title: '{version} versiyasını Əsas et'
-promote_version_changes: Dəyişikliklər
-promote_version_preview: Ön baxış
-outdated_notice: >-
-  Bu versiya yaradılandan bəri əsas element yeniləndi. Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
-promote_notice: >-
-  Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
 delete_version: Versiyanı sil
 delete_version_copy: >-
   "{version}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
@@ -205,23 +200,52 @@ field_validation: Xana doğrulaması
 field_presets: Xana ayarları
 permissions_for_role: '{role} rolunun {action} edə biləcəti obyektlər.'
 fields_for_role: '{role} rolunun {action} edə biləcəti xanalar.'
+search_collection: Axtar...
+confirmation_dialog: Təsdiqetmə sorğusu
+comments: Şərhlər
+no_items: Məlumat yoxdur
+search_items: Axtar...
+items: məlumat
+wysiwyg_options:
+  table: Cədvəl
+creating_in: 'Əlavə et: {collection}'
+editing_in: 'Redaktə et: {collection}'
 source_registry: Marketplace
 fields:
+  directus_activity:
+    revisions: Dəyişikliklər
   directus_settings:
     module_bar: Modul çərçivəsi
   directus_fields:
     translation: Sütun adlarının tərcüməsi
   directus_roles:
     name: Rol adı
+  directus_policies:
+    name:
+shares: Paylaşımlar
+ai:
+  unknown: Naməlum
+ai_tools:
+  items: məlumat
+  operations: Əməliyyatlar
+revisions: Dəyişikliklər
+no_revisions: Daha öncə dəyişiklik edilməyib
+table: Cədvəl
 interfaces:
   presentation-links:
     primary: Əsas
+  input-block-editor:
+    tools_options:
+      table: Cədvəl
 displays:
   datetime:
     suffix: Son şəkilçi
   formatted-value:
     prefix: Prefiks
     suffix: Son şəkilçi
+layouts:
+  tabular:
+    tabular: Cədvəl
 operations:
   log:
     message: Mesaj

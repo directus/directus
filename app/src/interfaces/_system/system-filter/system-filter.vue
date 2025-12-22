@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VFieldList from '@/components/v-field-list/v-field-list.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { ClientFilterOperator, FieldFunction, Filter, Type } from '@directus/types';
@@ -10,8 +19,7 @@ import {
 } from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Nodes from './nodes.vue';
+import Nodes from './Nodes.vue';
 import { getNodeName } from './utils';
 
 interface Props {
@@ -51,8 +59,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const menuEl = ref();
 
@@ -164,20 +170,20 @@ function addKeyAsNode() {
 </script>
 
 <template>
-	<v-notice v-if="collectionRequired && !collectionField && !collection" type="warning">
-		{{ t('collection_field_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="collectionRequired && !collection" type="warning">
-		{{ t('select_a_collection') }}
-	</v-notice>
+	<VNotice v-if="collectionRequired && !collectionField && !collection" type="warning">
+		{{ $t('collection_field_not_setup') }}
+	</VNotice>
+	<VNotice v-else-if="collectionRequired && !collection" type="warning">
+		{{ $t('select_a_collection') }}
+	</VNotice>
 
 	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
-		<v-list mandatory>
+		<VList mandatory>
 			<div v-if="innerValue.length === 0" class="no-rules">
-				{{ t('interfaces.filter.no_rules') }}
+				{{ $t('interfaces.filter.no_rules') }}
 			</div>
 
-			<nodes
+			<Nodes
 				v-else
 				v-model:filter="innerValue"
 				:collection="collection"
@@ -191,22 +197,22 @@ function addKeyAsNode() {
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
-		</v-list>
+		</VList>
 
 		<div v-if="fieldName" class="buttons">
-			<button @click="addNode(fieldName!)">{{ t('interfaces.filter.add_filter') }}</button>
-			<button @click="addNode('$group')">{{ t('interfaces.filter.add_group') }}</button>
+			<button @click="addNode(fieldName!)">{{ $t('interfaces.filter.add_filter') }}</button>
+			<button @click="addNode('$group')">{{ $t('interfaces.filter.add_group') }}</button>
 		</div>
 		<div v-else class="buttons">
-			<v-menu ref="menuEl" placement="bottom-start" show-arrow>
+			<VMenu ref="menuEl" placement="bottom-start" show-arrow>
 				<template #activator="{ toggle, active }">
 					<button class="add-filter" :class="{ active }" @click="toggle">
-						<v-icon v-if="inline" name="add" class="add" small />
-						<span>{{ t('interfaces.filter.add_filter') }}</span>
-						<v-icon name="expand_more" class="expand_more" />
+						<VIcon v-if="inline" name="add" class="add" small />
+						<span>{{ $t('interfaces.filter.add_filter') }}</span>
+						<VIcon name="expand_more" class="expand_more" />
 					</button>
 				</template>
-				<v-field-list
+				<VFieldList
 					v-if="collectionRequired"
 					:collection="collection"
 					include-functions
@@ -218,34 +224,34 @@ function addKeyAsNode() {
 					@add="addNode($event[0])"
 				>
 					<template #prepend>
-						<v-list-item clickable @click="addNode('$group')">
-							<v-list-item-content>
-								<v-text-overflow :text="t('interfaces.filter.add_group')" />
-							</v-list-item-content>
-						</v-list-item>
-						<v-divider />
+						<VListItem clickable @click="addNode('$group')">
+							<VListItemContent>
+								<VTextOverflow :text="$t('interfaces.filter.add_group')" />
+							</VListItemContent>
+						</VListItem>
+						<VDivider />
 					</template>
-				</v-field-list>
+				</VFieldList>
 
-				<v-list v-else :mandatory="false">
-					<v-list-item clickable @click="addNode('$group')">
-						<v-list-item-content>
-							<v-text-overflow :text="t('interfaces.filter.add_group')" />
-						</v-list-item-content>
-					</v-list-item>
-					<v-divider />
-					<v-list-item @click.stop>
-						<v-list-item-content>
+				<VList v-else :mandatory="false">
+					<VListItem clickable @click="addNode('$group')">
+						<VListItemContent>
+							<VTextOverflow :text="$t('interfaces.filter.add_group')" />
+						</VListItemContent>
+					</VListItem>
+					<VDivider />
+					<VListItem @click.stop>
+						<VListItemContent>
 							<input
 								v-model="newKey"
 								class="new-key-input"
-								:placeholder="t('interfaces.filter.add_key_placeholder')"
+								:placeholder="$t('interfaces.filter.add_key_placeholder')"
 								@keydown.enter="addKeyAsNode"
 							/>
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+						</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
 		</div>
 	</div>
 </template>
@@ -258,22 +264,22 @@ function addKeyAsNode() {
 	}
 
 	:deep(.group) {
-		margin-left: 18px;
-		padding-left: 10px;
-		border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		margin-inline-start: 18px;
+		padding-inline-start: 10px;
+		border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.v-list {
-		min-width: auto;
-		margin: 0px 0px 10px;
+		min-inline-size: auto;
+		margin: 0 0 10px;
 		padding: 20px 20px 12px;
 		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 		background: var(--theme--form--field--input--background);
 
 		& > :deep(.group) {
-			margin-left: 0px;
-			padding-left: 0px;
-			border-left: none;
+			margin-inline-start: 0;
+			padding-inline-start: 0;
+			border-inline-start: none;
 		}
 	}
 
@@ -290,9 +296,8 @@ function addKeyAsNode() {
 		.v-list {
 			display: flex;
 			align-items: center;
-			height: var(--theme--form--field--input--height);
-			padding-top: 0;
-			padding-bottom: 0;
+			block-size: var(--theme--form--field--input--height);
+			padding-block: 0;
 		}
 
 		.no-rules {
@@ -325,8 +330,8 @@ function addKeyAsNode() {
 		.add-filter {
 			display: flex;
 			align-items: center;
-			width: 100%;
-			height: 30px;
+			inline-size: 100%;
+			block-size: 30px;
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);
 			background-color: var(--theme--form--field--input--background);
@@ -344,12 +349,10 @@ function addKeyAsNode() {
 				}
 			}
 			.add {
-				margin-left: 6px;
-				margin-right: 4px;
+				margin-inline: 6px 4px;
 			}
 			.expand_more {
-				margin-left: auto;
-				margin-right: 6px;
+				margin-inline: auto 6px;
 				transition: transform var(--medium) var(--transition-out);
 			}
 		}
@@ -364,7 +367,7 @@ function addKeyAsNode() {
 	}
 
 	button + button {
-		margin-left: 24px;
+		margin-inline-start: 24px;
 	}
 }
 

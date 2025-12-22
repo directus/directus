@@ -1,9 +1,8 @@
 import { useEnv } from '@directus/env';
-import type { Notification, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, MutationOptions, Notification, PrimaryKey } from '@directus/types';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
@@ -40,7 +39,7 @@ export class NotificationsService extends ItemsService {
 					.toString();
 
 				const html = data.message ? md(data.message) : '';
-				const roles = await fetchRolesTree(user['role'], this.knex);
+				const roles = await fetchRolesTree(user['role'], { knex: this.knex });
 
 				const { app: app_access } = await fetchGlobalAccess(
 					{
@@ -48,7 +47,7 @@ export class NotificationsService extends ItemsService {
 						roles,
 						ip: null,
 					},
-					this.knex,
+					{ knex: this.knex },
 				);
 
 				const mailService = new MailService({
@@ -58,14 +57,19 @@ export class NotificationsService extends ItemsService {
 				});
 
 				mailService
-					.send({
-						template: {
-							name: 'base',
-							data: app_access ? { url: manageUserAccountUrl, html } : { html },
+					.send(
+						{
+							template: {
+								name: 'base',
+								data: app_access ? { url: manageUserAccountUrl, html } : { html },
+							},
+							to: user['email'],
+							subject: data.subject,
 						},
-						to: user['email'],
-						subject: data.subject,
-					})
+						{
+							defaultTemplateData: await mailService.getDefaultTemplateData(),
+						},
+					)
 					.catch((error) => {
 						logger.error(error, `Could not send notification via mail`);
 					});

@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import VAvatar from '@/components/v-avatar.vue';
+import VBadge from '@/components/v-badge.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -6,9 +14,7 @@ import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
+import { RouterLink } from 'vue-router';
 
 const appStore = useAppStore();
 const notificationsStore = useNotificationsStore();
@@ -18,11 +24,17 @@ const { unread } = storeToRefs(notificationsStore);
 
 const userStore = useUserStore();
 
+(async () => await userStore.hydrateAdditionalFields(['avatar.modified_on']))();
+
 const signOutActive = ref(false);
 
 const avatarURL = computed<string | null>(() => {
 	if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-	return getAssetUrl(`${userStore.currentUser.avatar.id}?key=system-medium-cover`);
+
+	return getAssetUrl(userStore.currentUser.avatar.id, {
+		imageKey: 'system-medium-cover',
+		cacheBuster: userStore.currentUser.avatar.modified_on,
+	});
 });
 
 const avatarError = ref<null | Event>(null);
@@ -41,42 +53,42 @@ const userFullName = userStore.fullName ?? undefined;
 
 <template>
 	<div class="module-bar-avatar">
-		<v-badge :value="unread" :disabled="unread == 0" class="notifications-badge">
-			<v-button
-				v-tooltip.right="t('notifications')"
+		<VBadge :value="unread" :disabled="unread == 0" class="notifications-badge">
+			<VButton
+				v-tooltip.right="$t('notifications')"
 				tile
 				icon
 				x-large
 				class="notifications"
 				@click="notificationsDrawerOpen = true"
 			>
-				<v-icon name="notifications" />
-			</v-button>
-		</v-badge>
+				<VIcon name="notifications" />
+			</VButton>
+		</VBadge>
 
 		<div class="space-bar">
-			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
+			<VDialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
-					<transition name="sign-out">
-						<v-button v-tooltip.right="t('sign_out')" tile icon x-large class="sign-out" @click="on">
-							<v-icon name="logout" />
-						</v-button>
-					</transition>
+					<Transition name="sign-out">
+						<VButton v-tooltip.right="$t('sign_out')" tile icon x-large class="sign-out" @click="on">
+							<VIcon name="logout" />
+						</VButton>
+					</Transition>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ t('sign_out_confirm') }}</v-card-title>
-					<v-card-actions>
-						<v-button secondary @click="signOutActive = !signOutActive">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button :to="signOutLink">{{ t('sign_out') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+				<VCard>
+					<VCardTitle>{{ $t('sign_out_confirm') }}</VCardTitle>
+					<VCardActions>
+						<VButton secondary @click="signOutActive = !signOutActive">
+							{{ $t('cancel') }}
+						</VButton>
+						<VButton :to="signOutLink">{{ $t('sign_out') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<router-link :to="userProfileLink" class="avatar-btn">
-				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
+			<RouterLink :to="userProfileLink" class="avatar-btn">
+				<VAvatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
 					<img
 						v-if="avatarURL && !avatarError"
 						:src="avatarURL"
@@ -84,9 +96,9 @@ const userFullName = userStore.fullName ?? undefined;
 						class="avatar-image"
 						@error="avatarError = $event"
 					/>
-					<v-icon v-else name="account_circle" />
-				</v-avatar>
-			</router-link>
+					<VIcon v-else name="account_circle" />
+				</VAvatar>
+			</RouterLink>
 		</div>
 	</div>
 </template>
@@ -112,10 +124,9 @@ const userFullName = userStore.fullName ?? undefined;
 		&.no-avatar {
 			&::after {
 				position: absolute;
-				top: -1px;
-				right: 8px;
-				left: 8px;
-				height: var(--theme--border-width);
+				inset-block-start: -1px;
+				inset-inline: 8px;
+				block-size: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
 				content: '';
@@ -144,6 +155,7 @@ const userFullName = userStore.fullName ?? undefined;
 
 			.avatar-image {
 				opacity: 1;
+
 				/* This adds a second focus ring to the image so we can see the focus better */
 				outline: var(--focus-ring-width) solid var(--theme--navigation--modules--background);
 				outline-offset: var(--focus-ring-offset-invert);
@@ -170,8 +182,8 @@ const userFullName = userStore.fullName ?? undefined;
 		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		z-index: 2;
 		transition: transform var(--fast) var(--transition);
 		opacity: 0;

@@ -3,7 +3,7 @@
 }
 
 .tox .tox-tbtn {
-	height: 36px;
+	block-size: 36px;
 	margin: 0;
 	color: var(--theme--form--field--input--foreground);
 }
@@ -32,7 +32,7 @@
 
 .tox-tbtn[aria-label='Bold'] .tox-icon::after {
 	display: inline-block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
@@ -46,7 +46,7 @@
 
 .tox-tbtn[aria-label='Italic'] .tox-icon::after {
 	display: inline-block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
@@ -60,7 +60,7 @@
 
 .tox-tbtn[aria-label='Underline'] .tox-icon::after {
 	display: inline-block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
@@ -74,7 +74,7 @@
 
 .tox-tbtn[aria-label='Add/Edit Link'] .tox-icon::after {
 	display: inline-block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
@@ -92,7 +92,7 @@
 }
 
 .tox-tinymce {
-	min-height: 300px;
+	min-block-size: 300px;
 	color: var(--theme--form--field--input--foreground);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -114,14 +114,14 @@
 .tox .tox-toolbar,
 .tox .tox-toolbar__primary,
 .tox .tox-toolbar__overflow {
-	min-height: 40px;
+	min-block-size: 40px;
 	padding: 2px 0;
 	background: var(--theme--form--field--input--background-subdued);
-	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-pop__dialog .tox-toolbar {
-	margin-bottom: -2px;
+	margin-block-end: -2px;
 }
 
 body.dark .tox .tox-toolbar,
@@ -144,7 +144,6 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-swatches__picker-btn:hover,
 .tox .tox-swatches__picker-btn:active,
 .tox .tox-split-button:hover {
-	-webkit-box-shadow: unset;
 	box-shadow: unset;
 }
 
@@ -162,7 +161,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-tbtn + .tox .tox-tbtn {
-	margin-left: 2px;
+	margin-inline-start: 2px;
 }
 
 .tox .tox-swatches__picker-btn:hover {
@@ -172,7 +171,6 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-swatch:hover,
 .tox .tox-swatch:focus {
-	-webkit-transform: scale(1.2);
 	transform: scale(1.2);
 }
 
@@ -202,7 +200,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog--width-lg {
-	max-width: 800px;
+	max-inline-size: 800px;
 }
 
 .tox .tox-dialog__header {
@@ -217,14 +215,14 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog__body-content {
-	padding: 24px 24px;
+	padding: 24px;
 }
 
 .tox .tox-dialog__footer {
 	padding: 0 24px 24px;
 	color: var(--theme--form--field--input--foreground);
 	background-color: var(--theme--background);
-	border-top: none;
+	border-block-start: none;
 }
 
 .tox .tox-textfield,
@@ -297,8 +295,8 @@ body.dark .tox .tox-toolbar__overflow {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 136px;
-	height: 44px;
+	min-inline-size: 136px;
+	block-size: 44px;
 	padding: 0 20px 1px;
 	color: var(--white);
 	font-weight: 500;
@@ -311,7 +309,6 @@ body.dark .tox .tox-toolbar__overflow {
 	border-color: var(--theme--primary);
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
-	-webkit-transition: var(--fast) var(--transition);
 	transition: var(--fast) var(--transition);
 	transition-property: border-color, background-color, color;
 }
@@ -334,8 +331,8 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-button--naked {
-	min-width: auto;
-	height: auto;
+	min-inline-size: auto;
+	block-size: auto;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: transparent;
 	border-color: transparent;
@@ -348,12 +345,12 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-form__group {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 
 .tox .tox-label,
 .tox .tox-toolbar-label {
-	margin-bottom: 4px;
+	margin-block-end: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 16px;
@@ -361,13 +358,13 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog__body-nav-item {
 	box-sizing: border-box;
-	width: 100%;
-	margin-bottom: 4px;
+	inline-size: 100%;
+	margin-block-end: 4px;
 	padding: 12px 16px;
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 14px;
-	border-bottom: none;
+	border-block-end: none;
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;
@@ -405,11 +402,11 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-pop.tox-pop--top::after {
-	border-bottom-color: var(--theme--form--field--input--background-subdued);
+	border-block-end-color: var(--theme--form--field--input--background-subdued);
 }
 
 .tox .tox-pop.tox-pop--top::before {
-	border-bottom-color: var(--theme--form--field--input--border-color);
+	border-block-end-color: var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-dialog-wrap__backdrop .tox-rgba-preview {

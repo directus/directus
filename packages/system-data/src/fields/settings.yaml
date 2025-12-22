@@ -32,128 +32,23 @@ fields:
       placeholder: en-US
     width: half
 
-  - field: theming_group
-    interface: group-raw
+  - field: project_owner
+    interface: system-owner
+    width: half
+
+  - field: project_usage
+    hidden: true
+
+  - field: org_name
+    hidden: true
+
+  - field: product_updates
+    hidden: true
     special:
-      - alias
-      - no-data
-      - group
+      - cast-boolean
 
-  - field: branding_divider
-    interface: presentation-divider
-    options:
-      icon: palette
-      title: $t:fields.directus_settings.branding
-    special:
-      - alias
-      - no-data
-    width: full
-    group: theming_group
-
-  - field: project_color
-    interface: select-color
-    note: $t:field_options.directus_settings.project_color_note
-    width: half
-    group: theming_group
-
-  - field: project_logo
-    interface: file
-    note: $t:field_options.directus_settings.project_logo_note
-    width: half
-    group: theming_group
-
-  - field: public_foreground
-    interface: file
-    width: half
-    group: theming_group
-
-  - field: public_background
-    interface: file
-    width: half
-    group: theming_group
-
-  - field: public_favicon
-    interface: file
-    note: $t:field_options.directus_settings.project_favicon_note
-    width: half
-    group: theming_group
-
-  - field: public_note
-    interface: input
-    options:
-      placeholder: $t:field_options.directus_settings.public_note_placeholder
-      iconRight: info
-    width: half
-    group: theming_group
-
-  - field: theming_divider
-    interface: presentation-divider
-    options:
-      icon: palette
-      title: $t:fields.directus_settings.theming
-    special:
-      - alias
-      - no-data
-    width: full
-    group: theming_group
-
-  - field: default_appearance
-    interface: select-dropdown
-    width: half
-    options:
-      choices:
-        - value: auto
-          text: $t:appearance_auto
-        - value: light
-          text: $t:appearance_light
-        - value: dark
-          text: $t:appearance_dark
-    group: theming_group
-
-  - field: default_theme_light
-    width: full
-    interface: system-theme
-    options:
-      appearance: light
-    group: theming_group
-
-  - field: theme_light_overrides
-    width: full
-    interface: system-theme-overrides
-    options:
-      appearance: light
-    group: theming_group
-    special:
-      - cast-json
-
-  - field: default_theme_dark
-    width: full
-    interface: system-theme
-    options:
-      appearance: dark
-    group: theming_group
-
-  - field: theme_dark_overrides
-    width: full
-    interface: system-theme-overrides
-    options:
-      appearance: dark
-    group: theming_group
-    special:
-      - cast-json
-
-  - field: custom_css
-    interface: input-code
-    options:
-      language: css
-      lineNumber: true
-      template: |
-        #app, #main-content, body {
-          --v-button-background-color: #6644FF !important;
-          --v-button-background-color-hover: #5E41EC !important;
-        }
-    width: full
-    group: theming_group
+  - field: project_status
+    hidden: true
 
   - field: modules_divider
     interface: presentation-divider
@@ -680,10 +575,315 @@ fields:
   - field: project_id
     hidden: true
 
-  - field: accepted_terms
-    interface: boolean
+  ### Appearance Settings ###
+  # The theming_group is rendered on the Appearance page in the app
+
+  - field: theming_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
+  - field: branding_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:fields.directus_settings.branding
+    special:
+      - alias
+      - no-data
+    width: full
+    group: theming_group
+
+  - field: project_color
+    interface: select-color
+    note: $t:field_options.directus_settings.project_color_note
+    width: half
+    group: theming_group
+
+  - field: project_logo
+    interface: file
+    note: $t:field_options.directus_settings.project_logo_note
+    width: half
+    group: theming_group
+
+  - field: public_foreground
+    interface: file
+    width: half
+    group: theming_group
+
+  - field: public_background
+    interface: file
+    width: half
+    group: theming_group
+
+  - field: public_favicon
+    interface: file
+    note: $t:field_options.directus_settings.project_favicon_note
+    width: half
+    group: theming_group
+
+  - field: public_note
+    interface: input
+    options:
+      placeholder: $t:field_options.directus_settings.public_note_placeholder
+      iconRight: info
+    width: half
+    group: theming_group
+
+  - field: theming_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:fields.directus_settings.theming
+    special:
+      - alias
+      - no-data
+    width: full
+    group: theming_group
+
+  - field: default_appearance
+    interface: select-dropdown
     width: half
     options:
-      label: $t:accepted
+      choices:
+        - value: auto
+          text: $t:appearance_auto
+        - value: light
+          text: $t:appearance_light
+        - value: dark
+          text: $t:appearance_dark
+    group: theming_group
+
+  - field: default_theme_light
+    width: full
+    interface: system-theme
+    options:
+      appearance: light
+    group: theming_group
+
+  - field: theme_light_overrides
+    width: full
+    interface: system-theme-overrides
+    options:
+      appearance: light
+    group: theming_group
+    special:
+      - cast-json
+
+  - field: default_theme_dark
+    width: full
+    interface: system-theme
+    options:
+      appearance: dark
+    group: theming_group
+
+  - field: theme_dark_overrides
+    width: full
+    interface: system-theme-overrides
+    options:
+      appearance: dark
+    group: theming_group
+    special:
+      - cast-json
+
+  - field: custom_css
+    interface: input-code
+    options:
+      language: css
+      lineNumber: true
+      template: |
+        #app, #main-content, body {
+          --v-button-background-color: #6644FF !important;
+          --v-button-background-color-hover: #5E41EC !important;
+        }
+    width: full
+    group: theming_group
+
+  ### AI Settings ###
+  # The AI group is rendered on a separate settings page in the app
+
+  - field: ai_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
+  - field: ai_divider
+    interface: presentation-divider
+    options:
+      icon: chat
+      title: $t:ai_chat
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.ai_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_openai_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_anthropic_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_system_prompt
+    interface: input-rich-text-md
+    group: ai_group
+    width: full
+    note: $t:fields.directus_settings.ai_system_prompt_note
+    options:
+      label: $t:fields.directus_settings.ai_system_prompt
+
+  - field: mcp_divider
+    interface: presentation-divider
+    options:
+      icon: automation
+      title: $t:model_context_protocol
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: mcp_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.mcp_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: mcp_enabled
+    interface: boolean
+    group: ai_group
     special:
       - cast-boolean
+    note: $t:fields.directus_settings.mcp_enabled_note
+    width: half
+    options:
+      label: $t:enabled
+
+  - field: mcp_allow_deletes
+    interface: boolean
+    group: ai_group
+    special:
+      - cast-boolean
+    note: $t:fields.directus_settings.mcp_allow_deletes_note
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_allow_deletes
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
+
+  - field: mcp_prompts_collection
+    interface: system-collection
+    group: ai_group
+    width: half
+    note: $t:fields.directus_settings.mcp_prompts_collection_note
+    options:
+      label: $t:fields.directus_settings.mcp_prompts_collection
+      includeSingleton: false
+      allowNone: true
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
+
+  - field: mcp_prompts_collection_validation
+    interface: system-mcp-prompts-collection-validation
+    group: ai_group
+    width: half
+    special:
+      - alias
+      - no-data
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        hidden: true
+
+  - field: mcp_system_prompt_divider
+    interface: presentation-divider
+    options:
+      inlineTitle: true
+      color: 'var(--theme--foreground-subdued)'
+      title: $t:fields.directus_settings.mcp_system_prompt_divider
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: mcp_system_prompt_enabled
+    interface: boolean
+    group: ai_group
+    special:
+      - cast-boolean
+    width: half-left
+    note: $t:fields.directus_settings.mcp_system_prompt_enabled_note
+    options:
+      label: $t:enabled
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
+
+  - field: mcp_system_prompt
+    interface: input-rich-text-md
+    group: ai_group
+    width: full
+    note: $t:fields.directus_settings.mcp_system_prompt_note
+    options:
+      label: $t:fields.directus_settings.mcp_system_prompt
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
+      - name: mcp_system_prompt_enabled
+        rule:
+          mcp_system_prompt_enabled:
+            _neq: true
+        readonly: true

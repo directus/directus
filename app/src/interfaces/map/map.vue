@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
@@ -82,7 +88,7 @@ const { basemap } = toRefs(appStore);
 const style = computed(() => {
 	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
 	if (!source) return;
-	return basemap.value, getStyleFromBasemapSource(source);
+	return (basemap.value, getStyleFromBasemapSource(source));
 });
 
 let parse: GeoJSONParser;
@@ -420,7 +426,7 @@ function handleKeyDown(event: any) {
 				projection!.y
 			}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
 		></div>
-		<transition name="fade">
+		<Transition name="fade">
 			<div
 				v-if="tooltipVisible"
 				class="tooltip top"
@@ -428,41 +434,41 @@ function handleKeyDown(event: any) {
 			>
 				{{ tooltipMessage }}
 			</div>
-		</transition>
+		</Transition>
 		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
-			<v-icon name="map" />
-			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+			<VIcon name="map" />
+			<VSelect v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 		</div>
-		<transition name="fade">
-			<v-info
+		<Transition name="fade">
+			<VInfo
 				v-if="geometryOptionsError"
 				icon="error"
 				center
 				type="danger"
-				:title="t('interfaces.map.invalid_options')"
+				:title="$t('interfaces.map.invalid_options')"
 			>
-				<v-notice type="danger" :icon="false">
+				<VNotice type="danger" :icon="false">
 					{{ geometryOptionsError }}
-				</v-notice>
-			</v-info>
-			<v-info
+				</VNotice>
+			</VInfo>
+			<VInfo
 				v-else-if="geometryParsingError"
 				icon="error"
 				center
 				type="warning"
-				:title="t('layouts.map.invalid_geometry')"
+				:title="$t('layouts.map.invalid_geometry')"
 			>
-				<v-notice type="warning" :icon="false">
+				<VNotice type="warning" :icon="false">
 					{{ geometryParsingError }}
-				</v-notice>
+				</VNotice>
 				<template #append>
-					<v-card-actions>
-						<v-button small secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
-						<v-button small kind="danger" @click="resetValue(true)">{{ t('reset') }}</v-button>
-					</v-card-actions>
+					<VCardActions>
+						<VButton small secondary @click="resetValue(false)">{{ $t('continue') }}</VButton>
+						<VButton small kind="danger" @click="resetValue(true)">{{ $t('reset') }}</VButton>
+					</VCardActions>
 				</template>
-			</v-info>
-		</transition>
+			</VInfo>
+		</Transition>
 	</div>
 </template>
 
@@ -485,8 +491,8 @@ function handleKeyDown(event: any) {
 
 	.map {
 		position: relative;
-		width: 100%;
-		height: 500px;
+		inline-size: 100%;
+		block-size: 500px;
 
 		&.error,
 		&.loading {
@@ -494,8 +500,8 @@ function handleKeyDown(event: any) {
 		}
 
 		.maplibregl-map {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 		}
 
 		&:not(.has-selection) :deep(.mapbox-gl-draw_trash) {
@@ -511,12 +517,12 @@ function handleKeyDown(event: any) {
 
 	.basemap-select {
 		position: absolute;
-		right: 10px;
-		bottom: 10px;
+		inset-inline-end: 10px;
+		inset-block-end: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 36px;
+		block-size: 36px;
 		padding: 10px;
 		color: var(--theme--form--field--input--foreground-subdued);
 		background-color: var(--theme--background);
@@ -524,8 +530,8 @@ function handleKeyDown(event: any) {
 		border-radius: var(--theme--border-radius);
 
 		span {
-			width: auto;
-			margin-right: 4px;
+			inline-size: auto;
+			margin-inline-end: 4px;
 		}
 
 		.v-select {
@@ -535,15 +541,15 @@ function handleKeyDown(event: any) {
 
 	.mapboxgl-search-location-dot {
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 	}
 }
 
 .center {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
 	transform: translate(-50%, -50%);
 }
 

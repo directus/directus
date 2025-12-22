@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import api from '@/api';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useInsightsStore } from '@/stores/insights';
 import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import { getEndpoint } from '@directus/utils';
+import { computed, ref } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -56,20 +60,19 @@ async function saveEdits(item: Record<string, any>) {
 <template>
 	<div class="list" :class="{ 'has-header': showHeader }">
 		<div>
-			<v-list>
-				<v-list-item
+			<VList>
+				<VListItem
 					v-for="row in data"
 					:key="row[primaryKeyField]"
-					class="selectable"
 					:clickable="linkToItem === true"
 					@click="startEditing(row)"
 				>
-					<render-template :item="row" :collection="collection" :template="displayTemplate" />
+					<RenderTemplate :item="row" :collection="collection" :template="displayTemplate" />
 					<div class="spacer" />
-				</v-list-item>
-			</v-list>
+				</VListItem>
+			</VList>
 		</div>
-		<drawer-item
+		<DrawerItem
 			:active="!!currentlyEditing"
 			:collection="collection"
 			:primary-key="currentlyEditing ?? '+'"
@@ -88,17 +91,17 @@ async function saveEdits(item: Record<string, any>) {
 	--v-list-item-padding: 6px;
 	--v-list-item-margin: 0;
 
-	height: 100%;
+	block-size: 100%;
 	padding: 0 12px;
 	overflow-y: auto;
 }
 
 .v-list-item {
-	height: 48px;
-	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	block-size: 48px;
+	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .v-list-item:last-child {
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 </style>

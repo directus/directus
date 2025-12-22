@@ -195,7 +195,7 @@ export const usePresetsStore = defineStore({
 								'filter[role][_eq]': role.id,
 								'filter[user][_null]': true,
 							},
-					  })
+						})
 					: Promise.resolve([]),
 				// All global saved bookmarks and presets
 				fetchAll<any>(`/presets`, {

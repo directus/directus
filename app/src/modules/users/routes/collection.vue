@@ -1,14 +1,25 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
+import { logout } from '@/auth';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInfo from '@/components/v-info.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
@@ -16,10 +27,6 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
-
-type Item = {
-	[field: string]: any;
-};
 
 const props = defineProps<{ role?: string }>();
 
@@ -29,14 +36,13 @@ const { t } = useI18n();
 const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
 const serverStore = useServerStore();
+const userStore = useUserStore();
 
 const layoutRef = ref();
-const selection = ref<Item[]>([]);
+const selection = ref<string[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
-
-const currentLayout = useExtension('layout', layout);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
@@ -108,6 +114,19 @@ function useBatch() {
 				data: batchPrimaryKeys,
 			});
 
+			// Check if the current user was among the deleted users
+			const currentUserId = userStore.currentUser && 'id' in userStore.currentUser ? userStore.currentUser.id : null;
+
+			if (
+				currentUserId &&
+				batchPrimaryKeys.some((key) => {
+					return key === currentUserId;
+				})
+			) {
+				await logout();
+				return;
+			}
+
 			await refresh();
 
 			selection.value = [];
@@ -170,19 +189,9 @@ function clearFilters() {
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
-		<private-view
-			:title="title"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-		>
+		<PrivateView :title="title" icon="people_alt">
 			<template v-if="breadcrumb" #headline>
-				<v-breadcrumb :items="breadcrumb" />
-			</template>
-
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="people_alt" />
-				</v-button>
+				<VBreadcrumb :items="breadcrumb" />
 			</template>
 
 			<template #actions:prepend>
@@ -190,112 +199,100 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_users" />
+				<SearchInput v-model="search" v-model:filter="filter" collection="directus_users" small />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
+				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button
-							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+						<PrivateViewHeaderBarActionButton
+							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							rounded
-							icon
 							class="action-delete"
 							secondary
+							icon="delete"
 							@click="on"
-						>
-							<v-icon name="delete" />
-						</v-button>
+						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
+								{{ $t('cancel') }}
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="batchDelete">
+								{{ $t('delete_label') }}
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
-					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
-					rounded
-					icon
+					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 					secondary
 					:disabled="batchEditAllowed === false"
+					icon="edit"
 					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="canInviteUsers"
-					v-tooltip.bottom="t('invite_users')"
-					rounded
-					icon
+					v-tooltip.bottom="$t('invite_users')"
 					secondary
+					icon="person_add"
 					@click="userInviteModalActive = true"
-				>
-					<v-icon name="person_add" />
-				</v-button>
+				/>
 
-				<v-button
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
-					rounded
-					icon
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
 					:to="addNewLink"
 					:disabled="createAllowed === false"
-				>
-					<v-icon name="add" />
-				</v-button>
+					icon="add"
+				/>
 			</template>
 
 			<template #navigation>
-				<users-navigation :current-role="role" />
+				<UsersNavigation :current-role="role" />
 			</template>
 
-			<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
+			<UsersInvite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info v-if="!filter && !search" :title="t('user_count', 0)" icon="people_alt" center>
-						{{ t('no_users_copy') }}
+					<VInfo v-if="!filter && !search" :title="$t('user_count', 0)" icon="people_alt" center>
+						{{ $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers" #append>
-							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
-								{{ t('create_user') }}
-							</v-button>
+							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+								{{ $t('create_user') }}
+							</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 
-					<v-info v-else :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
+					<VInfo v-else :title="$t('no_results')" icon="search" center>
+						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+							<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('user_count', 0)" icon="people_alt" center>
-						{{ t('no_users_copy') }}
+					<VInfo :title="$t('user_count', 0)" icon="people_alt" center>
+						{{ $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers" #append>
-							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
-								{{ t('create_user') }}
-							</v-button>
+							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+								{{ $t('create_user') }}
+							</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 			</component>
 
-			<drawer-batch
+			<DrawerBatch
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				collection="directus_users"
@@ -303,14 +300,11 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div v-md="t('page_help_users_collection')" class="page-description" />
-				</sidebar-detail>
-				<layout-sidebar-detail v-model="layout">
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
-				<export-sidebar-detail
+				<ExportSidebarDetail
 					collection="directus_users"
 					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, roleFilter)"
@@ -318,7 +312,7 @@ function clearFilters() {
 					@refresh="refresh"
 				/>
 			</template>
-		</private-view>
+		</PrivateView>
 	</component>
 </template>
 

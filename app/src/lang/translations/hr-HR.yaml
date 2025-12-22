@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O aplikaciji
+first_name: Ime
+last_name: Prezime
 identifier: Identifikator
 avatar: Avatar
 application: Aplikacija
@@ -164,19 +166,9 @@ rename_version: Preimenuj Verziju
 compare_version: Usporedi Verziju
 save_version: Spasi Verziju
 promote_version: Promoviraj Verziju
-promote_version_disabled: Bez promjena
-promote_version_drawer_title: Promoviraj {version} u Glavnu
-promote_version_changes: Promjene
-promote_version_preview: Pretpregled
-outdated_notice: >-
-  Glavna stavka je ažurirana otkako je ova verzija stvorena. Molimo pregledajte sve vrijednosti polja ispod i potvrdite koja verzija bi trebala biti korištena prilikom promicanja ove verzije u glavnu stavku.
-promote_notice: >-
-  Molimo pregledajte sve vrijednosti polja ispod i potvrdite koja verzija bi trebala biti korištena prilikom promicanja ove verzije u glavnu stavku.
 delete_version: Obriši Verziju
 delete_version_copy: >-
   Jeste li sigurni da želite izbrisati verziju "{version}"? Ova se radnja ne može poništiti.
-delete_on_promote_copy: >-
-  Želite li izbrisati ili zadržati verziju "{version}" nakon promicanja?
 reset_bookmark: Poništi oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
@@ -447,11 +439,11 @@ confirm_revert_body: Ovo će vratiti stavku u odabrano stanje.
 display: Prikaz
 settings_update_success: Postavke su ažurirane
 title: Naslov
+subtitle: Podnaslov
 revision_delta_created: Kreirano
 revision_delta_created_externally: Kreirano izvana
 revision_delta_updated: 'Ažurirano 1 polje | Ažurirano {count} polja'
 revision_delta_deleted: Obrisano
-revision_delta_version_saved: 'Spremi verziju (Ažurirano 1 polje) | Spremi verziju (Ažurirano {count} polja)'
 revision_delta_reverted: Vraćeno
 revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrijednost skrivena iz sigurnosnih razloga.
 revision_delta_other: Revizija
@@ -758,7 +750,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
   VALUE_TOO_LONG: Vrijednost je preduga
 security: Sigurnost
-value_hashed: Sigurno kriptirana vrijednost
 bookmark_name: Naziv oznake...
 create_bookmark: Stvori oznaku
 edit_bookmark: Uredi oznaku
@@ -934,10 +925,8 @@ label: Oznaka
 flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
-run_flow_confirm: Jeste li sigurni da želite izvršiti ovaj tok?
 run_flow_on_current_collection: Pokreni Tok na Trenutnoj Zbirci
 run_flow_on_current: Pokreni Tok na Trenutnoj Stavci
-run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 run_flow_on_selected: Prvo Odaberite Jednu ili Više Stavki | Pokreni Tok na 1 Odabranoj Stavci | Pokreni Tok na {n} Odabranih Stavki
 run_flow: Pokreni Tok
 field_name_placeholder: Unesite naziv polja...
@@ -1148,45 +1137,6 @@ discard_changes_copy: Jeste li sigurni da želite odbaciti sve napravljene promj
 show_x_axis: Prikaži X os
 show_y_axis: Prikaži Y os
 keep_editing: Nastavite uređivati
-page_help_collections_overview: '**Pregled zbirki** — Popis svih zbirki kojima imate pristup.'
-page_help_collections_collection: >-
-  **Pregledaj stavke** — Popisuje sve stavke iz {collection} kojima imate pristup. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i spremite oznake ovih različitih konfiguracija za brzi pristup.
-page_help_collections_item: >-
-  **Detalji stavke** — Obrazac za pregled i upravljanje ovom stavkom. Ova bočna traka također sadrži potpunu povijest revizija i ugrađenih komentara.
-page_help_activity_collection: >-
-  **Aktivnost pregledavanja** — opsežan popis svih aktivnosti sustava i sadržaja vašeg korisnika.
-page_help_docs_global: >-
-  **Pregled dokumentacije** — Dokumenti posebno prilagođeni verziji i shemi ovog projekta.
-page_help_files_collection: >-
-  **Biblioteka datoteka** — Navodi sve datotečne materijale prenesene u ovaj projekt. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i spremite oznake ovih različitih konfiguracija za brzi pristup.
-page_help_files_item: >-
-  **Detalji datoteke** — Obrazac za upravljanje metapodacima datoteke, uređivanje izvornog materijala i ažuriranje postavki pristupa.
-page_help_settings_project: "**Postavke projekta** — Globalne opcije konfiguracije vašeg projekta."
-page_help_settings_appearance: "**Prikaz** — Izgled vašeg projekta i tematske opcije."
-page_help_settings_extensions: '**Proširenja** — Instalirana proširenja ili ekstenzije u vašem projektu.'
-page_help_settings_datamodel_collections: >-
-  **Model podataka: zbirke** — Navodi sve dostupne zbirke. To uključuje vidljive, skrivene i sustavne zbirke, kao i neupravljane tablice baze podataka koje se mogu dodati.
-page_help_settings_datamodel_fields: >-
-  **Model podataka: zbirka** — Obrazac za upravljanje ovom zbirkom i njezinim poljima.
-page_help_settings_roles_item: "**Pojedinosti o ulozi** — Upravljajte dopuštenjima uloge i drugim postavkama."
-page_help_settings_presets_collection: >-
-  **Pregledaj unaprijed postavljene postavke** — Navodi sve unaprijed postavljene postavke u projektu, uključujući: korisničke, uloge i globalne oznake, kao i zadane prikaze.
-page_help_settings_presets_item: >-
-  **Unaprijed postavljene pojedinosti** — Obrazac za upravljanje oznakama i zadanim postavkama zbirke.
-page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
-page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
-page_help_settings_flows_collection: '**Pregledaj tokove** — Popisuje sve tokove unutar projekta.'
-page_help_settings_flows_item: '**Detalji toka** — Radni prostor za upravljanje jednom ili više operacija.'
-page_help_settings_translations_collection: '**Pregledaj Prilagođene Prijevode** — Prikazuje popis svih prilagođenih prijevoda u projektu.'
-page_help_settings_translations_item: '**Detalji Prilagođenih Prijevoda** — Obrazac za pregledavanje i upravljanje ovom stavkom.'
-page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
-page_help_users_item: >-
-  **Pojedinosti o korisniku** — Upravljajte podacima o svom računu ili pregledajte pojedinosti drugih korisnika.
-page_help_insights_overview: '**Uvidi** — Popis nadzornih ploča kojima imate pristup.'
-page_help_insights_dashboard: '**Nadzorna ploča** — Radni prostor za upravljanje jednom ili više ploča'
-page_help_marketplace_account: '**Račun** — Izdavač ili osoba koja održava objavljeno proširenje.'
-page_help_marketplace_registry: '**Registar** — Dostupna proširenja u Directusovoj Tržnici.'
-page_help_marketplace_extension: '**Proširenje** — Proširenje u Directusovoj Tržnici.'
 activity_feed: Sadržaj aktivnosti
 add_new: Dodaj novi
 create_new: Kreiraj novi
@@ -1220,7 +1170,6 @@ directus_collection:
   directus_dashboards: Nadzorne ploče unutar modula s uvidima
   directus_fields: Dodatna konfiguracija polja i metapodaci
   directus_files: Metapodaci za sva upravljana datotečna sredstva
-  directus_flows: Automatizacija tokova
   directus_folders: Pruža virtualne direktorije za datoteke
   directus_migrations: Koju verziju baze podataka koristite
   directus_notifications: Obavijesti poslane korisnicima
@@ -1540,6 +1489,24 @@ shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
+ai:
+  input: Unos
+  unknown: Nepoznato
+  settings: Postavke
+  tool_approval:
+    disabled: Onemogućeno
+ai_tools:
+  items: Stavke
+  files: Datoteke
+  folders: Mape
+  flows: Tokovi
+  trigger-flow: Pokreni tok
+  operations: Radnje
+  schema: Shema
+  collections: Zbirke
+  fields: Polja
+mcp_prompts_collection_schema:
+  messages_role_user: Korisnik
 expired: Isteklo
 upcoming: Nadolazeće
 share: Podijeli
@@ -1659,7 +1626,6 @@ translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
 report_error: Prijavi grešku
-start: Započni
 table: Tablica
 list: Lista
 search_filter: Pretraživanje i filtri
@@ -1702,9 +1668,7 @@ interfaces:
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
-    presentation-links: Veze gumba
-    links: Poveznice
-    description: Konfigurabilni gumbi veza za pokretanje dinamičkih URL-ova
+    presentation-links: Gumbi
     style: Stil
     primary: Primarno
     link: Poveznice
@@ -2020,6 +1984,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Uređivač sirovog sadržaja
     description: Omogućuje unos neobrađenih ili "mustache" predložaka
+  header:
+    header: Zaglavlje
+    links: Poveznice
 displays:
   translations:
     translations: Prijevodi
@@ -2234,6 +2201,7 @@ show_labels: Prikaži Oznake
 show_legend: Prikaži Legendu
 right: Desno
 left: Lijevo
+start: Započni
 donut: Krafna
 panels:
   metric:
@@ -2322,11 +2290,9 @@ triggers:
 a_flow_uuid: Odaberite Tok za pokretanje...
 any_string_or_json: Bilo koji string ili JSON...
 item_payload_placeholder: Ovo je JSON koji se koristi za ažuriranje vrijednosti polja stavke...
-operation_variables_note: Podacima o toku možete pristupiti pomoću varijabli kao što su **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, ili referencirajte prethodne operacije koristeći **{'{ '}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Uvjet
-    description: Usmjerite tok na temelju If / Else logike
   exec:
     name: Pokreni skriptu
     description: Izvršite proizvoljni kod za izmjenu payloada
@@ -2410,7 +2376,6 @@ operations:
     description: Promjenite JSON payload toka
   trigger:
     name: Pokreni tok
-    description: Proslijedite ove podatke u drugi tok
     flows: Tokovi
     flow: Tok
     data: Podaci

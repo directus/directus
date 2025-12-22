@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export type Choice = {
 	text: string;
@@ -11,8 +14,9 @@ export type Choice = {
 
 const props = withDefaults(
 	defineProps<{
-		value: string[] | null;
+		value?: string[] | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Choice[];
 		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
 	}>(),
@@ -25,7 +29,6 @@ const props = withDefaults(
 
 defineEmits(['input']);
 
-const { t } = useI18n();
 const search = ref('');
 
 const { choices, value } = toRefs(props);
@@ -43,26 +46,27 @@ const searchDebounced = ref('');
 </script>
 
 <template>
-	<v-notice v-if="items.length === 0" type="info">
-		{{ t('no_options_available') }}
-	</v-notice>
+	<VNotice v-if="items.length === 0" type="info">
+		{{ $t('no_options_available') }}
+	</VNotice>
 	<div v-else class="select-multiple-checkbox-tree">
 		<div v-if="items.length > 10" class="search">
-			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
+			<VInput v-model="search" class="input" type="text" :placeholder="$t('search')">
 				<template #prepend>
-					<v-icon name="search" />
+					<VIcon name="search" />
 				</template>
 
 				<template v-if="search" #append>
-					<v-icon name="clear" clickable @click="search = ''" />
+					<VIcon name="clear" clickable @click="search = ''" />
 				</template>
-			</v-input>
+			</VInput>
 		</div>
 
-		<v-checkbox-tree
+		<VCheckboxTree
 			:model-value="value"
 			:search="searchDebounced"
-			:disabled="disabled"
+			:disabled
+			:non-editable
 			:choices="items"
 			:value-combining="valueCombining"
 			:show-selection-only="showSelectionOnly"
@@ -71,7 +75,7 @@ const searchDebounced = ref('');
 
 		<div class="footer">
 			<button :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
-				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
+				{{ $t('interfaces.select-multiple-checkbox-tree.show_all') }}
 			</button>
 			/
 			<button
@@ -79,7 +83,7 @@ const searchDebounced = ref('');
 				:disabled="value == null || value.length === 0"
 				@click="showSelectionOnly = true"
 			>
-				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
+				{{ $t('interfaces.select-multiple-checkbox-tree.show_selected') }}
 			</button>
 		</div>
 	</div>
@@ -87,7 +91,7 @@ const searchDebounced = ref('');
 
 <style scoped>
 .select-multiple-checkbox-tree {
-	max-height: var(--input-height-max);
+	max-block-size: var(--input-height-max);
 	overflow: auto;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -96,10 +100,10 @@ const searchDebounced = ref('');
 
 .search {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
 	padding: 10px;
-	padding-bottom: 0;
+	padding-block-end: 0;
 }
 
 .search .v-input {
@@ -108,15 +112,15 @@ const searchDebounced = ref('');
 
 .footer {
 	position: sticky;
-	right: 0;
-	bottom: 0;
+	inset-inline-end: 0;
+	inset-block-end: 0;
 	z-index: 2;
-	float: right;
-	width: max-content;
+	float: inline-end;
+	inline-size: max-content;
 	padding: 4px 8px;
-	text-align: right;
+	text-align: end;
 	background-color: var(--theme--background);
-	border-top-left-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 }
 
 .footer > button {

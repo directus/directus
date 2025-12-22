@@ -78,5 +78,26 @@ test('Throws error if post was not successful', async () => {
 
 	const mockReport = {} as unknown as TelemetryReport;
 
-	expect(sendReport(mockReport)).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: [503] test-error]`);
+	await expect(sendReport(mockReport)).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: [503] test-error]`);
+});
+
+test('Sends to /v1/owner on owner payload', async () => {
+	const mockIngress = 'https://example.com';
+
+	vi.mocked(useEnv).mockReturnValue({
+		COMPLIANCE_URL: mockIngress,
+		TELEMETRY_AUTHORIZATION: 'test-auth',
+	});
+
+	await sendReport({
+		project_owner: '',
+		version: '',
+		org_name: '',
+		product_updates: false,
+		project_id: '',
+		project_usage: 'personal',
+	});
+
+	expect(vi.mocked(global.fetch)).toHaveBeenCalled();
+	expect(vi.mocked(global.fetch).mock.calls[0]![0].toString()).toEqual('https://example.com/v1/owner');
 });

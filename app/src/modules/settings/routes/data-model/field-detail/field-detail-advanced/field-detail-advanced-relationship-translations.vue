@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useFieldsStore } from '@/stores/fields';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore } from '@/stores/fields';
-
-const { t } = useI18n();
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
 const fieldDetailStore = useFieldDetailStore();
 const fieldsStore = useFieldsStore();
@@ -37,65 +39,62 @@ const relatedPrimaryKey = computed(
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ t('this_collection') }}</div>
-				<v-input disabled :model-value="collection" />
+				<div class="type-label">{{ $t('this_collection') }}</div>
+				<VInput disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('translations_collection') }}</div>
-				<related-collection-select
-					v-model="junctionCollection"
-					:disabled="autoGenerateJunctionRelation || isExisting"
-				/>
+				<div class="type-label">{{ $t('translations_collection') }}</div>
+				<RelatedCollectionSelect v-model="junctionCollection" :disabled="autoGenerateJunctionRelation || isExisting" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ t('languages_collection') }}</div>
-				<related-collection-select v-model="relatedCollection" :disabled="type === 'files' || isExisting" />
+				<div class="type-label">{{ $t('languages_collection') }}</div>
+				<RelatedCollectionSelect v-model="relatedCollection" :disabled="type === 'files' || isExisting" />
 			</div>
-			<v-input disabled :model-value="currentPrimaryKey" />
-			<related-field-select
+			<VInput disabled :model-value="currentPrimaryKey" />
+			<RelatedFieldSelect
 				v-model="junctionFieldCurrent"
 				:collection="junctionCollection"
 				:disabled="autoGenerateJunctionRelation || isExisting"
 			/>
 			<div class="spacer" />
 			<div class="spacer" />
-			<related-field-select
+			<RelatedFieldSelect
 				v-model="junctionFieldRelated"
 				:collection="junctionCollection"
 				:disabled="autoGenerateJunctionRelation || isExisting"
 			/>
-			<v-input v-model="relatedPrimaryKey" disabled :placeholder="t('primary_key') + '...'" />
+			<VInput v-model="relatedPrimaryKey" disabled :placeholder="$t('primary_key') + '...'" />
 			<div class="spacer" />
-			<v-checkbox v-model="autoGenerateJunctionRelation" :disabled="isExisting" block :label="t('auto_fill')" />
-			<v-icon class="arrow" name="arrow_forward" />
-			<v-icon class="arrow" name="arrow_back" />
+			<VCheckbox v-model="autoGenerateJunctionRelation" :disabled="isExisting" block :label="$t('auto_fill')" />
+			<VIcon class="arrow" name="arrow_forward" />
+			<VIcon class="arrow" name="arrow_back" />
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ t('relational_triggers') }}</v-divider>
+			<VDivider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</VDivider>
 
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_o2m', {
+						$t('referential_action_field_label_o2m', {
 							collection: junctionCollection || '',
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="deselectAction"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', {
+							text: $t('referential_action_set_null', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
 							value: 'nullify',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
@@ -108,33 +107,33 @@ const relatedPrimaryKey = computed(
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_m2o', {
+						$t('referential_action_field_label_m2o', {
 							collection: collection || 'related',
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeleteCurrent"
 					:disabled="junctionCollection === collection"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: junctionFieldCurrent }),
+							text: $t('referential_action_set_null', { field: junctionFieldCurrent }),
 							value: 'SET NULL',
 						},
 						{
-							text: t('referential_action_set_default', { field: junctionFieldCurrent }),
+							text: $t('referential_action_set_default', { field: junctionFieldCurrent }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: t('referential_action_no_action'),
+							text: $t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"
@@ -144,33 +143,33 @@ const relatedPrimaryKey = computed(
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_m2o', {
+						$t('referential_action_field_label_m2o', {
 							collection: relatedCollection || 'related',
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeleteRelated"
 					:disabled="junctionCollection === relatedCollection"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: junctionFieldRelated }),
+							text: $t('referential_action_set_null', { field: junctionFieldRelated }),
 							value: 'SET NULL',
 						},
 						{
-							text: t('referential_action_set_default', { field: junctionFieldRelated }),
+							text: $t('referential_action_set_default', { field: junctionFieldRelated }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldRelated,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: t('referential_action_no_action'),
+							text: $t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"
@@ -191,7 +190,6 @@ const relatedPrimaryKey = computed(
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 12px 28px;
-	margin-top: 48px;
 
 	.v-input.matches {
 		--v-input-color: var(--theme--primary);
@@ -204,20 +202,24 @@ const relatedPrimaryKey = computed(
 		transform: translateX(-50%);
 		pointer-events: none;
 
+		html[dir='rtl'] & {
+			transform: translateX(50%) scaleX(-1);
+		}
+
 		&:first-of-type {
-			bottom: 161px;
-			left: 32.5%;
+			inset-block-end: 161px;
+			inset-inline-start: 32.5%;
 		}
 
 		&:last-of-type {
-			bottom: 89px;
-			left: 67.4%;
+			inset-block-end: 89px;
+			inset-inline-start: 67.4%;
 		}
 	}
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 
 	@include mixins.no-wrap;
 }
@@ -231,7 +233,7 @@ const relatedPrimaryKey = computed(
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .relational-triggers {
@@ -241,8 +243,7 @@ const relatedPrimaryKey = computed(
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-top: 48px;
-		margin-bottom: 0;
+		margin-block: 48px 0;
 	}
 }
 </style>

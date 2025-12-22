@@ -11,8 +11,8 @@
 	}
 
 	button {
-		width: 36px;
-		height: 36px;
+		inline-size: 36px;
+		block-size: 36px;
 		background: var(--theme--form--field--input--background) !important;
 		border: none !important;
 		transition: background-color var(--fast) var(--transition);
@@ -22,7 +22,7 @@
 		}
 
 		& + button {
-			margin-top: 1px;
+			margin-block-start: 1px;
 		}
 
 		&:hover {
@@ -54,18 +54,18 @@
 .mapboxgl-search-location-dot,
 .mapboxgl-user-location-dot,
 .maplibregl-user-location-dot {
-	width: 12px;
-	height: 12px;
+	inline-size: 12px;
+	block-size: 12px;
 	pointer-events: none;
 
 	&::before {
-		width: 12px;
-		height: 12px;
+		inline-size: 12px;
+		block-size: 12px;
 	}
 
 	&::after {
-		width: 16px;
-		height: 16px;
+		inline-size: 16px;
+		block-size: 16px;
 	}
 }
 
@@ -77,8 +77,8 @@
 }
 
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
-	min-width: 24px;
-	min-height: 24px;
+	min-inline-size: 24px;
+	min-block-size: 24px;
 	color: var(--theme--foreground);
 	background: var(--theme--popover--menu--background);
 	border-radius: var(--theme--popover--menu--border-radius);
@@ -114,7 +114,7 @@
 	color: var(--theme--foreground);
 	background: var(--theme--form--field--input--background);
 	border-radius: 0 6px 0 0;
-	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);
 
 	a {
 		color: var(--theme--foreground);
@@ -180,20 +180,18 @@
 
 .map-selection-box {
 	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	inset-block: 0;
+	inset-inline: 0;
 	z-index: 1000;
-	width: 0;
-	height: 0;
+	inline-size: 0;
+	block-size: 0;
 	background: rgb(56 135 190 / 0.1);
 	border: 1px solid rgb(56 135 190);
 	pointer-events: none;
 }
 
 .maplibregl-ctrl-top-right {
-	max-width: 80%;
+	max-inline-size: 80%;
 }
 
 .mapbox-gl-draw_ctrl-draw-btn {

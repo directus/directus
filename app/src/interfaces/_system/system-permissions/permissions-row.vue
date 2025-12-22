@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { Collection } from '@/types/collections';
 import ValueNull from '@/views/private/components/value-null.vue';
 import { Permission, PermissionsAction } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
 import PermissionsToggle from './permissions-toggle.vue';
 
 defineProps<{
@@ -21,8 +21,6 @@ const emit = defineEmits<{
 	setFullAccessAll: [];
 	setNoAccessAll: [];
 }>();
-
-const { t } = useI18n();
 </script>
 
 <template>
@@ -31,15 +29,15 @@ const { t } = useI18n();
 			<div>
 				<div v-tooltip.left="collection.name" class="name">{{ collection.collection }}</div>
 				<div class="shortcuts">
-					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ t('all') }}</button>
+					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ $t('all') }}</button>
 					<span class="divider">/</span>
-					<button type="button" class="none" @click="emit('setNoAccessAll')">{{ t('none') }}</button>
+					<button type="button" class="none" @click="emit('setNoAccessAll')">{{ $t('none') }}</button>
 				</div>
 			</div>
 		</td>
 
 		<td v-for="action in editablePermissionActions" :key="action" class="action">
-			<permissions-toggle
+			<PermissionsToggle
 				v-if="!disabledActions?.includes(action)"
 				:action="action"
 				:collection="collection"
@@ -49,10 +47,10 @@ const { t } = useI18n();
 				@set-full-access="emit('setFullAccess', action)"
 				@set-no-access="emit('setNoAccess', action)"
 			/>
-			<value-null v-else />
+			<ValueNull v-else />
 		</td>
 		<td class="remove">
-			<v-icon v-tooltip="t('remove')" name="close" clickable @click="emit('removeRow')" />
+			<VIcon v-tooltip="$t('remove')" name="close" clickable @click="emit('removeRow')" />
 		</td>
 	</tr>
 </template>
@@ -61,7 +59,7 @@ const { t } = useI18n();
 .permissions-row {
 	.collection {
 		white-space: nowrap;
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	.collection > div {
@@ -71,7 +69,7 @@ const { t } = useI18n();
 
 	.name {
 		flex: 1;
-		width: 1px;
+		inline-size: 1px;
 		padding: 0 12px;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow: hidden;
@@ -80,14 +78,14 @@ const { t } = useI18n();
 
 	.shortcuts {
 		position: absolute;
-		right: 0;
+		inset-inline-end: 0;
 		background: var(--theme--background);
 		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);
 		font-size: 12px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
-		padding-right: 12px;
+		padding-inline-end: 12px;
 		box-shadow:
 			-12px 0 10px 2px var(--theme--background),
 			-12px 0 12px 2px var(--theme--background);
@@ -117,13 +115,13 @@ const { t } = useI18n();
 	}
 
 	.action {
-		height: 48px;
-		padding-left: 12px;
+		block-size: 48px;
+		padding-inline-start: 12px;
 		text-align: center;
 	}
 
 	.action + .action {
-		padding-left: 4px;
+		padding-inline-start: 4px;
 	}
 
 	.null {
@@ -131,11 +129,11 @@ const { t } = useI18n();
 	}
 
 	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
-		margin-left: 20px;
+		margin-inline-start: 20px;
 	}
 
 	& + .permissions-row td {
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.remove {

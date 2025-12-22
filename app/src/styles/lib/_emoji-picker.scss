@@ -16,12 +16,12 @@
 	}
 
 	.emoji-picker__search-container {
-		height: 40px;
+		block-size: 40px;
 		margin: 8px;
 
 		.emoji-picker__search-icon {
 			color: var(--theme--foreground-subdued);
-			top: calc(50% - 2px);
+			inset-block-start: calc(50% - 2px);
 			transform: translate(0, -50%);
 		}
 
@@ -30,7 +30,7 @@
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			background-color: var(--theme--background);
 
-			height: 100%;
+			block-size: 100%;
 
 			&:hover {
 				border-color: var(--theme--form--field--input--border-color-hover);
@@ -47,8 +47,8 @@
 	}
 
 	.emoji-picker__content {
-		padding: 8px 0 0 0;
-		height: unset;
+		padding: 8px 0 0;
+		block-size: unset;
 
 		.emoji-picker__category-buttons {
 			padding: 0 8px;
@@ -67,16 +67,16 @@
 		}
 
 		.emoji-picker__category-name {
-			margin-left: 12px;
+			margin-inline-start: 12px;
 		}
 
 		.emoji-picker__emojis {
-			border-top: 2px solid var(--theme--form--field--input--border-color);
+			border-block-start: 2px solid var(--theme--form--field--input--border-color);
 		}
 	}
 
 	.emoji-picker__preview {
-		border-top: 2px solid var(--theme--form--field--input--border-color);
+		border-block-start: 2px solid var(--theme--form--field--input--border-color);
 	}
 
 	.emoji-picker__emoji {

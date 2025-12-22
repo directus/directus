@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useSync } from '@directus/composables';
 import type { Permission, Policy } from '@directus/types';
-import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, ref, useId } from 'vue';
 import AppMinimal from './app-minimal.vue';
 
 type TreeChoice = {
@@ -21,8 +22,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:permission']);
 
-const { t } = useI18n();
-
+const labelId = useId();
 const permissionSync = useSync(props, 'permission', emit);
 const collection = computed(() => props.permission.collection);
 const isReadAction = computed(() => props.permission.action === 'read');
@@ -128,29 +128,30 @@ function useExpandCollapseAll() {
 
 <template>
 	<div>
-		<v-notice>
+		<VNotice>
 			{{
-				t('fields_for_policy', {
-					policy: policy ? policy.name : t('public_label'),
-					action: t(permission.action).toLowerCase(),
+				$t('fields_for_policy', {
+					policy: policy ? policy.name : $t('public_label'),
+					action: $t(permission.action).toLowerCase(),
 				})
 			}}
-		</v-notice>
+		</VNotice>
 
 		<div class="label-wrapper">
-			<label class="type-label">{{ t('field', 0) }}</label>
+			<div :id="labelId" class="type-label">{{ $t('field', 0) }}</div>
 
 			<div v-if="isExpandable" class="expand-collapse-action">
-				{{ t('expand') }}
-				<button type="button" @click="expandAll">{{ t('all') }}</button>
+				{{ $t('expand') }}
+				<button type="button" @click="expandAll">{{ $t('all') }}</button>
 				/
-				<button type="button" @click="collapseAll">{{ t('none') }}</button>
+				<button type="button" @click="collapseAll">{{ $t('none') }}</button>
 			</div>
 		</div>
 
-		<v-checkbox-tree
+		<VCheckboxTree
 			class="permissions-field-tree"
 			:model-value="selectedValues"
+			:aria-labelledby="labelId"
 			:choices="treeFields"
 			value-combining="indeterminate"
 			:open-groups="openGroups"
@@ -158,13 +159,13 @@ function useExpandCollapseAll() {
 			@group-toggle="openGroups = null"
 		/>
 
-		<app-minimal :value="appMinimal" />
+		<AppMinimal :value="appMinimal" />
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .label-wrapper {
@@ -174,7 +175,7 @@ function useExpandCollapseAll() {
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .expand-collapse-action {

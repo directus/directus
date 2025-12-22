@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VError from '@/components/v-error.vue';
+import VInfo from '@/components/v-info.vue';
+import VList from '@/components/v-list.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { PrivateView } from '@/views/private';
 import type { RegistryListResponse } from '@directus/extensions-registry';
 import { useRouteQuery } from '@vueuse/router';
 import { isEqual } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
 import InlineFilter from './components/inline-filter.vue';
-import RegistryInfoSidebarDetail from './components/registry-info-sidebar-detail.vue';
-
-const { t } = useI18n();
 
 const perPage = 10;
 
@@ -73,25 +77,11 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="t('marketplace')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="storefront" />
-			</v-button>
-		</template>
-
-		<template #title-outer:append>
-			<v-chip class="beta" outlined small>Beta</v-chip>
-		</template>
+	<PrivateView :title="$t('marketplace')" icon="storefront">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<template #sidebar>
-			<registry-info-sidebar-detail />
+			<SettingsNavigation />
 		</template>
 
 		<div class="page-container">
@@ -108,7 +98,7 @@ watchEffect(async () => {
 						/>
 					</svg>
 				</template>
-				{{ t('marketplace') }}
+				{{ $t('marketplace') }}
 			</VBanner>
 
 			<InlineFilter
@@ -121,29 +111,29 @@ watchEffect(async () => {
 				class="filter"
 			/>
 
-			<v-error v-if="error && !loading" :error="error" />
+			<VError v-if="error && !loading" :error="error" />
 
-			<v-progress-circular v-if="!error && extensions === null && loading" class="spinner" indeterminate />
+			<VProgressCircular v-if="!error && extensions === null && loading" class="spinner" indeterminate />
 
-			<v-list v-if="!error && extensions !== null" class="results" :class="{ loading }">
+			<VList v-if="!error && extensions !== null" class="results" :class="{ loading }">
 				<ExtensionListItem
 					v-for="extension in extensions"
 					:key="extension.id"
 					:extension="extension"
 					:show-type="!type"
 				/>
-			</v-list>
+			</VList>
 
-			<v-info
+			<VInfo
 				v-if="extensions?.length === 0 && !loading && !error"
-				:title="t('no_results')"
+				:title="$t('no_results')"
 				class="no-results"
 				icon="extension"
 			>
-				{{ t('no_results_copy') }}
-			</v-info>
+				{{ $t('no_results_copy') }}
+			</VInfo>
 
-			<v-pagination
+			<VPagination
 				v-if="pageCount > 1"
 				v-model="page"
 				class="pagination"
@@ -152,9 +142,9 @@ watchEffect(async () => {
 				show-first-last
 			/>
 
-			<router-view />
+			<RouterView />
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
@@ -167,27 +157,19 @@ watchEffect(async () => {
 
 .page-container {
 	padding: var(--content-padding);
-	padding-top: 0;
-	max-width: 1200px;
+	max-inline-size: 1200px;
 }
 
 .extension-group + .extension-group {
-	margin-top: 24px;
-}
-
-.beta {
-	--v-chip-color: var(--theme--primary);
-	--v-chip-background-color: var(--theme--primary-subdued);
-	margin-left: 10px;
+	margin-block-start: 24px;
 }
 
 .filter {
-	margin-block-start: 24px;
-	margin-block-end: 20px;
+	margin-block: 24px 20px;
 }
 
 .results {
-	padding-top: 0 !important; // 🤫
+	padding-block-start: 0 !important; // 🤫
 	opacity: 1;
 	transition: opacity var(--fast) var(--transition);
 

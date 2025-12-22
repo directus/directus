@@ -1,4 +1,6 @@
 ---
+first_name: Ime
+last_name: Prezime
 identifier: Identifikator
 application: Aplikacija
 default_provider: Zadano
@@ -92,7 +94,6 @@ rename_folder: Preimenuj folder
 delete_folder: Izbriši folder
 prefix: Prefiks
 suffix: Sufiks
-promote_version_preview: Pretpregled
 reset_bookmark: Poništi bookmark
 update_bookmark: Ažuriraj bookmark
 delete_bookmark: Obriši bookmark
@@ -304,6 +305,7 @@ confirm_revert_body: Ovo će vratiti stavku u odabrano stanje.
 display: Prikaz
 settings_update_success: Postavke su ažurirane
 title: Naslov
+subtitle: Podnaslov
 revision_delta_created: Kreirano
 revision_delta_created_externally: Kreirano izvana
 revision_delta_updated: 'Ažurirano 1 polje | Ažurirano {count} polja'
@@ -555,7 +557,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
   VALUE_TOO_LONG: Vrijednost je preduga
 security: Sigurnost
-value_hashed: Sigurno kriptovana vrijednost
 bookmark_name: Naziv bookmarka...
 create_bookmark: Kreiraj bookmark
 edit_bookmark: Uredi bookmark
@@ -710,7 +711,6 @@ label: Oznaka
 flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
-run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 trigger: Okidač
 trigger_options: Opcije okidača
 view_trigger: Prikaži okidač
@@ -882,37 +882,6 @@ discard_changes_copy: Jeste li sigurni da želite odbaciti sve napravljene promj
 show_x_axis: Prikaži X os
 show_y_axis: Prikaži Y os
 keep_editing: Nastavite uređivati
-page_help_collections_overview: '**Pregled kolekcija** — Popis svih kolekcija kojima imate pristup.'
-page_help_collections_collection: >-
-  **Pregledaj stavke** — Popisuje sve stavke iz {collection} kojima imate pristup. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
-page_help_collections_item: >-
-  **Detalji stavke** — Obrazac za pregled i upravljanje ovom stavkom. Ovaj bočni meni takođe sadrži potpunu povijest revizija i ugrađenih komentara.
-page_help_activity_collection: >-
-  **Aktivnost pregledavanja** — opsežan popis svih aktivnosti sistema i sadržaja vašeg korisnika.
-page_help_docs_global: >-
-  **Pregled dokumentacije** — Dokumenti posebno prilagođeni verziji i shemi ovog projekta.
-page_help_files_collection: >-
-  **Biblioteka fajlova** — Navodi sve fajlove prenesene u ovaj projekat. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
-page_help_files_item: >-
-  **Detalji fajla** — Obrazac za upravljanje metapodacima fajla, uređivanje izvornog materijala i ažuriranje postavki pristupa.
-page_help_settings_datamodel_collections: >-
-  **Model podataka: kolekcije** — Navodi sve dostupne kolekcije. To uključuje vidljive, skrivene i sistemske kolekcije, kao i neupravljane tablice baze podataka koje se mogu dodati.
-page_help_settings_datamodel_fields: >-
-  **Model podataka: kolekcija** — Obrazac za upravljanje ovom kolekcijom i njezinim poljima.
-page_help_settings_roles_item: "**Detalji o roli** — Upravljajte dopuštenjima role i drugim postavkama."
-page_help_settings_presets_collection: >-
-  **Pregledaj unaprijed postavljene postavke** — Navodi sve unaprijed postavljene postavke u projektu, uključujući: korisničke, role i globalne oznake, kao i zadane prikaze.
-page_help_settings_presets_item: >-
-  **Unaprijed postavljene detalje** — Obrazac za upravljanje oznakama i zadanim postavkama kolekcije.
-page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
-page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za kreiranje i upravljanje web-dojavnicima.'
-page_help_settings_flows_collection: '**Pregledaj tokove** — Popisuje sve tokove unutar projekta.'
-page_help_settings_flows_item: '**Detalji toka** — Radni prostor za upravljanje jednom ili više operacija.'
-page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sistema unutar ovog projekta.'
-page_help_users_item: >-
-  **Detalji o korisniku** — Upravljajte podacima o svom računu ili pregledajte detalje drugih korisnika.
-page_help_insights_overview: '**Uvidi** — Popis kontrolnih panela kojima imate pristup.'
-page_help_insights_dashboard: '**Kontrolni panel** — Radni prostor za upravljanje jednom ili više panela'
 activity_feed: Sadržaj aktivnosti
 add_new: Dodaj novi
 create_new: Kreiraj novi
@@ -934,7 +903,6 @@ directus_collection:
   directus_dashboards: Kontrolni paneli unutar modula s uvidima
   directus_fields: Dodatna konfiguracija polja i metapodaci
   directus_files: Metapodaci za sva upravljane fajlove
-  directus_flows: Automatizacija tokova
   directus_folders: Pruža virtualne direktorije za fajlove
   directus_migrations: Koju verziju baze podataka koristite
   directus_notifications: Obavijesti poslane korisnicima
@@ -1200,6 +1168,22 @@ shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
+ai:
+  input: Unos
+  settings: Postavke
+  tool_approval:
+    disabled: Onemogućeno
+ai_tools:
+  items: Stavke
+  files: Fajlovi
+  flows: Tokovi
+  trigger-flow: Pokreni tok
+  operations: Operacije
+  schema: Shema
+  collections: Kolekcije
+  fields: Polja
+mcp_prompts_collection_schema:
+  messages_role_user: Korisnik
 expired: Isteklo
 upcoming: Nadolazeće
 share: Podijeli
@@ -1307,7 +1291,6 @@ translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekat
 report_error: Prijavi grešku
-start: Započni
 table: Tablica
 list: Lista
 search_filter: Pretraživanje i filtri
@@ -1346,9 +1329,7 @@ interfaces:
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
-    presentation-links: Veze dugmeta
-    links: Linkovi
-    description: Konfigurabilna dugmeta veza za pokretanje dinamičkih URL-ova
+    presentation-links: Dugmeta
     style: Stil
     primary: Primarno
     link: Link
@@ -1625,6 +1606,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Uređivač sirovog sadržaja
     description: Omogućuje unos neobrađenih ili "mustache" predložaka
+  header:
+    header: Zaglavlje
+    links: Link
 displays:
   translations:
     translations: Prijevodi
@@ -1783,6 +1767,7 @@ layouts:
     advanced: Napredno
 horizontal: Horizontalno
 both: Oboje
+start: Započni
 panels:
   metric:
     name: Metrički
@@ -1860,11 +1845,9 @@ triggers:
 a_flow_uuid: Odaberite tok za okinuti...
 any_string_or_json: Bilo koji string ili JSON...
 item_payload_placeholder: Ovo je JSON koji se koristi za ažuriranje vrijednosti polja stavke...
-operation_variables_note: Podacima o toku možete pristupiti pomoću varijabli kao što su **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, ili referencirajte prethodne operacije koristeći **{'{ '}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Uslov
-    description: Usmjerite tok na temelju If / Else logike
   exec:
     name: Pokreni skriptu
     description: Izvršite proizvoljni kod za izmjenu payloada
@@ -1928,7 +1911,6 @@ operations:
     description: Promjenite JSON payload toka
   trigger:
     name: Pokreni tok
-    description: Proslijedite ove podatke u drugi tok
     flows: Tokovi
     flow: Tok
     data: Podaci

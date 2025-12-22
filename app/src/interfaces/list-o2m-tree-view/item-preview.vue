@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VRemove from '@/components/v-remove.vue';
 import { RelationO2M } from '@/composables/use-relation-o2m';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import { ref } from 'vue';
 
 const props = withDefaults(
@@ -12,38 +14,40 @@ const props = withDefaults(
 		edits: Record<string, any>;
 		relationInfo: RelationO2M;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		open?: boolean;
 		deleted: boolean;
 		isLocalItem: boolean;
 	}>(),
 	{
 		disabled: false,
+		nonEditable: false,
 		open: false,
 	},
 );
 
-const { t } = useI18n();
 const emit = defineEmits(['update:open', 'deselect', 'input']);
 const editActive = ref(false);
 </script>
 
 <template>
 	<div class="preview" :class="{ open, deleted }">
-		<v-icon
+		<VIcon
 			v-if="relationInfo.relatedPrimaryKeyField.field in item"
 			:name="props.open ? 'expand_more' : 'chevron_right'"
 			clickable
 			@click="emit('update:open', !props.open)"
 		/>
 
-		<render-template :collection="collection" :template="template" :item="item" />
+		<RenderTemplate :collection="collection" :template="template" :item="item" />
 
 		<div class="spacer" />
 
-		<div v-if="!disabled" class="item-actions">
-			<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click="editActive = true" />
+		<div class="item-actions">
+			<VIcon v-tooltip="$t('edit_item')" name="edit" clickable @click="editActive = true" />
 
-			<v-remove
+			<VRemove
+				v-if="!disabled"
 				:item-type="item.$type"
 				:item-info="relationInfo"
 				:item-is-local="isLocalItem"
@@ -52,8 +56,10 @@ const editActive = ref(false);
 			/>
 		</div>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="editActive"
+			:disabled
+			:non-editable
 			:collection="collection"
 			:primary-key="item[props.relationInfo.relatedPrimaryKeyField.field] || '+'"
 			:edits="edits"
@@ -68,7 +74,7 @@ const editActive = ref(false);
 
 .preview {
 	display: flex;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	align-items: center;
 
 	.spacer {

@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { useSync } from '@directus/composables';
-import type { ShowSelect } from '@directus/extensions';
-import type { Field } from '@directus/types';
+import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -20,8 +23,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);
-
-const { t } = useI18n();
 
 const sizeSync = useSync(props, 'size', emit);
 const sortSync = useSync(props, 'sort', emit);
@@ -72,33 +73,33 @@ function onClickSelect() {
 		<div class="start">
 			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
 				<template v-if="selectionSync.length">
-					<v-icon name="cancel" outline />
-					<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
+					<VIcon name="cancel" outline />
+					<span class="label">{{ $t('n_items_selected', selectionSync.length) }}</span>
 				</template>
 				<template v-else>
-					<v-icon name="check_circle" outline />
-					<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
+					<VIcon name="check_circle" outline />
+					<span class="label">{{ $t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
 				</template>
 			</button>
 		</div>
 		<div class="end">
-			<v-icon
-				v-tooltip.top="t('card_size')"
+			<VIcon
+				v-tooltip.top="$t('card_size')"
 				class="size-selector"
 				:name="`grid_${7 - size}`"
 				clickable
 				@click="toggleSize"
 			/>
 
-			<v-menu show-arrow placement="bottom">
+			<VMenu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<button v-tooltip.top="t('sort_field')" type="button" class="sort-selector" @click="toggle">
+					<button v-tooltip.top="$t('sort_field')" type="button" class="sort-selector" @click="toggle">
 						{{ sortField && sortField.name }}
 					</button>
 				</template>
 
-				<v-list>
-					<v-list-item
+				<VList>
+					<VListItem
 						v-for="field in fieldsWithoutFake"
 						:key="field.field"
 						:disabled="field.disabled"
@@ -106,12 +107,12 @@ function onClickSelect() {
 						clickable
 						@click="sortSync = [field.field]"
 					>
-						<v-list-item-content>{{ field.name }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-			<v-icon
-				v-tooltip.top="t('sort_direction')"
+						<VListItemContent>{{ field.name }}</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
+			<VIcon
+				v-tooltip.top="$t('sort_direction')"
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"
@@ -125,25 +126,25 @@ function onClickSelect() {
 <style lang="scss" scoped>
 .cards-header {
 	position: sticky;
-	top: var(--layout-offset-top);
+	inset-block-start: var(--layout-offset-top);
 	z-index: 4;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
-	height: 52px;
-	margin-bottom: 36px;
+	inline-size: 100%;
+	block-size: 52px;
+	margin-block-end: 36px;
 	padding: 0 8px;
 	background-color: var(--theme--background);
-	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	box-shadow: 0 0 0 2px var(--theme--background);
 }
 
 .start {
 	.label {
 		display: inline-block;
-		margin-left: 4px;
+		margin-inline-start: 4px;
 		transform: translateY(1px);
 	}
 
@@ -163,7 +164,7 @@ function onClickSelect() {
 	color: var(--theme--foreground-subdued);
 
 	.size-selector {
-		margin-right: 16px;
+		margin-inline-end: 16px;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -172,7 +173,7 @@ function onClickSelect() {
 	}
 
 	.sort-selector {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {

@@ -1,25 +1,30 @@
 <script setup lang="ts">
+import VFieldTemplate from '@/components/v-field-template/v-field-template.vue';
+import VNotice from '@/components/v-notice.vue';
+import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
-import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { computed, inject, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
-	value: string | null;
-	placeholder?: string | null;
-	disabled?: boolean;
-	collectionField?: string;
-	collectionName?: string;
-	fields?: FieldNode[];
-	injectVersionField?: boolean;
-}>();
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		placeholder?: string | null;
+		disabled?: boolean;
+		collectionField?: string;
+		collectionName?: string;
+		fields?: FieldNode[];
+		injectVersionField?: boolean;
+		includeRelations?: boolean;
+	}>(),
+	{
+		includeRelations: true,
+	},
+);
 
 defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
-
-const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
@@ -48,7 +53,7 @@ const injectFields = computed(() => {
 	return fakeVersionField.value ? { fields: [fakeVersionField.value] } : null;
 });
 
-const { treeList, loadFieldRelations } = useFieldTree(collection, injectFields);
+const { treeList, loadFieldRelations } = useFieldTree(collection, injectFields, () => true, props.includeRelations);
 
 const tree = computed(() => {
 	if (props.fields) {
@@ -65,10 +70,10 @@ const tree = computed(() => {
 
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="tree === null">
-			{{ t('interfaces.system-display-template.select_a_collection') }}
-		</v-notice>
-		<v-field-template
+		<VNotice v-if="tree === null">
+			{{ $t('interfaces.system-display-template.select_a_collection') }}
+		</VNotice>
+		<VFieldTemplate
 			v-else
 			:tree="tree.list"
 			:model-value="value"

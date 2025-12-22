@@ -6,14 +6,14 @@
 	--tooltip-background-color: var(--background-inverted);
 
 	position: absolute;
-	top: 0;
-	left: 0;
+	inset-block-start: 0;
+	inset-inline-start: 0;
 	z-index: 850;
 	display: none;
-	max-width: 260px;
+	max-inline-size: 260px;
 	padding: 4px 8px;
 	color: var(--tooltip-foreground-color);
-	word-break: break-word;
+	overflow-wrap: break-word;
 	background-color: var(--tooltip-background-color);
 	border-radius: 4px;
 	transition: opacity 200ms;
@@ -43,78 +43,78 @@
 
 	&::after {
 		position: absolute;
-		top: -5px;
-		left: calc(50% - 6px);
-		width: 0;
-		height: 0;
-		border-right: 6px solid transparent;
-		border-bottom: 6px solid var(--tooltip-background-color);
-		border-left: 6px solid transparent;
+		inset-block-start: -5px;
+		inset-inline-start: calc(50% - 6px);
+		inline-size: 0;
+		block-size: 0;
+		border-inline-end: 6px solid transparent;
+		border-block-end: 6px solid var(--tooltip-background-color);
+		border-inline-start: 6px solid transparent;
 		content: '';
 	}
 
 	&.start::after {
-		right: $arrow-alignment;
-		left: unset;
+		inset-inline-end: $arrow-alignment;
+		inset-inline-start: unset;
 	}
 
 	&.end::after {
-		left: $arrow-alignment;
+		inset-inline-start: $arrow-alignment;
 	}
 
 	&.top::after {
-		top: unset;
-		bottom: -5px;
-		left: calc(50% - 6px);
-		border-top: 6px solid var(--tooltip-background-color);
-		border-right: 6px solid transparent;
-		border-bottom: unset;
-		border-left: 6px solid transparent;
+		inset-block-start: unset;
+		inset-block-end: -5px;
+		inset-inline-start: calc(50% - 6px);
+		border-block-start: 6px solid var(--tooltip-background-color);
+		border-inline-end: 6px solid transparent;
+		border-block-end: unset;
+		border-inline-start: 6px solid transparent;
 	}
 
 	&.top.start::after {
-		right: $arrow-alignment;
-		left: unset;
+		inset-inline-end: $arrow-alignment;
+		inset-inline-start: unset;
 	}
 
 	&.top.end::after {
-		left: $arrow-alignment;
+		inset-inline-start: $arrow-alignment;
 	}
 
 	&.left::after {
-		top: calc(50% - 6px);
-		right: -5px;
-		left: unset;
-		border-top: 6px solid transparent;
-		border-right: unset;
-		border-bottom: 6px solid transparent;
-		border-left: 6px solid var(--tooltip-background-color);
+		inset-block-start: calc(50% - 6px);
+		inset-inline-end: -5px;
+		inset-inline-start: unset;
+		border-block-start: 6px solid transparent;
+		border-inline-end: unset;
+		border-block-end: 6px solid transparent;
+		border-inline-start: 6px solid var(--tooltip-background-color);
 	}
 
 	&.left.start::after {
-		top: unset;
-		bottom: $arrow-alignment;
+		inset-block-start: unset;
+		inset-block-end: $arrow-alignment;
 	}
 
 	&.left.end::after {
-		top: $arrow-alignment;
+		inset-block-start: $arrow-alignment;
 	}
 
 	&.right::after {
-		top: calc(50% - 6px);
-		left: -5px;
-		border-top: 6px solid transparent;
-		border-right: 6px solid var(--tooltip-background-color);
-		border-bottom: 6px solid transparent;
-		border-left: unset;
+		inset-block-start: calc(50% - 6px);
+		inset-inline-start: -5px;
+		border-block-start: 6px solid transparent;
+		border-inline-end: 6px solid var(--tooltip-background-color);
+		border-block-end: 6px solid transparent;
+		border-inline-start: unset;
 	}
 
 	&.right.start::after {
-		top: unset;
-		bottom: $arrow-alignment;
+		inset-block-start: unset;
+		inset-block-end: $arrow-alignment;
 	}
 
 	&.right.end::after {
-		top: $arrow-alignment;
+		inset-block-start: $arrow-alignment;
 	}
 }

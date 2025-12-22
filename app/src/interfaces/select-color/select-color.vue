@@ -1,16 +1,23 @@
 <script setup lang="ts">
-import Color, { ColorInstance } from 'color';
-import { isHex } from '@/utils/is-hex';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSlider from '@/components/v-slider.vue';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
+import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
+import Color, { ColorInstance } from 'color';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { i18n } from '@/lang';
 
 const { t } = useI18n();
 
 interface Props {
 	disabled?: boolean;
+	nonEditable?: boolean;
 	value?: string | null;
 	placeholder?: string;
 	presets?: { name: string; color: string }[];
@@ -20,48 +27,54 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
+	nonEditable: false,
 	value: null,
 	placeholder: undefined,
 	opacity: false,
-	presets: () => [
-		{
-			name: i18n.global.t('colors.purple'),
-			color: '#6644FF',
-		},
-		{
-			name: i18n.global.t('colors.blue'),
-			color: '#3399FF',
-		},
-		{
-			name: i18n.global.t('colors.green'),
-			color: '#2ECDA7',
-		},
-		{
-			name: i18n.global.t('colors.yellow'),
-			color: '#FFC23B',
-		},
-		{
-			name: i18n.global.t('colors.orange'),
-			color: '#FFA439',
-		},
-		{
-			name: i18n.global.t('colors.red'),
-			color: '#E35169',
-		},
-		{
-			name: i18n.global.t('colors.black'),
-			color: '#18222F',
-		},
-		{
-			name: i18n.global.t('colors.gray'),
-			color: '#A2B5CD',
-		},
-		{
-			name: i18n.global.t('colors.white'),
-			color: '#FFFFFF',
-		},
-	],
 });
+
+// Reactive translations can't be default values of props
+const presetsWithDefaults = computed(
+	() =>
+		props.presets || [
+			{
+				name: t('colors.purple'),
+				color: '#6644FF',
+			},
+			{
+				name: t('colors.blue'),
+				color: '#3399FF',
+			},
+			{
+				name: t('colors.green'),
+				color: '#2ECDA7',
+			},
+			{
+				name: t('colors.yellow'),
+				color: '#FFC23B',
+			},
+			{
+				name: t('colors.orange'),
+				color: '#FFA439',
+			},
+			{
+				name: t('colors.red'),
+				color: '#E35169',
+			},
+			{
+				name: t('colors.black'),
+				color: '#18222F',
+			},
+			{
+				name: t('colors.gray'),
+				color: '#A2B5CD',
+			},
+			{
+				name: t('colors.white'),
+				color: '#FFFFFF',
+			},
+		],
+);
 
 const emit = defineEmits(['input']);
 
@@ -298,12 +311,13 @@ function useColor() {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
+	<VMenu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
 		<template #activator="{ activate, toggle }">
-			<v-input
+			<VInput
 				v-model="input"
-				:disabled="disabled"
-				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
+				:disabled
+				:non-editable
+				:placeholder="placeholder || $t('interfaces.select-color.placeholder')"
 				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
 				:maxlength="opacity ? 9 : 7"
@@ -312,14 +326,15 @@ function useColor() {
 				@keydown="onKeydownInput($event, activate)"
 			>
 				<template #prepend>
-					<v-input
+					<VInput
 						ref="htmlColorInput"
 						:model-value="hex ? hex.slice(0, 7) : null"
 						type="color"
 						class="html-color-select"
+						@click.stop
 						@update:model-value="setSwatchValue($event)"
 					/>
-					<v-button
+					<VButton
 						class="swatch"
 						icon
 						:style="{
@@ -332,18 +347,18 @@ function useColor() {
 						}"
 						@click="activateColorPicker"
 					>
-						<v-icon v-if="!isValidColor" name="colorize" />
-						<v-icon v-else-if="!showSwatch" name="question_mark" />
-					</v-button>
+						<VIcon v-if="!isValidColor" name="colorize" />
+						<VIcon v-else-if="!showSwatch" name="question_mark" />
+					</VButton>
 				</template>
 				<template #append>
-					<div class="item-actions">
-						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
+					<div v-if="!nonEditable" class="item-actions">
+						<VRemove v-if="isValidColor" deselect @action="unsetColor" />
 
-						<v-icon v-else name="palette" clickable @click="toggle" />
+						<VIcon v-else name="palette" clickable @click="toggle" />
 					</div>
 				</template>
-			</v-input>
+			</VInput>
 		</template>
 
 		<div
@@ -354,8 +369,8 @@ function useColor() {
 						? 'repeat(4, 1fr)'
 						: 'repeat(6, 1fr)'
 					: width.startsWith('half')
-					  ? 'repeat(3, 1fr)'
-					  : 'repeat(5, 1fr)',
+						? 'repeat(3, 1fr)'
+						: 'repeat(5, 1fr)',
 			}"
 			:class="{ stacked: width.startsWith('half') }"
 		>
@@ -367,14 +382,14 @@ function useColor() {
 							? '1 / span 4'
 							: '1 / span 2'
 						: width.startsWith('half')
-						  ? '1 / span 3'
-						  : '1 / span 2',
+							? '1 / span 3'
+							: '1 / span 2',
 				}"
 			>
-				<v-select v-model="colorType" :items="colorTypes" />
+				<VSelect v-model="colorType" :items="colorTypes" />
 			</div>
 			<template v-if="colorType === 'RGB' || colorType === 'RGBA'">
-				<v-input
+				<VInput
 					v-for="(val, i) in rgb.length > 3 ? rgb.slice(0, -1) : rgb"
 					:key="i"
 					:hidden="i === 3"
@@ -388,7 +403,7 @@ function useColor() {
 					maxlength="3"
 					@update:model-value="setValue('rgb', i, $event)"
 				/>
-				<v-input
+				<VInput
 					v-if="opacity"
 					type="number"
 					:model-value="alpha"
@@ -402,7 +417,7 @@ function useColor() {
 				/>
 			</template>
 			<template v-if="colorType === 'HSL' || colorType === 'HSLA'">
-				<v-input
+				<VInput
 					v-for="(val, i) in hsl.length > 3 ? hsl.slice(0, -1) : hsl"
 					:key="i"
 					type="number"
@@ -415,7 +430,7 @@ function useColor() {
 					maxlength="3"
 					@update:model-value="setValue('hsl', i, $event)"
 				/>
-				<v-input
+				<VInput
 					v-if="opacity"
 					type="number"
 					:model-value="alpha"
@@ -431,7 +446,7 @@ function useColor() {
 		</div>
 		<div v-if="opacity" class="color-data-alphas">
 			<div class="color-data-alpha">
-				<v-slider
+				<VSlider
 					:model-value="alpha"
 					:min="0"
 					:max="100"
@@ -450,9 +465,9 @@ function useColor() {
 				/>
 			</div>
 		</div>
-		<div v-if="presets" class="presets">
-			<v-button
-				v-for="preset in presets"
+		<div v-if="presetsWithDefaults" class="presets">
+			<VButton
+				v-for="preset in presetsWithDefaults"
 				:key="preset.color"
 				v-tooltip="preset.name"
 				class="preset"
@@ -463,7 +478,7 @@ function useColor() {
 				@click="() => (hex = preset.color)"
 			/>
 		</div>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style scoped lang="scss">
@@ -477,20 +492,19 @@ function useColor() {
 	--v-button-padding: 6px;
 	--v-button-background-color: transparent;
 	background-color: var(--swatch-color, transparent);
+
 	--v-button-background-color-hover: var(--v-button-background-color);
 	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);
 	--v-button-width: calc(var(--theme--form--field--input--height) - 20px);
-
 	--swatch-radius: calc(var(--theme--border-radius) + 2px);
-
 	--focus-ring-offset: var(--focus-ring-offset-inset);
 	--focus-ring-radius: var(--swatch-radius);
 
 	position: relative;
 	box-sizing: border-box;
-	margin-left: -8px;
-	width: calc(var(--theme--form--field--input--height) - 20px);
-	height: calc(var(--theme--form--field--input--height) - 20px);
+	margin-inline-start: -8px;
+	inline-size: calc(var(--theme--form--field--input--height) - 20px);
+	block-size: calc(var(--theme--form--field--input--height) - 20px);
 	border-radius: var(--swatch-radius);
 	overflow: hidden;
 	cursor: pointer;
@@ -498,8 +512,8 @@ function useColor() {
 
 .presets {
 	display: flex;
-	width: 100%;
-	margin-bottom: 14px;
+	inline-size: 100%;
+	margin-block-end: 14px;
 	padding: 8px;
 	overflow-x: auto;
 }
@@ -509,7 +523,7 @@ function useColor() {
 	--v-button-height: 20px;
 	--v-button-width: 20px;
 
-	margin: 0px 4px;
+	margin: 0 4px;
 
 	&.low-contrast {
 		--v-button-height: 18px;
@@ -519,25 +533,25 @@ function useColor() {
 }
 
 .presets .preset:first-child {
-	padding-left: 0px;
+	padding-inline-start: 0;
 }
 
 .presets .preset:last-child {
-	padding-right: 0px;
+	padding-inline-end: 0;
 }
 
 .color-input {
 	.v-input.html-color-select {
-		width: 0;
-		height: 0;
+		inline-size: 0;
+		block-size: 0;
 		visibility: hidden;
 	}
 }
 
 .color-data-inputs {
 	display: grid;
-	grid-gap: 0px;
-	width: 100%;
+	gap: 0;
+	inline-size: 100%;
 	padding: 12px 10px;
 }
 
@@ -558,7 +572,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
-	margin-left: calc(-1 * var(--theme--border-width));
+	margin-inline-start: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs .color-data-input:first-child {
@@ -570,12 +584,12 @@ function useColor() {
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
-	margin-top: calc(-2 * var(--theme--border-width));
-	margin-left: initial;
+	margin-block-start: calc(-2 * var(--theme--border-width));
+	margin-inline-start: initial;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child):not(:nth-child(2)) :deep(.input) {
-	margin-left: calc(-1 * var(--theme--border-width));
+	margin-inline-start: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
@@ -592,10 +606,10 @@ function useColor() {
 
 .color-data-alphas {
 	display: grid;
-	grid-gap: 12px;
+	gap: 12px;
 	align-items: baseline;
-	width: 100%;
-	height: 45px;
+	inline-size: 100%;
+	block-size: 45px;
 	padding: 12px 14px;
 }
 

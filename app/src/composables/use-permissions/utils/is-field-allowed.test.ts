@@ -1,7 +1,6 @@
 import { ActionPermission } from '@/types/permissions';
 import { beforeEach, expect, it } from 'vitest';
 
-import { randomIdentifier } from '@directus/random';
 import { isFieldAllowed } from './is-field-allowed';
 
 let sample: {
@@ -10,7 +9,7 @@ let sample: {
 
 beforeEach(() => {
 	sample = {
-		field: randomIdentifier(),
+		field: 'test_field',
 	};
 });
 

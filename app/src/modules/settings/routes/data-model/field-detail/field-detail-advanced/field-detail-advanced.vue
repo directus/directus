@@ -14,20 +14,19 @@ defineProps<{
 
 <template>
 	<div class="content">
-		<field-detail-advanced-schema v-if="currentTab === 'schema'" />
-		<field-detail-advanced-relationship v-if="currentTab === 'relationship'" />
-		<field-detail-advanced-field v-if="currentTab === 'field'" />
-		<field-detail-advanced-interface v-if="currentTab === 'interface'" />
-		<field-detail-advanced-display v-if="currentTab === 'display'" />
-		<field-detail-advanced-validation v-if="currentTab === 'validation'" />
-		<field-detail-advanced-conditions v-if="currentTab === 'conditions'" />
+		<FieldDetailAdvancedSchema v-if="currentTab === 'schema'" />
+		<FieldDetailAdvancedRelationship v-if="currentTab === 'relationship'" />
+		<FieldDetailAdvancedField v-if="currentTab === 'field'" />
+		<FieldDetailAdvancedInterface v-if="currentTab === 'interface'" />
+		<FieldDetailAdvancedDisplay v-if="currentTab === 'display'" />
+		<FieldDetailAdvancedValidation v-if="currentTab === 'validation'" />
+		<FieldDetailAdvancedConditions v-if="currentTab === 'conditions'" />
 	</div>
 </template>
 
 <style scoped>
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 </style>

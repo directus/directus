@@ -1,4 +1,9 @@
+import type { Accountability } from '@directus/types';
+import { isEqual } from 'lodash-es';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../services/index.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -9,6 +14,7 @@ import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
 
 export async function authenticateConnection(
 	message: BasicAuthMessage & Record<string, any>,
+	accountabilityOverrides?: Partial<Accountability>,
 ): Promise<AuthenticationState> {
 	let access_token: string | undefined, refresh_token: string | undefined;
 
@@ -32,9 +38,35 @@ export async function authenticateConnection(
 		}
 
 		if (!access_token) throw new Error();
-		const accountability = await getAccountabilityForToken(access_token);
-		const expires_at = getExpiresAtForToken(access_token);
-		return { accountability, expires_at, refresh_token } as AuthenticationState;
+
+		const defaultAccountability = createDefaultAccountability(accountabilityOverrides);
+
+		const authenticationState = {
+			accountability: defaultAccountability,
+			expires_at: getExpiresAtForToken(access_token),
+			refresh_token,
+		} as AuthenticationState;
+
+		const customAccountability = await emitter.emitFilter(
+			'websocket.authenticate',
+			defaultAccountability,
+			{
+				message,
+			},
+			{
+				database: getDatabase(),
+				schema: null,
+				accountability: null,
+			},
+		);
+
+		if (customAccountability && isEqual(customAccountability, defaultAccountability) === false) {
+			authenticationState.accountability = customAccountability;
+		} else {
+			authenticationState.accountability = await getAccountabilityForToken(access_token, defaultAccountability);
+		}
+
+		return authenticationState;
 	} catch {
 		throw new WebSocketError('auth', 'AUTH_FAILED', 'Authentication failed.', message['uid']);
 	}

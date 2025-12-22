@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import VSelect from '@/components/v-select/v-select.vue';
 import { Events, emitter } from '@/events';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import SidebarDetail from './sidebar-detail.vue';
 
 const model = defineModel<number | null>({ required: true });
 
@@ -56,24 +58,24 @@ const items = computed(() => {
 			? {
 					text: t('refresh_interval_minutes', { minutes: seconds / 60 }, seconds / 60),
 					value: seconds,
-			  }
+				}
 			: {
 					text: t('refresh_interval_seconds', { seconds }, seconds),
 					value: seconds,
-			  };
+				};
 	});
 });
 </script>
 
 <template>
-	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="t('auto_refresh')" :badge="active">
+	<SidebarDetail id="refresh" :icon="active ? 'sync' : 'sync_disabled'" :title="$t('auto_refresh')" :badge="active">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ t('refresh_interval') }}</p>
-				<v-select v-model="model" :items="items" />
+				<p class="type-label">{{ $t('refresh_interval') }}</p>
+				<VSelect v-model="model" :items="items" />
 			</div>
 		</div>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>
@@ -90,6 +92,6 @@ const items = computed(() => {
 }
 
 .v-checkbox {
-	margin-top: 8px;
+	margin-block-start: 8px;
 }
 </style>

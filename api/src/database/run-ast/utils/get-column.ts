@@ -60,7 +60,7 @@ export function getColumn(
 							query: options.query,
 							cases: options.cases,
 							permissions: options.permissions,
-					  }
+						}
 					: undefined,
 				originalCollectionName: options?.originalCollectionName,
 			}) as Knex.Raw;

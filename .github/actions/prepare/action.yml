@@ -18,24 +18,14 @@ runs:
         node-version-file: package.json
         registry-url: ${{ inputs.registry }}
 
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-
-    - name: Get cache info
-      id: cache-info
+    - name: Update npm
       shell: bash
-      run: |
-        echo "os-release=$(node --eval 'console.log(os.release())')" >> $GITHUB_OUTPUT
-        echo "pnpm-cache-dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+      run: npm install -g npm@11
 
-    - name: Setup pnpm cache
-      uses: actions/cache@v4
+    - uses: pnpm/action-setup@v4
+      name: Install pnpm
       with:
-        path: ${{ steps.cache-info.outputs.pnpm-cache-dir }}
-        key:
-          ${{ runner.os }}-${{ steps.cache-info.outputs.os-release }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ steps.cache-info.outputs.os-release }}-pnpm-store-
+        run_install: false
 
     - name: Install dependencies
       shell: bash
@@ -45,6 +35,6 @@ runs:
       if: inputs.build == 'true'
       shell: bash
       env:
-        npm_config_workspace_concurrency: 1
+        npm_config_workspace_concurrency: 2
         NODE_OPTIONS: --max_old_space_size=6144
       run: pnpm run build

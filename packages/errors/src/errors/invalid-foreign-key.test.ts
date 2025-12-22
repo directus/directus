@@ -1,4 +1,3 @@
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import type { InvalidForeignKeyErrorExtensions } from './invalid-foreign-key.js';
 import { messageConstructor } from './invalid-foreign-key.js';
@@ -7,9 +6,9 @@ let sample: InvalidForeignKeyErrorExtensions;
 
 beforeEach(() => {
 	sample = {
-		collection: randomAlpha(randomInteger(2, 50)),
-		field: randomAlpha(randomInteger(2, 50)),
-		value: randomAlpha(randomInteger(2, 50)),
+		collection: 'test_collection',
+		field: 'test_field',
+		value: 'test_value',
 	};
 });
 

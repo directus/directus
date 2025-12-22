@@ -298,14 +298,14 @@ describe('WebSocket General Tests', () => {
 								? {
 										event: true,
 										key: true,
-								  }
+									}
 								: {
 										event: true,
 										data: {
 											id: true,
 											name: true,
 										},
-								  };
+									};
 
 						subscriptionKey = await wsGql.subscribe({
 							collection: localCollectionFirst,

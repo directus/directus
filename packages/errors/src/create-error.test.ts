@@ -1,4 +1,3 @@
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, test, expect, vi } from 'vitest';
 import { createError } from './create-error.js';
 
@@ -12,11 +11,11 @@ let sample: {
 
 beforeEach(() => {
 	sample = {
-		code: randomAlpha(randomInteger(1, 25)),
-		status: randomInteger(200, 599),
-		message: randomAlpha(randomInteger(10, 50)),
-		extensionKey: randomAlpha(randomInteger(1, 10)),
-		extensionValue: randomAlpha(randomInteger(1, 10)),
+		code: 'test_error',
+		status: 400,
+		message: 'Test error message',
+		extensionKey: 'testKey',
+		extensionValue: 'testValue',
 	};
 });
 
@@ -25,7 +24,7 @@ test('Returns enhanced error object', () => {
 	const error = new TestError();
 
 	expect(error.name).toBe('DirectusError');
-	expect(error.code).toBe(sample.code.toUpperCase());
+	expect(error.code).toBe('TEST_ERROR');
 	expect(error.message).toBe(sample.message);
 	expect(error.status).toBe(sample.status);
 });

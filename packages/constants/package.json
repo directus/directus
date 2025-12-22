@@ -1,6 +1,6 @@
 {
 	"name": "@directus/constants",
-	"version": "13.0.1",
+	"version": "14.0.0",
 	"description": "Shared constants for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -22,12 +22,12 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch"
+		"build": "tsdown src/index.ts --dts",
+		"dev": "tsdown src/index.ts --dts --watch"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2"
+		"@directus/tsconfig": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
 	}
 }

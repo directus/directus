@@ -88,8 +88,8 @@ export default function useImage(
 					imageUrl,
 					alt,
 					lazy,
-					width: selectedPreset.value ? selectedPreset.value.width ?? undefined : width,
-					height: selectedPreset.value ? selectedPreset.value.height ?? undefined : height,
+					width: selectedPreset.value ? (selectedPreset.value.width ?? undefined) : width,
+					height: selectedPreset.value ? (selectedPreset.value.height ?? undefined) : height,
 					transformationKey,
 					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value),
 				};

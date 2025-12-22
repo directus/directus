@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
+import VDrawerHeader from '@/components/v-drawer-header.vue';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import HeaderBar from '@/views/private/components/header-bar.vue';
-import { computed, provide, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { useScroll } from '@vueuse/core';
+import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
+import VButton from '@/components/v-button.vue';
+import VDetail from '@/components/v-detail.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VOverlay from '@/components/v-overlay.vue';
 
 export interface Props {
 	title: string;
@@ -13,11 +17,13 @@ export interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
+	/**
+	 * Color of the icon displayed in the drawer header.
+	 */
+	iconColor?: string;
 	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
 	cancelable?: boolean;
-	headerShadow?: boolean;
-	smallHeader?: boolean;
 	applyShortcut?: ApplyShortcut;
 }
 
@@ -26,21 +32,16 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	persistent: false,
 	icon: 'box',
-	sidebarLabel: i18n.global.t('sidebar'),
 	cancelable: true,
-	headerShadow: true,
-	smallHeader: false,
 });
 
 const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
 
-const { t } = useI18n();
-
 const localActive = ref(false);
 
-const mainEl = ref<Element>();
+const scrollContainer = useTemplateRef('scroll-container');
 
-provide('main-element', mainEl);
+provide('main-element', scrollContainer);
 
 const sidebarWidth = 220;
 // Half of the space of the drawer (856 / 2 = 428)
@@ -55,10 +56,14 @@ const internalActive = computed({
 		emit('update:modelValue', newActive);
 	},
 });
+
+const { y } = useScroll(scrollContainer);
+
+const showHeaderShadow = computed(() => y.value > 0);
 </script>
 
 <template>
-	<v-dialog
+	<VDialog
 		v-model="internalActive"
 		:persistent="persistent"
 		placement="right"
@@ -71,22 +76,23 @@ const internalActive = computed({
 		</template>
 
 		<article class="v-drawer">
-			<v-button
+			<VButton
 				v-if="cancelable"
-				v-tooltip.bottom="`${t('cancel')} (${translateShortcut(['esc'])})`"
+				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel"
 				icon
 				rounded
 				secondary
+				small
 				@click="$emit('cancel')"
 			>
-				<v-icon name="close" />
-			</v-button>
+				<VIcon name="close" small />
+			</VButton>
 
 			<div class="content">
-				<v-overlay v-if="$slots.sidebar" absolute />
+				<VOverlay v-if="$slots.sidebar" absolute />
 
-				<v-resizeable
+				<VResizeable
 					v-if="$slots.sidebar"
 					:disabled="!sidebarResizeable"
 					:width="sidebarWidth"
@@ -97,16 +103,10 @@ const internalActive = computed({
 							<slot name="sidebar" />
 						</div>
 					</nav>
-				</v-resizeable>
+				</VResizeable>
 
-				<main ref="mainEl" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<header-bar
-						:title="title"
-						primary-action-icon="close"
-						:small="smallHeader"
-						:shadow="headerShadow"
-						@primary="$emit('cancel')"
-					>
+				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
+					<VDrawerHeader :title :shadow="showHeaderShadow" :icon :icon-color @cancel="$emit('cancel')">
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
@@ -115,30 +115,26 @@ const internalActive = computed({
 						</template>
 
 						<template #title-outer:prepend>
-							<slot name="title-outer:prepend">
-								<v-button class="header-icon" rounded icon secondary disabled>
-									<v-icon :name="icon" />
-								</v-button>
-							</slot>
+							<slot name="title-outer:prepend" />
 						</template>
 
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
-
+						<template #actions:append><slot name="actions:append" /></template>
 						<template #title:append><slot name="header:append" /></template>
-					</header-bar>
+					</VDrawerHeader>
 
-					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
+					<VDetail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
 						<nav>
 							<slot name="sidebar" />
 						</nav>
-					</v-detail>
+					</VDetail>
 
 					<slot />
 				</main>
 			</div>
 		</article>
-	</v-dialog>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>
@@ -146,9 +142,9 @@ const internalActive = computed({
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	width: 100%;
-	max-width: 856px;
-	height: 100%;
+	inline-size: 100%;
+	max-inline-size: 856px;
+	block-size: 100%;
 	background-color: var(--theme--background);
 
 	.cancel {
@@ -156,8 +152,8 @@ const internalActive = computed({
 
 		display: none;
 		position: absolute;
-		top: 32px;
-		left: -76px;
+		inset-block-start: 12px;
+		inset-inline-start: -56px;
 
 		@media (min-width: 960px) {
 			display: inline-flex;
@@ -178,6 +174,7 @@ const internalActive = computed({
 	.content {
 		--theme--form--row-gap: 52px;
 
+		container-type: size;
 		position: relative;
 		display: flex;
 		flex-grow: 1;
@@ -197,10 +194,10 @@ const internalActive = computed({
 				position: relative;
 				display: block;
 				flex-shrink: 0;
-				width: 220px;
-				height: 100%;
+				inline-size: 220px;
+				block-size: 100%;
 				background: var(--theme--navigation--background);
-				border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 			}
 
 			.sidebar-content {
@@ -213,13 +210,11 @@ const internalActive = computed({
 				--v-list-item-background-color: var(--theme--navigation--list--background);
 				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
 				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
-
 				--v-divider-color: var(--theme--navigation--list--divider--border-color);
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 
-				height: 100%;
-				overflow-x: hidden;
-				overflow-y: auto;
+				block-size: 100%;
+				overflow: hidden auto;
 			}
 		}
 
@@ -234,27 +229,19 @@ const internalActive = computed({
 		}
 
 		.main {
-			--content-padding: 16px;
-			--content-padding-bottom: 32px;
-
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
-			scroll-padding-top: 100px;
-
-			@media (min-width: 600px) {
-				--content-padding: 32px;
-				--content-padding-bottom: 132px;
-			}
+			scroll-padding-block-start: 100px;
 		}
 
 		.main.small-search-input:deep(.search-input.filter-active) {
-			width: 300px !important;
+			inline-size: 300px !important;
 		}
 	}
 
 	@media (min-width: 960px) {
-		width: calc(100% - 64px);
+		inline-size: calc(100% - 64px);
 	}
 }
 

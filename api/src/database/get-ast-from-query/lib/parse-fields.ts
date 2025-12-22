@@ -60,11 +60,13 @@ export async function parseFields(
 	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
 	for (const fieldKey of fields) {
+		let alias = false;
 		let name = fieldKey;
 
 		if (options.query.alias) {
 			// check for field alias (is one of the key)
 			if (name in options.query.alias) {
+				alias = true;
 				name = options.query.alias[fieldKey]!;
 			}
 		}
@@ -151,7 +153,7 @@ export async function parseFields(
 				continue;
 			}
 
-			children.push({ type: 'field', name, fieldKey, whenCase: [] });
+			children.push({ type: 'field', name, fieldKey, whenCase: [], alias });
 		}
 	}
 

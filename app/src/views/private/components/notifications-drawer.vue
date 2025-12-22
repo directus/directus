@@ -1,6 +1,26 @@
 <script setup lang="ts">
 import api from '@/api';
-import useDatetime from '@/components/use-datetime.vue';
+import UseDatetime from '@/components/use-datetime.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemHint from '@/components/v-list-item-hint.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VTab from '@/components/v-tab.vue';
+import VTabs from '@/components/v-tabs.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
@@ -15,6 +35,7 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 type LocalNotification = Notification & {
 	to?: string;
@@ -201,121 +222,135 @@ function clearFilters() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		v-model="notificationsDrawerOpen"
 		icon="notifications"
-		:title="t('notifications')"
-		:sidebar-label="t('folders')"
+		:title="$t('notifications')"
+		:sidebar-label="$t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 		@apply="toggleArchive"
 	>
 		<template #actions:prepend>
-			<transition name="fade">
+			<Transition name="fade">
 				<span v-if="showingCount" class="item-count">
 					{{ showingCount }}
 				</span>
-			</transition>
+			</Transition>
 		</template>
 
 		<template #actions>
-			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
+			<SearchInput v-model="search" v-model:filter="filter" collection="directus_notifications" />
 
-			<v-dialog
+			<VDialog
 				v-model="confirmDelete"
 				:disabled="selection.length === 0"
 				@esc="confirmDelete = false"
 				@apply="deleteSelected"
 			>
 				<template #activator="{ on }">
-					<v-button
-						v-tooltip.bottom="t('delete_label')"
-						rounded
-						icon
+					<PrivateViewHeaderBarActionButton
+						v-tooltip.bottom="$t('delete_label')"
 						class="action-delete"
 						secondary
 						:disabled="selection.length === 0"
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" @click="deleteSelected">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
+							{{ $t('cancel') }}
+						</VButton>
+						<VButton kind="danger" @click="deleteSelected">
+							{{ $t('delete_label') }}
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-button
-				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
-				icon
-				rounded
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="tab[0] === 'inbox' ? $t('archive') : $t('unarchive')"
 				:disabled="selection.length === 0"
 				secondary
+				:icon="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'"
 				@click="toggleArchive"
-			>
-				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
-			</v-button>
+			/>
 		</template>
 
 		<template #sidebar>
-			<v-tabs v-model="tab" vertical>
-				<v-tab value="inbox">
-					<v-list-item-icon>
-						<v-icon name="inbox" />
-					</v-list-item-icon>
-					<v-list-item-content>{{ t('inbox') }}</v-list-item-content>
-				</v-tab>
-				<v-tab value="archived">
-					<v-list-item-icon>
-						<v-icon name="archive" />
-					</v-list-item-icon>
-					<v-list-item-content>{{ t('archive') }}</v-list-item-content>
-				</v-tab>
-			</v-tabs>
+			<VTabs v-model="tab" vertical>
+				<VTab value="inbox">
+					<VListItemIcon>
+						<VIcon name="inbox" />
+					</VListItemIcon>
+					<VListItemContent>{{ $t('inbox') }}</VListItemContent>
+				</VTab>
+				<VTab value="archived">
+					<VListItemIcon>
+						<VIcon name="archive" />
+					</VListItemIcon>
+					<VListItemContent>{{ $t('archive') }}</VListItemContent>
+				</VTab>
+			</VTabs>
+
+			<VDivider class="nav-divider" />
+
+			<VList nav>
+				<VListItem clickable to="/activity" :active="!notificationsDrawerOpen" @click="notificationsDrawerOpen = false">
+					<VListItemIcon>
+						<VIcon name="manage_search" />
+					</VListItemIcon>
+
+					<VListItemContent>
+						{{ $t('activity') }}
+					</VListItemContent>
+
+					<VListItemHint>
+						<VIcon name="launch" />
+					</VListItemHint>
+				</VListItem>
+			</VList>
 		</template>
 
 		<template v-if="!loading && !itemCount">
-			<v-info v-if="filter || search" :title="t('no_results')" icon="search" center>
-				{{ t('no_results_copy') }}
+			<VInfo v-if="filter || search" :title="$t('no_results')" icon="search" center>
+				{{ $t('no_results_copy') }}
 
 				<template #append>
-					<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+					<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 				</template>
-			</v-info>
+			</VInfo>
 
-			<v-info v-else icon="notifications" :title="t('no_notifications')" center>
-				{{ t('no_notifications_copy') }}
-			</v-info>
+			<VInfo v-else icon="notifications" :title="$t('no_notifications')" center>
+				{{ $t('no_notifications_copy') }}
+			</VInfo>
 		</template>
 
 		<div v-else class="content">
-			<v-list v-if="loading" class="notifications">
-				<v-skeleton-loader v-for="i in 10" :key="i" :class="{ dense: totalPages > 1 }" />
-			</v-list>
+			<VList v-if="loading" class="notifications">
+				<VSkeletonLoader v-for="i in 10" :key="i" :class="{ dense: totalPages > 1 }" />
+			</VList>
 
 			<div v-else class="notifications-block">
-				<v-checkbox
+				<VDivider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
+
+				<VCheckbox
 					class="select-all"
 					:class="{ dense: totalPages > 1 }"
-					:label="!allItemsSelected ? t('select_all') : t('deselect_all')"
+					:label="!allItemsSelected ? $t('select_all') : $t('deselect_all')"
 					:model-value="allItemsSelected"
 					:indeterminate="someItemsSelected"
 					@update:model-value="selectAll"
 				/>
 
-				<v-divider :class="{ dense: totalPages > 1 }" />
+				<VDivider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
 
-				<v-list class="notifications">
-					<v-list-item
+				<VList class="notifications">
+					<VListItem
 						v-for="notification in notifications"
 						:key="notification.id"
 						block
@@ -330,22 +365,22 @@ function clearFilters() {
 						"
 					>
 						<div class="header" @click="toggleNotification(notification.id)">
-							<v-checkbox
+							<VCheckbox
 								:model-value="selection.includes(notification.id)"
 								@update:model-value="toggleSelected(notification.id)"
 							/>
-							<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
-							<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
-								<v-text-overflow class="datetime" :text="datetime" />
-							</use-datetime>
-							<v-icon
+							<VTextOverflow class="title" :highlight="search" :text="notification.subject" />
+							<UseDatetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
+								<VTextOverflow class="datetime" :text="datetime" />
+							</UseDatetime>
+							<VIcon
 								v-if="notification.to"
-								v-tooltip="t('goto_collection_content')"
+								v-tooltip="$t('goto_collection_content')"
 								clickable
 								name="open_in_new"
 								@click="onLinkClick(notification.to)"
 							/>
-							<v-icon
+							<VIcon
 								v-if="notification.message"
 								clickable
 								:name="openNotifications.includes(notification.id) ? 'expand_less' : 'expand_more'"
@@ -356,12 +391,12 @@ function clearFilters() {
 							v-md="notification.message"
 							class="message"
 						/>
-					</v-list-item>
-				</v-list>
+					</VListItem>
+				</VList>
 			</div>
-			<v-pagination v-if="totalPages > 1" v-model="page" :total-visible="5" :length="totalPages" />
+			<VPagination v-if="totalPages > 1" v-model="page" :total-visible="5" :length="totalPages" />
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>
@@ -370,46 +405,45 @@ function clearFilters() {
 .item-count {
 	position: relative;
 	display: none;
-	margin: 0 8px;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	align-self: center;
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		display: inline;
 	}
 }
 
 .content {
-	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
+	padding: 0 var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
 
 .notifications {
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 
 	.v-skeleton-loader {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 
 		&.dense {
-			height: 44px;
+			block-size: 44px;
 		}
 	}
 
 	.v-list-item {
 		&.block {
-			height: unset;
-			min-height: var(--theme--form--field--input--height);
+			block-size: unset;
+			min-block-size: var(--theme--form--field--input--height);
 			flex-flow: wrap;
 			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
 
 			&.dense {
-				min-height: 44px;
+				min-block-size: 44px;
 				padding: 10px 8px;
 			}
 		}
 
 		.header {
-			width: 100%;
+			inline-size: 100%;
 			display: flex;
 			align-items: center;
 			gap: 8px;
@@ -423,16 +457,9 @@ function clearFilters() {
 		}
 
 		.message {
-			width: 100%;
-			margin-top: 8px;
-			-webkit-user-select: text;
-			user-select: text;
+			inline-size: 100%;
+			margin-block-start: 8px;
 			cursor: auto;
-
-			:deep(*) {
-				-webkit-user-select: text;
-				user-select: text;
-			}
 
 			:deep() {
 				@include mixins.markdown;
@@ -445,7 +472,7 @@ function clearFilters() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 24px;
+	block-size: 24px;
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {
@@ -453,7 +480,7 @@ function clearFilters() {
 	}
 }
 
-.v-divider {
+.select-all-divider {
 	margin: 8px 0;
 
 	&.dense {
@@ -474,5 +501,9 @@ function clearFilters() {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.nav-divider {
+	margin-inline: 12px;
 }
 </style>

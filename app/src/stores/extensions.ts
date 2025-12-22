@@ -1,6 +1,6 @@
 import api from '@/api';
-import type { ApiOutput } from '@directus/extensions';
-import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/extensions';
+import type { ApiOutput } from '@directus/types';
+import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';

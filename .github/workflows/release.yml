@@ -5,15 +5,32 @@ on:
     tags:
       - 'v[0-9]*'
 
+permissions:
+  contents: write
+  packages: write
+  attestations: write
+  id-token: write
+
 env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
   DOCKERHUB_IMAGE: docker.io/${{ github.repository }}
   COSIGN_REPOSITORY: docker.io/${{ github.repository }}-signatures
 
 jobs:
+  check-npm-packages:
+    name: Check NPM Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check if packages exist on NPM
+        uses: directus/npm-package-existence-checker@v1
+
   check-version:
     name: Check Version
     runs-on: ubuntu-latest
+    needs: check-npm-packages
     outputs:
       prerelease: ${{ steps.version.outputs.prerelease && true || false }}
     steps:
@@ -30,7 +47,7 @@ jobs:
     needs: check-version
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create release
         env:
@@ -62,7 +79,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -71,7 +88,6 @@ jobs:
 
       - name: Publish packages to NPM
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
         run: |
           pnpm --recursive publish \
@@ -100,7 +116,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -113,7 +129,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Cache Docker layers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}

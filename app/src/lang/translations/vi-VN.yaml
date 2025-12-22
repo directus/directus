@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Về chúng tôi
+first_name: Tên
+last_name: Họ
 identifier: Định danh
 avatar: Ảnh đại diện
 application: Ứng dụng
@@ -146,8 +148,6 @@ prefix: Tiền tố
 suffix: Hậu tố
 version: Phiên bản
 switch_version_copy: .
-promote_version_disabled: Không có thay đổi
-promote_version_changes: Thay đổi
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
@@ -360,6 +360,7 @@ confirm_revert_body: Bản ghi sẽ được cập nhật về mốc thời gian
 display: Hiển thị
 settings_update_success: Cài đặt đã được cập nhật
 title: Tiêu đề
+subtitle: Tiêu đề phụ
 revision_delta_created: Đã tạo
 revision_delta_updated: 'Cập nhật 1 Trường | Cập nhật {count} Trường'
 revision_delta_deleted: Đã xóa
@@ -605,7 +606,6 @@ errors:
   VALUE_OUT_OF_RANGE: Giá trị ngoài khoảng cho phép
   VALUE_TOO_LONG: Dữ liệu quá dài
 security: Bảo mật
-value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
 create_bookmark: Tạo Dấu trang
 edit_bookmark: Chỉnh sửa Dấu trang
@@ -735,7 +735,6 @@ bold: In đậm
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
-run_flow_confirm: Bạn có muốn thực thi luồng này không?
 run_flow_on_current_collection: Chạy luồng trên collection hiện tại
 run_flow: Chạy
 field_name_placeholder: Nhập tên trường...
@@ -840,8 +839,6 @@ unsaved_changes: Những thay đổi chưa được lưu
 unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
 discard_changes: Hủy thay đổi
 keep_editing: Tiếp tục chỉnh sửa
-page_help_collections_collection: >-
-  ** Duyệt các mục ** - Liệt kê tất cả các mục trong {collection} mà bạn có quyền truy cập. Tùy chỉnh bố cục, bộ lọc và sắp xếp để điều chỉnh chế độ xem của bạn và thậm chí lưu dấu trang của các cấu hình khác nhau này để truy cập nhanh.
 add_new: Thêm mới
 create_new: Tạo Mới
 all: Tất cả
@@ -997,6 +994,18 @@ no_value: Không có giá trị
 comment: Bình luận
 live_preview:
   new_window: Mở trong Cửa Sổ Mới
+ai:
+  unknown: Không xác định
+  settings: Cài đặt
+  tool_approval:
+    disabled: Đã tắt
+ai_tools:
+  files: Tệp
+  folders: Thư mục
+  schema: Cấu trúc dữ liệu
+  collections: Danh mục
+mcp_prompts_collection_schema:
+  messages_role_user: Người dùng
 expired: Đã hết hạn
 share: Chia sẻ
 share_access_not_found_desc: Vui lòng liên hệ với người dùng được ủy quyền của dự án này để yêu cầu quyền truy cập.

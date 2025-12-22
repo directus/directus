@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "13.0.7",
+	"version": "13.1.0",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -25,40 +25,44 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^build:.*/'",
-		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
-		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
-		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
+		"build:browser": "tsdown browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --dts",
+		"build:node": "tsdown node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --dts",
+		"build:shared": "tsdown shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --dts",
 		"dev": "pnpm run '/^build:.*/' --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/system-data": "workspace:*",
-		"date-fns": "4.1.0",
-		"fs-extra": "11.3.0",
-		"joi": "17.13.3",
-		"js-yaml": "4.1.0",
-		"lodash-es": "4.17.21",
-		"micromustache": "8.0.3"
+		"date-fns": "catalog:",
+		"fs-extra": "catalog:",
+		"ip-matching": "catalog:",
+		"joi": "catalog:",
+		"js-yaml": "catalog:",
+		"lodash-es": "catalog:",
+		"micromustache": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@types/fs-extra": "11.0.4",
-		"@types/js-yaml": "4.0.9",
-		"@types/lodash-es": "4.17.12",
-		"@types/node": "22.13.8",
-		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "2.1.9",
-		"tmp": "0.2.3",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9",
-		"vue": "3.5.13"
+		"@ngneat/falso": "catalog:",
+		"@types/fs-extra": "catalog:",
+		"@types/js-yaml": "catalog:",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
+		"@types/tmp": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"knex": "catalog:",
+		"tmp": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:",
+		"vue": "catalog:"
 	},
 	"peerDependencies": {
-		"vue": "^3.4"
+		"vue": "catalog:"
 	},
 	"peerDependenciesMeta": {
 		"vue": {

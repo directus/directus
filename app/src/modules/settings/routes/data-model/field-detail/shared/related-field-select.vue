@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -18,13 +23,11 @@ const props = withDefaults(
 	{
 		disabledFields: () => [],
 		typeDenyList: () => [],
-		placeholder: () => i18n.global.t('foreign_key') + '...',
 	},
 );
 
 defineEmits(['update:modelValue']);
 
-const { t } = useI18n();
 const fieldsStore = useFieldsStore();
 
 const fields = computed(() => {
@@ -49,23 +52,23 @@ const fieldExists = computed(() => {
 </script>
 
 <template>
-	<v-input
+	<VInput
 		:model-value="modelValue"
 		db-safe
 		:nullable="nullable"
 		:disabled="disabled"
-		:placeholder="placeholder"
+		:placeholder="placeholder || $t('foreign_key')"
 		:class="{ matches: fieldExists }"
 		@update:model-value="$emit('update:modelValue', $event)"
 	>
 		<template v-if="fields && fields.length > 0 && !disabled" #append>
-			<v-menu show-arrow placement="bottom-end">
+			<VMenu show-arrow placement="bottom-end">
 				<template #activator="{ toggle }">
-					<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable @click="toggle" />
+					<VIcon v-tooltip="$t('select_existing')" name="list_alt" clickable @click="toggle" />
 				</template>
 
-				<v-list class="monospace">
-					<v-list-item
+				<VList class="monospace">
+					<VListItem
 						v-for="field in fields"
 						:key="field.value"
 						:active="modelValue === field.value"
@@ -73,16 +76,16 @@ const fieldExists = computed(() => {
 						clickable
 						@click="$emit('update:modelValue', field.value)"
 					>
-						<v-list-item-content>
+						<VListItemContent>
 							{{ field.text }}
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+						</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
 		</template>
 
 		<template v-if="disabled" #input>
-			<v-text-overflow :text="modelValue" />
+			<VTextOverflow :text="modelValue" />
 		</template>
-	</v-input>
+	</VInput>
 </template>

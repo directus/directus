@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VButton from './v-button.vue';
+import VIcon from './v-icon/v-icon.vue';
 
 const props = defineProps<{
 	/** Currently selected page */
@@ -59,11 +61,11 @@ function toPage(page: number) {
 
 <template>
 	<div class="v-pagination">
-		<v-button class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
-			<v-icon name="chevron_left" />
-		</v-button>
+		<VButton class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
+			<VIcon name="chevron_left" />
+		</VButton>
 
-		<v-button
+		<VButton
 			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
 			class="page"
 			secondary
@@ -72,7 +74,7 @@ function toPage(page: number) {
 			@click="toPage(1)"
 		>
 			1
-		</v-button>
+		</VButton>
 
 		<span
 			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1"
@@ -81,7 +83,7 @@ function toPage(page: number) {
 			...
 		</span>
 
-		<v-button
+		<VButton
 			v-for="page in visiblePages"
 			:key="page"
 			:class="{ active: modelValue === page }"
@@ -92,7 +94,7 @@ function toPage(page: number) {
 			@click="toPage(page)"
 		>
 			{{ page }}
-		</v-button>
+		</VButton>
 
 		<span
 			v-if="
@@ -103,7 +105,7 @@ function toPage(page: number) {
 			...
 		</span>
 
-		<v-button
+		<VButton
 			v-if="
 				showFirstLast && totalVisible && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible
 			"
@@ -115,11 +117,11 @@ function toPage(page: number) {
 			@click="toPage(length)"
 		>
 			{{ length }}
-		</v-button>
+		</VButton>
 
-		<v-button class="next" :disabled="disabled || modelValue === length" secondary icon small @click="toNext">
-			<v-icon name="chevron_right" />
-		</v-button>
+		<VButton class="next" :disabled="disabled || modelValue === length" secondary icon small @click="toNext">
+			<VIcon name="chevron_right" />
+		</VButton>
 	</div>
 </template>
 
@@ -135,7 +137,7 @@ function toPage(page: number) {
 	line-height: 2em;
 }
 
-@media (min-width: 600px) {
+@media (width > 640px) {
 	.gap {
 		display: inline;
 	}
@@ -154,7 +156,7 @@ function toPage(page: number) {
 	display: none;
 }
 
-@media (min-width: 600px) {
+@media (width > 640px) {
 	.v-button.page:not(.active) {
 		display: inline;
 	}
@@ -165,11 +167,11 @@ function toPage(page: number) {
 }
 
 .v-button:first-child {
-	margin-left: 0;
+	margin-inline-start: 0;
 }
 
 .v-button:last-child {
-	margin-right: 0;
+	margin-inline-end: 0;
 }
 
 .v-button.active {

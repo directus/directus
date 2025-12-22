@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
@@ -67,6 +68,15 @@ const fakeFilesField: Field = {
 let currentUpdate: string;
 
 export const useFieldsStore = defineStore('fieldsStore', () => {
+	const aiStore = useAiStore();
+
+	aiStore.onSystemToolResult(async (toolName) => {
+		// Fields can be modified as a nested object within collections as well
+		if (toolName === 'collections' || toolName === 'fields') {
+			await hydrate();
+		}
+	});
+
 	const fields = ref<Field[]>([]);
 
 	return {
@@ -128,7 +138,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 										[field.field]: getLiteralInterpolatedTranslation(translation),
 									},
 								},
-						  }
+							}
 						: {}),
 				});
 			}

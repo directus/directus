@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useUserStore } from '@/stores/user';
 import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
 import { StyleValue, computed, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export type AppTile = {
 	id: string;
@@ -74,7 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);
 
-const { t } = useI18n();
+const userStore = useUserStore();
 
 /**
  * When drag-n-dropping for positioning/resizing, we're
@@ -129,6 +136,8 @@ const iconColor = computed(() => ({
 }));
 
 function useDragDrop() {
+	const isLTR = userStore.textDirection === 'ltr';
+
 	const dragging = ref(false);
 
 	let pointerStartPosX = 0;
@@ -162,8 +171,13 @@ function useDragDrop() {
 		const gridDeltaY = Math.round(pointerDeltaY / 20);
 
 		if (operation === 'move') {
-			editedPosition.position_x = panelStartPosX + gridDeltaX;
 			editedPosition.position_y = panelStartPosY + gridDeltaY;
+
+			if (isLTR) {
+				editedPosition.position_x = panelStartPosX + gridDeltaX;
+			} else {
+				editedPosition.position_x = panelStartPosX - gridDeltaX;
+			}
 
 			if (editedPosition.position_x < 1) editedPosition.position_x = 1;
 			if (editedPosition.position_y < 1) editedPosition.position_y = 1;
@@ -174,7 +188,11 @@ function useDragDrop() {
 			}
 
 			if (operation.includes('right')) {
-				editedPosition.width = panelStartWidth + gridDeltaX;
+				if (isLTR) {
+					editedPosition.width = panelStartWidth + gridDeltaX;
+				} else {
+					editedPosition.width = panelStartWidth - gridDeltaX;
+				}
 			}
 
 			if (operation.includes('bottom')) {
@@ -182,8 +200,13 @@ function useDragDrop() {
 			}
 
 			if (operation.includes('left')) {
-				editedPosition.width = panelStartWidth - gridDeltaX;
-				editedPosition.position_x = panelStartPosX + gridDeltaX;
+				if (isLTR) {
+					editedPosition.width = panelStartWidth - gridDeltaX;
+					editedPosition.position_x = panelStartPosX + gridDeltaX;
+				} else {
+					editedPosition.width = panelStartWidth + gridDeltaX;
+					editedPosition.position_x = panelStartPosX - gridDeltaX;
+				}
 			}
 
 			const minWidth = props.minWidth;
@@ -260,45 +283,45 @@ function useDragDrop() {
 		@pointerdown="onPointerDown('move', $event)"
 	>
 		<div v-if="showHeader" class="header">
-			<v-icon class="icon" :style="iconColor" :name="icon" small />
-			<v-text-overflow class="name" :text="name || ''" />
+			<VIcon class="icon" :style="iconColor" :name="icon" small />
+			<VTextOverflow class="name" :text="name || ''" />
 			<div class="spacer" />
-			<v-icon v-if="note" v-tooltip="note" class="note" name="info" />
+			<VIcon v-if="note" v-tooltip="note" class="note" name="info" />
 		</div>
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
+			<VIcon v-tooltip="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
 
-			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
+			<VMenu v-if="showOptions" placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
-					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
+					<VIcon class="more-icon" name="more_vert" clickable @click="toggle" />
 				</template>
 
-				<v-list>
-					<v-list-item clickable :disabled="id.startsWith('_')" @click="$emit('move')">
-						<v-list-item-icon>
-							<v-icon class="move-icon" name="input" />
-						</v-list-item-icon>
-						<v-list-item-content>
-							{{ t('copy_to') }}
-						</v-list-item-content>
-					</v-list-item>
+				<VList>
+					<VListItem clickable :disabled="id.startsWith('_')" @click="$emit('move')">
+						<VListItemIcon>
+							<VIcon class="move-icon" name="input" />
+						</VListItemIcon>
+						<VListItemContent>
+							{{ $t('copy_to') }}
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item clickable @click="$emit('duplicate')">
-						<v-list-item-icon>
-							<v-icon name="control_point_duplicate" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ t('duplicate') }}</v-list-item-content>
-					</v-list-item>
+					<VListItem clickable @click="$emit('duplicate')">
+						<VListItemIcon>
+							<VIcon name="control_point_duplicate" />
+						</VListItemIcon>
+						<VListItemContent>{{ $t('duplicate') }}</VListItemContent>
+					</VListItem>
 
-					<v-list-item class="delete-action" clickable @click="$emit('delete')">
-						<v-list-item-icon>
-							<v-icon name="delete" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+					<VListItem class="delete-action" clickable @click="$emit('delete')">
+						<VListItemIcon>
+							<VIcon name="delete" />
+						</VListItemIcon>
+						<VListItemContent>{{ $t('delete') }}</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
 		</div>
 
 		<div class="resize-details">
@@ -379,8 +402,8 @@ function useDragDrop() {
 
 .resize-details {
 	position: absolute;
-	bottom: 0;
-	right: 0;
+	inset-block-end: 0;
+	inset-inline-end: 0;
 	z-index: 2;
 	padding: 2px 11.5px 11.5px 2px;
 	color: var(--theme--foreground-subdued);
@@ -389,10 +412,10 @@ function useDragDrop() {
 	font-family: var(--theme--fonts--monospace--font-family);
 	font-style: normal;
 	line-height: 1;
-	text-align: right;
-	border-top-right-radius: var(--theme--border-radius);
-	border-bottom-right-radius: var(--theme--border-radius);
-	border-top-left-radius: var(--theme--border-radius);
+	text-align: end;
+	border-start-end-radius: var(--theme--border-radius);
+	border-end-end-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
 	opacity: 0;
 	transition:
@@ -405,33 +428,33 @@ function useDragDrop() {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	overflow: hidden;
 }
 
 .tile-content.has-header {
-	height: calc(100% - 42px);
+	block-size: calc(100% - 42px);
 }
 
 .header {
 	display: flex;
 	align-items: center;
-	height: 42px;
+	block-size: 42px;
 	padding: 12px;
 }
 
 .footer {
 	padding: 0 12px;
-	border-top: 2px solid var(--theme--border-color-subdued);
-	margin-top: auto;
-	padding-top: 8px;
+	border-block-start: 2px solid var(--theme--border-color-subdued);
+	margin-block-start: auto;
+	padding-block-start: 8px;
 }
 
 .icon {
 	--v-icon-color: var(--theme--foreground-subdued);
 
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 
 .name {
@@ -461,16 +484,16 @@ function useDragDrop() {
 
 .edit-actions {
 	position: absolute;
-	top: 0;
-	right: 0;
+	inset-block-start: 0;
+	inset-inline-end: 0;
 	z-index: 2;
 	display: flex;
 	gap: 4px;
 	align-items: center;
 	padding: 7px;
-	border-top-right-radius: var(--theme--border-radius);
-	border-bottom-right-radius: var(--theme--border-radius);
-	border-bottom-left-radius: var(--theme--border-radius);
+	border-start-end-radius: var(--theme--border-radius);
+	border-end-end-radius: var(--theme--border-radius);
+	border-end-start-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
 }
 
@@ -480,80 +503,96 @@ function useDragDrop() {
 }
 
 .resize-handlers .top {
-	top: -3px;
-	width: 100%;
-	height: 10px;
+	inset-block-start: -3px;
+	inline-size: 100%;
+	block-size: 10px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .right {
-	top: 0;
-	right: -3px;
-	width: 10px;
-	height: 100%;
+	inset-block-start: 0;
+	inset-inline-end: -3px;
+	inline-size: 10px;
+	block-size: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .bottom {
-	bottom: -3px;
-	width: 100%;
-	height: 10px;
+	inset-block-end: -3px;
+	inline-size: 100%;
+	block-size: 10px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .left {
-	top: 0;
-	left: -3px;
-	width: 10px;
-	height: 100%;
+	inset-block-start: 0;
+	inset-inline-start: -3px;
+	inline-size: 10px;
+	block-size: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .top-left {
-	top: -3px;
-	left: -3px;
-	width: 14px;
-	height: 14px;
+	inset-block-start: -3px;
+	inset-inline-start: -3px;
+	inline-size: 14px;
+	block-size: 14px;
 	cursor: nwse-resize;
+
+	html[dir='rtl'] & {
+		cursor: nesw-resize;
+	}
 }
 
 .resize-handlers .top-right {
-	top: -3px;
-	right: -3px;
-	width: 14px;
-	height: 14px;
+	inset-block-start: -3px;
+	inset-inline-end: -3px;
+	inline-size: 14px;
+	block-size: 14px;
 	cursor: nesw-resize;
+
+	html[dir='rtl'] & {
+		cursor: nwse-resize;
+	}
 }
 
 .resize-handlers .bottom-right {
-	right: -3px;
-	bottom: -3px;
-	width: 14px;
-	height: 14px;
+	inset-inline-end: -3px;
+	inset-block-end: -3px;
+	inline-size: 14px;
+	block-size: 14px;
 	cursor: nwse-resize;
+
+	html[dir='rtl'] & {
+		cursor: nesw-resize;
+	}
 }
 
 .resize-handlers .bottom-left {
-	bottom: -3px;
-	left: -3px;
-	width: 14px;
-	height: 14px;
+	inset-block-end: -3px;
+	inset-inline-start: -3px;
+	inline-size: 14px;
+	block-size: 14px;
 	cursor: nesw-resize;
+
+	html[dir='rtl'] & {
+		cursor: nwse-resize;
+	}
 }
 
 .br-tl {
-	border-top-left-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 }
 
 .br-tr {
-	border-top-right-radius: var(--theme--border-radius);
+	border-start-end-radius: var(--theme--border-radius);
 }
 
 .br-br {
-	border-bottom-right-radius: var(--theme--border-radius);
+	border-end-end-radius: var(--theme--border-radius);
 }
 
 .br-bl {
-	border-bottom-left-radius: var(--theme--border-radius);
+	border-end-start-radius: var(--theme--border-radius);
 }
 </style>

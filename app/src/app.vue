@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VError from '@/components/v-error.vue';
+import VInfo from '@/components/v-info.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
 import { generateFavicon } from '@/utils/generate-favicon';
@@ -7,14 +11,14 @@ import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
 import { computed, onMounted, onUnmounted, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { RouterView } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
-
-const { t } = useI18n();
+import { useUserStore } from './stores/user';
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
+const userStore = useUserStore();
 
 const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
 
@@ -31,6 +35,10 @@ useHead({
 	templateParams: {
 		projectName: computed(() => serverStore.info?.project?.project_name ?? 'Directus'),
 	},
+	htmlAttrs: computed(() => ({
+		lang: userStore.language,
+		dir: userStore.textDirection,
+	})),
 	meta: computed(() => {
 		const content = serverStore.info?.project?.project_color ?? '#6644ff';
 
@@ -92,35 +100,35 @@ useSystem();
 	/>
 
 	<div id="directus">
-		<transition name="fade">
+		<Transition name="fade">
 			<div v-if="hydrating" class="hydrating">
-				<v-progress-circular indeterminate />
+				<VProgressCircular indeterminate />
 			</div>
-		</transition>
+		</Transition>
 
-		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-			{{ t('unexpected_error_copy') }}
+		<VInfo v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
+			{{ $t('unexpected_error_copy') }}
 
 			<template #append>
-				<v-error class="error" :error="error" />
+				<VError class="error" :error="error" />
 
-				<v-button small @click="reload">{{ t('reload_page') }}</v-button>
+				<VButton small @click="reload">{{ $t('reload_page') }}</VButton>
 			</template>
-		</v-info>
+		</VInfo>
 
-		<router-view v-else-if="!hydrating" />
+		<RouterView v-else-if="!hydrating" />
 	</div>
 
-	<teleport to="#custom-css">{{ customCSS }}</teleport>
+	<Teleport to="#custom-css">{{ customCSS }}</Teleport>
 </template>
 
 <style lang="scss" scoped>
 :global(#app) {
-	height: 100%;
+	block-size: 100%;
 }
 
 #directus {
-	height: 100%;
+	block-size: 100%;
 }
 
 .hydrating {
@@ -129,8 +137,8 @@ useSystem();
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	backdrop-filter: blur(10px);
 }
 
@@ -145,6 +153,6 @@ useSystem();
 }
 
 .error {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 </style>

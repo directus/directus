@@ -5,9 +5,11 @@ import inquirer from 'inquirer';
 import { EXTENSION_LANGUAGES, EXTENSION_TYPES, BUNDLE_EXTENSION_TYPES } from '@directus/extensions';
 import { create } from '@directus/extensions-sdk/cli';
 
-run();
+if (process.env.NODE_ENV !== 'test') {
+	run();
+}
 
-async function run() {
+export async function run() {
 	// eslint-disable-next-line no-console
 	console.log('This utility will walk you through creating a Directus extension.\n');
 

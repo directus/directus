@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "11.1.0",
+	"version": "11.2.0",
 	"description": "OpenAPI Specification of the Directus API",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -30,12 +30,12 @@
 		"validate": "swagger-cli validate src/openapi.yaml"
 	},
 	"dependencies": {
-		"openapi3-ts": "4.4.0"
+		"openapi3-ts": "catalog:"
 	},
 	"devDependencies": {
-		"npm-watch": "0.13.0",
-		"swagger-cli": "4.0.4",
-		"swagger-ui-watcher": "2.1.14"
+		"npm-watch": "catalog:",
+		"swagger-cli": "catalog:",
+		"swagger-ui-watcher": "catalog:"
 	},
 	"watch": {
 		"build": {

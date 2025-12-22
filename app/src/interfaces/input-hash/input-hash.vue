@@ -7,14 +7,18 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: string | null;
 	disabled?: boolean;
+	nonEditable?: boolean;
 	placeholder?: string;
 	masked?: boolean;
+	autocomplete?: string;
 }>();
 
 const emit = defineEmits(['input']);
@@ -24,8 +28,16 @@ const { t } = useI18n();
 const isHashed = ref(false);
 const localValue = ref<string | null>(null);
 
+const autocomplete = computed(() => {
+	if (props.autocomplete) return props.autocomplete;
+
+	if (props.masked) return 'new-password';
+
+	return 'off';
+});
+
 const internalPlaceholder = computed(() => {
-	return isHashed.value ? t('value_hashed') : props.placeholder;
+	return isHashed.value ? t('value_securely_stored') : props.placeholder;
 });
 
 watch(
@@ -43,19 +55,20 @@ function emitValue(newValue: string) {
 </script>
 
 <template>
-	<v-input
+	<VInput
 		:placeholder="internalPlaceholder"
-		:disabled="disabled"
+		:disabled
+		:non-editable
 		:type="masked ? 'password' : 'text'"
-		:autocomplete="masked ? 'new-password' : 'off'"
+		:autocomplete
 		:model-value="localValue"
 		:class="{ hashed: isHashed && !localValue }"
 		@update:model-value="emitValue"
 	>
 		<template #append>
-			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
+			<VIcon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
 		</template>
-	</v-input>
+	</VInput>
 </template>
 
 <style lang="scss" scoped>
