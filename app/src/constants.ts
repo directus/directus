@@ -81,6 +81,12 @@ export const MODULE_BAR_DEFAULT = [
 	},
 ];
 
+export const BREAKPOINTS = {
+	sm: 640,
+	lg: 1024,
+	xl: 1280,
+};
+
 export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider: true }> = [
 	{
 		text: '$t:string',

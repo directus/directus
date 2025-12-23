@@ -1,6 +1,7 @@
 import api, { RequestConfig } from '@/api';
 import { RTL_LANGUAGES } from '@/constants/text-direction';
 import { setLanguage } from '@/lang/set-language';
+import sdk from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { AppUser, ShareUser } from '@/types/user';
 import { userName } from '@/utils/user-name';
@@ -80,6 +81,8 @@ export const useUserStore = defineStore('userStore', () => {
 				...globals.data,
 				roles: roles.data,
 			};
+
+			sdk.connect();
 		} catch (error: any) {
 			error.value = error;
 		} finally {
@@ -91,6 +94,7 @@ export const useUserStore = defineStore('userStore', () => {
 		currentUser.value = null;
 		loading.value = false;
 		error.value = null;
+		sdk.disconnect();
 	};
 
 	const hydrateAdditionalFields = async (fields: string[]) => {

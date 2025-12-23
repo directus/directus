@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useExtension } from '@/composables/use-extension';
 import { isVueComponent } from '@directus/utils';
 import { storeToRefs } from 'pinia';
@@ -70,11 +73,11 @@ const optionsValues = computed({
 </script>
 
 <template>
-	<v-notice v-if="usesCustomComponent === false && optionsFields.length === 0">
+	<VNotice v-if="usesCustomComponent === false && optionsFields.length === 0">
 		{{ $t('no_options_available') }}
-	</v-notice>
+	</VNotice>
 
-	<v-form
+	<VForm
 		v-else-if="usesCustomComponent === false"
 		v-model="optionsValues"
 		class="extension-options"
@@ -85,7 +88,7 @@ const optionsValues = computed({
 		primary-key="+"
 	/>
 
-	<v-error-boundary v-else :name="`${type}-options-${extensionInfo!.id}`">
+	<VErrorBoundary v-else :name="`${type}-options-${extensionInfo!.id}`">
 		<component
 			:is="`${type}-options-${extensionInfo!.id}`"
 			:value="optionsValues"
@@ -94,7 +97,7 @@ const optionsValues = computed({
 			@input="optionsValues = $event"
 		/>
 		<template #fallback>
-			<v-notice type="warning">{{ $t('unexpected_error') }}</v-notice>
+			<VNotice type="warning">{{ $t('unexpected_error') }}</VNotice>
 		</template>
-	</v-error-boundary>
+	</VErrorBoundary>
 </template>

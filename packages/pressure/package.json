@@ -1,6 +1,6 @@
 {
 	"name": "@directus/pressure",
-	"version": "3.0.11",
+	"version": "3.0.13",
 	"description": "Pressure based rate limiter",
 	"homepage": "https://directus.io",
 	"repository": {

@@ -1,29 +1,49 @@
 <script setup lang="ts">
+import { useAiStore } from '@/ai/stores/use-ai';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemHint from '@/components/v-list-item-hint.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
-import { useLocalStorage } from '@/composables/use-local-storage';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
+import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import HeaderCollab from '@/views/private/components/header-collab.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
-import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
+import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
+import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch, type ComponentPublicInstance } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -48,7 +68,11 @@ const { collectionRoute } = useCollectionRoute();
 
 const userStore = useUserStore();
 
-const form = ref<HTMLElement>();
+const form = ref<ComponentPublicInstance>();
+
+const scrollParent = computed(() => form.value?.$el?.parentElement);
+const { y: formScrollY } = useScroll(scrollParent);
+const showHeaderShadow = computed(() => formScrollY.value > 0);
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -91,6 +115,14 @@ const {
 	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
+
+const aiStore = useAiStore();
+
+aiStore.onSystemToolResult((tool, input) => {
+	if (tool === 'items' && input.collection === collection.value) {
+		refresh();
+	}
+});
 
 const {
 	onSave,
@@ -265,19 +297,42 @@ const previewUrl = computed(() => {
 	return displayValue.value.trim() || null;
 });
 
-const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
+const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
+const livePreviewSizeDefault = 50;
+const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', livePreviewSizeDefault);
 
-const splitView = computed({
+const breakpoints = useBreakpoints(BREAKPOINTS);
+const isMobile = breakpoints.smallerOrEqual('sm');
+
+const livePreviewActive = computed(
+	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',
+);
+
+const livePreviewCollapsed = computed({
 	get() {
-		if (!collectionInfo.value?.meta?.preview_url) return false;
-		if (unref(isNew)) return false;
-
-		return livePreviewMode.value === 'split';
+		return !livePreviewActive.value;
 	},
-	set(value) {
-		livePreviewMode.value = value ? 'split' : null;
+	set(value: boolean) {
+		livePreviewMode.value = value ? null : 'split';
 	},
 });
+
+const livePreviewSize = computed({
+	get() {
+		if (isMobile.value) {
+			return livePreviewActive.value ? 100 : 0;
+		}
+
+		return livePreviewSizeStorage.value || livePreviewSizeDefault;
+	},
+	set(value: number) {
+		if (isMobile.value) return;
+
+		livePreviewSizeStorage.value = value;
+	},
+});
+
+provide('live-preview-active', livePreviewActive);
 
 let popupWindow: Window | null = null;
 
@@ -313,22 +368,14 @@ watch(
 );
 
 const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
-	collection: collection.value,
-	primaryKey: actualPrimaryKey.value,
+	collection,
+	primaryKey: actualPrimaryKey,
 	location: 'item',
 	hasEdits,
 	onRefreshCallback: refresh,
 });
 
 provideRunManualFlow();
-
-function toggleSplitView() {
-	if (livePreviewMode.value === null) {
-		livePreviewMode.value = 'split';
-	} else {
-		livePreviewMode.value = null;
-	}
-}
 
 async function refreshLivePreview() {
 	try {
@@ -355,17 +402,6 @@ watch(saveVersionLoading, async (newVal, oldVal) => {
 onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
-
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push(collectionRoute.value);
-}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
@@ -532,16 +568,17 @@ function useCollectionRoute() {
 </script>
 
 <template>
-	<content-not-found
+	<ContentNotFound
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view
+	<PrivateView
 		v-else
-		v-model:split-view="splitView"
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
-		:split-view-min-width="310"
-		:title="title"
+		:title
+		:show-back="!collectionInfo.meta?.singleton"
+		:show-header-shadow="showHeaderShadow"
+		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
@@ -550,10 +587,10 @@ function useCollectionRoute() {
 		</template>
 
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
-			<v-skeleton-loader v-if="loading" class="title-loader" type="text" />
+			<VSkeletonLoader v-if="loading" class="title-loader" type="text" />
 
 			<h1 v-else class="type-title">
-				<render-template
+				<RenderTemplate
 					:collection="collectionInfo.collection"
 					:item="templateData"
 					:template="collectionInfo.meta!.display_template"
@@ -561,42 +598,16 @@ function useCollectionRoute() {
 			</h1>
 		</template>
 
-		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-			>
-				<v-icon :name="collectionInfo.icon" />
-			</v-button>
-
-			<v-button
-				v-else
-				v-tooltip.bottom="$t('back')"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				@click="navigateBack"
-			>
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
 		<template #headline>
 			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
-				<v-breadcrumb
+				<VBreadcrumb
 					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
 					:items="[{ name: $t('content'), to: '/content' }]"
 					class="headline-breadcrumb"
 				/>
-				<v-breadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
+				<VBreadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
 
-				<version-menu
+				<VersionMenu
 					v-if="shouldShowVersioning"
 					:collection="collection"
 					:primary-key="internalPrimaryKey!"
@@ -617,19 +628,20 @@ function useCollectionRoute() {
 		</template>
 
 		<template #actions>
-			<v-button
+			<VButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
 				rounded
 				icon
 				class="action-preview"
 				:secondary="livePreviewMode === null"
-				@click="toggleSplitView"
+				small
+				@click="livePreviewCollapsed = !livePreviewCollapsed"
 			>
-				<v-icon name="visibility" outline />
-			</v-button>
+				<VIcon name="visibility" outline small />
+			</VButton>
 
-			<v-dialog
+			<VDialog
 				v-if="!isNew && currentVersion === null"
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
@@ -637,7 +649,7 @@ function useCollectionRoute() {
 				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<VButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						rounded
@@ -645,27 +657,28 @@ function useCollectionRoute() {
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
-					</v-button>
+						<VIcon name="delete" outline small />
+					</VButton>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-dialog
+			<VDialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew && currentVersion === null"
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
@@ -673,46 +686,48 @@ function useCollectionRoute() {
 				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<VButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
 						rounded
 						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
-					</v-button>
+						<VIcon :name="isArchived ? 'unarchive' : 'archive'" outline small />
+					</VButton>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmArchive = false">
+					<VCardActions>
+						<VButton secondary @click="confirmArchive = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
+						</VButton>
+						<VButton kind="warning" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? $t('unarchive') : $t('archive') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-button
+			<VButton
 				v-if="currentVersion === null"
 				rounded
 				icon
 				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<VIcon name="check" small />
 
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
 						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
@@ -721,89 +736,109 @@ function useCollectionRoute() {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
-			<v-button
+			</VButton>
+			<VButton
 				v-else
 				rounded
 				icon
 				:tooltip="$t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
+				small
 				@click="saveVersionAction('stay')"
 			>
-				<v-icon name="beenhere" />
+				<VIcon name="beenhere" small />
 
 				<template #append-outer>
-					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
+					<VMenu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
 						<template #activator="{ toggle }">
-							<v-icon class="version-more-options" name="more_vert" clickable @click="toggle" />
+							<VIcon class="version-more-options" name="more_vert" clickable @click="toggle" />
 						</template>
 
-						<v-list>
-							<v-list-item clickable @click="saveVersionAction('main')">
-								<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('save_and_return_to_main') }}</v-list-item-content>
-								<v-list-item-hint>{{ translateShortcut(['meta', 'alt', 's']) }}</v-list-item-hint>
-							</v-list-item>
-							<v-list-item clickable @click="saveVersionAction('quit')">
-								<v-list-item-icon><v-icon name="done_all" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('save_and_quit') }}</v-list-item-content>
-								<v-list-item-hint>{{ translateShortcut(['meta', 'shift', 's']) }}</v-list-item-hint>
-							</v-list-item>
-							<v-list-item clickable @click="discardAndStay">
-								<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('discard_all_changes') }}</v-list-item-content>
-							</v-list-item>
-						</v-list>
-					</v-menu>
+						<VList>
+							<VListItem clickable @click="saveVersionAction('main')">
+								<VListItemIcon><VIcon name="check" /></VListItemIcon>
+								<VListItemContent>{{ $t('save_and_return_to_main') }}</VListItemContent>
+								<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>
+							</VListItem>
+							<VListItem clickable @click="saveVersionAction('quit')">
+								<VListItemIcon><VIcon name="done_all" /></VListItemIcon>
+								<VListItemContent>{{ $t('save_and_quit') }}</VListItemContent>
+								<VListItemHint>{{ translateShortcut(['meta', 'shift', 's']) }}</VListItemHint>
+							</VListItem>
+							<VListItem clickable @click="discardAndStay">
+								<VListItemIcon><VIcon name="undo" /></VListItemIcon>
+								<VListItemContent>{{ $t('discard_all_changes') }}</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
 				</template>
-			</v-button>
+			</VButton>
 
-			<flow-dialogs v-bind="flowDialogsContext" />
+			<FlowDialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
-			<content-navigation :current-collection="collection" />
+			<ContentNavigation :current-collection="collection" />
 		</template>
 
-		<v-form
-			ref="form"
-			v-model="edits"
-			:autofocus="isNew"
-			:disabled="isFormDisabled"
-			:loading="loading"
-			:initial-values="item"
-			:fields="fields"
-			:primary-key="internalPrimaryKey"
-			:validation-errors="validationErrors"
-			:version="currentVersion"
-			:collab-context="collabContext"
-			:direction="userStore.textDirection"
-		/>
+		<SplitPanel
+			v-model:size="livePreviewSize"
+			v-model:collapsed="livePreviewCollapsed"
+			primary="end"
+			size-unit="%"
+			collapsible
+			:collapsed-size="0"
+			:collapse-threshold="15"
+			:min-size="isMobile ? 0 : 20"
+			:max-size="isMobile ? 100 : 80"
+			:snap-points="[livePreviewSizeDefault]"
+			:transition-duration="150"
+			class="content-split"
+			:disabled="isMobile"
+		>
+			<template #start>
+				<VForm
+					ref="form"
+					v-model="edits"
+					:autofocus="isNew"
+					:disabled="isFormDisabled"
+					:loading="loading"
+					:initial-values="item"
+					:fields="fields"
+					:primary-key="internalPrimaryKey"
+					:collab-context="collabContext"
+					:validation-errors="validationErrors"
+					:version="currentVersion"
+					:direction="userStore.textDirection"
+				/>
+			</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+			<template #divider>
+				<PrivateViewResizeHandle />
+			</template>
+
+			<template #end>
+				<LivePreview v-if="livePreviewActive && previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+			</template>
+		</SplitPanel>
+
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<template #splitView>
-			<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
-		</template>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_collections_item')" class="page-description" />
-			</sidebar-detail>
 			<template v-if="isNew === false && actualPrimaryKey">
-				<revisions-sidebar-detail
+				<RevisionsSidebarDetail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsSidebarDetailRef"
 					:collection="collection"
@@ -812,21 +847,21 @@ function useCollectionRoute() {
 					:scope="accountabilityScope"
 					@revert="revert"
 				/>
-				<comments-sidebar-detail
+				<CommentsSidebarDetail
 					v-if="currentVersion === null"
 					:collection="collection"
 					:primary-key="actualPrimaryKey"
 				/>
-				<shares-sidebar-detail
+				<SharesSidebarDetail
 					v-if="currentVersion === null"
 					:collection="collection"
 					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<flow-sidebar-detail v-if="currentVersion === null" :manual-flows />
+				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
@@ -842,17 +877,26 @@ function useCollectionRoute() {
 }
 
 .v-form {
-	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
-
-	@media (min-width: 600px) {
-		padding: var(--content-padding);
-		padding-block-end: var(--content-padding-bottom);
-	}
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .title-loader {
 	inline-size: 260px;
+}
+
+:deep(.type-title) {
+	.render-template {
+		img {
+			block-size: 20px;
+		}
+	}
+}
+
+.headline-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
 }
 
 .header-collab {
@@ -885,23 +929,9 @@ function useCollectionRoute() {
 			inset-block-start: 4px;
 		}
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			opacity: 1;
 		}
-	}
-
-	.headline-wrapper {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-	}
-
-	:deep(.header-bar.collapsed.shadow .title-container .headline) {
-		opacity: 1;
-		pointer-events: auto;
-	}
-	:deep(.header-bar.small.shadow .title-container .headline) {
-		opacity: 1;
 	}
 }
 
@@ -909,5 +939,38 @@ function useCollectionRoute() {
 	@media (max-width: 600px) {
 		display: none;
 	}
+}
+
+.content-split {
+	flex-grow: 1;
+	block-size: 100%;
+	position: relative;
+}
+
+.content-split :deep(.sp-start) {
+	overflow: auto;
+}
+
+.content-split :deep(.sp-end) {
+	background-color: var(--theme--background-subdued);
+	overflow-y: auto;
+
+	@media (width > 640px) {
+		border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	}
+}
+
+.content-split.sp-collapsed :deep(.sp-divider) {
+	display: none;
+}
+
+.content-split.sp-collapsed :deep(.sp-end) {
+	border-inline-start: none;
+}
+
+/* Disable pointer events on iframe during drag to prevent jank */
+.content-split.sp-dragging :deep(iframe),
+.content-split:active :deep(iframe) {
+	pointer-events: none !important;
 }
 </style>

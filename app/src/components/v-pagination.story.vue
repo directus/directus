@@ -15,7 +15,7 @@ const value = ref(3);
 <template>
 	<Story title="VPagination" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-pagination v-model="value" v-bind="state" />
+			<VPagination v-model="value" v-bind="state" />
 		</template>
 
 		<template #controls>

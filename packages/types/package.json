@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "13.3.1",
+	"version": "13.5.0",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -14,6 +14,7 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
+		"./collab": "./dist/websockets/collab.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
@@ -31,7 +32,8 @@
 		"@types/express": "catalog:",
 		"@types/geojson": "catalog:",
 		"@types/nodemailer": "catalog:",
-		"@types/ws": "catalog:"
+		"@types/ws": "catalog:",
+		"@types/archiver": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",

@@ -2,6 +2,6 @@
 
 exports[`Mount component 1`] = `
 "<button data-v-2b39bf8c="" class="v-radio" type="button" aria-pressed="false">
-  <v-icon-stub data-v-2b39bf8c="" name="radio_button_unchecked"></v-icon-stub><span data-v-2b39bf8c="" class="label type-text">My Label</span>
+  <v-icon-stub data-v-2b39bf8c="" name="radio_button_unchecked" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="false" large="false" xlarge="false"></v-icon-stub><span data-v-2b39bf8c="" class="label type-text">My Label</span>
 </button>"
 `;

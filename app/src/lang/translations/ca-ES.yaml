@@ -347,6 +347,7 @@ confirm_revert_body: Això revertirà l'element a l'estat seleccionat.
 display: Mostra
 settings_update_success: Ajustaments actualitzats
 title: Títol
+subtitle: Subtítol
 revision_delta_created: Creat
 revision_delta_created_externally: Creat externament
 revision_delta_updated: 'Actualitzat 1 camp | Actualitzats {count} camps'
@@ -613,7 +614,6 @@ errors:
   VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
   VALUE_TOO_LONG: El valor és massa gran
 security: Seguretat
-value_hashed: Aplicat hash segur al valor
 bookmark_name: Nom del marcador...
 create_bookmark: Crea un marcador
 edit_bookmark: Edita el marcador
@@ -908,36 +908,6 @@ discard_changes_copy: Estàs segur de descartar tots els canvis que has fet?
 show_x_axis: Mostra el eix X
 show_y_axis: Mostra l'eix Y
 keep_editing: Continua editant
-page_help_collections_overview: '** Resum de col·leccions **: Llista de totes les col·leccions a les quals tens accés.'
-page_help_collections_collection: >-
-  ** Cerca elements **: Llista de tots els elements de {collection} als quals tens accés. Personalitza el disseny, els filtres i l’ordenació per adaptar-la a la teva vista i, fins i tot, desa els marcadors d’aquestes diferents configuracions per accedir-hi ràpidament.
-page_help_collections_item: >-
-  ** Detall de l'element **: Un formulari per visualitzar i gestionar aquest element. Aquesta barra lateral també conté un historial complet de revisions i comentaris incrustats.
-page_help_activity_collection: >-
-  ** Activitat de navegació **: Llista completa de tota l'activitat de contingut i sistema del vostre usuari.
-page_help_docs_global: >-
-  ** Informació general de la documentació **: Documents adaptats específicament a la versió i l'esquema d'aquest projecte.
-page_help_files_collection: >-
-  ** Biblioteca de fitxers **: Llista de tots els recursos de fitxers carregats en aquest projecte. Personalitza el disseny, els filtres i l’ordenació per adaptar-la a la teva vista i, fins i tot, desa els marcadors d’aquestes configuracions per accedir-hi ràpidament.
-page_help_files_item: >-
-  ** Detall de fitxer **: Formulari per gestionar metadades de fitxers, editar el recurs original i actualitzar la configuració d'accés.
-page_help_settings_datamodel_collections: >-
-  ** Model de dades: Col·leccions **: Llista de totes les col·leccions disponibles. Això inclou col·leccions visibles, ocultes i del sistema, així com taules de bases de dades no gestionades que es poden afegir.
-page_help_settings_datamodel_fields: >-
-  ** Model de dades: col·lecció **: Un formulari per gestionar aquesta col·lecció i els seus camps.
-page_help_settings_roles_item: "** Detalls del rol **: Gestiona els permisos i altres paràmetres d'un rol."
-page_help_settings_presets_collection: >-
-  ** Examina predefinits **: Llista tots els predefinits del projecte, incloent marcadors d'usuari, rols, globals, així com la vista predeterminada.
-page_help_settings_presets_item: >-
-  ** Detall de predefinit **: Un formulari per gestionar adreces d'interès i predefinits de col·lecció predeterminats.
-page_help_settings_webhooks_collection: '** Examina Webhooks **: Llista tots els webhooks del projecte.'
-page_help_settings_webhooks_item: '** Detall de webhook **: Un formulari per crear i gestionar webhooks del projecte.'
-page_help_settings_flows_collection: '**Examina els fluxos** — Llista tots els fluxos del projecte.'
-page_help_users_collection: '**Directori de l''usuari**.'
-page_help_users_item: >-
-  ** Detall de l'usuari **: Gestiona la informació del compte o consulta la informació d'altres usuaris.
-page_help_insights_overview: '**Visió** - Llista de quadres de comandament als que tens accés.'
-page_help_insights_dashboard: '**Quadre de comandament** - Espai de treball per a gestionar un o més panells'
 activity_feed: Canal d'activitat
 add_new: Afegir nou
 create_new: Crea un nou
@@ -960,7 +930,6 @@ directus_collection:
   directus_dashboards: Quadres de comandament de tota la visió
   directus_fields: Configuració i metadades addicionals del camp
   directus_files: Metadades per a tots els actius de fitxers gestionats
-  directus_flows: Automatització de fluxes
   directus_folders: Proporciona directoris virtuals per a fitxers
   directus_migrations: Quina versió de base de dades estàs utilitzant
   directus_notifications: Notificacions enviades als usuaris
@@ -1219,6 +1188,19 @@ inline: Inline
 comment: Comentari
 live_preview:
   new_window: Obre en una nova finestra
+ai:
+  input: Entrada
+  unknown: Desconegut
+  settings: Configuració
+  tool_approval:
+    disabled: Deshabilitat
+ai_tools:
+  items: Elements
+  files: Arxius
+  flows: Fluxes
+  schema: Esquema
+  collections: Col·leccions
+  fields: Camps
 mcp_prompts_collection_schema:
   messages_role_user: Usuari
 relational_triggers: Disparadors relacionals
@@ -1349,9 +1331,7 @@ interfaces:
     accordion_mode: Mode d'acordió
     max_one_section_open: Màxim 1 secció oberta
   presentation-links:
-    presentation-links: Botó d'enllaços
-    links: Enllaços
-    description: Botons d'enllaços configurables per a llançar URLs dinàmiques
+    presentation-links: Botons
     style: Estil
     primary: Primari
     link: Enllaços
@@ -1605,6 +1585,9 @@ interfaces:
     start_closed: Comená tancat
   system-token:
     system-token: Token
+  header:
+    header: Capçalera
+    links: Enllaços
 displays:
   translations:
     translations: Traduccions

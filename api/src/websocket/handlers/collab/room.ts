@@ -1,14 +1,5 @@
-import {
-	COLLAB,
-	COLLAB_COLORS,
-	type Accountability,
-	type ClientBaseCollabMessage,
-	type ClientID,
-	type CollabColor,
-	type Item,
-	type WebSocketClient,
-	type ActionHandler,
-} from '@directus/types';
+import { WS_TYPE, type Accountability, type Item, type WebSocketClient, type ActionHandler } from '@directus/types';
+import { ACTION, COLORS, type BaseServerMessage, type ClientID, type Color } from '@directus/types/collab';
 import { createHash } from 'crypto';
 import { isEqual, random } from 'lodash-es';
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
@@ -120,7 +111,7 @@ type RoomData = {
 	version: string | null;
 	changes: Item;
 	clients: { uid: ClientID; accountability: Accountability }[];
-	clientColors: Record<ClientID, CollabColor>;
+	clientColors: Record<ClientID, Color>;
 	focuses: Record<ClientID, string>;
 };
 
@@ -197,7 +188,7 @@ export class Room {
 				if (client.accountability?.user === accountability?.user) continue;
 
 				this.send(client.uid, {
-					action: 'save',
+					action: ACTION.SERVER.SAVE,
 				});
 			}
 		};
@@ -239,10 +230,10 @@ export class Room {
 		await this.ready;
 
 		if (!(await this.hasClient(client.uid))) {
-			const clientColor = COLLAB_COLORS[random(COLLAB_COLORS.length - 1)]!;
+			const clientColor = COLORS[random(COLORS.length - 1)]!;
 
 			this.sendAll({
-				action: 'join',
+				action: ACTION.SERVER.JOIN,
 				user: client.accountability!.user!,
 				connection: client.uid,
 				color: clientColor,
@@ -259,7 +250,7 @@ export class Room {
 			});
 		}
 
-		const { collection, item, version, clientColors, changes, focuses, clients } = await this.store(async (store) => {
+		const { collection, item, version, clientColors, changes, focuses, clients } = (await this.store(async (store) => {
 			return {
 				collection: (await store.get('collection'))!,
 				item: (await store.get('item')) ?? null,
@@ -269,12 +260,12 @@ export class Room {
 				focuses: (await store.get('focuses')) ?? {},
 				clients: (await store.get('clients')) ?? [],
 			};
-		});
+		})) as RoomData;
 
 		const allowedFields = await this.verifyPermissions(client, collection, item);
 
 		this.send(client.uid, {
-			action: 'init',
+			action: ACTION.SERVER.INIT,
 			collection: collection,
 			item: item,
 			version: version,
@@ -318,7 +309,7 @@ export class Room {
 		});
 
 		this.sendAll({
-			action: 'leave',
+			action: ACTION.SERVER.LEAVE,
 			connection: client.uid,
 		});
 	}
@@ -335,7 +326,7 @@ export class Room {
 
 		await this.sendExcluding(
 			{
-				action: 'save',
+				action: ACTION.SERVER.SAVE,
 			},
 			sender.uid,
 		);
@@ -373,7 +364,7 @@ export class Room {
 
 			if (field in item_sanitized) {
 				this.send(client.uid, {
-					action: 'update',
+					action: ACTION.SERVER.UPDATE,
 					field,
 					changes: item_sanitized[field],
 				});
@@ -401,7 +392,7 @@ export class Room {
 			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
 
 			this.send(client.uid, {
-				action: 'update',
+				action: ACTION.SERVER.UPDATE,
 				field: field,
 			});
 		}
@@ -433,14 +424,14 @@ export class Room {
 			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
 
 			this.send(client.uid, {
-				action: 'focus',
+				action: ACTION.SERVER.FOUCS,
 				connection: sender.uid,
 				field,
 			});
 		}
 	}
 
-	async sendAll(message: ClientBaseCollabMessage) {
+	async sendAll(message: BaseServerMessage) {
 		await this.ready;
 
 		const clients =
@@ -449,11 +440,11 @@ export class Room {
 			})) ?? [];
 
 		for (const client of clients) {
-			this.messenger.sendClient(client.uid, { ...message, type: COLLAB, room: this.uid });
+			this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
 		}
 	}
 
-	async sendExcluding(message: ClientBaseCollabMessage, exclude: ClientID) {
+	async sendExcluding(message: BaseServerMessage, exclude: ClientID) {
 		await this.ready;
 
 		const clients =
@@ -462,12 +453,14 @@ export class Room {
 			})) ?? [];
 
 		for (const client of clients) {
-			if (client.uid !== exclude) this.messenger.sendClient(client.uid, { ...message, type: COLLAB, room: this.uid });
+			if (client.uid !== exclude) {
+				this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
+			}
 		}
 	}
 
-	send(client: ClientID, message: ClientBaseCollabMessage) {
-		this.messenger.sendClient(client, { ...message, type: COLLAB, room: this.uid });
+	send(client: ClientID, message: BaseServerMessage) {
+		this.messenger.sendClient(client, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
 	}
 
 	/**

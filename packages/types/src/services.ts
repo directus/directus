@@ -1,38 +1,37 @@
-import type { Readable } from 'node:stream';
-import type { Knex } from 'knex';
 import type { Column, ForeignKey } from '@directus/schema';
-import type { OpenAPIObject } from 'openapi3-ts/oas30';
+import type { Archiver } from 'archiver';
 import type { GraphQLSchema } from 'graphql';
+import type { Knex } from 'knex';
+import type { Readable } from 'node:stream';
 import type { Transporter } from 'nodemailer';
+import type { OpenAPIObject } from 'openapi3-ts/oas30';
 import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
 import type { ApiCollection, RawCollection } from './collection.js';
 import type { ActionHandler } from './events.js';
 import type { ApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
-import type { Field, Type, RawField } from './fields.js';
+import type { Field, RawField, Type } from './fields.js';
 import type { BusboyFileStream, File } from './files.js';
-import type { FlowRaw } from './flows.js';
+import type { FlowRaw, OperationRaw } from './flows.js';
 import type { GQLScope, GraphQLParams } from './graphql.js';
 import type { ExportFormat } from './import-export.js';
-import type { Item, PrimaryKey, MutationOptions, QueryOptions } from './items.js';
-import type { SchemaOverview } from './schema.js';
-import type { ItemPermissions } from './permissions.js';
-import type { Policy } from './policies.js';
+import type { Item, MutationOptions, PrimaryKey, QueryOptions } from './items.js';
 import type { EmailOptions } from './mail.js';
 import type { DeepPartial } from './misc.js';
 import type { Notification } from './notifications.js';
 import type { PayloadAction, PayloadServiceProcessRelationResult } from './payload.js';
+import type { ItemPermissions } from './permissions.js';
+import type { Policy } from './policies.js';
 import type { Aggregate, Query } from './query.js';
-import type { FieldOverview } from './schema.js';
-import type { Range, Stat } from './storage.js';
-import type { OperationRaw } from './flows.js';
 import type { Relation } from './relations.js';
+import type { FieldOverview, SchemaOverview } from './schema.js';
+import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from './snapshot.js';
+import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
-import type { Snapshot, SnapshotDiffWithHash, SnapshotDiff, SnapshotWithHash } from './snapshot.js';
+import type { ContentVersion } from './versions.js';
 import type { Webhook } from './webhooks.js';
 import type { WebSocketClient, WebSocketMessage } from './websockets/index.js';
-import type { ContentVersion } from './versions.js';
 
 export type AbstractServiceOptions = {
 	knex?: Knex | undefined;
@@ -45,6 +44,17 @@ export type AbstractServiceOptions = {
  * The AssetsService
  */
 interface AssetsService {
+	zipFiles(files: string[]): Promise<{
+		archive: Archiver;
+		complete: () => Promise<void>;
+	}>;
+	zipFolder(folder: string): Promise<{
+		archive: Archiver;
+		complete: () => Promise<void>;
+		metadata: {
+			name: string | undefined;
+		};
+	}>;
 	getAsset(
 		id: string,
 		transformation?: TransformationSet,
@@ -186,6 +196,16 @@ interface FieldsService {
 	updateField(collection: string, field: RawField, opts?: MutationOptions): Promise<string>;
 	updateFields(collection: string, fields: RawField[], opts?: MutationOptions): Promise<string[]>;
 	deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void>;
+}
+
+/**
+ * The FoldersService
+ */
+interface FoldersService {
+	/**
+	 * Builds a full folder tree starting from a given root folder.
+	 */
+	buildTree(root: string): Promise<Map<string, string>>;
 }
 
 /**
@@ -617,7 +637,7 @@ export interface ExtensionsServices {
 	/**
 	 * The FoldersService
 	 */
-	FoldersService: new (options: AbstractServiceOptions) => AbstractService;
+	FoldersService: new (options: AbstractServiceOptions) => AbstractService & FoldersService;
 	/**
 	 * The GraphQLService
 	 */

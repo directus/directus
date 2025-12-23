@@ -4,6 +4,6 @@ import VSkeletonLoader from './v-skeleton-loader.vue';
 
 <template>
 	<Story title="VSkeletonLoader">
-		<v-skeleton-loader />
+		<VSkeletonLoader />
 	</Story>
 </template>

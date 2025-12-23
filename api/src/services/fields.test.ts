@@ -1,10 +1,9 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Field, RawField } from '@directus/types';
-import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
-import * as getSchemaModule from '../utils/get-schema.js';
 import {
 	createMockKnex,
 	createMockTableBuilder,
@@ -13,6 +12,7 @@ import {
 	resetKnexMocks,
 	setupSystemCollectionMocks,
 } from '../test-utils/knex.js';
+import * as getSchemaModule from '../utils/get-schema.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -39,7 +39,7 @@ vi.mock('../emitter.js', async () => {
 });
 
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../test-utils/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
@@ -101,9 +101,9 @@ vi.mock('../database/helpers/index.js', () => ({
 	})),
 }));
 
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
-import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 
 const schema = new SchemaBuilder()
 	.collection('directus_fields', (c) => {

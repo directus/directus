@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VSelect from '@/components/v-select/v-select.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { GEOMETRY_TYPES } from '@directus/constants';
@@ -84,7 +85,7 @@ onUnmounted(() => {
 	<div class="form-grid">
 		<div v-if="!nativeGeometryType && field?.type !== 'csv'" class="field half-left">
 			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
-			<v-select
+			<VSelect
 				v-model="geometryType"
 				:placeholder="$t('any')"
 				show-deselect

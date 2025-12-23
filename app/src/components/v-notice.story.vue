@@ -4,6 +4,6 @@ import VNotice from './v-notice.vue';
 
 <template>
 	<Story title="VNotice">
-		<v-notice>Making a pizza ist best done without ordering a pizza.</v-notice>
+		<VNotice>Making a pizza ist best done without ordering a pizza.</VNotice>
 	</Story>
 </template>

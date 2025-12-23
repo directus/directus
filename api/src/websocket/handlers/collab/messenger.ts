@@ -1,12 +1,7 @@
 import type { Bus } from '@directus/memory';
 import { useBus } from '../../../bus/index.js';
-import {
-	COLLAB,
-	type BroadcastMessage,
-	type ClientCollabMessage,
-	type ClientID,
-	type WebSocketClient,
-} from '@directus/types';
+import { COLLAB_BUS, type BroadcastMessage, type ClientID, type ServerMessage } from '@directus/types/collab';
+import type { WebSocketClient } from '@directus/types';
 
 type RoomMessage = Extract<BroadcastMessage, { type: 'room' }>;
 
@@ -17,7 +12,7 @@ export class Messenger {
 	roomListeners: Record<string, RoomListener> = {};
 
 	constructor() {
-		this.messenger.subscribe(COLLAB, (message: BroadcastMessage) => {
+		this.messenger.subscribe(COLLAB_BUS, (message: BroadcastMessage) => {
 			if (message.type === 'send') {
 				const client = this.clients[message.client];
 				if (client) client.send(JSON.stringify(message.message));
@@ -42,10 +37,10 @@ export class Messenger {
 	}
 
 	sendRoom(room: string, message: Omit<RoomMessage, 'type' | 'room'>) {
-		this.messenger.publish(COLLAB, { type: 'room', room, message });
+		this.messenger.publish(COLLAB_BUS, { type: 'room', room, message });
 	}
 
-	sendClient(client: ClientID, message: ClientCollabMessage) {
-		this.messenger.publish(COLLAB, { type: 'send', client, message });
+	sendClient(client: ClientID, message: ServerMessage) {
+		this.messenger.publish(COLLAB_BUS, { type: 'send', client, message });
 	}
 }

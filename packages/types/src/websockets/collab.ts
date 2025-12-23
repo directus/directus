@@ -1,53 +1,71 @@
 import z from 'zod';
 import type { Item } from '../items.js';
-import { WebSocketMessage } from './base.js';
+import { TYPE } from './type.js';
 
-export const COLLAB = 'collab';
-export const COLLAB_COLORS = ['purple', 'pink', 'blue', 'green', 'yellow', 'orange', 'red'] as const;
+export const COLLAB_BUS = 'collab';
+export const COLORS = ['purple', 'pink', 'blue', 'green', 'yellow', 'orange', 'red'] as const;
 
-export type CollabColor = (typeof COLLAB_COLORS)[number];
+export const ACTION = {
+	CLIENT: {
+		JOIN: 'join',
+		LEAVE: 'leave',
+		SAVE: 'save',
+		UPDATE: 'update',
+		FOUCS: 'focus',
+	},
+	SERVER: {
+		INIT: 'init',
+		JOIN: 'join',
+		LEAVE: 'leave',
+		SAVE: 'save',
+		UPDATE: 'update',
+		FOUCS: 'focus',
+	},
+} as const;
 
-const BaseCollabMessage = WebSocketMessage.extend({
-	type: z.literal(COLLAB),
+export type Color = (typeof COLORS)[number];
+
+const BaseClientMessage = z.object({
+	type: z.literal(TYPE.COLLAB),
 	room: z.string(),
 });
 
 const ZodItem = z.custom<Partial<Item>>();
 
-// Incomming Messages
-export const WebSocketCollabMessage = z.discriminatedUnion('action', [
-	WebSocketMessage.extend({
-		type: z.literal(COLLAB),
-		action: z.literal('join'),
+// Messages from client to server
+export const ClientMessage = z.discriminatedUnion('action', [
+	z.object({
+		type: z.literal(TYPE.COLLAB),
+		action: z.literal(ACTION.CLIENT.JOIN),
 		collection: z.string(),
 		item: z.string().nullable(),
 		version: z.string().nullable(),
 		initialChanges: ZodItem.optional(),
 	}),
-	BaseCollabMessage.extend({
-		action: z.literal('leave'),
+	BaseClientMessage.extend({
+		action: z.literal(ACTION.CLIENT.LEAVE),
 	}),
-	BaseCollabMessage.extend({
-		action: z.literal('save'),
+	BaseClientMessage.extend({
+		action: z.literal(ACTION.CLIENT.SAVE),
 	}),
-	BaseCollabMessage.extend({
-		action: z.literal('update'),
+	BaseClientMessage.extend({
+		action: z.literal(ACTION.CLIENT.UPDATE),
 		field: z.string(),
 		changes: z.unknown().optional(),
 	}),
-	BaseCollabMessage.extend({
-		action: z.literal('focus'),
+	BaseClientMessage.extend({
+		action: z.literal(ACTION.CLIENT.FOUCS),
 		field: z.string().nullable(),
 	}),
 ]);
-export type WebSocketCollabMessage = z.infer<typeof WebSocketCollabMessage>;
+export type ClientMessage = z.infer<typeof ClientMessage>;
 
 // Broadcast Messages
 export type BroadcastMessage =
 	| {
 			type: 'send';
 			client: ClientID;
-			message: ClientCollabMessage;
+			message: ServerMessage;
 	  }
 	| {
 			type: 'room';
@@ -55,46 +73,46 @@ export type BroadcastMessage =
 			room: string;
 	  };
 
-// Outgoing Messages
-export type ClientCollabMessage = {
-	type: typeof COLLAB;
+// Messages from server to client
+export type ServerMessage = {
+	type: typeof TYPE.COLLAB;
 	room: string;
-} & ClientBaseCollabMessage;
+} & BaseServerMessage;
 
 export type UserID = string;
 export type ClientID = string | number;
 
-export type ClientBaseCollabMessage =
+export type BaseServerMessage =
 	| {
-			action: 'init';
+			action: typeof ACTION.SERVER.INIT;
 			collection: string;
 			item: string | null;
 			version: string | null;
 			changes: Item;
 			connection: ClientID;
 			focuses: Record<ClientID, string>;
-			users: { user: UserID; connection: ClientID; color: CollabColor }[];
+			users: { user: UserID; connection: ClientID; color: Color }[];
 	  }
 	| {
-			action: 'join';
+			action: typeof ACTION.SERVER.JOIN;
 			user: UserID;
-			color: CollabColor;
+			color: Color;
 			connection: ClientID;
 	  }
 	| {
-			action: 'leave';
+			action: typeof ACTION.SERVER.LEAVE;
 			connection: ClientID;
 	  }
 	| {
-			action: 'save';
+			action: typeof ACTION.SERVER.SAVE;
 	  }
 	| {
-			action: 'update';
+			action: typeof ACTION.SERVER.UPDATE;
 			field: string;
 			changes?: unknown;
 	  }
 	| {
-			action: 'focus';
+			action: typeof ACTION.SERVER.FOUCS;
 			connection: ClientID;
 			field: string | null;
 	  };

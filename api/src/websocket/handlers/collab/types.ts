@@ -1,7 +1,7 @@
-import type { WebSocketCollabMessage } from '@directus/types';
+import type { ACTION, ClientMessage } from '@directus/types/collab';
 
-export type JoinMessage = Extract<WebSocketCollabMessage, { action: 'join' }>;
-export type LeaveMessage = Extract<WebSocketCollabMessage, { action: 'leave' }>;
-export type SaveMessage = Extract<WebSocketCollabMessage, { action: 'save' }>;
-export type UpdateMessage = Extract<WebSocketCollabMessage, { action: 'update' }>;
-export type FocusMessage = Extract<WebSocketCollabMessage, { action: 'focus' }>;
+export type JoinMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.JOIN }>;
+export type LeaveMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.LEAVE }>;
+export type SaveMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.SAVE }>;
+export type UpdateMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.UPDATE }>;
+export type FocusMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.FOUCS }>;
