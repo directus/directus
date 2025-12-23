@@ -14,7 +14,6 @@ export type TusDataStoreConfig = {
 	constants: {
 		ENABLED: boolean;
 		CHUNK_SIZE: number | null;
-		MAX_SIZE: number | null;
 		EXPIRATION_TIME: number;
 		SCHEDULE: string;
 	};
@@ -28,7 +27,6 @@ export type TusDataStoreConfig = {
 
 export class TusDataStore extends DataStore {
 	protected chunkSize: number | undefined;
-	protected maxSize: number | undefined;
 	protected expirationTime: number;
 	protected location: string;
 	protected storageDriver: TusDriver;
@@ -39,7 +37,6 @@ export class TusDataStore extends DataStore {
 		super();
 
 		if (config.constants.CHUNK_SIZE !== null) this.chunkSize = config.constants.CHUNK_SIZE;
-		if (config.constants.MAX_SIZE !== null) this.maxSize = config.constants.MAX_SIZE;
 		this.expirationTime = config.constants.EXPIRATION_TIME;
 		this.location = config.location;
 		this.storageDriver = config.driver;
