@@ -185,7 +185,7 @@ function useIconsPerRow(
 </script>
 
 <template>
-	<VMenu v-model="menuActive" attached :disabled no-focus-return>
+	<VMenu v-model="menuActive" v-prevent-focusout="menuActive" attached :disabled no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<VInput
 				v-model="searchQuery"

@@ -346,12 +346,18 @@ const createCollections = computed(() => {
 
 const canDrag = computed(() => relationInfo.value?.sortField !== undefined && !props.disabled && updateAllowed.value);
 const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitWritable.value);
+const createOpen = ref(false);
+const selectOpen = ref(false);
+
+const menuActive = computed(
+	() => Boolean(selectingFrom.value) || editModalActive.value || createOpen.value || selectOpen.value,
+);
 </script>
 
 <template>
 	<VNotice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
 	<VNotice v-else-if="allowedCollections.length === 0" type="warning">{{ $t('no_singleton_relations') }}</VNotice>
-	<div v-else class="m2a-builder">
+	<div v-else v-prevent-focusout="menuActive" class="m2a-builder">
 		<VNotice v-if="canDrag && !allowDrag">{{ $t('interfaces.list-m2a.sorting_disabled') }}</VNotice>
 		<template v-if="loading">
 			<VSkeletonLoader
@@ -430,7 +436,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		</template>
 
 		<div v-if="!nonEditable" class="actions">
-			<VMenu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
+			<VMenu v-if="enableCreate && createCollections.length > 0" v-model="createOpen" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<VButton :disabled="disabled" @click="toggle">
 						{{ $t('create_new') }}
@@ -453,7 +459,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 				</VList>
 			</VMenu>
 
-			<VMenu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
+			<VMenu v-if="enableSelect && selectAllowed" v-model="selectOpen" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<VButton :disabled="disabled" @click="toggle">
 						{{ $t('add_existing') }}
