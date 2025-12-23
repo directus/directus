@@ -10,7 +10,7 @@ export const ACTION = {
 		LEAVE: 'leave',
 		SAVE: 'save',
 		UPDATE: 'update',
-		FOUCS: 'focus',
+		FOCUS: 'focus',
 	},
 	SERVER: {
 		INIT: 'init',
@@ -18,7 +18,7 @@ export const ACTION = {
 		LEAVE: 'leave',
 		SAVE: 'save',
 		UPDATE: 'update',
-		FOUCS: 'focus',
+		FOCUS: 'focus',
 	},
 } as const;
 
@@ -53,7 +53,7 @@ export const ClientMessage = z.discriminatedUnion('action', [
 		changes: z.unknown().optional(),
 	}),
 	BaseClientMessage.extend({
-		action: z.literal(ACTION.CLIENT.FOUCS),
+		action: z.literal(ACTION.CLIENT.FOCUS),
 		field: z.string().nullable(),
 	}),
 ]);
@@ -98,7 +98,7 @@ export type BaseServerMessage =
 			changes?: unknown;
 	  }
 	| {
-			action: typeof ACTION.SERVER.FOUCS;
+			action: typeof ACTION.SERVER.FOCUS;
 			connection: ClientID;
 			field: string | null;
 	  };

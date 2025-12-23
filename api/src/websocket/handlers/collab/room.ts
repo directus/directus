@@ -197,7 +197,7 @@ export class Room {
 			if (field && !(await hasFieldPermision(client.accountability!, this.collection, field))) continue;
 
 			this.send(client, {
-				action: ACTION.SERVER.FOUCS,
+				action: ACTION.SERVER.FOCUS,
 				connection: sender.uid,
 				field,
 			});
