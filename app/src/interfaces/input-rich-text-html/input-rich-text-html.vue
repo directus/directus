@@ -56,6 +56,7 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
+import { useFocusin } from '@/composables/use-focusin';
 
 type CustomFormat = {
 	title: string;
@@ -359,11 +360,15 @@ function setFocus(val: boolean) {
 	if (editorElement.value == null) return;
 	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
+	const { focus, blur } = useFocusin(body);
+
 	if (body == null) return;
 
 	if (val) {
+		focus();
 		body.classList.add('focus');
 	} else {
+		blur();
 		body.classList.remove('focus');
 	}
 }
@@ -412,10 +417,14 @@ onMounted(() => {
 		'Right to left': t('right_to_left'),
 	});
 });
+
+const menuActive = computed(
+	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
+);
 </script>
 
 <template>
-	<div :id="field" class="wysiwyg" :class="{ disabled }">
+	<div :id="field" v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
 		<Editor
 			:key="editorKey"
 			ref="editorElement"

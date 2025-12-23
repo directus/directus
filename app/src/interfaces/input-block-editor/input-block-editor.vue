@@ -6,7 +6,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
 import { isEqual } from 'lodash';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBus } from './bus';
 import { sanitizeValue } from './sanitize';
@@ -154,10 +154,12 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 		unexpectedError(error);
 	}
 }
+
+const menuActive = computed(() => fileHandler.value !== null);
 </script>
 
 <template>
-	<div class="input-block-editor">
+	<div v-prevent-focusout="menuActive" class="input-block-editor">
 		<div ref="editorElement" :class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"></div>
 
 		<VDrawer
