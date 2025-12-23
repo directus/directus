@@ -1,6 +1,5 @@
-import { describe, test, expect, vi } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { getRequestUrl } from './get-request-url.js';
-import * as queryToParamsModule from './query-to-params.js';
 
 describe('getRequestUrl', () => {
 	const baseUrl = new URL('https://example.com/api/');
@@ -33,6 +32,7 @@ describe('getRequestUrl', () => {
 			num: 42,
 			bool: true,
 		};
+
 		const result = getRequestUrl(baseUrl, 'items', params);
 		const searchParams = result.searchParams;
 		expect(searchParams.get('foo')).toBe('bar');
@@ -44,6 +44,7 @@ describe('getRequestUrl', () => {
 		const params = {
 			sort: ['name', '-created_at'],
 		};
+
 		const result = getRequestUrl(baseUrl, 'items', params);
 		expect(result.searchParams.get('sort')).toBe('name,-created_at');
 	});
@@ -52,6 +53,7 @@ describe('getRequestUrl', () => {
 		const params = {
 			filter: { status: { _eq: 'published' } },
 		};
+
 		const result = getRequestUrl(baseUrl, 'items', params);
 		expect(result.searchParams.get('filter')).toBe('{"status":{"_eq":"published"}}');
 	});
@@ -60,6 +62,7 @@ describe('getRequestUrl', () => {
 		const params = {
 			fields: ['id', { author: ['name'] }],
 		};
+
 		const result = getRequestUrl(baseUrl, 'items', params);
 		expect(result.searchParams.get('fields')).toBe('id,author.name');
 	});
@@ -68,6 +71,7 @@ describe('getRequestUrl', () => {
 		const params = {
 			'custom.key': 'value',
 		};
+
 		const result = getRequestUrl(baseUrl, 'items', params);
 		expect(result.searchParams.get('custom.key')).toBe('value');
 	});
@@ -76,6 +80,7 @@ describe('getRequestUrl', () => {
 		const params = {
 			custom: { nested: 'value' },
 		};
+
 		const result = getRequestUrl(baseUrl, 'items', params);
 		expect(result.searchParams.get('custom')).toBe('{"nested":"value"}');
 	});
