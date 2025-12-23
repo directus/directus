@@ -109,6 +109,32 @@ function onInput(event: Event) {
 	.prepend {
 		margin-inline-end: 8px;
 	}
+	/* 
+ * Directus slider interaction fixes
+   */
+   cursor: pointer;
+	:deep(.v-slider__container),
+	:deep(.v-slider-track),
+	:deep(.v-slider-track__background),
+	:deep(.v-slider-track__fill) {
+		cursor: pointer;
+		transition: transform 0.5s ease;
+	}
+
+	:deep(.v-slider-thumb) {
+		cursor: pointer;
+		transition: inset-inline-start 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		will-change: inset-inline-start;
+	}
+
+	:deep(.v-slider-thumb__label) {
+		inset-block-start: -28px;
+		background: var(--theme--primary);
+		color: white;
+		font-size: 12px;
+		padding: 2px 6px;
+		border-radius: 6px;
+	}
 
 	.slider {
 		position: relative;
@@ -272,7 +298,6 @@ function onInput(event: Event) {
 					block-size: 12px;
 					margin-block-start: -4px;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
-					cursor: ew-resize;
 				}
 
 				&::-moz-range-thumb {
@@ -280,7 +305,6 @@ function onInput(event: Event) {
 					block-size: 12px;
 					margin-block-start: -4px;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
-					cursor: ew-resize;
 				}
 			}
 
@@ -300,5 +324,7 @@ function onInput(event: Event) {
 	.append {
 		margin-inline-start: 8px;
 	}
+
+
 }
 </style>
