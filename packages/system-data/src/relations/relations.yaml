@@ -256,3 +256,18 @@ data:
   - many_collection: directus_webhooks
     many_field: migrated_flow
     one_collection: directus_flows
+
+  ### Deployment
+  - many_collection: directus_deployment_projects
+    many_field: deployment
+    one_collection: directus_deployment
+    one_field: projects
+    one_deselect_action: delete
+
+  - many_collection: directus_deployment
+    many_field: user_created
+    one_collection: directus_users
+
+  - many_collection: directus_deployment_projects
+    many_field: user_created
+    one_collection: directus_users
