@@ -9,7 +9,7 @@ import { supportsTus } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { Server } from '@tus/server';
-import { RESUMABLE_UPLOADS } from '../../constants.js';
+import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../../constants.js';
 import { getStorage } from '../../storage/index.js';
 import { extractMetadata } from '../files/lib/extract-metadata.js';
 import { ItemsService } from '../index.js';
@@ -52,7 +52,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 		path: '/files/tus',
 		datastore: store,
 		locker: getTusLocker(),
-		...(RESUMABLE_UPLOADS.MAX_SIZE !== null && { maxSize: RESUMABLE_UPLOADS.MAX_SIZE }),
+		...(FILE_UPLOADS.MAX_SIZE !== null && { maxSize: FILE_UPLOADS.MAX_SIZE }),
 		async onUploadFinish(_req: any, upload) {
 			const schema = await getSchema();
 

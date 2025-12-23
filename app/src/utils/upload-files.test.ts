@@ -98,6 +98,32 @@ describe('uploadFiles', () => {
 		expect(startOrder).toHaveLength(3);
 	});
 
+	it('starts all uploads when maxParallel is 0', async () => {
+		mockServerInfo.uploads = { maxParallel: 0 };
+		const startOrder: string[] = [];
+		const resolvers: Array<() => void> = [];
+
+		uploadFile.mockImplementation(() => {
+			startOrder.push('start');
+
+			return new Promise((resolve) => {
+				resolvers.push(() => resolve({ id: 'test' }));
+			});
+		});
+
+		const files = [new File(['a'], 'a.txt'), new File(['b'], 'b.txt'), new File(['c'], 'c.txt')];
+
+		const uploadPromise = uploadFiles(files);
+
+		await Promise.resolve();
+		expect(uploadFile).toHaveBeenCalledTimes(3);
+
+		resolvers.forEach((resolve) => resolve());
+		await uploadPromise;
+
+		expect(startOrder).toHaveLength(3);
+	});
+
 	it('reports progress and chunked upload controllers', async () => {
 		const progressUpdates: number[][] = [];
 		const chunkedUpdates: Array<Array<unknown | null>> = [];

@@ -104,12 +104,16 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 	'image/avif',
 ];
 
-/** Resumable uploads */
+/** File uploads */
+export const FILE_UPLOADS = {
+	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
+	MAX_PARALLEL: Number(env['FILES_MAX_UPLOAD_PARALLEL']) > 0 ? Number(env['FILES_MAX_UPLOAD_PARALLEL']) : 0,
+};
+
+/** Resumable uploads (TUS) */
 export const RESUMABLE_UPLOADS = {
 	ENABLED: toBoolean(env['TUS_ENABLED']),
 	CHUNK_SIZE: bytes.parse(env['TUS_CHUNK_SIZE'] as string),
-	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
-	MAX_PARALLEL: Number(env['TUS_MAX_PARALLEL']) > 0 ? Number(env['TUS_MAX_PARALLEL']) : 0,
 	EXPIRATION_TIME: getMilliseconds(env['TUS_UPLOAD_EXPIRATION'], 600_000 /* 10min */),
 	SCHEDULE: String(env['TUS_CLEANUP_SCHEDULE'] as string),
 };

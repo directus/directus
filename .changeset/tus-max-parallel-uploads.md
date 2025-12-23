@@ -4,4 +4,4 @@
 "@directus/env": patch
 ---
 
-Add `TUS_MAX_PARALLEL` to limit concurrent resumable file uploads started by the Studio.
+Add `FILES_MAX_UPLOAD_PARALLEL` to limit concurrent file uploads started by the Studio, working for both regular and resumable (TUS) uploads.
