@@ -1,6 +1,5 @@
 ---
-'@directus/sdk': minor
+'@directus/sdk': patch
 ---
 
-Add `parseQueryParams` utility and apply it to realtime subscriptions to properly parse complex query parameters (e.g.
-`fields` with nested relations), aligning realtime behavior with REST requests.
+Fixed parsing of query parameters (such as nested `fields`) in realtime subscription queries.
