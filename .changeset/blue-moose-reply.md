@@ -2,4 +2,4 @@
 '@directus/sdk': patch
 ---
 
-Fixed parsing of query parameters (such as nested `fields`) in realtime subscription queries.
+Fixed conversion of `fields` from object notation to dot syntax in SDK subscription queries
