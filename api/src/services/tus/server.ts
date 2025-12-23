@@ -36,7 +36,7 @@ async function createTusStore(context: Context) {
 	}
 
 	return new TusDataStore({
-		constants: RESUMABLE_UPLOADS,
+		constants: { ...RESUMABLE_UPLOADS, MAX_SIZE: FILE_UPLOADS.MAX_SIZE },
 		accountability: context.accountability,
 		schema: context.schema,
 		location,
