@@ -5,7 +5,7 @@ import { Field, ValidationError } from '@directus/types';
 import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-type ValidationErrorWithDetails = ValidationError & {
+export type ValidationErrorWithDetails = ValidationError & {
 	fieldName?: string;
 	groupName?: string;
 	type: ValidationError['type'] | 'required' | 'unique';

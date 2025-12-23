@@ -2,7 +2,7 @@
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import VDetail from '@/components/v-detail.vue';
-import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
+import { useValidationErrorDetails, type ValidationErrorWithDetails } from '@/composables/use-validation-error-details';
 import { Field, ValidationError } from '@directus/types';
 import ValidationNestedGroups from './validation-nested-groups.vue';
 import { computed, toRef } from 'vue';
@@ -19,7 +19,7 @@ const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidati
 	toRef(() => props.fields),
 );
 
-function getNestedKey(validationError: (typeof validationErrorsWithDetails.value)[number]) {
+function getNestedKey(validationError: ValidationErrorWithDetails) {
 	return `${validationError.group ?? ''}::${validationError.field}`;
 }
 
@@ -35,7 +35,7 @@ const displayValidationErrors = computed(() => {
 	});
 });
 
-function getErrorKey(validationError: (typeof validationErrorsWithDetails.value)[number]) {
+function getErrorKey(validationError: ValidationErrorWithDetails) {
 	if (validationError.hasNestedValidation && validationError.validationStructure) return getNestedKey(validationError);
 	return `${getNestedKey(validationError)}::${validationError.type}`;
 }
