@@ -23,7 +23,8 @@ export function useValidationErrorDetails(validationErrors: Ref<ValidationError[
 				const { field: _fieldKey, fn: functionName } = extractFieldFromFunction(validationError.field);
 				const [fieldKey, ...nestedFieldKeys] = _fieldKey.split('.');
 				const field = fields.value.find((field) => field.field === fieldKey);
-				const group = fields.value.find((field) => field.field === validationError.group);
+				const groupFieldKey = validationError.group ?? field?.meta?.group;
+				const group = groupFieldKey ? fields.value.find((f) => f.field === groupFieldKey) : null;
 				const fieldName = getFieldName() + getNestedFieldNames(nestedFieldKeys, validationError.nestedNames);
 				const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
 				const isNotUniqueError = validationError.code === 'RECORD_NOT_UNIQUE';
@@ -33,9 +34,10 @@ export function useValidationErrorDetails(validationErrors: Ref<ValidationError[
 
 				return {
 					...validationError,
+					hidden: validationError.hidden ?? field?.meta?.hidden,
 					field: fieldKey!,
 					fieldName,
-					groupName: group?.name ?? validationError.group,
+					groupName: group?.name ?? groupFieldKey,
 					type: getValidationType(),
 					customValidationMessage: getCustomValidationMessage(),
 					validationStructure,

@@ -39,6 +39,10 @@ function buildItems(node: ValidationNode): RenderItem[] {
 
 	if ((node.type !== 'and' && node.type !== 'or') || !node.children?.length) return [];
 
+	if (node.children.length === 1 && node.children[0]?.type === node.type) {
+		return buildItems(node.children[0]);
+	}
+
 	const label = groupLabel(node.type);
 
 	return [
@@ -59,7 +63,7 @@ const items = computed(() => {
 
 <template>
 	<div class="validation-nested-groups">
-		<validation-nested-groups-list
+		<ValidationNestedGroupsList
 			:items="items"
 			:depth="props.depth"
 			:list-logic="props.node.type === 'and' || props.node.type === 'or' ? props.node.type : undefined"
