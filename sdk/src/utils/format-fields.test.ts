@@ -7,6 +7,16 @@ describe('formatFields', () => {
 		expect(result).toEqual(['id', 'name', 'email']);
 	});
 
+	test('should support literal strings', () => {
+		const result = formatFields(['*.custom.*']);
+		expect(result).toEqual(['*.custom.*']);
+	});
+
+	test('should support wildcard and custom wildcards', () => {
+		const result = formatFields(['*', 'custom.*']);
+		expect(result).toEqual(['*', 'custom.*']);
+	});
+
 	test('should handle empty arrays', () => {
 		const result = formatFields([]);
 		expect(result).toEqual([]);
