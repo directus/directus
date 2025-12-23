@@ -109,10 +109,11 @@ function onInput(event: Event) {
 	.prepend {
 		margin-inline-end: 8px;
 	}
+
 	/* 
  * Directus slider interaction fixes
    */
-   cursor: pointer;
+	cursor: pointer;
 	:deep(.v-slider__container),
 	:deep(.v-slider-track),
 	:deep(.v-slider-track__background),
@@ -324,7 +325,5 @@ function onInput(event: Event) {
 	.append {
 		margin-inline-start: 8px;
 	}
-
-
 }
 </style>

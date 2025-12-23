@@ -63,5 +63,3 @@ defineEmits<{
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>
-
-
