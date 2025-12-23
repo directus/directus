@@ -1,12 +1,5 @@
-import type { AggregationTypes, GroupByFields, Query } from '../types/index.js';
+import type { ExtendedQuery } from '../types/index.js';
 import { formatFields } from './format-fields.js';
-
-type ExtendedQuery<Schema, Item> = Query<Schema, Item> & {
-	aggregate?: Partial<Record<keyof AggregationTypes, string>>;
-	groupBy?: (string | GroupByFields<Schema, Item>)[];
-	version?: string | undefined;
-	versionRaw?: boolean | undefined;
-} & Record<string, unknown>;
 
 const knownQueryKeys = [
 	'fields',
