@@ -1,4 +1,4 @@
-import { formatFields } from '../../utils/query-to-params.js';
+import { formatFields } from '../../utils/format-fields.js';
 import type { RestCommand } from '../types.js';
 
 export function withSearch<Schema, Output>(getOptions: RestCommand<Output, Schema>): RestCommand<Output, Schema> {
