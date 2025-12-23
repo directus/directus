@@ -1,5 +1,5 @@
 import type { AuthenticationClient } from '../auth/types.js';
-import type { ConsoleInterface, WebSocketInterface } from '../index.js';
+import { queryToParams, type ConsoleInterface, type WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { auth } from './commands/auth.js';
 import { pong } from './commands/pong.js';
@@ -17,7 +17,6 @@ import type {
 } from './types.js';
 import { generateUid } from './utils/generate-uid.js';
 import { messageCallback } from './utils/message-callback.js';
-import { parseQueryParams } from './utils/parse-query-params.js';
 
 type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -374,7 +373,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				if ('uid' in options === false) options.uid = uid.next().value;
 
 				if ('query' in options && options.query) {
-					options.query = parseQueryParams(options.query);
+					options.query = queryToParams({ ...options.query });
 				}
 
 				subscriptions.add({ ...options, collection, type: 'subscribe' });
