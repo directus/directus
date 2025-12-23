@@ -142,6 +142,7 @@ export const DEFAULTS = {
 
 	TUS_ENABLED: false,
 	TUS_CHUNK_SIZE: DEFAULT_CHUNK_SIZE, // 8mb
+	TUS_MAX_PARALLEL: 0,
 	TUS_UPLOAD_EXPIRATION: '10m',
 	TUS_CLEANUP_SCHEDULE: '0 * * * *', // every hour
 

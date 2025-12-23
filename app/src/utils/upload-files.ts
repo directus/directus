@@ -1,8 +1,10 @@
 import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
 import { notify } from '@/utils/notify';
 import { uploadFile } from '@/utils/upload-file';
 import { unexpectedError } from './unexpected-error';
 import type { File } from '@directus/types';
+import PQueue from 'p-queue';
 import type { Upload } from 'tus-js-client';
 
 export async function uploadFiles(
@@ -18,24 +20,28 @@ export async function uploadFiles(
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
 	const uploadControllers: (Upload | null)[] = Array(files.length).fill(null);
+	const serverStore = useServerStore();
+	const maxParallelUploads = serverStore.info.uploads?.maxParallel ?? 0;
+	const uploadQueue = maxParallelUploads > 0 ? new PQueue({ concurrency: maxParallelUploads }) : null;
+
+	const startUpload = (file: globalThis.File, index: number) =>
+		uploadFile(file, {
+			...options,
+			onProgressChange: (percentage: number) => {
+				progressForFiles[index] = percentage;
+				progressHandler(progressForFiles);
+			},
+			onChunkedUpload: (controller: Upload) => {
+				uploadControllers[index] = controller;
+				options?.onChunkedUpload?.(uploadControllers);
+			},
+		});
 
 	try {
 		const uploadedFiles = (
-			await Promise.all(
-				files.map((file, index) =>
-					uploadFile(file, {
-						...options,
-						onProgressChange: (percentage: number) => {
-							progressForFiles[index] = percentage;
-							progressHandler(progressForFiles);
-						},
-						onChunkedUpload: (controller: Upload) => {
-							uploadControllers[index] = controller;
-							options?.onChunkedUpload?.(uploadControllers);
-						},
-					}),
-				),
-			)
+			maxParallelUploads === 0
+				? await Promise.all(files.map((file, index) => startUpload(file, index)))
+				: await Promise.all(files.map((file, index) => uploadQueue!.add(() => startUpload(file, index))))
 		).filter((v) => v);
 
 		if (options?.notifications) {

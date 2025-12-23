@@ -72,6 +72,7 @@ export type Info = {
 	};
 	uploads?: {
 		chunkSize: number;
+		maxParallel: number;
 	};
 };
 
