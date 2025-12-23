@@ -9,7 +9,7 @@ type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>
 type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>;
 type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE }>;
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
-type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
+type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOUCS }>;
 
 export type CollabUser = {
 	id: string;
@@ -283,7 +283,7 @@ export function useCollab(
 
 	const onFocus = debounce((field: string | null) => {
 		sendMessage({
-			action: ACTION.CLIENT.FOCUS,
+			action: ACTION.CLIENT.FOUCS,
 			field: field,
 		});
 	}, 100);

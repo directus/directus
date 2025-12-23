@@ -1,4 +1,4 @@
-import { WS_TYPE, type Item, type WebSocketClient } from '@directus/types';
+import { WS_TYPE, type Accountability, type Item, type WebSocketClient } from '@directus/types';
 import { createHash } from 'crypto';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
@@ -7,85 +7,176 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { hasFieldPermision } from './field-permissions.js';
 import { sanitizePayload } from './sanitize-payload.js';
+import { Messenger } from './messenger.js';
+import { useStore } from './store.js';
 import { ACTION, COLORS, type BaseServerMessage, type ClientID, type Color } from '@directus/types/collab';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
+	messenger: Messenger;
+
+	constructor(messenger: Messenger) {
+		this.messenger = messenger;
+	}
 
 	async createRoom(collection: string, item: string | null, version: string | null, initialChanges?: Item) {
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
-			this.rooms[uid] = new Room(uid, collection, item, version, initialChanges);
+			this.rooms[uid] = new Room(this.messenger, uid, collection, item, version, initialChanges);
 		}
+
+		this.messenger.setRoomListener(uid, (message) => {
+			if (message.action === 'close') {
+				delete this.rooms[uid];
+			}
+		});
 
 		return this.rooms[uid]!;
 	}
 
-	getRoom(uid: string) {
-		return this.rooms[uid];
+	async getRoom(uid: string) {
+		let room = this.rooms[uid];
+
+		if (!room) {
+			const store = useStore<RoomData>(uid);
+
+			// Loads room from shared memory
+			room = await store(async (store) => {
+				if (!(await store.has('uid'))) return;
+
+				const collection = await store.get('collection');
+				const item = await store.get('item');
+				const version = await store.get('version');
+				const changes = await store.get('changes');
+
+				return new Room(this.messenger, uid, collection, item, version, changes);
+			});
+		}
+
+		return room;
 	}
 
-	getClientRooms(client: WebSocketClient) {
-		return Object.values(this.rooms).filter((room) => room.hasClient(client));
+	async getClientRooms(client: WebSocketClient) {
+		const rooms = [];
+
+		for (const room of Object.values(this.rooms)) {
+			if (await room.hasClient(client.uid)) {
+				rooms.push(room);
+			}
+		}
+
+		return rooms;
 	}
 
 	cleanupRooms() {
-		for (const room of Object.values(this.rooms)) {
-			if (room.clients.length === 0) {
-				delete this.rooms[room.uid];
+		(async () => {
+			for (const room of Object.values(this.rooms)) {
+				if ((await room.getClients()).length === 0) {
+					await room.close();
+					delete this.rooms[room.uid];
+				}
 			}
-		}
+		})();
 	}
 }
 
-export class Room {
+type RoomData = {
 	uid: string;
 	collection: string;
 	item: string | null;
 	version: string | null;
 	changes: Item;
-	clients: WebSocketClient[] = [];
-	clientColors: Record<ClientID, Color> = {};
-	focuses: Record<ClientID, string> = {};
+	clients: { uid: ClientID; accountability: Accountability }[];
+	clientColors: Record<ClientID, Color>;
+	focuses: Record<ClientID, string>;
+};
 
-	constructor(uid: string, collection: string, item: string | null, version: string | null, initialChanges?: Item) {
+export class Room {
+	uid: string;
+	messenger: Messenger;
+	store;
+
+	constructor(
+		messenger: Messenger,
+		uid: string,
+		collection: string,
+		item: string | null,
+		version: string | null,
+		initialChanges?: Item,
+	) {
+		this.store = useStore<RoomData>(uid);
+
+		this.store(async (store) => {
+			if (await store.has('uid')) return;
+
+			await store.set('uid', uid);
+			await store.set('collection', collection);
+			await store.set('item', item);
+			await store.set('version', version);
+			// TODO: Have to merge multiple initial Changes somehow?
+			await store.set('changes', initialChanges ?? {});
+
+			// Default all other values
+			await store.set('clientColors', {});
+			await store.set('clients', []);
+			await store.set('focuses', {});
+		});
+
 		this.uid = uid;
-		this.collection = collection;
-		this.item = item;
-		this.version = version;
-		this.changes = initialChanges ?? {};
+		this.messenger = messenger;
 
 		// React to external updates to the item
-		emitter.onAction(`${this.collection}.items.update`, async ({ keys }, { accountability }) => {
-			if (!keys.includes(this.item)) return;
+		emitter.onAction(`${collection}.items.update`, async ({ keys }, { accountability }) => {
+			if (!keys.includes(item)) return;
 
-			const service = getService(this.collection, { schema: await getSchema() });
+			const service = getService(collection, { schema: await getSchema() });
 
-			const item = this.item ? await service.readOne(this.item) : await service.readSingleton({});
+			const result = item ? await service.readOne(item) : await service.readSingleton({});
 
-			this.changes = Object.fromEntries(
-				Object.entries(this.changes).filter(([key, value]) => !isEqual(item[key], value)),
-			);
+			const clients = await this.store(async (store) => {
+				let changes = await store.get('changes');
 
-			for (const client of this.clients) {
+				changes = Object.fromEntries(Object.entries(changes).filter(([key, value]) => !isEqual(result[key], value)));
+
+				store.set('changes', changes);
+
+				return await store.get('clients');
+			});
+
+			for (const client of clients) {
 				if (client.accountability?.user === accountability?.user) continue;
 
-				this.send(client, {
+				this.send(client.uid, {
 					action: ACTION.SERVER.SAVE,
 				});
 			}
 		});
 	}
 
-	hasClient(client: WebSocketClient) {
-		return this.clients.findIndex((c) => c.uid === client.uid) !== -1;
+	async getCollection() {
+		return await this.store(async (store) => {
+			return await store.get('collection');
+		});
+	}
+
+	async getClients() {
+		return await this.store(async (store) => {
+			return await store.get('clients');
+		});
+	}
+
+	async hasClient(id: ClientID) {
+		return await this.store(async (store) => {
+			const clients = await store.get('clients');
+
+			return clients.findIndex((c) => c.uid === id) !== -1;
+		});
 	}
 
 	async join(client: WebSocketClient) {
-		if (!this.hasClient(client)) {
+		if (!(await this.hasClient(client.uid))) {
 			const clientColor = COLORS[random(COLORS.length - 1)]!;
-			this.clientColors[client.uid] = clientColor;
 
 			this.sendAll({
 				action: ACTION.SERVER.JOIN,
@@ -94,29 +185,47 @@ export class Room {
 				color: clientColor,
 			});
 
-			this.clients.push(client);
+			await this.store(async (store) => {
+				const clientColors = await store.get('clientColors');
+				clientColors[client.uid] = clientColor;
+				await store.set('clientColors', clientColors);
+
+				const clients = await store.get('clients');
+				clients.push({ uid: client.uid, accountability: client.accountability! });
+				await store.set('clients', clients);
+			});
 		}
 
-		this.send(client, {
+		const { collection, item, version, clientColors, changes, focuses, clients } = await this.store(async (store) => {
+			return {
+				collection: await store.get('collection'),
+				item: await store.get('item'),
+				version: await store.get('version'),
+				clientColors: await store.get('clientColors'),
+				changes: await store.get('changes'),
+				focuses: await store.get('focuses'),
+				clients: await store.get('clients'),
+			};
+		});
+
+		this.send(client.uid, {
 			action: ACTION.SERVER.INIT,
-			collection: this.collection,
-			item: this.item,
-			version: this.version,
-			changes: await sanitizePayload(this.collection, this.changes, {
+			collection: collection,
+			item: item,
+			version: version,
+			changes: await sanitizePayload(collection, changes, {
 				knex: getDatabase(),
 				schema: await getSchema(),
 				accountability: client.accountability!,
 			}),
 			focuses: Object.fromEntries(
-				Object.entries(this.focuses).filter(([_, field]) =>
-					hasFieldPermision(client.accountability!, this.collection, field),
-				),
+				Object.entries(focuses).filter(([_, field]) => hasFieldPermision(client.accountability!, collection, field)),
 			),
 			connection: client.uid,
-			users: Array.from(this.clients).map((client) => ({
-				user: client.accountability!.user!,
+			users: Array.from(clients).map((client) => ({
+				user: client.accountability.user!,
 				connection: client.uid,
-				color: this.clientColors[client.uid]!,
+				color: clientColors[client.uid]!,
 			})),
 		});
 
@@ -125,10 +234,17 @@ export class Room {
 		});
 	}
 
-	leave(client: WebSocketClient) {
-		if (!this.hasClient(client)) return;
+	async leave(client: WebSocketClient) {
+		if (!this.hasClient(client.uid)) return;
 
-		this.clients = this.clients.filter((c) => c.uid !== client.uid);
+		await this.store(async (store) => {
+			const clients = await store.get('clients');
+
+			await store.set(
+				'clients',
+				clients.filter((c) => c.uid !== client.uid),
+			);
+		});
 
 		this.sendAll({
 			action: ACTION.SERVER.LEAVE,
@@ -136,35 +252,43 @@ export class Room {
 		});
 	}
 
-	save(sender: WebSocketClient) {
-		this.changes = {};
+	async save(sender: WebSocketClient) {
+		await this.store(async (store) => {
+			await store.set('changes', {});
+		});
 
 		this.sendExcluding(
 			{
 				action: ACTION.SERVER.SAVE,
 			},
-			sender,
+			sender.uid,
 		);
 	}
 
 	async update(sender: WebSocketClient, field: string, changes: unknown) {
-		this.changes[field] = changes;
+		const { clients, collection } = await this.store(async (store) => {
+			const existing_changes = await store.get('changes');
+			existing_changes[field] = changes;
+			await store.set('changes', existing_changes);
 
-		for (const client of this.clients) {
+			return { clients: await store.get('clients'), collection: await store.get('collection') };
+		});
+
+		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
 			const item = await sanitizePayload(
-				this.collection,
+				collection,
 				{ [field]: changes },
 				{
 					knex: getDatabase(),
 					schema: await getSchema(),
-					accountability: client.accountability!,
+					accountability: client.accountability,
 				},
 			);
 
 			if (field in item) {
-				this.send(client, {
+				this.send(client.uid, {
 					action: ACTION.SERVER.UPDATE,
 					field,
 					changes: item[field],
@@ -174,12 +298,18 @@ export class Room {
 	}
 
 	async unset(field: string) {
-		delete this.changes[field];
+		const { clients, collection } = await this.store(async (store) => {
+			const changes = await store.get('changes');
+			delete changes[field];
+			await store.set('changes', changes);
 
-		for (const c of this.clients) {
-			if (field && !(await hasFieldPermision(c.accountability!, this.collection, field))) continue;
+			return { clients: await store.get('clients'), collection: await store.get('collection') };
+		});
 
-			this.send(c, {
+		for (const client of clients) {
+			if (field && !(await hasFieldPermision(client.accountability, collection, field))) continue;
+
+			this.send(client.uid, {
 				action: ACTION.SERVER.UPDATE,
 				field: field,
 			});
@@ -187,17 +317,25 @@ export class Room {
 	}
 
 	async focus(sender: WebSocketClient, field: string | null) {
-		if (!field) {
-			delete this.focuses[sender.uid];
-		} else {
-			this.focuses[sender.uid] = field;
-		}
+		const { clients, collection } = await this.store(async (store) => {
+			const focuses = await store.get('focuses');
 
-		for (const client of this.clients) {
-			if (field && !(await hasFieldPermision(client.accountability!, this.collection, field))) continue;
+			if (!field) {
+				delete focuses[sender.uid];
+			} else {
+				focuses[sender.uid] = field;
+			}
 
-			this.send(client, {
-				action: ACTION.SERVER.FOCUS,
+			await store.set('focuses', focuses);
+
+			return { clients: await store.get('clients'), collection: await store.get('collection') };
+		});
+
+		for (const client of clients) {
+			if (field && !(await hasFieldPermision(client.accountability, collection, field))) continue;
+
+			this.send(client.uid, {
+				action: ACTION.SERVER.FOUCS,
 				connection: sender.uid,
 				field,
 			});
@@ -205,24 +343,40 @@ export class Room {
 	}
 
 	sendAll(message: BaseServerMessage) {
-		const msg = JSON.stringify({ ...message, type: WS_TYPE.COLLAB, room: this.uid });
+		(async () => {
+			const clients = await this.store(async (store) => {
+				return await store.get('clients');
+			});
 
-		for (const client of this.clients) {
-			client.send(msg);
-		}
+			for (const client of clients) {
+				this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
+			}
+		})();
 	}
 
-	sendExcluding(message: BaseServerMessage, exclude: WebSocketClient) {
-		const msg = JSON.stringify({ ...message, type: WS_TYPE.COLLAB, room: this.uid });
+	sendExcluding(message: BaseServerMessage, exclude: ClientID) {
+		(async () => {
+			const clients = await this.store(async (store) => {
+				return await store.get('clients');
+			});
 
-		for (const client of this.clients) {
-			if (client.uid !== exclude.uid) client.send(msg);
-		}
+			for (const client of clients) {
+				if (client.uid !== exclude)
+					this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
+			}
+		})();
 	}
 
-	send(client: WebSocketClient, message: BaseServerMessage) {
-		const msg = JSON.stringify({ ...message, type: WS_TYPE.COLLAB, room: this.uid });
-		client.send(msg);
+	send(client: ClientID, message: BaseServerMessage) {
+		this.messenger.sendClient(client, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
+	}
+
+	async close() {
+		this.messenger.sendRoom(this.uid, { action: 'close' });
+
+		await this.store(async (store) => {
+			await store.delete('uid');
+		});
 	}
 }
 

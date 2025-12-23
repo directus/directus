@@ -74,6 +74,14 @@ export class CacheMulti implements Cache {
 		await this.clearOthers();
 	}
 
+	async aquireLock(key: string) {
+		return await this.redis.aquireLock(key);
+	}
+
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return await this.redis.usingLock(key, callback);
+	}
+
 	private async onMessageClear(payload: CacheMultiMessageClear) {
 		// Ignore messages that were sent by the current process. The message is sent in the set and
 		// delete methods; we don't need to delete keys that are already up-to-date / already deleted

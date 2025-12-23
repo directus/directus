@@ -2,6 +2,7 @@ import z from 'zod';
 import type { Item } from '../items.js';
 import { TYPE } from './type.js';
 
+export const COLLAB_BUS = 'collab';
 export const COLORS = ['purple', 'pink', 'blue', 'green', 'yellow', 'orange', 'red'] as const;
 
 export const ACTION = {
@@ -10,7 +11,7 @@ export const ACTION = {
 		LEAVE: 'leave',
 		SAVE: 'save',
 		UPDATE: 'update',
-		FOCUS: 'focus',
+		FOUCS: 'focus',
 	},
 	SERVER: {
 		INIT: 'init',
@@ -18,7 +19,7 @@ export const ACTION = {
 		LEAVE: 'leave',
 		SAVE: 'save',
 		UPDATE: 'update',
-		FOCUS: 'focus',
+		FOUCS: 'focus',
 	},
 } as const;
 
@@ -53,11 +54,24 @@ export const ClientMessage = z.discriminatedUnion('action', [
 		changes: z.unknown().optional(),
 	}),
 	BaseClientMessage.extend({
-		action: z.literal(ACTION.CLIENT.FOCUS),
+		action: z.literal(ACTION.CLIENT.FOUCS),
 		field: z.string().nullable(),
 	}),
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
+
+// Broadcast Messages
+export type BroadcastMessage =
+	| {
+			type: 'send';
+			client: ClientID;
+			message: ServerMessage;
+	  }
+	| {
+			type: 'room';
+			action: 'close';
+			room: string;
+	  };
 
 // Messages from server to client
 export type ServerMessage = {
@@ -98,7 +112,7 @@ export type BaseServerMessage =
 			changes?: unknown;
 	  }
 	| {
-			action: typeof ACTION.SERVER.FOCUS;
+			action: typeof ACTION.SERVER.FOUCS;
 			connection: ClientID;
 			field: string | null;
 	  };

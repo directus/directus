@@ -189,6 +189,9 @@ catalogs:
     '@rollup/plugin-yaml':
       specifier: 4.1.2
       version: 4.1.2
+    '@sesamecare-oss/redlock':
+      specifier: 1.4.0
+      version: 1.4.0
     '@shopify/semaphore':
       specifier: 3.1.0
       version: 3.1.0
@@ -2320,6 +2323,9 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
+      '@sesamecare-oss/redlock':
+        specifier: 'catalog:'
+        version: 1.4.0(ioredis@5.8.2)
       ioredis:
         specifier: 'catalog:'
         version: 5.8.2

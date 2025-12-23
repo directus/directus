@@ -1,3 +1,4 @@
+import { Redlock } from '@sesamecare-oss/redlock';
 import {
 	bufferToUint8Array,
 	compress,
@@ -28,11 +29,21 @@ export const SET_MAX_SCRIPT = `
   return true
 `;
 
+const RELEASE_SCRIPT = `
+	if redis.call("GET", KEYS[1]) == ARGV[1] then
+	return redis.call("DEL", KEYS[1])
+	else
+	return 0
+	end
+`;
+
 export class KvRedis implements Kv {
 	private redis: ExtendedRedis;
 	private namespace: string;
 	private compression: boolean;
 	private compressionMinSize: number;
+	private lockTimeout: number;
+	private redlock;
 
 	constructor(config: Omit<KvConfigRedis, 'type'>) {
 		if ('setMax' in config.redis === false) {
@@ -42,10 +53,25 @@ export class KvRedis implements Kv {
 			});
 		}
 
+		if ('release' in config.redis === false) {
+			config.redis.defineCommand('release', {
+				numberOfKeys: 1,
+				lua: RELEASE_SCRIPT,
+			});
+		}
+
 		this.redis = config.redis as ExtendedRedis;
 		this.namespace = config.namespace;
 		this.compression = config.compression ?? true;
 		this.compressionMinSize = config.compressionMinSize ?? 1000;
+		this.lockTimeout = config.lockTimeout ?? 5000;
+
+		this.redlock = new Redlock([this.redis], {
+			retryDelay: 20,
+			driftFactor: 50,
+			retryCount: 20,
+			retryJitter: 0.01,
+		});
 	}
 
 	async get<T = unknown>(key: string) {
@@ -94,6 +120,23 @@ export class KvRedis implements Kv {
 	async setMax(key: string, value: number) {
 		const wasSet = await this.redis.setMax(withNamespace(key, this.namespace), value);
 		return wasSet !== 0;
+	}
+
+	async aquireLock(key: string) {
+		const lock = await this.redlock.acquire([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout));
+
+		return {
+			release: async () => {
+				lock.release();
+			},
+			extend: async (duration: number) => {
+				lock.extend(duration);
+			},
+		};
+	}
+
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return this.redlock.using([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout), callback);
 	}
 
 	async clear() {
