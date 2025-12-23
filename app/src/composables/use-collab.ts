@@ -1,4 +1,6 @@
 import sdk from '@/sdk';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 import { readUser, readUsers, RemoveEventHandler } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ServerMessage, ACTION, Color, ClientID, ClientMessage } from '@directus/types/collab';
@@ -46,6 +48,8 @@ export function useCollab(
 	collabContext: CollabContext;
 	connected: Ref<boolean>;
 } {
+	const serverStore = useServerStore();
+	const settingsStore = useSettingsStore();
 	const connected = ref(false);
 
 	const roomId = ref<string | null>(null);
@@ -64,6 +68,16 @@ export function useCollab(
 	};
 
 	onMounted(() => {
+		try {
+			if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collab) {
+				sdk.connect();
+			} else {
+				connected.value = false;
+			}
+		} catch {
+			connected.value = false;
+		}
+
 		if (active) return;
 		join();
 	});
@@ -71,8 +85,11 @@ export function useCollab(
 	onBeforeUnmount(() => {
 		eventHandlers.forEach((eventHandler) => eventHandler());
 
-		if (active) return;
-		leave();
+		if (!active) {
+			leave();
+		}
+
+		sdk.disconnect();
 	});
 
 	watch([active], () => {
@@ -113,7 +130,7 @@ export function useCollab(
 	);
 
 	function join() {
-		if (roomId.value || !collection.value || item.value === '+') return;
+		if (!connected.value || roomId.value || !collection.value || item.value === '+') return;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,
@@ -187,7 +204,7 @@ export function useCollab(
 						_in: Array.from(new Set(message.users.map((user) => user.user))),
 					},
 				},
-				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'],
+				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as any,
 			}),
 		);
 
@@ -226,7 +243,7 @@ export function useCollab(
 			: await sdk
 					.request<CollabUser>(
 						readUser(message.user, {
-							fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'],
+							fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as any,
 						}),
 					)
 					.catch(() => ({}));
@@ -288,8 +305,8 @@ export function useCollab(
 		});
 	}, 100);
 
-	function sendMessage(message: ClientMessage) {
-		if (!roomId.value) return;
+	function sendMessage(message: Omit<ClientMessage, 'id'>) {
+		if (!connected.value || !roomId.value) return;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,

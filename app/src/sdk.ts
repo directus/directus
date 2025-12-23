@@ -55,7 +55,7 @@ const baseClient = ofetch.create({
 export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch: baseClient.native } })
 	.with(authentication('session', { credentials: 'include', msRefreshBeforeExpires: SDK_AUTH_REFRESH_BEFORE_EXPIRES }))
 	.with(rest({ credentials: 'include' }))
-	.with(realtime({ authMode: 'strict' }));
+	.with(realtime({ authMode: 'strict', connect: false }));
 
 export default sdk;
 

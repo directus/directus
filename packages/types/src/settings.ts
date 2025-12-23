@@ -65,6 +65,7 @@ export type Settings = {
 	project_id: string | null;
 	ai_openai_api_key: '**********' | null;
 	ai_anthropic_api_key: '**********' | null;
+	collab: boolean;
 } & OwnerInformation;
 
 export type OwnerInformation = {
