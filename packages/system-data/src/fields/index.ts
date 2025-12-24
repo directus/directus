@@ -68,7 +68,6 @@ processFields(shareFields);
 processFields(translationFields);
 processFields(userFields);
 processFields(versionFields);
-processFields(webhookFields);
 
 function processFields(systemFields: Record<string, any>) {
 	const {
