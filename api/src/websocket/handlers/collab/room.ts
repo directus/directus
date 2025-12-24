@@ -377,7 +377,7 @@ export class Room {
 	/**
 	 * Propagate an unset to other clients
 	 */
-	async unset(sender: WebSocketClient, field: string) {
+	async unset(sender: PermissionClient, field: string) {
 		await this.ready;
 
 		const { clients } = await this.store(async (store) => {
