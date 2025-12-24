@@ -146,7 +146,6 @@ create_policy: Politika Oluştur
 create_user: Kullanıcı Oluştur
 message: Mesaj
 delete_panel: Paneli Sil
-create_webhook: Webhook Oluşturun
 create_custom_translation: Özel Çeviri Oluştur
 edit_custom_translation: Özel Çeviriyi Düzenle
 no_custom_translations: Özel Çeviri Yok
@@ -636,8 +635,6 @@ file_count: 'Hiç Dosya Yok | Bir Dosya | {count} Dosya'
 no_files_copy: Burada hiç dosya yok.
 user_count: 'Hiç Kullanıcı Yok | Bir Kullanıcı | {count} Kullanıcı'
 no_users_copy: Bu grupta henüz kullanıcı yok.
-webhooks_count: 'Hiç Webhook Yok | Bir Webhook | {count} Webhook'
-no_webhooks_copy: Henüz bir webhook yapılandırılmamış. Aşağıdan bir tane oluşturarak başlayın.
 no_notifications: Bildirim Yok
 no_notifications_copy: Hepsini gördün!
 activity_log: Etkinlik Günlüğü
@@ -668,7 +665,6 @@ action: İşlem
 ip_address: IP Adresi
 user_agent: Kullanıcı Etmeni
 origin: Kaynak
-webhooks: Webhooklar
 decimals: Ondalıklar
 value_decimals: Ondalık Değerleri
 min_value: Alt Değer
@@ -1106,7 +1102,6 @@ settings_roles: Kullanıcı Rolleri
 settings_permissions: Politikalara Eriş
 settings_project: Ayarlar
 settings_appearance: Görünüş
-settings_webhooks: Webhooklar
 settings_flows: Akışlar
 settings_system_logs: Sistem Geçmişleri
 settings_presets: Yer İmleri
@@ -1180,7 +1175,6 @@ directus_collection:
   directus_settings: Proje konfigürasyon seçenekleri
   directus_shares: Dışarı paylaşılan öğeleri takip eder
   directus_users: Platform için sistem kullanıcıları
-  directus_webhooks: Olay tabanlı HTTP istekleri için konfigürasyon
 fields:
   directus_activity:
     item: Öğe Birincil Anahtarı
@@ -1350,18 +1344,6 @@ fields:
     admin_access: Yönetici Erişimi
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekiyor
-  directus_webhooks:
-    name: İsim
-    method: Metod
-    status: Durum
-    data: Veri
-    header: Header
-    value: Değer
-    headers: Request Headers
-    data_label: Olay Verisini Gönder
-    triggers: Tetikler
-    actions: Aksiyonlar
-    collections: Koleksiyonlar
 field_options:
   directus_settings:
     project_name_placeholder: Benim projem...
@@ -1453,19 +1435,6 @@ field_options:
     status_dropdown_suspended: Askıda
     status_dropdown_archived: Arşivlenmiş
     token: Güvenli bir erişim anahtarı girin...
-  directus_webhooks:
-    status_options_active: Aktif
-    status_options_inactive: Devre Dışı
-    data_label: Olay Verisini Gönder
-    triggers_divider: Tetikler
-    actions_create: Oluşturma
-    actions_update: Güncelleme
-    actions_delete: Silme
-    actions_login: Oturum Açma
-    headers:
-      header: Header
-      value: Değer
-      add: Header Ekle
 no_fields_in_collection: '{collection} koleksiyonunda henüz hiç öğe yok'
 no_value: Değer yok
 do_nothing: Hiçbir Şey Yapma
@@ -1539,7 +1508,6 @@ continue_as: >-
 editing_role: '{role} Rolü'
 no_permissions: İzin Yok
 permission_add_collection: Koleksiyona Ekle
-creating_webhook: Webhook Oluşturma
 default_label: Varsayılan
 delete_label: Sil
 delete_are_you_sure: >-
