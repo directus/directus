@@ -293,4 +293,80 @@ describe('PrivateViewHeaderBar', () => {
 
 		expect(wrapper.find('.title-append').exists()).toBe(true);
 	});
+
+	test('showBack takes precedence over icon when both are provided', () => {
+		const wrapper = mount(PrivateViewHeaderBar, {
+			...mountOptions,
+			props: {
+				shadow: false,
+				inlineNav: false,
+				showBack: true,
+				icon: 'edit',
+			},
+		});
+
+		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
+		expect(headerBarIcon.exists()).toBe(true);
+		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(headerBarIcon.props('icon')).toBeUndefined();
+	});
+
+	test('showBack takes precedence over title-outer:prepend slot when both are provided', () => {
+		const wrapper = mount(PrivateViewHeaderBar, {
+			...mountOptions,
+			props: {
+				shadow: false,
+				inlineNav: false,
+				showBack: true,
+			},
+			slots: {
+				'title-outer:prepend': '<div class="custom-prepend">Prepend</div>',
+			},
+		});
+
+		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
+		expect(headerBarIcon.exists()).toBe(true);
+		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(wrapper.find('.custom-prepend').exists()).toBe(false);
+	});
+
+	test('icon takes precedence over title-outer:prepend slot when both are provided', () => {
+		const wrapper = mount(PrivateViewHeaderBar, {
+			...mountOptions,
+			props: {
+				shadow: false,
+				inlineNav: false,
+				icon: 'edit',
+			},
+			slots: {
+				'title-outer:prepend': '<div class="custom-prepend">Prepend</div>',
+			},
+		});
+
+		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
+		expect(headerBarIcon.exists()).toBe(true);
+		expect(headerBarIcon.props('icon')).toBe('edit');
+		expect(wrapper.find('.custom-prepend').exists()).toBe(false);
+	});
+
+	test('only back button renders when showBack, icon, and slot are all provided', () => {
+		const wrapper = mount(PrivateViewHeaderBar, {
+			...mountOptions,
+			props: {
+				shadow: false,
+				inlineNav: false,
+				showBack: true,
+				icon: 'edit',
+			},
+			slots: {
+				'title-outer:prepend': '<div class="custom-prepend">Prepend</div>',
+			},
+		});
+
+		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
+		expect(headerBarIcon.exists()).toBe(true);
+		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(headerBarIcon.props('icon')).toBeUndefined();
+		expect(wrapper.find('.custom-prepend').exists()).toBe(false);
+	});
 });
