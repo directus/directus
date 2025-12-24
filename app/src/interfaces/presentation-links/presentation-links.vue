@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectRunManualFlow } from '@/composables/use-flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useApi } from '@directus/composables';
@@ -35,7 +37,7 @@ const props = withDefaults(
 );
 
 const api = useApi();
-const values = inject('values', ref<Record<string, any>>({}));
+const itemValues = inject('values', ref<Record<string, any>>({}));
 const resolvedRelationalValues = ref<Record<string, any>>({});
 const { primaryKey } = toRefs(props);
 
@@ -75,7 +77,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 		 * Otherwise we use the fetched values from the API.
 		 */
 
-		const scope = { ...values.value };
+		const scope = { ...itemValues.value };
 
 		Object.keys(resolvedRelationalValues.value).forEach((key) => {
 			if (scope[key]?.constructor !== Object && scope[key] !== null) {
@@ -124,7 +126,7 @@ function getRelatedFieldsFromTemplates() {
 <template>
 	<div class="presentation-links">
 		<template v-for="(link, index) in linksParsed" :key="index">
-			<v-button
+			<VButton
 				v-if="link.actionType !== 'flow' || isActiveFlow(link.flow!)"
 				class="action"
 				:class="[link.type]"
@@ -136,12 +138,12 @@ function getRelatedFieldsFromTemplates() {
 				:disabled="link.actionType === 'flow' && (props.disabled || props.primaryKey === '+')"
 				@click="() => runManualFlow(link.flow!)"
 			>
-				<v-icon v-if="!link.icon && !link.label" name="smart_button" />
+				<VIcon v-if="!link.icon && !link.label" name="smart_button" />
 
-				<v-icon v-if="link.icon" :left="link.label" :name="link.icon" />
+				<VIcon v-if="link.icon" :left="link.label" :name="link.icon" />
 
 				<span v-if="link.label">{{ link.label }}</span>
-			</v-button>
+			</VButton>
 		</template>
 	</div>
 </template>

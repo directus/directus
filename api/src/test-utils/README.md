@@ -14,21 +14,23 @@ This directory contains mock implementations for commonly used modules in servic
 - **[emitter.ts](#emitterts)** - Event emitter mocks
 - **[items-service.ts](#items-servicets)** - ItemsService mocks
 - **[fields-service.ts](#fields-servicets)** - FieldsService mocks
+- **[files-service.ts](#files-servicets)** - FilesService mocks
+- **[folders-service.ts](#folders-servicets)** - FoldersService mocks
 - **[test-helpers.ts](#test-helpersts)** - Test data factory functions
 
 ## Quick Start
 
 ```typescript
-import { createMockKnex, resetKnexMocks } from '../__mocks__/knex.js';
+import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 
 // Set up mocks
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();
 });
 
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 
@@ -203,13 +205,13 @@ Creates a standard database module mock for service tests.
 ```typescript
 // Standard PostgreSQL mock
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();
 });
 
 // MySQL-specific mock
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase('mysql');
 });
 
@@ -229,7 +231,7 @@ transaction wrapper).
 
 ```typescript
 vi.mock('../utils/transaction.js', async () => {
-	const { mockTransaction } = await import('../__mocks__/database.js');
+	const { mockTransaction } = await import('../test-utils/database.js');
 	return mockTransaction();
 });
 
@@ -269,13 +271,13 @@ mocks for vi.mock() declarations and spies for testing cache behavior.
 ```typescript
 // Standard usage for vi.mock()
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 
 // Testing cache clearing with spies
 import { getCache } from '../cache.js';
-import { mockCache } from '../__mocks__/cache.js';
+import { mockCache } from '../test-utils/cache.js';
 
 test('should clear cache after update', async () => {
 	const { spies } = mockCache();
@@ -305,7 +307,7 @@ Creates a standard schema inspector mock with tableInfo, columnInfo, primary, fo
 ```typescript
 // Standard usage
 vi.mock('@directus/schema', async () => {
-	const { mockSchema } = await import('../__mocks__/schema.js');
+	const { mockSchema } = await import('../test-utils/schema.js');
 	return mockSchema();
 });
 
@@ -340,7 +342,7 @@ Creates a standard emitter mock with emitAction, emitFilter, emitInit, and event
 ```typescript
 // Standard usage
 vi.mock('../emitter.js', async () => {
-	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	const { mockEmitter } = await import('../test-utils/emitter.js');
 	return mockEmitter();
 });
 
@@ -390,7 +392,7 @@ Creates a standard ItemsService mock with all CRUD methods pre-configured with s
 ```typescript
 // Standard usage
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
@@ -423,6 +425,8 @@ Creates a standard FieldsService mock with common methods pre-configured.
 
 **Mocked methods:**
 
+In addition to the base `ItemsService` method the following `FieldsService` specific methods are available:
+
 - `addColumnToTable` → no-op function
 - `addColumnIndex` → resolves to undefined
 - `deleteField` → resolves to undefined
@@ -434,7 +438,7 @@ Creates a standard FieldsService mock with common methods pre-configured.
 ```typescript
 // Standard usage in CollectionsService tests
 vi.mock('./fields.js', async () => {
-  const { mockFieldsService } = await import('../__mocks__/fields-service.js');
+  const { mockFieldsService } = await import('../test-utils/services/fields-service.js');
   return mockFieldsService();
 });
 
@@ -450,43 +454,110 @@ expect(addColumnIndexSpy).toHaveBeenCalled();
 
 ---
 
+### files-service.ts
+
+Provides FilesService mocking utilities for testing services that depend on FilesService.
+
+#### `mockFilesService()`
+
+Creates a standard FilesService mock with common methods pre-configured.
+
+**Returns:** Mock module object with `FilesService` class
+
+**Mocked methods:**
+
+In addition to the base `ItemsService` method the following `FilesService` specific methods are available:
+
+- `uploadOne` → `1`
+- `importOne` → `1`
+
+**Example:**
+
+```typescript
+// Standard usage in service tests
+vi.mock('./files.js', async () => {
+	const { mockFilesService } = await import('../test-utils/services/files-service.js');
+	return mockFilesService();
+});
+
+// Override specific methods during tests
+import { FilesService } from './files.js';
+
+const uploadOneSpy = vi.spyOn(FilesService.prototype, 'uploadOne').mockResolvedValue(`1`);
+```
+
+---
+
+### folders-service.ts
+
+Provides FoldersService mocking utilities for testing services that depend on FoldersService.
+
+#### `mockFilesService()`
+
+Creates a standard FoldersService mock with common methods pre-configured.
+
+**Returns:** Mock module object with `FoldersService` class
+
+**Mocked methods:**
+
+In addition to the base `ItemsService` method the following `FoldersService` specific methods are available:
+
+- `buildTree` → return `1` => `root` map
+
+**Example:**
+
+```typescript
+// Standard usage in service tests
+vi.mock('./folders.js', async () => {
+	const { mockFoldersService } = await import('../test-utils/services/folders-service.js');
+	return mockFilesService();
+});
+
+// Override specific methods during tests
+import { FoldersService } from './folders.js';
+
+const buildTreeSpy = vi.spyOn(FoldersService.prototype, 'buildTree').mockResolvedValue(new Map('1', 'root-alt'));
+```
+
+---
+
 ## Common Patterns
 
 ### Full Service Test Setup
 
 ```typescript
-import { createMockKnex, resetKnexMocks } from '../__mocks__/knex.js';
+import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 // Mock all dependencies (before imports)
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();
 });
 
 vi.mock('@directus/schema', async () => {
-	const { mockSchema } = await import('../__mocks__/schema.js');
+	const { mockSchema } = await import('../test-utils/schema.js');
 	return mockSchema();
 });
 
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 
 vi.mock('../emitter.js', async () => {
-	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	const { mockEmitter } = await import('../test-utils/emitter.js');
 	return mockEmitter();
 });
 
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
 vi.mock('../utils/transaction.js', async () => {
-	const { mockTransaction } = await import('../__mocks__/database.js');
+	const { mockTransaction } = await import('../test-utils/database.js');
 	return mockTransaction();
 });
 
@@ -525,7 +596,7 @@ describe('Integration Tests', () => {
 ### Testing Schema Operations
 
 ```typescript
-import { mockCreateTable, mockAlterTable, createMockTableBuilder } from '../__mocks__/knex.js';
+import { mockCreateTable, mockAlterTable, createMockTableBuilder } from '../test-utils/knex.js';
 
 test('should create table with correct schema', async () => {
 	const { db, mockSchemaBuilder } = createMockKnex();
@@ -552,7 +623,7 @@ test('should alter table to add column', async () => {
 
 ```typescript
 import { getCache } from '../cache.js';
-import { mockCache } from '../__mocks__/cache.js';
+import { mockCache } from '../test-utils/cache.js';
 
 test('should clear cache after update', async () => {
 	const { spies } = mockCache();
@@ -604,7 +675,7 @@ test('should read column info', async () => {
 ### Testing with System Collection Mocks
 
 ```typescript
-import { setupSystemCollectionMocks } from '../__mocks__/knex.js';
+import { setupSystemCollectionMocks } from '../test-utils/knex.js';
 
 describe('Service Tests', () => {
 	const { db, tracker, mockSchemaBuilder } = createMockKnex();
@@ -678,7 +749,7 @@ Always declare `vi.mock()` calls **before** importing the modules they mock:
 ```typescript
 // ✅ Correct - mocks first
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 
@@ -688,7 +759,7 @@ import { YourService } from './your-service.js';
 import { YourService } from './your-service.js';
 
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 ```

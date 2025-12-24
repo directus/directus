@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { isPlainObject } from 'lodash';
 import { useClipboard } from '@/composables/use-clipboard';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	error: Record<string, any>;
@@ -42,7 +43,7 @@ async function copyError() {
 <template>
 	<div class="v-error">
 		<output>[{{ code }}] {{ message }}</output>
-		<v-icon
+		<VIcon
 			v-if="isCopySupported"
 			v-tooltip="$t('copy_details')"
 			small

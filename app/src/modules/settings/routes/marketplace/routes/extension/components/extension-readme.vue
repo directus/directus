@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
+
 defineProps<{
 	readme: string | null;
 }>();
 </script>
 
 <template>
-	<v-notice v-if="!readme" class="notice">{{ $t('extension_readme_missing') }}</v-notice>
+	<VNotice v-if="!readme" class="notice">{{ $t('extension_readme_missing') }}</VNotice>
 	<div v-else v-md="{ value: readme, target: '_blank' }" class="readme" />
 </template>
 

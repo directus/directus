@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import { computed } from 'vue';
+import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -28,20 +31,20 @@ const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.valu
 </script>
 
 <template>
-	<sidebar-detail icon="layers" :title="$t('layout_options')">
+	<SidebarDetail id="layout" icon="layers" :title="$t('layout_options')">
 		<div class="layout-options">
 			<div class="field">
 				<div class="type-label">{{ $t('layout') }}</div>
-				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
+				<VSelect v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
 					<template v-if="currentLayout!.icon" #prepend>
-						<v-icon :name="currentLayout!.icon" />
+						<VIcon :name="currentLayout!.icon" />
 					</template>
-				</v-select>
+				</VSelect>
 			</div>
 
 			<slot />
 		</div>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

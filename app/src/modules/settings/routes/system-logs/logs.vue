@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { useShortcut } from '@/composables/use-shortcut';
-import { getRootPath } from '@/utils/get-root-path';
+import InterfaceInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
+import { getRootPath } from '@/utils/get-root-path';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { realtime } from '@directus/sdk';
 import { useLocalStorage } from '@vueuse/core';
 import CodeMirror from 'codemirror';
@@ -13,7 +21,6 @@ import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import InlineFilter from './components/inline-filter.vue';
 import LogsDisplay from './components/logs-display.vue';
-import SystemLogsSidebarDetail from './components/system-logs-sidebar-detail.vue';
 import { Log } from './types';
 
 const { t } = useI18n();
@@ -417,44 +424,39 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<private-view :title="$t('settings_system_logs')">
-		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="terminal" />
-			</v-button>
-		</template>
+	<PrivateView :title="$t('settings_system_logs')" icon="terminal">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled>
-				<v-progress-circular small indeterminate />
-			</v-button>
-			<v-button
+			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
+				<VProgressCircular small indeterminate />
+			</VButton>
+
+			<PrivateViewHeaderBarActionButton
 				v-else-if="!shouldStream"
 				v-tooltip.bottom="$t('resume_streaming_logs')"
-				rounded
-				icon
+				icon="play_arrow"
 				@click="resumeLogsStreaming"
-			>
-				<v-icon name="play_arrow" />
-			</v-button>
-			<v-button v-else v-tooltip.bottom="$t('pause_streaming_logs')" rounded icon @click="pauseLogsStreaming">
-				<v-icon name="pause" />
-			</v-button>
-			<v-button
+			/>
+
+			<PrivateViewHeaderBarActionButton
+				v-else
+				v-tooltip.bottom="$t('pause_streaming_logs')"
+				icon="pause"
+				@click="pauseLogsStreaming"
+			/>
+
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('clear_logs')"
-				rounded
-				icon
 				:disabled="logs.length === 0"
 				class="action-clear"
+				icon="mop"
 				@click="clearLogs"
-			>
-				<v-icon name="mop" />
-			</v-button>
+			/>
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="logs-container">
@@ -468,7 +470,7 @@ onUnmounted(() => {
 			/>
 			<div class="split-view">
 				<div class="logs-display">
-					<logs-display
+					<LogsDisplay
 						ref="logsDisplay"
 						:logs="filteredLogs"
 						:log-levels="allowedLogLevels"
@@ -479,13 +481,13 @@ onUnmounted(() => {
 						@scrolled-to-bottom="onScrollBottom"
 					/>
 				</div>
-				<transition name="fade">
+				<Transition name="fade">
 					<div v-show="logDetailVisible" class="log-detail">
 						<div class="log-detail-controls">
-							<v-button class="close-button" x-large secondary icon @click="minimizeLog">
-								<v-icon name="close" />
-							</v-button>
-							<interface-input
+							<VButton class="close-button" x-large secondary icon @click="minimizeLog">
+								<VIcon name="close" />
+							</VButton>
+							<InterfaceInput
 								:value="logDetailSearch"
 								class="full"
 								:placeholder="$t('log_detail_filter_paths')"
@@ -495,28 +497,24 @@ onUnmounted(() => {
 							/>
 						</div>
 						<div ref="codemirrorEl" class="raw-log">
-							<v-button
+							<VButton
 								v-if="isCopySupported"
 								class="copy-button"
 								secondary
 								icon
 								@click="copyToClipboard(codemirror?.getValue())"
 							>
-								<v-icon name="content_copy" />
-							</v-button>
+								<VIcon name="content_copy" />
+							</VButton>
 						</div>
 						<div class="actions">
-							<v-checkbox v-model="softWrap" :label="$t('soft_wrap_lines')" />
+							<VCheckbox v-model="softWrap" :label="$t('soft_wrap_lines')" />
 						</div>
 					</div>
-				</transition>
+				</Transition>
 			</div>
 		</div>
-
-		<template #sidebar>
-			<system-logs-sidebar-detail />
-		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

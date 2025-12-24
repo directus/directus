@@ -287,6 +287,7 @@ confirm_revert_body: To bo vrnilo zapis na izbrano stanje.
 display: Prikaz
 settings_update_success: Nastavitve posodobljene
 title: Naslov
+subtitle: Podnaslov
 revision_delta_created: Ustvarjeno
 revision_delta_created_externally: Ustvarjeno eksterno
 revision_delta_updated: 'Eno polje urejeno | {count} polj urejenih'
@@ -488,7 +489,6 @@ errors:
   UNKNOWN: Nepričakovana napaka
   USER_SUSPENDED: Uporabnik suspendiran
 security: Varnost
-value_hashed: Vrednost varno zgoščena
 bookmark_name: Ime zaznamka ...
 create_bookmark: Ustvari zaznamek
 edit_bookmark: Uredi zaznamek
@@ -721,32 +721,6 @@ unsaved_changes: Neshranjene spremembe
 unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
 discard_changes: Zavrzi spremembe
 keep_editing: Nadaljuj urejanje
-page_help_collections_collection: >-
-  **Brskaj zapise** - Pokaže vse {collection} zapise, do katerih imate dostop. Uredite postavitev, filter in razvrščanje za prilagojen pogled in shranite te nastavitve kot zaznamek za hiter dostop.
-page_help_collections_item: >-
-  **Podrobnosti zapisa** - Obrazec ta pregled in urejanje tega zapisa. Ta izbor tudi vsebuje zgodovino revizij in komentarje.
-page_help_activity_collection: >-
-  **Brskanje po aktivnostih* - Spisek dejavnosti vseh uporabnikov.
-page_help_docs_global: >-
-  **Pregled dokumentacije** - Dokumentacija, prilagojena temu projektu glede na trenutno verzijo.
-page_help_files_collection: >-
-  **Knjižnjica datotek**  - Prikaz vseh naloženih datotek . Uredite postavitev, filtre in razvrščanje za prilagojen pogled in shranite kot zaznamek za hiter dostop.
-page_help_files_item: >-
-  **Podrobnosti datoteke** - Obrazec za urejanje datoteke in njenih meta podatkov ter dostopa.
-page_help_settings_datamodel_collections: >-
-  **Podatkovni model: zbirke** - Spisek vse zbitk. Vključuje vidne, skrite in sistemske zbirke kot tudi neurejene tabele iz baze.
-page_help_settings_datamodel_fields: >-
-  **Podatkovni model: zbirka** - Obrazec za urejanje te zbirke in njenih polj.
-page_help_settings_roles_item: "**Podrobnosti vloge** - Urejanje pravic vlog in drugih nastavitev."
-page_help_settings_presets_collection: >-
-  **Brskanje prednastavitev** - Prikaz vseh prednastavitev projekta, vključno z zaznamki uporabnika, vloge in globalno ter privzetih pogledov.
-page_help_settings_presets_item: >-
-  **Podrobnosti prednastavitev** - Obrazec za urejanje zaznamkov in prednastavitev zbirk.
-page_help_settings_webhooks_collection: '**Brskanje prožilcev** - Prikaz vseh prožilcev (webhooks) projekta.'
-page_help_settings_webhooks_item: '**Podrobnosti prožilca** - Obrazec za ustvarjanje in urejanje projektnih prožilcev.'
-page_help_users_collection: '**Uporabniški imenik** - Spisek vseh uporabnikov projekta.'
-page_help_users_item: >-
-  ** Podrobnosti uporabnika ** - Urejanje podatkov o uporabnikih
 activity_feed: Dnevnik dejavnosti
 add_new: Dodaj novo
 create_new: Ustvari novo
@@ -977,6 +951,17 @@ inline: V vrstici
 comment: Komentar
 live_preview:
   new_window: Odpri v novem oknu
+ai:
+  input: Vnos
+  settings: Nastavitve
+  tool_approval:
+    disabled: Onemogočeno
+ai_tools:
+  items: Zapisi
+  files: Datoteke
+  operations: Postopki
+  schema: Shema
+  collections: Zbirke
 mcp_prompts_collection_schema:
   messages_role_user: Uporabnik
 relational_triggers: Povezani prožilci
@@ -1066,7 +1051,7 @@ interfaces:
     accordion_mode: Način harmonike
     max_one_section_open: Največ ena odprta sekcija
   presentation-links:
-    links: Povezave
+    presentation-links: Gumbi
     style: Slog
     primary: Glavni
     link: Povezave
@@ -1305,6 +1290,8 @@ interfaces:
     start_closed: Začni zaprto
   system-token:
     system-token: Žeton
+  header:
+    links: Povezave
 displays:
   translations:
     translations: Prevodi

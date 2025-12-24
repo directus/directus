@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	modelValue?: boolean;
@@ -49,17 +52,17 @@ function toggle() {
 	<div class="v-detail" :class="{ disabled }">
 		<slot name="activator" v-bind="{ active: internalActive, enable, disable, toggle }">
 			<button type="button" class="activator" :disabled @click="internalActive = !internalActive">
-				<v-divider>
-					<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
+				<VDivider>
+					<VIcon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
 					<slot name="title">{{ label || $t('toggle') }}</slot>
-				</v-divider>
+				</VDivider>
 			</button>
 		</slot>
-		<transition-expand>
+		<TransitionExpand>
 			<div v-if="internalActive" class="content">
 				<slot />
 			</div>
-		</transition-expand>
+		</TransitionExpand>
 	</div>
 </template>
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { sortBy } from 'lodash';
 import { computed } from 'vue';
 
@@ -39,7 +41,7 @@ function updateValue(value: string[]) {
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		multiple
 		:model-value="value"
 		:items="items"
@@ -53,7 +55,7 @@ function updateValue(value: string[]) {
 		@update:model-value="updateValue($event)"
 	>
 		<template v-if="icon" #prepend>
-			<v-icon :name="icon" />
+			<VIcon :name="icon" />
 		</template>
-	</v-select>
+	</VSelect>
 </template>

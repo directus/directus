@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { ref } from 'vue';
 
 const loading = ref(false);
@@ -32,7 +33,7 @@ async function fetchCounts() {
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="$t('information')" close>
+	<SidebarDetail id="presets" icon="info" :title="$t('information')">
 		<dl>
 			<div>
 				<dt>{{ $t('bookmarks') }}</dt>
@@ -43,11 +44,7 @@ async function fetchCounts() {
 				<dd>{{ presetsCount }}</dd>
 			</div>
 		</dl>
-
-		<v-divider />
-
-		<div v-md="$t('page_help_settings_presets_collection')" class="page-description" />
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

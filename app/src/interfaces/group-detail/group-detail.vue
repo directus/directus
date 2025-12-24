@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import VDetail from '@/components/v-detail.vue';
+import VDivider from '@/components/v-divider.vue';
+import type { ComparisonContext } from '@/components/v-form/types';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import formatTitle from '@directus/format-title';
 import { Field, ValidationError } from '@directus/types';
-import type { ComparisonContext } from '@/components/v-form/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -117,7 +121,7 @@ function useComparisonIndicator() {
 </script>
 
 <template>
-	<v-detail
+	<VDetail
 		v-model="detailOpen"
 		:start-open="start === 'open'"
 		class="group-detail"
@@ -128,25 +132,25 @@ function useComparisonIndicator() {
 	>
 		<template #activator="{ toggle, active }">
 			<button type="button" class="toggle-btn" @click="toggle">
-				<v-divider :class="{ active, edited }" :inline-title="false" large>
-					<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
+				<VDivider :class="{ active, edited }" :inline-title="false" large>
+					<template v-if="headerIcon" #icon><VIcon :name="headerIcon" class="header-icon" /></template>
 					<template v-if="field.name">
 						<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot"></span>
 						<span class="title">{{ field.name }}</span>
 					</template>
-					<v-icon
+					<VIcon
 						v-if="!active && validationMessages!.length > 0"
 						v-tooltip="validationMessages!.join('\n')"
 						class="warning"
 						name="error"
 						small
 					/>
-					<v-icon class="expand-icon" name="expand_more" />
-				</v-divider>
+					<VIcon class="expand-icon" name="expand_more" />
+				</VDivider>
 			</button>
 		</template>
 
-		<v-form
+		<VForm
 			:initial-values="initialValues"
 			:fields="fields"
 			:model-value="values"
@@ -164,7 +168,7 @@ function useComparisonIndicator() {
 			:comparison="comparison"
 			@update:model-value="$emit('apply', $event)"
 		/>
-	</v-detail>
+	</VDetail>
 </template>
 
 <style scoped lang="scss">
@@ -213,7 +217,7 @@ function useComparisonIndicator() {
 }
 
 .v-divider.active .expand-icon {
-	transform: rotate(0) !important;
+	transform: rotate(0deg) !important;
 }
 
 .v-divider :deep(.type-text) {

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { RequestError } from '@/api';
 import { login } from '@/auth';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import InterfaceSystemInputPassword from '@/interfaces/_system/system-input-password/input-password.vue';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import z from 'zod';
 
 type Credentials = {
@@ -99,11 +105,11 @@ async function onSubmit() {
 
 <template>
 	<form novalidate @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="$t('email')" />
-		<interface-system-input-password :value="password" autocomplete="current-password" @input="password = $event" />
+		<VInput v-model="email" autofocus autocomplete="username" type="email" :placeholder="$t('email')" />
+		<InterfaceSystemInputPassword :value="password" autocomplete="current-password" @input="password = $event" />
 
-		<transition-expand>
-			<v-input
+		<TransitionExpand>
+			<VInput
 				v-if="requiresTFA"
 				v-model="otp"
 				type="text"
@@ -111,18 +117,18 @@ async function onSubmit() {
 				:placeholder="$t('otp')"
 				autofocus
 			/>
-		</transition-expand>
+		</TransitionExpand>
 
-		<v-notice v-if="error" type="warning">
+		<VNotice v-if="error" type="warning">
 			{{ errorFormatted }}
-		</v-notice>
+		</VNotice>
 		<div class="buttons">
-			<v-button class="sign-in" type="submit" :loading="loggingIn" large>
-				<v-text-overflow :text="$t('sign_in')" />
-			</v-button>
-			<router-link to="/reset-password" class="forgot-password">
+			<VButton class="sign-in" type="submit" :loading="loggingIn" large>
+				<VTextOverflow :text="$t('sign_in')" />
+			</VButton>
+			<RouterLink to="/reset-password" class="forgot-password">
 				{{ $t('forgot_password') }}
-			</router-link>
+			</RouterLink>
 		</div>
 	</form>
 </template>
