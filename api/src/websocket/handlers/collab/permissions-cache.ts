@@ -54,9 +54,17 @@ export class PermissionCache {
 			}
 		}
 
-		// Dependency Invalidation (Relational)
-		if (this.tags.has(`dependency:${collection}`)) {
-			for (const k of this.tags.get(`dependency:${collection}`)!) affectedKeys.add(k);
+		// Dependency Invalidation (Items + Relational)
+		const depTags = [`dependency:${collection}`];
+
+		for (const id of items) {
+			depTags.push(`dependency:${collection}:${id}`);
+		}
+
+		for (const tag of depTags) {
+			if (this.tags.has(tag)) {
+				for (const k of this.tags.get(tag)!) affectedKeys.add(k);
+			}
 		}
 
 		for (const k of affectedKeys) {

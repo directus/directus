@@ -627,7 +627,14 @@ export class Room {
 
 								if (rootCollection && parts.length > 1) {
 									const targetCollection = resolvePath(parts.slice(1, -1), rootCollection);
-									if (targetCollection) dependencies.add(targetCollection);
+
+									if (targetCollection) {
+										if (parts[0] === '$CURRENT_USER' && accountability.user) {
+											dependencies.add(`${targetCollection}:${accountability.user}`);
+										} else {
+											dependencies.add(targetCollection);
+										}
+									}
 								}
 							}
 						}
