@@ -742,10 +742,6 @@ export interface ExtensionsServices {
 	 */
 	VersionsService: new (options: AbstractServiceOptions) => AbstractService & VersionsService;
 	/**
-	 * The WebhooksService
-	 */
-	WebhooksService: new (options: AbstractServiceOptions) => AbstractService<Webhook>;
-	/**
 	 * The WebSocketService
 	 */
 	WebSocketService: new () => WebSocketService;
