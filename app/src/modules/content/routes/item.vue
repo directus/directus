@@ -565,6 +565,7 @@ function useCollectionRoute() {
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
+		:back-to="collectionRoute"
 		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
