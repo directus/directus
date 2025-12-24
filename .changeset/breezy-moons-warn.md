@@ -1,5 +1,5 @@
 ---
-'@directus/app': minor
+'@directus/app': patch
 ---
 
-fix: private view nav bar back button not route normally
+Improves behavior of the in-studio back button
