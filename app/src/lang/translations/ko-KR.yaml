@@ -146,7 +146,6 @@ create_policy: 정책 등록
 create_user: 사용자 생성
 message: 메시지
 delete_panel: 판넬 삭제
-create_webhook: 웹훅 생성
 create_custom_translation: 사용자 정의 번역 생성
 edit_custom_translation: 사용자 정의 번역 수정
 no_custom_translations: 사용자 정의 번역 없음
@@ -655,10 +654,6 @@ file_count: '파일 없음 | 파일 1개 | 파일 {count}개'
 no_files_copy: 표시할 파일이 없습니다.
 user_count: '사용자 없음 | 한명의 사용자 | {count}명의 사용자'
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
-webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
-webhooks_deprecation_notice: |
-  웹훅은 더 이상 사용하지 않으며, **Flows**와 [Webhook / Request URL 작업](https://docs.directus.io/app/flows/operations.html#webhook-request-url)을 대신 사용하세요.
-no_webhooks_copy: 아직 웹훅이 구성되지 않았습니다. 아래 버튼을 통해 시작해 보세요.
 no_notifications: 알림 없음
 no_notifications_copy: 모든 알림을 확인하셨습니다!
 activity_log: 활동 기록
@@ -689,7 +684,6 @@ action: 활동
 ip_address: IP 주소
 user_agent: 사용자 에이전트
 origin: 출처
-webhooks: 웹훅
 decimals: 소수
 value_decimals: 값 소수점
 min_value: 최소값
@@ -1149,7 +1143,6 @@ settings_project: 설정
 settings_appearance: 외관
 settings_ai: AI
 model_context_protocol: 모델 컨텍스트 프로토콜
-settings_webhooks: 웹후크
 settings_flows: 플로우
 settings_system_logs: 시스템 로그
 settings_presets: 북마크
@@ -1227,7 +1220,6 @@ directus_collection:
   directus_settings: 프로젝트 구성 옵션
   directus_shares: 외부 공유 항목 추적
   directus_users: 플랫폼의 시스템 사용자
-  directus_webhooks: 이벤트 기반 HTTP 요청 구성
   directus_translations: 사용자 정의 번역 생성
   directus_versions: 항목의 콘텐츠 버전
   directus_extensions: 확장 기능 구성
@@ -1420,18 +1412,6 @@ fields:
     admin_access: 관리자 액세스
     ip_access: IP 액세스
     enforce_tfa: 2FA 필요
-  directus_webhooks:
-    name: 이름
-    method: 방법
-    status: 상태
-    data: 데이터
-    header: 머리글
-    value: 값
-    headers: 요청 헤더
-    data_label: 이벤트 데이터 보내기
-    triggers: 트리거
-    actions: 액션
-    collections: 컬렉션
 field_options:
   directus_settings:
     project_name_placeholder: 내 프로젝트...
@@ -1533,19 +1513,6 @@ field_options:
     status_dropdown_suspended: 정지된
     status_dropdown_archived: 보관됨
     token: 보안 액세스 토큰을 입력하세요...
-  directus_webhooks:
-    status_options_active: 활성화
-    status_options_inactive: 비활성화
-    data_label: 이벤트 데이터 보내기
-    triggers_divider: 트리거
-    actions_create: 작성/추가
-    actions_update: 업데이트
-    actions_delete: 삭제
-    actions_login: 로그인
-    headers:
-      header: 머리글
-      value: 값
-      add: 헤더 추가
 no_fields_in_collection: '아직 "{collection}"에 필드가 없습니다.'
 no_value: 값 없음
 do_nothing: 아무것도하지 마세요
@@ -1648,7 +1615,6 @@ editing_role: '{role} 역할'
 editing_policy: '{policy} 정책'
 no_permissions: 권한 없음
 permission_add_collection: 컬렉션 추가
-creating_webhook: 웹훅 만들기
 default_label: 기본
 delete_label: 삭제
 delete_are_you_sure: >-
