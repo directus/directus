@@ -24,12 +24,14 @@ import { RouterLink, RouterView } from 'vue-router';
 import Draggable from 'vuedraggable';
 import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
+import CollectionImportDialog from './components/collection-import-dialog.vue';
 import CollectionItem from './components/CollectionItem.vue';
 import CollectionOptions from './components/collection-options.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
 
 const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);
+const collectionImportDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
@@ -165,6 +167,13 @@ async function downloadSnapshot() {
 				small
 			/>
 
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('import_collection')"
+				secondary
+				icon="publish"
+				@click="collectionImportDialogActive = true"
+			/>
+
 			<CollectionDialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
@@ -285,6 +294,11 @@ async function downloadSnapshot() {
 			:model-value="!!editCollection"
 			:collection="editCollection"
 			@update:model-value="editCollection = null"
+		/>
+
+		<CollectionImportDialog
+			v-model="collectionImportDialogActive"
+			@imported="collectionsStore.hydrate()"
 		/>
 	</PrivateView>
 </template>

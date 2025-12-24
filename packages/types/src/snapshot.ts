@@ -29,6 +29,25 @@ export type SnapshotSystemField = {
 
 export type SnapshotWithHash = Snapshot & { hash: string };
 
+export type CollectionSnapshot = {
+	version: number;
+	directus: string;
+	collection: string;
+	meta: SnapshotCollection['meta'] | null;
+	schema: Pick<Table, 'name'>;
+	fields: (SnapshotField | SnapshotSystemField)[];
+	relations: SnapshotRelation[];
+	dependencies?: {
+		junctions: {
+			collection: string;
+			meta: SnapshotCollection['meta'] | null;
+			schema: Pick<Table, 'name'>;
+			fields: (SnapshotField | SnapshotSystemField)[];
+			relations: SnapshotRelation[];
+		}[];
+	};
+};
+
 export type SnapshotDiff = {
 	collections: {
 		collection: string;

@@ -1,6 +1,7 @@
 import type {
 	AbstractServiceOptions,
 	Accountability,
+	CollectionSnapshot,
 	Snapshot,
 	SnapshotDiff,
 	SnapshotDiffWithHash,
@@ -12,9 +13,12 @@ import { ForbiddenError } from '@directus/errors';
 import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
+import { getCollectionSnapshot } from '../utils/get-collection-snapshot.js';
+import { applyCollectionAdditive } from '../utils/apply-collection-additive.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
 import { validateApplyDiff } from '../utils/validate-diff.js';
 import { validateSnapshot } from '../utils/validate-snapshot.js';
+import { getSchema } from '../utils/get-schema.js';
 
 export class SchemaService {
 	knex: Knex;
@@ -31,6 +35,21 @@ export class SchemaService {
 		const currentSnapshot = await getSnapshot({ database: this.knex });
 
 		return currentSnapshot;
+	}
+
+	async collectionSnapshot(collectionName: string): Promise<CollectionSnapshot> {
+		if (this.accountability?.admin !== true) throw new ForbiddenError();
+
+		const collectionSnapshot = await getCollectionSnapshot(collectionName, { database: this.knex });
+
+		return collectionSnapshot;
+	}
+
+	async applyCollectionSnapshot(snapshot: CollectionSnapshot): Promise<void> {
+		if (this.accountability?.admin !== true) throw new ForbiddenError();
+
+		const schema = await getSchema({ database: this.knex, bypassCache: true });
+		await applyCollectionAdditive(snapshot, { database: this.knex, schema, merge: true });
 	}
 
 	async apply(payload: SnapshotDiffWithHash): Promise<void> {

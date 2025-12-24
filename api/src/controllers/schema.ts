@@ -24,6 +24,38 @@ router.get(
 	respond,
 );
 
+router.get(
+	'/collections/:collectionName',
+	asyncHandler(async (req, res, next) => {
+		const collectionName = req.params['collectionName'];
+
+		if (!collectionName) {
+			throw new InvalidPayloadError({ reason: 'Collection name is required' });
+		}
+
+		const service = new SchemaService({ accountability: req.accountability });
+		const collectionSnapshot = await service.collectionSnapshot(collectionName);
+		res.locals['payload'] = { data: collectionSnapshot };
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/collections/import',
+	asyncHandler(async (req, res, next) => {
+		if (Object.keys(req.body).length === 0) {
+			throw new InvalidPayloadError({ reason: 'No data was included in the body' });
+		}
+
+		const service = new SchemaService({ accountability: req.accountability });
+		await service.applyCollectionSnapshot(req.body);
+		res.locals['payload'] = { data: { success: true } };
+		return next();
+	}),
+	respond,
+);
+
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('application/json')) {
 		if (Object.keys(req.body).length === 0) {

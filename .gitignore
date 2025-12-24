@@ -33,6 +33,7 @@ debug
 .history/
 *.sublime-settings
 .*.swp
+.claude/*
 
 # Environments / Workspaces
 .gitpod.yml
@@ -51,3 +52,4 @@ TODO
 /tests/blackbox/server-log-*
 /tests/blackbox/sequencer-data.json
 /packages/extensions-sdk/temp-extension-*/
+/api/schema/

@@ -10,6 +10,8 @@ import init from './commands/init/index.js';
 import rolesCreate from './commands/roles/create.js';
 import { apply } from './commands/schema/apply.js';
 import { snapshot } from './commands/schema/snapshot.js';
+import { exportCollections } from './commands/schema/export.js';
+import { importCollections } from './commands/schema/import.js';
 import keyGenerate from './commands/security/key.js';
 import secretGenerate from './commands/security/secret.js';
 import usersCreate from './commands/users/create.js';
@@ -109,6 +111,25 @@ export async function createCli(): Promise<Command> {
 		)
 		.argument('<path>', 'Path to snapshot file')
 		.action(apply);
+
+	schemaCommands
+		.command('export')
+		.description('Export collection schema(s) to file(s)')
+		.argument('<collections...>', 'Collection names to export')
+		.option('-o, --output <path>', 'Output directory', './schema')
+		.addOption(new Option('--format <format>', 'JSON or YAML format').choices(['json', 'yaml']).default('json'))
+		.option('-y, --yes', 'Overwrite existing files without prompt')
+		.action(exportCollections);
+
+	schemaCommands
+		.command('import')
+		.description('Import collection schema(s) from file(s)')
+		.argument('<paths...>', 'File path(s) or directory to import')
+		.option('--force', 'Overwrite existing collections')
+		.option('--skip-existing', 'Skip collections that already exist')
+		.option('--skip-relations', 'Skip importing relations (useful when related collections exist)')
+		.option('-y, --yes', 'Skip confirmation prompt')
+		.action(importCollections);
 
 	await emitter.emitInit('cli.after', { program });
 

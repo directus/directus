@@ -735,8 +735,27 @@ csv: CSV
 csv_utf8: CSV Excel (UTF-8)
 no_collections: No Collections
 create_collection: Create Collection
-no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
-no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
+import_collection: Import Collection
+no_collections_copy_admin: You don't have any Collections yet. Click the button below to get started.
+no_collections_copy: You don't have any Collections yet. Please contact your system administrator.
+paste_json: Paste JSON
+choose_file: Choose File
+paste_collection_json_here: Paste collection JSON here...
+preview: Preview
+will_create_collection: 'Will create collection: {collection}'
+will_create_junctions: 'Will create {count} junction collection(s): {junctions}'
+collection_exists_will_merge: 'Collection "{collection}" already exists and will be updated'
+missing_dependencies: 'Warning: Missing dependencies'
+importing_collection: Importing collection
+import_successful: 'Successfully imported: {collection}'
+import_failed: Import failed
+failed_to_read_file: 'Failed to read file: {message}'
+invalid_json: 'Invalid JSON: {message}'
+missing_collection_name: Collection name is missing in snapshot
+invalid_fields_array: Fields must be an array
+invalid_relations_array: Relations must be an array
+unknown_error: An unknown error occurred
+junctions: Junctions
 relationship_not_setup: The relationship hasn't been configured correctly
 no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: The display template option is misconfigured
@@ -1061,6 +1080,10 @@ stop_flow: Stop Flow
 create_operation: Create Operation
 edit_operation: Edit Operation
 code: Code
+visual: Visual
+schema_definition: Schema Definition
+hide_nulls: Hide Nulls
+copy_to_clipboard: Copy to Clipboard
 operation_options: Operation Options
 operation_name: Name of operation...
 operation_key: Identifier for reference...
