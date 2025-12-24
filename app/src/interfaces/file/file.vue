@@ -19,6 +19,7 @@ import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import VUpload from '@/components/v-upload.vue';
+import { useFocusin } from '@/composables/use-focusin';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -76,6 +77,9 @@ const query = ref<RelationQuerySingle>({
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
 
+const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
+const menuOpen = ref(false);
+
 const {
 	displayItem: file,
 	loading,
@@ -86,8 +90,6 @@ const {
 });
 
 const { createAllowed } = useRelationPermissionsM2O(relationInfo);
-
-const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -140,6 +142,8 @@ const customFilter = computed(() => {
 const internalDisabled = computed(() => {
 	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
 });
+
+const interfaceOpen = computed(() => Boolean(activeDialog.value) || menuOpen.value || editDrawerActive.value);
 
 function setSelection(selection: (string | number)[] | null) {
 	if (selection![0]) {
@@ -196,8 +200,8 @@ function useURLImport() {
 </script>
 
 <template>
-	<div class="file">
-		<VMenu attached :disabled="loading || internalDisabled">
+	<div v-prevent-focusout="interfaceOpen" class="file">
+		<VMenu v-model="menuOpen" attached :disabled="loading || internalDisabled">
 			<template #activator="{ toggle, active, deactivate }">
 				<div>
 					<VSkeletonLoader v-if="loading" type="input" />

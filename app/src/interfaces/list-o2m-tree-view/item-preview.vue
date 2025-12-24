@@ -4,7 +4,6 @@ import VRemove from '@/components/v-remove.vue';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { ref } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -27,7 +26,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:open', 'deselect', 'input']);
-const editActive = ref(false);
+const editActive = defineModel<boolean>('editOpen');
 </script>
 
 <template>
