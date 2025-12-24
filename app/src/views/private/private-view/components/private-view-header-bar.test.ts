@@ -1,32 +1,57 @@
-import { mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
-import { describe, expect, test, vi, beforeEach } from 'vitest';
-import PrivateViewHeaderBar from './private-view-header-bar.vue';
+import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { ref } from 'vue';
+import { createI18n } from 'vue-i18n';
+import { createMemoryHistory, createRouter } from 'vue-router';
 import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
+import PrivateViewHeaderBar from './private-view-header-bar.vue';
 
 vi.mock('@vueuse/core', () => ({
 	useBreakpoints: vi.fn(() => ({
 		smallerOrEqual: vi.fn(() => ({ value: false })),
 	})),
+	useLocalStorage: vi.fn((_key: string, defaultValue: any) => ref(defaultValue)),
+	createEventHook: vi.fn(() => ({
+		on: vi.fn(),
+		off: vi.fn(),
+		trigger: vi.fn(),
+	})),
 }));
+
+const i18n = createI18n({ legacy: false });
+
+vi.spyOn(i18n.global, 't').mockImplementation((key: any) => key);
+
+const router = createRouter({
+	history: createMemoryHistory(),
+	routes: [{ path: '/', name: 'root', component: { template: '<div />' } }],
+});
 
 const mountOptions = {
 	global: {
 		plugins: [
+			i18n,
 			createTestingPinia({
 				createSpy: vi.fn,
 			}),
+			router,
 		],
 		directives: {
 			tooltip: () => {},
+		},
+		stubs: {
+			VButton: false,
 		},
 	},
 };
 
 describe('PrivateViewHeaderBar', () => {
-	beforeEach(() => {
+	beforeEach(async () => {
 		vi.clearAllMocks();
+		await router.push('/');
+		await router.isReady();
 	});
 
 	test('renders the component', () => {
@@ -100,8 +125,7 @@ describe('PrivateViewHeaderBar', () => {
 			},
 		});
 
-		const pinia = createTestingPinia({ createSpy: vi.fn });
-		const navBarStore = useNavBarStore(pinia);
+		const navBarStore = useNavBarStore();
 		navBarStore.collapsed = false;
 
 		const navToggle = wrapper.find('.nav-toggle');

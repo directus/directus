@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { createPinia } from 'pinia';
 import { describe, expect, test, vi } from 'vitest';
 import { createRouter, createWebHistory } from 'vue-router';
 import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
@@ -19,9 +20,11 @@ const router = createRouter({
 	],
 });
 
+const pinia = createPinia();
+
 const mountOptions = {
 	global: {
-		plugins: [router],
+		plugins: [router, pinia],
 	},
 };
 
@@ -99,7 +102,8 @@ describe('PrivateViewHeaderBarIcon', () => {
 		});
 
 		const backButton = wrapper.findComponent({ name: 'VButton' });
-		await backButton.trigger('click');
+
+		await backButton.find('.button').trigger('click');
 
 		expect(routerBackSpy).toHaveBeenCalled();
 	});
@@ -129,7 +133,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 			},
 		});
 
-		const iconDiv = wrapper.find('.icon');
+		const iconDiv = wrapper.find('div.icon');
 		expect(iconDiv.exists()).toBe(true);
 	});
 
@@ -169,7 +173,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 			},
 		});
 
-		const iconDiv = wrapper.find('.icon');
+		const iconDiv = wrapper.find('div.icon');
 		expect(iconDiv.exists()).toBe(false);
 	});
 
@@ -177,7 +181,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, mountOptions);
 
 		const backButton = wrapper.find('.back-button');
-		const iconDiv = wrapper.find('.icon');
+		const iconDiv = wrapper.find('div.icon');
 
 		expect(backButton.exists()).toBe(false);
 		expect(iconDiv.exists()).toBe(false);
@@ -193,7 +197,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		});
 
 		const backButton = wrapper.find('.back-button');
-		const iconDiv = wrapper.find('.icon');
+		const iconDiv = wrapper.find('div.icon');
 
 		expect(backButton.exists()).toBe(true);
 		expect(iconDiv.exists()).toBe(false);
