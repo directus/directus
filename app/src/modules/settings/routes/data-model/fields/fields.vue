@@ -20,7 +20,6 @@ import { computed, ref, toRefs } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -82,12 +81,6 @@ function discardAndLeave() {
 	<PrivateView :title="formatTitle(collection)" show-back back-to="/settings/data-model">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<VButton class="header-icon" rounded icon exact to="/settings/data-model">
-				<VIcon name="arrow_back" />
-			</VButton>
 		</template>
 
 		<template #actions>
@@ -185,13 +178,6 @@ function discardAndLeave() {
 .fields {
 	max-inline-size: 800px;
 	margin-block-end: 48px;
-}
-
-.header-icon {
-	--v-button-background-color: var(--theme--primary-background);
-	--v-button-color: var(--theme--primary);
-	--v-button-background-color-hover: var(--theme--primary-subdued);
-	--v-button-color-hover: var(--theme--primary);
 }
 
 .action-delete {

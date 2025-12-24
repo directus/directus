@@ -108,6 +108,23 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(routerBackSpy).toHaveBeenCalled();
 	});
 
+	test('back button does not call router.back when backTo is provided', async () => {
+		const routerBackSpy = vi.spyOn(router, 'back');
+
+		const wrapper = mount(PrivateViewHeaderBarIcon, {
+			...mountOptions,
+			props: {
+				showBack: true,
+				backTo: '/back',
+			},
+		});
+
+		const backButton = wrapper.findComponent({ name: 'VButton' });
+		await backButton.trigger('click');
+
+		expect(routerBackSpy).not.toHaveBeenCalled();
+	});
+
 	test('renders icon div when icon prop is provided', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
