@@ -5,7 +5,7 @@ import { merge } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import { sanitizePayload } from './sanitize-payload.js';
-
+import { randomUUID } from 'node:crypto';
 import { getService } from '../../../utils/get-service.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
@@ -36,6 +36,8 @@ const mockMessenger = {
 	sendClient: vi.fn(),
 	sendRoom: vi.fn(),
 	setRoomListener: vi.fn(),
+	addClient: vi.fn(),
+	removeClient: vi.fn(),
 } as any;
 
 const getAccountability = (overrides = {}) =>
@@ -51,8 +53,43 @@ const getAccountability = (overrides = {}) =>
 		overrides,
 	);
 
+const mockData = new Map();
+const mockLocks = new Map();
+
+vi.mock('./store.js', () => {
+	return {
+		useStore: (uid: string) => {
+			return async (callback: any) => {
+				const lock = mockLocks.get(uid) || Promise.resolve();
+
+				const nextLock = lock.then(async () => {
+					return await callback({
+						has: async (key: string) => mockData.has(`${uid}:${key}`),
+						get: async (key: string) => mockData.get(`${uid}:${key}`),
+						set: async (key: string, value: any) => {
+							mockData.set(`${uid}:${key}`, value);
+						},
+						delete: async (key: string) => {
+							mockData.delete(`${uid}:${key}`);
+						},
+					});
+				});
+
+				mockLocks.set(
+					uid,
+					nextLock.catch(() => {}),
+				);
+
+				return nextLock;
+			};
+		},
+	};
+});
+
 afterEach(() => {
 	vi.clearAllMocks();
+	mockData.clear();
+	mockLocks.clear();
 });
 
 beforeEach(() => {
@@ -79,16 +116,14 @@ beforeEach(() => {
 });
 
 function mockWebSocketClient(client: Partial<WebSocketClient>): WebSocketClient {
+	const uid = client.uid || randomUUID();
+
 	return merge(
 		{
 			send: vi.fn(),
-
-			uid: 'abc',
-
-			accountability: getAccountability(),
-
+			uid,
+			accountability: getAccountability({ user: `user-${uid}` }),
 			on: vi.fn(),
-
 			close: vi.fn(),
 			terminate: vi.fn(),
 		},
@@ -136,6 +171,16 @@ describe('CollabRooms', () => {
 		expect(room).toBeUndefined();
 	});
 
+	test('getRoom for uid', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+
+		const item = getTestItem();
+		await rooms.createRoom('a', item, null);
+		const room = await rooms.getRoom(getRoomHash('a', item, null));
+
+		expect(room).toBeDefined();
+	});
+
 	test('getClientRooms', async () => {
 		const rooms = new CollabRooms(mockMessenger);
 		const client = mockWebSocketClient({ uid: 'abc' });
@@ -171,7 +216,7 @@ describe('room', () => {
 	test('create room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
-		const room = new Room(mockMessenger, uid, 'coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
 
 		expect(room).toBeDefined();
 	});
@@ -182,7 +227,7 @@ describe('room', () => {
 		const clientC = mockWebSocketClient({ uid: 'hij' });
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
-		const room = new Room(mockMessenger, uid, 'coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
 
 		await room.join(clientA);
 
@@ -198,6 +243,7 @@ describe('room', () => {
 				version: null,
 				focuses: {},
 				connection: 'abc',
+				users: [{ user: 'user-abc', connection: 'abc', color: expect.anything() }],
 				type: 'collab',
 				room: uid,
 			}),
@@ -217,17 +263,20 @@ describe('room', () => {
 			action: 'join',
 			connection: 'def',
 			color: expect.anything(),
-			user: 'Mock User',
+			user: 'user-def',
 			type: 'collab',
 			room: uid,
 		});
+
+		// Only the init message should have been sent (via messenger)
+		expect(vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'def')).toHaveLength(1);
 	});
 
 	test('leave room', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
-		const room = new Room(mockMessenger, uid, 'coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
 
 		await room.join(clientA);
 
@@ -244,14 +293,18 @@ describe('room', () => {
 		const clientC = mockWebSocketClient({ uid: 'hij' });
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
-		const room = new Room(mockMessenger, uid, 'coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
 
 		await room.join(clientA);
 		await room.join(clientB);
 		await room.join(clientC);
 
 		vi.mocked(sanitizePayload).mockImplementation(async (_, payload, ctx) => {
-			if (ctx.accountability?.user === 'Mock User') {
+			if (
+				ctx.accountability?.user === 'user-abc' ||
+				ctx.accountability?.user === 'user-def' ||
+				ctx.accountability?.user === 'user-hij'
+			) {
 				return payload;
 			}
 
@@ -285,7 +338,7 @@ describe('room', () => {
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
-		const room = new Room(mockMessenger, uid, 'coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -298,12 +351,12 @@ describe('room', () => {
 			},
 		] as any);
 
-		await room.unset('publish_date');
+		await room.unset(clientA, 'publish_date');
 
 		expect(
 			vi
 				.mocked(mockMessenger.sendClient)
-				.mock.calls.find((c: any) => c[0] === 'abc' && c[1].action === 'update' && c[1].field === 'publish_date')?.[1],
+				.mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'update' && c[1].field === 'publish_date')?.[1],
 		).toEqual({
 			action: 'update',
 			field: 'publish_date',
@@ -317,7 +370,7 @@ describe('room', () => {
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
-		const room = new Room(mockMessenger, uid, 'coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -338,7 +391,7 @@ describe('room', () => {
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
-		const room = new Room(mockMessenger, uid, 'coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -394,7 +447,7 @@ describe('Room.verifyPermissions', () => {
 	let room: Room;
 
 	beforeEach(async () => {
-		room = new Room(mockMessenger, uid, collection, item, null);
+		room = new Room(uid, collection, item, null, {}, mockMessenger);
 
 		vi.mocked(getService).mockReturnValue({
 			readOne: vi.fn().mockResolvedValue({ id: 1, publish_date: '2025-12-23T10:00:00Z', status: 'draft' }),
@@ -503,7 +556,7 @@ describe('Room.verifyPermissions', () => {
 		await room.verifyPermissions(client, collection, item);
 
 		expect(spy).toHaveBeenCalledWith(
-			expect.objectContaining({ user: 'Mock User' }),
+			expect.objectContaining({ user: 'user-client-1' }),
 			collection,
 			item,
 			'read',
@@ -515,7 +568,7 @@ describe('Room.verifyPermissions', () => {
 
 	test('Singleton collection handling', async () => {
 		const client = mockWebSocketClient({ uid: 'client-1' });
-		const singletonRoom = new Room(mockMessenger, 'settings-uid', 'settings', null, null);
+		const singletonRoom = new Room('settings-uid', 'settings', null, null, {}, mockMessenger);
 
 		const serviceMock = vi.mocked(getService)('settings', {} as any);
 

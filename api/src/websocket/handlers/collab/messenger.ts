@@ -32,8 +32,12 @@ export class Messenger {
 		this.clients[client.uid] = client;
 
 		client.on('close', () => {
-			delete this.clients[client.uid];
+			this.removeClient(client.uid);
 		});
+	}
+
+	removeClient(uid: ClientID) {
+		delete this.clients[uid];
 	}
 
 	sendRoom(room: string, message: Omit<RoomMessage, 'type' | 'room'>) {

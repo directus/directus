@@ -26,7 +26,7 @@ export class CollabRooms {
 	rooms: Record<string, Room> = {};
 	messenger: Messenger;
 
-	constructor(messenger: Messenger) {
+	constructor(messenger: Messenger = new Messenger()) {
 		this.messenger = messenger;
 	}
 
@@ -37,7 +37,7 @@ export class CollabRooms {
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
-			this.rooms[uid] = new Room(this.messenger, uid, collection, item, version, initialChanges);
+			this.rooms[uid] = new Room(uid, collection, item, version, initialChanges, this.messenger);
 		}
 
 		this.messenger.setRoomListener(uid, (message) => {
@@ -67,7 +67,7 @@ export class CollabRooms {
 				const version = await store.get('version');
 				const changes = await store.get('changes');
 
-				return new Room(this.messenger, uid, collection, item, version, changes);
+				return new Room(uid, collection, item, version, changes, this.messenger);
 			});
 		}
 
@@ -135,12 +135,12 @@ export class Room {
 	onUpdateHandler: ActionHandler;
 
 	constructor(
-		messenger: Messenger,
 		uid: string,
 		collection: string,
 		item: string | null,
 		version: string | null,
 		initialChanges?: Item,
+		messenger: Messenger = new Messenger(),
 	) {
 		this.store = useStore<RoomData>(uid);
 
@@ -226,13 +226,14 @@ export class Room {
 	/**
 	 * Join the room
 	 */
-	async join(client: PermissionClient) {
+	async join(client: WebSocketClient) {
+		this.messenger.addClient(client);
 		await this.ready;
 
 		if (!(await this.hasClient(client.uid))) {
 			const clientColor = COLORS[random(COLORS.length - 1)]!;
 
-			this.sendAll({
+			await this.sendAll({
 				action: ACTION.SERVER.JOIN,
 				user: client.accountability!.user!,
 				connection: client.uid,
@@ -295,6 +296,7 @@ export class Room {
 	 * Leave the room
 	 */
 	async leave(client: PermissionClient) {
+		this.messenger.removeClient(client.uid);
 		await this.ready;
 
 		if (!(await this.hasClient(client.uid))) return;
@@ -375,7 +377,7 @@ export class Room {
 	/**
 	 * Propagate an unset to other clients
 	 */
-	async unset(field: string) {
+	async unset(sender: WebSocketClient, field: string) {
 		await this.ready;
 
 		const { clients } = await this.store(async (store) => {
@@ -387,6 +389,8 @@ export class Room {
 		});
 
 		for (const client of clients) {
+			if (client.uid === sender.uid) continue;
+
 			const allowedFields = await this.verifyPermissions(client, this.collection, this.item);
 
 			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
@@ -419,12 +423,14 @@ export class Room {
 		});
 
 		for (const client of clients) {
+			if (client.uid === sender.uid) continue;
+
 			const allowedFields = await this.verifyPermissions(client, this.collection, this.item);
 
 			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
 
 			this.send(client.uid, {
-				action: ACTION.SERVER.FOUCS,
+				action: ACTION.SERVER.FOCUS,
 				connection: sender.uid,
 				field,
 			});

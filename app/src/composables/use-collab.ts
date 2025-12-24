@@ -11,7 +11,7 @@ type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>
 type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>;
 type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE }>;
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
-type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOUCS }>;
+type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
 
 export type CollabUser = {
 	id: string;
@@ -68,18 +68,16 @@ export function useCollab(
 	};
 
 	onMounted(() => {
-		try {
-			if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collab) {
-				sdk.connect();
-			} else {
-				connected.value = false;
-			}
-		} catch {
-			connected.value = false;
+		if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collab) {
+			sdk.connect().catch((e: any) => {
+				if (e.message?.toLowerCase().includes('open')) {
+					connected.value = true;
+					join();
+				}
+			});
 		}
 
-		if (active) return;
-		join();
+		if (!active || active.value) join();
 	});
 
 	onBeforeUnmount(() => {
@@ -88,12 +86,10 @@ export function useCollab(
 		if (!active) {
 			leave();
 		}
-
-		sdk.disconnect();
 	});
 
-	watch([active], () => {
-		if (active?.value) {
+	watch(() => active?.value, (isActive) => {
+		if (isActive) {
 			join();
 		} else {
 			leave();
@@ -130,7 +126,7 @@ export function useCollab(
 	);
 
 	function join() {
-		if (!connected.value || roomId.value || !collection.value || item.value === '+') return;
+		if ((active && active.value === false) || !connected.value || roomId.value || !collection.value || item.value === '+') return;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,
@@ -300,7 +296,7 @@ export function useCollab(
 
 	const onFocus = debounce((field: string | null) => {
 		sendMessage({
-			action: ACTION.CLIENT.FOUCS,
+			action: ACTION.CLIENT.FOCUS,
 			field: field,
 		});
 	}, 100);
