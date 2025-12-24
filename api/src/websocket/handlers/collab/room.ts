@@ -500,6 +500,8 @@ export class Room {
 		const cached = permissionCache.get(accountability, collection, item, action);
 		if (cached) return cached;
 
+		const startInvalidationCount = permissionCache.getInvalidationCount();
+
 		const schema = await getSchema();
 		const knex = getDatabase();
 
@@ -676,7 +678,9 @@ export class Room {
 				}
 			}
 
-			permissionCache.set(accountability, collection, item, action, allowedFields, Array.from(dependencies), ttlMs);
+			if (permissionCache.getInvalidationCount() === startInvalidationCount) {
+				permissionCache.set(accountability, collection, item, action, allowedFields, Array.from(dependencies), ttlMs);
+			}
 
 			return allowedFields;
 		} catch {

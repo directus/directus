@@ -14,11 +14,16 @@ export class PermissionCache {
 	private keyTags = new Map<CacheKey, Set<Tag>>();
 	private timers = new Map<CacheKey, NodeJS.Timeout>();
 	private bus = useBus();
+	private invalidationCount = 0;
 
 	constructor() {
 		this.bus.subscribe('websocket.event', (event: any) => {
 			this.handleInvalidation(event);
 		});
+	}
+
+	public getInvalidationCount() {
+		return this.invalidationCount;
 	}
 
 	private handleInvalidation(event: any) {
@@ -30,6 +35,8 @@ export class PermissionCache {
 			this.clear();
 			return;
 		}
+
+		this.invalidationCount++;
 
 		// Collection-level Invalidation
 		if (this.tags.has(`collection:${collection}`)) {
@@ -166,6 +173,7 @@ export class PermissionCache {
 		this.cache.clear();
 		this.tags.clear();
 		this.keyTags.clear();
+		this.invalidationCount++;
 	}
 }
 
