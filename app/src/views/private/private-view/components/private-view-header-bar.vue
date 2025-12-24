@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { BREAKPOINTS } from '@/constants';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import { BREAKPOINTS } from '@/constants';
 import { useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
 import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
-import isVNodeEmpty from '@/utils/is-vnode-empty';
 
 const props = defineProps<{
 	title?: string;
@@ -17,6 +16,7 @@ const props = defineProps<{
 	icon?: string;
 	iconColor?: string;
 	showBack?: boolean;
+	backTo?: string;
 }>();
 
 const navBarStore = useNavBarStore();
@@ -51,17 +51,23 @@ const showSidebarToggle = computed(() => {
 				@click="navBarStore.expand"
 			/>
 
-			<PrivateViewHeaderBarIcon
-				v-if="(icon || showBack) && isVNodeEmpty($slots['title-outer:prepend']?.())"
-				v-tooltip.bottom="$t('back')"
-				class="icon"
-				:icon
-				:show-back
-				:icon-color
-			/>
+			<div class="title-outer-prepend">
+				<PrivateViewHeaderBarIcon
+					v-if="showBack"
+					v-tooltip.bottom="$t('back')"
+					class="icon"
+					show-back
+					:back-to
+				/>
 
-			<div v-else class="title-outer-prepend">
-				<slot name="title-outer:prepend" />
+				<PrivateViewHeaderBarIcon
+					v-else-if="icon"
+					class="icon"
+					:icon
+					:icon-color
+				/>
+
+				<slot v-else name="title-outer:prepend" />
 			</div>
 
 			<div class="title-container">
