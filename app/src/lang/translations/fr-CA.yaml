@@ -155,7 +155,6 @@ create_policy: Créer une Règle
 create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
-create_webhook: Créer un webhook
 create_custom_translation: Créer une traduction personnalisée
 edit_custom_translation: Modifier la traduction personnalisée
 no_custom_translations: Aucune traduction personnalisée
@@ -658,12 +657,6 @@ file_count: 'Aucun fichier | Un fichier | {count} fichiers'
 no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
-webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Les Webhooks sont obsolètes et une utilisation ultérieure est déconseillée.
-
-  Veuillez utiliser **Flux** avec l'opération [Webhook / Requêtes URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) à la place.
-no_webhooks_copy: Aucun webhooks n'a encore été configuré. Commencez par en créer un ci-dessous.
 no_notifications: Aucune notification
 no_notifications_copy: Vous êtes à jour !
 activity_log: Journal d’activité
@@ -694,7 +687,6 @@ action: Action
 ip_address: Adresse IP
 user_agent: Agent utilisateur
 origin: Origine
-webhooks: Webhooks
 decimals: Décimales
 value_decimals: Valeur décimale
 min_value: Valeur minimale
@@ -1149,7 +1141,6 @@ settings_permissions: Règles d'accès
 settings_project: Réglages
 settings_appearance: Personnalisation du Thème
 settings_ai: IA
-settings_webhooks: Webhooks
 settings_flows: Flux
 settings_system_logs: Journaux système
 settings_presets: Favoris
@@ -1227,7 +1218,6 @@ directus_collection:
   directus_settings: Options de configuration du projet
   directus_shares: Trace les éléments externes partagés
   directus_users: Utilisateurs du système pour la plateforme
-  directus_webhooks: Configuration des requêtes HTTP basées sur des événements
   directus_translations: Traductions personnalisées
   directus_versions: Versions de contenu pour les éléments
   directus_extensions: Configuration des extensions
@@ -1405,18 +1395,6 @@ fields:
     admin_access: Accès Administrateur
     ip_access: Accès IP
     enforce_tfa: Nécessite une authentification à deux facteurs
-  directus_webhooks:
-    name: Nom
-    method: Méthode
-    status: État
-    data: Données
-    header: En-tête
-    value: Valeur
-    headers: En-têtes de requête
-    data_label: Envoyer les données de l'événement
-    triggers: Déclencheurs
-    actions: Actions
-    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
@@ -1518,19 +1496,6 @@ field_options:
     status_dropdown_suspended: Suspendu
     status_dropdown_archived: Archivé
     token: Entrez un jeton d'accès sécurisé...
-  directus_webhooks:
-    status_options_active: Actif
-    status_options_inactive: Inactif
-    data_label: Envoyer les données de l'événement
-    triggers_divider: Déclencheurs
-    actions_create: Créer
-    actions_update: Mettre à jour
-    actions_delete: Supprimer
-    actions_login: Identifiant
-    headers:
-      header: En-tête
-      value: Valeur
-      add: Ajouter l'en-tête
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 no_value: Aucune valeur
 do_nothing: Ne rien faire
@@ -1609,7 +1574,6 @@ editing_role: 'Rôle {role}'
 editing_policy: 'Police {policy}'
 no_permissions: Aucune Permission
 permission_add_collection: Ajouter une collection
-creating_webhook: Création du Webhook
 default_label: Défaut
 delete_label: Supprimer
 delete_are_you_sure: >-
