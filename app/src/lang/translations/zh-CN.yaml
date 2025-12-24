@@ -171,7 +171,6 @@ create_policy: 创建策略
 create_user: 创建用户
 message: 消息
 delete_panel: 删除面板
-create_webhook: 创建网络钩子
 create_custom_translation: 建立自定义翻译
 edit_custom_translation: 编辑自定义翻译
 no_custom_translations: 没有自定义翻译
@@ -695,12 +694,6 @@ file_count: '没有文件 | 一个文件 | {count} 个文件'
 no_files_copy: 没有任何文件。
 user_count: '没有用户 | 一个用户 | {count} 个用户'
 no_users_copy: 该角色下还没有用户。
-webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
-webhooks_deprecation_notice: |
-  Webhook 已被弃用，并且不鼓励进一步使用。
-
-  请改用 **Flows** 和 [Webhook / 请求 URL 操作](https://docs.directus.io/app/flows/operations.html#webhook-request-url)。
-no_webhooks_copy: 尚未配置任何Webhooks，来创建一个吧。
 no_notifications: 无通知
 no_notifications_copy: 你已全部搞定！
 activity_log: 活动日志
@@ -731,7 +724,6 @@ action: 操作
 ip_address: IP 地址
 user_agent: 用户代理（User Agent）
 origin: 原始
-webhooks: Webhook
 decimals: 小数
 value_decimals: 小数的值
 min_value: 最小值
@@ -1193,7 +1185,6 @@ settings_project: 设置
 settings_appearance: 外观
 settings_ai: AI
 model_context_protocol: 模型上下文协议
-settings_webhooks: Webhook
 settings_flows: 流程
 settings_system_logs: 系统日志
 settings_presets: 书签
@@ -1271,7 +1262,6 @@ directus_collection:
   directus_settings: 项目配置
   directus_shares: 跟踪外部共享条目
   directus_users: 平台系统用户
-  directus_webhooks: 基于事件的 HTTP 请求配置
   directus_translations: 自定义翻译
   directus_versions: 条目的内容版本
   directus_extensions: 扩展配置
@@ -1464,18 +1454,6 @@ fields:
     admin_access: 管理员访问
     ip_access: IP 访问
     enforce_tfa: 需要 2FA
-  directus_webhooks:
-    name: 名称
-    method: 方法
-    status: 状态
-    data: 数据
-    header: 报头
-    value: 值
-    headers: 请求报头
-    data_label: 发送事件数据
-    triggers: 触发条件
-    actions: 操作
-    collections: 数据模型
 field_options:
   directus_settings:
     project_name_placeholder: 我的项目
@@ -1577,19 +1555,6 @@ field_options:
     status_dropdown_suspended: 已停用
     status_dropdown_archived: 已存档
     token: 请输入安全访问令牌...
-  directus_webhooks:
-    status_options_active: 激活
-    status_options_inactive: 非活跃
-    data_label: 发送事件数据
-    triggers_divider: 触发条件
-    actions_create: 创建
-    actions_update: 更新
-    actions_delete: 删除
-    actions_login: 登录
-    headers:
-      header: 报头
-      value: 值
-      add: 添加报头
 no_fields_in_collection: '集合 {collection} 中没有任何字段'
 no_value: 没有值
 do_nothing: 什么都不做
@@ -1692,7 +1657,6 @@ editing_role: '{role} 角色'
 editing_policy: '{policy} 策略'
 no_permissions: 没有权限
 permission_add_collection: 添加模型
-creating_webhook: 正在创建 Webhook
 default_label: 默认值
 delete_label: 删除
 delete_are_you_sure: >-

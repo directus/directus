@@ -38,3 +38,9 @@ fields:
 field_options:
   directus_collections:
     archive_divider: Archive
+triggers:
+  webhook:
+    method: វិធីសាស្ត្រ
+operations:
+  request:
+    method: វិធីសាស្ត្រ

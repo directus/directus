@@ -138,7 +138,6 @@ create_policy: პოლიტიკის შექმნა
 create_user: მომხმარებლის შექმნა
 message: შეტყობინება
 delete_panel: პანელის წაშლა
-create_webhook: ვებჰუკის შექმნა
 create_custom_translation: მორგებული თარგმანის შექმნა
 edit_custom_translation: მორგებული თარგმანის რედაქტირება
 no_custom_translations: მორგებული თარგმანები არ არის
@@ -641,12 +640,6 @@ file_count: 'ფაილი არ არის | ერთი ფაილი 
 no_files_copy: აქ ფაილები არ არის.
 user_count: 'მომხმარებელი არ არის | ერთი მომხმარებელი | {count} მომხმარებელი'
 no_users_copy: ამ როლში მომხმარებლები ჯერ არ არიან.
-webhooks_count: 'ვებჰუკი არ არის | ერთი ვებჰუკი | {count} ვებჰუკი'
-webhooks_deprecation_notice: |
-  ვებჰუკები მოძველებულია და მათი შემდგომი გამოყენება არ არის რეკომენდებული.
-
-  გთხოვთ, გამოიყენოთ **ნაკადები** [ვებჰუკი / მოთხოვნის URL ოპერაციით](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: ვებჰუკები ჯერ არ არის დაკონფიგურირებული. დასაწყებად შექმენით ერთი ქვემოთ.
 no_notifications: შეტყობინებები არ არის
 no_notifications_copy: ყველაფერი წესრიგშია!
 activity_log: აქტივობის ჟურნალი
@@ -677,7 +670,6 @@ action: მოქმედება
 ip_address: IP მისამართი
 user_agent: მომხმარებლის აგენტი
 origin: წყარო
-webhooks: ვებჰუკები
 decimals: ათწილადები
 value_decimals: მნიშვნელობის ათწილადები
 min_value: მინ. მნიშვნელობა
@@ -1133,7 +1125,6 @@ settings_roles: მომხმარებლის როლები
 settings_permissions: წვდომის პოლიტიკები
 settings_project: პარამეტრები
 settings_appearance: გარეგნობა
-settings_webhooks: ვებჰუკები
 settings_flows: ნაკადები
 settings_system_logs: სისტემის ჟურნალები
 settings_presets: სანიშნები
@@ -1211,7 +1202,6 @@ directus_collection:
   directus_settings: პროექტის კონფიგურაციის ოფციები
   directus_shares: თვალყურს ადევნებს გარედან გაზიარებულ ჩანაწერებს
   directus_users: სისტემის მომხმარებლები პლატფორმისთვის
-  directus_webhooks: კონფიგურაცია მოვლენებზე დაფუძნებული HTTP მოთხოვნებისთვის
   directus_translations: მორგებული თარგმანები
   directus_versions: კონტენტის ვერსიები ჩანაწერებისთვის
   directus_extensions: გაფართოებების კონფიგურაცია
@@ -1390,18 +1380,6 @@ fields:
     admin_access: ადმინისტრატორზე წვდომა
     ip_access: IP წვდომა
     enforce_tfa: 2FA-ს მოთხოვნა
-  directus_webhooks:
-    name: სახელი
-    method: მეთოდი
-    status: სტატუსი
-    data: მონაცემები
-    header: თავსართი
-    value: მნიშვნელობა
-    headers: მოთხოვნის თავსართები
-    data_label: მოვლენის მონაცემების გაგზავნა
-    triggers: ტრიგერები
-    actions: მოქმედებები
-    collections: კოლექციები
 field_options:
   directus_settings:
     project_name_placeholder: ჩემი პროექტი...
@@ -1503,19 +1481,6 @@ field_options:
     status_dropdown_suspended: შეჩერებული
     status_dropdown_archived: დაარქივებული
     token: შეიყვანეთ უსაფრთხო წვდომის ტოკენი...
-  directus_webhooks:
-    status_options_active: აქტიური
-    status_options_inactive: არააქტიური
-    data_label: მოვლენის მონაცემების გაგზავნა
-    triggers_divider: ტრიგერები
-    actions_create: შექმნა
-    actions_update: განახლება
-    actions_delete: წაშლა
-    actions_login: შესვლა
-    headers:
-      header: თავსართი
-      value: მნიშვნელობა
-      add: თავსართის დამატება
 no_fields_in_collection: '"{collection}"-ში ველები ჯერ არ არის'
 no_value: მნიშვნელობა არ არის
 do_nothing: არაფრის გაკეთება
@@ -1594,7 +1559,6 @@ editing_role: '{role} როლი'
 editing_policy: '{policy} პოლიტიკა'
 no_permissions: უფლებები არ არის
 permission_add_collection: კოლექციის დამატება
-creating_webhook: ვებჰუკის შექმნა
 default_label: ნაგულისხმევი
 delete_label: წაშლა
 delete_are_you_sure: >-
@@ -2051,7 +2015,7 @@ interfaces:
     input-password: პაროლის შეყვანა
     description: პაროლის შეყვანა მნიშვნელობის დამალვის გადამრთველით
   header:
-    header: თავსართი
+    header: სათაური
     links: ბმულები
 displays:
   translations:

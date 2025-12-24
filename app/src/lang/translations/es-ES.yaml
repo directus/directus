@@ -140,7 +140,6 @@ create_policy: Crear política
 create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
-create_webhook: Crear webhook
 create_custom_translation: Crear traducción personalizada
 edit_custom_translation: Editar traducción personalizada
 no_custom_translations: No hay traducciones personalizadas
@@ -643,12 +642,6 @@ file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
 no_files_copy: Aquí no hay archivos.
 user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
-webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Los webhooks están obsoletos y no se recomienda el uso posterior.
-
-  Por favor usa **Flows** con la [operación Webhook / Solicitud URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) en su lugar.
-no_webhooks_copy: Aún no se ha configurado ningún webhooks. Comienza creando uno a continuación.
 no_notifications: Sin notificaciones
 no_notifications_copy: '¡Estás al día!'
 activity_log: Registro de actividad
@@ -679,7 +672,6 @@ action: Acción
 ip_address: Dirección IP
 user_agent: Agente de Usuario (Navegador)
 origin: Origen
-webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor Decimal
 min_value: Valor Mínimo
@@ -1135,7 +1127,6 @@ settings_roles: Roles de Usuario
 settings_permissions: Reglas de Acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
-settings_webhooks: Webhooks
 settings_flows: Flujos
 settings_system_logs: Registros del Sistema
 settings_presets: Marcadores
@@ -1213,7 +1204,6 @@ directus_collection:
   directus_settings: Opciones de configuración del proyecto
   directus_shares: Rastrear elementos compartidos externamente
   directus_users: Usuarios del sistema para la plataforma
-  directus_webhooks: Configuración de peticiones HTTP basadas en eventos
   directus_translations: Traducciones personalizadas
   directus_versions: Versiones de contenido para elementos
   directus_extensions: Configuración de extensiones
@@ -1393,18 +1383,6 @@ fields:
     admin_access: Acceso de Administrador
     ip_access: Acceso IP
     enforce_tfa: Requiere 2FA
-  directus_webhooks:
-    name: Nombre
-    method: Método
-    status: Estado
-    data: Datos
-    header: Encabezado
-    value: Valor
-    headers: Solicitar Encabezados
-    data_label: Enviar datos del evento
-    triggers: Disparadores
-    actions: Acciones
-    collections: Colecciones
 field_options:
   directus_settings:
     project_name_placeholder: Mi proyecto...
@@ -1506,19 +1484,6 @@ field_options:
     status_dropdown_suspended: Suspendido
     status_dropdown_archived: Archivado
     token: Introduzca un token de acceso seguro...
-  directus_webhooks:
-    status_options_active: Activo
-    status_options_inactive: Inactivo
-    data_label: Enviar datos del evento
-    triggers_divider: Disparadores
-    actions_create: Crear
-    actions_update: Actualización
-    actions_delete: Eliminar
-    actions_login: Iniciar sesión
-    headers:
-      header: Encabezado
-      value: Valor
-      add: Añadir cabecera
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
 no_value: Sin valor
 do_nothing: No hacer nada
@@ -1598,7 +1563,6 @@ editing_role: 'Rol {role}'
 editing_policy: '{policy} Regla'
 no_permissions: Sin permisos
 permission_add_collection: Agregar colección
-creating_webhook: Creando Webhook
 default_label: Por defecto
 delete_label: Eliminar
 delete_are_you_sure: >-

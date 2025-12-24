@@ -66,7 +66,6 @@ create_panel: สร้างแผงควบคุม
 create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 message: ข้อความ
-create_webhook: สร้างเว็บฮุก
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว
@@ -418,8 +417,6 @@ file_count: 'ไม่มีไฟล์ | 1 ไฟล์ | {count} ไฟล์
 no_files_copy: ไม่มีไฟล์ที่นี่
 user_count: 'ไม่มีผู้ใช้ | ผู้ใช้ 1 คน | ผู้ใช้ {count} คน'
 no_users_copy: ยังไม่มีผู้ใช้ในบทบาท
-webhooks_count: 'ไม่มี webhook | มี 1 webhook | มี {count} webhook'
-no_webhooks_copy: ยังไม่มีการกำหนดค่าเว็บฮุค เริ่มต้นด้วยการสร้างด้านล่าง
 no_notifications: ไม่มีการแจ้งเตือน
 activity_log: รายงานกิจกรรม
 all_items: รายการทั้งหมด
@@ -445,7 +442,6 @@ activity_item: ฟีดกิจกรรม
 action: ดำเนินการ
 ip_address: หมายเลขไอพี
 user_agent: ตัวแทนของผู้ใช้
-webhooks: Webhooks
 decimals: เลขฐานสิบ
 min_value: ค่าต่ำสุด
 max_value: ค่าสูงสุด
@@ -743,7 +739,6 @@ editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
 no_options_available: ไม่มีตัวเลือกให้ใช้
 settings_data_model: รูปแบบข้อมูล
 settings_project: การตั้งค่า
-settings_webhooks: Webhooks
 settings_presets: บุ๊กมาร์ก
 settings_translations: การแปลภาษา
 one_or_more_options_are_missing: ไม่พบตัวเลือกรายการ
@@ -888,15 +883,6 @@ fields:
     users: ผู้ใช้ในบทบาทนี้
   directus_policies:
     description: รายละเอียด
-  directus_webhooks:
-    name: ชื่อ
-    method: เมธอด
-    status: สถานะ
-    data: ข้อมูล
-    header: เฮดเดอร์
-    value: ค่า
-    headers: รีเควส เฮดเดอร์
-    collections: คอลเลกชัน
 field_options:
   directus_settings:
     security_divider_title: ความปลอดภัย
@@ -933,16 +919,6 @@ field_options:
     status_dropdown_suspended: ระงับชั่วคราว
     status_dropdown_archived: เก็บถาวร
     token: ระบุโทเค็นความปลอดภัย
-  directus_webhooks:
-    status_options_active: เปิดใช้งาน
-    status_options_inactive: ไม่ใช้งาน
-    actions_create: สร้าง
-    actions_update: แก้ไข
-    actions_delete: ลบ
-    actions_login: เข้าสู่ระบบ
-    headers:
-      header: เฮดเดอร์
-      value: ค่า
 no_fields_in_collection: 'ยังไม่มีฟิลด์ใน {collection}'
 no_value: ไม่มีค่า
 do_nothing: ไม่ต้องทำอะไร
@@ -980,7 +956,6 @@ continue_label: ดำเนินการต่อ
 continue_as: >-
   บัญชี {name} ถูกยืนยันตัวตนแล้ว ถ้าเป็นบัญชีของคุณ คลิ๊กที่นี่เพื่อเข้าสู่ระบบ
 editing_role: 'บทบาท {role}'
-creating_webhook: สร้าง webhook
 default_label: ค่าเริ่มต้น
 delete_label: ลบ
 delete_are_you_sure: >-
