@@ -15,7 +15,7 @@ export class CollabRooms {
 	rooms: Record<string, Room> = {};
 	messenger: Messenger;
 
-	constructor(messenger: Messenger) {
+	constructor(messenger: Messenger = new Messenger()) {
 		this.messenger = messenger;
 	}
 
@@ -23,7 +23,7 @@ export class CollabRooms {
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
-			this.rooms[uid] = new Room(this.messenger, uid, collection, item, version, initialChanges);
+			this.rooms[uid] = new Room(uid, collection, item, version, initialChanges, this.messenger);
 		}
 
 		this.messenger.setRoomListener(uid, (message) => {
@@ -50,7 +50,7 @@ export class CollabRooms {
 				const version = await store.get('version');
 				const changes = await store.get('changes');
 
-				return new Room(this.messenger, uid, collection, item, version, changes);
+				return new Room(uid, collection, item, version, changes, this.messenger);
 			});
 		}
 
@@ -69,15 +69,13 @@ export class CollabRooms {
 		return rooms;
 	}
 
-	cleanupRooms() {
-		(async () => {
-			for (const room of Object.values(this.rooms)) {
-				if ((await room.getClients()).length === 0) {
-					await room.close();
-					delete this.rooms[room.uid];
-				}
+	async cleanupRooms() {
+		for (const room of Object.values(this.rooms)) {
+			if ((await room.getClients()).length === 0) {
+				await room.close();
+				delete this.rooms[room.uid];
 			}
-		})();
+		}
 	}
 }
 
@@ -96,14 +94,15 @@ export class Room {
 	uid: string;
 	messenger: Messenger;
 	store;
+	listener: (...args: any[]) => void;
 
 	constructor(
-		messenger: Messenger,
 		uid: string,
 		collection: string,
 		item: string | null,
 		version: string | null,
 		initialChanges?: Item,
+		messenger: Messenger = new Messenger(),
 	) {
 		this.store = useStore<RoomData>(uid);
 
@@ -126,8 +125,7 @@ export class Room {
 		this.uid = uid;
 		this.messenger = messenger;
 
-		// React to external updates to the item
-		emitter.onAction(`${collection}.items.update`, async ({ keys }, { accountability }) => {
+		this.listener = async ({ keys }: any, { accountability }: any) => {
 			if (!keys.includes(item)) return;
 
 			const service = getService(collection, { schema: await getSchema() });
@@ -151,7 +149,10 @@ export class Room {
 					action: ACTION.SERVER.SAVE,
 				});
 			}
-		});
+		};
+
+		// React to external updates to the item
+		emitter.onAction(`${collection}.items.update`, this.listener);
 	}
 
 	async getCollection() {
@@ -168,17 +169,19 @@ export class Room {
 
 	async hasClient(id: ClientID) {
 		return await this.store(async (store) => {
-			const clients = await store.get('clients');
+			const clients = (await store.get('clients')) || [];
 
 			return clients.findIndex((c) => c.uid === id) !== -1;
 		});
 	}
 
 	async join(client: WebSocketClient) {
+		this.messenger.addClient(client);
+
 		if (!(await this.hasClient(client.uid))) {
 			const clientColor = COLORS[random(COLORS.length - 1)]!;
 
-			this.sendAll({
+			await this.sendAll({
 				action: ACTION.SERVER.JOIN,
 				user: client.accountability!.user!,
 				connection: client.uid,
@@ -201,10 +204,10 @@ export class Room {
 				collection: await store.get('collection'),
 				item: await store.get('item'),
 				version: await store.get('version'),
-				clientColors: await store.get('clientColors'),
-				changes: await store.get('changes'),
-				focuses: await store.get('focuses'),
-				clients: await store.get('clients'),
+				clientColors: (await store.get('clientColors')) || {},
+				changes: (await store.get('changes')) || {},
+				focuses: (await store.get('focuses')) || {},
+				clients: (await store.get('clients')) || [],
 			};
 		});
 
@@ -229,13 +232,15 @@ export class Room {
 			})),
 		});
 
-		client.on('close', () => {
-			this.leave(client);
+		client.on('close', async () => {
+			await this.leave(client);
 		});
 	}
 
 	async leave(client: WebSocketClient) {
-		if (!this.hasClient(client.uid)) return;
+		this.messenger.removeClient(client.uid);
+
+		if (!(await this.hasClient(client.uid))) return;
 
 		await this.store(async (store) => {
 			const clients = await store.get('clients');
@@ -257,7 +262,7 @@ export class Room {
 			await store.set('changes', {});
 		});
 
-		this.sendExcluding(
+		await this.sendExcluding(
 			{
 				action: ACTION.SERVER.SAVE,
 			},
@@ -297,7 +302,7 @@ export class Room {
 		}
 	}
 
-	async unset(field: string) {
+	async unset(sender: WebSocketClient, field: string) {
 		const { clients, collection } = await this.store(async (store) => {
 			const changes = await store.get('changes');
 			delete changes[field];
@@ -307,6 +312,8 @@ export class Room {
 		});
 
 		for (const client of clients) {
+			if (client.uid === sender.uid) continue;
+
 			if (field && !(await hasFieldPermision(client.accountability, collection, field))) continue;
 
 			this.send(client.uid, {
@@ -332,6 +339,8 @@ export class Room {
 		});
 
 		for (const client of clients) {
+			if (client.uid === sender.uid) continue;
+
 			if (field && !(await hasFieldPermision(client.accountability, collection, field))) continue;
 
 			this.send(client.uid, {
@@ -342,29 +351,25 @@ export class Room {
 		}
 	}
 
-	sendAll(message: BaseServerMessage) {
-		(async () => {
-			const clients = await this.store(async (store) => {
-				return await store.get('clients');
-			});
+	async sendAll(message: BaseServerMessage) {
+		const clients = await this.store(async (store) => {
+			return (await store.get('clients')) || [];
+		});
 
-			for (const client of clients) {
-				this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
-			}
-		})();
+		for (const client of clients) {
+			this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
+		}
 	}
 
-	sendExcluding(message: BaseServerMessage, exclude: ClientID) {
-		(async () => {
-			const clients = await this.store(async (store) => {
-				return await store.get('clients');
-			});
+	async sendExcluding(message: BaseServerMessage, exclude: ClientID) {
+		const clients = await this.store(async (store) => {
+			return (await store.get('clients')) || [];
+		});
 
-			for (const client of clients) {
-				if (client.uid !== exclude)
-					this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
-			}
-		})();
+		for (const client of clients) {
+			if (client.uid !== exclude)
+				this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
+		}
 	}
 
 	send(client: ClientID, message: BaseServerMessage) {
@@ -375,6 +380,8 @@ export class Room {
 		this.messenger.sendRoom(this.uid, { action: 'close' });
 
 		await this.store(async (store) => {
+			const collection = await store.get('collection');
+			emitter.offAction(`${collection}.items.update`, this.listener);
 			await store.delete('uid');
 		});
 	}

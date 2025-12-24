@@ -4,23 +4,60 @@ import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { sanitizePayload } from './sanitize-payload.js';
 import { hasFieldPermision } from './field-permissions.js';
+import { randomUUID } from 'node:crypto';
 
 vi.mock('../../../database/index.js');
 vi.mock('../../../utils/get-schema.js');
 vi.mock('./sanitize-payload.js');
 vi.mock('./field-permissions.js');
+const mockData = new Map();
+const mockLocks = new Map();
+
+vi.mock('./store.js', () => {
+	return {
+		useStore: (uid: string) => {
+			return async (callback: any) => {
+				const lock = mockLocks.get(uid) || Promise.resolve();
+
+				const nextLock = lock.then(async () => {
+					return await callback({
+						has: async (key: string) => mockData.has(`${uid}:${key}`),
+						get: async (key: string) => mockData.get(`${uid}:${key}`),
+						set: async (key: string, value: any) => {
+							mockData.set(`${uid}:${key}`, value);
+						},
+						delete: async (key: string) => {
+							mockData.delete(`${uid}:${key}`);
+						},
+					});
+				});
+
+				mockLocks.set(
+					uid,
+					nextLock.catch(() => {}),
+				);
+
+				return nextLock;
+			};
+		},
+	};
+});
 
 afterEach(() => {
 	vi.clearAllMocks();
+	mockData.clear();
+	mockLocks.clear();
 });
 
 function mockWebSocketClient(client: Partial<WebSocketClient>): WebSocketClient {
+	const uid = client.uid || randomUUID();
+
 	return merge(
 		{
 			send: vi.fn(),
-			uid: 'abc',
+			uid,
 			accountability: {
-				user: 'Mock User',
+				user: `user-${uid}`,
 			},
 			on: vi.fn(),
 		},
@@ -50,7 +87,7 @@ describe('CollabRooms', () => {
 		const rooms = new CollabRooms();
 
 		const room = await rooms.createRoom('a', '1', null);
-		const roomReference = rooms.getRoom(room.uid);
+		const roomReference = await rooms.getRoom(room.uid);
 
 		expect(room).toEqual(roomReference);
 	});
@@ -59,7 +96,7 @@ describe('CollabRooms', () => {
 		const rooms = new CollabRooms();
 
 		await rooms.createRoom('a', '1', null);
-		const room = rooms.getRoom('invalid');
+		const room = await rooms.getRoom('invalid');
 
 		expect(room).toBeUndefined();
 	});
@@ -67,10 +104,10 @@ describe('CollabRooms', () => {
 	test('getRoom for uid', async () => {
 		const rooms = new CollabRooms();
 
-		const room = await rooms.createRoom('a', '1', null);
-		const roomReference = rooms.getRoom(room.uid);
+		await rooms.createRoom('a', '1', null);
+		const room = await rooms.getRoom(getRoomHash('a', '1', null));
 
-		expect(room).toEqual(roomReference);
+		expect(room).toBeDefined();
 	});
 
 	test('getClientRooms', async () => {
@@ -78,9 +115,9 @@ describe('CollabRooms', () => {
 		const client = mockWebSocketClient({ uid: 'abc' });
 
 		const room = await rooms.createRoom('a', '1', null);
-		room.join(client);
+		await room.join(client);
 
-		const clientRooms = rooms.getClientRooms(client);
+		const clientRooms = await rooms.getClientRooms(client);
 
 		expect(clientRooms).toEqual([room]);
 	});
@@ -90,15 +127,15 @@ describe('CollabRooms', () => {
 		const client = mockWebSocketClient({ uid: 'abc' });
 
 		const room = await rooms.createRoom('a', '1', null);
-		room.join(client);
+		await room.join(client);
 
-		rooms.cleanupRooms();
+		await rooms.cleanupRooms();
 
 		expect(Object.keys(rooms.rooms).length).toEqual(1);
 
-		room.leave(client);
+		await room.leave(client);
 
-		rooms.cleanupRooms();
+		await rooms.cleanupRooms();
 
 		expect(Object.keys(rooms.rooms).length).toEqual(0);
 	});
@@ -106,7 +143,7 @@ describe('CollabRooms', () => {
 
 describe('room', () => {
 	test('create room', () => {
-		const room = new Room('abc', 'coll', '1', null);
+		const room = new Room('room1', 'coll', '1', null);
 
 		expect(room).toBeDefined();
 	});
@@ -114,41 +151,48 @@ describe('room', () => {
 	test('join room', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
-		const clientC = mockWebSocketClient({ uid: 'hij' });
 		const room = new Room('room1', 'coll', '1', null);
 
 		await room.join(clientA);
 
-		expect(room.clients.length).toBe(1);
+		expect((await room.getClients()).length).toBe(1);
 
-		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
+		expect(clientA.send).toHaveBeenCalledOnce();
+
+		expect(JSON.parse(vi.mocked(clientA.send).mock.lastCall![0] as string)).toEqual({
 			action: 'init',
 			collection: 'coll',
 			item: '1',
 			version: null,
 			focuses: {},
 			connection: 'abc',
-			users: [{ user: 'Mock User', connection: 'abc', color: expect.anything() }],
+			users: [{ user: 'user-abc', connection: 'abc', color: expect.anything() }],
 			type: 'collab',
 			room: 'room1',
 		});
 
 		await room.join(clientB);
 
-		expect(room.clients.length).toBe(2);
+		expect((await room.getClients()).length).toBe(2);
 
-		expect(room.hasClient(clientA)).toBeTruthy();
-		expect(room.hasClient(clientB)).toBeTruthy();
-		expect(room.hasClient(clientC)).toBeFalsy();
+		expect(await room.hasClient('abc')).toBeTruthy();
+		expect(await room.hasClient('def')).toBeTruthy();
+		expect(await room.hasClient('hij')).toBeFalsy();
 
-		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
+		// Init and join message
+		expect(clientA.send).toHaveBeenCalledTimes(2);
+
+		expect(JSON.parse(vi.mocked(clientA.send).mock.lastCall![0] as string)).toEqual({
 			action: 'join',
 			connection: 'def',
 			color: expect.anything(),
-			user: 'Mock User',
+			user: 'user-def',
 			type: 'collab',
 			room: 'room1',
 		});
+
+		// Only the init message should have been send
+		expect(clientB.send).toHaveBeenCalledOnce();
 	});
 
 	test('leave room', async () => {
@@ -157,11 +201,11 @@ describe('room', () => {
 
 		await room.join(clientA);
 
-		expect(room.clients.length).toBe(1);
+		expect((await room.getClients()).length).toBe(1);
 
-		room.leave(clientA);
+		await room.leave(clientA);
 
-		expect(room.clients.length).toBe(0);
+		expect((await room.getClients()).length).toBe(0);
 	});
 
 	test('update field', async () => {
@@ -175,7 +219,11 @@ describe('room', () => {
 		await room.join(clientC);
 
 		vi.mocked(sanitizePayload).mockImplementation(async (_, payload, ctx) => {
-			if (ctx.accountability === clientA.accountability || ctx.accountability === clientC.accountability) {
+			if (
+				ctx.accountability === clientA.accountability ||
+				ctx.accountability === clientB.accountability ||
+				ctx.accountability === clientC.accountability
+			) {
 				return payload;
 			}
 
@@ -184,7 +232,9 @@ describe('room', () => {
 
 		await room.update(clientA, 'id', 5);
 
-		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
+		expect(clientC.send).toHaveBeenCalledTimes(2);
+
+		expect(JSON.parse(vi.mocked(clientC.send).mock.lastCall![0] as string)).toEqual({
 			action: 'update',
 			field: 'id',
 			changes: 5,
@@ -192,10 +242,6 @@ describe('room', () => {
 			room: 'room1',
 		});
 
-		// Init and join message
-		expect(clientA.send).toHaveBeenCalledTimes(2);
-		// Only the init message should have been send
-		expect(clientB.send).toHaveBeenCalledOnce();
 		// Init, join and update message
 		expect(clientB.send).toHaveBeenCalledTimes(3);
 	});
@@ -216,17 +262,20 @@ describe('room', () => {
 			return false;
 		});
 
-		await room.unset('id');
+		await room.unset(clientA, 'id');
 
-		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
-			action: 'update',
-			field: 'id',
+		expect(JSON.parse(vi.mocked(clientA.send).mock.calls[1]![0] as string)).toEqual({
+			action: 'join',
+			connection: 'def',
+			color: expect.anything(),
+			user: 'user-def',
 			type: 'collab',
 			room: 'room1',
 		});
 
-		// Init, join and update message
-		expect(clientA.send).toHaveBeenCalledTimes(3);
+		// Init and join message
+		expect(clientA.send).toHaveBeenCalledTimes(2);
+
 		// Only the init message should have been send
 		expect(clientB.send).toHaveBeenCalledOnce();
 	});
@@ -239,9 +288,9 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		room.save(clientB);
+		await room.save(clientB);
 
-		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
+		expect(JSON.parse(vi.mocked(clientA.send).mock.lastCall![0] as string)).toEqual({
 			action: 'save',
 			type: 'collab',
 			room: 'room1',
@@ -249,6 +298,7 @@ describe('room', () => {
 
 		// Init, join and save message
 		expect(clientA.send).toHaveBeenCalledTimes(3);
+
 		// Only the init message should have been send
 		expect(clientB.send).toHaveBeenCalledOnce();
 	});
@@ -271,16 +321,18 @@ describe('room', () => {
 
 		await room.focus(clientA, 'id');
 
-		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
-			action: 'focus',
-			field: 'id',
-			connection: 'abc',
+		expect(JSON.parse(vi.mocked(clientA.send).mock.lastCall![0] as string)).toEqual({
+			action: 'join',
+			connection: 'def',
+			color: expect.anything(),
+			user: 'user-def',
 			type: 'collab',
 			room: 'room1',
 		});
 
-		// Init, join and focus message
-		expect(clientA.send).toHaveBeenCalledTimes(3);
+		// Init and join message
+		expect(clientA.send).toHaveBeenCalledTimes(2);
+
 		// Only the init message should have been send
 		expect(clientB.send).toHaveBeenCalledOnce();
 	});

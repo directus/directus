@@ -68,18 +68,16 @@ export function useCollab(
 	};
 
 	onMounted(() => {
-		try {
-			if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collab) {
-				sdk.connect();
-			} else {
-				connected.value = false;
-			}
-		} catch {
-			connected.value = false;
+		if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collab) {
+			sdk.connect().catch((e: any) => {
+				if (e.message?.toLowerCase().includes('open')) {
+					connected.value = true;
+					join();
+				}
+			});
 		}
 
-		if (active) return;
-		join();
+		if (!active || active.value) join();
 	});
 
 	onBeforeUnmount(() => {
@@ -88,8 +86,6 @@ export function useCollab(
 		if (!active) {
 			leave();
 		}
-
-		sdk.disconnect();
 	});
 
 	watch(() => active?.value, (isActive) => {
@@ -130,7 +126,7 @@ export function useCollab(
 	);
 
 	function join() {
-		if (!connected.value || roomId.value || !collection.value || item.value === '+') return;
+		if ((active && active.value === false) || !connected.value || roomId.value || !collection.value || item.value === '+') return;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,
