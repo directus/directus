@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VSelect from '@/components/v-select/v-select.vue';
 import { useFlowsStore } from '@/stores/flows';
 import { FlowRaw } from '@directus/types';
 import { computed } from 'vue';
@@ -31,7 +32,7 @@ const flows = computed(() =>
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:items="flows"
 		item-icon="icon"

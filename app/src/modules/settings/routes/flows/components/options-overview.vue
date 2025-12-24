@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { translate } from '@/utils/translate-object-values';
 import { FlowRaw } from '@directus/types';
@@ -23,7 +24,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 		>
 			<dt>{{ label }}</dt>
 			<dd>{{ text }}</dd>
-			<v-icon
+			<VIcon
 				v-if="isCopySupported && copyable"
 				v-tooltip="text"
 				name="content_copy"

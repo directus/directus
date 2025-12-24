@@ -2,7 +2,7 @@ import { useUserStore } from '@/stores/user';
 import { nanoid } from 'nanoid';
 import { Directive, DirectiveBinding } from 'vue';
 
-const tooltipDelay = 300;
+const tooltipDelay = 500;
 
 const handlers: Record<string, () => void> = {};
 

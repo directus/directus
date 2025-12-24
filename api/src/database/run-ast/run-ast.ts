@@ -88,7 +88,7 @@ export async function runAst(
 		if (!rawItems) return null;
 
 		// Run the items through the special transforms
-		const payloadService = new PayloadService(collection, { knex, schema });
+		const payloadService = new PayloadService(collection, { accountability, knex, schema });
 
 		let items: null | Item | Item[] = await payloadService.processValues(
 			'read',

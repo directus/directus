@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { translateAPIError } from '@/lang';
 import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
 
 const { t } = useI18n();
 
@@ -47,14 +51,14 @@ useHead({
 
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="$t('email')" />
-		<v-notice v-if="done" type="success">{{ $t('password_reset_sent') }}</v-notice>
-		<v-notice v-if="error" type="danger">
+		<VInput v-model="email" autofocus autocomplete="username" type="email" :placeholder="$t('email')" />
+		<VNotice v-if="done" type="success">{{ $t('password_reset_sent') }}</VNotice>
+		<VNotice v-if="error" type="danger">
 			{{ errorFormatted }}
-		</v-notice>
+		</VNotice>
 		<div class="buttons">
-			<v-button type="submit" :loading="sending" large>{{ $t('reset') }}</v-button>
-			<router-link :to="signInLink" class="sign-in">{{ $t('sign_in') }}</router-link>
+			<VButton type="submit" :loading="sending" large>{{ $t('reset') }}</VButton>
+			<RouterLink :to="signInLink" class="sign-in">{{ $t('sign_in') }}</RouterLink>
 		</div>
 	</form>
 </template>

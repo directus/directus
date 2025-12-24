@@ -5,7 +5,6 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
 import { useInsightsStore } from '@/stores/insights';
-import { useLatencyStore } from '@/stores/latency';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
 import { usePresetsStore } from '@/stores/presets';
@@ -26,7 +25,6 @@ export function useSystem(): void {
 		useFieldsStore,
 		useFlowsStore,
 		useInsightsStore,
-		useLatencyStore,
 		useNotificationsStore,
 		usePermissionsStore,
 		usePresetsStore,

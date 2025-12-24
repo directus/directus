@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
+import VError from '@/components/v-error.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { PrivateView } from '@/views/private';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
-import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
-import ExtensionInfoSidebarDetail from './components/extension-info-sidebar-detail.vue';
 import ExtensionMetadata from './components/extension-metadata.vue';
 import ExtensionReadme from './components/extension-readme.vue';
 
 const props = defineProps<{
 	extensionId: string;
 }>();
-
-const router = useRouter();
 
 const loading = ref(false);
 const error = ref<unknown>(null);
@@ -34,35 +33,12 @@ watchEffect(async () => {
 		loading.value = false;
 	}
 });
-
-const navigateBack = () => {
-	const backState = router.options.history.state.back;
-
-	const isBackStateValid = backState && !(typeof backState === 'string' && backState.startsWith('/login'));
-
-	if (isBackStateValid) {
-		router.back();
-		return;
-	}
-
-	router.push('/settings/marketplace');
-};
 </script>
 
 <template>
-	<private-view :title="$t('marketplace')">
-		<template #title-outer:prepend>
-			<v-button v-tooltip.bottom="$t('back')" class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
+	<PrivateView :title="$t('marketplace')" show-back back-to="/settings/marketplace">
 		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<template #sidebar>
-			<extension-info-sidebar-detail />
+			<SettingsNavigation />
 		</template>
 
 		<div class="extension-content">
@@ -76,20 +52,20 @@ const navigateBack = () => {
 				</div>
 			</template>
 
-			<v-banner v-else-if="loading" icon="plugin">
-				<template #avatar><v-progress-circular indeterminate /></template>
+			<VBanner v-else-if="loading" icon="plugin">
+				<template #avatar><VProgressCircular indeterminate /></template>
 				{{ $t('loading') }}
-			</v-banner>
+			</VBanner>
 
-			<v-error v-else :error="error" />
+			<VError v-else :error="error" />
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">
 .extension-content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 	max-inline-size: 1200px;
 	inline-size: 100%;
 }

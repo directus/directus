@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import api from '@/api';
+import VAvatar from '@/components/v-avatar.vue';
+import VButton from '@/components/v-button.vue';
+import VEmojiPicker from '@/components/v-emoji-picker.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTemplateInput from '@/components/v-template-input.vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { md } from '@/utils/md';
@@ -277,9 +288,9 @@ function pressedEnter() {
 
 <template>
 	<div class="input-container" :class="{ collapsed }">
-		<v-menu v-model="showMentionDropDown" attached>
+		<VMenu v-model="showMentionDropDown" attached>
 			<template #activator>
-				<v-template-input
+				<VTemplateInput
 					ref="commentElement"
 					v-model="newCommentContent"
 					capture-group="(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})"
@@ -296,8 +307,8 @@ function pressedEnter() {
 				/>
 			</template>
 
-			<v-list>
-				<v-list-item
+			<VList>
+				<VListItem
 					v-for="(user, index) in searchResult"
 					id="suggestions"
 					:key="user.id"
@@ -305,31 +316,31 @@ function pressedEnter() {
 					:active="index === selectedKeyboardIndex"
 					@click="insertUser(user)"
 				>
-					<v-list-item-icon>
-						<v-avatar x-small>
-							<v-image v-if="user.avatar" :src="avatarSource(user.avatar)" />
-							<v-icon v-else name="person_outline" />
-						</v-avatar>
-					</v-list-item-icon>
+					<VListItemIcon>
+						<VAvatar x-small>
+							<VImage v-if="user.avatar" :src="avatarSource(user.avatar)" />
+							<VIcon v-else name="person_outline" />
+						</VAvatar>
+					</VListItemIcon>
 
-					<v-list-item-content>{{ userName(user) }}</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					<VListItemContent>{{ userName(user) }}</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 
 		<div class="buttons">
-			<v-button x-small secondary icon class="mention" @click="insertAt">
-				<v-icon name="alternate_email" />
-			</v-button>
+			<VButton x-small secondary icon class="mention" @click="insertAt">
+				<VIcon name="alternate_email" />
+			</VButton>
 
-			<v-emoji-picker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
+			<VEmojiPicker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
 
 			<div class="spacer"></div>
 
-			<v-button class="cancel" x-small secondary @click="cancel">
+			<VButton class="cancel" x-small secondary @click="cancel">
 				{{ $t('cancel') }}
-			</v-button>
-			<v-button
+			</VButton>
+			<VButton
 				:disabled="!newCommentContent || newCommentContent.length === 0 || newCommentContent.trim() === ''"
 				:loading="saving"
 				class="post-comment"
@@ -337,7 +348,7 @@ function pressedEnter() {
 				@click="postComment"
 			>
 				{{ $t('submit') }}
-			</v-button>
+			</VButton>
 		</div>
 	</div>
 </template>

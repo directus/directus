@@ -239,6 +239,7 @@ length: Μήκος
 unique: Μοναδικό
 notifications: Ειδοποιήσεις
 title: Τίτλος
+subtitle: Υπότιτλος
 download_page_as_csv: 'Λήψη σελίδας ως CSV'
 leave_comment: Άφηστε ένα σχόλιο...
 import_data_input_placeholder: CSV ή JSON...
@@ -327,8 +328,6 @@ settings_flows: Ροές
 settings_presets: Σελιδοδείκτες
 layout: Διάταξη
 discard_changes: Ακύρωση αλλαγών
-page_help_collections_collection: >-
-  **Εξερεύνηση αντικειμένων** — Εμφανίζει όλα τα {collection} αντικείμενα στα οποία έχετε πρόσβαση. Προσαρμόστε τη διάταξη, τα φίλτρα και τη διαλογή για να προσαρμόσετε την προβολή σας, και ακόμη και να αποθηκεύσετε σελιδοδείκτες αυτών των διαφορετικών διαμορφώσεων για γρήγορη πρόσβαση.
 add_new: Προσθήκη νέου
 all: Όλα
 batch_delete_confirm: >-
@@ -425,6 +424,14 @@ field_options:
     headers:
       value: Τιμή
 comment: Σχόλιο
+ai:
+  unknown: Άγνωστο
+  settings: Ρυθμίσεις
+ai_tools:
+  files: Αρχεία
+  flows: Ροές
+  operations: Λειτουργίες
+  collections: Συλλογές
 continue_label: Συνέχεια
 continue_as: >-
   Ο χρήστης {name} είναι επί του παρόντος πιστοποιημένος. Αν αναγνωρίζετε αυτόν τον λογαριασμό, πατήστε συνέχεια.
@@ -529,7 +536,6 @@ operations:
     message: Μήνυμα
     subject: Θέμα
   trigger:
-    description: Πέρασμα δεδομένων σε άλλη ροή
     flows: Ροές
     flow: Ροή
     data: Δεδομένα

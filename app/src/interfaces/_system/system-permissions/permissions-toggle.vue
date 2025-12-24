@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import VChip from '@/components/v-chip.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { Collection, Permission, PermissionsAction } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 
@@ -56,55 +64,55 @@ const appMinimalLevel = computed(() => {
 		"
 		:class="[{ 'has-app-minimal': !!appMinimal }, appMinimalLevel]"
 	>
-		<v-chip v-if="appMinimalLevel === 'full'" small class="toggle all">{{ $t(action) }}</v-chip>
+		<VChip v-if="appMinimalLevel === 'full'" small class="toggle all">{{ $t(action) }}</VChip>
 
-		<v-menu v-else show-arrow>
+		<VMenu v-else show-arrow>
 			<template #activator="{ toggle, active }">
-				<v-chip small clickable class="toggle" :class="[permissionLevel, { active }]" @click="toggle">
-					<v-progress-circular v-if="loading || saving" indeterminate small />
+				<VChip small clickable class="toggle" :class="[permissionLevel, { active }]" @click="toggle">
+					<VProgressCircular v-if="loading || saving" indeterminate small />
 					<template v-else>{{ $t(action) }}</template>
-				</v-chip>
+				</VChip>
 			</template>
 
-			<v-list>
-				<v-list-item :disabled="permissionLevel === 'all'" clickable @click="emit('setFullAccess')">
-					<v-list-item-icon>
-						<v-icon name="check" />
-					</v-list-item-icon>
-					<v-list-item-content>
+			<VList>
+				<VListItem :disabled="permissionLevel === 'all'" clickable @click="emit('setFullAccess')">
+					<VListItemIcon>
+						<VIcon name="check" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ $t('all_access') }}
-					</v-list-item-content>
-				</v-list-item>
+					</VListItemContent>
+				</VListItem>
 
-				<v-list-item
+				<VListItem
 					v-if="!!appMinimalLevel === false"
 					:disabled="permissionLevel === 'none'"
 					clickable
 					@click="emit('setNoAccess')"
 				>
-					<v-list-item-icon>
-						<v-icon name="block" />
-					</v-list-item-icon>
-					<v-list-item-content>
+					<VListItemIcon>
+						<VIcon name="block" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ $t('no_access') }}
-					</v-list-item-content>
-				</v-list-item>
+					</VListItemContent>
+				</VListItem>
 
-				<v-divider />
+				<VDivider />
 
-				<v-list-item clickable @click="emit('edit')">
-					<v-list-item-icon>
-						<v-icon name="rule" />
-					</v-list-item-icon>
-					<v-list-item-content>
+				<VListItem clickable @click="emit('edit')">
+					<VListItemIcon>
+						<VIcon name="rule" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ $t('use_custom') }}
-					</v-list-item-content>
-					<v-list-item-icon>
-						<v-icon name="launch" />
-					</v-list-item-icon>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					</VListItemContent>
+					<VListItemIcon>
+						<VIcon name="launch" />
+					</VListItemIcon>
+				</VListItem>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 

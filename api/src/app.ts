@@ -47,7 +47,6 @@ import tusRouter from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
-import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
 	validateDatabaseConnection,
@@ -75,6 +74,7 @@ import projectSchedule from './schedules/project.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
+import { aiChatRouter } from './ai/chat/router.js';
 
 const require = createRequire(import.meta.url);
 
@@ -97,6 +97,12 @@ export default async function createApp(): Promise<express.Application> {
 	if (!env['SECRET']) {
 		logger.warn(
 			`"SECRET" env variable is missing. Using a random value instead. Tokens will not persist between restarts. This is not appropriate for production usage.`,
+		);
+	}
+
+	if (typeof env['SECRET'] === 'string' && Buffer.byteLength(env['SECRET']) < 32) {
+		logger.warn(
+			'"SECRET" env variable is shorter than 32 bytes which is insecure. This is not appropriate for production usage.',
 		);
 	}
 
@@ -304,6 +310,8 @@ export default async function createApp(): Promise<express.Application> {
 		app.use('/mcp', mcpRouter);
 	}
 
+	app.use('/ai/chat', aiChatRouter);
+
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);
 	}
@@ -325,7 +333,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/versions', versionsRouter);
-	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
