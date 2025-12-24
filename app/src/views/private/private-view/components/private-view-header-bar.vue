@@ -52,20 +52,9 @@ const showSidebarToggle = computed(() => {
 			/>
 
 			<div class="title-outer-prepend">
-				<PrivateViewHeaderBarIcon
-					v-if="showBack"
-					v-tooltip.bottom="$t('back')"
-					class="icon"
-					show-back
-					:back-to
-				/>
+				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" show-back :back-to />
 
-				<PrivateViewHeaderBarIcon
-					v-else-if="icon"
-					class="icon"
-					:icon
-					:icon-color
-				/>
+				<PrivateViewHeaderBarIcon v-else-if="icon" class="icon" :icon :icon-color />
 
 				<slot v-else name="title-outer:prepend" />
 			</div>
