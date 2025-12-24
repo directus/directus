@@ -49,6 +49,8 @@ import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
+import { SplitPanel } from '@directus/vue-split-panel';
+import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 
 interface Props {
 	collection: string;
