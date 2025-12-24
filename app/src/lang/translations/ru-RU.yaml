@@ -156,7 +156,6 @@ create_policy: Создать политику
 create_user: Создать пользователя
 message: Сообщение
 delete_panel: Удалить панель
-create_webhook: Создать веб-хук
 create_custom_translation: Создать пользовательский перевод
 edit_custom_translation: Редактировать пользовательский перевод
 no_custom_translations: Нет пользовательских переводов
@@ -662,12 +661,6 @@ file_count: 'Нет файлов | Один файл | {count} файлов'
 no_files_copy: Здесь нет файлов.
 user_count: 'Нет пользователей | Один пользователь | {count} пользователей'
 no_users_copy: В этой роли пока нет пользователей.
-webhooks_count: 'Нет веб-хуков | Один веб-хук | {count} веб-хуков'
-webhooks_deprecation_notice: |
-  Webhooks устарели и не рекомендуется дальнейшее использование.
-
-  Пожалуйста, используйте **Потоки** с помощью [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: Веб-хуки ещё не настроены. Начните с создания одного из них ниже.
 no_notifications: Нет уведомлений
 no_notifications_copy: Ничего нового!
 activity_log: Журнал действий
@@ -698,7 +691,6 @@ action: Действие
 ip_address: IP-адрес
 user_agent: Пользовательский агент
 origin: Источник
-webhooks: Веб-хуки
 decimals: Десятичные дроби
 value_decimals: Значение (десятичная дробь)
 min_value: Мин. значение
@@ -1157,7 +1149,6 @@ settings_project: Настройки
 settings_appearance: Внешний вид
 settings_ai: ИИ
 model_context_protocol: Model Context Protocol
-settings_webhooks: Веб-хуки
 settings_flows: Процессы
 settings_system_logs: Системные логи
 settings_presets: Закладки
@@ -1235,7 +1226,6 @@ directus_collection:
   directus_settings: Параметры конфигурации проекта
   directus_shares: Отслеживает элементы с общим доступом
   directus_users: Системные пользователи для платформы
-  directus_webhooks: Конфигурация для HTTP-запросов на основе событий
   directus_translations: Пользовательские переводы
   directus_versions: Версии содержимого для элементов
   directus_extensions: Настройка расширений
@@ -1422,18 +1412,6 @@ fields:
     admin_access: Доступ администратора
     ip_access: IP-доступ
     enforce_tfa: Требуется 2FA
-  directus_webhooks:
-    name: Название
-    method: Метод
-    status: Статус
-    data: Данные
-    header: HTTP-заголовок
-    value: Значение
-    headers: HTTP-заголовки
-    data_label: Отправлять данные о событии
-    triggers: Триггеры
-    actions: Действия
-    collections: Коллекции
 field_options:
   directus_settings:
     project_name_placeholder: Мой проект...
@@ -1535,19 +1513,6 @@ field_options:
     status_dropdown_suspended: Заблокирован
     status_dropdown_archived: В архиве
     token: Укажите достаточно надёжный ключ доступа...
-  directus_webhooks:
-    status_options_active: Активный
-    status_options_inactive: Неактивный
-    data_label: Отправлять данные о событии
-    triggers_divider: Триггеры
-    actions_create: Создать
-    actions_update: Обновить
-    actions_delete: Удалить
-    actions_login: Войти
-    headers:
-      header: HTTP-заголовок
-      value: Значение
-      add: Добавить заголовок
 no_fields_in_collection: 'В коллекции «{collection}» пока нет полей'
 no_value: Нет значения
 do_nothing: Ничего не делать
@@ -1626,7 +1591,6 @@ editing_role: '{role} Роль'
 editing_policy: 'Политика {policy}'
 no_permissions: Нет прав доступа
 permission_add_collection: Добавить коллекцию
-creating_webhook: Создание Веб-хука
 default_label: По умолчанию
 delete_label: Удалить
 delete_are_you_sure: >-
