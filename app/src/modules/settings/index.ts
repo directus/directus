@@ -200,23 +200,6 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'webhooks',
-			component: RouterPass,
-			children: [
-				{
-					name: 'settings-webhooks-collection',
-					path: '',
-					component: WebhooksCollection,
-				},
-				{
-					name: 'settings-webhooks-item',
-					path: ':primaryKey',
-					component: WebhooksItem,
-					props: true,
-				},
-			],
-		},
-		{
 			path: 'ai',
 			component: AiOverview,
 		},
