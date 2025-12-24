@@ -8,6 +8,7 @@ import { sanitizePayload } from './sanitize-payload.js';
 import { randomUUID } from 'node:crypto';
 import { getService } from '../../../utils/get-service.js';
 import { getSchema } from '../../../utils/get-schema.js';
+import { useBus } from '../../../bus/index.js';
 
 vi.mock('../../../database/index.js', () => ({
 	default: vi.fn(() => ({
@@ -660,5 +661,97 @@ describe('Room.verifyPermissions', () => {
 		const firstCall = spy.mock.calls.find((c) => c[5]?.includes('authors'));
 		expect(firstCall).toBeDefined();
 		expect(firstCall![5]).toContain('authors');
+	});
+});
+
+describe('PermissionCache Invalidation', () => {
+	test('Schema change invalidates cache', async () => {
+		const client = mockWebSocketClient({ uid: 'client-1' });
+		const room = new Room('test-uid', 'articles', '1', null, {}, mockMessenger);
+
+		// Populate cache
+		await room.verifyPermissions(client, 'articles', '1');
+		expect(permissionCache.get(client.accountability!, 'articles', '1', 'read')).toBeDefined();
+
+		// Trigger schema change invalidation
+		const bus = useBus();
+		await bus.publish('websocket.event', { collection: 'directus_fields' });
+
+		// Cache should be cleared
+		expect(permissionCache.get(client.accountability!, 'articles', '1', 'read')).toBeUndefined();
+	});
+
+	test('Collection metadata change invalidates cache', async () => {
+		const client = mockWebSocketClient({ uid: 'client-1' });
+		const room = new Room('test-uid', 'articles', '1', null, {}, mockMessenger);
+
+		// Populate cache
+		await room.verifyPermissions(client, 'articles', '1');
+		expect(permissionCache.get(client.accountability!, 'articles', '1', 'read')).toBeDefined();
+
+		// Trigger collection metadata change invalidation
+		const bus = useBus();
+		await bus.publish('websocket.event', { collection: 'directus_collections' });
+
+		// Cache should be cleared
+		expect(permissionCache.get(client.accountability!, 'articles', '1', 'read')).toBeUndefined();
+	});
+
+	test('Race condition protection in verifyPermissions', async () => {
+		const client = mockWebSocketClient({ uid: 'client-race' });
+		const room = new Room('race-uid', 'articles', '1', null, {}, mockMessenger);
+
+		// Mock a slow permission fetch
+		vi.mocked(fetchPermissions).mockImplementationOnce(async () => {
+			await new Promise((resolve) => setTimeout(resolve, 50));
+			return [{ fields: ['title'], permissions: {}, validation: {} }] as any;
+		});
+
+		permissionCache.clear();
+		const setSpy = vi.spyOn(permissionCache, 'set');
+
+		// Start permission verification
+		const verifyPromise = room.verifyPermissions(client, 'articles', '1');
+
+		// Immediately trigger an invalidation
+		const bus = useBus();
+		await bus.publish('websocket.event', { collection: 'articles', keys: ['1'] });
+
+		await verifyPromise;
+
+		// Should NOT have called set because invalidationCount changed
+		expect(setSpy).not.toHaveBeenCalled();
+	});
+
+	test('User-specific dependency invalidation', async () => {
+		const clientA = mockWebSocketClient({ uid: 'user-a', accountability: getAccountability({ user: 'user-a' }) });
+		const clientB = mockWebSocketClient({ uid: 'user-b', accountability: getAccountability({ user: 'user-b' }) });
+		const room = new Room('test-uid', 'articles', '1', null, {}, mockMessenger);
+
+		// Mock a permission that depends on $CURRENT_USER property
+		vi.mocked(fetchPermissions).mockResolvedValue([
+			{
+				fields: ['title'],
+				permissions: { department: { _eq: '$CURRENT_USER.department' } },
+				validation: {},
+			},
+		] as any);
+
+		permissionCache.clear();
+
+		// Populate cache for both users
+		await room.verifyPermissions(clientA, 'articles', '1');
+		await room.verifyPermissions(clientB, 'articles', '1');
+
+		expect(permissionCache.get(clientA.accountability!, 'articles', '1', 'read')).toBeDefined();
+		expect(permissionCache.get(clientB.accountability!, 'articles', '1', 'read')).toBeDefined();
+
+		// Trigger invalidation for user A ONLY
+		const bus = useBus();
+		await bus.publish('websocket.event', { collection: 'directus_users', key: 'user-a' });
+
+		// Cache for user A should be cleared, but user B should remain
+		expect(permissionCache.get(clientA.accountability!, 'articles', '1', 'read')).toBeUndefined();
+		expect(permissionCache.get(clientB.accountability!, 'articles', '1', 'read')).toBeDefined();
 	});
 });
