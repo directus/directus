@@ -172,7 +172,6 @@ create_policy: ساخت خط مشی
 create_user: ایجاد کاربر
 message: پیام
 delete_panel: حذف پنل
-create_webhook: ساخت وب هوک
 create_custom_translation: ایجاد ترجمه جدید
 edit_custom_translation: نگارش ترجمه سفارشی
 no_custom_translations: بدون ترجمه سفارشی
@@ -696,12 +695,6 @@ file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
 user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
-webhooks_count: 'هیچ وب‌هوک | یک وب‌هوک | {count} وب‌هوک'
-webhooks_deprecation_notice: |
-  وب‌هوک‌ها منسوخ شده‌اند و استفاده بیشتر توصیه نمی‌شود.
-
-  لطفا به جای آن از **جریان‌ها** با [عملیات وب‌هوک / درخواست URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) استفاده کنید.
-no_webhooks_copy: تاکنون هیچ وب‌هوکی پیکربندی نشده | جهت شروع یکی به پایین اضافه کنید.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
@@ -733,7 +726,6 @@ action: فعالیت
 ip_address: نشانی IP
 user_agent: عامل کاربر
 origin: مبدأ
-webhooks: وب‌هوک‌ها
 decimals: اعشاری
 value_decimals: مقدار اعشاری
 min_value: حداقل مقدار
@@ -1194,7 +1186,6 @@ settings_project: تنظیمات
 settings_appearance: ظاهر
 settings_ai: هوش مصنوعی
 model_context_protocol: دستورالعمل زمینه مدل (MCP)
-settings_webhooks: هوک های تحت وب
 settings_flows: اتوماسیون
 settings_system_logs: لاگ‌های سیستم
 settings_presets: نشانک‌ها
@@ -1271,7 +1262,6 @@ directus_collection:
   directus_settings: گزینه های پیکربندی پروژه
   directus_shares: موارد به اشتراک گذاشته شده خارجی را ردیابی می کند
   directus_users: کاربران سیستمی برای پلتفرم
-  directus_webhooks: پیکربندی برای درخواست های HTTP مبتنی بر رویداد
   directus_translations: ترجمه های سفارشی
   directus_versions: نسخه‌های محتوا برای موارد
   directus_extensions: تنظیمات افزونه‌ها
@@ -1464,18 +1454,6 @@ fields:
     admin_access: دسترسی مدیر
     ip_access: محدودیت IP
     enforce_tfa: اجبار به احراز هویت دو عاملی
-  directus_webhooks:
-    name: نام
-    method: شیوه یا متود
-    status: وضعیت
-    data: داده Data
-    header: سربرگ
-    value: مقدار
-    headers: درخواست Header
-    data_label: ارسال داده های رویداد
-    triggers: راه‌اندازها
-    actions: فعالیت ها
-    collections: کالکشن ها یا مجموعه ها
 field_options:
   directus_settings:
     project_name_placeholder: پروژه من...
@@ -1577,19 +1555,6 @@ field_options:
     status_dropdown_suspended: تعلیق شده
     status_dropdown_archived: بایگانی شده
     token: یک رمز دسترسی ایمن وارد کنید...
-  directus_webhooks:
-    status_options_active: فعال
-    status_options_inactive: غیر فعال
-    data_label: ارسال داده های رویداد
-    triggers_divider: محرک ها
-    actions_create: ایجاد
-    actions_update: بروزرسانی
-    actions_delete: حذف
-    actions_login: ورود به سیستم
-    headers:
-      header: سربرگ Header
-      value: مقدار
-      add: اضافه کردن Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: بدون مقدار
 do_nothing: کاری انجام نشود
@@ -1694,7 +1659,6 @@ editing_role: 'نقشِ {role}'
 editing_policy: 'سیاست {policy}'
 no_permissions: بدون مجوز
 permission_add_collection: ایجاد مجموعه
-creating_webhook: ساخت وب هوک
 default_label: پیش‌فرض
 delete_label: حذف
 delete_are_you_sure: >-
