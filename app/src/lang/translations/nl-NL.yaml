@@ -173,7 +173,6 @@ create_policy: Policy Aanmaken
 create_user: Gebruiker Aanmaken
 message: Bericht
 delete_panel: Paneel verwijderen
-create_webhook: Webhook Aanmaken
 create_custom_translation: Aangepaste vertaling aanmaken
 edit_custom_translation: Aangepaste vertaling bewerken
 no_custom_translations: Geen aangepaste vertalingen
@@ -698,13 +697,6 @@ file_count: 'Geen bestanden | Één Bestand | {count} bestanden'
 no_files_copy: Er zijn geen bestanden hier.
 user_count: 'Geen gebruikers | Één gebruiker | {count} gebruikers'
 no_users_copy: Er zijn nog geen gebruikers in deze rol.
-webhooks_count: 'Geen webhooks | 1 Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Webhooks zijn verouderd en verder gebruik wordt afgeraden.
-
-  Gebruik in plaats daarvan **Flows** met de [Webhook / Request URL operatie](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-
-no_webhooks_copy: Er zijn nog geen webhooks geconfigureerd. Ga aan de slag door er hieronder een aan te maken.
 no_notifications: Geen meldingen
 no_notifications_copy: Je bent helemaal mee!
 activity_log: Activiteitenlogboek
@@ -736,7 +728,6 @@ action: Actie
 ip_address: IP Adres
 user_agent: User Agent
 origin: Herkomst
-webhooks: Webhooks
 decimals: Decimalen
 value_decimals: Waarde Decimaal
 min_value: Minimumwaarde
@@ -1203,7 +1194,6 @@ settings_appearance: Uiterlijk
 settings_ai: AI
 model_context_protocol: Model Context Protocol
 ai_chat: AI-chat
-settings_webhooks: Webhooks
 settings_flows: Flows
 settings_system_logs: Systeemlogs
 settings_presets: Bladwijzers
@@ -1282,7 +1272,6 @@ directus_collection:
   directus_settings: Project configuratie opties
   directus_shares: Volgt extern gedeelde items
   directus_users: Systeemgebruikers voor het platform
-  directus_webhooks: Configuratie voor event-gebaseerde HTTP-verzoeken
   directus_translations: Aangepaste vertalingen
   directus_versions: Inhoud Versies voor items
   directus_extensions: Configuratie van extensies
@@ -1478,18 +1467,6 @@ fields:
     admin_access: Admintoegang
     ip_access: IP Toegang
     enforce_tfa: Verplicht 2FA
-  directus_webhooks:
-    name: Naam
-    method: Methode
-    status: Status
-    data: Data
-    header: Header
-    value: Waarde
-    headers: Verzoekheaders
-    data_label: Stuur Event Data
-    triggers: Triggers
-    actions: Acties
-    collections: Collecties
 field_options:
   directus_settings:
     project_name_placeholder: Mijn project...
@@ -1591,19 +1568,6 @@ field_options:
     status_dropdown_suspended: Geschorst
     status_dropdown_archived: Gearchiveerd
     token: Voer een veilig toegangstoken in...
-  directus_webhooks:
-    status_options_active: Actief
-    status_options_inactive: Inactief
-    data_label: Stuur Event Data
-    triggers_divider: Triggers
-    actions_create: Maak
-    actions_update: Updaten
-    actions_delete: Verwijderen
-    actions_login: Inloggen
-    headers:
-      header: Header
-      value: Waarde
-      add: Header toevoegen
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 no_value: Geen waarde
 do_nothing: Niets doen
@@ -1748,7 +1712,6 @@ editing_role: '{role} Rol'
 editing_policy: '{policy} Policy'
 no_permissions: Geen Rechten
 permission_add_collection: Collectie toevoegen
-creating_webhook: Webhook Aanmaken
 default_label: Standaard
 delete_label: Verwijderen
 delete_are_you_sure: >-
