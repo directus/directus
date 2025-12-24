@@ -51,7 +51,7 @@ async function deleteAndQuit() {
 </script>
 
 <template>
-	<PrivateView :title="title" show-back>
+	<PrivateView :title="title" show-back back-to="/settings/webhooks">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('settings_webhooks'), to: '/settings/webhooks' }]" />
 		</template>
