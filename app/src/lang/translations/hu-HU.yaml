@@ -173,7 +173,6 @@ create_policy: Szabályzat készítése
 create_user: Felhasználó létrehozása
 message: Üzenet
 delete_panel: Panel törlése
-create_webhook: Webhook létrehozása
 create_custom_translation: Egyéni fordítás létrehozása
 edit_custom_translation: Egyéni fordítás szerkesztése
 no_custom_translations: Nincs egyéni fordítás
@@ -648,8 +647,6 @@ file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
 no_files_copy: Nincsenek fileok.
 user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
-webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
-no_webhooks_copy: Még nincsenek webhookok konfigurálva. Hozzon létre egyet alább!
 no_notifications: Nincsenek értesítések
 no_notifications_copy: Felzárkózott!
 activity_log: Tevékenységnapló
@@ -678,7 +675,6 @@ action: Művelet
 ip_address: IP cím
 user_agent: Felhasználói ügynök
 origin: Eredeti
-webhooks: Webhookok
 decimals: Decimálisok
 value_decimals: Tizedes érték
 min_value: Min. érték
@@ -1071,7 +1067,6 @@ editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adatmodell
 settings_project: Beállítások
-settings_webhooks: Webhookok
 settings_flows: Folyamatok
 settings_presets: Könyvjelzők
 settings_translations: Fordítások
@@ -1132,7 +1127,6 @@ directus_collection:
   directus_settings: Projekt konfigurációs lehetőségek
   directus_shares: Követi a külsőleg megosztott elemeket
   directus_users: A platform rendszerhasználói
-  directus_webhooks: Konfiguráció eseményalapú HTTP-kérésekhez
 fields:
   directus_activity:
     item: Elem elsődleges kulcsa
@@ -1275,18 +1269,6 @@ fields:
   directus_policies:
     name: Szabályzat neve
     description: Leírás
-  directus_webhooks:
-    name: Név
-    method: Metódus
-    status: Állapot
-    data: Adat
-    header: Fejléc
-    value: Érték
-    headers: Fejlécek kérése
-    data_label: Eseményadatok küldése
-    triggers: Triggerek
-    actions: Műveletek
-    collections: Gyűjtemények
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
@@ -1375,19 +1357,6 @@ field_options:
     status_dropdown_suspended: Felfüggesztve
     status_dropdown_archived: Archiválva
     token: Írja be a biztonságos hozzáférés tokenjét...
-  directus_webhooks:
-    status_options_active: Aktív
-    status_options_inactive: Inaktív
-    data_label: Eseményadatok küldése
-    triggers_divider: Triggerek
-    actions_create: Létrehozás
-    actions_update: Frissítés
-    actions_delete: Törlés
-    actions_login: Bejelentkezés
-    headers:
-      header: Fejléc
-      value: Érték
-      add: Fejléc hozzáadása
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 no_value: Hiányzó érték
 do_nothing: Ne tegyen semmit
@@ -1455,7 +1424,6 @@ continue_label: Folytatás
 continue_as: >-
   {name} jelenleg hitelesített. Ha felismeri ezt a fiókot, nyomja meg a folytatás gombot.
 editing_role: '{role} szerepkör'
-creating_webhook: Webhook létrehozása
 default_label: Alapértelmezett
 delete_label: Törlés
 delete_are_you_sure: >-
