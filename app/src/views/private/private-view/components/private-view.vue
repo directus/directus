@@ -12,6 +12,9 @@ export interface PrivateViewProps {
 	/** Render a history back button in place of the title prepend icon */
 	showBack?: boolean;
 
+	/** Where to navigate to on back button click. Defaults to last page in the browser history */
+	backTo?: string;
+
 	/** Whether to always show sidebar shadows regardless of scroll state (true) or only when horizontally scrolled (false). */
 	sidebarShadow?: boolean;
 
