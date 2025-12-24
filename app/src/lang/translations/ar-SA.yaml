@@ -135,7 +135,6 @@ create_policy: إنشاء سياسة
 create_user: إضافة مستخدم
 message: الرسالة
 delete_panel: حذف لوحة
-create_webhook: إنشاء Webhook
 create_custom_translation: إنشاء ترجمة مخصصة
 edit_custom_translation: تعديل ترجمة مخصصة
 no_custom_translations: لا توجد ترجمات مخصصة
@@ -625,12 +624,6 @@ file_count: 'لايوجد دور أو صلاحية | دور أو صلاحية و
 no_files_copy: لا توجد ملفات هنا.
 user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
-webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
-webhooks_deprecation_notice: |
-  تم إهمال خُطافات الويب (Webhooks) ولا يُنصح باستخدامها مرة أخرى.
-
-  رجاءًا استخدم **Flows** مع عملية [Webhook / Request URL operation] (https://docs.directus.io/app/flows/operations.html#webhook-request-url) بدلاً من ذلك.
-no_webhooks_copy: لم يتم تكوين أي خطاف ويب بعد. إبدأ بإنشاء واحد أدناه.
 no_notifications: لا توجد إشعارات
 no_notifications_copy: لقد وصلت إلى المدخل الأخير!
 activity_log: سجل الأنشطة
@@ -661,7 +654,6 @@ action: الإجراء
 ip_address: عنوان IP
 user_agent: وكيل المستخدم
 origin: الأصل
-webhooks: روابط الويب (Webhooks)
 decimals: الأعداد العشرية
 value_decimals: القيمة العشرية
 min_value: أدنى قيمة
@@ -1092,7 +1084,6 @@ settings_roles: أدوار المستخدم
 settings_permissions: سياسات الوصول
 settings_project: إعدادات
 settings_appearance: المظهر
-settings_webhooks: روابط الويب (Webhooks)
 settings_flows: التدفقات
 settings_system_logs: سجلات النظام
 settings_presets: محفوظات
@@ -1158,7 +1149,6 @@ directus_collection:
   directus_settings: خيارات تكوين المشروع
   directus_shares: تتبع العناصر المشتركة خارجيًا
   directus_users: مستخدمي النظام للمنصة
-  directus_webhooks: إعدادات لطلبات HTTP المستندة إلى الأحداث
   directus_translations: ترجمات مخصصة
   directus_extensions: إعدادات الإضافات
 fields:
@@ -1322,18 +1312,6 @@ fields:
     admin_access: وصول المسؤول
     ip_access: الوصول إلى IP
     enforce_tfa: يتطلب التحقق بخطوتين 2FA
-  directus_webhooks:
-    name: الاسم
-    method: الطريقة
-    status: حالة
-    data: البيانات
-    header: الترويسة
-    value: قيمة
-    headers: ترويسات الطلب
-    data_label: إرسال بيانات الحدث
-    triggers: المحفزات
-    actions: الإجراءات
-    collections: مجموعات
 field_options:
   directus_settings:
     project_name_placeholder: مشروعي...
@@ -1422,18 +1400,6 @@ field_options:
     status_dropdown_suspended: معلّق
     status_dropdown_archived: مؤرشف
     token: أدخل رمز الوصول الآمن...
-  directus_webhooks:
-    status_options_active: مفعل
-    status_options_inactive: غير نشط
-    data_label: إرسال بيانات الحدث
-    triggers_divider: المحفزات
-    actions_create: انشاء
-    actions_update: تحديث
-    actions_delete: حذف
-    actions_login: تسجيل الدخول
-    headers:
-      header: الترويسة
-      value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 no_value: لا توجد قيمة
 do_nothing: لا تفعل شيئا
@@ -1503,7 +1469,6 @@ choose_action: اختر الإجراء
 continue_label: متابعة
 editing_role: 'دور {role}'
 no_permissions: لا توجد أذونات
-creating_webhook: إنشاء Webhook
 default_label: الافتراضي
 delete_label: حذف
 delete_are_you_sure: >-
