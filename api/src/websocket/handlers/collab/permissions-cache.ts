@@ -30,8 +30,18 @@ export class PermissionCache {
 		const { collection, keys, key } = event;
 		const affectedKeys = new Set<CacheKey>();
 
-		// System Invalidation (Roles, Permissions, Policies)
-		if (['directus_roles', 'directus_permissions', 'directus_policies', 'directus_access'].includes(collection)) {
+		// System Invalidation (Roles, Permissions, Policies, Schema)
+		if (
+			[
+				'directus_roles',
+				'directus_permissions',
+				'directus_policies',
+				'directus_access',
+				'directus_fields',
+				'directus_relations',
+				'directus_collections',
+			].includes(collection)
+		) {
 			this.clear();
 			return;
 		}
