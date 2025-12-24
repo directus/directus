@@ -282,7 +282,7 @@ function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<PrivateView :title="title" show-back>
+	<PrivateView :title="title" show-back back-to="/users">
 		<template #headline>
 			<VBreadcrumb :items="breadcrumb" />
 		</template>

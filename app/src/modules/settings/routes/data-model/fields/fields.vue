@@ -79,7 +79,7 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<PrivateView :title="formatTitle(collection)" show-back>
+	<PrivateView :title="formatTitle(collection)" show-back back-to="/settings/data-model">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>

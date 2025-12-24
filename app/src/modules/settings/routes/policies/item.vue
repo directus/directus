@@ -114,7 +114,7 @@ function discardAndStay() {
 </script>
 
 <template>
-	<PrivateView :title="loading ? $t('loading') : $t('editing_policy', { policy: item && item.name })" show-back>
+	<PrivateView :title="loading ? $t('loading') : $t('editing_policy', { policy: item && item.name })" show-back back-to="/settings/policies">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('settings_permissions'), to: '/settings/policies' }]" />
 		</template>
