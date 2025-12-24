@@ -30,7 +30,6 @@ import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } f
 import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
 import type { ContentVersion } from './versions.js';
-import type { Webhook } from './webhooks.js';
 import type { WebSocketClient, WebSocketMessage } from './websockets.js';
 
 export type AbstractServiceOptions = {
@@ -741,10 +740,6 @@ export interface ExtensionsServices {
 	 * The VersionsService
 	 */
 	VersionsService: new (options: AbstractServiceOptions) => AbstractService & VersionsService;
-	/**
-	 * The WebhooksService
-	 */
-	WebhooksService: new (options: AbstractServiceOptions) => AbstractService<Webhook>;
 	/**
 	 * The WebSocketService
 	 */

@@ -114,26 +114,6 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 			},
 		},
 	},
-	directus_webhooks: {
-		collection: 'directus_webhooks',
-		layout: 'tabular',
-		layout_query: {
-			tabular: {
-				fields: ['status', 'method', 'name', 'collections', 'actions'],
-			},
-		},
-		layout_options: {
-			tabular: {
-				widths: {
-					status: 32,
-					method: 100,
-					name: 210,
-					collections: 240,
-					actions: 210,
-				},
-			},
-		},
-	},
 	directus_presets: {
 		collection: 'directus_presets',
 		layout: 'tabular',
