@@ -26,9 +26,7 @@ vi.spyOn(i18n.global, 't').mockImplementation((key: any) => key);
 
 const router = createRouter({
 	history: createMemoryHistory(),
-	routes: [
-		{ path: '/', name: 'root', component: { template: '<div />' } },
-	],
+	routes: [{ path: '/', name: 'root', component: { template: '<div />' } }],
 });
 
 const mountOptions = {
