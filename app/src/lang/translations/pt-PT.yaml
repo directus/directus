@@ -138,7 +138,6 @@ create_policy: Criar Política
 create_user: Criar utilizador
 message: Mensagem
 delete_panel: Apagar painel
-create_webhook: Criar webhook
 create_custom_translation: Criar tradução personalizada
 edit_custom_translation: Editar tradução personalizada
 no_custom_translations: Sem tradução personalizada
@@ -629,7 +628,6 @@ file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
 no_files_copy: Não existem ficheiros aqui.
 user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
 no_users_copy: Ainda não existem utilizadores neste estatuto.
-webhooks_count: 'Nenhum webhook | Um webhook | {count} webhooks'
 no_notifications: Sem notificações
 no_notifications_copy: Tudo em dia!
 activity_log: Registo de Atividade
@@ -654,7 +652,6 @@ activity: Atividade
 action: Ação
 ip_address: Endereço IP
 user_agent: User Agent
-webhooks: Webhooks
 decimals: Decimais
 value_decimals: Valores decimais
 min_value: Valor mínimo
@@ -922,7 +919,6 @@ editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
 settings_project: Configurações
-settings_webhooks: Webhooks
 settings_flows: Fluxos
 settings_presets: Favoritos
 settings_translations: Traduções
@@ -1020,9 +1016,6 @@ fields:
   directus_policies:
     name: Nome da política
     description: Descrição
-  directus_webhooks:
-    name: Nome
-    status: Estado
 field_options:
   directus_settings:
     project_name_placeholder: O meu projeto...
@@ -1048,11 +1041,6 @@ field_options:
     dropdown_light: Modo Claro
     dropdown_dark: Modo Escuro
     status_dropdown_active: Ativar
-  directus_webhooks:
-    status_options_active: Ativar
-    status_options_inactive: Inativo
-    actions_create: Criar
-    actions_update: Atualizar
 no_fields_in_collection: 'Ainda não há nenhum campo em "{collection}"'
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e guardar UUID
@@ -1088,7 +1076,6 @@ choose_action: Escolher ação
 continue_label: Continuar
 continue_as: >-
   {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
-creating_webhook: Criando Webhook
 delete_are_you_sure: >-
   Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 description: Descrição
@@ -1216,6 +1203,9 @@ both: Ambos
 panels:
   label:
     name: Rótulo
+triggers:
+  webhook:
+    method: Método
 operations:
   json-web-token:
     token: Token
@@ -1232,6 +1222,7 @@ operations:
   request:
     url: URL
     url_placeholder: https://exemplo.com/exemplo
+    method: Método
   sleep:
     milliseconds: Milisegundos
   trigger:
