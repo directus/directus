@@ -92,8 +92,8 @@ export function useCollab(
 		sdk.disconnect();
 	});
 
-	watch([active], () => {
-		if (active?.value) {
+	watch(() => active?.value, (isActive) => {
+		if (isActive) {
 			join();
 		} else {
 			leave();
