@@ -983,6 +983,7 @@ folder_key: Folder Key...
 add_file: Add File
 replace_file: Replace File
 no_results: No Results
+search_placeholder: Search...
 no_results_copy: Adjust or clear search filters to see results.
 no_visible_fields: Empty Form
 no_visible_fields_copy: This form has no visible fields.
@@ -1688,6 +1689,7 @@ ai:
     collections: Create and manage collections
     fields: Create and configure collection fields
     relations: Set up relationships between collections
+    minis: Create and configure minis
 ai_tools:
   update_form_values: Update Form Values
   read_form_values: Read Form Values
@@ -1701,6 +1703,7 @@ ai_tools:
   collections: Collections
   fields: Fields
   relations: Relations
+  minis: Minis
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
@@ -2749,3 +2752,41 @@ accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)
 text_direction_rtl: Right to Left (RTL)
+minis:
+  label: Minis
+  no_minis: No Mini-Apps
+  no_minis_copy: Create your first mini-app to get started.
+  create_mini_app: Create Mini-App
+  edit_mini_app: Edit Mini-App
+  delete_mini_app: Delete Mini-App
+  delete_mini_app_confirm: Delete this mini-app?
+  delete_batch_confirm: Delete {count} mini-app(s)?
+  open_mini_app: Open Mini-App
+  clear_search: Clear Search
+  search_placeholder: Search Mini-Apps...
+  basic_info: Basic Info
+  ui_schema: UI Schema (JSON)
+  script: Script (JavaScript)
+  css: CSS
+  draft_notice: This mini-app is in draft mode.
+  mini_app_not_found: Mini-App Not Found
+  mini_app_not_found_copy: The requested mini-app could not be found.
+  back_to_minis: Back to Minis
+  welcome_message: Welcome to your new mini-app! Edit the UI schema to get started.
+  app_name: Mini-App Name
+  icon: Icon (e.g., apps)
+  description: Description (optional)
+  sandbox_error: 'Script Error: {message}'
+  debug_mini_app: Debug Mini-App
+  test_mini_app_changes: Test Mini-App Changes
+  reset_mini_app: Reset Mini-App
+  save_mini_app_changes: Save Mini-App Changes
+  editing_mini_app: Editing {name} Mini-App
+  testing_mode_notice: Testing unsaved changes
+  preview_mode_notice: Previewing local changes
+  no_changes: No changes to save
+  reset_to_saved: Reset
+  discard_test: Discard
+  show_form: Show Form
+  show_preview: Show Preview
+  error_loading_app: Error Loading Mini-App

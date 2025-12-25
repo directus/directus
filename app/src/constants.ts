@@ -52,6 +52,11 @@ export const MODULE_BAR_DEFAULT = [
 	},
 	{
 		type: 'module',
+		id: 'minis',
+		enabled: true,
+	},
+	{
+		type: 'module',
 		id: 'users',
 		enabled: true,
 	},

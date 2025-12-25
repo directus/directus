@@ -182,6 +182,15 @@ data:
     many_field: sender
     one_collection: directus_users
 
+  ### Minis
+  - many_collection: directus_minis
+    many_field: user_created
+    one_collection: directus_users
+
+  - many_collection: directus_minis
+    many_field: user_updated
+    one_collection: directus_users
+
   ### Shares
   - many_collection: directus_shares
     many_field: role

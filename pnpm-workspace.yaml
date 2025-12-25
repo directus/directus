@@ -263,6 +263,8 @@ catalog:
   proxy-addr: 2.0.7
   qrcode: 1.5.4
   qs: 6.14.0
+  quickjs-emscripten: 0.31.0
+  '@jitl/quickjs-wasmfile-release-sync': 0.31.0
   rate-limiter-flexible: 7.2.0
   reka-ui: 2.6.0
   rimraf: 6.1.0

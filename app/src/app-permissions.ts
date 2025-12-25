@@ -196,6 +196,30 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		},
 		fields: ['id', 'status', 'name', 'icon', 'color', 'options', 'trigger'],
 	},
+	{
+		collection: 'directus_minis',
+		action: 'create',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_minis',
+		action: 'read',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_minis',
+		action: 'update',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_minis',
+		action: 'delete',
+		permissions: {},
+		fields: ['*'],
+	},
 ];
 
 export const editablePermissionActions = ['create', 'read', 'update', 'delete', 'share'] as const;

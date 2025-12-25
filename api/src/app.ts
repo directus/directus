@@ -28,6 +28,7 @@ import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
 import mcpRouter from './controllers/mcp.js';
 import metricsRouter from './controllers/metrics.js';
+import minisRouter from './controllers/minis.js';
 import notFoundHandler from './controllers/not-found.js';
 import notificationsRouter from './controllers/notifications.js';
 import operationsRouter from './controllers/operations.js';
@@ -311,6 +312,8 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	app.use('/ai/chat', aiChatRouter);
+
+	app.use('/minis', minisRouter);
 
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);

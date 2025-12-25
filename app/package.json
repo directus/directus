@@ -143,6 +143,8 @@
 		"p-queue": "catalog:",
 		"pinia": "catalog:",
 		"qrcode": "catalog:",
+		"quickjs-emscripten": "catalog:",
+		"@jitl/quickjs-wasmfile-release-sync": "catalog:",
 		"reka-ui": "catalog:",
 		"sass-embedded": "catalog:",
 		"semver": "catalog:",

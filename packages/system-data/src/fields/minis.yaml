@@ -1,0 +1,61 @@
+table: directus_minis
+
+fields:
+  - field: id
+    hidden: true
+    special:
+      - uuid
+  - field: name
+    interface: input
+    width: half
+  - field: icon
+    interface: select-icon
+    width: half
+  - field: status
+    interface: select-dropdown
+    width: half
+    options:
+      choices:
+        - text: $t:draft
+          value: draft
+        - text: $t:published
+          value: published
+  - field: description
+    interface: textarea
+    width: full
+  - field: ui_schema
+    interface: input-code
+    options:
+      language: json
+      lineNumber: true
+    width: full
+  - field: script
+    interface: input-code
+    options:
+      language: javascript
+      lineNumber: true
+    width: full
+  - field: css
+    interface: input-code
+    options:
+      language: css
+      lineNumber: true
+    width: full
+  - field: date_created
+    hidden: true
+    special:
+      - date-created
+      - cast-timestamp
+  - field: date_updated
+    hidden: true
+    special:
+      - date-updated
+      - cast-timestamp
+  - field: user_created
+    hidden: true
+    special:
+      - user-created
+  - field: user_updated
+    hidden: true
+    special:
+      - user-updated

@@ -44,6 +44,10 @@ data:
   - collection: directus_migrations
     note: $t:directus_collection.directus_migrations
 
+  - collection: directus_minis
+    icon: apps
+    note: $t:directus_collection.directus_minis
+
   - collection: directus_permissions
     icon: admin_panel_settings
     note: $t:directus_collection.directus_permissions

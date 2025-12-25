@@ -59,6 +59,7 @@ const toolIcons: Record<SystemTool, string> = {
 	collections: 'database',
 	fields: 'variable_add',
 	relations: 'hub',
+	minis: 'apps',
 };
 
 const toolOptions = computed(() => {
@@ -127,7 +128,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 									>
 										<template #preview>
 											<div class="approval-preview" :style="{ color: toolOptions.get(toolName)?.approval?.color }">
-												<VIcon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
+												<VIcon :name="toolOptions.get(toolName)?.approval?.icon || 'check'" x-small />
 												{{ toolOptions.get(toolName)?.approval?.text }}
 											</div>
 										</template>
@@ -166,7 +167,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 									>
 										<template #preview>
 											<div class="approval-preview" :style="{ color: toolOptions.get(toolName)?.approval?.color }">
-												<VIcon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
+												<VIcon :name="toolOptions.get(toolName)?.approval?.icon || 'check'" x-small />
 												{{ toolOptions.get(toolName)?.approval?.text }}
 											</div>
 										</template>

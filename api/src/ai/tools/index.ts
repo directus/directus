@@ -1,3 +1,4 @@
+import { minis } from './minis/index.js';
 import { assets } from './assets/index.js';
 import { collections } from './collections/index.js';
 import { fields } from './fields/index.js';
@@ -25,10 +26,11 @@ export const ALL_TOOLS: ToolConfig<any>[] = [
 	collections,
 	fields,
 	relations,
+	minis,
 ];
 
 export const getAllMcpTools = () => ALL_TOOLS;
 
 export const findMcpTool = (name: string) => ALL_TOOLS.find((tool) => tool.name === name);
 
-export { collections, fields, files, flows, items, operations, relations, schema, system, triggerFlow };
+export { collections, fields, files, flows, items, minis, operations, relations, schema, system, triggerFlow };

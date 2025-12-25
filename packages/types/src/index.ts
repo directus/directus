@@ -17,6 +17,7 @@ export * from './graphql.js';
 export * from './import-export.js';
 export * from './items.js';
 export * from './mail.js';
+export * from './minis.js';
 export * from './misc.js';
 export * from './notifications.js';
 export * from './payload.js';

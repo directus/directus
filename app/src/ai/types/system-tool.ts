@@ -9,4 +9,5 @@ export type SystemTool =
 	| 'schema'
 	| 'collections'
 	| 'fields'
-	| 'relations';
+	| 'relations'
+	| 'minis';

@@ -130,3 +130,6 @@
     - tfa_secret
     - status
     - role
+
+- collection: directus_minis
+  action: read

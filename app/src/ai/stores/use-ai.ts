@@ -111,6 +111,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		'collections',
 		'fields',
 		'relations',
+		'minis',
 	]);
 
 	// Filter system tools based on approval mode (exclude 'disabled')
@@ -258,10 +259,14 @@ export const useAiStore = defineStore('ai-store', () => {
 
 				const tool = part.type.substring('tool-'.length);
 
-				const isSystemTool = systemTools.value.includes(tool);
+				const isSystemTool = systemTools.value.includes(tool as SystemTool);
 
 				if (isSystemTool) {
-					systemToolResultHook.trigger(tool as SystemTool, part.input, part.output);
+					systemToolResultHook.trigger(
+						tool as SystemTool,
+						part.input as Record<string, unknown>,
+						part.output as Record<string, unknown>,
+					);
 				}
 			}
 		}
