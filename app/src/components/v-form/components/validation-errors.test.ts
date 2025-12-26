@@ -5,6 +5,7 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it, test } from 'vitest';
 import VNotice from '@/components/v-notice.vue';
 import ValidationErrors from './validation-errors.vue';
+import ValidationNestedGroups from './validation-nested-groups.vue';
 
 const global: GlobalMountOptions = {
 	plugins: [i18n],
@@ -14,6 +15,10 @@ const global: GlobalMountOptions = {
 			template: '<span class="v-icon"><slot /></span>',
 		},
 		'v-notice': VNotice,
+		'v-detail': {
+			template:
+				'<div class="v-detail"><slot name="activator" :active="true" :toggle="() => {}" /><div class="content"><slot /></div></div>',
+		},
 	},
 	directives: {
 		tooltip: () => {},
@@ -292,5 +297,91 @@ describe('Props updates', () => {
 		expect(wrapper.findAll('.validation-error')).toHaveLength(2);
 		expect(wrapper.html()).toContain('Name');
 		expect(wrapper.html()).toContain('Custom Field');
+	});
+});
+
+describe('Nested validation groups display', () => {
+	it('shows custom validation message in the nested validation header when available', () => {
+		const wrapper = mount(ValidationErrors, {
+			props: {
+				validationErrors: [
+					{
+						field: 'title',
+						path: [],
+						type: 'contains',
+						substring: 'foo',
+						hidden: false,
+						group: null,
+					} as unknown as ValidationError,
+				],
+				fields: [
+					{
+						collection: 'posts',
+						name: 'Title',
+						field: 'title',
+						type: 'string',
+						meta: {
+							validation: { _and: [{ _or: [{ title: { _contains: 'foo' } }, { title: { _contains: 'bar' } }] }] },
+							validation_message: 'My custom validation header',
+						} as unknown as FieldMeta,
+					} as Field,
+				],
+			},
+			global,
+		});
+
+		expect(wrapper.text()).toContain('My custom validation header');
+	});
+
+	it('prefixes sibling rules with All/Any of the following', () => {
+		const globalWithDetail: GlobalMountOptions = {
+			plugins: [i18n],
+		};
+
+		const wrapperAnd = mount(ValidationNestedGroups, {
+			props: {
+				node: {
+					type: 'and',
+					children: [
+						{ type: 'rule', field: 'title', operator: 'contains', value: 'foo' },
+						{ type: 'rule', field: 'title', operator: 'contains', value: 'bar' },
+					],
+				},
+			},
+			global: globalWithDetail,
+		});
+
+		const andLines = wrapperAnd
+			.findAll('.rule')
+			.map((el) => el.text().trim())
+			.filter(Boolean);
+
+		const andLineLowercase = andLines[0]?.toLowerCase();
+		expect(andLineLowercase).toBe('all of the following');
+		expect(andLines).toContain('Value has to contain "foo"');
+		expect(andLines).toContain('Value has to contain "bar"');
+
+		const wrapperOr = mount(ValidationNestedGroups, {
+			props: {
+				node: {
+					type: 'or',
+					children: [
+						{ type: 'rule', field: 'title', operator: 'contains', value: 'foo' },
+						{ type: 'rule', field: 'title', operator: 'contains', value: 'bar' },
+					],
+				},
+			},
+			global: globalWithDetail,
+		});
+
+		const orLines = wrapperOr
+			.findAll('.rule')
+			.map((el) => el.text().trim())
+			.filter(Boolean);
+
+		const orLineLowercase = orLines[0]?.toLowerCase();
+		expect(orLineLowercase).toBe('any of the following');
+		expect(orLines).toContain('Value has to contain "foo"');
+		expect(orLines).toContain('Value has to contain "bar"');
 	});
 });
