@@ -71,7 +71,7 @@ export type Info = {
 		limit: number | null;
 	};
 	uploads?: {
-		tusEnabled: boolean;
+		tus: boolean;
 		chunkSize?: number;
 		maxParallel: number;
 	};

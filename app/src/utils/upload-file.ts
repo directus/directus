@@ -27,7 +27,7 @@ export async function uploadFile(
 	const server = useServerStore();
 	let notified = false;
 
-	if (server.info.uploads?.tusEnabled) {
+	if (server.info.uploads?.tus === true) {
 		const fileInfo: Partial<File> = { ...(options?.preset ?? {}) };
 
 		if (options?.fileId) {

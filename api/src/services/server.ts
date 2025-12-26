@@ -132,14 +132,14 @@ export class ServerService {
 
 			if (RESUMABLE_UPLOADS.ENABLED) {
 				info['uploads'] = {
-					tusEnabled: true,
+					tus: true,
 					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
-					maxParallel: FILE_UPLOADS.MAX_PARALLEL,
+					maxParallel: FILE_UPLOADS.MAX_CONCURRENCY,
 				};
 			} else {
 				info['uploads'] = {
-					tusEnabled: false,
-					maxParallel: FILE_UPLOADS.MAX_PARALLEL,
+					tus: false,
+					maxParallel: FILE_UPLOADS.MAX_CONCURRENCY,
 				};
 			}
 		}

@@ -107,7 +107,7 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 /** File uploads */
 export const FILE_UPLOADS = {
 	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
-	MAX_PARALLEL: Number(env['FILES_MAX_UPLOAD_PARALLEL']) > 0 ? Number(env['FILES_MAX_UPLOAD_PARALLEL']) : 0,
+	MAX_CONCURRENCY: Number(env['FILES_MAX_UPLOAD_CONCURRENCY']) > 0 ? Number(env['FILES_MAX_UPLOAD_CONCURRENCY']) : 0,
 };
 
 /** Resumable uploads (TUS) */
