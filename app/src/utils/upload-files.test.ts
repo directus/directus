@@ -12,7 +12,7 @@ vi.mock('@/utils/notify', () => ({
 
 const mockServerInfo = vi.hoisted(() => ({
 	uploads: {
-		maxParallel: 2,
+		maxConcurrency: 2,
 	},
 }));
 
@@ -35,10 +35,10 @@ describe('uploadFiles', () => {
 		uploadFile.mockReset();
 		vi.mocked(notify).mockReset();
 		vi.mocked(unexpectedError).mockReset();
-		mockServerInfo.uploads = { maxParallel: 2 };
+		mockServerInfo.uploads = { maxConcurrency: 2 };
 	});
 
-	it('limits concurrent uploads based on server maxParallel', async () => {
+	it('limits concurrent uploads based on maxConcurrency option', async () => {
 		let inFlight = 0;
 		let maxInFlight = 0;
 		const resolvers: Array<() => void> = [];
@@ -57,7 +57,7 @@ describe('uploadFiles', () => {
 
 		const files = [new File(['a'], 'a.txt'), new File(['b'], 'b.txt'), new File(['c'], 'c.txt')];
 
-		const uploadPromise = uploadFiles(files);
+		const uploadPromise = uploadFiles(files, { maxConcurrency: 2 });
 
 		await Promise.resolve();
 		expect(uploadFile).toHaveBeenCalledTimes(2);
@@ -72,8 +72,7 @@ describe('uploadFiles', () => {
 		expect(maxInFlight).toBe(2);
 	});
 
-	it('starts all uploads when maxParallel is not set', async () => {
-		mockServerInfo.uploads = undefined;
+	it('starts all uploads when maxConcurrency is not set', async () => {
 		const startOrder: string[] = [];
 		const resolvers: Array<() => void> = [];
 
@@ -98,8 +97,7 @@ describe('uploadFiles', () => {
 		expect(startOrder).toHaveLength(3);
 	});
 
-	it('starts all uploads when maxParallel is 0', async () => {
-		mockServerInfo.uploads = { maxParallel: 0 };
+	it('starts all uploads when maxConcurrency is 0', async () => {
 		const startOrder: string[] = [];
 		const resolvers: Array<() => void> = [];
 
@@ -113,7 +111,7 @@ describe('uploadFiles', () => {
 
 		const files = [new File(['a'], 'a.txt'), new File(['b'], 'b.txt'), new File(['c'], 'c.txt')];
 
-		const uploadPromise = uploadFiles(files);
+		const uploadPromise = uploadFiles(files, { maxConcurrency: 0 });
 
 		await Promise.resolve();
 		expect(uploadFile).toHaveBeenCalledTimes(3);

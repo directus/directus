@@ -73,7 +73,7 @@ export type Info = {
 	uploads?: {
 		tus: boolean;
 		chunkSize?: number;
-		maxParallel: number;
+		maxConcurrency: number;
 	};
 };
 

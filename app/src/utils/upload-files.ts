@@ -1,5 +1,4 @@
 import { i18n } from '@/lang';
-import { useServerStore } from '@/stores/server';
 import { notify } from '@/utils/notify';
 import { uploadFile } from '@/utils/upload-file';
 import { unexpectedError } from './unexpected-error';
@@ -15,14 +14,16 @@ export async function uploadFiles(
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		folder?: string;
+		maxConcurrency?: number;
 	},
 ): Promise<(File | undefined)[]> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
 	const uploadControllers: (Upload | null)[] = Array(files.length).fill(null);
-	const serverStore = useServerStore();
-	const maxParallelUploads = serverStore.info.uploads?.maxParallel ?? 0;
-	const uploadQueue = maxParallelUploads > 0 ? new PQueue({ concurrency: maxParallelUploads }) : null;
+
+	const uploadQueue = new PQueue({
+		concurrency: options?.maxConcurrency && options.maxConcurrency > 0 ? options.maxConcurrency : Infinity,
+	});
 
 	const startUpload = (file: globalThis.File, index: number) =>
 		uploadFile(file, {
@@ -39,10 +40,8 @@ export async function uploadFiles(
 
 	try {
 		const uploadedFiles = (
-			maxParallelUploads === 0
-				? await Promise.all(files.map((file, index) => startUpload(file, index)))
-				: await Promise.all(files.map((file, index) => uploadQueue!.add(() => startUpload(file, index))))
-		).filter((v) => v);
+			await Promise.all(files.map((file, index) => uploadQueue.add(() => startUpload(file, index))))
+		).filter((v): v is File => v !== undefined);
 
 		if (options?.notifications) {
 			notify({

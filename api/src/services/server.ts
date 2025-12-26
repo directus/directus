@@ -130,19 +130,15 @@ export class ServerService {
 				info['websocket'] = false;
 			}
 
-			if (RESUMABLE_UPLOADS.ENABLED) {
-				info['uploads'] = {
-					tus: true,
-					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
-					maxParallel: FILE_UPLOADS.MAX_CONCURRENCY,
-				};
-			} else {
-				info['uploads'] = {
-					tus: false,
-					maxParallel: FILE_UPLOADS.MAX_CONCURRENCY,
-				};
-			}
-		}
+		info['uploads'] = {
+			maxConcurrency: FILE_UPLOADS.MAX_CONCURRENCY,
+		};
+
+		if (RESUMABLE_UPLOADS.ENABLED) {
+			info['uploads'] = {
+				...info['uploads'],
+				tus: true,
+				chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
 
 		if (this.accountability?.user || !setupComplete) info['version'] = version;
 
