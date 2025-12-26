@@ -4,4 +4,4 @@
 "@directus/env": patch
 ---
 
-Add `FILES_MAX_UPLOAD_PARALLEL` to limit concurrent file uploads started by the Studio, working for both regular and resumable (TUS) uploads.
+Added concurrency control for file uploads via a new `FILES_MAX_UPLOAD_CONCURRENCY` env variable
