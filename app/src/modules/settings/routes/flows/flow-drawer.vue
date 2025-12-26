@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VFancySelect from '@/components/v-fancy-select.vue';
@@ -29,6 +28,7 @@ interface Values {
 	accountability: string | null;
 	trigger?: TriggerType | null;
 	options: Record<string, any>;
+	group: string | null;
 }
 
 const props = withDefaults(
@@ -57,7 +57,16 @@ const values: Values = reactive({
 	accountability: 'all',
 	trigger: undefined,
 	options: {},
+	group: null,
 });
+
+const folderOptions = computed(() => [
+	{ text: '—', value: null },
+	...flowsStore.folders.map((folder) => ({
+		text: folder.name,
+		value: folder.id,
+	})),
+]);
 
 watch(
 	() => props.primaryKey,
@@ -73,6 +82,7 @@ watch(
 			values.accountability = 'all';
 			values.trigger = undefined;
 			values.options = {};
+			values.group = null;
 		} else {
 			const existing = flowsStore.flows.find((existingFlow) => existingFlow.id === newKey)!;
 
@@ -84,6 +94,7 @@ watch(
 			values.accountability = existing.accountability;
 			values.trigger = existing.trigger;
 			values.options = existing.options ?? {};
+			values.group = existing.group;
 		}
 	},
 	{ immediate: true },
@@ -135,14 +146,11 @@ async function save() {
 		let id: string;
 
 		if (isNew.value) {
-			id = await api.post('/flows', values, { params: { fields: ['id'] } }).then((res) => res.data.data.id);
+			id = await flowsStore.createFlow(values);
 		} else {
-			id = await api
-				.patch(`/flows/${props.primaryKey}`, values, { params: { fields: ['id'] } })
-				.then((res) => res.data.data.id);
+			await flowsStore.updateFlow(props.primaryKey!, values);
+			id = props.primaryKey!;
 		}
-
-		await flowsStore.hydrate();
 
 		emit('done', id);
 	} catch (error) {
@@ -225,6 +233,15 @@ function onApply() {
 					<div class="field full">
 						<div class="type-label">{{ $t('description') }}</div>
 						<VInput v-model="values.description" :placeholder="$t('description')" />
+					</div>
+					<div class="field full">
+						<div class="type-label">{{ $t('folder') }}</div>
+						<VSelect
+							v-model="values.group"
+							:items="folderOptions"
+							:placeholder="$t('no_folder')"
+							show-deselect
+						/>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('icon') }}</div>

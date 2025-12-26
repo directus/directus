@@ -53,6 +53,31 @@ Perform CRUD operations on Directus Collections.
 
 </collection_structure>
 
+<organization>
+
+### Organizing Collections
+
+Use `meta.group` to organize collections into folders or nest under other collections.
+
+```json
+// Create folder (no schema)
+{ "action": "create", "data": { "collection": "cms_content", "meta": { "icon": "folder", "color": "#6644FF" } } }
+
+// Nest collection under folder or another collection
+{ "action": "update", "key": "articles", "data": { "meta": { "group": "cms_content" } } }
+
+// Remove from parent (move to root)
+{ "action": "update", "key": "articles", "data": { "meta": { "group": null } } }
+```
+
+**Notes:**
+- Folders have no `schema` property (just `meta`)
+- Both folders and regular collections can be parents
+- Use `sort` to control display order within a group
+- Use `collapse` to set default expanded/collapsed state
+
+</organization>
+
 <creating_collections>
 
 - **Primary Keys**: Use UUID primary keys (see `fields` tool `<primary_keys>` section for detailed guidance)
