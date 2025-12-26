@@ -608,7 +608,7 @@ function discardAndLeave() {
 
 <template>
 	<SettingsNotFound v-if="!flow && !loading" />
-	<PrivateView v-else :title="flow?.name ?? $t('loading')" show-back>
+	<PrivateView v-else :title="flow?.name ?? $t('loading')" show-back back-to="/settings/flows">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
 		</template>
