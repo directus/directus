@@ -130,15 +130,18 @@ export class ServerService {
 				info['websocket'] = false;
 			}
 
-		info['uploads'] = {
-			maxConcurrency: FILE_UPLOADS.MAX_CONCURRENCY,
-		};
-
-		if (RESUMABLE_UPLOADS.ENABLED) {
 			info['uploads'] = {
-				...info['uploads'],
-				tus: true,
-				chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
+				maxConcurrency: FILE_UPLOADS.MAX_CONCURRENCY,
+			};
+
+			if (RESUMABLE_UPLOADS.ENABLED) {
+				info['uploads'] = {
+					...info['uploads'],
+					tus: true,
+					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
+				};
+			}
+		}
 
 		if (this.accountability?.user || !setupComplete) info['version'] = version;
 
