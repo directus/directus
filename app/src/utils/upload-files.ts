@@ -41,7 +41,7 @@ export async function uploadFiles(
 	try {
 		const uploadedFiles = (
 			await Promise.all(files.map((file, index) => uploadQueue.add(() => startUpload(file, index))))
-		).filter((v): v is File => v !== undefined);
+		).filter((v) => v);
 
 		if (options?.notifications) {
 			notify({
