@@ -159,6 +159,9 @@ export const FlowItemInputSchema = z
 		date_created: z.string(),
 		user_created: z.string(),
 		accountability: z.union([z.enum(['all', 'activity']), z.null()]),
+		group: z.union([z.string(), z.null()]),
+		sort: z.union([z.number(), z.null()]),
+		collapse: z.enum(['open', 'closed']),
 	})
 	.partial();
 

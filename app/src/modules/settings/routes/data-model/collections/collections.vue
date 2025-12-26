@@ -9,7 +9,9 @@ import VInfo from '@/components/v-info.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
+import { useVisibilityTree } from '@/composables/use-visibility-tree';
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -33,6 +35,7 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
 const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
@@ -46,6 +49,59 @@ const rootCollections = computed(() => {
 	return collections.value.filter((collection) => !collection.meta?.group);
 });
 
+// Visibility tree for search filtering (uses shared composable)
+const { findVisibilityNode } = useVisibilityTree(
+	computed(() => collectionsStore.sortedCollections),
+	search,
+	{
+		getId: (collection) => collection.collection,
+		getParent: (collection) => collection.meta?.group ?? null,
+		matchesSearch: (collection, searchQuery) => {
+			// Match on collection name
+			if (collection.collection.toLowerCase().includes(searchQuery)) return true;
+
+			// Match on note/description
+			if (collection.meta?.note?.toLowerCase().includes(searchQuery)) return true;
+
+			// Match on field names
+			const fields = fieldsStore.getFieldsForCollection(collection.collection);
+
+			if (fields.some((field) => field.field.toLowerCase().includes(searchQuery))) return true;
+
+			return false;
+		},
+	},
+);
+
+// Adapter function to maintain backward compatibility with CollectionItem
+function findVisibilityChild(collection: string) {
+	const node = findVisibilityNode(collection);
+
+	if (!node) return undefined;
+
+	// Map the shared VisibilityTreeNode to the expected CollectionTree interface
+	return {
+		collection: node.id,
+		visible: node.visible,
+		children: node.children,
+		search: node.search,
+		findChild: (childId: string) => {
+			const childNode = node.findChild(childId);
+
+			if (!childNode) return undefined;
+
+			return {
+				collection: childNode.id,
+				visible: childNode.visible,
+				children: childNode.children,
+				search: childNode.search,
+				findChild: childNode.findChild,
+			};
+		},
+	};
+}
+
+// Type alias for backward compatibility
 export type CollectionTree = {
 	collection: string;
 	visible: boolean;
@@ -53,56 +109,6 @@ export type CollectionTree = {
 	search: string | null;
 	findChild(collection: string): CollectionTree | undefined;
 };
-
-function findVisibilityChild(
-	collection: string,
-	tree: CollectionTree[] = visibilityTree.value,
-): CollectionTree | undefined {
-	return tree.find((child) => child.collection === collection);
-}
-
-const visibilityTree = computed(() => {
-	const tree: CollectionTree[] = makeTree();
-	const propagateBackwards: CollectionTree[] = [];
-
-	function makeTree(parent: string | null = null): CollectionTree[] {
-		const children = collectionsStore.sortedCollections.filter(
-			(collection) => (collection.meta?.group ?? null) === parent,
-		);
-
-		const normalizedSearch = search.value?.toLowerCase();
-
-		return children.map((collection) => ({
-			collection: collection.collection,
-			visible: normalizedSearch ? collection.collection.toLowerCase().includes(normalizedSearch) : true,
-			search: search.value,
-			children: makeTree(collection.collection),
-			findChild(collection: string) {
-				return findVisibilityChild(collection, this.children);
-			},
-		}));
-	}
-
-	breadthSearch(tree);
-
-	function breadthSearch(tree: CollectionTree[]) {
-		for (const collection of tree) {
-			if (collection.children.length === 0) continue;
-
-			propagateBackwards.unshift(collection);
-		}
-
-		for (const collection of tree) {
-			breadthSearch(collection.children);
-		}
-	}
-
-	for (const child of propagateBackwards) {
-		child.visible = child.visible || child.children.some((child) => child.visible);
-	}
-
-	return tree;
-});
 
 const tableCollections = computed(() =>
 	translate(collectionsStore.databaseCollections.filter((collection) => !collection.meta)),

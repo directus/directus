@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import TransitionExpand from '@/components/transition/expand.vue';
+import { GroupedListItem } from '@/components/grouped-list';
 import VHighlight from '@/components/v-highlight.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import VListItemIcon from '@/components/v-list-item-icon.vue';
-import VListItem from '@/components/v-list-item.vue';
 import { Collection } from '@/types/collections';
-import { computed } from 'vue';
-import Draggable from 'vuedraggable';
 import { CollectionTree } from '../collections.vue';
 import CollectionOptions from './collection-options.vue';
 
@@ -18,127 +14,98 @@ const props = defineProps<{
 	disableDrag?: boolean;
 }>();
 
-const emit = defineEmits(['setNestedSort', 'editCollection', 'toggleCollapse']);
+const emit = defineEmits<{
+	setNestedSort: [updates: { collection: string; meta: { group: string } }[]];
+	editCollection: [collection: Collection];
+	toggleCollapse: [id: string];
+}>();
 
-const toggleCollapse = () => {
-	emit('toggleCollapse', props.collection.collection);
-};
+function getCollectionLink(item: Record<string, unknown>): string | undefined {
+	const collection = item as Collection;
+	// Only collections with schema have a detail page
+	if (!collection.schema) return undefined;
+	return `/settings/data-model/${collection.collection}`;
+}
 
-const nestedCollections = computed(() =>
-	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),
-);
+function handleItemClick(item: Record<string, unknown>) {
+	emit('editCollection', item as Collection);
+}
 
-function onGroupSortChange(collections: Collection[]) {
-	const updates = collections.map((collection) => ({
-		collection: collection.collection,
-		meta: {
-			group: props.collection.collection,
-		},
-	}));
-
-	emit('setNestedSort', updates);
+function handleNestedSort(updates: { id: string; group: string }[]) {
+	// Convert from generic format to collection-specific format
+	emit(
+		'setNestedSort',
+		updates.map((u) => ({
+			collection: u.id,
+			meta: { group: u.group },
+		})),
+	);
 }
 </script>
 
 <template>
-	<div v-show="visibilityTree.visible" class="collection-item">
-		<VListItem
-			block
-			dense
-			clickable
-			:class="{ hidden: collection.meta?.hidden }"
-			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
-			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
-		>
-			<VListItemIcon>
-				<VIcon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
-			</VListItemIcon>
-			<div class="collection-item-detail">
-				<VIcon
-					:color="
-						collection.meta?.hidden ? 'var(--theme--foreground-subdued)' : (collection.color ?? 'var(--theme--primary)')
-					"
-					class="collection-icon"
-					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
-				/>
-				<VHighlight
-					ref="collectionName"
-					:query="visibilityTree.search"
-					:text="collection.collection"
-					class="collection-name"
-				/>
-				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
-			</div>
-
+	<GroupedListItem
+		:item="collection"
+		:items="collections"
+		:is-collapsed="isCollapsed"
+		:visibility-tree="visibilityTree"
+		:disable-drag="disableDrag"
+		id-field="collection"
+		group-field="meta.group"
+		drag-group="collections"
+		:get-item-link="getCollectionLink"
+		:clickable="true"
+		:can-have-children="true"
+		@toggle-collapse="$emit('toggleCollapse', $event)"
+		@set-nested-sort="handleNestedSort"
+		@item-click="handleItemClick"
+	>
+		<template #icon="{ item }">
 			<VIcon
-				v-if="nestedCollections?.length"
-				v-tooltip="!isCollapsed ? $t('collapse') : $t('expand')"
-				:name="!isCollapsed ? 'unfold_less' : 'unfold_more'"
-				clickable
-				class="collapse-toggle"
-				@click.stop.prevent="toggleCollapse"
+				:color="
+					(item as Collection).meta?.hidden
+						? 'var(--theme--foreground-subdued)'
+						: ((item as Collection).color ?? 'var(--theme--primary)')
+				"
+				class="collection-icon"
+				:name="(item as Collection).meta?.hidden ? 'visibility_off' : (item as Collection).icon"
 			/>
-			<CollectionOptions
-				:has-nested-collections="nestedCollections.length > 0"
-				:collection="collection"
-				@collection-toggle="toggleCollapse"
-			/>
-		</VListItem>
+		</template>
 
-		<TransitionExpand class="collection-items">
-			<Draggable
-				v-if="!isCollapsed"
-				:model-value="nestedCollections"
-				:group="{ name: 'collections' }"
-				:swap-threshold="0.3"
-				class="drag-container"
-				item-key="collection"
-				handle=".drag-handle"
-				v-bind="{ 'force-fallback': true }"
-				@update:model-value="onGroupSortChange"
-			>
-				<template #item="{ element }">
-					<CollectionItem
-						:collection="element"
-						:collections="collections"
-						:is-collapsed="element.isCollapsed"
-						:visibility-tree="visibilityTree.findChild(element.collection)!"
-						@edit-collection="$emit('editCollection', $event)"
-						@set-nested-sort="$emit('setNestedSort', $event)"
-						@toggle-collapse="$emit('toggleCollapse', $event)"
-					/>
-				</template>
-			</Draggable>
-		</TransitionExpand>
-	</div>
+		<template #content="{ item, search }">
+			<VHighlight
+				:query="search"
+				:text="(item as Collection).collection"
+				class="collection-name"
+				:class="{ hidden: (item as Collection).meta?.hidden }"
+			/>
+			<span v-if="(item as Collection).meta?.note" class="collection-note">
+				{{ (item as Collection).meta.note }}
+			</span>
+		</template>
+
+		<template #actions="{ item, hasChildren }">
+			<CollectionOptions
+				:has-nested-collections="hasChildren"
+				:collection="(item as Collection)"
+				@collection-toggle="$emit('toggleCollapse', (item as Collection).collection)"
+			/>
+		</template>
+	</GroupedListItem>
 </template>
 
 <style scoped lang="scss">
-.drag-container {
-	margin-block-start: 8px;
-	margin-inline-start: 20px;
-}
-
-.collection-item {
-	margin-block-end: 8px;
-}
-
-.collection-item-detail {
-	display: flex;
-	flex-grow: 1;
-	align-items: center;
-	block-size: 100%;
-	overflow: hidden;
-	font-family: var(--theme--fonts--monospace--font-family);
-	pointer-events: none;
+.collection-icon {
+	margin-inline-end: 8px;
 }
 
 .collection-name {
 	flex-shrink: 0;
-}
+	font-family: var(--theme--fonts--monospace--font-family);
 
-.hidden .collection-name {
-	color: var(--theme--foreground-subdued);
+	&.hidden {
+		color: var(--theme--foreground-subdued);
+	}
 }
 
 .collection-note {
@@ -153,21 +120,5 @@ function onGroupSortChange(collections: Collection[]) {
 
 .v-list-item:hover .collection-note {
 	opacity: 1;
-}
-
-.collection-icon {
-	margin-inline-end: 8px;
-}
-
-.drag-handle {
-	cursor: grab;
-}
-
-.collapse-toggle {
-	--v-icon-color: var(--theme--foreground-subdued);
-
-	&:hover {
-		--v-icon-color: var(--theme--foreground);
-	}
 }
 </style>
