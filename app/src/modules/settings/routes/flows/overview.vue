@@ -1,143 +1,120 @@
 <script setup lang="ts">
 import api from '@/api';
+import TransitionExpand from '@/components/transition/expand.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
-import VCardActions from '@/components/v-card-actions.vue';
-import VCardTitle from '@/components/v-card-title.vue';
-import VCard from '@/components/v-card.vue';
-import VDialog from '@/components/v-dialog.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
-import VListItemContent from '@/components/v-list-item-content.vue';
-import VListItemIcon from '@/components/v-list-item-icon.vue';
-import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
-import { Header, Sort } from '@/components/v-table/types';
-import VTable from '@/components/v-table/v-table.vue';
+import { useExpandCollapse } from '@/composables/use-expand-collapse';
+import { useVisibilityTree } from '@/composables/use-visibility-tree';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import { FlowRaw } from '@directus/types';
-import { sortBy } from 'lodash';
+import type { FlowRaw } from '@directus/types';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
+import Draggable from 'vuedraggable';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
-
-const { t } = useI18n();
+import FlowFolderDialog from './components/flow-folder-dialog.vue';
+import FlowItem from './components/flow-item.vue';
 
 const { createAllowed } = useCollectionPermissions('directus_flows');
 
-const confirmDelete = ref<FlowRaw | null>(null);
-const deletingFlow = ref(false);
+const search = ref<string | null>(null);
+const folderDialogActive = ref(false);
+const editFolderFlow = ref<FlowRaw | null>(null);
 const editFlow = ref<string | undefined>();
-
-const conditionalFormatting = ref([
-	{
-		operator: 'eq',
-		value: 'active',
-		text: t('active'),
-		color: 'var(--foreground-inverted)',
-		background: 'var(--theme--primary)',
-	},
-	{
-		operator: 'eq',
-		value: 'inactive',
-		text: t('inactive'),
-		color: 'var(--theme--foreground-subdued)',
-		background: 'var(--theme--background-normal)',
-	},
-]);
-
-const tableHeaders = ref<Header[]>([
-	{
-		text: '',
-		value: 'icon',
-		width: 42,
-		sortable: false,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('status'),
-		value: 'status',
-		width: 100,
-		sortable: true,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('name'),
-		value: 'name',
-		width: 240,
-		sortable: true,
-		align: 'left',
-		description: null,
-	},
-	{
-		text: t('description'),
-		value: 'description',
-		width: 360,
-		sortable: false,
-		align: 'left',
-		description: null,
-	},
-]);
-
-const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 const flowsStore = useFlowsStore();
 
-const flows = computed(() => {
-	const sortedFlows = sortBy(flowsStore.flows, [internalSort.value.by]);
-	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
-});
+// Expand/collapse management
+const { collapsedIds, hasExpandable, expandAll, collapseAll, toggleCollapse } = useExpandCollapse(
+	'collapsed-flow-ids',
+	{
+		getExpandableIds: () =>
+			flowsStore.flows
+				.filter((flow) => flowsStore.flows.some((f) => f.group === flow.id))
+				.map((flow) => flow.id),
+		getAllIds: () => flowsStore.flows.map((flow) => flow.id),
+	},
+);
 
-function updateSort(sort: Sort | null) {
-	internalSort.value = sort ?? { by: 'name', desc: false };
+// Flows with collapse state
+const flows = computed(() =>
+	flowsStore.sortedFlows.map((flow) => ({
+		...flow,
+		isCollapsed: collapsedIds.value?.includes(flow.id) ?? false,
+	})),
+);
+
+// Root flows (no parent)
+const rootFlows = computed(() => flows.value.filter((flow) => !flow.group));
+
+// Visibility tree for search
+const { findVisibilityNode } = useVisibilityTree(
+	computed(() => flowsStore.flows),
+	search,
+	{
+		getId: (flow) => flow.id,
+		getParent: (flow) => flow.group ?? null,
+		matchesSearch: (flow, searchQuery) => {
+			// Match on name, status (exact), description, and trigger
+			return (
+				flow.name?.toLowerCase().includes(searchQuery) ||
+				flow.status?.toLowerCase() === searchQuery ||
+				flow.description?.toLowerCase().includes(searchQuery) ||
+				flow.trigger?.toLowerCase().includes(searchQuery) ||
+				false
+			);
+		},
+	},
+);
+
+async function onSort(updates: { id: string; group: string | null }[], removeGroup = false) {
+	const updatesWithSort = updates.map((update, index) => ({
+		id: update.id,
+		sort: index + 1,
+		group: removeGroup ? null : update.group,
+	}));
+
+	// Optimistic update
+	flowsStore.flows = flowsStore.flows.map((flow) => {
+		const update = updatesWithSort.find((u) => u.id === flow.id);
+		return update ? { ...flow, ...update } : flow;
+	});
+
+	try {
+		await api.patch('/flows', updatesWithSort);
+	} catch (error) {
+		unexpectedError(error);
+		await flowsStore.hydrate();
+	}
 }
 
-function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
-	const route = `/settings/flows/${flow.id}`;
+function onRootSortChange(sortedFlows: FlowRaw[]) {
+	onSort(
+		sortedFlows.map((flow) => ({ id: flow.id, group: null })),
+		true,
+	);
+}
 
-	if (event.ctrlKey || event.metaKey || event.button === 1) {
-		window.open(router.resolve(route).href, '_blank');
+function onNestedSortChange(updates: { id: string; group: string }[]) {
+	onSort(updates);
+}
+
+function handleEditFlow(flow: FlowRaw) {
+	if (flow.trigger === null) {
+		// It's a folder, open folder dialog
+		editFolderFlow.value = flow;
+		folderDialogActive.value = true;
 	} else {
-		router.push(route);
-	}
-}
-
-async function deleteFlow() {
-	if (!confirmDelete.value || deletingFlow.value) return;
-
-	deletingFlow.value = true;
-
-	try {
-		await api.delete(`/flows/${confirmDelete.value.id}`);
-		await flowsStore.hydrate();
-		confirmDelete.value = null;
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		deletingFlow.value = false;
-	}
-}
-
-async function toggleFlowStatusById(id: string, value: string) {
-	try {
-		await api.patch(`/flows/${id}`, {
-			status: value === 'active' ? 'inactive' : 'active',
-		});
-
-		await flowsStore.hydrate();
-	} catch (error) {
-		unexpectedError(error);
+		// It's a flow, open flow drawer
+		editFlow.value = flow.id;
 	}
 }
 
@@ -147,6 +124,11 @@ function onFlowDrawerCompletion(id: string) {
 	}
 
 	editFlow.value = undefined;
+}
+
+function openFolderDialog() {
+	editFolderFlow.value = null;
+	folderDialogActive.value = true;
 }
 </script>
 
@@ -161,6 +143,15 @@ function onFlowDrawerCompletion(id: string) {
 		</template>
 
 		<template #actions>
+			<SearchInput v-model="search" :show-filter="false" />
+
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="createAllowed ? $t('create_folder') : $t('not_allowed')"
+				:disabled="createAllowed === false"
+				icon="create_new_folder"
+				@click="openFolderDialog"
+			/>
+
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
 				:disabled="createAllowed === false"
@@ -169,92 +160,61 @@ function onFlowDrawerCompletion(id: string) {
 			/>
 		</template>
 
-		<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
-			{{ $t('no_flows_copy') }}
+		<div class="flows-content">
+			<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
+				{{ $t('no_flows_copy') }}
 
-			<template v-if="createAllowed" #append>
-				<VButton @click="editFlow = '+'">{{ $t('create_flow') }}</VButton>
+				<template v-if="createAllowed" #append>
+					<VButton @click="editFlow = '+'">{{ $t('create_flow') }}</VButton>
+				</template>
+			</VInfo>
+
+			<template v-else>
+				<!-- Expand/Collapse controls -->
+				<TransitionExpand>
+					<div v-if="hasExpandable" class="expand-collapse-controls">
+						<span>{{ $t('expand') }}</span>
+						<button @click="expandAll">{{ $t('all') }}</button>
+						<span>/</span>
+						<button @click="collapseAll">{{ $t('none') }}</button>
+					</div>
+				</TransitionExpand>
+
+				<!-- Flows list -->
+				<VList class="flows-list draggable-list">
+					<Draggable
+						:model-value="rootFlows"
+						:group="{ name: 'flows' }"
+						:swap-threshold="0.3"
+						class="root-drag-container"
+						item-key="id"
+						handle=".drag-handle"
+						v-bind="{ 'force-fallback': true }"
+						@update:model-value="onRootSortChange"
+					>
+						<template #item="{ element }">
+							<FlowItem
+								:flow="element"
+								:flows="flows"
+								:is-collapsed="element.isCollapsed"
+								:visibility-tree="findVisibilityNode(element.id) ?? { id: element.id, visible: true, children: [], search: null, findChild: () => undefined }"
+								@edit-flow="handleEditFlow"
+								@set-nested-sort="onNestedSortChange"
+								@toggle-collapse="toggleCollapse"
+							/>
+						</template>
+					</Draggable>
+				</VList>
 			</template>
-		</VInfo>
+		</div>
 
-		<VTable
-			v-else
-			v-model:headers="tableHeaders"
-			:items="flows"
-			:sort="internalSort"
-			show-resize
-			fixed-header
-			@click:row="navigateToFlow"
-			@update:sort="updateSort($event)"
-		>
-			<template #[`item.icon`]="{ item }">
-				<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
-			</template>
+		<!-- Folder dialog -->
+		<FlowFolderDialog
+			v-model="folderDialogActive"
+			:flow="editFolderFlow"
+		/>
 
-			<template #[`item.status`]="{ item }">
-				<DisplayFormattedValue
-					type="string"
-					:item="item"
-					:value="item.status"
-					:conditional-formatting="conditionalFormatting"
-				/>
-			</template>
-
-			<template #item-append="{ item }">
-				<VMenu placement="left-start" show-arrow>
-					<template #activator="{ toggle }">
-						<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
-					</template>
-
-					<VList>
-						<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
-							<template v-if="item.status === 'active'">
-								<VListItemIcon><VIcon name="block" /></VListItemIcon>
-								<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
-							</template>
-							<template v-else>
-								<VListItemIcon><VIcon name="check" /></VListItemIcon>
-								<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
-							</template>
-						</VListItem>
-
-						<VListItem clickable @click="editFlow = item.id">
-							<VListItemIcon>
-								<VIcon name="edit" outline />
-							</VListItemIcon>
-							<VListItemContent>
-								{{ $t('edit_flow') }}
-							</VListItemContent>
-						</VListItem>
-
-						<VListItem class="danger" clickable @click="confirmDelete = item">
-							<VListItemIcon>
-								<VIcon name="delete" outline />
-							</VListItemIcon>
-							<VListItemContent>
-								{{ $t('delete_flow') }}
-							</VListItemContent>
-						</VListItem>
-					</VList>
-				</VMenu>
-			</template>
-		</VTable>
-
-		<VDialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
-			<VCard>
-				<VCardTitle>{{ $t('flow_delete_confirm', { flow: confirmDelete!.name }) }}</VCardTitle>
-
-				<VCardActions>
-					<VButton secondary @click="confirmDelete = null">
-						{{ $t('cancel') }}
-					</VButton>
-					<VButton danger :loading="deletingFlow" @click="deleteFlow">
-						{{ $t('delete_label') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
-
+		<!-- Flow drawer -->
 		<FlowDrawer
 			:active="editFlow !== undefined"
 			:primary-key="editFlow"
@@ -266,24 +226,49 @@ function onFlowDrawerCompletion(id: string) {
 	</PrivateView>
 </template>
 
-<style scoped>
-.v-table {
+<style scoped lang="scss">
+.flows-content {
 	padding: var(--content-padding);
 }
 
-.ctx-toggle {
-	--v-icon-color: var(--theme--foreground-subdued);
-	--v-icon-color-hover: var(--theme--foreground);
+.expand-collapse-controls {
+	margin-block-end: 16px;
+	font-size: 12px;
+	color: var(--theme--foreground-subdued);
+
+	button {
+		padding: 0;
+		margin: 0 4px;
+		color: var(--theme--primary);
+		text-decoration: underline;
+		background: none;
+		border: none;
+		cursor: pointer;
+
+		&:hover {
+			color: var(--theme--primary-accent);
+		}
+	}
 }
 
-.v-list-item.danger {
-	--v-list-item-color: var(--theme--danger);
-	--v-list-item-color-hover: var(--theme--danger);
-	--v-list-item-icon-color: var(--theme--danger);
+.flows-list {
+	--v-list-padding: 0;
 }
 
-.header-icon {
-	--v-button-color-disabled: var(--theme--primary);
-	--v-button-background-color-disabled: var(--theme--primary-background);
+.root-drag-container {
+	min-height: 100px;
+}
+
+.draggable-list :deep(.sortable-ghost) {
+	.v-list-item {
+		--v-list-item-background-color: var(--theme--primary-background);
+		--v-list-item-border-color: var(--theme--primary);
+		--v-list-item-background-color-hover: var(--theme--primary-background);
+		--v-list-item-border-color-hover: var(--theme--primary);
+
+		> * {
+			opacity: 0;
+		}
+	}
 }
 </style>

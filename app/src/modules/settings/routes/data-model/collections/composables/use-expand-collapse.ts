@@ -1,30 +1,22 @@
+import { useExpandCollapse as useExpandCollapseShared } from '@/composables/use-expand-collapse';
 import { useCollectionsStore } from '@/stores/collections';
-import { useLocalStorage } from '@vueuse/core';
-import { computed } from 'vue';
 
 export function useExpandCollapse() {
 	const collectionsStore = useCollectionsStore();
-	const collapsedIds = useLocalStorage<string[]>('collapsed-collection-ids', []);
 
-	const hasExpandableCollections = computed(() => collectionsStore.allCollections.some(({ meta }) => meta?.group));
+	const {
+		collapsedIds,
+		hasExpandable: hasExpandableCollections,
+		expandAll,
+		collapseAll,
+		toggleCollapse,
+	} = useExpandCollapseShared('collapsed-collection-ids', {
+		getExpandableIds: () =>
+			collectionsStore.allCollections
+				.filter(({ meta }) => meta?.group)
+				.map(({ collection }) => collection),
+		getAllIds: () => collectionsStore.allCollections.map(({ collection }) => collection),
+	});
 
 	return { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse };
-
-	function expandAll() {
-		collapsedIds.value = [];
-	}
-
-	function collapseAll() {
-		collapsedIds.value = collectionsStore.allCollections.map(({ collection }) => collection);
-	}
-
-	function toggleCollapse(collection: string) {
-		const isCollapsed = collapsedIds.value.includes(collection);
-
-		if (isCollapsed) {
-			collapsedIds.value = collapsedIds.value.filter((id) => id !== collection);
-		} else {
-			collapsedIds.value = [...collapsedIds.value, collection];
-		}
-	}
 }

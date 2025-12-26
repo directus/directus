@@ -24,3 +24,6 @@ fields:
   - field: user_created
     special:
       - user-created
+  - field: group
+  - field: sort
+  - field: collapse
