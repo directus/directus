@@ -1,5 +1,6 @@
 import ky from 'ky';
 import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
+import { handleRegistryError } from '../../utils/handle-registry-error.js';
 import { constructUrl } from './lib/construct-url.js';
 import { RegistryAccountResponse } from './schemas/registry-account-response.js';
 import type { AccountOptions } from './types/account-options.js';
@@ -46,8 +47,12 @@ export type { AccountOptions } from './types/account-options.js';
  * ```
  */
 export const account = async (id: string, options?: AccountOptions) => {
-	await assertVersionCompatibility(options);
-	const url = constructUrl(id, options);
-	const response = await ky.get(url).json();
-	return await RegistryAccountResponse.parseAsync(response);
+	try {
+		await assertVersionCompatibility(options);
+		const url = constructUrl(id, options);
+		const response = await ky.get(url).json();
+		return await RegistryAccountResponse.parseAsync(response);
+	} catch (error) {
+		handleRegistryError(error);
+	}
 };
