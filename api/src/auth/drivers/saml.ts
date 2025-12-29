@@ -175,7 +175,7 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			const authMode = (env[`AUTH_${providerName.toUpperCase()}_MODE`] ?? 'session') as string;
 
-			if (relayState && isLoginRedirectAllowed(relayState, providerName) === false) {
+			if (relayState && isLoginRedirectAllowed(providerName, relayState) === false) {
 				throw new InvalidPayloadError({ reason: `URL "${relayState}" can't be used to redirect after login` });
 			}
 
