@@ -337,22 +337,20 @@ export default class CockroachDB implements SchemaInspector {
 			};
 		}
 
-		const intMatch = t.match(/^(INT2|INT4|INT8|INT|INTEGER|SMALLINT|BIGINT)$/);
+		const intPrecisionByType: Record<string, number> = {
+			INT2: 16,
+			SMALLINT: 16,
+			INT4: 32,
+			INT: 64,
+			INTEGER: 64,
+			INT8: 64,
+			BIGINT: 64,
+		};
 
-		if (intMatch) {
-			const precisionByType: Record<string, number> = {
-				INT2: 16,
-				SMALLINT: 16,
-				INT4: 32,
-				INT: 64,
-				INTEGER: 64,
-				INT8: 64,
-				BIGINT: 64,
-			};
-
+		if (typeof intPrecisionByType[t] === 'number') {
 			return {
 				max_length: null,
-				numeric_precision: precisionByType[intMatch[1]!]!,
+				numeric_precision: intPrecisionByType[t],
 				numeric_scale: 0,
 			};
 		}
