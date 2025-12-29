@@ -189,16 +189,8 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'collab-indicator': focusedBy,
 			},
 		]"
-		:style="
-			focusedBy
-				? {
-						'--collab-indicator--color': `var(--${focusedBy.color}-10)`,
-					}
-				: {}
-		"
 	>
 		<VMenu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
@@ -285,19 +277,6 @@ function useComputedValues() {
 .field {
 	position: relative;
 	align-self: baseline;
-
-	&.collab-indicator {
-		&::before {
-			content: '';
-			position: absolute;
-			inset: -12px;
-			inset-block-end: -12px;
-			inset-inline: -12px;
-			inset-inline-end: -12px;
-			border-radius: 8px;
-			background-color: var(--collab-indicator--color);
-		}
-	}
 }
 
 .type-note {

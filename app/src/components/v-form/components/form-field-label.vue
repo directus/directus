@@ -127,7 +127,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</component>
-		<HeaderCollab :model-value="focusedBy" hide-current x-small />
+		<HeaderCollab :model-value="focusedBy" hide-current lock x-small />
 	</div>
 </template>
 
@@ -279,7 +279,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 	font-family: var(--theme--form--field--label--font-family);
 }
 
-:deep(.v-avatar) {
+:deep(.header-collab) {
 	position: absolute;
 	inset-block-end: 0;
 	inset-inline-end: 0;

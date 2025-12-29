@@ -88,13 +88,16 @@ export function useCollab(
 		}
 	});
 
-	watch(() => active?.value, (isActive) => {
-		if (isActive) {
-			join();
-		} else {
-			leave();
-		}
-	});
+	watch(
+		() => active?.value,
+		(isActive) => {
+			if (isActive) {
+				join();
+			} else {
+				leave();
+			}
+		},
+	);
 
 	watch(item, () => {
 		leave();
@@ -126,7 +129,14 @@ export function useCollab(
 	);
 
 	function join() {
-		if ((active && active.value === false) || !connected.value || roomId.value || !collection.value || item.value === '+') return;
+		if (
+			(active && active.value === false) ||
+			!connected.value ||
+			roomId.value ||
+			!collection.value ||
+			item.value === '+'
+		)
+			return;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,
