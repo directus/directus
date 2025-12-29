@@ -25,6 +25,7 @@ npx create-directus-extension
 ```
 
 You will be prompted to choose:
+
 - Extension type (interface, display, panel, layout, module, hook, endpoint, operation, bundle)
 - Extension name
 - Language (JavaScript or TypeScript)
@@ -32,7 +33,8 @@ You will be prompted to choose:
 
 ### Non-Interactive Mode
 
-For automated workflows, coding agnets or when you know exactly what you want, you can provide all options via command-line arguments:
+For automated workflows, coding agnets or when you know exactly what you want, you can provide all options via
+command-line arguments:
 
 ```
 npx create-directus-extension <type> <name> [options]
@@ -51,16 +53,19 @@ npx create-directus-extension <type> <name> [options]
 #### Examples
 
 Create a TypeScript panel extension:
+
 ```
 npx create-directus-extension panel my-panel --language typescript
 ```
 
 Create a JavaScript hook without installing dependencies:
+
 ```
 npx create-directus-extension hook my-hook --no-install
 ```
 
 Create a TypeScript interface with all options:
+
 ```
 npx create-directus-extension interface my-interface -l typescript
 ```
