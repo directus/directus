@@ -178,7 +178,7 @@ export class CollabHandler {
 			if ('changes' in message) {
 				room.update(client, message.field, message.changes);
 			} else {
-				room.unset(message.field);
+				room.unset(client, message.field);
 			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'update');
