@@ -215,7 +215,7 @@ function remove(id: string) {
 
 <template>
 	<div class="system-modules">
-		<draggable
+		<Draggable
 			v-model="valuesWithData"
 			tag="v-list"
 			class="list"
@@ -226,34 +226,34 @@ function remove(id: string) {
 			v-bind="{ 'force-fallback': true }"
 		>
 			<template #item="{ element }">
-				<v-list-item
+				<VListItem
 					block
 					:class="{ enabled: element.enabled }"
 					:clickable="element.type === 'link'"
 					@click="element.type === 'link' ? edit(element.id) : undefined"
 				>
-					<v-icon class="drag-handle" name="drag_handle" />
-					<v-icon class="icon" :name="element.icon" />
+					<VIcon class="drag-handle" name="drag_handle" />
+					<VIcon class="icon" :name="element.icon" />
 					<div class="info">
 						<div class="name">{{ element.name }}</div>
 						<div class="to">{{ element.to }}</div>
 					</div>
 					<div class="spacer" />
-					<v-icon v-if="element.locked === true" name="lock" />
-					<v-icon v-else-if="element.type === 'link'" name="clear" clickable @click.stop="remove(element.id)" />
-					<v-icon
+					<VIcon v-if="element.locked === true" name="lock" />
+					<VIcon v-else-if="element.type === 'link'" name="clear" clickable @click.stop="remove(element.id)" />
+					<VIcon
 						v-else
 						:name="element.enabled ? 'check_box' : 'check_box_outline_blank'"
 						clickable
 						@click.stop="updateItem(element, { enabled: !element.enabled })"
 					/>
-				</v-list-item>
+				</VListItem>
 			</template>
-		</draggable>
+		</Draggable>
 
-		<v-button @click="edit('+')">{{ $t('add_link') }}</v-button>
+		<VButton @click="edit('+')">{{ $t('add_link') }}</VButton>
 
-		<v-drawer
+		<VDrawer
 			:title="$t('custom_link')"
 			:model-value="!!editing"
 			icon="link"
@@ -271,9 +271,9 @@ function remove(id: string) {
 			</template>
 
 			<div class="drawer-content">
-				<v-form v-model="values" :initial-values="initialValues" :fields="linkFields" />
+				<VForm v-model="values" :initial-values="initialValues" :fields="linkFields" />
 			</div>
-		</v-drawer>
+		</VDrawer>
 	</div>
 </template>
 

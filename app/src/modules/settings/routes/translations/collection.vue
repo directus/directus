@@ -118,9 +118,9 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<private-view :title="$t('settings_translations')" icon="translate">
+		<PrivateView :title="$t('settings_translations')" icon="translate">
 			<template #headline>
-				<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
+				<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 			</template>
 
 			<template #actions:prepend>
@@ -128,9 +128,9 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_translations" small />
+				<SearchInput v-model="search" v-model:filter="filter" collection="directus_translations" small />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
+				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="$t('delete_label')"
@@ -141,19 +141,19 @@ function clearFilters() {
 						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="batchDelete">
 								{{ $t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
@@ -171,32 +171,32 @@ function clearFilters() {
 			</template>
 
 			<template #navigation>
-				<settings-navigation />
+				<SettingsNavigation />
 			</template>
 
 			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="$t('no_results')" icon="search" center>
+					<VInfo :title="$t('no_results')" icon="search" center>
 						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+							<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="$t('no_custom_translations')" :icon="currentCollection!.icon" center>
+					<VInfo :title="$t('no_custom_translations')" :icon="currentCollection!.icon" center>
 						{{ $t('no_custom_translations_copy') }}
 
 						<template #append>
-							<v-button :to="`/settings/translations/+`">{{ $t('create_custom_translation') }}</v-button>
+							<VButton :to="`/settings/translations/+`">{{ $t('create_custom_translation') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 			</component>
 
-			<drawer-batch
+			<DrawerBatch
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				collection="directus_translations"
@@ -204,12 +204,12 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<layout-sidebar-detail v-model="layout">
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
-				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
-				<export-sidebar-detail
+				<RefreshSidebarDetail v-model="refreshInterval" @refresh="refresh" />
+				<ExportSidebarDetail
 					collection="directus_translations"
 					:filter="filter"
 					:search="search"
@@ -219,18 +219,18 @@ function clearFilters() {
 				/>
 			</template>
 
-			<v-dialog :model-value="deleteError !== null">
-				<v-card>
-					<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
-					<v-card-text>
-						<v-error :error="deleteError" />
-					</v-card-text>
-					<v-card-actions>
-						<v-button @click="deleteError = null">{{ $t('done') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</private-view>
+			<VDialog :model-value="deleteError !== null">
+				<VCard>
+					<VCardTitle>{{ $t('something_went_wrong') }}</VCardTitle>
+					<VCardText>
+						<VError :error="deleteError" />
+					</VCardText>
+					<VCardActions>
+						<VButton @click="deleteError = null">{{ $t('done') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
+		</PrivateView>
 	</component>
 </template>
 

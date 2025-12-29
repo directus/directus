@@ -1,21 +1,32 @@
 <script lang="ts" setup>
 import VButton from '@/components/v-button.vue';
-import vIcon from '@/components/v-icon/v-icon.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 defineProps<{
 	icon?: string;
 	iconColor?: string;
 	showBack?: boolean;
+	backTo?: string;
 }>();
 </script>
 
 <template>
-	<VButton v-if="showBack" class="back-button" rounded icon secondary exact small @click="$router.back()">
-		<v-icon name="arrow_back" small />
+	<VButton
+		v-if="showBack"
+		class="back-button"
+		rounded
+		icon
+		secondary
+		exact
+		small
+		:to="backTo"
+		@click="!backTo ? $router.back() : undefined"
+	>
+		<VIcon name="arrow_back" small />
 	</VButton>
 
-	<div v-else class="icon">
-		<v-icon :name="icon" :color="iconColor" small />
+	<div v-else-if="icon" class="icon">
+		<VIcon :name="icon" :color="iconColor" small />
 	</div>
 </template>
 

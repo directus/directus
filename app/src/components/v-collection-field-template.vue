@@ -19,10 +19,10 @@ const { treeList, loadFieldRelations } = useFieldTree(collection);
 
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="collection === null">
+		<VNotice v-if="collection === null">
 			{{ $t('interfaces.system-display-template.select_a_collection') }}
-		</v-notice>
-		<v-field-template
+		</VNotice>
+		<VFieldTemplate
 			v-else
 			v-model="value"
 			:tree="treeList"

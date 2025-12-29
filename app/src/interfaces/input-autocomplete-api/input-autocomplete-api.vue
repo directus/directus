@@ -96,13 +96,13 @@ async function onValueChange(value: string, activate: () => void, deactivate: ()
 </script>
 
 <template>
-	<v-notice v-if="!url" type="warning">
+	<VNotice v-if="!url" type="warning">
 		{{ $t('one_or_more_options_are_missing') }}
-	</v-notice>
+	</VNotice>
 	<div v-else>
-		<v-menu attached :disabled="disabled">
+		<VMenu attached :disabled="disabled">
 			<template #activator="{ activate, deactivate }">
-				<v-input
+				<VInput
 					:placeholder="placeholder"
 					:disabled="disabled"
 					:non-editable="nonEditable"
@@ -111,17 +111,17 @@ async function onValueChange(value: string, activate: () => void, deactivate: ()
 					:dir="direction"
 					@update:model-value="(value: string) => onValueChange(value, activate, deactivate)"
 				>
-					<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-					<template v-if="iconRight" #append><v-icon :name="iconRight" /></template>
-				</v-input>
+					<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
+					<template v-if="iconRight" #append><VIcon :name="iconRight" /></template>
+				</VInput>
 			</template>
 
-			<v-list v-if="results.length">
-				<v-list-item v-for="result of results" :key="result.value" clickable @click="() => emitValue(result.value)">
-					<v-list-item-content>{{ textPath ? result.text : result.value }}</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+			<VList v-if="results.length">
+				<VListItem v-for="result of results" :key="result.value" clickable @click="() => emitValue(result.value)">
+					<VListItemContent>{{ textPath ? result.text : result.value }}</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 

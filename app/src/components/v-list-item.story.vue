@@ -4,6 +4,6 @@ import VListItem from './v-list-item.vue';
 
 <template>
 	<Story title="VList/VListItem">
-		<v-list-item>List Item 1</v-list-item>
+		<VListItem>List Item 1</VListItem>
 	</Story>
 </template>

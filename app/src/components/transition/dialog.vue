@@ -1,7 +1,7 @@
 <template>
-	<transition name="dialog">
+	<Transition name="dialog">
 		<slot />
-	</transition>
+	</Transition>
 </template>
 
 <style lang="scss">

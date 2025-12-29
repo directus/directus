@@ -2,7 +2,7 @@
 import TransitionExpand from '@/components/transition/expand.vue';
 import VBadge from '@/components/v-badge.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import InterfaceSystemFilter from '@/interfaces/_system/system-filter';
+import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-filter.vue';
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
@@ -136,7 +136,7 @@ function emitValue() {
 </script>
 
 <template>
-	<v-badge
+	<VBadge
 		bottom
 		right
 		class="search-badge"
@@ -161,7 +161,7 @@ function emitValue() {
 			role="search"
 			@click="activate"
 		>
-			<v-icon small name="search" class="icon-search" :clickable="!active" @click="input?.focus()" />
+			<VIcon small name="search" class="icon-search" :clickable="!active" @click="input?.focus()" />
 			<input
 				ref="input"
 				:value="modelValue"
@@ -179,7 +179,7 @@ function emitValue() {
 				@focusout="onFocusOut"
 			/>
 			<div class="spacer" />
-			<v-icon
+			<VIcon
 				v-if="modelValue"
 				v-tooltip.bottom="$t('clear_value')"
 				small
@@ -189,7 +189,7 @@ function emitValue() {
 				@click.stop="clear"
 			/>
 			<template v-if="showFilter">
-				<v-icon
+				<VIcon
 					v-tooltip.bottom="$t('filter')"
 					small
 					clickable
@@ -198,9 +198,9 @@ function emitValue() {
 					@click="toggleFilter"
 				/>
 
-				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
+				<TransitionExpand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">
-						<interface-system-filter
+						<InterfaceSystemFilter
 							class="filter-input"
 							inline
 							:value="filter"
@@ -208,10 +208,10 @@ function emitValue() {
 							@input="$emit('update:filter', $event)"
 						/>
 					</div>
-				</transition-expand>
+				</TransitionExpand>
 			</template>
 		</div>
-	</v-badge>
+	</VBadge>
 </template>
 
 <style lang="scss" scoped>

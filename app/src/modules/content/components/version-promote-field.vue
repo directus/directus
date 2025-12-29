@@ -6,6 +6,6 @@ defineProps<{ value?: string }>();
 </script>
 
 <template>
-	<v-text-overflow v-if="value" :text="value" />
-	<value-null v-else />
+	<VTextOverflow v-if="value" :text="value" />
+	<ValueNull v-else />
 </template>

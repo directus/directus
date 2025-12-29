@@ -15,8 +15,8 @@ const navBarStore = useNavBarStore();
 <template>
 	<div class="project-info">
 		<div class="name-container">
-			<v-text-overflow class="name" :text="name" placement="bottom" />
-			<v-text-overflow v-if="descriptor" class="descriptor" :text="descriptor" placement="bottom" />
+			<VTextOverflow class="name" :text="name" placement="bottom" />
+			<VTextOverflow v-if="descriptor" class="descriptor" :text="descriptor" placement="bottom" />
 		</div>
 
 		<VIcon

@@ -29,7 +29,7 @@ defineEmits<{
 		@click="$emit('click', $event)"
 	>
 		<div class="icon">
-			<v-icon :name="icon!" />
+			<VIcon :name="icon!" />
 		</div>
 		<div v-if="!sidebarStore.collapsed" class="title">
 			<slot />

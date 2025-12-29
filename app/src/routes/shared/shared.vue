@@ -160,25 +160,25 @@ useHead({ title });
 
 <template>
 	<div v-if="loading" class="hydrating">
-		<v-progress-circular indeterminate />
+		<VProgressCircular indeterminate />
 	</div>
 
-	<shared-view v-else :inline="!authenticated" :title="title">
+	<SharedView v-else :inline="!authenticated" :title="title">
 		<div v-if="notFound">
 			<strong>{{ $t('share_access_not_found') }}</strong>
 			{{ $t('share_access_not_found_desc') }}
 		</div>
 
-		<v-error v-else-if="error" :error="error" />
+		<VError v-else-if="error" :error="error" />
 
 		<template v-else-if="share">
 			<template v-if="!authenticated">
-				<v-notice v-if="usesLeft !== undefined && usesLeft !== null" :type="usesLeftNoticeType">
+				<VNotice v-if="usesLeft !== undefined && usesLeft !== null" :type="usesLeftNoticeType">
 					{{ $t('shared_uses_left', usesLeft) }}
-				</v-notice>
+				</VNotice>
 
 				<template v-if="usesLeft !== 0">
-					<v-input
+					<VInput
 						v-if="share.password"
 						class="password"
 						:class="{ invalid: passwordWrong }"
@@ -186,17 +186,17 @@ useHead({ title });
 						:placeholder="$t('shared_enter_passcode')"
 						@update:model-value="password = $event"
 					/>
-					<v-button :busy="authenticating" @click="authenticate">
+					<VButton :busy="authenticating" @click="authenticate">
 						{{ $t('share_access_page') }}
-					</v-button>
+					</VButton>
 				</template>
 			</template>
 
 			<template v-else>
-				<share-item :collection="share.collection" :primary-key="share.item" />
+				<ShareItem :collection="share.collection" :primary-key="share.item" />
 			</template>
 		</template>
-	</shared-view>
+	</SharedView>
 </template>
 
 <style lang="scss" scoped>

@@ -178,7 +178,7 @@ function onApply() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:title="isNew ? $t('creating_new_flow') : $t('updating_flow')"
 		class="new-flow"
 		persistent
@@ -188,27 +188,27 @@ function onApply() {
 		@apply="onApply"
 	>
 		<template #sidebar>
-			<v-tabs v-model="currentTab" vertical>
-				<v-tab value="flow_setup">{{ $t('flow_setup') }}</v-tab>
-				<v-tab value="trigger_setup" :disabled="!values.name">
+			<VTabs v-model="currentTab" vertical>
+				<VTab value="flow_setup">{{ $t('flow_setup') }}</VTab>
+				<VTab value="trigger_setup" :disabled="!values.name">
 					{{ $t('trigger_setup') }}
-				</v-tab>
-			</v-tabs>
+				</VTab>
+			</VTabs>
 		</template>
 
-		<v-tabs-items v-model="currentTab" class="content">
-			<v-tab-item value="flow_setup">
+		<VTabsItems v-model="currentTab" class="content">
+			<VTabItem value="flow_setup">
 				<div class="fields">
 					<div class="field half">
 						<div class="type-label">
 							{{ $t('flow_name') }}
-							<v-icon v-tooltip="$t('required')" class="required" name="star" sup filled />
+							<VIcon v-tooltip="$t('required')" class="required" name="star" sup filled />
 						</div>
-						<v-input v-model="values.name" autofocus :placeholder="$t('flow_name')" />
+						<VInput v-model="values.name" autofocus :placeholder="$t('flow_name')" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('status') }}</div>
-						<v-select
+						<VSelect
 							v-model="values.status"
 							:items="[
 								{
@@ -224,20 +224,20 @@ function onApply() {
 					</div>
 					<div class="field full">
 						<div class="type-label">{{ $t('description') }}</div>
-						<v-input v-model="values.description" :placeholder="$t('description')" />
+						<VInput v-model="values.description" :placeholder="$t('description')" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('icon') }}</div>
-						<interface-select-icon :value="values.icon" @input="values.icon = $event" />
+						<InterfaceSelectIcon :value="values.icon" @input="values.icon = $event" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('color') }}</div>
-						<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
+						<InterfaceSelectColor width="half" :value="values.color" @input="values.color = $event" />
 					</div>
-					<v-divider class="full" />
+					<VDivider class="full" />
 					<div class="field full">
 						<div class="type-label">{{ $t('flow_tracking') }}</div>
-						<v-select
+						<VSelect
 							v-model="values.accountability"
 							:items="[
 								{
@@ -256,19 +256,19 @@ function onApply() {
 						/>
 					</div>
 				</div>
-			</v-tab-item>
-			<v-tab-item value="trigger_setup">
-				<v-fancy-select v-model="values.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
+			</VTabItem>
+			<VTabItem value="trigger_setup">
+				<VFancySelect v-model="values.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
 
-				<v-form
+				<VForm
 					v-if="values.trigger"
 					v-model="values.options"
 					class="extension-options"
 					:fields="currentTriggerOptionFields"
 					primary-key="+"
 				/>
-			</v-tab-item>
-		</v-tabs-items>
+			</VTabItem>
+		</VTabsItems>
 
 		<template #actions>
 			<PrivateViewHeaderBarActionButton
@@ -289,7 +289,7 @@ function onApply() {
 				@click="save"
 			/>
 		</template>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

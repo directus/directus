@@ -18,7 +18,7 @@ function update(newSelection: readonly (string | number)[]) {
 </script>
 
 <template>
-	<v-item-group class="v-tabs-items" :model-value="modelValue" scope="v-tabs-items" @update:model-value="update">
+	<VItemGroup class="v-tabs-items" :model-value="modelValue" scope="v-tabs-items" @update:model-value="update">
 		<slot />
-	</v-item-group>
+	</VItemGroup>
 </template>

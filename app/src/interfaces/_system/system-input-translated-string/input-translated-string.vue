@@ -151,9 +151,9 @@ const newTranslationDefaults = computed(() => {
 
 <template>
 	<div class="input-translated-string">
-		<v-menu ref="menuEl" :disabled="disabled" :close-on-content-click="false" attached>
+		<VMenu ref="menuEl" :disabled="disabled" :close-on-content-click="false" attached>
 			<template #activator="{ toggle, active }">
-				<v-input
+				<VInput
 					class="translation-input"
 					:model-value="localValue"
 					:autofocus="autofocus"
@@ -171,7 +171,7 @@ const newTranslationDefaults = computed(() => {
 						</button>
 					</template>
 					<template #append>
-						<v-icon
+						<VIcon
 							name="translate"
 							class="translate-icon"
 							:class="{ active }"
@@ -180,11 +180,11 @@ const newTranslationDefaults = computed(() => {
 							@click="toggle"
 						/>
 					</template>
-				</v-input>
+				</VInput>
 			</template>
 
 			<div v-if="searchValue !== null || filteredTranslationKeys.length >= 25" class="search">
-				<v-input
+				<VInput
 					class="search-input"
 					type="text"
 					:model-value="searchValue"
@@ -193,13 +193,13 @@ const newTranslationDefaults = computed(() => {
 					@update:model-value="searchValue = $event"
 				>
 					<template #append>
-						<v-icon name="search" class="search-icon" />
+						<VIcon name="search" class="search-icon" />
 					</template>
-				</v-input>
+				</VInput>
 			</div>
 
-			<v-list :loading="loading">
-				<v-list-item
+			<VList :loading="loading">
+				<VListItem
 					v-for="translationKey in filteredTranslationKeys"
 					:key="translationKey"
 					class="translation-key"
@@ -207,26 +207,26 @@ const newTranslationDefaults = computed(() => {
 					clickable
 					@click="selectKey(translationKey)"
 				>
-					<v-list-item-icon>
-						<v-icon name="translate" />
-					</v-list-item-icon>
-					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
-					<v-list-item-icon class="info">
-						<custom-translations-tooltip :translation-key="translationKey" />
-					</v-list-item-icon>
-				</v-list-item>
-				<v-list-item class="new-custom-translation" clickable @click="openNewCustomTranslationDrawer">
-					<v-list-item-icon>
-						<v-icon name="add" />
-					</v-list-item-icon>
-					<v-list-item-content>
+					<VListItemIcon>
+						<VIcon name="translate" />
+					</VListItemIcon>
+					<VListItemContent><VHighlight :text="translationKey" :query="searchValue" /></VListItemContent>
+					<VListItemIcon class="info">
+						<CustomTranslationsTooltip :translation-key="translationKey" />
+					</VListItemIcon>
+				</VListItem>
+				<VListItem class="new-custom-translation" clickable @click="openNewCustomTranslationDrawer">
+					<VListItemIcon>
+						<VIcon name="add" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ $t('interfaces.input-translated-string.new_custom_translation') }}
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="isCustomTranslationDrawerOpen"
 			collection="directus_translations"
 			primary-key="+"

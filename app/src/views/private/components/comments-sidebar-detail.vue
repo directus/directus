@@ -228,26 +228,26 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 </script>
 
 <template>
-	<sidebar-detail
+	<SidebarDetail
 		id="comments"
 		:title
 		icon="chat_bubble_outline"
 		:badge="!loadingCount && commentsCount > 0 ? abbreviateNumber(commentsCount) : null"
 		@toggle="onToggle"
 	>
-		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
+		<CommentInput :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
 
-		<v-progress-linear v-if="loading" indeterminate />
+		<VProgressLinear v-if="loading" indeterminate />
 
 		<div v-else-if="!comments || comments.length === 0" class="empty">
 			<div class="content">{{ $t('no_comments') }}</div>
 		</div>
 
 		<template v-for="group in comments" v-else :key="group.date.toString()">
-			<v-divider>{{ group.dateFormatted }}</v-divider>
+			<VDivider>{{ group.dateFormatted }}</VDivider>
 
 			<template v-for="item in group.comments" :key="item.id">
-				<comment-item
+				<CommentItem
 					:refresh="refresh"
 					:comment="item"
 					:user-previews="userPreviews"
@@ -256,7 +256,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 				/>
 			</template>
 		</template>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

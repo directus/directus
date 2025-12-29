@@ -14,7 +14,7 @@ import { isNil, orderBy } from 'lodash';
 import { computed, onBeforeMount, onBeforeUnmount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
-import FieldSelect from './field-select.vue';
+import FieldSelect from './FieldSelect.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -129,10 +129,10 @@ async function setNestedSort(updates?: Field[]) {
 <template>
 	<div class="fields-management">
 		<div v-if="lockedFields.length > 0" class="field-grid">
-			<field-select v-for="field in lockedFields" :key="field.field" disabled :field="field" />
+			<FieldSelect v-for="field in lockedFields" :key="field.field" disabled :field="field" />
 		</div>
 
-		<draggable
+		<Draggable
 			class="field-grid"
 			:model-value="usableFields.filter((field) => isNil(field?.meta?.group))"
 			handle=".drag-handle"
@@ -144,34 +144,34 @@ async function setNestedSort(updates?: Field[]) {
 			@update:model-value="setSort"
 		>
 			<template #item="{ element }">
-				<field-select :field="element" :fields="usableFields" @set-nested-sort="setNestedSort" />
+				<FieldSelect :field="element" :fields="usableFields" @set-nested-sort="setNestedSort" />
 			</template>
-		</draggable>
+		</Draggable>
 
-		<v-button full-width :to="`/settings/data-model/${collection}/+`">
+		<VButton full-width :to="`/settings/data-model/${collection}/+`">
 			{{ $t('create_field') }}
-		</v-button>
+		</VButton>
 
-		<v-menu show-arrow>
+		<VMenu show-arrow>
 			<template #activator="{ toggle, active }">
 				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
 					{{ $t('create_in_advanced_field_creation_mode') }}
 				</button>
 			</template>
-			<v-list>
+			<VList>
 				<template v-for="(option, index) in addOptions" :key="index">
-					<v-divider v-if="option.divider === true" />
-					<v-list-item v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
-						<v-list-item-icon>
-							<v-icon :name="option.icon" />
-						</v-list-item-icon>
-						<v-list-item-content>
+					<VDivider v-if="option.divider === true" />
+					<VListItem v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
+						<VListItemIcon>
+							<VIcon :name="option.icon" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ option.text }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 				</template>
-			</v-list>
-		</v-menu>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 

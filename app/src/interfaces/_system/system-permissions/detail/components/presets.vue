@@ -60,22 +60,22 @@ const fieldWarnings = computed(() => {
 
 <template>
 	<div>
-		<v-notice>
+		<VNotice>
 			{{
 				$t('presets_for_policy', {
 					action: $t(permission.action).toLowerCase(),
 					policy: policy ? policy.name : $t('public_label'),
 				})
 			}}
-		</v-notice>
-		<v-notice v-for="field in fieldWarnings" :key="field" type="warning">
+		</VNotice>
+		<VNotice v-for="field in fieldWarnings" :key="field" type="warning">
 			{{
 				$t('presets_field_warning', {
 					field,
 				})
 			}}
-		</v-notice>
-		<interface-input-code :value="presets" language="json" type="json" @input="presets = $event" />
+		</VNotice>
+		<InterfaceInputCode :value="presets" language="json" type="json" @input="presets = $event" />
 	</div>
 </template>
 

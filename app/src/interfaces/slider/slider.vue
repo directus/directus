@@ -35,7 +35,7 @@ defineEmits(['input']);
 </script>
 
 <template>
-	<v-slider
+	<VSlider
 		:model-value="value"
 		:disabled="disabled"
 		:non-editable="nonEditable"

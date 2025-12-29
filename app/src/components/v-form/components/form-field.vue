@@ -178,9 +178,9 @@ function useComputedValues() {
 			},
 		]"
 	>
-		<v-menu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
+		<VMenu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
-				<form-field-label
+				<FormFieldLabel
 					:field="field"
 					:toggle="toggle"
 					:active="active"
@@ -200,7 +200,7 @@ function useComputedValues() {
 				/>
 			</template>
 
-			<form-field-menu
+			<FormFieldMenu
 				:field="field"
 				:model-value="internalValue"
 				:initial-value="initialValue"
@@ -212,11 +212,11 @@ function useComputedValues() {
 				@copy-raw="copyRaw"
 				@paste-raw="pasteRaw"
 			/>
-		</v-menu>
+		</VMenu>
 
 		<div v-else-if="['full', 'fill'].includes(field.meta?.width ?? '') === false" class="label-spacer" />
 
-		<form-field-interface
+		<FormFieldInterface
 			:autofocus="autofocus"
 			:model-value="internalValue"
 			:field="field"
@@ -235,7 +235,7 @@ function useComputedValues() {
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
-		<form-field-raw-editor
+		<FormFieldRawEditor
 			:show-modal="showRaw"
 			:field="field"
 			:current-value="internalValue"
@@ -249,7 +249,7 @@ function useComputedValues() {
 		<small v-if="validationError" class="validation-error">
 			<template v-if="showCustomValidationMessage">
 				{{ field.meta?.validation_message }}
-				<v-icon v-tooltip="validationMessage" small right name="help" />
+				<VIcon v-tooltip="validationMessage" small right name="help" />
 			</template>
 			<template v-else>{{ validationPrefix }}{{ validationMessage }}</template>
 		</small>

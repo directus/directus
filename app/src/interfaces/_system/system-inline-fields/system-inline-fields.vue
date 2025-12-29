@@ -171,7 +171,7 @@ const repeaterFields = computed(() => {
 </script>
 
 <template>
-	<interface-list
+	<InterfaceList
 		:value="repeaterValue"
 		template="{{ name }} - {{ meta.interface }}"
 		:fields="repeaterFields"

@@ -28,9 +28,9 @@ function onClick() {
 </script>
 
 <template>
-	<v-list-item v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" clickable @click="onClick">
+	<VListItem v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" clickable @click="onClick">
 		<slot v-bind="{ active, toggle }" />
-	</v-list-item>
+	</VListItem>
 	<div v-else class="v-tab horizontal" :class="{ active, disabled }" @click="onClick">
 		<slot v-bind="{ active, toggle }" />
 	</div>

@@ -81,59 +81,59 @@ function useDelete() {
 
 <template>
 	<div class="comment-header">
-		<v-avatar x-small>
-			<v-image v-if="avatarSource" :src="avatarSource" :alt="userName(comment.user_created)" />
-			<v-icon v-else name="person_outline" />
-		</v-avatar>
+		<VAvatar x-small>
+			<VImage v-if="avatarSource" :src="avatarSource" :alt="userName(comment.user_created)" />
+			<VIcon v-else name="person_outline" />
+		</VAvatar>
 
 		<div class="name">
-			<user-popover v-if="comment.user_created && comment.user_created.id" :user="comment.user_created.id">
+			<UserPopover v-if="comment.user_created && comment.user_created.id" :user="comment.user_created.id">
 				<span>
 					{{ userName(comment.user_created) }}
 				</span>
-			</user-popover>
+			</UserPopover>
 			<span v-else>
 				{{ $t('private_user') }}
 			</span>
 		</div>
 
 		<div class="header-right">
-			<v-menu show-arrow placement="bottom-end">
+			<VMenu show-arrow placement="bottom-end">
 				<template #activator="{ toggle, active }">
-					<v-icon class="more" :class="{ active }" name="more_horiz" clickable @click="toggle" />
+					<VIcon class="more" :class="{ active }" name="more_horiz" clickable @click="toggle" />
 					<div class="time">
 						{{ formattedTime }}
 					</div>
 				</template>
 
-				<v-list>
-					<v-list-item clickable @click="$emit('edit')">
-						<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('edit') }}</v-list-item-content>
-					</v-list-item>
-					<v-list-item clickable @click="confirmDelete = true">
-						<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('delete_label') }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+				<VList>
+					<VListItem clickable @click="$emit('edit')">
+						<VListItemIcon><VIcon name="edit" /></VListItemIcon>
+						<VListItemContent>{{ $t('edit') }}</VListItemContent>
+					</VListItem>
+					<VListItem clickable @click="confirmDelete = true">
+						<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+						<VListItemContent>{{ $t('delete_label') }}</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
 		</div>
 
-		<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="remove">
-			<v-card>
-				<v-card-title>{{ $t('delete_comment') }}</v-card-title>
-				<v-card-text>{{ $t('delete_are_you_sure') }}</v-card-text>
+		<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="remove">
+			<VCard>
+				<VCardTitle>{{ $t('delete_comment') }}</VCardTitle>
+				<VCardText>{{ $t('delete_are_you_sure') }}</VCardText>
 
-				<v-card-actions>
-					<v-button secondary @click="confirmDelete = false">
+				<VCardActions>
+					<VButton secondary @click="confirmDelete = false">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button kind="danger" :loading="deleting" @click="remove">
+					</VButton>
+					<VButton kind="danger" :loading="deleting" @click="remove">
 						{{ $t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 

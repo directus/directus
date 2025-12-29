@@ -249,7 +249,7 @@ function usePopoverWidth() {
 
 <template>
 	<div ref="editing-layer" class="editing-layer" :class="{ editing: editOverlayActive }">
-		<overlay-item
+		<OverlayItem
 			v-if="collection"
 			v-model:active="editOverlayActive"
 			:overlay="mode"
@@ -275,11 +275,11 @@ function usePopoverWidth() {
 
 			<template #actions>
 				<template v-if="primaryKey">
-					<v-button v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
+					<VButton v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
 						{{ t('navigate_to_item') }}
-					</v-button>
+					</VButton>
 
-					<v-button
+					<VButton
 						v-else
 						v-tooltip:[tooltipPlacement]="t('navigate_to_item')"
 						:to="itemRoute"
@@ -290,11 +290,11 @@ function usePopoverWidth() {
 						icon
 						rounded
 					>
-						<v-icon name="launch" small />
-					</v-button>
+						<VIcon name="launch" small />
+					</VButton>
 				</template>
 			</template>
-		</overlay-item>
+		</OverlayItem>
 	</div>
 </template>
 

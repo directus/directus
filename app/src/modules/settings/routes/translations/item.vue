@@ -209,23 +209,24 @@ async function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<content-not-found v-if="error" />
+	<ContentNotFound v-if="error" />
 
-	<private-view
+	<PrivateView
 		v-else
 		:title="primaryKey === '+' ? $t('create_custom_translation') : $t('edit_custom_translation')"
 		show-back
+		back-to="/settings/translations"
 	>
 		<template #headline>
-			<v-breadcrumb
+			<VBreadcrumb
 				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
 				:items="[{ name: $t('content'), to: '/content' }]"
 			/>
-			<v-breadcrumb v-else :items="breadcrumb" />
+			<VBreadcrumb v-else :items="breadcrumb" />
 		</template>
 
 		<template #actions>
-			<v-dialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+			<VDialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
@@ -238,19 +239,19 @@ async function revert(values: Record<string, any>) {
 					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
@@ -260,7 +261,7 @@ async function revert(values: Record<string, any>) {
 				@click="saveAndQuit"
 			>
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="hasEdits"
 						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
@@ -276,7 +277,7 @@ async function revert(values: Record<string, any>) {
 			<SettingsNavigation current-collection="directus_translations" />
 		</template>
 
-		<v-form
+		<VForm
 			ref="form"
 			v-model="edits"
 			:autofocus="isNew"
@@ -287,22 +288,22 @@ async function revert(values: Record<string, any>) {
 			:validation-errors="validationErrors"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<template #sidebar>
 			<template v-if="isNew === false && loading === false && internalPrimaryKey">
-				<revisions-sidebar-detail
+				<RevisionsSidebarDetail
 					v-if="accountabilityScope === 'all'"
 					ref="revisionsSidebarDetailRef"
 					collection="directus_translations"
@@ -310,10 +311,10 @@ async function revert(values: Record<string, any>) {
 					:scope="accountabilityScope"
 					@revert="revert"
 				/>
-				<comments-sidebar-detail collection="directus_translations" :primary-key="internalPrimaryKey" />
+				<CommentsSidebarDetail collection="directus_translations" :primary-key="internalPrimaryKey" />
 			</template>
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

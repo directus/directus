@@ -167,7 +167,7 @@ function matchNumber(left: number, right: number, operator: string) {
 </script>
 
 <template>
-	<value-null v-if="displayValue === null || displayValue === undefined" />
+	<ValueNull v-if="displayValue === null || displayValue === undefined" />
 
 	<div
 		v-else
@@ -179,7 +179,7 @@ function matchNumber(left: number, right: number, operator: string) {
 		]"
 		:style="computedStyle"
 	>
-		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
+		<VIcon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
 
 		<span class="value">
 			{{ displayValue }}

@@ -36,7 +36,7 @@ defineEmits<{
 				small
 				@click="$emit('cancel')"
 			>
-				<v-icon name="close" small />
+				<VIcon name="close" small />
 			</VButton>
 
 			<PrivateViewHeaderBarIcon v-if="icon" class="header-icon" :icon :icon-color />

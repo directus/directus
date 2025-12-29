@@ -132,6 +132,15 @@ export default typescriptEslint.config(
 					ignorePatterns: ['Story', 'Variant', 'Hst*'],
 				},
 			],
+			// Require <PascalCase /> components in templates
+			'vue/component-name-in-template-casing': [
+				'error',
+				'PascalCase',
+				{
+					// Check global component uses as well
+					registeredComponentsOnly: false,
+				},
+			],
 		},
 	},
 

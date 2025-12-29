@@ -17,7 +17,7 @@ const { edits, item, loading } = useItem(collection, primaryKey);
 </script>
 
 <template>
-	<v-form
+	<VForm
 		v-model="edits"
 		:collection="collection"
 		:initial-values="item"

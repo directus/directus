@@ -160,11 +160,11 @@ function navigateToRole({ item }: { item: Role }) {
 </script>
 
 <template>
-	<private-view :title="$t('settings_roles')" icon="group">
-		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
+	<PrivateView :title="$t('settings_roles')" icon="group">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<search-input
+			<SearchInput
 				v-if="!loading"
 				v-model="search"
 				:autofocus="roles.length > 25"
@@ -177,11 +177,11 @@ function navigateToRole({ item }: { item: Role }) {
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div v-if="!search || filteredRoles.length > 0" class="roles">
-			<v-table
+			<VTable
 				v-model:headers="tableHeaders"
 				show-resize
 				:items="filteredRoles"
@@ -191,24 +191,24 @@ function navigateToRole({ item }: { item: Role }) {
 				@click:row="navigateToRole"
 			>
 				<template #[`item.icon`]="{ item }">
-					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
+					<VIcon class="icon" :name="item.icon" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :highlight="search" :class="{ public: item.public }" />
+					<VTextOverflow :text="item.name" class="name" :highlight="search" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
-					<value-null v-if="item.public" />
+					<ValueNull v-if="item.public" />
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<v-text-overflow :text="item.description" class="description" :highlight="search" />
+					<VTextOverflow :text="item.description" class="description" :highlight="search" />
 				</template>
 
 				<template #[`item.children`]="{ item }">
-					<value-null v-if="item.public || item.children.length === 0" />
-					<render-display
+					<ValueNull v-if="item.public || item.children.length === 0" />
+					<RenderDisplay
 						v-else
 						:value="item.children"
 						:display="tableHeaders[3]!.display"
@@ -217,19 +217,19 @@ function navigateToRole({ item }: { item: Role }) {
 						:collection="tableHeaders[3]!.collection"
 					/>
 				</template>
-			</v-table>
+			</VTable>
 		</div>
 
-		<v-info v-else icon="search" :title="$t('no_results')" center>
+		<VInfo v-else icon="search" :title="$t('no_results')" center>
 			{{ $t('no_results_copy') }}
 
 			<template #append>
-				<v-button @click="search = null">{{ $t('clear_filters') }}</v-button>
+				<VButton @click="search = null">{{ $t('clear_filters') }}</VButton>
 			</template>
-		</v-info>
+		</VInfo>
 
-		<router-view name="add" />
-	</private-view>
+		<RouterView name="add" />
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

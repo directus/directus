@@ -16,5 +16,5 @@ const style = computed(() => {
 </script>
 
 <template>
-	<v-icon small :name="value" :style="style" :filled="filled" />
+	<VIcon small :name="value" :style="style" :filled="filled" />
 </template>

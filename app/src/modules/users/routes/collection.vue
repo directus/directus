@@ -189,9 +189,9 @@ function clearFilters() {
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
-		<private-view :title="title" icon="people_alt">
+		<PrivateView :title="title" icon="people_alt">
 			<template v-if="breadcrumb" #headline>
-				<v-breadcrumb :items="breadcrumb" />
+				<VBreadcrumb :items="breadcrumb" />
 			</template>
 
 			<template #actions:prepend>
@@ -199,9 +199,9 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_users" small />
+				<SearchInput v-model="search" v-model:filter="filter" collection="directus_users" small />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
+				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
@@ -213,19 +213,19 @@ function clearFilters() {
 						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="batchDelete">
 								{{ $t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
@@ -253,46 +253,46 @@ function clearFilters() {
 			</template>
 
 			<template #navigation>
-				<users-navigation :current-role="role" />
+				<UsersNavigation :current-role="role" />
 			</template>
 
-			<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
+			<UsersInvite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info v-if="!filter && !search" :title="$t('user_count', 0)" icon="people_alt" center>
+					<VInfo v-if="!filter && !search" :title="$t('user_count', 0)" icon="people_alt" center>
 						{{ $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers" #append>
-							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
 								{{ $t('create_user') }}
-							</v-button>
+							</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 
-					<v-info v-else :title="$t('no_results')" icon="search" center>
+					<VInfo v-else :title="$t('no_results')" icon="search" center>
 						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+							<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="$t('user_count', 0)" icon="people_alt" center>
+					<VInfo :title="$t('user_count', 0)" icon="people_alt" center>
 						{{ $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers" #append>
-							<v-button :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
 								{{ $t('create_user') }}
-							</v-button>
+							</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 			</component>
 
-			<drawer-batch
+			<DrawerBatch
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				collection="directus_users"
@@ -300,11 +300,11 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<layout-sidebar-detail v-model="layout">
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
-				<export-sidebar-detail
+				<ExportSidebarDetail
 					collection="directus_users"
 					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, roleFilter)"
@@ -312,7 +312,7 @@ function clearFilters() {
 					@refresh="refresh"
 				/>
 			</template>
-		</private-view>
+		</PrivateView>
 	</component>
 </template>
 

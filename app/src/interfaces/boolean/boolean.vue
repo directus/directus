@@ -26,7 +26,7 @@ defineEmits<{
 </script>
 
 <template>
-	<v-checkbox
+	<VCheckbox
 		block
 		:icon-on="iconOn"
 		:icon-off="iconOff"
