@@ -491,10 +491,19 @@ export default class CockroachDB implements SchemaInspector {
 					typeof defaultVal === 'string' &&
 					(defaultVal.includes('unique_rowid()') || defaultVal.startsWith('nextval('));
 
+				// Keep parity with the existing shape (this data isn't in SHOW COLUMNS):
+				const typeMetadata = this.extractColumnTypeMetadata(r.data_type);
+
+				// Normalize CockroachDB's 64-bit integer type to 'bigint' for consistency
+				const normalizedDataType =
+					['integer', 'int'].includes(r.data_type.toLowerCase()) && typeMetadata.numeric_precision === 64
+						? 'bigint'
+						: r.data_type;
+
 				return {
 					table: t,
 					name: r.column_name,
-					data_type: r.data_type,
+					data_type: normalizedDataType,
 					default_value: defaultVal,
 					generation_expression: r.generation_expression || null,
 					is_generated: !!r.generation_expression,
@@ -507,8 +516,7 @@ export default class CockroachDB implements SchemaInspector {
 					foreign_key_table: fk?.foreign_key_table ?? null,
 					foreign_key_column: fk?.foreign_key_column ?? null,
 					comment: r.comment || null,
-					// Keep parity with the existing shape (this data isn't in SHOW COLUMNS):
-					...this.extractColumnTypeMetadata(r.data_type),
+					...typeMetadata,
 				};
 			});
 		};
