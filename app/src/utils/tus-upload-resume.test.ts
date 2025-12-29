@@ -86,7 +86,7 @@ class InMemoryUrlStorage implements tus.UrlStorage {
 function createMockHttpStack(server: MockTusServer): tus.HttpStack {
 	return {
 		createRequest(method: string, url: string) {
-			let headers: Record<string, string> = {};
+			const headers: Record<string, string> = {};
 			let bodyBuffer: Buffer | undefined;
 
 			return {
@@ -189,7 +189,7 @@ describe('TUS Upload Resume', () => {
 		const urlStorage = new InMemoryUrlStorage();
 		let postCount = 0;
 		let patchCount = 0;
-		let headCount = 0;
+		let _headCount = 0;
 		let currentUploadUrl: string | null = null;
 		let dbQueryError: Error | null = null;
 
@@ -252,7 +252,7 @@ describe('TUS Upload Resume', () => {
 			}
 
 			if (method === 'HEAD') {
-				headCount++;
+				_headCount++;
 				return { status: 404, headers: { 'Tus-Resumable': '1.0.0' } };
 			}
 
@@ -263,6 +263,7 @@ describe('TUS Upload Resume', () => {
 		try {
 			await new Promise<void>((resolve, reject) => {
 				const stream = Readable.from([Buffer.alloc(fileSize, 'x')]);
+
 				const upload = new tus.Upload(stream, {
 					endpoint: server.baseUrl + '/files/tus',
 					uploadSize: fileSize,
@@ -275,7 +276,10 @@ describe('TUS Upload Resume', () => {
 					onSuccess: resolve,
 					onAfterResponse(_req, res) {
 						const headerValue = res.getHeader('Directus-File-Id');
-						fileInfo.id ??= headerValue;
+
+						if (headerValue) {
+							fileInfo.id ??= headerValue;
+						}
 					},
 				});
 
@@ -311,12 +315,18 @@ describe('TUS Upload Resume', () => {
 		const previousUploads = await urlStorage.findUploadsByFingerprint(fingerprint);
 
 		if (previousUploads.length > 0) {
-			retryFileInfo.id = previousUploads[0]!.metadata?.['id'];
+			const storedId = previousUploads[0]!.metadata?.['id'];
+
+			// Only set id if it's a valid value (not null/undefined)
+			if (storedId) {
+				retryFileInfo.id = storedId;
+			}
 		}
 
 		try {
 			await new Promise<void>((resolve, reject) => {
 				const stream = Readable.from([Buffer.alloc(fileSize, 'x')]);
+
 				const upload = new tus.Upload(stream, {
 					endpoint: server.baseUrl + '/files/tus',
 					uploadSize: fileSize,
@@ -346,7 +356,7 @@ describe('TUS Upload Resume', () => {
 		const urlStorage = new InMemoryUrlStorage();
 		let postCount = 0;
 		let patchCount = 0;
-		let headCount = 0;
+		let _headCount = 0;
 		let sessionCleaned = false;
 		let currentUploadUrl: string | null = null;
 		const capturedPostMetadata: Record<string, string>[] = [];
@@ -396,6 +406,7 @@ describe('TUS Upload Resume', () => {
 
 				if (sessionCleaned && postCount > 1) {
 					const finalOffset = Math.min(offset + chunkSize, totalSize);
+
 					const responseHeaders: Record<string, string> = {
 						'Upload-Offset': String(finalOffset),
 						'Tus-Resumable': '1.0.0',
@@ -412,7 +423,7 @@ describe('TUS Upload Resume', () => {
 			}
 
 			if (method === 'HEAD') {
-				headCount++;
+				_headCount++;
 
 				if (sessionCleaned) {
 					return { status: 404, headers: { 'Tus-Resumable': '1.0.0' } };
@@ -435,6 +446,7 @@ describe('TUS Upload Resume', () => {
 		try {
 			await new Promise<void>((resolve, reject) => {
 				const stream = Readable.from([Buffer.alloc(totalSize, 'x')]);
+
 				const upload = new tus.Upload(stream, {
 					endpoint: server.baseUrl + '/files/tus',
 					uploadSize: totalSize,
@@ -447,7 +459,10 @@ describe('TUS Upload Resume', () => {
 					onSuccess: resolve,
 					onAfterResponse(_req, res) {
 						const headerValue = res.getHeader('Directus-File-Id');
-						fileInfo.id ??= headerValue;
+
+						if (headerValue) {
+							fileInfo.id ??= headerValue;
+						}
 					},
 				});
 
@@ -492,6 +507,7 @@ describe('TUS Upload Resume', () => {
 		try {
 			await new Promise<void>((resolve, reject) => {
 				const stream = Readable.from([Buffer.alloc(totalSize, 'x')]);
+
 				const upload = new tus.Upload(stream, {
 					endpoint: server.baseUrl + '/files/tus',
 					uploadSize: totalSize,
@@ -532,7 +548,7 @@ describe('TUS Upload Resume', () => {
 		const fileSize = 1024;
 		const chunkSize = 1024;
 
-		server.addInterceptor((method, url, headers) => {
+		server.addInterceptor((method, url, _headers) => {
 			if (method === 'POST' && url.endsWith('/files/tus')) {
 				postCount++;
 				const sessionId = `session-${postCount}-${Date.now()}`;
@@ -559,6 +575,7 @@ describe('TUS Upload Resume', () => {
 		try {
 			await new Promise<void>((resolve, reject) => {
 				const stream = Readable.from([Buffer.alloc(fileSize, 'x')]);
+
 				const upload = new tus.Upload(stream, {
 					endpoint: server.baseUrl + '/files/tus',
 					uploadSize: fileSize,
@@ -571,7 +588,10 @@ describe('TUS Upload Resume', () => {
 					onSuccess: resolve,
 					onAfterResponse(_req, res) {
 						const headerValue = res.getHeader('Directus-File-Id');
-						fileInfo.id ??= headerValue;
+
+						if (headerValue) {
+							fileInfo.id ??= headerValue;
+						}
 					},
 				});
 
@@ -591,7 +611,7 @@ describe('TUS Upload Resume', () => {
 		const urlStorage = new InMemoryUrlStorage();
 		let postCount = 0;
 		let patchCount = 0;
-		let uploadSucceeded = false;
+		let _uploadSucceeded = false;
 		let dbQueryError: Error | null = null;
 
 		const fileInfo: Record<string, any> = {
@@ -608,8 +628,10 @@ describe('TUS Upload Resume', () => {
 
 				// Validate UUID in metadata (like real server does)
 				const metaHeader = headers['upload-metadata'] || headers['Upload-Metadata'];
+
 				if (metaHeader) {
 					const decoded = decodeUploadMetadata(metaHeader);
+
 					if (decoded['id']) {
 						const clientId = decoded['id'];
 						const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -661,6 +683,7 @@ describe('TUS Upload Resume', () => {
 		try {
 			await new Promise<void>((resolve, reject) => {
 				const stream = Readable.from([Buffer.alloc(fileSize, 'x')]);
+
 				const upload = new tus.Upload(stream, {
 					endpoint: server.baseUrl + '/files/tus',
 					uploadSize: fileSize,
@@ -671,7 +694,7 @@ describe('TUS Upload Resume', () => {
 					httpStack: createMockHttpStack(server),
 					onError: reject,
 					onSuccess: () => {
-						uploadSucceeded = true;
+						_uploadSucceeded = true;
 						resolve();
 					},
 					onShouldRetry(err, retryAttempt) {
@@ -679,18 +702,22 @@ describe('TUS Upload Resume', () => {
 						if (retryAttempt < 5 && err?.originalResponse?.getStatus() >= 500) {
 							return true;
 						}
+
 						return false;
 					},
 					onAfterResponse(_req, res) {
 						const headerValue = res.getHeader('Directus-File-Id');
-						fileInfo.id ??= headerValue;
+
+						if (headerValue) {
+							fileInfo.id ??= headerValue;
+						}
 					},
 				});
 
 				upload.start();
 			});
 		} catch {
-			// May fail due to null ID bug
+			// Should succeed with fix
 		}
 
 		// This test will FAIL if the null ID bug is present

@@ -84,7 +84,11 @@ export async function uploadFile(
 					return false;
 				},
 				onAfterResponse(_req, res) {
-					fileInfo.id ??= res.getHeader('Directus-File-Id');
+					const fileId = res.getHeader('Directus-File-Id');
+
+					if (fileId) {
+						fileInfo.id ??= fileId;
+					}
 				},
 			});
 
