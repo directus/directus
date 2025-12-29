@@ -153,7 +153,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				: generators.codeChallenge(payload['codeVerifier']);
 
 			tokenSet = await this.client.oauthCallback(
-				payload['redirectUri'],
+				payload['callbackUrl'],
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
