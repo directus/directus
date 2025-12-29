@@ -565,7 +565,7 @@ export default class CockroachDB implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string): Promise<string> {
+	async primary(table: string): Promise<string | null> {
 		const result = await this.knex
 			.select('information_schema.key_column_usage.column_name')
 			.from('information_schema.key_column_usage')
@@ -581,12 +581,7 @@ export default class CockroachDB implements SchemaInspector {
 			})
 			.first();
 
-		if (!result) {
-			// TODO what error do we throw? because returning null is not an issue
-			throw new Error('No primary?');
-		}
-
-		return result.column_name;
+		return result.column_name || null;
 	}
 
 	// Foreign Keys
