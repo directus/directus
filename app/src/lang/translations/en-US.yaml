@@ -184,7 +184,6 @@ create_policy: Create Policy
 create_user: Create User
 message: Message
 delete_panel: Delete Panel
-create_webhook: Create Webhook
 create_custom_translation: Create Custom Translation
 edit_custom_translation: Edit Custom Translation
 no_custom_translations: No Custom Translations
@@ -720,12 +719,6 @@ file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
-webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Webhooks are deprecated and further use is discouraged.
-
-  Please use **Flows** with the [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url) instead.
-no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
 activity_log: Activity Log
@@ -757,7 +750,6 @@ action: Action
 ip_address: IP Address
 user_agent: User Agent
 origin: Origin
-webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
 min_value: Min Value
@@ -1228,7 +1220,6 @@ settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
 ai_chat: AI Chat
-settings_webhooks: Webhooks
 settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
@@ -1308,7 +1299,6 @@ directus_collection:
   directus_settings: Project configuration options
   directus_shares: Tracks externally shared items
   directus_users: System users for the platform
-  directus_webhooks: Configuration for event-based HTTP requests
   directus_translations: Custom translations
   directus_versions: Content Versions for items
   directus_extensions: Configuration of extensions
@@ -1524,18 +1514,6 @@ fields:
     admin_access: Admin Access
     ip_access: IP Access
     enforce_tfa: Require 2FA
-  directus_webhooks:
-    name: Name
-    method: Method
-    status: Status
-    data: Data
-    header: Header
-    value: Value
-    headers: Request Headers
-    data_label: Send Event Data
-    triggers: Triggers
-    actions: Actions
-    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
@@ -1638,19 +1616,6 @@ field_options:
     status_dropdown_suspended: Suspended
     status_dropdown_archived: Archived
     token: Enter a secure access token...
-  directus_webhooks:
-    status_options_active: Active
-    status_options_inactive: Inactive
-    data_label: Send Event Data
-    triggers_divider: Triggers
-    actions_create: Create
-    actions_update: Update
-    actions_delete: Delete
-    actions_login: Login
-    headers:
-      header: Header
-      value: Value
-      add: Add Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
@@ -1804,7 +1769,6 @@ editing_role: '{role} Role'
 editing_policy: '{policy} Policy'
 no_permissions: No Permissions
 permission_add_collection: Add Collection
-creating_webhook: Creating Webhook
 default_label: Default
 delete_label: Delete
 delete_are_you_sure: >-

@@ -78,7 +78,7 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<PrivateView :title="formatTitle(collection)" show-back>
+	<PrivateView :title="formatTitle(collection)" show-back back-to="/settings/data-model">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
@@ -178,13 +178,6 @@ function discardAndLeave() {
 .fields {
 	max-inline-size: 800px;
 	margin-block-end: 48px;
-}
-
-.header-icon {
-	--v-button-background-color: var(--theme--primary-background);
-	--v-button-color: var(--theme--primary);
-	--v-button-background-color-hover: var(--theme--primary-subdued);
-	--v-button-color-hover: var(--theme--primary);
 }
 
 .action-delete {
