@@ -230,7 +230,7 @@ describe('TUS Upload Resume', () => {
 
 				return {
 					status: 201,
-					headers: { 'Location': currentUploadUrl, 'Tus-Resumable': '1.0.0' },
+					headers: { Location: currentUploadUrl, 'Tus-Resumable': '1.0.0' },
 				};
 			}
 
@@ -384,7 +384,7 @@ describe('TUS Upload Resume', () => {
 
 				return {
 					status: 201,
-					headers: { 'Location': currentUploadUrl, 'Tus-Resumable': '1.0.0' },
+					headers: { Location: currentUploadUrl, 'Tus-Resumable': '1.0.0' },
 				};
 			}
 
@@ -556,7 +556,7 @@ describe('TUS Upload Resume', () => {
 				return {
 					status: 201,
 					headers: {
-						'Location': `http://localhost:8055/files/tus/${sessionId}`,
+						Location: `http://localhost:8055/files/tus/${sessionId}`,
 						'Tus-Resumable': '1.0.0',
 					},
 				};
@@ -652,7 +652,7 @@ describe('TUS Upload Resume', () => {
 				return {
 					status: 201,
 					headers: {
-						'Location': `http://localhost:8055/files/tus/${sessionId}`,
+						Location: `http://localhost:8055/files/tus/${sessionId}`,
 						'Tus-Resumable': '1.0.0',
 					},
 				};
