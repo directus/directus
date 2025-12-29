@@ -308,6 +308,7 @@ describe('run function', () => {
 				language: 'javascript',
 				install: true,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -324,6 +325,7 @@ describe('run function', () => {
 				language: 'typescript',
 				install: true,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -340,6 +342,7 @@ describe('run function', () => {
 				language: 'typescript',
 				install: true,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -356,6 +359,7 @@ describe('run function', () => {
 				language: 'javascript',
 				install: false,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -372,6 +376,7 @@ describe('run function', () => {
 				language: 'typescript',
 				install: false,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -388,6 +393,7 @@ describe('run function', () => {
 				language: 'typescript',
 				install: false,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -409,6 +415,7 @@ describe('run function', () => {
 
 			// Assert
 			expect(mockInquirerPrompt).toHaveBeenCalledTimes(1);
+
 			expect(mockCreate).toHaveBeenCalledWith('interface', 'test-extension', {
 				language: 'typescript',
 				install: true,
@@ -433,6 +440,7 @@ describe('run function', () => {
 
 			// Assert
 			expect(mockInquirerPrompt).toHaveBeenCalledTimes(1);
+
 			expect(mockCreate).toHaveBeenCalledWith('panel', 'test-panel', {
 				language: 'javascript',
 				install: false,
@@ -502,6 +510,7 @@ describe('run function', () => {
 				language: 'javascript',
 				install: true,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -518,6 +527,7 @@ describe('run function', () => {
 				language: 'typescript',
 				install: true,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -536,6 +546,7 @@ describe('run function', () => {
 				language: '--no-install',
 				install: false,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -553,6 +564,7 @@ describe('run function', () => {
 				language: 'javascript',
 				install: true,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 
@@ -570,6 +582,7 @@ describe('run function', () => {
 				language: 'invalid-lang',
 				install: true,
 			});
+
 			expect(mockInquirerPrompt).not.toHaveBeenCalled();
 		});
 	});
