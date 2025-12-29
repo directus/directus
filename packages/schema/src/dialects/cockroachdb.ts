@@ -57,7 +57,6 @@ export default class CockroachDB implements SchemaInspector {
 	}
 
 	private async resolveTableSchema(table: string): Promise<string> {
-		// If you know you only ever introspect the current schema, you can skip this and just use search_path.
 		const row = await this.knex
 			.select<{ table_schema: string }>('table_schema')
 			.from('information_schema.tables')
@@ -69,7 +68,6 @@ export default class CockroachDB implements SchemaInspector {
 	}
 
 	private safeIdentifier(schema: string, name: string): string {
-		// safely quoted identifier
 		const wrappedSchema = this.knex.client.wrapIdentifier(schema);
 		const wrapperName = this.knex.client.wrapIdentifier(name);
 		return `${wrappedSchema}.${wrapperName}`;
@@ -153,35 +151,26 @@ export default class CockroachDB implements SchemaInspector {
 
 		const columns: RawColumn[] = columnsResult.rows;
 		const primaryKeys = primaryKeysResult.rows;
-		let geometryColumns: RawGeometryColumn[] = [];
 
-		// Before we fetch the available geometry types, we'll have to ensure PostGIS exists
-		// in the first place. If we don't, the transaction would error out due to the exception in
-		// SQL, which we can't catch in JS.
-		const hasPostGIS =
-			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
+		const result = await this.knex.raw<{ rows: RawGeometryColumn[] }>(
+			`WITH geometries as (
+				select * from geometry_columns
+				union
+				select * from geography_columns
+			)
+			SELECT f_table_name as table_name
+				, f_geometry_column as column_name
+				, type as data_type
+			FROM geometries g
+			JOIN information_schema.tables t
+				ON g.f_table_name = t.table_name
+				AND t.table_type = 'BASE TABLE'
+			WHERE f_table_schema in (?)
+			`,
+			[this.explodedSchema.join(',')],
+		);
 
-		if (hasPostGIS) {
-			const result = await this.knex.raw<{ rows: RawGeometryColumn[] }>(
-				`WITH geometries as (
-					select * from geometry_columns
-					union
-					select * from geography_columns
-				)
-				SELECT f_table_name as table_name
-					, f_geometry_column as column_name
-					, type as data_type
-				FROM geometries g
-				JOIN information_schema.tables t
-					ON g.f_table_name = t.table_name
-					AND t.table_type = 'BASE TABLE'
-				WHERE f_table_schema in (?)
-				`,
-				[this.explodedSchema.join(',')],
-			);
-
-			geometryColumns = result.rows;
-		}
+		const geometryColumns: RawGeometryColumn[] = result.rows ?? [];
 
 		const overview: SchemaOverview = {};
 
@@ -248,7 +237,6 @@ export default class CockroachDB implements SchemaInspector {
 			),
 		);
 
-		// de-dupe (in case multiple schemas / search_path overlap)
 		const tables = new Set<string>();
 
 		for (const result of results) {
@@ -294,16 +282,15 @@ export default class CockroachDB implements SchemaInspector {
 			} as Table;
 		}
 
-		return rows
-			.sort((a, b) => a.table_name.localeCompare(b.table_name))
-			.map(
-				(r) =>
-					({
-						name: r.table_name,
-						schema: r.schema_name,
-						comment: r.comment || null,
-					}) as Table,
-			);
+		rows.sort((a, b) => a.table_name.localeCompare(b.table_name));
+
+		return rows.map((r) => {
+			return {
+				name: r.table_name,
+				schema: r.schema_name,
+				comment: r.comment || null,
+			} as Table;
+		});
 	}
 
 	/**
@@ -398,33 +385,6 @@ export default class CockroachDB implements SchemaInspector {
 		}));
 	}
 
-	private mapDataType(data_type: string): string {
-		// probably shouldnt force postgres naming here
-		const typeMap: [string | RegExp, string][] = [
-			['timestamptz', 'timestamp with time zone'],
-			['string', 'text'],
-			['bool', 'boolean'],
-			[/varchar\(\d+\)/, 'character varying'],
-			[/int\d+/, 'integer'],
-		];
-
-		const type = data_type.toLowerCase();
-
-		for (const [key, val] of typeMap) {
-			if (typeof key === 'string') {
-				if (key === type) {
-					return val;
-				}
-			} else {
-				if (key.test(type)) {
-					return val;
-				}
-			}
-		}
-
-		return type;
-	}
-
 	/**
 	 * Get the column info for all columns, columns in a given table, or a specific column.
 	 */
@@ -432,7 +392,6 @@ export default class CockroachDB implements SchemaInspector {
 	columnInfo(table: string): Promise<Column[]>;
 	columnInfo(table: string, column: string): Promise<Column>;
 	async columnInfo(table?: string, column?: string) {
-		// Pull constraints once (fast, structured). No pg_catalog.
 		const constraints = await this.knex.raw<{
 			rows: Array<{
 				table_name: string;
@@ -505,7 +464,6 @@ export default class CockroachDB implements SchemaInspector {
 		}
 
 		const fetchForOneTable = async (schema: string, t: string) => {
-			// SHOW COLUMNS includes indices array, generation_expression, is_hidden and supports WITH COMMENT :contentReference[oaicite:7]{index=7}
 			const res = await this.knex.raw<{
 				rows: Array<{
 					column_name: string;
@@ -538,7 +496,7 @@ export default class CockroachDB implements SchemaInspector {
 				return {
 					table: t,
 					name: r.column_name,
-					data_type: this.mapDataType(r.data_type),
+					data_type: r.data_type,
 					default_value: defaultVal,
 					generation_expression: r.generation_expression || null,
 					is_generated: !!r.generation_expression,
@@ -551,14 +509,13 @@ export default class CockroachDB implements SchemaInspector {
 					foreign_key_table: fk?.foreign_key_table ?? null,
 					foreign_key_column: fk?.foreign_key_column ?? null,
 					comment: r.comment || null,
-
-					// Keep parity with your existing shape (these weren't in SHOW COLUMNS):
+					// Keep parity with the existing shape (this data isn't in SHOW COLUMNS):
 					...this.extractColumnTypeMetadata(r.data_type),
 				};
 			});
 		};
 
-		// If a table was provided, introspect just that table (fast path).
+		// If a table was provided, introspect just that table
 		if (table) {
 			const schema = await this.resolveTableSchema(table);
 			const cols = await fetchForOneTable(schema, table);
@@ -571,15 +528,11 @@ export default class CockroachDB implements SchemaInspector {
 			return cols;
 		}
 
-		// Otherwise introspect all tables in the configured schema list.
-		// (You can add a concurrency limit here if you have thousands of tables.)
 		const tableInfos = await this.tableInfo();
-
 		const all = await Promise.all(tableInfos.map((t) => fetchForOneTable(t.schema!, t.name)));
 		const flattened = all.flat();
 
 		if (column) {
-			// no table + column is ambiguous; keep prior behavior: return first match
 			return flattened.find((c) => c.name === column) as any;
 		}
 
