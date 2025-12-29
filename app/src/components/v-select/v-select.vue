@@ -14,7 +14,7 @@ import { Placement } from '@popperjs/core';
 import { debounce, get, isArray } from 'lodash';
 import { computed, Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SelectListItemGroup from './select-list-item-group.vue';
+import SelectListItemGroup from './SelectListItemGroup.vue';
 import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
 
@@ -267,7 +267,7 @@ function useDisplayValue() {
 </script>
 
 <template>
-	<v-menu
+	<VMenu
 		class="v-select"
 		:disabled="isDisabled"
 		:attached="inline === false"
@@ -287,7 +287,7 @@ function useDisplayValue() {
 				@click="toggle"
 			>
 				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
-				<v-icon name="expand_more" :class="{ active }" />
+				<VIcon name="expand_more" :class="{ active }" />
 			</button>
 			<slot
 				v-else
@@ -297,7 +297,7 @@ function useDisplayValue() {
 					active: active,
 				}"
 			>
-				<v-input
+				<VInput
 					:full-width="fullWidth"
 					readonly
 					:model-value="displayValue.text"
@@ -312,55 +312,55 @@ function useDisplayValue() {
 				>
 					<template v-if="$slots.prepend || displayValue.icon || displayValue.color" #prepend>
 						<slot v-if="$slots.prepend" name="prepend" />
-						<v-icon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
-						<display-color v-else-if="displayValue.color" :value="displayValue.color" />
+						<VIcon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
+						<DisplayColor v-else-if="displayValue.color" :value="displayValue.color" />
 					</template>
 					<template #append>
-						<v-icon name="expand_more" :class="{ active }" />
+						<VIcon name="expand_more" :class="{ active }" />
 						<slot name="append" />
 					</template>
-				</v-input>
+				</VInput>
 			</slot>
 		</template>
 
-		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
+		<VList class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
 			<template v-if="showDeselect && !nonEditable">
-				<v-list-item
+				<VListItem
 					clickable
 					:disabled="modelValue === null || (Array.isArray(modelValue) && !modelValue.length)"
 					@click="$emit('update:modelValue', null)"
 				>
-					<v-list-item-icon v-if="multiple === true">
-						<v-icon name="close" />
-					</v-list-item-icon>
-					<v-list-item-content>
+					<VListItemIcon v-if="multiple === true">
+						<VIcon name="close" />
+					</VListItemIcon>
+					<VListItemContent>
 						{{ multiple ? $t('deselect_all') : $t('deselect') }}
-					</v-list-item-content>
-					<v-list-item-icon v-if="multiple === false">
-						<v-icon name="close" />
-					</v-list-item-icon>
-				</v-list-item>
-				<v-divider />
+					</VListItemContent>
+					<VListItemIcon v-if="multiple === false">
+						<VIcon name="close" />
+					</VListItemIcon>
+				</VListItem>
+				<VDivider />
 			</template>
 
-			<v-list-item v-if="internalItemsCount === 0 && !allowOther">
-				<v-list-item-content>
+			<VListItem v-if="internalItemsCount === 0 && !allowOther">
+				<VListItemContent>
 					{{ $t('no_options_available') }}
-				</v-list-item-content>
-			</v-list-item>
+				</VListItemContent>
+			</VListItem>
 
-			<v-list-item v-if="internalItemsCount > 10 || search">
-				<v-list-item-content>
-					<v-input v-model="search" autofocus small :placeholder="$t('search')" @click.stop.prevent>
+			<VListItem v-if="internalItemsCount > 10 || search">
+				<VListItemContent>
+					<VInput v-model="search" autofocus small :placeholder="$t('search')" @click.stop.prevent>
 						<template #append>
-							<v-icon small name="search" />
+							<VIcon small name="search" />
 						</template>
-					</v-input>
-				</v-list-item-content>
-			</v-list-item>
+					</VInput>
+				</VListItemContent>
+			</VListItem>
 
 			<template v-for="(item, index) in internalItems" :key="index">
-				<select-list-item-group
+				<SelectListItemGroup
 					v-if="item.children"
 					:item="item"
 					:item-label-font-family="itemLabelFontFamily"
@@ -371,7 +371,7 @@ function useDisplayValue() {
 					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event)"
 				/>
-				<select-list-item
+				<SelectListItem
 					v-else
 					:model-value="modelValue"
 					:item="item"
@@ -383,19 +383,19 @@ function useDisplayValue() {
 				/>
 			</template>
 
-			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
-				<v-list-item-content>
+			<VListItem v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
+				<VListItemContent>
 					<input
 						v-model="otherValue"
 						class="other-input"
 						:placeholder="$t('other')"
 						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 					/>
-				</v-list-item-content>
-			</v-list-item>
+				</VListItemContent>
+			</VListItem>
 
 			<template v-if="allowOther && multiple === true">
-				<v-list-item
+				<VListItem
 					v-for="otherVal in otherValues"
 					:key="otherVal.key"
 					:active="
@@ -404,8 +404,8 @@ function useDisplayValue() {
 						)
 					"
 				>
-					<v-list-item-content>
-						<v-checkbox
+					<VListItemContent>
+						<VCheckbox
 							:model-value="modelValue || []"
 							:value="otherVal.value"
 							custom-value
@@ -416,19 +416,19 @@ function useDisplayValue() {
 							@update:value="setOtherValue(otherVal.key, $event)"
 							@blur:custom-input="onBlurCustomInput(otherVal)"
 						/>
-					</v-list-item-content>
-					<v-list-item-icon v-if="!nonEditable">
-						<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherVal.key, null)" />
-					</v-list-item-icon>
-				</v-list-item>
+					</VListItemContent>
+					<VListItemIcon v-if="!nonEditable">
+						<VIcon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherVal.key, null)" />
+					</VListItemIcon>
+				</VListItem>
 
-				<v-list-item v-if="!nonEditable" clickable @click.stop="addOtherValue('', true)">
-					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('other') }}</v-list-item-content>
-				</v-list-item>
+				<VListItem v-if="!nonEditable" clickable @click.stop="addOtherValue('', true)">
+					<VListItemIcon><VIcon name="add" /></VListItemIcon>
+					<VListItemContent>{{ $t('other') }}</VListItemContent>
+				</VListItem>
 			</template>
-		</v-list>
-	</v-menu>
+		</VList>
+	</VMenu>
 </template>
 
 <style scoped lang="scss">

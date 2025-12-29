@@ -78,7 +78,7 @@ function onClick(event: MouseEvent) {
 
 <template>
 	<li class="v-list-group">
-		<v-list-item
+		<VListItem
 			class="activator"
 			:active="active"
 			:to="to"
@@ -90,24 +90,24 @@ function onClick(event: MouseEvent) {
 			:activator="Boolean(!clickable && $slots.default && arrowPlacement)"
 			@click="onClick"
 		>
-			<v-list-item-icon
+			<VListItemIcon
 				v-if="$slots.default && arrowPlacement && arrowPlacement === 'before'"
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
-				<v-icon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
-			</v-list-item-icon>
+				<VIcon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
+			</VListItemIcon>
 
 			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon
+			<VListItemIcon
 				v-if="$slots.default && arrowPlacement && arrowPlacement === 'after'"
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
-				<v-icon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
-			</v-list-item-icon>
-		</v-list-item>
+				<VIcon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
+			</VListItemIcon>
+		</VListItem>
 
 		<ul v-if="groupActive" class="items">
 			<slot />

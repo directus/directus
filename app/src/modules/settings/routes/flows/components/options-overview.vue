@@ -24,7 +24,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 		>
 			<dt>{{ label }}</dt>
 			<dd>{{ text }}</dd>
-			<v-icon
+			<VIcon
 				v-if="isCopySupported && copyable"
 				v-tooltip="text"
 				name="content_copy"

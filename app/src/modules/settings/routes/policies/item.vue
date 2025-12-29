@@ -114,13 +114,17 @@ function discardAndStay() {
 </script>
 
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_policy', { policy: item && item.name })" show-back>
+	<PrivateView
+		:title="loading ? $t('loading') : $t('editing_policy', { policy: item && item.name })"
+		show-back
+		back-to="/settings/policies"
+	>
 		<template #headline>
-			<v-breadcrumb :items="[{ name: $t('settings_permissions'), to: '/settings/policies' }]" />
+			<VBreadcrumb :items="[{ name: $t('settings_permissions'), to: '/settings/policies' }]" />
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
@@ -132,25 +136,25 @@ function discardAndStay() {
 					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
-				<v-icon name="check" small />
+			<VButton rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
+				<VIcon name="check" small />
 
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -158,15 +162,15 @@ function discardAndStay() {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</VButton>
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="content">
-			<v-form
+			<VForm
 				v-model="edits"
 				collection="directus_policies"
 				:primary-key="primaryKey"
@@ -177,27 +181,27 @@ function discardAndStay() {
 		</div>
 
 		<template #sidebar>
-			<policy-info-sidebar-detail :policy="item" />
-			<revisions-sidebar-detail
+			<PolicyInfoSidebarDetail :policy="item" />
+			<RevisionsSidebarDetail
 				ref="revisionsSidebarDetailRef"
 				collection="directus_policies"
 				:primary-key="primaryKey"
 			/>
 		</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

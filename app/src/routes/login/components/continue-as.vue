@@ -57,16 +57,16 @@ async function hydrateAndLogin() {
 
 <template>
 	<div class="continue-as">
-		<v-progress-circular v-if="loading" indeterminate />
+		<VProgressCircular v-if="loading" indeterminate />
 		<template v-else>
-			<i18n-t keypath="continue_as" scope="global" tag="p">
+			<I18nT keypath="continue_as" scope="global" tag="p">
 				<template #name>
 					<b>{{ name }}</b>
 				</template>
-			</i18n-t>
+			</I18nT>
 			<div class="actions">
-				<router-link to="/logout" class="sign-out">{{ $t('sign_out') }}</router-link>
-				<v-button autofocus large @click="hydrateAndLogin">{{ $t('continue_label') }}</v-button>
+				<RouterLink to="/logout" class="sign-out">{{ $t('sign_out') }}</RouterLink>
+				<VButton autofocus large @click="hydrateAndLogin">{{ $t('continue_label') }}</VButton>
 			</div>
 		</template>
 	</div>

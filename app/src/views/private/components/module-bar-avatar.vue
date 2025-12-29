@@ -53,8 +53,8 @@ const userFullName = userStore.fullName ?? undefined;
 
 <template>
 	<div class="module-bar-avatar">
-		<v-badge :value="unread" :disabled="unread == 0" class="notifications-badge">
-			<v-button
+		<VBadge :value="unread" :disabled="unread == 0" class="notifications-badge">
+			<VButton
 				v-tooltip.right="$t('notifications')"
 				tile
 				icon
@@ -62,33 +62,33 @@ const userFullName = userStore.fullName ?? undefined;
 				class="notifications"
 				@click="notificationsDrawerOpen = true"
 			>
-				<v-icon name="notifications" />
-			</v-button>
-		</v-badge>
+				<VIcon name="notifications" />
+			</VButton>
+		</VBadge>
 
 		<div class="space-bar">
-			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
+			<VDialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
-					<transition name="sign-out">
-						<v-button v-tooltip.right="$t('sign_out')" tile icon x-large class="sign-out" @click="on">
-							<v-icon name="logout" />
-						</v-button>
-					</transition>
+					<Transition name="sign-out">
+						<VButton v-tooltip.right="$t('sign_out')" tile icon x-large class="sign-out" @click="on">
+							<VIcon name="logout" />
+						</VButton>
+					</Transition>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('sign_out_confirm') }}</v-card-title>
-					<v-card-actions>
-						<v-button secondary @click="signOutActive = !signOutActive">
+				<VCard>
+					<VCardTitle>{{ $t('sign_out_confirm') }}</VCardTitle>
+					<VCardActions>
+						<VButton secondary @click="signOutActive = !signOutActive">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button :to="signOutLink">{{ $t('sign_out') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+						<VButton :to="signOutLink">{{ $t('sign_out') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<router-link :to="userProfileLink" class="avatar-btn">
-				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
+			<RouterLink :to="userProfileLink" class="avatar-btn">
+				<VAvatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
 					<img
 						v-if="avatarURL && !avatarError"
 						:src="avatarURL"
@@ -96,9 +96,9 @@ const userFullName = userStore.fullName ?? undefined;
 						class="avatar-image"
 						@error="avatarError = $event"
 					/>
-					<v-icon v-else name="account_circle" />
-				</v-avatar>
-			</router-link>
+					<VIcon v-else name="account_circle" />
+				</VAvatar>
+			</RouterLink>
 		</div>
 	</div>
 </template>

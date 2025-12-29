@@ -115,24 +115,24 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 <template>
 	<div class="collection-item-dropdown">
-		<v-skeleton-loader v-if="loading" type="input" />
+		<VSkeletonLoader v-if="loading" type="input" />
 
-		<v-list-item v-else :disabled :non-editable block clickable @click="selectDrawerOpen = true">
+		<VListItem v-else :disabled :non-editable block clickable @click="selectDrawerOpen = true">
 			<div v-if="displayItem" class="preview">
-				<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
+				<RenderTemplate :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
 			</div>
 			<div v-else class="placeholder">{{ $t('select_an_item') }}</div>
 
 			<div class="spacer" />
 
 			<div v-if="!nonEditable" class="item-actions">
-				<v-remove v-if="displayItem" deselect :disabled @action="value = null" />
+				<VRemove v-if="displayItem" deselect :disabled @action="value = null" />
 
-				<v-icon v-else class="expand" name="expand_more" />
+				<VIcon v-else class="expand" name="expand_more" />
 			</div>
-		</v-list-item>
+		</VListItem>
 
-		<drawer-collection
+		<DrawerCollection
 			v-model:active="selectDrawerOpen"
 			:collection="selectedCollection"
 			:selection="value?.key ? [value.key] : []"

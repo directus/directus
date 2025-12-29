@@ -45,7 +45,7 @@ const items = computed(() => {
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:disabled="disabled"
 		:show-deselect="allowNone"

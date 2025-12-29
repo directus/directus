@@ -14,6 +14,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
@@ -21,8 +22,6 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { PrivateView } from '@/views/private';
 import type { Field, File } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -227,14 +226,14 @@ function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? $t('loading') : item.title" show-back>
+	<FilesNotFound v-if="!loading && !item" />
+	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
 		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
+			<VBreadcrumb :items="breadcrumb" />
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
@@ -246,21 +245,21 @@ function revert(values: Record<string, any>) {
 					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-dialog
+			<VDialog
 				v-if="isNew === false"
 				v-model="moveToDialogActive"
 				@esc="moveToDialogActive = false"
@@ -276,23 +275,23 @@ function revert(values: Record<string, any>) {
 					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 
-					<v-card-text>
-						<folder-picker v-model="selectedFolder" />
-					</v-card-text>
+					<VCardText>
+						<FolderPicker v-model="selectedFolder" />
+					</VCardText>
 
-					<v-card-actions>
-						<v-button secondary @click="moveToDialogActive = false">
+					<VCardActions>
+						<VButton secondary @click="moveToDialogActive = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button :loading="moving" @click="moveToFolder">
+						</VButton>
+						<VButton :loading="moving" @click="moveToFolder">
 							{{ $t('move') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('download')"
@@ -318,7 +317,7 @@ function revert(values: Record<string, any>) {
 				@click="saveAndQuit"
 			>
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="isSavable"
 						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -330,15 +329,15 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #navigation>
-			<files-navigation :current-folder="item?.folder ?? undefined" />
+			<FilesNavigation :current-folder="item?.folder ?? undefined" />
 		</template>
 
 		<div class="file-item">
-			<file-preview-replace v-if="item" class="preview" :file="item" @replace="refresh" />
+			<FilePreviewReplace v-if="item" class="preview" :file="item" @replace="refresh" />
 
-			<image-editor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
+			<ImageEditor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
 
-			<v-form
+			<VForm
 				ref="form"
 				v-model="edits"
 				:fields="fieldsFiltered"
@@ -350,31 +349,31 @@ function revert(values: Record<string, any>) {
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<template #sidebar>
-			<file-info-sidebar-detail :file="item" :is-new="isNew" />
-			<revisions-sidebar-detail
+			<FileInfoSidebarDetail :file="item" :is-new="isNew" />
+			<RevisionsSidebarDetail
 				v-if="isNew === false && revisionsAllowed"
 				ref="revisionsSidebarDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
 				@revert="revert"
 			/>
-			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
+			<CommentsSidebarDetail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

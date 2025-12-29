@@ -55,7 +55,7 @@ function emitValue(newValue: string) {
 </script>
 
 <template>
-	<v-input
+	<VInput
 		:placeholder="internalPlaceholder"
 		:disabled
 		:non-editable
@@ -66,9 +66,9 @@ function emitValue(newValue: string) {
 		@update:model-value="emitValue"
 	>
 		<template #append>
-			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
+			<VIcon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
 		</template>
-	</v-input>
+	</VInput>
 </template>
 
 <style lang="scss" scoped>

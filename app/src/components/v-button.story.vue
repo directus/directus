@@ -5,6 +5,6 @@ import VButton from './v-button.vue';
 
 <template>
 	<Story title="VButton">
-		<v-button @click="logEvent('click', $event)">My Button</v-button>
+		<VButton @click="logEvent('click', $event)">My Button</VButton>
 	</Story>
 </template>

@@ -194,6 +194,14 @@ describe('set', () => {
 		expect(uint8ArrayToBuffer).toHaveBeenCalledWith(mockUint8Array);
 		expect(kv['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockBuffer);
 	});
+
+	test('Custom TTL', async () => {
+		const mockValue = 15;
+		const mockTTL = 3600000;
+		kv['ttl'] = mockTTL;
+		await kv.set(mockKey, mockValue);
+		expect(kv['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockValue, 'PX', mockTTL);
+	});
 });
 
 describe('delete', () => {

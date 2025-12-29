@@ -590,13 +590,13 @@ function useGroupedPermissions() {
 
 <template>
 	<div>
-		<v-notice v-if="adminAccess">
+		<VNotice v-if="adminAccess">
 			{{ $t('admins_have_all_permissions') }}
-		</v-notice>
+		</VNotice>
 
 		<div v-else-if="!loading || allPermissions.length > 0" class="permissions-list">
 			<table ref="permissionsTable">
-				<permissions-header />
+				<PermissionsHeader />
 
 				<tbody>
 					<tr v-if="allPermissions.length === 0">
@@ -605,7 +605,7 @@ function useGroupedPermissions() {
 						</td>
 					</tr>
 
-					<permissions-row
+					<PermissionsRow
 						v-for="group in regularPermissions"
 						:key="group.collection.collection"
 						:permissions="group.permissions"
@@ -620,13 +620,13 @@ function useGroupedPermissions() {
 
 					<tr v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
 						<td colspan="7" class="system-divider">
-							<v-divider>
+							<VDivider>
 								{{ $t('system_collections') }}
-							</v-divider>
+							</VDivider>
 						</td>
 					</tr>
 
-					<permissions-row
+					<PermissionsRow
 						v-for="group in systemPermissions"
 						:key="group.collection.collection"
 						:permissions="group.permissions"
@@ -663,7 +663,7 @@ function useGroupedPermissions() {
 				</tfoot>
 			</table>
 
-			<add-collection
+			<AddCollection
 				class="add-collection"
 				:exclude-collections="
 					[...regularPermissions, ...systemPermissions].map(({ collection }) => collection.collection)
@@ -672,7 +672,7 @@ function useGroupedPermissions() {
 			/>
 		</div>
 
-		<permissions-detail
+		<PermissionsDetail
 			:active="currentlyEditingKey !== null"
 			:edits="editsAtStart"
 			:permission-key="currentlyEditingKey"
@@ -682,19 +682,19 @@ function useGroupedPermissions() {
 			@update:active="cancelEdit"
 		/>
 
-		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
-			<v-card>
-				<v-card-title>
+		<VDialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
+			<VCard>
+				<VCardTitle>
 					{{ $t('reset_system_permissions_copy') }}
-				</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="resetActive = false">{{ $t('cancel') }}</v-button>
-					<v-button @click="resetSystemPermissions(resetActive === 'recommended')">
+				</VCardTitle>
+				<VCardActions>
+					<VButton secondary @click="resetActive = false">{{ $t('cancel') }}</VButton>
+					<VButton @click="resetSystemPermissions(resetActive === 'recommended')">
 						{{ $t('reset') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 

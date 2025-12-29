@@ -156,20 +156,20 @@ function toggleInterface(id: string) {
 						</template>
 
 						<span v-else class="fallback">
-							<v-icon large :name="inter.icon" />
+							<VIcon large :name="inter.icon" />
 						</span>
 					</div>
-					<v-text-overflow :text="inter.name" class="name" />
+					<VTextOverflow :text="inter.name" class="name" />
 				</button>
 
-				<transition-expand>
-					<field-configuration
+				<TransitionExpand>
+					<FieldConfiguration
 						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
 						:row="configRow"
 						@save="$emit('save')"
 						@toggle-advanced="$emit('toggleAdvanced')"
 					/>
-				</transition-expand>
+				</TransitionExpand>
 			</div>
 		</div>
 	</div>

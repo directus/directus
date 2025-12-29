@@ -185,9 +185,9 @@ function useIconsPerRow(
 </script>
 
 <template>
-	<v-menu v-model="menuActive" attached :disabled no-focus-return>
+	<VMenu v-model="menuActive" attached :disabled no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
-			<v-input
+			<VInput
 				v-model="searchQuery"
 				:disabled
 				:non-editable
@@ -198,12 +198,12 @@ function useIconsPerRow(
 				@keydown="onKeydownInput($event, activate)"
 			>
 				<template v-if="value" #prepend>
-					<v-icon clickable :name="value" :class="{ active: value }" @click="toggle" />
+					<VIcon clickable :name="value" :class="{ active: value }" @click="toggle" />
 				</template>
 
 				<template #append>
 					<div class="item-actions">
-						<v-remove
+						<VRemove
 							v-if="value !== null && !nonEditable"
 							deselect
 							@action="
@@ -214,7 +214,7 @@ function useIconsPerRow(
 							"
 						/>
 
-						<v-icon
+						<VIcon
 							v-else
 							clickable
 							name="expand_more"
@@ -224,7 +224,7 @@ function useIconsPerRow(
 						/>
 					</div>
 				</template>
-			</v-input>
+			</VInput>
 		</template>
 
 		<div ref="contentRef" class="content" :class="width">
@@ -238,9 +238,9 @@ function useIconsPerRow(
 			>
 				<template #default="{ item }">
 					<DynamicScrollerItem :item="item" active>
-						<v-divider v-if="item.type === 'header'" inline-title class="icon-row">
+						<VDivider v-if="item.type === 'header'" inline-title class="icon-row">
 							{{ item.groupName }}
-						</v-divider>
+						</VDivider>
 
 						<div
 							v-else-if="item.type === 'icons'"
@@ -251,7 +251,7 @@ function useIconsPerRow(
 								'--gap': `${gap}px`,
 							}"
 						>
-							<v-icon
+							<VIcon
 								v-for="icon in item.icons"
 								:key="icon"
 								:name="icon"
@@ -264,7 +264,7 @@ function useIconsPerRow(
 				</template>
 			</DynamicScroller>
 		</div>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>

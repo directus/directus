@@ -24,7 +24,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import Draggable from 'vuedraggable';
 import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
-import CollectionItem from './components/collection-item.vue';
+import CollectionItem from './components/CollectionItem.vue';
 import CollectionOptions from './components/collection-options.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
 
@@ -151,13 +151,13 @@ async function downloadSnapshot() {
 </script>
 
 <template>
-	<private-view :title="$t('settings_data_model')" icon="database">
+	<PrivateView :title="$t('settings_data_model')" icon="database">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
+			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 		</template>
 
 		<template #actions>
-			<search-input
+			<SearchInput
 				v-model="search"
 				:show-filter="false"
 				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
@@ -165,7 +165,7 @@ async function downloadSnapshot() {
 				small
 			/>
 
-			<collection-dialog v-model="collectionDialogActive">
+			<CollectionDialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('create_folder')"
@@ -174,7 +174,7 @@ async function downloadSnapshot() {
 						@click="on"
 					/>
 				</template>
-			</collection-dialog>
+			</CollectionDialog>
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('create_collection')"
@@ -184,28 +184,28 @@ async function downloadSnapshot() {
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
+			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
 				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
-					<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+					<VButton to="/settings/data-model/+">{{ $t('create_collection') }}</VButton>
 				</template>
-			</v-info>
+			</VInfo>
 
 			<template v-else>
-				<transition-expand>
+				<TransitionExpand>
 					<div v-if="hasExpandableCollections" class="expand-collapse-button">
 						{{ $t('expand') }}
 						<button @click="expandAll">{{ $t('all') }}</button>
 						/
 						<button @click="collapseAll">{{ $t('none') }}</button>
 					</div>
-				</transition-expand>
-				<draggable
+				</TransitionExpand>
+				<Draggable
 					tag="v-list"
 					:model-value="rootCollections"
 					:group="{ name: 'collections' }"
@@ -217,7 +217,7 @@ async function downloadSnapshot() {
 					@update:model-value="onSort($event, true)"
 				>
 					<template #item="{ element }">
-						<collection-item
+						<CollectionItem
 							:collection="element"
 							:collections="collections"
 							:is-collapsed="element.isCollapsed"
@@ -227,11 +227,11 @@ async function downloadSnapshot() {
 							@toggle-collapse="toggleCollapse"
 						/>
 					</template>
-				</draggable>
+				</Draggable>
 			</template>
 
-			<v-list class="db-only">
-				<v-list-item
+			<VList class="db-only">
+				<VListItem
 					v-for="collection of tableCollections"
 					v-show="findVisibilityChild(collection.collection)!.visible"
 					:key="collection.collection"
@@ -241,24 +241,24 @@ async function downloadSnapshot() {
 					dense
 					clickable
 				>
-					<v-list-item-icon>
-						<v-icon name="add" />
-					</v-list-item-icon>
+					<VListItemIcon>
+						<VIcon name="add" />
+					</VListItemIcon>
 
-					<router-link class="collection-name" :to="`/settings/data-model/${collection.collection}`">
-						<v-icon class="collection-icon" name="dns" />
+					<RouterLink class="collection-name" :to="`/settings/data-model/${collection.collection}`">
+						<VIcon class="collection-icon" name="dns" />
 						<span class="collection-name">{{ collection.name }}</span>
-					</router-link>
+					</RouterLink>
 
-					<collection-options :collection="collection" :has-nested-collections="false" />
-				</v-list-item>
-			</v-list>
+					<CollectionOptions :collection="collection" :has-nested-collections="false" />
+				</VListItem>
+			</VList>
 
-			<v-detail
+			<VDetail
 				v-show="systemCollections.some((collection) => findVisibilityChild(collection.collection)?.visible)"
 				:label="$t('system_collections')"
 			>
-				<collection-item
+				<CollectionItem
 					v-for="collection of systemCollections"
 					:key="collection.collection"
 					:collection="collection"
@@ -267,26 +267,26 @@ async function downloadSnapshot() {
 					:is-collapsed="false"
 					disable-drag
 				/>
-			</v-detail>
+			</VDetail>
 		</div>
 
-		<router-view name="add" />
+		<RouterView name="add" />
 
 		<template #sidebar>
-			<sidebar-detail id="download-snapshot" icon="download" :title="$t('snapshot.export')">
+			<SidebarDetail id="download-snapshot" icon="download" :title="$t('snapshot.export')">
 				<div v-md="$t('snapshot.info')" class="page-description" />
-				<v-button small full-width class="snapshot-download" @click="downloadSnapshot">
+				<VButton small full-width class="snapshot-download" @click="downloadSnapshot">
 					{{ $t('snapshot.download') }}
-				</v-button>
-			</sidebar-detail>
+				</VButton>
+			</SidebarDetail>
 		</template>
 
-		<collection-dialog
+		<CollectionDialog
 			:model-value="!!editCollection"
 			:collection="editCollection"
 			@update:model-value="editCollection = null"
 		/>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">

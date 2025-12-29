@@ -51,18 +51,18 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 
 <template>
 	<div>
-		<v-notice>
+		<VNotice>
 			{{
 				$t('permissions_for_policy', {
 					action: $t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
 					policy: policy ? policy.name : $t('public_label'),
 				})
 			}}
-		</v-notice>
+		</VNotice>
 
-		<v-form v-model="permissionSync" :initial-values="permissionInitial" :fields="fields" />
+		<VForm v-model="permissionSync" :initial-values="permissionInitial" :fields="fields" />
 
-		<app-minimal :value="appMinimal" />
+		<AppMinimal :value="appMinimal" />
 	</div>
 </template>
 

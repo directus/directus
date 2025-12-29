@@ -356,10 +356,10 @@ function useInlineWarning() {
 					@keydown.enter="$emit('keydown:enter', $event)"
 				/>
 			</slot>
-			<v-icon v-if="inlineWarning" v-tooltip="inlineWarning" name="warning" class="inline-warning" />
+			<VIcon v-if="inlineWarning" v-tooltip="inlineWarning" name="warning" class="inline-warning" />
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows && !nonEditable">
-				<v-icon
+				<VIcon
 					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
@@ -368,7 +368,7 @@ function useInlineWarning() {
 					:disabled="!isStepUpAllowed"
 					@click="stepUp"
 				/>
-				<v-icon
+				<VIcon
 					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"

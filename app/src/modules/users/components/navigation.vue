@@ -10,7 +10,7 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
-import NavigationRole from './navigation-role.vue';
+import NavigationRole from './NavigationRole.vue';
 
 const props = defineProps<{
 	currentRole?: string;
@@ -28,30 +28,30 @@ function handleClick({ role }: { role: string }) {
 </script>
 
 <template>
-	<v-list nav>
-		<v-list-item to="/users" exact :active="!currentRole">
-			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('all_users') }}</v-list-item-content>
-		</v-list-item>
+	<VList nav>
+		<VListItem to="/users" exact :active="!currentRole">
+			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
+			<VListItemContent>{{ $t('all_users') }}</VListItemContent>
+		</VListItem>
 
-		<v-divider v-if="(roles && roles.length > 0) || loading" />
+		<VDivider v-if="(roles && roles.length > 0) || loading" />
 
 		<template v-if="loading">
-			<v-list-item v-for="n in 4" :key="n">
-				<v-skeleton-loader type="list-item-icon" />
-			</v-list-item>
+			<VListItem v-for="n in 4" :key="n">
+				<VSkeletonLoader type="list-item-icon" />
+			</VListItem>
 		</template>
 
-		<v-item-group v-model="openRoles" scope="role-navigation" multiple>
-			<navigation-role
+		<VItemGroup v-model="openRoles" scope="role-navigation" multiple>
+			<NavigationRole
 				v-for="role in roleTree"
 				:key="role.id"
 				:role="role"
 				:current-role="currentRole"
 				@click="handleClick"
 			/>
-		</v-item-group>
-	</v-list>
+		</VItemGroup>
+	</VList>
 </template>
 
 <style lang="scss" scoped>

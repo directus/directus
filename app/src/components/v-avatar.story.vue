@@ -5,8 +5,8 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 
 <template>
 	<Story title="VAvatar">
-		<v-avatar>
-			<v-icon name="person" />
-		</v-avatar>
+		<VAvatar>
+			<VIcon name="person" />
+		</VAvatar>
 	</Story>
 </template>

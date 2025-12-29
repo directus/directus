@@ -25,7 +25,7 @@ const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
 <template>
 	<div class="field">
 		<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
-		<v-select
+		<VSelect
 			v-model="tableSpacingWritable"
 			:items="[
 				{

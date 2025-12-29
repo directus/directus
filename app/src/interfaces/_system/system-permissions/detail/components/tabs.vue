@@ -29,12 +29,12 @@ const internalCurrentTab = computed({
 </script>
 
 <template>
-	<v-tabs v-model="internalCurrentTab" vertical>
-		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
+	<VTabs v-model="internalCurrentTab" vertical>
+		<VTab v-for="tab in tabs" :key="tab.value" :value="tab.value">
 			<span class="text">{{ tab.text }}</span>
 			<span class="dot" :class="{ on: tab.hasValue }" />
-		</v-tab>
-	</v-tabs>
+		</VTab>
+	</VTabs>
 </template>
 
 <style lang="scss" scoped>

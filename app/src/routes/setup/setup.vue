@@ -66,22 +66,22 @@ watch(form, () => {
 </script>
 
 <template>
-	<public-view wide>
-		<setup-form v-model="form" :errors="errors" utm-location="onboarding"></setup-form>
-		<v-button full-width :disabled="!formComplete" :loading="isSaving" @click="launch()">
-			<v-icon name="rocket_launch" />
+	<PublicView wide>
+		<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
+		<VButton full-width :disabled="!formComplete" :loading="isSaving" @click="launch()">
+			<VIcon name="rocket_launch" />
 			{{ $t('setup_launch') }}
-		</v-button>
+		</VButton>
 
-		<v-notice v-if="error" type="danger">
+		<VNotice v-if="error" type="danger">
 			<p class="error-code">
 				{{ translateAPIError(error) }}
 			</p>
 			<p>
 				{{ errorMessage }}
 			</p>
-		</v-notice>
-	</public-view>
+		</VNotice>
+	</PublicView>
 </template>
 
 <style scoped>

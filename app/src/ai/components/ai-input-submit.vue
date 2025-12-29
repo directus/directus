@@ -40,7 +40,7 @@ const handleClick = () => {
 </script>
 
 <template>
-	<v-button
+	<VButton
 		:disabled="isDisabled"
 		class="submit-button"
 		x-small
@@ -48,6 +48,6 @@ const handleClick = () => {
 		icon
 		@click="handleClick"
 	>
-		<v-icon :name="icon" />
-	</v-button>
+		<VIcon :name="icon" />
+	</VButton>
 </template>

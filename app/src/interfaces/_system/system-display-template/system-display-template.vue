@@ -70,10 +70,10 @@ const tree = computed(() => {
 
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="tree === null">
+		<VNotice v-if="tree === null">
 			{{ $t('interfaces.system-display-template.select_a_collection') }}
-		</v-notice>
-		<v-field-template
+		</VNotice>
+		<VFieldTemplate
 			v-else
 			:tree="tree.list"
 			:model-value="value"

@@ -19,7 +19,7 @@ import {
 } from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
-import Nodes from './nodes.vue';
+import Nodes from './Nodes.vue';
 import { getNodeName } from './utils';
 
 interface Props {
@@ -170,20 +170,20 @@ function addKeyAsNode() {
 </script>
 
 <template>
-	<v-notice v-if="collectionRequired && !collectionField && !collection" type="warning">
+	<VNotice v-if="collectionRequired && !collectionField && !collection" type="warning">
 		{{ $t('collection_field_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="collectionRequired && !collection" type="warning">
+	</VNotice>
+	<VNotice v-else-if="collectionRequired && !collection" type="warning">
 		{{ $t('select_a_collection') }}
-	</v-notice>
+	</VNotice>
 
 	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
-		<v-list mandatory>
+		<VList mandatory>
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ $t('interfaces.filter.no_rules') }}
 			</div>
 
-			<nodes
+			<Nodes
 				v-else
 				v-model:filter="innerValue"
 				:collection="collection"
@@ -197,22 +197,22 @@ function addKeyAsNode() {
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
-		</v-list>
+		</VList>
 
 		<div v-if="fieldName" class="buttons">
 			<button @click="addNode(fieldName!)">{{ $t('interfaces.filter.add_filter') }}</button>
 			<button @click="addNode('$group')">{{ $t('interfaces.filter.add_group') }}</button>
 		</div>
 		<div v-else class="buttons">
-			<v-menu ref="menuEl" placement="bottom-start" show-arrow>
+			<VMenu ref="menuEl" placement="bottom-start" show-arrow>
 				<template #activator="{ toggle, active }">
 					<button class="add-filter" :class="{ active }" @click="toggle">
-						<v-icon v-if="inline" name="add" class="add" small />
+						<VIcon v-if="inline" name="add" class="add" small />
 						<span>{{ $t('interfaces.filter.add_filter') }}</span>
-						<v-icon name="expand_more" class="expand_more" />
+						<VIcon name="expand_more" class="expand_more" />
 					</button>
 				</template>
-				<v-field-list
+				<VFieldList
 					v-if="collectionRequired"
 					:collection="collection"
 					include-functions
@@ -224,34 +224,34 @@ function addKeyAsNode() {
 					@add="addNode($event[0])"
 				>
 					<template #prepend>
-						<v-list-item clickable @click="addNode('$group')">
-							<v-list-item-content>
-								<v-text-overflow :text="$t('interfaces.filter.add_group')" />
-							</v-list-item-content>
-						</v-list-item>
-						<v-divider />
+						<VListItem clickable @click="addNode('$group')">
+							<VListItemContent>
+								<VTextOverflow :text="$t('interfaces.filter.add_group')" />
+							</VListItemContent>
+						</VListItem>
+						<VDivider />
 					</template>
-				</v-field-list>
+				</VFieldList>
 
-				<v-list v-else :mandatory="false">
-					<v-list-item clickable @click="addNode('$group')">
-						<v-list-item-content>
-							<v-text-overflow :text="$t('interfaces.filter.add_group')" />
-						</v-list-item-content>
-					</v-list-item>
-					<v-divider />
-					<v-list-item @click.stop>
-						<v-list-item-content>
+				<VList v-else :mandatory="false">
+					<VListItem clickable @click="addNode('$group')">
+						<VListItemContent>
+							<VTextOverflow :text="$t('interfaces.filter.add_group')" />
+						</VListItemContent>
+					</VListItem>
+					<VDivider />
+					<VListItem @click.stop>
+						<VListItemContent>
 							<input
 								v-model="newKey"
 								class="new-key-input"
 								:placeholder="$t('interfaces.filter.add_key_placeholder')"
 								@keydown.enter="addKeyAsNode"
 							/>
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+						</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
 		</div>
 	</div>
 </template>
