@@ -36,7 +36,7 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<PrivateView :title="$t('marketplace')" show-back>
+	<PrivateView :title="$t('marketplace')" show-back back-to="/settings/marketplace">
 		<template #navigation>
 			<SettingsNavigation />
 		</template>

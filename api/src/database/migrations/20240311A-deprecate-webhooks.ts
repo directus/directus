@@ -1,7 +1,20 @@
 import { parseJSON, toArray } from '@directus/utils';
-import type { Webhook } from '@directus/types';
 import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
+
+export type Webhook = {
+	id: number;
+	name: string;
+	method: 'GET' | 'POST';
+	url: string;
+	status: 'active' | 'inactive';
+	data: boolean;
+	actions: string[];
+	collections: string[];
+	headers: WebhookHeader[];
+};
+
+export type WebhookHeader = { header: string; value: string };
 
 // To avoid typos
 const TABLE_WEBHOOKS = 'directus_webhooks';
