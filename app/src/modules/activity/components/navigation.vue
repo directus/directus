@@ -102,8 +102,8 @@ function clearNavFilter() {
 
 		<VListItem
 			clickable
-			:active="filterField === 'action' && filterValue === 'comment'"
-			@click="setNavFilter('action', 'comment')"
+			:active="filterField === 'collection' && filterValue === 'directus_comments'"
+			@click="setNavFilter('collection', 'directus_comments')"
 		>
 			<VListItemIcon>
 				<VIcon name="chat_bubble_outline" />
