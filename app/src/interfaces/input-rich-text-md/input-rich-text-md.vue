@@ -442,7 +442,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	--v-button-color: var(--theme--form--field--input--foreground);
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
-	--editor-min-height: var(--input-height-rich-text);
+	--editor-min-height: var(--input-height-large);
 	--editor-toolbar-height: 40px;
 	--editor-body-min-height: calc(var(--editor-min-height) - var(--editor-toolbar-height));
 
