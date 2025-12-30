@@ -1,4 +1,3 @@
-import { ServerSideEncryption, type HeadObjectCommandOutput } from '@aws-sdk/client-s3';
 import {
 	CopyObjectCommand,
 	DeleteObjectCommand,
@@ -6,6 +5,8 @@ import {
 	HeadObjectCommand,
 	ListObjectsV2Command,
 	S3Client,
+	ServerSideEncryption,
+	type HeadObjectCommandOutput,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { normalizePath } from '@directus/utils';
@@ -39,7 +40,7 @@ vi.mock('@aws-sdk/lib-storage');
 vi.mock('node:path');
 
 let sample: {
-	config: DriverS3Config;
+	config: DriverS3Config & Required<Pick<DriverS3Config, 'key' | 'secret' | 'root' | 'region' | 'forcePathStyle'>>;
 	path: {
 		input: string;
 		inputFull: string;

@@ -10,7 +10,6 @@ import type {
 	S3ClientConfig,
 } from '@aws-sdk/client-s3';
 import {
-	ServerSideEncryption,
 	AbortMultipartUploadCommand,
 	CompleteMultipartUploadCommand,
 	CopyObjectCommand,
@@ -22,6 +21,7 @@ import {
 	ListObjectsV2Command,
 	ListPartsCommand,
 	S3Client,
+	ServerSideEncryption,
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
@@ -41,25 +41,23 @@ import { join } from 'node:path';
 import stream, { promises as streamProm, type Readable } from 'node:stream';
 
 export type DriverS3Config = {
-	root?: string | undefined;
-	key?: string | undefined;
-	secret?: string | undefined;
+	root?: string;
+	key?: string;
+	secret?: string;
 	bucket: string;
-	acl?: ObjectCannedACL | undefined;
-	serverSideEncryption?: ServerSideEncryption | undefined;
-	serverSideEncryptionKmsKeyId?: string | undefined;
-	endpoint?: string | undefined;
-	region?: string | undefined;
-	forcePathStyle?: boolean | undefined;
-	tus?:
-		| {
-				chunkSize?: number | undefined;
-		  }
-		| undefined;
-	connectionTimeout?: number | undefined;
-	socketTimeout?: number | undefined;
-	maxSockets?: number | undefined;
-	keepAlive?: boolean | undefined;
+	acl?: ObjectCannedACL;
+	serverSideEncryption?: ServerSideEncryption;
+	serverSideEncryptionKmsKeyId?: string;
+	endpoint?: string;
+	region?: string;
+	forcePathStyle?: boolean;
+	tus?: {
+		chunkSize?: number;
+	};
+	connectionTimeout?: number;
+	socketTimeout?: number;
+	maxSockets?: number;
+	keepAlive?: boolean;
 };
 
 export const kmsKeyIdCheck = [
