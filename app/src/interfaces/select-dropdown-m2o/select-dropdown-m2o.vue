@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useParentFormContext } from '@/composables/use-parent-form-context';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -8,9 +9,8 @@ import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { get } from 'lodash';
-import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { getItemRoute } from '@/utils/get-route';
 
@@ -46,18 +46,18 @@ const emit = defineEmits(['input']);
 
 const values = inject('values', ref<Record<string, any>>({}));
 
+// Get parent form values from the global context stack
+// This allows filters like: { "field": { "_eq": "$FORM.parentField" } }
+const parentFormValues = useParentFormContext();
+
 const collectionsStore = useCollectionsStore();
 
 const customFilter = computed(() => {
-	return parseFilter(
-		deepMap(props.filter, (val: any) => {
-			if (val && typeof val === 'string') {
-				return render(val, values.value);
-			}
-
-			return val;
-		}),
-	);
+	// Parse filter with $FORM context for parent form values
+	// Syntax: $FORM.fieldName (e.g., $FORM.program)
+	return parseFilter(props.filter, {
+		$FORM: parentFormValues.value,
+	});
 });
 
 const { collection, field } = toRefs(props);

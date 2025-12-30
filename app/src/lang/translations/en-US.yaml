@@ -75,6 +75,8 @@ condition_rules: Condition Rules
 input: Input
 invalid_input: Invalid Input
 not_a_number: Not a Number
+invalid_range_min: Value is below minimum of {value}
+invalid_range_max: Value exceeds maximum of {value}
 maps: Maps
 switch_user: Switch User
 item_creation: Item Creation
@@ -194,6 +196,7 @@ connection_good: Good Connection
 connection_fair: Fair Connection
 connection_poor: Poor Connection
 primary: Primary
+download_folder: Download Folder
 rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
@@ -507,6 +510,7 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
+subtitle: Subtitle
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
@@ -835,7 +839,7 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   VALUE_TOO_LONG: Value is too long
 security: Security
-value_hashed: Value Securely Hashed
+value_securely_stored: Value Securely Stored
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
 edit_bookmark: Edit Bookmark
@@ -1061,6 +1065,7 @@ operation_handle_resolve: 'Resolve: Click to Add or Drag to Reroute'
 operation_handle_reject: 'Reject: Click to Add or Drag to Reroute'
 visual_editor: Visual Editor
 toggle_navigation: Toggle Navigation
+toggle_sidebar: Toggle Sidebar
 toggle_editable_elements: Toggle Editable Elements
 no_url: No URL provided
 no_url_copy: Please add a URL in the settings.
@@ -1218,6 +1223,7 @@ settings_project: Settings
 settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
+ai_chat: AI Chat
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_system_logs: System Logs
@@ -1246,56 +1252,6 @@ discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
 keep_editing: Keep Editing
-page_help_collections_overview: '**Collections Overview** — List of all collections you have access to.'
-page_help_collections_collection: >-
-  **Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor
-  your view, and even save bookmarks of these different configurations for quick access.
-page_help_collections_item: >-
-  **Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions,
-  and embedded comments.
-page_help_activity_collection: >-
-  **Browse Activity** — A comprehensive listing of all your user's system and content activity.
-page_help_docs_global: >-
-  **Documentation Overview** — Docs tailored specifically to this project's version and schema.
-page_help_files_collection: >-
-  **File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor
-  your view, and even save bookmarks of these different configurations for quick access.
-page_help_files_item: >-
-  **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Settings** — Your project's global configuration options."
-page_help_settings_appearance: "**Appearance** — Your project's appearance and theming options."
-page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
-page_help_settings_ai: "**AI** — Your project's artificial intelligence configuration options."
-page_help_settings_datamodel_collections: >-
-  **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
-  as well as unmanaged database tables that can be added.
-page_help_settings_datamodel_fields: >-
-  **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_system_logs: '**System Logs** — Access a live stream of the system logs.'
-page_help_settings_policies_collection: '**Browse Policies** — Lists all policies within the project.'
-page_help_settings_policies_item: '**Policy Detail** — Manage a policies permissions and other settings.'
-page_help_settings_roles_collection: '**Browse Roles** — Lists the all user roles within the project.'
-page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
-page_help_settings_presets_collection: >-
-  **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default
-  views.
-page_help_settings_presets_item: >-
-  **Preset Detail** — A form for managing bookmarks and default collection presets.
-page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
-page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
-page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
-page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
-page_help_settings_translations_collection:
-  '**Browse Custom Translations** — Lists all custom translations within the project.'
-page_help_settings_translations_item: '**Custom Translations Detail** — A form for viewing and managing this item.'
-page_help_users_collection: '**User Directory** — Lists all system users within this project.'
-page_help_users_item: >-
-  **User Detail** — Manage your account information, or view the details of other users.
-page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
-page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
-page_help_marketplace_account: '**Account** — Publisher or maintainer of a published extension.'
-page_help_marketplace_registry: '**Registry** — Extensions available in the Directus Marketplace.'
-page_help_marketplace_extension: '**Extension** — Extension in the Directus Marketplace.'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -1501,6 +1457,10 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
+    ai_notice:
+      'AI Chat provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the toolbar to
+      ask questions, generate content, and get help working with your project. <a
+      href="https://directus.io/docs/guides/ai/chat" target="_blank">Learn more about configuring and using AI Chat.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
       'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
@@ -1526,6 +1486,9 @@ fields:
     mcp_system_prompt: Custom System Prompt
     mcp_system_prompt_note:
       'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
+    ai_system_prompt: AI System Prompt
+    ai_system_prompt_note:
+      'Custom AI system prompt to guide LLM behavior in AI Chat interactions. Leave empty to use the default.'
 
   directus_shares:
     name: Name
@@ -1711,6 +1674,64 @@ unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
+show_more: Show More
+show_less: Show Less
+ai:
+  thinking: Thinking...
+  input: Input
+  output: Output
+  streaming: Streaming...
+  ready: Ready
+  complete: Complete
+  error: Error
+  error_message: An error occurred
+  unknown_error: Unknown Error
+  unknown: Unknown
+  approval_requested: Approval Requested
+  approve: Approve
+  always_allow: Always Allow
+  deny: Deny
+  approve_tool_execution: Approve tool execution?
+  retry: Retry
+  prompt_input_placeholder: Type your message here...
+  clear_conversation: Clear Conversation
+  build_with_chat: Build with AI Chat
+  responses_may_be_inaccurate: AI responses may be inaccurate
+  go_to_settings: Go to Settings
+  setup_ai_chat: Setup AI Chat
+  setup_ai_chat_admin_description: Add your AI provider API keys in settings to enable AI Chat.
+  setup_ai_chat_user_description: Contact your administrator to enable AI Chat.
+  settings: Settings
+  tool_approval:
+    always: Always Allowed
+    ask: Needs Approval
+    disabled: Disabled
+  enabled_tools: Enabled Tools
+  disabled_tools: Disabled Tools
+  tool_descriptions:
+    items: Create, read, update, and delete content
+    files: Search and manage files
+    folders: Create and organize folders
+    flows: Create and update flows
+    trigger-flow: Run manually triggered flows
+    operations: Manage operations within flows
+    schema: Get database schema information
+    collections: Create and manage collections
+    fields: Create and configure collection fields
+    relations: Set up relationships between collections
+ai_tools:
+  update_form_values: Update Form Values
+  read_form_values: Read Form Values
+  items: Items
+  files: Files
+  folders: Folders
+  flows: Flows
+  trigger-flow: Trigger Flow
+  operations: Operations
+  schema: Schema
+  collections: Collections
+  fields: Fields
+  relations: Relations
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
@@ -2258,6 +2279,27 @@ interfaces:
     description: Password input with toggle to hide value
   flow-select:
     flow-select: Flow Select
+  header:
+    header: Header
+    description:
+      Create a header with a title, subtitle, help information, and/or links to help users navigate or run Flows.
+    links: Links
+    action_type: Action Type
+    help:
+      title: Help
+      note: Provides toggleable help information for the user.
+    help_display_mode:
+      title: Help Display Mode
+      note: Select the display mode for the help information.
+    enable_help_translations:
+      title: Enable Help Translations
+      note: If enabled, this will override the Help field with values from the Help Translations String field.
+    help_translations_string:
+      title: Help Translations String
+      note:
+        You will need to create a translation value for the key in the Translations settings of your project with the
+        translated content for each language you want to support.
+    collapse: Collapse help
 displays:
   translations:
     translations: Translations

@@ -92,21 +92,6 @@ const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 });
 
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	if (item?.value?.folder) {
-		router.push(`/files/folders/${item.value.folder}`);
-	} else {
-		router.push('/files');
-	}
-}
-
 function useBreadcrumb() {
 	const breadcrumb = computed(() => {
 		if (!item?.value?.folder) {
@@ -233,13 +218,7 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
+	<private-view v-else :title="loading || !item ? $t('loading') : item.title" show-back>
 		<template #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
@@ -254,9 +233,10 @@ function revert(values: Record<string, any>) {
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed === false"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -287,9 +267,10 @@ function revert(values: Record<string, any>) {
 						icon
 						secondary
 						:disabled="item === null || !updateAllowed"
+						small
 						@click="on"
 					>
-						<v-icon name="folder_move" />
+						<v-icon name="folder_move" small />
 					</v-button>
 				</template>
 
@@ -317,8 +298,9 @@ function revert(values: Record<string, any>) {
 				rounded
 				:download="item?.filename_download"
 				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
+				small
 			>
-				<v-icon name="download" />
+				<v-icon name="download" small />
 			</v-button>
 
 			<v-button
@@ -327,9 +309,10 @@ function revert(values: Record<string, any>) {
 				rounded
 				icon
 				secondary
+				small
 				@click="editActive = true"
 			>
-				<v-icon name="tune" />
+				<v-icon name="tune" small />
 			</v-button>
 
 			<v-button
@@ -338,9 +321,10 @@ function revert(values: Record<string, any>) {
 				icon
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options

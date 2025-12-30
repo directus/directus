@@ -244,7 +244,7 @@ const overlayItemContentProps = computed(() => {
 
 const { provideRunManualFlow } = useFlows({
 	collection,
-	primaryKey: primaryKey.value,
+	primaryKey: primaryKey,
 	location: 'item',
 	hasEdits,
 	onRefreshCallback: refresh,
@@ -562,8 +562,15 @@ function popoverClickOutsideMiddleware(e: Event) {
 		<template #actions>
 			<slot name="actions" />
 
-			<v-button v-tooltip.bottom="getTooltip('save', $t('save'))" icon rounded :disabled="!isSavable" @click="save">
-				<v-icon name="check" />
+			<v-button
+				v-tooltip.bottom="getTooltip('save', $t('save'))"
+				icon
+				rounded
+				small
+				:disabled="!isSavable"
+				@click="save"
+			>
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 

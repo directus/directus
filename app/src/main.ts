@@ -15,6 +15,7 @@ import { i18n } from './lang/';
 import { router } from './router';
 import { initTelemetry } from './telemetry';
 import './styles/main.scss';
+import '@directus/vue-split-panel/index.css';
 import { registerViews } from './views/register';
 
 initTelemetry();

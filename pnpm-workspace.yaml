@@ -7,6 +7,9 @@ packages:
   - tests/*
 
 catalog:
+  '@ai-sdk/anthropic': 3.0.0-beta.53
+  '@ai-sdk/openai': 3.0.0-beta.57
+  '@ai-sdk/vue': 3.0.0-beta.98
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.928.0
   '@aws-sdk/client-sesv2': 3.928.0
@@ -18,6 +21,7 @@ catalog:
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 3.0.0
   '@directus/types': workspace:*
+  '@directus/vue-split-panel': 0.8.2
   '@editorjs/attaches': 1.3.2
   '@editorjs/checklist': 1.6.0
   '@editorjs/code': 2.9.3
@@ -42,7 +46,7 @@ catalog:
   '@fullcalendar/list': 6.1.19
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
-  '@google-cloud/storage': 7.17.3
+  '@google-cloud/storage': 7.18.0
   '@histoire/plugin-vue': 0.17.17
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
@@ -50,7 +54,7 @@ catalog:
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
-  '@modelcontextprotocol/sdk': 1.21.1
+  '@modelcontextprotocol/sdk': 1.24.0
   '@ngneat/falso': 8.0.2
   '@opentelemetry/api': 1.9.0
   '@opentelemetry/auto-instrumentations-node': 0.50.0
@@ -92,6 +96,7 @@ catalog:
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
   '@tus/utils': 0.6.0
+  '@types/archiver': 7.0.0
   '@types/async': 3.2.25
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4
@@ -115,6 +120,7 @@ catalog:
   '@types/glob-to-regexp': 0.4.4
   '@types/inquirer': 9.0.9
   '@types/js-yaml': 4.0.9
+  '@types/json-schema': 7.0.15
   '@types/json2csv': 5.0.7
   '@types/jsonwebtoken': 9.0.10
   '@types/ldapjs': 2.2.5
@@ -145,7 +151,10 @@ catalog:
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
+  ai: 6.0.0-beta.98
+  ajv: 8.17.1
   apexcharts: 4.7.0
+  archiver: 7.0.1
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
@@ -180,7 +189,7 @@ catalog:
   dotenv: 17.2.3
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.25.12
+  esbuild: 0.26.0
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
   eslint: 9.39.1
@@ -219,7 +228,8 @@ catalog:
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
-  jsonwebtoken: 9.0.2
+  jsonschema: 1.5.0
+  jsonwebtoken: 9.0.3
   keyv: 5.5.3
   knex: 3.1.0
   knex-mock-client: 3.0.2
@@ -243,7 +253,7 @@ catalog:
   mysql2: 3.15.3
   nanoid: 5.1.6
   node-machine-id: 1.1.12
-  nodemailer: 7.0.10
+  nodemailer: 7.0.11
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
@@ -265,19 +275,20 @@ catalog:
   pm2: 6.0.13
   postcss-html: 1.8.0
   prettier: 3.6.2
-  pretty-ms: 9.3.0
   prom-client: 15.1.3
   proxy-addr: 2.0.7
   qrcode: 1.5.4
   qs: 6.14.0
   rate-limiter-flexible: 7.2.0
+  reka-ui: 2.6.0
   rimraf: 6.1.0
   rolldown: 1.0.0-beta.31
   rollup: 4.52.5
   rollup-plugin-esbuild: 6.2.1
   rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
-  samlify: 2.10.1
+  sanitize-filename: 1.6.3
+  samlify: 2.10.2
   sanitize-html: 2.17.0
   sass-embedded: 1.93.3
   semver: 7.7.3
@@ -304,8 +315,8 @@ catalog:
   typescript: 5.9.3
   typescript-eslint: 8.46.4
   undici: 7.16.0
-  unplugin-yaml: 3.0.7
   universal-cookie: 8.0.1
+  unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
   vite: 7.1.12

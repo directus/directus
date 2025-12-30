@@ -138,15 +138,9 @@ async function downloadSnapshot() {
 </script>
 
 <template>
-	<private-view :title="$t('settings_data_model')">
+	<private-view :title="$t('settings_data_model')" icon="database">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="database" />
-			</v-button>
 		</template>
 
 		<template #actions>
@@ -155,18 +149,19 @@ async function downloadSnapshot() {
 				:show-filter="false"
 				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
 				:placeholder="$t('search_collection')"
+				small
 			/>
 
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="$t('create_folder')" rounded icon secondary @click="on">
-						<v-icon name="create_new_folder" />
+					<v-button v-tooltip.bottom="$t('create_folder')" rounded icon secondary small @click="on">
+						<v-icon name="create_new_folder" small />
 					</v-button>
 				</template>
 			</collection-dialog>
 
-			<v-button v-tooltip.bottom="$t('create_collection')" rounded icon to="/settings/data-model/+">
-				<v-icon name="add" />
+			<v-button v-tooltip.bottom="$t('create_collection')" rounded small icon to="/settings/data-model/+">
+				<v-icon name="add" small />
 			</v-button>
 		</template>
 
@@ -260,10 +255,7 @@ async function downloadSnapshot() {
 		<router-view name="add" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_settings_datamodel_collections')" class="page-description" />
-			</sidebar-detail>
-			<sidebar-detail icon="download" :title="$t('snapshot.export')">
+			<sidebar-detail id="download-snapshot" icon="download" :title="$t('snapshot.export')">
 				<div v-md="$t('snapshot.info')" class="page-description" />
 				<v-button small full-width class="snapshot-download" @click="downloadSnapshot">
 					{{ $t('snapshot.download') }}
@@ -282,7 +274,6 @@ async function downloadSnapshot() {
 <style scoped lang="scss">
 .padding-box {
 	padding: var(--content-padding);
-	padding-block-start: 0;
 }
 
 .v-info {

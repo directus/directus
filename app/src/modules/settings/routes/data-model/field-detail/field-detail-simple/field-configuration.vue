@@ -162,7 +162,7 @@ const options = computed({
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 

@@ -30,7 +30,7 @@ const revisionCount = computed(() => {
 const headerMessage = computed(() => {
 	switch (props.revision.activity.action.toLowerCase()) {
 		case 'create':
-			return t('revision_delta_updated', revisionCount.value);
+			return t('revision_delta_created');
 		case 'update':
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
@@ -85,7 +85,7 @@ const user = computed(() => {
 	display: block;
 	inline-size: 100%;
 	margin-block-end: 12px;
-	margin-inline-start: 16px;
+	padding-inline-start: 16px;
 	text-align: start;
 
 	.header {
@@ -98,8 +98,8 @@ const user = computed(() => {
 			inset-block-start: 6px;
 			inset-inline-start: -18px;
 			z-index: 2;
-			inline-size: 12px;
-			block-size: 12px;
+			inline-size: 11px;
+			block-size: 11px;
 			background-color: var(--theme--warning);
 			border: var(--theme--border-width) solid var(--theme--background-normal);
 			border-radius: 8px;
@@ -122,23 +122,12 @@ const user = computed(() => {
 		}
 	}
 
-	&:not(.last)::after {
-		position: absolute;
-		inset-block-start: 12px;
-		inset-inline-start: -13px;
-		z-index: 1;
-		inline-size: 2px;
-		block-size: calc(100% + 12px);
-		background-color: var(--theme--background-accent);
-		content: '';
-	}
-
 	&::before {
 		position: absolute;
 		inset-block-start: -4px;
-		inset-inline-start: -24px;
+		inset-inline-start: 12px;
 		z-index: 1;
-		inline-size: calc(100% + 32px);
+		inline-size: calc(100% - 12px);
 		block-size: calc(100% + 10px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
@@ -146,6 +135,17 @@ const user = computed(() => {
 		transition: opacity var(--fast) var(--transition);
 		content: '';
 		pointer-events: none;
+	}
+
+	&:not(.last)::after {
+		position: absolute;
+		inset-block-start: 12px;
+		inset-inline-start: 3px;
+		z-index: 1;
+		inline-size: 1px;
+		block-size: calc(100% + 12px);
+		background-color: var(--theme--background-accent);
+		content: '';
 	}
 
 	&:hover {
@@ -159,6 +159,7 @@ const user = computed(() => {
 
 		&::before {
 			opacity: 1;
+			transition: none;
 		}
 	}
 

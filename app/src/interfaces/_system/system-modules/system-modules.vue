@@ -54,7 +54,7 @@ const linkFields: DeepPartial<Field>[] = [
 
 const props = withDefaults(
 	defineProps<{
-		value: Settings['module_bar'];
+		value?: Settings['module_bar'];
 	}>(),
 	{
 		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],
@@ -256,8 +256,8 @@ function remove(id: string) {
 			@apply="save"
 		>
 			<template #actions>
-				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
-					<v-icon name="check" />
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" small @click="save">
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 

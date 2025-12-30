@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
-import { omit } from 'lodash';
+import { isNil, omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -114,20 +114,20 @@ const classes = computed(() => [
 		'has-click': props.clickable,
 		disabled: props.disabled,
 		small: props.small,
-		invalid: isInvalidInput.value,
+		invalid: isBadInput.value,
 	},
 	...((attrs.class || '') as string).split(' '),
 ]);
 
 const isStepUpAllowed = computed(() => {
-	return props.disabled === false && (props.max === undefined || parseInt(String(props.modelValue), 10) < props.max);
+	return props.disabled === false && (props.max === undefined || Number(props.modelValue) < props.max);
 });
 
 const isStepDownAllowed = computed(() => {
-	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
+	return props.disabled === false && (props.min === undefined || Number(props.modelValue) > props.min);
 });
 
-const { isInvalidInput, tooltipInvalid, setInvalidInput } = useInvalidInput();
+const { isBadInput, setInvalidInput, inlineWarning } = useInlineWarning();
 
 function onInput(event: InputEvent) {
 	const target = event.target as HTMLInputElement;
@@ -291,15 +291,37 @@ function stepDown() {
 	}
 }
 
-function useInvalidInput() {
-	const isInvalidInput = ref(false);
-	const tooltipInvalid = computed(() => t(props.type === 'number' ? 'not_a_number' : 'invalid_input'));
+function useInlineWarning() {
+	const isBadInput = ref(false);
 
-	return { isInvalidInput, tooltipInvalid, setInvalidInput };
+	const badInputWarning = computed(() => {
+		if (!isBadInput.value) return undefined;
+		return t(props.type === 'number' ? 'not_a_number' : 'invalid_input');
+	});
+
+	const invalidRangeWarning = computed(() => {
+		if (isNil(props.modelValue)) return undefined;
+
+		const modelValue = Number(props.modelValue);
+
+		if (props.min !== undefined && modelValue < props.min) {
+			return t('invalid_range_min', { value: props.min });
+		}
+
+		if (props.max !== undefined && modelValue > props.max) {
+			return t('invalid_range_max', { value: props.max });
+		}
+
+		return undefined;
+	});
+
+	const inlineWarning = computed(() => badInputWarning.value ?? invalidRangeWarning.value);
+
+	return { isBadInput, setInvalidInput, inlineWarning };
 
 	function setInvalidInput(target: HTMLInputElement) {
 		// When the input’s validity.badInput property is true (e.g., due to invalid user input like non-numeric characters in a number field), the input event’s target.value will be empty even if we see a value in the input field. This means we can’t sanitize the input value in the input event handler.
-		isInvalidInput.value = target.validity.badInput;
+		isBadInput.value = target.validity.badInput;
 	}
 }
 </script>
@@ -333,7 +355,7 @@ function useInvalidInput() {
 					@keydown.enter="$emit('keydown:enter', $event)"
 				/>
 			</slot>
-			<v-icon v-if="isInvalidInput" v-tooltip="tooltipInvalid" name="warning" class="warning-invalid" />
+			<v-icon v-if="inlineWarning" v-tooltip="inlineWarning" name="warning" class="inline-warning" />
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows && !nonEditable">
 				<v-icon
@@ -451,8 +473,8 @@ function useInvalidInput() {
 			box-shadow: var(--theme--form--field--input--box-shadow-hover);
 		}
 
-		&:focus-within,
-		&.active {
+		&:focus-within:not(.disabled),
+		&.active:not(.disabled) {
 			--arrow-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
 
 			color: var(--v-input-color);
@@ -560,7 +582,7 @@ function useInvalidInput() {
 		color: var(--theme--foreground-subdued);
 	}
 
-	.warning-invalid {
+	.inline-warning {
 		--v-icon-color: var(--theme--warning);
 
 		margin-inline-end: 8px;
