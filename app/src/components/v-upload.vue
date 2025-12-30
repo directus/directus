@@ -12,6 +12,7 @@ import VProgressLinear from '@/components/v-progress-linear.vue';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
@@ -52,6 +53,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const notificationsStore = useNotificationsStore();
+const { info } = useServerStore();
 
 let uploadController: Upload | null = null;
 
@@ -169,6 +171,7 @@ function useUpload() {
 				};
 
 				const uploadedFiles = await uploadFiles(Array.from(files), {
+					maxConcurrency: info.uploads?.maxConcurrency,
 					onProgressChange: (percentages) => {
 						newUpload.progress.value = Math.round(
 							(sum(fileSizes.map((total, i) => total * (percentages[i]! / 100))) / totalBytes) * 100,
