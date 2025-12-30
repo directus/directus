@@ -71,9 +71,9 @@ export type Info = {
 		limit: number | null;
 	};
 	uploads?: {
-		tus: boolean;
+		tus?: boolean;
 		chunkSize?: number;
-		maxConcurrency: number;
+		maxConcurrency?: number;
 	};
 };
 
