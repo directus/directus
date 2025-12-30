@@ -28,7 +28,6 @@ import translationFields from './translations.yaml';
 import userFields from './users.yaml';
 import versionFields from './versions.yaml';
 
-
 export const systemFieldRows: FieldMeta[] = [];
 export const systemIndexRows: FieldIndex[] = [];
 

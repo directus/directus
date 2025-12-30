@@ -1,7 +1,6 @@
 import { formatFilesize } from '@/utils/format-filesize';
 import { expect, test } from 'vitest';
 
-
 test('Returns -- for 0 bytes', () => {
 	expect(formatFilesize(0)).toBe('--');
 });

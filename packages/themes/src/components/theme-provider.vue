@@ -7,7 +7,6 @@ import type { DeepPartial, Theme } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, toRefs, unref } from 'vue';
 
-
 const props = withDefaults(
 	defineProps<{
 		darkMode: boolean;

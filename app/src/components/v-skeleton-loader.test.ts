@@ -4,7 +4,6 @@ import { createPinia } from 'pinia';
 import { expect, test } from 'vitest';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
-
 test('Mount component', () => {
 	expect(VSkeletonLoader).toBeTruthy();
 

@@ -2,7 +2,6 @@ import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables.j
 import type { Request } from 'express';
 import { expect, test } from 'vitest';
 
-
 const query = `
 	query getProduct($id: ID!) {
 		products_by_id(id: $id) {

@@ -8,7 +8,6 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick, ref } from 'vue';
 
-
 function makeField(collection: string, field: string, type: Field['type']): Field {
 	// Create a minimal Field object sufficient for the store utilities used in tests
 	return {

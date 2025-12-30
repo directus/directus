@@ -1,7 +1,6 @@
 import { getGroups } from '@/utils/get-groups';
 import { expect, test } from 'vitest';
 
-
 test('Returns correct groupings for given precision', () => {
 	const testCases: ['year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second', string, string[]][] = [
 		['year', 'date_created', ['year(date_created)']],

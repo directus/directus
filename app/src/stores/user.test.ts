@@ -6,7 +6,6 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
 
-
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({

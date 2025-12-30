@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { defineComponent, h, nextTick } from 'vue';
 
-
 beforeAll(() => {
 	vi.spyOn(console, 'warn').mockImplementation(() => vi.fn());
 });

@@ -6,7 +6,6 @@ import { merge } from 'lodash';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
 
-
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({

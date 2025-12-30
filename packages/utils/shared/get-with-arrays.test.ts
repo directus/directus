@@ -1,7 +1,6 @@
 import { get } from './get-with-arrays.js';
 import { expect, test } from 'vitest';
 
-
 test('Returns static value', () => {
 	const input = { test: { path: 'example' } };
 	expect(get(input, 'test.path')).toBe('example');

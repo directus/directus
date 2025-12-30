@@ -3,7 +3,6 @@ import type { DeepPartial, Field } from '@directus/types';
 import { describe, expect, it } from 'vitest';
 import { ref } from 'vue';
 
-
 // Minimal field factory using DeepPartial to keep fixtures concise
 const makeField = (overrides: DeepPartial<Field> = {}): DeepPartial<Field> => ({
 	field: 'test',

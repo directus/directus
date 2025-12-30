@@ -1,4 +1,3 @@
-
 import VCheckbox from '../v-checkbox.vue';
 import VListGroup from '../v-list-group.vue';
 import VListItemIcon from '../v-list-item-icon.vue';

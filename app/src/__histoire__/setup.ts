@@ -9,7 +9,6 @@ import { createPinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
-
 export const setupVue3 = defineSetupVue3(({ app, addWrapper }) => {
 	app.use(
 		createRouter({

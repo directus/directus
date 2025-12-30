@@ -9,7 +9,6 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed, ref } from 'vue';
 
-
 /**
  * Helper function to create field meta with default values
  * @param fieldMeta - Partial field meta properties to override defaults

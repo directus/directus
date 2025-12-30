@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
 
-
 function getTestComponent(shortcut: string, handler: () => void) {
 	return defineComponent({
 		setup() {

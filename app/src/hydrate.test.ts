@@ -9,7 +9,6 @@ import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-
 vi.mock('@/lang/set-language', () => ({
 	setLanguage: vi.fn(),
 }));

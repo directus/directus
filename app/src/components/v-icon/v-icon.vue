@@ -10,8 +10,6 @@ import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
 import { computed } from 'vue';
 
-
-
 const props = withDefaults(
 	defineProps<{
 		/** Which type of icon to display */

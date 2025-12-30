@@ -1,4 +1,3 @@
-
 import { convertWildcards } from './convert-wildcards.js';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { Client_SQLite3 } from '../../run-ast/lib/apply-query/mock.js';

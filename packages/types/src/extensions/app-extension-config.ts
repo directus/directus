@@ -1,4 +1,3 @@
-
 import type { DisplayConfig } from './displays.js';
 import type { EndpointConfig } from './endpoints.js';
 import type { HookConfig } from './hooks.js';

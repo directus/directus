@@ -1,7 +1,6 @@
 import config from './index.js';
 import { expect, test } from 'vitest';
 
-
 test('runs the same object as the input', async () => {
 	const json = { test: 'item' };
 

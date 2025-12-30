@@ -1,7 +1,6 @@
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 import { expect, test } from 'vitest';
 
-
 test.each([
 	{ input: 'test', expected: 'test' },
 	{ input: 'year(date_created)', expected: 'date_created_year' },

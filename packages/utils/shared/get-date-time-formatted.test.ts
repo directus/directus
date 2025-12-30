@@ -1,7 +1,6 @@
 import { getDateTimeFormatted } from './get-date-time-formatted.js';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
-
 beforeEach(() => {
 	vi.useFakeTimers();
 });

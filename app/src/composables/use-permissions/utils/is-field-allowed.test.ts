@@ -2,7 +2,6 @@ import { isFieldAllowed } from './is-field-allowed';
 import { ActionPermission } from '@/types/permissions';
 import { beforeEach, expect, it } from 'vitest';
 
-
 let sample: {
 	field: string;
 };

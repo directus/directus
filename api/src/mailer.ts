@@ -5,7 +5,6 @@ import { createRequire } from 'node:module';
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
 
-
 const require = createRequire(import.meta.url);
 
 let transporter: Transporter;

@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
 import { defineComponent, h } from 'vue';
 
-
 test('should return unknown', () => {
 	expect(getVueComponentName(null)).toBe('unknown');
 });

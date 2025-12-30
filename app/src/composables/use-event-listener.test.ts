@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils';
 import { expect, test, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
 
-
 test('Registers the event listener on mount, unregisters on unmount', () => {
 	const target = {
 		addEventListener: vi.fn(),

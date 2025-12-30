@@ -2,7 +2,6 @@ import config from './index.js';
 import jwt from 'jsonwebtoken';
 import { beforeEach, expect, test, vi } from 'vitest';
 
-
 beforeEach(() => {
 	vi.spyOn(jwt, 'sign');
 	vi.spyOn(jwt, 'verify');

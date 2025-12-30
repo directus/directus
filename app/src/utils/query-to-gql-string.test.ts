@@ -1,4 +1,3 @@
-
 import { formatQuery } from '@/utils/query-to-gql-string';
 
 import { Query } from '@directus/types';

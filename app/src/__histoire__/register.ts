@@ -1,5 +1,3 @@
-
-
 import TransitionBounce from '@/components/transition/bounce.vue';
 import TransitionDialog from '@/components/transition/dialog.vue';
 import TransitionExpand from '@/components/transition/expand.vue';

@@ -2,7 +2,6 @@ import VProgressCircular from './v-progress-circular.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
 
-
 test('Mount component', () => {
 	expect(VProgressCircular).toBeTruthy();
 

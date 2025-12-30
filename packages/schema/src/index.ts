@@ -1,4 +1,3 @@
-
 import CockroachDBSchemaInspector from './dialects/cockroachdb.js';
 import MSSQLSchemaInspector from './dialects/mssql.js';
 import MySQLSchemaInspector from './dialects/mysql.js';
