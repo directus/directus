@@ -112,12 +112,20 @@ function emitValue(value: any) {
 		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
 		props.batchMode === false
 	) {
-		onFieldUnset();
-		emit('unset', props.field);
+		unsetValue();
 	} else {
-		onFieldUpdate(value);
-		emit('update:modelValue', value);
+		updateValue(value);
 	}
+}
+
+function unsetValue() {
+	onFieldUnset();
+	emit('unset', props.field);
+}
+
+function updateValue(value: any) {
+	onFieldUpdate(value);
+	emit('update:modelValue', value);
 }
 
 function useRaw() {
@@ -222,7 +230,7 @@ function useComputedValues() {
 				:restricted="isDisabled"
 				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
-				@unset="$emit('unset', $event)"
+				@unset="unsetValue"
 				@edit-raw="showRaw = true"
 				@copy-raw="copyRaw"
 				@paste-raw="pasteRaw"

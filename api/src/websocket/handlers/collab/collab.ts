@@ -168,9 +168,11 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			if ((await room.getFocusBy(client.uid)) !== message.field) {
+			const focus = await room.getFocusBy(client.uid);
+
+			if (focus && focus !== message.field) {
 				throw new InvalidPayloadError({
-					reason: `Field ${message.field} has not been focused by the user`,
+					reason: `Field ${message.field} has already been focused by another user`,
 				});
 			}
 
