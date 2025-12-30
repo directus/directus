@@ -175,6 +175,10 @@ export class Room {
 		});
 	}
 
+	async getFocusBy(id: ClientID) {
+		return await this.store(async (store) => (await store.get('focuses'))[id]);
+	}
+
 	async join(client: WebSocketClient) {
 		this.messenger.addClient(client);
 

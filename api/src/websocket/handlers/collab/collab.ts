@@ -168,6 +168,12 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
+			if ((await room.getFocusBy(client.uid)) !== message.field) {
+				throw new InvalidPayloadError({
+					reason: `Field ${message.field} has not been focused by the user`,
+				});
+			}
+
 			if (
 				(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field, 'update')) === false
 			)
