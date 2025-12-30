@@ -62,9 +62,9 @@ function useEdits() {
 
 <template>
 	<div class="comment-item">
-		<comment-item-header :refresh="refresh" :comment="comment" @edit="editing = true" />
+		<CommentItemHeader :refresh="refresh" :comment="comment" @edit="editing = true" />
 
-		<comment-input
+		<CommentInput
 			v-if="editing"
 			:existing-comment="comment"
 			:primary-key="primaryKey"

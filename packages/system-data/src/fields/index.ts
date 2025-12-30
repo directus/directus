@@ -26,7 +26,6 @@ import shareFields from './shares.yaml';
 import translationFields from './translations.yaml';
 import userFields from './users.yaml';
 import versionFields from './versions.yaml';
-import webhookFields from './webhooks.yaml';
 
 import type { FieldIndex, FieldMeta } from '../types.js';
 
@@ -69,7 +68,6 @@ processFields(shareFields);
 processFields(translationFields);
 processFields(userFields);
 processFields(versionFields);
-processFields(webhookFields);
 
 function processFields(systemFields: Record<string, any>) {
 	const {

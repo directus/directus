@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, unref } from 'vue';
-
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -8,7 +14,10 @@ import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { useCollection } from '@directus/composables';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import ContentNotFound from '../not-found.vue';
@@ -200,66 +209,60 @@ async function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<content-not-found v-if="error" />
+	<ContentNotFound v-if="error" />
 
-	<private-view
+	<PrivateView
 		v-else
 		:title="primaryKey === '+' ? $t('create_custom_translation') : $t('edit_custom_translation')"
 		show-back
+		back-to="/settings/translations"
 	>
 		<template #headline>
-			<v-breadcrumb
+			<VBreadcrumb
 				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
 				:items="[{ name: $t('content'), to: '/content' }]"
 			/>
-			<v-breadcrumb v-else :items="breadcrumb" />
+			<VBreadcrumb v-else :items="breadcrumb" />
 		</template>
 
 		<template #actions>
-			<v-dialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+			<VDialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
 						v-tooltip.bottom="$t('delete_label')"
-						rounded
-						icon
 						class="action-delete"
 						secondary
 						:disabled="item === null"
-						small
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" outline small />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
-				rounded
-				icon
 				:loading="saving"
 				:disabled="!isSavable"
-				small
+				icon="check"
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" small />
-
 				<template #append-outer>
-					<save-options
+					<SaveOptions
+						v-if="hasEdits"
 						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
@@ -267,14 +270,14 @@ async function revert(values: Record<string, any>) {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>
 			<SettingsNavigation current-collection="directus_translations" />
 		</template>
 
-		<v-form
+		<VForm
 			ref="form"
 			v-model="edits"
 			:autofocus="isNew"
@@ -285,22 +288,22 @@ async function revert(values: Record<string, any>) {
 			:validation-errors="validationErrors"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<template #sidebar>
 			<template v-if="isNew === false && loading === false && internalPrimaryKey">
-				<revisions-sidebar-detail
+				<RevisionsSidebarDetail
 					v-if="accountabilityScope === 'all'"
 					ref="revisionsSidebarDetailRef"
 					collection="directus_translations"
@@ -308,10 +311,10 @@ async function revert(values: Record<string, any>) {
 					:scope="accountabilityScope"
 					@revert="revert"
 				/>
-				<comments-sidebar-detail collection="directus_translations" :primary-key="internalPrimaryKey" />
+				<CommentsSidebarDetail collection="directus_translations" :primary-key="internalPrimaryKey" />
 			</template>
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

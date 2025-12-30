@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
 import type { ShowSelect } from '@directus/types';
 import { useResizeObserver } from '@vueuse/core';
 import { debounce } from 'lodash';
@@ -57,9 +58,9 @@ const atLimit = computed(() => {
 
 <template>
 	<div class="calendar-layout" :class="{ 'select-mode': selectMode, 'select-one': showSelect === 'one' }">
-		<v-notice v-if="atLimit" type="warning">
+		<VNotice v-if="atLimit" type="warning">
 			{{ $t('dataset_too_large_currently_showing_n_items', { n: n(props.limit) }) }}
-		</v-notice>
+		</VNotice>
 		<div v-if="!error" ref="calendar-element" />
 		<slot v-else name="error" :error="error" :reset="resetPresetAndRefresh" />
 	</div>

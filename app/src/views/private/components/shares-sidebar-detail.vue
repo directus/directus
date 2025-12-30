@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import VTextarea from '@/components/v-textarea.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -10,6 +20,7 @@ import { abbreviateNumber } from '@directus/utils';
 import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ShareItem from './share-item.vue';
+import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -255,22 +266,22 @@ async function copy(id: string) {
 </script>
 
 <template>
-	<sidebar-detail
+	<SidebarDetail
 		id="shares"
 		:title
 		icon="share"
 		:badge="!loadingCount && sharesCount > 0 ? abbreviateNumber(sharesCount) : null"
 		@toggle="onToggle"
 	>
-		<v-notice v-if="error" type="danger">{{ $t('unexpected_error') }}</v-notice>
-		<v-progress-linear v-else-if="loading" indeterminate />
+		<VNotice v-if="error" type="danger">{{ $t('unexpected_error') }}</VNotice>
+		<VProgressLinear v-else-if="loading" indeterminate />
 
 		<div v-else-if="!shares || shares.length === 0" class="empty">
 			<div class="content">{{ $t('no_shares') }}</div>
 		</div>
 
 		<template v-for="share in shares" :key="share.id">
-			<share-item
+			<ShareItem
 				:share="share"
 				@copy="copy(share.id)"
 				@edit="select(share.id)"
@@ -279,7 +290,7 @@ async function copy(id: string) {
 			/>
 		</template>
 
-		<drawer-item
+		<DrawerItem
 			collection="directus_shares"
 			:primary-key="shareToEdit"
 			:active="!!shareToEdit"
@@ -287,63 +298,63 @@ async function copy(id: string) {
 			@input="input"
 		/>
 
-		<v-dialog
+		<VDialog
 			:model-value="!!shareToDelete"
 			@update:model-value="shareToDelete = null"
 			@esc="shareToDelete = null"
 			@apply="remove"
 		>
-			<v-card>
-				<v-card-title>{{ $t('delete_share') }}</v-card-title>
-				<v-card-text>{{ $t('delete_are_you_sure') }}</v-card-text>
+			<VCard>
+				<VCardTitle>{{ $t('delete_share') }}</VCardTitle>
+				<VCardText>{{ $t('delete_are_you_sure') }}</VCardText>
 
-				<v-card-actions>
-					<v-button secondary @click="shareToDelete = null">
+				<VCardActions>
+					<VButton secondary @click="shareToDelete = null">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button kind="danger" :loading="deleting" @click="remove">
+					</VButton>
+					<VButton kind="danger" :loading="deleting" @click="remove">
 						{{ $t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-dialog
+		<VDialog
 			:model-value="!!shareToSend"
 			@update:model-value="shareToSend = null"
 			@esc="shareToSend = null"
 			@apply="send"
 		>
-			<v-card>
-				<v-card-title>{{ $t('share_send_link') }}</v-card-title>
-				<v-card-text>
+			<VCard>
+				<VCardTitle>{{ $t('share_send_link') }}</VCardTitle>
+				<VCardText>
 					<div class="grid">
 						<div class="field">
-							<v-input disabled :model-value="sendPublicLink" />
+							<VInput disabled :model-value="sendPublicLink" />
 						</div>
 
 						<div class="field">
 							<div class="type-label">{{ $t('emails') }}</div>
-							<v-textarea v-model="sendEmails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
+							<VTextarea v-model="sendEmails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 						</div>
 					</div>
-				</v-card-text>
+				</VCardText>
 
-				<v-card-actions>
-					<v-button secondary @click="shareToSend = null">
+				<VCardActions>
+					<VButton secondary @click="shareToSend = null">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button :loading="sending" @click="send">
+					</VButton>
+					<VButton :loading="sending" @click="send">
 						{{ $t('share_send_link') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-button v-if="allowed" full-width @click="select('+')">
+		<VButton v-if="allowed" full-width @click="select('+')">
 			{{ $t('new_share') }}
-		</v-button>
-	</sidebar-detail>
+		</VButton>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

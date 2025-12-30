@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
+import VError from '@/components/v-error.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { PrivateView } from '@/views/private';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
 import SettingsNavigation from '../../../../components/navigation.vue';
@@ -33,9 +36,9 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="$t('marketplace')" show-back>
+	<PrivateView :title="$t('marketplace')" show-back back-to="/settings/marketplace">
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="extension-content">
@@ -49,14 +52,14 @@ watchEffect(async () => {
 				</div>
 			</template>
 
-			<v-banner v-else-if="loading" icon="plugin">
-				<template #avatar><v-progress-circular indeterminate /></template>
+			<VBanner v-else-if="loading" icon="plugin">
+				<template #avatar><VProgressCircular indeterminate /></template>
 				{{ $t('loading') }}
-			</v-banner>
+			</VBanner>
 
-			<v-error v-else :error="error" />
+			<VError v-else :error="error" />
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style scoped lang="scss">

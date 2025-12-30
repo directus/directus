@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VWorkspaceTile from '@/components/v-workspace-tile.vue';
+import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { useUserStore } from '@/stores/user';
 import { Vector2 } from '@/utils/vector2';
@@ -170,7 +176,7 @@ function pointerLeave() {
 </script>
 
 <template>
-	<v-workspace-tile
+	<VWorkspaceTile
 		v-bind="panel"
 		:name="panel.panel_name"
 		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
@@ -205,18 +211,18 @@ function pointerLeave() {
 				rounded
 				@pointerdown.stop="pointerdown('resolve')"
 			>
-				<v-icon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
+				<VIcon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
 			</div>
-			<transition name="fade">
+			<Transition name="fade">
 				<div
 					v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
 					class="hint resolve-hint"
 				>
 					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
-						<v-icon v-tooltip="$t('operation_handle_resolve')" name="add_circle_outline" />
+						<VIcon v-tooltip="$t('operation_handle_resolve')" name="add_circle_outline" />
 					</div>
 				</div>
-			</transition>
+			</Transition>
 			<div
 				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
 				x-small
@@ -225,18 +231,18 @@ function pointerLeave() {
 				class="button add-reject"
 				@pointerdown.stop="pointerdown('reject')"
 			>
-				<v-icon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
+				<VIcon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
 			</div>
-			<transition name="fade">
+			<Transition name="fade">
 				<div
 					v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
 					class="hint reject-hint"
 				>
 					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
-						<v-icon v-tooltip="$t('operation_handle_reject')" name="add_circle_outline" />
+						<VIcon v-tooltip="$t('operation_handle_reject')" name="add_circle_outline" />
 					</div>
 				</div>
-			</transition>
+			</Transition>
 
 			<div
 				v-if="panel.id !== '$trigger'"
@@ -247,26 +253,26 @@ function pointerLeave() {
 				:class="{ reject: parent?.type === 'reject' }"
 				@pointerdown.stop="pointerdown('parent')"
 			>
-				<v-icon name="adjust" />
+				<VIcon name="adjust" />
 			</div>
 		</template>
-		<v-error-boundary
+		<VErrorBoundary
 			v-if="typeof currentOperation?.overview === 'function'"
 			:name="`operation-overview-${currentOperation.id}`"
 		>
 			<div class="block">
-				<options-overview :panel="panel" :current-operation="currentOperation" :flow="flow" />
+				<OptionsOverview :panel="panel" :current-operation="currentOperation" :flow="flow" />
 			</div>
 
 			<template #fallback="{ error: optionsOverviewError }">
 				<div class="options-overview-error">
-					<v-icon name="warning" />
+					<VIcon name="warning" />
 					{{ $t('unexpected_error') }}
-					<v-error :error="optionsOverviewError" />
+					<VError :error="optionsOverviewError" />
 				</div>
 			</template>
-		</v-error-boundary>
-		<v-error-boundary
+		</VErrorBoundary>
+		<VErrorBoundary
 			v-else-if="currentOperation && 'id' in currentOperation"
 			:name="`operation-overview-${currentOperation.id}`"
 		>
@@ -274,21 +280,21 @@ function pointerLeave() {
 
 			<template #fallback="{ error: operationOverviewError }">
 				<div class="options-overview-error">
-					<v-icon name="warning" />
+					<VIcon name="warning" />
 					{{ $t('unexpected_error') }}
-					<v-error :error="operationOverviewError" />
+					<VError :error="operationOverviewError" />
 				</div>
 			</template>
-		</v-error-boundary>
+		</VErrorBoundary>
 		<template v-if="panel.id === '$trigger'" #footer>
 			<div class="status-footer" :class="flowStatus">
-				<display-color
+				<DisplayColor
 					v-tooltip="flowStatus === 'active' ? $t('active') : $t('inactive')"
 					class="status-dot"
 					:value="flowStatus === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
 				/>
 
-				<v-select
+				<VSelect
 					v-if="editMode"
 					class="flow-status-select"
 					inline
@@ -305,7 +311,7 @@ function pointerLeave() {
 				</span>
 			</div>
 		</template>
-	</v-workspace-tile>
+	</VWorkspaceTile>
 </template>
 
 <style lang="scss" scoped>

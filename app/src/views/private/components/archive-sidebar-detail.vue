@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import VRadio from '@/components/v-radio.vue';
 import { computed, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection?: string;
@@ -46,10 +48,10 @@ watch(selectedItem, () => {
 </script>
 
 <template>
-	<sidebar-detail id="archive" icon="archive" :title="$t('archive')" :badge="active">
+	<SidebarDetail id="archive" icon="archive" :title="$t('archive')" :badge="active">
 		<div class="fields">
 			<div class="field full">
-				<v-radio
+				<VRadio
 					v-for="item in items"
 					:key="item.value"
 					:value="item.value"
@@ -59,7 +61,7 @@ watch(selectedItem, () => {
 				/>
 			</div>
 		</div>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

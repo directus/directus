@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { Permission, PrimaryKey } from '@directus/types';
 
 defineProps<{
@@ -13,9 +14,7 @@ const emit = defineEmits<{
 
 <template>
 	<div class="actions">
-		<v-button v-tooltip.bottom="$t('save')" icon rounded @click="emit('save')">
-			<v-icon name="check" />
-		</v-button>
+		<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" icon="check" @click="emit('save')" />
 	</div>
 </template>
 

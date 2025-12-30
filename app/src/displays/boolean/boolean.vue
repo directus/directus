@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 import { computed } from 'vue';
 
 const props = withDefaults(
@@ -36,9 +38,9 @@ const styles = computed(() => {
 
 <template>
 	<div class="boolean" :style="styles">
-		<value-null v-if="value === null" />
+		<ValueNull v-if="value === null" />
 		<template v-else>
-			<v-icon v-if="iconOn !== null && iconOff !== null" :name="value ? iconOn : iconOff"></v-icon>
+			<VIcon v-if="iconOn !== null && iconOff !== null" :name="value ? iconOn : iconOff"></VIcon>
 			<span v-if="labelOn !== null && labelOff !== null">{{ value ? labelOn : labelOff }}</span>
 		</template>
 	</div>

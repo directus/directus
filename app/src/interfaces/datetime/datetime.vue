@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
+import VDatePicker from '@/components/v-date-picker.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VMenu from '@/components/v-menu.vue';
+import { parseDate } from '@/utils/parse-date';
 import { isValid } from 'date-fns';
 import { computed, ref } from 'vue';
-import { parseDate } from '@/utils/parse-date';
-import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
@@ -35,29 +39,29 @@ function unsetValue(e: any) {
 </script>
 
 <template>
-	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+	<VMenu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled :non-editable :active @click="toggle">
+			<VListItem block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
-					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
+					<UseDatetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
-					</use-datetime>
+					</UseDatetime>
 				</template>
 
 				<div class="spacer" />
 
 				<template v-if="!disabled">
-					<v-icon
+					<VIcon
 						:name="value ? 'clear' : 'today'"
 						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
 						clickable
 						@click="value ? unsetValue($event) : undefined"
 					/>
 				</template>
-			</v-list-item>
+			</VListItem>
 		</template>
 
-		<v-date-picker
+		<VDatePicker
 			:type
 			:disabled
 			:include-seconds
@@ -66,7 +70,7 @@ function unsetValue(e: any) {
 			@update:model-value="$emit('input', $event)"
 			@close="dateTimeMenu?.deactivate"
 		/>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>
@@ -76,6 +80,10 @@ function unsetValue(e: any) {
 		--v-list-item-background-color,
 		var(--v-list-background-color, var(--theme--form--field--input--background))
 	);
+
+	&.disabled:not(.non-editable) {
+		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+	}
 
 	&.active,
 	&:focus-within,

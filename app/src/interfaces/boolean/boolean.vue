@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+
 withDefaults(
 	defineProps<{
 		value: boolean | null;
@@ -24,7 +26,7 @@ defineEmits<{
 </script>
 
 <template>
-	<v-checkbox
+	<VCheckbox
 		block
 		:icon-on="iconOn"
 		:icon-off="iconOff"

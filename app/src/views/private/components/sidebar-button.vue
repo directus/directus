@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 const sidebarStore = useSidebarStore();
@@ -28,7 +29,7 @@ defineEmits<{
 		@click="$emit('click', $event)"
 	>
 		<div class="icon">
-			<v-icon :name="icon!" />
+			<VIcon :name="icon!" />
 		</div>
 		<div v-if="!sidebarStore.collapsed" class="title">
 			<slot />

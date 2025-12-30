@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TransitionBounce from '@/components/transition/bounce.vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
 import { Instance, Modifier, Placement, detectOverflow } from '@popperjs/core';
@@ -470,8 +471,8 @@ function usePopper(
 			/>
 		</div>
 
-		<teleport to="#menu-outlet">
-			<transition-bounce>
+		<Teleport to="#menu-outlet">
+			<TransitionBounce>
 				<div
 					v-if="isActive"
 					:id="id"
@@ -508,8 +509,8 @@ function usePopper(
 						/>
 					</div>
 				</div>
-			</transition-bounce>
-		</teleport>
+			</TransitionBounce>
+		</Teleport>
 	</div>
 </template>
 

@@ -4,6 +4,10 @@ import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { ComparisonContext, FormField } from '../types';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -64,14 +68,14 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			v-bind="!disabledMenu ? { type: 'button', onClick: toggle } : {}"
 		>
 			<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot" />
-			<v-checkbox
+			<VCheckbox
 				v-if="batchMode"
 				:model-value="batchActive"
 				:value="field.field"
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
 
-			<v-checkbox
+			<VCheckbox
 				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field)"
 				class="comparison-checkbox"
 				:model-value="comparisonActive"
@@ -80,11 +84,11 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			/>
 
 			<div class="field-label-content">
-				<v-text-overflow :text="field.name" />
+				<VTextOverflow :text="field.name" />
 
 				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ $t('hidden') }})</span>
 
-				<v-icon
+				<VIcon
 					v-if="field.meta?.required === true"
 					class="required"
 					:class="{ 'has-badge': badge }"
@@ -93,9 +97,9 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 					filled
 				/>
 
-				<v-chip v-if="badge" class="badge" x-small>{{ badge }}</v-chip>
+				<VChip v-if="badge" class="badge" x-small>{{ badge }}</VChip>
 
-				<v-icon
+				<VIcon
 					v-if="!disabled && rawEditorEnabled"
 					v-tooltip="$t('toggle_raw_editor')"
 					class="raw-editor-toggle"
@@ -107,7 +111,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 					@click.stop="$emit('toggle-raw', !rawEditorActive)"
 				/>
 
-				<v-chip
+				<VChip
 					v-if="comparison?.side === 'incoming' && comparison.revisionFields?.has(field.field)"
 					v-tooltip="getUpdatedInRevisionTooltip(comparison.fields.has(field.field))"
 					class="updated-badge"
@@ -115,10 +119,10 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 					:label="false"
 				>
 					{{ $t('updated') }}
-				</v-chip>
+				</VChip>
 			</div>
 
-			<v-icon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</component>
 	</div>
 </template>

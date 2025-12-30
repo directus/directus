@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+
 defineProps<{
 	id: string;
 	username: string;
@@ -9,12 +12,12 @@ defineProps<{
 </script>
 
 <template>
-	<v-button class="author" secondary full-width align="left" :to="`/settings/marketplace/account/${id}`">
+	<VButton class="author" secondary full-width align="left" :to="`/settings/marketplace/account/${id}`">
 		<img v-if="githubAvatarUrl" :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
-		<v-icon v-else name="face" left />
+		<VIcon v-else name="face" left />
 		{{ githubName ?? username }}
-		<v-icon v-if="verified" v-tooltip="$t('verified')" class="verified" name="verified" small />
-	</v-button>
+		<VIcon v-if="verified" v-tooltip="$t('verified')" class="verified" name="verified" small />
+	</VButton>
 </template>
 
 <style scoped>

@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import DisplayColor from '@/displays/color/color.vue';
 import { computed } from 'vue';
+import VCheckbox from '../v-checkbox.vue';
+import VDivider from '../v-divider.vue';
+import VIcon from '../v-icon/v-icon.vue';
+import VListItemContent from '../v-list-item-content.vue';
+import VListItemIcon from '../v-list-item-icon.vue';
+import VListItem from '../v-list-item.vue';
 import { Option } from './types';
 
 const props = withDefaults(
@@ -36,9 +43,9 @@ const isActive = computed(() => {
 </script>
 
 <template>
-	<v-divider v-if="item.divider === true" />
+	<VDivider v-if="item.divider === true" />
 
-	<v-list-item
+	<VListItem
 		v-else
 		v-show="!item.hidden"
 		:active="isActive"
@@ -47,11 +54,11 @@ const isActive = computed(() => {
 		:clickable="!multiple"
 		@click="multiple ? undefined : $emit('update:modelValue', item.value)"
 	>
-		<v-list-item-icon v-if="multiple === false && allowOther === false && (item.icon || item.color)">
-			<v-icon v-if="item.icon" :name="item.icon" :color="item.color" />
-			<display-color v-else :value="item.color" />
-		</v-list-item-icon>
-		<v-list-item-content>
+		<VListItemIcon v-if="multiple === false && allowOther === false && (item.icon || item.color)">
+			<VIcon v-if="item.icon" :name="item.icon" :color="item.color" />
+			<DisplayColor v-else :value="item.color" />
+		</VListItemIcon>
+		<VListItemContent>
 			<span
 				v-if="multiple === false || item.selectable === false"
 				class="item-text"
@@ -59,7 +66,7 @@ const isActive = computed(() => {
 			>
 				{{ item.text }}
 			</span>
-			<v-checkbox
+			<VCheckbox
 				v-else
 				class="checkbox"
 				:model-value="modelValue || []"
@@ -69,8 +76,8 @@ const isActive = computed(() => {
 				:non-editable="nonEditable"
 				@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 			/>
-		</v-list-item-content>
-	</v-list-item>
+		</VListItemContent>
+	</VListItem>
 </template>
 
 <style scoped>
