@@ -1,29 +1,6 @@
 import { formatDate, FormatDateOptions } from '@/utils/format-date';
 import { format as formatDateFns } from 'date-fns';
 import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
-import { createI18n } from 'vue-i18n';
-
-vi.mock('@/lang', () => {
-	return {
-		i18n: createI18n({
-			legacy: false,
-			locale: 'en-US',
-			messages: {
-				'en-US': {
-					'date-fns_date': 'PPP',
-					'date-fns_time': 'h:mm:ss a',
-					'date-fns_time_no_seconds': 'h:mm a',
-					'date-fns_time_24hour': 'HH:mm:ss',
-					'date-fns_time_no_seconds_24hour': 'HH:mm',
-					'date-fns_date_short': 'MMM d, u',
-					'date-fns_time_short': 'h:mma',
-					'date-fns_time_short_seconds': 'h:mm:ssa',
-					'date-fns_date_short_no_year': 'MMM d',
-				},
-			},
-		}),
-	};
-});
 
 beforeAll(() => {
 	vi.useFakeTimers();

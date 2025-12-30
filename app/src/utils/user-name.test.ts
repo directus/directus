@@ -1,24 +1,9 @@
 import { userName } from '@/utils/user-name';
-import { expect, test, vi } from 'vitest';
-import { createI18n } from 'vue-i18n';
-
-vi.mock('@/lang', () => {
-	return {
-		i18n: createI18n({
-			legacy: false,
-			locale: 'en-US',
-			messages: {
-				'en-US': {
-					unknown_user: 'TEST_UNKNOWN',
-				},
-			},
-		}),
-	};
-});
+import { expect, test } from 'vitest';
 
 test(`Returns unknown when user isn't passed`, () => {
-	expect(userName()).toBe('TEST_UNKNOWN');
-	expect(userName(undefined)).toBe('TEST_UNKNOWN');
+	expect(userName()).toBe('Unknown User');
+	expect(userName(undefined)).toBe('Unknown User');
 });
 
 test(`Returns first + last name if both exist`, () => {
@@ -34,5 +19,5 @@ test(`Returns email address if first name doesn't exist`, () => {
 });
 
 test(`Returns unknown if name and email are missing`, () => {
-	expect(userName({ id: '12345' })).toBe('TEST_UNKNOWN');
+	expect(userName({ id: '12345' })).toBe('Unknown User');
 });
