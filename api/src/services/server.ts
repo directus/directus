@@ -130,9 +130,11 @@ export class ServerService {
 				info['websocket'] = false;
 			}
 
-			info['uploads'] = {
-				maxConcurrency: FILE_UPLOADS.MAX_CONCURRENCY,
-			};
+			if (FILE_UPLOADS.MAX_CONCURRENCY && FILE_UPLOADS.MAX_CONCURRENCY !== Infinity) {
+				info['uploads'] = {
+					maxConcurrency: FILE_UPLOADS.MAX_CONCURRENCY,
+				};
+			}
 
 			if (RESUMABLE_UPLOADS.ENABLED) {
 				info['uploads'] = {

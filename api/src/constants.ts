@@ -1,9 +1,9 @@
-import type { CookieOptions } from 'express';
-import type { TransformationParams } from '@directus/types';
-import { getMilliseconds } from './utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
+import type { TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
+import type { CookieOptions } from 'express';
+import { getMilliseconds } from './utils/get-milliseconds.js';
 
 const env = useEnv();
 
@@ -107,7 +107,7 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 /** File uploads */
 export const FILE_UPLOADS = {
 	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
-	MAX_CONCURRENCY: Number(env['FILES_MAX_UPLOAD_CONCURRENCY']) > 0 ? Number(env['FILES_MAX_UPLOAD_CONCURRENCY']) : 0,
+	MAX_CONCURRENCY: Number(env['FILES_MAX_UPLOAD_CONCURRENCY']),
 };
 
 /** Resumable uploads (TUS) */
