@@ -316,6 +316,7 @@ function useURLImport() {
 				<VButton
 					secondary
 					rounded
+					small
 					icon
 					:download="file.filename_download"
 					:href="getAssetUrl(file.id, { isDownload: true })"
