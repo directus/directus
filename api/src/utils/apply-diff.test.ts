@@ -1,24 +1,24 @@
-import type { Diff } from 'deep-diff';
-import { afterEach, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
-import type {
-	SnapshotField,
-	Snapshot,
-	SnapshotDiff,
-	SnapshotRelation,
-	SnapshotCollection,
-	SnapshotSystemField,
-} from '@directus/types';
-import { DiffKind } from '@directus/types';
-import type { Knex } from 'knex';
-import knex from 'knex';
-import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { applyDiff, isNestedMetaUpdate } from './apply-diff.js';
+import * as getSchema from './get-schema.js';
+import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
-import * as getSchema from './get-schema.js';
-import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
 import type { Collection } from '../types/collection.js';
+import type {
+	Snapshot,
+	SnapshotCollection,
+	SnapshotDiff,
+	SnapshotField,
+	SnapshotRelation,
+	SnapshotSystemField,
+} from '@directus/types';
+import { DiffKind } from '@directus/types';
+import type { Diff } from 'deep-diff';
+import type { Knex } from 'knex';
+import knex from 'knex';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
 
 vi.mock('../cache.js', () => ({
 	flushCaches: vi.fn(),

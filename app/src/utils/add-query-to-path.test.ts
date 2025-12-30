@@ -1,5 +1,5 @@
-import { test, expect } from 'vitest';
 import { addQueryToPath } from '@/utils/add-query-to-path';
+import { expect, test } from 'vitest';
 
 test('Adds query parameters to given path', () => {
 	const output = addQueryToPath('/path/to/something', {

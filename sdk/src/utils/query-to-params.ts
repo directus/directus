@@ -1,5 +1,5 @@
-import type { ExtendedQuery } from '../types/index.js';
 import { formatFields } from './format-fields.js';
+import type { ExtendedQuery } from '../types/index.js';
 
 const knownQueryKeys = [
 	'fields',

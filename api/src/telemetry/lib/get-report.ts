@@ -1,5 +1,3 @@
-import { useEnv } from '@directus/env';
-import { version } from 'directus/version';
 import { getHelpers } from '../../database/helpers/index.js';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
@@ -10,6 +8,8 @@ import { getFilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getSettings } from '../utils/get-settings.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
+import { useEnv } from '@directus/env';
+import { version } from 'directus/version';
 
 const basicCountTasks = [
 	{ collection: 'directus_dashboards' },

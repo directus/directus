@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useEnv } from '@directus/env';
-import { type TelemetryReport } from '../types/report.js';
 import { sendReport } from './send-report.js';
+import { type TelemetryReport } from '../types/report.js';
+import { useEnv } from '@directus/env';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
 vi.mock('@directus/env');
 

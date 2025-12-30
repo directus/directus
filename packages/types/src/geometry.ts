@@ -1,3 +1,4 @@
+import type { GeometryFormat, GeometryType } from './fields.js';
 import type {
 	Feature,
 	FeatureCollection,
@@ -10,7 +11,6 @@ import type {
 	Point,
 	Polygon,
 } from 'geojson';
-import type { GeometryFormat, GeometryType } from './fields.js';
 
 export type GeometryOptions = {
 	geometryField: string;

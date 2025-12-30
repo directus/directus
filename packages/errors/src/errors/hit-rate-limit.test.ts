@@ -1,5 +1,5 @@
-import { expect, test, vi } from 'vitest';
 import { messageConstructor } from './hit-rate-limit.js';
+import { expect, test, vi } from 'vitest';
 
 vi.useFakeTimers();
 

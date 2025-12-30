@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { formatFilesize } from '@/utils/format-filesize';
 import MetadataItem from '../../../components/metadata-item.vue';
+import { formatFilesize } from '@/utils/format-filesize';
 
 defineProps<{ fileCount: number; unpackedSize: number }>();
 </script>

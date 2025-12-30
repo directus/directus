@@ -1,8 +1,8 @@
-import type { Request } from 'express';
-import { describe, expect, test, vi } from 'vitest';
 import { getCacheControlHeader } from './get-cache-headers.js';
 import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
+import type { Request } from 'express';
+import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('@directus/env');
 

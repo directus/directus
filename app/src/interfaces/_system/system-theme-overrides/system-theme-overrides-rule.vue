@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { SetValueFn } from './types';
 import { cssVar } from '@directus/utils/browser';
 import Color from 'color';
 import { computed } from 'vue';
-import { SetValueFn } from './types';
 
 const props = defineProps<{
 	rule: string;

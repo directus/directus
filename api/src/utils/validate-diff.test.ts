@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { validateApplyDiff } from './validate-diff.js';
 import type { Collection } from '../types/collection.js';
 import type {
 	Snapshot,
@@ -10,7 +10,7 @@ import type {
 	SnapshotSystemField,
 	SnapshotWithHash,
 } from '@directus/types';
-import { validateApplyDiff } from './validate-diff.js';
+import { describe, expect, test } from 'vitest';
 
 test('should fail on invalid diff schema', () => {
 	const diff = {} as SnapshotDiffWithHash;

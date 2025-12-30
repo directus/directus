@@ -1,7 +1,7 @@
+import { readConfigurationFromDotEnv } from './read-configuration-from-dotenv.js';
 import { parse } from 'dotenv';
 import { readFileSync } from 'node:fs';
 import { afterEach, expect, test, vi } from 'vitest';
-import { readConfigurationFromDotEnv } from './read-configuration-from-dotenv.js';
 
 vi.mock('dotenv');
 vi.mock('node:fs');

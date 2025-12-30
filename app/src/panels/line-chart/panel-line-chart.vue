@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { monoThemeGenerator } from '../pie-chart/color-generator';
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction } from '@/types/panels';
 import type { Filter } from '@directus/types';
@@ -8,7 +9,6 @@ import ApexCharts from 'apexcharts';
 import { isNil } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { monoThemeGenerator } from '../pie-chart/color-generator';
 
 const props = withDefaults(
 	defineProps<{

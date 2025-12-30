@@ -1,6 +1,6 @@
+import { hasItemPermissions } from './has-item-permissions.js';
 import type { Permission } from '@directus/types';
 import { expect, test } from 'vitest';
-import { hasItemPermissions } from './has-item-permissions.js';
 
 test('Returns false if permissions are null', () => {
 	expect(hasItemPermissions({ permissions: null } as unknown as Permission)).toBe(false);

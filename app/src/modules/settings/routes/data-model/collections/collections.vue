@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import CollectionDialog from './components/collection-dialog.vue';
+import CollectionOptions from './components/collection-options.vue';
+import CollectionItem from './components/CollectionItem.vue';
+import { useExpandCollapse } from './composables/use-expand-collapse';
+import SettingsNavigation from '../../../components/navigation.vue';
 import api from '@/api';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
@@ -13,20 +18,15 @@ import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
-import SearchInput from '@/views/private/components/search-input.vue';
-import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import SearchInput from '@/views/private/components/search-input.vue';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { saveAs } from 'file-saver';
 import { merge } from 'lodash';
 import { computed, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import Draggable from 'vuedraggable';
-import SettingsNavigation from '../../../components/navigation.vue';
-import CollectionDialog from './components/collection-dialog.vue';
-import CollectionItem from './components/CollectionItem.vue';
-import CollectionOptions from './components/collection-options.vue';
-import { useExpandCollapse } from './composables/use-expand-collapse';
 
 const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);

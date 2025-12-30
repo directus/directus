@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ItemPreview from './item-preview.vue';
 import VButton from '@/components/v-button.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -18,7 +19,6 @@ import { moveInArray } from '@directus/utils';
 import { cloneDeep } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import Draggable from 'vuedraggable';
-import ItemPreview from './item-preview.vue';
 
 type ChangeEvent =
 	| {

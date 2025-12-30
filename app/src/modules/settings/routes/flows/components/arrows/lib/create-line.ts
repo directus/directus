@@ -1,8 +1,8 @@
-import { Vector2 } from '@/utils/vector2';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
 import { findBestPosition } from './find-best-position';
 import { generatePath } from './generate-path';
+import { Vector2 } from '@/utils/vector2';
 
 const START_OFFSET = 2;
 const END_OFFSET = 13;

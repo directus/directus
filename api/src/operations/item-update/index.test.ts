@@ -12,8 +12,10 @@ vi.mock('../../utils/get-accountability-for-role.js', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
 
+/* eslint-disable import/order */
 import { ItemsService } from '../../services/items.js';
 import config from './index.js';
+/* eslint-enable import/order */
 
 const testCollection = 'test';
 const testPayload = {};

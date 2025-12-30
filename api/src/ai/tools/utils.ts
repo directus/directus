@@ -1,5 +1,5 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import type { Accountability, SchemaOverview } from '@directus/types';
 
 /**
  * Build a sanitized query object from a tool's args payload.

@@ -1,7 +1,7 @@
+import { LimiterLocal } from './local.js';
+import { consume } from '../utils/consume.js';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { consume } from '../utils/consume.js';
-import { LimiterLocal } from './local.js';
 
 vi.mock('rate-limiter-flexible');
 vi.mock('../utils/consume.js');

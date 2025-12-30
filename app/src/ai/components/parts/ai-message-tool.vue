@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { UIMessagePart, UIDataTypes, UITools } from 'ai';
-import { computed } from 'vue';
-import { useAiStore } from '@/ai/stores/use-ai';
-import formatTitle from '@directus/format-title';
 import AiToolCallCard from './ai-tool-call-card.vue';
+import { useAiStore } from '@/ai/stores/use-ai';
 import VNotice from '@/components/v-notice.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import formatTitle from '@directus/format-title';
+import type { UIDataTypes, UIMessagePart, UITools } from 'ai';
+import { computed } from 'vue';
 
 const aiStore = useAiStore();
 

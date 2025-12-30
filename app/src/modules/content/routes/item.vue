@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import ContentNotFound from './not-found.vue';
+import ContentNavigation from '../components/navigation.vue';
+import VersionMenu from '../components/version-menu.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -43,12 +46,9 @@ import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
-import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch, type ComponentPublicInstance } from 'vue';
+import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import ContentNavigation from '../components/navigation.vue';
-import VersionMenu from '../components/version-menu.vue';
-import ContentNotFound from './not-found.vue';
 
 interface Props {
 	collection: string;

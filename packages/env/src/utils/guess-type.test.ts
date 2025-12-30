@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'vitest';
 import { guessType } from './guess-type.js';
+import { describe, expect, test } from 'vitest';
 
 describe('boolean', () => {
 	test('Returns boolean if value is literal "true"', () => {

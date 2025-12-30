@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { BREAKPOINTS } from '@/constants';
-import { useUserStore } from '@/stores/user';
-import { cssVar } from '@directus/utils/browser';
-import { SplitPanel } from '@directus/vue-split-panel';
-import { useBreakpoints, useResizeObserver, useScroll } from '@vueuse/core';
-import { computed, inject, provide, ref, unref, useTemplateRef, watch, type ComputedRef } from 'vue';
-import NotificationsGroup from '../../components/notifications-group.vue';
-import SkipMenu from '../../components/skip-menu.vue';
-import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewHeaderBar from './private-view-header-bar.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import PrivateViewSidebar from './private-view-sidebar.vue';
 import type { PrivateViewProps } from './private-view.vue';
+import NotificationsGroup from '../../components/notifications-group.vue';
+import SkipMenu from '../../components/skip-menu.vue';
+import { useSidebarStore } from '../stores/sidebar';
+import { BREAKPOINTS } from '@/constants';
+import { useUserStore } from '@/stores/user';
+import { cssVar } from '@directus/utils/browser';
+import { SplitPanel } from '@directus/vue-split-panel';
+import { useBreakpoints, useResizeObserver, useScroll } from '@vueuse/core';
+import { computed, type ComputedRef, inject, provide, ref, unref, useTemplateRef, watch } from 'vue';
 
 const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
 

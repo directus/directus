@@ -10,7 +10,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useElementSize } from '@directus/composables';
-import { CSSProperties, computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, CSSProperties, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 declare global {

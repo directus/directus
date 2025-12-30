@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatName } from '../utils/format-name';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -10,7 +11,6 @@ import type { RegistryListResponse } from '@directus/extensions-registry';
 import { abbreviateNumber } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { formatName } from '../utils/format-name';
 
 const { t } = useI18n();
 

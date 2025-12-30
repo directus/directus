@@ -1,3 +1,4 @@
+import { useRelationsStore } from './relations';
 import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
@@ -14,7 +15,6 @@ import { getCollectionType } from '@directus/utils';
 import { isEqual, isNil, omit } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { useRelationsStore } from './relations';
 
 export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const aiStore = useAiStore();

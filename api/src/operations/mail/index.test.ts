@@ -1,10 +1,10 @@
-import knex from 'knex';
-import { MockClient } from 'knex-mock-client';
-import { beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
-import { MailService } from '../../services/mail/index.js';
-import * as mdUtil from '../../utils/md.js';
 import type { Options } from './index.js';
 import config from './index.js';
+import { MailService } from '../../services/mail/index.js';
+import * as mdUtil from '../../utils/md.js';
+import knex from 'knex';
+import { MockClient } from 'knex-mock-client';
+import { beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 
 describe('Operations / Mail', () => {
 	let mockOperationContext: any;

@@ -1,8 +1,8 @@
-import ky from 'ky';
-import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
 import { constructUrl } from './lib/construct-url.js';
 import { RegistryAccountResponse } from './schemas/registry-account-response.js';
 import type { AccountOptions } from './types/account-options.js';
+import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
+import ky from 'ky';
 
 export type { RegistryAccountResponse } from './schemas/registry-account-response.js';
 export type { AccountOptions } from './types/account-options.js';

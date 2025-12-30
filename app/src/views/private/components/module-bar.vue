@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ModuleBarAvatar from './module-bar-avatar.vue';
+import ModuleBarLogo from './module-bar-logo.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
@@ -7,8 +9,6 @@ import { useSettingsStore } from '@/stores/settings';
 import { translate } from '@/utils/translate-object-values';
 import { omit } from 'lodash';
 import { computed } from 'vue';
-import ModuleBarAvatar from './module-bar-avatar.vue';
-import ModuleBarLogo from './module-bar-logo.vue';
 
 const settingsStore = useSettingsStore();
 const { modules: registeredModules } = useExtensions();

@@ -2,12 +2,12 @@
  * Generate an AST based on a given collection and query
  */
 
+import { parseFields } from './lib/parse-fields.js';
+import { getAllowedSort } from './utils/get-allowed-sort.js';
+import type { AST } from '../../types/index.js';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, uniq } from 'lodash-es';
-import type { AST } from '../../types/index.js';
-import { parseFields } from './lib/parse-fields.js';
-import { getAllowedSort } from './utils/get-allowed-sort.js';
 
 export interface GetAstFromQueryOptions {
 	collection: string;

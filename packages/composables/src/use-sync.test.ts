@@ -1,6 +1,6 @@
+import { useSync } from './use-sync.js';
 import { describe, expect, it, vi } from 'vitest';
 import { nextTick, reactive } from 'vue';
-import { useSync } from './use-sync.js';
 
 describe('useSync', () => {
 	describe('Basic functionality', () => {

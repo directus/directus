@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { getOperation } from './get-operation.js';
+import { expect, test } from 'vitest';
 
 test('key object without operator', () => {
 	const result = getOperation('key', {

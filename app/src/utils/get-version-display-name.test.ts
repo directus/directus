@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
 import { getVersionDisplayName } from './get-version-display-name';
 import type { ContentVersion } from '@directus/types';
+import { describe, expect, it } from 'vitest';
 
 describe('getVersionDisplayName', () => {
 	it('should return "Main" when version is null', () => {

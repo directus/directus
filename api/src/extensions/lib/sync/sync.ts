@@ -1,19 +1,19 @@
-import Queue from 'p-queue';
-import mid from 'node-machine-id';
-import { useEnv } from '@directus/env';
-import { createWriteStream } from 'node:fs';
-import { mkdir, rm } from 'node:fs/promises';
-import { pipeline } from 'node:stream/promises';
-import { dirname, join, relative, resolve, sep } from 'node:path';
-import { getSyncPaths, compareFileMetadata } from './utils.js';
-import { useBus } from '../../../bus/index.js';
 import { SyncFileTracker } from './tracker.js';
+import { compareFileMetadata, getSyncPaths } from './utils.js';
+import { useBus } from '../../../bus/index.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
 import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
+import { useEnv } from '@directus/env';
 import { normalizePath } from '@directus/utils';
+import mid from 'node-machine-id';
+import { createWriteStream } from 'node:fs';
+import { mkdir, rm } from 'node:fs/promises';
+import { dirname, join, relative, resolve, sep } from 'node:path';
+import { pipeline } from 'node:stream/promises';
+import Queue from 'p-queue';
 
 export type ExtensionSyncOptions = {
 	forceSync?: boolean; // force sync all extensions

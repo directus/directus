@@ -1,13 +1,4 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { applyConditions } from '@/utils/apply-conditions';
-import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
-import { useElementSize } from '@directus/composables';
-import { ContentVersion, Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
-import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import VDivider from '../v-divider.vue';
 import VInfo from '../v-info.vue';
 import type { MenuOptions } from './components/form-field-menu.vue';
@@ -18,6 +9,15 @@ import type { ComparisonContext, FieldValues, FormField as TFormField } from './
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
+import { useFieldsStore } from '@/stores/fields';
+import { applyConditions } from '@/utils/apply-conditions';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
+import { useElementSize } from '@directus/composables';
+import { ContentVersion, Field, ValidationError } from '@directus/types';
+import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
+import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

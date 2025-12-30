@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { bufferToUint8Array } from './buffer-to-uint8array.js';
+import { expect, test } from 'vitest';
 
 test('Returns Uint8Array matching Buffer', () => {
 	const text = 'Hello World';

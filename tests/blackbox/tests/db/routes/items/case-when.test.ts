@@ -1,10 +1,10 @@
+import { collection } from './case-when.seed';
 import { getUrl } from '@common/config';
 import { CreateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { collection } from './case-when.seed';
 
 describe('retrieves items with filters', async () => {
 	const userToken = 'pp2KIAA3mGdgqngRVDuegxNuVj7gM-es';

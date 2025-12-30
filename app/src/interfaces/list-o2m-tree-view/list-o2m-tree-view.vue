@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NestedDraggable from './NestedDraggable.vue';
 import VNotice from '@/components/v-notice.vue';
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
@@ -9,7 +10,6 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
-import NestedDraggable from './NestedDraggable.vue';
 
 const props = withDefaults(
 	defineProps<{

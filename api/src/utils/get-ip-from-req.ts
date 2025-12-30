@@ -1,9 +1,9 @@
+import { useLogger } from '../logger/index.js';
 import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import type { IncomingMessage } from 'http';
 import { isIP } from 'net';
 import proxyAddr from 'proxy-addr';
-import { useLogger } from '../logger/index.js';
 
 /**
  * Generate the trusted ip list

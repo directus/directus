@@ -1,12 +1,12 @@
-import type { Item, Query } from '@directus/types';
-import { parseFilterFunctionPath } from '@directus/utils';
-import type { GraphQLResolveInfo } from 'graphql';
-import { omit } from 'lodash-es';
 import type { GraphQLService } from '../index.js';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
 import { getAggregateQuery } from '../utils/aggregate-query.js';
 import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
+import type { Item, Query } from '@directus/types';
+import { parseFilterFunctionPath } from '@directus/utils';
+import type { GraphQLResolveInfo } from 'graphql';
+import { omit } from 'lodash-es';
 
 /**
  * Generic resolver that's used for every "regular" items/system query. Converts the incoming GraphQL AST / fragments into

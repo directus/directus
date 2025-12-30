@@ -1,10 +1,4 @@
-import { useEnv } from '@directus/env';
-import { isSystemCollection } from '@directus/system-data';
-import type { GraphQLParams, SchemaOverview } from '@directus/types';
-import { Semaphore } from 'async-mutex';
-import { GraphQLSchema } from 'graphql';
-import type { ObjectTypeComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from 'graphql-compose';
-import { SchemaComposer } from 'graphql-compose';
+import { getWritableTypes } from './write.js';
 import {
 	fetchAllowedFieldMap,
 	type FieldMap,
@@ -14,10 +8,16 @@ import { reduceSchema } from '../../../utils/reduce-schema.js';
 import { GraphQLService } from '../index.js';
 import { injectSystemResolvers } from '../resolvers/system.js';
 import { cache } from '../schema-cache.js';
+import { getReadableTypes } from './read.js';
 import { GraphQLVoid } from '../types/void.js';
 import { sanitizeGraphqlSchema } from '../utils/sanitize-gql-schema.js';
-import { getReadableTypes } from './read.js';
-import { getWritableTypes } from './write.js';
+import { useEnv } from '@directus/env';
+import { isSystemCollection } from '@directus/system-data';
+import type { GraphQLParams, SchemaOverview } from '@directus/types';
+import { Semaphore } from 'async-mutex';
+import { GraphQLSchema } from 'graphql';
+import type { ObjectTypeComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from 'graphql-compose';
+import { SchemaComposer } from 'graphql-compose';
 
 export type Schema = { read: SchemaOverview; create: SchemaOverview; update: SchemaOverview; delete: SchemaOverview };
 export type InconsistentFields = {

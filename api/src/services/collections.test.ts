@@ -1,10 +1,10 @@
+import * as cacheModule from '../cache.js';
+import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
+import * as getSchemaModule from '../utils/get-schema.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import * as cacheModule from '../cache.js';
-import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
-import * as getSchemaModule from '../utils/get-schema.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -79,9 +79,11 @@ vi.mock('./fields/get-collection-meta-updates.js', () => ({
 	getCollectionMetaUpdates: vi.fn().mockReturnValue([]),
 }));
 
+/* eslint-disable import/order */
 import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+/* eslint-enable import/order */
 
 const schema = new SchemaBuilder()
 	.collection('directus_collections', (c) => {

@@ -1,3 +1,7 @@
+import KanbanActions from './actions.vue';
+import KanbanLayout from './kanban.vue';
+import KanbanOptions from './options.vue';
+import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
 import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
@@ -16,10 +20,6 @@ import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { uniq } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import KanbanActions from './actions.vue';
-import KanbanLayout from './kanban.vue';
-import KanbanOptions from './options.vue';
-import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'kanban',

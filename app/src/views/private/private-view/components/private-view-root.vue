@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { BREAKPOINTS } from '@/constants';
-import { useUserStore } from '@/stores/user';
-import { SplitPanel } from '@directus/vue-split-panel';
-import { useBreakpoints } from '@vueuse/core';
-import { computed, watch } from 'vue';
-import ModuleBar from '../../components/module-bar.vue';
-import SkipMenu from '../../components/skip-menu.vue';
-import { useNavBarStore } from '../stores/nav-bar';
-import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewMain from './private-view-main.vue';
 import PrivateViewNav from './private-view-nav.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import type { PrivateViewProps } from './private-view.vue';
+import ModuleBar from '../../components/module-bar.vue';
+import SkipMenu from '../../components/skip-menu.vue';
+import { useNavBarStore } from '../stores/nav-bar';
+import { useSidebarStore } from '../stores/sidebar';
+import { BREAKPOINTS } from '@/constants';
+import { useUserStore } from '@/stores/user';
+import { SplitPanel } from '@directus/vue-split-panel';
+import { useBreakpoints } from '@vueuse/core';
+import { computed, watch } from 'vue';
 
 defineProps<PrivateViewProps>();
 

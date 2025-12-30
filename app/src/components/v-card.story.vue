@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import VCard from './v-card.vue';
-import { logEvent } from 'histoire/client';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
+import { logEvent } from 'histoire/client';
 </script>
 
 <template>

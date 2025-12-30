@@ -1,7 +1,7 @@
+import InputCode from './input-code.vue';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
-import InputCode from './input-code.vue';
 
 // Create i18n instance for tests
 const i18n = createI18n({

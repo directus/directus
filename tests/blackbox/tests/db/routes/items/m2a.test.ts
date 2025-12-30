@@ -1,3 +1,14 @@
+import {
+	type Circle,
+	collectionCircles,
+	collectionShapes,
+	collectionSquares,
+	getTestsSchema,
+	seedDBValues,
+	type Shape,
+	type Square,
+} from './m2a.seed';
+import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import config, { getUrl } from '@common/config';
 import { CreateItem, ReadItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
@@ -9,17 +20,6 @@ import { findIndex, without } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { beforeAll, describe, expect, it, test } from 'vitest';
-import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
-import {
-	collectionCircles,
-	collectionShapes,
-	collectionSquares,
-	getTestsSchema,
-	seedDBValues,
-	type Circle,
-	type Shape,
-	type Square,
-} from './m2a.seed';
 
 function createShape(pkType: PrimaryKeyType) {
 	const item: Shape = {

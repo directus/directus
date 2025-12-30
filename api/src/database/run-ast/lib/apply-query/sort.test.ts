@@ -1,8 +1,8 @@
+import { Client_SQLite3 } from './mock.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { createTracker } from 'knex-mock-client';
 import { expect, test, vi } from 'vitest';
-import { Client_SQLite3 } from './mock.js';
 
 const { applySort } = await import('./sort.js');
 

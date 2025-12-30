@@ -1,3 +1,4 @@
+import { seedAllFieldTypesStructure } from '../items/seed-all-field-types';
 import {
 	CreateCollection,
 	CreateField,
@@ -12,7 +13,6 @@ import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
 import { expect, it } from 'vitest';
-import { seedAllFieldTypesStructure } from '../items/seed-all-field-types';
 
 export const collectionAll = 'test_schema_all';
 export const collectionM2O = 'test_schema_m2o';

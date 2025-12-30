@@ -1,3 +1,4 @@
+import { collection } from './crud.seed';
 import config, { getUrl } from '@common/config';
 import { ClearCaches, DisableTestCachingSetup } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
@@ -10,7 +11,6 @@ import knex from 'knex';
 import { sortedUniq } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { collection } from './crud.seed';
 
 describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 	DisableTestCachingSetup();

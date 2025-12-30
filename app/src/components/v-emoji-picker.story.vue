@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { logEvent } from 'histoire/client';
 import VEmojiPicker from './v-emoji-picker.vue';
+import { logEvent } from 'histoire/client';
 </script>
 
 <template>

@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { sizeProps, useSizeClass } from './use-size-class.js';
+import { describe, expect, it } from 'vitest';
 import { reactive, ref } from 'vue';
-import { useSizeClass, sizeProps } from './use-size-class.js';
 
 describe('sizeProps', () => {
 	it('should have correct prop definitions', () => {

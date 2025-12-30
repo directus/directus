@@ -6,6 +6,7 @@ import LogoutRoute from '@/routes/logout.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
 import RegisterRoute from '@/routes/register/register.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
+import Setup from '@/routes/setup/setup.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
 import { useServerStore } from '@/stores/server';
@@ -14,7 +15,6 @@ import { getRootPath } from '@/utils/get-root-path';
 import { useAppStore } from '@directus/stores';
 import { useLocalStorage } from '@vueuse/core';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
-import Setup from '@/routes/setup/setup.vue';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{

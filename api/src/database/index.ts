@@ -1,8 +1,14 @@
+import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
+import { useLogger } from '../logger/index.js';
+import { useMetrics } from '../metrics/index.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { validateEnv } from '../utils/validate-env.js';
+import { getHelpers } from './helpers/index.js';
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { isObject } from '@directus/utils';
 import type { DatabaseClient } from '@directus/types';
+import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -11,12 +17,6 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
-import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
-import { useLogger } from '../logger/index.js';
-import { useMetrics } from '../metrics/index.js';
-import { getConfigFromEnv } from '../utils/get-config-from-env.js';
-import { validateEnv } from '../utils/validate-env.js';
-import { getHelpers } from './helpers/index.js';
 
 type QueryInfo = Partial<Knex.Sql> & {
 	sql: Knex.Sql['sql'];

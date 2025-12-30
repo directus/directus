@@ -1,5 +1,5 @@
-import { afterAll, beforeAll, expect, test, vi, type MockInstance } from 'vitest';
 import { stall } from './stall.js';
+import { afterAll, beforeAll, expect, type MockInstance, test, vi } from 'vitest';
 
 let performanceNowSpy: MockInstance;
 

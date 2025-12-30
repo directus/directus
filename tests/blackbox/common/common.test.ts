@@ -1,5 +1,3 @@
-import request from 'supertest';
-import { describe, expect, it } from 'vitest';
 import { collectionName, collectionNameM2O, collectionNameO2M } from './common.seed';
 import { getUrl } from './config';
 import {
@@ -28,6 +26,8 @@ import {
 } from './functions';
 import vendors from './get-dbs-to-test';
 import { ROLE, USER } from './variables';
+import request from 'supertest';
+import { describe, expect, it } from 'vitest';
 
 describe('Common', () => {
 	DisableTestCachingSetup();

@@ -1,13 +1,13 @@
-import { NUMERIC_TYPES } from '@directus/constants';
-import type { FieldOverview, NumericType, Permission, SchemaOverview } from '@directus/types';
-import { isIn } from '@directus/utils';
-import type { Knex } from 'knex';
+import { applyFilter } from './filter/index.js';
 import { getCases } from '../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { isValidUuid } from '../../../../utils/is-valid-uuid.js';
 import { parseNumericString } from '../../../../utils/parse-numeric-string.js';
 import { getHelpers } from '../../../helpers/index.js';
-import { applyFilter } from './filter/index.js';
+import { NUMERIC_TYPES } from '@directus/constants';
+import type { FieldOverview, NumericType, Permission, SchemaOverview } from '@directus/types';
+import { isIn } from '@directus/utils';
+import type { Knex } from 'knex';
 
 export function applySearch(
 	knex: Knex,

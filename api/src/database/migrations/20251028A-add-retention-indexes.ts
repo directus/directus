@@ -1,9 +1,9 @@
-import type { Knex } from 'knex';
 import { FieldsService } from '../../services/fields.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { transaction } from '../../utils/transaction.js';
 import { getHelpers } from '../helpers/index.js';
 import { getDatabaseClient } from '../index.js';
+import type { Knex } from 'knex';
 
 const RETENTION_INDEXES = [
 	{ collection: 'directus_activity', field: 'timestamp', ignore: [] },

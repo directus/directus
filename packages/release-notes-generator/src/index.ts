@@ -1,8 +1,8 @@
-import { appendFile } from 'node:fs/promises';
 import { generateMarkdown } from './utils/generate-markdown.js';
 import { getInfo } from './utils/get-info.js';
 import { processPackages } from './utils/process-packages.js';
 import { processReleaseLines } from './utils/process-release-lines.js';
+import { appendFile } from 'node:fs/promises';
 
 const { defaultChangelogFunctions, changesets } = processReleaseLines();
 

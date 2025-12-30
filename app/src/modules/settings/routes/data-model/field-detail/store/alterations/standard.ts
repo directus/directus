@@ -1,7 +1,7 @@
 import { HelperFunctions, State, StateUpdates } from '../types';
-import { set } from 'lodash';
 import { useExtension } from '@/composables/use-extension';
 import { getSpecialForType } from '@/utils/get-special-for-type';
+import { set } from 'lodash';
 
 export function applyChanges(updates: StateUpdates, _state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;

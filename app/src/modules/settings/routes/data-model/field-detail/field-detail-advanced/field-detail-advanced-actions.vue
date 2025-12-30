@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useFieldDetailStore } from '../store';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { storeToRefs } from 'pinia';
-import { useFieldDetailStore } from '../store';
 
 defineEmits(['save']);
 

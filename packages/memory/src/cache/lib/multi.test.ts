@@ -1,9 +1,9 @@
-import { Redis } from 'ioredis';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { createBus, type BusLocal } from '../../index.js';
 import { CacheLocal } from './local.js';
 import { CacheMulti } from './multi.js';
 import { CacheRedis } from './redis.js';
+import { type BusLocal, createBus } from '../../index.js';
+import { Redis } from 'ioredis';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('../../bus/index.js');
 vi.mock('../../utils/index.js');

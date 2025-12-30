@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'vitest';
 import { mergeVersionsRaw } from './merge-version-data.js';
+import { describe, expect, test } from 'vitest';
 
 describe('content versioning mergeVersionsRaw', () => {
 	test('No versions available', () => {

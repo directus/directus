@@ -1,10 +1,10 @@
-import type { Knex } from 'knex';
+import type { Column } from '../types/column.js';
 import type { ForeignKey } from '../types/foreign-key.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema-inspector.js';
 import type { Table } from '../types/table.js';
 import { stripQuotes } from '../utils/strip-quotes.js';
-import type { Column } from '../types/column.js';
+import type { Knex } from 'knex';
 
 /**
  * NOTE: Use previous optimizer for better data dictionary performance.

@@ -1,6 +1,5 @@
-import { test, expect } from 'vitest';
-
 import { jwtPayload } from '@/utils/jwt-payload';
+import { expect, test } from 'vitest';
 
 test('Returns payload as JSON object from JWT', () => {
 	const token =

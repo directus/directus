@@ -1,7 +1,7 @@
+import { getIPFromReq } from './get-ip-from-req.js';
 import { useEnv } from '@directus/env';
 import type { IncomingMessage } from 'http';
 import { describe, expect, test, vi } from 'vitest';
-import { getIPFromReq } from './get-ip-from-req.js';
 
 vi.mock('@directus/env');
 

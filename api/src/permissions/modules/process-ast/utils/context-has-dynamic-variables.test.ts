@@ -1,6 +1,6 @@
-import { beforeEach, expect, test } from 'vitest';
-import type { DynamicVariableContext } from '../../../utils/extract-required-dynamic-variable-context.js';
 import { contextHasDynamicVariables } from './context-has-dynamic-variables.js';
+import type { DynamicVariableContext } from '../../../utils/extract-required-dynamic-variable-context.js';
+import { beforeEach, expect, test } from 'vitest';
 
 const context: DynamicVariableContext = {
 	$CURRENT_USER: new Set(),

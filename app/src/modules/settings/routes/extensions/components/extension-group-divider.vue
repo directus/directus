@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { extensionTypeIconMap } from '../constants';
+import { ExtensionType } from '../types';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { pluralize } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { extensionTypeIconMap } from '../constants';
-import { ExtensionType } from '../types';
 
 const props = defineProps<{
 	type: ExtensionType;

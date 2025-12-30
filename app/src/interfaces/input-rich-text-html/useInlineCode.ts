@@ -1,5 +1,5 @@
-import { Ref } from 'vue';
 import { i18n } from '@/lang';
+import { Ref } from 'vue';
 
 type InlineCodeButton = {
 	icon: string;

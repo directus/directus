@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { FieldTree } from './types';
-import formatTitle from '@directus/format-title';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListGroup from '@/components/v-list-group.vue';
-import VListItem from '@/components/v-list-item.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import formatTitle from '@directus/format-title';
 
 withDefaults(
 	defineProps<{

@@ -1,7 +1,7 @@
-import type { Accountability, Relation, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
-import { RelationsService } from '../../../services/relations.js';
 import { relations } from './index.js';
+import { RelationsService } from '../../../services/relations.js';
+import type { Accountability, Relation, SchemaOverview } from '@directus/types';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 
 vi.mock('../../../services/relations.js');
 

@@ -1,7 +1,7 @@
+import { isSaveAllowed } from './is-save-allowed';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { computed, ComputedRef, ref } from 'vue';
-import { isSaveAllowed } from './is-save-allowed';
 
 const createAllowedSpy = vi.fn();
 let createAllowed: ComputedRef<boolean>;

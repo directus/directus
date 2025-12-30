@@ -3,9 +3,9 @@
  * This ensures that query params are formatted and ready to go for the services.
  */
 
-import type { RequestHandler } from 'express';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { validateQuery } from '../utils/validate-query.js';
+import type { RequestHandler } from 'express';
 
 const sanitizeQueryMiddleware: RequestHandler = async (req, _res, next) => {
 	req.sanitizedQuery = {};

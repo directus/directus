@@ -1,5 +1,5 @@
-import path from 'path';
 import { createRequire } from 'node:module';
+import path from 'path';
 
 const require = createRequire(import.meta.url);
 

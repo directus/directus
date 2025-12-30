@@ -1,3 +1,5 @@
+import { UsablePermissions, usePermissions } from '../use-permissions';
+import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
@@ -21,9 +23,7 @@ import { getEndpoint, isObject } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { cloneDeep, mergeWith } from 'lodash';
-import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { UsablePermissions, usePermissions } from '../use-permissions';
-import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
+import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;

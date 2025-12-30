@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import VIcon from './v-icon/v-icon.vue';
+import { computed } from 'vue';
 
 interface Props {
 	/** Renders the components in each of it styles */

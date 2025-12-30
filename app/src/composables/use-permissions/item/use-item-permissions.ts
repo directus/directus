@@ -1,10 +1,10 @@
-import { Field } from '@directus/types';
-import { ComputedRef, Ref } from 'vue';
 import { isArchiveAllowed } from '../lib/is-archive-allowed';
 import { Collection, IsNew, PrimaryKey } from '../types';
 import { getFields } from './lib/get-fields';
 import { isActionAllowed } from './lib/is-action-allowed';
 import { fetchItemPermissions } from './utils/fetch-item-permissions';
+import { Field } from '@directus/types';
+import { ComputedRef, Ref } from 'vue';
 
 export type UsableItemPermissions = {
 	loading: Ref<boolean>;

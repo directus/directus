@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import AccordionSection from './accordion-section.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import VItemGroup from '@/components/v-item-group.vue';
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
 import { ref, watch } from 'vue';
-import AccordionSection from './accordion-section.vue';
 
 const props = withDefaults(
 	defineProps<{

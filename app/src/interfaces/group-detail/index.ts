@@ -1,6 +1,6 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceGroupDetail from './group-detail.vue';
 import PreviewSVG from './preview.svg?raw';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'group-detail',

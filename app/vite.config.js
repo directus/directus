@@ -6,8 +6,8 @@ import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
-import { defineConfig } from 'vitest/config';
 import vueDevtools from 'vite-plugin-vue-devtools';
+import { defineConfig } from 'vitest/config';
 
 const API_PATH = path.join('..', 'api');
 

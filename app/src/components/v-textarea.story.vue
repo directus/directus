@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import VTextarea from './v-textarea.vue';
+import { ref } from 'vue';
 
 const value = ref(`This is some text that will be displayed in the textarea.
 This is a new line.`);

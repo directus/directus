@@ -1,6 +1,6 @@
-import { beforeEach, expect, test, vi } from 'vitest';
-import type { Project } from '@pnpm/workspace.find-packages';
 import { Config } from '../types.js';
+import type { Project } from '@pnpm/workspace.find-packages';
+import { beforeEach, expect, test, vi } from 'vitest';
 
 vi.mock('../config.js', () => {
 	const config: Partial<Config> = {

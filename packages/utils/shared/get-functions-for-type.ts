@@ -1,4 +1,4 @@
-import type { Type, FieldFunction } from '@directus/types';
+import type { FieldFunction, Type } from '@directus/types';
 
 export function getFunctionsForType(type: Type): FieldFunction[] {
 	switch (type) {

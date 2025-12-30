@@ -1,7 +1,7 @@
-import type { NumericValue } from '@directus/types';
-import type { Knex } from 'knex';
 import { NumberDatabaseHelper } from '../types.js';
 import { maybeStringifyBigInt } from '../utils/maybe-stringify-big-int.js';
+import type { NumericValue } from '@directus/types';
+import type { Knex } from 'knex';
 
 export class NumberHelperOracle extends NumberDatabaseHelper {
 	override addSearchCondition(

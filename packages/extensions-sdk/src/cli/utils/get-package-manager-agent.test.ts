@@ -1,5 +1,5 @@
-import { afterEach, expect, test } from 'vitest';
 import getPackageManagerAgent from './get-package-manager-agent.js';
+import { afterEach, expect, test } from 'vitest';
 
 const envCopy = { ...process.env };
 

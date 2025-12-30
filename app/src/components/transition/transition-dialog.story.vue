@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import TransitionDialog from './dialog.vue';
+import { ref } from 'vue';
 
 const show = ref(true);
 </script>

@@ -1,9 +1,9 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { resolveQuery } from './query.js';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
 import { getAggregateQuery } from '../utils/aggregate-query.js';
 import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
-import { resolveQuery } from './query.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('../utils/replace-fragments.js');
 vi.mock('../schema/parse-args.js');

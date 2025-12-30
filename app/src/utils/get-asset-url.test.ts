@@ -1,7 +1,7 @@
-import { getAssetUrl } from '@/utils/get-asset-url';
 import { cryptoStub } from '@/__utils__/crypto';
-import { expect, test, vi } from 'vitest';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { getPublicURL } from '@/utils/get-root-path';
+import { expect, test, vi } from 'vitest';
 
 vi.stubGlobal('crypto', cryptoStub);
 vi.mock('@/utils/get-root-path');

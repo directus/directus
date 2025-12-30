@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FieldSelectMenu from './field-select-menu.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -22,7 +23,6 @@ import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink, useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
-import FieldSelectMenu from './field-select-menu.vue';
 
 const props = withDefaults(
 	defineProps<{

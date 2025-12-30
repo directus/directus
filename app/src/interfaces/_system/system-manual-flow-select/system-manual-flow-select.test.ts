@@ -1,7 +1,7 @@
-import { afterEach, expect, test, vi } from 'vitest';
+import SystemManualFlowSelect from './system-manual-flow-select.vue';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import SystemManualFlowSelect from './system-manual-flow-select.vue';
+import { afterEach, expect, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
 
 const i18n = createI18n({

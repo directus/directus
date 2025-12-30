@@ -1,9 +1,9 @@
+import { system } from './index.js';
+import { requireText } from '../../../utils/require-text.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
-import { requireText } from '../../../utils/require-text.js';
-import { system } from './index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -1,16 +1,16 @@
-import { ForbiddenError } from '@directus/errors';
-import { SchemaBuilder } from '@directus/schema-builder';
-import type { Permission, Query } from '@directus/types';
-import { knex } from 'knex';
-import { MockClient } from 'knex-mock-client';
-import { beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { MetaService } from './meta.js';
 import applyQuery from '../database/run-ast/lib/apply-query/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import { MetaService } from './meta.js';
+import { ForbiddenError } from '@directus/errors';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Permission, Query } from '@directus/types';
+import { knex } from 'knex';
+import { MockClient } from 'knex-mock-client';
+import { beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 
 vi.mock('../database/run-ast/lib/apply-query/index.js', () => ({ default: vi.fn() }));
 

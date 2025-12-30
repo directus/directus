@@ -1,7 +1,6 @@
-import { test, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
-
 import VHighlight from './v-highlight.vue';
+import { mount } from '@vue/test-utils';
+import { expect, test } from 'vitest';
 
 test('Mount component', () => {
 	expect(VHighlight).toBeTruthy();

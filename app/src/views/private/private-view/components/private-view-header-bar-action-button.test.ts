@@ -1,8 +1,8 @@
+import PrivateViewHeaderBarActionButton from './private-view-header-bar-action-button.vue';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
 import { createRouter, createWebHistory } from 'vue-router';
-import PrivateViewHeaderBarActionButton from './private-view-header-bar-action-button.vue';
 
 const router = createRouter({
 	history: createWebHistory(),

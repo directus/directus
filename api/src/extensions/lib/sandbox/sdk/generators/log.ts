@@ -1,6 +1,6 @@
+import { useLogger } from '../../../../../logger/index.js';
 import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import type { Reference } from 'isolated-vm';
-import { useLogger } from '../../../../../logger/index.js';
 
 export function logGenerator(requestedScopes: ExtensionSandboxRequestedScopes): (message: Reference<string>) => void {
 	const logger = useLogger();

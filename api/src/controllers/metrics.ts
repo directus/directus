@@ -1,8 +1,8 @@
+import { useMetrics } from '../metrics/index.js';
+import asyncHandler from '../utils/async-handler.js';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import { Router } from 'express';
-import { useMetrics } from '../metrics/index.js';
-import asyncHandler from '../utils/async-handler.js';
 
 const env = useEnv();
 const router = Router();

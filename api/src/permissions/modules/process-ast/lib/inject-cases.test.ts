@@ -1,8 +1,8 @@
-import type { DeepPartial, Permission } from '@directus/types';
-import { beforeAll, expect, test, vi } from 'vitest';
+import { injectCases } from './inject-cases.js';
 import type { AST } from '../../../../types/ast.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
-import { injectCases } from './inject-cases.js';
+import type { DeepPartial, Permission } from '@directus/types';
+import { beforeAll, expect, test, vi } from 'vitest';
 
 vi.mock('../../../utils/get-unaliased-field-key.js');
 

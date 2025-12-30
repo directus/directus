@@ -1,7 +1,7 @@
-import type { DeepPartial, Field } from '@directus/types';
-import { expect, it } from 'vitest';
 import { updateSystemDivider } from './update-system-divider';
+import type { DeepPartial, Field } from '@directus/types';
 import { cloneDeep } from 'lodash';
+import { expect, it } from 'vitest';
 
 const mockFields: DeepPartial<Field>[] = [
 	{ field: 'system_field', meta: { system: true } },

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import NavigationItem from './NavigationItem.vue';
+import { useNavigation } from '../composables/use-navigation';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -12,8 +14,6 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useUserStore } from '@/stores/user';
 import { isNil, orderBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
-import { useNavigation } from '../composables/use-navigation';
-import NavigationItem from './NavigationItem.vue';
 
 const props = defineProps<{
 	currentCollection?: string;

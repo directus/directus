@@ -1,6 +1,6 @@
+import { bufferToUint8Array } from './buffer-to-uint8array.js';
 import { promisify } from 'node:util';
 import { gunzip as gunzipCallback, gzip as gzipCallback } from 'node:zlib';
-import { bufferToUint8Array } from './buffer-to-uint8array.js';
 
 const gzip = promisify(gzipCallback);
 const gunzip = promisify(gunzipCallback);

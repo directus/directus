@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import MapComponent from './components/map.vue';
 import VInfo from '@/components/v-info.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
@@ -8,7 +9,6 @@ import RenderTemplate from '@/views/private/components/render-template.vue';
 import { useSync } from '@directus/composables';
 import { GeometryOptions } from '@directus/types';
 import { useI18n } from 'vue-i18n';
-import MapComponent from './components/map.vue';
 
 defineOptions({ inheritAttrs: false });
 

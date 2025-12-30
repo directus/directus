@@ -1,8 +1,10 @@
+import { FilesService, ItemsService } from './index.js';
+import { getStorage } from '../storage/index.js';
 import { InvalidPayloadError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { PassThrough } from 'node:stream';
 import {
 	afterEach,
@@ -11,12 +13,10 @@ import {
 	describe,
 	expect,
 	it,
-	vi,
-	type MockInstance,
 	type MockedFunction,
+	type MockInstance,
+	vi,
 } from 'vitest';
-import { getStorage } from '../storage/index.js';
-import { FilesService, ItemsService } from './index.js';
 
 vi.mock('../storage/index.js');
 vi.mock('@directus/storage');

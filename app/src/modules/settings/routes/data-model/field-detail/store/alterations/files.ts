@@ -1,10 +1,10 @@
-import { StateUpdates, State, HelperFunctions } from '../types';
-import { set } from 'lodash';
-import { useFieldsStore } from '@/stores/fields';
+import { HelperFunctions, State, StateUpdates } from '../types';
 import { setRelatedOneFieldForCorrespondingField } from './m2m';
 import { collectionExists } from '../../../utils/collection-exists';
 import { fieldExists } from '../../../utils/field-exists';
 import { getAutomaticJunctionCollectionName } from '../../../utils/get-junction-collection-name';
+import { useFieldsStore } from '@/stores/fields';
+import { set } from 'lodash';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;

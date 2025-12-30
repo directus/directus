@@ -4,7 +4,7 @@ import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-ty
 import { translate } from '@/utils/translate-object-values';
 import { Field } from '@directus/types';
 import { cloneDeep, orderBy } from 'lodash';
-import { ComputedRef, Ref, computed } from 'vue';
+import { computed, ComputedRef, Ref } from 'vue';
 
 export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 	return computed(() => {

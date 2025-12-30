@@ -1,5 +1,5 @@
 import { calculateFieldDepth } from './calculate-field-depth.js';
-import { test, expect } from 'vitest';
+import { expect, test } from 'vitest';
 
 test('Calculates basic depth', () => {
 	const filter = {

@@ -1,5 +1,3 @@
-import { Redis } from 'ioredis';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import {
 	bufferToUint8Array,
 	compress,
@@ -12,6 +10,8 @@ import {
 } from '../../utils/index.js';
 import type { ExtendedRedis } from '../index.js';
 import { KvRedis, SET_MAX_SCRIPT } from './redis.js';
+import { Redis } from 'ioredis';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('ioredis');
 vi.mock('../../utils/index.js');

@@ -1,7 +1,7 @@
-import type { Accountability, Filter } from '@directus/types';
 import type { Context } from '../types.js';
 import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
 import { withCache } from '../utils/with-cache.js';
+import type { Accountability, Filter } from '@directus/types';
 
 export interface AccessRow {
 	policy: { id: string; ip_access: string[] | null };

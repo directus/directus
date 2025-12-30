@@ -1,7 +1,7 @@
-import type { Accountability, FlowRaw, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
-import { FlowsService } from '../../../services/flows.js';
 import { flows } from './index.js';
+import { FlowsService } from '../../../services/flows.js';
+import type { Accountability, FlowRaw, SchemaOverview } from '@directus/types';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 
 vi.mock('../../../services/flows');
 

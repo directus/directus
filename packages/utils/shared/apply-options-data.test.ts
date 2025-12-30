@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { applyOptionsData, optionToObject, optionToString } from './apply-options-data.js';
+import { describe, expect, it } from 'vitest';
 
 describe('applyOptionsData', () => {
 	it('returns an empty object if the options are empty', () => {

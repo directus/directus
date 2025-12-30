@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
 import CollectionRoute from './collection.vue';
 import ItemRoute from './item.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { useRoute } from 'vue-router';
 import { useLocalStorage } from '@vueuse/core';
+import { computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const props = defineProps<{
 	collection: string;

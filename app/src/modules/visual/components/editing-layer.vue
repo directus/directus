@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { EditConfig, NavigationData, ReceiveData, SavedData, SendAction } from '../types';
+import { sameOrigin } from '../utils/same-origin';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -13,8 +15,6 @@ import { getEndpoint } from '@directus/utils';
 import { useEventListener } from '@vueuse/core';
 import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { EditConfig, NavigationData, ReceiveData, SavedData, SendAction } from '../types';
-import { sameOrigin } from '../utils/same-origin';
 
 const { frameSrc, frameEl, showEditableElements } = defineProps<{
 	frameSrc: string;

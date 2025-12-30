@@ -1,8 +1,8 @@
+import { createUiStream } from './create-ui-stream.js';
 import { ServiceUnavailableError } from '@directus/errors';
 import type { UIMessage } from 'ai';
 import { streamText } from 'ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createUiStream } from './create-ui-stream.js';
 
 // Mocks
 vi.mock('@ai-sdk/openai', () => ({

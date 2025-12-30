@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { h } from 'vue';
 import { findIconDefinition, icon, IconName, library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+import { h } from 'vue';
 
 library.add(fab);
 

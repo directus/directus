@@ -1,7 +1,7 @@
+import { useBus } from './bus';
+import { unexpectedError } from '@/utils/unexpected-error';
 import BaseAttachesTool from '@editorjs/attaches';
 import BaseImageTool from '@editorjs/image';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { useBus } from './bus';
 
 /**
  * This file is a modified version of the attaches and image tool from editorjs to work with the Directus file manager.

@@ -1,15 +1,15 @@
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import { handler } from './authenticate.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { InvalidCredentialsError } from '@directus/errors';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { afterEach, expect, test, vi } from 'vitest';
-import getDatabase from '../database/index.js';
-import emitter from '../emitter.js';
-import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
-import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
-import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import '../types/express.d.ts';
-import { handler } from './authenticate.js';
 
 const reqGetImplementation = (string: any) => {
 	switch (string) {

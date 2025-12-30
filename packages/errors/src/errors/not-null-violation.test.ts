@@ -1,6 +1,6 @@
-import { beforeEach, expect, test } from 'vitest';
 import type { NotNullViolationErrorExtensions } from './not-null-violation.js';
 import { messageConstructor } from './not-null-violation.js';
+import { beforeEach, expect, test } from 'vitest';
 
 let sample: NotNullViolationErrorExtensions;
 

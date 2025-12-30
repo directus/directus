@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
-import type { ExtensionOptionsContext } from '@directus/extensions';
 import config from './index';
+import type { ExtensionOptionsContext } from '@directus/extensions';
+import { describe, expect, test } from 'vitest';
 
 type OptionsFunction = (context: Partial<ExtensionOptionsContext>) => unknown;
 

@@ -1,3 +1,5 @@
+import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
+import { setLanguage } from './lang/set-language';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
@@ -13,8 +15,6 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useAppStore } from '@directus/stores';
-import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
-import { setLanguage } from './lang/set-language';
 
 type GenericStore = {
 	$id: string;

@@ -1,6 +1,6 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceInputTranslatedString from './input-translated-string.vue';
 import PreviewSVG from './preview.svg?raw';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'system-input-translated-string',

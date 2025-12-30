@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest';
 import type { FieldMap } from '../types.js';
 import { collectionsInFieldMap } from './collections-in-field-map.js';
+import { expect, test } from 'vitest';
 
 test('Returns set of collections in given map', () => {
 	const fieldMap: FieldMap = {

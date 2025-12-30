@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { buildCollectionAndFieldRelations } from './build-collection-and-field-relations.js';
+import { expect, test } from 'vitest';
 
 test('get relations for no relations', () => {
 	const relations = buildCollectionAndFieldRelations([]);

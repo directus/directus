@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SettingsNavigation from '../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -17,7 +18,6 @@ import { useCollection } from '@directus/composables';
 import { clone } from 'lodash';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
 
 const router = useRouter();
 

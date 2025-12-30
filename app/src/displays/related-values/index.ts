@@ -1,3 +1,4 @@
+import DisplayRelatedValues from './related-values.vue';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -9,7 +10,6 @@ import { defineDisplay } from '@directus/extensions';
 import type { Field } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
-import DisplayRelatedValues from './related-values.vue';
 
 type Options = {
 	template: string;

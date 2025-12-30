@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { scheduleSynchronizedJob, validateCron } from './schedule.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 // Mock SynchronizedClock to isolate scheduling logic
 vi.mock('../synchronization.js', () => ({

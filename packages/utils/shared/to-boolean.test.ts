@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { toBoolean } from './to-boolean.js';
+import { expect, test } from 'vitest';
 
 test.each([
 	['true', true],

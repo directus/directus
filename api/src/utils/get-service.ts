@@ -1,5 +1,3 @@
-import { ForbiddenError } from '@directus/errors';
-import type { AbstractServiceOptions } from '@directus/types';
 import {
 	AccessService,
 	ActivityService,
@@ -23,6 +21,8 @@ import {
 	UsersService,
 	VersionsService,
 } from '../services/index.js';
+import { ForbiddenError } from '@directus/errors';
+import type { AbstractServiceOptions } from '@directus/types';
 
 /**
  * Select the correct service for the given collection. This allows the individual services to run

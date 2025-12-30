@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import FieldsManagement from './components/fields-management.vue';
+import SettingsNavigation from '../../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -18,8 +20,6 @@ import formatTitle from '@directus/format-title';
 import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, toRefs } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
-import SettingsNavigation from '../../../components/navigation.vue';
-import FieldsManagement from './components/fields-management.vue';
 
 const props = defineProps<{
 	collection: string;

@@ -1,3 +1,4 @@
+import GroupDetail from './group-detail.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import VDetail from '@/components/v-detail.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -6,7 +7,6 @@ import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
 import { beforeEach, describe, expect, it } from 'vitest';
-import GroupDetail from './group-detail.vue';
 
 let global: GlobalMountOptions;
 

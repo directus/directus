@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest';
 import type { FieldMap } from '../types.js';
 import { getInfoForPath } from './get-info-for-path.js';
+import { expect, test } from 'vitest';
 
 test.each(['other', 'read'])('Returns existing info set if exists for group %s', (group) => {
 	const fieldMap: FieldMap = {

@@ -1,9 +1,9 @@
+import { verifyAccessJWT, verifyJWT } from './jwt.js';
+import type { DirectusTokenPayload } from '../types/index.js';
+import { InvalidTokenError, TokenExpiredError } from '@directus/errors';
+import { ServiceUnavailableError } from '@directus/errors';
 import jwt from 'jsonwebtoken';
 import { expect, test, vi } from 'vitest';
-import type { DirectusTokenPayload } from '../types/index.js';
-import { verifyAccessJWT, verifyJWT } from './jwt.js';
-import { TokenExpiredError, InvalidTokenError } from '@directus/errors';
-import { ServiceUnavailableError } from '@directus/errors';
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
 const secret = 'test-secret';

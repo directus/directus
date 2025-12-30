@@ -1,9 +1,9 @@
+import PanelTimeSeries from './panel-time-series.vue';
+import PreviewSVG from './preview.svg?raw';
 import { useCollectionsStore } from '@/stores/collections';
 import { getGroups } from '@/utils/get-groups';
 import { definePanel } from '@directus/extensions';
 import { Filter } from '@directus/types';
-import PanelTimeSeries from './panel-time-series.vue';
-import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'time-series',

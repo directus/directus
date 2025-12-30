@@ -1,5 +1,5 @@
-import { Field, ContentVersion } from '@directus/types';
 import { parseFilter } from '@/utils/parse-filter';
+import { ContentVersion, Field } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { isArray, mergeWith } from 'lodash';
 

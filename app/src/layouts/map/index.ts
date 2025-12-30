@@ -1,3 +1,8 @@
+import MapActions from './actions.vue';
+import MapLayout from './map.vue';
+import MapOptions from './options.vue';
+import { getMapStyle } from './style';
+import { LayoutOptions, LayoutQuery } from './types';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
@@ -12,11 +17,6 @@ import { cloneDeep, merge } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import MapActions from './actions.vue';
-import MapLayout from './map.vue';
-import MapOptions from './options.vue';
-import { getMapStyle } from './style';
-import { LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'map',

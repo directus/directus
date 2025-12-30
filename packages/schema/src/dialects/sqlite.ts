@@ -1,4 +1,3 @@
-import type { Knex } from 'knex';
 import type { Column } from '../types/column.js';
 import type { ForeignKey } from '../types/foreign-key.js';
 import type { SchemaOverview } from '../types/overview.js';
@@ -7,6 +6,7 @@ import type { Table } from '../types/table.js';
 import extractMaxLength from '../utils/extract-max-length.js';
 import extractType from '../utils/extract-type.js';
 import { stripQuotes } from '../utils/strip-quotes.js';
+import type { Knex } from 'knex';
 
 type RawForeignKey = {
 	id: number;

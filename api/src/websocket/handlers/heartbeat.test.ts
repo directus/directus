@@ -1,10 +1,10 @@
-import type { EventContext } from '@directus/types';
-import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { HeartbeatHandler } from './heartbeat.js';
 import emitter from '../../emitter.js';
 import { getWebSocketController, type WebSocketController } from '../controllers/index.js';
 import type { WebSocketClient } from '../types.js';
-import { HeartbeatHandler } from './heartbeat.js';
+import type { EventContext } from '@directus/types';
+import type { Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('../controllers', () => ({
 	getWebSocketController: vi.fn(() => ({

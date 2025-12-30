@@ -1,13 +1,3 @@
-import {
-	ErrorCode,
-	ForbiddenError,
-	InvalidCredentialsError,
-	InvalidPayloadError,
-	isDirectusError,
-} from '@directus/errors';
-import type { PrimaryKey, RegisterUserInput } from '@directus/types';
-import express from 'express';
-import Joi from 'joi';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { getDatabase } from '../database/index.js';
 import checkRateLimit from '../middleware/rate-limiter-registration.js';
@@ -20,6 +10,16 @@ import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import {
+	ErrorCode,
+	ForbiddenError,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	isDirectusError,
+} from '@directus/errors';
+import type { PrimaryKey, RegisterUserInput } from '@directus/types';
+import express from 'express';
+import Joi from 'joi';
 
 const router = express.Router();
 

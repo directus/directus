@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest';
 import type { ValueOutOfRangeErrorExtensions } from './value-out-of-range.js';
 import { messageConstructor } from './value-out-of-range.js';
+import { expect, test } from 'vitest';
 
 test('Constructs the message using the provided field name and collection', () => {
 	const sample: ValueOutOfRangeErrorExtensions = {

@@ -1,8 +1,8 @@
-import { beforeAll, describe, expect, test, vi } from 'vitest';
-import { getPermissionsForShare } from './get-permissions-for-share.js';
-import type { Accountability } from '@directus/types';
 import type { Context } from '../types.js';
+import { getPermissionsForShare } from './get-permissions-for-share.js';
 import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability } from '@directus/types';
+import { beforeAll, describe, expect, test, vi } from 'vitest';
 
 vi.mock('../modules/fetch-global-access/fetch-global-access.js', () => ({
 	fetchGlobalAccess: vi.fn().mockImplementation((accountability: Accountability) => {

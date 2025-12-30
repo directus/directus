@@ -1,7 +1,6 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
-
-import { ItemsService } from '../../services/items.js';
 import config from './index.js';
+import { ItemsService } from '../../services/items.js';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('../../services/items.js', () => {
 	const ItemsService = vi.fn();

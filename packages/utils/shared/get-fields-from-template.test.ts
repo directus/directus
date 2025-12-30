@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { getFieldsFromTemplate } from './get-fields-from-template.js';
+import { describe, expect, it } from 'vitest';
 
 describe('getFieldsFromTemplate', () => {
 	it('returns an empty array when no value passed', () => {

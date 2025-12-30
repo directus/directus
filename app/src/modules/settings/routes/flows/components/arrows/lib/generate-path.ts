@@ -1,5 +1,5 @@
-import { Vector2 } from '@/utils/vector2';
 import { generateCorner } from '../utils/generate-corner';
+import { Vector2 } from '@/utils/vector2';
 
 /**
  * Generates an SVG path string for drawing arrows between flow diagram panels.

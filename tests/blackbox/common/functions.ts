@@ -1,12 +1,12 @@
+import { type Env, getUrl } from './config';
+import vendors, { type Vendor } from './get-dbs-to-test';
+import type { PrimaryKeyType } from './types';
+import { ROLE, USER } from './variables';
 import type { Permission, PrimaryKey, Query } from '@directus/types';
 import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
-import { getUrl, type Env } from './config';
-import vendors, { type Vendor } from './get-dbs-to-test';
-import type { PrimaryKeyType } from './types';
-import { ROLE, USER } from './variables';
 
 export function DisableTestCachingSetup() {
 	beforeEach(async () => {

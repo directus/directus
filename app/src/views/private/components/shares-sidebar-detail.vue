@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ShareItem from './share-item.vue';
+import SidebarDetail from './sidebar-detail.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -17,10 +19,8 @@ import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { useGroupable } from '@directus/composables';
 import { PrimaryKey, Share } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
-import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ShareItem from './share-item.vue';
-import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection: string;

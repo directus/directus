@@ -1,9 +1,9 @@
-import { processId } from '@directus/utils/node';
-import { createBus, type Bus } from '../../bus/index.js';
-import type { Cache } from '../types/class.js';
-import type { CacheConfigMulti } from '../types/config.js';
 import { CacheLocal } from './local.js';
 import { CacheRedis } from './redis.js';
+import { type Bus, createBus } from '../../bus/index.js';
+import type { Cache } from '../types/class.js';
+import type { CacheConfigMulti } from '../types/config.js';
+import { processId } from '@directus/utils/node';
 
 export const CACHE_CHANNEL_KEY = 'multi-cache';
 

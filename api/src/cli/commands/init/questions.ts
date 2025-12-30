@@ -1,5 +1,5 @@
-import path from 'path';
 import type { Driver } from '@directus/types';
+import path from 'path';
 
 const filename = ({ filepath }: { filepath: string }): Record<string, string> => ({
 	type: 'input',

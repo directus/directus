@@ -1,12 +1,12 @@
+import { usePermissionsStore } from './permissions';
+import { useUserStore } from './user';
+import { mockedStore } from '@/__utils__/store';
 import api from '@/api';
 import { ActionPermission, CollectionPermission } from '@/types/permissions';
 import { PermissionsAction, User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, it, vi } from 'vitest';
-import { usePermissionsStore } from './permissions';
-import { useUserStore } from './user';
-import { mockedStore } from '@/__utils__/store';
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
 vi.mock('@/api');
 

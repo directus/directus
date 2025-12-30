@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { withCache } from './with-cache.js';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 const mockGet = vi.fn();
 const mockSet = vi.fn();

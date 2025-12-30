@@ -1,6 +1,6 @@
+import { messageConstructor } from './range-not-satisfiable.js';
 import type { Range } from '@directus/types';
 import { expect, test } from 'vitest';
-import { messageConstructor } from './range-not-satisfiable.js';
 
 let range: Range;
 

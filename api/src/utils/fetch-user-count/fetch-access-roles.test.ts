@@ -1,6 +1,6 @@
-import { type Knex } from 'knex';
-import { vi, beforeEach, test, expect } from 'vitest';
 import { fetchAccessRoles } from './fetch-access-roles.js';
+import { type Knex } from 'knex';
+import { beforeEach, expect, test, vi } from 'vitest';
 
 let knex: Knex;
 

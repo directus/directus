@@ -1,11 +1,11 @@
-import type { EventContext } from '@directus/types';
-import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { WebSocketClient } from '../types.js';
 import { ItemsHandler } from './items.js';
+import type { EventContext } from '@directus/types';
+import type { Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 // mocking
 vi.mock('../controllers', () => ({

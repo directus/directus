@@ -1,7 +1,7 @@
+import { GeometryHelper } from '../types.js';
 import type { Field, RawField } from '@directus/types';
 import type { Knex } from 'knex';
 import type { GeoJSONGeometry } from 'wellknown';
-import { GeometryHelper } from '../types.js';
 
 export class GeometryHelperPostgres extends GeometryHelper {
 	override async supported() {

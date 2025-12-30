@@ -1,9 +1,9 @@
-import { PERMISSION_ACTIONS } from '@directus/constants';
-import type { Accountability, CollectionAccess, CollectionPermissions } from '@directus/types';
-import { mapValues, uniq } from 'lodash-es';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
+import { PERMISSION_ACTIONS } from '@directus/constants';
+import type { Accountability, CollectionAccess, CollectionPermissions } from '@directus/types';
+import { mapValues, uniq } from 'lodash-es';
 
 /**
  * Get all permissions + minimal app permissions (if applicable) for the user + role in the current accountability.

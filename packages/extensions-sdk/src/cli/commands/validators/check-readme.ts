@@ -1,6 +1,6 @@
+import type { Report } from '../../types.js';
 import { opendir } from 'node:fs/promises';
 import { type Ora } from 'ora';
-import type { Report } from '../../types.js';
 
 const checkReadMe = {
 	name: 'readme',

@@ -1,8 +1,4 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelation } from '@directus/utils';
-import type { Knex } from 'knex';
-import { isEmpty } from 'lodash-es';
+import { convertWildcards } from './convert-wildcards.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
@@ -10,7 +6,11 @@ import { getRelationType } from '../../../utils/get-relation-type.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
-import { convertWildcards } from './convert-wildcards.js';
+import { REGEX_BETWEEN_PARENS } from '@directus/constants';
+import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
+import { getRelation } from '@directus/utils';
+import type { Knex } from 'knex';
+import { isEmpty } from 'lodash-es';
 
 interface CollectionScope {
 	[collectionScope: string]: string[];

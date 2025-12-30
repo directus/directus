@@ -1,5 +1,5 @@
-import { expect, test, describe } from 'vitest';
 import { getInternalInterfaces } from './index';
+import { describe, expect, test } from 'vitest';
 
 /**
  * Vite v3 reworked the glob import with it's own internal sorting,

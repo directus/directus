@@ -1,6 +1,6 @@
+import { getFilesizeSum } from './get-filesize-sum.js';
 import type { Knex } from 'knex';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getFilesizeSum } from './get-filesize-sum.js';
 
 let mockResult: { total: number | null };
 let mockDb: Knex;

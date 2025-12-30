@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { userName } from './user-name.js';
+import { expect, test } from 'vitest';
 
 const unknownUser = 'Unknown User';
 

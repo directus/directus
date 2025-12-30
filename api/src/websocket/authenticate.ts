@@ -1,16 +1,16 @@
-import type { Accountability } from '@directus/types';
-import { isEqual } from 'lodash-es';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { WebSocketError } from './errors.js';
+import type { BasicAuthMessage, WebSocketResponse } from './messages.js';
+import type { AuthenticationState } from './types.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../services/index.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { getSchema } from '../utils/get-schema.js';
-import { WebSocketError } from './errors.js';
-import type { BasicAuthMessage, WebSocketResponse } from './messages.js';
-import type { AuthenticationState } from './types.js';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
+import type { Accountability } from '@directus/types';
+import { isEqual } from 'lodash-es';
 
 export async function authenticateConnection(
 	message: BasicAuthMessage & Record<string, any>,

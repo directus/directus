@@ -1,7 +1,7 @@
+import { sanitizeQuery } from './sanitize-query.js';
+import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
-import { sanitizeQuery } from './sanitize-query.js';
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO

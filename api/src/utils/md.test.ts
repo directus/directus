@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { md } from './md.js';
+import { expect, test } from 'vitest';
 
 test.each([
 	{ value: 'test', expected: '<p>test</p>\n' },

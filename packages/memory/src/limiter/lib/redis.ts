@@ -1,7 +1,7 @@
-import { RateLimiterRedis } from 'rate-limiter-flexible';
 import type { Limiter } from '../types/class.js';
 import type { LimiterConfigRedis } from '../types/config.js';
 import { consume } from '../utils/consume.js';
+import { RateLimiterRedis } from 'rate-limiter-flexible';
 
 export class LimiterRedis implements Limiter {
 	private limiter: RateLimiterRedis;

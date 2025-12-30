@@ -1,4 +1,9 @@
 /* eslint-disable no-console */
+import global from './global';
+import config, { getUrl, paths } from '../common/config';
+import vendors from '../common/get-dbs-to-test';
+import { USER } from '../common/variables';
+import { awaitDatabaseConnection, awaitDirectusConnection } from '../utils/await-connection';
 import axios from 'axios';
 import { spawn, spawnSync } from 'child_process';
 import knex from 'knex';
@@ -6,11 +11,6 @@ import { Listr } from 'listr2';
 import { clone } from 'lodash-es';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
-import config, { getUrl, paths } from '../common/config';
-import vendors from '../common/get-dbs-to-test';
-import { USER } from '../common/variables';
-import { awaitDatabaseConnection, awaitDirectusConnection } from '../utils/await-connection';
-import global from './global';
 
 export async function setup() {
 	console.log(`👮‍♀️ Starting tests!\n`);

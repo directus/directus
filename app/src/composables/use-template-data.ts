@@ -3,7 +3,7 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { Collection, Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { has, merge, pick } from 'lodash';
-import { ComputedRef, Ref, computed, ref, watch } from 'vue';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
 type UsableTemplateData = {
 	template: ComputedRef<string | null>;

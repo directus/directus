@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { mergeItemData } from './merge-item-data';
+import { describe, expect, it } from 'vitest';
 
 describe('mergeItemData', () => {
 	it('should use existing if field is undefined in edits', () => {

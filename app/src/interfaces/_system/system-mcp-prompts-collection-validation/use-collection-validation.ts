@@ -1,8 +1,8 @@
-import { type MaybeRef, unref, computed } from 'vue';
+import { REQUIRED_FIELDS } from './schema';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { REQUIRED_FIELDS } from './schema';
 import { Field } from '@directus/types';
+import { computed, type MaybeRef, unref } from 'vue';
 
 export const useCollectionValidation = (collection: MaybeRef<string>) => {
 	const collectionsStore = useCollectionsStore();

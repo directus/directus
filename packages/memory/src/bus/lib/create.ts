@@ -1,6 +1,6 @@
-import type { BusConfig } from '../types/config.js';
 import { BusLocal } from './local.js';
 import { BusRedis } from './redis.js';
+import type { BusConfig } from '../types/config.js';
 
 export const createBus = (config: BusConfig) => {
 	if (config.type === 'local') {

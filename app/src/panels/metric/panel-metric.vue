@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { useAutoFontFit } from '@/composables/use-auto-fit-text';
+import type { Notation, Style, Unit } from '@/utils/format-number';
+import { formatNumber } from '@/utils/format-number';
 import { Filter } from '@directus/types';
 import { isNil } from 'lodash';
-import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useAutoFontFit } from '@/composables/use-auto-fit-text';
-import { formatNumber } from '@/utils/format-number';
-import type { Style, Notation, Unit } from '@/utils/format-number';
+import { computed, onBeforeUnmount, onMounted, onUpdated, ref } from 'vue';
 import { CSSProperties } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	showHeader?: boolean;

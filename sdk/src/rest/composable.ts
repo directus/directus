@@ -1,8 +1,8 @@
+import type { RestClient, RestCommand, RestConfig } from './types.js';
 import type { StaticTokenClient } from '../auth/types.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
-import type { RestClient, RestCommand, RestConfig } from './types.js';
 
 const defaultConfigValues: RestConfig = {};
 

@@ -1,6 +1,6 @@
+import { updateFieldWidths } from './update-field-widths';
 import type { DeepPartial, Field } from '@directus/types';
 import { expect, it } from 'vitest';
-import { updateFieldWidths } from './update-field-widths';
 
 it('should detect and update right aligned fields', () => {
 	const fields: DeepPartial<Field>[] = [

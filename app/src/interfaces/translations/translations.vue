@@ -1,20 +1,20 @@
 <script setup lang="ts">
+import TranslationForm from './translation-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useWindowSize } from '@/composables/use-window-size';
-import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { fetchAll } from '@/utils/fetch-all';
-import type { ContentVersion } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { validateItem } from '@/utils/validate-item';
+import type { ContentVersion } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import TranslationForm from './translation-form.vue';
-import { validateItem } from '@/utils/validate-item';
 
 const props = withDefaults(
 	defineProps<{

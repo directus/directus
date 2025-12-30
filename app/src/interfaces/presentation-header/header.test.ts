@@ -1,8 +1,8 @@
-import { describe, expect, test, vi } from 'vitest';
+import Header from './header.vue';
+import { Tooltip } from '@/__utils__/tooltip';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { Tooltip } from '@/__utils__/tooltip';
-import Header from './header.vue';
+import { describe, expect, test, vi } from 'vitest';
 import { computed } from 'vue';
 import { createI18n } from 'vue-i18n';
 

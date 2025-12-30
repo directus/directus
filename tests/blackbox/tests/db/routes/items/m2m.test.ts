@@ -1,3 +1,14 @@
+import {
+	collectionFoods,
+	collectionIngredients,
+	collectionSuppliers,
+	type Food,
+	getTestsSchema,
+	type Ingredient,
+	seedDBValues,
+	type Supplier,
+} from './m2m.seed';
+import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import config, { getUrl } from '@common/config';
 import { CreateItem, ReadItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
@@ -8,17 +19,6 @@ import { findIndex, without } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { beforeAll, describe, expect, it, test } from 'vitest';
-import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
-import {
-	collectionFoods,
-	collectionIngredients,
-	collectionSuppliers,
-	getTestsSchema,
-	seedDBValues,
-	type Food,
-	type Ingredient,
-	type Supplier,
-} from './m2m.seed';
 
 function createFood(pkType: PrimaryKeyType) {
 	const item: Food = {

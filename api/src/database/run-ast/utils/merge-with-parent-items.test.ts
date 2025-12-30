@@ -1,8 +1,8 @@
+import { mergeWithParentItems } from './merge-with-parent-items.js';
+import type { NestedCollectionNode } from '../../../types/ast.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 import type { Item } from '@directus/types';
 import { describe, expect, test } from 'vitest';
-import type { NestedCollectionNode } from '../../../types/ast.js';
-import { mergeWithParentItems } from './merge-with-parent-items.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 describe('m2o', () => {
 	const schema = new SchemaBuilder()

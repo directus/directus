@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
-import { InvalidTokenError, ServiceUnavailableError, TokenExpiredError } from '@directus/errors';
 import type { DirectusTokenPayload } from '../types/index.js';
+import { InvalidTokenError, ServiceUnavailableError, TokenExpiredError } from '@directus/errors';
+import jwt from 'jsonwebtoken';
 
 export function verifyJWT(token: string, secret: string) {
 	let payload;

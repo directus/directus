@@ -1,6 +1,6 @@
+import { getFilterType } from './get-filter-type.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { expect, test } from 'vitest';
-import { getFilterType } from './get-filter-type.js';
 
 test(`filter type for string field`, async () => {
 	const schema = new SchemaBuilder()

@@ -1,7 +1,7 @@
+import PreviewSVG from './preview.svg?raw';
+import InterfaceSelectMultipleCheckboxesTree from './select-multiple-checkbox-tree.vue';
 import { defineInterface } from '@directus/extensions';
 import { DeepPartial, Field } from '@directus/types';
-import InterfaceSelectMultipleCheckboxesTree from './select-multiple-checkbox-tree.vue';
-import PreviewSVG from './preview.svg?raw';
 
 const repeaterFields: DeepPartial<Field>[] = [
 	{

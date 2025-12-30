@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { useNavBarStore } from '../stores/nav-bar';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
 import { computed } from 'vue';
-import { useNavBarStore } from '../stores/nav-bar';
 
 const serverStore = useServerStore();
 

@@ -1,7 +1,7 @@
+import { Client_SQLite3 } from '../mock.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
-import { Client_SQLite3 } from '../mock.js';
 
 const { applyOperator } = await import('./operator.js');
 

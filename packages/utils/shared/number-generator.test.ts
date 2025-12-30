@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { numberGenerator } from './number-generator.js';
+import { expect, test } from 'vitest';
 
 test('generator', () => {
 	const idGen = numberGenerator();

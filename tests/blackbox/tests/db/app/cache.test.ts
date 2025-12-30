@@ -1,4 +1,5 @@
-import config, { getUrl, paths, type Env } from '@common/config';
+import { collectionFirst, collectionIgnored, seedDBValues } from './cache.seed';
+import config, { type Env, getUrl, paths } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
@@ -10,7 +11,6 @@ import { cloneDeep } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
-import { collectionFirst, collectionIgnored, seedDBValues } from './cache.seed';
 
 let isSeeded = false;
 

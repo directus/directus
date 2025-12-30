@@ -1,14 +1,14 @@
-import { Command } from 'commander';
-import { describe, expect, test, vi, beforeEach } from 'vitest';
 import { createCli } from './index.js';
 import emitter from '../emitter.js';
 import { startServer } from '../server.js';
-import { loadExtensions } from './load-extensions.js';
 import bootstrap from './commands/bootstrap/index.js';
-import init from './commands/init/index.js';
 import dbMigrate from './commands/database/migrate.js';
+import init from './commands/init/index.js';
 import { apply } from './commands/schema/apply.js';
 import usersCreate from './commands/users/create.js';
+import { loadExtensions } from './load-extensions.js';
+import { Command } from 'commander';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('../emitter.js', () => ({
 	default: {

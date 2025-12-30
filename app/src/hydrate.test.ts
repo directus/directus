@@ -1,3 +1,5 @@
+import { hydrate } from './hydrate';
+import { defaultBasemap } from './utils/geometry/basemap';
 import { setLanguage } from '@/lang/set-language';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
@@ -6,9 +8,6 @@ import { useAppStore } from '@directus/stores';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
-import { hydrate } from './hydrate';
-import { defaultBasemap } from './utils/geometry/basemap';
 
 vi.mock('@/lang/set-language', () => ({
 	setLanguage: vi.fn(),

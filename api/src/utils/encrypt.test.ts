@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { encrypt, decrypt } from './encrypt.js';
+import { decrypt, encrypt } from './encrypt.js';
+import { describe, expect, it } from 'vitest';
 
 const isBase64 = (s: string) => /^[A-Za-z0-9+/]+={0,2}$/.test(s);
 

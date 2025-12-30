@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { defaultValues, FormValidator, useFormFields, validate, ValidationError } from './form';
+import SetupForm from './form.vue';
 import api from '@/api';
 import { login } from '@/auth';
 import VButton from '@/components/v-button.vue';
@@ -11,8 +13,6 @@ import { useHead } from '@unhead/vue';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { defaultValues, FormValidator, useFormFields, validate, ValidationError } from './form';
-import SetupForm from './form.vue';
 
 const { t } = useI18n();
 

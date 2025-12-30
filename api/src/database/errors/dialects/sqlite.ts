@@ -1,10 +1,10 @@
+import type { SQLiteError } from './types.js';
 import {
 	ContainsNullValuesError,
 	InvalidForeignKeyError,
 	NotNullViolationError,
 	RecordNotUniqueError,
 } from '@directus/errors';
-import type { SQLiteError } from './types.js';
 import type { Item } from '@directus/types';
 
 // NOTE:

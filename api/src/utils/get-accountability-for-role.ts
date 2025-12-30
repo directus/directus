@@ -1,8 +1,8 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
+import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 
 export async function getAccountabilityForRole(
 	role: null | string,

@@ -1,5 +1,5 @@
-import type { Knex } from 'knex';
 import { GeometryHelper } from '../types.js';
+import type { Knex } from 'knex';
 
 export class GeometryHelperMySQL extends GeometryHelper {
 	override collect(table: string, column: string): Knex.Raw {

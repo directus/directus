@@ -273,6 +273,7 @@ vi.mock('./use-system', () => ({
 }));
 
 // Import the function after mocking
+// eslint-disable-next-line import/order
 import { useCollection } from './use-collection';
 
 describe('useCollection', () => {

@@ -1,12 +1,12 @@
+import { getAggregateQuery } from './aggregate-query.js';
+import * as filterReplaceM2AMod from './filter-replace-m2a.js';
+import * as replaceFuncsMod from './replace-funcs.js';
+import * as sanitizeQueryMod from '../../../utils/sanitize-query.js';
+import * as validateQueryMod from '../../../utils/validate-query.js';
 import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
 import type { Query } from '@directus/types';
 import type { FieldNode, SelectionNode } from 'graphql';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import * as sanitizeQueryMod from '../../../utils/sanitize-query.js';
-import * as validateQueryMod from '../../../utils/validate-query.js';
-import { getAggregateQuery } from './aggregate-query.js';
-import * as filterReplaceM2AMod from './filter-replace-m2a.js';
-import * as replaceFuncsMod from './replace-funcs.js';
 
 const sanitizeQuerySpy = vi.spyOn(sanitizeQueryMod, 'sanitizeQuery');
 const validateQuerySpy = vi.spyOn(validateQueryMod, 'validateQuery');

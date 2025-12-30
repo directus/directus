@@ -1,8 +1,8 @@
-import type { DirectusClient } from '../types/client.js';
 import type { GraphqlClient, GraphqlConfig } from './types.js';
-import { request } from '../utils/request.js';
-import { getRequestUrl } from '../utils/get-request-url.js';
 import type { AuthenticationClient } from '../auth/types.js';
+import type { DirectusClient } from '../types/client.js';
+import { getRequestUrl } from '../utils/get-request-url.js';
+import { request } from '../utils/request.js';
 
 const defaultConfigValues: GraphqlConfig = {};
 

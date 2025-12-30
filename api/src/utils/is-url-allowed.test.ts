@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import isUrlAllowed from './is-url-allowed.js';
+import { expect, test } from 'vitest';
 
 test('isUrlAllowed should allow matching domain', () => {
 	const checkUrl = 'https://directus.io';

@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import SystemThemeOverridesGroup from './SystemThemeOverridesGroup.vue';
+import type { SetValueFn } from './types.js';
 import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { Theme, useTheme } from '@directus/themes';
 import { clone, get, isEmpty, setWith, unset } from 'lodash';
 import { computed } from 'vue';
-import SystemThemeOverridesGroup from './SystemThemeOverridesGroup.vue';
-import type { SetValueFn } from './types.js';
 
 defineOptions({
 	inheritAttrs: false,

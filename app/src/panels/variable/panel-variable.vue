@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useInsightsStore } from '@/stores/insights';
 import { Type } from '@directus/types';
 import { computed } from 'vue';
-import { useInsightsStore } from '@/stores/insights';
 
 interface Props {
 	type: Type;

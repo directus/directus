@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useServerStore } from '@/stores/server';
-import type { Revision, RevisionPartial, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
+import type { Revision, RevisionPartial, RevisionsByDate, RevisionWithTime } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';

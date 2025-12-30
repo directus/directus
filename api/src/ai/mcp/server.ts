@@ -1,32 +1,32 @@
+import { DirectusTransport } from './transport.js';
+import type { MCPOptions, Prompt } from './types.js';
+import { ItemsService } from '../../services/index.js';
+import { Url } from '../../utils/url.js';
+import { findMcpTool, getAllMcpTools } from '../tools/index.js';
+import type { ToolConfig, ToolResult } from '../tools/types.js';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isObject, parseJSON, toArray } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
+	type CallToolRequest,
 	CallToolRequestSchema,
+	type CallToolResult,
+	type GetPromptRequest,
 	GetPromptRequestSchema,
+	type GetPromptResult,
 	InitializedNotificationSchema,
 	ErrorCode as JSONRPCErrorCode,
 	JSONRPCMessageSchema,
 	ListPromptsRequestSchema,
 	ListToolsRequestSchema,
 	McpError,
-	type CallToolRequest,
-	type CallToolResult,
-	type GetPromptRequest,
-	type GetPromptResult,
 	type PromptArgument,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
-import { ItemsService } from '../../services/index.js';
-import { Url } from '../../utils/url.js';
-import { findMcpTool, getAllMcpTools } from '../tools/index.js';
-import type { ToolConfig, ToolResult } from '../tools/types.js';
-import { DirectusTransport } from './transport.js';
-import type { MCPOptions, Prompt } from './types.js';
 
 export class DirectusMCP {
 	promptsCollection?: string | null;

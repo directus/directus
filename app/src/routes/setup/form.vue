@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defaultValues, useFormFields } from './form';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -7,7 +8,6 @@ import { SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
 import { I18nT } from 'vue-i18n';
-import { defaultValues, useFormFields } from './form';
 
 const { info } = storeToRefs(useServerStore());
 

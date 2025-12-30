@@ -1,4 +1,5 @@
-import config, { getUrl, paths, type Env } from '@common/config';
+import { collectionFirst } from './general.seed';
+import config, { type Env, getUrl, paths } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql } from '@common/transport';
 import type { WebSocketResponse, WebSocketUID } from '@common/types';
@@ -12,7 +13,6 @@ import { cloneDeep } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { collectionFirst } from './general.seed';
 
 describe('WebSocket General Tests', () => {
 	const databases = new Map<string, Knex>();

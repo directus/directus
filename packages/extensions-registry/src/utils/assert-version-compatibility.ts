@@ -1,6 +1,6 @@
-import { OutOfDateError } from '@directus/errors';
 import { SUPPORTED_VERSION } from '../constants.js';
 import { getApiVersion } from './get-api-version.js';
+import { OutOfDateError } from '@directus/errors';
 
 export interface ValidateApiVersionOptions {
 	registry?: string;

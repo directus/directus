@@ -1,11 +1,11 @@
+import type { Credentials } from '../create-db-connection.js';
+import type { Driver } from '@directus/types';
 import fs from 'fs';
 import { Liquid } from 'liquidjs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
-import type { Driver } from '@directus/types';
-import type { Credentials } from '../create-db-connection.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

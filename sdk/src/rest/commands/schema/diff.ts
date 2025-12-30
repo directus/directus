@@ -1,5 +1,5 @@
-import type { RestCommand } from '../../types.js';
 import type { SchemaSnapshotOutput } from './snapshot.js';
+import type { RestCommand } from '../../types.js';
 
 // TODO improve typing
 export type SchemaDiffOutput = {

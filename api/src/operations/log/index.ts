@@ -1,6 +1,6 @@
+import { useLogger } from '../../logger/index.js';
 import { defineOperationApi } from '@directus/extensions';
 import { optionToString } from '@directus/utils';
-import { useLogger } from '../../logger/index.js';
 
 type Options = {
 	message: unknown;

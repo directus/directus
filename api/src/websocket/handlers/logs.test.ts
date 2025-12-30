@@ -1,10 +1,10 @@
-import { ErrorCode } from '@directus/errors';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
 import { getAllowedLogLevels } from '../../utils/get-allowed-log-levels.js';
 import { WebSocketError } from '../errors.js';
 import type { WebSocketClient } from '../types.js';
 import { LogsHandler } from './logs.js';
+import { ErrorCode } from '@directus/errors';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 // mocking
 vi.mock('../controllers', () => ({

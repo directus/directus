@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useGroupable } from '@directus/composables';
-import { computed, watch } from 'vue';
 import VIcon from './v-icon/v-icon.vue';
 import VListItemIcon from './v-list-item-icon.vue';
 import VListItem from './v-list-item.vue';
+import { useGroupable } from '@directus/composables';
+import { computed, watch } from 'vue';
 
 interface Props {
 	/** If enabled, multiple elements can be selected */

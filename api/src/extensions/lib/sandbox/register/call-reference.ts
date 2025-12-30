@@ -1,6 +1,6 @@
+import { useLogger } from '../../../../logger/index.js';
 import { useEnv } from '@directus/env';
 import type { Reference } from 'isolated-vm';
-import { useLogger } from '../../../../logger/index.js';
 
 type Args<T> = T extends (...args: infer Args) => unknown ? Args : any[];
 type Result<T> = T extends (...args: any) => infer Result ? Result : unknown;

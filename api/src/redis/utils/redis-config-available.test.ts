@@ -1,5 +1,5 @@
-import { useEnv } from '@directus/env';
 import { redisConfigAvailable } from './redis-config-available.js';
+import { useEnv } from '@directus/env';
 
 import { afterEach, expect, test, vi } from 'vitest';
 

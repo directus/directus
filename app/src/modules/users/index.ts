@@ -1,6 +1,6 @@
-import { defineModule } from '@directus/extensions';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
+import { defineModule } from '@directus/extensions';
 
 export default defineModule({
 	id: 'users',

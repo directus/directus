@@ -1,9 +1,9 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { exists } from 'fs-extra';
-import { writeFile, rm } from 'node:fs/promises';
-import { join } from 'node:path';
 import { getExtensionsPath } from '../get-extensions-path.js';
-import { getSyncStatus, setSyncStatus, isSynchronizing, SyncStatus } from './status.js';
+import { getSyncStatus, isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
+import { exists } from 'fs-extra';
+import { rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('fs-extra');
 vi.mock('node:fs/promises');

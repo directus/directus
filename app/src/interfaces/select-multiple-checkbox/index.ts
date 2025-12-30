@@ -1,6 +1,6 @@
-import { defineInterface } from '@directus/extensions';
-import InterfaceSelectMultipleCheckboxes from './select-multiple-checkbox.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceSelectMultipleCheckboxes from './select-multiple-checkbox.vue';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'select-multiple-checkbox',

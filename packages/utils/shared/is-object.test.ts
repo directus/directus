@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { isObject } from './is-object.js';
+import { describe, expect, it } from 'vitest';
 
 describe('isObject', () => {
 	it.each([{}, { exampleProp: 1 }])('returns true if input is an object', (input) => {

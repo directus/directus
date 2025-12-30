@@ -1,11 +1,11 @@
+import { getCacheKey } from './get-cache-key.js';
+import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
+import { getDatabase } from '../database/index.js';
+import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
 import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import type { Knex } from 'knex';
-import { afterEach, beforeAll, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
-import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
-import { getDatabase } from '../database/index.js';
-import { getCacheKey } from './get-cache-key.js';
-import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
+import { afterEach, beforeAll, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 
 vi.mock('../database/index.js');
 

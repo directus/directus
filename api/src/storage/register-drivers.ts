@@ -1,6 +1,6 @@
+import { getStorageDriver } from './get-storage-driver.js';
 import { useEnv } from '@directus/env';
 import type { StorageManager } from '@directus/storage';
-import { getStorageDriver } from './get-storage-driver.js';
 
 export const registerDrivers = async (storage: StorageManager) => {
 	const env = useEnv();

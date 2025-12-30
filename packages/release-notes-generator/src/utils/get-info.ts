@@ -1,7 +1,7 @@
-import { getInfo as getGithubInfo } from '@changesets/get-github-info';
 import config from '../config.js';
 import type { Change, Changesets, Notice, Type, UntypedPackage } from '../types.js';
 import { sortByExternalOrder, sortByObjectValues } from './sort.js';
+import { getInfo as getGithubInfo } from '@changesets/get-github-info';
 
 export async function getInfo(changesets: Changesets): Promise<{
 	types: Type[];

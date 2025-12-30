@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import VButton from './v-button.vue';
 import VIcon from './v-icon/v-icon.vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
 	/** Currently selected page */

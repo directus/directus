@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import EditingLayer from '../components/editing-layer.vue';
+import type { NavigationData } from '../types';
+import { getUrlRoute } from '../utils/get-url-route';
+import { sameOrigin } from '../utils/same-origin';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -10,10 +14,6 @@ import { useHead } from '@unhead/vue';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import EditingLayer from '../components/editing-layer.vue';
-import type { NavigationData } from '../types';
-import { getUrlRoute } from '../utils/get-url-route';
-import { sameOrigin } from '../utils/same-origin';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
 	urls: string[];

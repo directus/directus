@@ -1,11 +1,11 @@
 import {
+	isDateCreated,
+	isDateUpdated,
 	isHidden,
 	isPrimaryKey,
 	isRelational,
-	isDateUpdated,
-	isDateCreated,
-	isUserUpdated,
 	isUserCreated,
+	isUserUpdated,
 } from '@/utils/field-utils';
 import type { Field } from '@directus/types';
 import { expect, test } from 'vitest';

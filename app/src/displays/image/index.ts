@@ -1,5 +1,5 @@
-import { defineDisplay } from '@directus/extensions';
 import DisplayImage from './image.vue';
+import { defineDisplay } from '@directus/extensions';
 
 export default defineDisplay({
 	id: 'image',

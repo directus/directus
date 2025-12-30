@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import RequestForm from './request.vue';
+import ResetForm from './reset.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import PublicView from '@/views/public';
 import { useHead } from '@unhead/vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import RequestForm from './request.vue';
-import ResetForm from './reset.vue';
 
 const { t } = useI18n();
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ComparisonHeader from './comparison-header.vue';
+import { useComparison } from './use-comparison';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -16,8 +18,6 @@ import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ComparisonHeader from './comparison-header.vue';
-import { useComparison } from './use-comparison';
 
 interface Props {
 	deleteVersionsAllowed: boolean;

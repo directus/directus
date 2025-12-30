@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import FilesNotFound from './not-found.vue';
+import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -26,8 +28,6 @@ import type { Field, File } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FilesNotFound from './not-found.vue';
 
 const props = defineProps<{
 	primaryKey: string;

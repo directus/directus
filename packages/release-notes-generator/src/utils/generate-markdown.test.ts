@@ -1,7 +1,7 @@
-import { describe, expect, test } from 'vitest';
 import config from '../config.js';
 import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types.js';
 import { generateMarkdown } from './generate-markdown.js';
+import { describe, expect, test } from 'vitest';
 
 const change1: Change = {
 	summary: "Made Directus even more magical\nAnd here's some additional context",

@@ -1,7 +1,7 @@
+import { getPublicURL } from '../../../../utils/get-root-path';
 import { DeepPartial, Field, FlowRaw, TriggerType, Width } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { useI18n } from 'vue-i18n';
-import { getPublicURL } from '../../../../utils/get-root-path';
 
 export type Trigger = {
 	name: string;

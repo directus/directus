@@ -1,14 +1,14 @@
-import { parseJSON } from '@directus/utils';
-import { WebSocketMessage } from '@directus/types';
-import type { Server as httpServer } from 'http';
-import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { getAddress } from '../../utils/get-address.js';
-import { WebSocketError, handleWebSocketError } from '../errors.js';
+import { handleWebSocketError, WebSocketError } from '../errors.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
 import { registerWebSocketEvents } from './hooks.js';
+import { WebSocketMessage } from '@directus/types';
+import { parseJSON } from '@directus/utils';
+import type { Server as httpServer } from 'http';
+import type WebSocket from 'ws';
 
 const logger = useLogger();
 

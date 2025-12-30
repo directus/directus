@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { extensionTypeIconMap } from '../constants';
+import { ExtensionState } from '../types';
+import ExtensionItemOptions from './extension-item-options.vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -13,9 +16,6 @@ import { ApiOutput, ExtensionType } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
-import { extensionTypeIconMap } from '../constants';
-import { ExtensionState } from '../types';
-import ExtensionItemOptions from './extension-item-options.vue';
 
 const props = withDefaults(
 	defineProps<{

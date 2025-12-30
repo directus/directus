@@ -1,5 +1,5 @@
+import { APP_NUMERIC_STRING_TYPES, APP_NUMERIC_TYPES } from '@/constants';
 import { Field } from '@directus/types';
-import { APP_NUMERIC_TYPES, APP_NUMERIC_STRING_TYPES } from '@/constants';
 
 export function getJSType(field: Field): string {
 	if (

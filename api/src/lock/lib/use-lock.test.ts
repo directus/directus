@@ -1,8 +1,8 @@
+import { _cache, useLock } from './use-lock.js';
+import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { createKv, type KvLocal, type KvRedis } from '@directus/memory';
 import type { Redis } from 'ioredis';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { redisConfigAvailable, useRedis } from '../../redis/index.js';
-import { _cache, useLock } from './use-lock.js';
 
 vi.mock('../../redis/index.js');
 vi.mock('@directus/memory');

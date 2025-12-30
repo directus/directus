@@ -1,4 +1,3 @@
-import type { Accountability, PermissionsAction } from '@directus/types';
 import type { AST } from '../../../types/ast.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
@@ -7,8 +6,9 @@ import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
 import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
-import { validatePathPermissions } from './utils/validate-path/validate-path-permissions.js';
 import { validatePathExistence } from './utils/validate-path/validate-path-existence.js';
+import { validatePathPermissions } from './utils/validate-path/validate-path-permissions.js';
+import type { Accountability, PermissionsAction } from '@directus/types';
 
 export interface ProcessAstOptions {
 	ast: AST;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import { toRefs } from 'vue';
-import NotificationItem from './notification-item.vue';
 
 const notificationsStore = useNotificationsStore();
 const queue = toRefs(notificationsStore).queue;

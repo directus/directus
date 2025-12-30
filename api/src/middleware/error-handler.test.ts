@@ -1,3 +1,5 @@
+import * as errorHandlerMod from './error-handler.js';
+import { useLogger } from '../logger/index.js';
 import { createError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import axios, { AxiosError } from 'axios';
@@ -7,8 +9,6 @@ import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { Logger } from 'pino';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { useLogger } from '../logger/index.js';
-import * as errorHandlerMod from './error-handler.js';
 
 vi.mock('../database/index');
 vi.mock('../logger/index');

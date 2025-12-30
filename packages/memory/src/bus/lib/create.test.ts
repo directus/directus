@@ -1,8 +1,8 @@
-import { expect, test, vi } from 'vitest';
 import type { BusConfig } from '../index.js';
 import { createBus } from './create.js';
 import { BusLocal } from './local.js';
 import { BusRedis } from './redis.js';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('./local.js');
 vi.mock('./redis.js');

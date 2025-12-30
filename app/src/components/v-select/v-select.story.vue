@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import VSelect from './v-select.vue';
+import { ref } from 'vue';
 
 function initState() {
 	return {

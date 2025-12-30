@@ -1,8 +1,8 @@
-import type { Accountability, Filter } from '@directus/types';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import type { Context } from '../permissions/types.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
+import type { Accountability, Filter } from '@directus/types';
 
 /**
  * Check if the read permissions for a collection contain the dynamic variable $NOW.

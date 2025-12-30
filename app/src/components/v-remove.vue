@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VButton from './v-button.vue';
+import VCardActions from './v-card-actions.vue';
+import VCardTitle from './v-card-title.vue';
+import VCard from './v-card.vue';
+import VDialog from './v-dialog.vue';
+import VIcon from './v-icon/v-icon.vue';
 import type { RelationM2A } from '@/composables/use-relation-m2a';
 import type { RelationM2M } from '@/composables/use-relation-m2m';
 import type { RelationM2O } from '@/composables/use-relation-m2o';
@@ -6,12 +12,6 @@ import type { DisplayItem } from '@/composables/use-relation-multiple';
 import type { RelationO2M } from '@/composables/use-relation-o2m';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import VButton from './v-button.vue';
-import VCardActions from './v-card-actions.vue';
-import VCardTitle from './v-card-title.vue';
-import VCard from './v-card.vue';
-import VDialog from './v-dialog.vue';
-import VIcon from './v-icon/v-icon.vue';
 
 const { itemType, itemInfo, itemIsLocal, itemEdits, deselect, disabled, confirm } = defineProps<{
 	itemType?: DisplayItem['$type'];

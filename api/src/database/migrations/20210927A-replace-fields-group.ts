@@ -1,6 +1,6 @@
+import { getHelpers } from '../helpers/index.js';
 import type { Knex } from 'knex';
 import { uniq } from 'lodash-es';
-import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
 	const helpers = getHelpers(knex);

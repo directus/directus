@@ -1,6 +1,6 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceInputRichTextMD from './input-rich-text-md.vue';
 import PreviewSVG from './preview.svg?raw';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'input-rich-text-md',

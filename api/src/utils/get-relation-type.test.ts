@@ -1,6 +1,6 @@
+import { getRelationType } from './get-relation-type.js';
 import type { Relation } from '@directus/types';
 import { expect, test } from 'vitest';
-import { getRelationType } from './get-relation-type.js';
 
 test('Returns null if no relation object is included', () => {
 	const result = getRelationType({ relation: null, collection: null, field: 'test' });

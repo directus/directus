@@ -1,7 +1,7 @@
+import { shouldSkipCache } from './should-skip-cache.js';
 import { useEnv } from '@directus/env';
 import type { Request } from 'express';
 import { expect, test, vi } from 'vitest';
-import { shouldSkipCache } from './should-skip-cache.js';
 
 vi.mock('@directus/env');
 

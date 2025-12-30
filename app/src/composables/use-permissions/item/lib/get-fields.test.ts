@@ -1,3 +1,4 @@
+import { getFields } from './get-fields';
 import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
@@ -6,8 +7,7 @@ import { Field, ItemPermissions, Permission, PermissionsAction } from '@directus
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Ref, computed, ref } from 'vue';
-import { getFields } from './get-fields';
+import { computed, ref, Ref } from 'vue';
 
 vi.mock('@directus/composables');
 

@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { KvLocal, createKv } from '../../kv/index.js';
 import { CacheLocal } from './local.js';
+import { createKv, KvLocal } from '../../kv/index.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('../../kv/index.js');
 vi.mock('../../utils/index.js');

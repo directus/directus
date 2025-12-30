@@ -9,7 +9,7 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useUserStore } from '@/stores/user';
 import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
-import { StyleValue, computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, StyleValue } from 'vue';
 
 export type AppTile = {
 	id: string;

@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createLine } from './create-line';
+import { generateArrows, type GenerateArrowsContext } from './generate-arrows';
 import { GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
 import type { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo } from '../../operation.vue';
 import type { Panel } from '../types';
 import { getPoints } from '../utils/get-points';
-import { createLine } from './create-line';
-import { generateArrows, type GenerateArrowsContext } from './generate-arrows';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../utils/get-points', () => ({
 	getPoints: vi.fn(),

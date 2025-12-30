@@ -1,10 +1,10 @@
+import { ItemsService } from './items.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import getDatabase from '../database/index.js';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, PrimaryKey } from '@directus/types';
 import type { Knex } from 'knex';
 import { authenticator } from 'otplib';
-import getDatabase from '../database/index.js';
-import { ItemsService } from './items.js';
-import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 
 export class TFAService {
 	knex: Knex;

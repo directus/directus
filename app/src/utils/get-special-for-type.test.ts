@@ -1,6 +1,6 @@
+import { getSpecialForType } from './get-special-for-type';
 import { TYPES } from '@directus/constants';
 import { expect, test } from 'vitest';
-import { getSpecialForType } from './get-special-for-type';
 
 const castPrefixedSpecials = ['json', 'csv', 'boolean'];
 const nonPrefixedSpecials = ['uuid', 'hash', 'geometry'];

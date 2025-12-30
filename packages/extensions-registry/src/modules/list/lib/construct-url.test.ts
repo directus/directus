@@ -1,5 +1,5 @@
-import { expect, test, vi } from 'vitest';
 import { constructUrl } from './construct-url.js';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('../../../constants.js', () => ({
 	DEFAULT_REGISTRY: 'http://example.com',

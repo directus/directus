@@ -1,7 +1,7 @@
+import { aiChatPostHandler } from './chat.post.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { NextFunction, Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { aiChatPostHandler } from './chat.post.js';
 
 // Mock dependencies
 vi.mock('ai', () => ({
@@ -16,9 +16,11 @@ vi.mock('../utils/chat-request-tool-to-ai-sdk-tool.js', () => ({
 	chatRequestToolToAiSdkTool: vi.fn(),
 }));
 
+/* eslint-disable import/order */
 import { safeValidateUIMessages } from 'ai';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
+/* eslint-enable import/order */
 
 describe('aiChatPostHandler', () => {
 	let mockReq: Partial<Request>;

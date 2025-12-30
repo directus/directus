@@ -1,5 +1,5 @@
-import type { Knex } from 'knex';
 import { getHelpers } from '../../helpers/index.js';
+import type { Knex } from 'knex';
 
 export function withPreprocessBindings(knex: Knex, dbQuery: Knex.QueryBuilder) {
 	const schemaHelper = getHelpers(knex).schema;

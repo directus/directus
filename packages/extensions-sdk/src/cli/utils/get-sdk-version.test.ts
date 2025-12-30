@@ -1,5 +1,5 @@
-import { afterEach, expect, test, vi } from 'vitest';
 import getSdkVersion from './get-sdk-version.js';
+import { afterEach, expect, test, vi } from 'vitest';
 
 afterEach(() => {
 	vi.clearAllMocks();

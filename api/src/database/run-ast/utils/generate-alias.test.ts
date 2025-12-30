@@ -1,12 +1,12 @@
-import type { Query } from '@directus/types';
-import { expect, test } from 'vitest';
-import type { FnHelperOptions } from '../../helpers/fn/types.js';
 import {
 	generateAlias,
 	generateJoinAlias,
 	generateQueryAlias,
 	generateRelationalQueryAlias,
 } from './generate-alias.js';
+import type { FnHelperOptions } from '../../helpers/fn/types.js';
+import type { Query } from '@directus/types';
+import { expect, test } from 'vitest';
 
 test('generateAlias without context returns random alias', () => {
 	const alias1 = generateAlias();

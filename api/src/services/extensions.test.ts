@@ -1,9 +1,9 @@
+import { ExtensionsService } from './extensions.js';
+import { ItemsService } from './items.js';
+import { getExtensionManager } from '../extensions/index.js';
 import { ServiceUnavailableError } from '@directus/errors';
 import { describe as registryDescribe } from '@directus/extensions-registry';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { getExtensionManager } from '../extensions/index.js';
-import { ExtensionsService } from './extensions.js';
-import { ItemsService } from './items.js';
 
 // Mock dependencies at the top level
 vi.mock('@directus/env', () => ({

@@ -1,7 +1,3 @@
-import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
-import { isSystemCollection } from '@directus/system-data';
-import type { PrimaryKey } from '@directus/types';
-import express from 'express';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -9,6 +5,10 @@ import { ItemsService } from '../services/items.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import { isSystemCollection } from '@directus/system-data';
+import type { PrimaryKey } from '@directus/types';
+import express from 'express';
 
 const router = express.Router();
 

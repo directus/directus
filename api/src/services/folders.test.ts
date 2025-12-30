@@ -1,7 +1,7 @@
+import { FoldersService } from './folders.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { FoldersService } from './folders.js';
 
 vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),
@@ -12,8 +12,10 @@ vi.mock('./items.js', async () => {
 	return mockItemsService();
 });
 
-import { ForbiddenError } from '@directus/errors';
+/* eslint-disable import/order */
 import { ItemsService } from './items.js';
+import { ForbiddenError } from '@directus/errors';
+/* eslint-enable import/order */
 
 describe('FoldersService', () => {
 	const mockSchema = {

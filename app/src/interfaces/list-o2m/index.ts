@@ -1,7 +1,7 @@
-import { DeepPartial, Field } from '@directus/types';
-import { defineInterface } from '@directus/extensions';
 import InterfaceListO2M from './list-o2m.vue';
 import PreviewSVG from './preview.svg?raw';
+import { defineInterface } from '@directus/extensions';
+import { DeepPartial, Field } from '@directus/types';
 
 export default defineInterface({
 	id: 'list-o2m',

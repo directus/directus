@@ -1,6 +1,6 @@
+import { dedupeAccess } from './dedupe-access.js';
 import type { DeepPartial, Permission } from '@directus/types';
 import { expect, test } from 'vitest';
-import { dedupeAccess } from './dedupe-access.js';
 
 test('Merges field sets where access rules are identical', () => {
 	const input: DeepPartial<Permission>[] = [

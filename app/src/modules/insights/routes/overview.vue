@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DashboardDialog from '../components/dashboard-dialog.vue';
+import InsightsNavigation from '../components/navigation.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -21,16 +23,14 @@ import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
 import { getPublicURL } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { getEndpoint } from '@directus/utils';
 import { sortBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DashboardDialog from '../components/dashboard-dialog.vue';
-import InsightsNavigation from '../components/navigation.vue';
 
 const { t } = useI18n();
 

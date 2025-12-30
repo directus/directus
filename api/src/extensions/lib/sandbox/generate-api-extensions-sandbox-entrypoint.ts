@@ -1,6 +1,3 @@
-import type { ApiExtensionType, HybridExtensionType } from '@directus/types';
-import { numberGenerator } from '@directus/utils';
-import type { Router } from 'express';
 import { generateHostFunctionReference } from './generate-host-function-reference.js';
 import {
 	registerActionGenerator,
@@ -8,6 +5,9 @@ import {
 	registerOperationGenerator,
 	registerRouteGenerator,
 } from './register/index.js';
+import type { ApiExtensionType, HybridExtensionType } from '@directus/types';
+import { numberGenerator } from '@directus/utils';
+import type { Router } from 'express';
 
 /**
  * Generate the JS to run in the isolate to create the extension's entrypoint to the host

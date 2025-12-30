@@ -1,14 +1,14 @@
-import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
-import type { ApiOutput, BundleExtension, ExtensionSettings, ExtensionManager } from '@directus/types';
-import { describe, type DescribeOptions } from '@directus/extensions-registry';
-import type { AbstractServiceOptions, Accountability, DeepPartial, SchemaOverview } from '@directus/types';
-import { isObject } from '@directus/utils';
-import type { Knex } from 'knex';
+import { ItemsService } from './items.js';
 import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { transaction } from '../utils/transaction.js';
-import { ItemsService } from './items.js';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
+import { describe, type DescribeOptions } from '@directus/extensions-registry';
+import type { ApiOutput, BundleExtension, ExtensionManager, ExtensionSettings } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, DeepPartial, SchemaOverview } from '@directus/types';
+import { isObject } from '@directus/utils';
+import type { Knex } from 'knex';
 
 export class ExtensionReadError extends Error {
 	originalError: unknown;

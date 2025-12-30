@@ -1,5 +1,5 @@
-import type { Knex } from 'knex';
 import type { AST } from '../../types/ast.js';
+import type { Knex } from 'knex';
 
 export interface RunASTOptions {
 	/**

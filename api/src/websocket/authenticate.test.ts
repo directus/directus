@@ -1,12 +1,12 @@
+import emitter from '../emitter.js';
+import { authenticateConnection, authenticationSuccess } from './authenticate.js';
+import type { WebSocketAuthMessage } from './messages.js';
+import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
+import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
 import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { Mock } from 'vitest';
 import { describe, expect, test, vi } from 'vitest';
-import emitter from '../emitter.js';
-import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
-import { authenticateConnection, authenticationSuccess } from './authenticate.js';
-import type { WebSocketAuthMessage } from './messages.js';
-import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
 
 vi.mock('../utils/get-accountability-for-token', () => ({
 	getAccountabilityForToken: vi.fn().mockReturnValue({

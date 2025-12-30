@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 
 // Mock API
@@ -17,6 +17,7 @@ vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
+// eslint-disable-next-line import/order
 import { useComparison } from '@/views/private/components/comparison/use-comparison';
 
 // Mock Fields Store

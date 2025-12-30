@@ -1,9 +1,9 @@
-import { StorageManager } from '@directus/storage';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { validateEnv } from '../utils/validate-env.js';
-import { getStorage, _cache } from './index.js';
+import { _cache, getStorage } from './index.js';
 import { registerDrivers } from './register-drivers.js';
 import { registerLocations } from './register-locations.js';
+import { validateEnv } from '../utils/validate-env.js';
+import { StorageManager } from '@directus/storage';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
 vi.mock('@directus/storage');
 vi.mock('./register-drivers.js');

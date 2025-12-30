@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ExtensionState, ExtensionType } from '../types';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -9,7 +10,6 @@ import VMenu from '@/components/v-menu.vue';
 import { ApiOutput } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ExtensionState, ExtensionType } from '../types';
 
 const props = defineProps<{
 	extension: ApiOutput;

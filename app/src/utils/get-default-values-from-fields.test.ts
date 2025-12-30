@@ -1,5 +1,5 @@
-import { test, expect } from 'vitest';
 import { getDefaultValuesFromFields } from './get-default-values-from-fields';
+import { expect, test } from 'vitest';
 
 test('Ignores PK default value', () => {
 	const values = getDefaultValuesFromFields([

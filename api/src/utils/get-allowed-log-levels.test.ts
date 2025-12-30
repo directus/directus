@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { getAllowedLogLevels } from './get-allowed-log-levels.js';
+import { expect, test } from 'vitest';
 
 test('should return correct log levels for "info"', () => {
 	const result = getAllowedLogLevels('info');

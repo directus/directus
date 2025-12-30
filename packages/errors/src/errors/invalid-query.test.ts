@@ -1,6 +1,6 @@
-import { beforeEach, expect, test } from 'vitest';
 import type { InvalidQueryErrorExtensions } from './invalid-query.js';
 import { messageConstructor } from './invalid-query.js';
+import { beforeEach, expect, test } from 'vitest';
 
 let sample: InvalidQueryErrorExtensions;
 

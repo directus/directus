@@ -1,3 +1,5 @@
+import type { MSSQLError } from './types.js';
+import getDatabase from '../../index.js';
 import {
 	ContainsNullValuesError,
 	InvalidForeignKeyError,
@@ -8,8 +10,6 @@ import {
 } from '@directus/errors';
 
 import type { Item } from '@directus/types';
-import getDatabase from '../../index.js';
-import type { MSSQLError } from './types.js';
 
 enum MSSQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 547,

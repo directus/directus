@@ -1,6 +1,6 @@
+import { shouldSkipCache } from './should-skip-cache.js';
 import { useEnv } from '@directus/env';
 import type { Request } from 'express';
-import { shouldSkipCache } from './should-skip-cache.js';
 
 /**
  * Returns the Cache-Control header for the current request

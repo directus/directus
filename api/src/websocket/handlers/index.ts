@@ -1,9 +1,9 @@
-import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { HeartbeatHandler } from './heartbeat.js';
 import { ItemsHandler } from './items.js';
 import { LogsHandler } from './logs.js';
 import { SubscribeHandler } from './subscribe.js';
+import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
 
 export function startWebSocketHandlers() {
 	const env = useEnv();

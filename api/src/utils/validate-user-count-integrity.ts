@@ -1,8 +1,8 @@
-import { UserIntegrityCheckFlag } from '@directus/types';
+import { fetchUserCount, type FetchUserCountOptions } from './fetch-user-count/fetch-user-count.js';
 import { validateRemainingAdminCount } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-count.js';
 import { checkUserLimits } from '../telemetry/utils/check-user-limits.js';
 import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
-import { fetchUserCount, type FetchUserCountOptions } from './fetch-user-count/fetch-user-count.js';
+import { UserIntegrityCheckFlag } from '@directus/types';
 
 export interface ValidateUserCountIntegrityOptions extends Omit<FetchUserCountOptions, 'adminOnly'> {
 	flags: UserIntegrityCheckFlag;

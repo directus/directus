@@ -1,5 +1,5 @@
-import { Directive, DirectiveBinding } from 'vue';
 import { md } from '@/utils/md';
+import { Directive, DirectiveBinding } from 'vue';
 
 const Markdown: Directive = {
 	beforeMount: markdown,

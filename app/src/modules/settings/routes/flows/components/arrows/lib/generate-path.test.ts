@@ -1,6 +1,6 @@
+import { generatePath } from './generate-path';
 import { Vector2 } from '@/utils/vector2';
 import { describe, expect, it } from 'vitest';
-import { generatePath } from './generate-path';
 
 describe('generatePath', () => {
 	describe('error handling', () => {

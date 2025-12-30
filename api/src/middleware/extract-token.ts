@@ -1,6 +1,6 @@
-import type { RequestHandler } from 'express';
-import { InvalidPayloadError } from '@directus/errors';
 import { useEnv } from '@directus/env';
+import { InvalidPayloadError } from '@directus/errors';
+import type { RequestHandler } from 'express';
 
 /**
  * Extract access token from

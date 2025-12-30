@@ -20,7 +20,7 @@ import { Collection } from '@/types/collections';
 import RenderDisplay from '@/views/private/components/render-display.vue';
 import { useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, Ref, inject, ref, toRefs, watch } from 'vue';
+import { ComponentPublicInstance, inject, ref, Ref, toRefs, watch } from 'vue';
 
 defineOptions({ inheritAttrs: false });
 

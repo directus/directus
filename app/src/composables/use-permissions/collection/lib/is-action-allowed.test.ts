@@ -1,9 +1,9 @@
+import { isActionAllowed } from './is-action-allowed';
 import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, expect, it, describe, vi } from 'vitest';
-import { isActionAllowed } from './is-action-allowed';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 let sample: {
 	collection: string;
