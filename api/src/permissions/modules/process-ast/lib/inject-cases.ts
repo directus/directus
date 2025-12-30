@@ -1,8 +1,8 @@
-import type { Permission } from '@directus/types';
+import { getCases } from './get-cases.js';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
+import type { Permission } from '@directus/types';
 import { uniq } from 'lodash-es';
-import { getCases } from './get-cases.js';
 
 /**
  * Mutates passed AST

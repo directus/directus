@@ -1,3 +1,6 @@
+import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
+import type { DriverCloudinaryConfig } from './index.js';
+import { DriverCloudinary } from './index.js';
 import { normalizePath } from '@directus/utils';
 import {
 	rand,
@@ -21,12 +24,9 @@ import { extname, join, parse } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
 import type { Response } from 'undici';
-import { FormData, fetch } from 'undici';
+import { fetch, FormData } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
-import type { DriverCloudinaryConfig } from './index.js';
-import { DriverCloudinary } from './index.js';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');

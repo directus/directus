@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { getCollectionRelationList } from './get-collection-relation-list.js';
+import { expect, test } from 'vitest';
 
 test('get empty list for no tree', () => {
 	const list = getCollectionRelationList('collection', new Map());

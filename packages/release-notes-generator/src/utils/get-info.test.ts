@@ -1,6 +1,6 @@
-import { expect, test, vi } from 'vitest';
 import { Changesets, Config } from '../types.js';
 import { getInfo } from './get-info.js';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('../config.js', () => {
 	const config: Partial<Config> = {

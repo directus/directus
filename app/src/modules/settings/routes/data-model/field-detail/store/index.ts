@@ -1,3 +1,4 @@
+import * as alterations from './alterations';
 import api from '@/api';
 import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
@@ -11,7 +12,6 @@ import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, has, isEmpty, mergeWith, orderBy, set, sortBy } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
-import * as alterations from './alterations';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();

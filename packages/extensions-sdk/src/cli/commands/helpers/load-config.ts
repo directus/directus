@@ -1,9 +1,9 @@
+import type { Config } from '../../types.js';
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import fse from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import type { Config } from '../../types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

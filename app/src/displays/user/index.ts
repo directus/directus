@@ -1,6 +1,6 @@
-import { defineDisplay } from '@directus/extensions';
 import DisplayUser from './user.vue';
 import { userName } from '@/utils/user-name';
+import { defineDisplay } from '@directus/extensions';
 
 export default defineDisplay({
 	id: 'user',

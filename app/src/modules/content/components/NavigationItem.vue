@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import NavigationBookmark from './navigation-bookmark.vue';
+import NavigationItemContent from './navigation-item-content.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListGroup from '@/components/v-list-group.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -16,8 +18,6 @@ import { useGroupable } from '@directus/composables';
 import { Preset } from '@directus/types';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import NavigationBookmark from './navigation-bookmark.vue';
-import NavigationItemContent from './navigation-item-content.vue';
 
 const props = defineProps<{
 	collection: Collection;

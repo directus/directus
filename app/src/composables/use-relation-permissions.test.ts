@@ -1,12 +1,4 @@
 import {
-	useRelationPermissionsM2A,
-	useRelationPermissionsM2M,
-	useRelationPermissionsM2O,
-	useRelationPermissionsO2M,
-} from '@/composables/use-relation-permissions';
-import { afterEach, expect, test, vi } from 'vitest';
-import { ref, unref } from 'vue';
-import {
 	UsableCollectionPermissions,
 	useCollectionPermissions,
 } from './use-permissions/collection/use-collection-permissions';
@@ -14,6 +6,14 @@ import { RelationM2A } from './use-relation-m2a';
 import { RelationM2M } from './use-relation-m2m';
 import { RelationM2O } from './use-relation-m2o';
 import { RelationO2M } from './use-relation-o2m';
+import {
+	useRelationPermissionsM2A,
+	useRelationPermissionsM2M,
+	useRelationPermissionsM2O,
+	useRelationPermissionsO2M,
+} from '@/composables/use-relation-permissions';
+import { afterEach, expect, test, vi } from 'vitest';
+import { ref, unref } from 'vue';
 
 vi.mock('./use-permissions/collection/use-collection-permissions');
 

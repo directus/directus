@@ -1,12 +1,12 @@
-import { getNodeEnv } from '@directus/utils/node';
-import { setTimeout } from 'timers/promises';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useLogger } from '../../logger/index.js';
-import type { TelemetryReport } from '../types/report.js';
-import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
 import { getReport } from './get-report.js';
 import { sendReport } from './send-report.js';
 import { track } from './track.js';
+import { useLogger } from '../../logger/index.js';
+import type { TelemetryReport } from '../types/report.js';
+import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
+import { getNodeEnv } from '@directus/utils/node';
+import { setTimeout } from 'timers/promises';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
 vi.mock('./get-report.js');
 vi.mock('./send-report.js');

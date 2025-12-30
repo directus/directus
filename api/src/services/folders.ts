@@ -1,7 +1,7 @@
-import type { AbstractServiceOptions, Folder } from '@directus/types';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { ItemsService } from './items.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import type { AbstractServiceOptions, Folder } from '@directus/types';
 
 export class FoldersService extends ItemsService<Folder> {
 	constructor(options: AbstractServiceOptions) {

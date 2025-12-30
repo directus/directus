@@ -1,5 +1,5 @@
-import { PERMISSION_ACTIONS } from '@directus/constants';
 import type { Filter } from './filter.js';
+import { PERMISSION_ACTIONS } from '@directus/constants';
 
 export type PermissionsAction = (typeof PERMISSION_ACTIONS)[number];
 

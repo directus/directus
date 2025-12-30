@@ -1,5 +1,5 @@
-import { expect, test, vi } from 'vitest';
 import { checkUserLimits } from './check-user-limits.js';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({

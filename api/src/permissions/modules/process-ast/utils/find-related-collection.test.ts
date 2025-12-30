@@ -1,6 +1,6 @@
+import { findRelatedCollection } from './find-related-collection.js';
 import type { DeepPartial, SchemaOverview } from '@directus/types';
 import { expect, test } from 'vitest';
-import { findRelatedCollection } from './find-related-collection.js';
 
 test('Returns null if schema overview does not contain relation for given field in given collection', () => {
 	const schema: DeepPartial<SchemaOverview> = {

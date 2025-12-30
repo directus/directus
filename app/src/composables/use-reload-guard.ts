@@ -1,6 +1,6 @@
+import { useNavigationGuard } from './use-navigation-guard';
 import { type Ref, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useNavigationGuard } from './use-navigation-guard';
 
 export function useReloadGuard(needsReload: Ref<boolean>) {
 	const router = useRouter();

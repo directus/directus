@@ -1,7 +1,7 @@
+import { useBus } from '../../bus/index.js';
 import { useEnv } from '@directus/env';
 import { GraphQLSchema } from 'graphql';
 import { LRUMap } from 'mnemonist';
-import { useBus } from '../../bus/index.js';
 
 const env = useEnv();
 const bus = useBus();

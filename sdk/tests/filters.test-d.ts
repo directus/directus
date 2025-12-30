@@ -1,6 +1,6 @@
-import { describe, expectTypeOf, test } from 'vitest';
-import { createDirectus, readItems, rest } from '../src/index.js';
 import type { TestSchema } from './schema.js';
+import { createDirectus, readItems, rest } from '../src/index.js';
+import { describe, expectTypeOf, test } from 'vitest';
 
 describe('Test QueryFilters', () => {
 	test('resolving _and/_or filters (issue #20633)', () => {

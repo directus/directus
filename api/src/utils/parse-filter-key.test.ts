@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { parseFilterKey } from './parse-filter-key.js';
+import { expect, test } from 'vitest';
 
 const testCases = [
 	{ key: 'test', expected: { fieldName: 'test' } },

@@ -1,5 +1,5 @@
-import { expect, test, vi } from 'vitest';
 import { getCastFlag } from './has-cast-prefix.js';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('../constants/env-types.js', () => ({
 	ENV_TYPES: ['test'],

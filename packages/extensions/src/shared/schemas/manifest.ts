@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { EXTENSION_PKG_KEY } from '../constants/index.js';
 import { ExtensionOptions } from './options.js';
+import { EXTENSION_PKG_KEY } from '../constants/index.js';
+import { z } from 'zod';
 
 export const ExtensionManifest = z.object({
 	name: z.string(),

@@ -1,5 +1,5 @@
-import { expect, test, vi } from 'vitest';
 import { isDirectusVariable } from './is-directus-variable.js';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('../constants/directus-variables.js', () => ({
 	DIRECTUS_VARIABLES_REGEX: [/TEST_.*/],

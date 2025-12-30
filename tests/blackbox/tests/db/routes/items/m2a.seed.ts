@@ -1,17 +1,17 @@
-import { CreateCollection, CreateField, CreateFieldM2A, CreateItem, DeleteCollection } from '@common/functions';
-import vendors from '@common/get-dbs-to-test';
-import { SeedFunctions } from '@common/seed-functions';
-import type { PrimaryKeyType } from '@common/types';
-import { PRIMARY_KEY_TYPES } from '@common/variables';
-import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
-import { set } from 'lodash-es';
-import { expect, it } from 'vitest';
 import {
 	getTestsAllTypesSchema,
 	seedAllFieldTypesStructure,
 	seedAllFieldTypesValues,
 	seedM2AAliasAllFieldTypesValues,
 } from './seed-all-field-types';
+import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
+import { CreateCollection, CreateField, CreateFieldM2A, CreateItem, DeleteCollection } from '@common/functions';
+import vendors from '@common/get-dbs-to-test';
+import { SeedFunctions } from '@common/seed-functions';
+import type { PrimaryKeyType } from '@common/types';
+import { PRIMARY_KEY_TYPES } from '@common/variables';
+import { set } from 'lodash-es';
+import { expect, it } from 'vitest';
 
 export const collectionShapes = 'test_items_m2a_shapes';
 export const collectionCircles = 'test_items_m2a_circles';

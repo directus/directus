@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
+import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
+import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
+import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
+import { useFieldDetailStore } from './store/';
 import VDrawer from '@/components/v-drawer.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -12,11 +17,6 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
-import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
-import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
-import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
-import { useFieldDetailStore } from './store/';
 
 const props = withDefaults(
 	defineProps<{

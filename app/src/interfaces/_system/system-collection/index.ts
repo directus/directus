@@ -1,5 +1,5 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceSystemCollection from './system-collection.vue';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'system-collection',

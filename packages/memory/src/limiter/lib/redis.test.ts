@@ -1,8 +1,8 @@
+import { LimiterRedis } from './redis.js';
+import { consume } from '../utils/consume.js';
 import { Redis } from 'ioredis';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { consume } from '../utils/consume.js';
-import { LimiterRedis } from './redis.js';
 
 vi.mock('ioredis');
 vi.mock('rate-limiter-flexible');

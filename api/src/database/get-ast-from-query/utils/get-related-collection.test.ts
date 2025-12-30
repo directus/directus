@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest';
-import { SchemaBuilder } from '@directus/schema-builder';
 import { getRelatedCollection } from './get-related-collection.js';
+import { SchemaBuilder } from '@directus/schema-builder';
+import { expect, test } from 'vitest';
 
 test('relation on a primitive field', () => {
 	const schema = new SchemaBuilder()

@@ -1,5 +1,5 @@
-import { defineDisplay } from '@directus/extensions';
 import DisplayColor from './color.vue';
+import { defineDisplay } from '@directus/extensions';
 
 export default defineDisplay({
 	id: 'color',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { logEvent } from 'histoire/client';
 import VButton from './v-button.vue';
+import { logEvent } from 'histoire/client';
 </script>
 
 <template>

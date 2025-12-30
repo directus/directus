@@ -1,9 +1,9 @@
-import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
-import { CronJob } from 'cron';
 import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';
 import { validateCron } from '../utils/schedule.js';
+import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
+import { CronJob } from 'cron';
 
 const METRICS_LOCK_TIMEOUT = 10 * 60 * 1000; // 10 mins
 

@@ -1,7 +1,7 @@
+import { getReplacer, redactObject } from './redact-object.js';
 import { getRedactedString, REDACTED_TEXT } from '@directus/utils';
 import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
-import { getReplacer, redactObject } from './redact-object.js';
 
 const input = {
 	$trigger: {

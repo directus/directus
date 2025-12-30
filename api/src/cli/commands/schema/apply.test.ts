@@ -1,6 +1,7 @@
-import { DiffKind } from '@directus/types';
+import { apply, filterSnapshotDiff, formatPath, formatRelatedCollection } from './apply.js';
 import type { Snapshot, SnapshotDiff, SnapshotField, SnapshotRelation, SnapshotSystemField } from '@directus/types';
 import type { ApiCollection } from '@directus/types';
+import { DiffKind } from '@directus/types';
 import type { Diff } from 'deep-diff';
 import { promises as fs } from 'fs';
 import type { Knex } from 'knex';
@@ -9,7 +10,6 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import path from 'path';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { apply, filterSnapshotDiff, formatPath, formatRelatedCollection } from './apply.js';
 
 vi.mock('inquirer');
 vi.mock('../../../database/index.js');

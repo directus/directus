@@ -1,15 +1,15 @@
+import type { ResizeableOptions } from './v-resizeable.vue';
+import VResizeable from './v-resizeable.vue';
 import { Focus } from '@/__utils__/focus';
 import { generateRouter } from '@/__utils__/router';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
+import { useUserStore } from '@/stores/user';
 import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { Router } from 'vue-router';
-import { createPinia, setActivePinia } from 'pinia';
-import { useUserStore } from '@/stores/user';
-import VResizeable from './v-resizeable.vue';
-import type { ResizeableOptions } from './v-resizeable.vue';
 
 // Mock the useUserStore
 vi.mock('@/stores/user', () => ({

@@ -1,7 +1,7 @@
-import { test, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
-
 import VCardTitle from './v-card-title.vue';
+import { mount } from '@vue/test-utils';
+import { expect, test } from 'vitest';
+
 
 test('Mount component', () => {
 	expect(VCardTitle).toBeTruthy();

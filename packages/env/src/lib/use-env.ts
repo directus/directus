@@ -1,5 +1,5 @@
-import type { Env } from '../types/env.js';
 import { createEnv } from './create-env.js';
+import type { Env } from '../types/env.js';
 
 export const _cache: {
 	env: Env | undefined;

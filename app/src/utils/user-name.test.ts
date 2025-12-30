@@ -1,7 +1,7 @@
-import { test, expect, vi } from 'vitest';
+import { userName } from '@/utils/user-name';
+import { expect, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
 
-import { userName } from '@/utils/user-name';
 
 vi.mock('@/lang', () => {
 	return {

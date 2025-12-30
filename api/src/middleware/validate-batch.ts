@@ -1,8 +1,8 @@
-import Joi from 'joi';
-import { InvalidPayloadError } from '@directus/errors';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { validateQuery } from '../utils/validate-query.js';
+import { InvalidPayloadError } from '@directus/errors';
+import Joi from 'joi';
 
 export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 	asyncHandler(async (req, _res, next) => {

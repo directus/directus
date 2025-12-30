@@ -1,6 +1,6 @@
+import { getRelationType } from '../../../utils/get-relation-type.js';
 import type { DeepQuery, Filter, NestedDeepQuery, Query, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
-import { getRelationType } from '../../../utils/get-relation-type.js';
 
 export function filterReplaceM2A(
 	filter_arg: Filter,

@@ -1,5 +1,5 @@
-import { expect, test, describe } from 'vitest';
 import { Url } from './url.js';
+import { describe, expect, test } from 'vitest';
 
 describe('relative URL handling', () => {
 	test('parse and serialize a relative path', () => {

@@ -1,7 +1,7 @@
+import VBadge from './v-badge.vue';
 import { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
-import VBadge from './v-badge.vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],

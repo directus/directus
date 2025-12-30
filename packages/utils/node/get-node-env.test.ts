@@ -1,5 +1,5 @@
-import { afterEach, expect, test, vi } from 'vitest';
 import { getNodeEnv } from './get-node-env.js';
+import { afterEach, expect, test, vi } from 'vitest';
 
 afterEach(() => {
 	vi.unstubAllEnvs();

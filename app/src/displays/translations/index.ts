@@ -1,3 +1,4 @@
+import DisplayTranslations from './translations.vue';
 import { useExtension } from '@/composables/use-extension';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
@@ -8,7 +9,6 @@ import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { defineDisplay } from '@directus/extensions';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
-import DisplayTranslations from './translations.vue';
 
 type Options = {
 	template: string;

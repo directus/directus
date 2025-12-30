@@ -2,7 +2,7 @@
 import TransitionBounce from '@/components/transition/bounce.vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
-import { Instance, Modifier, Placement, detectOverflow } from '@popperjs/core';
+import { detectOverflow, Instance, Modifier, Placement } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
 import eventListeners from '@popperjs/core/lib/modifiers/eventListeners';
@@ -14,7 +14,7 @@ import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
-import { computed, nextTick, onUnmounted, ref, useTemplateRef, watch, type Ref } from 'vue';
+import { computed, nextTick, onUnmounted, type Ref, ref, useTemplateRef, watch } from 'vue';
 
 interface Props {
 	/** Where to position the popper */

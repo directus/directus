@@ -1,16 +1,16 @@
-import { createAnthropic, type AnthropicProvider } from '@ai-sdk/anthropic';
+import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
+import { type AnthropicProvider, createAnthropic } from '@ai-sdk/anthropic';
 import { createOpenAI, type OpenAIProvider } from '@ai-sdk/openai';
 import { ServiceUnavailableError } from '@directus/errors';
 import {
 	convertToModelMessages,
+	type LanguageModelUsage,
 	stepCountIs,
 	streamText,
-	type LanguageModelUsage,
+	type StreamTextResult,
 	type Tool,
 	type UIMessage,
-	type StreamTextResult,
 } from 'ai';
-import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 
 export interface CreateUiStreamOptions {
 	provider: 'openai' | 'anthropic';

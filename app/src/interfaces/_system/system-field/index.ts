@@ -1,5 +1,5 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceSystemField from './system-field.vue';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'system-field',

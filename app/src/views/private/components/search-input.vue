@@ -6,7 +6,7 @@ import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-fil
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { Ref, computed, inject, onMounted, ref, watch } from 'vue';
+import { computed, inject, onMounted, ref, Ref, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

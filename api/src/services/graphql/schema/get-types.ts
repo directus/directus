@@ -1,3 +1,7 @@
+import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
+import { GENERATE_SPECIAL } from '../../../constants.js';
+import { getGraphQLType } from '../../../utils/get-graphql-type.js';
+import type { GQLScope } from '@directus/types';
 import type { GraphQLNullableType } from 'graphql';
 import { GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLScalarType, GraphQLUnionType } from 'graphql';
 import type {
@@ -7,10 +11,6 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, ObjectTypeComposer } from 'graphql-compose';
 import { mapKeys, pick } from 'lodash-es';
-import { GENERATE_SPECIAL } from '../../../constants.js';
-import { getGraphQLType } from '../../../utils/get-graphql-type.js';
-import type { GQLScope } from '@directus/types';
-import { SYSTEM_DENY_LIST, type InconsistentFields, type Schema } from './index.js';
 
 /**
  * Construct an object of types for every collection, using the permitted fields per action type

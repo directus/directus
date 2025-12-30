@@ -1,5 +1,20 @@
 <script setup lang="ts">
+import UserPopover from './user-popover.vue';
 import api from '@/api';
+import VAvatar from '@/components/v-avatar.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
@@ -7,21 +22,6 @@ import type { Comment, User } from '@directus/types';
 import { format } from 'date-fns';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import UserPopover from './user-popover.vue';
-import VAvatar from '@/components/v-avatar.vue';
-import VButton from '@/components/v-button.vue';
-import VCard from '@/components/v-card.vue';
-import VCardActions from '@/components/v-card-actions.vue';
-import VCardText from '@/components/v-card-text.vue';
-import VCardTitle from '@/components/v-card-title.vue';
-import VDialog from '@/components/v-dialog.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VImage from '@/components/v-image.vue';
-import VList from '@/components/v-list.vue';
-import VListItem from '@/components/v-list-item.vue';
-import VListItemContent from '@/components/v-list-item-content.vue';
-import VListItemIcon from '@/components/v-list-item-icon.vue';
-import VMenu from '@/components/v-menu.vue';
 
 const props = defineProps<{
 	comment: Comment & {

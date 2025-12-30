@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
 import { reconstructComparisonHtml } from './reconstruct-comparison-html';
 import type { Change } from '@/composables/use-comparison-diff';
+import { describe, expect, it } from 'vitest';
 
 describe('reconstructComparisonHtml', () => {
 	it('returns the full HTML value if isHtml is true and side matches', () => {

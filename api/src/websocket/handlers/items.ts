@@ -1,12 +1,12 @@
 import emitter from '../../emitter.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { isSystemCollection } from '@directus/system-data';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { WebSocketError, handleWebSocketError } from '../errors.js';
+import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { WebSocketItemsMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
+import { isSystemCollection } from '@directus/system-data';
 
 export class ItemsHandler {
 	constructor() {

@@ -1,7 +1,7 @@
+import { withCache } from '../../utils/with-cache.js';
 import type { Accountability } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { withCache } from '../../utils/with-cache.js';
 
 export const fetchPoliciesIpAccess = withCache('policies-ip-access', _fetchPoliciesIpAccess, ({ user, roles }) => ({
 	user,

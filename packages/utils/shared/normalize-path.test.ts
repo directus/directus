@@ -1,5 +1,5 @@
-import { test, expect } from 'vitest';
 import { normalizePath } from './normalize-path.js';
+import { expect, test } from 'vitest';
 
 test('Returns single / for given \\', () => {
 	expect(normalizePath('\\')).toBe('/');

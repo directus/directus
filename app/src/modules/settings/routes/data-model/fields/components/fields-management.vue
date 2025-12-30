@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FieldSelect from './FieldSelect.vue';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -14,7 +15,6 @@ import { isNil, orderBy } from 'lodash';
 import { computed, onBeforeMount, onBeforeUnmount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
-import FieldSelect from './FieldSelect.vue';
 
 const props = defineProps<{
 	collection: string;

@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { useSidebarStore } from '../private-view/stores/sidebar';
 import VBadge from '@/components/v-badge.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
 import { watch } from 'vue';
-import { useSidebarStore } from '../private-view/stores/sidebar';
 
 const props = defineProps<{
 	id: string;

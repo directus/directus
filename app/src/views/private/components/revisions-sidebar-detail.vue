@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import RevisionsDateGroup from './revisions-date-group.vue';
+import SidebarDetail from './sidebar-detail.vue';
 import VDivider from '@/components/v-divider.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressLinear from '@/components/v-progress-linear.vue';
@@ -10,8 +12,6 @@ import { ContentVersion, PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import RevisionsDateGroup from './revisions-date-group.vue';
-import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection: string;

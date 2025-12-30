@@ -1,4 +1,4 @@
-import { test, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
+import { afterEach, beforeEach, expect, Mock, test, vi } from 'vitest';
 import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 

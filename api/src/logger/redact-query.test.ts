@@ -1,6 +1,6 @@
+import { redactQuery } from './redact-query.js';
 import { REDACTED_TEXT } from '@directus/utils';
 import { expect, test } from 'vitest';
-import { redactQuery } from './redact-query.js';
 
 test('Redacts `access_token` query param', () => {
 	const url = '/items/test?access_token=d1r3ctu5';

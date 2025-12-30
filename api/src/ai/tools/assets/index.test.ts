@@ -1,8 +1,8 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { assets } from './index.js';
 import { AssetsService } from '../../../services/assets.js';
 import { FilesService } from '../../../services/files.js';
-import { assets } from './index.js';
+import type { Accountability, SchemaOverview } from '@directus/types';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 
 vi.mock('../../../services/assets.js');
 vi.mock('../../../services/files.js');

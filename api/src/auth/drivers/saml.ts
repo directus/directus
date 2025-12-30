@@ -1,14 +1,4 @@
-import * as validator from '@authenio/samlify-node-xmllint';
-import { useEnv } from '@directus/env';
-import {
-	ErrorCode,
-	InvalidCredentialsError,
-	InvalidPayloadError,
-	InvalidProviderError,
-	isDirectusError,
-} from '@directus/errors';
-import express, { Router } from 'express';
-import * as samlify from 'samlify';
+import { LocalAuthDriver } from './local.js';
 import { getAuthProvider } from '../../auth.js';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
@@ -21,7 +11,17 @@ import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
-import { LocalAuthDriver } from './local.js';
+import * as validator from '@authenio/samlify-node-xmllint';
+import { useEnv } from '@directus/env';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderError,
+	isDirectusError,
+} from '@directus/errors';
+import express, { Router } from 'express';
+import * as samlify from 'samlify';
 
 // Register the samlify schema validator
 samlify.setSchemaValidator(validator);

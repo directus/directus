@@ -1,5 +1,5 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceSystemOwner from './system-owner.vue';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'system-owner',

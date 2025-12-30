@@ -1,6 +1,6 @@
+import { GeometryHelper } from '../types.js';
 import type { Field, RawField } from '@directus/types';
 import type { Knex } from 'knex';
-import { GeometryHelper } from '../types.js';
 
 export class GeometryHelperRedshift extends GeometryHelper {
 	override createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {

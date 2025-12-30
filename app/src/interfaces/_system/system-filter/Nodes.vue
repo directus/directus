@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import InputGroup from './input-group.vue';
+import { fieldHasFunction, fieldToFilter, getComparator, getField, getNodeName } from './utils';
 import VFieldList from '@/components/v-field-list/v-field-list.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -21,8 +23,6 @@ import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
-import InputGroup from './input-group.vue';
-import { fieldHasFunction, fieldToFilter, getComparator, getField, getNodeName } from './utils';
 
 type FilterInfo = {
 	id: number;

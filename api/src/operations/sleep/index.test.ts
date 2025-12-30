@@ -1,6 +1,6 @@
+import config from './index.js';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
-import config from './index.js';
 
 beforeEach(() => {
 	vi.useFakeTimers();

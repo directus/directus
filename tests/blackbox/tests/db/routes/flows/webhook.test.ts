@@ -1,4 +1,4 @@
-import config, { getUrl, paths, type Env } from '@common/config';
+import config, { type Env, getUrl, paths } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';

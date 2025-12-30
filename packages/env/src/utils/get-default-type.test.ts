@@ -1,5 +1,5 @@
-import { afterEach, expect, test, vi } from 'vitest';
 import { getDefaultType } from './get-default-type.js';
+import { afterEach, expect, test, vi } from 'vitest';
 
 vi.mock('../constants/type-map.js', () => ({
 	TYPE_MAP_REGEX: [

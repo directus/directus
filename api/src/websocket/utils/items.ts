@@ -1,9 +1,9 @@
-import { InvalidPayloadError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
 import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
 import { getService } from '../../utils/get-service.js';
 import type { WebSocketEvent } from '../messages.js';
 import type { Subscription } from '../types.js';
+import { InvalidPayloadError } from '@directus/errors';
+import type { Accountability, SchemaOverview } from '@directus/types';
 
 type PSubscription = Omit<Subscription, 'client'>;
 

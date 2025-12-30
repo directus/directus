@@ -1,6 +1,6 @@
+import InputInterface from './input.vue';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import InputInterface from './input.vue';
 
 const mountOptions = {
 	global: {

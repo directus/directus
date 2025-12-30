@@ -1,9 +1,9 @@
+import type { Report } from '../types.js';
+import { log } from '../utils/logger.js';
+import validators from './validators/index.js';
 import chalk from 'chalk';
 import ora from 'ora';
-import { log } from '../utils/logger.js';
 
-import validators from './validators/index.js';
-import type { Report } from '../types.js';
 
 type ValidateOptions = {
 	check?: string;

@@ -1,6 +1,6 @@
 import { defineOperationApi } from '@directus/extensions';
-import { createRequire } from 'node:module';
 import { sieveFunctions } from '@directus/utils';
+import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');

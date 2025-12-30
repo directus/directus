@@ -1,6 +1,6 @@
-import { Knex } from 'knex';
-import axios from 'axios';
 import { sleep } from './sleep';
+import axios from 'axios';
+import { Knex } from 'knex';
 
 export async function awaitDatabaseConnection(database: Knex, checkSQL: string): Promise<void | null> {
 	for (let attempt = 0; attempt <= 30; attempt++) {

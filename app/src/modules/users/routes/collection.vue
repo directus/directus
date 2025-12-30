@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import UsersNavigation from '../components/navigation.vue';
+import useNavigation from '../composables/use-navigation';
 import api from '@/api';
 import { logout } from '@/auth';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
@@ -13,20 +15,18 @@ import { usePreset } from '@/composables/use-preset';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
-import UsersNavigation from '../components/navigation.vue';
-import useNavigation from '../composables/use-navigation';
 
 const props = defineProps<{ role?: string }>();
 

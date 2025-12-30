@@ -1,6 +1,6 @@
-import { describe, expect, test, vi } from 'vitest';
-import { useServerStore } from '@/stores/server';
 import { usePageSize } from './use-page-size';
+import { useServerStore } from '@/stores/server';
+import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('@/stores/server', () => {
 	return {

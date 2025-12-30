@@ -1,5 +1,5 @@
-import type { Component } from 'vue';
 import { isObject } from './is-object.js';
+import type { Component } from 'vue';
 
 export function isVueComponent(input: unknown): input is Component {
 	if (!isObject(input)) return false;

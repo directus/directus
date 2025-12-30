@@ -1,5 +1,5 @@
-import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { Collection } from '@/types/collections';
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { describe, expect, it } from 'vitest';
 
 describe('flattenGroupedCollection', () => {

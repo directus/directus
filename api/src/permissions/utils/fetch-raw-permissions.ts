@@ -1,8 +1,8 @@
-import type { Accountability, Filter, Permission, PermissionsAction } from '@directus/types';
-import { sortBy } from 'lodash-es';
 import { withAppMinimalPermissions } from '../lib/with-app-minimal-permissions.js';
 import type { Context } from '../types.js';
 import { withCache } from './with-cache.js';
+import type { Accountability, Filter, Permission, PermissionsAction } from '@directus/types';
+import { sortBy } from 'lodash-es';
 
 export const fetchRawPermissions = withCache(
 	'raw-permissions',

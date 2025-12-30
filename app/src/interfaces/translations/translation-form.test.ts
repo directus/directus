@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
-import type { GlobalMountOptions } from '@/__utils__/types';
-import { describe, expect, test, vi } from 'vitest';
 import TranslationForm from './translation-form.vue';
+import type { GlobalMountOptions } from '@/__utils__/types';
+import { mount } from '@vue/test-utils';
+import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('@/composables/use-permissions', () => ({
 	usePermissions: () => ({

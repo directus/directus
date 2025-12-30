@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
+import { getTriggers } from '../triggers';
+import OptionsOverview from './options-overview.vue';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
 import VError from '@/components/v-error.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -10,9 +13,6 @@ import { useUserStore } from '@/stores/user';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs, unref } from 'vue';
-import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
-import { getTriggers } from '../triggers';
-import OptionsOverview from './options-overview.vue';
 
 export type Target = 'resolve' | 'reject';
 export type ArrowInfo = {

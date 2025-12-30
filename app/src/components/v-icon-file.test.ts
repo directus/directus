@@ -1,8 +1,8 @@
-import { test, expect, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
-import { createTestingPinia } from '@pinia/testing';
-
 import VIconFile from './v-icon-file.vue';
+import { createTestingPinia } from '@pinia/testing';
+import { mount } from '@vue/test-utils';
+import { expect, test, vi } from 'vitest';
+
 
 test('Mount component', () => {
 	expect(VIconFile).toBeTruthy();

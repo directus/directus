@@ -1,5 +1,5 @@
-import { test, expect } from 'vitest';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { expect, test } from 'vitest';
 
 test('No special characters', () => {
 	expect(getLiteralInterpolatedTranslation('folding at home')).toBe('folding at home');

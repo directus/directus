@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, useTemplateRef } from 'vue';
-import { useSync } from '@directus/composables';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useSync } from '@directus/composables';
+import { computed, onMounted, useTemplateRef } from 'vue';
 
 interface Props {
 	/** If the `modelValue` is an array of strings, activates the checkbox if the value is inside it */

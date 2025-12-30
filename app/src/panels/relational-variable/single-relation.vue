@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import useDisplayItems from './use-display-items';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 import { computed, toRefs } from 'vue';
-import useDisplayItems from './use-display-items';
 
 interface Props {
 	value: (string | number)[];

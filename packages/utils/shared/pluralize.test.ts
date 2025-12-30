@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { depluralize, pluralize } from './pluralize.js';
+import { describe, expect, it } from 'vitest';
 
 describe('pluralize', () => {
 	it('adds an s to the end of the string', () => {

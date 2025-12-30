@@ -1,9 +1,4 @@
-import type { App } from 'vue';
 
-import ContextMenu from '@/directives//context-menu';
-import Focus from '@/directives//focus';
-import Tooltip from '@/directives//tooltip';
-import ClickOutside from '@/directives/click-outside';
 
 import TransitionBounce from '@/components/transition/bounce.vue';
 import TransitionDialog from '@/components/transition/dialog.vue';
@@ -25,8 +20,8 @@ import VEmojiPicker from '@/components/v-emoji-picker.vue';
 import VFancySelect from '@/components/v-fancy-select.vue';
 import VHighlight from '@/components/v-highlight.vue';
 import VHover from '@/components/v-hover.vue';
-import VIconFile from '@/components/v-icon-file.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VIconFile from '@/components/v-icon-file.vue';
 import VInfo from '@/components/v-info.vue';
 import VInput from '@/components/v-input.vue';
 import VItemGroup from '@/components/v-item-group.vue';
@@ -57,6 +52,11 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import VTextarea from '@/components/v-textarea.vue';
 import VWorkspaceTile from '@/components/v-workspace-tile.vue';
 import VWorkspace from '@/components/v-workspace.vue';
+import ContextMenu from '@/directives//context-menu';
+import Focus from '@/directives//focus';
+import Tooltip from '@/directives//tooltip';
+import ClickOutside from '@/directives/click-outside';
+import type { App } from 'vue';
 
 export function register(app: App): void {
 	app.directive('context-menu', ContextMenu);

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import InlineFilter from './components/inline-filter.vue';
+import SettingsNavigation from '../../../../components/navigation.vue';
+import ExtensionListItem from '../../components/extension-list-item.vue';
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
@@ -13,9 +16,6 @@ import { useRouteQuery } from '@vueuse/router';
 import { isEqual } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
-import SettingsNavigation from '../../../../components/navigation.vue';
-import ExtensionListItem from '../../components/extension-list-item.vue';
-import InlineFilter from './components/inline-filter.vue';
 
 const perPage = 10;
 

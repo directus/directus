@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from 'vitest';
-import { ref, nextTick, defineComponent } from 'vue';
+import { createLayoutWrapper, isWritableProp, useLayout } from './use-layout';
 import { mount } from '@vue/test-utils';
-import { isWritableProp, createLayoutWrapper, useLayout } from './use-layout';
+import { describe, expect, it, vi } from 'vitest';
+import { defineComponent, nextTick, ref } from 'vue';
 
 // Mock the useExtensions dependency
 vi.mock('./use-system.js', () => ({

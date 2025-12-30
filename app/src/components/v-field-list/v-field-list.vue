@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { useFakeVersionField } from '@/composables/use-fake-version-field';
-import { Field } from '@directus/types';
-import { debounce, isNil } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
 import VFieldListItem from './VFieldListItem.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
-import VList from '@/components/v-list.vue';
-import VListItem from '@/components/v-list-item.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import { useFakeVersionField } from '@/composables/use-fake-version-field';
+import { type FieldNode, useFieldTree } from '@/composables/use-field-tree';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+import { Field } from '@directus/types';
+import { debounce, isNil } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 
 const collectionsStore = useCollectionsStore();
 

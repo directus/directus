@@ -1,12 +1,12 @@
-import type { Knex } from 'knex';
-import type { SchemaInspectorConstructor } from './types/schema-inspector.js';
 
-import MySQLSchemaInspector from './dialects/mysql.js';
-import PostgresSchemaInspector from './dialects/postgres.js';
 import CockroachDBSchemaInspector from './dialects/cockroachdb.js';
-import SqliteSchemaInspector from './dialects/sqlite.js';
-import OracleDBSchemaInspector from './dialects/oracledb.js';
 import MSSQLSchemaInspector from './dialects/mssql.js';
+import MySQLSchemaInspector from './dialects/mysql.js';
+import OracleDBSchemaInspector from './dialects/oracledb.js';
+import PostgresSchemaInspector from './dialects/postgres.js';
+import SqliteSchemaInspector from './dialects/sqlite.js';
+import type { SchemaInspectorConstructor } from './types/schema-inspector.js';
+import type { Knex } from 'knex';
 
 export * from './types/column.js';
 export * from './types/foreign-key.js';

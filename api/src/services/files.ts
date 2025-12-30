@@ -1,3 +1,11 @@
+import { RESUMABLE_UPLOADS } from '../constants.js';
+import emitter from '../emitter.js';
+import { ItemsService } from './items.js';
+import { useLogger } from '../logger/index.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { getAxios } from '../request/index.js';
+import { getStorage } from '../storage/index.js';
+import { extractMetadata } from './files/lib/extract-metadata.js';
 import { useEnv } from '@directus/env';
 import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
@@ -20,14 +28,6 @@ import { PassThrough as PassThroughStream, Transform as TransformStream } from '
 import zlib from 'node:zlib';
 import path from 'path';
 import url from 'url';
-import { RESUMABLE_UPLOADS } from '../constants.js';
-import emitter from '../emitter.js';
-import { useLogger } from '../logger/index.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { getAxios } from '../request/index.js';
-import { getStorage } from '../storage/index.js';
-import { extractMetadata } from './files/lib/extract-metadata.js';
-import { ItemsService } from './items.js';
 
 const env = useEnv();
 const logger = useLogger();

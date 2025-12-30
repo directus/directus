@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { getDeepQuery } from './get-deep-query.js';
+import { expect, test } from 'vitest';
 
 test('empty object', () => {
 	const result = getDeepQuery({});

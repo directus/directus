@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Nodes from './Nodes.vue';
+import { getNodeName } from './utils';
 import VDivider from '@/components/v-divider.vue';
 import VFieldList from '@/components/v-field-list/v-field-list.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -19,8 +21,6 @@ import {
 } from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
-import Nodes from './Nodes.vue';
-import { getNodeName } from './utils';
 
 interface Props {
 	value?: Record<string, any> | string;

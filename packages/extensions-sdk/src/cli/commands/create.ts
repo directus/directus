@@ -1,3 +1,10 @@
+import { LAST_BREAKING_RELEASE } from '../../constants/last-breaking.js';
+import getPackageManager from '../utils/get-package-manager.js';
+import { isLanguage, languageToShort } from '../utils/languages.js';
+import { log } from '../utils/logger.js';
+import copyTemplate from './helpers/copy-template.js';
+import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
+import { BUNDLE_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ExtensionOptions } from '@directus/extensions';
 import { EXTENSION_LANGUAGES, EXTENSION_PKG_KEY } from '@directus/extensions';
 import type {
@@ -7,19 +14,12 @@ import type {
 	ExtensionType,
 	HybridExtensionType,
 } from '@directus/types';
-import { BUNDLE_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn } from '@directus/utils';
 import chalk from 'chalk';
 import { execa } from 'execa';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import { LAST_BREAKING_RELEASE } from '../../constants/last-breaking.js';
-import getPackageManager from '../utils/get-package-manager.js';
-import { isLanguage, languageToShort } from '../utils/languages.js';
-import { log } from '../utils/logger.js';
-import copyTemplate from './helpers/copy-template.js';
-import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
 type CreateOptions = {
 	language?: string;

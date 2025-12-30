@@ -1,17 +1,17 @@
-import { parseJSON } from '@directus/utils';
-import type { Snapshot, SnapshotDiff } from '@directus/types';
-import { DiffKind } from '@directus/types';
-import chalk from 'chalk';
-import { promises as fs } from 'fs';
-import inquirer from 'inquirer';
-import { load as loadYaml } from 'js-yaml';
-import path from 'path';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
 import { applySnapshot } from '../../../utils/apply-snapshot.js';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
+import type { Snapshot, SnapshotDiff } from '@directus/types';
+import { DiffKind } from '@directus/types';
+import { parseJSON } from '@directus/utils';
+import chalk from 'chalk';
+import { promises as fs } from 'fs';
+import inquirer from 'inquirer';
+import { load as loadYaml } from 'js-yaml';
+import path from 'path';
 
 export function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
 	const filterSet = new Set(filters);

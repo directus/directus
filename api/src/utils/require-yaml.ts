@@ -1,5 +1,5 @@
-import yaml from 'js-yaml';
 import { requireText } from './require-text.js';
+import yaml from 'js-yaml';
 
 export function requireYAML(filepath: string): Record<string, any> {
 	const yamlRaw = requireText(filepath);

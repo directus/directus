@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { getFilterPath } from './get-filter-path.js';
+import { expect, test } from 'vitest';
 
 test('path with empty object', () => {
 	const result = getFilterPath('test', {});

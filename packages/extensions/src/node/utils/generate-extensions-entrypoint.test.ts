@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import type { Extension, ExtensionSettings } from '../../shared/types/index.js';
 import { generateExtensionsEntrypoint } from './generate-extensions-entrypoint.js';
+import type { Extension, ExtensionSettings } from '../../shared/types/index.js';
+import { describe, expect, it } from 'vitest';
 
 describe('generateExtensionsEntrypoint', () => {
 	it('returns an empty extension entrypoint if there is no App, Hybrid or Bundle extension', () => {

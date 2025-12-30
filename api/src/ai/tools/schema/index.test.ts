@@ -1,9 +1,9 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { schema } from './index.js';
 import { CollectionsService } from '../../../services/collections.js';
 import { FieldsService } from '../../../services/fields.js';
 import { RelationsService } from '../../../services/relations.js';
-import { schema } from './index.js';
+import type { Accountability, SchemaOverview } from '@directus/types';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 
 vi.mock('../../../services/collections.js');
 vi.mock('../../../services/fields.js');

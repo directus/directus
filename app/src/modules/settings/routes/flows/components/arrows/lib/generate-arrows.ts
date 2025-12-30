@@ -1,9 +1,9 @@
+import { createLine } from './create-line';
 import { GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
 import { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo, Target } from '../../operation.vue';
 import type { Arrow, Panel } from '../types';
 import { getPoints } from '../utils/get-points';
-import { createLine } from './create-line';
 
 export interface GenerateArrowsContext {
 	/** Whether or not the flow is being edited. This modifies the hover state of some arrows */

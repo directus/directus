@@ -1,5 +1,5 @@
-import type { Table } from '@directus/schema';
 import type { Field, RawField } from './fields.js';
+import type { Table } from '@directus/schema';
 
 type Translations = {
 	language: string;

@@ -1,7 +1,7 @@
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
+import { ItemsService } from './items.js';
 import getDatabase from '../database/index.js';
 import { InvalidPayloadError } from '@directus/errors';
-import { ItemsService } from './items.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
 
 export class TranslationsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

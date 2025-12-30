@@ -1,7 +1,7 @@
-import { StateUpdates, State, HelperFunctions } from '../types';
-import { set } from 'lodash';
+import { HelperFunctions, State, StateUpdates } from '../types';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { set } from 'lodash';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged, getCurrent } = helperFn;

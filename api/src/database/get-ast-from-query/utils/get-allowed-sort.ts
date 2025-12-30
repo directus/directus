@@ -1,6 +1,6 @@
-import type { Accountability, Query, Relation } from '@directus/types';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import type { Context } from '../../../permissions/types.js';
+import type { Accountability, Query, Relation } from '@directus/types';
 
 export type GetAllowedSortFieldOptions = {
 	collection: string;

@@ -1,3 +1,10 @@
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { FilesService } from '../services/files.js';
+import { MetaService } from '../services/meta.js';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
@@ -10,13 +17,6 @@ import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
-import { respond } from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
-import { validateBatch } from '../middleware/validate-batch.js';
-import { FilesService } from '../services/files.js';
-import { MetaService } from '../services/meta.js';
-import asyncHandler from '../utils/async-handler.js';
-import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 const env = useEnv();

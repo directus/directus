@@ -1,7 +1,7 @@
+import { validatePathExistence } from './validate-path-existence.js';
 import { ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { expect, test } from 'vitest';
-import { validatePathExistence } from './validate-path-existence.js';
 
 test('Throws if collection does not exist in the schema', () => {
 	const schema = new SchemaBuilder().build();

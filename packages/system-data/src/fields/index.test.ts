@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'vitest';
 import { hasSystemIndex, isSystemField } from './index.js';
+import { describe, expect, test } from 'vitest';
 
 describe('hasSystemIndex', () => {
 	test('should return true when collection and field match an indexed field', () => {

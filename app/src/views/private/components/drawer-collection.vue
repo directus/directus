@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
 import VDrawer from '@/components/v-drawer.vue';
@@ -10,7 +11,6 @@ import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 const props = withDefaults(
 	defineProps<{

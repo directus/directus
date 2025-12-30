@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LogsDrawer from './logs-drawer.vue';
 import VDetail from '@/components/v-detail.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VPagination from '@/components/v-pagination.vue';
@@ -11,7 +12,6 @@ import type { FlowRaw } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import LogsDrawer from './logs-drawer.vue';
 
 const props = defineProps<{
 	flow: FlowRaw;

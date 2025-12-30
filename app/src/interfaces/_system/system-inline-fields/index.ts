@@ -1,5 +1,5 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceInlineFields from './system-inline-fields.vue';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'system-inline-fields',

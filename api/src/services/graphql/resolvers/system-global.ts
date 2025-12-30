@@ -1,17 +1,3 @@
-import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import type { Accountability, GraphQLParams } from '@directus/types';
-import argon2 from 'argon2';
-import {
-	GraphQLBoolean,
-	GraphQLEnumType,
-	GraphQLID,
-	GraphQLInt,
-	GraphQLNonNull,
-	GraphQLObjectType,
-	GraphQLString,
-} from 'graphql';
-import { SchemaComposer } from 'graphql-compose';
 import { clearSystemCache, getCache } from '../../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../../constants.js';
 import { rateLimiter } from '../../../middleware/rate-limiter-registration.js';
@@ -30,6 +16,20 @@ import { UtilsService } from '../../utils.js';
 import { GraphQLService } from '../index.js';
 import { GraphQLBigInt } from '../types/bigint.js';
 import { GraphQLVoid } from '../types/void.js';
+import { useEnv } from '@directus/env';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import type { Accountability, GraphQLParams } from '@directus/types';
+import argon2 from 'argon2';
+import {
+	GraphQLBoolean,
+	GraphQLEnumType,
+	GraphQLID,
+	GraphQLInt,
+	GraphQLNonNull,
+	GraphQLObjectType,
+	GraphQLString,
+} from 'graphql';
+import { SchemaComposer } from 'graphql-compose';
 
 const env = useEnv();
 

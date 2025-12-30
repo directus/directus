@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import VCheckbox from '../v-checkbox.vue';
 import VIcon from '../v-icon/v-icon.vue';
 import VListGroup from '../v-list-group.vue';
@@ -7,6 +6,7 @@ import VListItemContent from '../v-list-item-content.vue';
 import VListItemIcon from '../v-list-item-icon.vue';
 import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
+import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

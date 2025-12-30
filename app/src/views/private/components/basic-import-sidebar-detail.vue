@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ImportErrorDialog from './import-error-dialog.vue';
+import SidebarDetail from './sidebar-detail.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -13,8 +15,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ImportErrorDialog from './import-error-dialog.vue';
-import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection: string;

@@ -1,10 +1,10 @@
+import PanelList from './panel-list.vue';
+import PreviewSVG from './preview.svg?raw';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { definePanel } from '@directus/extensions';
 import { getFieldsFromTemplate } from '@directus/utils';
-import PanelList from './panel-list.vue';
-import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'list',

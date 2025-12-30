@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import VCheckbox from './v-checkbox.vue';
+import { ref } from 'vue';
 
 const value = ref();
 </script>

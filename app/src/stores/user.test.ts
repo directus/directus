@@ -1,11 +1,11 @@
+import { useUserStore } from './user';
+import { AppUser } from '@/types/user';
+import { Globals, Role, User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
 
-import { AppUser } from '@/types/user';
-import { Role, User, Globals } from '@directus/types';
-import { useUserStore } from './user';
 
 beforeEach(() => {
 	setActivePinia(

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import RelationshipConfiguration from './relationship-configuration.vue';
+import ExtensionOptions from '../shared/extension-options.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import VButton from '@/components/v-button.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -11,9 +14,6 @@ import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
 import { computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ExtensionOptions from '../shared/extension-options.vue';
-import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
-import RelationshipConfiguration from './relationship-configuration.vue';
 
 defineProps<{
 	row?: number;

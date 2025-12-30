@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import NavigationRole from './NavigationRole.vue';
+import useNavigation from '../composables/use-navigation';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VItemGroup from '@/components/v-item-group.vue';
@@ -9,8 +11,6 @@ import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import useNavigation from '../composables/use-navigation';
-import NavigationRole from './NavigationRole.vue';
 
 const props = defineProps<{
 	currentRole?: string;

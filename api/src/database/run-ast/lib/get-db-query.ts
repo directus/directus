@@ -1,7 +1,3 @@
-import { useEnv } from '@directus/env';
-import type { Filter, Permission, Query } from '@directus/types';
-import type { Knex } from 'knex';
-import { cloneDeep } from 'lodash-es';
 import type { Context } from '../../../permissions/types.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
@@ -17,6 +13,10 @@ import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
 import applyQuery from './apply-query/index.js';
 import { applyLimit } from './apply-query/pagination.js';
 import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
+import { useEnv } from '@directus/env';
+import type { Filter, Permission, Query } from '@directus/types';
+import type { Knex } from 'knex';
+import { cloneDeep } from 'lodash-es';
 
 export type DBQueryOptions = {
 	table: string;

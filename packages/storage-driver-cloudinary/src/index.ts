@@ -1,3 +1,4 @@
+import { IMAGE_EXTENSIONS, MINIMUM_CHUNK_SIZE, VIDEO_EXTENSIONS } from './constants.js';
 import type { TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
@@ -7,8 +8,7 @@ import { extname, join, parse } from 'node:path';
 import { Readable } from 'node:stream';
 import PQueue from 'p-queue';
 import type { RequestInit } from 'undici';
-import { FormData, fetch } from 'undici';
-import { IMAGE_EXTENSIONS, MINIMUM_CHUNK_SIZE, VIDEO_EXTENSIONS } from './constants.js';
+import { fetch, FormData } from 'undici';
 
 export type DriverCloudinaryConfig = {
 	root?: string;

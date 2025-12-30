@@ -1,4 +1,6 @@
-import config, { getUrl, paths, type Env } from '@common/config';
+import { collection, type Collection } from './cache-purge.seed';
+import config, { type Env, getUrl, paths } from '@common/config';
+import { CreatePolicy } from '@common/functions';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
@@ -7,8 +9,6 @@ import getPort from 'get-port';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { collection, type Collection } from './cache-purge.seed';
-import { CreatePolicy } from '@common/functions';
 
 describe('Permissions Cache Purging Tests', () => {
 	const cacheStatusHeader = 'x-cache-status';

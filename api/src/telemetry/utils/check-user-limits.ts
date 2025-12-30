@@ -1,6 +1,6 @@
+import { type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { useEnv } from '@directus/env';
 import { LimitExceededError } from '@directus/errors';
-import { type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 
 const env = useEnv();
 

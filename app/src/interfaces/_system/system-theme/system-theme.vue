@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import ThemePreview from './theme-preview.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
 import { translate } from '@/utils/translate-literal';
 import { useThemeStore } from '@directus/themes';
 import { computed } from 'vue';
-import ThemePreview from './theme-preview.vue';
 
 defineEmits<{
 	input: [string | null];

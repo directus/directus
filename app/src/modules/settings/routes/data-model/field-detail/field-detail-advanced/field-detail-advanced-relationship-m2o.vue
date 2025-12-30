@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -9,8 +11,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
 const { t } = useI18n();
 

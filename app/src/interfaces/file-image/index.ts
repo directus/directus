@@ -1,6 +1,6 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceFileImage from './file-image.vue';
 import PreviewSVG from './preview.svg?raw';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'file-image',

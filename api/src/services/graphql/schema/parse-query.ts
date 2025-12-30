@@ -1,11 +1,11 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
-import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
-import { get, mapKeys, merge, set, uniq } from 'lodash-es';
+import { parseArgs } from './parse-args.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
-import { parseArgs } from './parse-args.js';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
+import { get, mapKeys, merge, set, uniq } from 'lodash-es';
 
 /**
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into

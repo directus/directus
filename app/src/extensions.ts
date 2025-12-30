@@ -1,5 +1,3 @@
-import type { AppExtensionConfigs, RefRecord } from '@directus/types';
-import { App, shallowRef, watch } from 'vue';
 import { getInternalDisplays, registerDisplays } from './displays';
 import { getInternalInterfaces, registerInterfaces } from './interfaces';
 import { i18n } from './lang';
@@ -10,6 +8,8 @@ import { getInternalPanels, registerPanels } from './panels';
 import { registerThemes } from './themes/register';
 import { getRootPath } from './utils/get-root-path';
 import { translate } from './utils/translate-object-values';
+import type { AppExtensionConfigs, RefRecord } from '@directus/types';
+import { App, shallowRef, watch } from 'vue';
 
 let customExtensions: AppExtensionConfigs | null = null;
 

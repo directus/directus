@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { deserialize, serialize } from './serialize.js';
+import { expect, test } from 'vitest';
 
 const cases: [string, unknown][] = [
 	['object', { hello: 'world' }],

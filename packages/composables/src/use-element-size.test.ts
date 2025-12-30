@@ -1,9 +1,9 @@
 /**
  * @vitest-environment jsdom
  */
+import { useElementSize } from './use-element-size.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createApp, defineComponent, ref } from 'vue';
-import { useElementSize } from './use-element-size.js';
 
 // Helper function to test composables in a proper Vue context
 function withSetup<T>(composable: () => T): T {

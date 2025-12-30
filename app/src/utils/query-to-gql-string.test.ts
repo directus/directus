@@ -1,10 +1,10 @@
-import { beforeEach, describe, expect, test } from 'vitest';
 
 import { formatQuery } from '@/utils/query-to-gql-string';
 
-import { setActivePinia } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 import { Query } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 const collectionName = 'users';
 const primaryKeyField = 'id';

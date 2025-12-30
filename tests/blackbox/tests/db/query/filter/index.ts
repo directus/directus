@@ -1,7 +1,7 @@
+import * as testsSchema from '../../schema/index';
 import vendors from '@common/get-dbs-to-test';
 import type { PrimaryKeyType } from '@common/types';
 import type { ClientFilterOperator } from '@directus/types';
-import * as testsSchema from '../../schema/index';
 import { PrepareRequest, type RequestOptions } from '@utils/prepare-request';
 import { get, set } from 'lodash-es';
 import { describe, expect, it, type SuiteCollector } from 'vitest';

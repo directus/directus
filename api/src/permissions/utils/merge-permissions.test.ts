@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest';
 import { mergePermissions } from './merge-permissions.js';
 import type { Permission } from '@directus/types';
+import { expect, test } from 'vitest';
 
 test('merge empty permission arrays', () => {
 	const permissions = mergePermissions('and', [], []);

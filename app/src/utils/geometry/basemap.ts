@@ -1,6 +1,6 @@
-import { Style, RasterSource } from 'maplibre-gl';
-import { getAppearance } from '@/utils/get-appearance';
 import { useSettingsStore } from '@/stores/settings';
+import { getAppearance } from '@/utils/get-appearance';
+import { RasterSource, Style } from 'maplibre-gl';
 
 export type BasemapSource = {
 	name: string;

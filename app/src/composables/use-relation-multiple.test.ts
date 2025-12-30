@@ -1,10 +1,10 @@
+import { RelationM2A } from './use-relation-m2a';
+import { RelationO2M } from './use-relation-o2m';
 import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { flushPromises, mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import { describe, expect, test, vi } from 'vitest';
 import { computed, defineComponent, h, ref, toRefs } from 'vue';
-import { RelationM2A } from './use-relation-m2a';
-import { RelationO2M } from './use-relation-o2m';
 
 vi.mock('@/api', () => {
 	return {

@@ -1,6 +1,6 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceInputAutocompleteAPI from './input-autocomplete-api.vue';
 import PreviewSVG from './preview.svg?raw';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'input-autocomplete-api',

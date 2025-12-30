@@ -1,3 +1,7 @@
+import CalendarActions from './actions.vue';
+import CalendarLayout from './calendar.vue';
+import CalendarOptions from './options.vue';
+import { LayoutOptions } from './types';
 import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
@@ -22,10 +26,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { format, formatISO, isValid, parse } from 'date-fns';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import CalendarActions from './actions.vue';
-import CalendarLayout from './calendar.vue';
-import CalendarOptions from './options.vue';
-import { LayoutOptions } from './types';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',

@@ -1,6 +1,6 @@
-import { defineInterface } from '@directus/extensions';
 import InterfaceInputMultiline from './input-multiline.vue';
 import Preview from './preview.svg?raw';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'input-multiline',

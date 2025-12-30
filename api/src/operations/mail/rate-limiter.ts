@@ -1,8 +1,8 @@
-import { useEnv } from '@directus/env';
-import { RateLimiterMemory, RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { createRateLimiter } from '../../rate-limiter.js';
-import { toBoolean } from '@directus/utils';
+import { useEnv } from '@directus/env';
 import { EmailLimitExceededError } from '@directus/errors';
+import { toBoolean } from '@directus/utils';
+import { RateLimiterMemory, RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 
 let emailRateLimiter: RateLimiterRedis | RateLimiterMemory | undefined;
 

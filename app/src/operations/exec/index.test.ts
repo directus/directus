@@ -1,8 +1,8 @@
+import { cryptoStub } from '@/__utils__/crypto';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { cryptoStub } from '@/__utils__/crypto';
 
 vi.stubGlobal('crypto', cryptoStub);
 

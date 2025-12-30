@@ -1,8 +1,8 @@
-import { createBus, type BusLocal, type BusRedis } from '@directus/memory';
+import { _cache, useBus } from './use-bus.js';
+import { redisConfigAvailable, useRedis } from '../../redis/index.js';
+import { type BusLocal, type BusRedis, createBus } from '@directus/memory';
 import type { Redis } from 'ioredis';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { redisConfigAvailable, useRedis } from '../../redis/index.js';
-import { _cache, useBus } from './use-bus.js';
 
 vi.mock('../../redis/index.js');
 vi.mock('@directus/memory');

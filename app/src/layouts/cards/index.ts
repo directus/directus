@@ -1,3 +1,7 @@
+import CardsActions from './actions.vue';
+import CardsLayout from './cards.vue';
+import CardsOptions from './options.vue';
+import { LayoutOptions, LayoutQuery } from './types';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -11,10 +15,6 @@ import { getFieldsFromTemplate } from '@directus/utils';
 import { clone } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import CardsActions from './actions.vue';
-import CardsLayout from './cards.vue';
-import CardsOptions from './options.vue';
-import { LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',

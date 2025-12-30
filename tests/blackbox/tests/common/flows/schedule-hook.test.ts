@@ -1,4 +1,5 @@
-import config, { getUrl, paths, type Env } from '@common/config';
+import { envTargetVariable, flowName, logPrefix, seedDBValues } from './schedule-hook.seed';
+import config, { type Env, getUrl, paths } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
@@ -10,7 +11,6 @@ import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
-import { envTargetVariable, flowName, logPrefix, seedDBValues } from './schedule-hook.seed';
 
 let isSeeded = false;
 

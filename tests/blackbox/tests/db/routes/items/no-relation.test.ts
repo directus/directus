@@ -1,3 +1,4 @@
+import { collectionArtists } from './no-relation.seed';
 import config, { getUrl } from '@common/config';
 import { CreateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
@@ -8,7 +9,6 @@ import { without } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { describe, expect, it, test } from 'vitest';
-import { collectionArtists } from './no-relation.seed';
 
 type Artist = {
 	id?: number | string;

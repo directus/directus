@@ -1,7 +1,7 @@
-import { defineInterface } from '@directus/extensions';
-import type { DeepPartial, Field } from '@directus/types';
 import InterfaceDateTime from './datetime.vue';
 import PreviewSVG from './preview.svg?raw';
+import { defineInterface } from '@directus/extensions';
+import type { DeepPartial, Field } from '@directus/types';
 
 export default defineInterface({
 	id: 'datetime',

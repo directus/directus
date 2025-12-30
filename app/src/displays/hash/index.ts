@@ -1,5 +1,5 @@
-import { defineDisplay } from '@directus/extensions';
 import DisplayHash from './hash.vue';
+import { defineDisplay } from '@directus/extensions';
 
 export default defineDisplay({
 	id: 'hash',

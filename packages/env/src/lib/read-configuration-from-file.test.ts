@@ -1,11 +1,11 @@
-import { existsSync } from 'node:fs';
+import { readConfigurationFromFile } from './read-configuration-from-file.js';
 import { getFileExtension } from '../utils/get-file-extension.js';
 import { readConfigurationFromDotEnv } from '../utils/read-configuration-from-dotenv.js';
 import { readConfigurationFromJavaScript } from '../utils/read-configuration-from-javascript.js';
 import { readConfigurationFromJson } from '../utils/read-configuration-from-json.js';
 import { readConfigurationFromYaml } from '../utils/read-configuration-from-yaml.js';
-import { readConfigurationFromFile } from './read-configuration-from-file.js';
-import { test, afterEach, beforeEach, vi, expect } from 'vitest';
+import { existsSync } from 'node:fs';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
 vi.mock('node:fs');
 vi.mock('../utils/get-file-extension.js');

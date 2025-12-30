@@ -1,9 +1,9 @@
+import { Events } from './events';
+import { time as timeoutDuration } from './idle';
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { DefineComponent, defineComponent, h, onMounted, onUnmounted } from 'vue';
 
-import { time as timeoutDuration } from './idle';
-import { Events } from './events';
 
 vi.mock('lodash', () => ({
 	throttle: vi.fn((fn, _wait) => fn),

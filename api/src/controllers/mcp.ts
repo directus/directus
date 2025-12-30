@@ -1,8 +1,8 @@
-import { ForbiddenError } from '@directus/errors';
-import { Router } from 'express';
 import { DirectusMCP } from '../ai/mcp/index.js';
 import { SettingsService } from '../services/settings.js';
 import asyncHandler from '../utils/async-handler.js';
+import { ForbiddenError } from '@directus/errors';
+import { Router } from 'express';
 
 const router = Router();
 

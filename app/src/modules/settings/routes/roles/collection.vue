@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SettingsNavigation from '../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -9,16 +10,15 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import RenderDisplay from '@/views/private/components/render-display.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { PrivateView } from '@/views/private';
 import { Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView, useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
 
 const { t } = useI18n();
 

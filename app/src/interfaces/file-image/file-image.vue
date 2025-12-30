@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
-import VIconFile from '@/components/v-icon-file.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import VNotice from '@/components/v-notice.vue';
 import VRemove from '@/components/v-remove.vue';

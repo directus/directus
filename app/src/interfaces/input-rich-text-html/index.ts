@@ -1,7 +1,7 @@
+import PreviewSVG from './preview.svg?raw';
+import toolbarDefault from './toolbar-default';
 import { defineInterface } from '@directus/extensions';
 import { defineAsyncComponent } from 'vue';
-import toolbarDefault from './toolbar-default';
-import PreviewSVG from './preview.svg?raw';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
 

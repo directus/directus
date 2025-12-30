@@ -1,21 +1,3 @@
-import { Action } from '@directus/constants';
-import { useEnv } from '@directus/env';
-import { ForbiddenError } from '@directus/errors';
-import { isSystemCollection } from '@directus/system-data';
-import type {
-	Accountability,
-	ActionHandler,
-	FilterHandler,
-	Flow,
-	Operation,
-	PrimaryKey,
-	SchemaOverview,
-	OperationHandler,
-} from '@directus/types';
-import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
-import type { Knex } from 'knex';
-import { pick } from 'lodash-es';
-import { get } from 'micromustache';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
@@ -33,6 +15,24 @@ import { getService } from './utils/get-service.js';
 import { JobQueue } from './utils/job-queue.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
+import { Action } from '@directus/constants';
+import { useEnv } from '@directus/env';
+import { ForbiddenError } from '@directus/errors';
+import { isSystemCollection } from '@directus/system-data';
+import type {
+	Accountability,
+	ActionHandler,
+	FilterHandler,
+	Flow,
+	Operation,
+	OperationHandler,
+	PrimaryKey,
+	SchemaOverview,
+} from '@directus/types';
+import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
+import type { Knex } from 'knex';
+import { pick } from 'lodash-es';
+import { get } from 'micromustache';
 
 let flowManager: FlowManager | undefined;
 

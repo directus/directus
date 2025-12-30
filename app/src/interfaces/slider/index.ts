@@ -1,7 +1,7 @@
-import { defineInterface } from '@directus/extensions';
-import { APP_NUMERIC_TYPES } from '@/constants';
-import InterfaceSlider from './slider.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceSlider from './slider.vue';
+import { APP_NUMERIC_TYPES } from '@/constants';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'slider',

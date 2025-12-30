@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -8,9 +11,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
 const fieldDetailStore = useFieldDetailStore();
 const relationsStore = useRelationsStore();

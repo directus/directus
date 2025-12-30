@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -19,7 +20,6 @@ import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, unref } from 'vue';
 import { useRouter } from 'vue-router';
-import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 
 const props = defineProps<{
 	dashboardKey: string;

@@ -1,8 +1,8 @@
+import { NotificationsService } from '../../services/notifications.js';
+import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
 import { defineOperationApi } from '@directus/extensions';
 import type { Accountability } from '@directus/types';
 import { optionToString, toArray } from '@directus/utils';
-import { NotificationsService } from '../../services/notifications.js';
-import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
 
 type Options = {
 	recipient: string;

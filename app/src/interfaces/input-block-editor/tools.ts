@@ -1,3 +1,5 @@
+import { Alignment } from './alignment';
+import { AttachesTool, ImageTool } from './plugins';
 import ChecklistTool from '@editorjs/checklist';
 import CodeTool from '@editorjs/code';
 import DelimiterTool from '@editorjs/delimiter';
@@ -10,9 +12,7 @@ import QuoteTool from '@editorjs/quote';
 import RawToolTool from '@editorjs/raw';
 import TableTool from '@editorjs/table';
 import UnderlineTool from '@editorjs/underline';
-import { Alignment } from './alignment';
 import ToggleBlock from 'editorjs-toggle-block';
-import { AttachesTool, ImageTool } from './plugins';
 
 export type UploaderConfig = {
 	baseURL: string | undefined;

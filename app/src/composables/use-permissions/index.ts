@@ -1,8 +1,8 @@
-import { ComputedRef } from 'vue';
 import { UsableCollectionPermissions, useCollectionPermissions } from './collection/use-collection-permissions';
 import { UsableItemPermissions, useItemPermissions } from './item/use-item-permissions';
 import { isSaveAllowed } from './lib/is-save-allowed';
 import { Collection, IsNew, PrimaryKey } from './types';
+import { ComputedRef } from 'vue';
 
 export type UsablePermissions = {
 	collectionPermissions: UsableCollectionPermissions;

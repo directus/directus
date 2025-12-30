@@ -1,5 +1,3 @@
-import { describe, expectTypeOf, test } from 'vitest';
-import { createDirectus, readItems, rest } from '../src/index.js';
 import type {
 	CollectionA,
 	CollectionAB_Any,
@@ -8,6 +6,8 @@ import type {
 	CollectionC,
 	TestSchema,
 } from './schema.js';
+import { createDirectus, readItems, rest } from '../src/index.js';
+import { describe, expectTypeOf, test } from 'vitest';
 
 describe('Test relational return typing (issue #23545)', () => {
 	test('Flat relational field return type', () => {

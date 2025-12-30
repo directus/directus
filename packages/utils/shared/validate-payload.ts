@@ -1,9 +1,9 @@
-import type { FieldFilter, Filter } from '@directus/types';
-import type Joi from 'joi';
-import { flatten } from 'lodash-es';
 import type { JoiOptions } from './generate-joi.js';
 import { generateJoi } from './generate-joi.js';
 import { injectFunctionResults } from './inject-function-results.js';
+import type { FieldFilter, Filter } from '@directus/types';
+import type Joi from 'joi';
+import { flatten } from 'lodash-es';
 
 /**
  * Validate the payload against the given filter rules

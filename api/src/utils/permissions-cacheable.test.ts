@@ -1,8 +1,8 @@
-import type { Permission } from '@directus/types';
-import { describe, expect, test, vi } from 'vitest';
+import { filterHasNow, permissionsCacheable } from './permissions-cacheable.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
-import { filterHasNow, permissionsCacheable } from './permissions-cacheable.js';
+import type { Permission } from '@directus/types';
+import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('../permissions/lib/fetch-permissions.js');
 vi.mock('../permissions/lib/fetch-policies.js');

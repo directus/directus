@@ -1,7 +1,7 @@
-import { expect, test } from 'vitest';
 import { deepMapResponse } from './deep-map-response.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { getRelation } from '@directus/utils';
+import { expect, test } from 'vitest';
 
 const schema = new SchemaBuilder()
 	.collection('articles', (c) => {

@@ -1,11 +1,5 @@
-import api from '@/api';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useFlowsStore } from '@/stores/flows';
-import RouterPass from '@/utils/router-passthrough';
-import { defineModule } from '@directus/extensions';
-import Appearance from './routes/appearance/item.vue';
 import AiOverview from './routes/ai/overview.vue';
+import Appearance from './routes/appearance/item.vue';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
@@ -18,9 +12,9 @@ import MarketplaceAccount from './routes/marketplace/routes/account/account.vue'
 import MarketplaceExtension from './routes/marketplace/routes/extension/extension.vue';
 import MarketplaceRegistry from './routes/marketplace/routes/registry/registry.vue';
 import NotFound from './routes/not-found.vue';
+import NewPolicy from './routes/policies/add-new.vue';
 import PoliciesCollection from './routes/policies/collection.vue';
 import PoliciesItem from './routes/policies/item.vue';
-import NewPolicy from './routes/policies/add-new.vue';
 import PresetsCollection from './routes/presets/collection/collection.vue';
 import PresetsItem from './routes/presets/item.vue';
 import Project from './routes/project/project.vue';
@@ -31,6 +25,12 @@ import RolesPublicItem from './routes/roles/public-item.vue';
 import SystemLogs from './routes/system-logs/logs.vue';
 import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
+import api from '@/api';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useFlowsStore } from '@/stores/flows';
+import RouterPass from '@/utils/router-passthrough';
+import { defineModule } from '@directus/extensions';
 
 export default defineModule({
 	id: 'settings',

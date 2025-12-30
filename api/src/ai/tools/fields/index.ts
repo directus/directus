@@ -1,9 +1,3 @@
-import { InvalidPayloadError } from '@directus/errors';
-import type { Field, Item, RawField, Type } from '@directus/types';
-import { toArray } from '@directus/utils';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { z } from 'zod';
 import { clearSystemCache } from '../../../cache.js';
 import getDatabase from '../../../database/index.js';
 import { FieldsService } from '../../../services/fields.js';
@@ -18,6 +12,12 @@ import {
 	RawFieldItemInputSchema,
 	RawFieldItemValidateSchema,
 } from '../schema.js';
+import { InvalidPayloadError } from '@directus/errors';
+import type { Field, Item, RawField, Type } from '@directus/types';
+import { toArray } from '@directus/utils';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { z } from 'zod';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

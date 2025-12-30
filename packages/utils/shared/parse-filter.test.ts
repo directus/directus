@@ -1,6 +1,6 @@
+import { parseFilter } from './parse-filter.js';
 import type { Filter, Policy, User } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { parseFilter } from './parse-filter.js';
 
 describe('#parseFilter', () => {
 	beforeEach(() => {

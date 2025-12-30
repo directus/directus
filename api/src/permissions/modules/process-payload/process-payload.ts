@@ -1,18 +1,18 @@
-import type { Accountability, Filter, Item, PermissionsAction } from '@directus/types';
-import { parseFilter, validatePayload } from '@directus/utils';
-import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
-import { assign, difference, uniq } from 'lodash-es';
+import { isFieldNullable } from './lib/is-field-nullable.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { extractRequiredDynamicVariableContext } from '../../utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../utils/fetch-dynamic-variable-data.js';
 import { contextHasDynamicVariables } from '../process-ast/utils/context-has-dynamic-variables.js';
-import { isFieldNullable } from './lib/is-field-nullable.js';
 import {
 	createCollectionForbiddenError,
 	createFieldsForbiddenError,
 } from '../process-ast/utils/validate-path/create-error.js';
+import type { Accountability, Filter, Item, PermissionsAction } from '@directus/types';
+import { parseFilter, validatePayload } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import { assign, difference, uniq } from 'lodash-es';
 
 export interface ProcessPayloadOptions {
 	accountability: Accountability;

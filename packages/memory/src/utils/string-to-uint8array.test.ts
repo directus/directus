@@ -1,5 +1,5 @@
 import { stringToUint8Array } from './string-to-uint8array.js';
-import { test, expect } from 'vitest';
+import { expect, test } from 'vitest';
 
 test('Converts string to uint8array', () => {
 	const string = 'hello';

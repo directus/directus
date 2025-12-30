@@ -1,5 +1,5 @@
-import type { FieldOverview } from '@directus/types';
 import { GENERATE_SPECIAL } from '../../../../constants.js';
+import type { FieldOverview } from '@directus/types';
 
 /**
  * Checks if a given field is allowed to be set to `null`.

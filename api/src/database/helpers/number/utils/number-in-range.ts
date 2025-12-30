@@ -1,7 +1,7 @@
-import type { NumericValue } from '@directus/types';
-import { MAX_SAFE_INT32, MAX_SAFE_INT64, MIN_SAFE_INT32, MIN_SAFE_INT64 } from '@directus/constants';
 import type { NumberInfo } from '../types.js';
 import { calculateDecimalLimit } from './decimal-limit.js';
+import { MAX_SAFE_INT32, MAX_SAFE_INT64, MIN_SAFE_INT32, MIN_SAFE_INT64 } from '@directus/constants';
+import type { NumericValue } from '@directus/types';
 
 export function numberInRange(value: NumericValue, info: NumberInfo) {
 	switch (info.type) {

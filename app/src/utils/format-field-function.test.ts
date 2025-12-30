@@ -1,4 +1,4 @@
-import { test, expect, vi, beforeEach, Mock } from 'vitest';
+import { beforeEach, expect, Mock, test, vi } from 'vitest';
 import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { createI18n } from 'vue-i18n';

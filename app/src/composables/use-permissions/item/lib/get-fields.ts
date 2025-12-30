@@ -1,10 +1,10 @@
+import { Collection, IsNew } from '../../types';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useCollection } from '@directus/composables';
 import { Field, ItemPermissions } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { Ref, computed, ref, unref } from 'vue';
-import { Collection, IsNew } from '../../types';
+import { computed, ref, Ref, unref } from 'vue';
 
 export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermissions: Ref<ItemPermissions>) {
 	const userStore = useUserStore();

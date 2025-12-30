@@ -1,10 +1,10 @@
-import type { Accountability, PermissionsAction } from '@directus/types';
 import type { Context } from '../types.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../utils/fetch-dynamic-variable-data.js';
 import { fetchRawPermissions } from '../utils/fetch-raw-permissions.js';
 import { getPermissionsForShare } from '../utils/get-permissions-for-share.js';
 import { processPermissions } from '../utils/process-permissions.js';
+import type { Accountability, PermissionsAction } from '@directus/types';
 
 export interface FetchPermissionsOptions {
 	action?: PermissionsAction;

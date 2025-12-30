@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LanguageSelect from './language-select.vue';
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -8,7 +9,6 @@ import { type RelationM2M } from '@/composables/use-relation-m2m';
 import { type DisplayItem } from '@/composables/use-relation-multiple';
 import { isEmpty } from 'lodash';
 import { computed, ref, watch } from 'vue';
-import LanguageSelect from './language-select.vue';
 
 const {
 	languageOptions,

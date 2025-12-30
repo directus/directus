@@ -1,5 +1,5 @@
-import type { DirectusClient } from '../types/client.js';
 import type { StaticTokenClient } from './types.js';
+import type { DirectusClient } from '../types/client.js';
 
 /**
  * Creates a client to authenticate with Directus using a static token.

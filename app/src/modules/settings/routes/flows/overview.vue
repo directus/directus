@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import FlowDrawer from './flow-drawer.vue';
+import SettingsNavigation from '../../components/navigation.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -27,8 +29,6 @@ import { sortBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
-import FlowDrawer from './flow-drawer.vue';
 
 const { t } = useI18n();
 

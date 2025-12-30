@@ -1,5 +1,5 @@
-import { expect, test, vi } from 'vitest';
 import { defaultValues, useFormFields, validate } from './form';
+import { expect, test, vi } from 'vitest';
 import { ref } from 'vue';
 
 vi.mock('@/stores/relations', () => ({

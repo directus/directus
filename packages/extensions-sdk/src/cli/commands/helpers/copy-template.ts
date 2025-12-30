@@ -1,8 +1,8 @@
+import type { Language } from '../../types.js';
+import getTemplatePath from '../../utils/get-template-path.js';
 import type { ExtensionType } from '@directus/types';
 import fse from 'fs-extra';
 import path from 'path';
-import type { Language } from '../../types.js';
-import getTemplatePath from '../../utils/get-template-path.js';
 
 type TemplateFile = { type: 'config' | 'source'; path: string };
 

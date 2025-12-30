@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { isCompressed } from './is-compressed.js';
+import { expect, test } from 'vitest';
 
 test('Returns false if byte length is less than 19', () => {
 	const mockArray = new Uint8Array([1, 2, 3]);

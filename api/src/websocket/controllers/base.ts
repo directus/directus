@@ -1,27 +1,27 @@
-import { useEnv } from '@directus/env';
-import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
-import { WebSocketMessage } from '@directus/types';
-import { parseJSON, toBoolean } from '@directus/utils';
-import cookie from 'cookie';
-import type { IncomingMessage, Server as httpServer } from 'http';
-import { randomUUID } from 'node:crypto';
-import type { RateLimiterAbstract } from 'rate-limiter-flexible';
-import type internal from 'stream';
-import { parse } from 'url';
-import WebSocket, { WebSocketServer, type Server } from 'ws';
-import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
-import { WebSocketError, handleWebSocketError } from '../errors.js';
+import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage } from '../messages.js';
 import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
+import { useEnv } from '@directus/env';
+import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
+import type { Accountability } from '@directus/types';
+import { WebSocketMessage } from '@directus/types';
+import { parseJSON, toBoolean } from '@directus/utils';
+import cookie from 'cookie';
+import type { Server as httpServer, IncomingMessage } from 'http';
+import { randomUUID } from 'node:crypto';
+import type { RateLimiterAbstract } from 'rate-limiter-flexible';
+import type internal from 'stream';
+import { parse } from 'url';
+import WebSocket, { type Server, WebSocketServer } from 'ws';
+import { fromZodError } from 'zod-validation-error';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 

@@ -1,7 +1,3 @@
-import { useEnv } from '@directus/env';
-import { getDateTimeFormatted } from '@directus/utils';
-import { parse as parseBytesConfiguration } from 'bytes';
-import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -12,6 +8,10 @@ import { getCacheKey } from '../utils/get-cache-key.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
 import { permissionsCacheable } from '../utils/permissions-cacheable.js';
+import { useEnv } from '@directus/env';
+import { getDateTimeFormatted } from '@directus/utils';
+import { parse as parseBytesConfiguration } from 'bytes';
+import type { RequestHandler } from 'express';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();

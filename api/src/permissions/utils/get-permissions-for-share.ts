@@ -1,6 +1,5 @@
-import { schemaPermissions } from '@directus/system-data';
-import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
-import { set, uniq } from 'lodash-es';
+import { fetchShareInfo } from './fetch-share-info.js';
+import { mergePermissions } from './merge-permissions.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { fetchPermissions } from '../lib/fetch-permissions.js';
 import { fetchPolicies } from '../lib/fetch-policies.js';
@@ -8,8 +7,9 @@ import { fetchRolesTree } from '../lib/fetch-roles-tree.js';
 import { fetchAllowedFieldMap } from '../modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchGlobalAccess } from '../modules/fetch-global-access/fetch-global-access.js';
 import type { Context } from '../types.js';
-import { fetchShareInfo } from './fetch-share-info.js';
-import { mergePermissions } from './merge-permissions.js';
+import { schemaPermissions } from '@directus/system-data';
+import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
+import { set, uniq } from 'lodash-es';
 
 export async function getPermissionsForShare(
 	accountability: Pick<Accountability, 'share' | 'ip'>,

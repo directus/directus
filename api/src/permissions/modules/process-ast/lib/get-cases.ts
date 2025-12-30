@@ -1,7 +1,7 @@
-import type { Filter, Permission } from '@directus/types';
 import type { FieldKey } from '../types.js';
 import { dedupeAccess } from '../utils/dedupe-access.js';
 import { hasItemPermissions } from '../utils/has-item-permissions.js';
+import type { Filter, Permission } from '@directus/types';
 
 export function getCases(collection: string, permissions: Permission[], requestedKeys: string[]) {
 	const permissionsForCollection = permissions.filter((permission) => permission.collection === collection);

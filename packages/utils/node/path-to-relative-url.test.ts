@@ -1,8 +1,8 @@
-import path from 'path';
-import { describe, expect, it } from 'vitest';
 import { pathToRelativeUrl } from './path-to-relative-url.js';
 import { dirname } from 'node:path/posix';
 import { fileURLToPath } from 'node:url';
+import path from 'path';
+import { describe, expect, it } from 'vitest';
 
 describe('pathToRelativeUrl', () => {
 	const filePath = path.resolve(path.join('foo', 'bar.txt'));

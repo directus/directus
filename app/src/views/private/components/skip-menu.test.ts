@@ -1,3 +1,4 @@
+import SkipMenu from './skip-menu.vue';
 import { generateRouter } from '@/__utils__/router';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import VListItem from '@/components/v-list-item.vue';
@@ -7,7 +8,6 @@ import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { h } from 'vue';
-import SkipMenu from './skip-menu.vue';
 
 let global: GlobalMountOptions;
 

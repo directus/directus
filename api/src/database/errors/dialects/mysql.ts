@@ -1,3 +1,4 @@
+import type { MySQLError } from './types.js';
 import {
 	ContainsNullValuesError,
 	InvalidForeignKeyError,
@@ -6,7 +7,6 @@ import {
 	ValueOutOfRangeError,
 	ValueTooLongError,
 } from '@directus/errors';
-import type { MySQLError } from './types.js';
 import type { Item } from '@directus/types';
 
 enum MySQLErrorCodes {

@@ -1,6 +1,6 @@
+import { getHelpers } from '../helpers/index.js';
 import { parseJSON } from '@directus/utils';
 import type { Knex } from 'knex';
-import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
 	const helpers = getHelpers(knex);

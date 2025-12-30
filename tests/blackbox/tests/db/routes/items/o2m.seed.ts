@@ -1,17 +1,17 @@
-import { CreateCollection, CreateField, CreateFieldO2M, CreateItem, DeleteCollection } from '@common/functions';
-import vendors from '@common/get-dbs-to-test';
-import { SeedFunctions } from '@common/seed-functions';
-import type { PrimaryKeyType } from '@common/types';
-import { PRIMARY_KEY_TYPES } from '@common/variables';
-import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
-import { set } from 'lodash-es';
-import { expect, it } from 'vitest';
 import {
 	getTestsAllTypesSchema,
 	seedAllFieldTypesStructure,
 	seedAllFieldTypesValues,
 	seedO2MAliasAllFieldTypesValues,
 } from './seed-all-field-types';
+import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
+import { CreateCollection, CreateField, CreateFieldO2M, CreateItem, DeleteCollection } from '@common/functions';
+import vendors from '@common/get-dbs-to-test';
+import { SeedFunctions } from '@common/seed-functions';
+import type { PrimaryKeyType } from '@common/types';
+import { PRIMARY_KEY_TYPES } from '@common/variables';
+import { set } from 'lodash-es';
+import { expect, it } from 'vitest';
 
 export const collectionCountries = 'test_items_o2m_countries';
 export const collectionStates = 'test_items_o2m_states';

@@ -1,7 +1,7 @@
+import { aiChatPostHandler } from './chat.post.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { NextFunction, Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { aiChatPostHandler } from './chat.post.js';
 
 // Mock dependencies
 vi.mock('ai', () => ({

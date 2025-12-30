@@ -1,3 +1,23 @@
+import { getCollectionType } from './get-collection-type.js';
+import { getFieldType } from './get-field-type.js';
+import { getRelationType } from './get-relation-type.js';
+import { resolveSystemAdmin } from './system-admin.js';
+import { globalResolvers } from './system-global.js';
+import getDatabase from '../../../database/index.js';
+import { fetchAccountabilityCollectionAccess } from '../../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
+import { fetchAccountabilityPolicyGlobals } from '../../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
+import { CollectionsService } from '../../collections.js';
+import { FieldsService } from '../../fields.js';
+import { FilesService } from '../../files.js';
+import { RelationsService } from '../../relations.js';
+import { RolesService } from '../../roles.js';
+import { ServerService } from '../../server.js';
+import { SpecificationService } from '../../specifications.js';
+import { UsersService } from '../../users.js';
+import { GraphQLService } from '../index.js';
+import { type CollectionTypes, generateSchema, type Schema } from '../schema/index.js';
+import { getQuery } from '../schema/parse-query.js';
+import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 import { useEnv } from '@directus/env';
 import type { CollectionAccess, GraphQLParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
@@ -11,26 +31,6 @@ import {
 	GraphQLString,
 } from 'graphql';
 import { GraphQLJSON, SchemaComposer, toInputObjectType } from 'graphql-compose';
-import getDatabase from '../../../database/index.js';
-import { fetchAccountabilityCollectionAccess } from '../../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
-import { fetchAccountabilityPolicyGlobals } from '../../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
-import { CollectionsService } from '../../collections.js';
-import { FieldsService } from '../../fields.js';
-import { FilesService } from '../../files.js';
-import { RelationsService } from '../../relations.js';
-import { RolesService } from '../../roles.js';
-import { ServerService } from '../../server.js';
-import { SpecificationService } from '../../specifications.js';
-import { UsersService } from '../../users.js';
-import { GraphQLService } from '../index.js';
-import { generateSchema, type CollectionTypes, type Schema } from '../schema/index.js';
-import { getQuery } from '../schema/parse-query.js';
-import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
-import { getCollectionType } from './get-collection-type.js';
-import { getFieldType } from './get-field-type.js';
-import { getRelationType } from './get-relation-type.js';
-import { resolveSystemAdmin } from './system-admin.js';
-import { globalResolvers } from './system-global.js';
 
 const env = useEnv();
 

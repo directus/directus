@@ -1,6 +1,6 @@
-import { test, expect } from 'vitest';
-
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
+import { expect, test } from 'vitest';
+
 
 test('Returns true if all fields are missing', () => {
 	const perm: any = {};

@@ -1,3 +1,14 @@
+import {
+	type City,
+	collectionCities,
+	collectionCountries,
+	collectionStates,
+	type Country,
+	getTestsSchema,
+	seedDBValues,
+	type State,
+} from './o2m.seed';
+import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import config, { getUrl } from '@common/config';
 import { CreateItem, ReadItem, UpdateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
@@ -8,17 +19,6 @@ import { findIndex, without } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { beforeAll, describe, expect, it, test } from 'vitest';
-import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
-import {
-	collectionCities,
-	collectionCountries,
-	collectionStates,
-	getTestsSchema,
-	seedDBValues,
-	type City,
-	type Country,
-	type State,
-} from './o2m.seed';
 
 function createCountry(pkType: PrimaryKeyType) {
 	const item: Country = {

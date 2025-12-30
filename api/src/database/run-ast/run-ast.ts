@@ -1,6 +1,3 @@
-import { useEnv } from '@directus/env';
-import type { Accountability, Filter, Item, Permission, Query, SchemaOverview } from '@directus/types';
-import { cloneDeep, merge } from 'lodash-es';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { PayloadService } from '../../services/payload.js';
@@ -12,6 +9,9 @@ import type { RunASTOptions } from './types.js';
 import { applyParentFilters } from './utils/apply-parent-filters.js';
 import { mergeWithParentItems } from './utils/merge-with-parent-items.js';
 import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
+import { useEnv } from '@directus/env';
+import type { Accountability, Filter, Item, Permission, Query, SchemaOverview } from '@directus/types';
+import { cloneDeep, merge } from 'lodash-es';
 
 /**
  * Execute a given AST using Knex. Returns array of items based on requested AST.

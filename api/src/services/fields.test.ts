@@ -1,8 +1,3 @@
-import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability, Field, RawField } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import {
 	createMockKnex,
@@ -13,6 +8,11 @@ import {
 	setupSystemCollectionMocks,
 } from '../test-utils/knex.js';
 import * as getSchemaModule from '../utils/get-schema.js';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Field, RawField } from '@directus/types';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),

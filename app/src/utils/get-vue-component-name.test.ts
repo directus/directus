@@ -1,8 +1,8 @@
+import { getVueComponentName } from './get-vue-component-name';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
 import { defineComponent, h } from 'vue';
 
-import { getVueComponentName } from './get-vue-component-name';
 
 test('should return unknown', () => {
 	expect(getVueComponentName(null)).toBe('unknown');

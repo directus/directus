@@ -1,10 +1,10 @@
 import api from '@/api';
 import { logout } from '@/auth';
-import { nanoid } from 'nanoid';
-import { onMounted, ref } from 'vue';
-import qrcode from 'qrcode';
 import { useUserStore } from '@/stores/user';
 import { useLocalStorage } from '@vueuse/core';
+import { nanoid } from 'nanoid';
+import qrcode from 'qrcode';
+import { onMounted, ref } from 'vue';
 
 export function useTFASetup(initialEnabled: boolean) {
 	const loading = ref(false);

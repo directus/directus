@@ -1,5 +1,5 @@
-import type { RestCommand } from '../../types.js';
 import type { SchemaDiffOutput } from './diff.js';
+import type { RestCommand } from '../../types.js';
 
 /**
  * Update the instance's schema by passing the diff previously retrieved via /schema/diff endpoint in the request body. This endpoint is only available to admin users.

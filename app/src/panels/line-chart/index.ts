@@ -1,9 +1,9 @@
-import { useFieldsStore } from '@/stores/fields';
-import { definePanel } from '@directus/extensions';
-import { computed } from 'vue';
-import { getGroups } from '@/utils/get-groups';
 import PanelLineChart from './panel-line-chart.vue';
 import PreviewSVG from './preview.svg?raw';
+import { useFieldsStore } from '@/stores/fields';
+import { getGroups } from '@/utils/get-groups';
+import { definePanel } from '@directus/extensions';
+import { computed } from 'vue';
 
 export default definePanel({
 	id: 'line-chart',

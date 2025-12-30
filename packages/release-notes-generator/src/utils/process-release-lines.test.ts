@@ -1,6 +1,6 @@
+import { processReleaseLines } from './process-release-lines.js';
 import { NewChangesetWithCommit, VersionType } from '@changesets/types';
 import { expect, test } from 'vitest';
-import { processReleaseLines } from './process-release-lines.js';
 
 test('should process release lines', async () => {
 	const { defaultChangelogFunctions, changesets } = processReleaseLines();

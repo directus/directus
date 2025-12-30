@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest';
 import acronyms from '../constants/acronyms.js';
 import specialCase from '../constants/special-case.js';
+import { expect, test } from 'vitest';
 
 test('No duplicates across acronyms and special cases', () => {
 	const constants = [...acronyms, ...specialCase];

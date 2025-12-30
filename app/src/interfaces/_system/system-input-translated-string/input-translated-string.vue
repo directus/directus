@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 import VHighlight from '@/components/v-highlight.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -15,7 +16,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { snakeCase } from 'lodash';
 import { computed, ref, unref, watch } from 'vue';
-import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 
 const translationPrefix = '$t:';
 

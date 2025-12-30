@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { splitRecursive } from './split-recursive.js';
+import { expect, test } from 'vitest';
 
 test('split with no default overwrites', () => {
 	const input = {

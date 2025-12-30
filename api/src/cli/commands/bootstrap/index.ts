@@ -1,5 +1,3 @@
-import { useEnv } from '@directus/env';
-import type { Knex } from 'knex';
 import getDatabase, {
 	hasDatabaseConnection,
 	isInstalled,
@@ -9,8 +7,10 @@ import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
 import { useLogger } from '../../../logger/index.js';
 import { SettingsService } from '../../../services/settings.js';
-import { getSchema } from '../../../utils/get-schema.js';
 import { createAdmin } from '../../../utils/create-admin.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { useEnv } from '@directus/env';
+import type { Knex } from 'knex';
 import { email } from 'zod';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {

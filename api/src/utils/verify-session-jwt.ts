@@ -1,6 +1,6 @@
 import getDatabase from '../database/index.js';
-import { InvalidCredentialsError } from '@directus/errors';
 import type { DirectusTokenPayload } from '../types/index.js';
+import { InvalidCredentialsError } from '@directus/errors';
 
 /**
  * Verifies the associated session is still available and valid.

@@ -1,11 +1,11 @@
-import { TYPES } from '@directus/constants';
-import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
 import { getDatabaseClient } from '../database/index.js';
+import { TYPES } from '@directus/constants';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Snapshot } from '@directus/types';
 import { DatabaseClients } from '@directus/types';
 import { version } from 'directus/version';
+import Joi from 'joi';
 
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number().valid(1).required(),

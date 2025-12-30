@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useSizeClass } from '@directus/composables';
 import { computed, ref } from 'vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	/** Model the active state */

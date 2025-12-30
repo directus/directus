@@ -1,9 +1,9 @@
-import { test, expect, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
-import { createTestingPinia } from '@pinia/testing';
-
-import VInfo from './v-info.vue';
 import VIcon from './v-icon/v-icon.vue';
+import VInfo from './v-info.vue';
+import { createTestingPinia } from '@pinia/testing';
+import { mount } from '@vue/test-utils';
+import { expect, test, vi } from 'vitest';
+
 
 test('Mount component', () => {
 	expect(VInfo).toBeTruthy();

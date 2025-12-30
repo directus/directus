@@ -1,8 +1,8 @@
-import type { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
-import { ok as assert } from 'node:assert/strict';
 import { SchemaBuilder } from './builder.js';
 import { COLLECTION_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
+import type { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
+import { ok as assert } from 'node:assert/strict';
 
 type InitialCollectionOverview = Omit<CollectionOverview, 'primary' | 'fields'>;
 type FinalCollectionOverview = Omit<CollectionOverview, 'fields'>;

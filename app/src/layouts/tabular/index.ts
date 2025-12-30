@@ -1,3 +1,7 @@
+import TabularActions from './actions.vue';
+import TabularOptions from './options.vue';
+import TabularLayout from './tabular.vue';
+import { LayoutOptions, LayoutQuery } from './types';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { HeaderRaw, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
@@ -15,10 +19,6 @@ import { Field } from '@directus/types';
 import { debounce, flatten } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import TabularActions from './actions.vue';
-import TabularOptions from './options.vue';
-import TabularLayout from './tabular.vue';
-import { LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',

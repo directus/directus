@@ -1,6 +1,6 @@
-import { test, expect } from 'vitest';
-
 import { isHex } from '@/utils/is-hex';
+import { expect, test } from 'vitest';
+
 
 test('Returns true for valid hex', () => {
 	const cases = ['#64f', '#64ff', '#6644ff', '#6644ffff'];

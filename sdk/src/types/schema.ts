@@ -1,5 +1,5 @@
-import type { CoreSchema } from '../schema/index.js';
 import type { IfAny, UnpackList } from './utils.js';
+import type { CoreSchema } from '../schema/index.js';
 
 /**
  * Get all available top level Item types from a given Schema

@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
 import { messageConstructor } from './unsupported-media-type.js';
+import { expect, test } from 'vitest';
 
 test('Constructs message from extensions', () => {
 	const mediaType = 'application/json';

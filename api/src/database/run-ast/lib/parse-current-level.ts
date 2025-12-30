@@ -1,6 +1,6 @@
-import type { Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
+import type { Query, SchemaOverview } from '@directus/types';
 
 export async function parseCurrentLevel(
 	schema: SchemaOverview,

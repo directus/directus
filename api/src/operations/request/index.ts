@@ -1,8 +1,8 @@
+import { getAxios } from '../../request/index.js';
 import { defineOperationApi } from '@directus/extensions';
 import { isValidJSON } from '@directus/utils';
 import { isAxiosError } from 'axios';
 import encodeUrl from 'encodeurl';
-import { getAxios } from '../../request/index.js';
 
 type Options = {
 	url: string;

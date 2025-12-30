@@ -1,5 +1,5 @@
-import { ipInNetworks } from '@directus/utils/node';
 import type { AccessRow } from '../lib/fetch-policies.js';
+import { ipInNetworks } from '@directus/utils/node';
 
 export function filterPoliciesByIp(policies: AccessRow[], ip: string | null | undefined) {
 	return policies.filter(({ policy }) => {

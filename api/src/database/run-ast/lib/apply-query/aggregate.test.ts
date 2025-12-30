@@ -1,8 +1,8 @@
+import { applyAggregate } from './aggregate.js';
+import { Client_SQLite3 } from './mock.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
-import { applyAggregate } from './aggregate.js';
-import { Client_SQLite3 } from './mock.js';
 
 const schema = new SchemaBuilder()
 	.collection('articles', (c) => {

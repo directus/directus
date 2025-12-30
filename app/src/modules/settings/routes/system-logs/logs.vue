@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import InlineFilter from './components/inline-filter.vue';
+import LogsDisplay from './components/logs-display.vue';
+import { Log } from './types';
+import SettingsNavigation from '../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
@@ -18,10 +22,6 @@ import CodeMirror from 'codemirror';
 import 'codemirror/mode/javascript/javascript';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
-import InlineFilter from './components/inline-filter.vue';
-import LogsDisplay from './components/logs-display.vue';
-import { Log } from './types';
 
 const { t } = useI18n();
 const reconnectionParams = { delay: 1000, retries: 10 };

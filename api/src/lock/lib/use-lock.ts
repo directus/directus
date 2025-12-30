@@ -1,5 +1,5 @@
-import { createKv, type Kv } from '@directus/memory';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
+import { createKv, type Kv } from '@directus/memory';
 
 export const _cache: { lock: Kv | undefined } = {
 	lock: undefined,

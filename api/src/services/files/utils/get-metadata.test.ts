@@ -1,8 +1,8 @@
+import { getMetadata } from './get-metadata.js';
+import { getSharpInstance } from '../lib/get-sharp-instance.js';
 import { Readable, Transform } from 'node:stream';
 import type { Sharp } from 'sharp';
 import { expect, test, vi } from 'vitest';
-import { getSharpInstance } from '../lib/get-sharp-instance.js';
-import { getMetadata } from './get-metadata.js';
 
 vi.mock('../lib/get-sharp-instance.js', () => ({
 	getSharpInstance: vi.fn(),

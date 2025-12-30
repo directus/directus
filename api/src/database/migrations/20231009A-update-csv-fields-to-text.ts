@@ -1,6 +1,6 @@
-import type { Knex } from 'knex';
 import { getHelpers } from '../helpers/index.js';
 import { createInspector } from '@directus/schema';
+import type { Knex } from 'knex';
 
 export async function up(knex: Knex) {
 	const inspector = createInspector(knex);

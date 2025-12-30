@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SettingsNavigation from '../../components/navigation.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -16,16 +17,15 @@ import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { unexpectedError } from '@/utils/unexpected-error';
-import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { useLayout } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
 
 type FormattedPreset = {
 	id: number;

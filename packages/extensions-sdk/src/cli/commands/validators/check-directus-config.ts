@@ -1,10 +1,10 @@
-import { EXTENSION_PKG_KEY } from '@directus/extensions';
-import { EXTENSION_TYPES, API_EXTENSION_TYPES } from '@directus/constants';
-import fse from 'fs-extra';
-import path from 'path';
-import { type Ora } from 'ora';
-import semver from 'semver';
 import type { Report } from '../../types.js';
+import { API_EXTENSION_TYPES, EXTENSION_TYPES } from '@directus/constants';
+import { EXTENSION_PKG_KEY } from '@directus/extensions';
+import fse from 'fs-extra';
+import { type Ora } from 'ora';
+import path from 'path';
+import semver from 'semver';
 
 const checkDirectusConfig = {
 	name: 'directus-config',

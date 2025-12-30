@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { range } from './range';
+import { describe, expect, it } from 'vitest';
 
 describe('range', () => {
 	describe('basic functionality', () => {

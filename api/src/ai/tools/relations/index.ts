@@ -1,8 +1,3 @@
-import { InvalidPayloadError } from '@directus/errors';
-import type { Relation } from '@directus/types';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { z } from 'zod';
 import { RelationsService } from '../../../services/relations.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
@@ -11,6 +6,11 @@ import {
 	RelationItemValidateCreateSchema,
 	RelationItemValidateUpdateSchema,
 } from '../schema.js';
+import { InvalidPayloadError } from '@directus/errors';
+import type { Relation } from '@directus/types';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { z } from 'zod';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

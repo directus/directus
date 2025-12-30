@@ -1,8 +1,8 @@
-import { describe, test, expect, vi, beforeEach } from 'vitest';
-import ky from 'ky';
-import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
-import { constructUrl } from './lib/construct-url.js';
 import { download } from './download.js';
+import { constructUrl } from './lib/construct-url.js';
+import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
+import ky from 'ky';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('ky');
 vi.mock('../../utils/assert-version-compatibility.js');

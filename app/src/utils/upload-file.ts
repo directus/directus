@@ -1,3 +1,4 @@
+import { unexpectedError } from './unexpected-error';
 import api from '@/api';
 import { emitter, Events } from '@/events';
 import { i18n } from '@/lang';
@@ -9,7 +10,6 @@ import type { File } from '@directus/types';
 import type { AxiosProgressEvent } from 'axios';
 import type { PreviousUpload } from 'tus-js-client';
 import { Upload } from 'tus-js-client';
-import { unexpectedError } from './unexpected-error';
 
 export async function uploadFile(
 	file: globalThis.File,

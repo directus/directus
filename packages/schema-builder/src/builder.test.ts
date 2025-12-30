@@ -1,7 +1,7 @@
-import { expect, test } from 'vitest';
 import { SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
 import { FieldBuilder } from './field.js';
+import { expect, test } from 'vitest';
 
 test('Create primitive schema', () => {
 	const schema = new SchemaBuilder()

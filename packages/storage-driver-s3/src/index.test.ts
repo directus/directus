@@ -1,3 +1,5 @@
+import type { DriverS3Config } from './index.js';
+import { DriverS3 } from './index.js';
 import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
 import {
 	CopyObjectCommand,
@@ -28,8 +30,6 @@ import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import type { DriverS3Config } from './index.js';
-import { DriverS3 } from './index.js';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');

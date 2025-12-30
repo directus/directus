@@ -1,6 +1,6 @@
+import { isDeniedIp } from './is-denied-ip.js';
 import type { Agent, ClientRequestArgs } from 'node:http';
 import { isIP } from 'node:net';
-import { isDeniedIp } from './is-denied-ip.js';
 
 /**
  * 'createConnection' is missing in 'Agent' type, but assigned in actual implementation:

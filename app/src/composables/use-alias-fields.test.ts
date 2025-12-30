@@ -1,7 +1,7 @@
+import { useAliasFields } from './use-alias-fields';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
 import { defineComponent } from 'vue';
-import { useAliasFields } from './use-alias-fields';
 
 vi.mock('@/utils/adjust-fields-for-displays', () => {
 	return {

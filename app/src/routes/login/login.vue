@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import ContinueAs from './components/continue-as.vue';
+import { LdapForm, LoginForm } from './components/login-form/';
+import SsoLinks from './components/sso-links.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
@@ -11,9 +14,6 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
-import ContinueAs from './components/continue-as.vue';
-import { LdapForm, LoginForm } from './components/login-form/';
-import SsoLinks from './components/sso-links.vue';
 
 withDefaults(
 	defineProps<{

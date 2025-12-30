@@ -1,6 +1,6 @@
+import { useCustomSelection, useCustomSelectionMultiple } from './use-custom-selection';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { nextTick, ref, type Ref } from 'vue';
-import { useCustomSelection, useCustomSelectionMultiple } from './use-custom-selection';
 
 describe('useCustomSelection', () => {
 	let currentValue: Ref<string | null>;

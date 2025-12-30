@@ -1,6 +1,6 @@
-import { defineInterface } from '@directus/extensions';
-import InterfaceSelectIcon from './select-icon.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceSelectIcon from './select-icon.vue';
+import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'select-icon',

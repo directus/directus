@@ -1,6 +1,6 @@
+import { DatabaseHelper } from '../types.js';
 import type { NumericType, NumericValue } from '@directus/types';
 import type { Knex } from 'knex';
-import { DatabaseHelper } from '../types.js';
 
 export type NumberInfo = {
 	type: NumericType;

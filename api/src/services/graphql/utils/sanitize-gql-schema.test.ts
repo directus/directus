@@ -1,6 +1,6 @@
+import { sanitizeGraphqlSchema } from './sanitize-gql-schema.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { describe, expect, test } from 'vitest';
-import { sanitizeGraphqlSchema } from './sanitize-gql-schema.js';
 
 describe('Sanitize graphql schema', () => {
 	test('Filters out invalid names', () => {

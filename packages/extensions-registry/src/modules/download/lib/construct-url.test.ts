@@ -1,6 +1,6 @@
-import { describe, test, expect } from 'vitest';
 import { constructUrl } from './construct-url.js';
 import { DEFAULT_REGISTRY } from '../../../constants.js';
+import { describe, expect, test } from 'vitest';
 
 describe('constructUrl', () => {
 	test('Constructs URL with version ID and default registry', () => {

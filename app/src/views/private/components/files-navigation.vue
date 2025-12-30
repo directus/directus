@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NavigationFolder from './files-navigation-folder.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VItemGroup from '@/components/v-item-group.vue';
@@ -14,7 +15,6 @@ import { FolderTarget, SpecialFolder } from '@/types/folders';
 import { isEqual } from 'lodash';
 import { computed, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import NavigationFolder from './files-navigation-folder.vue';
 
 const router = useRouter();
 

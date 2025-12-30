@@ -16,11 +16,11 @@ import maplibre, {
 	LngLatBoundsLike,
 	LngLatLike,
 	Map,
-	MapLayerMouseEvent,
 	MapboxGeoJSONFeature,
+	MapLayerMouseEvent,
 	NavigationControl,
 } from 'maplibre-gl';
-import { WatchStopHandle, computed, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch, WatchStopHandle } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';

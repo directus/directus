@@ -1,13 +1,13 @@
-import type { Filter, Permission, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/ast.js';
-import { joinFilterWithCases } from '../lib/apply-query/join-filter-with-cases.js';
-import type { AliasMap } from '../../../utils/get-column-path.js';
+import { applyCaseWhen } from './apply-case-when.js';
 import { getColumn } from './get-column.js';
+import { getNodeAlias } from './get-field-alias.js';
+import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/ast.js';
+import type { AliasMap } from '../../../utils/get-column-path.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 import { getHelpers } from '../../helpers/index.js';
-import { applyCaseWhen } from './apply-case-when.js';
-import { getNodeAlias } from './get-field-alias.js';
+import { joinFilterWithCases } from '../lib/apply-query/join-filter-with-cases.js';
+import type { Filter, Permission, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 
 interface NodePreProcessOptions {
 	/** Don't assign an alias to the column but instead return the column as is */

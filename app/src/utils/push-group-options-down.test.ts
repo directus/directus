@@ -1,7 +1,7 @@
-import { expect, it, test, describe } from 'vitest';
-
-import { Field } from '@directus/types';
 import { pushGroupOptionsDown } from './push-group-options-down.js';
+import { Field } from '@directus/types';
+import { describe, expect, it, test } from 'vitest';
+
 
 describe('basic', () => {
 	const fields: Field[] = [

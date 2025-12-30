@@ -1,7 +1,7 @@
+import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
+import { filterItems } from '../../utils/filter-items.js';
 import type { Accountability, Permission, Query } from '@directus/types';
 import { expect, it, vi } from 'vitest';
-import { filterItems } from '../../utils/filter-items.js';
-import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 
 const mocks = vi.hoisted(() => {
 	return {

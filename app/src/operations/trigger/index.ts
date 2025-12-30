@@ -1,5 +1,5 @@
-import { defineOperationApp } from '@directus/extensions';
 import { useFlowsStore } from '@/stores/flows';
+import { defineOperationApp } from '@directus/extensions';
 
 export default defineOperationApp({
 	id: 'trigger',

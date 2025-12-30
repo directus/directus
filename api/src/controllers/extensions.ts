@@ -1,19 +1,3 @@
-import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
-import { EXTENSION_TYPES } from '@directus/constants';
-import {
-	account,
-	describe,
-	list,
-	type AccountOptions,
-	type DescribeOptions,
-	type ListOptions,
-	type ListQuery,
-} from '@directus/extensions-registry';
-import type { FieldFilter } from '@directus/types';
-import { isIn } from '@directus/utils';
-import express from 'express';
-import { isNil } from 'lodash-es';
 import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
@@ -22,6 +6,22 @@ import { ExtensionReadError, ExtensionsService } from '../services/extensions.js
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { EXTENSION_TYPES } from '@directus/constants';
+import { useEnv } from '@directus/env';
+import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import {
+	account,
+	type AccountOptions,
+	describe,
+	type DescribeOptions,
+	list,
+	type ListOptions,
+	type ListQuery,
+} from '@directus/extensions-registry';
+import type { FieldFilter } from '@directus/types';
+import { isIn } from '@directus/utils';
+import express from 'express';
+import { isNil } from 'lodash-es';
 import type { ReadStream } from 'node:fs';
 
 const router = express.Router();

@@ -1,13 +1,13 @@
-import { useEnv } from '@directus/env';
-import type { AbstractServiceOptions, MutationOptions, Notification, PrimaryKey } from '@directus/types';
+import { ItemsService } from './items.js';
+import { UsersService } from './users.js';
 import { useLogger } from '../logger/index.js';
+import { MailService } from './mail/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
-import { ItemsService } from './items.js';
-import { MailService } from './mail/index.js';
-import { UsersService } from './users.js';
+import { useEnv } from '@directus/env';
+import type { AbstractServiceOptions, MutationOptions, Notification, PrimaryKey } from '@directus/types';
 
 const env = useEnv();
 const logger = useLogger();

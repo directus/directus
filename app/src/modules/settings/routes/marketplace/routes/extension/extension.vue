@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import ExtensionBanner from './components/extension-banner.vue';
+import ExtensionMetadata from './components/extension-metadata.vue';
+import ExtensionReadme from './components/extension-readme.vue';
+import SettingsNavigation from '../../../../components/navigation.vue';
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
 import VError from '@/components/v-error.vue';
@@ -6,10 +10,6 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import { PrivateView } from '@/views/private';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
-import SettingsNavigation from '../../../../components/navigation.vue';
-import ExtensionBanner from './components/extension-banner.vue';
-import ExtensionMetadata from './components/extension-metadata.vue';
-import ExtensionReadme from './components/extension-readme.vue';
 
 const props = defineProps<{
 	extensionId: string;

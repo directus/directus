@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { EmojiButton } from '@joeattardi/emoji-button';
-import { onUnmounted } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { EmojiButton } from '@joeattardi/emoji-button';
+import { onUnmounted } from 'vue';
 
 const emojiPicker = new EmojiButton({
 	theme: 'auto',

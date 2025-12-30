@@ -1,7 +1,7 @@
-import { describe, test, expect, vi, beforeAll, afterAll } from 'vitest';
-import { createI18n } from 'vue-i18n';
 import { formatDate, FormatDateOptions } from '@/utils/format-date';
 import { format as formatDateFns } from 'date-fns';
+import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { createI18n } from 'vue-i18n';
 
 vi.mock('@/lang', () => {
 	return {

@@ -1,7 +1,7 @@
+import type { GeneratedFilter } from '..';
+import type { FilterEmptyValidator, FilterValidator } from '../../query/filter';
 import type { ClientFilterOperator } from '@directus/types';
 import { getFilterOperatorsForType } from '@directus/utils';
-import type { FilterEmptyValidator, FilterValidator } from '../../query/filter';
-import type { GeneratedFilter } from '..';
 
 export const type = 'dateTime';
 export const filterOperatorList = getFilterOperatorsForType(type);

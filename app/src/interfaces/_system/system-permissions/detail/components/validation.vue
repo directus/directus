@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import AppMinimal from './app-minimal.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
 import { DeepPartial, Field, Permission, Policy } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import AppMinimal from './app-minimal.vue';
 
 const props = defineProps<{
 	permission: Permission;

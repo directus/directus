@@ -1,4 +1,4 @@
-import { test, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 
@@ -14,8 +14,8 @@ beforeEach(() => {
 	);
 });
 
-import { getAppearance } from '@/utils/get-appearance';
 import { useUserStore } from '@/stores/user';
+import { getAppearance } from '@/utils/get-appearance';
 
 test(`Defaults to light when configured to auto and matchMedia isn't available in the browser`, () => {
 	const userStore = useUserStore();

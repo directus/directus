@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { abbreviateNumber } from './abbreviate-number.js';
+import { describe, expect, it } from 'vitest';
 
 describe('when no unit is given', () => {
 	it('when under 1000', () => {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
 import UseDatetime from '@/components/use-datetime.vue';
 import VButton from '@/components/v-button.vue';
@@ -35,7 +36,6 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 type LocalNotification = Notification & {
 	to?: string;

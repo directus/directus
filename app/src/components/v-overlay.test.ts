@@ -1,7 +1,7 @@
-import { test, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
-
 import VOverlay from './v-overlay.vue';
+import { mount } from '@vue/test-utils';
+import { expect, test } from 'vitest';
+
 
 test('Mount component', () => {
 	expect(VOverlay).toBeTruthy();

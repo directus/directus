@@ -1,3 +1,6 @@
+import { useLogger } from '../../../logger/index.js';
+import { getStorage } from '../../../storage/index.js';
+import { getExtensionsPath } from '../get-extensions-path.js';
 import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError, ServiceUnavailableError } from '@directus/errors';
 import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
@@ -10,9 +13,6 @@ import Queue from 'p-queue';
 import { join } from 'path';
 import type { ReadableStream } from 'stream/web';
 import { extract } from 'tar';
-import { useLogger } from '../../../logger/index.js';
-import { getStorage } from '../../../storage/index.js';
-import { getExtensionsPath } from '../get-extensions-path.js';
 
 const env = useEnv();
 

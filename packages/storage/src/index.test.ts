@@ -1,5 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
 import { StorageManager } from './index.js';
+import { describe, expect, test, vi } from 'vitest';
 
 describe('#registerDriver', () => {
 	test('Saves registered drivers locally', () => {

@@ -1,10 +1,10 @@
-import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability, Permission } from '@directus/types';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { fetchInconsistentFieldMap } from './fetch-inconsistent-field-map.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import { fetchInconsistentFieldMap } from './fetch-inconsistent-field-map.js';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Permission } from '@directus/types';
+import { beforeEach, expect, test, vi } from 'vitest';
 
 vi.mock('../../lib/fetch-policies.js');
 vi.mock('../../lib/fetch-permissions.js', () => ({ fetchPermissions: vi.fn() }));

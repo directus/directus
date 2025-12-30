@@ -3,7 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
-import { Router, createMemoryHistory, createRouter } from 'vue-router';
+import { createMemoryHistory, createRouter, Router } from 'vue-router';
 
 const testComponent = defineComponent({
 	render: () => h('div'),

@@ -1,10 +1,10 @@
-import { App } from 'vue';
 import ClickOutside from './click-outside';
 import ContextMenu from './context-menu';
 import Focus from './focus';
 import InputAutoWidth from './input-auto-width';
 import Markdown from './markdown';
 import Tooltip from './tooltip';
+import { App } from 'vue';
 
 export function registerDirectives(app: App): void {
 	app.directive('click-outside', ClickOutside);

@@ -1,3 +1,13 @@
+import { useBus } from '../bus/index.js';
+import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
+import { ALIAS_TYPES } from '../constants.js';
+import getDefaultValue from './get-default-value.js';
+import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
+import getLocalType from './get-local-type.js';
+import getDatabase from '../database/index.js';
+import { useLock } from '../lock/index.js';
+import { useLogger } from '../logger/index.js';
+import { RelationsService } from '../services/relations.js';
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -6,16 +16,6 @@ import type { Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';
-import { useBus } from '../bus/index.js';
-import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
-import { ALIAS_TYPES } from '../constants.js';
-import getDatabase from '../database/index.js';
-import { useLock } from '../lock/index.js';
-import { useLogger } from '../logger/index.js';
-import { RelationsService } from '../services/relations.js';
-import getDefaultValue from './get-default-value.js';
-import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
-import getLocalType from './get-local-type.js';
 
 const logger = useLogger();
 

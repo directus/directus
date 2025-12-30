@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, inject, ref } from 'vue';
 import SystemMcpPromptsCollectionValidationExisting from './system-mcp-prompts-collection-validation-existing.vue';
 import SystemMcpPromptsCollectionValidationNew from './system-mcp-prompts-collection-validation-new.vue';
+import { computed, inject, ref } from 'vue';
 
 const formValues = inject('values', ref({ mcp_prompts_collection: null }));
 

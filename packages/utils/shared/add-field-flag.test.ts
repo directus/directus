@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import type { RawField } from '@directus/types';
 import { addFieldFlag } from './add-field-flag.js';
+import type { RawField } from '@directus/types';
+import { describe, expect, it } from 'vitest';
 
 describe('addFieldFlag', () => {
 	it('Adds a flag to a field without meta', () => {

@@ -1,5 +1,5 @@
-import { defineDisplay } from '@directus/extensions';
 import DisplayFile from './file.vue';
+import { defineDisplay } from '@directus/extensions';
 
 export default defineDisplay({
 	id: 'file',

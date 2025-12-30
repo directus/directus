@@ -1,7 +1,7 @@
-import { systemCollectionNames } from '@directus/system-data';
 import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
 import type { WebSocketEvent } from '../messages.js';
+import { systemCollectionNames } from '@directus/system-data';
 
 let actionsRegistered = false;
 

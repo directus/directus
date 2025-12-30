@@ -1,7 +1,7 @@
-import type { FieldMeta } from '@directus/types';
-import { systemFieldRows } from '@directus/system-data';
-import formatTitle from '@directus/format-title';
 import { getAuthProviders } from './get-auth-providers.js';
+import formatTitle from '@directus/format-title';
+import { systemFieldRows } from '@directus/system-data';
+import type { FieldMeta } from '@directus/types';
 
 // Dynamically populate auth providers field
 export function getSystemFieldRowsWithAuthProviders(): FieldMeta[] {

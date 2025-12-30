@@ -1,9 +1,9 @@
-import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
-import { numberGenerator } from '@directus/utils';
-import type { Isolate, Module } from 'isolated-vm';
 import { generateHostFunctionReference } from '../generate-host-function-reference.js';
 import { getSdk } from './sdk.js';
 import { wrap } from './utils/wrap.js';
+import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
+import { numberGenerator } from '@directus/utils';
+import type { Isolate, Module } from 'isolated-vm';
 
 /**
  * Creates a new isolate context, generates the sandbox SDK, and returns an isolate Module with the

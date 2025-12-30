@@ -1,8 +1,8 @@
+import VCheckbox from './v-checkbox.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
 import { h } from 'vue';
-import VCheckbox from './v-checkbox.vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],

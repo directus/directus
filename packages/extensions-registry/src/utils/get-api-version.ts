@@ -1,6 +1,6 @@
-import ky from 'ky';
 import { DEFAULT_REGISTRY } from '../constants.js';
 import { RegistryVersionResponse } from '../schemas/registry-version-response.js';
+import ky from 'ky';
 
 export interface GetApiVersionOptions {
 	registry?: string;

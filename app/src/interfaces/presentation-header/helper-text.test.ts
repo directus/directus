@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
-import { mount } from '@vue/test-utils';
 import HelperText from './helper-text.vue';
+import { mount } from '@vue/test-utils';
+import { describe, expect, test } from 'vitest';
 
 const mountOptions = {
 	props: {
