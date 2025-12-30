@@ -357,7 +357,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-scroll {
 	position: relative;
 	block-size: 100%;
-	min-block-size: var(--input-height-tall);
+	min-block-size: var(--input-height-default);
 	max-block-size: 1000px; // matches wysiwyg
 	margin-inline-end: -50px;
 

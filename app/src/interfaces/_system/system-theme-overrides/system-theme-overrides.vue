@@ -57,7 +57,7 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	padding: var(--theme--form--field--input--padding);
 	border-radius: var(--theme--border-radius);
-	max-block-size: var(--input-height-max);
+	max-block-size: var(--input-height-xlarge);
 	overflow-y: auto;
 	background-color: var(--theme--form--field--input--background);
 	transition-duration: var(--fast);

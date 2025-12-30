@@ -94,7 +94,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .input-tall {
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-default);
 }
 
 .block-list-item {
