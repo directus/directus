@@ -1,10 +1,10 @@
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { uploadFile } from '@/utils/upload-file';
-import { unexpectedError } from './unexpected-error';
 import type { File } from '@directus/types';
 import PQueue from 'p-queue';
 import type { Upload } from 'tus-js-client';
+import { unexpectedError } from './unexpected-error';
 
 export async function uploadFiles(
 	files: globalThis.File[],
@@ -40,7 +40,9 @@ export async function uploadFiles(
 
 	try {
 		const uploadedFiles = (
-			await Promise.all(files.map((file, index) => uploadQueue.add(() => startUpload(file, index))))
+			await Promise.all(
+				files.map((file, index) => uploadQueue.add(() => startUpload(file, index), { throwOnTimeout: true })),
+			)
 		).filter((v) => v);
 
 		if (options?.notifications) {
