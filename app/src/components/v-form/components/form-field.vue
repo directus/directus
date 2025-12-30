@@ -112,12 +112,20 @@ function emitValue(value: any) {
 		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
 		props.batchMode === false
 	) {
-		onFieldUnset();
-		emit('unset', props.field);
+		unsetValue();
 	} else {
-		onFieldUpdate(value);
-		emit('update:modelValue', value);
+		updateValue(value);
 	}
+}
+
+function unsetValue() {
+	onFieldUnset();
+	emit('unset', props.field);
+}
+
+function updateValue(value: any) {
+	onFieldUpdate(value);
+	emit('update:modelValue', value);
 }
 
 function useRaw() {
@@ -189,16 +197,8 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'collab-indicator': focusedBy,
 			},
 		]"
-		:style="
-			focusedBy
-				? {
-						'--collab-indicator--color': `var(--${focusedBy.color}-10)`,
-					}
-				: {}
-		"
 	>
 		<VMenu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
@@ -230,7 +230,7 @@ function useComputedValues() {
 				:restricted="isDisabled"
 				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
-				@unset="$emit('unset', $event)"
+				@unset="unsetValue"
 				@edit-raw="showRaw = true"
 				@copy-raw="copyRaw"
 				@paste-raw="pasteRaw"
@@ -285,19 +285,6 @@ function useComputedValues() {
 .field {
 	position: relative;
 	align-self: baseline;
-
-	&.collab-indicator {
-		&::before {
-			content: '';
-			position: absolute;
-			inset: -12px;
-			inset-block-end: -12px;
-			inset-inline: -12px;
-			inset-inline-end: -12px;
-			border-radius: 8px;
-			background-color: var(--collab-indicator--color);
-		}
-	}
 }
 
 .type-note {

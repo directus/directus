@@ -181,6 +181,14 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
+			const focus = await room.getFocusBy(client.uid);
+
+			if (focus && focus !== message.field) {
+				throw new InvalidPayloadError({
+					reason: `Field ${message.field} has already been focused by another user`,
+				});
+			}
+
 			const allowedFields = await room.verifyPermissions(client, room.collection, room.item, 'update');
 
 			if (allowedFields.some((f) => f === message.field || f === '*') === false)

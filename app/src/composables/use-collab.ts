@@ -57,6 +57,7 @@ export function useCollab(
 	const users = ref<CollabUser[]>([]);
 	const focused = ref<Record<ClientID, string>>({});
 	const eventHandlers: RemoveEventHandler[] = [];
+	let largestUpdateOrder = 0;
 
 	const messageReceivers = {
 		receiveJoin,
@@ -88,13 +89,16 @@ export function useCollab(
 		}
 	});
 
-	watch(() => active?.value, (isActive) => {
-		if (isActive) {
-			join();
-		} else {
-			leave();
-		}
-	});
+	watch(
+		() => active?.value,
+		(isActive) => {
+			if (isActive) {
+				join();
+			} else {
+				leave();
+			}
+		},
+	);
 
 	watch(item, () => {
 		leave();
@@ -126,7 +130,14 @@ export function useCollab(
 	);
 
 	function join() {
-		if ((active && active.value === false) || !connected.value || roomId.value || !collection.value || item.value === '+') return;
+		if (
+			(active && active.value === false) ||
+			!connected.value ||
+			roomId.value ||
+			!collection.value ||
+			item.value === '+'
+		)
+			return;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,
@@ -224,6 +235,12 @@ export function useCollab(
 	}
 
 	function receiveUpdate(message: UpdateMessage) {
+		if (message.order > largestUpdateOrder) {
+			largestUpdateOrder = message.order;
+		} else {
+			return;
+		}
+
 		if ('changes' in message) {
 			if (!isEqual(message.changes, edits.value[message.field])) edits.value[message.field] = message.changes;
 		} else {

@@ -8,6 +8,7 @@ type RoomMessage = Extract<BroadcastMessage, { type: 'room' }>;
 export type RoomListener = (message: RoomMessage) => void;
 export class Messenger {
 	clients: Record<ClientID, WebSocketClient> = {};
+	orders: Record<ClientID, number> = {};
 	messenger: Bus = useBus();
 	roomListeners: Record<string, RoomListener> = {};
 
@@ -15,7 +16,12 @@ export class Messenger {
 		this.messenger.subscribe(COLLAB_BUS, (message: BroadcastMessage) => {
 			if (message.type === 'send') {
 				const client = this.clients[message.client];
-				if (client) client.send(JSON.stringify(message.message));
+
+				if (client) {
+					const order = this.orders[client.uid];
+					this.orders[client.uid]!++;
+					client.send(JSON.stringify({ order, ...message.message }));
+				}
 			} else if (message.type === 'room') {
 				this.roomListeners[message.room]?.(message);
 			}
@@ -30,6 +36,7 @@ export class Messenger {
 		if (client.uid in this.clients) return;
 
 		this.clients[client.uid] = client;
+		this.orders[client.uid] = 0;
 
 		client.on('close', () => {
 			this.removeClient(client.uid);
@@ -38,6 +45,7 @@ export class Messenger {
 
 	removeClient(uid: ClientID) {
 		delete this.clients[uid];
+		delete this.orders[uid];
 	}
 
 	sendRoom(room: string, message: Omit<RoomMessage, 'type' | 'room'>) {

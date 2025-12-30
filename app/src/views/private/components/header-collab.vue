@@ -9,11 +9,13 @@ interface Props {
 	connected?: boolean;
 	modelValue?: CollabUser[] | CollabUser;
 	xSmall?: boolean;
+	lock?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	connected: false,
 	modelValue: () => [],
+	lock: false,
 });
 
 const { t } = useI18n();
@@ -46,8 +48,14 @@ const users = computed(() => {
 		>
 			<img v-if="user.avatar_url" :src="user.avatar_url" />
 			<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
-			<v-icon v-else name="person" />
+			<VIcon v-else name="person" />
 		</VAvatar>
+		<VIcon
+			v-if="lock && users.length > 0"
+			name="lock"
+			class="lock-icon"
+			:style="{ color: `var(--${users[0].color})` }"
+		/>
 	</div>
 </template>
 
@@ -55,5 +63,11 @@ const users = computed(() => {
 .header-collab {
 	display: flex;
 	gap: 8px;
+}
+
+.lock-icon {
+	align-self: center;
+	font-size: 14px;
+	color: var(--text-50);
 }
 </style>

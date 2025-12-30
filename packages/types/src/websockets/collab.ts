@@ -77,6 +77,7 @@ export type BroadcastMessage =
 export type ServerMessage = {
 	type: typeof TYPE.COLLAB;
 	room: string;
+	order: number;
 } & BaseServerMessage;
 
 export type UserID = string;
