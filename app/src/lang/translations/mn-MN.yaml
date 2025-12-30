@@ -134,7 +134,6 @@ create_policy: Бодлого үүсгэх
 create_user: Хэрэглэгч үүсгэх
 message: Зурвас
 delete_panel: Хавтан устгах
-create_webhook: Webhook үүсгэх
 create_custom_translation: Тохируулгат орчуулга үүсгэх
 edit_custom_translation: Тохируулгат орчуулгыг засах
 no_custom_translations: Тохируулгат орчуулга байхгүй байна
@@ -629,10 +628,6 @@ file_count: 'Файл байхгүй | Нэг файл | {count} файлууд'
 no_files_copy: Энд файл байхгүй байна.
 user_count: 'Хэрэглэгч байхгүй | Нэг хэрэглэгч | {count} хэрэглэгчид'
 no_users_copy: Ийм үүрэгтэй хэрэглэгч одоогоор байхгүй байна.
-webhooks_count: 'Вэбхүүк байхгүй | Нэг вэбхүүк | {count} вэбхүүкүүд'
-webhooks_deprecation_notice: |
-  Вэбхүүк ашиглагдахаа больсон бөгөөд цаашид ашиглахгүй байхыг сануулж байна. Оронд нь **Урсгалууд**-ыг [Вэбхүүк / URL үйлдлийн хүсэлт]-тэй хамт ашиглана уу. (https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: Вэбхүүк одоогоор тохируулагдаагүй байна. Доорх хэсгээс үүсгэнэ үү.
 no_notifications: Мэдэгдэл байхгүй
 no_notifications_copy: Танд одоогоор мэдэгдэл байхгүй байна!
 activity_log: Үйл ажиллагааны бүртгэл
@@ -663,7 +658,6 @@ action: Үйлдэл
 ip_address: IP хаяг
 user_agent: Хэрэглэгчийн агент
 origin: Эх
-webhooks: Вэбхүүкүүд
 decimals: Аравтын бутархай
 value_decimals: Аравтын бутархайн утга
 min_value: Хамгийн бага утга
@@ -1109,7 +1103,6 @@ settings_roles: Хэрэглэгчийн үүргүүд
 settings_permissions: Хандах бодлогууд
 settings_project: Тохиргоо
 settings_appearance: Харагдах байдал
-settings_webhooks: Вэбхүүкүүд
 settings_flows: Урсгалууд
 settings_system_logs: Системийн логууд
 settings_presets: Тэмдэглэгээнүүд
@@ -1187,7 +1180,6 @@ directus_collection:
   directus_settings: Төслийн тохируулга
   directus_shares: Гаднаас хуваалцсан зүйлсийг хянадаг
   directus_users: Платформд зориулсан системийн хэрэглэгчид
-  directus_webhooks: Үйл явдалд суурилсан HTTP хүсэлтийн тохиргоо
   directus_translations: Тохируулгат орчуулгууд
   directus_versions: Оруулгуудын контент хувилбарууд
   directus_extensions: Хэрэгслүүдийн тохируулга
@@ -1365,18 +1357,6 @@ fields:
     admin_access: Админ хандалт
     ip_access: IP хандалт
     enforce_tfa: 2FA шаардах
-  directus_webhooks:
-    name: Нэр
-    method: Арга
-    status: Статус
-    data: Өгөгдөл
-    header: Толгой
-    value: Утга
-    headers: Хүсэлтийн толгой
-    data_label: Үйл явдлын өгөгдлийг илгээх
-    triggers: Өдөөгчид
-    actions: Үйлдлүүд
-    collections: Бүрдлүүд
 field_options:
   directus_settings:
     project_name_placeholder: Миний төсөл...
@@ -1478,19 +1458,6 @@ field_options:
     status_dropdown_suspended: Түдгэлзүүлсэн
     status_dropdown_archived: Архивласан
     token: Аюулгүй хандалтын токенг оруулах...
-  directus_webhooks:
-    status_options_active: Идэвхтэй
-    status_options_inactive: Идэвхгүй
-    data_label: Үйл явдлын өгөгдлийг илгээх
-    triggers_divider: Өдөөгчид
-    actions_create: Үүсгэх
-    actions_update: Шинэчлэх
-    actions_delete: Устгах
-    actions_login: Нэвтрэх
-    headers:
-      header: Толгой
-      value: Утга
-      add: Толгой нэмэх
 no_fields_in_collection: '"{collection}"-д одоогоор талбар байхгүй байна'
 no_value: Утга байхгүй
 do_nothing: Юу ч хийхгүй
@@ -1569,7 +1536,6 @@ editing_role: 'Үүрэг {role}'
 editing_policy: 'Бодлого {policy}'
 no_permissions: Эрх байхгүй
 permission_add_collection: Бүрдэл нэмэх
-creating_webhook: Вебхүүк үүсгэж байна
 default_label: Өгөгдмөл
 delete_label: Устгах
 delete_are_you_sure: >-

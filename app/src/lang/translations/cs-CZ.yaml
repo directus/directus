@@ -141,7 +141,6 @@ create_policy: Vytvořit oprávnění
 create_user: Vytvořit uživatele
 message: Zpráva
 delete_panel: Odstranit panel
-create_webhook: Vytvořit webhook
 create_custom_translation: Vytvořit Vlastní Překlad
 edit_custom_translation: Upravit Vlastní Překlad
 no_custom_translations: Žádné Vlastní Překlady
@@ -636,12 +635,6 @@ file_count: 'Žádné soubory | Jeden soubor | {count} souborů'
 no_files_copy: Nejsou zde žádné soubory.
 user_count: 'Žádní uživatelé | Jeden uživatel | {count} uživatelů'
 no_users_copy: V této roli zatím nejsou žádní uživatelé.
-webhooks_count: 'Žádné webhooky | 1 webhook | {count} webhooků'
-webhooks_deprecation_notice: |
-  Webové háčky jsou zastaralé, další použití nedoporučujeme.
-
-  Prosím, použijte **toky** s [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: Zatím nebyly nakonfigurovány žádné webhooky. Začněte vytvořením jednoho níže.
 no_notifications: Žádná oznámení
 no_notifications_copy: Jste v obraze!
 activity_log: Záznam aktivit
@@ -672,7 +665,6 @@ action: Akce
 ip_address: IP adresa
 user_agent: Uživatelský agent
 origin: Původ
-webhooks: Webhooky
 decimals: Desetinná místa
 value_decimals: Desetinná hodnota
 min_value: Minimální hodnota
@@ -1118,7 +1110,6 @@ settings_roles: Uživatelské role
 settings_permissions: Přístupová práva
 settings_project: Nastavení
 settings_appearance: Vzhled
-settings_webhooks: Webhooky
 settings_flows: Toky
 settings_system_logs: Systémové protokoly
 settings_presets: Záložky
@@ -1195,7 +1186,6 @@ directus_collection:
   directus_settings: Možnosti konfigurace projektu
   directus_shares: Sleduje externě sdílené položky
   directus_users: Systémoví uživatelé pro platformu
-  directus_webhooks: Konfigurace HTTP požadavků založených na událostech
   directus_translations: Vlastní překlady
   directus_versions: Verze obsahu pro položky
   directus_extensions: Nastavení rozšíření
@@ -1373,18 +1363,6 @@ fields:
     admin_access: Přístup správce
     ip_access: Přístup z IP adresy
     enforce_tfa: Vyžadovat 2FA
-  directus_webhooks:
-    name: Jméno
-    method: Metoda
-    status: Stav
-    data: Údaje
-    header: Hlavička
-    value: Hodnota
-    headers: Hlavičky požadavku
-    data_label: Odeslat data události
-    triggers: Spouštěče
-    actions: Akce
-    collections: Kategorie
 field_options:
   directus_settings:
     project_name_placeholder: Můj projekt...
@@ -1486,19 +1464,6 @@ field_options:
     status_dropdown_suspended: Pozastaveno
     status_dropdown_archived: Archivováno
     token: Zadejte bezpečný přístupový token...
-  directus_webhooks:
-    status_options_active: Aktivní
-    status_options_inactive: Neaktivní
-    data_label: Odeslat data události
-    triggers_divider: Spouštěče
-    actions_create: Vytořit
-    actions_update: Úpravy
-    actions_delete: Smazat
-    actions_login: Přihlášení
-    headers:
-      header: Hlavička
-      value: Hodnota
-      add: Přidat hlavičku
 no_fields_in_collection: 'V "{collection}" zatím nejsou žádná pole'
 no_value: Žádná hodnota
 do_nothing: Nedělat nic
@@ -1577,7 +1542,6 @@ editing_role: '{role} role'
 editing_policy: 'Přístupová práva k {policy}'
 no_permissions: Bez oprávnění
 permission_add_collection: Přidat kolekci
-creating_webhook: Vytvoření webhooku
 default_label: Výchozí
 delete_label: Odstranit
 delete_are_you_sure: >-

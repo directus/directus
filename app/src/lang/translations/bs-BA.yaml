@@ -78,7 +78,6 @@ create_role: Kreiraj novu rolu
 create_user: Dodaj korisnika
 message: Poruka
 delete_panel: Ukloni panel
-create_webhook: Kreiraj webhook
 invite_users: Pozovite korisnike
 invite: Pozovi
 email_already_invited: Adresa e-pošte "{email}" već pozvana
@@ -456,8 +455,6 @@ file_count: 'Nema fajlova | Jedan fajl | Broj fajlova: {count}'
 no_files_copy: Nema fajlova.
 user_count: 'Nema korisnika | Jedan korisnik | Broj korisnika: {count}'
 no_users_copy: Još nema korisnika s ovom rolom.
-webhooks_count: 'Nema web-dojavnika| Jedan web-dojavnik | {count} web-dojavnika'
-no_webhooks_copy: Još nije konfigurisan nijedan web-dojavnik. Započnite s kreiranjem jednog u nastavku.
 no_notifications: Nema obavijesti
 no_notifications_copy: Upoznati ste sa svime!
 activity_log: Dnevnik aktivnosti
@@ -485,7 +482,6 @@ action: Akcija
 ip_address: IP Adresa
 user_agent: Korisnički Agent
 origin: Porijeklo
-webhooks: Web-dojavnici
 decimals: Decimale
 value_decimals: Decimalne vrijednosti
 min_value: Min. vrijednost
@@ -858,7 +854,6 @@ editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
 settings_project: Postavke
-settings_webhooks: Web-dojavnici
 settings_flows: Tokovi
 settings_translations: Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
@@ -916,7 +911,6 @@ directus_collection:
   directus_settings: Opcije konfiguracije projekta
   directus_shares: Prati vanjske dijeljene stavke
   directus_users: Korisnici sistema za platformu
-  directus_webhooks: Konfiguracija za HTTP zahtjeve temeljene na događajima
 fields:
   directus_activity:
     item: Primarni ključ stavke
@@ -1043,17 +1037,6 @@ fields:
     users: Korisnici s rolom
   directus_policies:
     description: Opis
-  directus_webhooks:
-    name: Ime
-    method: Metoda
-    data: Podaci
-    header: Zaglavlje
-    value: Vrijednosti
-    headers: Zaglavlja zahtijeva
-    data_label: Pošalji podatke o događaju
-    triggers: Okidači
-    actions: Akcije
-    collections: Kolekcije
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekat...
@@ -1137,19 +1120,6 @@ field_options:
     status_dropdown_suspended: Suspendovan
     status_dropdown_archived: Arhivirano
     token: Unesite siguran pristupni token...
-  directus_webhooks:
-    status_options_active: Aktivan
-    status_options_inactive: Neaktivan
-    data_label: Pošalji podatke o događaju
-    triggers_divider: Okidači
-    actions_create: Kreiraj
-    actions_update: Ažuriraj
-    actions_delete: Obriši
-    actions_login: Prijava
-    headers:
-      header: Zaglavlje
-      value: Vrijednost
-      add: Dodajte zaglavlje
 no_fields_in_collection: 'Još nema polja u "{collection}"'
 no_value: Nema vrijednosti
 do_nothing: Ne čini ništa
@@ -1214,7 +1184,6 @@ continue_label: Nastavi
 continue_as: >-
   {name} je trenutno prijavljen/a. Ako prepoznate ovaj račun, pritisnite Nastavi.
 editing_role: '{role} rola'
-creating_webhook: Kreiraj web-dojavnik
 default_label: Zadano
 delete_label: Obriši
 delete_are_you_sure: >-

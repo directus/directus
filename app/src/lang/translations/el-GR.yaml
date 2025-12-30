@@ -120,7 +120,6 @@ create_role: Δημιουργία ρόλου
 create_user: Δημιουργία Χρήστη
 message: Μήνυμα
 delete_panel: Διαγραφή Πίνακα
-create_webhook: Δημιουργία Webhook
 create_custom_translation: Δημιουργία Προσαρμοσμένης Μετάφρασης
 edit_custom_translation: Επεξεργασία Προσαρμοσμένης Μετάφρασης
 no_custom_translations: Καμία Προσαρμοσμένη Μετάφραση
@@ -398,11 +397,6 @@ fields:
     description: Περιγραφή
   directus_policies:
     description: Περιγραφή
-  directus_webhooks:
-    name: Όνομα
-    status: Κατάσταση
-    value: Τιμή
-    collections: Συλλογές
 field_options:
   directus_activity:
     create: Δημιουργία
@@ -417,12 +411,6 @@ field_options:
       icon_name: Εικονίδιο
       name_name: Όνομα
     collections_name: Συλλογές
-  directus_webhooks:
-    actions_create: Δημιουργία
-    actions_update: Ενημέρωση
-    actions_delete: Διαγραφή
-    headers:
-      value: Τιμή
 comment: Σχόλιο
 ai:
   unknown: Άγνωστο
@@ -527,6 +515,9 @@ layouts:
   map:
     cluster_options: Επιλογές ομαδοποίησης
 both: Και τα δύο
+triggers:
+  webhook:
+    method: Μέθοδος
 operations:
   json-web-token:
     options: Επιλογές
@@ -535,6 +526,8 @@ operations:
   notification:
     message: Μήνυμα
     subject: Θέμα
+  request:
+    method: Μέθοδος
   trigger:
     flows: Ροές
     flow: Ροή
