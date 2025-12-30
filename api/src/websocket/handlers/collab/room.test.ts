@@ -644,10 +644,7 @@ describe('Room.verifyPermissions', () => {
 			{
 				fields: ['*'],
 				permissions: {
-					_and: [
-						{ status: { _eq: 'published' } },
-						{ authors: { name: { _contains: 'John' } } },
-					],
+					_and: [{ status: { _eq: 'published' } }, { authors: { name: { _contains: 'John' } } }],
 				},
 				validation: {},
 			},
@@ -753,5 +750,35 @@ describe('PermissionCache Invalidation', () => {
 		// Cache for user A should be cleared, but user B should remain
 		expect(permissionCache.get(clientA.accountability!, 'articles', '1', 'read')).toBeUndefined();
 		expect(permissionCache.get(clientB.accountability!, 'articles', '1', 'read')).toBeDefined();
+	});
+
+	test('LRU eviction when max size is reached', async () => {
+		// Create a small cache with max size of 3
+		const { PermissionCache } = await import('./permissions-cache.js');
+		const smallCache = new PermissionCache(3);
+
+		const accountability = getAccountability({ user: 'test-user' });
+
+		// Add 3 entries
+		smallCache.set(accountability, 'coll', 'item1', 'read', ['field1']);
+		smallCache.set(accountability, 'coll', 'item2', 'read', ['field2']);
+		smallCache.set(accountability, 'coll', 'item3', 'read', ['field3']);
+
+		// All 3 should be present
+		expect(smallCache.get(accountability, 'coll', 'item1', 'read')).toEqual(['field1']);
+		expect(smallCache.get(accountability, 'coll', 'item2', 'read')).toEqual(['field2']);
+		expect(smallCache.get(accountability, 'coll', 'item3', 'read')).toEqual(['field3']);
+
+		// Access item1 to make it most recently used
+		smallCache.get(accountability, 'coll', 'item1', 'read');
+
+		// Add a 4th entry - should evict item2 (the least recently used after accessing item1)
+		smallCache.set(accountability, 'coll', 'item4', 'read', ['field4']);
+
+		// item1 should still be present (was accessed), item2 should be evicted
+		expect(smallCache.get(accountability, 'coll', 'item1', 'read')).toEqual(['field1']);
+		expect(smallCache.get(accountability, 'coll', 'item2', 'read')).toBeUndefined();
+		expect(smallCache.get(accountability, 'coll', 'item3', 'read')).toEqual(['field3']);
+		expect(smallCache.get(accountability, 'coll', 'item4', 'read')).toEqual(['field4']);
 	});
 });
