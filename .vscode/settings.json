@@ -1,4 +1,9 @@
 {
 	"scssFormatter.singleQuote": true,
-	"stylelint.validate": ["css", "scss", "vue"]
+	"stylelint.validate": [
+		"css",
+		"scss",
+		"vue"
+	],
+	"postman.settings.dotenv-detection-notification-visibility": false
 }
