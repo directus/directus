@@ -2,6 +2,7 @@
 
 import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintImportPlugin from 'eslint-plugin-import';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import process from 'node:process';
@@ -74,6 +75,33 @@ export default typescriptEslint.config(
 			curly: ['error', 'multi-line'],
 			// Disallow expressions where the operation doesn't affect the value
 			'no-constant-binary-expression': 'error',
+			// Sort members
+			'sort-imports': [
+				'error',
+				{
+					ignoreCase: true,
+					ignoreDeclarationSort: true,
+					allowSeparatedGroups: true,
+				},
+			],
+		},
+	},
+
+	// Enable import plugin and custom rules for import sorting
+	{
+		plugins: { import: eslintImportPlugin },
+		rules: {
+			'import/order': [
+				'error',
+				{
+					groups: [],
+					alphabetize: {
+						order: 'asc',
+						orderImportKind: 'asc',
+						caseInsensitive: true,
+					},
+				},
+			],
 		},
 	},
 
