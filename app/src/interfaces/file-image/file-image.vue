@@ -140,8 +140,15 @@ async function imageErrorHandler() {
 
 const values = inject('values', ref<Record<string, unknown>>({}));
 
+// Image-only filter for file library
+const imageFilter = {
+	type: {
+		_starts_with: 'image/',
+	},
+};
+
 const customFilter = computed(() => {
-	return parseFilter(
+	const filter = parseFilter(
 		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
@@ -150,6 +157,12 @@ const customFilter = computed(() => {
 			return val;
 		}),
 	);
+
+	if (!filter) return imageFilter;
+
+	return {
+		_and: [filter, imageFilter],
+	};
 });
 
 function onUpload(image: any) {
@@ -289,6 +302,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			:from-library="enableSelect"
 			:folder="folder"
 			:filter="customFilter"
+			accept="image/*"
 			@input="onUpload"
 		/>
 	</div>

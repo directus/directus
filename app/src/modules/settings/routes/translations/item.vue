@@ -215,6 +215,7 @@ async function revert(values: Record<string, any>) {
 		v-else
 		:title="primaryKey === '+' ? $t('create_custom_translation') : $t('edit_custom_translation')"
 		show-back
+		back-to="/settings/translations"
 	>
 		<template #headline>
 			<VBreadcrumb

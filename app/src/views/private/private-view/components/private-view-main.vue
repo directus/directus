@@ -110,6 +110,7 @@ const splitterCollapsed = computed({
 						:icon
 						:icon-color
 						:show-back
+						:back-to
 					>
 						<template #actions:append><slot name="actions:append" /></template>
 						<template #actions:prepend><slot name="actions:prepend" /></template>

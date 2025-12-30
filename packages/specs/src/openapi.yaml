@@ -106,9 +106,6 @@ tags:
       Enables users to create unpublished copies of an item, modify them independently from the main version, and
       promote them to become the new main version when ready.
     x-collection: directus_versions
-  - name: Webhooks
-    description: Webhooks.
-    x-collection: directus_webhooks
 paths:
   # Activity
   /activity:
@@ -290,12 +287,6 @@ paths:
   /versions/{id}/promote:
     $ref: './paths/versions/promote.yaml'
 
-  # Webhooks
-  /webhooks:
-    $ref: './paths/webhooks/webhooks.yaml'
-  /webhooks/{id}:
-    $ref: './paths/webhooks/webhook.yaml'
-
 components:
   schemas:
     Activity:
@@ -340,8 +331,6 @@ components:
       $ref: './definitions/query.yaml'
     Versions:
       $ref: './components/version.yaml'
-    Webhooks:
-      $ref: './components/webhook.yaml'
     x-metadata:
       type: object
       properties:

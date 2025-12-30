@@ -23,4 +23,3 @@ export * from './share.js';
 export * from './translation.js';
 export * from './user.js';
 export * from './version.js';
-export * from './webhook.js';
