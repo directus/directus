@@ -1,9 +1,11 @@
-import createApp from './app.js';
 import { useEnv } from '@directus/env';
 import { Router } from 'express';
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
+// eslint-disable-next-line import/order
+import createApp from './app.js';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),
