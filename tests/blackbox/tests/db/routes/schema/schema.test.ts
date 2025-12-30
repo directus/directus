@@ -10,13 +10,13 @@ import {
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
+import type { Snapshot } from '@directus/types';
 import { load as loadYaml } from 'js-yaml';
 import { cloneDeep } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { version as currentDirectusVersion } from '../../../../../../api/package.json';
-import type { Snapshot } from '../../../../../../api/src/types/snapshot.js';
 import {
 	collectionAll,
 	collectionM2A,
