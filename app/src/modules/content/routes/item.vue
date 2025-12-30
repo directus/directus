@@ -16,6 +16,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
@@ -32,15 +33,14 @@ import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import HeaderCollab from '@/views/private/components/header-collab.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
-import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
-import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
 import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch, type ComponentPublicInstance } from 'vue';
@@ -49,6 +49,8 @@ import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
+import { SplitPanel } from '@directus/vue-split-panel';
+import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 
 interface Props {
 	collection: string;
@@ -112,6 +114,7 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
+	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
@@ -122,6 +125,13 @@ aiStore.onSystemToolResult((tool, input) => {
 		refresh();
 	}
 });
+
+const {
+	onSave,
+	users: collabUsers,
+	connected,
+	collabContext,
+} = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -432,6 +442,7 @@ async function saveAndStay() {
 
 	try {
 		const savedItem: Record<string, any> = await save();
+		onSave();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
@@ -452,6 +463,7 @@ async function saveAndAddNew() {
 
 	try {
 		await save();
+		onSave();
 
 		if (isNew.value === true) {
 			refresh();
@@ -466,6 +478,7 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
+		onSave();
 
 		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey));
 	} catch {
@@ -478,6 +491,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
+		onSave();
 		if (props.singleton === false) router.push(collectionRoute.value);
 	} catch {
 		// Save shows unexpected error dialog
@@ -611,7 +625,9 @@ function useCollectionRoute() {
 			</div>
 		</template>
 
-		<template #title-outer:append></template>
+		<template #title:append>
+			<header-collab :model-value="collabUsers" :connected="connected" small />
+		</template>
 
 		<template #actions>
 			<VButton
@@ -793,6 +809,7 @@ function useCollectionRoute() {
 					:initial-values="item"
 					:fields="fields"
 					:primary-key="internalPrimaryKey"
+					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
 					:direction="userStore.textDirection"
@@ -882,6 +899,10 @@ function useCollectionRoute() {
 	display: flex;
 	align-items: center;
 	gap: 0.25rem;
+}
+
+.header-collab {
+	margin-inline-start: 16px;
 }
 
 .version-more-options.v-icon {

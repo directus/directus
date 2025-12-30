@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { CollabContext } from '@/composables/use-collab';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
@@ -45,6 +46,7 @@ const props = withDefaults(
 		inline?: boolean;
 		version?: ContentVersion | null;
 		comparison?: ComparisonContext;
+		collabContext?: CollabContext;
 	}>(),
 	{
 		collection: undefined,
@@ -436,6 +438,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:direction="direction"
 					:version
 					:comparison="comparison"
+					:collab-context="collabContext"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
@@ -458,6 +461,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
 					:comparison-active="comparison?.selectedFields.includes(fieldName)"
+					:collab-field-context="collabContext?.registerField(fieldName)"
 					:primary-key="primaryKey"
 					:loading="loading"
 					:validation-error="

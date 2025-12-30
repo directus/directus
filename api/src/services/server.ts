@@ -120,6 +120,8 @@ export class ServerService {
 					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
 					: false;
 
+				info['websocket'].collab = toBoolean(env['WEBSOCKETS_COLLAB_ENABLED']);
+
 				info['websocket'].logs =
 					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
 						? {
