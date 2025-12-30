@@ -12,8 +12,10 @@ vi.mock('./items.js', async () => {
 	return mockItemsService();
 });
 
-import { ForbiddenError } from '@directus/errors';
+/* eslint-disable import/order */
 import { ItemsService } from './items.js';
+import { ForbiddenError } from '@directus/errors';
+/* eslint-enable import/order */
 
 describe('FoldersService', () => {
 	const mockSchema = {

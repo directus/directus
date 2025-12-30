@@ -17,6 +17,7 @@ vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
+// eslint-disable-next-line import/order
 import { useComparison } from '@/views/private/components/comparison/use-comparison';
 
 // Mock Fields Store

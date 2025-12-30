@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Driver } from '@directus/storage';
 import { Readable } from 'node:stream';

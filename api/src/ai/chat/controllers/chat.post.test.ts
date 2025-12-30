@@ -16,9 +16,11 @@ vi.mock('../utils/chat-request-tool-to-ai-sdk-tool.js', () => ({
 	chatRequestToolToAiSdkTool: vi.fn(),
 }));
 
+/* eslint-disable import/order */
 import { safeValidateUIMessages } from 'ai';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
+/* eslint-enable import/order */
 
 describe('aiChatPostHandler', () => {
 	let mockReq: Partial<Request>;

@@ -15,6 +15,7 @@ vi.mock('../../request/index.js', () => ({
 const url = '/';
 const method = 'POST';
 
+// eslint-disable-next-line import/order
 import config from './index.js';
 
 afterEach(() => {

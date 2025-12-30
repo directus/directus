@@ -5,6 +5,7 @@ vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
 
+// eslint-disable-next-line import/order
 import { SchemaHelperSQLite } from './sqlite.js';
 
 describe('SchemaHelperSQLite', () => {

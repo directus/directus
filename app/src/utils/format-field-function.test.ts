@@ -1,14 +1,15 @@
-import { beforeEach, expect, Mock, test, vi } from 'vitest';
-import { setActivePinia } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
-import { createI18n } from 'vue-i18n';
-
 import { cryptoStub } from '@/__utils__/crypto';
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
+import { beforeEach, expect, Mock, test, vi } from 'vitest';
+import { createI18n } from 'vue-i18n';
 
 vi.stubGlobal('crypto', cryptoStub);
 
+/* eslint-disable import/order */
 import { useFieldsStore } from '@/stores/fields';
 import { formatFieldFunction } from '@/utils/format-field-function';
+/* eslint-enable import/order */
 
 vi.mock('@/lang', () => {
 	return {

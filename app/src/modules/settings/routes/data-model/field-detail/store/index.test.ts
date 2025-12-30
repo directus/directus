@@ -3,15 +3,16 @@ import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
-
 vi.stubGlobal('crypto', cryptoStub);
 
+/* eslint-disable import/order */
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { useFieldDetailStore } from './index';
 import { setLocalTypeForInterface } from './alterations/global';
 import type { StateUpdates } from './types';
 import { useExtension } from '@/composables/use-extension';
+/* eslint-enable import/order */
 
 beforeEach(() => {
 	setActivePinia(

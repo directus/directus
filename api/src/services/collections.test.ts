@@ -79,9 +79,11 @@ vi.mock('./fields/get-collection-meta-updates.js', () => ({
 	getCollectionMetaUpdates: vi.fn().mockReturnValue([]),
 }));
 
+/* eslint-disable import/order */
 import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+/* eslint-enable import/order */
 
 const schema = new SchemaBuilder()
 	.collection('directus_collections', (c) => {

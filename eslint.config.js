@@ -176,7 +176,6 @@ export default typescriptEslint.config(
 	{
 		files: ['**/*.test.ts'],
 		rules: {
-			'import/order': 'off',
 			'vue/one-component-per-file': 'off',
 		},
 	},

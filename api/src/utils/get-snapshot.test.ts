@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
 import type { Knex } from 'knex';
 

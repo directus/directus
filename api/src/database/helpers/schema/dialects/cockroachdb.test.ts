@@ -5,6 +5,7 @@ vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
 
+// eslint-disable-next-line import/order
 import { SchemaHelperCockroachDb } from './cockroachdb.js';
 
 describe('SchemaHelperCockroachDb', () => {
