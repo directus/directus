@@ -11,7 +11,6 @@ import Draggable from 'vuedraggable';
 // Recursive component reference for nested items
 const GroupedListItem = defineAsyncComponent(() => import('./grouped-list-item.vue'));
 
- 
 type ItemType = Record<string, any>;
 
 const slots = useSlots();
@@ -99,13 +98,7 @@ function handleItemClick() {
 
 <template>
 	<div v-show="visibilityTree.visible" class="grouped-list-item">
-		<VListItem
-			block
-			dense
-			:clickable="clickable"
-			:to="itemLink"
-			@click.self="handleItemClick"
-		>
+		<VListItem block dense :clickable="clickable" :to="itemLink" @click.self="handleItemClick">
 			<VListItemIcon>
 				<VIcon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</VListItemIcon>
@@ -118,11 +111,7 @@ function handleItemClick() {
 
 				<!-- Content slot (default shows name with search highlight) -->
 				<slot name="content" :item="item" :search="visibilityTree.search">
-					<VHighlight
-						:query="visibilityTree.search"
-						:text="String(item.name || item[idField])"
-						class="item-name"
-					/>
+					<VHighlight :query="visibilityTree.search" :text="String(item.name || item[idField])" class="item-name" />
 				</slot>
 			</div>
 
@@ -173,16 +162,16 @@ function handleItemClick() {
 						@item-click="$emit('itemClick', $event)"
 					>
 						<template v-if="slots.icon" #icon="_iconData">
-							<slot name="icon" v-bind="(_iconData as Record<string, unknown>)" />
+							<slot name="icon" v-bind="_iconData as Record<string, unknown>" />
 						</template>
 						<template v-if="slots.content" #content="_contentData">
-							<slot name="content" v-bind="(_contentData as Record<string, unknown>)" />
+							<slot name="content" v-bind="_contentData as Record<string, unknown>" />
 						</template>
 						<template v-if="slots.meta" #meta="_metaData">
-							<slot name="meta" v-bind="(_metaData as Record<string, unknown>)" />
+							<slot name="meta" v-bind="_metaData as Record<string, unknown>" />
 						</template>
 						<template v-if="slots.actions" #actions="_actionsData">
-							<slot name="actions" v-bind="(_actionsData as Record<string, unknown>)" />
+							<slot name="actions" v-bind="_actionsData as Record<string, unknown>" />
 						</template>
 					</GroupedListItem>
 				</template>

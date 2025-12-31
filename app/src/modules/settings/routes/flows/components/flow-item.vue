@@ -85,11 +85,7 @@ function handleItemClick(item: Record<string, unknown>) {
 		</template>
 
 		<template #content="{ item, search }">
-			<VHighlight
-				:query="search"
-				:text="(item as FlowRaw).name"
-				class="flow-name"
-			/>
+			<VHighlight :query="search" :text="(item as FlowRaw).name" class="flow-name" />
 		</template>
 
 		<template #meta="{ item }">
@@ -112,7 +108,7 @@ function handleItemClick(item: Record<string, unknown>) {
 
 		<template #actions="{ item, hasChildren }">
 			<FlowOptions
-				:flow="(item as FlowRaw)"
+				:flow="item as FlowRaw"
 				:is-folder="(item as FlowRaw).trigger === null"
 				:has-children="hasChildren"
 				@edit="$emit('editFlow', item as FlowRaw)"
@@ -129,7 +125,7 @@ function handleItemClick(item: Record<string, unknown>) {
 
 .flow-name {
 	flex-shrink: 1;
-	min-width: 80px;
+	min-inline-size: 80px;
 	overflow: hidden;
 	font-family: var(--theme--fonts--monospace--font-family);
 	text-overflow: ellipsis;

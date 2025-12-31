@@ -71,6 +71,7 @@ Use `meta.group` to organize collections into folders or nest under other collec
 ```
 
 **Notes:**
+
 - Folders have no `schema` property (just `meta`)
 - Both folders and regular collections can be parents
 - Use `sort` to control display order within a group

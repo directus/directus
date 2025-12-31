@@ -87,7 +87,7 @@ function handleNestedSort(updates: { id: string; group: string }[]) {
 		<template #actions="{ item, hasChildren }">
 			<CollectionOptions
 				:has-nested-collections="hasChildren"
-				:collection="(item as Collection)"
+				:collection="item as Collection"
 				@collection-toggle="$emit('toggleCollapse', (item as Collection).collection)"
 			/>
 		</template>

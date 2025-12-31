@@ -24,10 +24,7 @@ export interface UseExpandCollapseReturn {
  * @param storageKey - localStorage key for persisting collapsed state
  * @param options - Configuration options
  */
-export function useExpandCollapse(
-	storageKey: string,
-	options: UseExpandCollapseOptions,
-): UseExpandCollapseReturn {
+export function useExpandCollapse(storageKey: string, options: UseExpandCollapseOptions): UseExpandCollapseReturn {
 	const collapsedIds = useLocalStorage<string[]>(storageKey, []);
 
 	const hasExpandable = computed(() => options.getExpandableIds().length > 0);

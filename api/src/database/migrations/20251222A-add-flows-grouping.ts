@@ -25,7 +25,9 @@ export async function up(knex: Knex): Promise<void> {
 		const flows = await knex('directus_flows').select('id', 'name').orderBy('name', 'asc');
 
 		for (let i = 0; i < flows.length; i++) {
-			await knex('directus_flows').where('id', flows[i].id).update({ sort: i + 1 });
+			await knex('directus_flows')
+				.where('id', flows[i].id)
+				.update({ sort: i + 1 });
 		}
 	}
 }

@@ -127,7 +127,13 @@ export const useFlowsStore = defineStore('flowsStore', () => {
 		}
 	}
 
-	async function createFolder(data: { name: string; icon?: string; color?: string; description?: string; group?: string | null }) {
+	async function createFolder(data: {
+		name: string;
+		icon?: string;
+		color?: string;
+		description?: string;
+		group?: string | null;
+	}) {
 		try {
 			// Calculate sort value to place new folder at the end of its group
 			const siblings = flows.value.filter((flow) => (flow.group ?? null) === (data.group ?? null));

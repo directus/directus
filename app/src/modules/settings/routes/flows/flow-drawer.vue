@@ -236,12 +236,7 @@ function onApply() {
 					</div>
 					<div class="field full">
 						<div class="type-label">{{ $t('folder') }}</div>
-						<VSelect
-							v-model="values.group"
-							:items="folderOptions"
-							:placeholder="$t('no_folder')"
-							show-deselect
-						/>
+						<VSelect v-model="values.group" :items="folderOptions" :placeholder="$t('no_folder')" show-deselect />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('icon') }}</div>

@@ -78,11 +78,7 @@ function confirmDelete() {
 				<template v-if="showCollapseOptions && (isFolder || hasChildren)">
 					<VDivider v-if="$slots.prepend" />
 
-					<VListItem
-						:active="collapseState === 'open'"
-						clickable
-						@click="updateCollapse('open')"
-					>
+					<VListItem :active="collapseState === 'open'" clickable @click="updateCollapse('open')">
 						<VListItemIcon>
 							<VIcon name="folder_open" />
 						</VListItemIcon>
@@ -91,11 +87,7 @@ function confirmDelete() {
 						</VListItemContent>
 					</VListItem>
 
-					<VListItem
-						:active="collapseState === 'closed'"
-						clickable
-						@click="updateCollapse('closed')"
-					>
+					<VListItem :active="collapseState === 'closed'" clickable @click="updateCollapse('closed')">
 						<VListItemIcon>
 							<VIcon name="folder" />
 						</VListItemIcon>
@@ -104,11 +96,7 @@ function confirmDelete() {
 						</VListItemContent>
 					</VListItem>
 
-					<VListItem
-						:active="collapseState === 'locked'"
-						clickable
-						@click="updateCollapse('locked')"
-					>
+					<VListItem :active="collapseState === 'locked'" clickable @click="updateCollapse('locked')">
 						<VListItemIcon>
 							<VIcon name="folder_lock" />
 						</VListItemIcon>

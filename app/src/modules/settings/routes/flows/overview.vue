@@ -37,9 +37,7 @@ const { collapsedIds, hasExpandable, expandAll, collapseAll, toggleCollapse } = 
 	'collapsed-flow-ids',
 	{
 		getExpandableIds: () =>
-			flowsStore.flows
-				.filter((flow) => flowsStore.flows.some((f) => f.group === flow.id))
-				.map((flow) => flow.id),
+			flowsStore.flows.filter((flow) => flowsStore.flows.some((f) => f.group === flow.id)).map((flow) => flow.id),
 		getAllIds: () => flowsStore.flows.map((flow) => flow.id),
 	},
 );
@@ -197,7 +195,15 @@ function openFolderDialog() {
 								:flow="element"
 								:flows="flows"
 								:is-collapsed="element.isCollapsed"
-								:visibility-tree="findVisibilityNode(element.id) ?? { id: element.id, visible: true, children: [], search: null, findChild: () => undefined }"
+								:visibility-tree="
+									findVisibilityNode(element.id) ?? {
+										id: element.id,
+										visible: true,
+										children: [],
+										search: null,
+										findChild: () => undefined,
+									}
+								"
 								@edit-flow="handleEditFlow"
 								@set-nested-sort="onNestedSortChange"
 								@toggle-collapse="toggleCollapse"
@@ -209,10 +215,7 @@ function openFolderDialog() {
 		</div>
 
 		<!-- Folder dialog -->
-		<FlowFolderDialog
-			v-model="folderDialogActive"
-			:flow="editFolderFlow"
-		/>
+		<FlowFolderDialog v-model="folderDialogActive" :flow="editFolderFlow" />
 
 		<!-- Flow drawer -->
 		<FlowDrawer
@@ -256,7 +259,7 @@ function openFolderDialog() {
 }
 
 .root-drag-container {
-	min-height: 100px;
+	min-block-size: 100px;
 }
 
 .draggable-list :deep(.sortable-ghost) {

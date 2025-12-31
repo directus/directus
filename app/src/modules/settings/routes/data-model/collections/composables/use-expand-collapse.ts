@@ -12,9 +12,7 @@ export function useExpandCollapse() {
 		toggleCollapse,
 	} = useExpandCollapseShared('collapsed-collection-ids', {
 		getExpandableIds: () =>
-			collectionsStore.allCollections
-				.filter(({ meta }) => meta?.group)
-				.map(({ collection }) => collection),
+			collectionsStore.allCollections.filter(({ meta }) => meta?.group).map(({ collection }) => collection),
 		getAllIds: () => collectionsStore.allCollections.map(({ collection }) => collection),
 	});
 

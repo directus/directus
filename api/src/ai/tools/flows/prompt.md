@@ -21,7 +21,8 @@ positioning, and data chain usage. </flow_concepts>
 All flows share these core fields for creation:
 
 - `name` (required) - Flow display name
-- `trigger` (required) - Trigger type: `event`, `webhook`, `schedule`, `operation`, `manual`. Use `null` to create a folder.
+- `trigger` (required) - Trigger type: `event`, `webhook`, `schedule`, `operation`, `manual`. Use `null` to create a
+  folder.
 - `status` - `active` or `inactive` (default: `active`)
 - `accountability` - `all`, `activity`, or `null` (default: `all`)
 - `icon` - Icon identifier (optional)
@@ -507,15 +508,15 @@ operation. </data_chain_warning>
 
 ```json
 {
-  "action": "create",
-  "data": {
-    "name": "[Util] Get Globals",
-    "trigger": "operation",
-    "accountability": "all",
-    "options": {
-      "return": "global_data"  // Returns data to calling flow: <operationKey>|$all|$last
-    }
-  }
+	"action": "create",
+	"data": {
+		"name": "[Util] Get Globals",
+		"trigger": "operation",
+		"accountability": "all",
+		"options": {
+			"return": "global_data" // Returns data to calling flow: <operationKey>|$all|$last
+		}
+	}
 }
 // Called by other flows using trigger operation
 ```
@@ -523,6 +524,7 @@ operation. </data_chain_warning>
 </real_world_examples>
 
 <important_notes>
+
 ## Important Notes
 
 - **Admin Required**: This tool requires admin permissions
@@ -530,10 +532,10 @@ operation. </data_chain_warning>
 - **Flow Execution**: Flows with `operations` array will include their operations
 - **Webhook URL**: After creating webhook trigger, URL is `/flows/trigger/<flow-id>`
 - **Event Blocking**: Filter events pause transaction until flow completes
-- **Logs**: Flow executions are logged (check `accountability` setting)
-</important_notes>
+- **Logs**: Flow executions are logged (check `accountability` setting) </important_notes>
 
 <common_mistakes>
+
 ## Common Mistakes to Avoid
 
 1. **DO NOT** create operations here - use the `operations` tool
@@ -541,6 +543,7 @@ operation. </data_chain_warning>
 3. **DO NOT** pass stringified JSON in data parameter
 4. **DO NOT** forget required fields: `name` and `trigger` for creation
 5. **DO NOT** put options outside of data - it goes inside the flow object:
+
    ```json
    // ✅ CORRECT
    {

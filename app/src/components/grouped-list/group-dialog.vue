@@ -132,7 +132,11 @@ function save() {
 						@update:model-value="values.name = $event ?? null"
 					/>
 					<InterfaceSelectIcon width="half" :value="values.icon" @input="values.icon = $event ?? defaultIcon" />
-					<InterfaceSelectColor width="half" :value="values.color ?? undefined" @input="values.color = $event ?? null" />
+					<InterfaceSelectColor
+						width="half"
+						:value="values.color ?? undefined"
+						@input="values.color = $event ?? null"
+					/>
 					<VInput
 						v-if="showDescription"
 						:model-value="values.description ?? undefined"
@@ -144,7 +148,7 @@ function save() {
 						v-if="showTranslations"
 						width="full"
 						class="full"
-						:value="(values.translations as any)"
+						:value="values.translations as any"
 						:placeholder="$t('no_translations')"
 						template="{{ translation }} ({{ language }})"
 						:fields="[
