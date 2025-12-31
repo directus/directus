@@ -79,7 +79,7 @@ async function handleSave(values: GroupDialogValues, isEdit: boolean) {
 		name-placeholder-key="folder_name"
 		default-icon="folder"
 		:show-translations="false"
-		:show-description="true"
+		show-description
 		@update:model-value="$emit('update:modelValue', $event)"
 		@save="handleSave"
 	>

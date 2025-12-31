@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent, h, unref } from 'vue';
 import { useExpandCollapse, type UseExpandCollapseOptions } from './use-expand-collapse';
 
@@ -130,7 +130,7 @@ describe('useExpandCollapse', () => {
 		const TestComponent2 = createTestComponent('key-2', mockOptions);
 
 		const wrapper1 = mount(TestComponent1);
-		const wrapper2 = mount(TestComponent2);
+		const _wrapper2 = mount(TestComponent2);
 
 		wrapper1.vm.toggleCollapse('parent-1');
 

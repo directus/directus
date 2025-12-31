@@ -11,7 +11,7 @@ import Draggable from 'vuedraggable';
 // Recursive component reference for nested items
 const GroupedListItem = defineAsyncComponent(() => import('./grouped-list-item.vue'));
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 type ItemType = Record<string, any>;
 
 const slots = useSlots();

@@ -14,7 +14,7 @@ const props = defineProps<{
 	hasChildren: boolean;
 }>();
 
-const emit = defineEmits<{
+defineEmits<{
 	edit: [];
 	toggleCollapse: [];
 }>();

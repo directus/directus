@@ -6,7 +6,7 @@ import { Collection } from '@/types/collections';
 import { CollectionTree } from '../collections.vue';
 import CollectionOptions from './collection-options.vue';
 
-const props = defineProps<{
+defineProps<{
 	collection: Collection;
 	collections: Collection[];
 	isCollapsed: boolean;
@@ -54,8 +54,8 @@ function handleNestedSort(updates: { id: string; group: string }[]) {
 		group-field="meta.group"
 		drag-group="collections"
 		:get-item-link="getCollectionLink"
-		:clickable="true"
-		:can-have-children="true"
+		clickable
+		can-have-children
 		@toggle-collapse="$emit('toggleCollapse', $event)"
 		@set-nested-sort="handleNestedSort"
 		@item-click="handleItemClick"

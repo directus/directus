@@ -5,10 +5,9 @@ import VHighlight from '@/components/v-highlight.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import type { VisibilityTreeNode } from '@/composables/use-visibility-tree';
 import type { FlowRaw } from '@directus/types';
-import { computed } from 'vue';
 import FlowOptions from './flow-options.vue';
 
-const props = defineProps<{
+defineProps<{
 	flow: FlowRaw & { isCollapsed?: boolean };
 	flows: (FlowRaw & { isCollapsed?: boolean })[];
 	isCollapsed: boolean;
@@ -22,13 +21,12 @@ const emit = defineEmits<{
 	toggleCollapse: [id: string];
 }>();
 
-const isFolder = computed(() => props.flow.trigger === null);
-
 // Helper functions to compute values from any flow item (used in slots)
 function getFlowIcon(item: FlowRaw): string {
 	if (item.trigger === null) {
 		return item.icon || 'folder';
 	}
+
 	return item.icon || 'bolt';
 }
 
@@ -72,8 +70,8 @@ function handleItemClick(item: Record<string, unknown>) {
 		group-field="group"
 		drag-group="flows"
 		:get-item-link="getFlowLink"
-		:clickable="true"
-		:can-have-children="true"
+		clickable
+		can-have-children
 		@toggle-collapse="$emit('toggleCollapse', $event)"
 		@set-nested-sort="$emit('setNestedSort', $event)"
 		@item-click="handleItemClick"
