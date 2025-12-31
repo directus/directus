@@ -2,6 +2,8 @@ export type TriggerType = 'event' | 'schedule' | 'operation' | 'webhook' | 'manu
 
 type Status = 'active' | 'inactive';
 
+export type CollapseState = 'open' | 'closed' | 'locked';
+
 export interface Flow {
 	id: string;
 	name: string | null;
@@ -12,6 +14,9 @@ export interface Flow {
 	options: Record<string, any>;
 	operation: Operation | null;
 	accountability: 'all' | 'activity' | null;
+	group: string | null;
+	sort: number | null;
+	collapse: CollapseState;
 }
 
 export interface Operation {
@@ -40,6 +45,9 @@ export interface FlowRaw {
 	date_created: string;
 	user_created: string;
 	accountability: 'all' | 'activity' | null;
+	group: string | null;
+	sort: number | null;
+	collapse: CollapseState;
 }
 
 export interface OperationRaw {

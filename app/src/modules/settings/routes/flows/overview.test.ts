@@ -1,7 +1,7 @@
 import { generateRouter } from '@/__utils__/router';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { Router } from 'vue-router';
 import { FlowRaw } from '@directus/types';
 import { i18n } from '@/lang';
@@ -16,17 +16,43 @@ vi.mock('@/api', () => ({
 	},
 }));
 
+const mockFlows: FlowRaw[] = [
+	{
+		id: 'flow-1',
+		name: 'Test Flow 1',
+		status: 'active',
+		trigger: 'manual',
+		icon: 'bolt',
+		color: 'var(--theme--primary)',
+		group: null,
+		sort: 1,
+	} as FlowRaw,
+	{
+		id: 'folder-1',
+		name: 'Test Folder',
+		status: 'active',
+		trigger: null, // Folders have null trigger
+		icon: 'folder',
+		color: null,
+		group: null,
+		sort: 2,
+	} as FlowRaw,
+	{
+		id: 'flow-2',
+		name: 'Nested Flow',
+		status: 'inactive',
+		trigger: 'webhook',
+		icon: 'bolt',
+		color: null,
+		group: 'folder-1',
+		sort: 1,
+	} as FlowRaw,
+];
+
 vi.mock('@/stores/flows', () => ({
 	useFlowsStore: () => ({
-		flows: [
-			{
-				id: 'flow-1',
-				name: 'Test Flow 1',
-				status: 'active',
-				icon: 'bolt',
-				color: 'var(--theme--primary)',
-			} as FlowRaw,
-		],
+		flows: mockFlows,
+		sortedFlows: mockFlows,
 		hydrate: vi.fn(),
 	}),
 }));
@@ -43,20 +69,6 @@ vi.mock('@/utils/unexpected-error', () => ({
 
 let router: Router;
 let global: GlobalMountOptions;
-let windowOpenSpy: any;
-let routerPushSpy: any;
-
-// Mock the router module - will be updated in beforeEach
-vi.mock('@/router', () => {
-	const mockRouter = {
-		push: vi.fn(),
-		resolve: vi.fn((route: string) => ({ href: route })),
-	};
-
-	return {
-		router: mockRouter,
-	};
-});
 
 beforeEach(async () => {
 	router = generateRouter([
@@ -72,15 +84,6 @@ beforeEach(async () => {
 
 	router.push('/settings/flows');
 	await router.isReady();
-
-	// Get the mocked router and update it to use our test router
-	const routerModule = await vi.importMock<{ router: Router }>('@/router');
-	routerModule.router.push = router.push.bind(router) as any;
-	routerModule.router.resolve = router.resolve.bind(router) as any;
-
-	// Spy on the mocked router's push method (which the component uses)
-	routerPushSpy = vi.spyOn(routerModule.router, 'push');
-	windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
 	global = {
 		stubs: [
@@ -103,124 +106,98 @@ beforeEach(async () => {
 			'v-card-title',
 			'v-card-actions',
 			'flow-drawer',
+			'flow-folder-dialog',
+			'flow-item',
 			'router-view',
+			'transition-expand',
+			'draggable',
+			'search-input',
+			'private-view-header-bar-action-button',
 		],
 		plugins: [router, i18n, createTestingPinia({ createSpy: vi.fn, stubActions: false })],
 	};
 
-	// Mock i18n.t to return the key to avoid translation warnings
 	vi.spyOn(i18n.global, 't').mockImplementation((key: string | number) => String(key) as any);
 });
 
-describe('FlowsOverview - navigateToFlow', () => {
-	test('normal click navigates in same tab using router.push', async () => {
-		routerPushSpy.mockClear();
+afterEach(() => {
+	vi.resetAllMocks();
+});
 
-		const wrapper = mount(FlowsOverview, {
-			global,
-		});
+describe('FlowsOverview - handleEditFlow', () => {
+	test('opens flow drawer for regular flows', async () => {
+		const wrapper = mount(FlowsOverview, { global });
 
-		const mockFlow = {
-			id: 'flow-1',
-			name: 'Test Flow',
-			status: 'active',
-		} as FlowRaw;
-
-		const mockEvent = {
-			ctrlKey: false,
-			metaKey: false,
-			button: 0,
-		} as MouseEvent;
-
-		// Access the component instance and call navigateToFlow directly
 		const vm = wrapper.vm as any;
-		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(routerPushSpy).toHaveBeenCalledWith('/settings/flows/flow-1');
-		expect(windowOpenSpy).not.toHaveBeenCalled();
+		// Simulate clicking on a regular flow (has trigger)
+		const regularFlow = mockFlows[0]!;
+		vm.handleEditFlow(regularFlow);
+
+		// Should set editFlow to the flow ID
+		expect(vm.editFlow).toBe('flow-1');
 	});
 
-	test('Ctrl+click opens in new tab using window.open', async () => {
-		routerPushSpy.mockClear();
-		windowOpenSpy.mockClear();
-
-		const wrapper = mount(FlowsOverview, {
-			global,
-		});
-
-		const mockFlow = {
-			id: 'flow-1',
-			name: 'Test Flow',
-			status: 'active',
-		} as FlowRaw;
-
-		const mockEvent = {
-			ctrlKey: true,
-			metaKey: false,
-			button: 0,
-		} as MouseEvent;
+	test('opens folder dialog for folders (trigger === null)', async () => {
+		const wrapper = mount(FlowsOverview, { global });
 
 		const vm = wrapper.vm as any;
-		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
+		// Simulate clicking on a folder
+		const folder = mockFlows[1]!;
+		vm.handleEditFlow(folder);
 
-		expect(routerPushSpy).not.toHaveBeenCalled();
+		// Should open folder dialog and set editFolderFlow
+		expect(vm.folderDialogActive).toBe(true);
+		expect(vm.editFolderFlow).toStrictEqual(folder);
+	});
+});
+
+describe('FlowsOverview - rootFlows', () => {
+	test('filters to only root items (no group)', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+
+		// rootFlows should only include items with no group
+		expect(vm.rootFlows.length).toBe(2);
+		expect(vm.rootFlows.map((f: FlowRaw) => f.id)).toEqual(['flow-1', 'folder-1']);
+	});
+});
+
+describe('FlowsOverview - flows with collapse state', () => {
+	test('adds isCollapsed property to flows', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+
+		// All flows should have isCollapsed property
+		for (const flow of vm.flows) {
+			expect(flow).toHaveProperty('isCollapsed');
+			expect(typeof flow.isCollapsed).toBe('boolean');
+		}
+	});
+});
+
+describe('FlowsOverview - create actions', () => {
+	test('openFolderDialog sets correct state', async () => {
+		const wrapper = mount(FlowsOverview, { global });
+
+		const vm = wrapper.vm as any;
+
+		vm.openFolderDialog();
+
+		expect(vm.folderDialogActive).toBe(true);
+		expect(vm.editFolderFlow).toBe(null);
 	});
 
-	test('Cmd+click (metaKey) opens in new tab using window.open', async () => {
-		routerPushSpy.mockClear();
-		windowOpenSpy.mockClear();
-
-		const wrapper = mount(FlowsOverview, {
-			global,
-		});
-
-		const mockFlow = {
-			id: 'flow-1',
-			name: 'Test Flow',
-			status: 'active',
-		} as FlowRaw;
-
-		const mockEvent = {
-			ctrlKey: false,
-			metaKey: true,
-			button: 0,
-		} as MouseEvent;
+	test('setting editFlow to + opens create flow drawer', async () => {
+		const wrapper = mount(FlowsOverview, { global });
 
 		const vm = wrapper.vm as any;
-		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
 
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
+		vm.editFlow = '+';
 
-		expect(routerPushSpy).not.toHaveBeenCalled();
-	});
-
-	test('middle mouse button click opens in new tab using window.open', async () => {
-		routerPushSpy.mockClear();
-		windowOpenSpy.mockClear();
-
-		const wrapper = mount(FlowsOverview, {
-			global,
-		});
-
-		const mockFlow = {
-			id: 'flow-1',
-			name: 'Test Flow',
-			status: 'active',
-		} as FlowRaw;
-
-		const mockEvent = {
-			ctrlKey: false,
-			metaKey: false,
-			button: 1, // Middle mouse button
-		} as MouseEvent;
-
-		const vm = wrapper.vm as any;
-		vm.navigateToFlow({ item: mockFlow, event: mockEvent });
-
-		expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/settings/flows/flow-1'), '_blank');
-
-		expect(routerPushSpy).not.toHaveBeenCalled();
+		expect(vm.editFlow).toBe('+');
 	});
 });

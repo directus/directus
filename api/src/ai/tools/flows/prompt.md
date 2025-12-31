@@ -21,14 +21,37 @@ positioning, and data chain usage. </flow_concepts>
 All flows share these core fields for creation:
 
 - `name` (required) - Flow display name
-- `trigger` (required) - Trigger type: `event`, `webhook`, `schedule`, `operation`, `manual`
+- `trigger` (required) - Trigger type: `event`, `webhook`, `schedule`, `operation`, `manual`. Use `null` to create a
+  folder.
 - `status` - `active` or `inactive` (default: `active`)
 - `accountability` - `all`, `activity`, or `null` (default: `all`)
 - `icon` - Icon identifier (optional)
 - `color` - Hex color code (optional)
 - `description` - Flow description (optional)
 - `options` - Trigger-specific configuration object (optional)
-- `operation` - UUID of first operation (optional, set after creating operations) </core_fields>
+- `operation` - UUID of first operation (optional, set after creating operations)
+- `group` - UUID of parent flow or folder (optional, for organizing flows hierarchically)
+- `sort` - Sort order within the parent group (optional, integer)
+- `collapse` - Folder collapse state: `open` or `closed` (default: `open`) </core_fields>
+
+<organization>
+
+### Organizing Flows
+
+Use `group` to organize flows hierarchically. Both folders (`trigger: null`) and regular flows can be parents.
+
+```json
+// Create folder
+{ "action": "create", "data": { "name": "Email Automations", "trigger": null, "icon": "folder" } }
+
+// Nest flow under folder or another flow
+{ "action": "update", "key": "flow-uuid", "data": { "group": "parent-uuid" } }
+
+// Remove from parent (move to root)
+{ "action": "update", "key": "flow-uuid", "data": { "group": null } }
+```
+
+</organization>
 
 <crud_actions>
 
@@ -299,7 +322,7 @@ UI button that users click to start flows
 
 <flow_chaining>
 
-## 🔗 Flow Chaining
+### Flow Chaining
 
 **When to Chain**: Reusable utilities, complex multi-step workflows, conditional branching
 
@@ -483,23 +506,25 @@ operation. </data_chain_warning>
 
 ### Utility Flow (Operation Trigger)
 
-````json
+```json
 {
-  "action": "create",
-  "data": {
-    "name": "[Util] Get Globals",
-    "trigger": "operation",
-    "accountability": "all",
-    "options": {
-      "return": "global_data"  // Returns data to calling flow: <operationKey>|$all|$last
-    }
-  }
+	"action": "create",
+	"data": {
+		"name": "[Util] Get Globals",
+		"trigger": "operation",
+		"accountability": "all",
+		"options": {
+			"return": "global_data" // Returns data to calling flow: <operationKey>|$all|$last
+		}
+	}
 }
 // Called by other flows using trigger operation
 ```
+
 </real_world_examples>
 
 <important_notes>
+
 ## Important Notes
 
 - **Admin Required**: This tool requires admin permissions
@@ -507,10 +532,10 @@ operation. </data_chain_warning>
 - **Flow Execution**: Flows with `operations` array will include their operations
 - **Webhook URL**: After creating webhook trigger, URL is `/flows/trigger/<flow-id>`
 - **Event Blocking**: Filter events pause transaction until flow completes
-- **Logs**: Flow executions are logged (check `accountability` setting)
-</important_notes>
+- **Logs**: Flow executions are logged (check `accountability` setting) </important_notes>
 
 <common_mistakes>
+
 ## Common Mistakes to Avoid
 
 1. **DO NOT** create operations here - use the `operations` tool
@@ -518,6 +543,7 @@ operation. </data_chain_warning>
 3. **DO NOT** pass stringified JSON in data parameter
 4. **DO NOT** forget required fields: `name` and `trigger` for creation
 5. **DO NOT** put options outside of data - it goes inside the flow object:
+
    ```json
    // ✅ CORRECT
    {
@@ -536,5 +562,5 @@ operation. </data_chain_warning>
      "options": { "type": "action" }
    }
    ```
+
 </common_mistakes>
-````

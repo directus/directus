@@ -140,6 +140,10 @@ data:
     many_field: user_created
     one_collection: directus_users
 
+  - many_collection: directus_flows
+    many_field: group
+    one_collection: directus_flows
+
   ### Operations
   - many_collection: directus_operations
     many_field: flow
