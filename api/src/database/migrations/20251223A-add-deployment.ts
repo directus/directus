@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('directus_deployment', (table) => {
     table.uuid('id').primary().notNullable();
-    table.string('type').notNullable();
+    table.string('type').unique().notNullable();
     table.text('credentials');
     table.text('options');
     table.timestamp('date_created').defaultTo(knex.fn.now());
