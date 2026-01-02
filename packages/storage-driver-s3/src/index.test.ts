@@ -1,5 +1,6 @@
 import {
 	CopyObjectCommand,
+	CreateMultipartUploadCommand,
 	DeleteObjectCommand,
 	GetObjectCommand,
 	HeadObjectCommand,
@@ -776,4 +777,46 @@ describe('#list', () => {
 		expect(driver['client'].send).toHaveBeenCalledTimes(3);
 		expect(output.length).toBe(4);
 	});
+});
+
+describe('#createChunkedUpload', () => {
+	beforeEach(() => {
+		vi.mocked(driver['client'].send).mockResolvedValue({ UploadId: 'test-upload-id' } as unknown as void);
+	});
+
+	test.each([[ServerSideEncryption.aws_kms], [ServerSideEncryption.aws_kms_dsse]])(
+		'Optionally sets ServerSideEncryptionKMSKeyId ',
+		async (sse) => {
+			driver['config'].serverSideEncryption = sse;
+			driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+			await driver.createChunkedUpload(sample.path.input, { metadata: {} });
+
+			expect(CreateMultipartUploadCommand).toHaveBeenCalledWith({
+				Bucket: sample.config.bucket,
+				Key: sample.path.inputFull,
+				Metadata: { 'tus-version': '1.0.0' },
+				ServerSideEncryption: sse,
+				SSEKMSKeyId: sample.config.serverSideEncryptionKmsKeyId,
+			});
+		},
+	);
+
+	test.each([[ServerSideEncryption.AES256], [ServerSideEncryption.aws_fsx]])(
+		'Does not set SSEKMSKeyId if ServerSideEncryption is not aws:kms or aws:kms:dsse',
+		async (sse) => {
+			driver['config'].serverSideEncryption = sse;
+			driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+			await driver.createChunkedUpload(sample.path.input, { metadata: {} });
+
+			expect(CreateMultipartUploadCommand).toHaveBeenCalledWith({
+				Bucket: sample.config.bucket,
+				Key: sample.path.inputFull,
+				Metadata: { 'tus-version': '1.0.0' },
+				ServerSideEncryption: sse,
+				SSEKMSKeyId: undefined,
+			});
+		},
+	);
 });
