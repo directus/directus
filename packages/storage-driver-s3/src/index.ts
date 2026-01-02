@@ -1,13 +1,13 @@
 import type {
 	CompletedPart,
 	CopyObjectCommandInput,
+	CreateMultipartUploadCommandInput,
 	GetObjectCommandInput,
 	ListObjectsV2CommandInput,
 	ObjectCannedACL,
 	Part,
 	PutObjectCommandInput,
 	S3ClientConfig,
-	ServerSideEncryption,
 } from '@aws-sdk/client-s3';
 import {
 	AbortMultipartUploadCommand,
@@ -21,6 +21,7 @@ import {
 	ListObjectsV2Command,
 	ListPartsCommand,
 	S3Client,
+	ServerSideEncryption,
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
@@ -46,6 +47,7 @@ export type DriverS3Config = {
 	bucket: string;
 	acl?: ObjectCannedACL;
 	serverSideEncryption?: ServerSideEncryption;
+	serverSideEncryptionKmsKeyId?: string;
 	endpoint?: string;
 	region?: string;
 	forcePathStyle?: boolean;
@@ -57,6 +59,11 @@ export type DriverS3Config = {
 	maxSockets?: number;
 	keepAlive?: boolean;
 };
+
+export const kmsKeyIdCheck = [
+	ServerSideEncryption.aws_kms,
+	ServerSideEncryption.aws_kms_dsse,
+] as ServerSideEncryption[];
 
 export class DriverS3 implements TusDriver {
 	private config: DriverS3Config;
@@ -194,6 +201,10 @@ export class DriverS3 implements TusDriver {
 
 		if (this.config.serverSideEncryption) {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
 		}
 
 		if (this.config.acl) {
@@ -220,6 +231,10 @@ export class DriverS3 implements TusDriver {
 
 		if (this.config.serverSideEncryption) {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
 		}
 
 		const upload = new Upload({
@@ -278,7 +293,7 @@ export class DriverS3 implements TusDriver {
 	}
 
 	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
-		const command = new CreateMultipartUploadCommand({
+		const params: CreateMultipartUploadCommandInput = {
 			Bucket: this.config.bucket,
 			Key: this.fullPath(filepath),
 			Metadata: { 'tus-version': TUS_RESUMABLE },
@@ -292,7 +307,17 @@ export class DriverS3 implements TusDriver {
 						CacheControl: context.metadata['cacheControl'],
 					}
 				: {}),
-		});
+		};
+
+		if (this.config.serverSideEncryption) {
+			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
+		}
+
+		const command = new CreateMultipartUploadCommand(params);
 
 		const res = await this.client.send(command);
 
