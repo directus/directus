@@ -479,7 +479,7 @@ function discardAndLeave() {
 		:collection="values.collection"
 		readonly
 	>
-		<PrivateView :title="$t('editing_preset')" show-back>
+		<PrivateView :title="$t('editing_preset')" show-back back-to="/settings/presets">
 			<template #headline>
 				<VBreadcrumb :items="[{ name: $t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
