@@ -37,16 +37,16 @@ export class SchemaHelperPostgres extends SchemaHelper {
 			a sort column that comes from a related M2O relation.
 
 			> When GROUP BY is present, or any aggregate functions are present, it is not valid for the SELECT list
-			  expressions to refer to ungrouped columns except within aggregate functions or when the ungrouped column is
-			  functionally dependent on the grouped columns, since there would otherwise be more than one possible value to
-			  return for an ungrouped column.
+				expressions to refer to ungrouped columns except within aggregate functions or when the ungrouped column is
+				functionally dependent on the grouped columns, since there would otherwise be more than one possible value to
+				return for an ungrouped column.
 			https://www.postgresql.org/docs/current/sql-select.html
 
 			Postgres allows aliases to be used in the GROUP BY clause
 
 			> In strict SQL, GROUP BY can only group by columns of the source table but PostgreSQL extends this to also allow
-			  GROUP BY to group by columns in the select list.
-      https://www.postgresql.org/docs/16/queries-table-expressions.html#QUERIES-GROUP
+				GROUP BY to group by columns in the select list.
+			https://www.postgresql.org/docs/16/queries-table-expressions.html#QUERIES-GROUP
 			 */
 
 			groupByFields.push(...sortRecords.map(({ alias }) => alias));
@@ -55,21 +55,27 @@ export class SchemaHelperPostgres extends SchemaHelper {
 
 	override async createIndex(
 		collection: string,
-		field: string,
+		field: string | string[],
 		options: CreateIndexOptions = {},
 	): Promise<Knex.SchemaBuilder> {
+		const fields = Array.isArray(field) ? field : [field];
 		const isUnique = Boolean(options.unique);
-		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, fields);
+		const placeholders = fields.map(() => '??').join(', ');
 
 		// https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
 		if (options.attemptConcurrentIndex) {
-			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX CONCURRENTLY ?? ON ?? (??)`, [
+			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX CONCURRENTLY ?? ON ?? (${placeholders})`, [
 				constraintName,
 				collection,
-				field,
+				...fields,
 			]);
 		}
 
-		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (${placeholders})`, [
+			constraintName,
+			collection,
+			...fields,
+		]);
 	}
 }
