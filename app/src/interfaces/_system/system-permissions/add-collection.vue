@@ -19,15 +19,19 @@ defineEmits<{
 const collectionsStore = useCollectionsStore();
 
 const availableCollections = computed(() => {
-	return orderBy(collectionsStore.databaseCollections.filter((collection) => collection.meta).filter(notExcluded), [
-		'collection',
-	]);
+	return orderBy(
+		collectionsStore.databaseCollections.filter((collection) => collection.meta).map(disableSelectedCollection),
+		['collection'],
+	);
 });
 
 const systemCollections = computed(() =>
-	orderBy(collectionsStore.collections.filter(({ collection }) => isSystemCollection(collection)).filter(notExcluded), [
-		'collection',
-	]),
+	orderBy(
+		collectionsStore.collections
+			.filter(({ collection }) => isSystemCollection(collection))
+			.map(disableSelectedCollection),
+		['collection'],
+	),
 );
 
 const displayItems = computed(() => {
@@ -45,8 +49,11 @@ const displayItems = computed(() => {
 	return items;
 });
 
-function notExcluded({ collection }: Collection) {
-	return props.excludeCollections?.includes(collection) === false;
+function disableSelectedCollection(collection: Collection) {
+	return {
+		...collection,
+		disabled: props.excludeCollections?.includes(collection.collection) ?? false,
+	};
 }
 </script>
 
@@ -58,6 +65,7 @@ function notExcluded({ collection }: Collection) {
 			item-value="collection"
 			placement="bottom-start"
 			item-label-font-family="var(--theme--fonts--monospace--font-family)"
+			:close-on-content-click="false"
 			@update:model-value="$emit('select', $event)"
 		>
 			<template #preview="{ toggle }">
