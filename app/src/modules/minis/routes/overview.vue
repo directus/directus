@@ -231,11 +231,19 @@ async function batchDelete() {
 				<VCard>
 					<VCardTitle>{{ t('minis.create_mini_app') }}</VCardTitle>
 
+					<div class="card-content">
+						<VInput
+							v-model="newAppName"
+							:placeholder="t('minis.app_name')"
+							autofocus
+							@keyup.enter="handleCreateApp"
+						/>
+					</div>
+
 					<VCardActions>
 						<VButton secondary @click="createDialogActive = false">
 							{{ t('cancel') }}
 						</VButton>
-						<VInput v-model="newAppName" :placeholder="t('minis.app_name')" autofocus @keyup.enter="handleCreateApp" />
 						<VButton :disabled="!newAppName.trim()" @click="handleCreateApp">
 							{{ t('create') }}
 						</VButton>
@@ -361,7 +369,7 @@ async function batchDelete() {
 }
 
 .card-content {
-	padding: 0 var(--v-card-padding) var(--v-card-padding);
+	padding: 4px var(--v-card-padding) 12px;
 }
 
 .status-badge {

@@ -393,11 +393,9 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 	// Create sdk object and attach all methods and config
 	const sdkObj = context.newObject();
 
-	// Inject config as a native object if available
 	if (sdk.config) {
 		const configHandle = jsonToHandle(context, sdk.config);
 		context.setProp(sdkObj, 'config', configHandle);
-		context.setProp(context.global, 'config', configHandle);
 		configHandle.dispose();
 	}
 
@@ -432,7 +430,6 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 		});
 
 		context.setProp(sdkObj, name, hostFn);
-		context.setProp(context.global, name, hostFn);
 		hostFn.dispose();
 	}
 
@@ -459,7 +456,10 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 
 		context.setProp(dashboardObj, 'getVariable', getVariableFn);
 		context.setProp(dashboardObj, 'setVariable', setVariableFn);
+
+		// Expose as global 'dashboard' and 'sdk.dashboard'
 		context.setProp(context.global, 'dashboard', dashboardObj);
+		context.setProp(sdkObj, 'dashboard', dashboardObj);
 
 		getVariableFn.dispose();
 		setVariableFn.dispose();
@@ -493,9 +493,8 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 		return promise.handle;
 	});
 
-	// Also set up sdk.request (same as global request)
+	// Also set up sdk.request
 	context.setProp(sdkObj, 'request', requestFn);
-	context.setProp(context.global, 'request', requestFn);
 
 	const configHandle = jsonToHandle(context, sdk.config || {});
 	context.setProp(sdkObj, 'config', configHandle);

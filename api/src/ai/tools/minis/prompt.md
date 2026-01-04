@@ -338,6 +338,27 @@ actions.init = async () => {
 };
 ```
 
+- **`sdk`** (Core SDK):
+  - `readItems(collection, query)`
+  - `readItem(collection, id, query)`
+  - `createItem(collection, data)`
+  - `updateItem(collection, id, data)`
+  - `deleteItem(collection, id)`
+  - `request(path, options)`: Make custom requests. `path` is a string (e.g. `/items/posts`), `options` is an object with `method`, `params`, `body`, and `headers`.
+  - **`config`**: Object containing values from the panel configuration. Use this instead of hardcoded constants.
+
+- **`dashboard`** (Dashboard Interop):
+  - `getVariable(name)`: Read a dashboard variable.
+  - `setVariable(name, value)`: Set a dashboard variable.
+
+---
+
+## 💎 Premium Quality Checklist (REQUIRED)
+
+1.  **Logic First**: Always perform calculations (rounding, percentages, formatting) in the `script` and store the result in `state`.
+2.  **Logic-less Templates**: UI Schema placeholders (`{{ state.x }}`) are logic-less (using `micromustache`). They do **NOT** support function calls like `Math.round()`.
+3.  **Correct SDK Usage**: Always pass `path` as the first argument to `sdk.request`.
+
 ---
 
 ## 🔗 Dashboard Interop

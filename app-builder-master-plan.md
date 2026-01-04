@@ -89,8 +89,9 @@ The sandbox uses QuickJS compiled to WebAssembly for isolation.
   - `createItem(collection, data)`
   - `updateItem(collection, id, data)`
   - `deleteItem(collection, id)`
-  - `request(path, options)`
+  - `request(path, options)`: Custom requests. Path is a string, options includes `method`, `body`, `params`, `headers`.
   - **`config`**: Object containing values from the panel instance configuration (based on `panel_config_schema`).
+  - **`dashboard`**: Also available via the `sdk` namespace for consistency.
 
 - **`dashboard`** (Dashboard Interop):
   - `getVariable(name)`: Read a dashboard-wide variable. Returns the current value of the variable.
