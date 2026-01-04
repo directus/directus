@@ -135,6 +135,54 @@ parentheses prevents automatic forwarding of event arguments. Use this only for 
 
 ---
 
+## 🗂 Slot-Based Customization
+
+Many components support **Named Slots** for richer UI customization. To use slots, provide an **Object** for the
+`children` property instead of an array.
+
+- **Table Cells**: Customize specific columns using `item.<field_key>`. The slot automatically receives the `item` (row
+  data) and `index` in its context.
+- **List Items**: Enhance `v-list-item` using `prepend` (for icons/avatars) and `append` (for actions).
+- **Cards**: Customize `v-card` using `title`, `subtitle`, and `actions` slots.
+
+**Example: Custom Table Cell (Status Chip)**
+
+```json
+{
+	"type": "v-table",
+	"props": { "items": "state.items", "headers": "state.headers" },
+	"children": {
+		"item.status": {
+			"type": "v-chip",
+			"props": {
+				"kind": "success",
+				"label": true
+			},
+			"children": "{{ item.status }}"
+		}
+	}
+}
+```
+
+**Example: List Item with Append Action**
+
+```json
+{
+	"type": "v-list-item",
+	"children": {
+		"prepend": { "type": "v-icon", "props": { "icon": "person" } },
+		"default": "User Profile",
+		"append": {
+			"type": "v-button",
+			"props": { "icon": "edit", "secondary": true },
+			"onClick": "actions.edit"
+		}
+	}
+}
+```
+
+---
+
 ## 🍱 Quick Patterns
 
 ### 1. Simple Data Dashboard
@@ -240,10 +288,45 @@ Mini-Apps can define their own configuration fields that are rendered reactively
 **1. Define Schema**: Include a `panel_config_schema` (Array of `VForm` fields) in your `create`/`update` call. **2.
 Access Values**: Values configured by the user in the panel are available in your script as `sdk.config`.
 
-**Example**: **`panel_config_schema`**:
+### 📏 Layout & Labeling Rules (MANDATORY)
+
+To ensure a professional and accessible interface in the panel configuration sidebar, follow these rules:
+
+1.  **Top-Level Name**: ALWAYS define the `name` (the label shown to the user) at the **top level** of the field object,
+    not inside `meta`.
+2.  **Meta Interface**: Always specify `meta.interface` (e.g., `input`, `select`, `checkbox`).
+3.  **Half Width**: Use `meta.width: "half"` for related fields that should sit side-by-side. Use `"full"` for major
+    descriptions or complex inputs.
+4.  **Note & Placeholder**: Provide a `meta.note` to explain what the field does and a `meta.options.placeholder` for
+    example data.
+
+**Example of a High-Quality Schema**:
 
 ```json
-[{ "field": "threshold", "type": "integer", "meta": { "interface": "input", "options": { "min": 0 } } }]
+[
+	{
+		"field": "collection",
+		"name": "Target Collection",
+		"type": "string",
+		"meta": {
+			"interface": "input",
+			"width": "half",
+			"note": "The collection to monitor (e.g. 'orders')",
+			"options": { "placeholder": "orders" }
+		}
+	},
+	{
+		"field": "slug_field",
+		"name": "Slug Field Name",
+		"type": "string",
+		"meta": {
+			"interface": "input",
+			"width": "half",
+			"note": "Field used for URLs (e.g. 'slug')",
+			"options": { "placeholder": "slug" }
+		}
+	}
+]
 ```
 
 **`script`**:
@@ -267,8 +350,8 @@ actions.init = async () => {
 
 ### 🍱 Pattern: Explicit Variable Mapping
 
-Instead of hardcoding variable names in your script, expose them as configuration options. This allows dashboard users
-to "link" your mini-app to specific variables (like those from a `relational-variable` panel).
+Instead of hardcoding variable name in your script, expose them as configuration options. This allows dashboard users to
+"link" your mini-app to specific variables (like those from a `relational-variable` panel).
 
 **panel_config_schema**:
 
@@ -279,7 +362,8 @@ to "link" your mini-app to specific variables (like those from a `relational-var
 		"name": "Sync to Variable",
 		"type": "string",
 		"meta": {
-			"interface": "input",
+			"interface": "select",
+			"width": "full",
 			"options": {
 				"placeholder": "my_metric"
 			},
@@ -333,15 +417,15 @@ your script:
 
 ## 📖 Component "Cheat Sheet" (Common Props)
 
-| Component  | Key Props                                                                                                                                                        | Notes                                                                                                                                                               |
-| :--------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `v-button` | `kind` (info\|success\|warning\|danger), `onClick`, `loading`, `disabled`, `secondary`, `icon`                                                                   | Use `:loading` for async.                                                                                                                                           |
-| `v-input`  | `modelValue`, `onUpdate:modelValue`, `placeholder`, `type` (text\|number), `iconLeft`                                                                            | Forward event args via action ref.                                                                                                                                  |
-| `v-select` | `items` (Array<{text, value}>), `modelValue`, `onUpdate:modelValue`                                                                                              | Required for dropdowns.                                                                                                                                             |
-| `v-table`  | `items` (Array), `headers` (Array), `itemKey` (String), `showSelect` (none\|single\|multiple), `selectionUseKeys` (Boolean), `modelValue`, `onUpdate:modelValue` | **CRITICAL**: Default selection is OBJECTS. Always use `selectionUseKeys: true` + `state.selected` array and trigger calculation `actions.compute()` in `onUpdate`. |
-| `v-notice` | `type` (info\|success\|warning\|danger), `icon`                                                                                                                  | Best for errors and alerts.                                                                                                                                         |
-| `v-card`   | `elevation` (Boolean), `outlined` (Boolean), `id` (String)                                                                                                       | **NOTE**: Has default `max-inline-size: 400px`. Use CSS `#id { max-inline-size: 100%; }` to override.                                                               |
-| `v-icon`   | `icon` (Material Symbol name), `color`, `small`, `large`                                                                                                         | Native symbol icons.                                                                                                                                                |
+| Component  | Key Props                                                                                                                                                                                                                           | Notes                                                                                                                                  |
+| :--------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| `v-button` | `kind` (info\|success\|warning\|danger), `onClick`, `loading`, `disabled`, `secondary`, `icon`                                                                                                                                      | Use `:loading` for async.                                                                                                              |
+| `v-input`  | `modelValue`, `onUpdate:modelValue`, `placeholder`, `type` (text\|number), `iconLeft`                                                                                                                                               | Forward event args via action ref.                                                                                                     |
+| `v-select` | `items` (Array<{text, value}>), `modelValue`, `onUpdate:modelValue`                                                                                                                                                                 | Required for dropdowns.                                                                                                                |
+| `v-table`  | `items` (Array), `headers` (Array), `itemKey` (String), `showResize` (Boolean), `sort` (Object), `onUpdate:sort` (Action), `showSelect` (none\|single\|multiple), `selectionUseKeys` (Boolean), `modelValue`, `onUpdate:modelValue` | **CRITICAL**: Default selection is OBJECTS. Always use `selectionUseKeys: true` + `state.selected` array. Supports `item.<key>` slots. |
+| `v-notice` | `type` (info\|success\|warning\|danger), `icon`                                                                                                                                                                                     | Best for errors and alerts.                                                                                                            |
+| `v-card`   | `elevation` (Boolean), `outlined` (Boolean), `id` (String)                                                                                                                                                                          | **NOTE**: Has default `max-inline-size: 400px`. Use CSS `#id { max-inline-size: 100%; }` to override.                                  |
+| `v-icon`   | `icon` (Material Symbol name), `color`, `small`, `large`                                                                                                                                                                            | Native symbol icons.                                                                                                                   |
 
 ---
 

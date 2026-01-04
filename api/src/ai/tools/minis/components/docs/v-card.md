@@ -31,6 +31,22 @@ Card container component with optional title, subtitle, content, and actions sec
 }
 ```
 
+## Named Slots (Concise Syntax)
+
+`v-card` supports named slots for common sections, reducing the need for nested card components.
+
+```json
+{
+	"type": "v-card",
+	"children": {
+		"title": "Concise Card",
+		"subtitle": "Using named slots",
+		"default": "The main content goes here.",
+		"actions": [{ "type": "v-button", "props": { "kind": "primary" }, "children": ["Confirm"] }]
+	}
+}
+```
+
 ## v-card Props
 
 | Prop       | Type    | Default | Description                             |

@@ -144,6 +144,8 @@ The UI is defined in a strict JSON format (not HTML or Vue code) for security an
 2.  **Stability**: The schema is data, not code. It is rendered by a dedicated engine that safely handles bindings and
     events.
 3.  **Sanitized**: No direct DOM access or `v-html` reduces XSS risks.
+4.  **Flexible Rendering**: Supports **Named Slots** (providing an Object for `children`) to allow components like
+    `v-table`, `v-list-item`, and `v-card` to render custom, richer content in specific areas (e.g. custom table cells).
 
 ### Current Implementation
 
@@ -530,18 +532,22 @@ Every mini-app MUST follow these standards by default:
 			"props": {
 				"items": "state.items",
 				"loading": "state.loading",
+				"showResize": true,
 				"headers": [
 					{ "text": "Name", "value": "name" },
 					{ "text": "Stock", "value": "stock" },
-					{ "text": "Low Stock", "value": "low", "align": "center" }
+					{ "text": "Status", "value": "status", "align": "center" }
 				]
 			},
 			"children": {
-				"item.low": {
+				"item.status": {
 					"type": "v-chip",
-					"condition": "item.stock < 10",
-					"props": { "kind": "danger", "small": true },
-					"children": ["Alert"]
+					"props": {
+						"kind": "success",
+						"small": true,
+						"label": true
+					},
+					"children": ["{{ item.status }}"]
 				}
 			}
 		},

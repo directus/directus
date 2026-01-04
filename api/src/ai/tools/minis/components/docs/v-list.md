@@ -15,6 +15,21 @@ Container for displaying lists of items with consistent styling.
 }
 ```
 
+## Named Slots (Cleaner Syntax)
+
+`v-list-item` supports named slots for `prepend` and `append` content, allowing for a flatter and cleaner UI schema.
+
+```json
+{
+	"type": "v-list-item",
+	"children": {
+		"prepend": { "type": "v-icon", "props": { "icon": "star" } },
+		"default": "Clean List Item",
+		"append": { "type": "v-chip", "children": ["New"] }
+	}
+}
+```
+
 ## Props
 
 | Prop    | Type    | Default | Description                                   |

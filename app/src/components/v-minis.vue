@@ -6,7 +6,7 @@ import { get } from 'lodash';
 export interface UiSchemaNode {
 	type: string;
 	props?: Record<string, any>;
-	children?: UiSchemaNode[] | string | any;
+	children?: UiSchemaNode[] | Record<string, UiSchemaNode | UiSchemaNode[] | string | any> | string | any;
 	condition?: string;
 	iterate?: string;
 	as?: string;
@@ -396,31 +396,46 @@ function renderNode(node: UiSchemaNode, index?: number): VNode | VNode[] | strin
 
 	// Process children
 	let children: any = undefined;
+	const isVueComponent = node.type.startsWith('v-');
 
 	if (node.children) {
-		let rawChildren: any = undefined;
-
 		if (typeof node.children === 'string') {
-			rawChildren = resolveValue(node.children);
+			const resolved = resolveValue(node.children);
+			children = isVueComponent ? { default: () => resolved } : resolved;
 		} else if (Array.isArray(node.children)) {
-			rawChildren = node.children
+			const rawChildren = node.children
 				.map((child: UiSchemaNode | string, idx: number) => {
-					if (typeof child === 'string') {
-						return resolveValue(child);
-					}
-
+					if (typeof child === 'string') return resolveValue(child);
 					return renderNode(child, idx);
 				})
 				.filter((c): c is VNode | string => c !== null);
-		}
 
-		if (rawChildren !== undefined) {
-			// For Vue components, wrap in default slot function; for HTML elements, pass directly
-			if (node.type.startsWith('v-')) {
-				children = { default: () => rawChildren };
-			} else {
-				children = rawChildren;
+			children = isVueComponent ? { default: () => rawChildren } : rawChildren;
+		} else if (typeof node.children === 'object') {
+			// Named slots support
+			const slots: Record<string, any> = {};
+
+			for (const [slotName, slotValue] of Object.entries(node.children)) {
+				slots[slotName] = (slotProps: any) => {
+					// Merge slot props (like {item, index} from v-table) into context
+					const slotContext = slotProps ? { ...props.state, ...slotProps } : props.state;
+
+					if (typeof slotValue === 'string') {
+						return resolveValue(slotValue, slotContext);
+					} else if (Array.isArray(slotValue)) {
+						return slotValue
+							.map((child: UiSchemaNode | string, idx: number) => {
+								if (typeof child === 'string') return resolveValue(child, slotContext);
+								return renderNodeWithState(child, slotContext, idx);
+							})
+							.filter((c): c is VNode | string => c !== null);
+					} else {
+						return renderNodeWithState(slotValue as UiSchemaNode, slotContext, 0);
+					}
+				};
 			}
+
+			children = isVueComponent ? slots : slots.default?.();
 		}
 	}
 
@@ -486,31 +501,46 @@ function renderNodeWithState(
 
 	// Process children with custom state
 	let children: any = undefined;
+	const isVueComponent = node.type.startsWith('v-');
 
 	if (node.children) {
-		let rawChildren: any = undefined;
-
 		if (typeof node.children === 'string') {
-			rawChildren = resolveCustomValue(node.children);
+			const resolved = resolveCustomValue(node.children);
+			children = isVueComponent ? { default: () => resolved } : resolved;
 		} else if (Array.isArray(node.children)) {
-			rawChildren = node.children
+			const rawChildren = node.children
 				.map((child: UiSchemaNode | string, idx: number) => {
-					if (typeof child === 'string') {
-						return resolveCustomValue(child);
-					}
-
+					if (typeof child === 'string') return resolveCustomValue(child);
 					return renderNodeWithState(child, customState, idx);
 				})
 				.filter((c): c is VNode | string => c !== null);
-		}
 
-		if (rawChildren !== undefined) {
-			// For Vue components, wrap in default slot function; for HTML elements, pass directly
-			if (node.type.startsWith('v-')) {
-				children = { default: () => rawChildren };
-			} else {
-				children = rawChildren;
+			children = isVueComponent ? { default: () => rawChildren } : rawChildren;
+		} else if (typeof node.children === 'object') {
+			// Named slots support within custom state (iteration/slots)
+			const slots: Record<string, any> = {};
+
+			for (const [slotName, slotValue] of Object.entries(node.children)) {
+				slots[slotName] = (slotProps: any) => {
+					// Merge slot props into the existing custom state
+					const slotContext = slotProps ? { ...customState, ...slotProps } : customState;
+
+					if (typeof slotValue === 'string') {
+						return resolveValue(slotValue, slotContext);
+					} else if (Array.isArray(slotValue)) {
+						return slotValue
+							.map((child: UiSchemaNode | string, idx: number) => {
+								if (typeof child === 'string') return resolveValue(child, slotContext);
+								return renderNodeWithState(child, slotContext, idx);
+							})
+							.filter((c): c is VNode | string => c !== null);
+					} else {
+						return renderNodeWithState(slotValue as UiSchemaNode, slotContext, 0);
+					}
+				};
 			}
+
+			children = isVueComponent ? slots : slots.default?.();
 		}
 	}
 

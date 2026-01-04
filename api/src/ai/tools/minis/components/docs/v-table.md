@@ -44,6 +44,8 @@ actions.init = async () => {
 | `onUpdate:modelValue` | action  | -        | Selection change handler                          |
 | `fixedHeader`         | boolean | false    | Keep header visible on scroll                     |
 | `showResize`          | boolean | false    | Allow column resizing                             |
+| `sort`                | Object  | null     | Sort state: `{ by: string, desc: boolean }`       |
+| `onUpdate:sort`       | action  | -        | Triggered when header is clicked                  |
 
 ## Header Format
 
@@ -174,6 +176,35 @@ actions.onRowClick = ({ item }) => {
 		],
 		"items": "state.items",
 		"showResize": true
+	}
+}
+```
+
+## Custom Cell Rendering (Named Slots)
+
+You can customize individual columns using named slots in the format `item.<value>`. Each slot receives `item` and
+`index` in its context.
+
+```json
+{
+	"type": "v-table",
+	"props": {
+		"headers": [
+			{ "text": "Name", "value": "name" },
+			{ "text": "Status", "value": "status" }
+		],
+		"items": "state.items"
+	},
+	"children": {
+		"item.status": {
+			"type": "v-chip",
+			"props": {
+				"kind": "success",
+				"label": true,
+				"small": true
+			},
+			"children": ["{{ item.status }}"]
+		}
 	}
 }
 ```

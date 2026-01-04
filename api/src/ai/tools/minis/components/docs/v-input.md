@@ -15,6 +15,28 @@ Text input field for single-line text, numbers, passwords, etc.
 }
 ```
 
+## Named Slots
+
+`v-input` supports `prepend` and `append` slots for adding icons or buttons inside the input container.
+
+```json
+{
+	"type": "v-input",
+	"props": {
+		"modelValue": "state.search",
+		"onUpdate:modelValue": "actions.setSearch"
+	},
+	"children": {
+		"prepend": { "type": "v-icon", "props": { "icon": "search" } },
+		"append": {
+			"type": "v-button",
+			"props": { "icon": "close", "secondary": true },
+			"onClick": "actions.clearSearch"
+		}
+	}
+}
+```
+
 ```javascript
 state.name = '';
 

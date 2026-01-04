@@ -189,8 +189,7 @@ export async function createQuickJSSandbox(
 			const err = context.dump(errorHandle);
 			errorHandle.dispose();
 
-			const message = typeof err === 'object' && err !== null && 'message' in err ? (err as any).message : String(err);
-			const wrappedError = new Error(message);
+			const wrappedError = new Error(extractErrorMessage(err));
 
 			if (stack) {
 				wrappedError.stack = String(stack);
@@ -238,7 +237,7 @@ export async function createQuickJSSandbox(
 		// Call init if exists
 		if (actions['init']) {
 			actions['init']().catch((e) => {
-				const errMessage = e instanceof Error ? e.message : String(e);
+				const errMessage = extractErrorMessage(e, true);
 				errors.push({ message: errMessage, action: 'init', timestamp: Date.now() });
 				// eslint-disable-next-line no-console
 				console.error('[Mini-App] Init error:', e);
@@ -246,7 +245,7 @@ export async function createQuickJSSandbox(
 		}
 	} catch (err) {
 		error = err as Error;
-		errors.push({ message: error.message, timestamp: Date.now() });
+		errors.push({ message: extractErrorMessage(err, true), timestamp: Date.now() });
 		// eslint-disable-next-line no-console
 		console.error('[Mini-App Sandbox Error]', err);
 	}
@@ -314,7 +313,7 @@ function createActionWrapper(
 				if (promiseResult.error) {
 					const err = context.dump(promiseResult.error);
 					promiseResult.error.dispose();
-					throw new Error(String(err));
+					throw new Error(extractErrorMessage(err, true));
 				}
 
 				const asyncResult = context.dump(promiseResult.value);
@@ -342,7 +341,7 @@ function createActionWrapper(
 			}
 		} catch (err) {
 			// Capture error to errors array
-			const errMessage = err instanceof Error ? err.message : String(err);
+			const errMessage = extractErrorMessage(err, true);
 			errors.push({ message: errMessage, action: actionName, timestamp: Date.now() });
 
 			// Re-throw so caller can handle it
@@ -417,21 +416,7 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 				})
 				.catch((err: any) => {
 					if (context) {
-						let errorMsg = '';
-
-						if (err instanceof Error) {
-							errorMsg = err.stack || err.message;
-						} else if (typeof err === 'object' && err !== null) {
-							try {
-								errorMsg = JSON.stringify(err);
-							} catch {
-								errorMsg = String(err);
-							}
-						} else {
-							errorMsg = String(err);
-						}
-
-						const errorHandle = context.newString(errorMsg);
+						const errorHandle = context.newString(extractErrorMessage(err, false));
 						promise.reject(errorHandle);
 						errorHandle.dispose();
 					}
@@ -498,7 +483,7 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 			})
 			.catch((err: any) => {
 				if (context) {
-					const errorHandle = context.newString(err instanceof Error ? err.stack || err.message : String(err));
+					const errorHandle = context.newString(extractErrorMessage(err, false));
 					promise.reject(errorHandle);
 					errorHandle.dispose();
 				}
@@ -619,7 +604,7 @@ function setupTimerFunctions(
 			if (result.error) {
 				const err = context.dump(result.error);
 				result.error.dispose();
-				errors.push({ message: String(err), action: `timer-${timerId}`, timestamp: Date.now() });
+				errors.push({ message: extractErrorMessage(err, true), action: `timer-${timerId}`, timestamp: Date.now() });
 			} else {
 				result.value.dispose();
 			}
@@ -630,7 +615,7 @@ function setupTimerFunctions(
 			// Execute pending jobs
 			context.runtime.executePendingJobs();
 		} catch (err) {
-			const errMessage = err instanceof Error ? err.message : String(err);
+			const errMessage = extractErrorMessage(err, true);
 			errors.push({ message: errMessage, action: `timer-${timerId}`, timestamp: Date.now() });
 		}
 
@@ -761,3 +746,36 @@ function setupTimerFunctions(
 
 // Track next timer ID globally for the module (shared across sandbox instances)
 let nextTimerId = 1;
+
+/**
+ * Extracts a meaningful error message from various error types, safely stripping stack traces for SDK errors.
+ */
+function extractErrorMessage(err: any, includeStack = false): string {
+	if (!err) return 'Unknown error';
+
+	if (typeof err === 'string') return err;
+
+	if (err instanceof Error) {
+		return includeStack && err.stack ? err.stack : err.message;
+	}
+
+	if (typeof err === 'object') {
+		// Handle Directus SDK error objects and plain objects
+		const extensions = (err as any).extensions;
+		const reason = extensions?.reason || (err as any).reason;
+		const message = (err as any).message || (err as any).error;
+		const code = (err as any).code;
+
+		if (message) return message;
+		if (reason) return reason;
+		if (code) return code;
+
+		try {
+			return JSON.stringify(err);
+		} catch {
+			return String(err);
+		}
+	}
+
+	return String(err);
+}
