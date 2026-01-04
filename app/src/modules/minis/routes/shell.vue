@@ -23,8 +23,8 @@ import { computed, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { z } from 'zod';
 import AppNavigation from '../components/app-navigation.vue';
-import { createSandbox, injectScopedCss, type ErrorEntry, type LogEntry } from '../components/app-sandbox';
-import SchemaRenderer, { type RenderWarning } from '../components/schema-renderer.vue';
+import { createSandbox, injectScopedCss, type ErrorEntry, type LogEntry } from '@/utils/minis/sandbox';
+import VMinis, { type RenderWarning } from '@/components/v-minis.vue';
 import { useMinis } from '../composables/use-minis';
 
 const props = defineProps<{
@@ -78,7 +78,7 @@ const sandboxLogs = ref<LogEntry[]>([]);
 const sandboxErrors = ref<ErrorEntry[]>([]);
 const sandboxLoading = ref(false);
 
-// Render warnings (from schema-renderer.vue)
+// Render warnings (from v-minis.vue)
 const renderWarnings = ref<RenderWarning[]>([]);
 const MAX_RENDER_WARNINGS = 50; // Limit to prevent memory issues
 
@@ -295,7 +295,7 @@ async function applyTestChanges(changes: { ui_schema?: any; script?: string; css
 
 		// Store the test schema for rendering
 		if (changes.ui_schema !== undefined) {
-			// We need to update what SchemaRenderer sees - store in testingValues
+			// We need to update what VMinis sees - store in testingValues
 			testingValues.value = { ...testingValues.value, ui_schema: testSchema };
 		}
 
@@ -878,7 +878,7 @@ defineTool(
 					<span>{{ t('loading') }}</span>
 				</div>
 
-				<SchemaRenderer
+				<VMinis
 					v-else
 					:schema="effectiveSchema"
 					:state="sandboxState"
@@ -915,7 +915,7 @@ defineTool(
 				<span>{{ t('loading') }}</span>
 			</div>
 
-			<SchemaRenderer
+			<VMinis
 				v-else
 				:schema="effectiveSchema"
 				:state="sandboxState"

@@ -2771,6 +2771,7 @@ minis:
   draft_notice: This mini-app is in draft mode.
   mini_app_not_found: Mini-App Not Found
   mini_app_not_found_copy: The requested mini-app could not be found.
+  select_mini_app: Select a Mini-App in the panel configuration.
   back_to_minis: Back to Minis
   welcome_message: Welcome to your new mini-app! Edit the UI schema to get started.
   app_name: Mini-App Name

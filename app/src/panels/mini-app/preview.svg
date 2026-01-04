@@ -1,0 +1,8 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="156" height="96" rx="6" fill="var(--theme--background)" />
+    <rect x="18" y="10" width="120" height="76" rx="6" stroke="var(--theme--primary)" stroke-width="2" />
+    <circle cx="45" cy="35" r="12" fill="var(--theme--primary-subdued)" />
+    <rect x="65" y="28" width="45" height="4" rx="2" fill="var(--theme--primary)" />
+    <rect x="65" y="38" width="30" height="4" rx="2" fill="var(--theme--primary-subdued)" />
+    <rect x="30" y="55" width="96" height="20" rx="4" fill="var(--theme--primary-subdued)" />
+</svg>

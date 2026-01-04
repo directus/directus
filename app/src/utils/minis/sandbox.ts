@@ -1,12 +1,12 @@
-import { APP_BUILDER_CONFIG } from '../config';
+import { APP_BUILDER_CONFIG } from '../../modules/minis/config';
 import {
 	createQuickJSSandbox,
 	type ErrorEntry,
 	type LogEntry,
 	type SandboxConfig,
 	type SandboxResult,
-} from '../services/quickjs-sandbox';
-import { createSafeSDK } from '../services/safe-sdk';
+} from '../../services/minis/quickjs-sandbox';
+import { createSafeSDK } from '../../services/minis/safe-sdk';
 
 export type { ErrorEntry, LogEntry, SandboxConfig, SandboxResult };
 

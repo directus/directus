@@ -76,6 +76,7 @@ import VEmojiPicker from './v-emoji-picker.vue';
 import VWorkspace from './v-workspace.vue';
 import VWorkspaceTile from './v-workspace-tile.vue';
 import VErrorBoundary from './v-error-boundary.vue';
+import VMinis from './v-minis.vue';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -142,6 +143,7 @@ export function registerComponents(app: App): void {
 	app.component('VWorkspace', VWorkspace);
 	app.component('VWorkspaceTile', VWorkspaceTile);
 	app.component('VErrorBoundary', VErrorBoundary);
+	app.component('VMinis', VMinis);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);
