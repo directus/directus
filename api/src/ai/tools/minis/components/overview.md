@@ -108,22 +108,23 @@ Components will warn or fail if they receive `null` or `undefined` for required 
 // Good - initialize all state values
 state.imageUrl = '';
 state.items = [];
-state.activeTab = ['home'];  // v-tabs expects Array
+state.activeTab = ['home']; // v-tabs expects Array
 state.loading = true;
 
 // Bad - using undefined state
-state.imageUrl;  // undefined - will cause warnings
+state.imageUrl; // undefined - will cause warnings
 ```
 
 ### Use `condition` for Async-Dependent Components
 
-When a component depends on data loaded asynchronously (e.g., from `actions.init`), use `condition` to prevent rendering until data is available:
+When a component depends on data loaded asynchronously (e.g., from `actions.init`), use `condition` to prevent rendering
+until data is available:
 
 ```json
 {
-  "type": "v-image",
-  "condition": "state.imageUrl",
-  "props": { "src": "state.imageUrl" }
+	"type": "v-image",
+	"condition": "state.imageUrl",
+	"props": { "src": "state.imageUrl" }
 }
 ```
 
@@ -137,13 +138,13 @@ When a component depends on data loaded asynchronously (e.g., from `actions.init
 
 ### Component-Specific Requirements
 
-| Component  | Requirement                                                                   |
-| ---------- | ----------------------------------------------------------------------------- |
-| `v-tabs`   | `modelValue` must be an **Array**: `state.activeTab = ['home']`               |
-| `v-image`  | `src` is required - use `condition` if loading async                          |
-| `v-select` | `items` array required: `[{ text: 'Label', value: 'val' }]`                   |
-| `v-table`  | Both `headers` and `items` arrays required                                    |
-| Iteration  | Initialize array state before use: `state.items = []`                         |
+| Component  | Requirement                                                     |
+| ---------- | --------------------------------------------------------------- |
+| `v-tabs`   | `modelValue` must be an **Array**: `state.activeTab = ['home']` |
+| `v-image`  | `src` is required - use `condition` if loading async            |
+| `v-select` | `items` array required: `[{ text: 'Label', value: 'val' }]`     |
+| `v-table`  | Both `headers` and `items` arrays required                      |
+| Iteration  | Initialize array state before use: `state.items = []`           |
 
 ### Pattern: Loading States
 
@@ -172,7 +173,7 @@ state.loading = true;
 state.data = null;
 
 actions.init = async () => {
-  state.data = await readItems('collection');
-  state.loading = false;
+	state.data = await readItems('collection');
+	state.loading = false;
 };
 ```

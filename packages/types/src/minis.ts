@@ -4,6 +4,7 @@ export type MiniApp = {
 	icon: string;
 	description: string | null;
 	ui_schema: Record<string, any> | null;
+	panel_config_schema: Record<string, any> | null;
 	script: string | null;
 	css: string | null;
 	status: 'draft' | 'published';

@@ -181,9 +181,22 @@ export async function createQuickJSSandbox(
 		const result = context.evalCode(`(function(){"use strict";${script}})()`);
 
 		if (result.error) {
-			const err = context.dump(result.error);
-			result.error.dispose();
-			throw new Error(String(err));
+			const errorHandle = result.error;
+			const stackHandle = context.getProp(errorHandle, 'stack');
+			const stack = context.dump(stackHandle);
+			stackHandle.dispose();
+
+			const err = context.dump(errorHandle);
+			errorHandle.dispose();
+
+			const message = typeof err === 'object' && err !== null && 'message' in err ? (err as any).message : String(err);
+			const wrappedError = new Error(message);
+
+			if (stack) {
+				wrappedError.stack = String(stack);
+			}
+
+			throw wrappedError;
 		}
 
 		result.value.dispose();
@@ -378,14 +391,22 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 		{ name: 'deleteItem', fn: sdk.deleteItem.bind(sdk) },
 	];
 
+	// Create sdk object and attach all methods and config
+	const sdkObj = context.newObject();
+
+	// Inject config as a native object if available
+	if (sdk.config) {
+		const configHandle = jsonToHandle(context, sdk.config);
+		context.setProp(sdkObj, 'config', configHandle);
+		context.setProp(context.global, 'config', configHandle);
+		configHandle.dispose();
+	}
+
 	for (const { name, fn } of sdkMethods) {
 		const hostFn = context.newFunction(name, (...argHandles: QuickJSHandle[]) => {
 			const args = argHandles.map((h) => context.dump(h));
-
-			// Create a promise that will be resolved by the host
 			const promise = context.newPromise();
 
-			// Execute the SDK function asynchronously
 			(fn as any)(...args)
 				.then((result: unknown) => {
 					if (context) {
@@ -396,13 +417,26 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 				})
 				.catch((err: any) => {
 					if (context) {
-						const errorHandle = context.newString(err instanceof Error ? err.message : String(err));
+						let errorMsg = '';
+
+						if (err instanceof Error) {
+							errorMsg = err.stack || err.message;
+						} else if (typeof err === 'object' && err !== null) {
+							try {
+								errorMsg = JSON.stringify(err);
+							} catch {
+								errorMsg = String(err);
+							}
+						} else {
+							errorMsg = String(err);
+						}
+
+						const errorHandle = context.newString(errorMsg);
 						promise.reject(errorHandle);
 						errorHandle.dispose();
 					}
 				});
 
-			// Important: tell QuickJS to execute pending jobs when the promise settles
 			promise.settled.then(() => {
 				if (context) {
 					context.runtime.executePendingJobs();
@@ -412,53 +446,106 @@ function setupSDKFunctions(context: QuickJSContext, sdk: SafeSDK) {
 			return promise.handle;
 		});
 
+		context.setProp(sdkObj, name, hostFn);
 		context.setProp(context.global, name, hostFn);
 		hostFn.dispose();
 	}
 
-	// Also set up sdk.request
+	context.setProp(context.global, 'sdk', sdkObj);
+
+	// Setup dashboard object if interop is available
+	if (sdk.dashboard) {
+		const dashboardObj = context.newObject();
+
+		const getVariableFn = context.newFunction('getVariable', (nameHandle: QuickJSHandle) => {
+			const name = context.dump(nameHandle) as string;
+			const value = sdk.dashboard!.getVariable(name);
+			return jsonToHandle(context, value);
+		});
+
+		const setVariableFn = context.newFunction(
+			'setVariable',
+			(nameHandle: QuickJSHandle, valueHandle: QuickJSHandle) => {
+				const name = context.dump(nameHandle) as string;
+				const value = context.dump(valueHandle);
+				sdk.dashboard!.setVariable(name, value);
+			},
+		);
+
+		context.setProp(dashboardObj, 'getVariable', getVariableFn);
+		context.setProp(dashboardObj, 'setVariable', setVariableFn);
+		context.setProp(context.global, 'dashboard', dashboardObj);
+
+		getVariableFn.dispose();
+		setVariableFn.dispose();
+		dashboardObj.dispose();
+	}
+
+	// Map SDK request method as well
 	const requestFn = context.newFunction('request', (...argHandles: QuickJSHandle[]) => {
 		const args = argHandles.map((h) => context.dump(h));
 		const [path, options] = args as [string, Record<string, unknown> | undefined];
-
 		const promise = context.newPromise();
 
 		sdk
 			.request(path, options)
-			.then((result) => {
+			.then((result: unknown) => {
 				if (context) {
 					const resultHandle = jsonToHandle(context, result);
 					promise.resolve(resultHandle);
 					resultHandle.dispose();
 				}
 			})
-			.catch((err) => {
+			.catch((err: any) => {
 				if (context) {
-					const errorHandle = context.newString(err instanceof Error ? err.message : String(err));
+					const errorHandle = context.newString(err instanceof Error ? err.stack || err.message : String(err));
 					promise.reject(errorHandle);
 					errorHandle.dispose();
 				}
 			});
 
-		promise.settled.then(() => {
-			if (context) {
-				context.runtime.executePendingJobs();
-			}
-		});
-
+		promise.settled.then(() => context?.runtime.executePendingJobs());
 		return promise.handle;
 	});
 
-	// Create sdk object and attach request
-	const sdkObj = context.newObject();
+	// Also set up sdk.request (same as global request)
 	context.setProp(sdkObj, 'request', requestFn);
-	context.setProp(context.global, 'sdk', sdkObj);
-
-	// Also expose request globally to match other SDK functions
 	context.setProp(context.global, 'request', requestFn);
 
-	requestFn.dispose();
+	const configHandle = jsonToHandle(context, sdk.config || {});
+	context.setProp(sdkObj, 'config', configHandle);
+	configHandle.dispose();
+
+	context.setProp(context.global, 'sdk', sdkObj);
+
+	// Setup dashboard interop if provided
+	if (sdk.dashboard) {
+		const dashboardObj = context.newObject();
+
+		const getVariableFn = context.newFunction('getVariable', (handle) => {
+			const name = context.dump(handle) as string;
+			const value = sdk.dashboard!.getVariable(name);
+			return jsonToHandle(context, value);
+		});
+
+		const setVariableFn = context.newFunction('setVariable', (nameHandle, valueHandle) => {
+			const name = context.dump(nameHandle) as string;
+			const value = context.dump(valueHandle);
+			sdk.dashboard!.setVariable(name, value);
+			return context.undefined;
+		});
+
+		context.setProp(dashboardObj, 'getVariable', getVariableFn);
+		context.setProp(dashboardObj, 'setVariable', setVariableFn);
+		context.setProp(context.global, 'dashboard', dashboardObj);
+
+		getVariableFn.dispose();
+		setVariableFn.dispose();
+		dashboardObj.dispose();
+	}
+
 	sdkObj.dispose();
+	requestFn.dispose();
 }
 
 /**

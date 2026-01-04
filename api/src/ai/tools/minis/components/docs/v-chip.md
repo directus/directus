@@ -179,17 +179,21 @@ Since `v-chip` does not support a `kind` prop, use the following pattern for sem
 ```
 
 ### Dynamic Component Pattern (Recommended)
+
 **Script**:
+
 ```javascript
 state.status = 'active';
 const statusConfig = {
-    active: { label: 'Active', color: 'var(--theme--success)' },
-    pending: { label: 'Pending', color: 'var(--theme--warning)' },
-    danger: { label: 'Error', color: 'var(--theme--danger)' }
+	active: { label: 'Active', color: 'var(--theme--success)' },
+	pending: { label: 'Pending', color: 'var(--theme--warning)' },
+	danger: { label: 'Error', color: 'var(--theme--danger)' },
 };
 state.currentStatus = statusConfig[state.status];
 ```
+
 **Schema**:
+
 ```json
 {
 	"type": "v-chip",

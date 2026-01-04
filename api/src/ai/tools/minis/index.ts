@@ -204,6 +204,7 @@ const MiniAppInputSchema = z.object({
 	icon: z.string().optional(),
 	description: z.string().nullable().optional(),
 	ui_schema: z.union([UiSchemaNodeSchema, z.string(), z.null()]).optional(),
+	panel_config_schema: z.array(z.any()).nullable().optional(),
 	css: z.string().nullable().optional(),
 	script: z.string().nullable().optional(),
 	status: z.enum(['draft', 'published']).optional(),
@@ -249,10 +250,8 @@ const MinisValidateSchema = z.discriminatedUnion('action', [
 ]);
 
 const MinisInputSchema = z.object({
-	action: z
-		.enum(['create', 'read', 'update', 'delete', 'validate', 'list_components', 'describe_component'])
-		.describe(
-			`The operation to perform.
+	action: z.enum(['create', 'read', 'update', 'delete', 'validate', 'list_components', 'describe_component']).describe(
+		`The operation to perform.
 
 | Action | Description |
 | :--- | :--- |
@@ -262,8 +261,8 @@ const MinisInputSchema = z.object({
 | \`delete\` | Remove mini-app(s). |
 | \`validate\` | Manual check of ui_schema/script consistency. |
 | \`list_components\` | Get overview of all available UI components. |
-| \`describe_component\` | Get detailed documentation for one or more specific components. **Pass an array for efficiency.** |`
-		),
+| \`describe_component\` | Get detailed documentation for one or more specific components. **Pass an array for efficiency.** |`,
+	),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional().describe('Primary keys of mini-apps to operate on'),
 	data: z
@@ -273,7 +272,9 @@ const MinisInputSchema = z.object({
 	component: z
 		.union([z.string(), z.array(z.string())])
 		.optional()
-		.describe('Component name or list of names for describe_component action (e.g., "v-select", ["v-select", "v-tabs"])'),
+		.describe(
+			'Component name or list of names for describe_component action (e.g., "v-select", ["v-select", "v-tabs"])',
+		),
 });
 
 export const minis = defineTool<z.infer<typeof MinisValidateSchema>>({
@@ -417,13 +418,7 @@ export const minis = defineTool<z.infer<typeof MinisValidateSchema>>({
 		if (args.action === 'create') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
-			const data = toArray(args.data).map((item) => {
-				if (item.ui_schema && typeof item.ui_schema === 'object') {
-					item.ui_schema = JSON.stringify(item.ui_schema, null, 2);
-				}
-
-				return item;
-			});
+			const data = toArray(args.data);
 
 			// Validate required fields, consistency, and published status
 			for (const item of data) {
@@ -498,10 +493,6 @@ export const minis = defineTool<z.infer<typeof MinisValidateSchema>>({
 				updatedKeys = await itemsService.updateBatch(data);
 			} else if (args.keys) {
 				const data = { ...args.data };
-
-				if (data.ui_schema && typeof data.ui_schema === 'object') {
-					data.ui_schema = JSON.stringify(data.ui_schema, null, 2);
-				}
 
 				// Automatic consistency validation for single update
 				const validation = validateMiniApp(data);

@@ -233,36 +233,38 @@ actions.setMainImage = (img) => {
 
 ## Handling Nullable/Async Sources
 
-When the image source is loaded asynchronously or may be null, **always use `condition`** to prevent rendering with an invalid `src`:
+When the image source is loaded asynchronously or may be null, **always use `condition`** to prevent rendering with an
+invalid `src`:
 
 ```json
 {
-  "type": "v-image",
-  "condition": "state.imageUrl",
-  "props": { "src": "state.imageUrl" }
+	"type": "v-image",
+	"condition": "state.imageUrl",
+	"props": { "src": "state.imageUrl" }
 }
 ```
 
-**Why this matters:** `v-image` requires a valid `src` prop. Rendering with `null` or `undefined` causes Vue warnings and broken display.
+**Why this matters:** `v-image` requires a valid `src` prop. Rendering with `null` or `undefined` causes Vue warnings
+and broken display.
 
 ### Pattern: With Loading Placeholder
 
 ```json
 {
-  "type": "div",
-  "props": { "style": "height: 200px;" },
-  "children": [
-    {
-      "type": "v-skeleton-loader",
-      "condition": "!state.imageUrl",
-      "props": { "type": "image" }
-    },
-    {
-      "type": "v-image",
-      "condition": "state.imageUrl",
-      "props": { "src": "state.imageUrl" }
-    }
-  ]
+	"type": "div",
+	"props": { "style": "height: 200px;" },
+	"children": [
+		{
+			"type": "v-skeleton-loader",
+			"condition": "!state.imageUrl",
+			"props": { "type": "image" }
+		},
+		{
+			"type": "v-image",
+			"condition": "state.imageUrl",
+			"props": { "src": "state.imageUrl" }
+		}
+	]
 }
 ```
 
@@ -273,29 +275,29 @@ state.imageUrl = '';
 state.hasImage = false;
 
 actions.init = async () => {
-  const item = await readItem('products', state.productId);
-  if (item.image) {
-    state.imageUrl = `/assets/${item.image}`;
-    state.hasImage = true;
-  }
+	const item = await readItem('products', state.productId);
+	if (item.image) {
+		state.imageUrl = `/assets/${item.image}`;
+		state.hasImage = true;
+	}
 };
 ```
 
 ```json
 {
-  "type": "div",
-  "children": [
-    {
-      "type": "v-image",
-      "condition": "state.hasImage",
-      "props": { "src": "state.imageUrl" }
-    },
-    {
-      "type": "v-icon",
-      "condition": "!state.hasImage",
-      "props": { "name": "image", "xLarge": true }
-    }
-  ]
+	"type": "div",
+	"children": [
+		{
+			"type": "v-image",
+			"condition": "state.hasImage",
+			"props": { "src": "state.imageUrl" }
+		},
+		{
+			"type": "v-icon",
+			"condition": "!state.hasImage",
+			"props": { "name": "image", "xLarge": true }
+		}
+	]
 }
 ```
 

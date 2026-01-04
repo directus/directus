@@ -9,7 +9,8 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('name').notNullable();
 		table.string('icon', 64).defaultTo('apps');
 		table.text('description').nullable();
-		table.text('ui_schema').nullable();
+		table.json('ui_schema').nullable();
+		table.json('panel_config_schema').nullable();
 		table.text('script').nullable();
 		table.text('css').nullable();
 		table.string('status').notNullable().defaultTo('draft');

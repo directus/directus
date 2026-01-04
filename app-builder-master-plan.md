@@ -44,22 +44,23 @@ rendered dynamically by a single module shell.
 
 ## Data Model
 
-The `directus_minis` collection stores mini-app definitions:
+The `directus_minis` collection stores mini-app definitions (API endpoint: `/minis`).
 
-| Field          | Type      | Description                                             |
-| -------------- | --------- | ------------------------------------------------------- |
-| `id`           | uuid      | Primary key                                             |
-| `name`         | string    | Display name (required)                                 |
-| `icon`         | string    | Material Symbols icon name (e.g., 'apps', 'calculate', 'dashboard', 'analytics') |
-| `description`  | text      | Brief description                                       |
-| `status`       | string    | 'draft' or 'published'                                  |
-| `ui_schema`    | json/text | JSON UI layout. Can be object (recommended) or string.  |
-| `css`          | text      | Scoped CSS styles. MUST be a string, NOT a JSON object. |
-| `script`       | text      | JavaScript code. MUST be a string, NOT a JSON object.   |
-| `date_created` | timestamp | Auto-generated                                          |
-| `date_updated` | timestamp | Auto-generated                                          |
-| `user_created` | uuid      | Auto-generated                                          |
-| `user_updated` | uuid      | Auto-generated                                          |
+| Field                 | Type      | Description                                                                                             |
+| --------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| `id`                  | uuid      | Primary key                                                                                             |
+| `name`                | string    | Display name (required)                                                                                 |
+| `icon`                | string    | Material Symbols icon name                                                                              |
+| `description`         | text      | Brief description                                                                                       |
+| `status`              | string    | 'draft' or 'published'                                                                                  |
+| `ui_schema`           | json/text | JSON UI layout.                                                                                         |
+| `panel_config_schema` | json      | Definition of configuration fields for the mini-app when used in a panel. Use `VForm` schema structure. |
+| `css`                 | text      | Scoped CSS styles.                                                                                      |
+| `script`              | text      | JavaScript code.                                                                                        |
+| `date_created`        | timestamp | Auto-generated                                                                                          |
+| `date_updated`        | timestamp | Auto-generated                                                                                          |
+| `user_created`        | uuid      | Auto-generated                                                                                          |
+| `user_updated`        | uuid      | Auto-generated                                                                                          |
 
 ## Sandbox Implementation
 
@@ -71,39 +72,54 @@ The sandbox uses QuickJS compiled to WebAssembly for isolation.
 
 - **Singleton module loading** - QuickJS WASM loads once and is reused across mini-apps
 - **JSON state sync** - State is serialized/deserialized via JSON after each action.
-  - **Warning**: Methods, prototypes, and non-serializable objects (like Date, Map, Set) are lost during sync. Use plain
-    objects/arrays for state.
 - **Fire-and-forget init** - `actions.init()` is called without blocking
 
 **How it works:**
 
-1. Load QuickJS WASM module (singleton, cached, separate asset)
-2. Create a new context for each mini-app
-3. Set up `state`, `actions`, and `console` objects in VM
+1. Load QuickJS WASM module
+2. Create context
+3. Set up `state`, `actions`, `console`, and `sdk` (SafeSDK)
 4. Execute user `script`
-5. Create action wrappers that call into VM and re-sync state
 
-**Available methods in sandbox:**
+**Available namespaces in sandbox:**
 
-- `readItems(collection, query)` - Read multiple items
-- `readItem(collection, id, query)` - Read single item
-- `createItem(collection, data)` - Create item
-- `updateItem(collection, id, data)` - Update item
-- `deleteItem(collection, id)` - Delete item
-- `request(path, options)` - Custom request (relative paths only)
+- **`sdk`** (Core SDK):
+  - `readItems(collection, query)`
+  - `readItem(collection, id, query)`
+  - `createItem(collection, data)`
+  - `updateItem(collection, id, data)`
+  - `deleteItem(collection, id)`
+  - `request(path, options)`
+  - **`config`**: Object containing values from the panel instance configuration (based on `panel_config_schema`).
 
-**Timer functions (browser-like APIs):**
+- **`dashboard`** (Dashboard Interop):
+  - `getVariable(name)`: Read a dashboard-wide variable. Returns the current value of the variable.
+  - `setVariable(name, value)`: Set a dashboard-wide variable. This value is reactive across other panels.
 
-- `setTimeout(callback, delay)` - Execute callback after delay (returns timer ID)
-- `clearTimeout(timerId)` - Cancel a setTimeout
-- `setInterval(callback, interval)` - Execute callback repeatedly (returns timer ID)
-- `clearInterval(timerId)` - Cancel a setInterval
+**Timer functions:**
+
+- `setTimeout(callback, delay)`
+- `clearTimeout(timerId)`
+- `setInterval(callback, interval)`
+- `clearInterval(timerId)`
 
 **Timer limitations:**
+
 - Maximum 50 concurrent timers per mini-app
 - Minimum interval of 50ms (shorter intervals are clamped)
 - All timers are automatically cleared when the mini-app is disposed
 - State is synced after each timer callback executes
+
+### Verbose Diagnostics
+
+The sandbox and UI are optimized for developer transparency:
+
+- **Stack Traces**: All runtime and initialization errors capture and display full stack traces from the QuickJS
+  environment.
+- **SDK Detail**: Errors from `readItems`, `request`, etc., preserve original Axios/SDK diagnostics (including status
+  codes and server messages).
+- **Console Capture**: `console.log/warn/error` messages are captured with timestamps and can be viewed via the
+  `debug-mini-app` tool or the "Logs" section in the UI.
 
 ### Safe SDK
 
@@ -112,6 +128,7 @@ The `SafeSDK` wrapper ensures mini-apps can only make requests within the Direct
 All requests go through the authenticated user's session and respect permissions.
 
 ### Layout & Theming
+
 - **Assumption**: 800px standard content width. Layouts must be flexible (100% width).
 - **Semantic Props**: Use `kind="primary|success|danger|warning|info"` for buttons and chips.
 - **Theme Variables**: Use `--theme--*` variables for all custom CSS colors and spacing.
@@ -180,8 +197,10 @@ For complex components (`v-select`, `v-tabs`, `v-table`, etc.), use the minis to
 
 - `{{ state.property }}` - Text interpolation
 - `state.property` - Direct prop binding
-- `actions.method` - Action binding (forwards all event arguments automatically)
-- `actions.method(item.id)` - Action with specific context arguments (resolves from iteration context)
+- `actions.method` - Action binding (**BEST PRACTICE**: The Mini-App renderer forwards all event arguments
+  automatically. Use this for inputs and selects.)
+- `actions.method(item.id)` - Action with context arguments (**CAUTION**: Using parentheses prevents automatic
+  forwarding of event arguments. Use this only for static context like IDs.)
 
 ### Control Flow
 
@@ -345,28 +364,33 @@ The `minis` tool is registered in `api/src/ai/tools/index.ts`.
 
 ### Tool Actions
 
-| Action               | Required                  | Description                                             |
-| -------------------- | ------------------------- | ------------------------------------------------------- |
-| `create`             | `data` (with `name`)      | Create new mini-app(s)                                  |
-| `read`               | -                         | List all mini-apps or get specific ones by ID           |
-| `update`             | `keys` OR `data[].id`     | Modify existing mini-app(s)                             |
-| `delete`             | `keys`                    | Remove mini-app(s) by ID                                |
-| `validate`           | `keys` OR `data`          | Check ui_schema/script consistency before save          |
-| `list_components`    | -                         | Get overview of all available UI components             |
-| `describe_component` | `component`               | Get detailed documentation for a specific component     |
+| Action               | Required              | Description                                         |
+| -------------------- | --------------------- | --------------------------------------------------- |
+| `create`             | `data` (with `name`)  | Create new mini-app(s)                              |
+| `read`               | -                     | List all mini-apps or get specific ones by ID       |
+| `update`             | `keys` OR `data[].id` | Modify existing mini-app(s)                         |
+| `delete`             | `keys`                | Remove mini-app(s) by ID                            |
+| `validate`           | `keys` OR `data`      | Check ui_schema/script consistency before save      |
+| `list_components`    | -                     | Get overview of all available UI components         |
+| `describe_component` | `component`           | Get detailed documentation for a specific component |
 
 ### Local Frontend Tools
 
 **IMPORTANT**: When a user is viewing a mini-app in the shell, **local frontend tools** become available. These tools:
+
 - **Automatically know the current mini-app** - NO need to ask for or provide an ID
 - Operate in-memory with no database calls
 - Show the current mini-app name and ID in their descriptions
 
 **When to use local tools vs backend `minis` tool:**
-- User is **viewing a mini-app** and asks to fix/debug/edit it → Use LOCAL tools (`debug-mini-app`, `test-mini-app-changes`, etc.)
-- User wants to create a **new** mini-app or edit one they're **not viewing** → Use BACKEND `minis` tool with `create`/`update` action
+
+- User is **viewing a mini-app** and asks to fix/debug/edit it → Use LOCAL tools (`debug-mini-app`,
+  `test-mini-app-changes`, etc.)
+- User wants to create a **new** mini-app or edit one they're **not viewing** → Use BACKEND `minis` tool with
+  `create`/`update` action
 
 **Permission-based availability:**
+
 - `debug-mini-app`: Available to ALL users (read-only diagnostics)
 - `test-mini-app-changes`: Requires edit permission
 - `reset-mini-app`: Requires edit permission
@@ -398,7 +422,8 @@ Test changes without saving (requires edit permission):
 }
 ```
 
-Returns debug info after applying changes. The user is automatically placed in **edit mode** with a "Testing unsaved changes" banner and can toggle between live preview and form view.
+Returns debug info after applying changes. The user is automatically placed in **edit mode** with a "Testing unsaved
+changes" banner and can toggle between live preview and form view.
 
 #### `reset-mini-app`
 
@@ -409,14 +434,19 @@ Discard test changes and restore the saved version. Exits edit mode.
 Save the currently tested changes to the database. Only works after `test-mini-app-changes` has been called.
 
 **STRICT INTERACTION POLICY**:
+
 - **NEVER** call `save-mini-app-changes` unless the user explicitly asks to "save" or "persist".
-- ALWAYS use `debug-mini-app` first to see the `activeSchema`, `activeScript`, and `activeCss`. These include any unsaved manual edits the user has made. You MUST incorporate these manual changes into your work to avoid overwriting the user.
+- ALWAYS use `debug-mini-app` first to see the `activeSchema`, `activeScript`, and `activeCss`. These include any
+  unsaved manual edits the user has made. You MUST incorporate these manual changes into your work to avoid overwriting
+  the user.
 
 **Recommended workflow:**
+
 1. User reports issue → call `debug-mini-app` to see errors
 2. Identify fix → call `test-mini-app-changes` with corrected code
 3. Verify fix works → call `debug-mini-app` again to confirm no errors
-4.  **Save changes** → call `save-mini-app-changes` to persist **ONLY if the user explicitly asks to "save" or "persist"**.
+4. **Save changes** → call `save-mini-app-changes` to persist **ONLY if the user explicitly asks to "save" or
+   "persist"**.
 
 ### Edit Mode UX
 
@@ -425,35 +455,65 @@ When a user or AI enters edit mode, the UI changes:
 **Title**: Shows "Editing [App Name] Mini-App" (e.g., "Editing Calculator Mini-App")
 
 **Header Actions** (in edit mode):
+
 - **Preview toggle** (play_arrow/code icon): Switch between Form view and Live Preview
 - **Cancel** (X icon): Discard changes and exit edit mode
 - **Save** (checkmark icon): Save changes (disabled if no changes)
 
 **Content Area**:
+
 - **Form view** (`livePreview=false`): Shows the VForm for editing fields
 - **Live Preview** (`livePreview=true`): Shows the mini-app running with current changes
 
 **Banners**:
+
 - "Testing unsaved changes" - When AI called `test-mini-app-changes`
 - "Previewing local changes" - When user is previewing form edits (not AI testing)
 
-**Mode Initialization**:
-| Entry Point | Starts With |
-|-------------|-------------|
-| User clicks Edit button | Form view |
-| AI calls `test-mini-app-changes` | Live Preview |
+**Mode Initialization**: | Entry Point | Starts With | |-------------|-------------| | User clicks Edit button | Form
+view | | AI calls `test-mini-app-changes` | Live Preview |
 
 ### Efficiency Tips
 
 - **Batch creates**: Pass an array to `data` to create multiple mini-apps at once
 - **Batch updates**: Pass `data` as an array with each item containing its `id` to update multiple mini-apps differently
-- **Same update to many**: Use `keys: ['id1', 'id2']` with a single `data` object to apply the same changes to multiple mini-apps
-- **Single call for all changes**: When modifying a mini-app, include ALL changes (`ui_schema`, `script`, `css`, `name`, etc.) in one update call rather than making multiple separate calls.
+- **Same update to many**: Use `keys: ['id1', 'id2']` with a single `data` object to apply the same changes to multiple
+  mini-apps
+- **Single call for all changes**: When modifying a mini-app, include ALL changes (`ui_schema`, `script`, `css`, `name`,
+  etc.) in one update call rather than making multiple separate calls.
 - **Error Handling**: Always use `try/catch` for SDK calls and display errors in the UI.
 - **State Limits**: Remember that `state` is JSON serialized; avoid storing non-POJO data.
-- **CSS Mastery**: Assign `id` or `class` props to your components in the `ui_schema` to target them easily with custom CSS. Call `list-theme-variables` to get active theme values.
+- **CSS Mastery**: Assign `id` or `class` props to your components in the `ui_schema` to target them easily with custom
+  CSS. Call `list-theme-variables` to get active theme values.
 
-## Example App: Counter
+## 💎 Premium Quality Checklist (REQUIRED)
+
+Every mini-app MUST follow these standards by default:
+
+1.  **Aesthetics**: Use Directus theme variables (e.g., `--theme--primary`, `--theme--background-normal`) for a native
+    look.
+2.  **Layout**: Assume **800px** width but ensure containers take **100% of available width**.
+3.  **Visual Polish**: Use gradients, shadows, and micro-animations. Avoid plain CSS colors.
+    - `box-shadow: 0 4px 12px var(--theme--shadow-color);`
+    - `padding: 20px;` (Standard spacing)
+4.  **Interactive States**: Buttons MUST show `:loading="state.loading"` or similar feedback during async operations.
+5.  **Error Handling**: Use `v-notice type="danger"` to display errors from `try/catch` blocks in SDK calls.
+6.  **V-Table Mastery**: For data-heavy views, use `v-table` with custom headers and row templates.
+7.  **Dashboard Interop**: If the app calculates a value (like "Total Stock"), use `dashboard.setVariable` to sync it.
+8.  **Mandatory Configuration**: Any dashboard variable name (used in `get/setVariable`), collection name, target email,
+    or item limit MUST be defined in `panel_config_schema` and accessed via `sdk.config`.
+    - **CRITICAL**: You MUST provide a `schema.default_value` for every field (e.g., `"default_value": "total_stock"`).
+      This ensures the script never receives `undefined` and prevents runtime crashes.
+    - **Script Fallbacks**: Always include a JS fallback: `const varName = sdk.config.var || 'default_var'`.
+    - **Consistency Rule**: The JS fallback value MUST match the `meta.options.placeholder` value.
+    - **Placeholders**: Use `meta.options.placeholder` to guide the user (e.g., `'default_var'`).
+    - **Type Safety**: Always cast to String when syncing to text panels: `dashboard.setVariable(name, String(val))`.
+
+> [!WARNING] **Avoid Reactivity Loops**: Setting dashboard variables can trigger a re-render of all panels. Avoid
+> calling `setVariable` in `actions.init` or high-frequency paths if it depends on dashboard context, as this can create
+> an infinite fetch loop. Always check if the value has actually changed before setting it.
+
+## 🍱 Advanced Pattern: Data Table with Interop
 
 **ui_schema:**
 
@@ -463,22 +523,33 @@ When a user or AI enters edit mode, the UI changes:
 	"children": [
 		{
 			"type": "v-card-title",
-			"children": ["Counter: {{ state.count }}"]
+			"children": ["Inventory Management"]
 		},
 		{
-			"type": "v-card-actions",
-			"children": [
-				{
-					"type": "v-button",
-					"props": { "onClick": "actions.decrement" },
-					"children": ["-"]
-				},
-				{
-					"type": "v-button",
-					"props": { "onClick": "actions.increment" },
-					"children": ["+"]
+			"type": "v-table",
+			"props": {
+				"items": "state.items",
+				"loading": "state.loading",
+				"headers": [
+					{ "text": "Name", "value": "name" },
+					{ "text": "Stock", "value": "stock" },
+					{ "text": "Low Stock", "value": "low", "align": "center" }
+				]
+			},
+			"children": {
+				"item.low": {
+					"type": "v-chip",
+					"condition": "item.stock < 10",
+					"props": { "kind": "danger", "small": true },
+					"children": ["Alert"]
 				}
-			]
+			}
+		},
+		{
+			"type": "v-notice",
+			"condition": "state.error",
+			"props": { "type": "danger" },
+			"children": ["{{ state.error }}"]
 		}
 	]
 }
@@ -487,13 +558,28 @@ When a user or AI enters edit mode, the UI changes:
 **script:**
 
 ```javascript
-state.count = 0;
+state.items = [];
+state.loading = false;
+state.error = null;
 
-actions.increment = () => {
-	state.count++;
+actions.init = async () => {
+	actions.load();
 };
 
-actions.decrement = () => {
-	state.count--;
+actions.load = async () => {
+	state.loading = true;
+	state.error = null;
+	try {
+		const data = await readItems('inventory');
+		state.items = data;
+
+		// Update global dashboard total
+		const total = data.reduce((acc, i) => acc + i.stock, 0);
+		dashboard.setVariable('total_inventory_count', total);
+	} catch (err) {
+		state.error = err.message;
+	} finally {
+		state.loading = false;
+	}
 };
 ```

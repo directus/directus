@@ -280,6 +280,11 @@ async function applyTestChanges(changes: { ui_schema?: any; script?: string; css
 	const testScript = changes.script !== undefined ? changes.script : miniApp.value.script;
 	const testSchema = changes.ui_schema !== undefined ? changes.ui_schema : miniApp.value.ui_schema;
 
+	// SYNC TO EDITS: Ensure form view reflects AI changes immediately
+	if (changes.ui_schema !== undefined) edits.value.ui_schema = changes.ui_schema;
+	if (changes.script !== undefined) edits.value.script = changes.script;
+	if (changes.css !== undefined) edits.value.css = changes.css;
+
 	try {
 		// Inject scoped CSS
 		cleanupCss = injectScopedCss(miniApp.value.id, testCss);
@@ -365,23 +370,10 @@ function resetToSaved() {
  * Save the current test changes to the database.
  */
 async function saveTestChanges() {
-	if (!testingMode.value || !testingValues.value || !miniApp.value) return false;
+	if (!testingMode.value || !miniApp.value) return false;
 
 	try {
-		// Apply test values to edits
-		if (testingValues.value.ui_schema !== undefined) {
-			edits.value.ui_schema = testingValues.value.ui_schema;
-		}
-
-		if (testingValues.value.script !== undefined) {
-			edits.value.script = testingValues.value.script;
-		}
-
-		if (testingValues.value.css !== undefined) {
-			edits.value.css = testingValues.value.css;
-		}
-
-		// Save to database
+		// Save to database (uses edits.value which is already synced)
 		await updateMiniApp();
 
 		// Exit testing and edit mode
@@ -470,13 +462,8 @@ const hasChangesToSave = computed(() => {
 	return hasEdits.value || testingMode.value;
 });
 
-// Effective schema - uses test values when in testing mode, or form edits when previewing
+// Effective schema - uses form edits when in edit mode (including testing mode)
 const effectiveSchema = computed(() => {
-	// Testing mode: use test values
-	if (testingMode.value && testingValues.value?.ui_schema !== undefined) {
-		return testingValues.value.ui_schema;
-	}
-
 	// Edit mode with preview: use form edits if available
 	if (editMode.value && livePreview.value && edits.value?.ui_schema !== undefined) {
 		return edits.value.ui_schema;
@@ -487,10 +474,6 @@ const effectiveSchema = computed(() => {
 
 // Effective script - for preview mode
 const effectiveScript = computed(() => {
-	if (testingMode.value && testingValues.value?.script !== undefined) {
-		return testingValues.value.script;
-	}
-
 	if (editMode.value && livePreview.value && edits.value?.script !== undefined) {
 		return edits.value.script;
 	}
@@ -500,10 +483,6 @@ const effectiveScript = computed(() => {
 
 // Effective CSS - for preview mode
 const effectiveCss = computed(() => {
-	if (testingMode.value && testingValues.value?.css !== undefined) {
-		return testingValues.value.css;
-	}
-
 	if (editMode.value && livePreview.value && edits.value?.css !== undefined) {
 		return edits.value.css;
 	}

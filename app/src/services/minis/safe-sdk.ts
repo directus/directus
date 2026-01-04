@@ -26,6 +26,15 @@ export interface SafeSDK {
 
 	/** Make a custom request to a relative path within the Directus instance */
 	request(path: string, options?: RequestOptions): Promise<unknown>;
+
+	/** Configuration passed from the panel instance */
+	config?: Record<string, any>;
+
+	/** Dashboard interop functions */
+	dashboard?: {
+		getVariable(name: string): any;
+		setVariable(name: string, value: any): void;
+	};
 }
 
 /**
@@ -54,8 +63,17 @@ function validatePath(path: string): string {
  * Creates a safe SDK wrapper that restricts access to the current Directus instance only.
  * All requests go through the authenticated session and respect user permissions.
  */
-export function createSafeSDK(): SafeSDK {
+export function createSafeSDK(options?: {
+	config?: Record<string, any>;
+	dashboard?: {
+		getVariable(name: string): any;
+		setVariable(name: string, value: any): void;
+	};
+}): SafeSDK {
 	return {
+		config: options?.config,
+		dashboard: options?.dashboard,
+
 		async readItems(collection: string, query?: Record<string, unknown>): Promise<unknown[]> {
 			if (!collection || typeof collection !== 'string') {
 				throw new Error('Collection name must be a non-empty string');

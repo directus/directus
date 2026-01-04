@@ -13,9 +13,23 @@ export type { ErrorEntry, LogEntry, SandboxConfig, SandboxResult };
 /**
  * Creates a secure sandbox environment for executing mini-app script using QuickJS/WASM.
  */
-export async function createSandbox(script: string | null, config?: SandboxConfig): Promise<SandboxResult> {
-	const safeSdk = createSafeSDK();
-	const mergedConfig = { ...APP_BUILDER_CONFIG.sandbox, ...config };
+export async function createSandbox(
+	script: string | null,
+	options?: {
+		config?: Record<string, any>;
+		dashboard?: {
+			getVariable(name: string): any;
+			setVariable(name: string, value: any): void;
+		};
+		additionalConfig?: SandboxConfig;
+	},
+): Promise<SandboxResult> {
+	const safeSdk = createSafeSDK({
+		config: options?.config,
+		dashboard: options?.dashboard,
+	});
+
+	const mergedConfig = { ...APP_BUILDER_CONFIG.sandbox, ...options?.additionalConfig };
 	return createQuickJSSandbox(script, safeSdk, mergedConfig);
 }
 

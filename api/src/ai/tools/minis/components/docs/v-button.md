@@ -18,16 +18,16 @@ actions.handleClick = () => {
 };
 ```
 
-| Prop        | Type    | Default  | Description                                             |
-| ----------- | ------- | -------- | ------------------------------------------------------- |
+| Prop        | Type    | Default  | Description                                                       |
+| ----------- | ------- | -------- | ----------------------------------------------------------------- |
 | `kind`      | string  | "normal" | Semantic intent: "normal", "info", "success", "warning", "danger" |
-| `secondary` | boolean | false    | Subset style (subdued background)                        |
-| `outlined`  | boolean | false    | Transparent background with border                       |
-| `loading`   | boolean | false    | Show loading spinner                                     |
-| `disabled`  | boolean | false    | Disable interaction                                     |
-| `fullWidth` | boolean | false    | Take 100% container width                                |
-| `icon`      | boolean | false    | Icon-only style (removes min-width)                      |
-| `onClick`   | action  | -        | Click event handler                                     |
+| `secondary` | boolean | false    | Subset style (subdued background)                                 |
+| `outlined`  | boolean | false    | Transparent background with border                                |
+| `loading`   | boolean | false    | Show loading spinner                                              |
+| `disabled`  | boolean | false    | Disable interaction                                               |
+| `fullWidth` | boolean | false    | Take 100% container width                                         |
+| `icon`      | boolean | false    | Icon-only style (removes min-width)                               |
+| `onClick`   | action  | -        | Click event handler                                               |
 
 ## Semantic Kinds
 

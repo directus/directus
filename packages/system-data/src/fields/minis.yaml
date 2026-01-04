@@ -25,6 +25,8 @@ fields:
     width: full
   - field: ui_schema
     interface: input-code
+    special:
+      - cast-json
     options:
       language: json
       lineNumber: true
@@ -40,6 +42,11 @@ fields:
     options:
       language: css
       lineNumber: true
+    width: full
+  - field: panel_config_schema
+    interface: system-inline-fields
+    special:
+      - cast-json
     width: full
   - field: date_created
     hidden: true

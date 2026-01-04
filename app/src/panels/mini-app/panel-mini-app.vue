@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, computed } from 'vue';
+import { ref, watch, onUnmounted, computed, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useItem } from '@/composables/use-item';
+import { useInsightsStore } from '@/stores/insights';
 import { createSandbox, injectScopedCss, type ErrorEntry, type LogEntry } from '@/utils/minis/sandbox';
 import VMinis, { type RenderWarning } from '@/components/v-minis.vue';
 
@@ -16,6 +17,7 @@ const props = defineProps<{
 	width: number;
 }>();
 
+const attrs = useAttrs();
 const { t } = useI18n();
 
 const miniAppIdRef = computed(() => {
@@ -27,6 +29,43 @@ const miniAppIdRef = computed(() => {
 });
 
 const { item: miniApp, loading, error } = useItem(ref('directus_minis'), miniAppIdRef);
+
+const insightsStore = useInsightsStore();
+
+const config = computed(() => {
+	const options = { ...props, ...attrs };
+	delete (options as any).miniAppId;
+	delete (options as any).showHeader;
+	delete (options as any).height;
+	delete (options as any).width;
+	delete (options as any).dashboard;
+	delete (options as any).id;
+
+	// Filter config to only include options defined in the mini-app's panel_config_schema
+	// to avoid re-initializing on unrelated dashboard prop changes.
+	let schema = miniApp.value?.panel_config_schema;
+
+	if (typeof schema === 'string' && schema.trim()) {
+		try {
+			schema = JSON.parse(schema);
+		} catch {
+			schema = null;
+		}
+	}
+
+	if (Array.isArray(schema)) {
+		const schemaFields = schema.map((f) => f.field);
+		const filtered: Record<string, any> = {};
+
+		for (const key of schemaFields) {
+			if (key in options) filtered[key] = (options as any)[key];
+		}
+
+		return filtered;
+	}
+
+	return options;
+});
 
 const friendlyError = computed(() => {
 	if (!error.value) return null;
@@ -89,7 +128,21 @@ async function initializeSandbox() {
 		cleanupCss = injectScopedCss(miniApp.value.id, miniApp.value.css);
 
 		// Create sandbox
-		const { state, actions, error: sbError, logs, errors, dispose } = await createSandbox(miniApp.value.script);
+		const {
+			state,
+			actions,
+			error: sbError,
+			logs,
+			errors,
+			dispose,
+		} = await createSandbox(miniApp.value.script, {
+			config: config.value,
+			dashboard: {
+				getVariable: (name: string) => insightsStore.getVariable(name),
+				setVariable: (name: string, value: any) => insightsStore.setVariable(name, value),
+			},
+		});
+
 		sandboxState.value = state;
 		sandboxActions.value = actions;
 		sandboxError.value = sbError;
@@ -105,11 +158,24 @@ async function initializeSandbox() {
 	}
 }
 
-watch(miniApp, (newApp) => {
-	if (newApp) {
-		initializeSandbox();
-	}
-}, { immediate: true });
+let lastConfigString = '';
+
+watch(
+	[miniApp, config],
+	([newApp, newConfig]) => {
+		if (!newApp) return;
+
+		const configString = JSON.stringify(newConfig);
+
+		// Only re-initialize if the mini-app itself changed,
+		// or if the relevant configuration values actually changed.
+		if (newApp.id !== miniApp.value?.id || configString !== lastConfigString) {
+			lastConfigString = configString;
+			initializeSandbox();
+		}
+	},
+	{ immediate: true },
+);
 
 onUnmounted(() => {
 	if (cleanupCss) cleanupCss();
@@ -137,8 +203,9 @@ function handleRenderWarning(warning: RenderWarning) {
 			{{ friendlyError }}
 		</VNotice>
 
-		<VNotice v-else-if="sandboxError" type="danger" center>
-			{{ t('minis.sandbox_error', { message: sandboxError.message }) }}
+		<VNotice v-else-if="sandboxError" type="danger">
+			<div class="error-message">{{ t('minis.sandbox_error', { message: sandboxError.message }) }}</div>
+			<pre v-if="sandboxError.stack" class="error-stack">{{ sandboxError.stack }}</pre>
 		</VNotice>
 
 		<VNotice v-else-if="miniApp && miniApp.status !== 'published'" type="warning" center>
@@ -168,5 +235,21 @@ function handleRenderWarning(warning: RenderWarning) {
 	flex: 1;
 	overflow: auto;
 	padding: 16px;
+}
+
+.error-message {
+	font-weight: 600;
+}
+
+.error-stack {
+	margin-block-start: 8px;
+	padding: 8px;
+	font-family: var(--family-monospace);
+	font-size: 12px;
+	line-height: 1.4;
+	white-space: pre-wrap;
+	word-break: break-all;
+	background: rgb(0 0 0 / 0.05);
+	border-radius: 4px;
 }
 </style>

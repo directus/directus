@@ -13,17 +13,16 @@ Small status indicator that can be attached to other elements.
 
 ## Props
 
-| Prop       | Type          | Default | Description                                 |
-| ---------- | ------------- | ------- | ------------------------------------------- |
-| `value`    | string/number | null    | Content (max 2-3 characters recommended)     |
-| `dot`      | boolean       | false   | Show as small dot only                      |
-| `bordered` | boolean       | false   | Add contrast border (useful on images)      |
-| `disabled` | boolean       | false   | Fade the badge                              |
-| `left`     | boolean       | false   | Position on top-left                        |
-| `bottom`   | boolean       | false   | Position on bottom-right                    |
+| Prop       | Type          | Default | Description                              |
+| ---------- | ------------- | ------- | ---------------------------------------- |
+| `value`    | string/number | null    | Content (max 2-3 characters recommended) |
+| `dot`      | boolean       | false   | Show as small dot only                   |
+| `bordered` | boolean       | false   | Add contrast border (useful on images)   |
+| `disabled` | boolean       | false   | Fade the badge                           |
+| `left`     | boolean       | false   | Position on top-left                     |
+| `bottom`   | boolean       | false   | Position on bottom-right                 |
 
-> [!NOTE]
-> `v-badge` is red (`--theme--danger`) by default. To change its color, use `style`:
+> [!NOTE] `v-badge` is red (`--theme--danger`) by default. To change its color, use `style`:
 > `"style": "--v-badge-background-color: var(--theme--primary)"`
 
 ## With Value

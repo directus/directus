@@ -2791,3 +2791,4 @@ minis:
   show_form: Show Form
   show_preview: Show Preview
   error_loading_app: Error Loading Mini-App
+  list_theme_variables: List Theme Variables
