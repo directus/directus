@@ -384,4 +384,88 @@ describe('Nested validation groups display', () => {
 		expect(orLines).toContain('Value has to contain "foo"');
 		expect(orLines).toContain('Value has to contain "bar"');
 	});
+
+	it('shows field names when validation rules reference other fields', () => {
+		const wrapper = mount(ValidationErrors, {
+			props: {
+				validationErrors: [
+					{
+						field: 'subtitle',
+						path: [],
+						type: 'contains',
+						substring: 'Hello',
+						hidden: false,
+						group: null,
+					} as unknown as ValidationError,
+				],
+				fields: [
+					{
+						collection: 'posts',
+						name: 'Subtitle',
+						field: 'subtitle',
+						type: 'string',
+						meta: {
+							validation: {
+								_and: [
+									{
+										_and: [
+											{
+												subtitle: {
+													_contains: 'Hello',
+												},
+											},
+											{
+												tagline: {
+													_contains: 'World',
+												},
+											},
+										],
+									},
+								],
+							},
+							validation_message: 'Subtitle does not satisfy our crazy long validation rule!',
+						} as unknown as FieldMeta,
+					} as Field,
+					{
+						collection: 'posts',
+						name: 'Tagline',
+						field: 'tagline',
+						type: 'string',
+						meta: {
+							validation: {
+								_and: [
+									{
+										tagline: {
+											_contains: 'tag',
+										},
+									},
+								],
+							},
+						} as unknown as FieldMeta,
+					} as Field,
+				],
+			},
+			global,
+		});
+
+		const text = wrapper.text();
+
+		expect(text).toContain('Subtitle');
+		expect(text).toContain('Subtitle does not satisfy our crazy long validation rule!');
+
+		const ruleTexts = wrapper
+			.findAll('.rule')
+			.map((el) => el.text().trim())
+			.filter(
+				(text) =>
+					text &&
+					!text.toLowerCase().includes('all of the following') &&
+					!text.toLowerCase().includes('any of the following'),
+			);
+
+		expect(ruleTexts.length).toBeGreaterThanOrEqual(2);
+		const taglineRuleText = ruleTexts.find((text) => text.includes('World'));
+		expect(taglineRuleText).toBeDefined();
+		expect(taglineRuleText).toEqual('Tagline: Value has to contain "World"');
+	});
 });

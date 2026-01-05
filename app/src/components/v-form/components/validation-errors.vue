@@ -5,6 +5,12 @@ import VDetail from '@/components/v-detail.vue';
 import { useValidationErrorDetails, type ValidationErrorWithDetails } from '@/composables/use-validation-error-details';
 import { Field, ValidationError } from '@directus/types';
 import ValidationNestedGroups from './validation-nested-groups.vue';
+import {
+	getReferencedFields,
+	hasNestedGroups,
+	parseValidationStructure,
+	errorMatchesValidationRule,
+} from '@/utils/format-validation-structure';
 import { computed, toRef } from 'vue';
 
 const props = defineProps<{
@@ -26,13 +32,157 @@ function getNestedKey(validationError: ValidationErrorWithDetails) {
 const displayValidationErrors = computed(() => {
 	const seen = new Set<string>();
 
-	return validationErrorsWithDetails.value.filter((error) => {
-		if (!error.hasNestedValidation || !error.validationStructure) return true;
+	const referencedFieldsMap = new Map<string, Set<string>>();
+
+	props.fields.forEach((field) => {
+		if (field.meta?.validation) {
+			const referencedFields = getReferencedFields(field.meta.validation);
+
+			referencedFields.forEach((referencedField) => {
+				if (!referencedFieldsMap.has(referencedField)) {
+					referencedFieldsMap.set(referencedField, new Set());
+				}
+
+				referencedFieldsMap.get(referencedField)!.add(field.field);
+			});
+		}
+	});
+
+	const fieldsWithNestedValidation = new Set(
+		props.fields
+			.filter((field) => field.meta?.validation && hasNestedGroups(field.meta.validation))
+			.map((field) => field.field),
+	);
+
+	const fieldsWithNestedValidationErrors = new Set(
+		validationErrorsWithDetails.value
+			.filter((error) => error.hasNestedValidation && error.validationStructure)
+			.map((error) => error.field),
+	);
+
+	const filteredErrors = validationErrorsWithDetails.value.filter((error) => {
+		if (!error.hasNestedValidation || !error.validationStructure) {
+			const errorField = props.fields.find((f) => f.field === error.field);
+
+			if (errorField?.meta?.validation) {
+				const matchesOwnValidation = errorMatchesValidationRule(
+					{
+						field: error.field,
+						type: error.type,
+						substring: error.substring,
+						valid: error.valid,
+						invalid: error.invalid,
+					},
+					errorField.meta.validation,
+				);
+
+				if (matchesOwnValidation) {
+					return true;
+				}
+			}
+
+			const referencingFields = referencedFieldsMap.get(error.field);
+
+			if (referencingFields) {
+				const shouldFilter = Array.from(referencingFields).some((referencingField) => {
+					if (
+						!fieldsWithNestedValidation.has(referencingField) &&
+						!fieldsWithNestedValidationErrors.has(referencingField)
+					) {
+						return false;
+					}
+
+					const referencingFieldObj = props.fields.find((f) => f.field === referencingField);
+
+					if (!referencingFieldObj?.meta?.validation) return false;
+
+					return errorMatchesValidationRule(
+						{
+							field: error.field,
+							type: error.type,
+							substring: error.substring,
+							valid: error.valid,
+							invalid: error.invalid,
+						},
+						referencingFieldObj.meta.validation,
+					);
+				});
+
+				if (shouldFilter) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		const key = getNestedKey(error);
+
 		if (seen.has(key)) return false;
+
 		seen.add(key);
 		return true;
 	});
+
+	const allFieldsWithErrors = new Set(validationErrorsWithDetails.value.map((error) => error.field));
+	const fieldsWithErrors = new Set(filteredErrors.map((error) => error.field));
+
+	const virtualErrors: ValidationErrorWithDetails[] = [];
+
+	props.fields.forEach((field) => {
+		if (
+			field.meta?.validation &&
+			hasNestedGroups(field.meta.validation) &&
+			!fieldsWithErrors.has(field.field) &&
+			!fieldsWithNestedValidationErrors.has(field.field)
+		) {
+			const referencedFields = getReferencedFields(field.meta.validation);
+
+			const matchingErrors = validationErrorsWithDetails.value.filter((error) => {
+				if (!allFieldsWithErrors.has(error.field)) return false;
+				if (!referencedFields.has(error.field)) return false;
+
+				return errorMatchesValidationRule(
+					{
+						field: error.field,
+						type: error.type,
+						substring: error.substring,
+						valid: error.valid,
+						invalid: error.invalid,
+					},
+					field.meta?.validation,
+				);
+			});
+
+			if (matchingErrors.length > 0) {
+				const validationStructure = parseValidationStructure(field.meta.validation);
+
+				if (validationStructure) {
+					const fieldForError = props.fields.find((f) => f.field === field.field);
+
+					const groupField = fieldForError?.meta?.group
+						? props.fields.find((f) => f.field === fieldForError?.meta?.group)
+						: null;
+
+					virtualErrors.push({
+						code: 'FAILED_VALIDATION',
+						collection: fieldForError?.collection ?? '',
+						field: field.field,
+						type: 'nnull',
+						hidden: fieldForError?.meta?.hidden,
+						group: fieldForError?.meta?.group ?? null,
+						fieldName: fieldForError?.name ?? field.field,
+						groupName: groupField?.name ?? fieldForError?.meta?.group,
+						customValidationMessage: fieldForError?.meta?.validation_message ?? null,
+						validationStructure,
+						hasNestedValidation: true,
+					} as ValidationErrorWithDetails);
+				}
+			}
+		}
+	});
+
+	return [...filteredErrors, ...virtualErrors];
 });
 
 function getErrorKey(validationError: ValidationErrorWithDetails) {
@@ -88,7 +238,11 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 								</div>
 							</template>
 
-							<ValidationNestedGroups :node="validationError.validationStructure" />
+							<ValidationNestedGroups
+								:node="validationError.validationStructure"
+								:parent-field="validationError.field"
+								:fields="props.fields"
+							/>
 						</VDetail>
 					</template>
 

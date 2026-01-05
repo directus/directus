@@ -129,3 +129,76 @@ export function hasNestedGroups(validation: any): boolean {
 
 	return false;
 }
+
+export function getReferencedFields(validation: any): Set<string> {
+	const fields = new Set<string>();
+
+	if (!validation || typeof validation !== 'object') return fields;
+
+	if (validation._and && Array.isArray(validation._and)) {
+		validation._and.forEach((child: any) => {
+			const childFields = getReferencedFields(child);
+			childFields.forEach((field) => fields.add(field));
+		});
+
+		return fields;
+	}
+
+	if (validation._or && Array.isArray(validation._or)) {
+		validation._or.forEach((child: any) => {
+			const childFields = getReferencedFields(child);
+			childFields.forEach((field) => fields.add(field));
+		});
+
+		return fields;
+	}
+
+	const fieldKeys = Object.keys(validation).filter((key) => !key.startsWith('_'));
+
+	if (fieldKeys.length > 0) {
+		fields.add(fieldKeys[0]!);
+	}
+
+	return fields;
+}
+
+export function errorMatchesValidationRule(
+	error: { field: string; type: string; substring?: string; valid?: any; invalid?: any },
+	validation: any,
+): boolean {
+	if (!validation || typeof validation !== 'object') return false;
+
+	if (validation._and && Array.isArray(validation._and)) {
+		return validation._and.some((child: any) => errorMatchesValidationRule(error, child));
+	}
+
+	if (validation._or && Array.isArray(validation._or)) {
+		return validation._or.some((child: any) => errorMatchesValidationRule(error, child));
+	}
+
+	const fieldKeys = Object.keys(validation).filter((key) => !key.startsWith('_'));
+
+	if (fieldKeys.length > 0) {
+		const field = fieldKeys[0]!;
+
+		if (field !== error.field) return false;
+
+		const fieldRules = validation[field];
+		if (!fieldRules || typeof fieldRules !== 'object') return false;
+
+		const operators = Object.keys(fieldRules).filter((key) => key.startsWith('_'));
+
+		for (const operatorKey of operators) {
+			const operatorName = operatorKey.substring(1);
+			const ruleValue = fieldRules[operatorKey];
+
+			if (operatorName === error.type) {
+				if (error.substring !== undefined && error.substring === ruleValue) return true;
+				if (error.valid !== undefined && error.valid === ruleValue) return true;
+				if (error.invalid !== undefined && error.invalid === ruleValue) return true;
+			}
+		}
+	}
+
+	return false;
+}

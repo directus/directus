@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ValidationNode } from '@/utils/format-validation-structure';
 import { formatValidationRule } from '@/utils/format-validation-structure';
+import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ValidationNestedGroupsList, { type RenderItem } from './validation-nested-groups-list.vue';
@@ -8,6 +9,8 @@ import ValidationNestedGroupsList, { type RenderItem } from './validation-nested
 interface Props {
 	node: ValidationNode;
 	depth?: number;
+	parentField?: string;
+	fields?: Field[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,7 +27,16 @@ function groupLabel(type: 'and' | 'or') {
 }
 
 function renderRule(node: ValidationNode) {
-	return formatValidationRule(node, t);
+	const ruleText = formatValidationRule(node, t);
+
+	if (node.type === 'rule' && node.field && props.parentField && node.field !== props.parentField && props.fields) {
+		const field = props.fields.find((f) => f.field === node.field);
+		const fieldName = field?.name ?? node.field;
+
+		return `${fieldName}: ${ruleText}`;
+	}
+
+	return ruleText;
 }
 
 function buildItems(node: ValidationNode): RenderItem[] {
