@@ -756,8 +756,12 @@ function getLinkForItem(item: DisplayItem) {
 	padding: var(--v-card-padding, 16px);
 }
 
-.v-table .deleted {
-	color: var(--danger-75);
+.v-table {
+	--v-table-background-color: var(--theme--background);
+
+	.deleted {
+		color: var(--danger-75);
+	}
 }
 
 .v-list {
