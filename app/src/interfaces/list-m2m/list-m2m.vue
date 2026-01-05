@@ -740,8 +740,8 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				inset-inline-end: 0;
-				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 				background: var(--theme--background);
+				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}
