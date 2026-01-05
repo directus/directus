@@ -209,7 +209,7 @@ export class Room {
 		await this.ready;
 
 		return await this.store(async (store) => {
-			return (await store.get('clients')) ?? [];
+			return await store.get('clients');
 		});
 	}
 
@@ -217,7 +217,7 @@ export class Room {
 		await this.ready;
 
 		return await this.store(async (store) => {
-			const clients = (await store.get('clients')) ?? [];
+			const clients = await store.get('clients');
 
 			return clients.findIndex((c) => c.uid === id) !== -1;
 		});
@@ -245,11 +245,11 @@ export class Room {
 			});
 
 			await this.store(async (store) => {
-				const clientColors = (await store.get('clientColors')) ?? {};
+				const clientColors = await store.get('clientColors');
 				clientColors[client.uid] = clientColor;
 				await store.set('clientColors', clientColors);
 
-				const clients = (await store.get('clients')) ?? [];
+				const clients = await store.get('clients');
 				clients.push({ uid: client.uid, accountability: client.accountability! });
 				await store.set('clients', clients);
 			});
@@ -257,13 +257,13 @@ export class Room {
 
 		const { collection, item, version, clientColors, changes, focuses, clients } = (await this.store(async (store) => {
 			return {
-				collection: (await store.get('collection'))!,
-				item: (await store.get('item')) ?? null,
-				version: (await store.get('version')) ?? null,
-				clientColors: (await store.get('clientColors')) ?? {},
-				changes: (await store.get('changes')) ?? {},
-				focuses: (await store.get('focuses')) ?? {},
-				clients: (await store.get('clients')) ?? [],
+				collection: await store.get('collection'),
+				item: await store.get('item'),
+				version: await store.get('version'),
+				clientColors: await store.get('clientColors'),
+				changes: await store.get('changes'),
+				focuses: await store.get('focuses'),
+				clients: await store.get('clients'),
 			};
 		})) as RoomData;
 
@@ -306,7 +306,7 @@ export class Room {
 		if (!(await this.hasClient(client.uid))) return;
 
 		await this.store(async (store) => {
-			const clients = (await store.get('clients')) ?? [];
+			const clients = await store.get('clients');
 
 			await store.set(
 				'clients',
@@ -345,7 +345,7 @@ export class Room {
 		await this.ready;
 
 		const { clients } = await this.store(async (store) => {
-			const existing_changes = (await store.get('changes')) ?? {};
+			const existing_changes = await store.get('changes');
 			existing_changes[field] = changes;
 			await store.set('changes', existing_changes);
 
@@ -385,7 +385,7 @@ export class Room {
 		await this.ready;
 
 		const { clients } = await this.store(async (store) => {
-			const changes = (await store.get('changes')) ?? {};
+			const changes = await store.get('changes');
 			delete changes[field];
 			await store.set('changes', changes);
 
@@ -413,7 +413,7 @@ export class Room {
 		await this.ready;
 
 		const { clients } = await this.store(async (store) => {
-			const focuses = (await store.get('focuses')) ?? {};
+			const focuses = await store.get('focuses');
 
 			if (!field) {
 				delete focuses[sender.uid];
@@ -444,10 +444,9 @@ export class Room {
 	async sendAll(message: BaseServerMessage) {
 		await this.ready;
 
-		const clients =
-			(await this.store(async (store) => {
-				return await store.get('clients');
-			})) ?? [];
+		const clients = await this.store(async (store) => {
+			return await store.get('clients');
+		});
 
 		for (const client of clients) {
 			this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
@@ -457,10 +456,9 @@ export class Room {
 	async sendExcluding(message: BaseServerMessage, exclude: ClientID) {
 		await this.ready;
 
-		const clients =
-			(await this.store(async (store) => {
-				return await store.get('clients');
-			})) ?? [];
+		const clients = await this.store(async (store) => {
+			return await store.get('clients');
+		});
 
 		for (const client of clients) {
 			if (client.uid !== exclude) {
