@@ -1,4 +1,7 @@
+import { getLocalTypeForField } from './get-local-type';
 import { cryptoStub } from '@/__utils__/crypto';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, Mock, test, vi } from 'vitest';
@@ -12,12 +15,6 @@ beforeEach(() => {
 		}),
 	);
 });
-
-/* eslint-disable import/order */
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { getLocalTypeForField } from './get-local-type';
-/* eslint-enable import/order */
 
 test('Returns NULL for non-existing relations', () => {
 	const fieldsStore = useFieldsStore();

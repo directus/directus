@@ -1,4 +1,6 @@
 import { cryptoStub } from '@/__utils__/crypto';
+import { useUserStore } from '@/stores/user';
+import { getAppearance } from '@/utils/get-appearance';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
@@ -12,11 +14,6 @@ beforeEach(() => {
 		}),
 	);
 });
-
-/* eslint-disable import/order */
-import { useUserStore } from '@/stores/user';
-import { getAppearance } from '@/utils/get-appearance';
-/* eslint-enable import/order */
 
 test(`Defaults to light when configured to auto and matchMedia isn't available in the browser`, () => {
 	const userStore = useUserStore();

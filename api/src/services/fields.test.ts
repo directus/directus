@@ -1,4 +1,7 @@
 import * as cacheModule from '../cache.js';
+import { FieldsService } from './fields.js';
+import { ItemsService } from './items.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import {
 	createMockKnex,
 	createMockTableBuilder,
@@ -100,12 +103,6 @@ vi.mock('../database/helpers/index.js', () => ({
 		},
 	})),
 }));
-
-/* eslint-disable import/order */
-import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
-import { FieldsService } from './fields.js';
-import { ItemsService } from './items.js';
-/* eslint-enable import/order */
 
 const schema = new SchemaBuilder()
 	.collection('directus_fields', (c) => {

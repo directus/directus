@@ -1,4 +1,9 @@
 import { apply, filterSnapshotDiff, formatPath, formatRelatedCollection } from './apply.js';
+import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
+import { useLogger } from '../../../logger/index.js';
+import { applySnapshot } from '../../../utils/apply-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
 import type { Snapshot, SnapshotDiff, SnapshotField, SnapshotRelation, SnapshotSystemField } from '@directus/types';
 import type { ApiCollection } from '@directus/types';
 import { DiffKind } from '@directus/types';
@@ -17,14 +22,6 @@ vi.mock('../../../logger/index.js');
 vi.mock('../../../utils/apply-snapshot.js');
 vi.mock('../../../utils/get-snapshot-diff.js');
 vi.mock('../../../utils/get-snapshot.js');
-
-/* eslint-disable import/order */
-import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
-import { useLogger } from '../../../logger/index.js';
-import { applySnapshot } from '../../../utils/apply-snapshot.js';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
-import { getSnapshot } from '../../../utils/get-snapshot.js';
-/* eslint-enable import/order */
 
 class Client_PG extends MockClient {}
 

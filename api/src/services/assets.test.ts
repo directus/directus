@@ -1,3 +1,7 @@
+import { AssetsService } from './assets.js';
+import { FilesService } from './files.js';
+import { FoldersService } from './folders.js';
+import { getStorage } from '../storage/index.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Driver, StorageManager } from '@directus/storage';
 import type { File, SchemaOverview } from '@directus/types';
@@ -35,13 +39,6 @@ vi.mock('../utils/get-schema.js', () => ({
 }));
 
 vi.mock('../storage/index.js');
-
-/* eslint-disable import/order */
-import { getStorage } from '../storage/index.js';
-import { AssetsService } from './assets.js';
-import { FilesService } from './files.js';
-import { FoldersService } from './folders.js';
-/* eslint-enable import/order */
 
 describe('AssetsService', () => {
 	const mockArchiver = {

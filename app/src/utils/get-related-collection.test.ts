@@ -1,4 +1,7 @@
 import { cryptoStub } from '@/__utils__/crypto';
+import { useRelationsStore } from '@/stores/relations';
+import { getLocalTypeForField } from '@/utils/get-local-type';
+import { getRelatedCollection } from '@/utils/get-related-collection';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, Mock, test, vi } from 'vitest';
@@ -14,12 +17,6 @@ beforeEach(() => {
 });
 
 vi.mock('@/utils/get-local-type');
-
-/* eslint-disable import/order */
-import { useRelationsStore } from '@/stores/relations';
-import { getLocalTypeForField } from '@/utils/get-local-type';
-import { getRelatedCollection } from '@/utils/get-related-collection';
-/* eslint-enable import/order */
 
 test('Returns M2M as related + junction', () => {
 	const relationsStore = useRelationsStore();
