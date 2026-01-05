@@ -3,9 +3,9 @@ import vendors from '@common/get-dbs-to-test';
 import { SeedFunctions } from '@common/seed-functions';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
+import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
 import { set } from 'lodash-es';
 import { expect, it } from 'vitest';
-import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
 import { getTestsAllTypesSchema, seedAllFieldTypesStructure, seedAllFieldTypesValues } from './seed-all-field-types';
 import { seedRelationalFields } from './seed-relational-fields';
 
