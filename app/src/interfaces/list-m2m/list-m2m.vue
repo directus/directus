@@ -741,6 +741,7 @@ function getLinkForItem(item: DisplayItem) {
 				position: sticky;
 				inset-inline-end: 0;
 				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
+				background: var(--theme--background);
 			}
 		}
 	}
@@ -756,12 +757,8 @@ function getLinkForItem(item: DisplayItem) {
 	padding: var(--v-card-padding, 16px);
 }
 
-.v-table {
-	--v-table-background-color: var(--theme--background);
-
-	.deleted {
-		color: var(--danger-75);
-	}
+.v-table .deleted {
+	color: var(--danger-75);
 }
 
 .v-list {
