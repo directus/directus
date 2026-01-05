@@ -51,12 +51,12 @@ jobs:
       matrix:
         vendor:
           - sqlite3
-          - cockroachdb
           - postgres
           - mysql
           - maria
           - mssql
           - oracle
+          - cockroachdb
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
