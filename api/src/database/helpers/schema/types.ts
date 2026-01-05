@@ -4,6 +4,7 @@ import { DatabaseHelper } from '../types.js';
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Column } from '@directus/schema';
 import type { DatabaseClient, Field, RawField, Relation, Type } from '@directus/types';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
@@ -64,6 +65,15 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			}
 
 			b.alter();
+		});
+	}
+
+	async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
+		const primaryColumns = toArray(columns);
+
+		await this.knex.schema.alterTable(table, (builder) => {
+			builder.dropPrimary();
+			builder.primary(primaryColumns);
 		});
 	}
 

@@ -3,16 +3,19 @@ import { DriverS3 } from './index.js';
 import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
 import {
 	CopyObjectCommand,
+	CreateMultipartUploadCommand,
 	DeleteObjectCommand,
 	GetObjectCommand,
 	HeadObjectCommand,
 	ListObjectsV2Command,
 	S3Client,
+	ServerSideEncryption,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
+	rand,
 	randAlphaNumeric,
 	randBoolean,
 	randGitBranch as randBucket,
@@ -38,7 +41,7 @@ vi.mock('@aws-sdk/lib-storage');
 vi.mock('node:path');
 
 let sample: {
-	config: Required<DriverS3Config>;
+	config: DriverS3Config & Required<Pick<DriverS3Config, 'key' | 'secret' | 'root' | 'region' | 'forcePathStyle'>>;
 	path: {
 		input: string;
 		inputFull: string;
@@ -68,8 +71,9 @@ beforeEach(() => {
 			key: randAlphaNumeric({ length: 20 }).join(''),
 			secret: randAlphaNumeric({ length: 40 }).join(''),
 			bucket: randBucket(),
-			acl: randWord(),
-			serverSideEncryption: randWord(),
+			acl: 'private',
+			serverSideEncryption: rand(Object.values(ServerSideEncryption)),
+			serverSideEncryptionKmsKeyId: randAlphaNumeric({ length: 20 }).join(''),
 			root: randDirectoryPath(),
 			endpoint: randDomainName(),
 			region: randWord(),
@@ -300,6 +304,7 @@ describe('#fullPath', () => {
 		vi.mocked(join).mockReturnValue(sample.path.inputFull);
 		vi.mocked(normalizePath).mockReturnValue(sample.path.inputFull);
 
+		// @ts-expect-error - mutating private attribute
 		driver['root'] = sample.config.root;
 
 		const result = driver['fullPath'](sample.path.input);
@@ -490,6 +495,42 @@ describe('#copy', () => {
 		});
 	});
 
+	test.each([[ServerSideEncryption.aws_kms], [ServerSideEncryption.aws_kms_dsse]])(
+		'Optionally sets ServerSideEncryptionKMSKeyId ',
+		async (sse) => {
+			driver['config'].serverSideEncryption = sse;
+			driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+			await driver.copy(sample.path.src, sample.path.dest);
+
+			expect(CopyObjectCommand).toHaveBeenCalledWith({
+				Key: sample.path.destFull,
+				Bucket: sample.config.bucket,
+				CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
+				ServerSideEncryption: sse,
+				SSEKMSKeyId: sample.config.serverSideEncryptionKmsKeyId,
+			});
+		},
+	);
+
+	test.each([[ServerSideEncryption.AES256], [ServerSideEncryption.aws_fsx]])(
+		'Does not set ServerSideEncryptionKMSKeyId if ServerSideEncryption is not aws:kms or aws:kms:dsse',
+		async (sse) => {
+			driver['config'].serverSideEncryption = sse;
+			driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+			await driver.copy(sample.path.src, sample.path.dest);
+
+			expect(CopyObjectCommand).toHaveBeenCalledWith({
+				Key: sample.path.destFull,
+				Bucket: sample.config.bucket,
+				CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
+				ServerSideEncryption: sse,
+				SSEKMSKeyId: undefined,
+			});
+		},
+	);
+
 	test('Optionally sets ACL', async () => {
 		driver['config'].acl = sample.config.acl;
 
@@ -556,6 +597,48 @@ describe('#write', () => {
 			},
 		});
 	});
+
+	test.each([[ServerSideEncryption.aws_kms], [ServerSideEncryption.aws_kms_dsse]])(
+		'Optionally sets ServerSideEncryptionKmsKeyId',
+		async (sse) => {
+			driver['config'].serverSideEncryption = sse;
+			driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+			await driver.write(sample.path.input, sample.stream);
+
+			expect(Upload).toHaveBeenCalledWith({
+				client: driver['client'],
+				params: {
+					Key: sample.path.inputFull,
+					Bucket: sample.config.bucket,
+					Body: sample.stream,
+					ServerSideEncryption: sse,
+					SSEKMSKeyId: sample.config.serverSideEncryptionKmsKeyId,
+				},
+			});
+		},
+	);
+
+	test.each([[ServerSideEncryption.aws_fsx], [ServerSideEncryption.AES256]])(
+		'Does not set ServerSideEncryptionKmsKeyId when ServerSideEncryption is not aws:kms or aws:kms:dsse',
+		async (sse) => {
+			driver['config'].serverSideEncryption = sse;
+			driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+			await driver.write(sample.path.input, sample.stream);
+
+			expect(Upload).toHaveBeenCalledWith({
+				client: driver['client'],
+				params: {
+					Key: sample.path.inputFull,
+					Bucket: sample.config.bucket,
+					Body: sample.stream,
+					ServerSideEncryption: sse,
+					SSEKMSKeyId: undefined,
+				},
+			});
+		},
+	);
 
 	test('Optionally sets ACL', async () => {
 		driver['config'].acl = sample.config.acl;
@@ -639,6 +722,7 @@ describe('#list', () => {
 			],
 		} as unknown as void);
 
+		// @ts-expect-error - mutating private attribute
 		driver['root'] = sampleRoot;
 
 		const iterator = driver.list(sample.path.input);
@@ -693,4 +777,46 @@ describe('#list', () => {
 		expect(driver['client'].send).toHaveBeenCalledTimes(3);
 		expect(output.length).toBe(4);
 	});
+});
+
+describe('#createChunkedUpload', () => {
+	beforeEach(() => {
+		vi.mocked(driver['client'].send).mockResolvedValue({ UploadId: 'test-upload-id' } as unknown as void);
+	});
+
+	test.each([[ServerSideEncryption.aws_kms], [ServerSideEncryption.aws_kms_dsse]])(
+		'Optionally sets ServerSideEncryptionKMSKeyId ',
+		async (sse) => {
+			driver['config'].serverSideEncryption = sse;
+			driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+			await driver.createChunkedUpload(sample.path.input, { metadata: {} });
+
+			expect(CreateMultipartUploadCommand).toHaveBeenCalledWith({
+				Bucket: sample.config.bucket,
+				Key: sample.path.inputFull,
+				Metadata: { 'tus-version': '1.0.0' },
+				ServerSideEncryption: sse,
+				SSEKMSKeyId: sample.config.serverSideEncryptionKmsKeyId,
+			});
+		},
+	);
+
+	test.each([[ServerSideEncryption.AES256], [ServerSideEncryption.aws_fsx]])(
+		'Does not set SSEKMSKeyId if ServerSideEncryption is not aws:kms or aws:kms:dsse',
+		async (sse) => {
+			driver['config'].serverSideEncryption = sse;
+			driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+			await driver.createChunkedUpload(sample.path.input, { metadata: {} });
+
+			expect(CreateMultipartUploadCommand).toHaveBeenCalledWith({
+				Bucket: sample.config.bucket,
+				Key: sample.path.inputFull,
+				Metadata: { 'tus-version': '1.0.0' },
+				ServerSideEncryption: sse,
+				SSEKMSKeyId: undefined,
+			});
+		},
+	);
 });
