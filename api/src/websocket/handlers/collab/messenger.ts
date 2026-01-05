@@ -20,7 +20,7 @@ export class Messenger {
 				if (client) {
 					const order = this.orders[client.uid];
 					this.orders[client.uid]!++;
-					client.send(JSON.stringify({ order, ...message.message }));
+					client.send(JSON.stringify({ ...message.message, order }));
 				}
 			} else if (message.type === 'room') {
 				this.roomListeners[message.room]?.(message);
@@ -52,7 +52,7 @@ export class Messenger {
 		this.messenger.publish(COLLAB_BUS, { type: 'room', room, message });
 	}
 
-	sendClient(client: ClientID, message: ServerMessage) {
+	sendClient(client: ClientID, message: Omit<ServerMessage, 'order'>) {
 		this.messenger.publish(COLLAB_BUS, { type: 'send', client, message });
 	}
 }
