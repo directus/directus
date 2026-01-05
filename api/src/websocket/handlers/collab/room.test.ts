@@ -625,7 +625,7 @@ describe('Room.verifyPermissions', () => {
 		expect(fetchPermissions).toHaveBeenCalledTimes(1);
 	});
 
-	test('Error in verifyPermissions kicks client', async () => {
+	test('Error in verifyPermissions returns empty fields', async () => {
 		const client = mockWebSocketClient({ uid: 'client-fail' });
 
 		vi.mocked(fetchPermissions).mockRejectedValueOnce(new Error('DB Error'));
@@ -633,8 +633,8 @@ describe('Room.verifyPermissions', () => {
 		const fields = await room.verifyPermissions(client, collection, item);
 
 		expect(fields).toEqual([]);
-		expect(client.close).toHaveBeenCalled();
-		expect(client.terminate).toHaveBeenCalled();
+		expect(client.close).not.toHaveBeenCalled();
+		expect(client.terminate).not.toHaveBeenCalled();
 	});
 
 	test('Deep Relational Dependencies', async () => {
