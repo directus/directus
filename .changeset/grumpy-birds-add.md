@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Update background color in v-table row component to use theme background variable
+Fixed sticky column background in M2M list interface
