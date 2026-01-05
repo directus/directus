@@ -22,6 +22,7 @@ export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
+			console.log({ seed: 'concealFilter' });
 			for (const pkType of PRIMARY_KEY_TYPES) {
 				try {
 					const localCollectionFirst = `${collectionFirst}_${pkType}`;

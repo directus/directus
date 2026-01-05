@@ -9,6 +9,8 @@ export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
+			console.log({ seed: 'norelation' });
+
 			for (const pkType of PRIMARY_KEY_TYPES) {
 				try {
 					const localCollectionArtists = `${collectionArtists}_${pkType}`;

@@ -147,6 +147,8 @@ export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
+			console.log({ seed: 'm2a' });
+
 			for (const pkType of PRIMARY_KEY_TYPES) {
 				try {
 					const localCollectionShapes = `${collectionShapes}_${pkType}`;

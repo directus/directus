@@ -3,9 +3,9 @@ import vendors from '@common/get-dbs-to-test';
 import { SeedFunctions } from '@common/seed-functions';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
-import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
 import { set } from 'lodash-es';
 import { expect, it } from 'vitest';
+import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
 import {
 	getTestsAllTypesSchema,
 	seedAllFieldTypesStructure,
@@ -135,6 +135,8 @@ export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
+			console.log({ seed: 'o2m' });
+
 			for (const pkType of PRIMARY_KEY_TYPES) {
 				try {
 					const localCollectionCountries = `${collectionCountries}_${pkType}`;
