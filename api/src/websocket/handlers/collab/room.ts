@@ -17,6 +17,7 @@ import { useStore } from './store.js';
 import { filterItems } from '../../../utils/filter-items.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
+import { useLogger } from '../../../logger/index.js';
 import { processPermissions } from '../../../permissions/utils/process-permissions.js';
 
 /**
@@ -692,10 +693,12 @@ export class Room {
 			}
 
 			return allowedFields;
-		} catch {
-			this.leave(client);
-			client.close?.();
-			client.terminate?.();
+		} catch (err) {
+			useLogger().error(
+				err,
+				`[Collab] Room.verifyPermissions failed for user "${accountability.user}", collection "${collection}", and item "${item}"`,
+			);
+
 			return [];
 		}
 	}
