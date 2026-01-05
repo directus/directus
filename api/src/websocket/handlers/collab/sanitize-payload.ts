@@ -5,6 +5,7 @@ import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import { asyncDeepMapWithSchema } from '../../../utils/versioning/deep-map-with-schema.js';
 import { isEmpty } from 'lodash-es';
 import { getService } from '../../../utils/get-service.js';
+import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 
 /**
  * Sanitizes a payload based on the user's permissions.
@@ -53,9 +54,9 @@ export async function sanitizePayload(
 			const readAllowed =
 				accountability.admin === true ||
 				(allowedFields
-					? allowedFields.includes(String(key)) || allowedFields.includes('*')
-					: (permissionsByCollection[context.collection.collection]?.some(
-							(perm) => perm.fields && (perm.fields.includes(String(key)) || perm.fields.includes('*')),
+					? isFieldAllowed(allowedFields, String(key))
+					: (permissionsByCollection[context.collection.collection]?.some((perm) =>
+							isFieldAllowed(perm.fields ?? [], String(key)),
 						) ?? false));
 
 			if (!readAllowed) return;

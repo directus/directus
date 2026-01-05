@@ -12,6 +12,7 @@ import { InvalidPayloadError } from '@directus/errors';
 import { Messenger } from './messenger.js';
 import { ClientMessage } from '@directus/types/collab';
 import { getService } from '../../../utils/get-service.js';
+import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 
 /**
  * Handler responsible for subscriptions
@@ -191,7 +192,7 @@ export class CollabHandler {
 
 			const allowedFields = await room.verifyPermissions(client, room.collection, room.item, 'update');
 
-			if (allowedFields.some((f) => f === message.field || f === '*') === false)
+			if (!isFieldAllowed(allowedFields, message.field))
 				throw new InvalidPayloadError({
 					reason: `No permission to update field ${message.field} or field does not exist`,
 				});
@@ -226,7 +227,7 @@ export class CollabHandler {
 			if (message.field) {
 				const allowedFields = await room.verifyPermissions(client, room.collection, room.item, 'read');
 
-				if (allowedFields.some((f) => f === message.field || f === '*') === false) {
+				if (!isFieldAllowed(allowedFields, message.field)) {
 					throw new InvalidPayloadError({
 						reason: `No permission to focus on field ${message.field} or field does not exist`,
 					});
