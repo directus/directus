@@ -116,12 +116,7 @@ type RoomData = {
 	focuses: Record<ClientID, string>;
 };
 
-interface PermissionClient {
-	uid: ClientID;
-	accountability: Accountability | null;
-	close?: () => void;
-	terminate?: () => void;
-}
+type PermissionClient = Pick<WebSocketClient, 'uid' | 'accountability'>;
 
 /**
  * Represents a single collaboration room for a specific item
