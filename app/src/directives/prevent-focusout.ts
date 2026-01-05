@@ -7,8 +7,6 @@ const PreventFocusout: Directive = {
 		}
 	},
 	updated(el: HTMLElement, binding) {
-		console.log('updated', binding.value, binding.oldValue);
-
 		if (binding.oldValue && !binding.value) {
 			el.removeEventListener('focusout', preventFocusout);
 
@@ -37,7 +35,6 @@ const PreventFocusout: Directive = {
 };
 
 function preventFocusout(event: FocusEvent) {
-	console.log('Prevented Focusout');
 	event.preventDefault();
 	event.stopPropagation();
 }
