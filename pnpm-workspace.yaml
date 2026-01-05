@@ -288,6 +288,7 @@ catalog:
   stylelint-config-standard-vue: 1.0.0
   stylelint-use-logical: 2.1.2
   swagger-cli: 4.0.4
+  swagger-ui-dist: 5.31.0
   swagger-ui-watcher: 2.1.14
   tar: 7.5.2
   tedious: 18.6.1
