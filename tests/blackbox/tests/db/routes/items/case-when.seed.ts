@@ -16,7 +16,6 @@ export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
-			console.log({ seed: 'caseWhen' });
 			try {
 				await DeleteCollection(vendor, { collection });
 

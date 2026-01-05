@@ -84,8 +84,6 @@ export const seedDBValues = async () => {
 
 	await Promise.all(
 		vendors.map(async (vendor) => {
-			console.log({ seed: 'hasfilter' });
-
 			for (const pkType of PRIMARY_KEY_TYPES) {
 				const localCollectionFirst = `${collectionFirst}_${pkType}`;
 

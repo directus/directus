@@ -58,8 +58,6 @@ export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
-			console.log({ seed: 'version' });
-
 			// Delete existing collections
 			for (const collection of Object.values(c)) {
 				await DeleteCollection(vendor, { collection });

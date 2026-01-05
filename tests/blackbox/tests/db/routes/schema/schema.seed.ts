@@ -90,8 +90,6 @@ export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
-			console.log({ seed: 'schema' });
-
 			for (const setDefaultValues of [false, true]) {
 				const suffix = setDefaultValues ? '2' : '';
 
