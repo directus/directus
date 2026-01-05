@@ -45,7 +45,6 @@ jobs:
   db:
     name: ${{ matrix.vendor }}
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -56,7 +55,7 @@ jobs:
           - maria
           - mssql
           - oracle
-          # - cockroachdb
+          - cockroachdb
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
