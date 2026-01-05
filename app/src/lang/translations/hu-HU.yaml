@@ -237,7 +237,7 @@ archive_confirm_count: >-
   Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
 reset_system_permissions_to: 'Rendszerjogosultságok visszaállítása a következőkre:'
 reset_system_permissions_copy: Ez a művelet felülírja a rendszergyűjteményekre alkalmazott egyéni engedélyeid. Biztos vagy benne?
-the_following_are_minimum_permissions: A következő minimális engedélyek automatikusan érvényesek, ha az „Alkalmazáshozzáférés” engedélyezve van. Szükség esetén további engedélyeket adhat, de az engedélyek nem csökkenthetők ezen szint alá.
+the_following_are_minimum_permissions: A következő minimális engedélyek automatikusan érvényesek, ha az „Alkalmazás hozzáférés” engedélyezve van. Szükség esetén további engedélyeket adhat, de az engedélyek nem csökkenthetők ezen szint alá.
 app_access_minimum: App hozzáférés minimuma
 recommended_defaults: Ajánlott alapértelmezések
 unarchive: Archiválás visszavonása
