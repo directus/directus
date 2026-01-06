@@ -276,7 +276,7 @@ test('sanitize on m2m with create,update,delete syntax', async () => {
 					},
 				},
 			],
-			delete: [{ id: 13 }],
+			delete: [13],
 		},
 	});
 });

@@ -230,7 +230,7 @@ describe('room', () => {
 			return {};
 		});
 
-		await room.update(clientA, 'id', 5);
+		await room.update(clientA, { id: 5 });
 
 		expect(clientC.send).toHaveBeenCalledTimes(2);
 
