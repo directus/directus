@@ -108,7 +108,7 @@ const setRawValue = () => {
 	.input-code {
 		:deep(.CodeMirror),
 		:deep(.CodeMirror-scroll) {
-			max-block-size: var(--input-height-xlarge);
+			max-block-size: var(--input-height-xl);
 		}
 	}
 }

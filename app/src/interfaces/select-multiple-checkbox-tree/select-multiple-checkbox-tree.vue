@@ -91,7 +91,7 @@ const searchDebounced = ref('');
 
 <style scoped>
 .select-multiple-checkbox-tree {
-	max-block-size: var(--input-height-xlarge);
+	max-block-size: var(--input-height-xl);
 	overflow: auto;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

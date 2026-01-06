@@ -320,7 +320,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&.multiline {
-		block-size: var(--input-height-default);
+		block-size: var(--input-height-md);
 		overflow-y: auto;
 		white-space: pre-wrap;
 	}

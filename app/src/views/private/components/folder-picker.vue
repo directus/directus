@@ -162,7 +162,7 @@ function parseFolder(id: string) {
 	padding: 12px;
 	background-color: var(--folder-picker-background-color, var(--theme--background-normal));
 	border-radius: var(--theme--border-radius);
-	max-block-size: calc(var(--input-height-default) * 2);
+	max-block-size: calc(var(--input-height-md) * 2);
 	overflow: auto;
 }
 </style>
