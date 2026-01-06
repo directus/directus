@@ -4,7 +4,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { readUser, readUsers, RemoveEventHandler } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ServerMessage, ACTION, Color, ClientID, ClientMessage } from '@directus/types/collab';
-import { capitalize, debounce, isEqual, throttle } from 'lodash';
+import { capitalize, debounce, isEmpty, isEqual, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 
 type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>;
@@ -44,9 +44,12 @@ export function useCollab(
 	active?: Ref<boolean>,
 ): {
 	onSave: () => void;
+	update: (changes: Item) => void;
+	clearCollidingChanges: () => void;
 	users: Ref<CollabUser[]>;
 	collabContext: CollabContext;
 	connected: Ref<boolean>;
+	collabCollision: Ref<{ from: Item; to: Item } | undefined>;
 } {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
@@ -56,8 +59,18 @@ export function useCollab(
 	const connectionId = ref<ClientID | null>(null);
 	const users = ref<CollabUser[]>([]);
 	const focused = ref<Record<ClientID, string>>({});
+	const collidingLocalChanges = ref<Item | undefined>({ title: 'A' });
 	const eventHandlers: RemoveEventHandler[] = [];
 	let largestUpdateOrder = 0;
+
+	const collabCollision = computed(() => {
+		if (!collidingLocalChanges.value) return undefined;
+
+		return {
+			from: edits.value,
+			to: collidingLocalChanges.value,
+		};
+	});
 
 	const messageReceivers = {
 		receiveJoin,
@@ -200,7 +213,10 @@ export function useCollab(
 		roomId.value = message.room;
 		connectionId.value = message.connection;
 
-		if (!isEqual(message.changes, edits.value)) edits.value = message.changes;
+		if (!isEqual(message.changes, edits.value)) {
+			if (!isEmpty(edits.value)) collidingLocalChanges.value = edits.value;
+			edits.value = message.changes;
+		}
 
 		if (message.users.length === 0) return;
 
@@ -311,6 +327,19 @@ export function useCollab(
 		});
 	}
 
+	function update(changes: Item) {
+		edits.value = Object.assign({}, edits.value, changes);
+
+		sendMessage({
+			action: ACTION.CLIENT.UPDATE_ALL,
+			changes,
+		});
+	}
+
+	function clearCollidingChanges() {
+		collidingLocalChanges.value = undefined;
+	}
+
 	const onFocus = debounce((field: string | null) => {
 		sendMessage({
 			action: ACTION.CLIENT.FOCUS,
@@ -322,11 +351,11 @@ export function useCollab(
 		if (!connected.value || !roomId.value) return;
 
 		sdk.sendMessage({
+			...message,
 			type: WS_TYPE.COLLAB,
 			room: roomId.value,
-			...message,
 		});
 	}
 
-	return { onSave, users, collabContext, connected };
+	return { onSave, update, users, collabContext, connected, collabCollision, clearCollidingChanges };
 }

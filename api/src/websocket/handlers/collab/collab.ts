@@ -1,10 +1,10 @@
 import { WS_TYPE, type WebSocketClient } from '@directus/types';
-import { capitalize } from 'lodash-es';
+import { upperFirst } from 'lodash-es';
 import emitter from '../../../emitter.js';
 import { handleWebSocketError } from '../../errors.js';
 import { getMessageType } from '../../utils/message.js';
 import { CollabRooms } from './room.js';
-import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateMessage } from './types.js';
+import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import getDatabase from '../../../database/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
@@ -39,7 +39,7 @@ export class CollabHandler {
 
 			try {
 				const validMessage = ClientMessage.parse(message);
-				await this[`on${capitalize(validMessage.action)}`](client, message);
+				await this[`on${upperFirst(validMessage.action)}`](client, message);
 			} catch (error) {
 				handleWebSocketError(client, error, 'subscribe');
 			}
@@ -184,9 +184,38 @@ export class CollabHandler {
 				});
 
 			if ('changes' in message) {
-				room.update(client, message.field, message.changes);
+				room.update(client, { [message.field]: message.changes });
 			} else {
 				room.unset(client, message.field);
+			}
+		} catch (err) {
+			handleWebSocketError(client, err, 'update');
+		}
+	}
+
+	async onUpdateAll(client: WebSocketClient, message: UpdateAllMessage) {
+		try {
+			const room = await this.rooms.getRoom(message.room);
+
+			if (!room)
+				throw new InvalidPayloadError({
+					reason: `No access to room ${message.room} or room does not exist`,
+				});
+
+			if (!room.hasClient(client.uid))
+				throw new InvalidPayloadError({
+					reason: `Not connected to room ${message.room}`,
+				});
+
+			for (const key of Object.keys(message.changes ?? {})) {
+				if ((await hasFieldPermision(client.accountability!, await room.getCollection(), key, 'update')) === false)
+					throw new InvalidPayloadError({
+						reason: `No permission to update field ${key} or field does not exist`,
+					});
+			}
+
+			if (message.changes) {
+				room.update(client, message.changes);
 			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'update');

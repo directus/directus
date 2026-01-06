@@ -51,6 +51,7 @@ import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
 import { SplitPanel } from '@directus/vue-split-panel';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 
 interface Props {
 	collection: string;
@@ -128,9 +129,12 @@ aiStore.onSystemToolResult((tool, input) => {
 
 const {
 	onSave,
+	clearCollidingChanges,
 	users: collabUsers,
 	connected,
 	collabContext,
+	collabCollision,
+	update: updateCollab,
 } = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
@@ -824,6 +828,16 @@ function useCollectionRoute() {
 				<LivePreview v-if="livePreviewActive && previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 			</template>
 		</SplitPanel>
+
+		<ComparisonModal
+			:model-value="Boolean(collabCollision)"
+			:collection="collection"
+			:primary-key="internalPrimaryKey"
+			:current-collab="collabCollision"
+			mode="collab"
+			@confirm="updateCollab"
+			@cancel="clearCollidingChanges"
+		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<VCard>

@@ -274,10 +274,10 @@ export class Room {
 		);
 	}
 
-	async update(sender: WebSocketClient, field: string, changes: unknown) {
+	async update(sender: WebSocketClient, changes: Record<string, unknown>) {
 		const { clients, collection } = await this.store(async (store) => {
 			const existing_changes = await store.get('changes');
-			existing_changes[field] = changes;
+			Object.assign(existing_changes, changes);
 			await store.set('changes', existing_changes);
 
 			return { clients: await store.get('clients'), collection: await store.get('collection') };
@@ -286,22 +286,21 @@ export class Room {
 		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
-			const item = await sanitizePayload(
-				collection,
-				{ [field]: changes },
-				{
-					knex: getDatabase(),
-					schema: await getSchema(),
-					accountability: client.accountability,
-				},
-			);
+			const item = await sanitizePayload(collection, changes, {
+				knex: getDatabase(),
+				schema: await getSchema(),
+				accountability: client.accountability,
+			});
 
-			if (field in item) {
-				this.send(client.uid, {
-					action: ACTION.SERVER.UPDATE,
-					field,
-					changes: item[field],
-				});
+			// TODO: Make this one message instead
+			for (const field of Object.keys(changes)) {
+				if (field in item) {
+					this.send(client.uid, {
+						action: ACTION.SERVER.UPDATE,
+						field,
+						changes: item[field],
+					});
+				}
 			}
 		}
 	}

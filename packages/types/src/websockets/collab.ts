@@ -11,6 +11,7 @@ export const ACTION = {
 		LEAVE: 'leave',
 		SAVE: 'save',
 		UPDATE: 'update',
+		UPDATE_ALL: 'updateAll',
 		FOCUS: 'focus',
 	},
 	SERVER: {
@@ -30,8 +31,6 @@ const BaseClientMessage = z.object({
 	room: z.string(),
 });
 
-const ZodItem = z.custom<Partial<Item>>();
-
 // Messages from client to server
 export const ClientMessage = z.discriminatedUnion('action', [
 	z.object({
@@ -40,7 +39,7 @@ export const ClientMessage = z.discriminatedUnion('action', [
 		collection: z.string(),
 		item: z.string().nullable(),
 		version: z.string().nullable(),
-		initialChanges: ZodItem.optional(),
+		initialChanges: z.record(z.string(), z.any()).optional(),
 	}),
 	BaseClientMessage.extend({
 		action: z.literal(ACTION.CLIENT.LEAVE),
@@ -52,6 +51,10 @@ export const ClientMessage = z.discriminatedUnion('action', [
 		action: z.literal(ACTION.CLIENT.UPDATE),
 		field: z.string(),
 		changes: z.unknown().optional(),
+	}),
+	BaseClientMessage.extend({
+		action: z.literal(ACTION.CLIENT.UPDATE_ALL),
+		changes: z.record(z.string(), z.any()).optional(),
 	}),
 	BaseClientMessage.extend({
 		action: z.literal(ACTION.CLIENT.FOCUS),
