@@ -466,24 +466,49 @@ export default class CockroachDB implements SchemaInspector {
 				rows: Array<{
 					column_name: string;
 					data_type: string;
-					is_nullable: boolean | string;
+					is_nullable: boolean;
 					column_default: string | null;
 					generation_expression: string | null;
-					indices: string[] | null;
-					is_hidden: boolean | string;
-					comment?: string | null;
+					column_comment: string | null;
+					has_index: boolean;
+					has_unique: boolean;
 				}>;
-			}>(`SHOW COLUMNS FROM ${this.safeIdentifier(schema, t)} WITH COMMENT`);
+			}>(
+				`SELECT 
+    c.column_name,
+    c.data_type,
+    BOOL_OR(c.is_nullable = 'YES') as is_nullable,
+    c.column_default,
+    c.column_comment,
+    c.generation_expression,
+    BOOL_OR(s.index_name IS NOT NULL AND s.non_unique = 'YES') AS has_index,
+    BOOL_OR(s.index_name IS NOT NULL AND s.non_unique = 'NO') AS has_unique
+FROM information_schema.columns c
+LEFT JOIN information_schema.statistics s 
+    ON c.table_schema = s.table_schema
+    AND c.table_name = s.table_name 
+    AND c.column_name = s.column_name
+    AND s.implicit = 'NO'
+    AND s.storing = 'NO'
+WHERE c.table_name = ? AND c.table_schema = ?
+GROUP BY 
+    c.column_name,
+    c.data_type,
+    c.is_nullable,
+    c.column_default,
+    c.column_comment,
+    c.generation_expression,
+    c.ordinal_position
+ORDER BY c.ordinal_position`,
+				[t, schema],
+			);
 
 			return res.rows.map((r): Column => {
 				const key = `${schema}.${t}.${r.column_name}`;
 				const cons = constraintsByKey.get(key) ?? [];
 				const fk = cons.find((x) => x.constraint_type === 'FOREIGN KEY');
 
-				const indices = Array.isArray(r.indices) ? r.indices : [];
 				const isPrimary = cons.some((x) => x.constraint_type === 'PRIMARY KEY');
-				const isUnique = cons.some((x) => x.constraint_type === 'UNIQUE') || isPrimary;
-
 				const defaultVal = r.column_default ? parseDefaultValue(r.column_default) : null;
 
 				const hasAutoIncrement =
@@ -506,15 +531,15 @@ export default class CockroachDB implements SchemaInspector {
 					default_value: defaultVal,
 					generation_expression: r.generation_expression || null,
 					is_generated: !!r.generation_expression,
-					is_nullable: r.is_nullable === true || r.is_nullable === 'true',
+					is_nullable: r.is_nullable,
 					is_primary_key: isPrimary,
-					is_unique: isUnique,
-					is_indexed: cons.length - indices.length > 0, // wait does this really make sense?
+					is_unique: r.has_unique || isPrimary,
+					is_indexed: r.has_index,
 					has_auto_increment: hasAutoIncrement,
 					foreign_key_schema: fk?.foreign_key_schema ?? null,
 					foreign_key_table: fk?.foreign_key_table ?? null,
 					foreign_key_column: fk?.foreign_key_column ?? null,
-					comment: r.comment || null,
+					comment: r.column_comment || null,
 					...typeMetadata,
 				};
 			});
