@@ -1,24 +1,23 @@
-import { WS_TYPE, type Accountability, type Item, type WebSocketClient, type ActionHandler } from '@directus/types';
+import { WS_TYPE, type Accountability, type ActionHandler, type Item, type WebSocketClient } from '@directus/types';
 import { ACTION, COLORS, type BaseServerMessage, type ClientID, type Color } from '@directus/types/collab';
 import { createHash } from 'crypto';
 import { isEqual, random } from 'lodash-es';
-import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import { adjustDate } from '@directus/utils';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
+import { useLogger } from '../../../logger/index.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import { getSchema } from '../../../utils/get-schema.js';
-import { getService } from '../../../utils/get-service.js';
-import { permissionCache } from './permissions-cache.js';
-import { sanitizePayload } from './sanitize-payload.js';
-import { Messenger } from './messenger.js';
-import { useStore } from './store.js';
-import { filterItems } from '../../../utils/filter-items.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
-import { useLogger } from '../../../logger/index.js';
 import { processPermissions } from '../../../permissions/utils/process-permissions.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { getService } from '../../../utils/get-service.js';
+import { calculateAllowedFields } from './calculate-allowed-fields.js';
+import { calculateCacheMetadata } from './calculate-cache-metadata.js';
+import { Messenger } from './messenger.js';
+import { permissionCache } from './permissions-cache.js';
+import { sanitizePayload } from './sanitize-payload.js';
+import { useStore } from './store.js';
 
 /**
  * Store and manage all active collaboration rooms
@@ -505,14 +504,6 @@ export class Room {
 
 		const service = getService(collection, { schema, knex, accountability });
 
-		const DYNAMIC_VARIABLE_MAP: Record<string, string> = {
-			$CURRENT_USER: 'directus_users',
-			$CURRENT_ROLE: 'directus_roles',
-			$CURRENT_ROLES: 'directus_roles',
-			$CURRENT_POLICIES: 'directus_policies',
-		};
-
-		let allowedFields: string[] = [];
 		let itemData: any = null;
 
 		try {
@@ -543,148 +534,19 @@ export class Room {
 				permissionsContext,
 			});
 
-			allowedFields = [];
-			const itemArray = itemData ? [itemData] : [];
-
-			for (const perm of processedPermissions) {
-				const isMatch =
-					!perm.permissions ||
-					Object.keys(perm.permissions).length === 0 ||
-					filterItems(itemArray, perm.permissions).length > 0;
-
-				if (isMatch && perm.fields) {
-					allowedFields.push(...perm.fields);
-				}
-			}
-
-			allowedFields = Array.from(new Set(allowedFields)).filter(
-				(field) => field === '*' || field in (schema.collections[collection]?.fields ?? {}),
-			);
+			const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
 
 			// Calculate Logical Expiry and Dependencies
-			let ttlMs: number | undefined;
-			const dependencies = new Set<string>();
-
-			if (itemData) {
-				const now = Date.now();
-				let closestExpiry = Infinity;
-
-				const resolvePath = (path: string[], rootCollection: string): string | null => {
-					let currentCollection: string | null = rootCollection;
-
-					for (const segment of path) {
-						if (!currentCollection) break;
-
-						const relation = schema.relations.find(
-							(r) =>
-								(r.collection === currentCollection && r.field === segment) ||
-								(r.related_collection === currentCollection && r.meta?.one_field === segment),
-						);
-
-						if (relation) {
-							currentCollection =
-								relation.collection === currentCollection
-									? (relation.related_collection as string)
-									: (relation.collection as string);
-						} else {
-							currentCollection = null;
-						}
-					}
-
-					return currentCollection;
-				};
-
-				const scan = (val: unknown, fieldKey?: string, currentCollection: string = collection) => {
-					if (!val || typeof val !== 'object') return;
-
-					for (const [key, value] of Object.entries(val)) {
-						// Parse dynamic variables
-						if (typeof value === 'string' && value.startsWith('$')) {
-							if (value.startsWith('$NOW')) {
-								const field: string = fieldKey || key;
-								const dateValue = itemData[field];
-
-								if (dateValue) {
-									let ruleDate = new Date();
-
-									if (value.includes('(')) {
-										const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
-										if (adjustment) ruleDate = adjustDate(ruleDate, adjustment) || ruleDate;
-									}
-
-									const adjustmentMs = ruleDate.getTime() - now;
-									const expiry = new Date(dateValue).getTime() - adjustmentMs;
-
-									if (expiry > now && expiry < closestExpiry) {
-										closestExpiry = expiry;
-									}
-								}
-							} else {
-								const parts = value.split('.');
-								const rootCollection = DYNAMIC_VARIABLE_MAP[parts[0]!];
-
-								if (rootCollection && parts.length > 1) {
-									const targetCollection = resolvePath(parts.slice(1, -1), rootCollection);
-
-									if (targetCollection) {
-										if (parts[0] === '$CURRENT_USER' && accountability.user) {
-											dependencies.add(`${targetCollection}:${accountability.user}`);
-										} else {
-											dependencies.add(targetCollection);
-										}
-									}
-								}
-							}
-						}
-
-						// Parse relational filter dependencies
-						let field = key;
-
-						if (key.includes('(') && key.includes(')')) {
-							const columnName = key.match(REGEX_BETWEEN_PARENS)?.[1];
-							if (columnName) field = columnName;
-						}
-
-						if (!field.startsWith('_')) {
-							const relation = schema.relations.find(
-								(r) =>
-									(r.collection === currentCollection && r.field === field) ||
-									(r.related_collection === currentCollection && r.meta?.one_field === field),
-							);
-
-							let targetCol: string | null = null;
-
-							if (relation) {
-								targetCol =
-									relation.collection === currentCollection ? relation.related_collection : relation.collection;
-							}
-
-							if (targetCol) {
-								dependencies.add(targetCol);
-								scan(value, undefined, targetCol);
-							} else {
-								// Not a relation, but might be a nested filter object
-								scan(value, field.startsWith('_') ? fieldKey : field, currentCollection);
-							}
-						} else {
-							// Keep scanning filter operators
-							scan(value, fieldKey, currentCollection);
-						}
-					}
-				};
-
-				for (const perm of rawPermissions) {
-					scan(perm.permissions);
-				}
-
-				if (closestExpiry !== Infinity) {
-					ttlMs = closestExpiry - now;
-					ttlMs = Math.max(1000, Math.min(ttlMs, 3600000));
-				}
-			}
+			const { ttlMs, dependencies } = calculateCacheMetadata(
+				collection,
+				itemData,
+				rawPermissions,
+				schema,
+				accountability,
+			);
 
 			if (permissionCache.getInvalidationCount() === startInvalidationCount) {
-				permissionCache.set(accountability, collection, item, action, allowedFields, Array.from(dependencies), ttlMs);
+				permissionCache.set(accountability, collection, item, action, allowedFields, dependencies, ttlMs);
 			}
 
 			return allowedFields;
