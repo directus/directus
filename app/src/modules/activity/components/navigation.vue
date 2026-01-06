@@ -102,19 +102,6 @@ function clearNavFilter() {
 
 		<VListItem
 			clickable
-			:active="filterField === 'action' && filterValue === 'comment'"
-			@click="setNavFilter('action', 'comment')"
-		>
-			<VListItemIcon>
-				<VIcon name="chat_bubble_outline" />
-			</VListItemIcon>
-			<VListItemContent>
-				<VTextOverflow :text="$t('comment')" />
-			</VListItemContent>
-		</VListItem>
-
-		<VListItem
-			clickable
 			:active="filterField === 'action' && filterValue === 'login'"
 			@click="setNavFilter('action', 'login')"
 		>

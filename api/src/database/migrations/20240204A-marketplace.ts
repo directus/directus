@@ -75,16 +75,15 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').alter().notNullable();
 	});
 
+	// knex does not bundle the drop + add PK, the transaction ensures they are apart of the same commit
 	await knex.transaction(async (trx) => {
-		const helpers = getHelpers(trx);
+		await getHelpers(trx).schema.changePrimaryKey('directus_extensions', ['id']);
+	});
 
-		await helpers.schema.changePrimaryKey('directus_extensions', ['id']);
-
-		await trx.schema.alterTable('directus_extensions', (table) => {
-			table.dropColumn('name');
-			table.string('source').alter().notNullable();
-			table.string('folder').alter().notNullable();
-		});
+	await knex.schema.alterTable('directus_extensions', (table) => {
+		table.dropColumn('name');
+		table.string('source').alter().notNullable();
+		table.string('folder').alter().notNullable();
 	});
 }
 
@@ -120,13 +119,11 @@ export async function down(knex: Knex): Promise<void> {
 	}
 
 	await knex.transaction(async (trx) => {
-		const helpers = getHelpers(trx);
+		await getHelpers(trx).schema.changePrimaryKey('directus_extensions', ['name']);
+	});
 
-		await helpers.schema.changePrimaryKey('directus_extensions', ['name']);
-
-		await trx.schema.alterTable('directus_extensions', (table) => {
-			table.dropColumns('id', 'folder', 'source', 'bundle');
-			table.string('name').alter().notNullable();
-		});
+	await knex.schema.alterTable('directus_extensions', (table) => {
+		table.dropColumns('id', 'folder', 'source', 'bundle');
+		table.string('name').alter().notNullable();
 	});
 }
