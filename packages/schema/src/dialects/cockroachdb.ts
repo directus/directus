@@ -263,7 +263,7 @@ export default class CockroachDB implements SchemaInspector {
 				(schema) =>
 					this.knex.raw<{
 						rows: { schema_name: string; table_name: string; type: string; comment?: string | null }[];
-					}>(`SHOW TABLES FROM ${this.sanitizeIdentifier(dbName, schema)} WITH COMMENT`, [dbName + '.' + schema]), // TODO
+					}>(`SHOW TABLES FROM ${this.sanitizeIdentifier(dbName, schema)} WITH COMMENT`)
 			),
 		);
 
@@ -273,7 +273,7 @@ export default class CockroachDB implements SchemaInspector {
 			const tableInfo = tables.find((r) => r.table_name === table);
 
 			if (!tableInfo) {
-				throw new Error(`Table information for "${table}" not found.`);
+				throw new Error(`Table information for "${table}" not found`);
 			}
 
 			return {
