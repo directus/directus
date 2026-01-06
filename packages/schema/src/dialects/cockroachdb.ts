@@ -67,7 +67,7 @@ export default class CockroachDB implements SchemaInspector {
 		return row?.table_schema ?? this.explodedSchema[0]!;
 	}
 
-	private safeIdentifier(schema: string, name: string): string {
+	private sanitizeIdentifier(schema: string, name: string): string {
 		const wrappedSchema = this.knex.client.wrapIdentifier(schema);
 		const wrapperName = this.knex.client.wrapIdentifier(name);
 		return `${wrappedSchema}.${wrapperName}`;
@@ -232,7 +232,7 @@ export default class CockroachDB implements SchemaInspector {
 		const results = await Promise.all(
 			this.explodedSchema.map((schema) =>
 				this.knex.raw<{ rows: { schema_name: string; table_name: string; type: string }[] }>(
-					`SHOW TABLES FROM ${this.safeIdentifier(dbName, schema)}`,
+					`SHOW TABLES FROM ${this.sanitizeIdentifier(dbName, schema)}`,
 				),
 			),
 		);
@@ -262,29 +262,29 @@ export default class CockroachDB implements SchemaInspector {
 			this.explodedSchema.map((schema) =>
 				this.knex.raw<{
 					rows: { schema_name: string; table_name: string; type: string; comment?: string | null }[];
-				}>(`SHOW TABLES FROM ${this.safeIdentifier(dbName, schema)} WITH COMMENT`),
+				}>(`SHOW TABLES FROM ${this.sanitizeIdentifier(dbName, schema)} WITH COMMENT`, [ dbName +'.'+ schema ]), // TODO
 			),
 		);
 
-		const rows = results.flatMap((r) => r.rows).filter((r) => r.type === 'table');
+		const tables = results.flatMap((r) => r.rows).filter((r) => r.type === 'table');
 
 		if (table) {
-			const row = rows.find((r) => r.table_name === table);
+			const tableInfo = tables.find((r) => r.table_name === table);
 
-			if (!row) {
-				throw new Error('Table not found');
+			if (!tableInfo) {
+				throw new Error(`Table information for "${table}" not found.`);
 			}
 
 			return {
-				name: row.table_name,
-				schema: row.schema_name,
-				comment: row.comment || null,
+				name: tableInfo.table_name,
+				schema: tableInfo.schema_name,
+				comment: tableInfo.comment || null,
 			} as Table;
 		}
 
-		rows.sort((a, b) => a.table_name.localeCompare(b.table_name));
+		tables.sort((a, b) => a.table_name.localeCompare(b.table_name));
 
-		return rows.map((r) => {
+		return tables.map((r) => {
 			return {
 				name: r.table_name,
 				schema: r.schema_name,
