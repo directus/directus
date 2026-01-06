@@ -59,7 +59,7 @@ export function useCollab(
 	const connectionId = ref<ClientID | null>(null);
 	const users = ref<CollabUser[]>([]);
 	const focused = ref<Record<ClientID, string>>({});
-	const collidingLocalChanges = ref<Item | undefined>({ title: 'A' });
+	const collidingLocalChanges = ref<Item | undefined>();
 	const eventHandlers: RemoveEventHandler[] = [];
 	let largestUpdateOrder = 0;
 
