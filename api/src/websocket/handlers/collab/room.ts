@@ -336,39 +336,45 @@ export class Room {
 	/**
 	 * Propagate an update to other clients
 	 */
-	async update(sender: PermissionClient, field: string, changes: unknown) {
+	async update(sender: WebSocketClient, changes: Record<string, unknown>) {
 		await this.ready;
 
-		const { clients } = await this.store(async (store) => {
+		const { clients, collection, item } = await this.store(async (store) => {
 			const existing_changes = await store.get('changes');
-			existing_changes[field] = changes;
+			Object.assign(existing_changes, changes);
 			await store.set('changes', existing_changes);
 
-			return { clients: await store.get('clients') };
+			return {
+				clients: (await store.get('clients')) || [],
+				collection: await store.get('collection'),
+				item: await store.get('item'),
+			};
 		});
 
 		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
-			const allowedFields = await this.verifyPermissions(client, this.collection, this.item);
+			const allowedFields = await this.verifyPermissions(client, collection, item);
 
-			const item_sanitized = (await sanitizePayload(
-				this.collection,
-				{ [field]: changes },
+			const sanitizedChanges = await sanitizePayload(
+				collection,
+				changes,
 				{
 					knex: getDatabase(),
 					schema: await getSchema(),
 					accountability: client.accountability,
 				},
 				allowedFields,
-			)) as Item;
+			);
 
-			if (field in item_sanitized) {
-				this.send(client.uid, {
-					action: ACTION.SERVER.UPDATE,
-					field,
-					changes: item_sanitized[field],
-				});
+			for (const field of Object.keys(changes)) {
+				if (field in sanitizedChanges) {
+					this.send(client.uid, {
+						action: ACTION.SERVER.UPDATE,
+						field,
+						changes: sanitizedChanges[field],
+					});
+				}
 			}
 		}
 	}

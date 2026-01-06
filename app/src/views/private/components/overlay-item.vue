@@ -37,6 +37,7 @@ import OverlayItemContent from './overlay-item-content.vue';
 import RenderTemplate from './render-template.vue';
 import { useCollab } from '@/composables/use-collab';
 import HeaderCollab from '@/views/private/components/header-collab.vue';
+import ComparisonModal from './comparison/comparison-modal.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -97,15 +98,13 @@ const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
 const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
-const { users: collabUsers, connected } = useCollab(
-	collection,
-	primaryKey,
-	ref(null),
-	initialValues,
-	internalEdits,
-	refresh,
-	overlayActive,
-);
+const {
+	users: collabUsers,
+	connected,
+	clearCollidingChanges,
+	collabCollision,
+	update: updateCollab,
+} = useCollab(collection, primaryKey, ref(null), initialValues, internalEdits, refresh, overlayActive);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
@@ -682,6 +681,16 @@ function popoverClickOutsideMiddleware(e: Event) {
 			/>
 		</div>
 	</VMenu>
+
+	<ComparisonModal
+		:model-value="Boolean(collabCollision) && overlayActive"
+		:collection="collection"
+		:primary-key="primaryKey"
+		:current-collab="collabCollision"
+		mode="collab"
+		@confirm="updateCollab"
+		@cancel="clearCollidingChanges"
+	/>
 
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 		<VCard>

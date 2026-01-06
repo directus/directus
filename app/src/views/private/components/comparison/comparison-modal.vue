@@ -12,7 +12,7 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { Revision } from '@/types/revisions';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { ContentVersion, PrimaryKey } from '@directus/types';
+import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -23,8 +23,9 @@ interface Props {
 	deleteVersionsAllowed: boolean;
 	collection: string;
 	primaryKey: PrimaryKey;
-	mode: 'version' | 'revision';
+	mode: 'version' | 'revision' | 'collab';
 	currentVersion: ContentVersion | null | undefined;
+	currentCollab: { from: Item; to: Item } | undefined;
 	revisions?: Revision[] | null;
 }
 
@@ -35,12 +36,12 @@ const currentRevision = defineModel<Revision | null>('current-revision');
 const emit = defineEmits<{
 	cancel: [];
 	promote: [deleteOnPromote: boolean];
-	confirm: [data?: Record<string, any>];
+	confirm: [data: Record<string, any>];
 }>();
 
 const { t } = useI18n();
 
-const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
+const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions, currentCollab } = toRefs(props);
 
 const {
 	comparisonData,
@@ -69,6 +70,7 @@ const {
 	currentVersion,
 	currentRevision,
 	revisions,
+	currentCollab,
 });
 
 const incomingTooltipMessage = computed(() => {
@@ -185,6 +187,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					<div class="col left">
 						<ComparisonHeader
 							:loading="modalLoading"
+							:mode="mode"
 							:title="baseDisplayName"
 							:date-updated="$t('latest')"
 							:user-updated="baseUserUpdated"
@@ -222,6 +225,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					<div class="col right vertical-divider">
 						<ComparisonHeader
 							:loading="modalLoading"
+							:mode="mode"
 							:title="deltaDisplayName"
 							:date-updated="normalizedData?.incoming.date.dateObject || null"
 							:user-updated="userUpdated"
@@ -287,7 +291,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									@click="$emit('cancel')"
 								>
 									<VIcon name="close" left />
-									<span class="button-text">{{ $t('cancel') }}</span>
+									<span class="button-text">{{ $t(mode === 'collab' ? 'discard' : 'cancel') }}</span>
 								</VButton>
 								<VButton
 									v-tooltip.top="

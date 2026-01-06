@@ -312,7 +312,7 @@ describe('room', () => {
 			return {};
 		});
 
-		await room.update(clientA, 'id', 5);
+		await room.update(clientA, { id: 5 });
 
 		expect(
 			vi.mocked(mockMessenger.sendClient).mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'update')?.[1],
