@@ -7,6 +7,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useServerStore } from '@/stores/server';
@@ -26,15 +27,24 @@ const serverStore = useServerStore();
 
 const { fields: allFields } = useCollection('directus_settings');
 
-const fields = computed(() =>
+const aiFields = computed(() =>
 	unref(allFields).filter((field) => field.meta?.group === 'ai_group' || field.field === 'ai_group'),
+);
+
+const mcpFields = computed(() =>
+	unref(allFields).filter((field) => field.meta?.group === 'mcp_group' || field.field === 'mcp_group'),
 );
 
 const initialValues = ref(clone(settingsStore.settings));
 
-const edits = ref<{ [key: string]: any } | null>(null);
+const aiEdits = ref<Record<string, any> | null>(null);
+const mcpEdits = ref<Record<string, any> | null>(null);
 
-const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
+const hasEdits = computed(
+	() =>
+		(aiEdits.value !== null && Object.keys(aiEdits.value).length > 0) ||
+		(mcpEdits.value !== null && Object.keys(mcpEdits.value).length > 0),
+);
 
 const saving = ref(false);
 
@@ -45,18 +55,21 @@ useShortcut('meta+s', () => {
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function save() {
-	if (edits.value === null) return;
+	const combinedEdits = { ...aiEdits.value, ...mcpEdits.value };
+	if (Object.keys(combinedEdits).length === 0) return;
 	saving.value = true;
-	await settingsStore.updateSettings(edits.value);
-	await serverStore.hydrate({ isLanguageUpdated: 'default_language' in edits.value });
-	edits.value = null;
+	await settingsStore.updateSettings(combinedEdits);
+	await serverStore.hydrate();
+	aiEdits.value = null;
+	mcpEdits.value = null;
 	saving.value = false;
 	initialValues.value = clone(settingsStore.settings);
 }
 
 function discardAndLeave() {
 	if (!leaveTo.value) return;
-	edits.value = {};
+	aiEdits.value = null;
+	mcpEdits.value = null;
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
@@ -81,7 +94,29 @@ function discardAndLeave() {
 		</template>
 
 		<div class="settings">
-			<VForm v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
+			<VNotice v-if="!serverStore.info.ai_enabled" type="warning" class="disabled-notice">
+				{{ $t('ai_disabled_by_env') }}
+			</VNotice>
+			<VForm
+				v-model="aiEdits"
+				:initial-values="initialValues"
+				:fields="aiFields"
+				:primary-key="1"
+				:disabled="!serverStore.info.ai_enabled"
+			/>
+
+			<div class="mcp-section">
+				<VNotice v-if="!serverStore.info.mcp_enabled" type="warning" class="disabled-notice">
+					{{ $t('mcp_disabled_by_env') }}
+				</VNotice>
+				<VForm
+					v-model="mcpEdits"
+					:initial-values="initialValues"
+					:fields="mcpFields"
+					:primary-key="1"
+					:disabled="!serverStore.info.mcp_enabled"
+				/>
+			</div>
 		</div>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
@@ -105,16 +140,11 @@ function discardAndLeave() {
 	padding-block-end: var(--content-padding-bottom);
 }
 
-.header-icon {
-	--v-button-background-color-disabled: var(--theme--primary-background);
-	--v-button-color-disabled: var(--theme--primary);
-	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
-	--v-button-color-hover-disabled: var(--theme--primary);
+.disabled-notice {
+	margin-block-end: var(--theme--form--row-gap);
 }
 
-.beta {
-	--v-chip-color: var(--theme--primary);
-	--v-chip-background-color: var(--theme--primary-subdued);
-	margin-inline-start: 10px;
+.mcp-section {
+	margin-block-start: var(--theme--form--row-gap);
 }
 </style>

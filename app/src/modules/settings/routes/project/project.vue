@@ -26,7 +26,7 @@ const serverStore = useServerStore();
 
 const { fields: allFields } = useCollection('directus_settings');
 
-const EXCLUDED_GROUPS: string[] = ['theming_group', 'ai_group'] as const;
+const EXCLUDED_GROUPS = ['theming_group', 'ai_group', 'mcp_group'];
 
 const fields = computed(() => {
 	return allFields.value.filter((field) => {

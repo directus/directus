@@ -1,17 +1,25 @@
 <script lang="ts" setup>
 import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
+import { useServerStore } from '@/stores/server';
 import { AccordionRoot } from 'reka-ui';
 import { useSidebarStore } from '../stores/sidebar';
 
+const serverStore = useServerStore();
 const sidebarStore = useSidebarStore();
 </script>
 
 <template>
 	<aside role="contentinfo" class="sidebar alt-colors" aria-label="Module Sidebar">
-		<AccordionRoot v-model="sidebarStore.activeAccordionItem" type="single" collapsible class="accordion-root">
+		<AccordionRoot
+			v-model="sidebarStore.activeAccordionItem"
+			type="single"
+			collapsible
+			class="accordion-root"
+			:class="{ 'ai-disabled': !serverStore.info.ai_enabled }"
+		>
 			<slot name="sidebar" />
-			<AiSidebarDetail class="ai-sidebar-detail" />
 		</AccordionRoot>
+		<AiSidebarDetail v-if="serverStore.info.ai_enabled" class="ai-sidebar-detail" />
 	</aside>
 </template>
 
@@ -35,6 +43,10 @@ const sidebarStore = useSidebarStore();
 	block-size: calc(100% - 60px);
 	display: flex;
 	flex-direction: column;
+}
+
+.accordion-root.ai-disabled {
+	block-size: 100%;
 }
 
 .ai-sidebar-detail {
