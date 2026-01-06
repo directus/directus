@@ -259,10 +259,11 @@ export default class CockroachDB implements SchemaInspector {
 		const dbName = await this.getDatabaseName();
 
 		const results = await Promise.all(
-			this.explodedSchema.map((schema) =>
-				this.knex.raw<{
-					rows: { schema_name: string; table_name: string; type: string; comment?: string | null }[];
-				}>(`SHOW TABLES FROM ${this.sanitizeIdentifier(dbName, schema)} WITH COMMENT`, [ dbName +'.'+ schema ]), // TODO
+			this.explodedSchema.map(
+				(schema) =>
+					this.knex.raw<{
+						rows: { schema_name: string; table_name: string; type: string; comment?: string | null }[];
+					}>(`SHOW TABLES FROM ${this.sanitizeIdentifier(dbName, schema)} WITH COMMENT`, [dbName + '.' + schema]), // TODO
 			),
 		);
 
