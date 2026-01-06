@@ -15,19 +15,19 @@ import { usePreset } from '@/composables/use-preset';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl, getFilesUrl } from '@/utils/get-asset-url';
 import { getFolderFilter } from '@/utils/get-folder-filter';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { PrivateView } from '@/views/private';
 import { useLayout } from '@directus/composables';
 import { getDateTimeFormatted, mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
@@ -46,6 +46,7 @@ const { t } = useI18n();
 const router = useRouter();
 
 const notificationsStore = useNotificationsStore();
+const { info } = useServerStore();
 const { folders } = useFolders();
 
 const layoutRef = ref();
@@ -334,6 +335,7 @@ function useFileUpload() {
 
 			await uploadFiles(files, {
 				preset,
+				maxConcurrency: info.uploads?.maxConcurrency,
 				onProgressChange: (progress) => {
 					const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 
