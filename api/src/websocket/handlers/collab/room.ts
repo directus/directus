@@ -503,6 +503,7 @@ export class Room {
 		const cached = permissionCache.get(accountability, collection, item, action);
 		if (cached) return cached;
 
+		// Prevent caching stale permissions if an invalidation occurs during async steps
 		const startInvalidationCount = permissionCache.getInvalidationCount();
 
 		const schema = await getSchema();
@@ -513,6 +514,7 @@ export class Room {
 		let itemData: any = null;
 
 		try {
+			// Fetch current item data to evaluate any conditional permission filters based on record state
 			if (item) {
 				itemData = await service.readOne(item);
 				if (!itemData) throw new Error('No access');
@@ -527,6 +529,7 @@ export class Room {
 				{ knex, schema },
 			);
 
+			// Resolve dynamic variables used in the permission filters
 			const dynamicVariableContext = extractRequiredDynamicVariableContextForPermissions(rawPermissions);
 
 			const permissionsContext = await fetchDynamicVariableData(
@@ -542,7 +545,7 @@ export class Room {
 
 			const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
 
-			// Calculate Logical Expiry and Dependencies
+			// Determine TTL and relational dependencies for cache invalidation
 			const { ttlMs, dependencies } = calculateCacheMetadata(
 				collection,
 				itemData,
@@ -551,6 +554,7 @@ export class Room {
 				accountability,
 			);
 
+			// Only cache if the state hasn't been invalidated by another operation in the meantime
 			if (permissionCache.getInvalidationCount() === startInvalidationCount) {
 				permissionCache.set(accountability, collection, item, action, allowedFields, dependencies, ttlMs);
 			}
