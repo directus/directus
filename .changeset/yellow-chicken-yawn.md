@@ -3,4 +3,4 @@
 '@directus/api': major
 ---
 
-Improved CockroachDB database introspection using CockroachDB specific queries instead of postgres compatibility
+Improved CockroachDB database introspection performance
