@@ -2,4 +2,4 @@
 '@directus/app': major
 ---
 
-Deleted comment navigation in the activity page
+Removed the "Comment" tab from the activities page
