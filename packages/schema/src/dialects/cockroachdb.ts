@@ -472,6 +472,7 @@ export default class CockroachDB implements SchemaInspector {
 					column_comment: string | null;
 					has_index: boolean;
 					has_unique: boolean;
+					crdb_sql_type: string;
 				}>;
 			}>(
 				`SELECT 
@@ -481,6 +482,7 @@ export default class CockroachDB implements SchemaInspector {
     c.column_default,
     c.column_comment,
     c.generation_expression,
+	c.crdb_sql_type,
     BOOL_OR(s.index_name IS NOT NULL AND s.non_unique = 'YES') AS has_index,
     BOOL_OR(s.index_name IS NOT NULL AND s.non_unique = 'NO') AS has_unique
 FROM information_schema.columns c
@@ -498,6 +500,7 @@ GROUP BY
     c.column_default,
     c.column_comment,
     c.generation_expression,
+	c.crdb_sql_type,
     c.ordinal_position
 ORDER BY c.ordinal_position`,
 				[t, schema],
@@ -516,7 +519,7 @@ ORDER BY c.ordinal_position`,
 					(defaultVal.includes('unique_rowid()') || defaultVal.startsWith('nextval('));
 
 				// Keep parity with the existing shape (this data isn't in SHOW COLUMNS):
-				const typeMetadata = this.extractColumnTypeMetadata(r.data_type);
+				const typeMetadata = this.extractColumnTypeMetadata(r.crdb_sql_type);
 
 				// Normalize CockroachDB's 64-bit integer type to 'bigint' for consistency
 				const normalizedDataType =
