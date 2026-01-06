@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Added multi-domain and subpath support for OAuth/OpenID callback URLs via AUTH_ALLOWED_ORIGINS
+Added multi-domain support for OAuth/OpenID
