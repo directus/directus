@@ -481,7 +481,6 @@ export default class CockroachDB implements SchemaInspector {
 				const fk = cons.find((x) => x.constraint_type === 'FOREIGN KEY');
 
 				const indices = Array.isArray(r.indices) ? r.indices : [];
-				// console.log(r.column_name, { indices, cons });
 				const isPrimary = cons.some((x) => x.constraint_type === 'PRIMARY KEY');
 				const isUnique = cons.some((x) => x.constraint_type === 'UNIQUE') || isPrimary;
 
