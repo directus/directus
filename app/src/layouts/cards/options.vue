@@ -33,7 +33,6 @@ const imageFitWritable = useSync(props, 'imageFit', emit);
 </script>
 
 <script lang="ts">
-
 export default defineComponent({
 	inheritAttrs: false,
 });

@@ -12,7 +12,6 @@ import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
-
 const logger = useLogger();
 const env = useEnv();
 
