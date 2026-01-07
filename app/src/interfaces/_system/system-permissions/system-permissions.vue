@@ -5,7 +5,7 @@ import { type Alterations, Filter, Permission, PermissionsAction } from '@direct
 import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
 import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
-import AddCollection from './add-collection.vue';
+import AddCollection from './add-collection/add-collection.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
 import PermissionsRow from './permissions-row.vue';
