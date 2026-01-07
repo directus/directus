@@ -55,7 +55,7 @@ useShortcut('meta+s', () => {
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function save() {
-	const combinedEdits = { ...aiEdits.value, ...mcpEdits.value };
+	const combinedEdits = { ...(aiEdits.value ?? {}), ...(mcpEdits.value ?? {}) };
 	if (Object.keys(combinedEdits).length === 0) return;
 	saving.value = true;
 	await settingsStore.updateSettings(combinedEdits);
