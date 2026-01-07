@@ -310,7 +310,7 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 
 .field-detail {
 	:deep(> .content) {
-		margin-block-start: var(--validation-errors-line-gap, 4px);
+		margin-block: var(--validation-errors-line-gap, 4px) 0;
 	}
 }
 

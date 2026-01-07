@@ -87,7 +87,7 @@ const items = computed(() => {
 
 <style lang="scss" scoped>
 .validation-nested-groups {
-	margin-block-start: 4px;
+	margin-block-start: 0;
 	margin-inline-start: 0;
 	color: var(--theme--danger);
 }
