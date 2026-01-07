@@ -20,6 +20,7 @@ import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
@@ -279,15 +280,12 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				@input="update"
 			>
 				<template #actions>
-					<VButton
+					<PrivateViewHeaderBarActionButton
+						icon="download"
 						secondary
-						rounded
-						icon
 						:download="image.filename_download"
 						:href="getAssetUrl(image.id, { isDownload: true })"
-					>
-						<VIcon name="download" />
-					</VButton>
+					/>
 				</template>
 			</DrawerItem>
 
