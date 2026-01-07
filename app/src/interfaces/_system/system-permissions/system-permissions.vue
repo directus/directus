@@ -1,4 +1,14 @@
 <script setup lang="ts">
+import { PERMISSION_ACTIONS } from '@directus/constants';
+import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
+import { type Alterations, Filter, Permission, PermissionsAction } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
+import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
+import AddCollection from './add-collection.vue';
+import PermissionsDetail from './detail/permissions-detail.vue';
+import PermissionsHeader from './permissions-header.vue';
+import PermissionsRow from './permissions-row.vue';
 import api from '@/api';
 import { appRecommendedPermissions, disabledActions } from '@/app-permissions.js';
 import VButton from '@/components/v-button.vue';
@@ -13,16 +23,6 @@ import { RelationO2M, useRelationO2M } from '@/composables/use-relation-o2m';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { PERMISSION_ACTIONS } from '@directus/constants';
-import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
-import { type Alterations, Filter, Permission, PermissionsAction } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
-import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
-import AddCollection from './add-collection.vue';
-import PermissionsDetail from './detail/permissions-detail.vue';
-import PermissionsHeader from './permissions-header.vue';
-import PermissionsRow from './permissions-row.vue';
 
 type PermissionGroup = {
 	collection: Collection;

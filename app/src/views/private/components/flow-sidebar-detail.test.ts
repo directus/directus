@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
-import FlowSidebarDetail from './flow-sidebar-detail.vue';
-import { createI18n } from 'vue-i18n';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { type ManualFlow } from '@/composables/use-flows';
+import { createI18n } from 'vue-i18n';
+import FlowSidebarDetail from './flow-sidebar-detail.vue';
 import { Tooltip } from '@/__utils__/tooltip';
+import { type ManualFlow } from '@/composables/use-flows';
 
 const mockIsActiveFlow = vi.fn(() => true);
 const mockRunningFlows = vi.fn(() => [] as string[]);

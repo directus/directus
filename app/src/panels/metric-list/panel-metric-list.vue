@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { cssVar } from '@directus/utils/browser';
+import chroma from 'chroma-js';
+import { isNil } from 'lodash';
+import { computed, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import type { Notation, Style, Unit } from '@/utils/format-number';
 import { formatNumber } from '@/utils/format-number';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { cssVar } from '@directus/utils/browser';
-import chroma from 'chroma-js';
-import { isNil } from 'lodash';
-import { computed, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export interface Group {
 	[groupByField: string]: string;

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { SetupForm as Form } from '@directus/types';
+import { computed, ref } from 'vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -6,8 +8,6 @@ import { useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { SetupForm as Form } from '@directus/types';
-import { computed, ref } from 'vue';
 
 const settingsStore = useSettingsStore();
 

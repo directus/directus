@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { User } from '@directus/types';
+import { computed, onUnmounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import api from '@/api';
 import VAvatar from '@/components/v-avatar.vue';
 import VChip from '@/components/v-chip.vue';
@@ -8,9 +11,6 @@ import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
-import { User } from '@directus/types';
-import { computed, onUnmounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	user: string;

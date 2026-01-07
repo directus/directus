@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import TransitionExpand from '@/components/transition/expand.vue';
-import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import LivePreview from '@/views/private/components/live-preview.vue';
-import ModuleBar from '@/views/private/components/module-bar.vue';
-import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
-import NotificationsGroup from '@/views/private/components/notifications-group.vue';
 import { useHead } from '@unhead/vue';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -14,6 +7,13 @@ import EditingLayer from '../components/editing-layer.vue';
 import type { NavigationData } from '../types';
 import { getUrlRoute } from '../utils/get-url-route';
 import { sameOrigin } from '../utils/same-origin';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import LivePreview from '@/views/private/components/live-preview.vue';
+import ModuleBar from '@/views/private/components/module-bar.vue';
+import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
+import NotificationsGroup from '@/views/private/components/notifications-group.vue';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
 	urls: string[];

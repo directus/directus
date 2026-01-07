@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRequestsStore } from '@/stores/requests';
 import { useSettingsStore } from '@/stores/settings';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 

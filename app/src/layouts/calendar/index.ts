@@ -1,14 +1,3 @@
-import { useAiStore } from '@/ai/stores/use-ai';
-import api from '@/api';
-import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
-import { useServerStore } from '@/stores/server';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountRelative } from '@/utils/format-items-count';
-import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
-import { renderDisplayStringTemplate } from '@/utils/render-string-template';
-import { saveAsCSV } from '@/utils/save-as-csv';
-import { syncRefProperty } from '@/utils/sync-ref-property';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field, Item } from '@directus/types';
@@ -26,6 +15,17 @@ import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import { LayoutOptions } from './types';
+import { useAiStore } from '@/ai/stores/use-ai';
+import api from '@/api';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useServerStore } from '@/stores/server';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatItemsCountRelative } from '@/utils/format-items-count';
+import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
+import { renderDisplayStringTemplate } from '@/utils/render-string-template';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',

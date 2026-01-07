@@ -1,7 +1,13 @@
-import { describe, test, expect, vi, beforeEach, type Mock } from 'vitest';
-import type { Knex } from 'knex';
 import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
+import getDatabase, { getDatabaseClient } from '../database/index.js';
+import { CollectionsService } from '../services/collections.js';
+import { FieldsService } from '../services/fields.js';
+import { RelationsService } from '../services/relations.js';
+import { getSchema } from './get-schema.js';
 import { getSnapshot } from './get-snapshot.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 // Mock dependencies
 vi.mock('directus/version', () => ({
@@ -35,13 +41,6 @@ vi.mock('./sanitize-schema.js', () => ({
 	sanitizeRelation: vi.fn((r) => r),
 	sanitizeSystemField: vi.fn((f) => f),
 }));
-
-import getDatabase, { getDatabaseClient } from '../database/index.js';
-import { CollectionsService } from '../services/collections.js';
-import { FieldsService } from '../services/fields.js';
-import { RelationsService } from '../services/relations.js';
-import { getSchema } from './get-schema.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 describe('getSnapshot', () => {
 	let mockDatabase: Partial<Knex>;

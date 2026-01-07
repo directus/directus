@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import VList from '@/components/v-list.vue';
 import { useGroupableParent } from '@directus/composables';
 import { provide, ref, toRefs } from 'vue';
+import VList from '@/components/v-list.vue';
 
 interface Props {
 	/** Display the tabs in a vertical format */

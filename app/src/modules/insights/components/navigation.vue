@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -9,7 +10,6 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
-import { computed } from 'vue';
 
 defineEmits(['create']);
 

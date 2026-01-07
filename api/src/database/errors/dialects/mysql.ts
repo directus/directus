@@ -6,8 +6,8 @@ import {
 	ValueOutOfRangeError,
 	ValueTooLongError,
 } from '@directus/errors';
-import type { MySQLError } from './types.js';
 import type { Item } from '@directus/types';
+import type { MySQLError } from './types.js';
 
 enum MySQLErrorCodes {
 	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',

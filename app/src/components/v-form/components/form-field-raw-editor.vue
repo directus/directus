@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import type { Field } from '@directus/types';
+import { isValidJSON, parseJSON } from '@directus/utils';
+import { isNil } from 'lodash';
+import { computed, ref, watch } from 'vue';
+import type { FormField } from '../types';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -9,11 +14,6 @@ import InterfaceSystemRawEditor from '@/interfaces/_system/system-raw-editor/sys
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { getJSType } from '@/utils/get-js-type';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
-import type { Field } from '@directus/types';
-import { isValidJSON, parseJSON } from '@directus/utils';
-import { isNil } from 'lodash';
-import { computed, ref, watch } from 'vue';
-import type { FormField } from '../types';
 
 const props = withDefaults(
 	defineProps<{
@@ -108,7 +108,7 @@ const setRawValue = () => {
 	.input-code {
 		:deep(.CodeMirror),
 		:deep(.CodeMirror-scroll) {
-			max-block-size: var(--input-height-max);
+			max-block-size: var(--input-height-xl);
 		}
 	}
 }

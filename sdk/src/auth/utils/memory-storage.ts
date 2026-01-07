@@ -1,4 +1,4 @@
-import type { AuthenticationStorage, AuthenticationData } from '../types.js';
+import type { AuthenticationData, AuthenticationStorage } from '../types.js';
 
 /**
  * Simple memory storage implementation
