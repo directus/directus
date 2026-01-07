@@ -4,9 +4,9 @@ import { Url } from '../../utils/url.js';
 
 /**
  * Find matching public URL from request origin
- * @param requestOrigin - The origin of the request (protocol + host)
+ * @param requestOrigin - The origin of the request
  * @param allowedPublicUrls - The allowed public URLs from AUTH_ALLOWED_PUBLIC_URLS
- * @returns The matching public URL (with subpath if configured) or null
+ * @returns The matching public URL
  */
 function findMatchingPublicUrl(requestOrigin: string, allowedPublicUrls: string[]): string | null {
 	for (const allowedUrl of allowedPublicUrls) {
