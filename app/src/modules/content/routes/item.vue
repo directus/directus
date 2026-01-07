@@ -322,6 +322,13 @@ const livePreviewSize = computed({
 	set(value: number) {
 		if (isMobile.value) return;
 
+		// Auto-toggle full-width based on drag position
+		if (value >= 95 && !livePreviewFullWidth.value) {
+			livePreviewFullWidth.value = true;
+		} else if (value < 95 && livePreviewFullWidth.value) {
+			livePreviewFullWidth.value = false;
+		}
+
 		livePreviewSizeStorage.value = value;
 	},
 });
@@ -822,20 +829,16 @@ function useCollectionRoute() {
 					:url="previewUrl"
 					:can-enable-visual-editing="visualEditingEnabled"
 					:visual-editor-urls="visualEditorUrls"
+					:is-full-width="livePreviewFullWidth"
 					@new-window="livePreviewMode = 'popup'"
+					@exit-full-width="livePreviewFullWidth = false"
 					@saved="onVisualEditorSaved"
 				>
-					<template #prepend-header>
-						<VButton
-							v-tooltip.bottom.end="$t('full_width')"
-							x-small
-							rounded
-							icon
-							:secondary="!livePreviewFullWidth"
-							@click="livePreviewFullWidth = !livePreviewFullWidth"
-						>
-							<VIcon small name="width_full" outline />
-						</VButton>
+					<template #display-options>
+						<VListItem clickable @click="livePreviewFullWidth = true">
+							<VListItemIcon><VIcon name="width_full" /></VListItemIcon>
+							<VListItemContent>{{ $t('live_preview.full_width') }}</VListItemContent>
+						</VListItem>
 					</template>
 				</LivePreview>
 			</template>
