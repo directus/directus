@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { ref } from 'vue';
+import { useVisualEditing } from '@/composables/use-visual-editing';
 
 const mockModuleBar = vi.hoisted(() => ({
 	value: [] as Array<{ type: string; id: string; enabled: boolean }>,
@@ -26,13 +27,12 @@ vi.mock('@/stores/settings', () => ({
 	}),
 }));
 
-import { useVisualEditing } from '@/composables/use-visual-editing';
-
 beforeEach(() => {
 	mockModuleBar.value = [
 		{ type: 'module', id: 'content', enabled: true },
 		{ type: 'module', id: 'visual', enabled: true },
 	];
+
 	mockVisualEditorUrls.value = [{ url: 'https://example.com' }];
 });
 

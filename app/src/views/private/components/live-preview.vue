@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import { type CSSProperties, computed, nextTick, onMounted, ref, useSlots, watch } from 'vue';
+import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import VButton from '@/components/v-button.vue';
@@ -452,7 +452,7 @@ function useUrls() {
 						@load="onIframeLoad"
 					/>
 					<slot name="overlay" :frame-el :frame-src />
-					<editing-layer
+					<EditingLayer
 						v-if="visualEditingEnabled && !overlayProvided"
 						:frame-el="frameEl"
 						:frame-src="frameSrc"

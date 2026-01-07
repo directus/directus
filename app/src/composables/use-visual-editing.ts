@@ -1,4 +1,4 @@
-import { computed, unref, type MaybeRef } from 'vue';
+import { computed, type MaybeRef, unref } from 'vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useSettingsStore } from '@/stores/settings';
 import { normalizeUrl } from '@/utils/normalize-url';
