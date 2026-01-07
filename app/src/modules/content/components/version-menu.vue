@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ContentVersion, PrimaryKey } from '@directus/types';
+import slugify from '@sindresorhus/slugify';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -17,9 +20,6 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
-import { ContentVersion, PrimaryKey } from '@directus/types';
-import slugify from '@sindresorhus/slugify';
-import { computed, ref, toRefs, unref, watch } from 'vue';
 
 interface Props {
 	collection: string;

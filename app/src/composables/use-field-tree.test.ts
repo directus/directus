@@ -1,9 +1,12 @@
+import type { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { ref, unref } from 'vue';
-
 import { cryptoStub } from '@/__utils__/crypto';
+import { useFieldTree } from '@/composables/use-field-tree';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 vi.stubGlobal('crypto', cryptoStub);
 
@@ -15,11 +18,6 @@ beforeEach(() => {
 		}),
 	);
 });
-
-import { useFieldTree } from '@/composables/use-field-tree';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { Field, Relation } from '@directus/types';
 
 test('Returns tree list of same length', () => {
 	const fieldsStore = useFieldsStore();

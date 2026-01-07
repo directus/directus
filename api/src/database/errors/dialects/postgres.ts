@@ -6,8 +6,8 @@ import {
 	ValueOutOfRangeError,
 	ValueTooLongError,
 } from '@directus/errors';
-import type { PostgresError } from './types.js';
 import type { Item } from '@directus/types';
+import type { PostgresError } from './types.js';
 
 enum PostgresErrorCodes {
 	FOREIGN_KEY_VIOLATION = '23503',

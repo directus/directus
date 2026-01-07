@@ -1,10 +1,10 @@
+import { basename, join } from 'node:path';
+import { Readable } from 'node:stream';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import type { TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
-import { basename, join } from 'node:path';
-import { Readable } from 'node:stream';
 import * as tus from 'tus-js-client';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';

@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { useItems } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
+import { Filter, Notification } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
+import { storeToRefs } from 'pinia';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
 import UseDatetime from '@/components/use-datetime.vue';
 import VButton from '@/components/v-button.vue';
@@ -27,15 +36,6 @@ import { useUserStore } from '@/stores/user';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { useItems } from '@directus/composables';
-import { useAppStore } from '@directus/stores';
-import { Filter, Notification } from '@directus/types';
-import { mergeFilters } from '@directus/utils';
-import { storeToRefs } from 'pinia';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 type LocalNotification = Notification & {
 	to?: string;

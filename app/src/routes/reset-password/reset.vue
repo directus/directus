@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { useHead } from '@unhead/vue';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api, { RequestError } from '@/api';
 import VButton from '@/components/v-button.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 import { translateAPIError } from '@/lang';
 import { jwtPayload } from '@/utils/jwt-payload';
-import { useHead } from '@unhead/vue';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	token: string;

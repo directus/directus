@@ -1,4 +1,3 @@
-import DisplayDateTime from '@/displays/datetime/datetime.vue';
 import type { Field } from '@directus/types';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
@@ -6,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import Kanban from './kanban.vue';
+import DisplayDateTime from '@/displays/datetime/datetime.vue';
 
 const i18n = createI18n({ legacy: false, missingWarn: false });
 

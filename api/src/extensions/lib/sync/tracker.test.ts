@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { readdir, rm } from 'node:fs/promises';
 import { sep } from 'node:path';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { SyncFileTracker } from './tracker.js';
 
 vi.mock('node:fs/promises');

@@ -1,7 +1,7 @@
-import { UnsupportedMediaTypeError } from '@directus/errors';
-import type { TransformationSet } from '@directus/types';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { UnsupportedMediaTypeError } from '@directus/errors';
+import type { TransformationSet } from '@directus/types';
 import { z } from 'zod';
 import { AssetsService } from '../../../services/assets.js';
 import { FilesService } from '../../../services/files.js';

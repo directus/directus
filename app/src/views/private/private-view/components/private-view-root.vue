@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { BREAKPOINTS } from '@/constants';
-import { useUserStore } from '@/stores/user';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useBreakpoints } from '@vueuse/core';
 import { computed, watch } from 'vue';
@@ -13,6 +11,8 @@ import PrivateViewMain from './private-view-main.vue';
 import PrivateViewNav from './private-view-nav.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import type { PrivateViewProps } from './private-view.vue';
+import { BREAKPOINTS } from '@/constants';
+import { useUserStore } from '@/stores/user';
 
 defineProps<PrivateViewProps>();
 

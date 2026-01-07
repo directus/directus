@@ -1,4 +1,3 @@
-import { defineTool } from '@/ai/composables/define-tool';
 import type { Field } from '@directus/types';
 import type { ComputedRef } from 'vue';
 import { computed, getCurrentInstance, Ref } from 'vue';
@@ -6,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { z } from 'zod';
 import type { FieldValues } from '../types';
 import { useInputSchema } from './use-input-schema';
+import { defineTool } from '@/ai/composables/define-tool';
 
 interface UseAiToolsOptions {
 	finalFields: Ref<Field[]>;
