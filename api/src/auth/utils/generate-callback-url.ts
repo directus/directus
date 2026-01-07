@@ -3,20 +3,20 @@ import { toArray } from '@directus/utils';
 import { Url } from '../../utils/url.js';
 
 /**
- * Find matching origin from request
- * @param requestOrigin - The origin of the request
- * @param allowedOrigins - The allowed origins from AUTH_ALLOWED_ORIGINS
- * @returns The matching origin or null
+ * Find matching public URL from request origin
+ * @param requestOrigin - The origin of the request (protocol + host)
+ * @param allowedPublicUrls - The allowed public URLs from AUTH_ALLOWED_PUBLIC_URLS
+ * @returns The matching public URL (with subpath if configured) or null
  */
-function findMatchingOrigin(requestOrigin: string, allowedOrigins: string[]): string | null {
-	for (const allowedOrigin of allowedOrigins) {
-		if (!URL.canParse(allowedOrigin)) continue;
+function findMatchingPublicUrl(requestOrigin: string, allowedPublicUrls: string[]): string | null {
+	for (const allowedUrl of allowedPublicUrls) {
+		if (!URL.canParse(allowedUrl)) continue;
 
-		const { protocol, host } = new URL(allowedOrigin);
-		const allowedOriginBase = `${protocol}//${host}`;
+		const { protocol, host } = new URL(allowedUrl);
+		const allowedUrlOrigin = `${protocol}//${host}`;
 
-		if (requestOrigin === allowedOriginBase) {
-			return allowedOrigin;
+		if (requestOrigin === allowedUrlOrigin) {
+			return allowedUrl;
 		}
 	}
 
@@ -26,7 +26,7 @@ function findMatchingOrigin(requestOrigin: string, allowedOrigins: string[]): st
 /**
  * Generate callback URL for SSO providers (OAuth2/OpenID/SAML)
  *
- * Uses AUTH_ALLOWED_ORIGINS to find matching origin with subpath support.
+ * Uses AUTH_ALLOWED_PUBLIC_URLS to find matching public URL with subpath support.
  * Falls back to PUBLIC_URL for backward compatibility.
  *
  * @param providerName SSO provider name
@@ -37,10 +37,10 @@ export function generateCallbackUrl(providerName: string, requestOrigin: string)
 	const env = useEnv();
 	const publicUrl = env['PUBLIC_URL'] as string;
 
-	const allowedOrigins = env['AUTH_ALLOWED_ORIGINS'] ? toArray(env['AUTH_ALLOWED_ORIGINS'] as string) : [];
+	const allowedPublicUrls = env['AUTH_ALLOWED_PUBLIC_URLS'] ? toArray(env['AUTH_ALLOWED_PUBLIC_URLS'] as string) : [];
 
-	const matchedOrigin = findMatchingOrigin(requestOrigin, allowedOrigins);
+	const matchedUrl = findMatchingPublicUrl(requestOrigin, allowedPublicUrls);
 
-	// Use matched origin or fallback to PUBLIC_URL for backward compatibility
-	return new Url(matchedOrigin || publicUrl).addPath('auth', 'login', providerName, 'callback').toString();
+	// Use matched public URL or fallback to PUBLIC_URL for backward compatibility
+	return new Url(matchedUrl || publicUrl).addPath('auth', 'login', providerName, 'callback').toString();
 }

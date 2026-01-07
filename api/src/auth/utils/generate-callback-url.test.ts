@@ -16,8 +16,8 @@ describe('generateCallbackUrl', () => {
 		});
 	});
 
-	describe('without AUTH_ALLOWED_ORIGINS (legacy/fallback)', () => {
-		test('falls back to PUBLIC_URL when AUTH_ALLOWED_ORIGINS is not set', () => {
+	describe('without AUTH_ALLOWED_PUBLIC_URLS (legacy/fallback)', () => {
+		test('falls back to PUBLIC_URL when AUTH_ALLOWED_PUBLIC_URLS is not set', () => {
 			const result = generateCallbackUrl('github', 'https://other-domain.com');
 
 			expect(result).toBe(`${PUBLIC_URL}/auth/login/github/callback`);
@@ -26,7 +26,7 @@ describe('generateCallbackUrl', () => {
 		test('falls back to PUBLIC_URL when request origin does not match any allowed origin', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_ORIGINS: 'https://api.directus.io',
+				AUTH_ALLOWED_PUBLIC_URLS: 'https://api.directus.io',
 			});
 
 			const result = generateCallbackUrl('github', 'https://unknown.com');
@@ -35,11 +35,11 @@ describe('generateCallbackUrl', () => {
 		});
 	});
 
-	describe('with AUTH_ALLOWED_ORIGINS', () => {
-		test('uses matching origin from AUTH_ALLOWED_ORIGINS', () => {
+	describe('with AUTH_ALLOWED_PUBLIC_URLS', () => {
+		test('uses matching origin from AUTH_ALLOWED_PUBLIC_URLS', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_ORIGINS: 'https://api-eu.directus.io,https://api-us.directus.io',
+				AUTH_ALLOWED_PUBLIC_URLS: 'https://api-eu.directus.io,https://api-us.directus.io',
 			});
 
 			const result = generateCallbackUrl('github', 'https://api-us.directus.io');
@@ -47,13 +47,13 @@ describe('generateCallbackUrl', () => {
 			expect(result).toBe('https://api-us.directus.io/auth/login/github/callback');
 		});
 
-		test('preserves subpath from matched AUTH_ALLOWED_ORIGINS entry', () => {
+		test('preserves subpath from matched AUTH_ALLOWED_PUBLIC_URLS entry', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_ORIGINS: 'https://mysite.com/api',
+				AUTH_ALLOWED_PUBLIC_URLS: 'https://mysite.com/api',
 			});
 
-			// Request origin is just the host, but AUTH_ALLOWED_ORIGINS has subpath
+			// Request origin is just the host, but AUTH_ALLOWED_PUBLIC_URLS has subpath
 			const result = generateCallbackUrl('github', 'https://mysite.com');
 
 			expect(result).toBe('https://mysite.com/api/auth/login/github/callback');
@@ -62,7 +62,7 @@ describe('generateCallbackUrl', () => {
 		test('works with array of allowed origins', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_ORIGINS: ['https://api-eu.directus.io', 'https://api-us.directus.io/v1'],
+				AUTH_ALLOWED_PUBLIC_URLS: ['https://api-eu.directus.io', 'https://api-us.directus.io/v1'],
 			});
 
 			const result = generateCallbackUrl('github', 'https://api-us.directus.io');
@@ -73,7 +73,7 @@ describe('generateCallbackUrl', () => {
 		test('matches on protocol and host only (without port)', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_ORIGINS: 'https://api.directus.io/subpath',
+				AUTH_ALLOWED_PUBLIC_URLS: 'https://api.directus.io/subpath',
 			});
 
 			// Even though request origin doesn't have subpath, it should match
@@ -85,7 +85,7 @@ describe('generateCallbackUrl', () => {
 		test('matches on protocol and host with custom port', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_ORIGINS: 'http://localhost:8055/api,http://127.0.0.1:8055/api',
+				AUTH_ALLOWED_PUBLIC_URLS: 'http://localhost:8055/api,http://127.0.0.1:8055/api',
 			});
 
 			const result = generateCallbackUrl('github', 'http://localhost:8055');
@@ -93,10 +93,10 @@ describe('generateCallbackUrl', () => {
 			expect(result).toBe('http://localhost:8055/api/auth/login/github/callback');
 		});
 
-		test('skips invalid URLs in AUTH_ALLOWED_ORIGINS', () => {
+		test('skips invalid URLs in AUTH_ALLOWED_PUBLIC_URLS', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
-				AUTH_ALLOWED_ORIGINS: 'invalid-url,https://api.directus.io',
+				AUTH_ALLOWED_PUBLIC_URLS: 'invalid-url,https://api.directus.io',
 			});
 
 			const result = generateCallbackUrl('github', 'https://api.directus.io');

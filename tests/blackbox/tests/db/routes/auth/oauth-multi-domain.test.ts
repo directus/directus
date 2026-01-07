@@ -22,7 +22,7 @@ describe('OAuth multi-domain and subpath support', () => {
 			env[vendor].PORT = String(newServerPort);
 			env[vendor]['PUBLIC_URL'] = `http://127.0.0.1:${newServerPort}/api`;
 
-			env[vendor]['AUTH_ALLOWED_ORIGINS'] =
+			env[vendor]['AUTH_ALLOWED_PUBLIC_URLS'] =
 				`http://127.0.0.1:${newServerPort}/api,http://localhost:${newServerPort}/api`;
 
 			env[vendor]['AUTH_GITHUB_REDIRECT_ALLOW_LIST'] = 'https://external-frontend.com/callback';
@@ -57,7 +57,7 @@ describe('OAuth multi-domain and subpath support', () => {
 		});
 	});
 
-	describe('callback URL uses matching AUTH_ALLOWED_ORIGINS', () => {
+	describe('callback URL uses matching AUTH_ALLOWED_PUBLIC_URLS', () => {
 		it.each(vendors)('%s', async (vendor) => {
 			const port = serverPorts[vendor];
 
