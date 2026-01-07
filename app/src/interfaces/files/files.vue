@@ -28,10 +28,10 @@ import { useRelationPermissionsM2M } from '@/composables/use-relation-permission
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 const props = withDefaults(
 	defineProps<{
