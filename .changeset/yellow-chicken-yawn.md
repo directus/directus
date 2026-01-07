@@ -1,6 +1,6 @@
 ---
-'@directus/schema': major
-'@directus/api': major
+'@directus/schema': patch
+'@directus/api': patch
 ---
 
 Improved CockroachDB database introspection performance
