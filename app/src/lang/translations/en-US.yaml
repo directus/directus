@@ -140,6 +140,7 @@ report_an_issue: Report an Issue
 website: Website
 github: GitHub
 beta: Beta
+collab_collision: The item was changed while you were editing. Select which changes to keep.
 n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Compatibility not guaranteed
@@ -210,6 +211,7 @@ version: Version
 version_key: Version Key
 version_name: Version Name
 main_version: Main
+your_version: Your Version
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
@@ -218,6 +220,7 @@ compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
 apply: Apply
+discard: Discard
 select_all_differences: Select All Differences
 main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
@@ -1461,6 +1464,8 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
+    collab_divider: Collaborative Editing
+    collab: Activate Collaborate Editing
     ai_notice:
       'AI Chat provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the toolbar to
       ask questions, generate content, and get help working with your project. <a

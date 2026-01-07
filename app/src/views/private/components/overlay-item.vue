@@ -35,6 +35,9 @@ import { useRouter } from 'vue-router';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import OverlayItemContent from './overlay-item-content.vue';
 import RenderTemplate from './render-template.vue';
+import { useCollab } from '@/composables/use-collab';
+import HeaderCollab from '@/views/private/components/header-collab.vue';
+import ComparisonModal from './comparison/comparison-modal.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -94,6 +97,15 @@ const { save, cancel, overlayActive, getTooltip } = useActions();
 const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
 const { info: collectionInfo, primaryKeyField } = useCollection(collection);
+
+const {
+	users: collabUsers,
+	connected,
+	clearCollidingChanges,
+	collabCollision,
+	update: updateCollab,
+	collabContext,
+} = useCollab(collection, primaryKey, ref(null), initialValues, internalEdits, refresh, overlayActive);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
@@ -571,6 +583,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VBreadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
 		</template>
 
+		<template #actions:prepend>
+			<HeaderCollab :model-value="collabUsers" :connected="connected" small />
+		</template>
+
 		<template #actions>
 			<slot name="actions" />
 
@@ -667,6 +683,17 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</div>
 	</VMenu>
 
+	<ComparisonModal
+		:model-value="Boolean(collabCollision) && overlayActive"
+		:collection="collection"
+		:primary-key="primaryKey"
+		:current-collab="collabCollision"
+		:collab-context="collabContext"
+		mode="collab"
+		@confirm="updateCollab"
+		@cancel="clearCollidingChanges"
+	/>
+
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 		<VCard>
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
@@ -745,6 +772,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 			}
 		}
 	}
+}
+
+.header-collab {
+	margin-inline-end: 16px;
 }
 
 .modal-title-icon {

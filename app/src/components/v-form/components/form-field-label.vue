@@ -8,6 +8,8 @@ import VCheckbox from '@/components/v-checkbox.vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import { CollabUser } from '@/composables/use-collab';
+import HeaderCollab from '@/views/private/components/header-collab.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -26,6 +28,7 @@ const props = withDefaults(
 		disabledMenu?: boolean;
 		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
+		focusedBy?: CollabUser;
 	}>(),
 	{
 		batchMode: false,
@@ -124,6 +127,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</component>
+		<HeaderCollab :model-value="focusedBy" hide-current lock x-small />
 	</div>
 </template>
 
@@ -273,5 +277,11 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 .type-label {
 	font-family: var(--theme--form--field--label--font-family);
+}
+
+:deep(.header-collab) {
+	position: absolute;
+	inset-block-end: 0;
+	inset-inline-end: 0;
 }
 </style>

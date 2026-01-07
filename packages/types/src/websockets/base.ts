@@ -1,8 +1,8 @@
-import { z } from 'zod';
 import type { WebSocket } from 'ws';
-import type { Accountability } from './accountability.js';
+import { z } from 'zod';
+import type { Accountability } from '../accountability.js';
 
-const zodStringOrNumber = z.union([z.string(), z.number()]);
+export const zodStringOrNumber = z.union([z.string(), z.number()]);
 
 export const WebSocketMessage = z
 	.object({

@@ -31,7 +31,7 @@ import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
 import type { ContentVersion } from './versions.js';
 import type { Webhook } from './webhooks.js';
-import type { WebSocketClient, WebSocketMessage } from './websockets.js';
+import type { WebSocketClient, WebSocketMessage } from './websockets/index.js';
 
 export type AbstractServiceOptions = {
 	knex?: Knex | undefined;
