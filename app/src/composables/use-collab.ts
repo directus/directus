@@ -67,8 +67,8 @@ export function useCollab(
 		if (!collidingLocalChanges.value) return undefined;
 
 		return {
-			from: edits.value,
-			to: collidingLocalChanges.value,
+			from: { ...initialValues.value, ...edits.value },
+			to: { ...initialValues.value, ...edits.value, ...collidingLocalChanges.value },
 		};
 	});
 

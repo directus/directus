@@ -18,6 +18,7 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import { useComparison } from './use-comparison';
+import { CollabContext } from '@/composables/use-collab';
 
 interface Props {
 	deleteVersionsAllowed: boolean;
@@ -27,6 +28,7 @@ interface Props {
 	currentVersion: ContentVersion | null | undefined;
 	currentCollab: { from: Item; to: Item } | undefined;
 	revisions?: Revision[] | null;
+	collabContext?: CollabContext;
 }
 
 const props = defineProps<Props>();
@@ -100,6 +102,18 @@ watch(
 	},
 	{ immediate: true },
 );
+
+if (mode.value === 'collab') {
+	watch(
+		[currentCollab],
+		async () => {
+			if (!active.value) return;
+
+			await fetchComparisonData();
+		},
+		{ immediate: true },
+	);
+}
 
 function usePromoteDialog() {
 	const confirmDeleteOnPromoteDialogActive = ref(false);
@@ -189,6 +203,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							:loading="modalLoading"
 							:mode="mode"
 							:title="baseDisplayName"
+							:subtitle="mode === 'collab' ? $t('collab_collision') : undefined"
 							:date-updated="$t('latest')"
 							:user-updated="baseUserUpdated"
 							:user-loading="baseUserLoading"
@@ -208,6 +223,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
+									:collab-context="collabContext"
 									:comparison="{
 										side: 'base',
 										fields: comparisonFields,
