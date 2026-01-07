@@ -830,10 +830,11 @@ function useCollectionRoute() {
 		</SplitPanel>
 
 		<ComparisonModal
-			:model-value="Boolean(collabCollision)"
+			:model-value="collabCollision !== undefined"
 			:collection="collection"
 			:primary-key="internalPrimaryKey"
 			:current-collab="collabCollision"
+			:collab-context="collabContext"
 			mode="collab"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"

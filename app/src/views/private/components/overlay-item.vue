@@ -104,6 +104,7 @@ const {
 	clearCollidingChanges,
 	collabCollision,
 	update: updateCollab,
+	collabContext,
 } = useCollab(collection, primaryKey, ref(null), initialValues, internalEdits, refresh, overlayActive);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
@@ -687,6 +688,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		:collection="collection"
 		:primary-key="primaryKey"
 		:current-collab="collabCollision"
+		:collab-context="collabContext"
 		mode="collab"
 		@confirm="updateCollab"
 		@cancel="clearCollidingChanges"

@@ -140,6 +140,7 @@ report_an_issue: Report an Issue
 website: Website
 github: GitHub
 beta: Beta
+collab_collision: The item was changed while you were editing. Select which changes to keep.
 n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Compatibility not guaranteed
