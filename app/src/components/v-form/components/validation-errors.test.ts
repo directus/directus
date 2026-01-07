@@ -1,11 +1,11 @@
-import type { GlobalMountOptions } from '@/__utils__/types';
-import { i18n } from '@/lang';
 import type { Field, FieldMeta, ValidationError } from '@directus/types';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, test } from 'vitest';
-import VNotice from '@/components/v-notice.vue';
 import ValidationErrors from './validation-errors.vue';
 import ValidationNestedGroups from './validation-nested-groups.vue';
+import type { GlobalMountOptions } from '@/__utils__/types';
+import VNotice from '@/components/v-notice.vue';
+import { i18n } from '@/lang';
 
 const global: GlobalMountOptions = {
 	plugins: [i18n],

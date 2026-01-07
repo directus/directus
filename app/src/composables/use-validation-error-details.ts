@@ -1,9 +1,9 @@
-import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import { formatFieldFunction } from '@/utils/format-field-function';
-import { parseValidationStructure, hasNestedGroups } from '@/utils/format-validation-structure';
 import { Field, ValidationError } from '@directus/types';
 import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
+import { formatFieldFunction } from '@/utils/format-field-function';
+import { hasNestedGroups, parseValidationStructure } from '@/utils/format-validation-structure';
 
 export type ValidationErrorWithDetails = ValidationError & {
 	fieldName?: string;

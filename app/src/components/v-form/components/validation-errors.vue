@@ -1,17 +1,17 @@
 <script setup lang="ts">
+import { Field, ValidationError } from '@directus/types';
+import { computed, toRef } from 'vue';
+import ValidationNestedGroups from './validation-nested-groups.vue';
+import VDetail from '@/components/v-detail.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
-import VDetail from '@/components/v-detail.vue';
 import { useValidationErrorDetails, type ValidationErrorWithDetails } from '@/composables/use-validation-error-details';
-import { Field, ValidationError } from '@directus/types';
-import ValidationNestedGroups from './validation-nested-groups.vue';
 import {
+	errorMatchesValidationRule,
 	getReferencedFields,
 	hasNestedGroups,
 	parseValidationStructure,
-	errorMatchesValidationRule,
 } from '@/utils/format-validation-structure';
-import { computed, toRef } from 'vue';
 
 const props = defineProps<{
 	validationErrors: ValidationError[];
