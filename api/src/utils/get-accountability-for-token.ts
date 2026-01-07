@@ -1,13 +1,13 @@
-import { getSecret } from './get-secret.js';
-import isDirectusJWT from './is-directus-jwt.js';
-import { verifyAccessJWT } from './jwt.js';
-import { verifySessionJWT } from './verify-session-jwt.js';
+import { InvalidCredentialsError } from '@directus/errors';
+import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import { InvalidCredentialsError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
+import { getSecret } from './get-secret.js';
+import isDirectusJWT from './is-directus-jwt.js';
+import { verifyAccessJWT } from './jwt.js';
+import { verifySessionJWT } from './verify-session-jwt.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,

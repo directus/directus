@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { FlowRaw } from '@directus/types';
+import { computed, ref, toRefs, unref } from 'vue';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
 import OptionsOverview from './options-overview.vue';
@@ -11,8 +13,6 @@ import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { useUserStore } from '@/stores/user';
 import { Vector2 } from '@/utils/vector2';
-import { FlowRaw } from '@directus/types';
-import { computed, ref, toRefs, unref } from 'vue';
 
 export type Target = 'resolve' | 'reject';
 export type ArrowInfo = {

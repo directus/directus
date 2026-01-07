@@ -1,10 +1,10 @@
+import express from 'express';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { ActivityService } from '../services/activity.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
-import express from 'express';
 
 const router = express.Router();
 

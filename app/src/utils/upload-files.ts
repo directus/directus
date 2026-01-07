@@ -1,9 +1,9 @@
+import type { File } from '@directus/types';
+import type { Upload } from 'tus-js-client';
 import { unexpectedError } from './unexpected-error';
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { uploadFile } from '@/utils/upload-file';
-import type { File } from '@directus/types';
-import type { Upload } from 'tus-js-client';
 
 export async function uploadFiles(
 	files: globalThis.File[],

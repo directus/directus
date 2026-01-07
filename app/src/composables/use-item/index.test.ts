@@ -1,13 +1,13 @@
-import { useItem } from '.';
-import api from '@/api';
-import { usePermissions } from '@/composables/use-permissions';
-import { applyConditions } from '@/utils/apply-conditions';
 import { useCollection } from '@directus/composables';
 import { AppCollection, Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed, ref } from 'vue';
+import { useItem } from '.';
+import api from '@/api';
+import { usePermissions } from '@/composables/use-permissions';
+import { applyConditions } from '@/utils/apply-conditions';
 
 /**
  * Helper function to create field meta with default values

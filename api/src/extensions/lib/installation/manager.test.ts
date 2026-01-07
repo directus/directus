@@ -1,8 +1,8 @@
-import { InstallationManager } from './manager.js';
-import { useLogger } from '../../../logger/index.js';
-import { download } from '@directus/extensions-registry';
 import { mkdir, readFile, rm } from 'node:fs/promises';
+import { download } from '@directus/extensions-registry';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../../../logger/index.js';
+import { InstallationManager } from './manager.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({

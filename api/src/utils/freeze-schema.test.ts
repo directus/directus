@@ -1,5 +1,5 @@
-import { freezeSchema, unfreezeSchema } from './freeze-schema.js';
 import { expect, test } from 'vitest';
+import { freezeSchema, unfreezeSchema } from './freeze-schema.js';
 
 test('freeze empty schema', () => {
 	const schema = freezeSchema({

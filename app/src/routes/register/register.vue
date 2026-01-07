@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import RegisterForm from './register-form.vue';
-import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import { useServerStore } from '@/stores/server';
-import PublicView from '@/views/public/public-view.vue';
 import { useAppStore } from '@directus/stores';
 import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
+import RegisterForm from './register-form.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useServerStore } from '@/stores/server';
+import PublicView from '@/views/public/public-view.vue';
 
 withDefaults(
 	defineProps<{

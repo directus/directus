@@ -1,11 +1,11 @@
-import { collectionCountries, collectionStates, getTestsSchema, seedDBValues } from './change-fields.seed';
-import type { CachedTestsSchema, TestsSchemaVendorValues } from '../../query/filter';
 import { getUrl } from '@common/config';
 import { ClearCaches, CreateField, DeleteField, DisableTestCachingSetup } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
+import type { CachedTestsSchema, TestsSchemaVendorValues } from '../../query/filter';
+import { collectionCountries, collectionStates, getTestsSchema, seedDBValues } from './change-fields.seed';
 
 const cachedSchema = PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
 	acc[pkType] = getTestsSchema(pkType);

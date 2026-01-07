@@ -1,17 +1,17 @@
 <script setup lang="ts">
+import { ApiOutput } from '@directus/types';
+import { groupBy } from 'lodash';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/ExtensionItem.vue';
 import { ExtensionType } from './types';
-import SettingsNavigation from '../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VInfo from '@/components/v-info.vue';
 import VList from '@/components/v-list.vue';
 import { useExtensionsStore } from '@/stores/extensions';
 import { PrivateView } from '@/views/private';
-import { ApiOutput } from '@directus/types';
-import { groupBy } from 'lodash';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
 
 type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;
 

@@ -1,5 +1,5 @@
-import { localizedFormat } from '@/utils/localized-format';
 import { add, set, startOfWeek } from 'date-fns';
+import { localizedFormat } from '@/utils/localized-format';
 
 // Flatpickr locale object reference: https://github.com/flatpickr/flatpickr/blob/master/src/l10n/default.ts
 export function getFlatpickrLocale() {

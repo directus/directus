@@ -1,7 +1,7 @@
-import type { TelemetryReport } from '../types/report.js';
+import { URL } from 'node:url';
 import { useEnv } from '@directus/env';
 import type { OwnerInformation } from '@directus/types';
-import { URL } from 'node:url';
+import type { TelemetryReport } from '../types/report.js';
 
 export type OwnerReport = OwnerInformation & { project_id: string; version: string };
 

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import { useClipboard } from '@/composables/use-clipboard';
-import { localizedFormat } from '@/utils/localized-format';
-import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import type { User } from '@directus/types';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useClipboard } from '@/composables/use-clipboard';
+import { localizedFormat } from '@/utils/localized-format';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 
 const props = defineProps<{
 	user: User | null;

@@ -1,3 +1,9 @@
+import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
+import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { cloneDeep, get, has, isEmpty, mergeWith, orderBy, set, sortBy } from 'lodash';
+import { defineStore } from 'pinia';
+import { computed } from 'vue';
 import * as alterations from './alterations';
 import api from '@/api';
 import { useExtensions } from '@/extensions';
@@ -6,12 +12,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
-import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, has, isEmpty, mergeWith, orderBy, set, sortBy } from 'lodash';
-import { defineStore } from 'pinia';
-import { computed } from 'vue';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();

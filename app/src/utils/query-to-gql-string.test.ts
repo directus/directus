@@ -1,9 +1,9 @@
-import { formatQuery } from '@/utils/query-to-gql-string';
 
 import { Query } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { formatQuery } from '@/utils/query-to-gql-string';
 
 const collectionName = 'users';
 const primaryKeyField = 'id';

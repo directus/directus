@@ -1,11 +1,11 @@
-import { isDeniedIp } from './is-denied-ip.js';
-import { useLogger } from '../logger/index.js';
+import os from 'node:os';
 import { useEnv } from '@directus/env';
 import { ipInNetworks } from '@directus/utils/node';
 import { randIp, randUrl } from '@ngneat/falso';
-import os from 'node:os';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { useLogger } from '../logger/index.js';
+import { isDeniedIp } from './is-denied-ip.js';
 
 vi.mock('node:os');
 vi.mock('@directus/env');

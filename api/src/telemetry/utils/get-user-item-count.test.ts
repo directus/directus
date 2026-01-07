@@ -1,9 +1,9 @@
-import { getItemCount } from './get-item-count.js';
-import { getUserItemCount, sum } from './get-user-item-count.js';
-import { getSchema } from '../../utils/get-schema.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { getSchema } from '../../utils/get-schema.js';
+import { getItemCount } from './get-item-count.js';
+import { getUserItemCount, sum } from './get-user-item-count.js';
 
 vi.mock('../../utils/get-schema.js');
 vi.mock('./get-item-count.js');

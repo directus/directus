@@ -1,5 +1,5 @@
-import type { ChunkedUploadContext, Range, ReadOptions, Stat } from '@directus/types';
 import type { Readable } from 'node:stream';
+import type { ChunkedUploadContext, Range, ReadOptions, Stat } from '@directus/types';
 
 export class StorageManager {
 	private drivers = new Map<string, typeof Driver>();

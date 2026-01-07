@@ -1,6 +1,6 @@
-import type { Sql } from '../types.js';
 import type { Knex } from 'knex';
 import { isString } from 'lodash-es';
+import type { Sql } from '../types.js';
 
 export type PrepQueryParamsOptions = {
 	format(index: number): string;

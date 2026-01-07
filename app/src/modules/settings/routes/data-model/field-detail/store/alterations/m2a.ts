@@ -1,9 +1,9 @@
+import { set } from 'lodash';
 import { collectionExists } from '../../../utils/collection-exists';
 import { fieldExists } from '../../../utils/field-exists';
 import { getAutomaticJunctionCollectionName } from '../../../utils/get-junction-collection-name';
 import { HelperFunctions, State, StateUpdates } from '../types';
 import { useFieldsStore } from '@/stores/fields';
-import { set } from 'lodash';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;

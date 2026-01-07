@@ -1,5 +1,5 @@
-import { messageConstructor } from './email-limit-exceeded.js';
 import { expect, test } from 'vitest';
+import { messageConstructor } from './email-limit-exceeded.js';
 
 test('Constructs message without options', () => {
 	expect(messageConstructor({})).toBe('Email sending limit exceeded.');

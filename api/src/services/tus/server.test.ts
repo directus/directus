@@ -1,11 +1,11 @@
-import { createTusServer } from './server.js';
+import type { Accountability, File, SchemaOverview } from '@directus/types';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { extractMetadata } from '../files/lib/extract-metadata.js';
 import { ItemsService } from '../index.js';
-import type { Accountability, File, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createTusServer } from './server.js';
 
 vi.mock('../../emitter.js', () => ({
 	default: {

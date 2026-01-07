@@ -1,7 +1,7 @@
-import { callReference } from './call-reference.js';
-import emitter from '../../../../emitter.js';
 import type { FilterHandler, PromiseCallback } from '@directus/types';
 import type { Reference } from 'isolated-vm';
+import emitter from '../../../../emitter.js';
+import { callReference } from './call-reference.js';
 
 export function registerFilterGenerator() {
 	const unregisterFunctions: PromiseCallback[] = [];

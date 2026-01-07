@@ -1,7 +1,7 @@
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { Query } from '@directus/types';
 import { get, getSimpleHash } from '@directus/utils';
 import { computed, ComputedRef, Ref, unref } from 'vue';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 export type AliasFields =
 	| {

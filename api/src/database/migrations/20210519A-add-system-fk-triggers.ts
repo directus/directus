@@ -1,7 +1,7 @@
-import { useLogger } from '../../logger/index.js';
-import { getDatabaseClient } from '../index.js';
 import { createInspector } from '@directus/schema';
 import type { Knex } from 'knex';
+import { useLogger } from '../../logger/index.js';
+import { getDatabaseClient } from '../index.js';
 
 /**
  * Things to keep in mind:

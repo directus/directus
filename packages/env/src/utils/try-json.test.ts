@@ -1,6 +1,6 @@
-import { tryJson } from './try-json.js';
 import { parseJSON } from '@directus/utils';
 import { afterEach, expect, test, vi } from 'vitest';
+import { tryJson } from './try-json.js';
 
 vi.mock('@directus/utils');
 

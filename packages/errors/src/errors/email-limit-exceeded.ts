@@ -1,5 +1,5 @@
-import { createError, ErrorCode } from '../index.js';
 import ms from 'ms';
+import { createError, ErrorCode } from '../index.js';
 
 export interface EmailLimitExceededErrorExtensions {
 	points?: number | undefined;

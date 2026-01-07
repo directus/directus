@@ -1,10 +1,10 @@
-import emitter from '../emitter.js';
-import { getWebSocketController } from '../websocket/controllers/index.js';
-import type { WebSocketController } from '../websocket/controllers/rest.js';
 import { useEnv } from '@directus/env';
 import { ServiceUnavailableError } from '@directus/errors';
 import type { ActionHandler, WebSocketClient, WebSocketMessage } from '@directus/types';
 import { toBoolean } from '@directus/utils';
+import emitter from '../emitter.js';
+import { getWebSocketController } from '../websocket/controllers/index.js';
+import type { WebSocketController } from '../websocket/controllers/rest.js';
 
 const env = useEnv();
 

@@ -1,5 +1,5 @@
-import getMailer from './mailer.js';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import getMailer from './mailer.js';
 
 // Mock the dependencies
 vi.mock('@directus/env');

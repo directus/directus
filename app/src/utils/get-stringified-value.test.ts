@@ -1,5 +1,5 @@
-import { getStringifiedValue } from '@/utils/get-stringified-value';
 import { expect, test } from 'vitest';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
 
 test(`Returns empty string when input is undefined`, () => {
 	expect(getStringifiedValue(undefined, true)).toBe('');

@@ -1,4 +1,3 @@
-import { SpecificationService } from './index.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
@@ -7,6 +6,7 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { RequestBodyObject } from 'openapi3-ts/oas30';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { SpecificationService } from './index.js';
 
 class Client_PG extends MockClient {}
 

@@ -1,18 +1,18 @@
-import { getCollectionType } from './get-collection-type.js';
-import { getFieldType } from './get-field-type.js';
-import { getRelationType } from './get-relation-type.js';
-import { CollectionsService } from '../../collections.js';
-import { ExtensionsService } from '../../extensions.js';
-import { FieldsService, systemFieldUpdateSchema } from '../../fields.js';
-import { RelationsService } from '../../relations.js';
-import { GraphQLService } from '../index.js';
-import type { Schema } from '../schema/index.js';
 import { InvalidPayloadError } from '@directus/errors';
 import { isSystemField } from '@directus/system-data';
 import type { GraphQLParams } from '@directus/types';
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { SchemaComposer, toInputObjectType } from 'graphql-compose';
 import { fromZodError } from 'zod-validation-error';
+import { CollectionsService } from '../../collections.js';
+import { ExtensionsService } from '../../extensions.js';
+import { FieldsService, systemFieldUpdateSchema } from '../../fields.js';
+import { RelationsService } from '../../relations.js';
+import { GraphQLService } from '../index.js';
+import type { Schema } from '../schema/index.js';
+import { getCollectionType } from './get-collection-type.js';
+import { getFieldType } from './get-field-type.js';
+import { getRelationType } from './get-relation-type.js';
 
 export function resolveSystemAdmin(
 	gql: GraphQLService,

@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useLayout } from '@directus/composables';
+import { mergeFilters } from '@directus/utils';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
 import api from '@/api';
@@ -22,11 +27,6 @@ import ExportSidebarDetail from '@/views/private/components/export-sidebar-detai
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
-import { useLayout } from '@directus/composables';
-import { mergeFilters } from '@directus/utils';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 
 const props = defineProps<{ role?: string }>();
 

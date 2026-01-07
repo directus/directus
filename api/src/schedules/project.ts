@@ -1,8 +1,8 @@
+import { version } from 'directus/version';
+import { random } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import { sendReport } from '../telemetry/index.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
-import { version } from 'directus/version';
-import { random } from 'lodash-es';
 
 /**
  * Schedule the project status job

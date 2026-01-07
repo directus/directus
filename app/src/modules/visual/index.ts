@@ -1,9 +1,9 @@
+import { defineModule } from '@directus/extensions';
+import { stringifyQuery } from 'vue-router';
 import VisualEditor from './routes/visual-editor.vue';
 import { getUrlRoute } from './utils/get-url-route';
 import { sameOrigin } from './utils/same-origin';
 import { useSettingsStore } from '@/stores/settings';
-import { defineModule } from '@directus/extensions';
-import { stringifyQuery } from 'vue-router';
 
 export default defineModule({
 	id: 'visual',

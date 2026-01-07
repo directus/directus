@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { snakeCase } from 'lodash';
+import { computed, ref, unref, watch } from 'vue';
 import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 import VHighlight from '@/components/v-highlight.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -14,8 +16,6 @@ import { useUserStore } from '@/stores/user';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { snakeCase } from 'lodash';
-import { computed, ref, unref, watch } from 'vue';
 
 const translationPrefix = '$t:';
 

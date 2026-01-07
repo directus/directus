@@ -1,5 +1,5 @@
-import SystemManualFlowSelect from './system-manual-flow-select.vue';
 import { defineInterface } from '@directus/extensions';
+import SystemManualFlowSelect from './system-manual-flow-select.vue';
 
 export default defineInterface({
 	id: 'system-manual-flow-select',

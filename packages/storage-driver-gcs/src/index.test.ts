@@ -1,5 +1,6 @@
-import type { DriverGCSConfig } from './index.js';
-import { DriverGCS } from './index.js';
+import { join } from 'node:path';
+import { PassThrough } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { normalizePath } from '@directus/utils';
 import { Bucket, Storage } from '@google-cloud/storage';
 import {
@@ -13,11 +14,10 @@ import {
 	randGitShortSha as randUnique,
 	randUrl,
 } from '@ngneat/falso';
-import { join } from 'node:path';
-import { PassThrough } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { DriverGCSConfig } from './index.js';
+import { DriverGCS } from './index.js';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');

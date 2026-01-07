@@ -1,5 +1,5 @@
-import { isValidJSON } from './is-valid-json.js';
 import { describe, expect, it } from 'vitest';
+import { isValidJSON } from './is-valid-json.js';
 
 describe('isValidJSON', () => {
 	it('returns true if JSON is valid', () => {

@@ -1,10 +1,10 @@
-import { validateItemAccess } from './validate-item-access.js';
-import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
-import type { Context } from '../../../types.js';
-import { processAst } from '../../process-ast/process-ast.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
+import type { Context } from '../../../types.js';
+import { processAst } from '../../process-ast/process-ast.js';
+import { validateItemAccess } from './validate-item-access.js';
 
 vi.mock('../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js');
 vi.mock('../../../../database/run-ast/run-ast.js');

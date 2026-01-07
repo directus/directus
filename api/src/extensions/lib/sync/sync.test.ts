@@ -1,3 +1,12 @@
+import { createWriteStream } from 'node:fs';
+import { mkdir, rm } from 'node:fs/promises';
+import { sep } from 'node:path';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { useEnv } from '@directus/env';
+import type { Driver } from '@directus/storage';
+import mid from 'node-machine-id';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useBus } from '../../../bus/index.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
@@ -7,15 +16,6 @@ import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
 import { syncExtensions } from './sync.js';
 import { SyncFileTracker } from './tracker.js';
 import { compareFileMetadata, getSyncPaths } from './utils.js';
-import { useEnv } from '@directus/env';
-import type { Driver } from '@directus/storage';
-import mid from 'node-machine-id';
-import { createWriteStream } from 'node:fs';
-import { mkdir, rm } from 'node:fs/promises';
-import { sep } from 'node:path';
-import { Readable } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({

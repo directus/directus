@@ -1,11 +1,11 @@
-import type { AliasMap } from '../../../../utils/get-column-path.js';
-import { getRelationInfo } from '../../../../utils/get-relation-info.js';
-import { getHelpers } from '../../../helpers/index.js';
-import { generateJoinAlias } from '../../utils/generate-alias.js';
 import { InvalidQueryError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { clone } from 'lodash-es';
+import type { AliasMap } from '../../../../utils/get-column-path.js';
+import { getRelationInfo } from '../../../../utils/get-relation-info.js';
+import { getHelpers } from '../../../helpers/index.js';
+import { generateJoinAlias } from '../../utils/generate-alias.js';
 
 /**
  * Apply a given filter object to the Knex QueryBuilder instance.

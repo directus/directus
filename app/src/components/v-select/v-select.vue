@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { type OtherValue, useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
+import { Placement } from '@popperjs/core';
+import { debounce, get, isArray } from 'lodash';
+import { computed, Ref, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import SelectListItem from './select-list-item.vue';
 import SelectListItemGroup from './SelectListItemGroup.vue';
 import { Option } from './types';
@@ -12,11 +17,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import DisplayColor from '@/displays/color/color.vue';
-import { type OtherValue, useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
-import { Placement } from '@popperjs/core';
-import { debounce, get, isArray } from 'lodash';
-import { computed, Ref, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string | number | null;

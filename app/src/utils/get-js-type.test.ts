@@ -1,7 +1,7 @@
-import { getJSType } from './get-js-type';
-import { APP_NUMERIC_STRING_TYPES, APP_NUMERIC_TYPES } from '@/constants';
 import { Field } from '@directus/types';
 import { expect, test } from 'vitest';
+import { getJSType } from './get-js-type';
+import { APP_NUMERIC_STRING_TYPES, APP_NUMERIC_TYPES } from '@/constants';
 
 test('Returns object for relational fields', () => {
 	const relationTypes = ['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'];

@@ -1,10 +1,10 @@
-import { extractFieldsFromQuery } from './extract-fields-from-query.js';
+import type { SchemaOverview } from '@directus/types';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import type { FieldMap, QueryPath } from '../types.js';
 import { formatA2oKey } from '../utils/format-a2o-key.js';
 import { getInfoForPath } from '../utils/get-info-for-path.js';
-import type { SchemaOverview } from '@directus/types';
+import { extractFieldsFromQuery } from './extract-fields-from-query.js';
 
 export function extractFieldsFromChildren(
 	collection: string,

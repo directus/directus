@@ -1,5 +1,5 @@
-import InterfaceSystemToken from './system-token.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemToken from './system-token.vue';
 
 export default defineInterface({
 	id: 'system-token',

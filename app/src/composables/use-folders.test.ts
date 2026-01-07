@@ -1,7 +1,7 @@
-import { FolderRaw, useFolders } from './use-folders';
 import { flushPromises, mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
 import { defineComponent, h, toRefs } from 'vue';
+import { FolderRaw, useFolders } from './use-folders';
 
 const folders: FolderRaw[] = [
 	{

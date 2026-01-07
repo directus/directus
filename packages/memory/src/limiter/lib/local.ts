@@ -1,7 +1,7 @@
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 import type { Limiter } from '../types/class.js';
 import type { LimiterConfigLocal } from '../types/config.js';
 import { consume } from '../utils/consume.js';
-import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 export class LimiterLocal implements Limiter {
 	private limiter: RateLimiterMemory;

@@ -1,10 +1,10 @@
 /**
  * @vitest-environment jsdom
  */
-import { useFilterFields } from './use-filter-fields.js';
 import type { Field } from '@directus/types';
 import { describe, expect, it } from 'vitest';
 import { ref } from 'vue';
+import { useFilterFields } from './use-filter-fields.js';
 
 // Mock field data for testing
 const createMockField = (overrides: Partial<Field> = {}): Field => ({

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import AiLoadingIndicator from './ai-loading-indicator.vue';
-import AiMessage from './ai-message.vue';
-import { useAiStore } from '../stores/use-ai';
 import type { UIMessage } from 'ai';
 import { onMounted, ref } from 'vue';
+import { useAiStore } from '../stores/use-ai';
+import AiLoadingIndicator from './ai-loading-indicator.vue';
+import AiMessage from './ai-message.vue';
 
 export type AiMessage = UIMessage;
 

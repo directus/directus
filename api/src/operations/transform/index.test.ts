@@ -1,5 +1,5 @@
-import config from './index.js';
 import { expect, test } from 'vitest';
+import config from './index.js';
 
 test('runs the same object as the input', async () => {
 	const json = { test: 'item' };

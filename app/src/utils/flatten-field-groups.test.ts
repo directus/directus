@@ -1,6 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { FieldNode } from '../../src/composables/use-field-tree';
 import { flattenFieldGroups } from '../../src/utils/flatten-field-groups';
-import { describe, expect, it } from 'vitest';
 
 describe('utils/flatten-field-groups', () => {
 	it('Returns the original tree when no groups are present', () => {

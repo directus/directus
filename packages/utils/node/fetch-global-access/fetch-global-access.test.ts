@@ -1,9 +1,9 @@
-import { fetchGlobalAccess } from './fetch-global-access.js';
-import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.js';
-import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { fetchGlobalAccess } from './fetch-global-access.js';
+import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.js';
+import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';
 
 vi.mock('./lib/fetch-global-access-for-roles.js');
 vi.mock('./lib/fetch-global-access-for-user.js');

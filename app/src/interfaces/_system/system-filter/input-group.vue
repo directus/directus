@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import { FieldFilter } from '@directus/types';
+import { clone, get } from 'lodash';
+import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { useCollection } from '@directus/composables';
-import { FieldFilter } from '@directus/types';
-import { clone, get } from 'lodash';
-import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
 
 // Workaround because you cannot cast directly to union types inside
 // the template block without running into eslint/prettier issues

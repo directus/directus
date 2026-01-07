@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { getEndpoint } from '@directus/utils';
+import { sortBy } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import DashboardDialog from '../components/dashboard-dialog.vue';
 import InsightsNavigation from '../components/navigation.vue';
 import api from '@/api';
@@ -27,10 +31,6 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { getEndpoint } from '@directus/utils';
-import { sortBy } from 'lodash';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 

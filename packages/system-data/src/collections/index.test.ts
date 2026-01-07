@@ -1,5 +1,5 @@
-import { isSystemCollection, systemCollectionNames, systemCollectionRows } from './index.js';
 import { describe, expect, test } from 'vitest';
+import { isSystemCollection, systemCollectionNames, systemCollectionRows } from './index.js';
 
 describe('systemCollectionRows', () => {
 	test('should be an array', () => {

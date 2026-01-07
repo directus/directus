@@ -1,7 +1,7 @@
-import { buildSanitizedQueryFromArgs } from './utils.js';
-import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { buildSanitizedQueryFromArgs } from './utils.js';
 
 vi.mock('../../utils/sanitize-query.js');
 

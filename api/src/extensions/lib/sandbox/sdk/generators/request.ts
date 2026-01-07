@@ -1,8 +1,8 @@
-import { getAxios } from '../../../../../request/index.js';
 import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import encodeUrl from 'encodeurl';
 import globToRegExp from 'glob-to-regexp';
 import type { Reference } from 'isolated-vm';
+import { getAxios } from '../../../../../request/index.js';
 
 export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScopes): (
 	url: Reference<string>,

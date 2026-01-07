@@ -1,3 +1,16 @@
+import type { ServerResponse } from 'http';
+import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import path from 'path';
+import { useEnv } from '@directus/env';
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { handlePressure } from '@directus/pressure';
+import { toBoolean } from '@directus/utils';
+import cookieParser from 'cookie-parser';
+import type { Request, RequestHandler, Response } from 'express';
+import express from 'express';
+import { merge } from 'lodash-es';
+import qs from 'qs';
 import { aiChatRouter } from './ai/chat/router.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
@@ -62,19 +75,6 @@ import tusSchedule from './schedules/tus.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
-import { useEnv } from '@directus/env';
-import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import { handlePressure } from '@directus/pressure';
-import { toBoolean } from '@directus/utils';
-import cookieParser from 'cookie-parser';
-import type { Request, RequestHandler, Response } from 'express';
-import express from 'express';
-import type { ServerResponse } from 'http';
-import { merge } from 'lodash-es';
-import { readFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
-import path from 'path';
-import qs from 'qs';
 
 const require = createRequire(import.meta.url);
 

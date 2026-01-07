@@ -1,5 +1,5 @@
-import { ENV_TYPES } from '../constants/env-types.js';
 import { isIn } from '@directus/utils';
+import { ENV_TYPES } from '../constants/env-types.js';
 
 export const getCastFlag = (value: unknown) => {
 	if (typeof value !== 'string') return null;

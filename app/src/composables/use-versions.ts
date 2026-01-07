@@ -1,3 +1,6 @@
+import { ContentVersion, Filter, Item, Query } from '@directus/types';
+import { useRouteQuery } from '@vueuse/router';
+import { computed, ref, Ref, unref, watch } from 'vue';
 import { useCollectionPermissions, usePermissions } from './use-permissions';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
@@ -8,9 +11,6 @@ import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { ContentVersion, Filter, Item, Query } from '@directus/types';
-import { useRouteQuery } from '@vueuse/router';
-import { computed, ref, Ref, unref, watch } from 'vue';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
 	const currentVersion = ref<ContentVersion | null>(null);

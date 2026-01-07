@@ -1,9 +1,9 @@
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { Field, Relation, Type } from '@directus/types';
 import { getRelationType } from '@directus/utils';
 import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 export type FieldNode = {
 	name: string;

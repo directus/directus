@@ -1,3 +1,5 @@
+import { afterEach, expect, test, vi } from 'vitest';
+import { ref, unref } from 'vue';
 import {
 	UsableCollectionPermissions,
 	useCollectionPermissions,
@@ -12,8 +14,6 @@ import {
 	useRelationPermissionsM2O,
 	useRelationPermissionsO2M,
 } from '@/composables/use-relation-permissions';
-import { afterEach, expect, test, vi } from 'vitest';
-import { ref, unref } from 'vue';
 
 vi.mock('./use-permissions/collection/use-collection-permissions');
 

@@ -1,5 +1,5 @@
-import { HelperFunctions, State, StateUpdates } from '../types';
 import { set } from 'lodash';
+import { HelperFunctions, State, StateUpdates } from '../types';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;

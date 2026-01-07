@@ -1,6 +1,6 @@
-import { extractFieldsFromQuery } from './extract-fields-from-query.js';
 import type { DeepPartial, Query, SchemaOverview } from '@directus/types';
 import { expect, test } from 'vitest';
+import { extractFieldsFromQuery } from './extract-fields-from-query.js';
 
 test('Appends paths used in query to FieldMap', () => {
 	const fieldMap = { read: new Map(), other: new Map() };

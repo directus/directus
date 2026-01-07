@@ -1,11 +1,11 @@
-import { useUserStore } from '../stores/user';
-import api from '@/api';
-import { CollectionPermission } from '@/types/permissions';
-import { parsePreset } from '@/utils/parse-preset';
 import { CollectionAccess, PermissionsAction } from '@directus/types';
 import { deepMap } from '@directus/utils';
 import { mapValues } from 'lodash';
 import { defineStore } from 'pinia';
+import { useUserStore } from '../stores/user';
+import api from '@/api';
+import { CollectionPermission } from '@/types/permissions';
+import { parsePreset } from '@/utils/parse-preset';
 
 export const usePermissionsStore = defineStore({
 	id: 'permissionsStore',

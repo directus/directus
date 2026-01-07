@@ -1,11 +1,11 @@
-import { create } from './src/cli/index.js';
-import { languageToShort } from './src/cli/utils/languages.js';
+import { resolve } from 'node:path';
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { EXTENSION_LANGUAGES } from '@directus/extensions';
 import { execa } from 'execa';
 import fse from 'fs-extra';
-import { resolve } from 'node:path';
 import { afterAll, describe, expect, test } from 'vitest';
+import { create } from './src/cli/index.js';
+import { languageToShort } from './src/cli/utils/languages.js';
 
 const TEST_PREFIX = 'temp-extension';
 

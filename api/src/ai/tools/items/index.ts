@@ -1,3 +1,11 @@
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { isSystemCollection } from '@directus/system-data';
+import type { PrimaryKey } from '@directus/types';
+import { toArray } from '@directus/utils';
+import { isObject } from 'graphql-compose';
+import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
@@ -10,14 +18,6 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { isSystemCollection } from '@directus/system-data';
-import type { PrimaryKey } from '@directus/types';
-import { toArray } from '@directus/utils';
-import { isObject } from 'graphql-compose';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { z } from 'zod';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

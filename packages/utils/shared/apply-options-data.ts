@@ -1,7 +1,7 @@
-import { parseJSON } from './parse-json.js';
 import type { JsonValue } from '@directus/types';
 import type { ResolveFn, Scope } from 'micromustache';
 import { get, renderFn } from 'micromustache';
+import { parseJSON } from './parse-json.js';
 
 type Mustache<T> = T extends string
 	? JsonValue

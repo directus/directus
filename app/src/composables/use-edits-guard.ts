@@ -1,7 +1,7 @@
-import { useNavigationGuard } from './use-navigation-guard';
 import { isEqual } from 'lodash';
 import { MaybeRef, Ref, ref, unref } from 'vue';
 import { LocationQuery, useRoute } from 'vue-router';
+import { useNavigationGuard } from './use-navigation-guard';
 
 type EditsGuardOptions = {
 	ignorePrefix?: MaybeRef<string>;

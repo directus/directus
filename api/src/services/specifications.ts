@@ -1,11 +1,3 @@
-import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
-import getDatabase from '../database/index.js';
-import { GraphQLService } from './graphql/index.js';
-import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
-import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import { getRelationType } from '../utils/get-relation-type.js';
-import { reduceSchema } from '../utils/reduce-schema.js';
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
@@ -30,6 +22,14 @@ import type {
 	SchemaObject,
 	TagObject,
 } from 'openapi3-ts/oas30';
+import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
+import getDatabase from '../database/index.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { getRelationType } from '../utils/get-relation-type.js';
+import { reduceSchema } from '../utils/reduce-schema.js';
+import { GraphQLService } from './graphql/index.js';
 
 const env = useEnv();
 

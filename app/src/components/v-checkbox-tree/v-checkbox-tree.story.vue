@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VCheckboxTree from './v-checkbox-tree.vue';
 import { ref } from 'vue';
+import VCheckboxTree from './v-checkbox-tree.vue';
 
 function initState() {
 	return {

@@ -1,13 +1,13 @@
-import * as cacheModule from '../cache.js';
-import { CollectionsService } from './collections.js';
-import { FieldsService } from './fields.js';
-import { ItemsService } from './items.js';
-import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
-import * as getSchemaModule from '../utils/get-schema.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import * as cacheModule from '../cache.js';
+import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
+import * as getSchemaModule from '../utils/get-schema.js';
+import { CollectionsService } from './collections.js';
+import { FieldsService } from './fields.js';
+import { ItemsService } from './items.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),

@@ -1,8 +1,8 @@
-import processError from './process-error.js';
 import { createError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { GraphQLError } from 'graphql';
 import { describe, expect, test } from 'vitest';
+import processError from './process-error.js';
 
 describe('GraphQL processError util', () => {
 	const sampleError = new GraphQLError('An error message', { path: ['test_collection'] });

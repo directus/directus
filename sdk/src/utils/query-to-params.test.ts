@@ -1,5 +1,5 @@
-import { queryToParams } from './query-to-params.js';
 import { describe, expect, test } from 'vitest';
+import { queryToParams } from './query-to-params.js';
 
 describe('queryToParams', () => {
 	test('should skip undefined parameters', () => {

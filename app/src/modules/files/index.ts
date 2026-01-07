@@ -1,7 +1,7 @@
+import { defineModule } from '@directus/extensions';
 import AddNew from './routes/add-new.vue';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
-import { defineModule } from '@directus/extensions';
 
 export default defineModule({
 	id: 'files',

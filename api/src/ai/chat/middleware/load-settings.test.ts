@@ -1,6 +1,6 @@
-import { loadSettings } from './load-settings.js';
 import type { Request, Response } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { loadSettings } from './load-settings.js';
 
 // Mock dependencies
 vi.mock('../../../services/settings.js');

@@ -1,8 +1,8 @@
-import { handleMetricsJob, default as metricsSchedule } from './metrics.js';
-import * as schedule from '../utils/schedule.js';
 import { useEnv } from '@directus/env';
 import { CronJob } from 'cron';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import * as schedule from '../utils/schedule.js';
+import { handleMetricsJob, default as metricsSchedule } from './metrics.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),

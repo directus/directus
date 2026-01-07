@@ -1,9 +1,9 @@
+import type { Table } from '@directus/schema';
+import type { Diff } from 'deep-diff';
 import type { ApiCollection } from './collection.js';
 import type { DatabaseClient } from './database.js';
 import type { Field, FieldMeta } from './fields.js';
 import type { Relation, RelationMeta } from './relations.js';
-import type { Table } from '@directus/schema';
-import type { Diff } from 'deep-diff';
 
 export type Snapshot = {
 	version: number;

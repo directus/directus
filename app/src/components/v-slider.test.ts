@@ -1,6 +1,6 @@
-import VSlider from './v-slider.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import VSlider from './v-slider.vue';
 
 test('Mount component', () => {
 	expect(VSlider).toBeTruthy();

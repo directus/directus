@@ -1,6 +1,6 @@
-import { getRelation, getRelations } from './get-relation.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { expect, test } from 'vitest';
+import { getRelation, getRelations } from './get-relation.js';
 
 test('relations on m2o field', () => {
 	const schema = new SchemaBuilder()

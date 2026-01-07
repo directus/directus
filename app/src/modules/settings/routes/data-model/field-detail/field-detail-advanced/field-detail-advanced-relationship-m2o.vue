@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 import VCheckbox from '@/components/v-checkbox.vue';
@@ -8,9 +11,6 @@ import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useFieldsStore } from '@/stores/fields';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 

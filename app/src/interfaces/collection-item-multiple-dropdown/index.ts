@@ -1,6 +1,6 @@
+import { defineInterface } from '@directus/extensions';
 import CollectionItemMultipleDropdown from './collection-item-multiple-dropdown.vue';
 import PreviewSVG from './preview.svg?raw';
-import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'collection-item-multiple-dropdown',

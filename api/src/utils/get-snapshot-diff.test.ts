@@ -1,7 +1,7 @@
-import { getSnapshotDiff } from './get-snapshot-diff.js';
-import { sanitizeField } from './sanitize-schema.js';
 import type { Snapshot } from '@directus/types';
 import { describe, expect, test, vi } from 'vitest';
+import { getSnapshotDiff } from './get-snapshot-diff.js';
+import { sanitizeField } from './sanitize-schema.js';
 
 // Mock the sanitize functions
 vi.mock('./sanitize-schema', () => ({

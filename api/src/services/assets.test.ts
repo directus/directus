@@ -1,13 +1,13 @@
-import { AssetsService } from './assets.js';
-import { FilesService } from './files.js';
-import { FoldersService } from './folders.js';
-import { getStorage } from '../storage/index.js';
+import { Readable } from 'node:stream';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Driver, StorageManager } from '@directus/storage';
 import type { File, SchemaOverview } from '@directus/types';
 import archiver, { type Archiver } from 'archiver';
-import { Readable } from 'node:stream';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { getStorage } from '../storage/index.js';
+import { AssetsService } from './assets.js';
+import { FilesService } from './files.js';
+import { FoldersService } from './folders.js';
 
 vi.mock('archiver');
 

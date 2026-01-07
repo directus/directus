@@ -1,7 +1,7 @@
-import { ProviderAnthropic, ProviderOpenAi } from './providers.js';
-import { parseJsonSchema7 } from '../utils/parse-json-schema-7.js';
 import { type JSONSchema7 } from 'ai';
 import { z } from 'zod';
+import { parseJsonSchema7 } from '../utils/parse-json-schema-7.js';
+import { ProviderAnthropic, ProviderOpenAi } from './providers.js';
 
 export const ChatRequestTool = z.union([
 	z.string(),

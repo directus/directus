@@ -1,5 +1,5 @@
-import { sieveFunctions } from './sieve-functions.js';
 import { expect, test } from 'vitest';
+import { sieveFunctions } from './sieve-functions.js';
 
 test('sieve primitive types', () => {
 	expect(sieveFunctions(1)).toEqual(1);

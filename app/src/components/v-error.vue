@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import { useClipboard } from '@/composables/use-clipboard';
 import { isPlainObject } from 'lodash';
 import { computed, ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {
 	error: Record<string, any>;

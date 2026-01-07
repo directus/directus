@@ -1,5 +1,5 @@
-import { fixErrorToolCalls } from './fix-error-tool-calls.js';
 import { describe, expect, it } from 'vitest';
+import { fixErrorToolCalls } from './fix-error-tool-calls.js';
 
 describe('fixErrorToolCalls', () => {
 	it('copies rawInput to input for error tool call without input', () => {

@@ -1,3 +1,16 @@
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
+import { Field, Item } from '@directus/types';
+import { getEndpoint, getFieldsFromTemplate, mergeFilters } from '@directus/utils';
+import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
+import { EventImpl } from '@fullcalendar/core/internal';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { format, formatISO, isValid, parse } from 'date-fns';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
@@ -13,19 +26,6 @@ import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollection, useItems, useSync } from '@directus/composables';
-import { defineLayout } from '@directus/extensions';
-import { Field, Item } from '@directus/types';
-import { getEndpoint, getFieldsFromTemplate, mergeFilters } from '@directus/utils';
-import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
-import { EventImpl } from '@fullcalendar/core/internal';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin from '@fullcalendar/list';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import { format, formatISO, isValid, parse } from 'date-fns';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',

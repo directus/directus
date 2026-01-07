@@ -1,7 +1,7 @@
-import { useBus } from '../bus/index.js';
+import { Writable } from 'stream';
 import type { Bus } from '@directus/memory';
 import { nanoid } from 'nanoid';
-import { Writable } from 'stream';
+import { useBus } from '../bus/index.js';
 
 type PrettyType = 'basic' | 'http' | false;
 

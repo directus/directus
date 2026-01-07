@@ -1,8 +1,8 @@
-import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
 import { mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
 import { describe, expect, test, vi } from 'vitest';
 import { createRouter, createWebHistory } from 'vue-router';
+import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
 
 const router = createRouter({
 	history: createWebHistory(),

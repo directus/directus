@@ -1,4 +1,7 @@
-import { isFieldNullable } from './lib/is-field-nullable.js';
+import type { Accountability, Filter, Item, PermissionsAction } from '@directus/types';
+import { parseFilter, validatePayload } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import { assign, difference, uniq } from 'lodash-es';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
@@ -9,10 +12,7 @@ import {
 	createCollectionForbiddenError,
 	createFieldsForbiddenError,
 } from '../process-ast/utils/validate-path/create-error.js';
-import type { Accountability, Filter, Item, PermissionsAction } from '@directus/types';
-import { parseFilter, validatePayload } from '@directus/utils';
-import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
-import { assign, difference, uniq } from 'lodash-es';
+import { isFieldNullable } from './lib/is-field-nullable.js';
 
 export interface ProcessPayloadOptions {
 	accountability: Accountability;

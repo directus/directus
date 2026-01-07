@@ -1,8 +1,8 @@
-import { triggerFlow } from './index.js';
-import { getFlowManager } from '../../../flows.js';
-import { FlowsService } from '../../../services/flows.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import { getFlowManager } from '../../../flows.js';
+import { FlowsService } from '../../../services/flows.js';
+import { triggerFlow } from './index.js';
 
 vi.mock('../../../services/flows.js');
 vi.mock('../../../flows');

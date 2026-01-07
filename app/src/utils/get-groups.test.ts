@@ -1,5 +1,5 @@
-import { getGroups } from '@/utils/get-groups';
 import { expect, test } from 'vitest';
+import { getGroups } from '@/utils/get-groups';
 
 test('Returns correct groupings for given precision', () => {
 	const testCases: ['year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second', string, string[]][] = [

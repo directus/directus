@@ -1,3 +1,4 @@
+import type { App } from 'vue';
 import TransitionBounce from '@/components/transition/bounce.vue';
 import TransitionDialog from '@/components/transition/dialog.vue';
 import TransitionExpand from '@/components/transition/expand.vue';
@@ -54,7 +55,6 @@ import ContextMenu from '@/directives//context-menu';
 import Focus from '@/directives//focus';
 import Tooltip from '@/directives//tooltip';
 import ClickOutside from '@/directives/click-outside';
-import type { App } from 'vue';
 
 export function register(app: App): void {
 	app.directive('context-menu', ContextMenu);

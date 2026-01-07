@@ -1,7 +1,7 @@
-import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.js';
-import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';
 import type { Accountability, GlobalAccess } from '@directus/types';
 import type { Knex } from 'knex';
+import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.js';
+import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';
 
 /**
  * Fetches the global access permissions for a given accountability.

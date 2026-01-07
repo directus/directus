@@ -1,8 +1,8 @@
-import DisplayFormattedValue from './formatted-value.vue';
 import { defineDisplay } from '@directus/extensions';
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';
+import DisplayFormattedValue from './formatted-value.vue';
 
 export default defineDisplay({
 	id: 'formatted-value',

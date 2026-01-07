@@ -1,6 +1,6 @@
+import { defineInterface } from '@directus/extensions';
 import InterfaceListO2MTreeView from './list-o2m-tree-view.vue';
 import PreviewSVG from './preview.svg?raw';
-import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'list-o2m-tree-view',

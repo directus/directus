@@ -1,5 +1,5 @@
-import InterfaceSystemDisplayTemplate from './system-display-template.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemDisplayTemplate from './system-display-template.vue';
 
 export default defineInterface({
 	id: 'system-display-template',

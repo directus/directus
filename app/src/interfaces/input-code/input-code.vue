@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import CodeMirror, { ModeSpec } from 'codemirror';
+import { computed, onMounted, ref, Ref, watch } from 'vue';
 import importCodemirrorMode from './import-codemirror-mode';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
-import CodeMirror, { ModeSpec } from 'codemirror';
-import { computed, onMounted, ref, Ref, watch } from 'vue';
 
 import 'codemirror/mode/meta';
 

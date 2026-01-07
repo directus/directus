@@ -1,7 +1,7 @@
-import { useExtensions } from './use-system.js';
 import type { Filter, LayoutConfig, ShowSelect } from '@directus/types';
 import type { Component, ComputedRef, PropType, Ref } from 'vue';
 import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { useExtensions } from './use-system.js';
 
 const NAME_SUFFIX = 'wrapper';
 const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery'] as const;

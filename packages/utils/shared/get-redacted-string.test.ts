@@ -1,5 +1,5 @@
-import { getRedactedString } from './get-redacted-string.js';
 import { describe, expect, it } from 'vitest';
+import { getRedactedString } from './get-redacted-string.js';
 
 describe('getRedactedString', () => {
 	it('redacts without a key', () => {

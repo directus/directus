@@ -1,15 +1,15 @@
-import api from '@/api';
-import { useServerStore } from '@/stores/server';
-import type { Revision, RevisionPartial, RevisionsByDate, RevisionWithTime } from '@/types/revisions';
-import { localizedFormat } from '@/utils/localized-format';
-import { localizedFormatDistance } from '@/utils/localized-format-distance';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import { useServerStore } from '@/stores/server';
+import type { Revision, RevisionPartial, RevisionsByDate, RevisionWithTime } from '@/types/revisions';
+import { localizedFormat } from '@/utils/localized-format';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type UseRevisionsOptions = {
 	action?: Action;

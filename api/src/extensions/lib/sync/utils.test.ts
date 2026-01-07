@@ -1,10 +1,10 @@
-import { compareFileMetadata, fsStat, getSyncPaths, pathDepth } from './utils.js';
-import { getExtensionsPath } from '../get-extensions-path.js';
-import { useEnv } from '@directus/env';
-import type { Driver } from '@directus/storage';
 import { stat } from 'node:fs/promises';
 import { join, sep } from 'node:path';
+import { useEnv } from '@directus/env';
+import type { Driver } from '@directus/storage';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { getExtensionsPath } from '../get-extensions-path.js';
+import { compareFileMetadata, fsStat, getSyncPaths, pathDepth } from './utils.js';
 
 vi.mock('node:fs/promises');
 vi.mock('../get-extensions-path.js');

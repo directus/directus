@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useCollection, useLayout } from '@directus/composables';
+import { Filter } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
+import { isEqual } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
@@ -6,11 +11,6 @@ import VDrawer from '@/components/v-drawer.vue';
 import VInfo from '@/components/v-info.vue';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { useCollection, useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
-import { mergeFilters } from '@directus/utils';
-import { isEqual } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

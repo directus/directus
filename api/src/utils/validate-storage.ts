@@ -1,10 +1,10 @@
-import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
-import { useLogger } from '../logger/index.js';
-import { useEnv } from '@directus/env';
-import { toArray } from '@directus/utils';
 import { constants } from 'fs';
 import { access } from 'node:fs/promises';
 import path from 'path';
+import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
+import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
+import { useLogger } from '../logger/index.js';
 
 export async function validateStorage(): Promise<void> {
 	const env = useEnv();

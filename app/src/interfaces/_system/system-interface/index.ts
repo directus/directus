@@ -1,5 +1,5 @@
-import InterfaceSystemInterface from './system-interface.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemInterface from './system-interface.vue';
 
 export default defineInterface({
 	id: 'system-interface',

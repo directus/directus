@@ -1,6 +1,6 @@
-import VHover from './v-hover.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test, vi } from 'vitest';
+import VHover from './v-hover.vue';
 
 test('Mount component', () => {
 	expect(VHover).toBeTruthy();

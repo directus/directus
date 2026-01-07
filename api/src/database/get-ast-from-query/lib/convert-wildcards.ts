@@ -1,9 +1,9 @@
-import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
+import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 
 export interface ConvertWildcardsOptions {
 	collection: string;

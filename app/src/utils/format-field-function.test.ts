@@ -1,9 +1,9 @@
-import { cryptoStub } from '@/__utils__/crypto';
-import { useFieldsStore } from '@/stores/fields';
-import { formatFieldFunction } from '@/utils/format-field-function';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, Mock, test, vi } from 'vitest';
+import { cryptoStub } from '@/__utils__/crypto';
+import { useFieldsStore } from '@/stores/fields';
+import { formatFieldFunction } from '@/utils/format-field-function';
 
 vi.stubGlobal('crypto', cryptoStub);
 

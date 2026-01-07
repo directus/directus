@@ -3,8 +3,8 @@
  * Provides simplified mocks for src/services/folders module used in service testing
  */
 
-import { mockItemsService } from './items-service.js';
 import { vi } from 'vitest';
+import { mockItemsService } from './items-service.js';
 
 /**
  * Creates a standard FoldersService mock for service tests

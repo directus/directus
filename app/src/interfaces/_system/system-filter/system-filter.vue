@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { ClientFilterOperator, FieldFunction, Filter, Type } from '@directus/types';
+import {
+	getFilterOperatorsForType,
+	getOutputTypeForFunction,
+	parseFilterFunctionPath,
+	parseJSON,
+} from '@directus/utils';
+import { cloneDeep, get, isEmpty, set } from 'lodash';
+import { computed, inject, ref } from 'vue';
 import Nodes from './Nodes.vue';
 import { getNodeName } from './utils';
 import VDivider from '@/components/v-divider.vue';
@@ -12,15 +21,6 @@ import VNotice from '@/components/v-notice.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { ClientFilterOperator, FieldFunction, Filter, Type } from '@directus/types';
-import {
-	getFilterOperatorsForType,
-	getOutputTypeForFunction,
-	parseFilterFunctionPath,
-	parseJSON,
-} from '@directus/utils';
-import { cloneDeep, get, isEmpty, set } from 'lodash';
-import { computed, inject, ref } from 'vue';
 
 interface Props {
 	value?: Record<string, any> | string;

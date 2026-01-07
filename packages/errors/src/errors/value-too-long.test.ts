@@ -1,6 +1,6 @@
+import { beforeEach, expect, test } from 'vitest';
 import type { ValueTooLongErrorExtensions } from './value-too-long.js';
 import { messageConstructor } from './value-too-long.js';
-import { beforeEach, expect, test } from 'vitest';
 
 let sample: ValueTooLongErrorExtensions;
 

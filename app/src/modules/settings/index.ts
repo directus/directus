@@ -1,3 +1,4 @@
+import { defineModule } from '@directus/extensions';
 import AiOverview from './routes/ai/overview.vue';
 import Appearance from './routes/appearance/item.vue';
 import Collections from './routes/data-model/collections/collections.vue';
@@ -30,7 +31,6 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
 import RouterPass from '@/utils/router-passthrough';
-import { defineModule } from '@directus/extensions';
 
 export default defineModule({
 	id: 'settings',

@@ -1,7 +1,7 @@
+import { ok as assert } from 'node:assert/strict';
+import type { SchemaOverview } from '@directus/types';
 import { CollectionBuilder, type CollectionOveriewBuilderOptions } from './collection.js';
 import { RelationBuilder } from './relation.js';
-import type { SchemaOverview } from '@directus/types';
-import { ok as assert } from 'node:assert/strict';
 
 export class SchemaBuilder {
 	_collections: CollectionBuilder[] = [];

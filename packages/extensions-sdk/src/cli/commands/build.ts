@@ -1,10 +1,4 @@
-import type { Config, Format, RollupConfig, RollupMode } from '../types.js';
-import { getFileExt } from '../utils/file.js';
-import { clear, log } from '../utils/logger.js';
-import tryParseJson from '../utils/try-parse-json.js';
-import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
-import loadConfig from './helpers/load-config.js';
-import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
+import path from 'path';
 import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ExtensionOptionsBundleEntry, ExtensionManifest as TExtensionManifest } from '@directus/extensions';
 import {
@@ -26,11 +20,17 @@ import vue from '@vitejs/plugin-vue';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
-import path from 'path';
 import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styler';
+import type { Config, Format, RollupConfig, RollupMode } from '../types.js';
+import { getFileExt } from '../utils/file.js';
+import { clear, log } from '../utils/logger.js';
+import tryParseJson from '../utils/try-parse-json.js';
+import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
+import loadConfig from './helpers/load-config.js';
+import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;

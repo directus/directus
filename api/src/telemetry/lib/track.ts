@@ -1,9 +1,9 @@
-import { getReport } from './get-report.js';
-import { sendReport } from './send-report.js';
+import { setTimeout } from 'timers/promises';
+import { getNodeEnv } from '@directus/utils/node';
 import { useLogger } from '../../logger/index.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
-import { getNodeEnv } from '@directus/utils/node';
-import { setTimeout } from 'timers/promises';
+import { getReport } from './get-report.js';
+import { sendReport } from './send-report.js';
 
 /**
  * Generate and send a report. Will log on error, but not throw. No need to be awaited

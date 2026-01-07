@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { version } from './version.js';
 import { updateCheck } from '@directus/update-check';
+import { version } from './version.js';
 
 if (version) {
 	await updateCheck(version);

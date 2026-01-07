@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { difference } from 'lodash';
+import { computed, toRefs } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VHighlight from '@/components/v-highlight.vue';
 import VListGroup from '@/components/v-list-group.vue';
 import VListItem from '@/components/v-list-item.vue';
-import { difference } from 'lodash';
-import { computed, toRefs } from 'vue';
 
 type Delta = {
 	added?: (number | string)[];

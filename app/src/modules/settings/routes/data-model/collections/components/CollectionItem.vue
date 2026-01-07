@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import Draggable from 'vuedraggable';
 import { CollectionTree } from '../collections.vue';
 import CollectionOptions from './collection-options.vue';
 import TransitionExpand from '@/components/transition/expand.vue';
@@ -7,8 +9,6 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import { Collection } from '@/types/collections';
-import { computed } from 'vue';
-import Draggable from 'vuedraggable';
 
 const props = defineProps<{
 	collection: Collection;

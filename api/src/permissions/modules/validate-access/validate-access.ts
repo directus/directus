@@ -1,9 +1,9 @@
-import type { Context } from '../../types.js';
-import { validateCollectionAccess } from './lib/validate-collection-access.js';
-import { validateItemAccess } from './lib/validate-item-access.js';
-import { createCollectionForbiddenError } from '../process-ast/utils/validate-path/create-error.js';
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/types';
+import type { Context } from '../../types.js';
+import { createCollectionForbiddenError } from '../process-ast/utils/validate-path/create-error.js';
+import { validateCollectionAccess } from './lib/validate-collection-access.js';
+import { validateItemAccess } from './lib/validate-item-access.js';
 
 export interface ValidateAccessOptions {
 	accountability: Accountability;

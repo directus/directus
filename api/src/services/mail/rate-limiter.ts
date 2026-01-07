@@ -1,8 +1,8 @@
-import { createRateLimiter } from '../../rate-limiter.js';
 import { useEnv } from '@directus/env';
 import { EmailLimitExceededError } from '@directus/errors';
 import { toBoolean } from '@directus/utils';
 import { RateLimiterQueue } from 'rate-limiter-flexible';
+import { createRateLimiter } from '../../rate-limiter.js';
 
 let emailRateLimiterQueue: RateLimiterQueue | undefined;
 

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Field } from '@directus/types';
+import { debounce, isNil } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import VFieldListItem from './VFieldListItem.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -11,9 +14,6 @@ import { type FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { Field } from '@directus/types';
-import { debounce, isNil } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
 
 const collectionsStore = useCollectionsStore();
 

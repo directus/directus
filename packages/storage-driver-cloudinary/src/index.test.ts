@@ -1,6 +1,10 @@
-import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
-import type { DriverCloudinaryConfig } from './index.js';
-import { DriverCloudinary } from './index.js';
+import { Blob, Buffer } from 'node:buffer';
+import type { Hash } from 'node:crypto';
+import { createHash } from 'node:crypto';
+import type { ParsedPath } from 'node:path';
+import { extname, join, parse } from 'node:path';
+import { PassThrough, Readable } from 'node:stream';
+import { ReadableStream } from 'node:stream/web';
 import { normalizePath } from '@directus/utils';
 import {
 	rand,
@@ -16,17 +20,13 @@ import {
 	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
-import { Blob, Buffer } from 'node:buffer';
-import type { Hash } from 'node:crypto';
-import { createHash } from 'node:crypto';
-import type { ParsedPath } from 'node:path';
-import { extname, join, parse } from 'node:path';
-import { PassThrough, Readable } from 'node:stream';
-import { ReadableStream } from 'node:stream/web';
 import type { Response } from 'undici';
 import { fetch, FormData } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
+import type { DriverCloudinaryConfig } from './index.js';
+import { DriverCloudinary } from './index.js';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');

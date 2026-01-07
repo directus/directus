@@ -1,5 +1,5 @@
-import { useLogger } from '../logger/index.js';
 import { createRequire } from 'node:module';
+import { useLogger } from '../logger/index.js';
 
 const require = createRequire(import.meta.url);
 

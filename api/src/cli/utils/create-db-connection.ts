@@ -1,9 +1,9 @@
-import type { Driver } from '@directus/types';
-import type { Knex } from 'knex';
-import knex from 'knex';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
+import type { Driver } from '@directus/types';
+import type { Knex } from 'knex';
+import knex from 'knex';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -1,6 +1,6 @@
-import { defaultValues, useFormFields, validate } from './form';
 import { expect, test, vi } from 'vitest';
 import { ref } from 'vue';
+import { defaultValues, useFormFields, validate } from './form';
 
 vi.mock('@/stores/relations', () => ({
 	useRelationsStore: () => ({

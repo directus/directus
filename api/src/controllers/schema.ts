@@ -1,8 +1,3 @@
-import { useLogger } from '../logger/index.js';
-import { respond } from '../middleware/respond.js';
-import { SchemaService } from '../services/schema.js';
-import asyncHandler from '../utils/async-handler.js';
-import { getVersionedHash } from '../utils/get-versioned-hash.js';
 import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
 import type { Snapshot, SnapshotDiffWithHash } from '@directus/types';
 import { parseJSON } from '@directus/utils';
@@ -10,6 +5,11 @@ import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import { load as loadYaml } from 'js-yaml';
+import { useLogger } from '../logger/index.js';
+import { respond } from '../middleware/respond.js';
+import { SchemaService } from '../services/schema.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getVersionedHash } from '../utils/get-versioned-hash.js';
 
 const router = express.Router();
 

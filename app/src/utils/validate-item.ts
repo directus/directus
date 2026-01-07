@@ -1,5 +1,3 @@
-import { applyConditions } from './apply-conditions';
-import { useRelationsStore } from '@/stores/relations';
 import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import {
@@ -8,6 +6,8 @@ import {
 	joiValidationErrorItemToErrorExtensions,
 } from '@directus/validation';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
+import { applyConditions } from './apply-conditions';
+import { useRelationsStore } from '@/stores/relations';
 
 export function validateItem(
 	item: Record<string, any>,

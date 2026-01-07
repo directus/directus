@@ -1,5 +1,5 @@
-import DisplayLabels from './labels.vue';
 import { defineDisplay } from '@directus/extensions';
+import DisplayLabels from './labels.vue';
 
 export default defineDisplay({
 	id: 'labels',

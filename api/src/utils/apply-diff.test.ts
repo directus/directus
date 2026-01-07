@@ -1,10 +1,3 @@
-import { applyDiff, isNestedMetaUpdate } from './apply-diff.js';
-import * as getSchema from './get-schema.js';
-import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
-import { CollectionsService } from '../services/collections.js';
-import { FieldsService } from '../services/fields.js';
-import { RelationsService } from '../services/relations.js';
-import type { Collection } from '../types/collection.js';
 import type {
 	Snapshot,
 	SnapshotCollection,
@@ -19,6 +12,13 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
+import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
+import { CollectionsService } from '../services/collections.js';
+import { FieldsService } from '../services/fields.js';
+import { RelationsService } from '../services/relations.js';
+import type { Collection } from '../types/collection.js';
+import { applyDiff, isNestedMetaUpdate } from './apply-diff.js';
+import * as getSchema from './get-schema.js';
 
 vi.mock('../cache.js', () => ({
 	flushCaches: vi.fn(),

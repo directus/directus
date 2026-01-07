@@ -1,8 +1,8 @@
+import { defineInterface } from '@directus/extensions';
+import type { ComponentOptions } from 'vue';
 import InterfaceMap from './map.vue';
 import Options from './options.vue';
 import PreviewSVG from './preview.svg?raw';
-import { defineInterface } from '@directus/extensions';
-import type { ComponentOptions } from 'vue';
 
 export default defineInterface({
 	id: 'map',

@@ -1,12 +1,12 @@
-import type { GraphQLService } from './index.js';
-import { getQuery } from './schema/parse-query.js';
+import { EventEmitter, on } from 'events';
+import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { useBus } from '../../bus/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 import type { Subscription } from '../../websocket/types.js';
 import { getPayload } from '../../websocket/utils/items.js';
-import { EventEmitter, on } from 'events';
-import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
+import { getQuery } from './schema/parse-query.js';
+import type { GraphQLService } from './index.js';
 
 const messages = createPubSub(new EventEmitter());
 

@@ -1,15 +1,3 @@
-import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
-import { ItemsService } from './items.js';
-import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
-import emitter from '../emitter.js';
-import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { getDefaultIndexName } from '../utils/get-default-index-name.js';
-import { getSchema } from '../utils/get-schema.js';
-import { transaction } from '../utils/transaction.js';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { ForeignKey, SchemaInspector } from '@directus/schema';
@@ -29,6 +17,18 @@ import type {
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
+import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
+import emitter from '../emitter.js';
+import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { getDefaultIndexName } from '../utils/get-default-index-name.js';
+import { getSchema } from '../utils/get-schema.js';
+import { transaction } from '../utils/transaction.js';
+import { ItemsService } from './items.js';
 
 const env = useEnv();
 

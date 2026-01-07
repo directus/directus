@@ -1,9 +1,9 @@
+import type { PermissionsAction } from '@directus/types';
+import { Router } from 'express';
 import getDatabase from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { createTusServer } from '../services/tus/index.js';
 import asyncHandler from '../utils/async-handler.js';
-import type { PermissionsAction } from '@directus/types';
-import { Router } from 'express';
 
 const mapAction = (method: string): PermissionsAction => {
 	switch (method) {

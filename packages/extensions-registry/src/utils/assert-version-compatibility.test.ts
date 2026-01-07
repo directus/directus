@@ -1,7 +1,7 @@
-import { assertVersionCompatibility } from './assert-version-compatibility.js';
-import { getApiVersion } from './get-api-version.js';
 import { OutOfDateError } from '@directus/errors';
 import { afterEach, expect, test, vi } from 'vitest';
+import { assertVersionCompatibility } from './assert-version-compatibility.js';
+import { getApiVersion } from './get-api-version.js';
 
 vi.mock('./get-api-version.js');
 

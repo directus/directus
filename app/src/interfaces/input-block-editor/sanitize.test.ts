@@ -1,5 +1,5 @@
-import { sanitizeBlockData, sanitizeValue } from './sanitize';
 import { describe, expect, test } from 'vitest';
+import { sanitizeBlockData, sanitizeValue } from './sanitize';
 
 describe('sanitizeValue', () => {
 	describe('input handling', () => {

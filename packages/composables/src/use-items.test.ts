@@ -1,10 +1,10 @@
-import { useItems } from './use-items.js';
-import { useApi } from './use-system.js';
 import type { Filter } from '@directus/types';
 import { flushPromises } from '@vue/test-utils';
 import type { AxiosInstance } from 'axios';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { type Ref, ref, unref } from 'vue';
+import { useItems } from './use-items.js';
+import { useApi } from './use-system.js';
 
 vi.mock('./use-system.js');
 

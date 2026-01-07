@@ -1,3 +1,15 @@
+import * as http from 'http';
+import * as https from 'https';
+import type { ListenOptions } from 'net';
+import url from 'url';
+import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
+import { getNodeEnv } from '@directus/utils/node';
+import type { TerminusOptions } from '@godaddy/terminus';
+import { createTerminus } from '@godaddy/terminus';
+import type { Request } from 'express';
+import { once } from 'lodash-es';
+import qs from 'qs';
 import createApp from './app.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
@@ -14,18 +26,6 @@ import {
 	getWebSocketController,
 } from './websocket/controllers/index.js';
 import { startWebSocketHandlers } from './websocket/handlers/index.js';
-import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
-import { getNodeEnv } from '@directus/utils/node';
-import type { TerminusOptions } from '@godaddy/terminus';
-import { createTerminus } from '@godaddy/terminus';
-import type { Request } from 'express';
-import * as http from 'http';
-import * as https from 'https';
-import { once } from 'lodash-es';
-import type { ListenOptions } from 'net';
-import qs from 'qs';
-import url from 'url';
 
 export let SERVER_ONLINE = true;
 

@@ -1,6 +1,6 @@
-import { getFieldsInGroup } from './get-fields-in-group.js';
 import { Field } from '@directus/types';
 import { describe, expect, it } from 'vitest';
+import { getFieldsInGroup } from './get-fields-in-group.js';
 
 describe('getFieldsInGroup', () => {
 	const fields: Field[] = [

@@ -1,12 +1,12 @@
+import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import { format } from 'date-fns';
+import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
 import { SettingsService } from '../services/index.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
 import asyncHandler from '../utils/async-handler.js';
 import { createAdmin } from '../utils/create-admin.js';
-import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
-import { format } from 'date-fns';
-import { Router } from 'express';
 
 const router = Router();
 

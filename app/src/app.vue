@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useAppStore } from '@directus/stores';
+import { ThemeProvider } from '@directus/themes';
+import { useHead } from '@unhead/vue';
+import { computed, onMounted, onUnmounted, toRefs } from 'vue';
+import { RouterView } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import { useUserStore } from './stores/user';
@@ -10,11 +15,6 @@ import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
 import { generateFavicon } from '@/utils/generate-favicon';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import { useAppStore } from '@directus/stores';
-import { ThemeProvider } from '@directus/themes';
-import { useHead } from '@unhead/vue';
-import { computed, onMounted, onUnmounted, toRefs } from 'vue';
-import { RouterView } from 'vue-router';
 
 const appStore = useAppStore();
 const serverStore = useServerStore();

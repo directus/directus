@@ -1,7 +1,7 @@
-import { useInputSchema } from './use-input-schema';
 import type { DeepPartial, Field } from '@directus/types';
 import { describe, expect, it } from 'vitest';
 import { ref } from 'vue';
+import { useInputSchema } from './use-input-schema';
 
 // Minimal field factory using DeepPartial to keep fixtures concise
 const makeField = (overrides: DeepPartial<Field> = {}): DeepPartial<Field> => ({

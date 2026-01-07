@@ -1,3 +1,9 @@
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
+import { Field } from '@directus/types';
+import { debounce, flatten } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
@@ -13,12 +19,6 @@ import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { useCollection, useItems, useSync } from '@directus/composables';
-import { defineLayout } from '@directus/extensions';
-import { Field } from '@directus/types';
-import { debounce, flatten } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VPagination from './v-pagination.vue';
 import { ref } from 'vue';
+import VPagination from './v-pagination.vue';
 
 function initState() {
 	return {

@@ -1,3 +1,9 @@
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
+import { getFieldsFromTemplate } from '@directus/utils';
+import { clone } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import CardsActions from './actions.vue';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
@@ -9,12 +15,6 @@ import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { useCollection, useItems, useSync } from '@directus/composables';
-import { defineLayout } from '@directus/extensions';
-import { getFieldsFromTemplate } from '@directus/utils';
-import { clone } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',

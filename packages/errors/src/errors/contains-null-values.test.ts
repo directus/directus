@@ -1,5 +1,5 @@
-import { messageConstructor } from './contains-null-values.js';
 import { beforeEach, expect, test } from 'vitest';
+import { messageConstructor } from './contains-null-values.js';
 
 let sample: {
 	collection: string;

@@ -1,6 +1,7 @@
-import { defineOperationApi } from '@directus/extensions';
-import { sieveFunctions } from '@directus/utils';
 import { createRequire } from 'node:module';
+import { defineOperationApi } from '@directus/extensions';
+// eslint-disable-next-line import/order
+import { sieveFunctions } from '@directus/utils';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');

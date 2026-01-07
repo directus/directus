@@ -1,5 +1,5 @@
-import { createRedis } from './create-redis.js';
 import { Redis } from 'ioredis';
+import { createRedis } from './create-redis.js';
 
 /**
  * Memoization cache for useRedis

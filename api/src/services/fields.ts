@@ -1,26 +1,3 @@
-import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
-import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
-import { ItemsService } from './items.js';
-import { PayloadService } from './payload.js';
-import { translateDatabaseError } from '../database/errors/translate.js';
-import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
-import emitter from '../emitter.js';
-import { RelationsService } from './relations.js';
-import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import getDefaultValue from '../utils/get-default-value.js';
-import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
-import getLocalType from '../utils/get-local-type.js';
-import { getSchema } from '../utils/get-schema.js';
-import { sanitizeColumn } from '../utils/sanitize-schema.js';
-import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { transaction } from '../utils/transaction.js';
-import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
-import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
-import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import {
 	DEFAULT_NUMERIC_PRECISION,
 	DEFAULT_NUMERIC_SCALE,
@@ -49,6 +26,29 @@ import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
 import { z } from 'zod';
+import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
+import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
+import emitter from '../emitter.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import getDefaultValue from '../utils/get-default-value.js';
+import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
+import getLocalType from '../utils/get-local-type.js';
+import { getSchema } from '../utils/get-schema.js';
+import { sanitizeColumn } from '../utils/sanitize-schema.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { transaction } from '../utils/transaction.js';
+import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
+import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
+import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
+import { ItemsService } from './items.js';
+import { PayloadService } from './payload.js';
+import { RelationsService } from './relations.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();

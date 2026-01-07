@@ -1,3 +1,7 @@
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { OperationRaw } from '@directus/types';
+import { z } from 'zod';
 import { OperationsService } from '../../../services/operations.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
@@ -8,10 +12,6 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
-import type { OperationRaw } from '@directus/types';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { z } from 'zod';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

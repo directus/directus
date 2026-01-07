@@ -1,5 +1,5 @@
-import DisplayIcon from './icon.vue';
 import { defineDisplay } from '@directus/extensions';
+import DisplayIcon from './icon.vue';
 
 export default defineDisplay({
 	id: 'icon',

@@ -1,5 +1,5 @@
-import { parseJsonSchema7 } from './parse-json-schema-7.js';
 import { describe, expect, it } from 'vitest';
+import { parseJsonSchema7 } from './parse-json-schema-7.js';
 
 describe('parseJsonSchema7', () => {
 	it('accepts a minimal object schema with properties and required', () => {

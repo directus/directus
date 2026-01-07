@@ -1,3 +1,22 @@
+import { randomUUID } from 'node:crypto';
+import { getUrl } from '@common/config';
+import {
+	ClearCaches,
+	CreateCollection,
+	CreateFieldM2O,
+	CreateFieldO2M,
+	CreateItem,
+	DisableTestCachingSetup,
+} from '@common/functions';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
+import type { PrimaryKeyType } from '@common/types';
+import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
+import { load as loadYaml } from 'js-yaml';
+import { cloneDeep } from 'lodash-es';
+import request from 'supertest';
+import { describe, expect, it } from 'vitest';
+import { version as currentDirectusVersion } from '../../../../../../api/package.json';
+import type { Snapshot } from '../../../../../../api/src/types/snapshot.js';
 import {
 	collectionAll,
 	collectionM2A,
@@ -17,25 +36,6 @@ import {
 	junctionSelfM2M,
 	tempTestCollection,
 } from './schema.seed';
-import { version as currentDirectusVersion } from '../../../../../../api/package.json';
-import type { Snapshot } from '../../../../../../api/src/types/snapshot.js';
-import { getUrl } from '@common/config';
-import {
-	ClearCaches,
-	CreateCollection,
-	CreateFieldM2O,
-	CreateFieldO2M,
-	CreateItem,
-	DisableTestCachingSetup,
-} from '@common/functions';
-import vendors, { type Vendor } from '@common/get-dbs-to-test';
-import type { PrimaryKeyType } from '@common/types';
-import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
-import { load as loadYaml } from 'js-yaml';
-import { cloneDeep } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
-import request from 'supertest';
-import { describe, expect, it } from 'vitest';
 
 describe('Schema Snapshots', () => {
 	const snapshotsCacheOriginal: {

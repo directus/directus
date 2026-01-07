@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { clone } from 'lodash';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import ExtensionOptions from '../shared/extension-options.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 import VFancySelect, { FancySelectItem } from '@/components/v-fancy-select.vue';
 import VNotice from '@/components/v-notice.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useExtension } from '@/composables/use-extension';
-import { clone } from 'lodash';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
 
 const fieldDetailStore = useFieldDetailStore();
 

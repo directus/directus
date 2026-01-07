@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import VTabItem from './v-tab-item.vue';
 import VTab from './v-tab.vue';
 import VTabsItems from './v-tabs-items.vue';
 import VTabs from './v-tabs.vue';
-import { ref } from 'vue';
 
 const value = ref([1]);
 </script>

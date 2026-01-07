@@ -1,10 +1,10 @@
-import FormField from '@/components/v-form/components/form-field.vue';
-import VMenu from '@/components/v-menu.vue';
-import { i18n } from '@/lang';
 import { Width } from '@directus/system-data';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
+import FormField from '@/components/v-form/components/form-field.vue';
+import VMenu from '@/components/v-menu.vue';
+import { i18n } from '@/lang';
 
 const baseField = {
 	field: 'test',

@@ -1,5 +1,5 @@
-import InterfaceInputTranslatedString from './system-raw-editor.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceInputTranslatedString from './system-raw-editor.vue';
 
 export default defineInterface({
 	id: 'system-raw-editor',

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Policy } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -13,10 +17,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Policy } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterView, useRouter } from 'vue-router';
 
 type PolicyBaseFields = 'id' | 'name' | 'icon' | 'description';
 

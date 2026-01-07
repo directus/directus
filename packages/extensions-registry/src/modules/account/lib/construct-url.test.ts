@@ -1,5 +1,5 @@
-import { constructUrl } from './construct-url.js';
 import { expect, test, vi } from 'vitest';
+import { constructUrl } from './construct-url.js';
 
 vi.mock('../../../constants.js', () => ({
 	DEFAULT_REGISTRY: 'https://registry.directus.io',

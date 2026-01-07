@@ -1,3 +1,4 @@
+import type { Item } from '@directus/types';
 import emitter from '../../emitter.js';
 import getDatabase, { getDatabaseClient } from '../index.js';
 import { extractError as mssql } from './dialects/mssql.js';
@@ -6,7 +7,6 @@ import { extractError as oracle } from './dialects/oracle.js';
 import { extractError as postgres } from './dialects/postgres.js';
 import { extractError as sqlite } from './dialects/sqlite.js';
 import type { SQLError } from './dialects/types.js';
-import type { Item } from '@directus/types';
 
 /**
  * Translates an error thrown by any of the databases into a pre-defined Exception. Currently

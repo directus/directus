@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { useLayout } from '@directus/composables';
+import { getDateTimeFormatted, mergeFilters } from '@directus/utils';
+import { storeToRefs } from 'pinia';
+import { computed, nextTick, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, RouterView, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
@@ -29,12 +35,6 @@ import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { useLayout } from '@directus/composables';
-import { getDateTimeFormatted, mergeFilters } from '@directus/utils';
-import { storeToRefs } from 'pinia';
-import { computed, nextTick, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { onBeforeRouteLeave, onBeforeRouteUpdate, RouterView, useRouter } from 'vue-router';
 
 const props = defineProps<{
 	folder?: string;

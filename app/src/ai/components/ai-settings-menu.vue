@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { type ToolApprovalMode, useAiStore } from '../stores/use-ai';
 import { SystemTool } from '../types/system-tool';
 import VButton from '@/components/v-button.vue';
@@ -11,9 +14,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSelect from '@/components/v-select/v-select.vue';
-import formatTitle from '@directus/format-title';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const aiStore = useAiStore();

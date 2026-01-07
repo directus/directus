@@ -1,6 +1,6 @@
+import { defineInterface } from '@directus/extensions';
 import PreviewSVG from './preview.svg?raw';
 import InterfaceSelectDropdown from './select-dropdown.vue';
-import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'select-dropdown',

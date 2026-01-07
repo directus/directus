@@ -1,6 +1,6 @@
-import VDivider from './v-divider.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import VDivider from './v-divider.vue';
 
 test('Mount component', () => {
 	expect(VDivider).toBeTruthy();

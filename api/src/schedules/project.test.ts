@@ -1,10 +1,10 @@
-import projectSchedule from './project.js';
-import getDatabase from '../database/index.js';
-import { sendReport } from '../telemetry/index.js';
-import { scheduleSynchronizedJob } from '../utils/schedule.js';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, expect, test, vi } from 'vitest';
+import getDatabase from '../database/index.js';
+import { sendReport } from '../telemetry/index.js';
+import { scheduleSynchronizedJob } from '../utils/schedule.js';
+import projectSchedule from './project.js';
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO

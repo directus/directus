@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useGroupable } from '@directus/composables';
+import { ContentVersion, PrimaryKey } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -7,11 +12,6 @@ import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
 import type { Revision } from '@/types/revisions';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
-import { useGroupable } from '@directus/composables';
-import { ContentVersion, PrimaryKey } from '@directus/types';
-import { abbreviateNumber } from '@directus/utils';
-import { computed, onMounted, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: string;

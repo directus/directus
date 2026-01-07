@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Preset } from '@directus/types';
+import { computed, reactive, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -20,9 +23,6 @@ import { useUserStore } from '@/stores/user';
 import { getCollectionRoute } from '@/utils/get-route';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Preset } from '@directus/types';
-import { computed, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
 interface Props {
 	bookmark: Preset;

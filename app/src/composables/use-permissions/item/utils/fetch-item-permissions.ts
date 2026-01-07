@@ -1,9 +1,9 @@
-import { Collection, PrimaryKey } from '../../types';
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { ItemPermissions } from '@directus/types';
 import { computedAsync } from '@vueuse/core';
 import { ref, unref } from 'vue';
+import { Collection, PrimaryKey } from '../../types';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const defaultPermissions: ItemPermissions = {
 	update: {

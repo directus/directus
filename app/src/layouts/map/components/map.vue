@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { useSettingsStore } from '@/stores/settings';
-import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
 import { useAppStore } from '@directus/stores';
 import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -22,6 +19,9 @@ import maplibre, {
 } from 'maplibre-gl';
 import { computed, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch, WatchStopHandle } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useSettingsStore } from '@/stores/settings';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
+import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';

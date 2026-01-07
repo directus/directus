@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
+import { useApi } from '@directus/composables';
+import { Alterations, Item, Policy } from '@directus/types';
+import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -17,12 +23,6 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { useApi } from '@directus/composables';
-import { Alterations, Item, Policy } from '@directus/types';
-import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
-import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 type Access = {
 	id: string;

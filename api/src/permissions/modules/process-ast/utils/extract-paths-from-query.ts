@@ -1,7 +1,7 @@
-import type { FieldKey } from '../types.js';
-import { flattenFilter } from './flatten-filter.js';
 import type { Query } from '@directus/types';
 import { isEqual, uniqWith } from 'lodash-es';
+import type { FieldKey } from '../types.js';
+import { flattenFilter } from './flatten-filter.js';
 
 /**
  * Converts the passed Query object into a unique list of path arrays, for example:

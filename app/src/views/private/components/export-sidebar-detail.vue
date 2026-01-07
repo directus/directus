@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import { Filter } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import type { AxiosProgressEvent } from 'axios';
+import { debounce, pick } from 'lodash';
+import { computed, reactive, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import ImportErrorDialog from './import-error-dialog.vue';
 import SidebarDetail from './sidebar-detail.vue';
-import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -26,13 +33,6 @@ import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
-import { useCollection } from '@directus/composables';
-import { Filter } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import type { AxiosProgressEvent } from 'axios';
-import { debounce, pick } from 'lodash';
-import { computed, reactive, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type LayoutQuery = {
 	fields?: string[];

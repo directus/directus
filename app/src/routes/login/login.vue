@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { useAppStore } from '@directus/stores';
+import { useHead } from '@unhead/vue';
+import { storeToRefs } from 'pinia';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
 import ContinueAs from './components/continue-as.vue';
 import { LdapForm, LoginForm } from './components/login-form/';
 import SsoLinks from './components/sso-links.vue';
@@ -8,12 +14,6 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import { DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { useServerStore } from '@/stores/server';
 import PublicView from '@/views/public';
-import { useAppStore } from '@directus/stores';
-import { useHead } from '@unhead/vue';
-import { storeToRefs } from 'pinia';
-import { computed, ref, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterLink } from 'vue-router';
 
 withDefaults(
 	defineProps<{

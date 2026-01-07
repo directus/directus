@@ -1,5 +1,3 @@
-import type { Filter, FilterOperator } from './filter.js';
-import type { DeepPartial } from './misc.js';
 import type {
 	FUNCTIONS,
 	GEOMETRY_FORMATS,
@@ -10,6 +8,8 @@ import type {
 	TYPES,
 } from '@directus/constants';
 import type { Column } from '@directus/schema';
+import type { Filter, FilterOperator } from './filter.js';
+import type { DeepPartial } from './misc.js';
 
 type Translations = {
 	language: string;

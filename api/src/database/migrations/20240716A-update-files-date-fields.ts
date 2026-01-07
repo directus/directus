@@ -1,5 +1,5 @@
-import { getDatabaseClient } from '../index.js';
 import type { Knex } from 'knex';
+import { getDatabaseClient } from '../index.js';
 
 export async function up(knex: Knex): Promise<void> {
 	if (getDatabaseClient(knex) === 'mysql') {

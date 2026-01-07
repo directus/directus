@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { useGroupable } from '@directus/composables';
+import { Action } from '@directus/constants';
+import type { FlowRaw } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
+import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import LogsDrawer from './logs-drawer.vue';
 import VDetail from '@/components/v-detail.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -6,12 +12,6 @@ import VPagination from '@/components/v-pagination.vue';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
-import { useGroupable } from '@directus/composables';
-import { Action } from '@directus/constants';
-import type { FlowRaw } from '@directus/types';
-import { abbreviateNumber } from '@directus/utils';
-import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	flow: FlowRaw;

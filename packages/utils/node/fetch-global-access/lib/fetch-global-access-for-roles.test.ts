@@ -1,8 +1,8 @@
-import { fetchGlobalAccessForRoles } from './fetch-global-access-for-roles.js';
-import { fetchGlobalAccessForQuery } from '../utils/fetch-global-access-for-query.js';
 import type { GlobalAccess } from '@directus/types';
 import type { Knex } from 'knex';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { fetchGlobalAccessForQuery } from '../utils/fetch-global-access-for-query.js';
+import { fetchGlobalAccessForRoles } from './fetch-global-access-for-roles.js';
 
 vi.mock('../utils/fetch-global-access-for-query.js');
 

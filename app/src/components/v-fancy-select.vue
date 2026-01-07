@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { computed } from 'vue';
 
 export type FancySelectItem = (
 	| {

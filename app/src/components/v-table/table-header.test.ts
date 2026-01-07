@@ -1,3 +1,7 @@
+import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { Router } from 'vue-router';
 import TableHeader from './table-header.vue';
 import type { Header, Sort } from './types';
 import { Focus } from '@/__utils__/focus';
@@ -6,10 +10,6 @@ import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
-import { mount } from '@vue/test-utils';
-import { createPinia, setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { Router } from 'vue-router';
 
 // Mock the useUserStore
 vi.mock('@/stores/user', () => ({

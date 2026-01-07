@@ -1,6 +1,6 @@
+import { defineInterface } from '@directus/extensions';
 import InterfacePresentationLinks from './presentation-links.vue';
 import PreviewSVG from './preview.svg?raw';
-import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'presentation-links',

@@ -1,3 +1,9 @@
+import { getUrl } from '@common/config';
+import { CreatePermission } from '@common/functions';
+import vendors from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
+import request from 'supertest';
+import { beforeAll, describe, expect, it, test } from 'vitest';
 import {
 	collection,
 	collectionItemName,
@@ -5,12 +11,6 @@ import {
 	singleton,
 	singletonItemName,
 } from './check-item-permissions.seed';
-import { getUrl } from '@common/config';
-import { CreatePermission } from '@common/functions';
-import vendors from '@common/get-dbs-to-test';
-import { USER } from '@common/variables';
-import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
 
 let isSeeded = false;
 

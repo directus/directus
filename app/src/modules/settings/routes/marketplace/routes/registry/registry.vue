@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import InlineFilter from './components/inline-filter.vue';
+import type { RegistryListResponse } from '@directus/extensions-registry';
+import { useRouteQuery } from '@vueuse/router';
+import { isEqual } from 'lodash';
+import { computed, ref, watch, watchEffect } from 'vue';
+import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
+import InlineFilter from './components/inline-filter.vue';
 import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
@@ -11,11 +16,6 @@ import VList from '@/components/v-list.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { PrivateView } from '@/views/private';
-import type { RegistryListResponse } from '@directus/extensions-registry';
-import { useRouteQuery } from '@vueuse/router';
-import { isEqual } from 'lodash';
-import { computed, ref, watch, watchEffect } from 'vue';
-import { RouterView } from 'vue-router';
 
 const perPage = 10;
 

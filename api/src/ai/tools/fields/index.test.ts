@@ -1,7 +1,7 @@
-import { fields } from './index.js';
-import { FieldsService } from '../../../services/fields.js';
 import type { Accountability, Field, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import { FieldsService } from '../../../services/fields.js';
+import { fields } from './index.js';
 
 vi.mock('../../../services/fields.js');
 

@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import type { ShowSelect } from '@directus/types';
+import { clone, forEach, pick } from 'lodash';
+import { computed, ref, useSlots } from 'vue';
+import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import type { ShowSelect } from '@directus/types';
-import { clone, forEach, pick } from 'lodash';
-import { computed, ref, useSlots } from 'vue';
-import Draggable from 'vuedraggable';
 
 const HeaderDefaults: Header = {
 	text: '',

@@ -1,11 +1,11 @@
-import getDatabase from '../database/index.js';
-import emitter from '../emitter.js';
-import { useLogger } from '../logger/index.js';
 import { ErrorCode, InternalServerError, isDirectusError } from '@directus/errors';
 import type { DeepPartial } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import type { ErrorRequestHandler } from 'express';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import { useLogger } from '../logger/index.js';
 
 type ApiError = {
 	message: string;

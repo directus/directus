@@ -1,6 +1,6 @@
-import { isValidUuid } from './is-valid-uuid.js';
 import { ForbiddenError } from '@directus/errors';
 import type { PrimaryKey, SchemaOverview } from '@directus/types';
+import { isValidUuid } from './is-valid-uuid.js';
 
 /**
  * Validate keys based on its type

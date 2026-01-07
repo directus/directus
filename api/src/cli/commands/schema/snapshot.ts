@@ -1,10 +1,10 @@
+import { promises as fs, constants as fsConstants } from 'fs';
+import path from 'path';
+import inquirer from 'inquirer';
+import { dump as toYaml } from 'js-yaml';
 import getDatabase from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
-import { promises as fs, constants as fsConstants } from 'fs';
-import inquirer from 'inquirer';
-import { dump as toYaml } from 'js-yaml';
-import path from 'path';
 
 export async function snapshot(
 	snapshotPath?: string,

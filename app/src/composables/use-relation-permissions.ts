@@ -1,3 +1,4 @@
+import { computed, Ref } from 'vue';
 import {
 	UsableCollectionPermissions,
 	useCollectionPermissions,
@@ -6,7 +7,6 @@ import { RelationM2A } from './use-relation-m2a';
 import { RelationM2M } from './use-relation-m2m';
 import { RelationM2O } from './use-relation-m2o';
 import { RelationO2M } from './use-relation-o2m';
-import { computed, Ref } from 'vue';
 
 export function useRelationPermissionsM2O(info: Ref<RelationM2O | undefined>) {
 	const relatedPermissions = useCollectionPermissions(computed(() => info.value?.relatedCollection.collection ?? null));

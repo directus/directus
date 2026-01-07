@@ -1,8 +1,8 @@
-import { injectCases } from './inject-cases.js';
-import type { AST } from '../../../../types/ast.js';
-import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import type { DeepPartial, Permission } from '@directus/types';
 import { beforeAll, expect, test, vi } from 'vitest';
+import type { AST } from '../../../../types/ast.js';
+import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
+import { injectCases } from './inject-cases.js';
 
 vi.mock('../../../utils/get-unaliased-field-key.js');
 

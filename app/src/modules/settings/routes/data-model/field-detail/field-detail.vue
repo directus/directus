@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { LocalType } from '@directus/types';
+import { storeToRefs } from 'pinia';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
 import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
 import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
@@ -11,12 +17,6 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import formatTitle from '@directus/format-title';
-import { LocalType } from '@directus/types';
-import { storeToRefs } from 'pinia';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{

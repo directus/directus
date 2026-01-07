@@ -1,6 +1,6 @@
+import { defineInterface } from '@directus/extensions';
 import PreviewSVG from './preview.svg?raw';
 import InterfaceSelectRadio from './select-radio.vue';
-import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'select-radio',

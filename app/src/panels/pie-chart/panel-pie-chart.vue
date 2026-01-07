@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { monoThemeGenerator } from './color-generator';
-import { useFieldsStore } from '@/stores/fields';
-import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { isNil } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { monoThemeGenerator } from './color-generator';
+import { useFieldsStore } from '@/stores/fields';
+import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 
 type ConditionalFillFormat = {
 	operator: StringConditionalFillOperators;

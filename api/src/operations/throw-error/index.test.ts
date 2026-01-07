@@ -1,6 +1,6 @@
-import config from './index.js';
 import { InternalServerError } from '@directus/errors';
 import { describe, expect, test } from 'vitest';
+import config from './index.js';
 
 const DEFAULT_ERROR = new InternalServerError();
 

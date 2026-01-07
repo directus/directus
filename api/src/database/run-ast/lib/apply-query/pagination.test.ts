@@ -1,7 +1,7 @@
-import { Client_SQLite3 } from './mock.js';
-import { applyLimit, applyOffset } from './pagination.js';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
+import { Client_SQLite3 } from './mock.js';
+import { applyLimit, applyOffset } from './pagination.js';
 
 test('limit of 0', async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));

@@ -1,4 +1,5 @@
-import { DriverAzure, type DriverAzureConfig } from './index.js';
+import { join } from 'node:path';
+import { PassThrough } from 'node:stream';
 import { BlobServiceClient, type ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
@@ -16,9 +17,8 @@ import {
 	randUrl,
 	randWord,
 } from '@ngneat/falso';
-import { join } from 'node:path';
-import { PassThrough } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
+import { DriverAzure, type DriverAzureConfig } from './index.js';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');

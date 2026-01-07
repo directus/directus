@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useGroupable } from '@directus/composables';
+import { PrimaryKey, Share } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
+import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ShareItem from './share-item.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import api from '@/api';
@@ -16,11 +21,6 @@ import { useClipboard } from '@/composables/use-clipboard';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { useGroupable } from '@directus/composables';
-import { PrimaryKey, Share } from '@directus/types';
-import { abbreviateNumber } from '@directus/utils';
-import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: string;

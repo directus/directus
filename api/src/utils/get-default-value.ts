@@ -1,9 +1,9 @@
-import getLocalType from './get-local-type.js';
-import { useLogger } from '../logger/index.js';
 import type { Column, SchemaOverview } from '@directus/schema';
 import type { FieldMeta } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
+import { useLogger } from '../logger/index.js';
+import getLocalType from './get-local-type.js';
 
 export default function getDefaultValue(
 	column: SchemaOverview[string]['columns'][string] | Column,

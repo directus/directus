@@ -1,12 +1,10 @@
 import type { Knex } from 'knex';
 import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelperDefault } from './default.js';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-// eslint-disable-next-line import/order
-import { SchemaHelperDefault } from './default.js';
 
 describe('SchemaHelperDefault', () => {
 	function createHelper() {

@@ -1,9 +1,9 @@
-import { getExtensionsPath } from '../get-extensions-path.js';
+import { stat } from 'node:fs/promises';
+import { join, relative, resolve, sep } from 'node:path';
 import { useEnv } from '@directus/env';
 import type { Driver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
-import { stat } from 'node:fs/promises';
-import { join, relative, resolve, sep } from 'node:path';
+import { getExtensionsPath } from '../get-extensions-path.js';
 
 /**
  * Returns the directory depth of the provided path

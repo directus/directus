@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { mustacheMode } from './mustacheMode';
-import { useWindowSize } from '@/composables/use-window-size';
-import { getStringifiedValue } from '@/utils/get-stringified-value';
 import { isValidJSON, parseJSON } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { mustacheMode } from './mustacheMode';
+import { useWindowSize } from '@/composables/use-window-size';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
 
 const props = withDefaults(
 	defineProps<{

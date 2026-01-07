@@ -1,9 +1,9 @@
+import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
 import type { AST } from '../../../../types/index.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
-import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 
 export interface ValidateItemAccessOptions {
 	accountability: Accountability;

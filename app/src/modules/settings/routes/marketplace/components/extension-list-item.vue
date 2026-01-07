@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { RegistryListResponse } from '@directus/extensions-registry';
+import { abbreviateNumber } from '@directus/utils';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatName } from '../utils/format-name';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -7,10 +11,6 @@ import VListItem from '@/components/v-list-item.vue';
 import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
 import { useExtensionsStore } from '@/stores/extensions';
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
-import type { RegistryListResponse } from '@directus/extensions-registry';
-import { abbreviateNumber } from '@directus/utils';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 

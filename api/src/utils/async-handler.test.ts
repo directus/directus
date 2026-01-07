@@ -1,7 +1,7 @@
-import asyncHandler from './async-handler.js';
 import type { Request, RequestHandler, Response } from 'express';
 import '../types/express.d.ts';
 import { expect, test, vi } from 'vitest';
+import asyncHandler from './async-handler.js';
 
 const mockRequest: Partial<Request & { token?: string }> = {};
 const mockResponse: Partial<Response> = {};

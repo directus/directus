@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { BasicRole } from '../composables/use-navigation';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListGroup from '@/components/v-list-group.vue';
@@ -10,7 +11,6 @@ import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
-import { computed } from 'vue';
 
 const props = defineProps<{
 	role: BasicRole;

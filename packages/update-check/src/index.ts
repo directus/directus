@@ -1,10 +1,10 @@
-import { getCache } from './cache.js';
 import type { Manifest } from '@npm/types';
 import Axios from 'axios';
 import { setupCache } from 'axios-cache-interceptor';
 import boxen, { type Options as BoxenOptions } from 'boxen';
 import chalk from 'chalk';
 import { gte, prerelease } from 'semver';
+import { getCache } from './cache.js';
 
 const cache = await getCache();
 const instance = Axios.create();

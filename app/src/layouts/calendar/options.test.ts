@@ -1,8 +1,8 @@
-import Options from './options.vue';
-import { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { beforeAll, expect, test, vi } from 'vitest';
 import { createI18n, I18n } from 'vue-i18n';
+import Options from './options.vue';
+import { GlobalMountOptions } from '@/__utils__/types';
 
 let i18n: I18n;
 let global: GlobalMountOptions;

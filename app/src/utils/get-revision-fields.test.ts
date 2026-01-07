@@ -1,6 +1,6 @@
-import { getRevisionFields } from './get-revision-fields';
 import type { Field } from '@directus/types';
 import { describe, expect, it } from 'vitest';
+import { getRevisionFields } from './get-revision-fields';
 
 describe('getRevisionFields', () => {
 	it('should filter out random fields', () => {

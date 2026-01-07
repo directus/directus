@@ -1,9 +1,9 @@
+import type { Permission } from '@directus/types';
+import { expect, test } from 'vitest';
 import {
 	extractRequiredDynamicVariableContext,
 	extractRequiredDynamicVariableContextForPermissions,
 } from './extract-required-dynamic-variable-context.js';
-import type { Permission } from '@directus/types';
-import { expect, test } from 'vitest';
 
 test('Extracts dynamic variables context from permissions', () => {
 	const permissions = [

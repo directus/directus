@@ -1,12 +1,12 @@
+import { Field, Relation } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { getGraphqlQueryFields } from './get-graphql-query-fields.js';
 import { mockedStore } from '@/__utils__/store.js';
 import { useFieldsStore } from '@/stores/fields.js';
 import { useRelationsStore } from '@/stores/relations.js';
 import { getRelatedCollection } from '@/utils/get-related-collection.js';
-import { Field, Relation } from '@directus/types';
-import { createTestingPinia } from '@pinia/testing';
-import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 vi.mock('@/utils/get-related-collection.js');
 

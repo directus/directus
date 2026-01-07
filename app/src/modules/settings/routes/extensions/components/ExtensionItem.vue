@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/constants';
+import { ApiOutput, ExtensionType } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
 import { extensionTypeIconMap } from '../constants';
 import { ExtensionState } from '../types';
 import ExtensionItemOptions from './extension-item-options.vue';
@@ -11,11 +16,6 @@ import VList from '@/components/v-list.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useExtensionsStore } from '@/stores/extensions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/constants';
-import { ApiOutput, ExtensionType } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterLink } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{

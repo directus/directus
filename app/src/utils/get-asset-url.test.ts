@@ -1,7 +1,7 @@
+import { expect, test, vi } from 'vitest';
 import { cryptoStub } from '@/__utils__/crypto';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { getPublicURL } from '@/utils/get-root-path';
-import { expect, test, vi } from 'vitest';
 
 vi.stubGlobal('crypto', cryptoStub);
 vi.mock('@/utils/get-root-path');

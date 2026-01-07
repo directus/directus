@@ -1,6 +1,6 @@
+import type { LimiterConfig } from '../types/config.js';
 import { LimiterLocal } from './local.js';
 import { LimiterRedis } from './redis.js';
-import type { LimiterConfig } from '../types/config.js';
 
 export const createLimiter = (config: LimiterConfig) => {
 	if (config.type === 'local') {

@@ -1,12 +1,12 @@
+import ky, { type ResponsePromise } from 'ky';
+import { afterEach, expect, test, vi } from 'vitest';
+import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
 import { account } from './account.js';
 import { constructUrl } from './lib/construct-url.js';
 import {
 	RegistryAccountResponse,
 	type RegistryAccountResponse as TRegistryAccountResponse,
 } from './schemas/registry-account-response.js';
-import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
-import ky, { type ResponsePromise } from 'ky';
-import { afterEach, expect, test, vi } from 'vitest';
 
 vi.mock('ky');
 vi.mock('../../utils/assert-version-compatibility.js');

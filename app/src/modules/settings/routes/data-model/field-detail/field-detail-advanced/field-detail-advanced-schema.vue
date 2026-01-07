@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Type } from '@directus/types';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { TranslateResult, useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -7,10 +11,6 @@ import VSelect from '@/components/v-select/v-select.vue';
 import VTextarea from '@/components/v-textarea.vue';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { translate } from '@/utils/translate-object-values';
-import { Type } from '@directus/types';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { TranslateResult, useI18n } from 'vue-i18n';
 
 type FieldTypeOption = { value: Type; text: TranslateResult | string; children?: FieldTypeOption[] };
 

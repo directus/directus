@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useElementSize, useSync } from '@directus/composables';
+import type { Field, Filter, Item, ShowSelect } from '@directus/types';
+import { inject, ref, Ref, watch } from 'vue';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
 import VPagination from '@/components/v-pagination.vue';
@@ -8,9 +11,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { usePageSize } from '@/composables/use-page-size';
 import { Collection } from '@/types/collections';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { useElementSize, useSync } from '@directus/composables';
-import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { inject, ref, Ref, watch } from 'vue';
 
 defineOptions({ inheritAttrs: false });
 

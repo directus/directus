@@ -1,10 +1,10 @@
+import { File, SettingsStorageAssetPreset } from '@directus/types';
+import mime from 'mime/lite';
+import { Ref, ref, watch } from 'vue';
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { File, SettingsStorageAssetPreset } from '@directus/types';
-import mime from 'mime/lite';
-import { Ref, ref, watch } from 'vue';
 
 type ImageSelection = {
 	imageUrl: string;

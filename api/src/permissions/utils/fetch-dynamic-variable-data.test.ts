@@ -1,11 +1,11 @@
-import type { DynamicVariableContext } from './extract-required-dynamic-variable-context.js';
-import { fetchDynamicVariableData } from './fetch-dynamic-variable-data.js';
+import type { Accountability } from '@directus/types';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { PoliciesService } from '../../services/policies.js';
 import { RolesService } from '../../services/roles.js';
 import { UsersService } from '../../services/users.js';
 import type { Context } from '../types.js';
-import type { Accountability } from '@directus/types';
-import { beforeEach, expect, test, vi } from 'vitest';
+import type { DynamicVariableContext } from './extract-required-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from './fetch-dynamic-variable-data.js';
 
 vi.mock('../../services/users.js', () => ({
 	UsersService: vi.fn(),

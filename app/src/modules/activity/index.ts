@@ -1,6 +1,6 @@
+import { defineModule } from '@directus/extensions';
 import ActivityCollection from './routes/collection.vue';
 import ActivityItem from './routes/item.vue';
-import { defineModule } from '@directus/extensions';
 
 export default defineModule({
 	id: 'activity',

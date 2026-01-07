@@ -1,6 +1,6 @@
-import { formatFilesize } from '@/utils/format-filesize';
 import { defineDisplay } from '@directus/extensions';
 import { h } from 'vue';
+import { formatFilesize } from '@/utils/format-filesize';
 
 export default defineDisplay({
 	id: 'filesize',

@@ -1,5 +1,5 @@
-import SystemPermissionsInterface from './system-permissions.vue';
 import { defineInterface } from '@directus/extensions';
+import SystemPermissionsInterface from './system-permissions.vue';
 
 export default defineInterface({
 	id: 'system-permissions',

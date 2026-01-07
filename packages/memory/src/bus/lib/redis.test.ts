@@ -1,4 +1,5 @@
-import { BusRedis } from './redis.js';
+import { Redis } from 'ioredis';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import {
 	bufferToUint8Array,
 	compress,
@@ -11,8 +12,7 @@ import {
 	withNamespace,
 } from '../../utils/index.js';
 import type { MessageHandler } from '../types/index.js';
-import { Redis } from 'ioredis';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { BusRedis } from './redis.js';
 
 vi.mock('ioredis');
 vi.mock('../../utils/index.js');

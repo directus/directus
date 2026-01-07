@@ -1,11 +1,11 @@
-import { useCollection } from './use-collection.js';
-import { useApi } from './use-system.js';
 import type { Item, Query } from '@directus/types';
 import { getEndpoint, moveInArray } from '@directus/utils';
 import axios from 'axios';
 import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, toRef, unref, watch } from 'vue';
+import { useCollection } from './use-collection.js';
+import { useApi } from './use-system.js';
 
 export type ManualSortData = {
 	item: string | number;

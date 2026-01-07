@@ -1,10 +1,10 @@
-import { fetchAllowedFields } from './fetch-allowed-fields.js';
-import { fetchPermissions } from '../../lib/fetch-permissions.js';
-import { fetchPolicies } from '../../lib/fetch-policies.js';
-import type { Context } from '../../types.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { fetchPermissions } from '../../lib/fetch-permissions.js';
+import { fetchPolicies } from '../../lib/fetch-policies.js';
+import type { Context } from '../../types.js';
+import { fetchAllowedFields } from './fetch-allowed-fields.js';
 
 vi.mock('../../lib/fetch-policies.js');
 vi.mock('../../lib/fetch-permissions.js');

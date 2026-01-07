@@ -1,7 +1,7 @@
-import { useEventListener } from '@/composables/use-event-listener';
 import { mount } from '@vue/test-utils';
 import { expect, test, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
+import { useEventListener } from '@/composables/use-event-listener';
 
 test('Registers the event listener on mount, unregisters on unmount', () => {
 	const target = {

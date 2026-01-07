@@ -1,5 +1,5 @@
-import { joinFilterWithCases } from './join-filter-with-cases.js';
 import { expect, test } from 'vitest';
+import { joinFilterWithCases } from './join-filter-with-cases.js';
 
 test('No filter and no cases', () => {
 	const result = joinFilterWithCases(null, []);

@@ -1,10 +1,3 @@
-import getDatabase from '../database/index.js';
-import { applyDiff } from '../utils/apply-diff.js';
-import { getSnapshotDiff } from '../utils/get-snapshot-diff.js';
-import { getSnapshot } from '../utils/get-snapshot.js';
-import { getVersionedHash } from '../utils/get-versioned-hash.js';
-import { validateApplyDiff } from '../utils/validate-diff.js';
-import { validateSnapshot } from '../utils/validate-snapshot.js';
 import { ForbiddenError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
@@ -15,6 +8,13 @@ import type {
 	SnapshotWithHash,
 } from '@directus/types';
 import type { Knex } from 'knex';
+import getDatabase from '../database/index.js';
+import { applyDiff } from '../utils/apply-diff.js';
+import { getSnapshotDiff } from '../utils/get-snapshot-diff.js';
+import { getSnapshot } from '../utils/get-snapshot.js';
+import { getVersionedHash } from '../utils/get-versioned-hash.js';
+import { validateApplyDiff } from '../utils/validate-diff.js';
+import { validateSnapshot } from '../utils/validate-snapshot.js';
 
 export class SchemaService {
 	knex: Knex;

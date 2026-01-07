@@ -1,5 +1,5 @@
-import { useCache } from '../cache.js';
 import { getSimpleHash } from '@directus/utils';
+import { useCache } from '../cache.js';
 
 /**
  * Wraps a function with caching capabilities.

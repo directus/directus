@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { isPlainObject } from 'lodash';
+import { computed, ref } from 'vue';
 import SystemThemeOverridesRule from './system-theme-overrides-rule.vue';
 import type { SetValueFn } from './types.js';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { isPlainObject } from 'lodash';
-import { computed, ref } from 'vue';
 
 defineOptions({
 	name: 'SystemThemeOverridesGroup',

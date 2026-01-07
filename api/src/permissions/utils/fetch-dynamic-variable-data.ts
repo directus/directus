@@ -1,9 +1,9 @@
-import { getCache, getCacheValue, setCacheValue } from '../../cache.js';
-import type { Context } from '../types.js';
-import { type DynamicVariableContext } from './extract-required-dynamic-variable-context.js';
 import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
+import { getCache, getCacheValue, setCacheValue } from '../../cache.js';
+import type { Context } from '../types.js';
+import { type DynamicVariableContext } from './extract-required-dynamic-variable-context.js';
 
 export interface FetchDynamicVariableContext {
 	accountability: Pick<Accountability, 'user' | 'role' | 'roles'>;

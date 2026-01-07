@@ -1,5 +1,5 @@
-import { emitter, Events } from './events';
 import { throttle } from 'lodash';
+import { emitter, Events } from './events';
 
 const events = ['pointermove', 'pointerdown', 'keydown'];
 

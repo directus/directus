@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TransitionExpand from './expand.vue';
 import { ref } from 'vue';
+import TransitionExpand from './expand.vue';
 
 const show = ref(true);
 </script>

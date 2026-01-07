@@ -1,12 +1,12 @@
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { InvalidPayloadError } from '@directus/errors';
+import { z } from 'zod';
 import { getFlowManager } from '../../../flows.js';
 import { FlowsService } from '../../../services/flows.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
 import { TriggerFlowInputSchema, TriggerFlowValidateSchema } from '../schema.js';
-import { InvalidPayloadError } from '@directus/errors';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { z } from 'zod';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

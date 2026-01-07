@@ -1,5 +1,5 @@
-import { createError } from './create-error.js';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { createError } from './create-error.js';
 
 let sample: {
 	code: string;

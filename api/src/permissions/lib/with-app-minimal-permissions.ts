@@ -1,7 +1,7 @@
-import { filterItems } from '../../utils/filter-items.js';
 import { appAccessMinimalPermissions } from '@directus/system-data';
 import type { Accountability, Permission, Query } from '@directus/types';
 import { cloneDeep } from 'lodash-es';
+import { filterItems } from '../../utils/filter-items.js';
 
 export function withAppMinimalPermissions(
 	accountability: Pick<Accountability, 'app'> | null,

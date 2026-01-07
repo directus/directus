@@ -1,4 +1,3 @@
-import type { TestsFieldSchema } from '../../query/filter';
 import { getUrl } from '@common/config';
 import { CreateItem } from '@common/functions';
 import type { Vendor } from '@common/get-dbs-to-test';
@@ -7,6 +6,7 @@ import type { PrimaryKeyType } from '@common/types';
 import { USER } from '@common/variables';
 import request from 'supertest';
 import { expect } from 'vitest';
+import type { TestsFieldSchema } from '../../query/filter';
 
 export const seedRelationalFields = async (
 	vendor: Vendor,

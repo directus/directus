@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import CodeMirror from 'codemirror';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { Alteration, applyEdit, CustomSyntax } from './edits';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -21,8 +23,6 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import CodeMirror from 'codemirror';
-import { computed, onMounted, reactive, ref, watch } from 'vue';
 
 import 'codemirror/addon/display/placeholder.js';
 import 'codemirror/mode/markdown/markdown';

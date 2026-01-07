@@ -1,10 +1,10 @@
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
+import { beforeEach, expect, Mock, test, vi } from 'vitest';
 import { cryptoStub } from '@/__utils__/crypto';
 import { useRelationsStore } from '@/stores/relations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
-import { createTestingPinia } from '@pinia/testing';
-import { setActivePinia } from 'pinia';
-import { beforeEach, expect, Mock, test, vi } from 'vitest';
 
 vi.stubGlobal('crypto', cryptoStub);
 

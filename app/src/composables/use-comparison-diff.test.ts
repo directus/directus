@@ -1,5 +1,5 @@
-import { useComparisonDiff } from './use-comparison-diff';
 import { describe, expect, it } from 'vitest';
+import { useComparisonDiff } from './use-comparison-diff';
 
 describe('useComparisonDiff - HTML Diff', () => {
 	const { computeDiff } = useComparisonDiff();

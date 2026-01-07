@@ -1,7 +1,7 @@
-import { useStores } from './use-system.js';
 import type { AppCollection, Field } from '@directus/types';
 import type { ComputedRef, Ref } from 'vue';
 import { computed, ref } from 'vue';
+import { useStores } from './use-system.js';
 
 export type UsableCollection = {
 	info: ComputedRef<AppCollection | null>;

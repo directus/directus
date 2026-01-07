@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import { PrimaryKey } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { useEventListener } from '@vueuse/core';
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { EditConfig, NavigationData, ReceiveData, SavedData, SendAction } from '../types';
 import { sameOrigin } from '../utils/same-origin';
 import api from '@/api';
@@ -9,12 +15,6 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
-import { useCollection } from '@directus/composables';
-import { PrimaryKey } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { useEventListener } from '@vueuse/core';
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { frameSrc, frameEl, showEditableElements } = defineProps<{
 	frameSrc: string;

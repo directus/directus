@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Field, FlowRaw } from '@directus/types';
+import slugify from '@sindresorhus/slugify';
+import { customAlphabet } from 'nanoid/non-secure';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VFancySelect from '@/components/v-fancy-select.vue';
@@ -12,11 +17,6 @@ import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { translate } from '@/utils/translate-object-values';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { Field, FlowRaw } from '@directus/types';
-import slugify from '@sindresorhus/slugify';
-import { customAlphabet } from 'nanoid/non-secure';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 

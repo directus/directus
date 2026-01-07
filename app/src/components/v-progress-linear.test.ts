@@ -1,6 +1,6 @@
-import VProgressLinear from './v-progress-linear.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import VProgressLinear from './v-progress-linear.vue';
 
 test('Mount component', () => {
 	expect(VProgressLinear).toBeTruthy();

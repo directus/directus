@@ -1,5 +1,5 @@
-import { isPlainObject } from 'lodash-es';
 import { createRequire } from 'node:module';
+import { isPlainObject } from 'lodash-es';
 
 export const readConfigurationFromJson = (path: string) => {
 	const require = createRequire(import.meta.url);

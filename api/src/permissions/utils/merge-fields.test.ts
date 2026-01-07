@@ -1,5 +1,5 @@
-import { mergeFields } from './merge-fields.js';
 import { expect, test } from 'vitest';
+import { mergeFields } from './merge-fields.js';
 
 type Case = {
 	fieldsA: string[] | null;

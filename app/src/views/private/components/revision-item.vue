@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import UserPopover from './user-popover.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { Revision } from '@/types/revisions';
 import { getRevisionFields } from '@/utils/get-revision-fields';
 import { userName } from '@/utils/user-name';
-import { format } from 'date-fns';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	revision: Revision;

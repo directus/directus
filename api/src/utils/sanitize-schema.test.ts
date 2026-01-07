@@ -1,3 +1,7 @@
+import type { Column } from '@directus/schema';
+import type { Field, Relation, SnapshotSystemField } from '@directus/types';
+import { describe, expect, test } from 'vitest';
+import type { Collection } from '../types/index.js';
 import {
 	sanitizeCollection,
 	sanitizeColumn,
@@ -5,10 +9,6 @@ import {
 	sanitizeRelation,
 	sanitizeSystemField,
 } from './sanitize-schema.js';
-import type { Collection } from '../types/index.js';
-import type { Column } from '@directus/schema';
-import type { Field, Relation, SnapshotSystemField } from '@directus/types';
-import { describe, expect, test } from 'vitest';
 
 describe('sanitizeCollection', () => {
 	test.each([

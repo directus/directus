@@ -1,5 +1,4 @@
-import { cast } from './cast.js';
-import { readConfigurationFromFile } from './read-configuration-from-file.js';
+import { readFileSync } from 'node:fs';
 import { DEFAULTS } from '../constants/defaults.js';
 import type { Env } from '../types/env.js';
 import { getConfigPath } from '../utils/get-config-path.js';
@@ -9,7 +8,8 @@ import { isDirectusVariable } from '../utils/is-directus-variable.js';
 import { isFileKey } from '../utils/is-file-key.js';
 import { readConfigurationFromProcess } from '../utils/read-configuration-from-process.js';
 import { removeFileSuffix } from '../utils/remove-file-suffix.js';
-import { readFileSync } from 'node:fs';
+import { cast } from './cast.js';
+import { readConfigurationFromFile } from './read-configuration-from-file.js';
 
 export const createEnv = (): Env => {
 	const baseConfiguration = readConfigurationFromProcess();

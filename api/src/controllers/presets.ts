@@ -1,3 +1,6 @@
+import { ErrorCode, isDirectusError } from '@directus/errors';
+import type { PrimaryKey } from '@directus/types';
+import express from 'express';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -5,9 +8,6 @@ import { MetaService } from '../services/meta.js';
 import { PresetsService } from '../services/presets.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { ErrorCode, isDirectusError } from '@directus/errors';
-import type { PrimaryKey } from '@directus/types';
-import express from 'express';
 
 const router = express.Router();
 

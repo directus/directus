@@ -1,10 +1,10 @@
-import VWorkspaceTile from './v-workspace-tile.vue';
-import { Tooltip } from '../__utils__/tooltip';
-import type { GlobalMountOptions } from '@/__utils__/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { expect, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
+import { Tooltip } from '../__utils__/tooltip';
+import VWorkspaceTile from './v-workspace-tile.vue';
+import type { GlobalMountOptions } from '@/__utils__/types';
 
 const i18n = createI18n({ legacy: false });
 

@@ -1,8 +1,8 @@
+import { expect, test, vi } from 'vitest';
 import type { KvConfig } from '../index.js';
 import { createKv } from './create.js';
 import { KvLocal } from './local.js';
 import { KvRedis } from './redis.js';
-import { expect, test, vi } from 'vitest';
 
 vi.mock('./local.js');
 vi.mock('./redis.js');

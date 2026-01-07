@@ -1,7 +1,7 @@
-import { getConfigPath } from './get-config-path.js';
-import { DEFAULTS } from '../constants/defaults.js';
 import { resolve } from 'node:path';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { DEFAULTS } from '../constants/defaults.js';
+import { getConfigPath } from './get-config-path.js';
 
 vi.mock('node:path');
 

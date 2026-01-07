@@ -1,10 +1,10 @@
+import { Command } from 'commander';
 import add from './commands/add.js';
 import build from './commands/build.js';
 import create from './commands/create.js';
 import link from './commands/link.js';
 import validate from './commands/validate.js';
 import getSdkVersion from './utils/get-sdk-version.js';
-import { Command } from 'commander';
 
 const program = new Command();
 

@@ -1,14 +1,3 @@
-import { getGraphQLType } from '../../../utils/get-graphql-type.js';
-import { GraphQLService } from '../index.js';
-import { getTypes } from './get-types.js';
-import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
-import { resolveQuery } from '../resolvers/query.js';
-import { createSubscriptionGenerator } from '../subscription.js';
-import { GraphQLBigInt } from '../types/bigint.js';
-import { GraphQLDate } from '../types/date.js';
-import { GraphQLGeoJSON } from '../types/geojson.js';
-import { GraphQLHash } from '../types/hash.js';
-import { GraphQLStringOrFloat } from '../types/string-or-float.js';
 import type { GraphQLResolveInfo } from 'graphql';
 import {
 	GraphQLBoolean,
@@ -27,6 +16,17 @@ import type {
 	SchemaComposer,
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer } from 'graphql-compose';
+import { getGraphQLType } from '../../../utils/get-graphql-type.js';
+import { GraphQLService } from '../index.js';
+import { resolveQuery } from '../resolvers/query.js';
+import { createSubscriptionGenerator } from '../subscription.js';
+import { GraphQLBigInt } from '../types/bigint.js';
+import { GraphQLDate } from '../types/date.js';
+import { GraphQLGeoJSON } from '../types/geojson.js';
+import { GraphQLHash } from '../types/hash.js';
+import { GraphQLStringOrFloat } from '../types/string-or-float.js';
+import { getTypes } from './get-types.js';
+import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
 
 /**
  * Create readable types and attach resolvers for each. Also prepares full filter argument structures

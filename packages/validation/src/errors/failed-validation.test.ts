@@ -1,6 +1,6 @@
-import { messageConstructor } from './failed-validation.js';
 import type { FilterOperator } from '@directus/types';
 import { describe, expect, test } from 'vitest';
+import { messageConstructor } from './failed-validation.js';
 
 /** Can't be randomized, as we're using snapshot tests */
 const field = 'test_field';

@@ -1,5 +1,5 @@
-import { useLogger } from '../logger/index.js';
 import { useEnv } from '@directus/env';
+import { useLogger } from '../logger/index.js';
 
 export function validateEnv(requiredKeys: string[]): void {
 	const env = useEnv();

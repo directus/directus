@@ -1,6 +1,6 @@
-import tusSchedule from './tus.js';
-import * as schedule from '../utils/schedule.js';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import * as schedule from '../utils/schedule.js';
+import tusSchedule from './tus.js';
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO

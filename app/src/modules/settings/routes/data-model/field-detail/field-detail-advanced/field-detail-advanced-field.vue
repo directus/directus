@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { SEARCHABLE_TYPES } from '@directus/constants';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -6,9 +9,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import InterfaceSystemInputTranslatedString from '@/interfaces/_system/system-input-translated-string/input-translated-string.vue';
 import InterfaceList from '@/interfaces/list/list.vue';
 import { useUserStore } from '@/stores/user';
-import { SEARCHABLE_TYPES } from '@directus/constants';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
 
 const fieldDetailStore = useFieldDetailStore();
 const readonly = syncFieldDetailStoreProperty('field.meta.readonly', false);

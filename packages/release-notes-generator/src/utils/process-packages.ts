@@ -1,11 +1,11 @@
+import { existsSync, readFileSync, unlinkSync } from 'node:fs';
+import { join } from 'node:path';
+import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/workspace.find-packages';
+import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
+import semver from 'semver';
 import config from '../config.js';
 import type { PackageVersion } from '../types.js';
 import { sortByExternalOrder } from './sort.js';
-import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/workspace.find-packages';
-import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
-import { existsSync, readFileSync, unlinkSync } from 'node:fs';
-import { join } from 'node:path';
-import semver from 'semver';
 
 export async function processPackages(): Promise<{
 	mainVersion: string;

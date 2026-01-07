@@ -1,9 +1,9 @@
-import { useLogger } from './logger/index.js';
-import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { useEnv } from '@directus/env';
 import { createRequire } from 'node:module';
+import { useEnv } from '@directus/env';
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
+import { useLogger } from './logger/index.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 const require = createRequire(import.meta.url);
 

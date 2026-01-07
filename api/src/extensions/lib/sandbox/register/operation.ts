@@ -1,7 +1,7 @@
-import { callReference } from './call-reference.js';
-import { getFlowManager } from '../../../../flows.js';
 import type { OperationHandler, PromiseCallback } from '@directus/types';
 import type { Reference } from 'isolated-vm';
+import { getFlowManager } from '../../../../flows.js';
+import { callReference } from './call-reference.js';
 
 export function registerOperationGenerator() {
 	const flowManager = getFlowManager();

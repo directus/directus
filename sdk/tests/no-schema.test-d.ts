@@ -1,5 +1,5 @@
-import type { ApplyQueryFields, MergeCoreCollection, Query, RegularCollections } from '../src/index.js';
 import { assertType, describe, test } from 'vitest';
+import type { ApplyQueryFields, MergeCoreCollection, Query, RegularCollections } from '../src/index.js';
 
 describe('Test Schema Fallback', () => {
 	// RegularCollections is used to determine the collection input type of "readItems"

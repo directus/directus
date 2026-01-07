@@ -1,8 +1,8 @@
-import { WebSocketService } from './websocket.js';
-import { getWebSocketController, WebSocketController } from '../websocket/controllers/index.js';
-import type { WebSocketClient } from '../websocket/types.js';
 import type { Accountability } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { getWebSocketController, WebSocketController } from '../websocket/controllers/index.js';
+import type { WebSocketClient } from '../websocket/types.js';
+import { WebSocketService } from './websocket.js';
 
 vi.mock('../emitter');
 vi.mock('../websocket/controllers/index');

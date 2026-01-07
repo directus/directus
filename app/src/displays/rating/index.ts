@@ -1,5 +1,5 @@
-import DisplayRating from './rating.vue';
 import { defineDisplay } from '@directus/extensions';
+import DisplayRating from './rating.vue';
 
 export default defineDisplay({
 	id: 'rating',

@@ -1,8 +1,8 @@
-import { fetchItemPermissions } from './fetch-item-permissions';
-import api from '@/api';
 import { ItemPermissions } from '@directus/types';
 import { flushPromises } from '@vue/test-utils';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { fetchItemPermissions } from './fetch-item-permissions';
+import api from '@/api';
 
 let sample: {
 	collection: string;

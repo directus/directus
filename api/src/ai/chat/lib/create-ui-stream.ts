@@ -1,4 +1,3 @@
-import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import { type AnthropicProvider, createAnthropic } from '@ai-sdk/anthropic';
 import { createOpenAI, type OpenAIProvider } from '@ai-sdk/openai';
 import { ServiceUnavailableError } from '@directus/errors';
@@ -11,6 +10,7 @@ import {
 	type Tool,
 	type UIMessage,
 } from 'ai';
+import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 
 export interface CreateUiStreamOptions {
 	provider: 'openai' | 'anthropic';

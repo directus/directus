@@ -1,9 +1,9 @@
+import { Field, Relation } from '@directus/types';
+import { computed, Ref } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
-import { Field, Relation } from '@directus/types';
-import { computed, Ref } from 'vue';
 
 export type RelationM2M = {
 	relation: Relation;

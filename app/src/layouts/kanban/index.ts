@@ -1,3 +1,10 @@
+import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
+import { Field, PermissionsAction, User } from '@directus/types';
+import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
+import { uniq } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
@@ -13,13 +20,6 @@ import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
-import { defineLayout } from '@directus/extensions';
-import { Field, PermissionsAction, User } from '@directus/types';
-import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
-import { uniq } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'kanban',

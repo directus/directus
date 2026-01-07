@@ -1,8 +1,8 @@
-import { Auth, Info, useServerStore } from './server';
-import api, * as apiFunctions from '@/api';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
+import { Auth, Info, useServerStore } from './server';
+import api, * as apiFunctions from '@/api';
 
 beforeEach(() => {
 	setActivePinia(

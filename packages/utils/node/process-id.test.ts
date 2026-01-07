@@ -1,7 +1,7 @@
-import { _cache, processId } from './process-id.js';
 import { createHash, type Hash } from 'node:crypto';
 import { hostname } from 'node:os';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { _cache, processId } from './process-id.js';
 
 vi.mock('node:crypto');
 vi.mock('node:os');

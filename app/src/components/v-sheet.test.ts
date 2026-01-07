@@ -1,6 +1,6 @@
-import VSheet from './v-sheet.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import VSheet from './v-sheet.vue';
 
 test('Mount component', () => {
 	expect(VSheet).toBeTruthy();

@@ -1,4 +1,3 @@
-import type { Collection } from '../types/index.js';
 import type { Column } from '@directus/schema';
 import type {
 	Field,
@@ -9,6 +8,7 @@ import type {
 	SnapshotSystemField,
 } from '@directus/types';
 import { pick } from 'lodash-es';
+import type { Collection } from '../types/index.js';
 
 /**
  * Pick certain database vendor specific collection properties that should be compared when performing diff

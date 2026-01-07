@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useCollection, useLayout } from '@directus/composables';
+import { computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
@@ -18,8 +20,6 @@ import ExportSidebarDetail from '@/views/private/components/export-sidebar-detai
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { useCollection, useLayout } from '@directus/composables';
-import { computed, ref } from 'vue';
 
 type Item = {
 	[field: string]: any;

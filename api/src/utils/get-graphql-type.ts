@@ -1,7 +1,3 @@
-import { GraphQLBigInt } from '../services/graphql/types/bigint.js';
-import { GraphQLDate } from '../services/graphql/types/date.js';
-import { GraphQLGeoJSON } from '../services/graphql/types/geojson.js';
-import { GraphQLHash } from '../services/graphql/types/hash.js';
 import type { Type } from '@directus/types';
 import type { GraphQLType } from 'graphql';
 import {
@@ -14,6 +10,10 @@ import {
 	GraphQLString,
 } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
+import { GraphQLBigInt } from '../services/graphql/types/bigint.js';
+import { GraphQLDate } from '../services/graphql/types/date.js';
+import { GraphQLGeoJSON } from '../services/graphql/types/geojson.js';
+import { GraphQLHash } from '../services/graphql/types/hash.js';
 
 export function getGraphQLType(
 	localType: Type | 'alias' | 'unknown',

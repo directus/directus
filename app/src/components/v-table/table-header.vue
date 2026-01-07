@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useSync } from '@directus/composables';
+import type { ShowSelect } from '@directus/types';
+import { clone, throttle } from 'lodash';
+import { computed, ref, useSlots } from 'vue';
+import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -6,11 +11,6 @@ import VMenu from '@/components/v-menu.vue';
 import { useEventListener } from '@/composables/use-event-listener';
 import { useUserStore } from '@/stores/user';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { useSync } from '@directus/composables';
-import type { ShowSelect } from '@directus/types';
-import { clone, throttle } from 'lodash';
-import { computed, ref, useSlots } from 'vue';
-import Draggable from 'vuedraggable';
 
 const props = withDefaults(
 	defineProps<{

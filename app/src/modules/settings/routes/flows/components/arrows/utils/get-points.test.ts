@@ -1,7 +1,7 @@
-import { getPoints } from './get-points';
-import { ATTACHMENT_OFFSET, GRID_SIZE } from '../../../constants';
-import { Vector2 } from '@/utils/vector2';
 import { describe, expect, it } from 'vitest';
+import { ATTACHMENT_OFFSET, GRID_SIZE } from '../../../constants';
+import { getPoints } from './get-points';
+import { Vector2 } from '@/utils/vector2';
 
 describe('getPoints', () => {
 	describe('basic functionality', () => {

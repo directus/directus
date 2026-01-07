@@ -1,5 +1,5 @@
-import { formatFields } from './format-fields.js';
 import { describe, expect, test } from 'vitest';
+import { formatFields } from './format-fields.js';
 
 describe('formatFields', () => {
 	test('should format simple string fields', () => {

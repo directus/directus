@@ -1,4 +1,10 @@
-import { databaseQuestions } from './questions.js';
+import { randomUUID } from 'node:crypto';
+import chalk from 'chalk';
+import { execa } from 'execa';
+import inquirer from 'inquirer';
+import Joi from 'joi';
+import type { Knex } from 'knex';
+import ora from 'ora';
 import runMigrations from '../../../database/migrations/run.js';
 import runSeed from '../../../database/seeds/run.js';
 import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../../utils/create-admin.js';
@@ -7,13 +13,7 @@ import type { Credentials } from '../../utils/create-db-connection.js';
 import createDBConnection from '../../utils/create-db-connection.js';
 import createEnv from '../../utils/create-env/index.js';
 import { drivers, getDriverForClient } from '../../utils/drivers.js';
-import chalk from 'chalk';
-import { execa } from 'execa';
-import inquirer from 'inquirer';
-import Joi from 'joi';
-import type { Knex } from 'knex';
-import { randomUUID } from 'node:crypto';
-import ora from 'ora';
+import { databaseQuestions } from './questions.js';
 
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();

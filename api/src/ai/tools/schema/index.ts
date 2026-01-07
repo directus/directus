@@ -1,13 +1,13 @@
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { Field, Relation } from '@directus/types';
+import { z } from 'zod';
 import { FieldsService } from '../../..//services/fields.js';
 import { CollectionsService } from '../../../services/collections.js';
 import { RelationsService } from '../../../services/relations.js';
 import type { Collection } from '../../../types/collection.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
-import type { Field, Relation } from '@directus/types';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { z } from 'zod';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

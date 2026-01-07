@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useFieldDetailStore } from '../store';
-import VTab from '@/components/v-tab.vue';
-import VTabs from '@/components/v-tabs.vue';
 import { useSync } from '@directus/composables';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useFieldDetailStore } from '../store';
+import VTab from '@/components/v-tab.vue';
+import VTabs from '@/components/v-tabs.vue';
 
 const props = defineProps<{
 	currentTab: string[];

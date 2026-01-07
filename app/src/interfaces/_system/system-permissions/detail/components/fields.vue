@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { useSync } from '@directus/composables';
+import type { Permission, Policy } from '@directus/types';
+import { computed, ref, useId } from 'vue';
 import AppMinimal from './app-minimal.vue';
 import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
 import VNotice from '@/components/v-notice.vue';
 import { type FieldNode, useFieldTree } from '@/composables/use-field-tree';
-import { useSync } from '@directus/composables';
-import type { Permission, Policy } from '@directus/types';
-import { computed, ref, useId } from 'vue';
 
 type TreeChoice = {
 	text: string;

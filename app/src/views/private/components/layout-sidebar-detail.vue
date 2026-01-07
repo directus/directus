@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import SidebarDetail from './sidebar-detail.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
-import { computed } from 'vue';
 
 const props = defineProps<{
 	modelValue: string | null;

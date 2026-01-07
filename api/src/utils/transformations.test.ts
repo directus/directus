@@ -1,6 +1,6 @@
-import { maybeExtractFormat, resolvePreset } from './transformations.js';
 import type { File, Transformation, TransformationParams } from '@directus/types';
 import { describe, expect, test } from 'vitest';
+import { maybeExtractFormat, resolvePreset } from './transformations.js';
 
 const inputFile = {
 	id: '43a15f67-84a7-4e07-880d-e46a9f33c542',

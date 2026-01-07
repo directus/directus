@@ -1,16 +1,4 @@
-import { clearSystemCache } from '../cache.js';
-import { ItemsService } from './items.js';
-import { SettingsService } from './settings.js';
-import getDatabase from '../database/index.js';
-import { useLogger } from '../logger/index.js';
-import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
-import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import { getSecret } from '../utils/get-secret.js';
-import isUrlAllowed from '../utils/is-url-allowed.js';
-import { verifyJWT } from '../utils/jwt.js';
-import { stall } from '../utils/stall.js';
-import { Url } from '../utils/url.js';
-import { MailService } from './mail/index.js';
+import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
@@ -28,7 +16,19 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
 import type { StringValue } from 'ms';
-import { performance } from 'perf_hooks';
+import { clearSystemCache } from '../cache.js';
+import getDatabase from '../database/index.js';
+import { useLogger } from '../logger/index.js';
+import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
+import { getSecret } from '../utils/get-secret.js';
+import isUrlAllowed from '../utils/is-url-allowed.js';
+import { verifyJWT } from '../utils/jwt.js';
+import { stall } from '../utils/stall.js';
+import { Url } from '../utils/url.js';
+import { ItemsService } from './items.js';
+import { MailService } from './mail/index.js';
+import { SettingsService } from './settings.js';
 
 const env = useEnv();
 const logger = useLogger();

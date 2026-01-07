@@ -1,6 +1,6 @@
+import { beforeEach, expect, test } from 'vitest';
 import { createError } from './create-error.js';
 import { isDirectusError } from './is-directus-error.js';
-import { beforeEach, expect, test } from 'vitest';
 
 let sample: {
 	code: string;

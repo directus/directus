@@ -1,6 +1,6 @@
-import { validatePayload } from './validate-payload.js';
 import type { Filter } from '@directus/types';
 import { describe, expect, it, test } from 'vitest';
+import { validatePayload } from './validate-payload.js';
 
 describe('validatePayload', () => {
 	it('returns an empty array when there are no errors', () => {

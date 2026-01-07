@@ -1,5 +1,5 @@
-import { getSimpleHash } from './get-simple-hash.js';
 import { describe, expect, it } from 'vitest';
+import { getSimpleHash } from './get-simple-hash.js';
 
 describe('getSimpleHash', () => {
 	it('returns "364492" for string "test"', () => {

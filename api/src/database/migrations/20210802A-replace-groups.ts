@@ -1,6 +1,6 @@
-import { useLogger } from '../../logger/index.js';
 import { parseJSON } from '@directus/utils';
 import type { Knex } from 'knex';
+import { useLogger } from '../../logger/index.js';
 
 export async function up(knex: Knex): Promise<void> {
 	const logger = useLogger();

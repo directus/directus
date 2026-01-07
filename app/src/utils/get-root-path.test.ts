@@ -1,5 +1,5 @@
-import { extract, getPublicURL, getRootPath } from '@/utils/get-root-path';
 import { describe, expect, it } from 'vitest';
+import { extract, getPublicURL, getRootPath } from '@/utils/get-root-path';
 
 Object.defineProperty(window, 'location', {
 	value: { href: '', pathname: '' },

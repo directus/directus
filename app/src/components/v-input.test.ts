@@ -1,10 +1,10 @@
+import { mount } from '@vue/test-utils';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import VInput from './v-input.vue';
 import { Focus } from '@/__utils__/focus';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
-import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, test, vi } from 'vitest';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],

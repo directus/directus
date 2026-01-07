@@ -1,3 +1,11 @@
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
+import { Field, Filter, GeometryOptions } from '@directus/types';
+import { getFieldsFromTemplate, mergeFilters } from '@directus/utils';
+import { cloneDeep, merge } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import MapActions from './actions.vue';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
@@ -9,14 +17,6 @@ import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { useCollection, useItems, useSync } from '@directus/composables';
-import { defineLayout } from '@directus/extensions';
-import { Field, Filter, GeometryOptions } from '@directus/types';
-import { getFieldsFromTemplate, mergeFilters } from '@directus/utils';
-import { cloneDeep, merge } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'map',

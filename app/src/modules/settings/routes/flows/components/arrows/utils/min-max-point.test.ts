@@ -1,6 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { minMaxPoint } from './min-max-point';
 import { Vector2 } from '@/utils/vector2';
-import { describe, expect, it } from 'vitest';
 
 describe('minMaxPoint', () => {
 	it('should return correct min and max points for two different points', () => {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import MetadataItem from '../../../components/metadata-item.vue';
-import { useServerStore } from '@/stores/server';
 import { satisfies } from 'semver';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import MetadataItem from '../../../components/metadata-item.vue';
+import { useServerStore } from '@/stores/server';
 
 const props = defineProps<{
 	hostVersion: string;

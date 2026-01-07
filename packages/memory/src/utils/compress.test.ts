@@ -1,5 +1,5 @@
-import { compress, decompress } from './compress.js';
 import { expect, test } from 'vitest';
+import { compress, decompress } from './compress.js';
 
 const cases: [string, Uint8Array][] = [
 	['object', new Uint8Array([123, 34, 104, 101, 108, 108, 111, 34, 58, 34, 119, 111, 114, 108, 100, 34, 125])],

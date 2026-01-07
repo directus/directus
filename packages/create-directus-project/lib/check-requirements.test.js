@@ -1,5 +1,5 @@
-import checkRequirements from './check-requirements.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import checkRequirements from './check-requirements.js';
 
 describe('checkRequirements', () => {
 	let mockExit;

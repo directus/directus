@@ -1,6 +1,6 @@
-import { formatDate, FormatDateOptions } from '@/utils/format-date';
 import { format as formatDateFns } from 'date-fns';
 import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { formatDate, FormatDateOptions } from '@/utils/format-date';
 
 beforeAll(() => {
 	vi.useFakeTimers();

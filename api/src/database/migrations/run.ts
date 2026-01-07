@@ -1,15 +1,15 @@
-import { flushCaches } from '../../cache.js';
-import { useLogger } from '../../logger/index.js';
-import type { Migration } from '../../types/index.js';
-import getModuleDefault from '../../utils/get-module-default.js';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import path from 'path';
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { orderBy } from 'lodash-es';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
+import { flushCaches } from '../../cache.js';
+import { useLogger } from '../../logger/index.js';
+import type { Migration } from '../../types/index.js';
+import getModuleDefault from '../../utils/get-module-default.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

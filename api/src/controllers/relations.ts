@@ -1,12 +1,12 @@
+import { ErrorCode, InvalidPayloadError } from '@directus/errors';
+import { isDirectusError } from '@directus/errors';
+import express from 'express';
+import Joi from 'joi';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { RelationsService } from '../services/relations.js';
 import asyncHandler from '../utils/async-handler.js';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
-import { isDirectusError } from '@directus/errors';
-import express from 'express';
-import Joi from 'joi';
 
 const router = express.Router();
 

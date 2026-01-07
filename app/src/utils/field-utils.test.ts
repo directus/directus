@@ -1,3 +1,5 @@
+import type { Field } from '@directus/types';
+import { expect, test } from 'vitest';
 import {
 	isDateCreated,
 	isDateUpdated,
@@ -7,8 +9,6 @@ import {
 	isUserCreated,
 	isUserUpdated,
 } from '@/utils/field-utils';
-import type { Field } from '@directus/types';
-import { expect, test } from 'vitest';
 
 test('isPrimaryKey', () => {
 	const field = fields.find((f) => f.field === 'id');

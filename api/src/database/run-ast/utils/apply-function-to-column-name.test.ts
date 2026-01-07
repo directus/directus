@@ -1,5 +1,5 @@
-import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 import { expect, test } from 'vitest';
+import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 test.each([
 	{ input: 'test', expected: 'test' },

@@ -1,6 +1,6 @@
-import { getRelationInfo } from './get-relation-info.js';
 import { InvalidQueryError } from '@directus/errors';
 import type { Relation, SchemaOverview } from '@directus/types';
+import { getRelationInfo } from './get-relation-info.js';
 
 export type AliasMap = { [key: string]: { alias: string; collection: string } };
 

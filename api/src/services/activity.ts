@@ -1,5 +1,5 @@
-import { ItemsService } from './items.js';
 import type { AbstractServiceOptions } from '@directus/types';
+import { ItemsService } from './items.js';
 
 export class ActivityService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

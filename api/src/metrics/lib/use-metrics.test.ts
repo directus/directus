@@ -1,7 +1,7 @@
-import { createMetrics } from './create-metrics.js';
-import { _cache, useMetrics } from './use-metrics.js';
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createMetrics } from './create-metrics.js';
+import { _cache, useMetrics } from './use-metrics.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),

@@ -1,3 +1,6 @@
+import { useAppStore } from '@directus/stores';
+import { useLocalStorage } from '@vueuse/core';
+import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
@@ -12,9 +15,6 @@ import TFASetup from '@/routes/tfa-setup.vue';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
-import { useAppStore } from '@directus/stores';
-import { useLocalStorage } from '@vueuse/core';
-import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{

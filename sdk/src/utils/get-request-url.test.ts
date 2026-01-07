@@ -1,5 +1,5 @@
-import { getRequestUrl } from './get-request-url.js';
 import { describe, expect, test } from 'vitest';
+import { getRequestUrl } from './get-request-url.js';
 
 describe('getRequestUrl', () => {
 	const baseUrl = new URL('https://example.com/api/');

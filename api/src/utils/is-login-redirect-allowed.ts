@@ -1,7 +1,7 @@
-import isUrlAllowed from './is-url-allowed.js';
-import { useLogger } from '../logger/index.js';
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
+import { useLogger } from '../logger/index.js';
+import isUrlAllowed from './is-url-allowed.js';
 
 /**
  * Checks if the defined redirect after successful SSO login is in the allow list

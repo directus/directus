@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VFancySelect from './v-fancy-select.vue';
 import { ref } from 'vue';
+import VFancySelect from './v-fancy-select.vue';
 
 function initState() {
 	return {

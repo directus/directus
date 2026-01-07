@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { DeepPartial, Theme } from '@directus/types';
+import { useHead } from '@unhead/vue';
+import { computed, toRefs, unref } from 'vue';
 import { useFonts, useTheme } from '../composables/index.js';
 import themeDefaultDark from '../themes/dark/default.js';
 import themeDefaultLight from '../themes/light/default.js';
 import { rulesToCssVars } from '../utils/index.js';
-import type { DeepPartial, Theme } from '@directus/types';
-import { useHead } from '@unhead/vue';
-import { computed, toRefs, unref } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

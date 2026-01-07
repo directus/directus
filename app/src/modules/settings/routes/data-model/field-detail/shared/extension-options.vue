@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { isVueComponent } from '@directus/utils';
+import { storeToRefs } from 'pinia';
+import { computed, toRefs } from 'vue';
 import { useFieldDetailStore } from '../store';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useExtension } from '@/composables/use-extension';
-import { isVueComponent } from '@directus/utils';
-import { storeToRefs } from 'pinia';
-import { computed, toRefs } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

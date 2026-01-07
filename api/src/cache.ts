@@ -1,3 +1,7 @@
+import { createRequire } from 'node:module';
+import { useEnv } from '@directus/env';
+import type { SchemaOverview } from '@directus/types';
+import Keyv, { type KeyvOptions } from 'keyv';
 import { useBus } from './bus/index.js';
 import { useLogger } from './logger/index.js';
 import { clearCache as clearPermissionCache } from './permissions/cache.js';
@@ -8,10 +12,6 @@ import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
-import { useEnv } from '@directus/env';
-import type { SchemaOverview } from '@directus/types';
-import Keyv, { type KeyvOptions } from 'keyv';
-import { createRequire } from 'node:module';
 
 const logger = useLogger();
 const env = useEnv();

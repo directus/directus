@@ -1,6 +1,6 @@
-import { getRelationInfo } from './get-relation-info.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { describe, expect, test } from 'vitest';
+import { getRelationInfo } from './get-relation-info.js';
 
 describe('getRelationInfo', () => {
 	test('Error on suspiciously long implicit $FOLLOW', () => {

@@ -1,8 +1,8 @@
-import { validateEnv } from './validate-env.js';
-import { useLogger } from '../logger/index.js';
 import { useEnv } from '@directus/env';
 import type { Logger } from 'pino';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
+import { useLogger } from '../logger/index.js';
+import { validateEnv } from './validate-env.js';
 
 vi.mock('@directus/env');
 

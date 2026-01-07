@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { FlowRaw, OperationRaw } from '@directus/types';
+import { cloneDeep, isEmpty, merge, omit } from 'lodash';
+import { customAlphabet, nanoid } from 'nanoid/non-secure';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import SettingsNotFound from '../not-found.vue';
 import Arrows from './components/arrows/arrows.vue';
@@ -29,12 +35,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import { FlowRaw, OperationRaw } from '@directus/types';
-import { cloneDeep, isEmpty, merge, omit } from 'lodash';
-import { customAlphabet, nanoid } from 'nanoid/non-secure';
-import { computed, ref, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterView } from 'vue-router';
 
 // Maps the x and y coordinates of attachments of panels to their id
 export type Attachments = Record<number, Record<number, string>>;

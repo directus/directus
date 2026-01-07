@@ -1,5 +1,5 @@
-import { userName } from '@/utils/user-name';
 import { expect, test } from 'vitest';
+import { userName } from '@/utils/user-name';
 
 test(`Returns unknown when user isn't passed`, () => {
 	expect(userName()).toBe('Unknown User');

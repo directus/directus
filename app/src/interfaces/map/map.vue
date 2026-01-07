@@ -1,15 +1,4 @@
 <script setup lang="ts">
-import { getMapStyle } from './style';
-import VButton from '@/components/v-button.vue';
-import VCardActions from '@/components/v-card-actions.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VInfo from '@/components/v-info.vue';
-import VNotice from '@/components/v-notice.vue';
-import VSelect from '@/components/v-select/v-select.vue';
-import { useSettingsStore } from '@/stores/settings';
-import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
-import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import { ButtonControl } from '@/utils/geometry/controls';
 import { useAppStore } from '@directus/stores';
 import { Field, GeoJSONParser, GeoJSONSerializer, GeometryType, MultiGeometry, SimpleGeometry } from '@directus/types';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
@@ -30,6 +19,17 @@ import maplibre, {
 import type { Ref } from 'vue';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { TranslateResult, useI18n } from 'vue-i18n';
+import { getMapStyle } from './style';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useSettingsStore } from '@/stores/settings';
+import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
+import { ButtonControl } from '@/utils/geometry/controls';
 
 // @ts-ignore
 

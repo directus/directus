@@ -1,13 +1,13 @@
-import { getSchema } from './get-schema.js';
-import { getSnapshot } from './get-snapshot.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
-import type { SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
+import { getSchema } from './get-schema.js';
+import { getSnapshot } from './get-snapshot.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 // Mock dependencies
 vi.mock('directus/version', () => ({

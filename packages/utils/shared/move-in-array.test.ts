@@ -1,5 +1,5 @@
-import { moveInArray } from './move-in-array.js';
 import { describe, expect, it } from 'vitest';
+import { moveInArray } from './move-in-array.js';
 
 describe('moveInArray', () => {
 	const testArray = [1, 2, 3, 4, 5, 6];

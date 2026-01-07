@@ -1,6 +1,6 @@
+import { EXTENSION_LANGUAGES } from '@directus/extensions';
 import type { Language, LanguageShort } from '../types.js';
 import { getFileExt } from './file.js';
-import { EXTENSION_LANGUAGES } from '@directus/extensions';
 
 export function isLanguage(language: string): language is Language {
 	return (EXTENSION_LANGUAGES as readonly string[]).includes(language);

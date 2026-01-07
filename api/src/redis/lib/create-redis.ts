@@ -1,6 +1,6 @@
-import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { useEnv } from '@directus/env';
 import { Redis } from 'ioredis';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 
 /**
  * Create a new Redis instance based on the global env configuration

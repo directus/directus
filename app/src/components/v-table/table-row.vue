@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { ShowSelect } from '@directus/types';
+import { computed } from 'vue';
 import type { Header, Item } from './types';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
-import type { ShowSelect } from '@directus/types';
-import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

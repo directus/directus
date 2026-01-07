@@ -1,5 +1,5 @@
-import { useLogger } from '../../../logger/index.js';
 import type { Relation, SchemaOverview } from '@directus/types';
+import { useLogger } from '../../../logger/index.js';
 
 /**
  * Regex was taken from the spec

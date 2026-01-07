@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import NavigationItem from './NavigationItem.vue';
+import { isNil, orderBy } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
 import { useNavigation } from '../composables/use-navigation';
+import NavigationItem from './NavigationItem.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -12,8 +14,6 @@ import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useUserStore } from '@/stores/user';
-import { isNil, orderBy } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
 
 const props = defineProps<{
 	currentCollection?: string;

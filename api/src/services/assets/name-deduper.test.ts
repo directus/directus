@@ -1,5 +1,5 @@
-import { NameDeduper } from './name-deduper.js';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { NameDeduper } from './name-deduper.js';
 
 describe('NameDeduper', () => {
 	let deduper: NameDeduper;

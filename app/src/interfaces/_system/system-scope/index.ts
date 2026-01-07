@@ -1,5 +1,5 @@
-import InterfaceSystemScope from './system-scope.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemScope from './system-scope.vue';
 
 export default defineInterface({
 	id: 'system-scope',

@@ -1,6 +1,6 @@
-import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { useEnv } from '@directus/env';
 import { Redis } from 'ioredis';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 interface SynchronizationManager {
 	set(key: string, value: string | number): Promise<void>;

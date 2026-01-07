@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { computed, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import SidebarDetail from './sidebar-detail.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { emitter, Events } from '@/events';
-import { computed, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const model = defineModel<number | null>({ required: true });
 

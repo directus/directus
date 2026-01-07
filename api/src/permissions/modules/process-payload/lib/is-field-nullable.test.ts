@@ -1,6 +1,6 @@
-import { isFieldNullable } from './is-field-nullable.js';
 import type { FieldOverview } from '@directus/types';
 import { expect, test } from 'vitest';
+import { isFieldNullable } from './is-field-nullable.js';
 
 test('Returns true if "nullable" is set on the field', () => {
 	const field = { nullable: true } as FieldOverview;

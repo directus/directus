@@ -1,9 +1,9 @@
-import { applyCaseWhen } from './apply-case-when.js';
-import { getNodeAlias } from './get-field-alias.js';
-import type { FieldNode, FunctionFieldNode, M2ONode, O2MNode } from '../../../types/index.js';
-import type { AliasMap } from '../../../utils/get-column-path.js';
 import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import type { FieldNode, FunctionFieldNode, M2ONode, O2MNode } from '../../../types/index.js';
+import type { AliasMap } from '../../../utils/get-column-path.js';
+import { applyCaseWhen } from './apply-case-when.js';
+import { getNodeAlias } from './get-field-alias.js';
 
 export function getInnerQueryColumnPreProcessor(
 	knex: Knex,

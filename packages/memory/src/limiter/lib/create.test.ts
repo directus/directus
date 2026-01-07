@@ -1,8 +1,8 @@
+import { expect, test, vi } from 'vitest';
+import type { LimiterConfig } from '../types/index.js';
 import { createLimiter } from './create.js';
 import { LimiterLocal } from './local.js';
 import { LimiterRedis } from './redis.js';
-import type { LimiterConfig } from '../types/index.js';
-import { expect, test, vi } from 'vitest';
 
 vi.mock('./local.js');
 vi.mock('./redis.js');

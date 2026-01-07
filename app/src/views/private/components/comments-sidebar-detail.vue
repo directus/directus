@@ -1,12 +1,4 @@
 <script setup lang="ts">
-import CommentInput from './comment-input.vue';
-import CommentItem from './comment-item.vue';
-import SidebarDetail from './sidebar-detail.vue';
-import api from '@/api';
-import VDivider from '@/components/v-divider.vue';
-import VProgressLinear from '@/components/v-progress-linear.vue';
-import { localizedFormat } from '@/utils/localized-format';
-import { userName } from '@/utils/user-name';
 import { useGroupable } from '@directus/composables';
 import type { Comment, PrimaryKey, User } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
@@ -15,6 +7,14 @@ import dompurify from 'dompurify';
 import { flatten, groupBy, orderBy } from 'lodash';
 import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import CommentInput from './comment-input.vue';
+import CommentItem from './comment-item.vue';
+import SidebarDetail from './sidebar-detail.vue';
+import api from '@/api';
+import VDivider from '@/components/v-divider.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import { localizedFormat } from '@/utils/localized-format';
+import { userName } from '@/utils/user-name';
 
 type CommentsByDateDisplay = {
 	date: Date;

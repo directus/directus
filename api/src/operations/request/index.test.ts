@@ -1,4 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest';
+import config from './index.js';
 
 const axiosDefault = vi.fn();
 
@@ -14,9 +15,6 @@ vi.mock('../../request/index.js', () => ({
 
 const url = '/';
 const method = 'POST';
-
-// eslint-disable-next-line import/order
-import config from './index.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

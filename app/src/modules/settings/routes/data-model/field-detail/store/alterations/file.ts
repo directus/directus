@@ -1,6 +1,6 @@
+import { set } from 'lodash';
 import { HelperFunctions, State, StateUpdates } from '../types';
 import { setRelatedOneFieldForCorrespondingField } from './m2o';
-import { set } from 'lodash';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged, getCurrent } = helperFn;

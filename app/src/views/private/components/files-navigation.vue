@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { isEqual } from 'lodash';
+import { computed, toRefs, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import NavigationFolder from './files-navigation-folder.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -12,9 +15,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFolders } from '@/composables/use-folders';
 import { FolderTarget, SpecialFolder } from '@/types/folders';
-import { isEqual } from 'lodash';
-import { computed, toRefs, watch } from 'vue';
-import { useRouter } from 'vue-router';
 
 const router = useRouter();
 

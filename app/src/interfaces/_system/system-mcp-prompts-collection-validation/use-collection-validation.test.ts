@@ -1,12 +1,12 @@
-import { useCollectionValidation } from './use-collection-validation';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { Collection } from '@/types/collections';
 import type { Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick, ref } from 'vue';
+import { useCollectionValidation } from './use-collection-validation';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { Collection } from '@/types/collections';
 
 function makeField(collection: string, field: string, type: Field['type']): Field {
 	// Create a minimal Field object sufficient for the store utilities used in tests

@@ -1,10 +1,10 @@
-import { useFlows } from './use-flows';
-import api from '@/api';
-import { useFlowsStore } from '@/stores/flows';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { nextTick, ref } from 'vue';
+import { useFlows } from './use-flows';
+import api from '@/api';
+import { useFlowsStore } from '@/stores/flows';
 
 vi.mock('@/stores/flows');
 

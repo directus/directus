@@ -1,7 +1,7 @@
-import { getItemCount } from './get-item-count.js';
-import { getSchema } from '../../utils/get-schema.js';
 import { isSystemCollection } from '@directus/system-data';
 import { type Knex } from 'knex';
+import { getSchema } from '../../utils/get-schema.js';
+import { getItemCount } from './get-item-count.js';
 
 export interface UserItemCount {
 	collections: number;

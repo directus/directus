@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { AxiosProgressEvent } from 'axios';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ImportErrorDialog from './import-error-dialog.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import api from '@/api';
@@ -12,9 +15,6 @@ import type { APIError } from '@/types/error';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { AxiosProgressEvent } from 'axios';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: string;

@@ -1,3 +1,6 @@
+import { mount } from '@vue/test-utils';
+import { beforeEach, expect, test } from 'vitest';
+import { Router } from 'vue-router';
 import VCheckbox from '../v-checkbox.vue';
 import VListGroup from '../v-list-group.vue';
 import VListItemIcon from '../v-list-item-icon.vue';
@@ -7,9 +10,6 @@ import VCheckboxTree from './v-checkbox-tree.vue';
 import VCheckboxTreeCheckbox from './VCheckboxTreeCheckbox.vue';
 import { generateRouter } from '@/__utils__/router';
 import type { GlobalMountOptions } from '@/__utils__/types';
-import { mount } from '@vue/test-utils';
-import { beforeEach, expect, test } from 'vitest';
-import { Router } from 'vue-router';
 
 let router: Router;
 let global: GlobalMountOptions;

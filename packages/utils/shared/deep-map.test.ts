@@ -1,5 +1,5 @@
-import { deepMap } from './deep-map.js';
 import { expect, test } from 'vitest';
+import { deepMap } from './deep-map.js';
 
 for (const value of [123, 'abc', null, undefined, true, false, new Date()]) {
 	test(`primitive value ${value}`, () => {

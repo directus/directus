@@ -1,8 +1,8 @@
-import { useLogger } from '../../logger/index.js';
-import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
 import { createInspector } from '@directus/schema';
 import type { RelationMeta } from '@directus/types';
 import type { Knex } from 'knex';
+import { useLogger } from '../../logger/index.js';
+import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
 
 export async function up(knex: Knex): Promise<void> {
 	const logger = useLogger();

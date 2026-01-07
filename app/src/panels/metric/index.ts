@@ -1,10 +1,10 @@
+import type { PanelQuery } from '@directus/extensions';
+import { definePanel } from '@directus/extensions';
+import { computed } from 'vue';
 import PanelMetric from './panel-metric.vue';
 import PreviewSVG from './preview.svg?raw';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import type { PanelQuery } from '@directus/extensions';
-import { definePanel } from '@directus/extensions';
-import { computed } from 'vue';
 
 export default definePanel({
 	id: 'metric',

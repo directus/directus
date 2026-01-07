@@ -1,11 +1,11 @@
-import { getGraphQLType } from '../../../utils/get-graphql-type.js';
-import type { Schema } from '../schema/index.js';
 import { GraphQLNonNull, GraphQLString } from 'graphql';
 import type {
 	ObjectTypeComposerFieldConfigAsObjectDefinition,
 	ObjectTypeComposerFieldConfigDefinition,
 	SchemaComposer,
 } from 'graphql-compose';
+import { getGraphQLType } from '../../../utils/get-graphql-type.js';
+import type { Schema } from '../schema/index.js';
 
 export function getCollectionType(schemaComposer: SchemaComposer, schema: Schema, action: 'read' | 'write') {
 	const prefix = action === 'read' ? '' : 'write_';

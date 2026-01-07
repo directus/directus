@@ -1,7 +1,7 @@
-import { useVersions } from './use-versions';
 import type { Field } from '@directus/types';
 import { computed, type ComputedRef, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useVersions } from './use-versions';
 
 type Choice = { text: string; value: string | null };
 

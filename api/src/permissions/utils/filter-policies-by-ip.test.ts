@@ -1,6 +1,6 @@
-import { filterPoliciesByIp } from './filter-policies-by-ip.js';
-import type { AccessRow } from '../lib/fetch-policies.js';
 import { expect, test } from 'vitest';
+import type { AccessRow } from '../lib/fetch-policies.js';
+import { filterPoliciesByIp } from './filter-policies-by-ip.js';
 
 test('Keeps policies that do not have a ip access rule set configured when IP is null', () => {
 	const policies: AccessRow[] = [

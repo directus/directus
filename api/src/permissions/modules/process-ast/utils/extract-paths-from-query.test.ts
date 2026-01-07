@@ -1,6 +1,6 @@
-import { extractPathsFromQuery } from './extract-paths-from-query.js';
 import type { Query } from '@directus/types';
 import { expect, test } from 'vitest';
+import { extractPathsFromQuery } from './extract-paths-from-query.js';
 
 test('Returns empty lists when query does not contain filter sort or aggregate', () => {
 	expect(extractPathsFromQuery({})).toEqual({ paths: [], readOnlyPaths: [] });

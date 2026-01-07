@@ -1,7 +1,7 @@
-import { useLogger } from '../../logger/index.js';
-import { getDatabaseClient } from '../index.js';
 import { createInspector } from '@directus/schema';
 import type { Knex } from 'knex';
+import { useLogger } from '../../logger/index.js';
+import { getDatabaseClient } from '../index.js';
 
 export async function up(knex: Knex): Promise<void> {
 	const isMysql = getDatabaseClient(knex) === 'mysql';

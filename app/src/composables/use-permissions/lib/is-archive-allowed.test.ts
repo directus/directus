@@ -1,14 +1,14 @@
-import { isArchiveAllowed } from './is-archive-allowed';
-import { isFieldAllowed } from '../utils/is-field-allowed';
-import { mockedStore } from '@/__utils__/store';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { useCollection } from '@directus/composables';
 import { Permission } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, ref } from 'vue';
+import { isFieldAllowed } from '../utils/is-field-allowed';
+import { isArchiveAllowed } from './is-archive-allowed';
+import { mockedStore } from '@/__utils__/store';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 
 vi.mock('@directus/composables');
 vi.mock('../utils/is-field-allowed');

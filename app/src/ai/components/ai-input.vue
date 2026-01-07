@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { computed, useTemplateRef } from 'vue';
+import { useAiStore } from '../stores/use-ai';
 import AiInputSubmit from './ai-input-submit.vue';
 import AiTextarea from './ai-textarea.vue';
-import { useAiStore } from '../stores/use-ai';
-import { computed, useTemplateRef } from 'vue';
 
 const aiStore = useAiStore();
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
-import chalk from 'chalk';
 import readline from 'readline';
+import chalk from 'chalk';
 
 export function log(message: string, type?: 'info' | 'warn' | 'error'): void {
 	if (type === 'info') {

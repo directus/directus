@@ -1,10 +1,10 @@
-import { useCollectionsStore } from './collections';
-import { i18n } from '@/lang';
 import { Collection } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { merge } from 'lodash';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { useCollectionsStore } from './collections';
+import { i18n } from '@/lang';
 
 beforeEach(() => {
 	setActivePinia(

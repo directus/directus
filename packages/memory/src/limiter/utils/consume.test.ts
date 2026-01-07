@@ -1,7 +1,7 @@
-import { consume } from './consume.js';
 import { HitRateLimitError } from '@directus/errors';
 import { type IRateLimiterRes, RateLimiterMemory } from 'rate-limiter-flexible';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { consume } from './consume.js';
 
 vi.mock('rate-limiter-flexible');
 

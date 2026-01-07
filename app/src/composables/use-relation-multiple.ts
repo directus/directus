@@ -1,13 +1,13 @@
+import { ContentVersion, Filter, Item } from '@directus/types';
+import { getEndpoint, toArray } from '@directus/utils';
+import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
+import { computed, ref, Ref, watch } from 'vue';
 import api from '@/api';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion, Filter, Item } from '@directus/types';
-import { getEndpoint, toArray } from '@directus/utils';
-import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
-import { computed, ref, Ref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
 	page: number;

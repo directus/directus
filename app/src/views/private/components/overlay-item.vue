@@ -1,7 +1,15 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import { isSystemCollection } from '@directus/system-data';
+import { Field, PrimaryKey, Relation } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { isEmpty, set } from 'lodash';
+import { computed, type Ref, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import OverlayItemContent from './overlay-item-content.vue';
 import RenderTemplate from './render-template.vue';
-import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -27,14 +35,6 @@ import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollection } from '@directus/composables';
-import { isSystemCollection } from '@directus/system-data';
-import { Field, PrimaryKey, Relation } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { isEmpty, set } from 'lodash';
-import { computed, type Ref, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';

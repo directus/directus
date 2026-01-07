@@ -1,6 +1,6 @@
+import { defineInterface } from '@directus/extensions';
 import InterfaceListM2A from './list-m2a.vue';
 import PreviewSVG from './preview.svg?raw';
-import { defineInterface } from '@directus/extensions';
 
 export default defineInterface({
 	id: 'list-m2a',

@@ -1,8 +1,8 @@
+import type { Accountability } from '@directus/types';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { AccessService } from '../../services/access.js';
 import type { Context } from '../types.js';
 import { type AccessRow, _fetchPolicies as fetchPolicies } from './fetch-policies.js';
-import type { Accountability } from '@directus/types';
-import { beforeEach, expect, test, vi } from 'vitest';
 
 vi.mock('../../services/access.js', () => ({
 	AccessService: vi.fn(),

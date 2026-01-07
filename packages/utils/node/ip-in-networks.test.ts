@@ -1,6 +1,6 @@
-import { ipInNetworks } from './ip-in-networks.js';
 import { randIp, randIpv6 } from '@ngneat/falso';
 import { describe, expect, test } from 'vitest';
+import { ipInNetworks } from './ip-in-networks.js';
 
 describe('IP address', () => {
 	const ipv4 = randIp();

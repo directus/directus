@@ -1,5 +1,5 @@
-import type { OracleError } from './types.js';
 import { ContainsNullValuesError } from '@directus/errors';
+import type { OracleError } from './types.js';
 
 enum OracleErrorCodes {
 	'CONTAINS_NULL_VALUES' = 2296,

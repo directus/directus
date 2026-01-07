@@ -1,6 +1,5 @@
 import type { FieldIndex, FieldMeta } from '../types.js';
 import defaults from './_defaults.yaml';
-
 import accessFields from './access.yaml';
 import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';

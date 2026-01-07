@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { appAccessMinimalPermissions } from '@directus/system-data';
+import { Permission, Policy, PrimaryKey } from '@directus/types';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Actions from './components/actions.vue';
 import Fields from './components/fields.vue';
 import Permissions from './components/permissions.vue';
@@ -9,10 +13,6 @@ import api from '@/api';
 import VDrawer from '@/components/v-drawer.vue';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { appAccessMinimalPermissions } from '@directus/system-data';
-import { Permission, Policy, PrimaryKey } from '@directus/types';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	active: boolean;

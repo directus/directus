@@ -1,5 +1,5 @@
-import InterfaceSystemFieldTree from './system-field-tree.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemFieldTree from './system-field-tree.vue';
 
 export default defineInterface({
 	id: 'system-field-tree',

@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { remove as removeDiacritics } from 'diacritics';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './VCheckboxTreeCheckbox.vue';
 import VList from '@/components/v-list.vue';
-import { remove as removeDiacritics } from 'diacritics';
-import { computed, ref, toRefs, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

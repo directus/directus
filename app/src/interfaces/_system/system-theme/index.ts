@@ -1,5 +1,5 @@
-import InterfaceSystemTheme from './system-theme.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemTheme from './system-theme.vue';
 
 export default defineInterface({
 	id: 'system-theme',

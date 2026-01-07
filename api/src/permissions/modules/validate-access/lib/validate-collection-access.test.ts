@@ -1,9 +1,9 @@
-import { validateCollectionAccess } from './validate-collection-access.js';
+import type { Accountability, Permission } from '@directus/types';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../lib/fetch-policies.js';
 import type { Context } from '../../../types.js';
-import type { Accountability, Permission } from '@directus/types';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { validateCollectionAccess } from './validate-collection-access.js';
 
 vi.mock('../../../lib/fetch-permissions.js');
 vi.mock('../../../lib/fetch-policies.js');

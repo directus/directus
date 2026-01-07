@@ -1,5 +1,5 @@
-import InterfaceSystemDisplayOptions from './system-display-options.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemDisplayOptions from './system-display-options.vue';
 
 export default defineInterface({
 	id: 'system-display-options',

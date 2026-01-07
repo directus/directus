@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import FlowDrawer from './flow-drawer.vue';
+import { FlowRaw } from '@directus/types';
+import { sortBy } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -24,11 +29,6 @@ import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import { FlowRaw } from '@directus/types';
-import { sortBy } from 'lodash';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterView } from 'vue-router';
 
 const { t } = useI18n();
 

@@ -1,7 +1,7 @@
+import { set } from 'lodash';
 import { useFieldDetailStore } from '../index';
 import { State, StateUpdates } from '../types';
 import { useExtension } from '@/composables/use-extension';
-import { set } from 'lodash';
 
 /**
  * In case a relational field removed the schema object, we'll have to make sure it's re-added

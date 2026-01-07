@@ -1,5 +1,5 @@
-import { getRandomWaitTime } from './get-random-wait-time.js';
 import { expect, test } from 'vitest';
+import { getRandomWaitTime } from './get-random-wait-time.js';
 
 test('Returns a random number between 0 and 1.8e+6', () => {
 	const results = Array.from({ length: 500 }, () => getRandomWaitTime());

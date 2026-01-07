@@ -1,7 +1,7 @@
-import { useAiStore } from '../stores/use-ai';
 import formatTitle from '@directus/format-title';
 import { type MaybeRefOrGetter, onMounted, onUnmounted, toValue, unref, watch } from 'vue';
 import { z, ZodObject } from 'zod';
+import { useAiStore } from '../stores/use-ai';
 
 export interface StaticToolDefinition<T = ZodObject> {
 	name: string;

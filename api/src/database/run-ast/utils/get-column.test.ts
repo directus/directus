@@ -1,7 +1,7 @@
-import { Client_SQLite3 } from '../lib/apply-query/mock.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
+import { Client_SQLite3 } from '../lib/apply-query/mock.js';
 
 const { getColumn } = await import('./get-column.js');
 

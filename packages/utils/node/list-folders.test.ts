@@ -1,8 +1,8 @@
-import { listFolders } from './list-folders.js';
 import path from 'path';
 import type { DirResult } from 'tmp';
 import { dirSync } from 'tmp';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { listFolders } from './list-folders.js';
 
 describe('', () => {
 	let rootDir: DirResult;

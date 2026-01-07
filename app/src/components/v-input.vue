@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import VIcon from './v-icon/v-icon.vue';
-import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { isNil, omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VIcon from './v-icon/v-icon.vue';
+import { keyMap, systemKeys } from '@/composables/use-shortcut';
 
 defineOptions({ inheritAttrs: false });
 

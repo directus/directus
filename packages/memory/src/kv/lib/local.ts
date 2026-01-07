@@ -1,7 +1,7 @@
+import { LRUCache } from 'lru-cache';
 import { deserialize, serialize } from '../../utils/index.js';
 import type { Kv } from '../types/class.js';
 import type { KvConfigLocal } from '../types/config.js';
-import { LRUCache } from 'lru-cache';
 
 export class KvLocal implements Kv {
 	private store: LRUCache<string, Uint8Array, unknown> | Map<string, Uint8Array>;

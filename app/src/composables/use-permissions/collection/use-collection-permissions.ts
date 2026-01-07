@@ -1,9 +1,9 @@
+import { ComputedRef } from 'vue';
 import { isArchiveAllowed } from '../lib/is-archive-allowed';
 import { Collection } from '../types';
 import { isActionAllowed } from './lib/is-action-allowed';
 import { isRevisionsAllowed } from './lib/is-revisions-allowed';
 import { isSortAllowed } from './lib/is-sort-allowed';
-import { ComputedRef } from 'vue';
 
 export type UsableCollectionPermissions = {
 	readAllowed: ComputedRef<boolean>;

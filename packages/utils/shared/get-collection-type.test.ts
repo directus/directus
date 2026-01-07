@@ -1,6 +1,6 @@
-import { getCollectionType } from './get-collection-type.js';
 import type { Collection } from '@directus/types';
 import { describe, expect, it } from 'vitest';
+import { getCollectionType } from './get-collection-type.js';
 
 const TableCollection: Collection = {
 	collection: 'table',

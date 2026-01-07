@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { moveInArray } from '@directus/utils';
+import { cloneDeep } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import Draggable from 'vuedraggable';
 import ItemPreview from './item-preview.vue';
 import VButton from '@/components/v-button.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -14,11 +19,6 @@ import { RelationO2M } from '@/composables/use-relation-o2m';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import type { ContentVersion, Filter } from '@directus/types';
-import { moveInArray } from '@directus/utils';
-import { cloneDeep } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
-import Draggable from 'vuedraggable';
 
 type ChangeEvent =
 	| {

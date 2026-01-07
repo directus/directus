@@ -1,5 +1,5 @@
-import InterfaceMcpPromptsCollectionValidation from './system-mcp-prompts-collection-validation.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceMcpPromptsCollectionValidation from './system-mcp-prompts-collection-validation.vue';
 
 export default defineInterface({
 	id: 'system-mcp-prompts-collection-validation',

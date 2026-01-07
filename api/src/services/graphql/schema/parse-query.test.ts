@@ -1,7 +1,7 @@
-import { getQuery } from './parse-query.js';
-import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import type { FieldNode, SelectionNode } from 'graphql';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { sanitizeQuery } from '../../../utils/sanitize-query.js';
+import { getQuery } from './parse-query.js';
 
 vi.mock('../../../utils/sanitize-query.js', () => ({
 	sanitizeQuery: vi.fn(async (q) => q),

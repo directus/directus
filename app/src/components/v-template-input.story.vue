@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import VTemplateInput from './v-template-input.vue';
 import { logEvent } from 'histoire/client';
 import { ref } from 'vue';
+import VTemplateInput from './v-template-input.vue';
 
 function initState() {
 	return {

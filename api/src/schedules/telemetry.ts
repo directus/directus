@@ -1,8 +1,8 @@
+import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
 import { getCache } from '../cache.js';
 import { track } from '../telemetry/index.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
-import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 
 /**
  * Exported to be able to test the anonymous callback function

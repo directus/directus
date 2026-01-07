@@ -1,5 +1,5 @@
-import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { type Bus, createBus } from '@directus/memory';
+import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 
 export const _cache: { bus: Bus | undefined } = {
 	bus: undefined,

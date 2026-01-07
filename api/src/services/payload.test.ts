@@ -1,6 +1,3 @@
-import { PayloadService } from './index.js';
-import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Item } from '@directus/types';
 import type { Knex } from 'knex';
@@ -8,6 +5,9 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
+import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),

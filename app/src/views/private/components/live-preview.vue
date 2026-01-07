@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useElementSize } from '@directus/composables';
+import { computed, CSSProperties, nextTick, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -9,9 +12,6 @@ import VMenu from '@/components/v-menu.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { useElementSize } from '@directus/composables';
-import { computed, CSSProperties, nextTick, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 declare global {
 	interface Window {

@@ -1,5 +1,5 @@
-import InputPassword from './input-password.vue';
 import { defineInterface } from '@directus/extensions';
+import InputPassword from './input-password.vue';
 
 export default defineInterface({
 	id: 'system-input-password',

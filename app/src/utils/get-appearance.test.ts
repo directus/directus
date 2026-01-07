@@ -1,9 +1,9 @@
-import { cryptoStub } from '@/__utils__/crypto';
-import { useUserStore } from '@/stores/user';
-import { getAppearance } from '@/utils/get-appearance';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { cryptoStub } from '@/__utils__/crypto';
+import { useUserStore } from '@/stores/user';
+import { getAppearance } from '@/utils/get-appearance';
 
 vi.stubGlobal('crypto', cryptoStub);
 

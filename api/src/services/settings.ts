@@ -1,7 +1,7 @@
-import { ItemsService } from './items.js';
-import { sendReport } from '../telemetry/index.js';
 import type { AbstractServiceOptions, OwnerInformation } from '@directus/types';
 import { version } from 'directus/version';
+import { sendReport } from '../telemetry/index.js';
+import { ItemsService } from './items.js';
 
 export class SettingsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

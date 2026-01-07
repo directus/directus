@@ -1,13 +1,13 @@
-import { parseIptc, parseXmp } from './parse-image-metadata.js';
-import { useLogger } from '../../../logger/index.js';
-import { getSharpInstance } from '../lib/get-sharp-instance.js';
+import type { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { useEnv } from '@directus/env';
 import type { File } from '@directus/types';
 import exif, { type GPSInfoTags, type ImageTags, type IopTags, type PhotoTags } from 'exif-reader';
 import { type IccProfile, parse as parseIcc } from 'icc';
 import { pick } from 'lodash-es';
-import type { Readable } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
+import { useLogger } from '../../../logger/index.js';
+import { getSharpInstance } from '../lib/get-sharp-instance.js';
+import { parseIptc, parseXmp } from './parse-image-metadata.js';
 
 const env = useEnv();
 const logger = useLogger();

@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
+import { useCollection, useLayout } from '@directus/composables';
+import { ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
+import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -20,8 +22,6 @@ import ExportSidebarDetail from '@/views/private/components/export-sidebar-detai
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { useCollection, useLayout } from '@directus/composables';
-import { ref } from 'vue';
 
 const layout = ref('tabular');
 const collection = ref('directus_presets');

@@ -1,7 +1,7 @@
-import { collections } from './index.js';
-import { CollectionsService } from '../../../services/collections.js';
 import type { Accountability, Collection, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import { CollectionsService } from '../../../services/collections.js';
+import { collections } from './index.js';
 
 vi.mock('../../../services/collections.js');
 

@@ -1,12 +1,12 @@
-import PrivateViewHeaderBar from './private-view-header-bar.vue';
-import { useNavBarStore } from '../stores/nav-bar';
-import { useSidebarStore } from '../stores/sidebar';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
+import { useNavBarStore } from '../stores/nav-bar';
+import { useSidebarStore } from '../stores/sidebar';
+import PrivateViewHeaderBar from './private-view-header-bar.vue';
 
 vi.mock('@vueuse/core', () => ({
 	useBreakpoints: vi.fn(() => ({

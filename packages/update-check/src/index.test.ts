@@ -1,6 +1,6 @@
-import { updateCheck } from './index.js';
 import stripAnsi from 'strip-ansi';
 import { afterEach, beforeEach, expect, type MockInstance, test, vi } from 'vitest';
+import { updateCheck } from './index.js';
 
 vi.mock('./cache.js');
 

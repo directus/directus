@@ -1,5 +1,5 @@
-import { useFonts } from './use-fonts';
 import { describe, expect, it, vi } from 'vitest';
+import { useFonts } from './use-fonts';
 
 vi.mock('@directus/utils/browser', () => ({ cssVar: () => 'Inter' }));
 

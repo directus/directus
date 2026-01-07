@@ -1,6 +1,6 @@
-import VCardTitle from './v-card-title.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import VCardTitle from './v-card-title.vue';
 
 test('Mount component', () => {
 	expect(VCardTitle).toBeTruthy();

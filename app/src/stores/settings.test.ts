@@ -1,12 +1,12 @@
+import { Settings } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
+import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { useSettingsStore } from './settings';
 import { useUserStore } from './user';
 import api from '@/api';
 import * as notifyUtil from '@/utils/notify';
 import * as unexpectedErrorUtil from '@/utils/unexpected-error';
-import { Settings } from '@directus/types';
-import { createTestingPinia } from '@pinia/testing';
-import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 
 beforeEach(() => {
 	setActivePinia(

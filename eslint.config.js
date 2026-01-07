@@ -1,11 +1,11 @@
 // @ts-check
 
+import process from 'node:process';
 import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintImportPlugin from 'eslint-plugin-import';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
-import process from 'node:process';
 import typescriptEslint from 'typescript-eslint';
 
 export default typescriptEslint.config(

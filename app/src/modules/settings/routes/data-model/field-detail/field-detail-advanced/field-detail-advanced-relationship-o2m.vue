@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
@@ -9,8 +11,6 @@ import VNotice from '@/components/v-notice.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
 
 const fieldDetailStore = useFieldDetailStore();
 const relationsStore = useRelationsStore();

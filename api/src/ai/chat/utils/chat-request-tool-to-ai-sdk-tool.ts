@@ -1,10 +1,10 @@
-import { ALL_TOOLS } from '../../tools/index.js';
-import type { ChatRequestTool, ToolApprovalMode } from '../models/chat-request.js';
 import { InvalidPayloadError } from '@directus/errors';
 import { type Accountability, type SchemaOverview } from '@directus/types';
 import type { Tool } from 'ai';
 import { jsonSchema, tool } from 'ai';
 import { fromZodError } from 'zod-validation-error';
+import { ALL_TOOLS } from '../../tools/index.js';
+import type { ChatRequestTool, ToolApprovalMode } from '../models/chat-request.js';
 
 export const chatRequestToolToAiSdkTool = ({
 	chatRequestTool,

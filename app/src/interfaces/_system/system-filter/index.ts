@@ -1,5 +1,5 @@
-import InterfaceSystemFilter from './system-filter.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemFilter from './system-filter.vue';
 
 export default defineInterface({
 	id: 'system-filter',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VSlider from './v-slider.vue';
 import { ref } from 'vue';
+import VSlider from './v-slider.vue';
 
 const value = ref(50);
 </script>

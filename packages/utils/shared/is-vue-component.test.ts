@@ -1,6 +1,6 @@
-import { isVueComponent } from './is-vue-component.js';
 import { describe, expect, it } from 'vitest';
 import { defineComponent } from 'vue';
+import { isVueComponent } from './is-vue-component.js';
 
 describe('isVueComponent', () => {
 	it('returns true if input is a Vue component', () => {

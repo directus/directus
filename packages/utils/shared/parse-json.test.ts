@@ -1,5 +1,5 @@
-import { noproto, parseJSON } from './parse-json.js';
 import { describe, expect, it } from 'vitest';
+import { noproto, parseJSON } from './parse-json.js';
 
 describe('noproto', () => {
 	it('Returns the value if the key is not __proto__', () => {

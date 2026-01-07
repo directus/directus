@@ -1,5 +1,5 @@
-import { BusLocal } from './local.js';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { BusLocal } from './local.js';
 
 let bus: BusLocal;
 

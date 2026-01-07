@@ -1,3 +1,4 @@
+import type { Redis } from 'ioredis';
 import {
 	bufferToUint8Array,
 	compress,
@@ -11,7 +12,6 @@ import {
 } from '../../utils/index.js';
 import type { Bus, MessageHandler } from '../types/class.js';
 import type { BusConfigRedis } from '../types/config.js';
-import type { Redis } from 'ioredis';
 
 export class BusRedis implements Bus {
 	private pub: Redis;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TransitionBounce from './bounce.vue';
 import { ref } from 'vue';
+import TransitionBounce from './bounce.vue';
 
 const show = ref(true);
 </script>

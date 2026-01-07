@@ -1,3 +1,5 @@
+import { ErrorCode, ServiceUnavailableError } from '@directus/errors';
+import type { Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
@@ -7,8 +9,6 @@ import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { WebSocketLogsMessage } from '../messages.js';
 import type { LogsSubscription, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
-import { ErrorCode, ServiceUnavailableError } from '@directus/errors';
-import type { Bus } from '@directus/memory';
 
 const logger = useLogger();
 

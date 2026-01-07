@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { Field, PrimaryKey } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
 import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
 import VAvatar from '@/components/v-avatar.vue';
 import VButton from '@/components/v-button.vue';
@@ -20,10 +24,6 @@ import DisplayDatetime from '@/displays/datetime/datetime.vue';
 import DisplayLabels from '@/displays/labels/labels.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import RenderDisplay from '@/views/private/components/render-display.vue';
-import type { Field, PrimaryKey } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
 
 defineOptions({ inheritAttrs: false });
 

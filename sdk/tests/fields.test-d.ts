@@ -1,6 +1,6 @@
-import type { CollectionA, CollectionC, TestSchema } from './schema.js';
-import type { QueryFields } from '../src/types/fields.js';
 import { assertType, describe, test } from 'vitest';
+import type { QueryFields } from '../src/types/fields.js';
+import type { CollectionA, CollectionC, TestSchema } from './schema.js';
 
 describe('Test QueryFields', () => {
 	type CollectionAFields = QueryFields<TestSchema, CollectionA>;

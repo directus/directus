@@ -1,6 +1,6 @@
-import VCard from './v-card.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import VCard from './v-card.vue';
 
 test('Mount component', () => {
 	expect(VCard).toBeTruthy();

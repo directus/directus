@@ -1,8 +1,8 @@
-import InterfaceCode from './input-code.vue';
-import PreviewSVG from './preview.svg?raw';
 import { defineInterface } from '@directus/extensions';
 import { DeepPartial, Field } from '@directus/types';
 import CodeMirror from 'codemirror';
+import InterfaceCode from './input-code.vue';
+import PreviewSVG from './preview.svg?raw';
 import 'codemirror/mode/meta';
 
 const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {

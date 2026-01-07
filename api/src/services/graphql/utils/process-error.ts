@@ -1,7 +1,7 @@
-import { useLogger } from '../../../logger/index.js';
 import { type DirectusError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { useLogger } from '../../../logger/index.js';
 
 const processError = (
 	accountability: Accountability | null,

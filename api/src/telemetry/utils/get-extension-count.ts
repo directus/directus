@@ -1,6 +1,6 @@
+import { type Knex } from 'knex';
 import { ExtensionsService } from '../../services/extensions.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { type Knex } from 'knex';
 
 export interface ExtensionCount {
 	/**

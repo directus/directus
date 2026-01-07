@@ -1,6 +1,6 @@
+import { parseJSON } from '@directus/utils';
 import { stringToUint8Array } from './string-to-uint8array.js';
 import { uint8ArrayToString } from './uint8array-to-string.js';
-import { parseJSON } from '@directus/utils';
 
 /**
  * Serialize a given JavaScript value to it's Uint8Array equivalent

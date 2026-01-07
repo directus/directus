@@ -1,7 +1,7 @@
-import { redisConfigAvailable, useRedis } from '../redis/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
 import { type CacheConfig, defineCache } from '@directus/memory';
+import { redisConfigAvailable, useRedis } from '../redis/index.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 const localOnly = redisConfigAvailable() === false;
 const env = useEnv();

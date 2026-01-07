@@ -1,3 +1,4 @@
+import { App } from 'vue';
 import TransitionBounce from './transition/bounce.vue';
 import TransitionDialog from './transition/dialog.vue';
 import TransitionExpand from './transition/expand.vue';
@@ -75,7 +76,6 @@ import RenderTemplate from '@/views/private/components/render-template.vue';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import UserPopover from '@/views/private/components/user-popover.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
-import { App } from 'vue';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);

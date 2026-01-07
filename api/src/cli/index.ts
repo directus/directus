@@ -1,3 +1,5 @@
+import { Command, Option } from 'commander';
+import { version } from 'directus/version';
 import emitter from '../emitter.js';
 import { startServer } from '../server.js';
 import bootstrap from './commands/bootstrap/index.js';
@@ -13,8 +15,6 @@ import secretGenerate from './commands/security/secret.js';
 import usersCreate from './commands/users/create.js';
 import usersPasswd from './commands/users/passwd.js';
 import { loadExtensions } from './load-extensions.js';
-import { Command, Option } from 'commander';
-import { version } from 'directus/version';
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();

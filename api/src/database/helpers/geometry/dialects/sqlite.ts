@@ -1,5 +1,5 @@
-import { GeometryHelper } from '../types.js';
 import type { Knex } from 'knex';
+import { GeometryHelper } from '../types.js';
 
 export class GeometryHelperSQLite extends GeometryHelper {
 	override async supported() {

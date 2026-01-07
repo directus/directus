@@ -1,9 +1,9 @@
+import ky from 'ky';
+import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
 import { constructUrl } from './lib/construct-url.js';
 import { RegistryListResponse } from './schemas/registry-list-response.js';
 import type { ListOptions } from './types/list-options.js';
 import type { ListQuery } from './types/list-query.js';
-import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
-import ky from 'ky';
 
 export type { RegistryListResponse } from './schemas/registry-list-response.js';
 export type { ListOptions } from './types/list-options.js';

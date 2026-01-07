@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
-import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
+import { useBreakpoints } from '@vueuse/core';
+import { computed } from 'vue';
 import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
+import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
+import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { BREAKPOINTS } from '@/constants';
-import { useBreakpoints } from '@vueuse/core';
-import { computed } from 'vue';
 
 const props = defineProps<{
 	title?: string;

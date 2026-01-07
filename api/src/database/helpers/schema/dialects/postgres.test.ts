@@ -1,12 +1,10 @@
 import type { Knex } from 'knex';
 import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelperPostgres } from './postgres.js';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-// eslint-disable-next-line import/order
-import { SchemaHelperPostgres } from './postgres.js';
 
 describe('SchemaHelperPostgres', () => {
 	function createHelper() {

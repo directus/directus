@@ -1,7 +1,6 @@
-import { redisConfigAvailable } from './redis-config-available.js';
 import { useEnv } from '@directus/env';
-
 import { afterEach, expect, test, vi } from 'vitest';
+import { redisConfigAvailable } from './redis-config-available.js';
 
 vi.mock('@directus/env');
 

@@ -1,5 +1,5 @@
-import { getMilliseconds } from './get-milliseconds.js';
 import { expect, test } from 'vitest';
+import { getMilliseconds } from './get-milliseconds.js';
 
 test.each([
 	// accept human readable time format and plain number

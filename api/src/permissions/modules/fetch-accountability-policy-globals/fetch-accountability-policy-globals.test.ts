@@ -1,8 +1,8 @@
-import { fetchAccountabilityPolicyGlobals } from './fetch-accountability-policy-globals.js';
-import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { fetchPolicies } from '../../lib/fetch-policies.js';
+import { fetchAccountabilityPolicyGlobals } from './fetch-accountability-policy-globals.js';
 
 vi.mock('../../lib/fetch-policies.js');
 

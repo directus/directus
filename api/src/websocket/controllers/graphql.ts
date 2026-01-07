@@ -1,5 +1,8 @@
-import SocketController from './base.js';
-import { registerWebSocketEvents } from './hooks.js';
+import type { Server as httpServer } from 'http';
+import type { WebSocketMessage } from '@directus/types';
+import type { Server } from 'graphql-ws';
+import { CloseCode, makeServer, MessageType } from 'graphql-ws';
+import type { WebSocket } from 'ws';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
@@ -11,11 +14,8 @@ import { handleWebSocketError } from '../errors.js';
 import { ConnectionParams } from '../messages.js';
 import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
-import type { WebSocketMessage } from '@directus/types';
-import type { Server } from 'graphql-ws';
-import { CloseCode, makeServer, MessageType } from 'graphql-ws';
-import type { Server as httpServer } from 'http';
-import type { WebSocket } from 'ws';
+import SocketController from './base.js';
+import { registerWebSocketEvents } from './hooks.js';
 
 const logger = useLogger();
 

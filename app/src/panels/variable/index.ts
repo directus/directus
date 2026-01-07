@@ -1,10 +1,10 @@
+import { definePanel } from '@directus/extensions';
+import { useI18n } from 'vue-i18n';
 import PanelVariable from './panel-variable.vue';
 import PreviewSVG from './preview.svg?raw';
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { translate } from '@/utils/translate-object-values';
-import { definePanel } from '@directus/extensions';
-import { useI18n } from 'vue-i18n';
 
 export default definePanel({
 	id: 'variable',

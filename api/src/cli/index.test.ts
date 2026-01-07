@@ -1,4 +1,5 @@
-import { createCli } from './index.js';
+import { Command } from 'commander';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../emitter.js';
 import { startServer } from '../server.js';
 import bootstrap from './commands/bootstrap/index.js';
@@ -7,8 +8,7 @@ import init from './commands/init/index.js';
 import { apply } from './commands/schema/apply.js';
 import usersCreate from './commands/users/create.js';
 import { loadExtensions } from './load-extensions.js';
-import { Command } from 'commander';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { createCli } from './index.js';
 
 vi.mock('../emitter.js', () => ({
 	default: {

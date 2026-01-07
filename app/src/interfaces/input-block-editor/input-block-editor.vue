@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import EditorJS from '@editorjs/editorjs';
+import { isEqual } from 'lodash';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { useBus } from './bus';
 import { sanitizeValue } from './sanitize';
 import getTools from './tools';
@@ -8,10 +12,6 @@ import VDrawer from '@/components/v-drawer.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
-import EditorJS from '@editorjs/editorjs';
-import { isEqual } from 'lodash';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 
 import './editorjs-overrides.css';
 

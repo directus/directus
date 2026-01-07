@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import { computed, ref, toRefs, unref } from 'vue';
+import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import ContentNotFound from '../not-found.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
@@ -18,9 +21,6 @@ import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { useCollection } from '@directus/composables';
-import { computed, ref, toRefs, unref } from 'vue';
-import { useRouter } from 'vue-router';
 
 interface Props {
 	primaryKey?: string | null;

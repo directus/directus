@@ -1,6 +1,6 @@
+import { Relation } from '@directus/types';
 import { getLocalTypeForField } from './get-local-type';
 import { useRelationsStore } from '@/stores/relations';
-import { Relation } from '@directus/types';
 
 export interface RelatedCollectionData {
 	relatedCollection: string;

@@ -1,8 +1,8 @@
-import { run } from './index.js';
 import { BUNDLE_EXTENSION_TYPES, EXTENSION_LANGUAGES, EXTENSION_TYPES } from '@directus/extensions';
 import { create } from '@directus/extensions-sdk/cli';
 import inquirer from 'inquirer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { run } from './index.js';
 
 // Mock dependencies
 vi.mock('inquirer');

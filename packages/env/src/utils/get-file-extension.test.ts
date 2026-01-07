@@ -1,6 +1,6 @@
-import { getFileExtension } from './get-file-extension.js';
 import { extname } from 'node:path';
 import { afterEach, expect, test, vi } from 'vitest';
+import { getFileExtension } from './get-file-extension.js';
 
 vi.mock('node:path');
 

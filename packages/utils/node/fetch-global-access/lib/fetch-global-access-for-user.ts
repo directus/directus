@@ -1,6 +1,6 @@
-import { fetchGlobalAccessForQuery } from '../utils/fetch-global-access-for-query.js';
 import type { Accountability, GlobalAccess } from '@directus/types';
 import type { Knex } from 'knex';
+import { fetchGlobalAccessForQuery } from '../utils/fetch-global-access-for-query.js';
 
 /**
  * Fetches the global access permissions for a specific user.

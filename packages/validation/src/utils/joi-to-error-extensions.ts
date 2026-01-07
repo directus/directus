@@ -1,5 +1,5 @@
-import type { FailedValidationErrorExtensions } from '../errors/failed-validation.js';
 import type { ValidationErrorItem } from 'joi';
+import type { FailedValidationErrorExtensions } from '../errors/failed-validation.js';
 
 export const joiValidationErrorItemToErrorExtensions = (
 	validationErrorItem: ValidationErrorItem,

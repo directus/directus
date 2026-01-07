@@ -1,14 +1,3 @@
-import { getCache } from '../cache.js';
-import { ActivityService } from './activity.js';
-import { getHelpers } from '../database/helpers/index.js';
-import emitter from '../emitter.js';
-import { ItemsService } from './items.js';
-import { PayloadService } from './payload.js';
-import { RevisionsService } from './revisions.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { deepMapWithSchema } from '../utils/versioning/deep-map-with-schema.js';
-import { splitRecursive } from '../utils/versioning/split-recursive.js';
 import { Action } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type {
@@ -23,6 +12,17 @@ import type {
 import Joi from 'joi';
 import { assign, get, isEqual, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
+import { getCache } from '../cache.js';
+import { getHelpers } from '../database/helpers/index.js';
+import emitter from '../emitter.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { deepMapWithSchema } from '../utils/versioning/deep-map-with-schema.js';
+import { splitRecursive } from '../utils/versioning/split-recursive.js';
+import { ActivityService } from './activity.js';
+import { ItemsService } from './items.js';
+import { PayloadService } from './payload.js';
+import { RevisionsService } from './revisions.js';
 
 export class VersionsService extends ItemsService<ContentVersion> {
 	constructor(options: AbstractServiceOptions) {

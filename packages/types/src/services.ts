@@ -1,3 +1,10 @@
+import type { Readable } from 'node:stream';
+import type { Column, ForeignKey } from '@directus/schema';
+import type { Archiver } from 'archiver';
+import type { GraphQLSchema } from 'graphql';
+import type { Knex } from 'knex';
+import type { Transporter } from 'nodemailer';
+import type { OpenAPIObject } from 'openapi3-ts/oas30';
 import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
@@ -24,13 +31,6 @@ import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
 import type { ContentVersion } from './versions.js';
 import type { WebSocketClient, WebSocketMessage } from './websockets.js';
-import type { Column, ForeignKey } from '@directus/schema';
-import type { Archiver } from 'archiver';
-import type { GraphQLSchema } from 'graphql';
-import type { Knex } from 'knex';
-import type { Readable } from 'node:stream';
-import type { Transporter } from 'nodemailer';
-import type { OpenAPIObject } from 'openapi3-ts/oas30';
 
 export type AbstractServiceOptions = {
 	knex?: Knex | undefined;

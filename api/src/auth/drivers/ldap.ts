@@ -1,15 +1,3 @@
-import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
-import getDatabase from '../../database/index.js';
-import emitter from '../../emitter.js';
-import { useLogger } from '../../logger/index.js';
-import { respond } from '../../middleware/respond.js';
-import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
-import { AuthenticationService } from '../../services/authentication.js';
-import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
-import asyncHandler from '../../utils/async-handler.js';
-import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import { getSchema } from '../../utils/get-schema.js';
-import { AuthDriver } from '../auth.js';
 import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
@@ -26,6 +14,18 @@ import { Router } from 'express';
 import Joi from 'joi';
 import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } from 'ldapjs';
 import ldap from 'ldapjs';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
+import { useLogger } from '../../logger/index.js';
+import { respond } from '../../middleware/respond.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { AuthDriver } from '../auth.js';
 
 interface UserInfo {
 	dn: string;

@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import type { User } from '@directus/types';
+import { computed, provide, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { logout } from '@/auth';
@@ -28,11 +33,6 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { useCollection } from '@directus/composables';
-import type { User } from '@directus/types';
-import { computed, provide, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	primaryKey: string;

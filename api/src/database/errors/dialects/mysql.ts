@@ -1,4 +1,3 @@
-import type { MySQLError } from './types.js';
 import {
 	ContainsNullValuesError,
 	InvalidForeignKeyError,
@@ -8,6 +7,7 @@ import {
 	ValueTooLongError,
 } from '@directus/errors';
 import type { Item } from '@directus/types';
+import type { MySQLError } from './types.js';
 
 enum MySQLErrorCodes {
 	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',

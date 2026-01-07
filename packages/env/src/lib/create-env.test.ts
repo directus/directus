@@ -1,14 +1,14 @@
-import { cast } from './cast.js';
-import { createEnv } from './create-env.js';
-import { readConfigurationFromFile } from './read-configuration-from-file.js';
+import { readFileSync } from 'node:fs';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getConfigPath } from '../utils/get-config-path.js';
 import { getDefaultType } from '../utils/get-default-type.js';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';
 import { isFileKey } from '../utils/is-file-key.js';
 import { readConfigurationFromProcess } from '../utils/read-configuration-from-process.js';
 import { removeFileSuffix } from '../utils/remove-file-suffix.js';
-import { readFileSync } from 'node:fs';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { cast } from './cast.js';
+import { createEnv } from './create-env.js';
+import { readConfigurationFromFile } from './read-configuration-from-file.js';
 
 vi.mock('../utils/get-config-path.js');
 vi.mock('../utils/is-directus-variable.js');

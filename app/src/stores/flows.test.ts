@@ -1,9 +1,9 @@
-import { useFlowsStore } from './flows';
-import { useUserStore } from './user';
-import { AppUser } from '@/types/user';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { useFlowsStore } from './flows';
+import { useUserStore } from './user';
+import { AppUser } from '@/types/user';
 
 beforeEach(() => {
 	setActivePinia(

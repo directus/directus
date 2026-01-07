@@ -1,12 +1,10 @@
 import type { Knex } from 'knex';
 import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelperSQLite } from './sqlite.js';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-// eslint-disable-next-line import/order
-import { SchemaHelperSQLite } from './sqlite.js';
 
 describe('SchemaHelperSQLite', () => {
 	function createHelper() {

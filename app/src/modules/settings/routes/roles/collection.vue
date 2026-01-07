@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Role } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -15,10 +19,6 @@ import { PrivateView } from '@/views/private';
 import RenderDisplay from '@/views/private/components/render-display.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
-import { Role } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterView, useRouter } from 'vue-router';
 
 const { t } = useI18n();
 

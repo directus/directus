@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { requestQueue } from '@/api';
 import { omit } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, useAttrs, watch } from 'vue';
+import { requestQueue } from '@/api';
 
 defineOptions({
 	inheritAttrs: false,

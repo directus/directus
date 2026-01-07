@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
+import { Policy } from '@directus/types';
+import { ref, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -18,9 +21,6 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { Policy } from '@directus/types';
-import { ref, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	primaryKey: string;

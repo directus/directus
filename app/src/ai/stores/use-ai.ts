@@ -1,8 +1,3 @@
-import { StaticToolDefinition } from '../composables/define-tool';
-import { AI_MODELS, type ModelDefinition } from '../models';
-import { SystemTool } from '../types/system-tool';
-import { useSettingsStore } from '@/stores/settings';
-import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { Chat } from '@ai-sdk/vue';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
@@ -14,6 +9,11 @@ import {
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
+import { StaticToolDefinition } from '../composables/define-tool';
+import { AI_MODELS, type ModelDefinition } from '../models';
+import { SystemTool } from '../types/system-tool';
+import { useSettingsStore } from '@/stores/settings';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
 

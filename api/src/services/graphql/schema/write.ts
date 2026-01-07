@@ -1,11 +1,11 @@
-import { GraphQLService } from '../index.js';
-import { getTypes } from './get-types.js';
-import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
-import { resolveMutation } from '../resolvers/mutation.js';
 import type { GraphQLResolveInfo } from 'graphql';
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import type { ResolverDefinition, SchemaComposer } from 'graphql-compose';
 import { ObjectTypeComposer, toInputObjectType } from 'graphql-compose';
+import { GraphQLService } from '../index.js';
+import { resolveMutation } from '../resolvers/mutation.js';
+import { getTypes } from './get-types.js';
+import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
 
 export function getWritableTypes(
 	gql: GraphQLService,

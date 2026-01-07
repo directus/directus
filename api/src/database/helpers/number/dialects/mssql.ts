@@ -1,8 +1,8 @@
+import type { NumericValue } from '@directus/types';
+import type { Knex } from 'knex';
 import { NumberDatabaseHelper, type NumberInfo } from '../types.js';
 import { maybeStringifyBigInt } from '../utils/maybe-stringify-big-int.js';
 import { numberInRange } from '../utils/number-in-range.js';
-import type { NumericValue } from '@directus/types';
-import type { Knex } from 'knex';
 
 export class NumberHelperMSSQL extends NumberDatabaseHelper {
 	override addSearchCondition(

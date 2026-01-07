@@ -1,10 +1,10 @@
-import type { Report } from '../../types.js';
+import path from 'path';
 import { API_EXTENSION_TYPES, EXTENSION_TYPES } from '@directus/constants';
 import { EXTENSION_PKG_KEY } from '@directus/extensions';
 import fse from 'fs-extra';
 import { type Ora } from 'ora';
-import path from 'path';
 import semver from 'semver';
+import type { Report } from '../../types.js';
 
 const checkDirectusConfig = {
 	name: 'directus-config',

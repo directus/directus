@@ -1,10 +1,10 @@
+import fs from 'node:fs/promises';
+import request from 'supertest';
+import { expect, it } from 'vitest';
 import { getUrl } from './config';
 import { DeleteCollection } from './functions';
 import vendors from './get-dbs-to-test';
 import { USER } from './variables';
-import fs from 'node:fs/promises';
-import request from 'supertest';
-import { expect, it } from 'vitest';
 
 export const collectionName = 'common_test_collection';
 export const collectionNameM2O = 'common_test_collection_m2o';

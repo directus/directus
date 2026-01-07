@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { Panel } from '@directus/extensions';
+import { assign, clone, isUndefined, omitBy } from 'lodash';
+import { nanoid } from 'nanoid/non-secure';
+import { storeToRefs } from 'pinia';
+import { computed, reactive, unref } from 'vue';
+import { useRouter } from 'vue-router';
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
@@ -14,12 +20,6 @@ import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { CreatePanel, useInsightsStore } from '@/stores/insights';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import type { Panel } from '@directus/extensions';
-import { assign, clone, isUndefined, omitBy } from 'lodash';
-import { nanoid } from 'nanoid/non-secure';
-import { storeToRefs } from 'pinia';
-import { computed, reactive, unref } from 'vue';
-import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	dashboardKey: string;

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { ContentVersion, PrimaryKey } from '@directus/types';
+import { isEqual } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import { useComparison } from './use-comparison';
 import api from '@/api';
@@ -14,10 +18,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { Revision } from '@/types/revisions';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { ContentVersion, PrimaryKey } from '@directus/types';
-import { isEqual } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
 	deleteVersionsAllowed: boolean;

@@ -1,15 +1,15 @@
+import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import type { AliasMap } from '../../../../utils/get-column-path.js';
+import { getHelpers } from '../../../helpers/index.js';
+import { applyCaseWhen } from '../../utils/apply-case-when.js';
+import { getColumn } from '../../utils/get-column.js';
 import { applyAggregate } from './aggregate.js';
 import { applyFilter } from './filter/index.js';
 import { joinFilterWithCases } from './join-filter-with-cases.js';
 import { applyLimit, applyOffset } from './pagination.js';
 import { applySearch } from './search.js';
 import { applySort } from './sort.js';
-import type { AliasMap } from '../../../../utils/get-column-path.js';
-import { getHelpers } from '../../../helpers/index.js';
-import { applyCaseWhen } from '../../utils/apply-case-when.js';
-import { getColumn } from '../../utils/get-column.js';
-import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
 
 type ApplyQueryOptions = {
 	aliasMap?: AliasMap;

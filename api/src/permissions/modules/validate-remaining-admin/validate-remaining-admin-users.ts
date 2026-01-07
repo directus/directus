@@ -1,6 +1,6 @@
-import { validateRemainingAdminCount } from './validate-remaining-admin-count.js';
 import { fetchUserCount, type FetchUserCountOptions } from '../../../utils/fetch-user-count/fetch-user-count.js';
 import type { Context } from '../../types.js';
+import { validateRemainingAdminCount } from './validate-remaining-admin-count.js';
 
 export type ValidateRemainingAdminUsersOptions = Pick<
 	FetchUserCountOptions,

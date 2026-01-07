@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useSync } from '@directus/composables';
+import { GeometryOptions } from '@directus/types';
+import { useI18n } from 'vue-i18n';
 import MapComponent from './components/map.vue';
 import VInfo from '@/components/v-info.vue';
 import VPagination from '@/components/v-pagination.vue';
@@ -6,9 +9,6 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { usePageSize } from '@/composables/use-page-size';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { useSync } from '@directus/composables';
-import { GeometryOptions } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 
 defineOptions({ inheritAttrs: false });
 

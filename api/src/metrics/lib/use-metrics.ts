@@ -1,6 +1,6 @@
-import { createMetrics } from './create-metrics.js';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
+import { createMetrics } from './create-metrics.js';
 
 export const _cache: {
 	metrics: ReturnType<typeof createMetrics> | undefined;

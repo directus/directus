@@ -1,6 +1,6 @@
+import { beforeEach, expect, test } from 'vitest';
 import type { RecordNotUniqueErrorExtensions } from './record-not-unique.js';
 import { messageConstructor } from './record-not-unique.js';
-import { beforeEach, expect, test } from 'vitest';
 
 let sample: RecordNotUniqueErrorExtensions;
 

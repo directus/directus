@@ -1,5 +1,5 @@
-import { SynchronizedClock } from '../synchronization.js';
 import { CronJob, validateCronExpression } from 'cron';
+import { SynchronizedClock } from '../synchronization.js';
 
 export interface ScheduledJob {
 	stop(): Promise<void>;

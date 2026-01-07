@@ -1,5 +1,5 @@
-import InterfaceSystemThemeOverrides from './system-theme-overrides.vue';
 import { defineInterface } from '@directus/extensions';
+import InterfaceSystemThemeOverrides from './system-theme-overrides.vue';
 
 export default defineInterface({
 	id: 'system-theme-overrides',

@@ -1,11 +1,11 @@
-import { useFieldsStore } from './fields';
-import { i18n } from '@/lang';
-import { translate as translateLiteral } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { merge } from 'lodash';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useFieldsStore } from './fields';
+import { i18n } from '@/lang';
+import { translate as translateLiteral } from '@/utils/translate-literal';
 
 beforeEach(() => {
 	setActivePinia(

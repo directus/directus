@@ -1,5 +1,5 @@
-import { percentage } from '@/utils/percentage';
 import { describe, expect, it } from 'vitest';
+import { percentage } from '@/utils/percentage';
 
 describe('utils/percentage', () => {
 	it('Returns null for undefined upper limits', () => {

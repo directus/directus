@@ -1,5 +1,5 @@
-import { AutoSequenceHelper } from '../types.js';
 import type { Knex } from 'knex';
+import { AutoSequenceHelper } from '../types.js';
 
 export class AutoIncrementHelperPostgres extends AutoSequenceHelper {
 	/**

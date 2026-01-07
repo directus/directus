@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { useAiStore } from '../stores/use-ai';
 import AiModelSelector from './ai-model-selector.vue';
 import AiSettingsMenu from './ai-settings-menu.vue';
-import { useAiStore } from '../stores/use-ai';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 

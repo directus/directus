@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import InsightsNotFound from './not-found.vue';
+import { applyOptionsData } from '@directus/utils';
+import { assign, isEmpty } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { RouterView } from 'vue-router';
 import InsightsNavigation from '../components/navigation.vue';
+import InsightsNotFound from './not-found.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -27,10 +31,6 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import { applyOptionsData } from '@directus/utils';
-import { assign, isEmpty } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { RouterView } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{

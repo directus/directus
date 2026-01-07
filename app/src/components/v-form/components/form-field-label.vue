@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import type { Field } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { ComparisonContext, FormField } from '../types';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
-import type { Field } from '@directus/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{

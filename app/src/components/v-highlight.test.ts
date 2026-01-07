@@ -1,6 +1,6 @@
-import VHighlight from './v-highlight.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import VHighlight from './v-highlight.vue';
 
 test('Mount component', () => {
 	expect(VHighlight).toBeTruthy();

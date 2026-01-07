@@ -1,4 +1,5 @@
-import { collectionFirst } from './general.seed';
+import { ChildProcess, spawn } from 'child_process';
+import { randomUUID } from 'node:crypto';
 import config, { type Env, getUrl, paths } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql } from '@common/transport';
@@ -6,13 +7,12 @@ import type { WebSocketResponse, WebSocketUID } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
-import { ChildProcess, spawn } from 'child_process';
 import getPort from 'get-port';
 import knex, { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { collectionFirst } from './general.seed';
 
 describe('WebSocket General Tests', () => {
 	const databases = new Map<string, Knex>();

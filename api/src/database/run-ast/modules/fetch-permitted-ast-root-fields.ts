@@ -1,11 +1,11 @@
+import type { Accountability, Permission, PermissionsAction, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { cloneDeep } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { AST } from '../../../types/ast.js';
 import { getDBQuery } from '../lib/get-db-query.js';
 import { parseCurrentLevel } from '../lib/parse-current-level.js';
-import type { Accountability, Permission, PermissionsAction, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import { cloneDeep } from 'lodash-es';
 
 type FetchPermittedAstRootFieldsOptions = {
 	schema: SchemaOverview;

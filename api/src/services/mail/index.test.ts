@@ -1,11 +1,11 @@
-import { MailService } from './index.js';
-import emitter from '../../emitter.js';
-import getMailer from '../../mailer.js';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions } from '@directus/types';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import emitter from '../../emitter.js';
+import getMailer from '../../mailer.js';
+import { MailService } from './index.js';
 
 vi.mock('../../database/index.js', () => ({
 	default: vi.fn().mockReturnValue({}),

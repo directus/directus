@@ -1,6 +1,6 @@
-import type { Extension } from './app-extension-config.js';
-import type { Router } from 'express';
 import type { ReadStream } from 'node:fs';
+import type { Router } from 'express';
+import type { Extension } from './app-extension-config.js';
 
 export interface ExtensionManagerOptions {
 	schedule: boolean;

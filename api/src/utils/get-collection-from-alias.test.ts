@@ -1,6 +1,6 @@
+import { expect, it } from 'vitest';
 import { getCollectionFromAlias } from './get-collection-from-alias.js';
 import type { AliasMap } from './get-column-path.js';
-import { expect, it } from 'vitest';
 
 it('Returns the correct collection', () => {
 	const aliasMap: AliasMap = {

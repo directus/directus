@@ -1,9 +1,9 @@
-import api from '@/api';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { Collection, Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { has, merge, pick } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
+import api from '@/api';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 type UsableTemplateData = {
 	template: ComputedRef<string | null>;

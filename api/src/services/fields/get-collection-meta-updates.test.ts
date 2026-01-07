@@ -1,5 +1,5 @@
-import { getCollectionMetaUpdates } from './get-collection-meta-updates.js';
 import { expect, test } from 'vitest';
+import { getCollectionMetaUpdates } from './get-collection-meta-updates.js';
 
 test('get no updates for empty list', () => {
 	const updates = getCollectionMetaUpdates('collection', 'field', [], {}, new Map());

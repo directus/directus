@@ -1,4 +1,3 @@
-import { collectionSingleton, collectionSingletonO2M, seedDBValues } from './singleton.seed';
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { SeedFunctions } from '@common/seed-functions';
@@ -6,6 +5,7 @@ import { requestGraphQL } from '@common/transport';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
 import { beforeAll, describe, expect, it, test } from 'vitest';
+import { collectionSingleton, collectionSingletonO2M, seedDBValues } from './singleton.seed';
 
 let isSeeded = false;
 

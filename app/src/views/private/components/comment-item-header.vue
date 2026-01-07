@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { Comment, User } from '@directus/types';
+import { format } from 'date-fns';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import UserPopover from './user-popover.vue';
 import api from '@/api';
 import VAvatar from '@/components/v-avatar.vue';
@@ -18,10 +22,6 @@ import VMenu from '@/components/v-menu.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import type { Comment, User } from '@directus/types';
-import { format } from 'date-fns';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	comment: Comment & {

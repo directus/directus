@@ -1,3 +1,5 @@
+import { ok as assert } from 'node:assert/strict';
+import type { FieldOverview, SchemaOverview } from '@directus/types';
 import { SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
 import {
@@ -20,8 +22,6 @@ import {
 	UUID_FIELD,
 } from './defaults.js';
 import { RelationBuilder } from './relation.js';
-import type { FieldOverview, SchemaOverview } from '@directus/types';
-import { ok as assert } from 'node:assert/strict';
 
 type InitialFieldOverview = {
 	field: string;

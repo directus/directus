@@ -1,3 +1,6 @@
+import { useEnv } from '@directus/env';
+import { InvalidProviderConfigError } from '@directus/errors';
+import { toArray } from '@directus/utils';
 import type { AuthDriver } from './auth/auth.js';
 import {
 	LDAPAuthDriver,
@@ -11,9 +14,6 @@ import getDatabase from './database/index.js';
 import { useLogger } from './logger/index.js';
 import type { AuthDriverOptions } from './types/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { useEnv } from '@directus/env';
-import { InvalidProviderConfigError } from '@directus/errors';
-import { toArray } from '@directus/utils';
 
 const providers: Map<string, AuthDriver> = new Map();
 

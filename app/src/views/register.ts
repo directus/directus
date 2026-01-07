@@ -1,6 +1,6 @@
+import { App, defineAsyncComponent } from 'vue';
 import PublicView from './public/';
 import SharedView from './shared/shared-view.vue';
-import { App, defineAsyncComponent } from 'vue';
 
 const PrivateView = defineAsyncComponent(() => import('./private'));
 

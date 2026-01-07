@@ -1,3 +1,7 @@
+import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { has, isEqual, mergeWith } from 'lodash';
+import { computed, type Ref, ref, watch } from 'vue';
 import type {
 	ComparisonData,
 	NormalizedComparison,
@@ -25,10 +29,6 @@ import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { reconstructComparisonHtml } from '@/utils/reconstruct-comparison-html';
 import { shouldShowComparisonDiff } from '@/utils/should-show-comparison-diff';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { has, isEqual, mergeWith } from 'lodash';
-import { computed, type Ref, ref, watch } from 'vue';
 
 interface UseComparisonOptions {
 	collection: Ref<string>;

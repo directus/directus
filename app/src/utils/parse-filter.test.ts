@@ -1,7 +1,7 @@
-import { parseFilter } from './parse-filter';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { parseFilter } from './parse-filter';
 
 beforeEach(() => {
 	setActivePinia(

@@ -1,7 +1,7 @@
-import type { FieldKey } from '../types.js';
-import { flattenFilter } from './flatten-filter.js';
 import type { Filter, Query } from '@directus/types';
 import { expect, test } from 'vitest';
+import type { FieldKey } from '../types.js';
+import { flattenFilter } from './flatten-filter.js';
 
 test('Returns early when no filter is passed', () => {
 	const paths: FieldKey[][] = [];

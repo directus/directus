@@ -1,5 +1,5 @@
-import { i18n } from '@/lang';
 import { computed, ComputedRef, ref, Ref } from 'vue';
+import { i18n } from '@/lang';
 
 type LinkSelection = {
 	url: string | null;

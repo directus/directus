@@ -1,3 +1,8 @@
+import { useEnv } from '@directus/env';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import type { Accountability } from '@directus/types';
+import type { Request } from 'express';
+import { Router } from 'express';
 import {
 	createLDAPAuthRouter,
 	createLocalAuthRouter,
@@ -18,11 +23,6 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import { getSecret } from '../utils/get-secret.js';
 import isDirectusJWT from '../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../utils/jwt.js';
-import { useEnv } from '@directus/env';
-import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
-import type { Request } from 'express';
-import { Router } from 'express';
 
 const router = Router();
 const env = useEnv();

@@ -1,6 +1,6 @@
-import VAvatar from './v-avatar.vue';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
+import VAvatar from './v-avatar.vue';
 
 test('Mount component', () => {
 	expect(VAvatar).toBeTruthy();

@@ -1,5 +1,9 @@
-import type { DriverLocalConfig } from './index.js';
-import { DriverLocal } from './index.js';
+import type { Dir, WriteStream } from 'node:fs';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
+import { dirname, join, relative, resolve, sep } from 'node:path';
+import { PassThrough } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import {
 	randDirectoryPath,
 	randFilePath,
@@ -10,13 +14,9 @@ import {
 	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
-import type { Dir, WriteStream } from 'node:fs';
-import { createReadStream, createWriteStream } from 'node:fs';
-import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
-import { dirname, join, relative, resolve, sep } from 'node:path';
-import { PassThrough } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { DriverLocalConfig } from './index.js';
+import { DriverLocal } from './index.js';
 
 vi.mock('node:path');
 vi.mock('node:fs');

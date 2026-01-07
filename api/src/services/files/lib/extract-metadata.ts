@@ -1,7 +1,7 @@
+import type { File } from '@directus/types';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../../../constants.js';
 import { getStorage } from '../../../storage/index.js';
 import { getMetadata, type Metadata } from '../utils/get-metadata.js';
-import type { File } from '@directus/types';
 
 export async function extractMetadata(
 	storageLocation: string,

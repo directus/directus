@@ -1,13 +1,13 @@
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { setLocalTypeForInterface } from './alterations/global';
-import { useFieldDetailStore } from './index';
 import type { StateUpdates } from './types';
+import { useFieldDetailStore } from './index';
 import { cryptoStub } from '@/__utils__/crypto';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { createTestingPinia } from '@pinia/testing';
-import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
 vi.stubGlobal('crypto', cryptoStub);
 

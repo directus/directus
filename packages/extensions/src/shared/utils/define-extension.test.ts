@@ -1,3 +1,6 @@
+import type { Type } from '@directus/types';
+import { describe, expect, it } from 'vitest';
+import { defineComponent } from 'vue';
 import {
 	defineDisplay,
 	defineEndpoint,
@@ -9,9 +12,6 @@ import {
 	defineOperationApp,
 	definePanel,
 } from './define-extension.js';
-import type { Type } from '@directus/types';
-import { describe, expect, it } from 'vitest';
-import { defineComponent } from 'vue';
 
 const mockComponent = defineComponent({});
 

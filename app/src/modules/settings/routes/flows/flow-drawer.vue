@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { TriggerType } from '@directus/types';
+import { computed, reactive, ref, watch } from 'vue';
 import { getTriggers } from './triggers';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
@@ -17,8 +19,6 @@ import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import type { TriggerType } from '@directus/types';
-import { computed, reactive, ref, watch } from 'vue';
 
 interface Values {
 	name: string | null;

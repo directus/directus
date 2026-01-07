@@ -1,7 +1,7 @@
-import config from './index.js';
-import { useLogger } from '../../logger/index.js';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { useLogger } from '../../logger/index.js';
+import config from './index.js';
 
 vi.mock('../../logger/index.js');
 

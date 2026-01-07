@@ -1,9 +1,9 @@
-import { getAccountabilityForToken } from './get-accountability-for-token.js';
+import jwt from 'jsonwebtoken';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
-import jwt from 'jsonwebtoken';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { getAccountabilityForToken } from './get-accountability-for-token.js';
 
 vi.mock('@directus/env', () => {
 	return {

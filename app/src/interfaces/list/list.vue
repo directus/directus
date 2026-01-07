@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { DeepPartial, Field, FieldMeta } from '@directus/types';
+import { isEqual, sortBy } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import Draggable from 'vuedraggable';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -14,11 +19,6 @@ import VRemove from '@/components/v-remove.vue';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import formatTitle from '@directus/format-title';
-import { DeepPartial, Field, FieldMeta } from '@directus/types';
-import { isEqual, sortBy } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
-import Draggable from 'vuedraggable';
 
 const props = withDefaults(
 	defineProps<{

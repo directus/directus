@@ -1,3 +1,7 @@
+import { getAuthEndpoint } from '../rest/utils/get-auth-endpoint.js';
+import type { DirectusClient } from '../types/client.js';
+import { getRequestUrl } from '../utils/get-request-url.js';
+import { request } from '../utils/request.js';
 import type {
 	AuthenticationClient,
 	AuthenticationConfig,
@@ -10,10 +14,6 @@ import type {
 	LogoutOptions,
 	RefreshOptions,
 } from './types.js';
-import { getAuthEndpoint } from '../rest/utils/get-auth-endpoint.js';
-import type { DirectusClient } from '../types/client.js';
-import { getRequestUrl } from '../utils/get-request-url.js';
-import { request } from '../utils/request.js';
 import { memoryStorage } from './utils/memory-storage.js';
 
 const defaultConfigValues: AuthenticationConfig = {

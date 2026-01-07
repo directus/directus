@@ -1,5 +1,5 @@
-import { defaults } from './defaults.js';
 import { expect, test } from 'vitest';
+import { defaults } from './defaults.js';
 
 test('Returns defaults with input properties assigned', () => {
 	expect(defaults({ input: true }, { default: 'test' })).toEqual({

@@ -1,8 +1,8 @@
-import VIcon from './v-icon.vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { expect, test, vi } from 'vitest';
+import VIcon from './v-icon.vue';
 
 test('Mount component', () => {
 	expect(VIcon).toBeTruthy();

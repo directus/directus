@@ -1,3 +1,8 @@
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { Folder, PrimaryKey } from '@directus/types';
+import { toArray } from '@directus/utils';
+import { z } from 'zod';
 import { FoldersService } from '../../../services/folders.js';
 import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
@@ -10,11 +15,6 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
-import type { Folder, PrimaryKey } from '@directus/types';
-import { toArray } from '@directus/utils';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { z } from 'zod';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

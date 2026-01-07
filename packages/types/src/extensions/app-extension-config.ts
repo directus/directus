@@ -1,12 +1,3 @@
-import type { DisplayConfig } from './displays.js';
-import type { EndpointConfig } from './endpoints.js';
-import type { HookConfig } from './hooks.js';
-import type { InterfaceConfig } from './interfaces.js';
-import type { LayoutConfig } from './layouts.js';
-import type { ModuleConfig } from './modules.js';
-import type { OperationApiConfig, OperationAppConfig } from './operations.js';
-import type { PanelConfig } from './panels.js';
-import type { Theme } from './themes.js';
 import type {
 	API_EXTENSION_TYPES,
 	APP_EXTENSION_TYPES,
@@ -16,6 +7,15 @@ import type {
 	NESTED_EXTENSION_TYPES,
 } from '@directus/constants';
 import { z } from 'zod';
+import type { DisplayConfig } from './displays.js';
+import type { EndpointConfig } from './endpoints.js';
+import type { HookConfig } from './hooks.js';
+import type { InterfaceConfig } from './interfaces.js';
+import type { LayoutConfig } from './layouts.js';
+import type { ModuleConfig } from './modules.js';
+import type { OperationApiConfig, OperationAppConfig } from './operations.js';
+import type { PanelConfig } from './panels.js';
+import type { Theme } from './themes.js';
 
 export type AppExtensionConfigs = {
 	interfaces: InterfaceConfig[];

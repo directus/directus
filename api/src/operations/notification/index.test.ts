@@ -1,6 +1,6 @@
-import config from './index.js';
-import { NotificationsService } from '../../services/notifications.js';
 import { afterEach, expect, test, vi } from 'vitest';
+import { NotificationsService } from '../../services/notifications.js';
+import config from './index.js';
 
 vi.mock('../../services/notifications.js', () => {
 	const NotificationsService = vi.fn();

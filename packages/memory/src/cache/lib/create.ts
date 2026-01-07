@@ -1,7 +1,7 @@
+import type { CacheConfig } from '../types/config.js';
 import { CacheLocal } from './local.js';
 import { CacheMulti } from './multi.js';
 import { CacheRedis } from './redis.js';
-import type { CacheConfig } from '../types/config.js';
 
 export const createCache = (config: CacheConfig) => {
 	if (config.type === 'local') {

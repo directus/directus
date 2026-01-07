@@ -1,6 +1,6 @@
-import config from './index.js';
 import jwt from 'jsonwebtoken';
 import { beforeEach, expect, test, vi } from 'vitest';
+import config from './index.js';
 
 beforeEach(() => {
 	vi.spyOn(jwt, 'sign');

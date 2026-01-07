@@ -1,6 +1,6 @@
+import { beforeEach, expect, test } from 'vitest';
 import type { InvalidForeignKeyErrorExtensions } from './invalid-foreign-key.js';
 import { messageConstructor } from './invalid-foreign-key.js';
-import { beforeEach, expect, test } from 'vitest';
 
 let sample: InvalidForeignKeyErrorExtensions;
 

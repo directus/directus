@@ -1,8 +1,8 @@
-import { isLoginRedirectAllowed } from './is-login-redirect-allowed.js';
-import { useLogger } from '../logger/index.js';
 import { useEnv } from '@directus/env';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { useLogger } from '../logger/index.js';
+import { isLoginRedirectAllowed } from './is-login-redirect-allowed.js';
 
 vi.mock('@directus/env');
 vi.mock('../logger');

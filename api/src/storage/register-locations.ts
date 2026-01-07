@@ -1,8 +1,8 @@
-import { RESUMABLE_UPLOADS } from '../constants.js';
-import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { useEnv } from '@directus/env';
 import type { StorageManager } from '@directus/storage';
 import { toArray } from '@directus/utils';
+import { RESUMABLE_UPLOADS } from '../constants.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 
 export const registerLocations = async (storage: StorageManager) => {
 	const env = useEnv();

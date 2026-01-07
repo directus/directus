@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import { ref, toRef } from 'vue';
 import SystemMcpPromptsCollectionGenerateDialog from './system-mcp-prompts-collection-generate-dialog.vue';
 import { useCollectionValidation } from './use-collection-validation';
 import VButton from '@/components/v-button.vue';
 import VNotice from '@/components/v-notice.vue';
-import { ref, toRef } from 'vue';
 
 const props = defineProps<{
 	promptsCollection: string;

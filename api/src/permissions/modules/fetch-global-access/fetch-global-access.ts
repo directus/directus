@@ -1,10 +1,10 @@
-import { withCache } from '../../utils/with-cache.js';
 import type { Accountability, GlobalAccess } from '@directus/types';
 import {
 	fetchGlobalAccessForRoles as _fetchGlobalAccessForRoles,
 	fetchGlobalAccessForUser as _fetchGlobalAccessForUser,
 } from '@directus/utils/node';
 import type { Knex } from 'knex';
+import { withCache } from '../../utils/with-cache.js';
 
 interface FetchGlobalAccessContext {
 	knex: Knex;

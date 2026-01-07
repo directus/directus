@@ -1,5 +1,5 @@
-import DisplayBoolean from './boolean.vue';
 import { defineDisplay } from '@directus/extensions';
+import DisplayBoolean from './boolean.vue';
 
 export default defineDisplay({
 	id: 'boolean',

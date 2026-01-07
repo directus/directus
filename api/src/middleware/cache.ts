@@ -1,11 +1,11 @@
+import { useEnv } from '@directus/env';
+import type { RequestHandler } from 'express';
 import { getCache, getCacheValue } from '../cache.js';
 import { useLogger } from '../logger/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';
 import { shouldSkipCache } from '../utils/should-skip-cache.js';
-import { useEnv } from '@directus/env';
-import type { RequestHandler } from 'express';
 
 const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 	const env = useEnv();

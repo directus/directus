@@ -1,10 +1,10 @@
-import { extractFieldFromFunction } from './extract-field-from-function';
-import { useFieldsStore } from '@/stores/fields';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter, Query } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { isEmpty, isUndefined, omitBy, pick, set, transform } from 'lodash';
+import { extractFieldFromFunction } from './extract-field-from-function';
+import { useFieldsStore } from '@/stores/fields';
 
 type QueryInfo = { collection: string; key: string; query: Query };
 

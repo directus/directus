@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useGroupable } from '@directus/composables';
+import { Preset } from '@directus/types';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import NavigationBookmark from './navigation-bookmark.vue';
 import NavigationItemContent from './navigation-item-content.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -14,10 +18,6 @@ import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { getCollectionRoute } from '@/utils/get-route';
-import { useGroupable } from '@directus/composables';
-import { Preset } from '@directus/types';
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 
 const props = defineProps<{
 	collection: Collection;

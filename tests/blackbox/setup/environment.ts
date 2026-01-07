@@ -1,9 +1,9 @@
-import { getReversedTestIndex } from './sequential-tests';
+import fs from 'node:fs/promises';
+import axios from 'axios';
+import type { Environment } from 'vitest';
 import { USER } from '../common/variables';
 import { sleep } from '../utils/sleep';
-import axios from 'axios';
-import fs from 'node:fs/promises';
-import type { Environment } from 'vitest';
+import { getReversedTestIndex } from './sequential-tests';
 
 export default <Environment>{
 	name: 'custom',

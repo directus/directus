@@ -1,6 +1,6 @@
+import type { Accountability, Globals } from '@directus/types';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import type { Accountability, Globals } from '@directus/types';
 
 export async function fetchAccountabilityPolicyGlobals(
 	accountability: Pick<Accountability, 'user' | 'roles' | 'ip' | 'admin' | 'app'>,

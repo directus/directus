@@ -1,6 +1,6 @@
+import { beforeEach, expect, test } from 'vitest';
 import type { InvalidPayloadErrorExtensions } from './invalid-payload.js';
 import { messageConstructor } from './invalid-payload.js';
-import { beforeEach, expect, test } from 'vitest';
 
 let sample: InvalidPayloadErrorExtensions;
 

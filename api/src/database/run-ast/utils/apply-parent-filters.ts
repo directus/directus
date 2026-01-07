@@ -1,7 +1,7 @@
-import type { NestedCollectionNode } from '../../../types/ast.js';
 import type { Item, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { isNil, merge, uniq } from 'lodash-es';
+import type { NestedCollectionNode } from '../../../types/ast.js';
 
 export function applyParentFilters(
 	schema: SchemaOverview,

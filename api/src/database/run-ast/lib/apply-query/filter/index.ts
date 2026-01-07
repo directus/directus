@@ -1,3 +1,6 @@
+import { InvalidQueryError } from '@directus/errors';
+import type { Filter, Permission, Relation, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../../utils/get-column-path.js';
@@ -10,9 +13,6 @@ import applyQuery from '../index.js';
 import { getFilterType } from './get-filter-type.js';
 import { applyOperator } from './operator.js';
 import { validateOperator } from './validate-operator.js';
-import { InvalidQueryError } from '@directus/errors';
-import type { Filter, Permission, Relation, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
 
 export function applyFilter(
 	knex: Knex,
