@@ -124,7 +124,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		block-size: var(--input-height-tall);
+		block-size: var(--input-height-md);
 		border-radius: var(--theme--border-radius);
 	}
 

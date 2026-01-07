@@ -345,7 +345,7 @@ img {
 .image-preview {
 	position: relative;
 	inline-size: 100%;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -453,7 +453,7 @@ img {
 }
 
 .disabled-placeholder {
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 }
 
 .fallback {
@@ -461,7 +461,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	border-radius: var(--theme--border-radius);
 }
 </style>
