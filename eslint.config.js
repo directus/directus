@@ -94,7 +94,7 @@ export default typescriptEslint.config(
 			'import/order': [
 				'error',
 				{
-					groups: [],
+					'newlines-between': 'never',
 					alphabetize: {
 						order: 'asc',
 						orderImportKind: 'asc',
