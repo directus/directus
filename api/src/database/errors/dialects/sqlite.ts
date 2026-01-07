@@ -4,8 +4,8 @@ import {
 	NotNullViolationError,
 	RecordNotUniqueError,
 } from '@directus/errors';
-import type { SQLiteError } from './types.js';
 import type { Item } from '@directus/types';
+import type { SQLiteError } from './types.js';
 
 // NOTE:
 // - Sqlite doesn't have varchar with length support, so no ValueTooLongError

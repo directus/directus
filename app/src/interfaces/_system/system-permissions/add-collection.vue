@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { isSystemCollection } from '@directus/system-data';
+import { orderBy } from 'lodash';
+import { computed } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
-import { isSystemCollection } from '@directus/system-data';
-import { orderBy } from 'lodash';
-import { computed } from 'vue';
 
 const props = defineProps<{
 	excludeCollections?: string[];

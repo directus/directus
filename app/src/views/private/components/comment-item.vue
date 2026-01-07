@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import type { Comment, User } from '@directus/types';
 import { ref, watch } from 'vue';
 import CommentInput from './comment-input.vue';
 import CommentItemHeader from './comment-item-header.vue';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = withDefaults(
 	defineProps<{

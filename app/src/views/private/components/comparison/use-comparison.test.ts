@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
+import { useComparison } from '@/views/private/components/comparison/use-comparison';
 
 // Mock API
 const mockApi = {
@@ -16,8 +17,6 @@ vi.mock('@/api', () => ({
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
-
-import { useComparison } from '@/views/private/components/comparison/use-comparison';
 
 // Mock Fields Store
 const mockFieldsStore = {

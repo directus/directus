@@ -1,6 +1,6 @@
-import { test, expect } from 'vitest';
+import { File, SettingsStorageAssetPreset } from '@directus/types';
+import { expect, test } from 'vitest';
 import { ref } from 'vue';
-import { SettingsStorageAssetPreset, File } from '@directus/types';
 import useImage from './useImage';
 
 const imageFile: File = {

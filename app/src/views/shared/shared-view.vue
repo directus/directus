@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useServerStore } from '@/stores/server';
-import { getAssetUrl } from '@/utils/get-asset-url';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import { useServerStore } from '@/stores/server';
+import { getAssetUrl } from '@/utils/get-asset-url';
 
 defineProps<{
 	title?: string;

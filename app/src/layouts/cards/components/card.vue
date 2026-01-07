@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import VIconFile from '@/components/v-icon-file.vue';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 type File = {
 	[key: string]: any;

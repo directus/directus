@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { useSync } from '@directus/composables';
+import { Field } from '@directus/types';
+import { defineComponent } from 'vue';
 import VCollectionFieldTemplate from '@/components/v-collection-field-template.vue';
 import VDetail from '@/components/v-detail.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
-import { useSync } from '@directus/composables';
-import { Field } from '@directus/types';
 
 const props = defineProps<{
 	collection: string;
@@ -32,8 +33,6 @@ const imageFitWritable = useSync(props, 'imageFit', emit);
 </script>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-
 export default defineComponent({
 	inheritAttrs: false,
 });

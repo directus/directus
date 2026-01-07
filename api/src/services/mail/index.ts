@@ -1,3 +1,5 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
@@ -6,8 +8,6 @@ import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
 import type { SendMailOptions, Transporter } from 'nodemailer';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';

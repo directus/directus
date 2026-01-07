@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { debounce } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
 import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
-import { debounce } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
 
 export type Choice = {
 	text: string;
@@ -91,7 +91,7 @@ const searchDebounced = ref('');
 
 <style scoped>
 .select-multiple-checkbox-tree {
-	max-block-size: var(--input-height-max);
+	max-block-size: var(--input-height-xl);
 	overflow: auto;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

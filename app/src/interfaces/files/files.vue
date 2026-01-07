@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import Draggable from 'vuedraggable';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -25,12 +31,6 @@ import { parseFilter } from '@/utils/parse-filter';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import Draggable from 'vuedraggable';
 
 const props = withDefaults(
 	defineProps<{
