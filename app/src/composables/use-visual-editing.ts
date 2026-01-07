@@ -34,10 +34,7 @@ export function useVisualEditing({ previewUrl, isNew = false }: UseVisualEditing
 	/** Prerequisites check - live-preview does the final sameOrigin validation */
 	const visualEditingEnabled = computed(
 		() =>
-			!!normalizedPreviewUrl.value &&
-			!unref(isNew) &&
-			visualModuleEnabled.value &&
-			visualEditorUrls.value.length > 0,
+			!!normalizedPreviewUrl.value && !unref(isNew) && visualModuleEnabled.value && visualEditorUrls.value.length > 0,
 	);
 
 	return { visualEditingEnabled, visualEditorUrls };
