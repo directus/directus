@@ -23,6 +23,7 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -279,15 +280,12 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				@input="update"
 			>
 				<template #actions>
-					<VButton
+					<PrivateViewHeaderBarActionButton
+						icon="download"
 						secondary
-						rounded
-						icon
 						:download="image.filename_download"
 						:href="getAssetUrl(image.id, { isDownload: true })"
-					>
-						<VIcon name="download" />
-					</VButton>
+					/>
 				</template>
 			</DrawerItem>
 

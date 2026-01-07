@@ -31,6 +31,7 @@ import { parseFilter } from '@/utils/parse-filter';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -426,16 +427,13 @@ const allowDrag = computed(
 			@input="stageEdits"
 		>
 			<template #actions>
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-if="currentlyEditing !== '+' && relationInfo.relatedCollection.collection === 'directus_files'"
+					icon="download"
 					secondary
-					rounded
-					icon
 					:download="downloadName"
 					:href="downloadUrl"
-				>
-					<VIcon name="download" />
-				</VButton>
+				/>
 			</template>
 		</DrawerItem>
 

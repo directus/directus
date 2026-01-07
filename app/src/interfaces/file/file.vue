@@ -30,6 +30,7 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 
@@ -313,16 +314,12 @@ function useURLImport() {
 			@input="update"
 		>
 			<template #actions>
-				<VButton
-					secondary
-					rounded
-					small
-					icon
-					:download="file.filename_download"
+				<PrivateViewHeaderBarActionButton
+					icon="download"
 					:href="getAssetUrl(file.id, { isDownload: true })"
-				>
-					<VIcon name="download" />
-				</VButton>
+					:download="file.filename_download"
+					secondary
+				/>
 			</template>
 		</DrawerItem>
 
