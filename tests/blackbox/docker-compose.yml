@@ -93,8 +93,8 @@ services:
 
   cockroachdb:
     # change in the YY.R component denotes a major release
-    image: cockroachdb/cockroach:latest-v21.1
-    command: start-single-node --cluster-name=example-single-node --insecure
+    image: cockroachdb/cockroach:latest-v24.3
+    command: start-single-node --cluster-name=example-single-node --insecure --store=type=mem,size=4GB
     ports:
       - 6107:26257
 

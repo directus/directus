@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import { computed, ref, toRefs, unref } from 'vue';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
+import ContentNotFound from '../not-found.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -11,16 +16,11 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { PrivateView } from '@/views/private';
-import { useCollection } from '@directus/composables';
-import { computed, ref, toRefs, unref } from 'vue';
-import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
-import ContentNotFound from '../not-found.vue';
 
 interface Props {
 	primaryKey?: string | null;
@@ -215,6 +215,7 @@ async function revert(values: Record<string, any>) {
 		v-else
 		:title="primaryKey === '+' ? $t('create_custom_translation') : $t('edit_custom_translation')"
 		show-back
+		back-to="/settings/translations"
 	>
 		<template #headline>
 			<VBreadcrumb

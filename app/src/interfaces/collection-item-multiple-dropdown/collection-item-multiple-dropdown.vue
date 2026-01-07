@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Filter, PrimaryKey } from '@directus/types';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -13,11 +18,6 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { Filter, PrimaryKey } from '@directus/types';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
 
 type ValueItem = {
 	key: PrimaryKey;

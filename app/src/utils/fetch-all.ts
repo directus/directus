@@ -1,6 +1,6 @@
+import { cloneDeep, set } from 'lodash';
 import api from '@/api';
 import { useServerStore } from '@/stores/server';
-import { cloneDeep, set } from 'lodash';
 
 export const fetchAll = async <T = unknown>(
 	url: Parameters<(typeof api)['get']>[0],

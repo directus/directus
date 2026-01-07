@@ -5,9 +5,9 @@ import {
 	InvalidPayloadError,
 	InvalidProviderConfigError,
 	InvalidProviderError,
+	isDirectusError,
 	ServiceUnavailableError,
 	UnexpectedResponseError,
-	isDirectusError,
 } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
@@ -29,8 +29,8 @@ import { AuthenticationService } from '../../services/authentication.js';
 import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import { AuthDriver } from '../auth.js';
 import { getSchema } from '../../utils/get-schema.js';
+import { AuthDriver } from '../auth.js';
 
 interface UserInfo {
 	dn: string;

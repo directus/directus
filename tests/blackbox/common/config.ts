@@ -1,6 +1,6 @@
-import { Knex } from 'knex';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Knex } from 'knex';
 import { allVendors, type Vendor } from './get-dbs-to-test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

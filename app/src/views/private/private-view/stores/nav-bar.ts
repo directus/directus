@@ -1,4 +1,4 @@
-import { useLocalStorage, createEventHook, useBreakpoints } from '@vueuse/core';
+import { createEventHook, useBreakpoints, useLocalStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { computed, watch } from 'vue';
 import { useRoute } from 'vue-router';

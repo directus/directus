@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VChip from '@/components/v-chip.vue';
-import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { useElementHover } from '@vueuse/core';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import { useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 import AiConversation from './ai-conversation.vue';
 import AiMagicButton from './ai-magic-button.vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 const sidebarStore = useSidebarStore();
 const aiStore = useAiStore();

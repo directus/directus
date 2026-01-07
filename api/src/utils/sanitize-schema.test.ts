@@ -1,12 +1,12 @@
 import type { Column } from '@directus/schema';
 import type { Field, Relation, SnapshotSystemField } from '@directus/types';
-import { expect, test, describe } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import type { Collection } from '../types/index.js';
 import {
 	sanitizeCollection,
+	sanitizeColumn,
 	sanitizeField,
 	sanitizeRelation,
-	sanitizeColumn,
 	sanitizeSystemField,
 } from './sanitize-schema.js';
 

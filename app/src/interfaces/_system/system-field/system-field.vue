@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { Field } from '@directus/types';
+import { computed, inject, ref, watch } from 'vue';
 import VNotice from '@/components/v-notice.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useFieldsStore } from '@/stores/fields';
-import { Field } from '@directus/types';
-import { computed, inject, ref, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

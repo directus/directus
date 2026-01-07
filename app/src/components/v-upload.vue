@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import type { File, Filter } from '@directus/types';
+import { sum } from 'lodash';
+import type { Upload } from 'tus-js-client';
+import { computed, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -11,14 +16,11 @@ import VInput from '@/components/v-input.vue';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
+import { useNotificationsStore } from '@/stores/notifications';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
-import type { File, Filter } from '@directus/types';
-import { sum } from 'lodash';
-import type { Upload } from 'tus-js-client';
-import { computed, onUnmounted, ref } from 'vue';
 
 export type UploadController = {
 	start(): void;
@@ -35,6 +37,7 @@ interface Props {
 	fromLibrary?: boolean;
 	folder?: string;
 	filter?: Filter;
+	accept?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -46,6 +49,9 @@ const emit = defineEmits<{
 	input: [files: null | File | File[]];
 	start: [controller: UploadController];
 }>();
+
+const { t } = useI18n();
+const notificationsStore = useNotificationsStore();
 
 let uploadController: Upload | null = null;
 
@@ -61,10 +67,64 @@ onUnmounted(() => {
 });
 
 function validFiles(files: FileList) {
-	if (files.length === 0) return false;
+	const typeErrors: string[] = [];
+	const emptyErrors: string[] = [];
 
 	for (const file of files) {
-		if (file.size === 0) return false;
+		if (file.size === 0) {
+			emptyErrors.push(`"${file.name}"`);
+			continue;
+		}
+
+		if (props.accept) {
+			const acceptTypes = props.accept.split(',').map((type) => type.trim());
+
+			const isValidType = acceptTypes.some((acceptType) => {
+				if (acceptType.endsWith('/*')) {
+					const baseType = acceptType.slice(0, -2);
+
+					return file.type.startsWith(baseType + '/');
+				} else {
+					return file.type === acceptType;
+				}
+			});
+
+			if (!isValidType) {
+				typeErrors.push(`"${file.name}" (${file.type})`);
+			}
+		}
+	}
+
+	const totalErrors = typeErrors.length + emptyErrors.length;
+
+	if (typeErrors.length + emptyErrors.length > 0) {
+		const errorParts: string[] = [];
+
+		if (typeErrors.length > 0) {
+			errorParts.push(
+				t('files_wrong_type', {
+					files: typeErrors.join(', '),
+					expected: props.accept,
+				}),
+			);
+		}
+
+		if (emptyErrors.length > 0) {
+			errorParts.push(
+				t('files_are_empty', {
+					files: emptyErrors.join(', '),
+				}),
+			);
+		}
+
+		notificationsStore.add({
+			title: t('invalid_files_selected', { count: totalErrors }, totalErrors),
+			text: errorParts.join('\n'),
+			type: 'error',
+			dialog: true,
+		});
+
+		return false;
 	}
 
 	return true;
@@ -92,9 +152,7 @@ function useUpload() {
 		};
 
 		try {
-			if (!validFiles(files)) {
-				throw new Error('An error has occurred while uploading the files.');
-			}
+			if (!validFiles(files)) return;
 
 			if (props.multiple === true) {
 				const fileSizes = Array.from(files).map((file) => file.size);
@@ -342,7 +400,15 @@ defineExpose({ abort });
 		<template v-else>
 			<div class="actions">
 				<VButton v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
-					<input ref="input" class="browse" type="file" tabindex="-1" :multiple="multiple" @input="onBrowseSelect" />
+					<input
+						ref="input"
+						class="browse"
+						type="file"
+						tabindex="-1"
+						:multiple="multiple"
+						:accept="accept"
+						@input="onBrowseSelect"
+					/>
 					<VIcon name="file_upload" />
 				</VButton>
 				<VButton
@@ -412,7 +478,7 @@ defineExpose({ abort });
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	min-block-size: var(--input-height-tall);
+	min-block-size: var(--input-height-md);
 	padding: 32px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;

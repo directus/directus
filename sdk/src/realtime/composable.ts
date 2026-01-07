@@ -1,6 +1,7 @@
 import type { AuthenticationClient } from '../auth/types.js';
-import type { ConsoleInterface, WebSocketInterface } from '../index.js';
+import type { ConsoleInterface, ExtendedQuery, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
+import { queryToParams } from '../utils/query-to-params.js';
 import { auth } from './commands/auth.js';
 import { pong } from './commands/pong.js';
 import type {
@@ -371,6 +372,11 @@ export function realtime(config: WebSocketConfig = {}) {
 				options = {} as Options,
 			) {
 				if ('uid' in options === false) options.uid = uid.next().value;
+
+				if (options.query) {
+					options.query = queryToParams(options.query as ExtendedQuery<Schema, Schema[Collection]>);
+				}
+
 				subscriptions.add({ ...options, collection, type: 'subscribe' });
 
 				if (state.code !== 'open') {

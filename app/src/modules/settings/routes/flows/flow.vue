@@ -1,4 +1,17 @@
 <script setup lang="ts">
+import { FlowRaw, OperationRaw } from '@directus/types';
+import { cloneDeep, isEmpty, merge, omit } from 'lodash';
+import { customAlphabet, nanoid } from 'nanoid/non-secure';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterView } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
+import SettingsNotFound from '../not-found.vue';
+import Arrows from './components/arrows/arrows.vue';
+import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
+import Operation, { ArrowInfo, Target } from './components/operation.vue';
+import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
+import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -22,19 +35,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import { FlowRaw, OperationRaw } from '@directus/types';
-import { cloneDeep, isEmpty, merge, omit } from 'lodash';
-import { customAlphabet, nanoid } from 'nanoid/non-secure';
-import { computed, ref, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterView } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
-import SettingsNotFound from '../not-found.vue';
-import Arrows from './components/arrows/arrows.vue';
-import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
-import Operation, { ArrowInfo, Target } from './components/operation.vue';
-import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
-import FlowDrawer from './flow-drawer.vue';
 
 // Maps the x and y coordinates of attachments of panels to their id
 export type Attachments = Record<number, Record<number, string>>;
@@ -608,7 +608,7 @@ function discardAndLeave() {
 
 <template>
 	<SettingsNotFound v-if="!flow && !loading" />
-	<PrivateView v-else :title="flow?.name ?? $t('loading')" show-back>
+	<PrivateView v-else :title="flow?.name ?? $t('loading')" show-back back-to="/settings/flows">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
 		</template>

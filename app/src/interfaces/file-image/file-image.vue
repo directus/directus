@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import type { File, Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
-import VIconFile from '@/components/v-icon-file.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import VNotice from '@/components/v-notice.vue';
 import VRemove from '@/components/v-remove.vue';
@@ -18,11 +23,6 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import type { File, Filter } from '@directus/types';
-import { deepMap } from '@directus/utils';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -140,8 +140,15 @@ async function imageErrorHandler() {
 
 const values = inject('values', ref<Record<string, unknown>>({}));
 
+// Image-only filter for file library
+const imageFilter = {
+	type: {
+		_starts_with: 'image/',
+	},
+};
+
 const customFilter = computed(() => {
-	return parseFilter(
+	const filter = parseFilter(
 		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
@@ -150,6 +157,12 @@ const customFilter = computed(() => {
 			return val;
 		}),
 	);
+
+	if (!filter) return imageFilter;
+
+	return {
+		_and: [filter, imageFilter],
+	};
 });
 
 function onUpload(image: any) {
@@ -289,6 +302,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			:from-library="enableSelect"
 			:folder="folder"
 			:filter="customFilter"
+			accept="image/*"
 			@input="onUpload"
 		/>
 	</div>
@@ -331,7 +345,7 @@ img {
 .image-preview {
 	position: relative;
 	inline-size: 100%;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -439,7 +453,7 @@ img {
 }
 
 .disabled-placeholder {
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 }
 
 .fallback {
@@ -447,7 +461,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	border-radius: var(--theme--border-radius);
 }
 </style>

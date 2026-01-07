@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { render } from 'micromustache';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -11,10 +15,6 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { Snackbar } from '@/types/notifications';
-import { render } from 'micromustache';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 
 const notificationsStore = useNotificationsStore();
 const { isAdmin, currentUser } = useUserStore();
@@ -83,7 +83,7 @@ const done = async (notification: Snackbar) => {
 		<VDialog v-for="notification in notifications" :key="notification.id" model-value persist>
 			<VCard :class="[notification.type]">
 				<VCardTitle>{{ notification.title }}</VCardTitle>
-				<VCardText v-if="notification.text || notification.error">
+				<VCardText v-if="notification.text || notification.error" class="notification-text">
 					{{ notification.text }}
 
 					<VError v-if="notification.error" :error="notification.error" />
@@ -104,6 +104,10 @@ const done = async (notification: Snackbar) => {
 <style lang="scss" scoped>
 .notification-dialogs {
 	position: relative;
+}
+
+.notification-text {
+	white-space: pre-line;
 }
 
 .v-error {

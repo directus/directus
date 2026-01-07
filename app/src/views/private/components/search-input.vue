@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import TransitionExpand from '@/components/transition/expand.vue';
-import VBadge from '@/components/v-badge.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import InterfaceSystemFilter from '@/interfaces/_system/system-filter';
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { Ref, computed, inject, onMounted, ref, watch } from 'vue';
+import { computed, inject, onMounted, ref, Ref, watch } from 'vue';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VBadge from '@/components/v-badge.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-filter.vue';
 
 const props = withDefaults(
 	defineProps<{
