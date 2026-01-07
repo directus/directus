@@ -1,4 +1,18 @@
 <script setup lang="ts">
+import type { SettingsStorageAssetPreset } from '@directus/types';
+import Editor from '@tinymce/tinymce-vue';
+import { cloneDeep, isEqual } from 'lodash';
+import tinymce from 'tinymce/tinymce';
+import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import getEditorStyles from './get-editor-styles';
+import toolbarDefault from './toolbar-default';
+import useImage from './useImage';
+import useInlineCode from './useInlineCode';
+import useLink from './useLink';
+import useMedia from './useMedia';
+import usePre from './usePre';
+import useSourceCode from './useSourceCode';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -20,26 +34,12 @@ import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
-import { SettingsStorageAssetPreset } from '@directus/types';
-import Editor from '@tinymce/tinymce-vue';
-import { cloneDeep, isEqual } from 'lodash';
-import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import getEditorStyles from './get-editor-styles';
-import toolbarDefault from './toolbar-default';
-import useImage from './useImage';
-import useLink from './useLink';
-import useMedia from './useMedia';
-import useSourceCode from './useSourceCode';
-import usePre from './usePre';
-import useInlineCode from './useInlineCode';
-import tinymce from 'tinymce/tinymce';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
 
 import 'tinymce/tinymce';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/autoresize/plugin';

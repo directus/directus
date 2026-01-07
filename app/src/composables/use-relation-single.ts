@@ -1,9 +1,9 @@
-import api from '@/api';
-import { RelationM2O } from '@/composables/use-relation-m2o';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { merge } from 'lodash';
 import { computed, MaybeRefOrGetter, ref, Ref, toValue, watch } from 'vue';
+import api from '@/api';
+import { RelationM2O } from '@/composables/use-relation-m2o';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export type RelationQuerySingle = {
 	fields: string[];

@@ -1,10 +1,10 @@
-import api from '@/api';
-import { useUserStore } from '@/stores/user';
-import { fetchAll } from '@/utils/fetch-all';
 import { Preset } from '@directus/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
+import api from '@/api';
+import { useUserStore } from '@/stores/user';
+import { fetchAll } from '@/utils/fetch-all';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,

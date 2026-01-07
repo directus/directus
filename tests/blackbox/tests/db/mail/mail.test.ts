@@ -2,7 +2,7 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
-import { simpleParser, type ParsedMail } from 'mailparser';
+import { type ParsedMail, simpleParser } from 'mailparser';
 import { SMTPServer } from 'smtp-server';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';

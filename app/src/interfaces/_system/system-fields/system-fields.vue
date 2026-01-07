@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Field } from '@directus/types';
+import { computed } from 'vue';
+import Draggable from 'vuedraggable';
 import VFieldList from '@/components/v-field-list/v-field-list.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -7,9 +10,6 @@ import VMenu from '@/components/v-menu.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import { Field } from '@directus/types';
-import { computed } from 'vue';
-import Draggable from 'vuedraggable';
 
 interface Props {
 	collectionName: string;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { isHex } from '@/utils/is-hex';
-import { computed } from 'vue';
 
 const props = defineProps<{
 	value: string | null;

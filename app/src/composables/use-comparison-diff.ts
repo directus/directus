@@ -1,7 +1,7 @@
-import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
-import { isArray, isEqual, isNil, isPlainObject, isString } from 'lodash';
-import dompurify from 'dompurify';
 import type { Field } from '@directus/types';
+import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
+import dompurify from 'dompurify';
+import { isArray, isEqual, isNil, isPlainObject, isString } from 'lodash';
 
 export type Change = {
 	added?: boolean;

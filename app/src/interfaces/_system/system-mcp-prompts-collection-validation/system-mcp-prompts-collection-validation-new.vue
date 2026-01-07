@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import VButton from '@/components/v-button.vue';
-import VNotice from '@/components/v-notice.vue';
 import { ref } from 'vue';
 import SystemMcpPromptsCollectionGenerateDialog from './system-mcp-prompts-collection-generate-dialog.vue';
+import VButton from '@/components/v-button.vue';
+import VNotice from '@/components/v-notice.vue';
 
 const generateCollectionDialogActive = ref(false);
 

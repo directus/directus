@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import type { File, Filter } from '@directus/types';
+import { sum } from 'lodash';
+import type { Upload } from 'tus-js-client';
+import { computed, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -16,11 +21,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
-import type { File, Filter } from '@directus/types';
-import { sum } from 'lodash';
-import type { Upload } from 'tus-js-client';
-import { computed, onUnmounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export type UploadController = {
 	start(): void;

@@ -5,9 +5,9 @@ export default {
 </script>
 
 <script setup lang="ts">
-import VSelect from '@/components/v-select/v-select.vue';
 import { useSync } from '@directus/composables';
 import { Field } from '@directus/types';
+import VSelect from '@/components/v-select/v-select.vue';
 
 export interface Props {
 	fields: string[];

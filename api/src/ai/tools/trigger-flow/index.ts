@@ -1,6 +1,6 @@
-import { InvalidPayloadError } from '@directus/errors';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { InvalidPayloadError } from '@directus/errors';
 import { z } from 'zod';
 import { getFlowManager } from '../../../flows.js';
 import { FlowsService } from '../../../services/flows.js';

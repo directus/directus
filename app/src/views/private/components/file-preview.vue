@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import type { File } from '@directus/types';
+import { computed, toRef } from 'vue';
 import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import type { File } from '@directus/types';
-import { computed, toRef } from 'vue';
 
 export interface Props {
 	file: Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'>;

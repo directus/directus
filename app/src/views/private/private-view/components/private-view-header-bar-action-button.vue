@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { RouteLocationRaw } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import type { RouteLocationRaw } from 'vue-router';
 
 defineProps<{
 	icon: string;

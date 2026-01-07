@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { FieldNode } from '@/composables/use-field-tree';
-import { flattenFieldGroups } from '@/utils/flatten-field-groups';
+import dompurify from 'dompurify';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import FieldListItem from './FieldListItem.vue';
+import { FieldTree } from './types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
-import { FieldTree } from './types';
-import dompurify from 'dompurify';
+import type { FieldNode } from '@/composables/use-field-tree';
+import { flattenFieldGroups } from '@/utils/flatten-field-groups';
 
 const props = withDefaults(
 	defineProps<{

@@ -1,8 +1,8 @@
-import { resolvePackage } from '@directus/utils/node';
-import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolvePackage } from '@directus/utils/node';
+import type { Knex } from 'knex';
 import { getHelpers } from '../helpers/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

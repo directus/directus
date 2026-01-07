@@ -1,6 +1,6 @@
 import type { Query } from '@directus/types';
-import type { ClientOptions } from 'ws';
 import type { ClientOptions as ClientOptionsGql } from 'graphql-ws';
+import type { ClientOptions } from 'ws';
 
 /** @TODO Could also be big integer */
 export type PrimaryKeyType = 'integer' | 'uuid' | 'string';

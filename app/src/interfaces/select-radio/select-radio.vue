@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { useCustomSelection } from '@directus/composables';
+import { computed, toRefs } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import VRadio from '@/components/v-radio.vue';
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
-import { useCustomSelection } from '@directus/composables';
-import { computed, toRefs } from 'vue';
 
 type Option = {
 	text: string;
