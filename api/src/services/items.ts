@@ -1730,7 +1730,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			if (Object.keys(payloadWithTypeCasting).length > 0) {
 				try {
-					await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
+					if (keys.length > 1) {
+						await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
+					} else {
+						await trx(this.collection).update(payloadWithTypeCasting).where(primaryKeyField, keys[0]);
+					}
 				} catch (err: any) {
 					await throwDatabaseError(err, data);
 				}
