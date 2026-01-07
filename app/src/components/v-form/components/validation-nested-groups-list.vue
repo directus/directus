@@ -4,6 +4,7 @@ export type RenderItem =
 	| {
 			kind: 'rule';
 			text: string;
+			fieldName?: string;
 	  }
 	| {
 			kind: 'group';
@@ -38,7 +39,13 @@ const props = defineProps<{
 					{{ item.labelSuffix }}
 				</template>
 				<template v-else>
-					{{ item.text }}
+					<template v-if="item.fieldName">
+						<strong>{{ item.fieldName }}:</strong>
+						{{ item.text }}
+					</template>
+					<template v-else>
+						{{ item.text }}
+					</template>
 				</template>
 			</span>
 			<ValidationNestedGroupsList

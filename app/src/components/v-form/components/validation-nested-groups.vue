@@ -26,25 +26,27 @@ function groupLabel(type: 'and' | 'or') {
 	};
 }
 
-function renderRule(node: ValidationNode) {
+function renderRule(node: ValidationNode): { text: string; fieldName?: string } {
 	const ruleText = formatValidationRule(node, t);
 
 	if (node.type === 'rule' && node.field && props.parentField && node.field !== props.parentField && props.fields) {
 		const field = props.fields.find((f) => f.field === node.field);
 		const fieldName = field?.name ?? node.field;
 
-		return `${fieldName}: ${ruleText}`;
+		return { text: ruleText, fieldName };
 	}
 
-	return ruleText;
+	return { text: ruleText };
 }
 
 function buildItems(node: ValidationNode): RenderItem[] {
 	if (node.type === 'rule') {
+		const rule = renderRule(node);
 		return [
 			{
 				kind: 'rule',
-				text: renderRule(node),
+				text: rule.text,
+				fieldName: rule.fieldName,
 			},
 		];
 	}

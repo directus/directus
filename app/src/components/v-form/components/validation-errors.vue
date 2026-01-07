@@ -213,15 +213,14 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 											{{
 												`${validationError.fieldName} (${$t('hidden_in_group', {
 													group: validationError.groupName,
-												})})`
+												})}): `
 											}}
 										</template>
 										<template v-else-if="validationError.field && validationError.hidden">
-											{{ `${validationError.fieldName} (${$t('hidden')})` }}
+											{{ `${validationError.fieldName} (${$t('hidden')}): ` }}
 										</template>
-										<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
+										<template v-else-if="validationError.field">{{ `${validationError.fieldName}: ` }}</template>
 									</strong>
-									<span v-if="validationError.field">:</span>
 									<span class="field-message">
 										{{ validationError.customValidationMessage ?? $t('validation_value_is_invalid') }}
 									</span>
@@ -252,15 +251,15 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 								{{
 									`${validationError.fieldName} (${$t('hidden_in_group', {
 										group: validationError.groupName,
-									})})`
+									})}): `
 								}}
 							</template>
 							<template v-else-if="validationError.field && validationError.hidden">
-								{{ `${validationError.fieldName} (${$t('hidden')})` }}
+								{{ `${validationError.fieldName} (${$t('hidden')}): ` }}
 							</template>
 							<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
 						</strong>
-						<span v-if="validationError.field">:</span>
+						<span v-if="validationError.field && !validationError.hidden">{{ `: ` }}</span>
 
 						<template v-if="validationError.customValidationMessage">
 							{{ validationError.customValidationMessage }}

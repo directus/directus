@@ -23,7 +23,7 @@ export function useValidationErrorDetails(validationErrors: Ref<ValidationError[
 				const { field: _fieldKey, fn: functionName } = extractFieldFromFunction(validationError.field);
 				const [fieldKey, ...nestedFieldKeys] = _fieldKey.split('.');
 				const field = fields.value.find((field) => field.field === fieldKey);
-				const groupFieldKey = validationError.group ?? field?.meta?.group;
+				const groupFieldKey = field?.meta?.group ?? null;
 				const group = groupFieldKey ? fields.value.find((f) => f.field === groupFieldKey) : null;
 				const fieldName = getFieldName() + getNestedFieldNames(nestedFieldKeys, validationError.nestedNames);
 				const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
@@ -34,7 +34,8 @@ export function useValidationErrorDetails(validationErrors: Ref<ValidationError[
 
 				return {
 					...validationError,
-					hidden: validationError.hidden ?? field?.meta?.hidden,
+					group: groupFieldKey,
+					hidden: validationError.hidden ?? (field?.meta?.hidden || group?.meta?.hidden),
 					field: fieldKey!,
 					fieldName,
 					groupName: group?.name ?? groupFieldKey,
