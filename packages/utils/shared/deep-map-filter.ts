@@ -2,7 +2,7 @@ import type { CollectionOverview, FieldOverview, Filter, Relation, SchemaOvervie
 import assert from 'node:assert';
 import { isPlainObject } from 'lodash-es';
 import { InvalidQueryError } from '@directus/errors';
-import { getRelationInfo, type RelationInfo } from '../../../utils/get-relation-info.js';
+import { getRelationInfo, type RelationInfo } from './get-relation-info.js';
 
 export function deepMapFilter(
 	filter: Filter,

@@ -47,6 +47,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/types": "workspace:*",
+		"@directus/errors": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/js-yaml": "catalog:",

@@ -1,6 +1,6 @@
 import type { FieldFilter } from '@directus/types';
 import { escapeRegExp } from 'lodash-es';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, test } from 'vitest';
 import type { JoiOptions, StringSchema } from './generate-joi.js';
 import { Joi, generateJoi } from './generate-joi.js';
 

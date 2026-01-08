@@ -2988,6 +2988,9 @@ importers:
         specifier: 'catalog:'
         version: 8.0.3
     devDependencies:
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
       '@directus/schema-builder':
         specifier: workspace:*
         version: link:../schema-builder
