@@ -9,6 +9,7 @@ export type ServerInfoOutput = {
 		public_registration_verify_email: boolean;
 	};
 	mcp_enabled: boolean;
+	ai_enabled: boolean;
 	rateLimit?:
 		| {
 				points: number;
