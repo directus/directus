@@ -174,16 +174,80 @@ services:
       - 1025:1025
       - 1080:1080
 
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
-      - COLLECTOR_OTLP_HTTP_CORS_ALLOWED_ORIGINS=http://localhost:8080,http://localhost:5173
-      - COLLECTOR_OTLP_HTTP_CORS_ALLOWED_HEADERS=content-type
-    command:
-      - "--collector.otlp.http.cors.allowed-origins=http://localhost:8080,http://localhost:5173"
-      - "--collector.otlp.http.cors.allowed-headers=content-type"
+  # ========== OpenTelemetry Observability Stack ==========
+
+  # OpenTelemetry Collector - receives traces, logs, and metrics
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    env_file:
+      - observability/configs/.env.observability
+    volumes:
+      - ${OTEL_COLLECTOR_CONFIG_FILE:-./observability/configs/otel-collector-config.development.yaml}:/etc/otel-collector-config.yaml:ro
     ports:
-      - 16686:16686 # Web UI
       - 4317:4317   # OTLP gRPC
       - 4318:4318   # OTLP HTTP
+      - 8888:8888   # Prometheus metrics exposed by the collector
+    depends_on:
+      - tempo
+      - loki
+      - prometheus
+
+  # Tempo - distributed tracing backend
+  tempo:
+    image: grafana/tempo:latest
+    command: ["-config.file=/etc/tempo.yaml"]
+    user: "0:0"
+    volumes:
+      - ./observability/configs/tempo.yaml:/etc/tempo.yaml:ro
+      - tempo-data:/tmp/tempo
+    ports:
+      - 3200:3200   # Tempo API
+
+  # Loki - log aggregation
+  loki:
+    image: grafana/loki:latest
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    user: "0:0"
+    volumes:
+      - ./observability/configs/loki.yaml:/etc/loki/local-config.yaml:ro
+      - loki-data:/tmp/loki
+    ports:
+      - 3100:3100   # Loki API
+
+  # Prometheus - metrics
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-remote-write-receiver'
+    volumes:
+      - ./observability/configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - 9090:9090   # Prometheus UI
+
+  # Grafana - unified visualization
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./observability/configs/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - 3000:3000   # Grafana UI
+    depends_on:
+      - prometheus
+      - tempo
+      - loki
+
+volumes:
+  tempo-data:
+  loki-data:
+  prometheus-data:
+  grafana-data:
+

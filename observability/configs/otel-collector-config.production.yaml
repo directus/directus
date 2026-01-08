@@ -1,0 +1,105 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+            - "${CORS_ALLOWED_ORIGIN}"
+          allowed_headers:
+            - "content-type"
+            - "authorization"
+
+processors:
+  batch:
+    timeout: 10s
+    send_batch_size: 8192
+    send_batch_max_size: 16384
+
+  # Resource detection for AWS environment
+  resourcedetection:
+    detectors: [env, ec2, ecs, eks]
+    timeout: 5s
+
+  # Add resource attributes
+  resource:
+    attributes:
+      - key: environment
+        value: ${ENVIRONMENT}
+        action: upsert
+      - key: service.namespace
+        value: directus
+        action: upsert
+
+  # Memory limiter to prevent OOM
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+    spike_limit_mib: 128
+
+exporters:
+  # AWS CloudWatch Logs
+  awscloudwatchlogs:
+    region: ${AWS_REGION}
+    log_group_name: /directus/${ENVIRONMENT}/logs
+    log_stream_name: ${HOSTNAME}
+    endpoint: ${AWS_CLOUDWATCH_ENDPOINT:-}
+    # For production, use IAM roles instead of credentials
+    # If running outside AWS or in development, you can set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+
+  # AWS CloudWatch Metrics (EMF format)
+  awsemf:
+    region: ${AWS_REGION}
+    namespace: Directus/${ENVIRONMENT}
+    log_group_name: /directus/${ENVIRONMENT}/metrics
+    log_stream_name: ${HOSTNAME}
+    endpoint: ${AWS_CLOUDWATCH_ENDPOINT:-}
+    dimension_rollup_option: NoDimensionRollup
+    resource_to_telemetry_conversion:
+      enabled: true
+
+  # AWS X-Ray for traces
+  awsxray:
+    region: ${AWS_REGION}
+    endpoint: ${AWS_XRAY_ENDPOINT:-}
+    # Use IAM role in production
+    index_all_attributes: true
+    indexed_attributes:
+      - http.method
+      - http.status_code
+      - http.url
+      - service.name
+
+  # Optional: OTLP exporter for additional observability platforms
+  # (Datadog, New Relic, Grafana Cloud, etc.)
+  # otlp/external:
+  #   endpoint: ${EXTERNAL_OTLP_ENDPOINT}
+  #   headers:
+  #     Authorization: ${EXTERNAL_OTLP_API_KEY}
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource, batch]
+      exporters: [awsxray]
+
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource, batch]
+      exporters: [awscloudwatchlogs]
+
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource, batch]
+      exporters: [awsemf]
+
+  # Enable telemetry for the collector itself
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      level: detailed
+      address: 0.0.0.0:8888
