@@ -24,10 +24,10 @@ function findMatchingPublicUrl(requestOrigin: string, allowedPublicUrls: string[
 }
 
 /**
- * Generate callback URL for SSO providers (OAuth2/OpenID/SAML)
+ * Dynamically generate the callback URL for OAuth2/OpenID SSO providers
  *
- * Uses AUTH_ALLOWED_PUBLIC_URLS to find matching public URL with subpath support.
- * Falls back to PUBLIC_URL for backward compatibility.
+ * Uses AUTH_ALLOWED_PUBLIC_URLS to find an alternate PUBLIC_URL based on the origins protocol and host.
+ * Defaults to the PUBLIC_URL if no match is found.
  *
  * @param providerName SSO provider name
  * @param requestOrigin Origin of the request (protocol + host)
