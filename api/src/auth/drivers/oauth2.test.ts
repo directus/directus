@@ -1,4 +1,17 @@
+import { useEnv } from '@directus/env';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidProviderConfigError,
+	InvalidProviderError,
+	InvalidTokenError,
+	ServiceUnavailableError,
+} from '@directus/errors';
+import { generators, errors as openidErrors } from 'openid-client';
+import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../../logger/index.js';
+import { OAuth2AuthDriver } from './oauth2.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
@@ -42,7 +55,7 @@ vi.mock('openid-client', () => {
 		}
 	}
 
-	class MockRPError extends Error {}
+	class MockRPError extends Error { }
 
 	return {
 		Issuer: class MockIssuer {
@@ -73,20 +86,6 @@ vi.mock('openid-client', () => {
 		},
 	};
 });
-
-import { useEnv } from '@directus/env';
-import { useLogger } from '../../logger/index.js';
-import { OAuth2AuthDriver } from './oauth2.js';
-import type { Logger } from 'pino';
-import {
-	InvalidCredentialsError,
-	InvalidProviderConfigError,
-	InvalidProviderError,
-	ErrorCode,
-	InvalidTokenError,
-	ServiceUnavailableError,
-} from '@directus/errors';
-import { generators, errors as openidErrors } from 'openid-client';
 
 let mockLogger: Logger;
 let codeChallengelengeSpy: any;

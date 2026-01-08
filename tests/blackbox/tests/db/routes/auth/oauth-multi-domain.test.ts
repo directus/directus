@@ -1,7 +1,7 @@
+import { ChildProcess, spawn } from 'child_process';
 import config, { paths } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { awaitDirectusConnection } from '@utils/await-connection';
-import { ChildProcess, spawn } from 'child_process';
 import getPort from 'get-port';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';

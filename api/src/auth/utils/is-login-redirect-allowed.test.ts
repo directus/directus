@@ -1,11 +1,10 @@
+import { useEnv } from '@directus/env';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../../logger/index.js';
 import { isLoginRedirectAllowed } from './is-login-redirect-allowed.js';
 
 vi.mock('@directus/env');
 vi.mock('../../logger/index.js');
-
-import { useEnv } from '@directus/env';
-import { useLogger } from '../../logger/index.js';
 
 const mockLogger = {
 	error: vi.fn(),

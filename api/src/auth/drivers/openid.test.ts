@@ -1,4 +1,16 @@
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidProviderConfigError,
+	InvalidProviderError,
+	InvalidTokenError,
+	ServiceUnavailableError,
+} from '@directus/errors';
+import { errors as openidErrors } from 'openid-client';
+import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../../logger/index.js';
+import { OpenIDAuthDriver } from './openid.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
@@ -59,7 +71,7 @@ vi.mock('openid-client', () => {
 				},
 			});
 
-			constructor() {}
+			constructor() { }
 			Client = class {
 				constructor() {
 					return mockClient;
@@ -83,23 +95,10 @@ vi.mock('openid-client', () => {
 					this.error_description = params.error_description;
 				}
 			},
-			RPError: class RPError extends Error {},
+			RPError: class RPError extends Error { },
 		},
 	};
 });
-
-import { useLogger } from '../../logger/index.js';
-import { OpenIDAuthDriver } from './openid.js';
-import type { Logger } from 'pino';
-import {
-	InvalidProviderConfigError,
-	InvalidProviderError,
-	InvalidCredentialsError,
-	InvalidTokenError,
-	ServiceUnavailableError,
-	ErrorCode,
-} from '@directus/errors';
-import { errors as openidErrors } from 'openid-client';
 
 let mockLogger: Logger;
 

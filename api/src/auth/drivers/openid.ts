@@ -34,9 +34,9 @@ import { getSchema } from '../../utils/get-schema.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
-import { LocalAuthDriver } from './local.js';
-import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 import { generateCallbackUrl } from '../utils/generate-callback-url.js';
+import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
+import { LocalAuthDriver } from './local.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;

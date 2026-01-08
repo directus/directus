@@ -19,8 +19,8 @@ import { AuthenticationService } from '../../services/authentication.js';
 import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
-import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 import { getSchema } from '../../utils/get-schema.js';
+import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 import { LocalAuthDriver } from './local.js';
 
 // Register the samlify schema validator
