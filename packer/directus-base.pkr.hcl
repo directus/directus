@@ -391,8 +391,13 @@ build {
       "# Initialize package.json",
       "pnpm init",
       
-      "# Create .npmrc to allow build scripts for git-hosted dependencies",
-      "echo 'enable-pre-post-scripts=true' > .npmrc",
+      "# Create pnpm-workspace.yaml to allow build scripts for git-hosted dependencies",
+      "cat > pnpm-workspace.yaml << 'EOF'",
+      "packages:",
+      "  - '.'",
+      "onlyBuiltDependencies:",
+      "  - 'directus-template-cli'",
+      "EOF",
       
       "# Install directly from GitHub repo (avoids GitHub Packages auth issues)",
       "# Using the specific tag/version from the repo",
