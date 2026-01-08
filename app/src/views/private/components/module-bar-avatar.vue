@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useAppStore } from '@directus/stores';
+import { User } from '@directus/types';
+import { storeToRefs } from 'pinia';
+import { computed, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import VAvatar from '@/components/v-avatar.vue';
 import VBadge from '@/components/v-badge.vue';
 import VButton from '@/components/v-button.vue';
@@ -10,11 +15,6 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import { useAppStore } from '@directus/stores';
-import { User } from '@directus/types';
-import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
-import { RouterLink } from 'vue-router';
 
 const appStore = useAppStore();
 const notificationsStore = useNotificationsStore();

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isEqual } from 'lodash';
+import { computed, reactive, ref, watch } from 'vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -13,8 +15,6 @@ import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { isEqual } from 'lodash';
-import { computed, reactive, ref, watch } from 'vue';
 
 const props = defineProps<{
 	modelValue?: boolean;

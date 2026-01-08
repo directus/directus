@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { getFlatpickrLocale } from '@/utils/get-flatpickr-locale';
 import { format } from 'date-fns';
 import Flatpickr from 'flatpickr';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getFlatpickrLocale } from '@/utils/get-flatpickr-locale';
 
 interface Props {
 	type: 'date' | 'time' | 'dateTime' | 'timestamp';

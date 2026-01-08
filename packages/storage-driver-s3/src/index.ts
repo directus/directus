@@ -1,3 +1,9 @@
+import fs, { promises as fsProm } from 'node:fs';
+import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
+import os from 'node:os';
+import { join } from 'node:path';
+import stream, { type Readable, promises as streamProm } from 'node:stream';
 import type {
 	CompletedPart,
 	CopyObjectCommandInput,
@@ -33,12 +39,6 @@ import { Permit, Semaphore } from '@shopify/semaphore';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { ERRORS, StreamSplitter, TUS_RESUMABLE } from '@tus/utils';
 import ms, { type StringValue } from 'ms';
-import fs, { promises as fsProm } from 'node:fs';
-import { Agent as HttpAgent } from 'node:http';
-import { Agent as HttpsAgent } from 'node:https';
-import os from 'node:os';
-import { join } from 'node:path';
-import stream, { promises as streamProm, type Readable } from 'node:stream';
 
 export type DriverS3Config = {
 	root?: string;

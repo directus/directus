@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { realtime } from '@directus/sdk';
+import { useLocalStorage } from '@vueuse/core';
+import CodeMirror from 'codemirror';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+import InlineFilter from './components/inline-filter.vue';
+import LogsDisplay from './components/logs-display.vue';
+import { Log } from './types';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
@@ -12,16 +21,7 @@ import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import { realtime } from '@directus/sdk';
-import { useLocalStorage } from '@vueuse/core';
-import CodeMirror from 'codemirror';
 import 'codemirror/mode/javascript/javascript';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
-import InlineFilter from './components/inline-filter.vue';
-import LogsDisplay from './components/logs-display.vue';
-import { Log } from './types';
 
 const { t } = useI18n();
 const reconnectionParams = { delay: 1000, retries: 10 };

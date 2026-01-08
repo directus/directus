@@ -1,8 +1,8 @@
+import type { Readable } from 'node:stream';
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Archiver } from 'archiver';
 import type { GraphQLSchema } from 'graphql';
 import type { Knex } from 'knex';
-import type { Readable } from 'node:stream';
 import type { Transporter } from 'nodemailer';
 import type { OpenAPIObject } from 'openapi3-ts/oas30';
 import type { Accountability } from './accountability.js';

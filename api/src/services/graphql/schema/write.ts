@@ -5,7 +5,7 @@ import { ObjectTypeComposer, toInputObjectType } from 'graphql-compose';
 import { GraphQLService } from '../index.js';
 import { resolveMutation } from '../resolvers/mutation.js';
 import { getTypes } from './get-types.js';
-import { SYSTEM_DENY_LIST, type InconsistentFields, type Schema } from './index.js';
+import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
 
 export function getWritableTypes(
 	gql: GraphQLService,

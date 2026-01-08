@@ -1,7 +1,7 @@
+import { join, resolve } from 'path';
 import { isTypeIn, listFolders, resolvePackage } from '@directus/utils/node';
 import fse from 'fs-extra';
 import { pick } from 'lodash-es';
-import { join, resolve } from 'path';
 import { EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { ExtensionManifest } from '../../shared/schemas/index.js';
 import type { Extension } from '../../shared/types/index.js';

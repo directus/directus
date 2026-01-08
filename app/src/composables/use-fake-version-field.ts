@@ -1,5 +1,5 @@
 import type { Field } from '@directus/types';
-import { computed, ref, type Ref, type ComputedRef } from 'vue';
+import { computed, type ComputedRef, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useVersions } from './use-versions';
 

@@ -1,3 +1,6 @@
+import { join } from 'node:path';
+import { PassThrough, Readable } from 'node:stream';
+import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
 import {
 	CopyObjectCommand,
 	CreateMultipartUploadCommand,
@@ -7,7 +10,6 @@ import {
 	ListObjectsV2Command,
 	S3Client,
 	ServerSideEncryption,
-	type HeadObjectCommandOutput,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { normalizePath } from '@directus/utils';
@@ -28,8 +30,6 @@ import {
 	randWord,
 } from '@ngneat/falso';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
-import { join } from 'node:path';
-import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';

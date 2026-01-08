@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useAiStore } from '@/ai/stores/use-ai';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAiStore } from '@/ai/stores/use-ai';
 import VButton from '@/components/v-button.vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';

@@ -1,8 +1,8 @@
 import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type CreateIndexOptions, type SortRecord } from '../types.js';
-import { toArray } from '@directus/utils';
+import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
@@ -97,7 +97,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 			/*
 			Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
 			so we're just going to send it and fall back to blocking index creation on error
-			
+
 			https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
 			*/
 			return this.knex

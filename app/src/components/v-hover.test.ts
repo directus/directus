@@ -1,6 +1,5 @@
-import { test, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-
+import { expect, test, vi } from 'vitest';
 import VHover from './v-hover.vue';
 
 test('Mount component', () => {

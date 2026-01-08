@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import api from '@/api';
-import VDrawer from '@/components/v-drawer.vue';
-import VUpload from '@/components/v-upload.vue';
-import { useCollectionsStore } from '@/stores/collections';
-import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
 import { isEqual } from 'lodash';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
@@ -12,6 +7,11 @@ import { useBus } from './bus';
 import { sanitizeValue } from './sanitize';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
+import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VUpload from '@/components/v-upload.vue';
+import { useCollectionsStore } from '@/stores/collections';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 import './editorjs-overrides.css';
 

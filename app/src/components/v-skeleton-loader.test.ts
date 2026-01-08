@@ -2,7 +2,6 @@ import { mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
 import { expect, test } from 'vitest';
 import { createMemoryHistory, createRouter } from 'vue-router';
-
 import VSkeletonLoader from './v-skeleton-loader.vue';
 
 test('Mount component', () => {

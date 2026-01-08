@@ -1,12 +1,12 @@
+import { join } from 'node:path';
+import { type Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import type { TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import type { Bucket, CreateReadStreamOptions, GetFilesOptions } from '@google-cloud/storage';
 import { Storage } from '@google-cloud/storage';
-import { join } from 'node:path';
-import { type Readable } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
 
 const MINIMUM_CHUNK_SIZE = 262_144; // 256kb in bytes
 

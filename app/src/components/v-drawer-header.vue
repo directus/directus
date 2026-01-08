@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import PrivateViewHeaderBarActions from '@/views/private/private-view/components/private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
-import VButton from '@/components/v-button.vue';
-import VTextOverflow from '@/components/v-text-overflow.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 
 withDefaults(
 	defineProps<{
@@ -137,6 +137,7 @@ defineEmits<{
 	&:deep(.type-title) {
 		line-height: 1.2em;
 		max-inline-size: 100%;
+		block-size: 24px;
 	}
 }
 
