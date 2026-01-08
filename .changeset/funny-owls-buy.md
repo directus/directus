@@ -8,6 +8,6 @@ Added multi-domain support for OAuth/OpenID
 
 ::: notice
 
-SSO callback URL generation and redirect validation now include port matching to ensure redirects target the correct server.
+SSO callback URL generation and redirect validation now includes port matching to ensure redirects target the correct server.
 
 :::
