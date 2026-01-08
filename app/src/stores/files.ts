@@ -1,6 +1,6 @@
+import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
-import { nanoid } from 'nanoid';
 
 type Upload = {
 	numberOfFiles: number;

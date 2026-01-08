@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { generateFields } from './schema';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -15,9 +18,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { generateFields } from './schema';
 
 const { t } = useI18n();
 

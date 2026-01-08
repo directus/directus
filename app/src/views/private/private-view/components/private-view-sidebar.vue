@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
-import { useServerStore } from '@/stores/server';
 import { AccordionRoot } from 'reka-ui';
 import { useSidebarStore } from '../stores/sidebar';
+import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
+import { useServerStore } from '@/stores/server';
 
 const serverStore = useServerStore();
 const sidebarStore = useSidebarStore();

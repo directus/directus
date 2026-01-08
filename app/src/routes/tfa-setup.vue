@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useAppStore } from '@directus/stores';
+import { User } from '@directus/types';
+import { useHead } from '@unhead/vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VError from '@/components/v-error.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -9,11 +14,6 @@ import { DEFAULT_AUTH_DRIVER } from '@/constants';
 import { router } from '@/router';
 import { useUserStore } from '@/stores/user';
 import PublicView from '@/views/public/public-view.vue';
-import { useAppStore } from '@directus/stores';
-import { User } from '@directus/types';
-import { useHead } from '@unhead/vue';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const appStore = useAppStore();

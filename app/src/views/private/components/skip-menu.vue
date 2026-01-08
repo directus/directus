@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { useBreakpoints } from '@vueuse/core';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import { BREAKPOINTS } from '@/constants';
 import { useNavBarStore } from '@/views/private/private-view/stores/nav-bar';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
-import { useBreakpoints } from '@vueuse/core';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { section } = defineProps<{
 	section: 'navigation' | 'module-navigation' | 'main-content' | 'sidebar';

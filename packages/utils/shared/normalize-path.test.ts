@@ -1,4 +1,4 @@
-import { test, expect } from 'vitest';
+import { expect, test } from 'vitest';
 import { normalizePath } from './normalize-path.js';
 
 test('Returns single / for given \\', () => {

@@ -98,7 +98,7 @@ function trimIfEnabled() {
 	display: flex;
 	flex-direction: column;
 	inline-size: max-content;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

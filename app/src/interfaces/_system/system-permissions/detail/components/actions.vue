@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { Permission, PrimaryKey } from '@directus/types';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 defineProps<{
 	permission: Permission;

@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { Field, ValidationError } from '@directus/types';
+import { toRef } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
-import { Field, ValidationError } from '@directus/types';
-import { toRef } from 'vue';
 
 const props = defineProps<{
 	validationErrors: ValidationError[];

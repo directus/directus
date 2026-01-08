@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import VInfo from '@/components/v-info.vue';
-import { PrivateView } from '@/views/private';
 import { useHead } from '@unhead/vue';
 import { useI18n } from 'vue-i18n';
+import VInfo from '@/components/v-info.vue';
+import { PrivateView } from '@/views/private';
 
 const { t } = useI18n();
 
