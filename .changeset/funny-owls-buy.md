@@ -1,7 +1,7 @@
 ---
-"@directus/api": major
-"@directus/app": patch
-"@directus/env": minor
+'@directus/api': major
+'@directus/app': patch
+'@directus/env': minor
 ---
 
 Added multi-domain support for OAuth/OpenID
