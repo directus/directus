@@ -3,7 +3,8 @@ import { toArray } from '@directus/utils';
 import { Url } from '../../utils/url.js';
 
 /**
- * Find matching public URL from request origin
+ * Find a matching public URL based on the request origins protocol and host
+ * 
  * @param requestOrigin - The origin of the request
  * @param allowedPublicUrls - The allowed public URLs from AUTH_ALLOWED_PUBLIC_URLS
  * @returns The matching public URL
