@@ -38,11 +38,13 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		assert(primaryColumns.length > 0, 'At least 1 "to" column is required');
 		assert(primaryColumns[0] && primaryColumns[0].length > 0, '"to" column cannot be empty');
 
-		/* Before adding the new PK field(s) we drop the constraint to ensure no leftover secondary index on the original PK field.
-		 * see: https://www.cockroachlabs.com/docs/stable/primary-key#changing-primary-key-columns
+		/* Before adding the new PK field(s) we drop the existing constraint to ensure no leftover secondary index on the original PK field.
+		 * - https://www.cockroachlabs.com/docs/stable/primary-key#changing-primary-key-columns
 		 *
-		 * CockroachDB requires that a Primary Key be dropped and added in the same atomic statement to ensure a seamless transition
-		 * To prevent this error from being thrown both operations are bundled via `,` see: https://www.cockroachlabs.com/docs/stable/alter-table#synopsis
+		 * CockroachDB requires that when changing a PK the current one be dropped and new one added in the same transaction.
+		 * To prevent this error from being thrown both operations are executed in the same statement via `,`.
+		 * - https://www.cockroachlabs.com/docs/stable/primary-key.html
+		 * - https://www.cockroachlabs.com/docs/stable/alter-table#synopsis
 		 */
 
 		await transaction(this.knex, async (trx) => {
