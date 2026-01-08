@@ -192,4 +192,6 @@ export const DEFAULTS = {
 	ACCEPT_TERMS: false,
 
 	MCP_ENABLED: true,
+
+	AI_ENABLED: true,
 } as const;

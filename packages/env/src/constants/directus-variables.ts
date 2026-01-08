@@ -259,6 +259,9 @@ export const DIRECTUS_VARIABLES = [
 
 	// mcp
 	'MCP_ENABLED',
+
+	// ai
+	'AI_ENABLED',
 ] as const;
 
 /**
