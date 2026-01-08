@@ -32,20 +32,12 @@ on:
   # Automatic trigger on packer changes | <TRIGGER>
   push:
     branches:
-      - main
-    paths:
-      - 'packer/**'
-      - '.github/workflows/ami-build.yml'
+      - custom
 
   # PR trigger for testing (validate only, no build)
   pull_request:
-    paths:
-      - 'packer/**'
-      - '.github/workflows/ami-build.yml'
-
-  # Weekly rebuild for security updates (Sundays at 2 AM UTC)
-  schedule:
-    - cron: '0 2 * * 0'
+    branches:
+      - custom
 
 # Cancel in-progress builds when new commits are pushed
 concurrency:
