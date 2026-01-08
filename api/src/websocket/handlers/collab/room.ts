@@ -18,6 +18,7 @@ import { Messenger } from './messenger.js';
 import { permissionCache } from './permissions-cache.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { useStore } from './store.js';
+import { filterToFields } from './filter-to-fields.js';
 
 /**
  * Store and manage all active collaboration rooms
@@ -427,6 +428,8 @@ export class Room {
 			return { clients: await store.get('clients') };
 		});
 
+		console.log(clients);
+
 		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
@@ -501,6 +504,7 @@ export class Room {
 		if (accountability.admin) return ['*'];
 
 		const cached = permissionCache.get(accountability, collection, item, action);
+		console.log(`cache ${cached ? 'hit' : 'miss'} c: ${collection}, i: ${item}, a: ${action}, c:${cached}`);
 		if (cached) return cached;
 
 		// Prevent caching stale permissions if an invalidation occurs during async steps
@@ -514,14 +518,6 @@ export class Room {
 		let itemData: any = null;
 
 		try {
-			// Fetch current item data to evaluate any conditional permission filters based on record state
-			if (item) {
-				itemData = await service.readOne(item);
-				if (!itemData) throw new Error('No access');
-			} else if (schema.collections[collection]?.singleton) {
-				itemData = await service.readSingleton({});
-			}
-
 			const policies = await fetchPolicies(accountability, { knex, schema });
 
 			const rawPermissions = await fetchPermissions(
@@ -542,6 +538,21 @@ export class Room {
 				accountability,
 				permissionsContext,
 			});
+
+			const fieldsToFetch = processedPermissions
+				.map((perm) => (perm.permissions ? filterToFields(perm.permissions, collection, schema) : []))
+				.flat();
+
+			// Fetch current item data to evaluate any conditional permission filters based on record state
+			if (item) {
+				itemData = await service.readOne(item, {
+					fields: fieldsToFetch,
+				});
+
+				if (!itemData) throw new Error('No access');
+			} else if (schema.collections[collection]?.singleton) {
+				itemData = await service.readSingleton({ fields: fieldsToFetch });
+			}
 
 			const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
 

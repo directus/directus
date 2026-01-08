@@ -30,6 +30,7 @@ export function filterItems<T extends Item[]>(items: T, filter: Query['filter'])
 			const schema = generateJoi(filter as FieldFilter);
 
 			const { error } = schema.validate(item);
+			console.error(error);
 			return error === undefined;
 		}
 	}
