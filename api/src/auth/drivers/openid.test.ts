@@ -71,7 +71,7 @@ vi.mock('openid-client', () => {
 				},
 			});
 
-			constructor() { }
+			constructor() {}
 			Client = class {
 				constructor() {
 					return mockClient;
@@ -95,7 +95,7 @@ vi.mock('openid-client', () => {
 					this.error_description = params.error_description;
 				}
 			},
-			RPError: class RPError extends Error { },
+			RPError: class RPError extends Error {},
 		},
 	};
 });

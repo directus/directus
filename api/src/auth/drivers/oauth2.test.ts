@@ -55,7 +55,7 @@ vi.mock('openid-client', () => {
 		}
 	}
 
-	class MockRPError extends Error { }
+	class MockRPError extends Error {}
 
 	return {
 		Issuer: class MockIssuer {
