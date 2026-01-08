@@ -1,8 +1,11 @@
 import type { KNEX_TYPES } from '@directus/constants';
+import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import { type Knex } from 'knex';
+import assert from 'node:assert';
+import { transaction } from '../../../../utils/transaction.js';
 import type { CreateIndexOptions, Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
-import { useEnv } from '@directus/env';
 
 const env = useEnv();
 
@@ -26,6 +29,30 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		} else {
 			return existingName + suffix;
 		}
+	}
+
+	override async changePrimaryKey(table: string, to: string | string[]): Promise<void> {
+		const primaryColumns = toArray(to);
+		const placeholders = primaryColumns.map(() => '??').join(', ');
+
+		assert(primaryColumns.length > 0, 'At least 1 "to" column is required');
+		assert(primaryColumns[0] && primaryColumns[0].length > 0, '"to" column cannot be empty');
+
+		/* Before adding the new PK field(s) we drop the constraint to ensure no leftover secondary index on the original PK field.
+		 * see: https://www.cockroachlabs.com/docs/stable/primary-key#changing-primary-key-columns
+		 *
+		 * CockroachDB requires that a Primary Key be dropped and added in the same atomic statement to ensure a seamless transition
+		 * To prevent this error from being thrown both operations are bundled via `,` see: https://www.cockroachlabs.com/docs/stable/alter-table#synopsis
+		 */
+
+		await transaction(this.knex, async (trx) => {
+			await trx.raw(`ALTER TABLE ?? DROP CONSTRAINT ?? , ADD CONSTRAINT ?? PRIMARY KEY (${placeholders})`, [
+				table,
+				`${table}_pkey`,
+				`${table}_pkey`,
+				...primaryColumns,
+			]);
+		});
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {
