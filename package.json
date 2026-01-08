@@ -41,7 +41,7 @@
 			"glob@11.0.3": "11.1.0"
 		}
 	},
-	"packageManager": "pnpm@10.14.0",
+	"packageManager": "pnpm@10.26.0",
 	"engines": {
 		"node": "22",
 		"pnpm": ">=10 <11"
