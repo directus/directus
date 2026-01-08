@@ -65,6 +65,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Determine version
+        id: version
+        run: |
+          if [[ -n "${{ github.event.inputs.version }}" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
+            VERSION="weekly-$(date +%Y%m%d)"
+          else
+            VERSION="${GITHUB_SHA::8}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "AMI Version: $VERSION"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -135,20 +148,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          nameDetermine version
-        id: version
-        run: |
-          if [[ -n "${{ github.event.inputs.version }}" ]]; then
-            VERSION="${{ github.event.inputs.version }}"
-          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
-            VERSION="weekly-$(date +%Y%m%d)"
-          else
-            VERSION="${GITHUB_SHA::8}"
-          fi
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "AMI Version: $VERSION"
-
-      - name: : packer-logs
+          name: packer-logs
           path: packer/packer.log
           retention-days: 7
 
