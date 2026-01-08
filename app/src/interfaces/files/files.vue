@@ -28,6 +28,7 @@ import { useRelationPermissionsM2M } from '@/composables/use-relation-permission
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
@@ -426,16 +427,13 @@ const allowDrag = computed(
 			@input="stageEdits"
 		>
 			<template #actions>
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-if="currentlyEditing !== '+' && relationInfo.relatedCollection.collection === 'directus_files'"
+					icon="download"
 					secondary
-					rounded
-					icon
 					:download="downloadName"
 					:href="downloadUrl"
-				>
-					<VIcon name="download" />
-				</VButton>
+				/>
 			</template>
 		</DrawerItem>
 
