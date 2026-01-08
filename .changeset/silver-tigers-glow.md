@@ -2,6 +2,7 @@
 '@directus/api': minor
 '@directus/app': minor
 '@directus/env': minor
+'@directus/sdk': patch
 '@directus/system-data': patch
 ---
 
