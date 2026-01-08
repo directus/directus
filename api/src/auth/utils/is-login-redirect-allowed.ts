@@ -5,7 +5,7 @@ import isUrlAllowed from '../../utils/is-url-allowed.js';
 
 /**
  * Checks if the defined redirect after successful SSO login is in the allow list
- * @param provider SSO provider name (oauth2/openid/saml)
+ * @param provider SSO provider name
  * @param redirect URL to redirect to after login
  * @returns True if the redirect is allowed, false otherwise
  */
