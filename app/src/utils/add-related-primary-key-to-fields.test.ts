@@ -1,13 +1,11 @@
-import { test, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
-import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-
+import { setActivePinia } from 'pinia';
+import { afterEach, beforeEach, expect, Mock, test, vi } from 'vitest';
 import { cryptoStub } from '@/__utils__/crypto';
-
-vi.stubGlobal('crypto', cryptoStub);
-
 import { useFieldsStore } from '@/stores/fields';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+
+vi.stubGlobal('crypto', cryptoStub);
 
 beforeEach(() => {
 	setActivePinia(

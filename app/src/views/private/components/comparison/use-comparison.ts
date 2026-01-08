@@ -1,4 +1,17 @@
+import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { has, isEqual, mergeWith } from 'lodash';
+import { computed, type Ref, ref, watch } from 'vue';
+import type {
+	ComparisonData,
+	NormalizedComparison,
+	NormalizedComparisonData,
+	NormalizedDate,
+	NormalizedItem,
+	VersionComparisonResponse,
+} from './types';
 import api from '@/api';
+import { isHtmlString, useComparisonDiff } from '@/composables/use-comparison-diff';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import type { Revision } from '@/types/revisions';
@@ -13,22 +26,9 @@ import {
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getRevisionFields } from '@/utils/get-revision-fields';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
-import { unexpectedError } from '@/utils/unexpected-error';
-import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { has, isEqual, mergeWith } from 'lodash';
-import { computed, ref, watch, type Ref } from 'vue';
-import { useComparisonDiff, isHtmlString } from '@/composables/use-comparison-diff';
 import { reconstructComparisonHtml } from '@/utils/reconstruct-comparison-html';
 import { shouldShowComparisonDiff } from '@/utils/should-show-comparison-diff';
-import type {
-	ComparisonData,
-	NormalizedComparison,
-	NormalizedComparisonData,
-	NormalizedDate,
-	NormalizedItem,
-	VersionComparisonResponse,
-} from './types';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 interface UseComparisonOptions {
 	collection: Ref<string>;

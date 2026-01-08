@@ -1,3 +1,6 @@
+import { basename, dirname, join } from 'node:path';
+import { Readable } from 'node:stream';
+import { ReadableStream } from 'node:stream/web';
 import {
 	randAlphaNumeric,
 	randGitBranch as randBucket,
@@ -12,13 +15,10 @@ import {
 	randGitShortSha as randUnique,
 } from '@ngneat/falso';
 import { StorageClient } from '@supabase/storage-js';
-import { Readable } from 'node:stream';
-import { ReadableStream } from 'node:stream/web';
-import { Response, fetch } from 'undici';
+import { fetch, Response } from 'undici';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
-import { basename, dirname, join } from 'node:path';
 
 vi.mock('@supabase/storage-js');
 vi.mock('undici');

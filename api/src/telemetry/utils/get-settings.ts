@@ -1,6 +1,6 @@
+import type { Knex } from 'knex';
 import { SettingsService } from '../../services/settings.js';
 import { getSchema } from '../../utils/get-schema.js';
-import type { Knex } from 'knex';
 
 export type TelemetrySettings = {
 	project_id: string;

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import VList from '@/components/v-list.vue';
 import { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
 import MetadataItem from '../../../components/metadata-item.vue';
@@ -12,6 +11,7 @@ import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
 import ExtensionMetadataLicense from './extension-metadata-license.vue';
 import ExtensionMetadataSize from './extension-metadata-size.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
+import VList from '@/components/v-list.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];

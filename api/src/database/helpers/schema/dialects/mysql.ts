@@ -1,9 +1,9 @@
+import assert from 'node:assert';
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import assert from 'node:assert';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type CreateIndexOptions, type SortRecord } from '../types.js';
+import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
 

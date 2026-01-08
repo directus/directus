@@ -1,9 +1,9 @@
 /**
  * Utility functions to write a `.status` file on the filesystem to indicate active synchronization
  */
+import { rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { exists } from 'fs-extra';
-import { writeFile, rm } from 'node:fs/promises';
 import { getExtensionsPath } from '../get-extensions-path.js';
 
 export const SyncStatus = {

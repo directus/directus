@@ -1,9 +1,22 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import type { Driver } from '@directus/storage';
-import { Readable } from 'node:stream';
+import { createWriteStream } from 'node:fs';
+import { mkdir, rm } from 'node:fs/promises';
 import { sep } from 'node:path';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { useEnv } from '@directus/env';
+import type { Driver } from '@directus/storage';
+import mid from 'node-machine-id';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useBus } from '../../../bus/index.js';
+import { useLock } from '../../../lock/index.js';
+import { useLogger } from '../../../logger/index.js';
+import { getStorage } from '../../../storage/index.js';
+import { getExtensionsPath } from '../get-extensions-path.js';
+import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
+import { syncExtensions } from './sync.js';
+import { SyncFileTracker } from './tracker.js';
+import { compareFileMetadata, getSyncPaths } from './utils.js';
 
-// Hoist the env mock to ensure it's available before any module imports
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
 		EXTENSIONS_LOCATION: 'test-location',
@@ -31,21 +44,6 @@ vi.mock('node:fs/promises');
 vi.mock('node:fs');
 vi.mock('node:stream/promises');
 vi.mock('node-machine-id');
-
-import { syncExtensions } from './sync.js';
-import { useEnv } from '@directus/env';
-import { useBus } from '../../../bus/index.js';
-import { useLock } from '../../../lock/index.js';
-import { useLogger } from '../../../logger/index.js';
-import { getStorage } from '../../../storage/index.js';
-import { getExtensionsPath } from '../get-extensions-path.js';
-import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
-import { getSyncPaths, compareFileMetadata } from './utils.js';
-import { SyncFileTracker } from './tracker.js';
-import { mkdir, rm } from 'node:fs/promises';
-import { createWriteStream } from 'node:fs';
-import { pipeline } from 'node:stream/promises';
-import mid from 'node-machine-id';
 
 describe('syncExtensions', () => {
 	let mockEnv: Record<string, any>;

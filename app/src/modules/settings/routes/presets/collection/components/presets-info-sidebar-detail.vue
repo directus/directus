@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
-import { ref } from 'vue';
 
 const loading = ref(false);
 const bookmarksCount = ref<number | null>(null);

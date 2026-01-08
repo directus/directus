@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useSync } from '@directus/composables';
+import type { Field, Filter, Item, ShowSelect } from '@directus/types';
+import { ComponentPublicInstance, inject, ref, Ref, toRefs, watch } from 'vue';
 import VDivider from '@/components/v-divider.vue';
 import VFieldList from '@/components/v-field-list/v-field-list.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -18,9 +21,6 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
 import RenderDisplay from '@/views/private/components/render-display.vue';
-import { useSync } from '@directus/composables';
-import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, Ref, inject, ref, toRefs, watch } from 'vue';
 
 defineOptions({ inheritAttrs: false });
 

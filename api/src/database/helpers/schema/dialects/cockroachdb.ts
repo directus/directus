@@ -1,8 +1,8 @@
+import assert from 'node:assert';
 import type { KNEX_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import { type Knex } from 'knex';
-import assert from 'node:assert';
 import { transaction } from '../../../../utils/transaction.js';
 import type { CreateIndexOptions, Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';

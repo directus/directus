@@ -18,6 +18,7 @@
 		"@eslint/js": "catalog:",
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
+		"eslint-plugin-import": "catalog:",
 		"eslint-plugin-vue": "catalog:",
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
@@ -40,7 +41,7 @@
 			"glob@11.0.3": "11.1.0"
 		}
 	},
-	"packageManager": "pnpm@10.14.0",
+	"packageManager": "pnpm@10.27.0",
 	"engines": {
 		"node": "22",
 		"pnpm": ">=10 <11"
