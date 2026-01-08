@@ -391,6 +391,9 @@ build {
       "# Initialize package.json",
       "pnpm init",
       
+      "# Create .npmrc to allow build scripts for git-hosted dependencies",
+      "echo 'enable-pre-post-scripts=true' > .npmrc",
+      
       "# Install directly from GitHub repo (avoids GitHub Packages auth issues)",
       "# Using the specific tag/version from the repo",
       "pnpm add github:Face-to-Face-IT/directus-template-api#v0.7.4-ftf.1",
