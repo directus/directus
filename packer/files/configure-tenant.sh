@@ -353,7 +353,12 @@ export DB_PASSWORD="$DB_PASSWORD"
 export DB_SSL=true
 export KEY="$DIRECTUS_KEY"
 export SECRET="$DIRECTUS_SECRET"
-export PUBLIC_URL="https://$FQDN"
+# Use HTTP when SSL is disabled (ALB/CloudFront handles SSL termination)
+if [[ "$ENABLE_SSL" == "true" ]]; then
+    export PUBLIC_URL="https://$FQDN"
+else
+    export PUBLIC_URL="http://$FQDN"
+fi
 export PORT="$DIRECTUS_PORT"
 
 # Run bootstrap as ubuntu user
@@ -734,9 +739,16 @@ echo "=============================================="
 echo "=== Tenant Configuration Complete ==="
 echo "=============================================="
 echo "  Tenant: $TENANT_NAME"
-echo "  URL: https://$FQDN"
+# Show correct URL based on SSL configuration
+if [[ "$SSL_CONFIGURED" == "true" ]]; then
+    echo "  URL: https://$FQDN"
+    ADMIN_URL="https://$FQDN/admin"
+else
+    echo "  URL: http://$FQDN (SSL terminates at ALB/CloudFront)"
+    ADMIN_URL="http://$FQDN/admin"
+fi
 echo "  Template Version: $TEMPLATE_VERSION"
-echo "  SSL: ${SSL_CONFIGURED:-false}"
+echo "  SSL on EC2: ${SSL_CONFIGURED:-false}"
 echo "  Time: $(date)"
 echo "=============================================="
 
@@ -747,6 +759,6 @@ sudo -u ubuntu pm2 save
 
 echo ""
 echo "Directus is ready!"
-echo "  Admin URL: https://$FQDN/admin"
+echo "  Admin URL: $ADMIN_URL"
 echo "  Admin Email: $ADMIN_EMAIL"
 echo ""
