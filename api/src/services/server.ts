@@ -67,12 +67,12 @@ export class ServerService {
 
 		info['project'] = projectInfo;
 
-		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
-		info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
-
 		info['setupCompleted'] = setupComplete;
 
 		if (this.accountability?.user) {
+			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
+
 			if (env['RATE_LIMITER_ENABLED']) {
 				info['rateLimit'] = {
 					points: env['RATE_LIMITER_POINTS'],
