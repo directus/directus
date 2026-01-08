@@ -15,6 +15,7 @@ import { useAppStore } from '@directus/stores';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
 import Setup from '@/routes/setup/setup.vue';
+import { recordNavigation } from '@/telemetry';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
@@ -207,8 +208,11 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 
 let trackTimeout: number | null = null;
 
-export const onAfterEach: NavigationHookAfter = (to) => {
+export const onAfterEach: NavigationHookAfter = (to, from) => {
 	const userStore = useUserStore();
+
+	// Record navigation metric
+	recordNavigation(from.path || 'unknown', to.path || 'unknown');
 
 	if (to.meta.public !== true && to.meta.track !== false) {
 		// The timeout gives the page some breathing room to load. No need to clog up the thread with
