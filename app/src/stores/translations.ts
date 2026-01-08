@@ -1,10 +1,10 @@
+import { defineStore } from 'pinia';
+import { ref, unref, watch } from 'vue';
 import api from '@/api';
 import { i18n } from '@/lang';
 import { fetchAll } from '@/utils/fetch-all';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { defineStore } from 'pinia';
-import { ref, unref, watch } from 'vue';
 
 export interface Translation {
 	language: string;

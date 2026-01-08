@@ -1,6 +1,6 @@
+import type { ContentVersion, User } from '@directus/types';
 import type { Activity } from '@/types/activity';
 import type { Revision } from '@/types/revisions';
-import type { ContentVersion, User } from '@directus/types';
 
 export type VersionComparisonResponse = {
 	outdated: boolean;

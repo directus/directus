@@ -30,13 +30,14 @@ import type { RoleMap } from '../../types/rolemap.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getSchema } from '../../utils/get-schema.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
-import { getSchema } from '../../utils/get-schema.js';
 import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 import { generateCallbackUrl } from '../utils/generate-callback-url.js';
+
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
 	config: Record<string, any>;

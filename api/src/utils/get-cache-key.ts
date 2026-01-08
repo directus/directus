@@ -1,8 +1,8 @@
+import url from 'url';
 import { ipInNetworks } from '@directus/utils/node';
 import { version } from 'directus/version';
 import type { Request } from 'express';
 import hash from 'object-hash';
-import url from 'url';
 import getDatabase from '../database/index.js';
 import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
 import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables.js';

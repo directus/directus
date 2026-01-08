@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isNil } from 'lodash';
+import { computed, toRefs } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -10,8 +12,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { useUserStore } from '@/stores/user';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
-import { isNil } from 'lodash';
-import { computed, toRefs } from 'vue';
 
 interface Props {
 	collection: string;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import VHighlight from '@/components/v-highlight.vue';
 import { useElementSize } from '@directus/composables';
 import { ref, watch } from 'vue';
+import VHighlight from '@/components/v-highlight.vue';
 
 interface Props {
 	/** The text that should be displayed */

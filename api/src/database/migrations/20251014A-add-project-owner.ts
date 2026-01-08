@@ -1,9 +1,9 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import { email } from 'zod';
 import { SettingsService } from '../../services/settings.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { email } from 'zod';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {

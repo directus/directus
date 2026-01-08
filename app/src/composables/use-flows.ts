@@ -1,14 +1,14 @@
-import api from '@/api';
-import { computed, ref, provide, inject, unref, type Ref } from 'vue';
+import { useCollection } from '@directus/composables';
+import formatTitle from '@directus/format-title';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
+import { computed, inject, provide, type Ref, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import { useFlowsStore } from '@/stores/flows';
+import { useNotificationsStore } from '@/stores/notifications';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollection } from '@directus/composables';
-import { useFlowsStore } from '@/stores/flows';
-import { useI18n } from 'vue-i18n';
-import { useNotificationsStore } from '@/stores/notifications';
-import formatTitle from '@directus/format-title';
 
 interface UseFlowsOptions {
 	collection: Ref<string>;

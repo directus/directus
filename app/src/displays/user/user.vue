@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { User } from '@directus/types';
+import { computed } from 'vue';
 import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import UserPopover from '@/views/private/components/user-popover.vue';
-import { User } from '@directus/types';
-import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

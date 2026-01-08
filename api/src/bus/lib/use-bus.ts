@@ -1,4 +1,4 @@
-import { createBus, type Bus } from '@directus/memory';
+import { type Bus, createBus } from '@directus/memory';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 
 export const _cache: { bus: Bus | undefined } = {

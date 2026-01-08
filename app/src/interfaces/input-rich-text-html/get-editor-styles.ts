@@ -1,6 +1,6 @@
+import { cssVar } from '@directus/utils/browser';
 import firaMono from '../../assets/fonts/FiraMono-Medium.woff2';
 import merriweatherRegular from '../../assets/fonts/merriweather-regular.woff2';
-import { cssVar } from '@directus/utils/browser';
 
 export default function getEditorStyles(
 	font: 'sans-serif' | 'serif' | 'monospace',

@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import api from '@/api';
-import { login } from '@/auth';
-import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VNotice from '@/components/v-notice.vue';
-import { translateAPIError } from '@/lang';
-import PublicView from '@/views/public';
 import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, ref, watch } from 'vue';
@@ -13,6 +6,13 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { defaultValues, FormValidator, useFormFields, validate, ValidationError } from './form';
 import SetupForm from './form.vue';
+import api from '@/api';
+import { login } from '@/auth';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
+import { translateAPIError } from '@/lang';
+import PublicView from '@/views/public';
 
 const { t } = useI18n();
 
