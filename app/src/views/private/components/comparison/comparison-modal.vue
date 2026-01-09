@@ -4,6 +4,7 @@ import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
+import ComparisonToggle from './comparison-toggle.vue';
 import { useComparison } from './use-comparison';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -42,6 +43,8 @@ const { t } = useI18n();
 
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
 
+const compareToOption = ref<'Previous' | 'Latest'>('Previous');
+
 const {
 	comparisonData,
 	selectedComparisonFields,
@@ -69,6 +72,7 @@ const {
 	currentVersion,
 	currentRevision,
 	revisions,
+	compareToOption,
 });
 
 const incomingTooltipMessage = computed(() => {
@@ -97,6 +101,23 @@ watch(
 		}
 	},
 	{ immediate: true },
+);
+
+watch(
+	[compareToOption],
+	async () => {
+		if (props.mode !== 'revision' || !active.value) return;
+
+		modalLoading.value = true;
+
+		try {
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+		} finally {
+			modalLoading.value = false;
+		}
+	},
 );
 
 function usePromoteDialog() {
@@ -167,6 +188,10 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	if (props.mode !== 'revision') return;
 
 	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
+}
+
+function handleCompareToSelection(option: 'Previous' | 'Latest') {
+	compareToOption.value = option;
 }
 </script>
 
@@ -264,8 +289,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			<div class="footer">
 				<div class="columns">
 					<div class="col left">
-						<div class="fields-changed">
+						<div v-if="mode !== 'revision'" class="fields-changed">
 							{{ $t('differences_count', { count: availableFieldsCount }) }}
+						</div>
+						<div v-else>
+							<ComparisonToggle v-model="compareToOption" @update:model-value="handleCompareToSelection" />
 						</div>
 					</div>
 					<div class="col right">
@@ -291,11 +319,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 								</VButton>
 								<VButton
 									v-tooltip.top="
-										selectedComparisonFields.length === 0
+										selectedComparisonFields.length === 0 || compareToOption === 'Previous'
 											? undefined
 											: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
-									:disabled="selectedComparisonFields.length === 0"
+									:disabled="selectedComparisonFields.length === 0 || compareToOption === 'Previous'"
 									:loading="promoting"
 									@click="onPromoteClick"
 								>

@@ -37,10 +37,11 @@ interface UseComparisonOptions {
 	currentVersion: Ref<ContentVersion | null | undefined>;
 	currentRevision: Ref<Revision | null | undefined>;
 	revisions: Ref<Revision[] | null | undefined>;
+	compareToOption: Ref<'Previous' | 'Latest'>;
 }
 
 export function useComparison(options: UseComparisonOptions) {
-	const { collection, primaryKey, mode, currentVersion, currentRevision, revisions } = options;
+	const { collection, primaryKey, mode, currentVersion, currentRevision, revisions, compareToOption } = options;
 
 	const selectedComparisonFields = ref<string[]>([]);
 	const userUpdated = ref<User | null>(null);
@@ -166,6 +167,7 @@ export function useComparison(options: UseComparisonOptions) {
 					currentRevision.value,
 					currentVersion.value,
 					revisions.value,
+					compareToOption.value,
 				);
 			}
 		} catch (error) {
@@ -342,10 +344,50 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 	}
 
+	function findPreviousRevision(currentRevision: Revision, revisions: Revision[]): Revision | null {
+		if (!revisions || revisions.length === 0) return null;
+		if (!('id' in currentRevision) || !currentRevision.id) return null;
+
+		const currentId = currentRevision.id;
+		const previousRevision = revisions.find((r) => 'id' in r && r.id && r.id < currentId);
+
+		return previousRevision || null;
+	}
+
+	async function fetchRevisionData(revisionId: number): Promise<Revision | null> {
+		try {
+			type RevisionResponse = { data: Revision };
+
+			const response = await api.get<RevisionResponse>(`/revisions/${revisionId}`, {
+				params: {
+					fields: [
+						'id',
+						'data',
+						'delta',
+						'collection',
+						'item',
+						'activity.action',
+						'activity.timestamp',
+						'activity.user.id',
+						'activity.user.email',
+						'activity.user.first_name',
+						'activity.user.last_name',
+					],
+				},
+			});
+
+			return response.data.data;
+		} catch (error) {
+			unexpectedError(error);
+			return null;
+		}
+	}
+
 	async function buildRevisionComparison(
 		revision: Revision,
 		currentVersion: ContentVersion | null | undefined,
 		revisions: Revision[] | null | undefined,
+		compareToOption: 'Previous' | 'Latest',
 	): Promise<ComparisonData> {
 		let base: Record<string, any> = {};
 		let incoming = revision.data || {};
@@ -357,7 +399,37 @@ export function useComparison(options: UseComparisonOptions) {
 		const revisionDelta = Object.keys(revision.delta ?? {});
 		const revisionFields = new Set(getRevisionFields(revisionDelta, fields));
 
-		if (currentVersion) {
+		let previousRevision: Revision | null = null;
+
+		if (compareToOption === 'Previous') {
+			const foundPreviousRevision = findPreviousRevision(revision, revisionsList);
+
+			if (foundPreviousRevision && 'id' in foundPreviousRevision) {
+				const previousRevisionData = await fetchRevisionData(foundPreviousRevision.id);
+
+				if (previousRevisionData) {
+					previousRevision = previousRevisionData;
+
+					if (previousRevisionData.data) {
+						base = previousRevisionData.data;
+						const defaultValues = getDefaultValuesFromFields(fields).value;
+						base = mergeWith({}, defaultValues, base, replaceArraysInMergeCustomizer);
+					} else {
+						const { collection, item } = revision as { collection: string; item: string | number };
+						base = await fetchMainVersion(collection, item);
+					}
+				} else {
+					const { collection, item } = revision as { collection: string; item: string | number };
+					base = await fetchMainVersion(collection, item);
+				}
+			} else {
+				const { collection, item } = revision as { collection: string; item: string | number };
+				base = await fetchMainVersion(collection, item);
+			}
+
+			const defaultValues = getDefaultValuesFromFields(fields).value;
+			incoming = mergeWith({}, defaultValues, incoming, replaceArraysInMergeCustomizer);
+		} else if (currentVersion) {
 			const versionComparison = await fetchVersionComparisonForRevision(currentVersion.id);
 			base = versionComparison.base;
 			incoming = mergeWith({}, versionComparison.main, incoming, replaceArraysInMergeCustomizer);
@@ -388,6 +460,7 @@ export function useComparison(options: UseComparisonOptions) {
 			mainHash: '',
 			currentVersion: currentVersion || null,
 			initialSelectedDeltaId: revisionId || undefined,
+			previousRevision: previousRevision || null,
 		};
 	}
 
@@ -433,13 +506,26 @@ export function useComparison(options: UseComparisonOptions) {
 		let base: NormalizedItem;
 
 		if (comparisonData.comparisonType === 'revision') {
-			const revisions = (comparisonData.selectableDeltas as Revision[]) || [];
-			const latestRevision = revisions?.[0] ?? null;
-			const { date, user } = getNormalizedDateAndUser(latestRevision);
+			if (comparisonData.previousRevision) {
+				const { date, user } = getNormalizedDateAndUser(comparisonData.previousRevision);
 
-			const displayName = getVersionDisplayName(comparisonData.currentVersion ?? null);
+				base = {
+					id: comparisonData.previousRevision.id,
+					displayName: i18n.global.t('item_revision'),
+					date,
+					user,
+					collection: comparisonData.previousRevision.collection,
+					item: comparisonData.previousRevision.item,
+				};
+			} else {
+				const revisions = (comparisonData.selectableDeltas as Revision[]) || [];
+				const latestRevision = revisions?.[0] ?? null;
+				const { date, user } = getNormalizedDateAndUser(latestRevision);
 
-			base = { id: 'base', displayName, date, user };
+				const displayName = getVersionDisplayName(comparisonData.currentVersion ?? null);
+
+				base = { id: 'base', displayName, date, user };
+			}
 		} else {
 			base = {
 				id: 'base',
