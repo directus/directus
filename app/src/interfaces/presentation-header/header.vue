@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Collection } from '@directus/types';
 import { render } from 'micromustache';
-import { computed, inject, ref, useAttrs } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import HelperText from './helper-text.vue';
 import TransitionExpand from '@/components/transition/expand.vue';
@@ -34,6 +34,8 @@ type Link = {
 type ParsedLink = Omit<Link, 'url'> & {
 	to?: string;
 	href?: string;
+	disabled: boolean;
+	loading: boolean;
 };
 
 const props = withDefaults(
@@ -88,8 +90,6 @@ const combinedItemData = computed(() => {
 	return result;
 });
 
-const attrs = useAttrs();
-
 const linksParsed = computed<ParsedLink[]>(() =>
 	props.links.map((link) => {
 		const interpolatedUrl = link.url ? render(link.url, itemValues.value) : '';
@@ -103,6 +103,8 @@ const linksParsed = computed<ParsedLink[]>(() =>
 			to: isInternalLink ? interpolatedUrl : undefined,
 			href: isInternalLink ? undefined : interpolatedUrl,
 			flow: link.actionType === 'flow' ? link.flow : undefined,
+			disabled: link.actionType === 'flow' && (props.disabled || props.primaryKey === '+'),
+			loading: link.actionType === 'flow' && runningFlows.value.includes(link.flow ?? ''),
 		};
 	}),
 );
@@ -114,8 +116,8 @@ const buttonProps = computed(() =>
 			class: ['action', link.type],
 			secondary: link.type !== 'primary',
 			icon: !link.label,
-			disabled: (link.actionType === 'flow' && attrs['batch-mode']) || props.disabled,
-			loading: link.flow && runningFlows.value.includes(link.flow),
+			disabled: link.disabled,
+			loading: link.loading,
 		};
 
 		if (link.actionType === 'url' && link.href) {
@@ -261,7 +263,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 									v-for="(link, index) in linksParsed"
 									:key="index"
 									:clickable="!link.flow || (link.flow && !runningFlows.includes(link.flow))"
-									:disabled="link.flow && runningFlows.includes(link.flow)"
+									:disabled="link.disabled || link.loading"
 									@click="link.actionType === 'flow' ? handleActionClick(link) : null"
 								>
 									<VListItemIcon v-if="link.icon">
