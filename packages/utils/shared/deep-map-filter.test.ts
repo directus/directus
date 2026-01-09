@@ -66,6 +66,7 @@ test('map flat filter', () => {
 						_eq: 1,
 					},
 				},
+				quantity: null,
 				path: [],
 				leaf: true,
 				function: undefined,
@@ -104,6 +105,7 @@ test('map m2o filter', () => {
 						relationType: null,
 						leaf: true,
 						path: ['author'],
+						quantity: null,
 						object: {
 							name: {
 								_eq: 'John Doe',
@@ -119,6 +121,7 @@ test('map m2o filter', () => {
 				relationType: 'm2o',
 				leaf: false,
 				path: [],
+				quantity: null,
 				object: {
 					author: {
 						name: {
@@ -160,6 +163,7 @@ test('map o2m filter', () => {
 						relationType: null,
 						leaf: true,
 						path: ['links'],
+						quantity: null,
 						object: {
 							name: {
 								_eq: 'Link 1',
@@ -176,6 +180,7 @@ test('map o2m filter', () => {
 				leaf: false,
 				function: undefined,
 				path: [],
+				quantity: null,
 				object: {
 					links: {
 						name: {
@@ -221,6 +226,7 @@ test('map m2a filter', () => {
 								relationType: null,
 								leaf: true,
 								path: ['sections', 'item:sec_num'],
+								quantity: null,
 								object: {
 									num: {
 										_eq: 1,
@@ -236,6 +242,8 @@ test('map m2a filter', () => {
 						relationType: 'a2o',
 						leaf: false,
 						path: ['sections'],
+						quantity: null,
+						targetCollection: 'sec_num',
 						object: {
 							'item:sec_num': {
 								num: {
@@ -253,6 +261,7 @@ test('map m2a filter', () => {
 				relationType: 'o2m',
 				leaf: false,
 				path: [],
+				quantity: null,
 				object: {
 					sections: {
 						'item:sec_num': {
@@ -304,6 +313,7 @@ test('map _and filter', () => {
 							relationType: null,
 							leaf: true,
 							path: [],
+							quantity: null,
 							object: {
 								id: {
 									_eq: 1,
@@ -324,6 +334,7 @@ test('map _and filter', () => {
 							relationType: null,
 							leaf: true,
 							path: [],
+							quantity: null,
 							object: {
 								title: {
 									_eq: 'Test',
@@ -337,9 +348,10 @@ test('map _and filter', () => {
 				collection: schema.collections['articles'],
 				field: null,
 				relation: null,
-				leaf: true,
+				leaf: false,
 				relationType: null,
 				path: [],
+				quantity: null,
 				object: {
 					_and: [
 						{
@@ -379,39 +391,21 @@ test('map _some filter', () => {
 	expect(result).toEqual({
 		links: {
 			value: {
-				_some: {
+				name: {
 					value: {
-						name: {
-							value: {
-								_eq: 'Link 1',
-							},
-							context: {
-								collection: schema.collections['links'],
-								field: schema.collections['links']!.fields['name'],
-								relation: null,
-								relationType: null,
-								leaf: true,
-								path: ['links'],
-								object: {
-									name: {
-										_eq: 'Link 1',
-									},
-								},
-							},
-						},
+						_eq: 'Link 1',
 					},
 					context: {
 						collection: schema.collections['links'],
-						field: null,
+						field: schema.collections['links']!.fields['name'],
 						relation: null,
 						relationType: null,
 						leaf: true,
 						path: ['links'],
+						quantity: null,
 						object: {
-							_some: {
-								name: {
-									_eq: 'Link 1',
-								},
+							name: {
+								_eq: 'Link 1',
 							},
 						},
 					},
@@ -425,6 +419,7 @@ test('map _some filter', () => {
 				leaf: false,
 				function: undefined,
 				path: [],
+				quantity: 'some',
 				object: {
 					links: {
 						_some: {
@@ -466,6 +461,7 @@ test('map function filter', () => {
 						_eq: '2020',
 					},
 				},
+				quantity: null,
 				path: [],
 				leaf: true,
 				function: 'year',
@@ -504,6 +500,7 @@ test('map $FOLLOW filter', () => {
 						relationType: null,
 						leaf: true,
 						path: ['$FOLLOW(followable, article_id)'],
+						quantity: null,
 						object: {
 							id: {
 								_eq: 1,
@@ -520,11 +517,13 @@ test('map $FOLLOW filter', () => {
 					field: 'article_id',
 					related_collection: 'articles',
 					schema: null,
+
 					meta: null,
 				},
 				relationType: 'o2m',
 				leaf: false,
 				path: [],
+				quantity: null,
 				object: {
 					'$FOLLOW(followable, article_id)': {
 						id: {

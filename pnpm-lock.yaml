@@ -2987,6 +2987,9 @@ importers:
       micromustache:
         specifier: 'catalog:'
         version: 8.0.3
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.12
     devDependencies:
       '@directus/errors':
         specifier: workspace:*

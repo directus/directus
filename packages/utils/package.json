@@ -39,6 +39,7 @@
 		"fs-extra": "catalog:",
 		"ip-matching": "catalog:",
 		"joi": "catalog:",
+		"zod": "catalog:",
 		"js-yaml": "catalog:",
 		"lodash-es": "catalog:",
 		"micromustache": "catalog:"
