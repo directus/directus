@@ -47,14 +47,12 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		 * - https://www.cockroachlabs.com/docs/stable/alter-table#synopsis
 		 */
 
-		await transaction(this.knex, async (trx) => {
-			await trx.raw(`ALTER TABLE ?? DROP CONSTRAINT ?? , ADD CONSTRAINT ?? PRIMARY KEY (${placeholders})`, [
-				table,
-				`${table}_pkey`,
-				`${table}_pkey`,
-				...primaryColumns,
-			]);
-		});
+		await this.knex.raw(`ALTER TABLE ?? DROP CONSTRAINT ?? , ADD CONSTRAINT ?? PRIMARY KEY (${placeholders})`, [
+			table,
+			`${table}_pkey`,
+			`${table}_pkey`,
+			...primaryColumns,
+		]);
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {
