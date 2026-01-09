@@ -1,5 +1,5 @@
 ---
-
-## '@directus/types': major
+'@directus/types': major
+---
 
 Add missing MCP settings types.
