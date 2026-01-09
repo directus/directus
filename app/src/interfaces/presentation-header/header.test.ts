@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import Header from './header.vue';
 import { Tooltip } from '@/__utils__/tooltip';
@@ -16,7 +16,7 @@ const i18n = createI18n({
 });
 
 const mockIsActiveFlow = vi.fn(() => true);
-const mockRunningFlows = vi.fn(() => [] as string[]);
+const mockRunningFlows = vi.fn(() => ref<string[]>([]));
 
 vi.mock('@/composables/use-flows', () => ({
 	useInjectRunManualFlow: () => ({
