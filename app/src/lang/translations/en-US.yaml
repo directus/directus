@@ -368,6 +368,7 @@ iso: ISO
 focal_length: Focal Length
 schema_setup_key: This field's database column name and API key
 create_field: Create Field
+configure_translations: Configure Translations
 creating_new_field: 'New Field ({collection})'
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
