@@ -134,7 +134,6 @@ create_policy: पॉलिसी तयार करा
 create_user: युजर तयार करा
 message: संदेश
 delete_panel: पॅनेल हटवा
-create_webhook: वेबहुक तयार करा
 create_custom_translation: सानुकूल भाषांतर तयार करा
 edit_custom_translation: सानुकूल भाषांतर संपादित करा
 no_custom_translations: सानुकूल भाषांतरे नाहीत
@@ -629,12 +628,6 @@ file_count: 'फाइल नाहीत | एक फाईल | {count} फा
 no_files_copy: येथे कोणत्याही फाइल्स नाहीत
 user_count: 'वापरकर्ते नाहीत | एक वापरकर्ता | {count} वापरकर्ते'
 no_users_copy: या भूमिकेत अद्याप कोणतेही वापरकर्ते नाहीत
-webhooks_count: 'वेबहुक्स नाहीत | एक वेबहुक | {count} वेबहुक'
-webhooks_deprecation_notice: |
-  वेबहुक नापसंत केले आहेत आणि पुढील वापरास परावृत्त केले आहे.
-
-  कृपया त्याऐवजी [Webhook / Request URL ऑपरेशन](https://docs.directus.io/app/flows/operations.html#webhook-request-url) सोबत वापरा.
-no_webhooks_copy: अद्याप कोणतेही वेबहुक कॉन्फिगर केलेले नाहीत. खाली एक तयार करून प्रारंभ करा.
 no_notifications: कोणत्याही सूचना नाहीत
 no_notifications_copy: तुम्ही सर्व पाहिले आहात!
 activity_log: ऍक्टिव्हिटी लॉग
@@ -665,7 +658,6 @@ action: कृती
 ip_address: IP Address
 user_agent: युजर एजंट
 origin: उगम
-webhooks: वेबहुक
 decimals: दशांश
 value_decimals: मूल्य दशांश
 min_value: किमान मूल्य
@@ -1111,7 +1103,6 @@ settings_roles: वापरकर्ता भूमिका
 settings_permissions: प्रवेश धोरणे
 settings_project: सेटिंग्ज
 settings_appearance: देखावा
-settings_webhooks: वेबहुक
 settings_flows: फ्लोव
 settings_system_logs: सिस्टम लॉग
 settings_presets: बुकमार्क
@@ -1189,7 +1180,6 @@ directus_collection:
   directus_settings: प्रोजेक्ट कॉन्फिगरेशन पर्याय
   directus_shares: बाह्यरित्या सामायिक केलेल्या आयटमचा मागोवा घेतो
   directus_users: प्लॅटफॉर्मसाठी सिस्टम वापरकर्ते
-  directus_webhooks: इव्हेंट-आधारित HTTP विनंत्यांसाठी कॉन्फिगरेशन
   directus_translations: कस्टम भाषांतरे
   directus_versions: आयटमसाठी सामग्री आवृत्त्या
   directus_extensions: विस्तारांचे कॉन्फिगरेशन
@@ -1367,18 +1357,6 @@ fields:
     admin_access: ऍडमिन प्रवेश
     ip_access: IP प्रवेश
     enforce_tfa: 2FA आवश्यक आहे
-  directus_webhooks:
-    name: नाव
-    method: पद्धत
-    status: स्टेटस
-    data: डेटा
-    header: हेडर
-    value: व्हॅल्यू
-    headers: हेडर ची विनंती करा
-    data_label: इव्हेंट डेटा पाठवा
-    triggers: ट्रिगर
-    actions: ऍक्शन
-    collections: कलेक्शन
 field_options:
   directus_settings:
     project_name_placeholder: माझे प्रोजेक्ट
@@ -1480,19 +1458,6 @@ field_options:
     status_dropdown_suspended: निलंबित
     status_dropdown_archived: संग्रहित
     token: सुरक्षित प्रवेश टोकन प्रविष्ट करा..
-  directus_webhooks:
-    status_options_active: ऍक्टिव्ह
-    status_options_inactive: निष्क्रिय
-    data_label: इव्हेंट डेटा पाठवा
-    triggers_divider: ट्रिगर्स
-    actions_create: तयार करा
-    actions_update: अपडेट करा
-    actions_delete: डिलीट करा
-    actions_login: लॉगिन
-    headers:
-      header: हेडर
-      value: व्हॅल्यू
-      add: हेडर ऍड करा
 no_fields_in_collection: '"{collection}" मध्ये अद्याप कोणतेही फील्ड नाहीत'
 no_value: व्हॅल्यू नाही
 do_nothing: काहीही करू नका
@@ -1571,7 +1536,6 @@ editing_role: '{role} भूमिका'
 editing_policy: '{policy} धोरण'
 no_permissions: कोणत्याही परवानग्या नाहीत
 permission_add_collection: संग्रह जोडा
-creating_webhook: वेबहुक तयार करत आहे
 default_label: डीफॉल्ट
 delete_label: हटवा
 delete_are_you_sure: >-

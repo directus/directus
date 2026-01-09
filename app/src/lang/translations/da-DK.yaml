@@ -131,7 +131,6 @@ create_role: Opret rolle
 create_user: Opret bruger
 message: Besked
 delete_panel: Slet panel
-create_webhook: Opret webhook
 create_custom_translation: Opret tilpasset Oversættelse
 edit_custom_translation: Rediger Brugerdefineret Oversættelse
 no_custom_translations: Ingen tilpassede Oversættelser
@@ -543,8 +542,6 @@ file_count: 'Ingen filer, én fil, {count} filer'
 no_files_copy: Der er ingen filer her.
 user_count: 'Ingen brugere: Én bruger, {count} brugere'
 no_users_copy: Der er endnu ingen brugere i denne rolle.
-webhooks_count: 'Ingen webhooks | En webhook | {count} webhooks'
-no_webhooks_copy: Ingen webhooks er konfigureret endnu. Kom i gang ved at oprette en nedenfor.
 no_notifications: Ingen notifikationer
 no_notifications_copy: Du er helt ajour!
 activity_log: Aktivitetslog
@@ -573,7 +570,6 @@ action: Handling
 ip_address: IP adresse
 user_agent: Brugeragent
 origin: Oprindelse
-webhooks: Webhooks
 decimals: Decimaler
 value_decimals: Værdi decimaler
 min_value: Minimumsværdi
@@ -958,7 +954,6 @@ editing_in_batch: 'Masseredigerer {count} elementer'
 no_options_available: Ingen tilgængelige valgmuligheder
 settings_data_model: Data model
 settings_project: Indstillinger
-settings_webhooks: Webhooks
 settings_presets: Foretrukne
 settings_translations: Oversættelser
 one_or_more_options_are_missing: En eller flere muligheder mangler
@@ -1017,7 +1012,6 @@ directus_collection:
   directus_settings: Valgmuligheder for projektopsætning
   directus_shares: Spor eksternt delte elementer
   directus_users: Systembrugere til platformen
-  directus_webhooks: Konfiguration for event-baserede HTTP-forespørgsler
 fields:
   directus_activity:
     item: Element primær nøgle
@@ -1156,18 +1150,6 @@ fields:
     users: Brugere i rolle
   directus_policies:
     description: Beskrivelse
-  directus_webhooks:
-    name: Navn
-    method: Metode
-    status: Status
-    data: Data
-    header: Overskrift
-    value: Værdi
-    headers: Anmod om headers
-    data_label: Send begivenhedsdata
-    triggers: Udløsere
-    actions: Handlinger
-    collections: Samlinger
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
@@ -1253,19 +1235,6 @@ field_options:
     status_dropdown_suspended: Suspenderet
     status_dropdown_archived: Arkiveret
     token: Indtast en sikker adgangstok...
-  directus_webhooks:
-    status_options_active: Aktiv
-    status_options_inactive: Inaktiv
-    data_label: Send begivenhedsdata
-    triggers_divider: Udløsere
-    actions_create: Opret
-    actions_update: Opdater
-    actions_delete: Slet
-    actions_login: Log ind
-    headers:
-      header: Overskrift
-      value: Værdi
-      add: Tilføj overskrift
 no_fields_in_collection: 'Der er ingen felter i "{collection}" endnu'
 no_value: Ingen værdi
 do_nothing: Gør intet
@@ -1331,7 +1300,6 @@ continue_label: Fortsæt
 continue_as: >-
   {name} er i øjeblikket godkendt. Hvis du genkender denne konto, skal du fortsætte.
 editing_role: '{role} Rolle'
-creating_webhook: Opretter webhook
 default_label: Standard
 delete_label: Slet
 delete_are_you_sure: >-

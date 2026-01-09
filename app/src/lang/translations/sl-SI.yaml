@@ -82,7 +82,6 @@ create_role: Ustvari vlogo
 create_user: Ustvari uporabnika
 message: Sporočilo
 delete_panel: Izbriži ploščo
-create_webhook: Ustvari Webhook
 invite_users: Povabite uporabnike
 invite: Povabi
 email_already_invited: Elektronski naslov {email} je že bil povabljen
@@ -417,7 +416,6 @@ file_count: 'Ni datotek | Ena datoteka | Dve datoteki | Tri datoteke | Štiri da
 no_files_copy: Ni datotek.
 user_count: 'Ni uporabnikov | En uporabnik | Dva uporabnika | Trije uporabniki | Štirje uporabniki | {count} uporabnikov'
 no_users_copy: Ta vloga še nima uporabnikov.
-webhooks_count: 'Ni prožilnikov | En prožilnik | Dva prožilnika | Trije prožilniki | Štirje prožilniki | {count} prožilnikov'
 all_items: Vsi zapisi
 any: Katerokoli
 csv: CSV
@@ -437,7 +435,6 @@ activity: Aktivnost
 action: Dejanje
 ip_address: IP naslov
 user_agent: Brskalnik
-webhooks: Prožilci
 field_width: Širina polja
 add_filter: Dodaj filter
 upper_limit: Zgornja meja ...
@@ -701,7 +698,6 @@ editing_in_batch: 'Masovno urejanje {count} zapisov'
 no_options_available: Ni opcij
 settings_data_model: Podatkovni model
 settings_project: Nastavitve
-settings_webhooks: Prožilci
 settings_presets: Zaznamki
 settings_translations: Prevodi
 one_or_more_options_are_missing: Manjka ena ali več opcij
@@ -843,16 +839,6 @@ fields:
     users: Uporabniki v vlogi
   directus_policies:
     description: Opis
-  directus_webhooks:
-    name: Ime
-    method: Metoda
-    status: Stanje
-    data: Podatki
-    value: Vrednost
-    data_label: Pošlji podatke dogodka
-    triggers: Sprožilci
-    actions: Dejanja
-    collections: Zbirke
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...
@@ -926,17 +912,6 @@ field_options:
     status_dropdown_suspended: Zaustavljeno
     status_dropdown_archived: Arhivirano
     token: Vnesite žeton ...
-  directus_webhooks:
-    status_options_active: Aktivno
-    status_options_inactive: Neaktivno
-    data_label: Pošlji podatke dogodka
-    triggers_divider: Sprožilci
-    actions_create: Ustvari
-    actions_update: Posodobi
-    actions_delete: Izbriši
-    actions_login: Prijava
-    headers:
-      value: Vrednost
 no_fields_in_collection: 'Zbirka {collection} še nima polj'
 do_nothing: Ne stori ničesar
 generate_and_save_uuid: Ustvari in shrani UUID
@@ -976,7 +951,6 @@ continue_label: Nadaljuj
 continue_as: >-
   {name} je trenutno prijavljen. Če prepoznate ta račun, pritisnite nadaljuj.
 editing_role: 'Vloga {role}'
-creating_webhook: Ustvarjanje sprožilca
 default_label: Privzeto
 delete_label: Izbriši
 delete_are_you_sure: >-
