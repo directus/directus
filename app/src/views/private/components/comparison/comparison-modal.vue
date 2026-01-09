@@ -81,6 +81,22 @@ const incomingTooltipMessage = computed(() => {
 	return undefined;
 });
 
+const comparisonFieldsForDisplay = computed(() => {
+	if (compareToOption.value === 'Previous') {
+		return new Set<string>();
+	}
+
+	return comparisonFields.value;
+});
+
+const revisionFieldsForDisplay = computed(() => {
+	if (compareToOption.value === 'Previous') {
+		return new Set<string>();
+	}
+
+	return comparisonData.value?.revisionFields;
+});
+
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const modalLoading = ref(false);
@@ -103,22 +119,19 @@ watch(
 	{ immediate: true },
 );
 
-watch(
-	[compareToOption],
-	async () => {
-		if (props.mode !== 'revision' || !active.value) return;
+watch([compareToOption], async () => {
+	if (props.mode !== 'revision' || !active.value) return;
 
-		modalLoading.value = true;
+	modalLoading.value = true;
 
-		try {
-			await fetchComparisonData();
-			await fetchUserUpdated();
-			await fetchBaseItemUserUpdated();
-		} finally {
-			modalLoading.value = false;
-		}
-	},
-);
+	try {
+		await fetchComparisonData();
+		await fetchUserUpdated();
+		await fetchBaseItemUserUpdated();
+	} finally {
+		modalLoading.value = false;
+	}
+});
 
 function usePromoteDialog() {
 	const confirmDeleteOnPromoteDialogActive = ref(false);
@@ -232,8 +245,8 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 									:initial-values="comparisonData?.base || {}"
 									:comparison="{
 										side: 'base',
-										fields: comparisonFields,
-										revisionFields: comparisonData?.revisionFields,
+										fields: comparisonFieldsForDisplay,
+										revisionFields: revisionFieldsForDisplay,
 										selectedFields: [],
 										onToggleField: () => {},
 									}"
@@ -273,8 +286,8 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 									:initial-values="comparisonData?.incoming || {}"
 									:comparison="{
 										side: 'incoming',
-										fields: comparisonFields,
-										revisionFields: comparisonData?.revisionFields,
+										fields: comparisonFieldsForDisplay,
+										revisionFields: revisionFieldsForDisplay,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
 									}"
