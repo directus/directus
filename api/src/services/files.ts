@@ -43,9 +43,11 @@ export class FilesService extends ItemsService<File> {
 	 * @param filename - The filename
 	 */
 	private async checkUniqueFilename(filename: string) {
-		const existingFile =
-			(await this.knex.select('filename_disk').from('directus_files').where({ filename_disk: filename }).first()) ??
-			null;
+		const existingFile = await this.knex
+			.select('filename_disk')
+			.from('directus_files')
+			.where({ filename_disk: filename })
+			.first();
 
 		if (existingFile) {
 			throw new ForbiddenError();
