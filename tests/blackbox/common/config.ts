@@ -1,6 +1,6 @@
-import { Knex } from 'knex';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Knex } from 'knex';
 import { allVendors, type Vendor } from './get-dbs-to-test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -92,6 +92,9 @@ const directusConfig = {
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer
 	WEBSOCKETS_ENABLED: 'true',
 	TUS_ENABLED: 'true',
+	EMAIL_TRANSPORT: 'smtp',
+	EMAIL_SMTP_HOST: '127.0.0.1',
+	EMAIL_SMTP_PORT: '1025',
 	...directusAuthConfig,
 	...directusStorageConfig,
 };

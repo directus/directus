@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { useSettingsStore } from '@/stores/settings';
-import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
-import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import { ButtonControl } from '@/utils/geometry/controls';
 import { useAppStore } from '@directus/stores';
 import { Field, GeoJSONParser, GeoJSONSerializer, GeometryType, MultiGeometry, SimpleGeometry } from '@directus/types';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { Geometry } from 'geojson';
 import { debounce, isEqual, snakeCase } from 'lodash';
@@ -23,9 +20,18 @@ import type { Ref } from 'vue';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { TranslateResult, useI18n } from 'vue-i18n';
 import { getMapStyle } from './style';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useSettingsStore } from '@/stores/settings';
+import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
+import { ButtonControl } from '@/utils/geometry/controls';
 
 // @ts-ignore
-import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -420,7 +426,7 @@ function handleKeyDown(event: any) {
 				projection!.y
 			}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
 		></div>
-		<transition name="fade">
+		<Transition name="fade">
 			<div
 				v-if="tooltipVisible"
 				class="tooltip top"
@@ -428,41 +434,41 @@ function handleKeyDown(event: any) {
 			>
 				{{ tooltipMessage }}
 			</div>
-		</transition>
+		</Transition>
 		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
-			<v-icon name="map" />
-			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+			<VIcon name="map" />
+			<VSelect v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 		</div>
-		<transition name="fade">
-			<v-info
+		<Transition name="fade">
+			<VInfo
 				v-if="geometryOptionsError"
 				icon="error"
 				center
 				type="danger"
 				:title="$t('interfaces.map.invalid_options')"
 			>
-				<v-notice type="danger" :icon="false">
+				<VNotice type="danger" :icon="false">
 					{{ geometryOptionsError }}
-				</v-notice>
-			</v-info>
-			<v-info
+				</VNotice>
+			</VInfo>
+			<VInfo
 				v-else-if="geometryParsingError"
 				icon="error"
 				center
 				type="warning"
 				:title="$t('layouts.map.invalid_geometry')"
 			>
-				<v-notice type="warning" :icon="false">
+				<VNotice type="warning" :icon="false">
 					{{ geometryParsingError }}
-				</v-notice>
+				</VNotice>
 				<template #append>
-					<v-card-actions>
-						<v-button small secondary @click="resetValue(false)">{{ $t('continue') }}</v-button>
-						<v-button small kind="danger" @click="resetValue(true)">{{ $t('reset') }}</v-button>
-					</v-card-actions>
+					<VCardActions>
+						<VButton small secondary @click="resetValue(false)">{{ $t('continue') }}</VButton>
+						<VButton small kind="danger" @click="resetValue(true)">{{ $t('reset') }}</VButton>
+					</VCardActions>
 				</template>
-			</v-info>
-		</transition>
+			</VInfo>
+		</Transition>
 	</div>
 </template>
 

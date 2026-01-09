@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useApi } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { pickBy } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useInjectRunManualFlow } from '@/composables/use-flows';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Link = {
 	icon: string;
 	label: string;
 	type: string;
+	actionType: 'url' | 'flow';
 	url?: string;
+	flow?: string;
 };
 
 type ParsedLink = Omit<Link, 'url'> & {
@@ -21,9 +26,10 @@ type ParsedLink = Omit<Link, 'url'> & {
 
 const props = withDefaults(
 	defineProps<{
-		links: Link[];
+		links?: Link[];
 		collection: string;
 		primaryKey?: PrimaryKey;
+		disabled?: boolean;
 	}>(),
 	{
 		links: () => [],
@@ -31,7 +37,7 @@ const props = withDefaults(
 );
 
 const api = useApi();
-const values = inject('values', ref<Record<string, any>>({}));
+const itemValues = inject('values', ref<Record<string, any>>({}));
 const resolvedRelationalValues = ref<Record<string, any>>({});
 const { primaryKey } = toRefs(props);
 
@@ -71,7 +77,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 		 * Otherwise we use the fetched values from the API.
 		 */
 
-		const scope = { ...values.value };
+		const scope = { ...itemValues.value };
 
 		Object.keys(resolvedRelationalValues.value).forEach((key) => {
 			if (scope[key]?.constructor !== Object && scope[key] !== null) {
@@ -91,11 +97,15 @@ const linksParsed = computed<ParsedLink[]>(() =>
 			icon: link.icon,
 			type: link.type,
 			label: link.label,
+			actionType: link.actionType,
 			to: isInternalLink ? interpolatedUrl : undefined,
-			href: isInternalLink ? undefined : interpolatedUrl,
+			href: link.actionType === 'flow' || isInternalLink ? undefined : interpolatedUrl,
+			flow: link.actionType === 'flow' ? link.flow : undefined,
 		};
 	}),
 );
+
+const { runManualFlow, runningFlows, isActiveFlow } = useInjectRunManualFlow();
 
 /**
  * Get all deduplicated relational fields from the link-templates.
@@ -115,19 +125,26 @@ function getRelatedFieldsFromTemplates() {
 
 <template>
 	<div class="presentation-links">
-		<v-button
-			v-for="(link, index) in linksParsed"
-			:key="index"
-			class="action"
-			:class="[link.type]"
-			:secondary="link.type !== 'primary'"
-			:icon="!link.label"
-			:href="link.href"
-			:to="link.to"
-		>
-			<v-icon v-if="link.icon" left :name="link.icon" />
-			<span v-if="link.label">{{ link.label }}</span>
-		</v-button>
+		<template v-for="(link, index) in linksParsed" :key="index">
+			<VButton
+				v-if="link.actionType !== 'flow' || isActiveFlow(link.flow!)"
+				class="action"
+				:class="[link.type]"
+				:secondary="link.type !== 'primary'"
+				:icon="!link.label"
+				:href="link.href"
+				:to="link.to"
+				:loading="link.flow && runningFlows.includes(link.flow)"
+				:disabled="link.actionType === 'flow' && (props.disabled || props.primaryKey === '+')"
+				@click="() => runManualFlow(link.flow!)"
+			>
+				<VIcon v-if="!link.icon && !link.label" name="smart_button" />
+
+				<VIcon v-if="link.icon" :left="link.label" :name="link.icon" />
+
+				<span v-if="link.label">{{ link.label }}</span>
+			</VButton>
+		</template>
 	</div>
 </template>
 

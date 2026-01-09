@@ -1,17 +1,26 @@
+import { mount } from '@vue/test-utils';
+import { createPinia } from 'pinia';
+import { beforeEach, describe, expect, it } from 'vitest';
+import GroupDetail from './group-detail.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import VDetail from '@/components/v-detail.vue';
+import VDivider from '@/components/v-divider.vue';
 import { ComparisonContext } from '@/components/v-form/types';
 import { i18n } from '@/lang';
-import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
-import GroupDetail from './group-detail.vue';
 
-const global: GlobalMountOptions = {
-	plugins: [i18n],
-	stubs: {
-		VDetail,
-	},
-};
+let global: GlobalMountOptions;
+
+beforeEach(() => {
+	const pinia = createPinia();
+
+	global = {
+		plugins: [i18n, pinia],
+		stubs: {
+			VDetail,
+			VDivider,
+		},
+	};
+});
 
 describe('group detail interface', () => {
 	it('should render the edited class when having edits', async () => {
@@ -25,7 +34,7 @@ describe('group detail interface', () => {
 			},
 		});
 
-		expect(wrapper.find('v-divider').classes()).toContain('edited');
+		expect(wrapper.findComponent(VDivider).classes()).toContain('edited');
 	});
 
 	it('should not render the edited class when having no edits', async () => {
@@ -34,7 +43,7 @@ describe('group detail interface', () => {
 			props,
 		});
 
-		expect(wrapper.find('v-divider').classes()).not.toContain('edited');
+		expect(wrapper.findComponent(VDivider).classes()).not.toContain('edited');
 	});
 });
 

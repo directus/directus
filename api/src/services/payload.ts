@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
@@ -22,12 +23,13 @@ import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, pick } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
 import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
+import { decrypt, encrypt } from '../utils/encrypt.js';
 import { generateHash } from '../utils/generate-hash.js';
+import { getSecret } from '../utils/get-secret.js';
 
 type Transformers = {
 	[type: string]: (context: {
@@ -159,6 +161,27 @@ export class PayloadService {
 
 			if (Array.isArray(value)) {
 				return value.join(',');
+			}
+
+			return value;
+		},
+		async encrypt({ action, value, accountability }) {
+			if (!value) return value;
+
+			if (action === 'read') {
+				// In-system calls can still get the decrypted value
+				if (accountability === null) {
+					const key = getSecret();
+					return await decrypt(value, key);
+				}
+
+				// Requests from the API entrypoints have accountability and shouldn't get the raw value
+				return '**********';
+			}
+
+			if (typeof value === 'string') {
+				const key = getSecret();
+				return await encrypt(value, key);
 			}
 
 			return value;

@@ -1,11 +1,11 @@
-import api from '@/api';
-import { i18n } from '@/lang';
-import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { OwnerInformation, Settings } from '@directus/types';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
+import api from '@/api';
+import { i18n } from '@/lang';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export const useSettingsStore = defineStore({
 	id: 'settingsStore',
@@ -53,6 +53,21 @@ export const useSettingsStore = defineStore({
 				this.settings = settingsCopy;
 				unexpectedError(error);
 			}
+		},
+	},
+	getters: {
+		availableAiProviders(): string[] {
+			const providers: string[] = [];
+
+			if (this.settings?.ai_openai_api_key) {
+				providers.push('openai');
+			}
+
+			if (this.settings?.ai_anthropic_api_key) {
+				providers.push('anthropic');
+			}
+
+			return providers;
 		},
 	},
 });

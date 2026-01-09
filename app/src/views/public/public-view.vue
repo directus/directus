@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useServerStore } from '@/stores/server';
-import { getAssetUrl } from '@/utils/get-asset-url';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import VImage from '@/components/v-image.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useServerStore } from '@/stores/server';
+import { getAssetUrl } from '@/utils/get-asset-url';
 
 interface Props {
 	wide?: boolean;
@@ -53,7 +55,7 @@ const logoURL = computed<string | null>(() => {
 					class="logo"
 					:style="info?.project.project_color ? { backgroundColor: info.project.project_color } : {}"
 				>
-					<v-image :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
+					<VImage :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
 				</div>
 				<div
 					v-else
@@ -63,8 +65,8 @@ const logoURL = computed<string | null>(() => {
 					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
 				</div>
 				<div class="title">
-					<h1 class="type-title"><v-text-overflow :text="info?.project?.project_name" placement="bottom" /></h1>
-					<v-text-overflow
+					<h1 class="type-title"><VTextOverflow :text="info?.project?.project_name" placement="bottom" /></h1>
+					<VTextOverflow
 						class="subtitle"
 						:text="info?.project?.project_descriptor ?? $t('application')"
 						placement="bottom"
@@ -88,9 +90,9 @@ const logoURL = computed<string | null>(() => {
 
 			<video v-else-if="customBackgroundIsVideo" :src="customBackgroundUrl" autoplay muted loop />
 
-			<transition name="scale">
-				<v-image v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
-			</transition>
+			<Transition name="scale">
+				<VImage v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
+			</Transition>
 			<div class="note-container">
 				<div v-if="info?.project?.public_note" v-md="info?.project.public_note" class="note" />
 			</div>

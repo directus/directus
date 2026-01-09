@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { useSettingsStore } from '@/stores/settings';
-import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { GEOMETRY_TYPES } from '@directus/constants';
 import { useAppStore } from '@directus/stores';
 import { Field, GeometryOptions, GeometryType } from '@directus/types';
 import { CameraOptions, Map } from 'maplibre-gl';
 import type { Ref } from 'vue';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useSettingsStore } from '@/stores/settings';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -84,7 +85,7 @@ onUnmounted(() => {
 	<div class="form-grid">
 		<div v-if="!nativeGeometryType && field?.type !== 'csv'" class="field half-left">
 			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
-			<v-select
+			<VSelect
 				v-model="geometryType"
 				:placeholder="$t('any')"
 				show-deselect

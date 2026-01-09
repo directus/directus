@@ -1,7 +1,7 @@
-import { buildStorage } from 'axios-cache-interceptor';
-import findCacheDirectory from 'find-cache-directory';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { buildStorage } from 'axios-cache-interceptor';
+import findCacheDirectory from 'find-cache-directory';
 
 export async function getCache() {
 	const dir = findCacheDirectory({ name: 'directus' });

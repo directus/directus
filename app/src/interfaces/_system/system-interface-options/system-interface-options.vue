@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import type { ExtensionOptionsContext } from '@directus/extensions';
 import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
+import { useExtension } from '@/composables/use-extension';
 
 const props = defineProps<{
 	value: Record<string, unknown> | null;
@@ -83,16 +85,16 @@ const optionsFields = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!selectedInterface">
+	<VNotice v-if="!selectedInterface">
 		{{ $t('select_interface') }}
-	</v-notice>
+	</VNotice>
 
-	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
+	<VNotice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
 		{{ $t('no_options_available') }}
-	</v-notice>
+	</VNotice>
 
 	<div v-else class="inset">
-		<v-form
+		<VForm
 			v-if="usesCustomComponent === false"
 			v-model="options"
 			class="extension-options"

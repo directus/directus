@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
 import { computed, ref, Ref } from 'vue';
-import VCheckbox from '@/components/v-checkbox.vue';
 import type { Header, Item } from './types';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
 	defineProps<{
 		headers: Header[];
 		item: Item;
-		showSelect: ShowSelect;
+		showSelect?: ShowSelect;
 		showManualSort?: boolean;
 		isSelected?: boolean;
 		subdued?: boolean;
@@ -61,11 +65,11 @@ function onKeydown(e: KeyboardEvent) {
 		@keydown="onKeydown"
 	>
 		<td v-if="showManualSort" class="manual cell" @click.stop>
-			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
+			<VIcon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
 		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
-			<v-checkbox
+			<VCheckbox
 				ref="checkbox"
 				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
 				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
@@ -76,7 +80,7 @@ function onKeydown(e: KeyboardEvent) {
 
 		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
 			<slot :name="`item.${header.value}`" :item="item">
-				<v-text-overflow
+				<VTextOverflow
 					v-if="
 						header.value.split('.').reduce((acc, val) => {
 							return acc[val];
@@ -88,7 +92,7 @@ function onKeydown(e: KeyboardEvent) {
 						}, item)
 					"
 				/>
-				<value-null v-else />
+				<ValueNull v-else />
 			</slot>
 		</td>
 

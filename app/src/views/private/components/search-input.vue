@@ -2,7 +2,11 @@
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { Ref, computed, inject, onMounted, ref, watch } from 'vue';
+import { computed, inject, onMounted, ref, Ref, watch } from 'vue';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VBadge from '@/components/v-badge.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-filter.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -112,6 +116,18 @@ function disable() {
 	input.value?.blur();
 }
 
+function onFocusOut(event: FocusEvent) {
+	if (filterActive.value) return;
+
+	// Check if focus is moving to another element inside the search component -- prevents race condition on touch vs click events
+	const searchElement = (event.currentTarget as HTMLElement)?.closest('.search-input');
+	const relatedTarget = event.relatedTarget as HTMLElement | null;
+
+	if (relatedTarget && searchElement?.contains(relatedTarget)) return;
+
+	disable();
+}
+
 function emitValue() {
 	if (!input.value) return;
 	const value = input.value?.value;
@@ -120,7 +136,14 @@ function emitValue() {
 </script>
 
 <template>
-	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount || filterActive">
+	<VBadge
+		bottom
+		right
+		class="search-badge"
+		:class="{ active, 'filter-active': filterActive }"
+		:value="activeFilterCount"
+		:disabled="!activeFilterCount || filterActive"
+	>
 		<div
 			v-click-outside="{
 				handler: disable,
@@ -138,13 +161,7 @@ function emitValue() {
 			role="search"
 			@click="activate"
 		>
-			<v-icon
-				v-tooltip.bottom="!active ? $t('search') : undefined"
-				name="search"
-				class="icon-search"
-				:clickable="!active"
-				@click="input?.focus()"
-			/>
+			<VIcon small name="search" class="icon-search" :clickable="!active" @click="input?.focus()" />
 			<input
 				ref="input"
 				:value="modelValue"
@@ -159,29 +176,31 @@ function emitValue() {
 				@paste="emitValue"
 				@keydown.esc="disable"
 				@focusin="activate"
-				@focusout="filterActive ? undefined : disable()"
+				@focusout="onFocusOut"
 			/>
 			<div class="spacer" />
-			<v-icon
+			<VIcon
 				v-if="modelValue"
 				v-tooltip.bottom="$t('clear_value')"
+				small
 				clickable
 				class="icon-clear"
 				name="close"
 				@click.stop="clear"
 			/>
 			<template v-if="showFilter">
-				<v-icon
+				<VIcon
 					v-tooltip.bottom="$t('filter')"
+					small
 					clickable
 					class="icon-filter"
 					name="filter_list"
 					@click="toggleFilter"
 				/>
 
-				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
+				<TransitionExpand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">
-						<interface-system-filter
+						<InterfaceSystemFilter
 							class="filter-input"
 							inline
 							:value="filter"
@@ -189,10 +208,10 @@ function emitValue() {
 							@input="$emit('update:filter', $event)"
 						/>
 					</div>
-				</transition-expand>
+				</TransitionExpand>
 			</template>
 		</div>
-	</v-badge>
+	</VBadge>
 </template>
 
 <style lang="scss" scoped>
@@ -200,25 +219,52 @@ function emitValue() {
 	--v-badge-background-color: var(--theme--primary);
 	--v-badge-offset-y: 8px;
 	--v-badge-offset-x: 8px;
+
+	@media (width <= 400px) {
+		&.active,
+		&.filter-active {
+			position: absolute;
+			inset-inline: 0;
+			z-index: 1;
+			background-color: var(--theme--header--background);
+		}
+	}
+
+	:deep(.badge) {
+		pointer-events: none;
+	}
 }
 
 .search-input {
+	--button-size: 36px;
+	--search-input-size: calc(var(--button-size) - var(--theme--border-width) * 2);
+	--search-input-radius: calc(var(--button-size) / 2);
+	--icon-size: 18px;
+	--icon-search-padding-left: 7px; // visually center in closed filter
+	--icon-search-padding-right: 4px;
+	--icon-filter-margin-right: 8px;
+
+	box-sizing: content-box;
 	display: flex;
 	align-items: center;
-	inline-size: 42px;
-	min-block-size: 42px;
-	max-inline-size: 100%;
-	box-sizing: content-box;
+	inline-size: var(--search-input-size);
+	min-block-size: var(--search-input-size);
+	max-inline-size: calc(100% - var(--theme--border-width) * 2);
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
+	border-radius: var(--search-input-radius);
 	transition:
 		inline-size var(--slow) var(--transition),
 		border-end-start-radius var(--fast) var(--transition),
 		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		inline-size: 69px;
+		/* stylelint-disable scss/operator-no-newline-after */
+		inline-size: calc(
+			var(--icon-size) * 2 + var(--icon-search-padding-left) + var(--icon-search-padding-right) +
+				var(--icon-filter-margin-right)
+		);
+		/* stylelint-enable scss/operator-no-newline-after */
 	}
 
 	input {
@@ -262,11 +308,12 @@ function emitValue() {
 	}
 
 	.icon-search {
-		margin: 0 4px 0 9px; // visually center in closed filter
+		margin-block: 0;
+		margin-inline: var(--icon-search-padding-left) var(--icon-search-padding-right);
 	}
 
 	.icon-filter {
-		margin-inline-end: 8px;
+		margin-inline-end: var(--icon-filter-margin-right);
 	}
 
 	&:focus-within,
@@ -293,8 +340,16 @@ function emitValue() {
 	}
 
 	&.active {
-		inline-size: 300px;
+		inline-size: 100%;
 		border-color: var(--theme--form--field--input--border-color-focus);
+
+		@media (width > 400px) {
+			inline-size: 150px;
+		}
+
+		@media (width > 640px) {
+			inline-size: 200px;
+		}
 
 		input {
 			opacity: 1;
@@ -302,14 +357,18 @@ function emitValue() {
 	}
 
 	&.filter-active {
-		inline-size: 200px;
+		inline-size: 100%;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
 		}
 
-		@media (min-width: 600px) {
-			inline-size: 250px;
+		@media (width > 400px) {
+			inline-size: 150px;
+		}
+
+		@media (width > 640px) {
+			inline-size: 200px;
 		}
 
 		@media (min-width: 960px) {
@@ -353,8 +412,8 @@ function emitValue() {
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-start-end-radius: 0;
-	border-end-end-radius: 22px;
-	border-end-start-radius: 22px;
+	border-end-end-radius: var(--search-input-radius);
+	border-end-start-radius: var(--search-input-radius);
 
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);

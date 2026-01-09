@@ -1,4 +1,4 @@
-import { createBus, type BusLocal, type BusRedis } from '@directus/memory';
+import { type BusLocal, type BusRedis, createBus } from '@directus/memory';
 import type { Redis } from 'ioredis';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';

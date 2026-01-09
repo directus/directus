@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { useRevisions } from '@/composables/use-revisions';
-import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
-import type { Revision } from '@/types/revisions';
 import { useGroupable } from '@directus/composables';
 import { ContentVersion, PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
+import SidebarDetail from './sidebar-detail.vue';
+import VDivider from '@/components/v-divider.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import { useRevisions } from '@/composables/use-revisions';
+import type { Revision } from '@/types/revisions';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -77,13 +81,14 @@ defineExpose({
 </script>
 
 <template>
-	<sidebar-detail
+	<SidebarDetail
+		id="revisions"
 		:title
 		icon="change_history"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 		@toggle="onToggle"
 	>
-		<v-progress-linear v-if="!revisions && loading" indeterminate />
+		<VProgressLinear v-if="!revisions && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">
 			<div class="content">{{ $t('no_revisions') }}</div>
@@ -91,20 +96,20 @@ defineExpose({
 
 		<template v-else>
 			<template v-for="group in revisionsByDate" :key="group.date.toString()">
-				<revisions-date-group :group="group" @click="openModal" />
+				<RevisionsDateGroup :group="group" @click="openModal" />
 			</template>
 
 			<template v-if="page == pagesCount && !created">
-				<v-divider v-if="revisionsByDate!.length > 0" />
+				<VDivider v-if="revisionsByDate!.length > 0" />
 
 				<div class="external">
 					{{ $t('revision_delta_created_externally') }}
 				</div>
 			</template>
-			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
+			<VPagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 		</template>
 
-		<comparison-modal
+		<ComparisonModal
 			v-model="comparisonModalActive"
 			v-model:current-revision="currentRevision"
 			:delete-versions-allowed="false"
@@ -116,7 +121,7 @@ defineExpose({
 			@confirm="$emit('revert', $event)"
 			@cancel="closeModal"
 		/>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

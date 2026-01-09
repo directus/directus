@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import api, { RequestError } from '@/api';
-import { login } from '@/auth';
-import { translateAPIError } from '@/lang';
-import { useServerStore } from '@/stores/server';
-import { useUserStore } from '@/stores/user';
 import { ErrorCode } from '@directus/errors';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import z from 'zod';
+import api, { RequestError } from '@/api';
+import { login } from '@/auth';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import InterfaceSystemInputPassword from '@/interfaces/_system/system-input-password/input-password.vue';
+import { translateAPIError } from '@/lang';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 
 type Credentials = {
 	email: string;
@@ -84,7 +88,7 @@ async function onSubmit() {
 
 <template>
 	<form novalidate @submit.prevent="onSubmit">
-		<v-input
+		<VInput
 			v-model="email"
 			autofocus
 			autocomplete="username"
@@ -92,13 +96,13 @@ async function onSubmit() {
 			:placeholder="$t('email')"
 			:disabled="isLoading"
 		/>
-		<interface-system-input-password :value="password" :disabled="isLoading" @input="password = $event" />
+		<InterfaceSystemInputPassword :value="password" :disabled="isLoading" @input="password = $event" />
 
-		<v-notice v-if="error" type="warning">
+		<VNotice v-if="error" type="warning">
 			{{ errorFormatted }}
-		</v-notice>
+		</VNotice>
 		<div class="buttons">
-			<v-button type="submit" :loading="isLoading" :disabled="isLoading" large>{{ $t('register') }}</v-button>
+			<VButton type="submit" :loading="isLoading" :disabled="isLoading" large>{{ $t('register') }}</VButton>
 		</div>
 	</form>
 </template>

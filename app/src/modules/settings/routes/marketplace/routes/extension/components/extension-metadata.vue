@@ -11,6 +11,7 @@ import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
 import ExtensionMetadataLicense from './extension-metadata-license.vue';
 import ExtensionMetadataSize from './extension-metadata-size.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
+import VList from '@/components/v-list.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
@@ -31,7 +32,7 @@ const maintainers = computed(() => {
 
 <template>
 	<div class="metadata">
-		<v-list class="list">
+		<VList class="list">
 			<div class="grid buttons">
 				<ExtensionInstall :extension-id="extension.id" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
@@ -52,8 +53,8 @@ const maintainers = computed(() => {
 					:github-avatar-url="maintainer.github_avatar_url"
 				/>
 			</div>
-		</v-list>
-		<v-list class="list">
+		</VList>
+		<VList class="list">
 			<div class="grid">
 				<ExtensionMetadataDownloadsSparkline
 					v-if="extension.downloads"
@@ -76,7 +77,7 @@ const maintainers = computed(() => {
 					{{ $t('report_an_issue') }}
 				</MetadataItem>
 			</div>
-		</v-list>
+		</VList>
 	</div>
 </template>
 

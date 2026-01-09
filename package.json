@@ -18,6 +18,7 @@
 		"@eslint/js": "catalog:",
 		"eslint": "catalog:",
 		"eslint-config-prettier": "catalog:",
+		"eslint-plugin-import": "catalog:",
 		"eslint-plugin-vue": "catalog:",
 		"globals": "catalog:",
 		"postcss-html": "catalog:",
@@ -34,10 +35,13 @@
 	"pnpm": {
 		"overrides": {
 			"tar-fs": "2.1.4",
-			"@yarnpkg/shell>cross-spawn": "7.0.6"
+			"@yarnpkg/shell>cross-spawn": "7.0.6",
+			"jws": "4.0.1",
+			"glob@10.4.5": "10.5.0",
+			"glob@11.0.3": "11.1.0"
 		}
 	},
-	"packageManager": "pnpm@10.14.0",
+	"packageManager": "pnpm@10.27.0",
 	"engines": {
 		"node": "22",
 		"pnpm": ">=10 <11"

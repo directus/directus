@@ -90,6 +90,7 @@ auto_generate: Auto-Genereer
 add_note: Voeg 'n nuttige nota vir gebruikers...
 default_value: Standaard Waarde
 title: Titel
+subtitle: Subtitels
 owner: Eienaar
 created_by: Geskep Deur
 created_on: Geskep Op
@@ -186,6 +187,8 @@ field_options:
   directus_webhooks:
     actions_create: Skep
 comment: Kommentaar
+ai_tools:
+  files: Lêers
 description: Beskrywing
 email: E-pos
 password: Wagwoord

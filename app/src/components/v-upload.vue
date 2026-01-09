@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import api from '@/api';
 import type { File, Filter } from '@directus/types';
+import { sum } from 'lodash';
+import type { Upload } from 'tus-js-client';
+import { computed, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
+import { useNotificationsStore } from '@/stores/notifications';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
-import { sum } from 'lodash';
-import { computed, onUnmounted, ref } from 'vue';
-import type { Upload } from 'tus-js-client';
 
 export type UploadController = {
 	start(): void;
@@ -26,6 +37,7 @@ interface Props {
 	fromLibrary?: boolean;
 	folder?: string;
 	filter?: Filter;
+	accept?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -37,6 +49,9 @@ const emit = defineEmits<{
 	input: [files: null | File | File[]];
 	start: [controller: UploadController];
 }>();
+
+const { t } = useI18n();
+const notificationsStore = useNotificationsStore();
 
 let uploadController: Upload | null = null;
 
@@ -52,10 +67,64 @@ onUnmounted(() => {
 });
 
 function validFiles(files: FileList) {
-	if (files.length === 0) return false;
+	const typeErrors: string[] = [];
+	const emptyErrors: string[] = [];
 
 	for (const file of files) {
-		if (file.size === 0) return false;
+		if (file.size === 0) {
+			emptyErrors.push(`"${file.name}"`);
+			continue;
+		}
+
+		if (props.accept) {
+			const acceptTypes = props.accept.split(',').map((type) => type.trim());
+
+			const isValidType = acceptTypes.some((acceptType) => {
+				if (acceptType.endsWith('/*')) {
+					const baseType = acceptType.slice(0, -2);
+
+					return file.type.startsWith(baseType + '/');
+				} else {
+					return file.type === acceptType;
+				}
+			});
+
+			if (!isValidType) {
+				typeErrors.push(`"${file.name}" (${file.type})`);
+			}
+		}
+	}
+
+	const totalErrors = typeErrors.length + emptyErrors.length;
+
+	if (typeErrors.length + emptyErrors.length > 0) {
+		const errorParts: string[] = [];
+
+		if (typeErrors.length > 0) {
+			errorParts.push(
+				t('files_wrong_type', {
+					files: typeErrors.join(', '),
+					expected: props.accept,
+				}),
+			);
+		}
+
+		if (emptyErrors.length > 0) {
+			errorParts.push(
+				t('files_are_empty', {
+					files: emptyErrors.join(', '),
+				}),
+			);
+		}
+
+		notificationsStore.add({
+			title: t('invalid_files_selected', { count: totalErrors }, totalErrors),
+			text: errorParts.join('\n'),
+			type: 'error',
+			dialog: true,
+		});
+
+		return false;
 	}
 
 	return true;
@@ -83,9 +152,7 @@ function useUpload() {
 		};
 
 		try {
-			if (!validFiles(files)) {
-				throw new Error('An error has occurred while uploading the files.');
-			}
+			if (!validFiles(files)) return;
 
 			if (props.multiple === true) {
 				const fileSizes = Array.from(files).map((file) => file.size);
@@ -314,7 +381,7 @@ defineExpose({ abort });
 		@drop.stop.prevent="onDrop"
 	>
 		<template v-if="dragging && fromUser">
-			<v-icon class="upload-icon" x-large name="file_upload" />
+			<VIcon class="upload-icon" x-large name="file_upload" />
 			<p class="type-label">{{ $t('drop_to_upload') }}</p>
 		</template>
 
@@ -327,16 +394,24 @@ defineExpose({ abort });
 						: $t('upload_file_indeterminate')
 				}}
 			</p>
-			<v-progress-linear :value="progress" rounded />
+			<VProgressLinear :value="progress" rounded />
 		</template>
 
 		<template v-else>
 			<div class="actions">
-				<v-button v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
-					<input ref="input" class="browse" type="file" tabindex="-1" :multiple="multiple" @input="onBrowseSelect" />
-					<v-icon name="file_upload" />
-				</v-button>
-				<v-button
+				<VButton v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+					<input
+						ref="input"
+						class="browse"
+						type="file"
+						tabindex="-1"
+						:multiple="multiple"
+						:accept="accept"
+						@input="onBrowseSelect"
+					/>
+					<VIcon name="file_upload" />
+				</VButton>
+				<VButton
 					v-if="fromLibrary"
 					v-tooltip="$t('choose_from_library')"
 					icon
@@ -344,9 +419,9 @@ defineExpose({ abort });
 					secondary
 					@click="activeDialog = 'choose'"
 				>
-					<v-icon name="folder_open" />
-				</v-button>
-				<v-button
+					<VIcon name="folder_open" />
+				</VButton>
+				<VButton
 					v-if="fromUrl && fromUser"
 					v-tooltip="$t('import_from_url')"
 					icon
@@ -354,14 +429,14 @@ defineExpose({ abort });
 					secondary
 					@click="activeDialog = 'url'"
 				>
-					<v-icon name="link" />
-				</v-button>
+					<VIcon name="link" />
+				</VButton>
 			</div>
 
 			<p class="type-label">{{ $t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<drawer-files
+				<DrawerFiles
 					:active="activeDialog === 'choose'"
 					:multiple="multiple"
 					:folder="folder"
@@ -370,28 +445,28 @@ defineExpose({ abort });
 					@input="setSelection"
 				/>
 
-				<v-dialog
+				<VDialog
 					:model-value="activeDialog === 'url'"
 					:persistent="urlLoading"
 					@esc="activeDialog = null"
 					@apply="importFromURL"
 					@update:model-value="activeDialog = null"
 				>
-					<v-card>
-						<v-card-title>{{ $t('import_from_url') }}</v-card-title>
-						<v-card-text>
-							<v-input v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
-						</v-card-text>
-						<v-card-actions>
-							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
+					<VCard>
+						<VCardTitle>{{ $t('import_from_url') }}</VCardTitle>
+						<VCardText>
+							<VInput v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
+						</VCardText>
+						<VCardActions>
+							<VButton :disabled="urlLoading" secondary @click="activeDialog = null">
 								{{ $t('cancel') }}
-							</v-button>
-							<v-button :loading="urlLoading" :disabled="!isValidURL" @click="importFromURL">
+							</VButton>
+							<VButton :loading="urlLoading" :disabled="!isValidURL" @click="importFromURL">
 								{{ $t('import_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 			</template>
 		</template>
 	</div>
@@ -403,7 +478,7 @@ defineExpose({ abort });
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	min-block-size: var(--input-height-tall);
+	min-block-size: var(--input-height-md);
 	padding: 32px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;

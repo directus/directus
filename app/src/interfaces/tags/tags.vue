@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -118,7 +121,7 @@ function emitValue() {
 
 <template>
 	<div class="interface-tags">
-		<v-input
+		<VInput
 			v-if="allowCustom"
 			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
 			:disabled
@@ -127,12 +130,12 @@ function emitValue() {
 			@keydown="onInput"
 			@blur="onInput"
 		>
-			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-			<template #append><v-icon :name="iconRight" /></template>
-		</v-input>
+			<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
+			<template #append><VIcon :name="iconRight" /></template>
+		</VInput>
 		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
 			<span v-if="presetVals.length > 0" class="presets tag-container">
-				<v-chip
+				<VChip
 					v-for="preset in presetVals"
 					:key="preset"
 					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
@@ -144,11 +147,11 @@ function emitValue() {
 					@click="toggleTag(preset)"
 				>
 					{{ preset }}
-				</v-chip>
+				</VChip>
 			</span>
 			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
-				<v-chip
+				<VIcon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
+				<VChip
 					v-for="val in customVals"
 					:key="val"
 					:disabled="disabled"
@@ -160,7 +163,7 @@ function emitValue() {
 					@click="removeTag(val)"
 				>
 					{{ val }}
-				</v-chip>
+				</VChip>
 			</span>
 		</div>
 	</div>

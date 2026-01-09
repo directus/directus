@@ -1,16 +1,34 @@
 <script setup lang="ts">
-import api from '@/api';
-import { Header, Sort } from '@/components/v-table/types';
-import { useCollectionPermissions } from '@/composables/use-permissions';
-import { router } from '@/router';
-import { useFlowsStore } from '@/stores/flows';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
+import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import { Header, Sort } from '@/components/v-table/types';
+import VTable from '@/components/v-table/v-table.vue';
+import { useCollectionPermissions } from '@/composables/use-permissions';
+import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
+import { router } from '@/router';
+import { useFlowsStore } from '@/stores/flows';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 
 const { t } = useI18n();
 
@@ -85,8 +103,14 @@ function updateSort(sort: Sort | null) {
 	internalSort.value = sort ?? { by: 'name', desc: false };
 }
 
-function navigateToFlow({ item: flow }: { item: FlowRaw }) {
-	router.push(`/settings/flows/${flow.id}`);
+function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
+	const route = `/settings/flows/${flow.id}`;
+
+	if (event.ctrlKey || event.metaKey || event.button === 1) {
+		window.open(router.resolve(route).href, '_blank');
+	} else {
+		router.push(route);
+	}
 }
 
 async function deleteFlow() {
@@ -127,48 +151,33 @@ function onFlowDrawerCompletion(id: string) {
 </script>
 
 <template>
-	<private-view :title="$t('flows')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon>
-				<v-icon name="bolt" />
-			</v-button>
-		</template>
-
+	<PrivateView :title="$t('flows')" icon="bolt">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
+			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<template #actions>
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
-				rounded
-				icon
 				:disabled="createAllowed === false"
+				icon="add"
 				@click="editFlow = '+'"
-			>
-				<v-icon name="add" />
-			</v-button>
+			/>
 		</template>
 
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_settings_flows_collection')" class="page-description" />
-			</sidebar-detail>
-		</template>
-
-		<v-info v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
+		<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
 			{{ $t('no_flows_copy') }}
 
 			<template v-if="createAllowed" #append>
-				<v-button @click="editFlow = '+'">{{ $t('create_flow') }}</v-button>
+				<VButton @click="editFlow = '+'">{{ $t('create_flow') }}</VButton>
 			</template>
-		</v-info>
+		</VInfo>
 
-		<v-table
+		<VTable
 			v-else
 			v-model:headers="tableHeaders"
 			:items="flows"
@@ -179,11 +188,11 @@ function onFlowDrawerCompletion(id: string) {
 			@update:sort="updateSort($event)"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
+				<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
 			</template>
 
 			<template #[`item.status`]="{ item }">
-				<display-formatted-value
+				<DisplayFormattedValue
 					type="string"
 					:item="item"
 					:value="item.status"
@@ -192,75 +201,74 @@ function onFlowDrawerCompletion(id: string) {
 			</template>
 
 			<template #item-append="{ item }">
-				<v-menu placement="left-start" show-arrow>
+				<VMenu placement="left-start" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
+						<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
 					</template>
 
-					<v-list>
-						<v-list-item clickable @click="toggleFlowStatusById(item.id, item.status)">
+					<VList>
+						<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
 							<template v-if="item.status === 'active'">
-								<v-list-item-icon><v-icon name="block" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('set_flow_inactive') }}</v-list-item-content>
+								<VListItemIcon><VIcon name="block" /></VListItemIcon>
+								<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
 							</template>
 							<template v-else>
-								<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
-								<v-list-item-content>{{ $t('set_flow_active') }}</v-list-item-content>
+								<VListItemIcon><VIcon name="check" /></VListItemIcon>
+								<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
 							</template>
-						</v-list-item>
+						</VListItem>
 
-						<v-list-item clickable @click="editFlow = item.id">
-							<v-list-item-icon>
-								<v-icon name="edit" outline />
-							</v-list-item-icon>
-							<v-list-item-content>
+						<VListItem clickable @click="editFlow = item.id">
+							<VListItemIcon>
+								<VIcon name="edit" outline />
+							</VListItemIcon>
+							<VListItemContent>
 								{{ $t('edit_flow') }}
-							</v-list-item-content>
-						</v-list-item>
+							</VListItemContent>
+						</VListItem>
 
-						<v-list-item class="danger" clickable @click="confirmDelete = item">
-							<v-list-item-icon>
-								<v-icon name="delete" outline />
-							</v-list-item-icon>
-							<v-list-item-content>
+						<VListItem class="danger" clickable @click="confirmDelete = item">
+							<VListItemIcon>
+								<VIcon name="delete" outline />
+							</VListItemIcon>
+							<VListItemContent>
 								{{ $t('delete_flow') }}
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
+							</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
 			</template>
-		</v-table>
+		</VTable>
 
-		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
-			<v-card>
-				<v-card-title>{{ $t('flow_delete_confirm', { flow: confirmDelete!.name }) }}</v-card-title>
+		<VDialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
+			<VCard>
+				<VCardTitle>{{ $t('flow_delete_confirm', { flow: confirmDelete!.name }) }}</VCardTitle>
 
-				<v-card-actions>
-					<v-button secondary @click="confirmDelete = null">
+				<VCardActions>
+					<VButton secondary @click="confirmDelete = null">
 						{{ $t('cancel') }}
-					</v-button>
-					<v-button danger :loading="deletingFlow" @click="deleteFlow">
+					</VButton>
+					<VButton danger :loading="deletingFlow" @click="deleteFlow">
 						{{ $t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<flow-drawer
+		<FlowDrawer
 			:active="editFlow !== undefined"
 			:primary-key="editFlow"
 			@cancel="editFlow = undefined"
 			@done="onFlowDrawerCompletion"
 		/>
 
-		<router-view name="add" />
-	</private-view>
+		<RouterView name="add" />
+	</PrivateView>
 </template>
 
 <style scoped>
 .v-table {
 	padding: var(--content-padding);
-	padding-block-start: 0;
 }
 
 .ctx-toggle {

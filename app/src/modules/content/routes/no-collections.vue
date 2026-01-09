@@ -1,23 +1,20 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user';
 import ContentNavigation from '../components/navigation.vue';
+import VButton from '@/components/v-button.vue';
+import VInfo from '@/components/v-info.vue';
+import { useUserStore } from '@/stores/user';
+import { PrivateView } from '@/views/private';
 
 const userStore = useUserStore();
 </script>
 
 <template>
-	<private-view class="content-overview" :title="$t('content')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="box" />
-			</v-button>
-		</template>
-
+	<PrivateView class="content-overview" :title="$t('content')" icon="box">
 		<template #navigation>
-			<content-navigation />
+			<ContentNavigation />
 		</template>
 
-		<v-info icon="box" :title="$t('no_collections')" center>
+		<VInfo icon="box" :title="$t('no_collections')" center>
 			<template v-if="userStore.isAdmin">
 				{{ $t('no_collections_copy_admin') }}
 			</template>
@@ -27,16 +24,10 @@ const userStore = useUserStore();
 			</template>
 
 			<template v-if="userStore.isAdmin" #append>
-				<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
+				<VButton to="/settings/data-model/+">{{ $t('create_collection') }}</VButton>
 			</template>
-		</v-info>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_collections_overview')" class="page-description" />
-			</sidebar-detail>
-		</template>
-	</private-view>
+		</VInfo>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

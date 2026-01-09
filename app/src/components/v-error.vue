@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import { isPlainObject } from 'lodash';
+import { computed, ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {
@@ -42,7 +43,7 @@ async function copyError() {
 <template>
 	<div class="v-error">
 		<output>[{{ code }}] {{ message }}</output>
-		<v-icon
+		<VIcon
 			v-if="isCopySupported"
 			v-tooltip="$t('copy_details')"
 			small

@@ -1,5 +1,5 @@
-import Joi from 'joi';
 import { InvalidPayloadError } from '@directus/errors';
+import Joi from 'joi';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { validateQuery } from '../utils/validate-query.js';

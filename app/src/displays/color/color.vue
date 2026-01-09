@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
 import Color from 'color';
 import { computed } from 'vue';
+import { isHex } from '@/utils/is-hex';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = defineProps({
 	value: {
@@ -33,7 +34,7 @@ const addBorder = computed(() => {
 
 <template>
 	<div class="color-dot">
-		<value-null v-if="value === null && defaultColor === null" />
+		<ValueNull v-if="value === null && defaultColor === null" />
 		<div class="dot" :class="{ 'with-border': addBorder }" />
 	</div>
 </template>

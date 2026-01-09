@@ -1,9 +1,9 @@
-import type { CookieOptions } from 'express';
-import type { TransformationParams } from '@directus/types';
-import { getMilliseconds } from './utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
+import type { TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
+import type { CookieOptions } from 'express';
+import { getMilliseconds } from './utils/get-milliseconds.js';
 
 const env = useEnv();
 

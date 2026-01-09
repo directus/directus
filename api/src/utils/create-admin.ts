@@ -1,11 +1,11 @@
 import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
+import type { Policy, Role, User } from '@directus/types';
 import { useLogger } from '../logger/index.js';
 import { AccessService } from '../services/access.js';
 import { UsersService } from '../services/index.js';
 import { PoliciesService } from '../services/policies.js';
 import { RolesService } from '../services/roles.js';
-import type { Policy, Role, User } from '@directus/types';
 
 export const defaultAdminRole: Partial<Role> = {
 	name: 'Administrator',
