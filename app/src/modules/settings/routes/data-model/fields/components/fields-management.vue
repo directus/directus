@@ -4,6 +4,7 @@ import { isNil, orderBy } from 'lodash';
 import { computed, onBeforeMount, onBeforeUnmount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import ConfigureTranslationsCta from './ConfigureTranslationsCta.vue';
 import FieldSelect from './FieldSelect.vue';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -148,30 +149,34 @@ async function setNestedSort(updates?: Field[]) {
 			</template>
 		</Draggable>
 
-		<VButton full-width :to="`/settings/data-model/${collection}/+`">
-			{{ $t('create_field') }}
-		</VButton>
+		<div class="actions">
+			<VButton :to="`/settings/data-model/${collection}/+`">
+				{{ $t('create_field') }}
+			</VButton>
 
-		<VMenu show-arrow>
-			<template #activator="{ toggle, active }">
-				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
-					{{ $t('create_in_advanced_field_creation_mode') }}
-				</button>
-			</template>
-			<VList>
-				<template v-for="(option, index) in addOptions" :key="index">
-					<VDivider v-if="option.divider === true" />
-					<VListItem v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
-						<VListItemIcon>
-							<VIcon :name="option.icon" />
-						</VListItemIcon>
-						<VListItemContent>
-							{{ option.text }}
-						</VListItemContent>
-					</VListItem>
+			<ConfigureTranslationsCta />
+
+			<VMenu show-arrow>
+				<template #activator="{ toggle, active }">
+					<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
+						{{ $t('create_in_advanced_field_creation_mode') }}
+					</button>
 				</template>
-			</VList>
-		</VMenu>
+				<VList>
+					<template v-for="(option, index) in addOptions" :key="index">
+						<VDivider v-if="option.divider === true" />
+						<VListItem v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
+							<VListItemIcon>
+								<VIcon :name="option.icon" />
+							</VListItemIcon>
+							<VListItemContent>
+								{{ option.text }}
+							</VListItemContent>
+						</VListItem>
+					</template>
+				</VList>
+			</VMenu>
+		</div>
 	</div>
 </template>
 
@@ -188,7 +193,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .field-select {
-	margin: 4px;
+	margin: 4px 0;
 }
 
 .field-select:deep(.field-grid) {
@@ -203,32 +208,27 @@ async function setNestedSort(updates?: Field[]) {
 	}
 }
 
-.add-field {
-	--v-button-font-size: 14px;
-	--v-button-background-color: var(--theme--primary);
-	--v-button-background-color-hover: var(--theme--primary-accent);
-
-	margin-block-start: -12px;
-}
-
-.add-field-advanced {
-	display: block;
-	inline-size: max-content;
-	margin: 0 auto;
-	margin-block-start: 8px;
-	color: var(--theme--foreground-subdued);
-	transition: color var(--fast) var(--transition);
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
-}
-
 .visible {
 	margin-block-end: 24px;
 }
 
 .list-move {
 	transition: transform 0.5s;
+}
+
+.actions {
+	display: flex;
+	gap: 12px;
+}
+
+.add-field-advanced {
+	display: block;
+	inline-size: max-content;
+	color: var(--theme--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--theme--foreground);
+	}
 }
 </style>
