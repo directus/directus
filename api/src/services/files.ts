@@ -15,7 +15,7 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { normalizePath, toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
@@ -38,9 +38,19 @@ export class FilesService extends ItemsService<File> {
 	}
 
 	/**
+	 * Generates the relative path for the filename_disk
+	 *
+	 * @param filenameDisk - The filepath
+	 */
+	private generateFilenamePath(filepath: string) {
+		return path.relative(path.sep, path.resolve(path.sep, filepath));
+	}
+
+	/**
 	 * Check whether a filename is unique.
 	 *
 	 * @param filename - The filename
+	 * @throws ForbiddenError if a match is found
 	 */
 	private async checkUniqueFilename(filename: string) {
 		const existingFile = await this.knex
@@ -289,6 +299,8 @@ export class FilesService extends ItemsService<File> {
 
 		if (data.filename_disk) {
 			await this.checkUniqueFilename(data.filename_disk);
+
+			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 		}
 
 		const key = await super.createOne(data, opts);
@@ -303,6 +315,8 @@ export class FilesService extends ItemsService<File> {
 
 		if (data.filename_disk) {
 			await this.checkUniqueFilename(data.filename_disk);
+
+			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
 			const sudoFilesItemsService = new FilesService({
 				knex: this.knex,
@@ -328,6 +342,14 @@ export class FilesService extends ItemsService<File> {
 				const { name: filePrefix, ext: fileExtname } = path.parse(file.filename_disk);
 				const { name: updateFilePrefix, ext: updateFileExtname } = path.parse(data.filename_disk);
 				const remoteFileExists = await disk.exists(data.filename_disk);
+
+				/**
+				 * TODO: Add support for moving files between directories across all storage drivers.
+				 *
+				 * The generated filepath should be used for `file.filename_disk` to maintain backward compatibility.
+				 * All storage drivers must be supported; the local driver should work on both Windows and macOS.
+				 * The `list()` operation should be scoped by directory and filename to avoid conflicts between folders.
+				 */
 
 				const replacements = {
 					[filePrefix]: updateFilePrefix,
