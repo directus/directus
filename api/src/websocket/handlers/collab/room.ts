@@ -19,6 +19,7 @@ import { permissionCache } from './permissions-cache.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { useStore } from './store.js';
 import { filterToFields } from './filter-to-fields.js';
+import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
 
 /**
  * Store and manage all active collaboration rooms
@@ -428,8 +429,6 @@ export class Room {
 			return { clients: await store.get('clients') };
 		});
 
-		console.log(clients);
-
 		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
@@ -554,7 +553,20 @@ export class Room {
 				itemData = await service.readSingleton({ fields: fieldsToFetch });
 			}
 
-			const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
+			// TODO: Check which approach might be faster better: Checking it JS or DB side
+			// const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
+			const allowedFields = (
+				await validateItemAccess(
+					{
+						collection,
+						accountability,
+						action,
+						primaryKeys: item ? [item] : [],
+						returnAllowedRootFields: true,
+					},
+					{ knex, schema },
+				)
+			).allowedRootFields;
 
 			// Determine TTL and relational dependencies for cache invalidation
 			const { ttlMs, dependencies } = calculateCacheMetadata(

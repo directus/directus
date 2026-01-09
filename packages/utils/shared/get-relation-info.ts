@@ -1,6 +1,6 @@
 import type { Relation, RelationMeta } from '@directus/types';
-import { getRelation } from '@directus/utils';
 import { getRelationTypeServer } from './get-relation-type.js';
+import { getRelation } from './get-relation.js';
 
 export type RelationInfo = {
 	relation: Relation | null;
