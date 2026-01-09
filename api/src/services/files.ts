@@ -15,7 +15,7 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { normalizePath, toArray } from '@directus/utils';
+import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
