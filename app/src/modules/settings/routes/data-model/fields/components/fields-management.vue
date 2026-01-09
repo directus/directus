@@ -176,10 +176,6 @@ async function setNestedSort(updates?: Field[]) {
 </template>
 
 <style lang="scss" scoped>
-.v-divider {
-	margin: 32px 0;
-}
-
 .fields-management {
 	margin-block-end: 24px;
 }
