@@ -10,7 +10,7 @@ import type {
 	SchemaOverview,
 	Type,
 } from '@directus/types';
-import { getRelation } from '@directus/utils';
+import { getRelation, getRelationTypeServer } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
 import hash from 'object-hash';
@@ -27,7 +27,6 @@ import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
 
@@ -476,7 +475,7 @@ class OASSpecsService implements SpecificationSubService {
 				...this.fieldTypes[field.type],
 			};
 		} else {
-			const relationType = getRelationType({
+			const relationType = getRelationTypeServer({
 				relation,
 				field: field.field,
 				collection: collection,

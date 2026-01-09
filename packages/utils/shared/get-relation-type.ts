@@ -28,3 +28,11 @@ export function getRelationType(getRelationOptions: {
 
 	return null;
 }
+
+export function getRelationTypeServer(getRelationOptions: {
+	relation: Relation;
+	collection: string | null;
+	field: string;
+}): 'm2o' | 'o2m' | 'a2o' | null {
+	return getRelationType(getRelationOptions)?.replace('m2a', 'a2o') as 'm2o' | 'o2m' | 'a2o' | null;
+}
