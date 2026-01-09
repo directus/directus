@@ -477,8 +477,8 @@ function useDisplayValue() {
 	inline-size: max-content;
 	padding-inline-end: 18px;
 
-	&:not(.disabled) {
-		cursor: pointer;
+	&.disabled {
+		cursor: not-allowed;
 	}
 }
 

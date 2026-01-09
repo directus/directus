@@ -32,7 +32,7 @@ function close() {
 	<div class="file-preview-replace">
 		<FilePreview :file="file" />
 
-		<button class="replace-toggle" @click="dialogActive = true">
+		<button v-if="!nonEditable" class="replace-toggle" :disabled @click="dialogActive = true">
 			{{ $t('replace_file') }}
 		</button>
 
@@ -50,11 +50,16 @@ function close() {
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .replace-toggle {
 	color: var(--theme--primary);
 	cursor: pointer;
 	font-weight: 600;
 	margin-block-start: 12px;
+
+	&[disabled] {
+		cursor: not-allowed;
+		color: var(--theme--foreground-subdued);
+	}
 }
 </style>

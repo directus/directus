@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Field } from '@directus/types';
 import { get } from '@directus/utils';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import ValueNull from './value-null.vue';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
 import { useExtension } from '@/composables/use-extension';
@@ -26,8 +26,6 @@ const props = withDefaults(
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
-
-const templateEl = ref<HTMLElement>();
 
 const regex = /({{.*?}})/g;
 
@@ -142,7 +140,7 @@ const parts = computed(() =>
 </script>
 
 <template>
-	<div ref="templateEl" class="render-template">
+	<div class="render-template">
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
 			<template v-for="(subPart, subIndex) in part" :key="subIndex">

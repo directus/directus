@@ -231,9 +231,7 @@ const spacings = {
 
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
 
-const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled,
-);
+const allowDrag = computed(() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined);
 
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
@@ -445,7 +443,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 		{{ $t('no_singleton_relations') }}
 	</VNotice>
 	<div v-else class="one-to-many">
-		<div :class="{ bordered: layout === LAYOUTS.TABLE }">
+		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE, disabled, 'non-editable': nonEditable }]">
 			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
 				<div class="spacer" />
 
@@ -459,36 +457,40 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 							v-model="search"
 							v-model:filter="searchFilter"
 							:collection="relationInfo.relatedCollection.collection"
+							:disabled
 						/>
 					</div>
 
 					<VButton
-						v-if="!disabled && updateAllowed && selectedKeys.length"
+						v-if="updateAllowed && selectedKeys.length"
 						v-tooltip.bottom="$t('edit')"
 						rounded
 						icon
 						secondary
+						:disabled
 						@click="batchEditActive = true"
 					>
 						<VIcon name="edit" outline />
 					</VButton>
 
 					<VButton
-						v-if="!disabled && enableSelect && updateAllowed"
+						v-if="enableSelect && updateAllowed"
 						v-tooltip.bottom="$t('add_existing')"
 						rounded
 						icon
 						:secondary="enableCreate"
+						:disabled
 						@click="selectModalActive = true"
 					>
 						<VIcon name="playlist_add" />
 					</VButton>
 
 					<VButton
-						v-if="!disabled && enableCreate && createAllowed"
+						v-if="enableCreate && createAllowed"
 						v-tooltip.bottom="$t('create_item')"
 						rounded
 						icon
+						:disabled
 						@click="createItem"
 					>
 						<VIcon name="add" />
@@ -502,11 +504,12 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 				v-model:headers="headers"
 				v-model="selection"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
+				:disabled="disabled && !nonEditable"
 				:loading="loading"
 				:items="displayItems"
 				:item-key="relationInfo.relatedPrimaryKeyField.field"
 				:row-height="tableRowHeight"
-				:show-manual-sort="allowDrag"
+				:show-manual-sort="allowDrag && !disabled"
 				:manual-sort-key="relationInfo?.sortField"
 				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
 				show-resize
@@ -524,20 +527,24 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 				<template v-if="!nonEditable" #item-append="{ item }">
 					<div class="item-actions">
-						<RouterLink
-							v-if="enableLink"
-							v-tooltip="$t('navigate_to_item')"
-							:to="getLinkForItem(item)!"
-							class="item-link"
-							:class="{ disabled: item.$type === 'created' }"
-							@click.stop
-							@keydown.stop
-						>
-							<VIcon name="launch" />
+						<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem(item)!" custom>
+							<VIcon v-if="disabled || item.$type === 'created'" name="launch" />
+
+							<a
+								v-else
+								v-tooltip="$t('navigate_to_item')"
+								:href="href"
+								class="item-link"
+								@click.stop="navigate"
+								@keydown.stop
+							>
+								<VIcon name="launch" />
+							</a>
 						</RouterLink>
 
 						<VRemove
-							v-if="!disabled && (deleteAllowed || isLocalItem(item))"
+							v-if="deleteAllowed || isLocalItem(item)"
+							:disabled
 							:class="{ deleted: item.$type === 'deleted' }"
 							:item-type="item.$type"
 							:item-info="relationInfo"
@@ -568,7 +575,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 					tag="v-list"
 					item-key="id"
 					handle=".drag-handle"
-					:disabled="!allowDrag"
+					:disabled="disabled || !allowDrag"
 					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
@@ -576,11 +583,19 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 						<VListItem
 							block
 							clickable
+							:disabled="disabled && !nonEditable"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
 						>
-							<VIcon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+							<VIcon
+								v-if="allowDrag && !nonEditable"
+								name="drag_handle"
+								class="drag-handle"
+								left
+								:disabled
+								@click.stop="() => {}"
+							/>
 
 							<RenderTemplate
 								:collection="relationInfo.relatedCollection.collection"
@@ -591,18 +606,24 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 							<div class="spacer" />
 
 							<div v-if="!nonEditable" class="item-actions">
-								<RouterLink
-									v-if="enableLink && element.$type !== 'created'"
-									v-tooltip="$t('navigate_to_item')"
-									:to="getLinkForItem(element)!"
-									class="item-link"
-									@click.stop
-								>
-									<VIcon name="launch" />
+								<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem(element)!" custom>
+									<VIcon v-if="disabled || element.$type === 'created'" name="launch" />
+
+									<a
+										v-else
+										v-tooltip="$t('navigate_to_item')"
+										:href="href"
+										class="item-link"
+										@click.stop="navigate"
+										@keydown.stop
+									>
+										<VIcon name="launch" />
+									</a>
 								</RouterLink>
 
 								<VRemove
-									v-if="!disabled && (deleteAllowed || isLocalItem(element))"
+									v-if="deleteAllowed || isLocalItem(element)"
+									:disabled
 									:item-type="element.$type"
 									:item-info="relationInfo"
 									:item-is-local="isLocalItem(element)"
@@ -619,6 +640,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 				<div v-if="pageCount > 1" class="actions">
 					<VPagination
 						v-model="page"
+						:disabled="disabled && !nonEditable"
 						:length="pageCount"
 						:total-visible="width.includes('half') ? 1 : 2"
 						show-first-last
@@ -628,7 +650,12 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 					<div v-if="loading === false" class="per-page">
 						<span>{{ $t('per_page') }}</span>
-						<VSelect v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
+						<VSelect
+							v-model="limit"
+							:disabled="disabled && !nonEditable"
+							:items="['10', '20', '30', '50', '100']"
+							inline
+						/>
 					</div>
 				</div>
 			</template>
@@ -654,7 +681,14 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 					<div class="spacer" />
 
-					<VPagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
+					<VPagination
+						v-if="pageCount > 1"
+						v-model="page"
+						:disabled="disabled && !nonEditable"
+						:length="pageCount"
+						:total-visible="2"
+						show-first-last
+					/>
 				</div>
 			</template>
 		</div>
@@ -711,12 +745,20 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
+
+		.disabled tr.table-row .append {
+			background: var(--theme--background-subdued);
+		}
 	}
 }
 </style>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
+
+.layout-table.disabled:not(.non-editable) {
+	background-color: var(--theme--background-subdued);
+}
 
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -730,6 +772,10 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 .v-list {
 	@include mixins.list-interface($deleteable: true);
+}
+
+.v-list-item.disabled {
+	--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .item-actions {
@@ -802,6 +848,10 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 	.v-select {
 		color: var(--theme--form--field--input--foreground);
+
+		:deep(.disabled) {
+			color: var(--theme--foreground-subdued);
+		}
 	}
 }
 </style>

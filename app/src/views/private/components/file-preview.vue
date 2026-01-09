@@ -10,6 +10,8 @@ export interface Props {
 	file: Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'>;
 	preset?: string | null;
 	inModal?: boolean;
+	disabled?: boolean;
+	nonEditable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), { preset: 'system-large-contain' });

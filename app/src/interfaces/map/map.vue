@@ -53,6 +53,7 @@ const props = withDefaults(
 		fieldData?: Field;
 		loading?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		geometryType?: GeometryType;
 		defaultView?: Record<string, unknown>;
 	}>(),
@@ -176,8 +177,6 @@ function setupMap(): () => void {
 	});
 
 	if (controls.geocoder) {
-		map.addControl(controls.geocoder as any, 'top-right');
-
 		controls.geocoder.on('result', (event: any) => {
 			location.value = event.result.center;
 		});
@@ -192,11 +191,9 @@ function setupMap(): () => void {
 		location.value = [longitude, latitude];
 	});
 
-	map.addControl(controls.attribution, 'bottom-left');
-	map.addControl(controls.navigation, 'top-left');
-	map.addControl(controls.geolocate, 'top-left');
-	map.addControl(controls.fitData, 'top-left');
-	map.addControl(controls.draw as any, 'top-left');
+	watch(() => style.value, updateStyle);
+	watch(() => props.disabled, updateDisabled, { immediate: true });
+	watch(() => props.value, updateValue, { immediate: true });
 
 	map.on('load', async () => {
 		map.resize();
@@ -216,10 +213,6 @@ function setupMap(): () => void {
 
 		window.addEventListener('keydown', handleKeyDown);
 	});
-
-	watch(() => props.value, updateValue, { immediate: true });
-	watch(() => style.value, updateStyle);
-	watch(() => props.disabled, updateStyle);
 
 	return () => {
 		window.removeEventListener('keydown', handleKeyDown);
@@ -250,11 +243,59 @@ function updateValue(value: any) {
 }
 
 function updateStyle() {
-	map.removeControl(controls.draw as any);
+	refreshUI();
+}
+
+function updateDisabled() {
+	refreshUI(true);
+}
+
+function refreshUI(updatedDisabled = false) {
+	if (map.hasControl(controls.draw as any)) map.removeControl(controls.draw as any);
 	if (style.value) map.setStyle(style.value, { diff: false });
+
+	if (updatedDisabled) refreshDisabledState();
+
 	controls.draw = new MapboxDraw(getDrawOptions(geometryType));
 	map.addControl(controls.draw as any, 'top-left');
+	if (props.disabled) controls.draw.changeMode('static');
 	loadValueFromProps();
+}
+
+function refreshDisabledState() {
+	if (!props.disabled) {
+		map.dragPan.enable();
+		map.scrollZoom.enable();
+		map.boxZoom.enable();
+		map.keyboard.enable();
+		map.doubleClickZoom.enable();
+		map.touchZoomRotate.enable();
+
+		map.addControl(controls.geocoder as any, 'top-right');
+		map.addControl(controls.attribution, 'bottom-left');
+		map.addControl(controls.navigation, 'top-left');
+		map.addControl(controls.geolocate, 'top-left');
+		map.addControl(controls.fitData, 'top-left');
+
+		return;
+	}
+
+	if (!props.nonEditable) {
+		map.dragPan.disable();
+		map.scrollZoom.disable();
+		map.boxZoom.disable();
+		map.keyboard.disable();
+		map.doubleClickZoom.disable();
+		map.touchZoomRotate.disable();
+	}
+
+	if (props.nonEditable) map.addControl(controls.navigation, 'top-left');
+	else if (map.hasControl(controls.navigation)) map.removeControl(controls.navigation);
+
+	if (map.hasControl(controls.geocoder as any)) map.removeControl(controls.geocoder as any);
+	if (map.hasControl(controls.attribution)) map.removeControl(controls.attribution);
+	if (map.hasControl(controls.geolocate)) map.removeControl(controls.geolocate);
+	if (map.hasControl(controls.fitData)) map.removeControl(controls.fitData);
 }
 
 function resetValue(hard: boolean) {
@@ -408,7 +449,7 @@ function handleKeyDown(event: any) {
 </script>
 
 <template>
-	<div class="interface-map">
+	<div class="interface-map" :class="{ disabled }">
 		<div
 			class="map"
 			:class="{
@@ -435,9 +476,9 @@ function handleKeyDown(event: any) {
 				{{ tooltipMessage }}
 			</div>
 		</Transition>
-		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
+		<div v-if="!nonEditable" class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
 			<VIcon name="map" />
-			<VSelect v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+			<VSelect v-model="basemap" inline :disabled :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 		</div>
 		<Transition name="fade">
 			<VInfo
@@ -479,7 +520,7 @@ function handleKeyDown(event: any) {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
-	&:focus-within {
+	&:not(.disabled):focus-within {
 		border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		box-shadow: var(--theme--form--field--input--box-shadow-focus);
 	}
@@ -536,7 +577,23 @@ function handleKeyDown(event: any) {
 
 		.v-select {
 			color: var(--theme--form--field--input--foreground);
+
+			:deep(button) {
+				background-color: transparent !important;
+			}
+
+			:deep(button.active) {
+				color: inherit !important;
+			}
+
+			:deep(button.disabled) {
+				color: var(--theme--form--field--input--foreground-subdued) !important;
+			}
 		}
+	}
+
+	&:not(.disabled) .basemap-select:hover {
+		background-color: var(--theme--background-normal);
 	}
 
 	.mapboxgl-search-location-dot {

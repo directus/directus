@@ -336,6 +336,7 @@ function useColor() {
 					/>
 					<VButton
 						class="swatch"
+						:class="{ 'non-editable': nonEditable }"
 						icon
 						:style="{
 							'--swatch-color': showSwatch ? value : 'transparent',
@@ -345,6 +346,7 @@ function useColor() {
 									? 'none'
 									: 'var(--theme--border-width) solid var(--theme--form--field--input--border-color)',
 						}"
+						:disabled
 						@click="activateColorPicker"
 					>
 						<VIcon v-if="!isValidColor" name="colorize" />
@@ -353,9 +355,9 @@ function useColor() {
 				</template>
 				<template #append>
 					<div v-if="!nonEditable" class="item-actions">
-						<VRemove v-if="isValidColor" deselect @action="unsetColor" />
+						<VRemove v-if="isValidColor" deselect :disabled @action="unsetColor" />
 
-						<VIcon v-else name="palette" clickable @click="toggle" />
+						<VIcon v-else name="palette" clickable :disabled @click="toggle" />
 					</div>
 				</template>
 			</VInput>
@@ -490,9 +492,7 @@ function useColor() {
 
 .swatch {
 	--v-button-padding: 6px;
-	--v-button-background-color: transparent;
-	background-color: var(--swatch-color, transparent);
-
+	--v-button-background-color: var(--swatch-color, transparent);
 	--v-button-background-color-hover: var(--v-button-background-color);
 	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);
 	--v-button-width: calc(var(--theme--form--field--input--height) - 20px);
@@ -508,6 +508,10 @@ function useColor() {
 	border-radius: var(--swatch-radius);
 	overflow: hidden;
 	cursor: pointer;
+
+	&.non-editable {
+		--v-button-background-color-disabled: var(--v-button-background-color);
+	}
 }
 
 .presets {

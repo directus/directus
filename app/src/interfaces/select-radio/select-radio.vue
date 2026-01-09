@@ -80,7 +80,7 @@ const customIcon = computed(() => {
 			class="custom"
 			:class="{
 				active: (!disabled || nonEditable) && usesOtherValue,
-				'has-value': (!disabled || nonEditable) && otherValue,
+				'has-value': otherValue,
 				disabled,
 				'non-editable': nonEditable,
 			}"
@@ -195,7 +195,10 @@ const customIcon = computed(() => {
 
 	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
-		border-color: transparent;
+
+		&.has-value {
+			border-color: var(--theme--form--field--input--border-color);
+		}
 
 		input {
 			color: var(--theme--form--field--input--foreground-subdued);

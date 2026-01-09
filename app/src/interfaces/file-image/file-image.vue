@@ -193,11 +193,18 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	<div class="image" :class="[width, { crop }]">
 		<VSkeletonLoader v-if="loading" type="input-tall" />
 
-		<VNotice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
+		<VNotice v-else-if="nonEditable && !image" icon="hide_image" center class="non-editable-notice">
 			{{ $t('no_image_selected') }}
 		</VNotice>
 
-		<div v-else-if="image" class="image-preview">
+		<component
+			:is="nonEditable ? 'button' : 'div'"
+			v-else-if="image"
+			class="image-preview"
+			:class="{ disabled, 'non-editable': nonEditable }"
+			:type="nonEditable ? 'button' : undefined"
+			@click="nonEditable ? (editImageDetails = true) : undefined"
+		>
 			<div v-if="imageError || !src" class="image-error">
 				<VIcon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
@@ -223,7 +230,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 			<div class="shadow" />
 
-			<div class="actions">
+			<div v-if="!internalDisabled" class="actions">
 				<VButton v-tooltip="$t('zoom')" icon rounded @click="lightboxActive = true">
 					<VIcon name="zoom_in" />
 				</VButton>
@@ -238,30 +245,15 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					<VIcon name="download" />
 				</VButton>
 
-				<template v-if="!internalDisabled || nonEditable">
-					<VButton v-tooltip="$t('edit_item')" icon rounded @click="editImageDetails = true">
-						<VIcon name="edit" />
-					</VButton>
+				<VButton v-tooltip="$t('edit_item')" icon rounded @click="editImageDetails = true">
+					<VIcon name="edit" />
+				</VButton>
 
-					<VButton
-						v-if="updateAllowed && !nonEditable"
-						v-tooltip="$t('edit_image')"
-						icon
-						rounded
-						@click="editImageEditor = true"
-					>
-						<VIcon name="tune" />
-					</VButton>
+				<VButton v-if="updateAllowed" v-tooltip="$t('edit_image')" icon rounded @click="editImageEditor = true">
+					<VIcon name="tune" />
+				</VButton>
 
-					<VRemove
-						v-if="!nonEditable"
-						button
-						deselect
-						:item-info="relationInfo"
-						:item-edits="edits"
-						@action="deselect"
-					/>
-				</template>
+				<VRemove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
 			</div>
 
 			<div class="info">
@@ -292,7 +284,8 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<ImageEditor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
 			<FileLightbox v-model="lightboxActive" :file="image" />
-		</div>
+		</component>
+
 		<VUpload
 			v-else
 			from-url
@@ -300,6 +293,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			:from-library="enableSelect"
 			:folder="folder"
 			:filter="customFilter"
+			:disabled="internalDisabled"
 			accept="image/*"
 			@input="onUpload"
 		/>
@@ -347,6 +341,7 @@ img {
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
+	text-align: start;
 
 	.shadow {
 		position: absolute;
@@ -413,22 +408,29 @@ img {
 		color: rgb(255 255 255 / 0.75);
 		transition: max-block-size var(--fast) var(--transition);
 	}
-}
 
-.image-preview:focus-within,
-.image-preview:hover {
-	.shadow {
-		block-size: 100%;
-		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
+	&:not(.disabled),
+	&.non-editable {
+		&:focus-within,
+		&:hover {
+			.shadow {
+				block-size: 100%;
+				background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
+			}
+
+			.actions ::v-deep(.v-button) {
+				transform: translateY(0);
+				opacity: 1;
+			}
+
+			.meta {
+				max-block-size: 17px;
+			}
+		}
 	}
 
-	.actions ::v-deep(.v-button) {
-		transform: translateY(0);
-		opacity: 1;
-	}
-
-	.meta {
-		max-block-size: 17px;
+	&.disabled:not(.non-editable) img {
+		mix-blend-mode: luminosity;
 	}
 }
 
@@ -450,7 +452,7 @@ img {
 	}
 }
 
-.disabled-placeholder {
+.non-editable-notice {
 	block-size: var(--input-height-md);
 }
 

@@ -260,7 +260,7 @@ function onInput(event: Event) {
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
-			background-color: var(--theme--primary);
+			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: var(--theme--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;

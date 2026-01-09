@@ -192,7 +192,14 @@ function getLinkForItem() {
 	<div v-else class="many-to-one">
 		<VSkeletonLoader v-if="loading" type="input" />
 
-		<VListItem v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
+		<VListItem
+			v-else
+			block
+			clickable
+			:disabled="disabled && !(nonEditable && displayItem)"
+			:non-editable
+			@click="!(nonEditable && displayItem) ? onPreviewClick() : (editModalActive = true)"
+		>
 			<div v-if="displayItem" class="preview">
 				<RenderTemplate
 					:collection="relationInfo.relatedCollection.collection"
@@ -204,36 +211,37 @@ function getLinkForItem() {
 
 			<div class="spacer" />
 
-			<div class="item-actions">
+			<div v-if="!nonEditable" class="item-actions">
 				<template v-if="displayItem">
-					<RouterLink
-						v-if="enableLink && !nonEditable"
-						v-tooltip="$t('navigate_to_item')"
-						:to="getLinkForItem()"
-						class="item-link"
-						@click.stop
-					>
-						<VIcon name="launch" />
+					<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem()" custom>
+						<VIcon v-if="disabled" name="launch" />
+
+						<a
+							v-else
+							v-tooltip="$t('navigate_to_item')"
+							:href="href"
+							class="item-link"
+							@click.stop="navigate"
+							@keydown.stop
+						>
+							<VIcon name="launch" />
+						</a>
 					</RouterLink>
 
-					<VIcon v-tooltip="$t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+					<VIcon v-tooltip="$t('edit_item')" name="edit" clickable :disabled @click="editModalActive = true" />
 
-					<VRemove
-						v-if="!disabled"
-						deselect
-						:item-info="relationInfo"
-						:item-edits="edits"
-						@action="$emit('input', null)"
-					/>
+					<VRemove deselect :disabled :item-info="relationInfo" :item-edits="edits" @action="$emit('input', null)" />
 				</template>
 
 				<template v-else>
 					<VIcon
-						v-if="!disabled && createAllowed && enableCreate"
-						v-tooltip="$t('create_item')"
-						class="add"
+						v-if="!nonEditable && createAllowed && enableCreate"
+						v-tooltip="!disabled && $t('create_item')"
 						name="add"
 						clickable
+						class="add"
+						:class="{ disabled }"
+						:disabled
 						@click="editModalActive = true"
 					/>
 
@@ -270,8 +278,8 @@ function getLinkForItem() {
 .item-actions {
 	@include mixins.list-interface-item-actions($item-link: true);
 
-	.add:hover {
-		--v-icon-color: var(--theme--primary);
+	.add:not(.disabled) {
+		--v-icon-color-hover: var(--theme--primary);
 	}
 }
 

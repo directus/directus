@@ -192,13 +192,13 @@ function useIconsPerRow(
 				:disabled
 				:non-editable
 				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
-				:class="{ 'has-value': value }"
+				:class="{ 'has-value': value, 'non-editable': nonEditable }"
 				:nullable="false"
 				@click="onClickInput($event, toggle)"
 				@keydown="onKeydownInput($event, activate)"
 			>
 				<template v-if="value" #prepend>
-					<VIcon clickable :name="value" :class="{ active: value }" @click="toggle" />
+					<VIcon class="selected-icon" clickable :disabled :name="value" @click="toggle" />
 				</template>
 
 				<template #append>
@@ -206,6 +206,7 @@ function useIconsPerRow(
 						<VRemove
 							v-if="value !== null && !nonEditable"
 							deselect
+							:disabled
 							@action="
 								() => {
 									setIcon(null);
@@ -219,6 +220,7 @@ function useIconsPerRow(
 							clickable
 							name="expand_more"
 							class="open-indicator"
+							:disabled
 							:class="{ open: active }"
 							@click="toggle"
 						/>
@@ -227,7 +229,7 @@ function useIconsPerRow(
 			</VInput>
 		</template>
 
-		<div ref="contentRef" class="content" :class="width">
+		<div ref="contentRef" class="select-icon-popover" :class="width">
 			<DynamicScroller
 				:min-item-size="MIN_ITEM_SIZE"
 				:items="virtualRows"
@@ -274,21 +276,27 @@ function useIconsPerRow(
 	@include mixins.list-interface-item-actions;
 }
 
-.v-input.has-value {
+.v-input.has-value.non-editable,
+.v-input.has-value:not(.disabled) {
 	--v-input-placeholder-color: var(--theme--primary);
+
+	.selected-icon {
+		--v-icon-color: var(--theme--primary);
+		--v-icon-color-hover: var(--v-icon-color);
+	}
 
 	&:focus-within {
 		--v-input-placeholder-color: var(--theme--form--field--input--foreground-subdued);
 	}
 }
 
-.content {
-	padding: 8px;
-
+.select-icon-popover {
 	--v-icon-color-hover: var(--theme--form--field--input--foreground);
 
+	padding: 8px;
+
 	.v-icon.active {
-		color: var(--theme--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	.v-divider {
