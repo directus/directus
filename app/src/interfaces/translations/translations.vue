@@ -371,6 +371,7 @@ function useNestedValidation() {
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
+					:disabled="disabled && !nonEditable"
 					@click.stop="
 						if (active) toggle();
 						splitView = true;
@@ -385,6 +386,7 @@ function useNestedValidation() {
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
+					:disabled="disabled && !nonEditable"
 					@click="splitView = false"
 				/>
 			</template>
