@@ -3,7 +3,6 @@ import type { ShowSelect } from '@directus/types';
 import { computed, ref, Ref } from 'vue';
 import type { Header, Item } from './types';
 import VCheckbox from '@/components/v-checkbox.vue';
-import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import ValueNull from '@/views/private/components/value-null.vue';

@@ -1,9 +1,9 @@
 import { LayoutProps } from '@directus/extensions';
 import { Field, PrimaryKey } from '@directus/types';
-import { useShiftSelection } from '@/composables/use-shift-selection';
 import { Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Item } from '@/components/v-table/types';
+import { useShiftSelection } from '@/composables/use-shift-selection';
 import { getItemRoute } from '@/utils/get-route';
 
 export type UseLayoutClickHandlerOptions = {

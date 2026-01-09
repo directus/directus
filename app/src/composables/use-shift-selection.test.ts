@@ -9,7 +9,7 @@
  * In ambiguous cases (e.g. on exact midpoint between clusters), nearest-cluster logic looks at previous click index to determine direction.
  */
 
-import { test, expect } from 'vitest';
+import { expect, test } from 'vitest';
 import { useShiftSelection } from './use-shift-selection';
 
 const shiftSelection = useShiftSelection();
