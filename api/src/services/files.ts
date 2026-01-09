@@ -1,5 +1,10 @@
+import type { Readable } from 'node:stream';
+import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
+import zlib from 'node:zlib';
+import path from 'path';
+import url from 'url';
 import { useEnv } from '@directus/env';
-import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type {
 	AbstractServiceOptions,
@@ -15,11 +20,6 @@ import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
 import { extension } from 'mime-types';
-import type { Readable } from 'node:stream';
-import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
-import zlib from 'node:zlib';
-import path from 'path';
-import url from 'url';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
@@ -35,6 +35,21 @@ const logger = useLogger();
 export class FilesService extends ItemsService<File> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
+	}
+
+	/**
+	 * Check whether a filename is unique.
+	 *
+	 * @param filename - The filename
+	 */
+	private async checkUniqueFilename(filename: string) {
+		const existingFile =
+			(await this.knex.select('filename_disk').from('directus_files').where({ filename_disk: filename }).first()) ??
+			null;
+
+		if (existingFile) {
+			throw new ForbiddenError();
+		}
 	}
 
 	/**
@@ -271,8 +286,55 @@ export class FilesService extends ItemsService<File> {
 			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
+		if (data.filename_disk) {
+			await this.checkUniqueFilename(data.filename_disk);
+		}
+
 		const key = await super.createOne(data, opts);
 		return key;
+	}
+
+	/**
+	 * Create a file (only applicable when it is not a multipart/data POST request)
+	 * Useful for associating metadata with existing file in storage
+	 */
+	override async updateMany(keys: PrimaryKey[], data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		let updatedFiles: File[] = [];
+
+		if (data.filename_disk) {
+			await this.checkUniqueFilename(data.filename_disk);
+
+			const sudoFilesItemsService = new FilesService({
+				knex: this.knex,
+				schema: this.schema,
+			});
+
+			updatedFiles = await sudoFilesItemsService.readMany(keys, {
+				fields: ['id', 'storage', 'filename_disk'],
+				limit: -1,
+			});
+		}
+
+		const result = await super.updateMany(keys, data, opts);
+
+		// if filename is present and was updated rename files it was changed
+		if (data.filename_disk) {
+			const storage = await getStorage();
+
+			for (const file of updatedFiles) {
+				if (!file.filename_disk || file.filename_disk === data.filename_disk) continue;
+
+				const disk = storage.location(file['storage']);
+				const { name: filePrefix } = path.parse(file.filename_disk);
+
+				// Rename file + thumbnails
+				for await (const filepath of disk.list(filePrefix)) {
+					await disk.move(filepath, data.filename_disk);
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
