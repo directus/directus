@@ -280,8 +280,7 @@ export class FilesService extends ItemsService<File> {
 	}
 
 	/**
-	 * Create a file (only applicable when it is not a multipart/data POST request)
-	 * Useful for associating metadata with existing file in storage
+	 * Create a file
 	 */
 	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data.type) {
@@ -297,8 +296,7 @@ export class FilesService extends ItemsService<File> {
 	}
 
 	/**
-	 * Create a file (only applicable when it is not a multipart/data POST request)
-	 * Useful for associating metadata with existing file in storage
+	 * Update many files
 	 */
 	override async updateMany(keys: PrimaryKey[], data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		let updatedFiles: File[] = [];
