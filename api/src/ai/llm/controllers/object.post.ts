@@ -30,8 +30,7 @@ export const aiObjectPostHandler: RequestHandler = async (req, res, next) => {
 			},
 		},
 		toolChoice: 'required',
-		maxOutputTokens: 16,
-		temperature: 0
+		maxOutputTokens: 16, // TODO make configurable in request
 	});
 
 	res.locals['payload'] = toolCalls?.[0]?.input;

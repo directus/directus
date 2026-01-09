@@ -33,24 +33,6 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const cachedPostRoutes = ['/graphql', '/ai/object'];
 	const isCachedNonGetRoute = cachedPostRoutes.some((route) => req.originalUrl?.startsWith(route));
 
-	console.log([
-		(isGetRequest || isCachedNonGetRoute),
-		req.originalUrl?.startsWith('/auth') === false,
-		env['CACHE_ENABLED'] === true,
-		!!cache,
-		!req.sanitizedQuery.export,
-		res.locals['cache'] !== false,
-		exceedsMaxSize === false,
-		(await permissionsCacheable(
-			req.collection,
-			{
-				knex: getDatabase(),
-				schema: req.schema,
-			},
-			req.accountability,
-		))
-	]);
-
 	if (
 		(isGetRequest || isCachedNonGetRoute) &&
 		req.originalUrl?.startsWith('/auth') === false &&
