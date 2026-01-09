@@ -28,7 +28,6 @@ import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { ItemsService } from './items.js';
-import { basename, extname } from 'node:path';
 
 const env = useEnv();
 const logger = useLogger();
