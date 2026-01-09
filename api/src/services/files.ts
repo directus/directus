@@ -327,19 +327,36 @@ export class FilesService extends ItemsService<File> {
 				const disk = storage.location(file['storage']);
 				const { name: filePrefix, ext: fileExtname } = path.parse(file.filename_disk);
 				const { name: updateFilePrefix, ext: updateFileExtname } = path.parse(data.filename_disk);
+				const remoteFileExists = await disk.exists(data.filename_disk);
 
 				const replacements = {
 					[filePrefix]: updateFilePrefix,
-					[fileExtname]: updateFileExtname,
 				};
 
-				// Rename file + thumbnails
+				if (fileExtname) {
+					replacements[fileExtname] = updateFileExtname;
+				}
+
 				for await (const filepath of disk.list(filePrefix)) {
-					await disk.move(
-						filepath,
-						// update filename_disk prefix and extension where applicable
-						filepath.replace(new RegExp(Object.keys(replacements).join('|'), 'g'), (m) => replacements[m]!),
-					);
+					if (remoteFileExists) {
+						/**
+						 * If the remote file exists, repoint the asset to it.
+						 *
+						 * Any generated assets associated with the original pointer are deleted.
+						 * The primary asset may also be deleted, depending on the `FILES_SKIP_PRIMARY_ASSET` flag.
+						 */
+
+						if (env['FILES_SKIP_PRIMARY_ASSET'] !== true && filepath === file.filename_disk) continue;
+
+						await disk.delete(filepath);
+					} else {
+						// If the remote file exists, rename all associated assets
+						await disk.move(
+							filepath,
+							// Update filename_disk prefix and extension when applicable
+							filepath.replace(new RegExp(Object.keys(replacements).join('|'), 'g'), (m) => replacements[m]!),
+						);
+					}
 				}
 			}
 		}

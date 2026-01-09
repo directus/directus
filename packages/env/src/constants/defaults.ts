@@ -186,6 +186,7 @@ export const DEFAULTS = {
 	METRICS_NAME_PREFIX: 'directus_',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+	FILES_SKIP_PRIMARY_ASSET: false,
 
 	ACCEPT_TERMS: false,
 
