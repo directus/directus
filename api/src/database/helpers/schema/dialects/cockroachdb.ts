@@ -3,7 +3,6 @@ import type { KNEX_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import { type Knex } from 'knex';
-import { transaction } from '../../../../utils/transaction.js';
 import type { CreateIndexOptions, Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
 
