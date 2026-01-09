@@ -28,6 +28,7 @@ import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { ItemsService } from './items.js';
+import { basename, extname } from 'node:path';
 
 const env = useEnv();
 const logger = useLogger();
@@ -325,11 +326,21 @@ export class FilesService extends ItemsService<File> {
 				if (!file.filename_disk || file.filename_disk === data.filename_disk) continue;
 
 				const disk = storage.location(file['storage']);
-				const { name: filePrefix } = path.parse(file.filename_disk);
+				const { name: filePrefix, ext: fileExtname } = path.parse(file.filename_disk);
+				const { name: updateFilePrefix, ext: updateFileExtname } = path.parse(data.filename_disk);
+
+				const replacements = {
+					[filePrefix]: updateFilePrefix,
+					[fileExtname]: updateFileExtname,
+				};
 
 				// Rename file + thumbnails
 				for await (const filepath of disk.list(filePrefix)) {
-					await disk.move(filepath, data.filename_disk);
+					await disk.move(
+						filepath,
+						// update filename_disk prefix and extension where applicable
+						filepath.replace(new RegExp(Object.keys(replacements).join('|'), 'g'), (m) => replacements[m]!),
+					);
 				}
 			}
 		}
