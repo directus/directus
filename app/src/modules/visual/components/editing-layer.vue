@@ -22,7 +22,10 @@ const { frameSrc, frameEl, showEditableElements } = defineProps<{
 	showEditableElements?: boolean;
 }>();
 
-const emit = defineEmits(['navigation']);
+const emit = defineEmits<{
+	navigation: [data: NavigationData];
+	saved: [data: { collection: string; primaryKey: PrimaryKey }];
+}>();
 
 const { t } = useI18n();
 
@@ -162,6 +165,8 @@ function useItemWithEdits() {
 				item: primaryKey.value,
 				payload: JSON.parse(JSON.stringify(edits.value)),
 			});
+
+			emit('saved', { collection: collection.value, primaryKey: primaryKey.value });
 
 			resetEdits();
 		} catch (error) {
