@@ -43,6 +43,7 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		 *
 		 * CockroachDB requires that when changing a PK the current one be dropped and new one added in the same transaction.
 		 * To prevent this error from being thrown both operations are executed in the same statement via `,`.
+		 * As it is done in a single operation no need for transaction rollback support.
 		 * - https://www.cockroachlabs.com/docs/stable/primary-key.html
 		 * - https://www.cockroachlabs.com/docs/stable/alter-table#synopsis
 		 */
