@@ -261,6 +261,7 @@ function useUrls() {
 	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen, 'header-expanded': headerExpanded }">
 		<div class="header">
 			<div class="group">
+				<slot name="prepend-header" />
 				<!-- In full-width: show exit button -->
 				<VButton
 					v-if="isFullWidth"
