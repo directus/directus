@@ -58,8 +58,6 @@ export default defineLayout<LayoutOptions>({
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
-
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
 				return ['timestamp', 'dateTime', 'date'].includes(field.type);
@@ -141,6 +139,8 @@ export default defineLayout<LayoutOptions>({
 			search: search,
 			filterSystem,
 		});
+
+		const { onClick } = useLayoutClickHandler({ props, items, selection, primaryKeyField });
 
 		const events = computed<EventInput>(
 			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [],

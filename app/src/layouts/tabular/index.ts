@@ -59,8 +59,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			flatten(Object.values(aliasedFields.value).map(({ fields }) => fields)),
 		);
 
-		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
-
 		const {
 			items,
 			loading,
@@ -83,6 +81,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			search,
 			filterSystem,
 		});
+
+		const { onClick } = useLayoutClickHandler({ props, items, selection, primaryKeyField });
 
 		const { tableSort, tableHeaders, tableRowHeight, onSortChange, onAlignChange, activeFields, tableSpacing } =
 			useTable();
