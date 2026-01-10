@@ -116,11 +116,12 @@ git gtr rm my-feature           # Remove worktree
 
 **What happens on `git gtr new`:**
 1. Creates the worktree directory
-2. Generates `docker-compose.override.yml` with unique ports (based on path hash)
-3. Generates `api/.env` with matching database ports
-4. Runs `pnpm install` and `pnpm build`
-5. Starts postgres via `docker compose up -d postgres`
-6. Runs `pnpm cli bootstrap` in the api directory
+2. Copies environment files from main repo (`.env.observability`, etc.)
+3. Generates `.env` with unique port variables (based on path hash)
+4. Generates `api/.env` with matching database ports
+5. Runs `pnpm install` and `pnpm build`
+6. Starts postgres via `docker compose up -d postgres`
+7. Runs `pnpm cli bootstrap` in the api directory
 
 **Managing services:**
 ```bash
@@ -131,15 +132,21 @@ docker compose up -d postgres redis minio
 # Or run the setup script manually with options:
 ./scripts/gtr-setup.sh --services postgres,redis,otel-collector
 ./scripts/gtr-setup.sh --skip-bootstrap   # Skip bootstrap step
+
+# Work with worktrees without leaving main directory:
+git gtr run my-feature pnpm dev           # Run command in worktree
+git gtr run my-feature docker compose ps  # Check docker status
 ```
 
 **Port allocation:**
-Each worktree gets a unique port offset (0-9900) based on its directory path hash. For example:
-- Main repo: postgres on 5100
-- Worktree A: postgres on 5200
-- Worktree B: postgres on 5700
+Each worktree gets a unique port offset (0-9900) based on its directory path hash. The `docker-compose.yml` uses environment variables with defaults (`${POSTGRES_PORT:-5100}`), and each worktree's `.env` file sets these to unique values.
 
-Check your worktree's ports in `api/.env` or `docker-compose.override.yml`.
+Example ports:
+- Main repo: postgres on 5100 (default)
+- Worktree A: postgres on 12300
+- Worktree B: postgres on 8500
+
+Check your worktree's ports in `.env` or `api/.env`.
 
 ## Testing
 
