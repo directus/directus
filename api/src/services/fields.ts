@@ -806,8 +806,15 @@ export class FieldsService {
 					fieldToCollectionList,
 				);
 
-				for (const meta of collectionMetaUpdates) {
-					await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
+				// Process collection metadata updates in batches of 10 to limit concurrency
+				const batchSize = 10;
+				for (let i = 0; i < collectionMetaUpdates.length; i += batchSize) {
+					const batch = collectionMetaUpdates.slice(i, i + batchSize);
+					await Promise.all(
+						batch.map((meta) =>
+							trx('directus_collections').update(meta.updates).where({ collection: meta.collection })
+						)
+					);
 				}
 
 				// Cleanup directus_fields
