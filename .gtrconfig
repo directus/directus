@@ -4,16 +4,13 @@
 # This file provides team-wide defaults for git worktree management.
 # Individual users can override these in their local git config.
 
-[gtr.ai]
+[defaults]
     # Default AI coding assistant (claude, aider, copilot)
-    default = claude
-
-[gtr.editor]
+    ai = claude
     # Default editor (cursor, vscode, zed)
-    # Uncomment and set your preference:
-    # default = cursor
+    # editor = cursor
 
-[gtr.hook]
+[hooks]
     # Full worktree setup: install, build, start postgres, bootstrap
     # This script handles .env generation with unique ports per worktree
     #

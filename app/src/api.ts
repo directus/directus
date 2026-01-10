@@ -93,6 +93,7 @@ function onRequestEnd(response?: AxiosResponse | Response) {
 	if (config?.id) {
 		const requestsStore = useRequestsStore();
 		requestsStore.endRequest(config.id);
+	}
 
 	if (config?.start) {
 		const end = performance.now();
@@ -113,5 +114,4 @@ function onRequestEnd(response?: AxiosResponse | Response) {
 			recordApiRequest(endpoint, method, statusCode, duration);
 		}
 	}
->>>>>>> feature/opentelemetry
 }
