@@ -12,7 +12,7 @@ import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynam
 import { processPermissions } from '../../../permissions/utils/process-permissions.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
-import { calculateAllowedFields } from './calculate-allowed-fields.js';
+// import { calculateAllowedFields } from './calculate-allowed-fields.js';
 import { calculateCacheMetadata } from './calculate-cache-metadata.js';
 import { Messenger } from './messenger.js';
 import { permissionCache } from './permissions-cache.js';
