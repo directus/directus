@@ -188,17 +188,11 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			const { myFocus, focusHolder } = await room.checkFocus(client.uid, message.field);
+			const focus = await room.getFocusByUser(client.uid);
 
-			if (myFocus && myFocus !== message.field) {
+			if (!focus || focus !== message.field) {
 				throw new InvalidPayloadError({
-					reason: `Cannot update field ${message.field} while focused on ${myFocus}`,
-				});
-			}
-
-			if (focusHolder) {
-				throw new InvalidPayloadError({
-					reason: `Field ${message.field} is being edited by another user`,
+					reason: `Cannot update field ${message.field} without focusing on it first`,
 				});
 			}
 
@@ -278,6 +272,14 @@ export class CollabHandler {
 				if (!isFieldAllowed(allowedReadFields, message.field) || !isFieldAllowed(allowedUpdateFields, message.field)) {
 					throw new InvalidPayloadError({
 						reason: `No permission to focus on field ${message.field} or field does not exist`,
+					});
+				}
+
+				const existingFocus = await room.getFocusByField(message.field);
+
+				if (existingFocus && existingFocus !== client.uid) {
+					throw new InvalidPayloadError({
+						reason: `Field ${message.field} is already focused by another user`,
 					});
 				}
 
