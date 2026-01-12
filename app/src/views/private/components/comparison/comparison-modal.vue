@@ -248,7 +248,7 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 						<ComparisonHeader
 							:loading="modalLoading"
 							:title="baseDisplayName"
-							:date-updated="$t('latest')"
+							:date-updated="normalizedData?.base.date.dateObject || null"
 							:user-updated="baseUserUpdated"
 							:user-loading="baseUserLoading"
 						/>

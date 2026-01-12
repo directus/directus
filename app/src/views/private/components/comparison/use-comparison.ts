@@ -511,7 +511,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 				base = {
 					id: comparisonData.previousRevision.id,
-					displayName: i18n.global.t('item_revision'),
+					displayName: i18n.global.t('previous_revision'),
 					date,
 					user,
 					collection: comparisonData.previousRevision.collection,

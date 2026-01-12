@@ -85,6 +85,7 @@ maps: Maps
 switch_user: Switch User
 item_creation: Item Creation
 item_revision: Item Revision
+previous_revision: Previous Revision
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
 half_width: Half Width
