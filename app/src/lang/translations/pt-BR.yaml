@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
+privacy_policy: Política de Privacidade
 first_name: Primeiro Nome
 last_name: Sobrenome
 identifier: Identificador
