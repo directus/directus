@@ -41,7 +41,7 @@ export class CollabHandler {
 				const validMessage = ClientMessage.parse(message);
 				await this[`on${upperFirst(validMessage.action)}`](client, message);
 			} catch (error) {
-				handleWebSocketError(client, error, 'subscribe');
+				handleWebSocketError(client, error, WS_TYPE.COLLAB);
 			}
 		});
 
