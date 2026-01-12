@@ -141,7 +141,7 @@ export class CollabHandler {
 			}
 
 			if (roomIds.length > 0) {
-				this.rooms.cleanupRooms(roomIds);
+				await this.rooms.cleanupRooms(roomIds);
 			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'leave');
