@@ -15,7 +15,7 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { normalizePath, toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
@@ -43,7 +43,7 @@ export class FilesService extends ItemsService<File> {
 	 * @param filenameDisk - The filepath
 	 */
 	private generateFilenamePath(filepath: string) {
-		return path.relative(path.sep, path.resolve(path.sep, filepath));
+		return normalizePath(path.relative(path.sep, path.resolve(path.sep, filepath)));
 	}
 
 	/**
@@ -336,49 +336,37 @@ export class FilesService extends ItemsService<File> {
 			const storage = await getStorage();
 
 			for (const file of updatedFiles) {
-				if (!file.filename_disk || file.filename_disk === data.filename_disk) continue;
+				if (!file.filename_disk) continue;
+
+				// For backwards compatibility it must be resolved first to ensure consistent path
+				const filePath = this.generateFilenamePath(file.filename_disk);
+
+				if (filePath === data.filename_disk) continue;
 
 				const disk = storage.location(file['storage']);
-				const { name: filePrefix, ext: fileExtname } = path.parse(file.filename_disk);
-				const { name: updateFilePrefix, ext: updateFileExtname } = path.parse(data.filename_disk);
+				const { name: filePrefix } = path.parse(file.filename_disk);
+				const updatedFilePath = this.generateFilenamePath(data.filename_disk);
+
 				const remoteFileExists = await disk.exists(data.filename_disk);
 
-				/**
-				 * TODO: Add support for moving files between directories across all storage drivers.
-				 *
-				 * The generated filepath should be used for `file.filename_disk` to maintain backward compatibility.
-				 * All storage drivers must be supported; the local driver should work on both Windows and macOS.
-				 * The `list()` operation should be scoped by directory and filename to avoid conflicts between folders.
-				 */
-
-				const replacements = {
-					[filePrefix]: updateFilePrefix,
-				};
-
-				if (fileExtname) {
-					replacements[fileExtname] = updateFileExtname;
-				}
-
 				for await (const filepath of disk.list(filePrefix)) {
-					if (remoteFileExists) {
-						/**
-						 * If the remote file exists, repoint the asset to it.
-						 *
-						 * Any generated assets associated with the original pointer are deleted.
-						 * The primary asset may also be deleted, depending on the `FILES_SKIP_PRIMARY_ASSET` flag.
-						 */
-
-						if (env['FILES_SKIP_PRIMARY_ASSET'] !== true && filepath === file.filename_disk) continue;
-
-						await disk.delete(filepath);
-					} else {
-						// If the remote file exists, rename all associated assets
-						await disk.move(
-							filepath,
-							// Update filename_disk prefix and extension when applicable
-							filepath.replace(new RegExp(Object.keys(replacements).join('|'), 'g'), (m) => replacements[m]!),
-						);
+					/**
+					 * If the remote file exists, repoint the primary asset to it.
+					 *  - The original asset may also be deleted, depending on the `FILES_SKIP_PRIMARY_ASSET` flag.
+					 *  If the remote file does not exist, move the primary asset to location.
+					 *
+					 * Any generated assets associated are deleted.
+					 */
+					if (filepath === filePath) {
+						if (!remoteFileExists) {
+							await disk.move(filepath, updatedFilePath);
+						} else if (env['FILES_SKIP_PRIMARY_ASSET'] === true) {
+							continue;
+						}
 					}
+
+					// always delete generated assets
+					await disk.delete(filepath);
 				}
 			}
 		}
