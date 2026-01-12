@@ -329,7 +329,8 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 						<div v-if="mode !== 'revision'" class="fields-changed">
 							{{ $t('differences_count', { count: availableFieldsCount }) }}
 						</div>
-						<div v-else>
+						<div v-else class="compare-to-container">
+							<span class="compare-to-label">{{ $t('comparing_to') }}</span>
 							<ComparisonToggle
 								v-model="compareToOption"
 								:disable-previous="isFirstRevision"
@@ -522,11 +523,26 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 					align-items: center;
 					gap: 24px;
 
-					.fields-changed {
+					.fields-changed,
+					.compare-to-label {
 						font-size: 14px;
 						line-height: 20px;
-						color: var(--theme--foreground-subdued);
 						font-weight: 600;
+					}
+
+					.fields-changed {
+						color: var(--theme--foreground-subdued);
+					}
+
+					.compare-to-label {
+						color: var(--theme--foreground);
+						white-space: nowrap;
+					}
+
+					.compare-to-container {
+						display: flex;
+						align-items: center;
+						gap: 12px;
 					}
 				}
 			}
