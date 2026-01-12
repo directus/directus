@@ -170,26 +170,30 @@ export class Room {
 			// Skip if this update is for a different item (singletons have item=null)
 			if (item !== null && !keys.includes(item)) return;
 
-			const service = getService(collection, { schema: await getSchema() });
+			try {
+				const service = getService(collection, { schema: await getSchema() });
 
-			const result = item ? await service.readOne(item) : await service.readSingleton({});
+				const result = item ? await service.readOne(item) : await service.readSingleton({});
 
-			const clients = await this.store(async (store) => {
-				let changes = await store.get('changes');
+				const clients = await this.store(async (store) => {
+					let changes = await store.get('changes');
 
-				changes = Object.fromEntries(Object.entries(changes).filter(([key, value]) => !isEqual(result[key], value)));
+					changes = Object.fromEntries(Object.entries(changes).filter(([key, value]) => !isEqual(result[key], value)));
 
-				store.set('changes', changes);
+					store.set('changes', changes);
 
-				return await store.get('clients');
-			});
-
-			for (const client of clients) {
-				if (client.accountability?.user === accountability?.user) continue;
-
-				this.send(client.uid, {
-					action: ACTION.SERVER.SAVE,
+					return await store.get('clients');
 				});
+
+				for (const client of clients) {
+					if (client.accountability?.user === accountability?.user) continue;
+
+					this.send(client.uid, {
+						action: ACTION.SERVER.SAVE,
+					});
+				}
+			} catch (err) {
+				useLogger().error(err, `[Collab] External update handler failed for ${collection}/${item ?? 'singleton'}`);
 			}
 		};
 
