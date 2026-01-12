@@ -272,16 +272,17 @@ export class CollabHandler {
 				});
 
 			if (message.field) {
-				const allowedFields = await room.verifyPermissions(client, room.collection, room.item, 'read');
+				const allowedReadFields = await room.verifyPermissions(client, room.collection, room.item, 'read');
+				const allowedUpdateFields = await room.verifyPermissions(client, room.collection, room.item, 'update');
 
-				if (!isFieldAllowed(allowedFields, message.field)) {
+				if (!isFieldAllowed(allowedReadFields, message.field) || !isFieldAllowed(allowedUpdateFields, message.field)) {
 					throw new InvalidPayloadError({
 						reason: `No permission to focus on field ${message.field} or field does not exist`,
 					});
 				}
-			}
 
-			room.focus(client, message.field);
+				room.focus(client, message.field);
+			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'focus');
 		}

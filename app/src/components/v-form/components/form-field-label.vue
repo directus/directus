@@ -9,7 +9,7 @@ import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { CollabUser } from '@/composables/use-collab';
-import HeaderCollab from '@/views/private/components/header-collab.vue';
+import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
 
 const props = withDefaults(
 	defineProps<{

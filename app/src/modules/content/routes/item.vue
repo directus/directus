@@ -33,7 +33,7 @@ import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
-import HeaderCollab from '@/views/private/components/header-collab.vue';
+import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
@@ -630,7 +630,7 @@ function useCollectionRoute() {
 		</template>
 
 		<template #title:append>
-			<header-collab :model-value="collabUsers" :connected="connected" small />
+			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template #actions>

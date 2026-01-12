@@ -36,7 +36,7 @@ import PrivateViewHeaderBarActionButton from '../private-view/components/private
 import OverlayItemContent from './overlay-item-content.vue';
 import RenderTemplate from './render-template.vue';
 import { useCollab } from '@/composables/use-collab';
-import HeaderCollab from '@/views/private/components/header-collab.vue';
+import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
 import ComparisonModal from './comparison/comparison-modal.vue';
 
 export interface OverlayItemProps {
