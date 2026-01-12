@@ -1,10 +1,10 @@
 import type { File } from '@directus/types';
+import PQueue from 'p-queue';
 import type { Upload } from 'tus-js-client';
 import { unexpectedError } from './unexpected-error';
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { uploadFile } from '@/utils/upload-file';
-import PQueue from 'p-queue';
 
 export async function uploadFiles(
 	files: globalThis.File[],

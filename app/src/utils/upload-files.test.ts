@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { unexpectedError } from './unexpected-error';
+import { uploadFiles } from './upload-files';
+import { notify } from '@/utils/notify';
 
 const uploadFile = vi.hoisted(() => vi.fn());
 
@@ -25,10 +28,6 @@ vi.mock('@/stores/server', () => ({
 vi.mock('./unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
-
-import { notify } from '@/utils/notify';
-import { uploadFiles } from './upload-files';
-import { unexpectedError } from './unexpected-error';
 
 describe('uploadFiles', () => {
 	afterEach(() => {
