@@ -18,18 +18,21 @@ export interface ValidateItemAccessOptions {
 	returnAllowedRootFields?: boolean;
 }
 
+export interface ValidateItemAccessOptionsWithFields extends ValidateItemAccessOptions {
+	returnAllowedRootFields: true;
+}
+
 export interface ValidateItemAccessResult {
 	accessAllowed: boolean;
 	allowedRootFields?: string[];
 }
 
-export interface ValidateItemAccessResultWithFields {
-	accessAllowed: boolean;
+export interface ValidateItemAccessResultWithFields extends ValidateItemAccessResult {
 	allowedRootFields: string[];
 }
 
 export async function validateItemAccess(
-	options: ValidateItemAccessOptions & { returnAllowedRootFields: true },
+	options: ValidateItemAccessOptionsWithFields,
 	context: Context,
 ): Promise<ValidateItemAccessResultWithFields>;
 
@@ -39,9 +42,9 @@ export async function validateItemAccess(
 ): Promise<ValidateItemAccessResult>;
 
 export async function validateItemAccess(
-	options: ValidateItemAccessOptions,
+	options: ValidateItemAccessOptions | ValidateItemAccessOptionsWithFields,
 	context: Context,
-): Promise<ValidateItemAccessResult> {
+): Promise<ValidateItemAccessResult | ValidateItemAccessResultWithFields> {
 	const primaryKeyField = context.schema.collections[options.collection]?.primary;
 
 	if (!primaryKeyField) {
