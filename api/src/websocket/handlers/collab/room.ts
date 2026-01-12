@@ -167,7 +167,8 @@ export class Room {
 			const { keys } = meta as { keys: string[] };
 			const { accountability } = context;
 
-			if (!keys.includes(item!)) return;
+			// Skip if this update is for a different item (singletons have item=null)
+			if (item !== null && !keys.includes(item)) return;
 
 			const service = getService(collection, { schema: await getSchema() });
 
