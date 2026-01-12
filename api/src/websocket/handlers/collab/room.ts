@@ -231,25 +231,37 @@ export class Room {
 		this.messenger.addClient(client);
 		await this.ready;
 
+		let added = false;
+		let clientColor: Color | undefined;
+
 		if (!(await this.hasClient(client.uid))) {
-			const clientColor = COLORS[random(COLORS.length - 1)]!;
-
-			await this.sendAll({
-				action: ACTION.SERVER.JOIN,
-				user: client.accountability!.user!,
-				connection: client.uid,
-				color: clientColor,
-			});
-
 			await this.store(async (store) => {
-				const clientColors = await store.get('clientColors');
-				clientColors[client.uid] = clientColor;
-				await store.set('clientColors', clientColors);
-
 				const clients = await store.get('clients');
-				clients.push({ uid: client.uid, accountability: client.accountability! });
-				await store.set('clients', clients);
+
+				if (clients.findIndex((c) => c.uid === client.uid) === -1) {
+					added = true;
+					clientColor = COLORS[random(COLORS.length - 1)]!;
+
+					const clientColors = await store.get('clientColors');
+					clientColors[client.uid] = clientColor;
+					await store.set('clientColors', clientColors);
+
+					clients.push({ uid: client.uid, accountability: client.accountability! });
+					await store.set('clients', clients);
+				}
 			});
+		}
+
+		if (added && clientColor) {
+			await this.sendExcluding(
+				{
+					action: ACTION.SERVER.JOIN,
+					user: client.accountability!.user!,
+					connection: client.uid,
+					color: clientColor,
+				},
+				client.uid,
+			);
 		}
 
 		const { collection, item, version, clientColors, changes, focuses, clients } = (await this.store(async (store) => {
