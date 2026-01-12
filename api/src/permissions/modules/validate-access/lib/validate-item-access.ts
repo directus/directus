@@ -44,7 +44,7 @@ export async function validateItemAccess(
 export async function validateItemAccess(
 	options: ValidateItemAccessOptions | ValidateItemAccessOptionsWithRootFields,
 	context: Context,
-): Promise<ValidateItemAccessResult | ValidateItemAccessResultWithFields> {
+): Promise<ValidateItemAccessResult | ValidateItemAccessResultWithRootFields> {
 	const primaryKeyField = context.schema.collections[options.collection]?.primary;
 
 	if (!primaryKeyField) {
