@@ -1,3 +1,5 @@
+import type { Readable } from 'node:stream';
+import path from 'path';
 import { useEnv } from '@directus/env';
 import {
 	ForbiddenError,
@@ -21,9 +23,7 @@ import archiver from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType, extension } from 'mime-types';
-import type { Readable } from 'node:stream';
 import hash from 'object-hash';
-import path from 'path';
 import sharp from 'sharp';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
@@ -34,8 +34,8 @@ import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { NameDeduper } from './assets/name-deduper.js';
-import { FilesService } from './files.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
+import { FilesService } from './files.js';
 import { FoldersService } from './folders.js';
 
 const env = useEnv();

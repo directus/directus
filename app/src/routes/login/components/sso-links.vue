@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -10,9 +13,6 @@ import { AUTH_SSO_DRIVERS } from '@/constants';
 import { translateAPIError } from '@/lang';
 import { AuthProvider } from '@/types/login';
 import { getRootPath } from '@/utils/get-root-path';
-import formatTitle from '@directus/format-title';
-import { computed, onMounted, ref, toRefs, watch } from 'vue';
-import { useRoute } from 'vue-router';
 
 const props = defineProps<{
 	providers: AuthProvider[];

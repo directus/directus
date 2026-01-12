@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { SetupForm as Form } from '@directus/types';
+import { useCookies } from '@vueuse/integrations/useCookies';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -10,10 +14,6 @@ import { defaultValues, useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
-import type { SetupForm as Form } from '@directus/types';
-import { useCookies } from '@vueuse/integrations/useCookies';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const settingsStore = useSettingsStore();
 const cookies = useCookies(['license-banner-dismissed']);

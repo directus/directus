@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Field, ValidationError } from '@directus/types';
+import { merge } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VChip from '@/components/v-chip.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
@@ -6,10 +10,6 @@ import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VItem from '@/components/v-item.vue';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
-import { Field, ValidationError } from '@directus/types';
-import { merge } from 'lodash';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{

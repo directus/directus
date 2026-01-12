@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import type { Field, Width } from '@directus/types';
+import { cloneDeep } from 'lodash';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterLink, useRouter } from 'vue-router';
+import Draggable from 'vuedraggable';
+import FieldSelectMenu from './field-select-menu.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -16,13 +23,6 @@ import { getSpecialForType } from '@/utils/get-special-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { Field, Width } from '@directus/types';
-import { cloneDeep } from 'lodash';
-import { computed, ref, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterLink, useRouter } from 'vue-router';
-import Draggable from 'vuedraggable';
-import FieldSelectMenu from './field-select-menu.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -347,6 +347,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 .field-select {
 	--input-height: 40px;
 	--theme--form--field--input--padding: 8px;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .full,

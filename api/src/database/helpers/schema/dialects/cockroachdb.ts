@@ -1,8 +1,8 @@
 import type { KNEX_TYPES } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { type Knex } from 'knex';
 import type { CreateIndexOptions, Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
-import { useEnv } from '@directus/env';
 
 const env = useEnv();
 

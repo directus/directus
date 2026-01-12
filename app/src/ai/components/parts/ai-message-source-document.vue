@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
 import type { SourceDocumentUIPart } from 'ai';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 defineProps<{
 	part: SourceDocumentUIPart;

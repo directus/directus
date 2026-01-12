@@ -1,6 +1,6 @@
 import type { ApplyQueryFields, CollectionType, Query, QueryItem, RegularCollections } from '../../../types/index.js';
-import { throwIfEmpty, throwIfCoreCollection } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 
 export type ReadItemOutput<
 	Schema,

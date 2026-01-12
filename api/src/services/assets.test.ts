@@ -1,14 +1,19 @@
-import type { Accountability } from '@directus/types';
-import type { Knex } from 'knex';
-import knex from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { PassThrough } from 'node:stream';
-import { beforeEach, describe, expect, test, vi, afterEach, beforeAll, it, type MockedFunction } from 'vitest';
-import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
+import { Readable } from 'node:stream';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Driver, StorageManager } from '@directus/storage';
+import type { Accountability } from '@directus/types';
 import type { File, SchemaOverview } from '@directus/types';
-import { Readable } from 'node:stream';
+import archiver, { type Archiver } from 'archiver';
+import type { Knex } from 'knex';
+import knex from 'knex';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
+import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
+import { getStorage } from '../storage/index.js';
+import { AssetsService } from './assets.js';
+import { FilesService } from './files.js';
+import { FoldersService } from './folders.js';
 
 vi.mock('@directus/storage');
 vi.mock('../permissions/modules/validate-access/lib/validate-item-access.js');
@@ -43,13 +48,7 @@ vi.mock('../utils/get-schema.js', () => ({
 
 vi.mock('../storage/index.js');
 
-import archiver, { type Archiver } from 'archiver';
-import { getStorage } from '../storage/index.js';
-import { AssetsService } from './assets.js';
-import { FilesService } from './files.js';
-import { FoldersService } from './folders.js';
-
-describe('Services / Assets', () => {
+describe('AssetsService', () => {
 	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
@@ -351,40 +350,38 @@ describe('Services / Assets', () => {
 			});
 		});
 	});
-});
-
-describe('AssetsService', () => {
-	const mockArchiver = {
-		append: vi.fn(),
-		finalize: vi.fn().mockResolvedValue(undefined),
-	};
-
-	const mockSchema = {
-		collections: {},
-		relations: [],
-	} as SchemaOverview;
-
-	let mockDriver: Partial<Driver>;
-	let mockStorage: Partial<StorageManager>;
-
-	// Common setup
-	beforeEach(() => {
-		vi.resetAllMocks();
-
-		mockDriver = {
-			read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
-			exists: vi.fn().mockResolvedValue(true),
-		};
-
-		mockStorage = {
-			location: vi.fn(() => mockDriver as Driver),
-		};
-
-		vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
-		vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
-	});
 
 	describe('zip (private)', () => {
+		const mockArchiver = {
+			append: vi.fn(),
+			finalize: vi.fn().mockResolvedValue(undefined),
+		};
+
+		const mockSchema = {
+			collections: {},
+			relations: [],
+		} as SchemaOverview;
+
+		let mockDriver: Partial<Driver>;
+		let mockStorage: Partial<StorageManager>;
+
+		// Common setup
+		beforeEach(() => {
+			vi.resetAllMocks();
+
+			mockDriver = {
+				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
+				exists: vi.fn().mockResolvedValue(true),
+			};
+
+			mockStorage = {
+				location: vi.fn(() => mockDriver as Driver),
+			};
+
+			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
+			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+		});
+
 		test('should throw error when no files provided', async () => {
 			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([]);
 
@@ -569,6 +566,36 @@ describe('AssetsService', () => {
 	});
 
 	describe('zipFiles', () => {
+		const mockArchiver = {
+			append: vi.fn(),
+			finalize: vi.fn().mockResolvedValue(undefined),
+		};
+
+		const mockSchema = {
+			collections: {},
+			relations: [],
+		} as SchemaOverview;
+
+		let mockDriver: Partial<Driver>;
+		let mockStorage: Partial<StorageManager>;
+
+		// Common setup
+		beforeEach(() => {
+			vi.resetAllMocks();
+
+			mockDriver = {
+				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
+				exists: vi.fn().mockResolvedValue(true),
+			};
+
+			mockStorage = {
+				location: vi.fn(() => mockDriver as Driver),
+			};
+
+			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
+			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+		});
+
 		test('should zip multiple files', async () => {
 			const readByQuerySpy = vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
 				{ id: 'file1', folder: null, filename_download: 'file1.txt' },
@@ -604,6 +631,36 @@ describe('AssetsService', () => {
 	});
 
 	describe('zipFolder', () => {
+		const mockArchiver = {
+			append: vi.fn(),
+			finalize: vi.fn().mockResolvedValue(undefined),
+		};
+
+		const mockSchema = {
+			collections: {},
+			relations: [],
+		} as SchemaOverview;
+
+		let mockDriver: Partial<Driver>;
+		let mockStorage: Partial<StorageManager>;
+
+		// Common setup
+		beforeEach(() => {
+			vi.resetAllMocks();
+
+			mockDriver = {
+				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
+				exists: vi.fn().mockResolvedValue(true),
+			};
+
+			mockStorage = {
+				location: vi.fn(() => mockDriver as Driver),
+			};
+
+			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
+			vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
+		});
+
 		test('should zip folder with files', async () => {
 			const folderId = 'root-id';
 

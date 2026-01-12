@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
 import { computed } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 type InterfaceOptions = {
 	minValue: number;

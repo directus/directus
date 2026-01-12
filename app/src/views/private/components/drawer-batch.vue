@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { getEndpoint } from '@directus/utils';
+import { computed, ref, toRefs } from 'vue';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
 import VDrawer from '@/components/v-drawer.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getEndpoint } from '@directus/utils';
-import { computed, ref, toRefs } from 'vue';
-import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 const props = defineProps<{
 	collection: string;

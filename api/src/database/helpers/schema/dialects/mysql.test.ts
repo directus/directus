@@ -1,11 +1,10 @@
 import type { Knex } from 'knex';
 import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelperMySQL } from './mysql.js';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-import { SchemaHelperMySQL } from './mysql.js';
 
 describe('SchemaHelperMySQL', () => {
 	function createHelper() {

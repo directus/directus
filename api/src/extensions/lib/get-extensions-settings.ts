@@ -1,9 +1,9 @@
-import type { BundleExtension, Extension, ExtensionSettings } from '@directus/types';
 import { randomUUID } from 'node:crypto';
+import { list } from '@directus/extensions-registry';
+import type { BundleExtension, Extension, ExtensionSettings } from '@directus/types';
 import getDatabase from '../../database/index.js';
 import { ExtensionsService } from '../../services/extensions.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { list } from '@directus/extensions-registry';
 
 /**
  * Loads stored settings for all extensions. Creates empty new rows in extensions tables for
