@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { DeepPartial, Field, FieldMeta } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Repeater from './list.vue';
 import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { FIELD_TYPES_SELECT } from '@/constants';
 import InterfaceSystemInputTranslatedString from '@/interfaces/_system/system-input-translated-string/input-translated-string.vue';
 import { translate } from '@/utils/translate-object-values';
-import { DeepPartial, Field, FieldMeta } from '@directus/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Repeater from './list.vue';
 
 const props = defineProps<{
 	value: Record<string, any> | null;

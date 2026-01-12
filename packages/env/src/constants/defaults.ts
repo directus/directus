@@ -1,6 +1,6 @@
-import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
+import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 
 export const DEFAULTS = {
 	CONFIG_PATH: resolve(cwd(), '.env'),
@@ -193,4 +193,6 @@ export const DEFAULTS = {
 	ACCEPT_TERMS: false,
 
 	MCP_ENABLED: true,
+
+	AI_ENABLED: true,
 } as const;

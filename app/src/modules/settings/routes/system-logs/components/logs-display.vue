@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import VChip from '@/components/v-chip.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import { localizedFormat } from '@/utils/localized-format';
 import { nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import { Log } from '../types';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { localizedFormat } from '@/utils/localized-format';
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 

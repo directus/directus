@@ -2,7 +2,11 @@ import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/ty
 import { toBoolean } from '@directus/utils';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
 import type { AST } from '../../../../types/index.js';
+import { fetchPermissions } from '../../../lib/fetch-permissions.js';
+import { fetchPolicies } from '../../../lib/fetch-policies.js';
 import type { Context } from '../../../types.js';
+import { fetchAllowedFields } from '../../fetch-allowed-fields/fetch-allowed-fields.js';
+import { injectCases } from '../../process-ast/lib/inject-cases.js';
 import { processAst } from '../../process-ast/process-ast.js';
 
 export interface ValidateItemAccessOptions {
@@ -11,9 +15,33 @@ export interface ValidateItemAccessOptions {
 	collection: string;
 	primaryKeys: PrimaryKey[];
 	fields?: string[];
+	returnAllowedRootFields?: boolean;
 }
 
-export async function validateItemAccess(options: ValidateItemAccessOptions, context: Context) {
+export interface ValidateItemAccessResult {
+	accessAllowed: boolean;
+	allowedRootFields?: string[];
+}
+
+export interface ValidateItemAccessResultWithFields {
+	accessAllowed: boolean;
+	allowedRootFields: string[];
+}
+
+export async function validateItemAccess(
+	options: ValidateItemAccessOptions & { returnAllowedRootFields: true },
+	context: Context,
+): Promise<ValidateItemAccessResultWithFields>;
+
+export async function validateItemAccess(
+	options: ValidateItemAccessOptions,
+	context: Context,
+): Promise<ValidateItemAccessResult>;
+
+export async function validateItemAccess(
+	options: ValidateItemAccessOptions,
+	context: Context,
+): Promise<ValidateItemAccessResult> {
 	const primaryKeyField = context.schema.collections[options.collection]?.primary;
 
 	if (!primaryKeyField) {
@@ -43,6 +71,44 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		},
 	};
 
+	let hasItemRules;
+	let permissionedFields;
+
+	// Inject the root fields after the permissions have been processed, as to not require access to all collection fields
+	if (options.returnAllowedRootFields) {
+		const allowedFields = await fetchAllowedFields(
+			{ accountability: options.accountability, action: options.action, collection: options.collection },
+			context,
+		);
+
+		const schemaFields = Object.keys(context.schema.collections[options.collection]!.fields);
+		const hasWildcard = allowedFields.includes('*');
+		permissionedFields = hasWildcard ? schemaFields : allowedFields;
+
+		const policies = await fetchPolicies(options.accountability, context);
+
+		const permissions = await fetchPermissions(
+			{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
+			context,
+		);
+
+		// Only inject cases if there are item-level permission rules
+		hasItemRules = permissions.some((p) => p.permissions && Object.keys(p.permissions).length > 0);
+
+		if (hasItemRules) {
+			// Create children only for fields that exist in schema and are allowed by permissions
+			ast.children = permissionedFields.map((field) => ({
+				type: 'field',
+				name: field,
+				fieldKey: field,
+				whenCase: [],
+				alias: false,
+			}));
+
+			injectCases(ast, permissions);
+		}
+	}
+
 	const items = await fetchPermittedAstRootFields(ast, {
 		schema: context.schema,
 		accountability: options.accountability,
@@ -50,15 +116,41 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		action: options.action,
 	});
 
-	if (items && items.length === options.primaryKeys.length) {
-		const { fields } = options;
+	const hasAccess = items && items.length === options.primaryKeys.length;
 
-		if (fields) {
-			return items.every((item: any) => fields.every((field) => toBoolean(item[field])));
+	if (!hasAccess) {
+		if (options.returnAllowedRootFields) {
+			return { accessAllowed: false, allowedRootFields: [] };
 		}
 
-		return true;
+		return { accessAllowed: false };
 	}
 
-	return false;
+	let accessAllowed = true;
+
+	// If specific fields were requested, verify they are all accessible
+	if (options.fields) {
+		accessAllowed = items.every((item: any) => options.fields!.every((field) => toBoolean(item[field])));
+	}
+
+	// If returnAllowedRootFields, return intersection of allowed fields across all items
+	if (options.returnAllowedRootFields) {
+		// If there are no item-level rules, return the permissioned fields directly
+		if (!hasItemRules) {
+			return {
+				accessAllowed,
+				allowedRootFields: permissionedFields!,
+			};
+		}
+
+		const allowedRootFields =
+			items.length > 0 ? Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1)) : [];
+
+		return {
+			accessAllowed,
+			allowedRootFields,
+		};
+	}
+
+	return { accessAllowed };
 }

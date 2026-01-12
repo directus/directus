@@ -1,7 +1,7 @@
-import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
 import VWorkspace from './v-workspace.vue';
+import type { GlobalMountOptions } from '@/__utils__/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-workspace-tile'],

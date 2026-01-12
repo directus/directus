@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue';
+import MultipleRelation from './multiple-relation.vue';
+import SingleRelation from './single-relation.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useInsightsStore } from '@/stores/insights';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import { computed, ref } from 'vue';
-import MultipleRelation from './multiple-relation.vue';
-import SingleRelation from './single-relation.vue';
 
 const props = defineProps<{
 	field: string;
