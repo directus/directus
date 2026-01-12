@@ -9,10 +9,10 @@ import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allo
 import getDatabase from '../../../database/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { InvalidPayloadError } from '@directus/errors';
-import { hasFieldPermision } from './field-permissions.js';
+import { Messenger } from './messenger.js';
 import { ClientMessage } from '@directus/types/collab';
 import { getService } from '../../../utils/get-service.js';
-import { Messenger } from './messenger.js';
+import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 
 /**
  * Handler responsible for subscriptions
@@ -41,7 +41,7 @@ export class CollabHandler {
 				const validMessage = ClientMessage.parse(message);
 				await this[`on${upperFirst(validMessage.action)}`](client, message);
 			} catch (error) {
-				handleWebSocketError(client, error, 'subscribe');
+				handleWebSocketError(client, error, WS_TYPE.COLLAB);
 			}
 		});
 
@@ -50,8 +50,17 @@ export class CollabHandler {
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
 	}
 
+	/**
+	 * Join a collaboration room
+	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
 		try {
+			if (client.accountability?.share) {
+				throw new InvalidPayloadError({
+					reason: 'Collaboration is not supported for shares',
+				});
+			}
+
 			this.messenger.addClient(client);
 			const schema = await getSchema();
 
@@ -94,18 +103,19 @@ export class CollabHandler {
 				message.initialChanges,
 			);
 
-			client.on('close', async () => {
-				await room.leave(client);
-			});
-
 			await room.join(client);
 		} catch (err) {
 			handleWebSocketError(client, err, 'join');
 		}
 	}
 
+	/**
+	 * Leave a collaboration room
+	 */
 	async onLeave(client: WebSocketClient, message?: LeaveMessage) {
 		try {
+			const roomIds: string[] = [];
+
 			if (message) {
 				const room = await this.rooms.getRoom(message.room);
 
@@ -120,20 +130,27 @@ export class CollabHandler {
 					});
 
 				room.leave(client);
+				roomIds.push(room.uid);
 			} else {
 				const rooms = await this.rooms.getClientRooms(client);
 
 				for (const room of rooms) {
 					room.leave(client);
+					roomIds.push(room.uid);
 				}
 			}
 
-			this.rooms.cleanupRooms();
+			if (roomIds.length > 0) {
+				await this.rooms.cleanupRooms(roomIds);
+			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'leave');
 		}
 	}
 
+	/**
+	 * Save the room state
+	 */
 	async onSave(client: WebSocketClient, message: SaveMessage) {
 		try {
 			const room = await this.rooms.getRoom(message.room);
@@ -154,6 +171,9 @@ export class CollabHandler {
 		}
 	}
 
+	/**
+	 * Update a field value
+	 */
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
 		try {
 			const room = await this.rooms.getRoom(message.room);
@@ -168,17 +188,17 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			const focus = await room.getFocusBy(client.uid);
+			const focus = await room.getFocusByUser(client.uid);
 
-			if (focus && focus !== message.field) {
+			if (!focus || focus !== message.field) {
 				throw new InvalidPayloadError({
-					reason: `Field ${message.field} has already been focused by another user`,
+					reason: `Cannot update field ${message.field} without focusing on it first`,
 				});
 			}
 
-			if (
-				(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field, 'update')) === false
-			)
+			const allowedFields = await room.verifyPermissions(client, room.collection, room.item, 'update');
+
+			if (!isFieldAllowed(allowedFields, message.field))
 				throw new InvalidPayloadError({
 					reason: `No permission to update field ${message.field} or field does not exist`,
 				});
@@ -193,6 +213,9 @@ export class CollabHandler {
 		}
 	}
 
+	/**
+	 * Update multiple field values
+	 */
 	async onUpdateAll(client: WebSocketClient, message: UpdateAllMessage) {
 		try {
 			const room = await this.rooms.getRoom(message.room);
@@ -207,8 +230,11 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
+			const collection = await room.getCollection();
+			const allowedFields = await room.verifyPermissions(client, collection, room.item, 'update');
+
 			for (const key of Object.keys(message.changes ?? {})) {
-				if ((await hasFieldPermision(client.accountability!, await room.getCollection(), key, 'update')) === false)
+				if (!isFieldAllowed(allowedFields, key))
 					throw new InvalidPayloadError({
 						reason: `No permission to update field ${key} or field does not exist`,
 					});
@@ -222,6 +248,9 @@ export class CollabHandler {
 		}
 	}
 
+	/**
+	 * Update focus state
+	 */
 	async onFocus(client: WebSocketClient, message: FocusMessage) {
 		try {
 			const room = await this.rooms.getRoom(message.room);
@@ -236,18 +265,26 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			if (
-				message.field &&
-				((await hasFieldPermision(client.accountability!, await room.getCollection(), message.field, 'read')) ===
-					false ||
-					(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field, 'update')) ===
-						false)
-			)
-				throw new InvalidPayloadError({
-					reason: `No permission to focus on field ${message.field} or field does not exist`,
-				});
+			if (message.field) {
+				const allowedReadFields = await room.verifyPermissions(client, room.collection, room.item, 'read');
+				const allowedUpdateFields = await room.verifyPermissions(client, room.collection, room.item, 'update');
 
-			room.focus(client, message.field);
+				if (!isFieldAllowed(allowedReadFields, message.field) || !isFieldAllowed(allowedUpdateFields, message.field)) {
+					throw new InvalidPayloadError({
+						reason: `No permission to focus on field ${message.field} or field does not exist`,
+					});
+				}
+
+				const existingFocus = await room.getFocusByField(message.field);
+
+				if (existingFocus && existingFocus !== client.uid) {
+					throw new InvalidPayloadError({
+						reason: `Field ${message.field} is already focused by another user`,
+					});
+				}
+
+				room.focus(client, message.field);
+			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'focus');
 		}
