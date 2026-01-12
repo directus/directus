@@ -550,23 +550,38 @@ export class Room {
 
 				if (!itemData) throw new Error('No access');
 			} else if (schema.collections[collection]?.singleton) {
+				// validateItemAccess requires the PK to check for item rules
+				const pkField = schema.collections[collection]!.primary;
+
+				if (pkField) {
+					if (Array.from(fieldsToFetch).some((field) => field === '*' || field === pkField) === false) {
+						fieldsToFetch.push(pkField);
+					}
+				}
+
 				itemData = await service.readSingleton({ fields: fieldsToFetch });
 			}
 
 			// TODO: Check which approach might be faster better: Checking it JS or DB side
 			// const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
-			const allowedFields = (
-				await validateItemAccess(
-					{
-						collection,
-						accountability,
-						action,
-						primaryKeys: item ? [item] : [],
-						returnAllowedRootFields: true,
-					},
-					{ knex, schema },
-				)
-			).allowedRootFields;
+			let primaryKeys: (string | number)[] = item ? [item] : [];
+
+			if (schema.collections[collection]?.singleton && itemData) {
+				const pkField = schema.collections[collection]!.primary;
+				const pk = itemData[pkField];
+
+				if (pk) primaryKeys = [pk];
+			}
+
+			const validationContext = {
+				collection,
+				accountability,
+				action,
+				primaryKeys,
+				returnAllowedRootFields: true,
+			};
+
+			const allowedFields = (await validateItemAccess(validationContext, { knex, schema })).allowedRootFields || [];
 
 			// Determine TTL and relational dependencies for cache invalidation
 			const { ttlMs, dependencies } = calculateCacheMetadata(
