@@ -188,11 +188,17 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			const focus = await room.getFocusBy(client.uid);
+			const { myFocus, focusHolder } = await room.checkFocus(client.uid, message.field);
 
-			if (focus && focus !== message.field) {
+			if (myFocus && myFocus !== message.field) {
 				throw new InvalidPayloadError({
-					reason: `Field ${message.field} has already been focused by another user`,
+					reason: `Cannot update field ${message.field} while focused on ${myFocus}`,
+				});
+			}
+
+			if (focusHolder) {
+				throw new InvalidPayloadError({
+					reason: `Field ${message.field} is being edited by another user`,
 				});
 			}
 

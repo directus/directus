@@ -227,8 +227,17 @@ export class Room {
 		});
 	}
 
-	async getFocusBy(id: ClientID) {
-		return await this.store(async (store) => (await store.get('focuses'))[id]);
+	async checkFocus(clientId: ClientID, targetField: string) {
+		return await this.store(async (store) => {
+			const focuses = await store.get('focuses');
+			const myFocus = focuses[clientId] as string | undefined;
+			const focusHolder = Object.entries(focuses).find(([cid, f]) => f === targetField && cid !== clientId);
+
+			return {
+				myFocus,
+				focusHolder: focusHolder ? (focusHolder[0] as ClientID) : null,
+			};
+		});
 	}
 
 	/**

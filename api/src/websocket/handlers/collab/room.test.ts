@@ -419,6 +419,43 @@ describe('room', () => {
 			room: uid,
 		});
 	});
+
+	test('checkFocus', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(fetchPermissions).mockResolvedValue([
+			{
+				fields: ['*'],
+				permissions: {},
+				validation: {},
+			},
+		] as any);
+
+		// Client A focuses on title
+		await room.focus(clientA, 'title');
+
+		// Client A checks focus on title
+		const checkA = await room.checkFocus('abc', 'title');
+		expect(checkA.myFocus).toBe('title');
+		expect(checkA.focusHolder).toBeNull();
+
+		// Client B checks focus on title
+		const checkB = await room.checkFocus('def', 'title');
+		expect(checkB.myFocus).toBeUndefined();
+		expect(checkB.focusHolder).toBe('abc');
+
+		// Client A checks focus on different field
+		const checkDiff = await room.checkFocus('abc', 'content');
+		expect(checkDiff.myFocus).toBe('title');
+		expect(checkDiff.focusHolder).toBeNull();
+	});
 });
 
 describe('getRoomHash', () => {
