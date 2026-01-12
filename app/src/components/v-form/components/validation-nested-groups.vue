@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ValidationNode } from '@/utils/format-validation-structure';
-import { formatValidationRule } from '@/utils/format-validation-structure';
 import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ValidationNestedGroupsList, { type RenderItem } from './validation-nested-groups-list.vue';
+import type { ValidationNode } from '@/utils/format-validation-structure';
+import { formatValidationRule } from '@/utils/format-validation-structure';
 
 interface Props {
 	node: ValidationNode;

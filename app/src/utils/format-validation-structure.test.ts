@@ -1,9 +1,9 @@
-import { test, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
 import {
 	formatValidationRule,
-	parseValidationStructure,
 	hasNestedGroups,
+	parseValidationStructure,
 	type ValidationNode,
 } from './format-validation-structure';
 
