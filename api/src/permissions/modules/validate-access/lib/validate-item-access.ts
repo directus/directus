@@ -32,7 +32,7 @@ export interface ValidateItemAccessResultWithFields extends ValidateItemAccessRe
 }
 
 export async function validateItemAccess(
-	options: ValidateItemAccessOptionsWithFields,
+	options: ValidateItemAccessOptionsWithRootFields,
 	context: Context,
 ): Promise<ValidateItemAccessResultWithFields>;
 
