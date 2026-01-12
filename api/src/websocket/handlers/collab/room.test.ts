@@ -381,6 +381,103 @@ describe('room', () => {
 		});
 	});
 
+	test('sender does not receive echo', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(sanitizePayload).mockResolvedValue({ title: 'New Title' });
+
+		await room.update(clientA, { title: 'New Title' });
+
+		// A (sender) should NOT have the update
+		const clientAMsgs = vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'abc');
+		const echoUpdate = clientAMsgs.find((c: any) => c[1].action === 'update');
+		expect(echoUpdate).toBeUndefined();
+
+		// B (receiver) should have the update
+		const clientBMsgs = vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'def');
+		const updateMsg = clientBMsgs.find((c: any) => c[1].action === 'update' && c[1].field === 'title');
+		expect(updateMsg).toBeDefined();
+	});
+
+	test('multiple clients update different fields', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(sanitizePayload).mockImplementation(async (_, payload) => payload);
+
+		// Simultaneous updates
+		await Promise.all([room.update(clientA, { title: 'Title A' }), room.update(clientB, { status: 'published' })]);
+
+		// Verify final state in store
+		const changes = mockData.get(`${uid}:changes`);
+
+		expect(changes).toEqual({
+			title: 'Title A',
+			status: 'published',
+		});
+
+		// A should receive B's update
+		const msgToA = vi
+			.mocked(mockMessenger.sendClient)
+			.mock.calls.find((c: any) => c[0] === 'abc' && c[1].action === 'update' && c[1].field === 'status');
+
+		expect(msgToA).toBeDefined();
+		expect(msgToA?.[1].changes).toBe('published');
+
+		// B should receive A's update
+		const msgToB = vi
+			.mocked(mockMessenger.sendClient)
+			.mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'update' && c[1].field === 'title');
+
+		expect(msgToB).toBeDefined();
+		expect(msgToB?.[1].changes).toBe('Title A');
+	});
+
+	test('last write wins', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(sanitizePayload).mockImplementation(async (_, payload) => payload);
+
+		// A updates first
+		await room.update(clientA, { title: 'Title A' });
+		// B updates same field shortly after
+		await room.update(clientB, { title: 'Title B' });
+
+		// Verify final state in store
+		const changes = mockData.get(`${uid}:changes`);
+
+		expect(changes).toEqual({
+			title: 'Title B',
+		});
+
+		// Verify the final state
+		const updatesToA = vi
+			.mocked(mockMessenger.sendClient)
+			.mock.calls.filter((c: any) => c[0] === 'abc' && c[1].action === 'update' && c[1].field === 'title');
+
+		expect(updatesToA.find((args: any) => args[1].changes === 'Title B')).toBeDefined();
+	});
+
 	test('save', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
