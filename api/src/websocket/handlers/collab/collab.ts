@@ -238,7 +238,10 @@ export class CollabHandler {
 
 			if (
 				message.field &&
-				(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field)) === false
+				((await hasFieldPermision(client.accountability!, await room.getCollection(), message.field, 'read')) ===
+					false ||
+					(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field, 'update')) ===
+						false)
 			)
 				throw new InvalidPayloadError({
 					reason: `No permission to focus on field ${message.field} or field does not exist`,
