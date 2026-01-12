@@ -1,15 +1,14 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
+import type { Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
+import { fetchPermissions } from '../../../lib/fetch-permissions.js';
+import { fetchPolicies } from '../../../lib/fetch-policies.js';
 import type { Context } from '../../../types.js';
+import { injectCases } from '../../process-ast/lib/inject-cases.js';
 import { processAst } from '../../process-ast/process-ast.js';
 import { validateItemAccess } from './validate-item-access.js';
-
-import { fetchPolicies } from '../../../lib/fetch-policies.js';
-import { fetchPermissions } from '../../../lib/fetch-permissions.js';
-import type { Permission } from '@directus/types';
-import { injectCases } from '../../process-ast/lib/inject-cases.js';
 
 vi.mock('../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js');
 vi.mock('../../../../database/run-ast/run-ast.js');
