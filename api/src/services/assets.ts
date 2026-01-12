@@ -60,7 +60,7 @@ export class AssetsService {
 		}
 
 		const bypassFields: (keyof File)[] = ['type', 'filesize'];
-		const fieldsToKeep = new Set<string>([...bypassFields, ...allowedFields]);
+		const fieldsToKeep = new Set<string>([...allowedFields, ...bypassFields]);
 
 		const filteredFile: Partial<File> = {};
 
