@@ -40,7 +40,7 @@ test('Queries the database', async () => {
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
 			schema,
 		} as Context),
-	).resolves.toBe(false);
+	).resolves.toMatchObject({ accessAllowed: false });
 
 	expect(processAst).toHaveBeenCalledWith(
 		{
@@ -98,7 +98,7 @@ test('Returns false if no items are returned', async () => {
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
 			schema,
 		} as Context),
-	).resolves.toBe(false);
+	).resolves.toMatchObject({ accessAllowed: false });
 });
 
 test('Returns true if the number of returned items matches the number of requested primary keys', async () => {
@@ -116,7 +116,7 @@ test('Returns true if the number of returned items matches the number of request
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 2] }, {
 			schema,
 		} as Context),
-	).resolves.toBe(true);
+	).resolves.toMatchObject({ accessAllowed: true });
 });
 
 test('Returns true if the number of returned items matches the number of requested primary keys and the user has access to the fields', async () => {
@@ -137,7 +137,7 @@ test('Returns true if the number of returned items matches the number of request
 				schema,
 			} as Context,
 		),
-	).resolves.toBe(true);
+	).resolves.toMatchObject({ accessAllowed: true });
 });
 
 test('Returns false if the number of returned items matches the number of requested primary keys and the user does not have access to the fields', async () => {
@@ -158,5 +158,5 @@ test('Returns false if the number of returned items matches the number of reques
 				schema,
 			} as Context,
 		),
-	).resolves.toBe(false);
+	).resolves.toMatchObject({ accessAllowed: false });
 });

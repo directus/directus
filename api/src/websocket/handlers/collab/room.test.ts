@@ -27,11 +27,13 @@ vi.mock('../../../permissions/lib/fetch-policies.js');
 vi.mock('../../../permissions/utils/extract-required-dynamic-variable-context.js');
 vi.mock('../../../permissions/utils/fetch-dynamic-variable-data.js');
 vi.mock('../../../permissions/utils/process-permissions.js');
+vi.mock('../../../permissions/modules/validate-access/lib/validate-item-access.js');
 
 import { permissionCache } from './permissions-cache.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
 import { processPermissions } from '../../../permissions/utils/process-permissions.js';
+import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
 
 const mockMessenger = {
 	sendClient: vi.fn(),
@@ -114,6 +116,19 @@ beforeEach(() => {
 	vi.mocked(processPermissions).mockImplementation(({ permissions }) => permissions);
 	vi.mocked(fetchDynamicVariableData).mockResolvedValue({});
 	vi.mocked(extractRequiredDynamicVariableContextForPermissions).mockReturnValue({} as any);
+
+	vi.mocked(getSchema).mockResolvedValue({
+		collections: {
+			coll: { primary: 'id', singleton: false, fields: {} },
+			articles: { primary: 'id', singleton: false, fields: {} },
+		},
+		relations: [],
+	} as any);
+
+	vi.mocked(validateItemAccess).mockResolvedValue({
+		accessAllowed: true,
+		allowedRootFields: ['*'],
+	});
 });
 
 function mockWebSocketClient(client: Partial<WebSocketClient>): WebSocketClient {
@@ -554,6 +569,11 @@ describe('Room.verifyPermissions', () => {
 			},
 		] as any);
 
+		vi.mocked(validateItemAccess).mockResolvedValue({
+			accessAllowed: true,
+			allowedRootFields: ['title'],
+		});
+
 		// Current time: 10:00:00
 		// publish_date: 2025-12-23T10:00:00Z (24 hours in future)
 		// Rule: publish_date > $NOW
@@ -631,6 +651,11 @@ describe('Room.verifyPermissions', () => {
 				validation: {},
 			},
 		] as any);
+
+		vi.mocked(validateItemAccess).mockResolvedValue({
+			accessAllowed: true,
+			allowedRootFields: ['title', 'status'],
+		});
 
 		const fields = await room.verifyPermissions(client, collection, item);
 
