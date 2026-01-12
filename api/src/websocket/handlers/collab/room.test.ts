@@ -554,19 +554,12 @@ describe('room', () => {
 		await room.focus(clientA, 'title');
 
 		// Client A checks focus on title
-		const checkA = await room.checkFocus('abc', 'title');
-		expect(checkA.myFocus).toBe('title');
-		expect(checkA.focusHolder).toBeNull();
+		const checkA = await room.getFocusByUser('abc');
+		expect(checkA).toBe('title');
 
 		// Client B checks focus on title
-		const checkB = await room.checkFocus('def', 'title');
-		expect(checkB.myFocus).toBeUndefined();
-		expect(checkB.focusHolder).toBe('abc');
-
-		// Client A checks focus on different field
-		const checkDiff = await room.checkFocus('abc', 'content');
-		expect(checkDiff.myFocus).toBe('title');
-		expect(checkDiff.focusHolder).toBeNull();
+		const checkB = await room.getFocusByUser('def');
+		expect(checkB).toBeUndefined();
 	});
 });
 
