@@ -20,9 +20,31 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
+directus_bsl: Directus BSL 1.1
 privacy_policy: Política de Privacidade
+contact_our_team: Contate nosso Time
+setup_welcome: Bem-Vindo ao Directus
+setup_info: Vamos criar sua conta de administrador e começar seu projeto.
+setup_license_notice: >
+  Directus é gratuito para ser usado por entidades com lucro, doação ou orçamento de operação anual inferior a 5 milhões de dólares.
+setup_license_follow_up: >
+  Entidades acima deste limite requerem uma licença paga. Você pode continuar a avaliar a Directus agora e {contactOurTeam} quando estiver pronto para discutir o uso em produção.
+setup_save_accept_license: >
+  Clicando em salvar você aceita os termos de {directusBsl} e {privacyPolicy}.
+setup_accept_license: Eu aceito os termos de {directusBsl} e {privacyPolicy}
+setup_marketing_emails: Receber novidades do produto e notas de lançamento
+setup_launch: Iniciar Directus
+setup_project: Configurar Projeto
 first_name: Primeiro Nome
 last_name: Sobrenome
+admin_email: Email de Administrador
+owner_email: Email de Proprietário
+email_address: Endereço de Email
+organization_name: Nome da Organização
+how_do_you_use_directus: Para quê você está usando o Directus?
+usage_personal: Pessoal / Aprendizagem
+usage_commercial: Empresarial / Comercial
+usage_community: Código Aberto / Comunitário
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -50,6 +72,13 @@ collection_names_are_case_sensitive: Os nomes das coleções diferenciam maiúsc
 condition_rules: Regras da condição
 input: Entrada
 invalid_input: Entrada invalida
+invalid_file_type: Tipo de Arquivo Inválido
+invalid_files_selected: 'Sem arquivos inválidos | Arquivo Inválido Selecionado | {count} Arquivos Inválidos Selecionados'
+files_wrong_type: 'Arquivos {files} têm tipos inválidos, esperando tipo {expected}.'
+files_are_empty: 'Os seguintes arquivos estão vazios e não podem ser carregados: {files}'
+not_a_number: Não é um Número
+invalid_range_min: Valor é menor que o mínimo de {value}
+invalid_range_max: Valor excede o máximo de {value}
 maps: Mapas
 switch_user: Alternar Usuário
 item_creation: Criação do Item
@@ -61,6 +90,8 @@ full_width: Largura Total
 group: Grupo
 popular: Populares
 recent: Recentes
+latest: Mais recente
+updated: Atualizado
 export_items: Exportar itens
 and: E
 or: Ou
@@ -117,6 +148,11 @@ fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 sso_tfa_setup_notice: Você será desligado da sua conta e precisará entrar novamente. Qualquer mudança não salva será descartada.
+enable_tfa: Permitido 2FA
+cancel_tfa_setup: Cancelar Configuração 2FA
+cancel_tfa_setup_notice: Você tem certeza que quer cancelar a configuração 2FA?
+keep_setup: Manter Configuração
+cancel_setup: Cancelar Configuração
 add_field: Adicionar Campo
 role_name: Nome do Cargo
 policy_name: Nome da política 
@@ -156,6 +192,7 @@ connection_good: Conexão Boa
 connection_fair: Conexão Razoável
 connection_poor: Conexão Ruim
 primary: Primário
+download_folder: Baixar Pasta
 rename_folder: Renomear Pasta
 delete_folder: Excluir Pasta
 prefix: Prefixo
@@ -172,9 +209,14 @@ rename_version: Renomear Versão
 compare_version: Comparar Versão
 save_version: Salvar Versão
 promote_version: Promover Versão
+apply: Aplicar
+select_all_differences: Selecionar Todas as Diferenças
+main_updated_notice: O 'item' principal foi atualizado desde que essa versão foi criada.
 delete_version: Deletar Versão
 delete_version_copy: >-
   Tem certeza que deseja excluir a versão "{version}"? Esta ação não pode ser desfeita.
+delete_on_apply_copy: >-
+  Você está prestes a promover "{version}" a Principal. O que deve acontecer com "{version}" depois da promoção?
 reset_bookmark: Redefinir Favoritos
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
@@ -208,6 +250,7 @@ unarchive: Desarquivar
 unarchive_confirm: Você tem certeza que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
 validation_errors_notice: 'Os seguintes campos têm valores inválidos:'
+validation_value_is_invalid: Valor Inválido
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
@@ -235,6 +278,8 @@ validationError:
   iends_with: O valor tem que terminar com {substring}
   nends_with: O valor não pode terminar com {substring}
   niends_with: O valor não pode terminar com {substring}
+  confirm_password: Senha não corresponde
+  org_name: Por favor, incluir um nome de organização
 all_access: Acesso Total
 no_access: Sem Acesso
 use_custom: Usar Personalizado
@@ -315,6 +360,7 @@ reset_page_preferences: Redefinir Preferências da Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
 clear_hidden_field: Limpar Valor(es)
+clear_value_on_save_when_hidden: Limpar valor(es) ao salvar quando ocultos
 readonly_field_label: Desabilitar Campo no Aplicativo
 required_readonly_field_warning: Ao habilitar "somente leitura" e "obrigatório" em um campo impede que o “item” seja salvo se o valor estiver vazio.
 key: Chave
@@ -414,6 +460,8 @@ precision_scale: Precisão e Escala
 readonly: Leitura apenas
 unique: Único
 index: Índice
+searchable: Pesquisável
+field_searchable: Incluir campo em consultas de pesquisa
 updated_on: Atualizado em
 updated_by: Atualizado por
 primary_key: Chave primária
@@ -458,6 +506,9 @@ revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi actualizado, mas o seu valor está a ser ocultado por razões de segurança.
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
+updated_in_revision: Atualizar esta Revisão
+updated_in_revision_matches_latest: Atualizado nesta Revisão, mas corresponde à Última Revisão
+differences_count: 'Sem Diferenças | 1 Diferença | {count} Diferenças'
 presentation_text_values_cannot_be_reimported: 'Usa texto de apresentação, valores não podem ser importados novamente.'
 download_page_as_csv: 'Baixar página como CSV'
 download_page_as_csv_unsupported: Este layout não suporta o download da página atual.
@@ -480,7 +531,14 @@ import_data_input_placeholder: CSV ou JSON...
 import_data_button: Iniciar Importação
 import_data_indeterminate: Importando Dados...
 import_data_success: Dados importados com sucesso de {filename}
+import_data_errors: Importar Erro
 import_data_error: A estrutura de dados deste arquivo não condiz com a coleção.
+import_data_validation_errors_notice: 'A seguinte linha tem valores inválidos:'
+import_data_error_row: 'Linha {rows}{field}:'
+snapshot:
+  export: Exportar Estrutura de Dados
+  download: Baixar Snapshot (JSON)
+  info: Exportar Estrutura de Dados somente para compartilhar ou fazer ‘debugging’
 label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
@@ -519,6 +577,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: MMM d
 minutes: Minutos
 hours: Horas
@@ -553,6 +612,9 @@ original: Original
 url: URL
 import_label: Importar
 file_details: Detalhes do Arquivo
+copy_id: Copiar ID
+copy_id_success: ID Copiado
+copy_id_fail: ID Não Copiado
 dimensions: Dimensões
 size: Tamanho
 created: Criado
@@ -581,9 +643,9 @@ download_file: Baixar arquivo
 open_file_in_tab: Abrir arquivo em uma nova aba
 start_export: Iniciar Exportação
 not_available_for_local_downloads: Não disponível para downloads locais
-exporting_all_items_in_collection: Exportando todos os {total} itens dentro de {collection}.
+exporting_all_items_in_collection: Exportando todos os itens ({total}) dentro de {collection}.
 exporting_limited_items_in_collection: '{count} de {total} itens dentro de {collection} serão exportados.'
-exporting_no_items_to_export: Nenhum item para exportar. Ajuste a configuração de exportação e/ou adicione itens à coleção.
+exporting_no_items_to_export: Sem itens para exportar. Ajuste a configuração de exportação e/ou adicione itens à coleção.
 exporting_download_hint: Depois de criar o arquivo {format} , ele será baixado para o seu dispositivo.
 exporting_library_hint: Depois de criar o arquivo {format}, ele será salvo na Biblioteca de Arquivos.
 exporting_library_hint_forced: Esta exportação será processada em lotes e, assim que concluída, o arquivo {format} será salvo na Biblioteca de Arquivos.
@@ -603,6 +665,7 @@ manual_string: String inserida manualmente
 save_and_create_new: Salvar e criar novo
 save_and_stay: Salvar e manter aqui
 save_and_quit: Salvar e sair
+save_and_return_to_main: Salvar e Retornar ao Principal
 save_as_copy: Salvar e Copiar
 add_existing: Adicionar existente
 creating_items: Criando Itens
@@ -645,6 +708,7 @@ activity_log: Registro de atividades
 all_items: Todos os itens
 any: Qualquer
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: Sem coleções
 create_collection: Criar Coleção
 no_collections_copy_admin: Você ainda não tem nenhuma coleção. Clique no botão abaixo para começar.
@@ -708,6 +772,7 @@ enabled_dev_tooltip: As extensões do aplicativo são sempre ativadas no modo de
 disable_tfa: Desativar verificação em duas etapas
 admin_disable_tfa_text: Tem certeza de que deseja desativar a 2FA para este usuário?
 tfa_setup: Configurar 2FA
+tfa_setup_description: Configurar autenticação de dois fatores para proteger conta
 tfa_scan_code: Escaneie o código no seu aplicativo de autenticação para terminar de configurar a 2FA
 enter_otp_to_disable_tfa: Digite o OTP para desativar a 2FA
 create_account: Criar conta
@@ -717,7 +782,7 @@ corresponding_field: Campo correspondente
 errors:
   COLLECTION_NOT_FOUND: "A coleção não existe"
   CONTAINS_NULL_VALUES: O campo contém valores nulos
-  CONTENT_TOO_LARGE: Item/arquivo enviado é muito grande
+  CONTENT_TOO_LARGE: Item/Arquivo enviado é grande demais
   FAILED_VALIDATION: Validação Falhou
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Não permitido
@@ -753,6 +818,7 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fora de alcance
   VALUE_TOO_LONG: Valor é muito longo
 security: Segurança
+value_securely_stored: Valor Salvo em Segurança
 bookmark_name: Nome do marcador...
 create_bookmark: Criar marcador
 edit_bookmark: Editar marcador
@@ -928,6 +994,8 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
+run_flow_confirm: Você tem certeza que quer executar este fluxo?
+run_flow_anyway: Executar Fluxo Mesmo Assim
 run_flow_on_current_collection: Executar fluxo na coleção atual
 run_flow_on_current: Executar fluxo no Item atual
 run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
@@ -1081,6 +1149,7 @@ wysiwyg_options:
   h4: Cabeçalho 4
   h5: Cabeçalho 5
   h6: Cabeçalho 6
+  pre: Pré-formatado
   fontselect: Selecionar fonte
   fontsizeselect: Selecionar tamanho da fonte
   indent: Indentar
@@ -1111,6 +1180,8 @@ appearance_dark: Escuro
 other: Outros...
 adding_user: Adicionando usuário
 unknown_user: Usuário desconhecido
+unknown_version: Versão Desconhecida
+unknown_revision: Revisão Desconhecida
 creating_in: 'Criando Item em {collection}'
 editing_in: 'Editando Item em {collection}'
 viewing_in: 'Visualizando Item em {collection}'
@@ -1123,6 +1194,10 @@ settings_roles: Funções do usuário
 settings_permissions: Políticas de acesso
 settings_project: Configurações
 settings_appearance: Aparência
+settings_ai: IA
+ai_chat: Chat IA
+ai_disabled_by_env: Os recursos de Chat IA foram desabilitados via ambiente variável.
+mcp_disabled_by_env: Os recursos de MCP foram desabilitados via ambiente variável.
 settings_flows: Fluxos
 settings_system_logs: Registro de Sistema
 settings_presets: Favoritos
@@ -1185,6 +1260,7 @@ directus_collection:
   directus_dashboards: Painéis dentro do módulo Insights
   directus_fields: Configurações e metadados adicionais do campo
   directus_files: Metadados de todos os arquivos gerenciados
+  directus_flows: Fluxo de Automação
   directus_folders: Fornece diretórios virtuais para arquivos
   directus_migrations: Qual versão do banco de dados você está utilizando
   directus_notifications: Notificações enviadas aos usuários
@@ -1270,6 +1346,7 @@ fields:
     tags: Tags
     user_preferences: Preferências do Usuário
     language: Idioma
+    text_direction: Direção de Texto
     tfa_secret: Autenticação em Duas Etapas
     admin_options: Opções do Admin
     status: Status
@@ -1348,6 +1425,7 @@ fields:
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envia um e-mail para o usuário que se registrou pedindo que clique em um link de verificação antes de fazer o login.
     visual_editor_urls: URL dos Editores Visuais
+    ai_notice: 'Chat IA providencia uma barra lateral "in-app" para conversar com uma LLM. Uma vez ativado, abra a barra lateral da IA na barra de ferramenta para fazer perguntas, gerar conteúdo e receber ajuda com seu projeto. <a href="https://directus.io/docs/guides/ai/chat" target="_blank">Saiba mais sobre configuração e uso de Chat IA.</a>'
   directus_shares:
     name: Nome
     role: Função
@@ -1511,6 +1589,8 @@ ai:
   settings: Configurações
   tool_approval:
     disabled: Desabilitado
+  tool_descriptions:
+    items: Criar, ler, atualizar e deletar conteúdo
 ai_tools:
   items: Itens
   files: Arquivos
@@ -1661,7 +1741,7 @@ resume: Retomar
 interfaces:
   list-m2a:
     prefix_note: Utiliza o nome da coleção do item relacionado por padrão.
-    sorting_disabled: Ordenação está desabilitada por não haver mais itens que caibam em uma página.
+    sorting_disabled: Ordenação está desabilitada por que há mais itens do que cabe em uma página.
   filter:
     name: Filtro
     description: Configurar um filtro de objeto.
@@ -1816,6 +1896,8 @@ interfaces:
   collection-item-dropdown:
     collection-item-dropdown: Dropdown de Itens de Coleção
     description: Selecionar um item de uma coleção em formato JSON
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: Dropdown de Item de Coleção (Múltiplo)
   input-rich-text-md:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
@@ -2321,7 +2403,7 @@ triggers:
     require_selection: Requer Seleção
 a_flow_uuid: Selecione um Fluxo para acionamento...
 any_string_or_json: Qualquer texto ou JSON...
-item_payload_placeholder: Este é o JSON utilizado para atualizar os campos do item...
+item_payload_placeholder: Este é o JSON utilizado para atualizar os campos de valor do item...
 operations:
   condition:
     name: Condição
@@ -2342,7 +2424,7 @@ operations:
     query: Query
   item-read:
     name: Ler Dados
-    description: Realiza leitura de itens do banco de dados
+    description: Ler itens do banco de dados
     key: IDs
     query: Query
     emit_events: Emitir eventos
