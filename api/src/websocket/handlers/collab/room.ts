@@ -94,8 +94,10 @@ export class CollabRooms {
 	/**
 	 * Remove empty rooms
 	 */
-	async cleanupRooms() {
-		for (const room of Object.values(this.rooms)) {
+	async cleanupRooms(uids?: string[]) {
+		const rooms = uids ? uids.map((uid) => this.rooms[uid]).filter((room) => !!room) : Object.values(this.rooms);
+
+		for (const room of rooms) {
 			const clients = await room.getClients();
 
 			if (clients.length === 0) {

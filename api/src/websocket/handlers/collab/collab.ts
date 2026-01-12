@@ -114,6 +114,8 @@ export class CollabHandler {
 	 */
 	async onLeave(client: WebSocketClient, message?: LeaveMessage) {
 		try {
+			const roomIds: string[] = [];
+
 			if (message) {
 				const room = await this.rooms.getRoom(message.room);
 
@@ -128,15 +130,19 @@ export class CollabHandler {
 					});
 
 				room.leave(client);
+				roomIds.push(room.uid);
 			} else {
 				const rooms = await this.rooms.getClientRooms(client);
 
 				for (const room of rooms) {
 					room.leave(client);
+					roomIds.push(room.uid);
 				}
 			}
 
-			this.rooms.cleanupRooms();
+			if (roomIds.length > 0) {
+				this.rooms.cleanupRooms(roomIds);
+			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'leave');
 		}
