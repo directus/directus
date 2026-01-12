@@ -1213,6 +1213,7 @@ appearance_light: Light
 appearance_dark: Dark
 other: Other...
 adding_user: Adding User
+more_users: Click to view more
 unknown_user: Unknown User
 unknown_version: Unknown Version
 unknown_revision: Unknown Revision
