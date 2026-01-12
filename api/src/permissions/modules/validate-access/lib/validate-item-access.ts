@@ -18,7 +18,7 @@ export interface ValidateItemAccessOptions {
 	returnAllowedRootFields?: boolean;
 }
 
-export interface ValidateItemAccessOptionsWithFields extends ValidateItemAccessOptions {
+export interface ValidateItemAccessOptionsWithRootFields extends ValidateItemAccessOptions {
 	returnAllowedRootFields: true;
 }
 
