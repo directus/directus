@@ -42,7 +42,7 @@ export async function validateItemAccess(
 ): Promise<ValidateItemAccessResult>;
 
 export async function validateItemAccess(
-	options: ValidateItemAccessOptions | ValidateItemAccessOptionsWithFields,
+	options: ValidateItemAccessOptions | ValidateItemAccessOptionsWithRootFields,
 	context: Context,
 ): Promise<ValidateItemAccessResult | ValidateItemAccessResultWithFields> {
 	const primaryKeyField = context.schema.collections[options.collection]?.primary;
