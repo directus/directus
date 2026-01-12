@@ -52,6 +52,7 @@ const props = withDefaults(
 		collection: string;
 		primaryKey?: string | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 	}>(),
 	{
 		links: () => [],
@@ -103,9 +104,15 @@ const linksParsed = computed<ParsedLink[]>(() =>
 			to: isInternalLink ? interpolatedUrl : undefined,
 			href: isInternalLink ? undefined : interpolatedUrl,
 			flow: link.actionType === 'flow' ? link.flow : undefined,
-			disabled: link.actionType === 'flow' && (props.disabled || props.primaryKey === '+'),
+			disabled: isDisabled(),
 			loading: link.actionType === 'flow' && runningFlows.value.includes(link.flow ?? ''),
 		};
+
+		function isDisabled() {
+			if (props.disabled && !props.nonEditable) return true;
+
+			return link.actionType === 'flow' && (props.nonEditable || props.primaryKey === '+');
+		}
 	}),
 );
 
