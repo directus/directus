@@ -43,7 +43,7 @@ const { t } = useI18n();
 
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
 
-const compareToOption = ref<'Previous' | 'Latest'>('Previous');
+const compareToOption = ref<'Previous' | 'Latest'>('Latest');
 
 const {
 	comparisonData,
@@ -81,6 +81,22 @@ const incomingTooltipMessage = computed(() => {
 	return undefined;
 });
 
+const isFirstRevision = computed(() => {
+	if (props.mode !== 'revision' || !currentRevision.value || !revisions.value) return false;
+
+	const currentId = currentRevision.value.id;
+	if (!currentId) return false;
+
+	const sortedRevisions = [...revisions.value].sort((a, b) => {
+		const aId = typeof a.id === 'number' ? a.id : 0;
+		const bId = typeof b.id === 'number' ? b.id : 0;
+		return aId - bId;
+	});
+
+	const firstRevision = sortedRevisions[0];
+	return sortedRevisions.length > 0 && firstRevision?.id === currentId;
+});
+
 const comparisonFieldsForDisplay = computed(() => {
 	if (compareToOption.value === 'Previous') {
 		return new Set<string>();
@@ -105,6 +121,8 @@ watch(
 	[active, currentRevision],
 	async ([isActive]) => {
 		if (!isActive) return;
+		// Reset to Latest by default
+		compareToOption.value = 'Latest';
 
 		modalLoading.value = true;
 
@@ -130,6 +148,12 @@ watch([compareToOption], async () => {
 		await fetchBaseItemUserUpdated();
 	} finally {
 		modalLoading.value = false;
+	}
+});
+
+watch([isFirstRevision], () => {
+	if (isFirstRevision.value && compareToOption.value === 'Previous') {
+		compareToOption.value = 'Latest';
 	}
 });
 
@@ -306,7 +330,11 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 							{{ $t('differences_count', { count: availableFieldsCount }) }}
 						</div>
 						<div v-else>
-							<ComparisonToggle v-model="compareToOption" @update:model-value="handleCompareToSelection" />
+							<ComparisonToggle
+								v-model="compareToOption"
+								:disable-previous="isFirstRevision"
+								@update:model-value="handleCompareToSelection"
+							/>
 						</div>
 					</div>
 					<div class="col right">

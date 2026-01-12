@@ -12,9 +12,11 @@ import VMenu from '@/components/v-menu.vue';
 const props = withDefaults(
 	defineProps<{
 		modelValue?: 'Previous' | 'Latest';
+		disablePrevious?: boolean;
 	}>(),
 	{
 		modelValue: 'Previous',
+		disablePrevious: false,
 	},
 );
 
@@ -50,7 +52,7 @@ const toggleClass = computed(() => {
 
 			<VDivider />
 
-			<VListItem clickable @click="selectOption('Previous')">
+			<VListItem :clickable="!props.disablePrevious" :disabled="props.disablePrevious" @click="selectOption('Previous')">
 				<VListItemIcon>
 					<VIcon name="history" />
 				</VListItemIcon>
