@@ -27,7 +27,7 @@ export interface ValidateItemAccessResult {
 	allowedRootFields?: string[];
 }
 
-export interface ValidateItemAccessResultWithFields extends ValidateItemAccessResult {
+export interface ValidateItemAccessResultWithRootFields extends ValidateItemAccessResult {
 	allowedRootFields: string[];
 }
 
