@@ -600,6 +600,7 @@ describe('Room.verifyPermissions', () => {
 			collections: {
 				articles: {
 					collection: 'articles',
+					primary: 'id',
 					fields: {
 						id: { field: 'id', type: 'integer' },
 						title: { field: 'title', type: 'string' },
@@ -610,6 +611,7 @@ describe('Room.verifyPermissions', () => {
 				},
 				authors: {
 					collection: 'authors',
+					primary: 'id',
 					fields: {
 						id: { field: 'id', type: 'integer' },
 						name: { field: 'name', type: 'string' },
@@ -618,6 +620,7 @@ describe('Room.verifyPermissions', () => {
 				settings: {
 					collection: 'settings',
 					singleton: true,
+					primary: 'id',
 					fields: {
 						id: { field: 'id', type: 'integer' },
 						title: { field: 'title', type: 'string' },
@@ -723,6 +726,38 @@ describe('Room.verifyPermissions', () => {
 
 		expect(serviceMock.readSingleton).toHaveBeenCalled();
 		expect(serviceMock.readOne).not.toHaveBeenCalled();
+	});
+
+	test('Singleton with item rules returns allowed fields', async () => {
+		const client = mockWebSocketClient({ uid: 'client-restricted' });
+		const singletonRoom = new Room('settings-uid', 'settings', null, null, {}, mockMessenger);
+
+		vi.mocked(fetchPermissions).mockResolvedValue([
+			{
+				fields: ['title'],
+				permissions: { title: { _eq: 'Settings' } },
+				validation: {},
+			},
+		] as any);
+
+		vi.mocked(processPermissions).mockReturnValue([
+			{
+				fields: ['title'],
+				permissions: { title: { _eq: 'Settings' } },
+				validation: {},
+			},
+		] as any);
+
+		vi.mocked(validateItemAccess).mockResolvedValue({
+			accessAllowed: true,
+			allowedRootFields: ['title'],
+		});
+
+		permissionCache.clear();
+		const fields = await singletonRoom.verifyPermissions(client, 'settings', null);
+
+		expect(fields).toContain('title');
+		expect(fields.length).toBeGreaterThan(0);
 	});
 
 	test('Permission merging (union of fields)', async () => {

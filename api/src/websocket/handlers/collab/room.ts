@@ -569,7 +569,6 @@ export class Room {
 
 				if (!itemData) throw new Error('No access');
 			} else if (schema.collections[collection]?.singleton) {
-				// validateItemAccess requires the PK to check for item rules
 				const pkField = schema.collections[collection]!.primary;
 
 				if (pkField) {
@@ -584,13 +583,6 @@ export class Room {
 			// TODO: Check which approach might be faster better: Checking it JS or DB side
 			// const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
 			let primaryKeys: (string | number)[] = item ? [item] : [];
-
-			if (schema.collections[collection]?.singleton && itemData) {
-				const pkField = schema.collections[collection]!.primary;
-				const pk = itemData[pkField];
-
-				if (pk) primaryKeys = [pk];
-			}
 
 			const validationContext = {
 				collection,
