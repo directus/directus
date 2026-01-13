@@ -405,6 +405,7 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 			currentVersion: ref(currentVersion),
 			currentRevision: ref(currentRevision),
 			revisions: ref(revisions),
+			compareToOption: ref<'Previous' | 'Latest'>('Latest'),
 		},
 	};
 

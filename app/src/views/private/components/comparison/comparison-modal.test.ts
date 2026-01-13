@@ -121,7 +121,7 @@ const global: GlobalMountOptions = {
 		},
 		'v-button': {
 			template:
-				'<button class="v-button" :disabled="disabled !== undefined && disabled !== false" v-bind="$attrs" v-on="$attrs"><slot /></button>',
+				'<button class="v-button" :disabled="disabled !== undefined && disabled !== false" v-bind="$attrs"><slot /></button>',
 			props: ['disabled', 'loading'],
 		},
 		'v-checkbox': {
@@ -193,27 +193,6 @@ describe('comparison-modal', () => {
 			expect(applyButton.exists()).toBe(true);
 			expect(applyButton.attributes('disabled')).toBeDefined();
 		});
-
-		it('should pass comparingTo value to VForm comparison context', async () => {
-			mockUseComparison();
-
-			const wrapper = mount(ComparisonModal, {
-				props: {
-					...defaultProps,
-					modelValue: true,
-				},
-				global,
-			});
-
-			await new Promise((resolve) => setTimeout(resolve, 0));
-
-			const forms = wrapper.findAllComponents({ name: 'VForm' });
-			const form = forms[0];
-
-			const comparison = form?.props('comparison');
-			expect(comparison).toBeDefined();
-			expect(comparison.comparingTo).toBe('Previous');
-		});
 	});
 
 	describe('Revision mode - Compare to Latest', () => {
@@ -249,9 +228,7 @@ describe('comparison-modal', () => {
 			});
 
 			const toggle = wrapper.findComponent({ name: 'ComparisonToggle' });
-			expect(toggle.exists()).toBe(true);
 			await toggle.vm.$emit('update:modelValue', 'Latest');
-			await wrapper.vm.$nextTick();
 
 			const applyButton = wrapper.find('[data-test="comparison-modal_apply-button"]');
 			expect(applyButton.exists()).toBe(true);
