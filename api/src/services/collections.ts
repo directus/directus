@@ -152,12 +152,62 @@ export class CollectionsService {
 					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field, {
-									attemptConcurrentIndex,
-								});
+								fieldsService.addColumnToTable(table, payload.collection, field);
 							}
 						}
 					});
+
+					// Shadow table must be created BEFORE fields
+					if (payload.meta?.versioning) {
+						// TODO: Abstract prefixing to util / store as meta in collection table
+						const shadowCollection = `directus_version_${payload.collection}`;
+
+						const injectedShadowFields: RawField[] = [
+							{
+								field: 'id',
+								type: 'integer',
+								meta: {
+									hidden: true,
+									interface: 'numeric',
+									readonly: true,
+								},
+								schema: {
+									is_primary_key: true,
+									has_auto_increment: true,
+								},
+							},
+						];
+
+						/**
+						 * Inject required shadow "meta" fields.
+						 */
+						const shadowFields = [
+							...injectedShadowFields,
+							...payload.fields.filter(
+								(f) => f.schema?.is_primary_key !== true && f.schema?.has_auto_increment !== true,
+							),
+						].map((f) =>
+							// TODO: Move to util
+							({
+								...f,
+								collection: shadowCollection,
+								schema: {
+									...f.schema,
+									// enforced when promoting
+									is_unique: false,
+									// TODO: make indexed if indexed or unique?
+								},
+							}),
+						);
+
+						await trx.schema.createTable(shadowCollection, (table) => {
+							for (const field of shadowFields) {
+								if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+									fieldsService.addColumnToTable(table, shadowCollection, field);
+								}
+							}
+						});
+					}
 
 					const fieldItemsService = new ItemsService('directus_fields', {
 						knex: trx,

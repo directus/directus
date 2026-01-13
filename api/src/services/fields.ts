@@ -43,6 +43,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
+import { CollectionsService } from './collections.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
@@ -427,6 +428,52 @@ export class FieldsService {
 								attemptConcurrentIndex,
 							});
 						});
+					}
+
+					if (this.schema.collections[collection]!.versioning) {
+						const shadowCollection = `directus_version_${collection}`;
+
+						const shadowField = {
+							...hookAdjustedField,
+							collection: shadowCollection,
+							schema: {
+								...hookAdjustedField.schema,
+								is_unique: false,
+							},
+						};
+
+						const shadowFields = [shadowField];
+
+						/*
+						 * If special contains relational assume it is and prefix with "directus_".
+						 * We do not receive any relational information
+						 */
+						if (
+							shadowField.meta?.special?.includes('m2o') ||
+							shadowField.meta?.special?.includes('o2m') ||
+							shadowField.meta?.special?.includes('m2m') ||
+							shadowField.meta?.special?.includes('m2a')
+						) {
+							shadowFields.push({
+								...shadowField,
+								field: `directus_${shadowField.field}`,
+								name: `directus_${shadowField.name}`,
+							});
+						}
+
+						for (const field of shadowFields) {
+							if (table) {
+								this.addColumnToTable(table, shadowCollection, field as Field, {
+									attemptConcurrentIndex,
+								});
+							} else {
+								await trx.schema.alterTable(shadowCollection, (table) => {
+									this.addColumnToTable(table, shadowCollection, field as Field, {
+										attemptConcurrentIndex,
+									});
+								});
+							}
+						}
 					}
 				}
 

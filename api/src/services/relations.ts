@@ -252,7 +252,7 @@ export class RelationsService {
 
 			await transaction(this.knex, async (trx) => {
 				if (relation.related_collection) {
-					await trx.schema.alterTable(relation.collection!, async (table) => {
+					await trx.schema.alterTable(relation.collection!, (table) => {
 						this.alterType(table, relation, fieldSchema.nullable);
 
 						const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
@@ -271,6 +271,57 @@ export class RelationsService {
 							builder.onUpdate(relation.schema.on_update);
 						}
 					});
+
+					// shadow relation
+					if (collectionSchema.versioning) {
+						const shadowCollection = `directus_version_${relation.collection!}`;
+
+						await trx.schema.alterTable(shadowCollection, async (table) => {
+							this.alterType(table, relation, fieldSchema.nullable);
+
+							const constraintName: string = getDefaultIndexName('foreign', shadowCollection, relation.field!);
+
+							const builder = table
+								.foreign(relation.field!, constraintName)
+								.references(
+									`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`,
+								);
+
+							if (relation.schema?.on_delete) {
+								builder.onDelete(relation.schema.on_delete);
+							}
+
+							if (relation.schema?.on_update) {
+								builder.onUpdate(relation.schema.on_update);
+							}
+
+							// create duplicate if pointer is also versioned
+							if (this.schema.collections[relation.related_collection!]!.versioning) {
+								const shadowRelationCollection = `directus_version_${relation.related_collection!}`;
+								const shadowRelationField = `directus_${relation.field!}`;
+
+								const shadowRelationConstraintName: string = getDefaultIndexName(
+									'foreign',
+									shadowRelationCollection,
+									shadowRelationField,
+								);
+
+								const builder = table
+									.foreign(shadowRelationField, shadowRelationConstraintName)
+									.references(
+										`${shadowRelationCollection}.${this.schema.collections[shadowRelationCollection]!.primary}`,
+									);
+
+								if (relation.schema?.on_delete) {
+									builder.onDelete(relation.schema.on_delete);
+								}
+
+								if (relation.schema?.on_update) {
+									builder.onUpdate(relation.schema.on_update);
+								}
+							}
+						});
+					}
 				}
 
 				const relationsItemService = new ItemsService('directus_relations', {
