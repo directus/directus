@@ -69,7 +69,7 @@ export class KvLocal implements Kv {
 		return true;
 	}
 
-	async aquireLock(_key: string) {
+	async acquireLock(_key: string) {
 		return {
 			release: async () => {},
 			extend: async (_duration: number) => {},

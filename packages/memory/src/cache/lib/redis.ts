@@ -30,8 +30,8 @@ export class CacheRedis implements Cache {
 		await this.store.clear();
 	}
 
-	async aquireLock(key: string) {
-		return await this.store.aquireLock(key);
+	async acquireLock(key: string) {
+		return await this.store.acquireLock(key);
 	}
 
 	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {

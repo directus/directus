@@ -133,7 +133,7 @@ export class KvRedis implements Kv {
 		return wasSet !== 0;
 	}
 
-	async aquireLock(key: string) {
+	async acquireLock(key: string) {
 		const lock = await this.redlock.acquire([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout));
 
 		return {
