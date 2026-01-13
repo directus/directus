@@ -2,12 +2,12 @@ import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/ty
 import { toBoolean } from '@directus/utils';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
 import type { AST } from '../../../../types/index.js';
-import type { Context } from '../../../types.js';
-import { processAst } from '../../process-ast/process-ast.js';
-import { fetchPolicies } from '../../../lib/fetch-policies.js';
 import { fetchPermissions } from '../../../lib/fetch-permissions.js';
-import { injectCases } from '../../process-ast/lib/inject-cases.js';
+import { fetchPolicies } from '../../../lib/fetch-policies.js';
+import type { Context } from '../../../types.js';
 import { fetchAllowedFields } from '../../fetch-allowed-fields/fetch-allowed-fields.js';
+import { injectCases } from '../../process-ast/lib/inject-cases.js';
+import { processAst } from '../../process-ast/process-ast.js';
 
 export interface ValidateItemAccessOptions {
 	accountability: Accountability;
@@ -18,20 +18,23 @@ export interface ValidateItemAccessOptions {
 	returnAllowedRootFields?: boolean;
 }
 
+export interface ValidateItemAccessOptionsWithRootFields extends ValidateItemAccessOptions {
+	returnAllowedRootFields: true;
+}
+
 export interface ValidateItemAccessResult {
 	accessAllowed: boolean;
 	allowedRootFields?: string[];
 }
 
-export interface ValidateItemAccessResultWithFields {
-	accessAllowed: boolean;
+export interface ValidateItemAccessResultWithRootFields extends ValidateItemAccessResult {
 	allowedRootFields: string[];
 }
 
 export async function validateItemAccess(
-	options: ValidateItemAccessOptions & { returnAllowedRootFields: true },
+	options: ValidateItemAccessOptionsWithRootFields,
 	context: Context,
-): Promise<ValidateItemAccessResultWithFields>;
+): Promise<ValidateItemAccessResultWithRootFields>;
 
 export async function validateItemAccess(
 	options: ValidateItemAccessOptions,
@@ -39,9 +42,9 @@ export async function validateItemAccess(
 ): Promise<ValidateItemAccessResult>;
 
 export async function validateItemAccess(
-	options: ValidateItemAccessOptions,
+	options: ValidateItemAccessOptions | ValidateItemAccessOptionsWithRootFields,
 	context: Context,
-): Promise<ValidateItemAccessResult> {
+): Promise<ValidateItemAccessResult | ValidateItemAccessResultWithRootFields> {
 	const primaryKeyField = context.schema.collections[options.collection]?.primary;
 
 	if (!primaryKeyField) {

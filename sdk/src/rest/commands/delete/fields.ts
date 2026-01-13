@@ -1,6 +1,6 @@
 import type { DirectusField } from '../../../schema/field.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Deletes the given field in the given collection.

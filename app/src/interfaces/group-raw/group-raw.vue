@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Field, ValidationError } from '@directus/types';
 import type { ComparisonContext } from '@/components/v-form/types';
 import VForm from '@/components/v-form/v-form.vue';
-import { Field, ValidationError } from '@directus/types';
 import { CollabContext } from '@/composables/use-collab';
 
 withDefaults(

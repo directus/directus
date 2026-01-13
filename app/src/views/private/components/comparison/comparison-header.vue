@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { User } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -6,9 +9,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
-import { User } from '@directus/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
 	title: string;

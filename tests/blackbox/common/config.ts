@@ -1,6 +1,6 @@
-import { Knex } from 'knex';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Knex } from 'knex';
 import { allVendors, type Vendor } from './get-dbs-to-test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -46,7 +46,7 @@ if (process.env['TEST_SAVE_LOGS']) {
 }
 
 const directusAuthConfig = {
-	AUTH_PROVIDERS: 'saml',
+	AUTH_PROVIDERS: 'saml,github',
 	AUTH_SAML_DRIVER: 'saml',
 	AUTH_SAML_ALLOW_PUBLIC_REGISTRATION: 'true',
 	AUTH_SAML_SP_metadata:
@@ -56,6 +56,13 @@ const directusAuthConfig = {
 	AUTH_SAML_DEFAULT_ROLE_ID: 'd70c0943-5b55-4c5d-a613-f539a27a57f5',
 	AUTH_SAML_IDENTIFIER_KEY: 'uid',
 	AUTH_SAML_EMAIL_KEY: 'email',
+
+	AUTH_GITHUB_DRIVER: 'oauth2',
+	AUTH_GITHUB_CLIENT_ID: 'test-client-id',
+	AUTH_GITHUB_CLIENT_SECRET: 'test-client-secret',
+	AUTH_GITHUB_AUTHORIZE_URL: 'https://github.com/login/oauth/authorize',
+	AUTH_GITHUB_ACCESS_URL: 'https://github.com/login/oauth/access_token',
+	AUTH_GITHUB_PROFILE_URL: 'https://api.github.com/user',
 };
 
 const directusStorageConfig = {

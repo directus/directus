@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
+import { isEqual } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import ComparisonHeader from './comparison-header.vue';
+import { useComparison } from './use-comparison';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -12,12 +18,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { Revision } from '@/types/revisions';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
-import { isEqual } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import ComparisonHeader from './comparison-header.vue';
-import { useComparison } from './use-comparison';
 import { CollabContext } from '@/composables/use-collab';
 
 interface Props {

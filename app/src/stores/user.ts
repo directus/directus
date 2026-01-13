@@ -1,3 +1,8 @@
+import { isIn } from '@directus/utils';
+import { merge } from 'lodash';
+import { defineStore } from 'pinia';
+import { computed, ref, unref, watch } from 'vue';
+import type { RouteLocationNormalized } from 'vue-router';
 import api, { RequestConfig } from '@/api';
 import { RTL_LANGUAGES } from '@/constants/text-direction';
 import { setLanguage } from '@/lang/set-language';
@@ -5,11 +10,6 @@ import sdk from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { AppUser, ShareUser } from '@/types/user';
 import { userName } from '@/utils/user-name';
-import { isIn } from '@directus/utils';
-import { merge } from 'lodash';
-import { defineStore } from 'pinia';
-import { computed, ref, unref, watch } from 'vue';
-import type { RouteLocationNormalized } from 'vue-router';
 
 export const useUserStore = defineStore('userStore', () => {
 	const serverStore = useServerStore();

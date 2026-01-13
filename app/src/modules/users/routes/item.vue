@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import type { User } from '@directus/types';
+import { computed, provide, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import UsersNavigation from '../components/navigation.vue';
+import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { logout } from '@/auth';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -22,17 +29,10 @@ import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import { PrivateView } from '@/views/private';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { useCollection } from '@directus/composables';
-import type { User } from '@directus/types';
-import { computed, provide, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import UsersNavigation from '../components/navigation.vue';
-import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -282,7 +282,7 @@ function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<PrivateView :title="title" show-back>
+	<PrivateView :title="title" show-back back-to="/users">
 		<template #headline>
 			<VBreadcrumb :items="breadcrumb" />
 		</template>

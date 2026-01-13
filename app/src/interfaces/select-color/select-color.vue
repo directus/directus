@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { cssVar } from '@directus/utils/browser';
+import Color, { ColorInstance } from 'color';
+import { ComponentPublicInstance, computed, ref, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -9,10 +13,6 @@ import VSlider from '@/components/v-slider.vue';
 import { useFocusin } from '@/composables/use-focusin';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { isHex } from '@/utils/is-hex';
-import { cssVar } from '@directus/utils/browser';
-import Color, { ColorInstance } from 'color';
-import { ComponentPublicInstance, computed, ref, useTemplateRef, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 

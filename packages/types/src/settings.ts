@@ -66,6 +66,11 @@ export type Settings = {
 	ai_openai_api_key: '**********' | null;
 	ai_anthropic_api_key: '**********' | null;
 	collab: boolean;
+	mcp_enabled: boolean;
+	mcp_allow_deletes: boolean;
+	mcp_prompts_collection: string | null;
+	mcp_system_prompt_enabled: boolean;
+	mcp_system_prompt: string | null;
 } & OwnerInformation;
 
 export type OwnerInformation = {

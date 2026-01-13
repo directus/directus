@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import NestedDraggable from './NestedDraggable.vue';
 import VNotice from '@/components/v-notice.vue';
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
-import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import NestedDraggable from './NestedDraggable.vue';
 
 const props = withDefaults(
 	defineProps<{

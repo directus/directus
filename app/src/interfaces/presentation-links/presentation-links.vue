@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import { useInjectRunManualFlow } from '@/composables/use-flows';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useApi } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { pickBy } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useInjectRunManualFlow } from '@/composables/use-flows';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Link = {
 	icon: string;

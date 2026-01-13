@@ -1,4 +1,15 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import type { PrimaryKey } from '@directus/types';
+import { SplitPanel } from '@directus/vue-split-panel';
+import { useHead } from '@unhead/vue';
+import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
+import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import ContentNavigation from '../components/navigation.vue';
+import VersionMenu from '../components/version-menu.vue';
+import ContentNotFound from './not-found.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -39,17 +50,6 @@ import RenderTemplate from '@/views/private/components/render-template.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
-import { useCollection } from '@directus/composables';
-import type { PrimaryKey } from '@directus/types';
-import { useHead } from '@unhead/vue';
-import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
-import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch, type ComponentPublicInstance } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
-import ContentNavigation from '../components/navigation.vue';
-import VersionMenu from '../components/version-menu.vue';
-import ContentNotFound from './not-found.vue';
-import { SplitPanel } from '@directus/vue-split-panel';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 
@@ -583,6 +583,7 @@ function useCollectionRoute() {
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
+		:back-to="collectionRoute"
 		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>

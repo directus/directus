@@ -1,10 +1,10 @@
-import { getPublicURL } from '@/utils/get-root-path';
 import type { AuthenticationClient, DirectusClient, RestClient, WebSocketClient } from '@directus/sdk';
 import { authentication, createDirectus, realtime, rest } from '@directus/sdk';
-import { ofetch, type FetchContext } from 'ofetch';
+import { type FetchContext, ofetch } from 'ofetch';
 import { requestQueue } from './api';
 import { SDK_AUTH_REFRESH_BEFORE_EXPIRES } from './constants';
 import { useRequestsStore } from './stores/requests';
+import { getPublicURL } from '@/utils/get-root-path';
 
 export type SdkClient = DirectusClient<unknown> &
 	AuthenticationClient<unknown> &

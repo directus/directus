@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { computed, nextTick, onUnmounted, type Ref, ref, watch } from 'vue';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
+import icons from './icons.json';
 import VDivider from '@/components/v-divider.vue';
 import { socialIcons } from '@/components/v-icon/social-icons';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VMenu from '@/components/v-menu.vue';
 import VRemove from '@/components/v-remove.vue';
-import formatTitle from '@directus/format-title';
-import { computed, nextTick, onUnmounted, ref, watch, type Ref } from 'vue';
-import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
-import icons from './icons.json';
 
 withDefaults(
 	defineProps<{

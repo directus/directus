@@ -781,6 +781,13 @@ fields:
     options:
       label: $t:fields.directus_settings.ai_system_prompt
 
+  - field: mcp_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
   - field: mcp_divider
     interface: presentation-divider
     options:
@@ -790,7 +797,7 @@ fields:
       - alias
       - no-data
     width: full
-    group: ai_group
+    group: mcp_group
 
   - field: mcp_notice
     interface: presentation-notice
@@ -801,11 +808,11 @@ fields:
       - alias
       - no-data
     width: full
-    group: ai_group
+    group: mcp_group
 
   - field: mcp_enabled
     interface: boolean
-    group: ai_group
+    group: mcp_group
     special:
       - cast-boolean
     note: $t:fields.directus_settings.mcp_enabled_note
@@ -815,7 +822,7 @@ fields:
 
   - field: mcp_allow_deletes
     interface: boolean
-    group: ai_group
+    group: mcp_group
     special:
       - cast-boolean
     note: $t:fields.directus_settings.mcp_allow_deletes_note
@@ -831,11 +838,10 @@ fields:
 
   - field: mcp_prompts_collection
     interface: system-collection
-    group: ai_group
+    group: mcp_group
     width: half
     note: $t:fields.directus_settings.mcp_prompts_collection_note
     options:
-      label: $t:fields.directus_settings.mcp_prompts_collection
       includeSingleton: false
       allowNone: true
     conditions:
@@ -847,7 +853,7 @@ fields:
 
   - field: mcp_prompts_collection_validation
     interface: system-mcp-prompts-collection-validation
-    group: ai_group
+    group: mcp_group
     width: half
     special:
       - alias
@@ -869,11 +875,11 @@ fields:
       - alias
       - no-data
     width: full
-    group: ai_group
+    group: mcp_group
 
   - field: mcp_system_prompt_enabled
     interface: boolean
-    group: ai_group
+    group: mcp_group
     special:
       - cast-boolean
     width: half-left
@@ -889,7 +895,7 @@ fields:
 
   - field: mcp_system_prompt
     interface: input-rich-text-md
-    group: ai_group
+    group: mcp_group
     width: full
     note: $t:fields.directus_settings.mcp_system_prompt_note
     options:

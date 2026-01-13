@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import FolderListItem from './FolderListItem.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -9,9 +12,6 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { Folder, useFolders } from '@/composables/use-folders';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import FolderListItem from './FolderListItem.vue';
 
 const props = defineProps<{
 	value: string | null;

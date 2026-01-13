@@ -1,7 +1,8 @@
 import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type CreateIndexOptions, type SortRecord } from '../types.js';
+import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
@@ -12,6 +13,13 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		fields: string | string[],
 	): string {
 		return getDefaultIndexName(type, collection, fields, { maxLength: 64 });
+	}
+
+	override async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
+		const primaryColumns = toArray(columns);
+		const columnsSql = primaryColumns.map(() => '??').join(', ');
+
+		await this.knex.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [table, ...primaryColumns]);
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {
@@ -44,8 +52,8 @@ export class SchemaHelperMySQL extends SchemaHelper {
 			MySQL only requires all selected sort columns that are not functionally dependent on the primary key to be included.
 
 			> If the ONLY_FULL_GROUP_BY SQL mode is enabled (which it is by default),
-			  MySQL rejects queries for which the select list, HAVING condition, or ORDER BY list refer to
-			  nonaggregated columns that are neither named in the GROUP BY clause nor are functionally dependent on them.
+				MySQL rejects queries for which the select list, HAVING condition, or ORDER BY list refer to
+				nonaggregated columns that are neither named in the GROUP BY clause nor are functionally dependent on them.
 
 			https://dev.mysql.com/doc/refman/8.4/en/group-by-handling.html
 
@@ -89,7 +97,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 			/*
 			Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
 			so we're just going to send it and fall back to blocking index creation on error
-			
+
 			https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
 			*/
 			return this.knex

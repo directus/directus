@@ -1,6 +1,6 @@
 import type { DirectusRelation } from '../../../schema/relation.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Delete an existing relation.

@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import api from '@/api';
-import VDrawer from '@/components/v-drawer.vue';
-import { isPermissionEmpty } from '@/utils/is-permission-empty';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { appAccessMinimalPermissions } from '@directus/system-data';
 import { Permission, Policy, PrimaryKey } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
@@ -13,6 +9,10 @@ import Permissions from './components/permissions.vue';
 import Presets from './components/presets.vue';
 import Tabs from './components/tabs.vue';
 import Validation from './components/validation.vue';
+import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import { isPermissionEmpty } from '@/utils/is-permission-empty';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = defineProps<{
 	active: boolean;

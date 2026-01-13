@@ -1,8 +1,8 @@
+import assert from 'node:assert';
+import { InvalidQueryError } from '@directus/errors';
 import type { CollectionOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
 import { isPlainObject } from 'lodash-es';
-import assert from 'node:assert';
 import { getRelationInfo, type RelationInfo } from '@directus/utils';
-import { InvalidQueryError } from '@directus/errors';
 
 /**
  * Allows to deep map the data like a response or delta changes with collection, field and relation context for each entry.

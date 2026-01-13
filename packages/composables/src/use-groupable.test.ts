@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { nextTick, ref } from 'vue';
-import { useGroupable, useGroupableParent, type GroupableInstance } from './use-groupable';
+import { type GroupableInstance, useGroupable, useGroupableParent } from './use-groupable';
 
 describe('useGroupable', () => {
 	it('should return inactive state when no parent is available', () => {

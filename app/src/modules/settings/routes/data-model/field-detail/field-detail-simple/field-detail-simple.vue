@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import TransitionExpand from '@/components/transition/expand.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VTextOverflow from '@/components/v-text-overflow.vue';
-import { useExtensions } from '@/extensions';
 import { Collection } from '@directus/types';
 import { orderBy } from 'lodash';
 import { computed, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import FieldConfiguration from './field-configuration.vue';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useExtensions } from '@/extensions';
 
 const props = withDefaults(
 	defineProps<{

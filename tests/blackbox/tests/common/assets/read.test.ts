@@ -1,9 +1,9 @@
-import { getUrl, paths } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import { USER } from '@common/variables';
 import { createReadStream } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'path';
+import { getUrl, paths } from '@common/config';
+import vendors from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 

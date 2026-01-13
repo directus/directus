@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Policy } from '@directus/types';
+import { ref, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
+import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -12,15 +17,10 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
-import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
-import SaveOptions from '@/views/private/components/save-options.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import { Policy } from '@directus/types';
-import { ref, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
-import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -114,7 +114,11 @@ function discardAndStay() {
 </script>
 
 <template>
-	<PrivateView :title="loading ? $t('loading') : $t('editing_policy', { policy: item && item.name })" show-back>
+	<PrivateView
+		:title="loading ? $t('loading') : $t('editing_policy', { policy: item && item.name })"
+		show-back
+		back-to="/settings/policies"
+	>
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('settings_permissions'), to: '/settings/policies' }]" />
 		</template>

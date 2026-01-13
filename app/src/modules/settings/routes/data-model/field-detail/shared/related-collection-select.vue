@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -9,7 +10,6 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { computed } from 'vue';
 
 const props = defineProps<{
 	modelValue?: string;

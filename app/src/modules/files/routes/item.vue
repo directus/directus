@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { Field, File } from '@directus/types';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
+import FilesNotFound from './not-found.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -14,6 +20,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
@@ -21,14 +28,6 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { PrivateView } from '@/views/private';
-import type { Field, File } from '@directus/types';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FilesNotFound from './not-found.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -228,7 +227,7 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<FilesNotFound v-if="!loading && !item" />
-	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back>
+	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
 		<template #headline>
 			<VBreadcrumb :items="breadcrumb" />
 		</template>

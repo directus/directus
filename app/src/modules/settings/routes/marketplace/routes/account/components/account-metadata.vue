@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import VDivider from '@/components/v-divider.vue';
-import VList from '@/components/v-list.vue';
 import { RegistryAccountResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
 import MetadataItem from '../../../components/metadata-item.vue';
+import VDivider from '@/components/v-divider.vue';
+import VList from '@/components/v-list.vue';
 
 const props = defineProps<{
 	account: RegistryAccountResponse['data'];

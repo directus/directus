@@ -179,6 +179,7 @@ catalog:
   escape-string-regexp: 5.0.0
   eslint: 9.39.1
   eslint-config-prettier: 10.1.8
+  eslint-plugin-import: 2.32.0
   eslint-plugin-vue: 10.5.1
   eventemitter2: 6.4.9
   execa: 9.6.0

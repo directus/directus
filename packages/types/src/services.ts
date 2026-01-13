@@ -1,8 +1,8 @@
+import type { Readable } from 'node:stream';
 import type { Column, ForeignKey } from '@directus/schema';
 import type { Archiver } from 'archiver';
 import type { GraphQLSchema } from 'graphql';
 import type { Knex } from 'knex';
-import type { Readable } from 'node:stream';
 import type { Transporter } from 'nodemailer';
 import type { OpenAPIObject } from 'openapi3-ts/oas30';
 import type { Accountability } from './accountability.js';
@@ -30,7 +30,6 @@ import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } f
 import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
 import type { ContentVersion } from './versions.js';
-import type { Webhook } from './webhooks.js';
 import type { WebSocketClient, WebSocketMessage } from './websockets/index.js';
 
 export type AbstractServiceOptions = {
@@ -741,10 +740,6 @@ export interface ExtensionsServices {
 	 * The VersionsService
 	 */
 	VersionsService: new (options: AbstractServiceOptions) => AbstractService & VersionsService;
-	/**
-	 * The WebhooksService
-	 */
-	WebhooksService: new (options: AbstractServiceOptions) => AbstractService<Webhook>;
 	/**
 	 * The WebSocketService
 	 */

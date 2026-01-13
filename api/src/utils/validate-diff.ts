@@ -1,7 +1,7 @@
-import Joi from 'joi';
 import { InvalidPayloadError } from '@directus/errors';
 import type { SnapshotDiffWithHash, SnapshotWithHash } from '@directus/types';
 import { DiffKind } from '@directus/types';
+import Joi from 'joi';
 
 const deepDiffSchema = Joi.object({
 	kind: Joi.string()

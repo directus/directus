@@ -9,16 +9,16 @@ import { supportsTus } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { Server } from '@tus/server';
-import { RESUMABLE_UPLOADS } from '../../constants.js';
+import { pick } from 'lodash-es';
+import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../../constants.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
 import { getStorage } from '../../storage/index.js';
+import { getSchema } from '../../utils/get-schema.js';
 import { extractMetadata } from '../files/lib/extract-metadata.js';
 import { ItemsService } from '../index.js';
 import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
-import { pick } from 'lodash-es';
-import emitter from '../../emitter.js';
-import getDatabase from '../../database/index.js';
-import { getSchema } from '../../utils/get-schema.js';
 
 type Context = {
 	schema: SchemaOverview;
@@ -52,7 +52,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 		path: '/files/tus',
 		datastore: store,
 		locker: getTusLocker(),
-		...(RESUMABLE_UPLOADS.MAX_SIZE !== null && { maxSize: RESUMABLE_UPLOADS.MAX_SIZE }),
+		...(FILE_UPLOADS.MAX_SIZE !== null && { maxSize: FILE_UPLOADS.MAX_SIZE }),
 		async onUploadFinish(_req: any, upload) {
 			const schema = await getSchema();
 
