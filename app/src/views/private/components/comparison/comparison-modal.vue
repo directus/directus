@@ -365,6 +365,7 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 												? undefined
 												: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
+									data-test="comparison-modal_apply-button"
 									:disabled="selectedComparisonFields.length === 0 || compareToOption === 'Previous'"
 									:loading="promoting"
 									@click="onPromoteClick"
