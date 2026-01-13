@@ -219,7 +219,7 @@ export class Room {
 
 		const lastActive = await this.store((store) => store.get('lastActive'));
 
-		// Consider room active if there was activity in the last 5 minutes
+		// Consider room active if there was activity in the last 1 minute
 		if (Date.now() - lastActive < 1 * 60 * 1000) {
 			return true;
 		}
@@ -343,6 +343,13 @@ export class Room {
 				'clients',
 				clients.filter((c) => c.uid !== client.uid),
 			);
+
+			const focuses = await store.get('focuses');
+
+			if (client.uid in focuses) {
+				delete focuses[client.uid];
+				await store.set('focuses', focuses);
+			}
 		});
 
 		this.sendAll({

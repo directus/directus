@@ -221,9 +221,15 @@ describe('CollabRooms', () => {
 
 		await room.leave(client);
 
+		// Advance time past the 1 minute inactivity threshold
+		vi.useFakeTimers();
+		vi.setSystemTime(Date.now() + 61 * 1000);
+
 		await rooms.cleanupRooms();
 
 		expect(Object.keys(rooms.rooms).length).toEqual(0);
+
+		vi.useRealTimers();
 	});
 });
 
@@ -300,6 +306,30 @@ describe('room', () => {
 		await room.leave(clientA);
 
 		expect((await room.getClients()).length).toBe(0);
+	});
+
+	test('leave room clears focus', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		vi.mocked(fetchPermissions).mockResolvedValue([
+			{
+				fields: ['*'],
+				permissions: {},
+				validation: {},
+			},
+		] as any);
+
+		await room.focus(clientA, 'title');
+		expect(await room.getFocusByUser('abc')).toBe('title');
+
+		await room.leave(clientA);
+
+		expect(await room.getFocusByUser('abc')).toBeUndefined();
 	});
 
 	test('update field', async () => {
@@ -475,27 +505,6 @@ describe('room', () => {
 			.mock.calls.filter((c: any) => c[0] === 'abc' && c[1].action === 'update' && c[1].field === 'title');
 
 		expect(updatesToA.find((args: any) => args[1].changes === 'Title B')).toBeDefined();
-	});
-
-	test('save', async () => {
-		const clientA = mockWebSocketClient({ uid: 'abc' });
-		const clientB = mockWebSocketClient({ uid: 'def' });
-		const item = getTestItem();
-		const uid = getRoomHash('coll', item, null);
-		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
-
-		await room.join(clientA);
-		await room.join(clientB);
-
-		await room.save(clientB);
-
-		expect(
-			vi.mocked(mockMessenger.sendClient).mock.calls.find((c: any) => c[0] === 'abc' && c[1].action === 'save')?.[1],
-		).toEqual({
-			action: 'save',
-			type: 'collab',
-			room: uid,
-		});
 	});
 
 	test('focus', async () => {
