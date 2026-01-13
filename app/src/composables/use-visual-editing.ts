@@ -1,3 +1,4 @@
+import type { ContentVersion } from '@directus/types';
 import { computed, type MaybeRef, unref } from 'vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useSettingsStore } from '@/stores/settings';
@@ -8,6 +9,8 @@ interface UseVisualEditingOptions {
 	previewUrl: MaybeRef<string | null>;
 	/** Whether this is a new item - visual editing is disabled for new items. Defaults to false. */
 	isNew?: MaybeRef<boolean>;
+	/** Current content version - visual editing is disabled for non-main versions. Defaults to null (main). */
+	currentVersion?: MaybeRef<ContentVersion | null>;
 }
 
 /**
@@ -17,7 +20,7 @@ interface UseVisualEditingOptions {
  * Note: This checks prerequisites only. The live-preview component does the final
  * sameOrigin validation against the currently displayed URL.
  */
-export function useVisualEditing({ previewUrl, isNew = false }: UseVisualEditingOptions) {
+export function useVisualEditing({ previewUrl, isNew = false, currentVersion = null }: UseVisualEditingOptions) {
 	const settingsStore = useSettingsStore();
 	const moduleBar = computed(() => settingsStore.settings?.module_bar ?? MODULE_BAR_DEFAULT);
 
@@ -34,7 +37,11 @@ export function useVisualEditing({ previewUrl, isNew = false }: UseVisualEditing
 	/** Prerequisites check - live-preview does the final sameOrigin validation */
 	const visualEditingEnabled = computed(
 		() =>
-			!!normalizedPreviewUrl.value && !unref(isNew) && visualModuleEnabled.value && visualEditorUrls.value.length > 0,
+			!!normalizedPreviewUrl.value &&
+			!unref(isNew) &&
+			unref(currentVersion) === null &&
+			visualModuleEnabled.value &&
+			visualEditorUrls.value.length > 0,
 	);
 
 	return { visualEditingEnabled, visualEditorUrls };

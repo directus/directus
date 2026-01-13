@@ -30,7 +30,7 @@ const previewUrl = computed(() => {
 	return displayValue.value || null;
 });
 
-const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl });
+const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl, currentVersion });
 
 function closePopup() {
 	window.close();

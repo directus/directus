@@ -271,8 +271,9 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-watch(currentVersion, () => {
+watch(currentVersion, async () => {
 	edits.value = {};
+	await refreshLivePreview();
 });
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
@@ -335,7 +336,7 @@ const livePreviewSize = computed({
 
 provide('live-preview-active', livePreviewActive);
 
-const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl, isNew });
+const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl, isNew, currentVersion });
 
 watch(previewUrl, (url) => {
 	if (!url) livePreviewFullWidth.value = false;
