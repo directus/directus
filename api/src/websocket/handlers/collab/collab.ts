@@ -12,7 +12,7 @@ import { handleWebSocketError } from '../../errors.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
 import { CollabRooms } from './room.js';
-import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
+import type { FocusMessage, JoinMessage, LeaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
 
 /**
  * Handler responsible for subscriptions

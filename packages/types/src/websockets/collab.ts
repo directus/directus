@@ -9,7 +9,6 @@ export const ACTION = {
 	CLIENT: {
 		JOIN: 'join',
 		LEAVE: 'leave',
-		SAVE: 'save',
 		UPDATE: 'update',
 		UPDATE_ALL: 'updateAll',
 		FOCUS: 'focus',
@@ -43,9 +42,6 @@ export const ClientMessage = z.discriminatedUnion('action', [
 	}),
 	BaseClientMessage.extend({
 		action: z.literal(ACTION.CLIENT.LEAVE),
-	}),
-	BaseClientMessage.extend({
-		action: z.literal(ACTION.CLIENT.SAVE),
 	}),
 	BaseClientMessage.extend({
 		action: z.literal(ACTION.CLIENT.UPDATE),
