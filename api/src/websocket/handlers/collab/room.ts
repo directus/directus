@@ -582,7 +582,7 @@ export class Room {
 
 			// TODO: Check which approach might be faster better: Checking it JS or DB side
 			// const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
-			let primaryKeys: (string | number)[] = item ? [item] : [];
+			const primaryKeys: (string | number)[] = item ? [item] : [];
 
 			const validationContext = {
 				collection,
