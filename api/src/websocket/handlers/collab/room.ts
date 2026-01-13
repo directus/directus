@@ -523,7 +523,6 @@ export class Room {
 		if (accountability.admin) return ['*'];
 
 		const cached = permissionCache.get(accountability, collection, item, action);
-		console.log(`cache ${cached ? 'hit' : 'miss'} c: ${collection}, i: ${item}, a: ${action}, c:${cached}`);
 		if (cached) return cached;
 
 		// Prevent caching stale permissions if an invalidation occurs during async steps

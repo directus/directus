@@ -1,4 +1,3 @@
-import type { RedlockAbortSignal, RedlockUsingContext } from '@sesamecare-oss/redlock';
 import type { Lock } from './lock.js';
 
 export interface Kv {

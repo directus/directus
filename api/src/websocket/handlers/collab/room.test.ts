@@ -7,8 +7,11 @@ import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js'
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
+import { processPermissions } from '../../../permissions/utils/process-permissions.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
+import { permissionCache } from './permissions-cache.js';
 import { CollabRooms, getRoomHash, Room } from './room.js';
 import { sanitizePayload } from './sanitize-payload.js';
 
@@ -30,10 +33,6 @@ vi.mock('../../../permissions/utils/extract-required-dynamic-variable-context.js
 vi.mock('../../../permissions/utils/fetch-dynamic-variable-data.js');
 vi.mock('../../../permissions/utils/process-permissions.js');
 vi.mock('../../../permissions/modules/validate-access/lib/validate-item-access.js');
-
-import { permissionCache } from './permissions-cache.js';
-import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
-import { processPermissions } from '../../../permissions/utils/process-permissions.js';
 
 const mockMessenger = {
 	sendClient: vi.fn(),

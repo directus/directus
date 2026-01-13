@@ -3,6 +3,11 @@ import { ClientID } from '@directus/types/collab';
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VAvatar from '@/components/v-avatar.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { CollabUser } from '@/composables/use-collab';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
@@ -59,7 +64,7 @@ function focusIntoView(cid: ClientID) {
 			v-if="lock && users.length > 0"
 			name="lock"
 			class="lock-icon"
-			:style="{ color: `var(--${users[0].color})` }"
+			:style="{ color: `var(--${users[0]!.color})` }"
 		/>
 		<VMenu v-if="users.length > DISPLAY_LIMIT" trigger="click">
 			<template #activator>

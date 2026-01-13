@@ -30,15 +30,14 @@ import VTabs from '@/components/v-tabs.vue';
 import VTextarea from '@/components/v-textarea.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { useFocusin } from '@/composables/use-focusin';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
-
 import 'tinymce/tinymce';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
@@ -55,7 +54,6 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
-import { useFocusin } from '@/composables/use-focusin';
 
 type CustomFormat = {
 	title: string;
