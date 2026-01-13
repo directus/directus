@@ -4,7 +4,7 @@ fields:
   - field: id
     special:
       - uuid
-  - field: type
+  - field: provider
   - field: credentials
     special:
       - encrypt
