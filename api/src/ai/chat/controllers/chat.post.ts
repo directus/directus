@@ -22,7 +22,6 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 
 	const aiSettings = res.locals['ai'].settings;
 
-
 	const allowedModelsMap: Record<string, string[] | null> = {
 		openai: aiSettings.openaiAllowedModels,
 		anthropic: aiSettings.anthropicAllowedModels,

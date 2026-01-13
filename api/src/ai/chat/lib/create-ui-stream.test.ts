@@ -172,7 +172,10 @@ describe('createUiStream', () => {
 
 		// Extract and call the onFinish handler to verify it invokes onUsage
 		const call = vi.mocked(streamText).mock.calls[0]?.[0];
-		const onFinish = call?.onFinish as (result: { usage: { inputTokens: number; outputTokens: number; totalTokens: number } }) => void;
+
+		const onFinish = call?.onFinish as (result: {
+			usage: { inputTokens: number; outputTokens: number; totalTokens: number };
+		}) => void;
 
 		onFinish({ usage: { inputTokens: 100, outputTokens: 50, totalTokens: 150 } });
 
