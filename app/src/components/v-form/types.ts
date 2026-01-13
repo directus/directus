@@ -12,6 +12,7 @@ export interface ComparisonContext {
 	selectedFields: string[];
 	onToggleField: (field: string) => void;
 	comparingTo?: 'Previous' | 'Latest';
+	mode?: 'version' | 'revision';
 }
 
 export type FieldValues = {

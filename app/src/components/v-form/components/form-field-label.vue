@@ -64,7 +64,7 @@ const showHiddenIndicator = computed(
 			/>
 
 			<VCheckbox
-				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field) && comparison.comparingTo !== 'Previous'"
+				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field) && (comparison.mode !== 'revision' || comparison.comparingTo !== 'Previous')"
 				class="comparison-checkbox"
 				:model-value="comparisonActive"
 				:value="field.field"

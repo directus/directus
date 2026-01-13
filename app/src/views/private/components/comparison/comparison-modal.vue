@@ -270,6 +270,7 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 										selectedFields: [],
 										onToggleField: () => {},
 										comparingTo,
+										mode,
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -312,6 +313,7 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
 										comparingTo,
+										mode,
 									}"
 									non-editable
 									class="comparison-form--incoming"
@@ -338,7 +340,7 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 					</div>
 					<div class="col right">
 						<div class="footer-actions">
-							<div v-if="compareToOption !== 'Previous'" class="select-all-container">
+							<div v-if="mode !== 'revision' || compareToOption !== 'Previous'" class="select-all-container">
 								<VCheckbox
 									v-if="availableFieldsCount > 0"
 									:model-value="allFieldsSelected"
@@ -359,14 +361,14 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 								</VButton>
 								<VButton
 									v-tooltip.top="
-										compareToOption === 'Previous'
+										mode === 'revision' && compareToOption === 'Previous'
 											? $t('compare_to_latest_to_restore')
 											: selectedComparisonFields.length === 0
 												? undefined
 												: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
 									data-test="comparison-modal_apply-button"
-									:disabled="selectedComparisonFields.length === 0 || compareToOption === 'Previous'"
+									:disabled="selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')"
 									:loading="promoting"
 									@click="onPromoteClick"
 								>
