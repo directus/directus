@@ -148,6 +148,15 @@ Example ports:
 
 Check your worktree's ports in `.env` or `api/.env`.
 
+**TASK.md workflow:**
+
+When starting a session, check if `.git` is a file (not a directory) - this indicates you're in a worktree. If so:
+1. Check for `TASK.md` in the root
+2. If missing, offer to create one with the feature name (from branch) and goals
+3. Use `TASK.md` to guide development - it defines what you're building
+
+TASK.md should be committed to the feature branch (for syncing across machines) but deleted before merging to main.
+
 ## Testing
 
 - Framework: Vitest
