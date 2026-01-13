@@ -81,8 +81,6 @@ export const useUserStore = defineStore('userStore', () => {
 				...globals.data,
 				roles: roles.data,
 			};
-
-			sdk.connect();
 		} catch (error: any) {
 			error.value = error;
 		} finally {
@@ -94,7 +92,6 @@ export const useUserStore = defineStore('userStore', () => {
 		currentUser.value = null;
 		loading.value = false;
 		error.value = null;
-		sdk.disconnect();
 	};
 
 	const hydrateAdditionalFields = async (fields: string[]) => {

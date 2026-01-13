@@ -1,11 +1,11 @@
 import type { Accountability, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import { asyncDeepMapWithSchema } from '../../../utils/versioning/deep-map-with-schema.js';
-import { isEmpty } from 'lodash-es';
 import { getService } from '../../../utils/get-service.js';
 import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
+import { asyncDeepMapWithSchema } from '../../../utils/versioning/deep-map-with-schema.js';
 
 /**
  * Sanitizes a payload based on the user's permissions.

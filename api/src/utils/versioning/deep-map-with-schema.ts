@@ -1,8 +1,8 @@
 import assert from 'node:assert';
 import { InvalidQueryError } from '@directus/errors';
 import type { CollectionOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
-import { isPlainObject } from 'lodash-es';
 import { getRelationInfo, type RelationInfo } from '@directus/utils';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * Allows to deep map the data like a response or delta changes with collection, field and relation context for each entry.
@@ -27,13 +27,13 @@ export function deepMapWithSchema(
 		relationInfo?: RelationInfo;
 	},
 	options?: {
-		/** If set to true, non-existent fields will be included in the mapping and will have a value of undefined */
+		/** If set to true, fields that exist in the schema but not in the mapped data will be included and with a value of undefined */
 		mapNonExistentFields?: boolean;
 		/** If set to true, it will map primitive values to objects with primary key on o2m relations */
 		mapPrimaryKeys?: boolean;
 		/** If set to true, it will map the "create", "update" and "delete" syntax for o2m relations found in deltas */
 		detailedUpdateSyntax?: boolean;
-		/** If set to true, will throw away fields that are not in the schema */
+		/** If set to true, fields that are in the data but not in the schema will be removed */
 		omitUnknownFields?: boolean;
 	},
 ): any {
@@ -179,13 +179,13 @@ export async function asyncDeepMapWithSchema(
 		relationInfo?: RelationInfo;
 	},
 	options?: {
-		/** If set to true, non-existent fields will be included in the mapping and will have a value of undefined */
+		/** If set to true, fields that exist in the schema but not in the mapped data will be included and with a value of undefined */
 		mapNonExistentFields?: boolean;
 		/** If set to true, it will map primitive values to objects with primary key on o2m relations */
 		mapPrimaryKeys?: boolean;
 		/** If set to true, it will map the "create", "update" and "delete" syntax for o2m relations found in deltas */
 		detailedUpdateSyntax?: boolean;
-		/** If set to true, will throw away fields that are not in the schema */
+		/** If set to true, fields that are in the data but not in the schema will be removed */
 		omitUnknownFields?: boolean;
 	},
 ): Promise<any> {

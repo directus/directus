@@ -465,7 +465,7 @@ fields:
       - no-data
     width: full
 
-  - field: collab
+  - field: collaboration
     interface: boolean
     width: half
     options:

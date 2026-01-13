@@ -1,11 +1,11 @@
+import { readUser, readUsers, RemoveEventHandler } from '@directus/sdk';
+import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
+import { ACTION, ClientID, ClientMessage, Color, ServerMessage } from '@directus/types/collab';
+import { capitalize, debounce, isEmpty, isEqual, throttle } from 'lodash';
+import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import sdk from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
-import { readUser, readUsers, RemoveEventHandler } from '@directus/sdk';
-import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
-import { ServerMessage, ACTION, Color, ClientID, ClientMessage } from '@directus/types/collab';
-import { capitalize, debounce, isEmpty, isEqual, throttle } from 'lodash';
-import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 
 type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>;
 type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>;
@@ -82,7 +82,7 @@ export function useCollab(
 	};
 
 	onMounted(() => {
-		if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collab) {
+		if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collaboration) {
 			sdk.connect().catch((e: any) => {
 				if (e.message?.toLowerCase().includes('open')) {
 					connected.value = true;

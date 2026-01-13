@@ -1,12 +1,13 @@
-import { WS_TYPE, type Accountability, type ActionHandler, type Item, type WebSocketClient } from '@directus/types';
-import { ACTION, COLORS, type BaseServerMessage, type ClientID, type Color } from '@directus/types/collab';
 import { createHash } from 'crypto';
+import { type Accountability, type ActionHandler, type Item, type WebSocketClient, WS_TYPE } from '@directus/types';
+import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
+import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
 import { processPermissions } from '../../../permissions/utils/process-permissions.js';
@@ -14,12 +15,11 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 // import { calculateAllowedFields } from './calculate-allowed-fields.js';
 import { calculateCacheMetadata } from './calculate-cache-metadata.js';
+import { filterToFields } from './filter-to-fields.js';
 import { Messenger } from './messenger.js';
 import { permissionCache } from './permissions-cache.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { useStore } from './store.js';
-import { filterToFields } from './filter-to-fields.js';
-import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
 
 /**
  * Store and manage all active collaboration rooms
@@ -114,8 +114,7 @@ type RoomData = {
 	item: string | null;
 	version: string | null;
 	changes: Item;
-	clients: { uid: ClientID; accountability: Accountability }[];
-	clientColors: Record<ClientID, Color>;
+	clients: { uid: ClientID; accountability: Accountability; color: Color }[];
 	focuses: Record<ClientID, string>;
 };
 
@@ -153,7 +152,6 @@ export class Room {
 			await store.set('changes', initialChanges ?? {});
 
 			// Default all other values
-			await store.set('clientColors', {});
 			await store.set('clients', []);
 			await store.set('focuses', {});
 		});
@@ -257,11 +255,7 @@ export class Room {
 					added = true;
 					clientColor = COLORS[random(COLORS.length - 1)]!;
 
-					const clientColors = await store.get('clientColors');
-					clientColors[client.uid] = clientColor;
-					await store.set('clientColors', clientColors);
-
-					clients.push({ uid: client.uid, accountability: client.accountability! });
+					clients.push({ uid: client.uid, accountability: client.accountability!, color: clientColor });
 					await store.set('clients', clients);
 				}
 			});
@@ -279,12 +273,11 @@ export class Room {
 			);
 		}
 
-		const { collection, item, version, clientColors, changes, focuses, clients } = (await this.store(async (store) => {
+		const { collection, item, version, changes, focuses, clients } = (await this.store(async (store) => {
 			return {
 				collection: await store.get('collection'),
 				item: await store.get('item'),
 				version: await store.get('version'),
-				clientColors: await store.get('clientColors'),
 				changes: await store.get('changes'),
 				focuses: await store.get('focuses'),
 				clients: await store.get('clients'),
@@ -315,7 +308,7 @@ export class Room {
 			users: Array.from(clients).map((client) => ({
 				user: client.accountability.user!,
 				connection: client.uid,
-				color: clientColors[client.uid]!,
+				color: client.color,
 			})),
 		});
 	}
