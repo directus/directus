@@ -321,12 +321,6 @@ export function useCollab(
 		});
 	}, 100);
 
-	function onSave() {
-		sendMessage({
-			action: ACTION.CLIENT.SAVE,
-		});
-	}
-
 	function update(changes: Item) {
 		edits.value = Object.assign({}, edits.value, changes);
 
@@ -357,5 +351,5 @@ export function useCollab(
 		});
 	}
 
-	return { onSave, update, users, collabContext, connected, collabCollision, clearCollidingChanges };
+	return { update, users, collabContext, connected, collabCollision, clearCollidingChanges };
 }

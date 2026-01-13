@@ -176,7 +176,7 @@ export class Room {
 				const clients = await this.store(async (store) => {
 					let changes = await store.get('changes');
 
-					changes = Object.fromEntries(Object.entries(changes).filter(([key, value]) => !isEqual(result[key], value)));
+					changes = Object.fromEntries(Object.entries(changes).filter(([key]) => key in result));
 
 					store.set('changes', changes);
 
@@ -335,24 +335,6 @@ export class Room {
 			action: ACTION.SERVER.LEAVE,
 			connection: client.uid,
 		});
-	}
-
-	/**
-	 * Save the room state and clear changes
-	 */
-	async save(sender: PermissionClient) {
-		await this.ready;
-
-		await this.store(async (store) => {
-			await store.set('changes', {});
-		});
-
-		await this.sendExcluding(
-			{
-				action: ACTION.SERVER.SAVE,
-			},
-			sender.uid,
-		);
 	}
 
 	/**

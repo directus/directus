@@ -128,7 +128,6 @@ aiStore.onSystemToolResult((tool, input) => {
 });
 
 const {
-	onSave,
 	clearCollidingChanges,
 	users: collabUsers,
 	connected,
@@ -446,7 +445,6 @@ async function saveAndStay() {
 
 	try {
 		const savedItem: Record<string, any> = await save();
-		onSave();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
@@ -467,7 +465,6 @@ async function saveAndAddNew() {
 
 	try {
 		await save();
-		onSave();
 
 		if (isNew.value === true) {
 			refresh();
@@ -482,7 +479,6 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		onSave();
 
 		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey));
 	} catch {
@@ -495,7 +491,6 @@ async function saveAndQuit() {
 
 	try {
 		await save();
-		onSave();
 		if (props.singleton === false) router.push(collectionRoute.value);
 	} catch {
 		// Save shows unexpected error dialog

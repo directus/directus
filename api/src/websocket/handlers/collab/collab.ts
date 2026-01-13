@@ -149,29 +149,6 @@ export class CollabHandler {
 	}
 
 	/**
-	 * Save the room state
-	 */
-	async onSave(client: WebSocketClient, message: SaveMessage) {
-		try {
-			const room = await this.rooms.getRoom(message.room);
-
-			if (!room)
-				throw new InvalidPayloadError({
-					reason: `No access to room ${message.room} or room does not exist`,
-				});
-
-			if (!room.hasClient(client.uid))
-				throw new InvalidPayloadError({
-					reason: `Not connected to room ${message.room}`,
-				});
-
-			room.save(client);
-		} catch (err) {
-			handleWebSocketError(client, err, 'save');
-		}
-	}
-
-	/**
 	 * Update a field value
 	 */
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
