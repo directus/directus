@@ -42,6 +42,7 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
@@ -51,7 +52,6 @@ import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
-import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 
 interface Props {
 	collection: string;
