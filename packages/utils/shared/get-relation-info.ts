@@ -1,5 +1,5 @@
 import type { Relation, RelationMeta } from '@directus/types';
-import { getRelationTypeServer } from './get-relation-type.js';
+import { getRelationType } from './get-relation-type.js';
 import { getRelation } from './get-relation.js';
 
 export type RelationInfo = {
@@ -53,7 +53,7 @@ export function getRelationInfo(relations: Relation[], collection: string, field
 	}
 
 	const relation = getRelation(relations, collection, field) ?? null;
-	const relationType = relation ? getRelationTypeServer({ relation, collection, field }) : null;
+	const relationType = relation ? getRelationType({ relation, collection, field, useA2O: true }) : null;
 
 	return { relation, relationType };
 }

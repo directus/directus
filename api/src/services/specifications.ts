@@ -10,7 +10,7 @@ import type {
 	SchemaOverview,
 	Type,
 } from '@directus/types';
-import { getRelation, getRelationTypeServer } from '@directus/utils';
+import { getRelation, getRelationType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
 import hash from 'object-hash';
@@ -475,10 +475,11 @@ class OASSpecsService implements SpecificationSubService {
 				...this.fieldTypes[field.type],
 			};
 		} else {
-			const relationType = getRelationTypeServer({
+			const relationType = getRelationType({
 				relation,
 				field: field.field,
 				collection: collection,
+				useA2O: true,
 			});
 
 			if (relationType === 'm2o') {

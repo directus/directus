@@ -1,6 +1,6 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelation, getRelationTypeServer } from '@directus/utils';
+import { getRelation, getRelationType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
@@ -168,10 +168,11 @@ export async function parseFields(
 
 		if (!relation) continue;
 
-		const relationType = getRelationTypeServer({
+		const relationType = getRelationType({
 			relation,
 			collection: options.parentCollection,
 			field: fieldName,
+			useA2O: true,
 		});
 
 		if (!relationType) continue;

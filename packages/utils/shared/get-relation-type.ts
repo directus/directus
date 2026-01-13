@@ -1,11 +1,17 @@
 import type { Relation } from '@directus/types';
 
-export function getRelationType(getRelationOptions: {
+type GetRelationOptions = {
 	relation: Relation;
 	collection: string | null;
 	field: string;
-}): 'm2o' | 'o2m' | 'm2a' | null {
-	const { relation, collection, field } = getRelationOptions;
+};
+
+export function getRelationType(options: GetRelationOptions & { useA2O: true }): 'm2o' | 'o2m' | 'a2o' | null;
+export function getRelationType(options: GetRelationOptions & { useA2O?: false }): 'm2o' | 'o2m' | 'm2a' | null;
+export function getRelationType(
+	getRelationOptions: GetRelationOptions & { useA2O?: boolean },
+): 'm2o' | 'o2m' | 'm2a' | 'a2o' | null {
+	const { relation, collection, field, useA2O = false } = getRelationOptions;
 
 	if (!relation) return null;
 
@@ -15,7 +21,7 @@ export function getRelationType(getRelationOptions: {
 		relation.meta?.one_collection_field &&
 		relation.meta?.one_allowed_collections
 	) {
-		return 'm2a';
+		return useA2O ? 'a2o' : 'm2a';
 	}
 
 	if (relation.collection === collection && relation.field === field) {
@@ -27,12 +33,4 @@ export function getRelationType(getRelationOptions: {
 	}
 
 	return null;
-}
-
-export function getRelationTypeServer(getRelationOptions: {
-	relation: Relation;
-	collection: string | null;
-	field: string;
-}): 'm2o' | 'o2m' | 'a2o' | null {
-	return getRelationType(getRelationOptions)?.replace('m2a', 'a2o') as 'm2o' | 'o2m' | 'a2o' | null;
 }
