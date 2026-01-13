@@ -1,5 +1,7 @@
 export type ProviderType = 'openai' | 'anthropic' | 'google' | 'openai-compatible';
 
+export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
+
 export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
 
 export type SystemTool =
@@ -22,6 +24,7 @@ export interface OpenAICompatibleModel {
 	output?: number;
 	attachment?: boolean;
 	reasoning?: boolean;
+	providerOptions?: { [key: string]: JSONValue };
 }
 
 export interface OpenAICompatibleHeader {

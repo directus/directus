@@ -1,4 +1,4 @@
-import type { OpenAICompatibleHeader, OpenAICompatibleModel, ProviderType } from '@directus/ai';
+import type { OpenAICompatibleHeader, OpenAICompatibleModel } from '@directus/ai';
 
 interface OpenAIConfig {
 	type: 'openai';

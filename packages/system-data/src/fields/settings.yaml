@@ -974,6 +974,18 @@ fields:
           meta:
             interface: boolean
             width: half
+        - field: providerOptions
+          name: $t:fields.directus_settings.ai_provider_options
+          type: json
+          schema:
+            is_nullable: true
+          meta:
+            interface: input-code
+            width: full
+            options:
+              language: json
+              placeholder: '{ "customOption": "value" }'
+            note: $t:fields.directus_settings.ai_provider_options_note
     width: full
     group: ai_group
 

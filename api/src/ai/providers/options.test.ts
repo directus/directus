@@ -76,4 +76,54 @@ describe('getProviderOptions', () => {
 
 		expect(result).toEqual({});
 	});
+
+	it('returns providerOptions for openai-compatible model with custom options', () => {
+		const settings: AISettings = {
+			...baseSettings,
+			openaiCompatibleModels: [
+				{
+					id: 'llama3',
+					name: 'Llama 3',
+					providerOptions: { customOption: 'value', temperature: 0.5 },
+				},
+			],
+		};
+
+		const result = getProviderOptions('openai-compatible', 'llama3', settings);
+
+		expect(result).toEqual({
+			'openai-compatible': { customOption: 'value', temperature: 0.5 },
+		});
+	});
+
+	it('uses custom provider name in providerOptions key', () => {
+		const settings: AISettings = {
+			...baseSettings,
+			openaiCompatibleName: 'ollama',
+			openaiCompatibleModels: [
+				{
+					id: 'llama3',
+					name: 'Llama 3',
+					providerOptions: { customOption: 'value' },
+				},
+			],
+		};
+
+		const result = getProviderOptions('openai-compatible', 'llama3', settings);
+
+		expect(result).toEqual({
+			ollama: { customOption: 'value' },
+		});
+	});
+
+	it('returns empty object for openai-compatible model without providerOptions', () => {
+		const settings: AISettings = {
+			...baseSettings,
+			openaiCompatibleModels: [{ id: 'llama3', name: 'Llama 3' }],
+		};
+
+		const result = getProviderOptions('openai-compatible', 'llama3', settings);
+
+		expect(result).toEqual({});
+	});
 });

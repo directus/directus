@@ -17,13 +17,22 @@ const OPENAI_REASONING_OPTIONS = {
 		store: false,
 		include: ['reasoning.encrypted_content'],
 	},
-} as const;
+};
 
 export function getProviderOptions(provider: ProviderType, model: string, settings: AISettings) {
 	const modelDef = getModelDefinition(provider, model, settings);
 
 	if (provider === 'openai' && modelDef?.reasoning) {
 		return OPENAI_REASONING_OPTIONS;
+	}
+
+	if (provider === 'openai-compatible') {
+		const customModel = settings.openaiCompatibleModels?.find((m) => m.id === model);
+
+		if (customModel?.providerOptions) {
+			const providerName = settings.openaiCompatibleName ?? 'openai-compatible';
+			return { [providerName]: customModel.providerOptions };
+		}
 	}
 
 	return {};

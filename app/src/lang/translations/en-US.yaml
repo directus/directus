@@ -1503,6 +1503,8 @@ fields:
     ai_output_limit: Output Limit
     ai_supports_attachments: Supports Attachments
     ai_supports_reasoning: Supports Reasoning
+    ai_provider_options: Provider Options
+    ai_provider_options_note: Provider-specific options passed to AI endpoints.
     ai_header_name: Header
 
   directus_shares:
