@@ -36,7 +36,7 @@ export interface Cache {
 	 */
 	clear(): Promise<void>;
 
-	aquireLock(key: string): Promise<Lock>;
+	acquireLock(key: string): Promise<Lock>;
 
 	usingLock<T>(key: string, callback: () => Promise<T>): Promise<T>;
 }

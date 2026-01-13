@@ -49,7 +49,7 @@ export interface Kv {
 	 */
 	setMax(key: string, value: number): Promise<boolean>;
 
-	aquireLock(key: string): Promise<Lock>;
+	acquireLock(key: string): Promise<Lock>;
 
 	usingLock<T>(key: string, callback: () => Promise<T>): Promise<T>;
 

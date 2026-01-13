@@ -74,8 +74,8 @@ export class CacheMulti implements Cache {
 		await this.clearOthers();
 	}
 
-	async aquireLock(key: string) {
-		return await this.redis.aquireLock(key);
+	async acquireLock(key: string) {
+		return await this.redis.acquireLock(key);
 	}
 
 	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
