@@ -27,6 +27,9 @@ import translationFields from './translations.yaml';
 import userFields from './users.yaml';
 import versionFields from './versions.yaml';
 import webhookFields from './webhooks.yaml';
+import deploymentFields from './deployment.yaml';
+import deploymentProjectsFields from './deployment-projects.yaml';
+import deploymentRunsFields from './deployment-runs.yaml';
 
 import type { FieldIndex, FieldMeta } from '../types.js';
 
@@ -70,6 +73,9 @@ processFields(translationFields);
 processFields(userFields);
 processFields(versionFields);
 processFields(webhookFields);
+processFields(deploymentFields);
+processFields(deploymentProjectsFields);
+processFields(deploymentRunsFields);
 
 function processFields(systemFields: Record<string, any>) {
 	const {
