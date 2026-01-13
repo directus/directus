@@ -1017,6 +1017,9 @@ importers:
       '@aws-sdk/client-sesv2':
         specifier: 'catalog:'
         version: 3.928.0
+      '@directus/ai':
+        specifier: workspace:*
+        version: link:../packages/ai
       '@directus/app':
         specifier: workspace:*
         version: link:../app
@@ -1532,6 +1535,9 @@ importers:
       '@ai-sdk/vue':
         specifier: 'catalog:'
         version: 3.0.25(vue@3.5.24(typescript@5.9.3))(zod@4.1.12)
+      '@directus/ai':
+        specifier: workspace:*
+        version: link:../packages/ai
       '@directus/composables':
         specifier: workspace:*
         version: link:../packages/composables
@@ -1928,6 +1934,18 @@ importers:
       '@directus/update-check':
         specifier: workspace:*
         version: link:../packages/update-check
+
+  packages/ai:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
 
   packages/composables:
     dependencies:
@@ -2850,6 +2868,9 @@ importers:
 
   packages/types:
     dependencies:
+      '@directus/ai':
+        specifier: workspace:*
+        version: link:../ai
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants

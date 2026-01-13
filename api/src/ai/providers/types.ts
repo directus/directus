@@ -1,6 +1,4 @@
-import type { OpenAICompatibleHeader, OpenAICompatibleModel } from '@directus/types';
-
-export type ProviderType = 'openai' | 'anthropic' | 'google' | 'openai-compatible';
+import type { OpenAICompatibleHeader, OpenAICompatibleModel, ProviderType } from '@directus/ai';
 
 export interface ProviderConfig {
 	type: ProviderType;

@@ -237,7 +237,7 @@ describe('createAIProviderRegistry', () => {
 			type: 'openai-compatible',
 			headers: {
 				'X-Custom-Header': 'custom-value',
-				'Authorization': 'Bearer token123',
+				Authorization: 'Bearer token123',
 			},
 		});
 	});
@@ -277,4 +277,3 @@ describe('createAIProviderRegistry', () => {
 		expect(model.id).toBe('openai:gpt-4');
 	});
 });
-

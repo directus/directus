@@ -956,6 +956,24 @@ fields:
             width: half
             options:
               placeholder: '16000'
+        - field: attachment
+          name: $t:fields.directus_settings.ai_supports_attachments
+          type: boolean
+          schema:
+            is_nullable: true
+            default_value: false
+          meta:
+            interface: boolean
+            width: half
+        - field: reasoning
+          name: $t:fields.directus_settings.ai_supports_reasoning
+          type: boolean
+          schema:
+            is_nullable: true
+            default_value: false
+          meta:
+            interface: boolean
+            width: half
     width: full
     group: ai_group
 

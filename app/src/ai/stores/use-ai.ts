@@ -1,4 +1,5 @@
 import { Chat } from '@ai-sdk/vue';
+import { type SystemTool, type ToolApprovalMode } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
 	DefaultChatTransport,
@@ -10,12 +11,9 @@ import { defineStore } from 'pinia';
 import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
-import { buildCustomModelDefinition, buildCustomModels, DEFAULT_AI_MODELS, type ModelDefinition } from '../models';
-import { SystemTool } from '../types/system-tool';
+import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
 import { useSettingsStore } from '@/stores/settings';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
-
-export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -56,7 +54,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const models = computed(() => {
 		const customModels = buildCustomModels(settingsStore.settings?.ai_openai_compatible_models ?? null);
-		const allModels = [...DEFAULT_AI_MODELS, ...customModels];
+		const allModels = [...AI_MODELS, ...customModels];
 
 		const allowedModelsMap: Record<string, string[] | null> = {
 			openai: settingsStore.settings?.ai_openai_allowed_models ?? null,
@@ -64,15 +62,20 @@ export const useAiStore = defineStore('ai-store', () => {
 			google: settingsStore.settings?.ai_google_allowed_models ?? null,
 		};
 
-		const result: ModelDefinition[] = [];
+		const result: AppModelDefinition[] = [];
 
-		// Add predefined models that are in the allowed list
+		// Add models that are allowed or explicitly configured
 		for (const modelDef of allModels) {
 			if (!settingsStore.availableAiProviders.includes(modelDef.provider)) continue;
 
+			// openai-compatible models are always allowed (user explicitly configured them)
+			if (modelDef.provider === 'openai-compatible') {
+				result.push(modelDef);
+				continue;
+			}
+
 			const allowedModels = allowedModelsMap[modelDef.provider];
 
-			// null or empty = no models allowed for that provider
 			if (!allowedModels || allowedModels.length === 0) continue;
 
 			if (allowedModels.includes(modelDef.model)) {
@@ -89,7 +92,7 @@ export const useAiStore = defineStore('ai-store', () => {
 				const exists = result.some((m) => m.provider === provider && m.model === modelId);
 
 				if (!exists) {
-					result.push(buildCustomModelDefinition(provider, modelId));
+					result.push(buildCustomModelDefinition(provider as any, modelId));
 				}
 			}
 		}
@@ -137,7 +140,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		);
 	});
 
-	const selectModel = (modelDefinition: ModelDefinition) => {
+	const selectModel = (modelDefinition: AppModelDefinition) => {
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
 
@@ -299,7 +302,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			if ('toolCallId' in part && part.state === 'output-available' && !processedToolCallIds.has(part.toolCallId)) {
 				processedToolCallIds.add(part.toolCallId);
 
-				const tool = part.type.substring('tool-'.length);
+				const tool = part.type.substring('tool-'.length) as SystemTool;
 
 				const isSystemTool = systemTools.value.includes(tool);
 

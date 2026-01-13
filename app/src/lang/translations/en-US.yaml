@@ -1501,6 +1501,8 @@ fields:
     ai_model_id: Model ID
     ai_context_limit: Context Limit
     ai_output_limit: Output Limit
+    ai_supports_attachments: Supports Attachments
+    ai_supports_reasoning: Supports Reasoning
     ai_header_name: Header
 
   directus_shares:

@@ -31,7 +31,9 @@ const mockStreamTextResult = {
 
 vi.mock('ai', () => ({
 	streamText: vi.fn(() => mockStreamTextResult),
-	convertToModelMessages: vi.fn((messages: UIMessage[]) => Promise.resolve(messages.map((m) => ({ ...m, converted: true })))),
+	convertToModelMessages: vi.fn((messages: UIMessage[]) =>
+		Promise.resolve(messages.map((m) => ({ ...m, converted: true }))),
+	),
 	stepCountIs: vi.fn(),
 	createProviderRegistry: vi.fn((providers) => ({
 		languageModel: (id: string) => ({ id, providers }),

@@ -1,7 +1,12 @@
+import type { ProviderType } from '@directus/ai';
 import { z } from 'zod';
-import type { ProviderType } from '../../providers/types.js';
 
-export const ProviderTypeSchema = z.enum(['openai', 'anthropic', 'google', 'openai-compatible']) satisfies z.ZodType<ProviderType>;
+export const ProviderTypeSchema = z.enum([
+	'openai',
+	'anthropic',
+	'google',
+	'openai-compatible',
+]) satisfies z.ZodType<ProviderType>;
 
 export const ProviderOpenAi = z.object({
 	provider: z.literal('openai'),

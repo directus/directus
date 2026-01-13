@@ -1,3 +1,4 @@
+import type { ProviderType } from '@directus/ai';
 import { ServiceUnavailableError } from '@directus/errors';
 import {
 	convertToModelMessages,
@@ -8,7 +9,12 @@ import {
 	type Tool,
 	type UIMessage,
 } from 'ai';
-import { type AISettings, buildProviderConfigs, createAIProviderRegistry, type ProviderType } from '../../providers/index.js';
+import {
+	type AISettings,
+	buildProviderConfigs,
+	createAIProviderRegistry,
+	getProviderOptions,
+} from '../../providers/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 
 export interface CreateUiStreamOptions {
@@ -35,18 +41,14 @@ export const createUiStream = async (
 
 	systemPrompt ||= SYSTEM_PROMPT;
 
+	const providerOptions = getProviderOptions(provider, model, aiSettings);
+
 	const stream = streamText({
 		system: systemPrompt,
 		model: registry.languageModel(`${provider}:${model}`),
 		messages: await convertToModelMessages(messages),
 		stopWhen: [stepCountIs(10)],
-		providerOptions: {
-			openai: {
-				reasoningSummary: 'auto',
-				store: false,
-				include: ['reasoning.encrypted_content'],
-			},
-		},
+		providerOptions,
 		tools,
 		onFinish({ usage }) {
 			if (onUsage) {

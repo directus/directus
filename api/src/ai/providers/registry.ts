@@ -81,4 +81,3 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 
 	return createProviderRegistry(providers);
 }
-

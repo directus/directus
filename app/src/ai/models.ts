@@ -1,311 +1,43 @@
-// Limits and costs adopted from models.dev
-// MIT License
-// Copyright (c) 2025 models.dev
-
-import type { OpenAICompatibleModel } from '@directus/types';
+import {
+	buildCustomModelDefinition as buildCustomModelDefinitionBase,
+	buildCustomModels as buildCustomModelsBase,
+	DEFAULT_AI_MODELS,
+	type ModelDefinition,
+	type OpenAICompatibleModel,
+	type ProviderType,
+} from '@directus/ai';
 import type { Component } from 'vue';
 import LogoClaude from '@/ai/components/logos/claude.vue';
 import LogoCustom from '@/ai/components/logos/custom.vue';
 import LogoGoogle from '@/ai/components/logos/google.vue';
 import LogoOpenAI from '@/ai/components/logos/openai.vue';
 
-export interface ModelDefinition {
-	provider: string;
-	model: string;
-	name: string;
+export interface AppModelDefinition extends ModelDefinition {
 	icon: Component;
-	limit: {
-		context: number;
-		output: number;
-	};
-	cost: {
-		input: number;
-		output: number;
-	};
-}
-
-export const DEFAULT_AI_MODELS: ModelDefinition[] = [
-	// OpenAI GPT-4 series
-	{
-		provider: 'openai',
-		model: 'gpt-4o-mini',
-		name: 'GPT-4o Mini',
-		icon: LogoOpenAI,
-		limit: {
-			context: 128_000,
-			output: 16_384,
-		},
-		cost: {
-			input: 0.15,
-			output: 0.6,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-4.1-nano',
-		name: 'GPT-4.1 Nano',
-		icon: LogoOpenAI,
-		limit: {
-			context: 1_047_576,
-			output: 32_768,
-		},
-		cost: {
-			input: 0.1,
-			output: 0.4,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-4.1-mini',
-		name: 'GPT-4.1 Mini',
-		icon: LogoOpenAI,
-		limit: {
-			context: 1_047_576,
-			output: 32_768,
-		},
-		cost: {
-			input: 0.4,
-			output: 1.6,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-4.1',
-		name: 'GPT-4.1',
-		icon: LogoOpenAI,
-		limit: {
-			context: 1_047_576,
-			output: 32_768,
-		},
-		cost: {
-			input: 2.0,
-			output: 8.0,
-		},
-	},
-	// OpenAI GPT-5 series
-	{
-		provider: 'openai',
-		model: 'gpt-5-nano',
-		name: 'GPT-5 Nano',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 0.05,
-			output: 0.4,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-5-mini',
-		name: 'GPT-5 Mini',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 0.25,
-			output: 2,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-5',
-		name: 'GPT-5',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 1.25,
-			output: 10.0,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-5.2',
-		name: 'GPT-5.2',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 1.75,
-			output: 14.0,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-5.2-chat-latest',
-		name: 'GPT-5.2 Chat',
-		icon: LogoOpenAI,
-		limit: {
-			context: 128_000,
-			output: 16_384,
-		},
-		cost: {
-			input: 1.75,
-			output: 14.0,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-5.2-pro',
-		name: 'GPT-5.2 Pro',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 21.0,
-			output: 168.0,
-		},
-	},
-	// Anthropic Claude
-	{
-		provider: 'anthropic',
-		model: 'claude-haiku-4-5',
-		name: 'Claude Haiku 4.5',
-		icon: LogoClaude,
-		limit: {
-			context: 200_000,
-			output: 64_000,
-		},
-		cost: {
-			input: 1.0,
-			output: 5.0,
-		},
-	},
-	{
-		provider: 'anthropic',
-		model: 'claude-sonnet-4-5',
-		name: 'Claude Sonnet 4.5',
-		icon: LogoClaude,
-		limit: {
-			context: 200_000,
-			output: 64_000,
-		},
-		cost: {
-			input: 3.0,
-			output: 15.0,
-		},
-	},
-	{
-		provider: 'anthropic',
-		model: 'claude-opus-4-5',
-		name: 'Claude Opus 4.5',
-		icon: LogoClaude,
-		limit: {
-			context: 200_000,
-			output: 64_000,
-		},
-		cost: {
-			input: 5.0,
-			output: 25.0,
-		},
-	},
-	{
-		provider: 'google',
-		model: 'gemini-3-pro-preview',
-		name: 'Gemini 3 Pro Preview',
-		icon: LogoGoogle,
-		limit: {
-			context: 1_000_000,
-			output: 65_536,
-		},
-		cost: {
-			input: 2.0,
-			output: 12.0,
-		},
-	},
-	{
-		provider: 'google',
-		model: 'gemini-3-flash-preview',
-		name: 'Gemini 3 Flash Preview',
-		icon: LogoGoogle,
-		limit: {
-			context: 1_000_000,
-			output: 65_536,
-		},
-		cost: {
-			input: 0.50,
-			output: 3.0,
-		},
-	},
-	{
-		provider: 'google',
-		model: 'gemini-2.5-pro',
-		name: 'Gemini 2.5 Pro',
-		icon: LogoGoogle,
-		limit: {
-			context: 1_000_000,
-			output: 65_536,
-		},
-		cost: {
-			input: 1.25,
-			output: 5.0,
-		},
-	},
-	{
-		provider: 'google',
-		model: 'gemini-2.5-flash',
-		name: 'Gemini 2.5 Flash',
-		icon: LogoGoogle,
-		limit: {
-			context: 1_000_000,
-			output: 65_536,
-		},
-		cost: {
-			input: 0.15,
-			output: 0.6,
-		},
-	},
-];
-
-export function buildCustomModels(customModels: OpenAICompatibleModel[] | null): ModelDefinition[] {
-	if (!customModels) return [];
-
-	return customModels.map((m) => ({
-		provider: 'openai-compatible',
-		model: m.id,
-		name: m.name,
-		icon: LogoCustom,
-		limit: {
-			context: m.context ?? 128_000,
-			output: m.output ?? 16_000,
-		},
-		cost: {
-			input: 0,
-			output: 0,
-		},
-	}));
 }
 
 const PROVIDER_ICONS: Record<string, Component> = {
 	openai: LogoOpenAI,
 	anthropic: LogoClaude,
 	google: LogoGoogle,
+	'openai-compatible': LogoCustom,
 };
 
-export function buildCustomModelDefinition(provider: string, modelId: string): ModelDefinition {
+export const AI_MODELS: AppModelDefinition[] = DEFAULT_AI_MODELS.map((m) => ({
+	...m,
+	icon: PROVIDER_ICONS[m.provider] ?? LogoCustom,
+}));
+
+export function buildCustomModels(customModels: OpenAICompatibleModel[] | null): AppModelDefinition[] {
+	return buildCustomModelsBase(customModels).map((m) => ({
+		...m,
+		icon: LogoCustom,
+	}));
+}
+
+export function buildCustomModelDefinition(provider: ProviderType, modelId: string): AppModelDefinition {
 	return {
-		provider,
-		model: modelId,
-		name: modelId,
+		...buildCustomModelDefinitionBase(provider, modelId),
 		icon: PROVIDER_ICONS[provider] ?? LogoCustom,
-		limit: {
-			context: 128_000,
-			output: 16_000,
-		},
-		cost: {
-			input: 0,
-			output: 0,
-		},
 	};
 }

@@ -1,3 +1,5 @@
+import type { OpenAICompatibleHeader, OpenAICompatibleModel } from '@directus/ai';
+
 export type SettingsModuleBarModule = {
 	type: 'module';
 	id: string;
@@ -29,18 +31,6 @@ export type SettingsStorageAssetPreset = {
 export type CustomAspectRatio = {
 	text: string;
 	value: number;
-};
-
-export type OpenAICompatibleModel = {
-	id: string;
-	name: string;
-	context?: number;
-	output?: number;
-};
-
-export type OpenAICompatibleHeader = {
-	header: string;
-	value: string;
 };
 
 export type Settings = {

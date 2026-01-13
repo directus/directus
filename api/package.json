@@ -72,6 +72,7 @@
 		"@ai-sdk/openai-compatible": "catalog:",
 		"@authenio/samlify-node-xmllint": "catalog:",
 		"@aws-sdk/client-sesv2": "catalog:",
+		"@directus/ai": "workspace:*",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/env": "workspace:*",

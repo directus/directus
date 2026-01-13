@@ -1,4 +1,5 @@
-import type { ProviderCapabilities, ProviderType } from './types.js';
+import type { ProviderType } from '@directus/ai';
+import type { ProviderCapabilities } from './types.js';
 
 export const PROVIDER_CAPABILITIES: Record<ProviderType, ProviderCapabilities> = {
 	openai: {
