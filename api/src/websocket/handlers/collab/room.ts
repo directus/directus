@@ -170,9 +170,9 @@ export class Room {
 			if (item !== null && !keys.includes(item)) return;
 
 			try {
-				const service = getService(collection, { schema: await getSchema() });
+				const sudoService = getService(collection, { schema: await getSchema() });
 
-				const result = item ? await service.readOne(item) : await service.readSingleton({});
+				const result = item ? await sudoService.readOne(item) : await sudoService.readSingleton({});
 
 				const clients = await this.store(async (store) => {
 					let changes = await store.get('changes');
