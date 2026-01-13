@@ -359,9 +359,11 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 								</VButton>
 								<VButton
 									v-tooltip.top="
-										selectedComparisonFields.length === 0 || compareToOption === 'Previous'
-											? undefined
-											: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
+										compareToOption === 'Previous'
+											? $t('compare_to_latest_to_restore')
+											: selectedComparisonFields.length === 0
+												? undefined
+												: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
 									:disabled="selectedComparisonFields.length === 0 || compareToOption === 'Previous'"
 									:loading="promoting"

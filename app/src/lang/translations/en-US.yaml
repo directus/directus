@@ -87,6 +87,7 @@ item_creation: Item Creation
 item_revision: Item Revision
 previous_revision: Previous Revision
 comparing_to: Comparing to
+compare_to_latest_to_restore: Compare to latest to consider restoring this revision
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
 half_width: Half Width
