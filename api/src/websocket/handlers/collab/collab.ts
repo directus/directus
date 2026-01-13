@@ -1,13 +1,14 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
-import { upperFirst } from 'lodash-es';
+import { random, upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
+import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { handleWebSocketError } from '../../errors.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
@@ -48,6 +49,10 @@ export class CollabHandler {
 		// unsubscribe when a connection drops
 		emitter.onAction('websocket.error', ({ client }) => this.onLeave(client));
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
+
+		scheduleSynchronizedJob('collab', `*/1 * * * *`, async () => {
+			await this.rooms.cleanupRooms();
+		});
 	}
 
 	/**

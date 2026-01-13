@@ -92,17 +92,16 @@ export class CollabRooms {
 	}
 
 	/**
-	 * Remove empty rooms
+	 * Remove empty rooms or inactive rooms
 	 */
 	async cleanupRooms(uids?: string[]) {
 		const rooms = uids ? uids.map((uid) => this.rooms[uid]).filter((room) => !!room) : Object.values(this.rooms);
 
 		for (const room of rooms) {
-			const clients = await room.getClients();
-
-			if (clients.length === 0) {
+			if (!(await room.isActive())) {
 				await room.close();
 				delete this.rooms[room.uid];
+				useLogger().info(`[Collab] Closed inactive room ${room.uid}`);
 			}
 		}
 	}
@@ -116,6 +115,7 @@ type RoomData = {
 	changes: Item;
 	clients: { uid: ClientID; accountability: Accountability; color: Color }[];
 	focuses: Record<ClientID, string>;
+	lastActive: number;
 };
 
 type PermissionClient = Pick<WebSocketClient, 'uid' | 'accountability'>;
@@ -154,6 +154,7 @@ export class Room {
 			// Default all other values
 			await store.set('clients', []);
 			await store.set('focuses', {});
+			await store.set('lastActive', Date.now());
 		});
 
 		this.uid = uid;
@@ -210,9 +211,22 @@ export class Room {
 	async getClients() {
 		await this.ready;
 
-		return await this.store(async (store) => {
-			return await store.get('clients');
-		});
+		return await this.store((store) => store.get('clients'));
+	}
+
+	async isActive() {
+		await this.ready;
+
+		const lastActive = await this.store((store) => store.get('lastActive'));
+
+		// Consider room active if there was activity in the last 5 minutes
+		if (Date.now() - lastActive < 1 * 60 * 1000) {
+			return true;
+		}
+
+		const clients = await this.store((store) => store.get('clients'));
+
+		return clients.length > 0;
 	}
 
 	async hasClient(id: ClientID) {
@@ -348,6 +362,8 @@ export class Room {
 			Object.assign(existing_changes, changes);
 			await store.set('changes', existing_changes);
 
+			await store.set('lastActive', Date.now());
+
 			return {
 				clients: (await store.get('clients')) || [],
 				collection: await store.get('collection'),
@@ -394,6 +410,8 @@ export class Room {
 			delete changes[field];
 			await store.set('changes', changes);
 
+			await store.set('lastActive', Date.now());
+
 			return { clients: await store.get('clients') };
 		});
 
@@ -427,6 +445,7 @@ export class Room {
 			}
 
 			await store.set('focuses', focuses);
+			await store.set('lastActive', Date.now());
 
 			return { clients: await store.get('clients') };
 		});
