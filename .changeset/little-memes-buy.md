@@ -1,5 +1,5 @@
 ---
-'@directus/schema-builder': minor
+'@directus/schema-builder': patch
 ---
 
-Added singleton support
+Fixed singleton support

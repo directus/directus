@@ -1238,28 +1238,20 @@ test('define type twice', () => {
 });
 
 test('define singleton collection', () => {
-	const schema = new SchemaBuilder()
-		.collection('blog', (c) => {
-			c.field('id').id();
-			c.singleton();
-		})
-		.build();
-
 	const singletonSchema = new SchemaBuilder()
 		.collection('blog', (c) => {
 			c.field('id').id();
-			c.singleton(true);
 		})
+		.options({ singleton: true })
 		.build();
 
 	const nonSingletonSchema = new SchemaBuilder()
 		.collection('blog', (c) => {
 			c.field('id').id();
-			c.singleton(false);
 		})
+		.options({ singleton: false })
 		.build();
 
-	expect(schema.collections?.['blog']?.singleton).toBe(true);
 	expect(singletonSchema.collections?.['blog']?.singleton).toBe(true);
 	expect(nonSingletonSchema.collections?.['blog']?.singleton).toBe(false);
 });
