@@ -10,7 +10,7 @@ import { defineStore } from 'pinia';
 import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
-import { AI_MODELS, type ModelDefinition } from '../models';
+import { buildCustomModelDefinition, buildCustomModels, DEFAULT_AI_MODELS, type ModelDefinition } from '../models';
 import { SystemTool } from '../types/system-tool';
 import { useSettingsStore } from '@/stores/settings';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
@@ -54,11 +54,48 @@ export const useAiStore = defineStore('ai-store', () => {
 		chatOpen.value = false;
 	});
 
-	const models = computed(() =>
-		AI_MODELS.filter(({ provider }) => {
-			return settingsStore.availableAiProviders.includes(provider);
-		}),
-	);
+	const models = computed(() => {
+		const customModels = buildCustomModels(settingsStore.settings?.ai_openai_compatible_models ?? null);
+		const allModels = [...DEFAULT_AI_MODELS, ...customModels];
+
+		const allowedModelsMap: Record<string, string[] | null> = {
+			openai: settingsStore.settings?.ai_openai_allowed_models ?? null,
+			anthropic: settingsStore.settings?.ai_anthropic_allowed_models ?? null,
+			google: settingsStore.settings?.ai_google_allowed_models ?? null,
+		};
+
+		const result: ModelDefinition[] = [];
+
+		// Add predefined models that are in the allowed list
+		for (const modelDef of allModels) {
+			if (!settingsStore.availableAiProviders.includes(modelDef.provider)) continue;
+
+			const allowedModels = allowedModelsMap[modelDef.provider];
+
+			// null or empty = no models allowed for that provider
+			if (!allowedModels || allowedModels.length === 0) continue;
+
+			if (allowedModels.includes(modelDef.model)) {
+				result.push(modelDef);
+			}
+		}
+
+		// Add custom model IDs that are in allowed list but not in predefined models
+		for (const [provider, allowedModels] of Object.entries(allowedModelsMap)) {
+			if (!allowedModels || allowedModels.length === 0) continue;
+			if (!settingsStore.availableAiProviders.includes(provider)) continue;
+
+			for (const modelId of allowedModels) {
+				const exists = result.some((m) => m.provider === provider && m.model === modelId);
+
+				if (!exists) {
+					result.push(buildCustomModelDefinition(provider, modelId));
+				}
+			}
+		}
+
+		return result;
+	});
 
 	const defaultModel = computed(() => models.value[0] ?? null);
 
@@ -81,7 +118,13 @@ export const useAiStore = defineStore('ai-store', () => {
 	const selectedModel = computed(() => {
 		if (!selectedModelId.value) return null;
 
-		const [provider, model] = selectedModelId.value.split(':');
+		// Split only on first colon - model IDs may contain colons (e.g., "gpt-oss:20b")
+		const colonIndex = selectedModelId.value.indexOf(':');
+
+		if (colonIndex === -1) return null;
+
+		const provider = selectedModelId.value.slice(0, colonIndex);
+		const model = selectedModelId.value.slice(colonIndex + 1);
 
 		if (!provider || !model) return null;
 

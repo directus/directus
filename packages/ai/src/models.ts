@@ -2,27 +2,7 @@
 // MIT License
 // Copyright (c) 2025 models.dev
 
-import type { OpenAICompatibleModel } from '@directus/types';
-import type { Component } from 'vue';
-import LogoClaude from '@/ai/components/logos/claude.vue';
-import LogoCustom from '@/ai/components/logos/custom.vue';
-import LogoGoogle from '@/ai/components/logos/google.vue';
-import LogoOpenAI from '@/ai/components/logos/openai.vue';
-
-export interface ModelDefinition {
-	provider: string;
-	model: string;
-	name: string;
-	icon: Component;
-	limit: {
-		context: number;
-		output: number;
-	};
-	cost: {
-		input: number;
-		output: number;
-	};
-}
+import type { ModelDefinition, OpenAICompatibleModel, ProviderType } from './types.js';
 
 export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 	// OpenAI GPT-4 series
@@ -30,7 +10,6 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		provider: 'openai',
 		model: 'gpt-4o-mini',
 		name: 'GPT-4o Mini',
-		icon: LogoOpenAI,
 		limit: {
 			context: 128_000,
 			output: 16_384,
@@ -39,12 +18,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 0.15,
 			output: 0.6,
 		},
+		attachment: true,
+		reasoning: false,
 	},
 	{
 		provider: 'openai',
 		model: 'gpt-4.1-nano',
 		name: 'GPT-4.1 Nano',
-		icon: LogoOpenAI,
 		limit: {
 			context: 1_047_576,
 			output: 32_768,
@@ -53,12 +33,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 0.1,
 			output: 0.4,
 		},
+		attachment: true,
+		reasoning: false,
 	},
 	{
 		provider: 'openai',
 		model: 'gpt-4.1-mini',
 		name: 'GPT-4.1 Mini',
-		icon: LogoOpenAI,
 		limit: {
 			context: 1_047_576,
 			output: 32_768,
@@ -67,12 +48,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 0.4,
 			output: 1.6,
 		},
+		attachment: true,
+		reasoning: false,
 	},
 	{
 		provider: 'openai',
 		model: 'gpt-4.1',
 		name: 'GPT-4.1',
-		icon: LogoOpenAI,
 		limit: {
 			context: 1_047_576,
 			output: 32_768,
@@ -81,13 +63,14 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 2.0,
 			output: 8.0,
 		},
+		attachment: true,
+		reasoning: false,
 	},
-	// OpenAI GPT-5 series
+	// OpenAI GPT-5 series (all support reasoning)
 	{
 		provider: 'openai',
 		model: 'gpt-5-nano',
 		name: 'GPT-5 Nano',
-		icon: LogoOpenAI,
 		limit: {
 			context: 400_000,
 			output: 128_000,
@@ -96,12 +79,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 0.05,
 			output: 0.4,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'openai',
 		model: 'gpt-5-mini',
 		name: 'GPT-5 Mini',
-		icon: LogoOpenAI,
 		limit: {
 			context: 400_000,
 			output: 128_000,
@@ -110,12 +94,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 0.25,
 			output: 2,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'openai',
 		model: 'gpt-5',
 		name: 'GPT-5',
-		icon: LogoOpenAI,
 		limit: {
 			context: 400_000,
 			output: 128_000,
@@ -124,12 +109,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 1.25,
 			output: 10.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'openai',
 		model: 'gpt-5.2',
 		name: 'GPT-5.2',
-		icon: LogoOpenAI,
 		limit: {
 			context: 400_000,
 			output: 128_000,
@@ -138,12 +124,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 1.75,
 			output: 14.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'openai',
 		model: 'gpt-5.2-chat-latest',
 		name: 'GPT-5.2 Chat',
-		icon: LogoOpenAI,
 		limit: {
 			context: 128_000,
 			output: 16_384,
@@ -152,12 +139,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 1.75,
 			output: 14.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'openai',
 		model: 'gpt-5.2-pro',
 		name: 'GPT-5.2 Pro',
-		icon: LogoOpenAI,
 		limit: {
 			context: 400_000,
 			output: 128_000,
@@ -166,13 +154,14 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 21.0,
 			output: 168.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	// Anthropic Claude
 	{
 		provider: 'anthropic',
 		model: 'claude-haiku-4-5',
 		name: 'Claude Haiku 4.5',
-		icon: LogoClaude,
 		limit: {
 			context: 200_000,
 			output: 64_000,
@@ -181,12 +170,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 1.0,
 			output: 5.0,
 		},
+		attachment: true,
+		reasoning: false,
 	},
 	{
 		provider: 'anthropic',
 		model: 'claude-sonnet-4-5',
 		name: 'Claude Sonnet 4.5',
-		icon: LogoClaude,
 		limit: {
 			context: 200_000,
 			output: 64_000,
@@ -195,12 +185,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 3.0,
 			output: 15.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'anthropic',
 		model: 'claude-opus-4-5',
 		name: 'Claude Opus 4.5',
-		icon: LogoClaude,
 		limit: {
 			context: 200_000,
 			output: 64_000,
@@ -209,12 +200,14 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 5.0,
 			output: 25.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
+	// Google Gemini
 	{
 		provider: 'google',
 		model: 'gemini-3-pro-preview',
 		name: 'Gemini 3 Pro Preview',
-		icon: LogoGoogle,
 		limit: {
 			context: 1_000_000,
 			output: 65_536,
@@ -223,26 +216,28 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 2.0,
 			output: 12.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'google',
 		model: 'gemini-3-flash-preview',
 		name: 'Gemini 3 Flash Preview',
-		icon: LogoGoogle,
 		limit: {
 			context: 1_000_000,
 			output: 65_536,
 		},
 		cost: {
-			input: 0.50,
+			input: 0.5,
 			output: 3.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'google',
 		model: 'gemini-2.5-pro',
 		name: 'Gemini 2.5 Pro',
-		icon: LogoGoogle,
 		limit: {
 			context: 1_000_000,
 			output: 65_536,
@@ -251,12 +246,13 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 1.25,
 			output: 5.0,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 	{
 		provider: 'google',
 		model: 'gemini-2.5-flash',
 		name: 'Gemini 2.5 Flash',
-		icon: LogoGoogle,
 		limit: {
 			context: 1_000_000,
 			output: 65_536,
@@ -265,6 +261,8 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 			input: 0.15,
 			output: 0.6,
 		},
+		attachment: true,
+		reasoning: true,
 	},
 ];
 
@@ -272,10 +270,9 @@ export function buildCustomModels(customModels: OpenAICompatibleModel[] | null):
 	if (!customModels) return [];
 
 	return customModels.map((m) => ({
-		provider: 'openai-compatible',
+		provider: 'openai-compatible' as const,
 		model: m.id,
 		name: m.name,
-		icon: LogoCustom,
 		limit: {
 			context: m.context ?? 128_000,
 			output: m.output ?? 16_000,
@@ -284,21 +281,16 @@ export function buildCustomModels(customModels: OpenAICompatibleModel[] | null):
 			input: 0,
 			output: 0,
 		},
+		attachment: m.attachment ?? false,
+		reasoning: m.reasoning ?? false,
 	}));
 }
 
-const PROVIDER_ICONS: Record<string, Component> = {
-	openai: LogoOpenAI,
-	anthropic: LogoClaude,
-	google: LogoGoogle,
-};
-
-export function buildCustomModelDefinition(provider: string, modelId: string): ModelDefinition {
+export function buildCustomModelDefinition(provider: ProviderType, modelId: string): ModelDefinition {
 	return {
 		provider,
 		model: modelId,
 		name: modelId,
-		icon: PROVIDER_ICONS[provider] ?? LogoCustom,
 		limit: {
 			context: 128_000,
 			output: 16_000,
@@ -307,5 +299,7 @@ export function buildCustomModelDefinition(provider: string, modelId: string): M
 			input: 0,
 			output: 0,
 		},
+		attachment: false,
+		reasoning: false,
 	};
 }

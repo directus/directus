@@ -2,6 +2,7 @@ import { ServiceUnavailableError } from '@directus/errors';
 import type { UIMessage } from 'ai';
 import { streamText } from 'ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { AISettings } from '../../providers/types.js';
 import { createUiStream } from './create-ui-stream.js';
 
 // Mocks
@@ -11,6 +12,10 @@ vi.mock('@ai-sdk/openai', () => ({
 
 vi.mock('@ai-sdk/anthropic', () => ({
 	createAnthropic: vi.fn(() => (model: string) => ({ id: `anthropic:${model}` })),
+}));
+
+vi.mock('@ai-sdk/google', () => ({
+	createGoogleGenerativeAI: vi.fn(() => (model: string) => ({ id: `google:${model}` })),
 }));
 
 vi.mock('../constants/system-prompt.js', () => ({
@@ -26,8 +31,11 @@ const mockStreamTextResult = {
 
 vi.mock('ai', () => ({
 	streamText: vi.fn(() => mockStreamTextResult),
-	convertToModelMessages: vi.fn((messages: UIMessage[]) => messages.map((m) => ({ ...m, converted: true }))),
+	convertToModelMessages: vi.fn((messages: UIMessage[]) => Promise.resolve(messages.map((m) => ({ ...m, converted: true })))),
 	stepCountIs: vi.fn(),
+	createProviderRegistry: vi.fn((providers) => ({
+		languageModel: (id: string) => ({ id, providers }),
+	})),
 }));
 
 describe('createUiStream', () => {
@@ -40,90 +48,103 @@ describe('createUiStream', () => {
 		{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Hi there!' }] },
 	];
 
-	const apiKeys = { openai: 'openai-key', anthropic: 'anthropic-key' };
+	const aiSettings: AISettings = {
+		openaiApiKey: 'openai-key',
+		anthropicApiKey: 'anthropic-key',
+		googleApiKey: null,
+		openaiCompatibleApiKey: null,
+		openaiCompatibleBaseUrl: null,
+		openaiCompatibleName: null,
+		openaiCompatibleModels: null,
+		openaiCompatibleHeaders: null,
+		openaiAllowedModels: null,
+		anthropicAllowedModels: null,
+		googleAllowedModels: null,
+		systemPrompt: null,
+	};
 
-	it('should create a stream for OpenAI provider', () => {
-		const result = createUiStream(messages, {
+	it('should create a stream for OpenAI provider', async () => {
+		const result = await createUiStream(messages, {
 			provider: 'openai',
 			model: 'gpt-3.5',
 			tools: {},
-			apiKeys,
+			aiSettings,
 		});
 
 		expect(result).toBe(mockStreamTextResult);
 	});
 
-	it('should create a stream for Anthropic provider', () => {
-		const result = createUiStream(messages, {
+	it('should create a stream for Anthropic provider', async () => {
+		const result = await createUiStream(messages, {
 			provider: 'anthropic',
 			model: 'claude-2',
 			tools: {},
-			apiKeys,
+			aiSettings,
 		});
 
 		expect(result).toBe(mockStreamTextResult);
 	});
 
-	it('should throw ServiceUnavailableError if API key is missing for provider', () => {
-		expect(() =>
+	it('should throw ServiceUnavailableError if API key is missing for provider', async () => {
+		await expect(
 			createUiStream(messages, {
 				provider: 'openai',
 				model: 'gpt-3.5',
 				tools: {},
-				apiKeys: { ...apiKeys, openai: null },
+				aiSettings: { ...aiSettings, openaiApiKey: null },
 			}),
-		).toThrow(ServiceUnavailableError);
+		).rejects.toThrow(ServiceUnavailableError);
 
-		expect(() =>
+		await expect(
 			createUiStream(messages, {
 				provider: 'anthropic',
 				model: 'claude-2',
 				tools: {},
-				apiKeys: { ...apiKeys, anthropic: null },
+				aiSettings: { ...aiSettings, anthropicApiKey: null },
 			}),
-		).toThrow(ServiceUnavailableError);
+		).rejects.toThrow(ServiceUnavailableError);
 	});
 
-	it('should throw Error for unknown provider', () => {
-		expect(() =>
+	it('should throw ServiceUnavailableError for unconfigured provider', async () => {
+		await expect(
 			createUiStream(messages, {
-				provider: 'unknown' as any,
-				model: 'model',
+				provider: 'google',
+				model: 'gemini-pro',
 				tools: {},
-				apiKeys,
+				aiSettings,
 			}),
-		).toThrow('Unexpected provider given: "unknown"');
+		).rejects.toThrow(ServiceUnavailableError);
 	});
 
-	it('uses default system prompt when none provided', () => {
-		createUiStream(messages, {
+	it('uses default system prompt when none provided', async () => {
+		await createUiStream(messages, {
 			provider: 'openai',
 			model: 'gpt-4',
 			tools: {},
-			apiKeys,
+			aiSettings,
 		});
 
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));
 	});
 
-	it('uses provided system prompt when given', () => {
-		createUiStream(messages, {
+	it('uses provided system prompt when given', async () => {
+		await createUiStream(messages, {
 			provider: 'openai',
 			model: 'gpt-4o',
 			tools: {},
-			apiKeys,
+			aiSettings,
 			systemPrompt: 'CUSTOM_PROMPT',
 		});
 
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'CUSTOM_PROMPT' }));
 	});
 
-	it('replaces empty string system prompt with default', () => {
-		createUiStream(messages, {
+	it('replaces empty string system prompt with default', async () => {
+		await createUiStream(messages, {
 			provider: 'openai',
 			model: 'gpt-4o-mini',
 			tools: {},
-			apiKeys,
+			aiSettings,
 			systemPrompt: '',
 		});
 

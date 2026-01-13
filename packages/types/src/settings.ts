@@ -31,6 +31,18 @@ export type CustomAspectRatio = {
 	value: number;
 };
 
+export type OpenAICompatibleModel = {
+	id: string;
+	name: string;
+	context?: number;
+	output?: number;
+};
+
+export type OpenAICompatibleHeader = {
+	header: string;
+	value: string;
+};
+
 export type Settings = {
 	id: 1;
 	project_name: string;
@@ -65,6 +77,16 @@ export type Settings = {
 	project_id: string | null;
 	ai_openai_api_key: '**********' | null;
 	ai_anthropic_api_key: '**********' | null;
+	ai_google_api_key: '**********' | null;
+	ai_openai_compatible_api_key: '**********' | null;
+	ai_openai_compatible_base_url: string | null;
+	ai_openai_compatible_name: string | null;
+	ai_openai_compatible_models: OpenAICompatibleModel[] | null;
+	ai_openai_compatible_headers: OpenAICompatibleHeader[] | null;
+	ai_openai_allowed_models: string[] | null;
+	ai_anthropic_allowed_models: string[] | null;
+	ai_google_allowed_models: string[] | null;
+	ai_system_prompt: string | null;
 	mcp_enabled: boolean;
 	mcp_allow_deletes: boolean;
 	mcp_prompts_collection: string | null;

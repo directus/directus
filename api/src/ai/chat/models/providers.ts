@@ -1,11 +1,24 @@
 import { z } from 'zod';
+import type { ProviderType } from '../../providers/types.js';
+
+export const ProviderTypeSchema = z.enum(['openai', 'anthropic', 'google', 'openai-compatible']) satisfies z.ZodType<ProviderType>;
 
 export const ProviderOpenAi = z.object({
 	provider: z.literal('openai'),
-	model: z.union([z.literal('gpt-5'), z.literal('gpt-5-nano'), z.literal('gpt-5-mini'), z.literal('gpt-5-pro')]),
+	model: z.string(),
 });
 
 export const ProviderAnthropic = z.object({
 	provider: z.literal('anthropic'),
-	model: z.union([z.literal('claude-sonnet-4-5'), z.literal('claude-haiku-4-5'), z.literal('claude-opus-4-1')]),
+	model: z.string(),
+});
+
+export const ProviderGoogle = z.object({
+	provider: z.literal('google'),
+	model: z.string(),
+});
+
+export const ProviderOpenAiCompatible = z.object({
+	provider: z.literal('openai-compatible'),
+	model: z.string(),
 });
