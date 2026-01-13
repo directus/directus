@@ -17,37 +17,37 @@ drivers.set('vercel', VercelDriver);
 /**
  * Get a deployment driver instance
  *
- * @param type Provider type (vercel, netlify, aws, etc.)
+ * @param provider Provider name (vercel, netlify, aws, etc.)
  * @param credentials Provider credentials (decrypted from DB)
  * @param options Additional provider options
  * @returns Deployment driver instance
- * @throws Error if driver type is not supported
+ * @throws Error if provider is not supported
  */
 export function getDeploymentDriver(
-  type: ProviderType,
-  credentials: Credentials,
-  options?: Options,
+	provider: ProviderType,
+	credentials: Credentials,
+	options?: Options,
 ): DeploymentDriver {
-  const Driver = drivers.get(type);
+	const Driver = drivers.get(provider);
 
-  if (!Driver) {
-    throw new Error(`Deployment driver "${type}" is not supported`);
-  }
+	if (!Driver) {
+		throw new Error(`Deployment driver "${provider}" is not supported`);
+	}
 
-  return new Driver(credentials, options);
+	return new Driver(credentials, options);
 }
 
 /**
- * Check if a provider type is supported
+ * Check if a provider is supported
  */
-export function isValidProviderType(type: string): type is ProviderType {
-  return drivers.has(type as ProviderType);
+export function isValidProviderType(provider: string): provider is ProviderType {
+	return drivers.has(provider as ProviderType);
 }
 
 /**
  * Get list of supported provider types
  */
 export function getSupportedProviderTypes(): ProviderType[] {
-  return Array.from(drivers.keys());
+	return Array.from(drivers.keys());
 }
 
