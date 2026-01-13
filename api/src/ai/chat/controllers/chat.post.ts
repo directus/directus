@@ -22,7 +22,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 
 	const aiSettings = res.locals['ai'].settings;
 
-	// Validate model is allowed for provider
+
 	const allowedModelsMap: Record<string, string[] | null> = {
 		openai: aiSettings.openaiAllowedModels,
 		anthropic: aiSettings.anthropicAllowedModels,
@@ -34,7 +34,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 	// For standard providers: null/empty = no models allowed, must be in list
 	// openai-compatible skips validation (not in map, so allowedModels is undefined)
 	if (allowedModels !== undefined && (!allowedModels || allowedModels.length === 0 || !allowedModels.includes(model))) {
-		throw new ForbiddenError();
+		throw new ForbiddenError({ reason: 'Model not allowed for this provider' });
 	}
 
 	if (rawMessages.length === 0) {

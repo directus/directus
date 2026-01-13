@@ -1,19 +1,27 @@
 import type { OpenAICompatibleHeader, OpenAICompatibleModel, ProviderType } from '@directus/ai';
 
-export interface ProviderConfig {
-	type: ProviderType;
+interface OpenAIConfig {
+	type: 'openai';
 	apiKey: string;
-	baseUrl?: string;
 }
 
-export interface ProviderCapabilities {
-	fileUpload?: {
-		supported: boolean;
-		maxSize?: number;
-		mimeTypes?: string[];
-		method: 'files-api' | 'base64' | 'multipart';
-	};
+interface AnthropicConfig {
+	type: 'anthropic';
+	apiKey: string;
 }
+
+interface GoogleConfig {
+	type: 'google';
+	apiKey: string;
+}
+
+interface OpenAICompatibleConfig {
+	type: 'openai-compatible';
+	apiKey: string;
+	baseUrl: string;
+}
+
+export type ProviderConfig = OpenAIConfig | AnthropicConfig | GoogleConfig | OpenAICompatibleConfig;
 
 export interface AISettings {
 	openaiApiKey: string | null;

@@ -152,4 +152,30 @@ describe('createUiStream', () => {
 
 		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));
 	});
+
+	it('passes onUsage callback to streamText onFinish', async () => {
+		const onUsage = vi.fn();
+
+		await createUiStream(messages, {
+			provider: 'openai',
+			model: 'gpt-4',
+			tools: {},
+			aiSettings,
+			onUsage,
+		});
+
+		expect(streamText).toHaveBeenCalledWith(
+			expect.objectContaining({
+				onFinish: expect.any(Function),
+			}),
+		);
+
+		// Extract and call the onFinish handler to verify it invokes onUsage
+		const call = vi.mocked(streamText).mock.calls[0]?.[0];
+		const onFinish = call?.onFinish as (result: { usage: { inputTokens: number; outputTokens: number; totalTokens: number } }) => void;
+
+		onFinish({ usage: { inputTokens: 100, outputTokens: 50, totalTokens: 150 } });
+
+		expect(onUsage).toHaveBeenCalledWith({ inputTokens: 100, outputTokens: 50, totalTokens: 150 });
+	});
 });
