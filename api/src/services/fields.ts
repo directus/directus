@@ -50,6 +50,7 @@ import { getCollectionRelationList } from './fields/get-collection-relation-list
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+import { ShadowsService } from './shadow.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
@@ -430,50 +431,9 @@ export class FieldsService {
 						});
 					}
 
-					if (this.schema.collections[collection]!.versioning) {
-						const shadowCollection = `directus_version_${collection}`;
-
-						const shadowField = {
-							...hookAdjustedField,
-							collection: shadowCollection,
-							schema: {
-								...hookAdjustedField.schema,
-								is_unique: false,
-							},
-						};
-
-						const shadowFields = [shadowField];
-
-						/*
-						 * If special contains relational assume it is and prefix with "directus_".
-						 * We do not receive any relational information
-						 */
-						if (
-							shadowField.meta?.special?.includes('m2o') ||
-							shadowField.meta?.special?.includes('o2m') ||
-							shadowField.meta?.special?.includes('m2m') ||
-							shadowField.meta?.special?.includes('m2a')
-						) {
-							shadowFields.push({
-								...shadowField,
-								field: `directus_${shadowField.field}`,
-								name: `directus_${shadowField.name}`,
-							});
-						}
-
-						for (const field of shadowFields) {
-							if (table) {
-								this.addColumnToTable(table, shadowCollection, field as Field, {
-									attemptConcurrentIndex,
-								});
-							} else {
-								await trx.schema.alterTable(shadowCollection, (table) => {
-									this.addColumnToTable(table, shadowCollection, field as Field, {
-										attemptConcurrentIndex,
-									});
-								});
-							}
-						}
+					if (this.schema.collections[collection]!.versioned) {
+						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+						await shadowsService.createShadowField(collection, hookAdjustedField, table);
 					}
 				}
 

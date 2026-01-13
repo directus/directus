@@ -35,6 +35,7 @@ import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.j
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+import { ShadowsService } from './shadow.js';
 
 export class CollectionsService {
 	knex: Knex;
@@ -157,56 +158,10 @@ export class CollectionsService {
 						}
 					});
 
-					// Shadow table must be created BEFORE fields
+					// shadow table
 					if (payload.meta?.versioning) {
-						// TODO: Abstract prefixing to util / store as meta in collection table
-						const shadowCollection = `directus_version_${payload.collection}`;
-
-						const injectedShadowFields: RawField[] = [
-							{
-								field: 'id',
-								type: 'integer',
-								meta: {
-									hidden: true,
-									interface: 'numeric',
-									readonly: true,
-								},
-								schema: {
-									is_primary_key: true,
-									has_auto_increment: true,
-								},
-							},
-						];
-
-						/**
-						 * Inject required shadow "meta" fields.
-						 */
-						const shadowFields = [
-							...injectedShadowFields,
-							...payload.fields.filter(
-								(f) => f.schema?.is_primary_key !== true && f.schema?.has_auto_increment !== true,
-							),
-						].map((f) =>
-							// TODO: Move to util
-							({
-								...f,
-								collection: shadowCollection,
-								schema: {
-									...f.schema,
-									// enforced when promoting
-									is_unique: false,
-									// TODO: make indexed if indexed or unique?
-								},
-							}),
-						);
-
-						await trx.schema.createTable(shadowCollection, (table) => {
-							for (const field of shadowFields) {
-								if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-									fieldsService.addColumnToTable(table, shadowCollection, field);
-								}
-							}
-						});
+						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+						await shadowsService.createShadowTable(payload.collection, payload.fields);
 					}
 
 					const fieldItemsService = new ItemsService('directus_fields', {
@@ -505,11 +460,11 @@ export class CollectionsService {
 				return collectionKey;
 			}
 
-			const exists = !!(await this.knex
-				.select('collection')
+			const exists = await this.knex
+				.select('collection', 'versioning')
 				.from('directus_collections')
 				.where({ collection: collectionKey })
-				.first());
+				.first();
 
 			if (exists) {
 				await collectionsItemsService.updateOne(collectionKey, payload.meta, {
@@ -526,6 +481,28 @@ export class CollectionsService {
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					},
 				);
+			}
+
+			const isVersioned = !!this.schema.collections[collectionKey]?.versioned;
+
+			// shadow table
+			if (!isVersioned && payload.meta.versioning) {
+				const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
+				const shadowFields = await fieldsService.readAll(collectionKey);
+				const shadowsService = new ShadowsService({ knex: this.knex, schema: this.schema });
+
+				await shadowsService.createShadowTable(collectionKey, shadowFields);
+
+				// link any existing relation fields
+				for (const relation of this.schema.relations) {
+					if (relation.collection !== collectionKey && relation.related_collection !== collectionKey) continue;
+
+					await shadowsService.createShadowRelation(relation);
+				}
+			} else if (isVersioned && payload.meta.versioning === false) {
+				const shadowsService = new ShadowsService({ knex: this.knex, schema: this.schema });
+
+				await shadowsService.dropShadowTable(collectionKey);
 			}
 
 			return collectionKey;
