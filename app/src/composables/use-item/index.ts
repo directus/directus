@@ -256,7 +256,6 @@ export function useItem<T extends Item>(
 		}
 
 		// Transform aliased M2A fields back to their original names
-		// The m2aAliasMap now includes collectionField per relation path, so no need to pass it separately
 		const itemData = transformM2AAliases(response.data.data.item, m2aAliasMap);
 
 		const newItem: Item = {
