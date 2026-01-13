@@ -41,6 +41,11 @@ export class CollectionBuilder {
 		return this._data.collection;
 	}
 
+	singleton(isSingleton = true) {
+		this._data.singleton = isSingleton;
+		return this;
+	}
+
 	build(schema: SchemaOverview): CollectionOverview {
 		assert('primary' in this._data, `The collection ${this.get_name()} needs a primary key`);
 
