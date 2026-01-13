@@ -104,8 +104,8 @@ describe('buildCustomModelDefinition', () => {
 		expect(googleResult.icon).toBeDefined();
 	});
 
-	test('uses custom icon for unknown providers', () => {
-		const result = buildCustomModelDefinition('unknown-provider', 'test');
+	test('uses custom icon for openai-compatible provider', () => {
+		const result = buildCustomModelDefinition('openai-compatible', 'test');
 
 		expect(result.icon).toBeDefined();
 	});

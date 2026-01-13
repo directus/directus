@@ -243,7 +243,8 @@ describe('createAIProviderRegistry', () => {
 	});
 
 	it('skips OpenAI-compatible when baseUrl is missing', () => {
-		const configs: ProviderConfig[] = [{ type: 'openai-compatible', apiKey: 'custom-key' }];
+		// Cast to bypass type checking - testing runtime handling of invalid config
+		const configs = [{ type: 'openai-compatible', apiKey: 'custom-key' }] as ProviderConfig[];
 
 		const registry = createAIProviderRegistry(configs);
 
