@@ -46,10 +46,12 @@ module.exports = {
         EXTENSIONS_PATH: '/opt/directus/extensions',
         EXTENSIONS_AUTO_RELOAD: 'false',
 
-        // File storage
-        STORAGE_LOCATIONS: 'local',
-        STORAGE_LOCAL_DRIVER: 'local',
-        STORAGE_LOCAL_ROOT: '/opt/directus/uploads',
+        // File storage (S3 via IAM role)
+        STORAGE_LOCATIONS: '${STORAGE_LOCATIONS}',
+        STORAGE_S3_DRIVER: '${STORAGE_S3_DRIVER}',
+        STORAGE_S3_ROOT: '${STORAGE_S3_ROOT}',
+        STORAGE_S3_BUCKET: '${STORAGE_S3_BUCKET}',
+        STORAGE_S3_REGION: '${STORAGE_S3_REGION}',
 
         // Rate limiting
         RATE_LIMITER_ENABLED: 'true',
