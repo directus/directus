@@ -76,7 +76,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			/>
 
 			<VCheckbox
-				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field)"
+				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field) && comparison.comparingTo !== 'Previous'"
 				class="comparison-checkbox"
 				:model-value="comparisonActive"
 				:value="field.field"
@@ -112,7 +112,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 				/>
 
 				<VChip
-					v-if="comparison?.side === 'incoming' && comparison.revisionFields?.has(field.field)"
+					v-if="comparison?.side === 'incoming' && comparison.revisionFields?.has(field.field) && comparison.comparingTo !== 'Previous'"
 					v-tooltip="getUpdatedInRevisionTooltip(comparison.fields.has(field.field))"
 					class="updated-badge"
 					x-small

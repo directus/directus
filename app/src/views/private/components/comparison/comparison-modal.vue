@@ -43,7 +43,7 @@ const { t } = useI18n();
 
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
 
-const compareToOption = ref<'Previous' | 'Latest'>('Latest');
+const compareToOption = ref<'Previous' | 'Latest'>('Previous');
 
 const {
 	comparisonData,
@@ -98,19 +98,15 @@ const isFirstRevision = computed(() => {
 });
 
 const comparisonFieldsForDisplay = computed(() => {
-	if (compareToOption.value === 'Previous') {
-		return new Set<string>();
-	}
-
 	return comparisonFields.value;
 });
 
 const revisionFieldsForDisplay = computed(() => {
-	if (compareToOption.value === 'Previous') {
-		return new Set<string>();
-	}
-
 	return comparisonData.value?.revisionFields;
+});
+
+const comparingTo = computed(() => {
+	return compareToOption.value;
 });
 
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
@@ -121,8 +117,8 @@ watch(
 	[active, currentRevision],
 	async ([isActive]) => {
 		if (!isActive) return;
-		// Reset to Latest by default
-		compareToOption.value = 'Latest';
+		// Reset to Previous by default
+		compareToOption.value = 'Previous';
 
 		modalLoading.value = true;
 
@@ -273,6 +269,7 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 										revisionFields: revisionFieldsForDisplay,
 										selectedFields: [],
 										onToggleField: () => {},
+										comparingTo,
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -314,6 +311,7 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 										revisionFields: revisionFieldsForDisplay,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
+										comparingTo,
 									}"
 									non-editable
 									class="comparison-form--incoming"
@@ -340,7 +338,7 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 					</div>
 					<div class="col right">
 						<div class="footer-actions">
-							<div class="select-all-container">
+							<div v-if="compareToOption !== 'Previous'" class="select-all-container">
 								<VCheckbox
 									v-if="availableFieldsCount > 0"
 									:model-value="allFieldsSelected"
