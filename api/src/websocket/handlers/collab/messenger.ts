@@ -1,7 +1,7 @@
 import type { Bus } from '@directus/memory';
-import { useBus } from '../../../bus/index.js';
-import { COLLAB_BUS, type BroadcastMessage, type ClientID, type ServerMessage } from '@directus/types/collab';
 import type { WebSocketClient } from '@directus/types';
+import { type BroadcastMessage, type ClientID, COLLAB_BUS, type ServerMessage } from '@directus/types/collab';
+import { useBus } from '../../../bus/index.js';
 
 type RoomMessage = Extract<BroadcastMessage, { type: 'room' }>;
 

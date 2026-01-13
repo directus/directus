@@ -1,4 +1,4 @@
-import { createCache, type CacheConfig } from '@directus/memory';
+import { type CacheConfig, createCache } from '@directus/memory';
 import { redisConfigAvailable, useRedis } from '../../../redis/index.js';
 
 export type RedisStore<T> = {

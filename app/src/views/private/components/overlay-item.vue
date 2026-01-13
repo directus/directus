@@ -8,6 +8,7 @@ import { computed, type Ref, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
+import ComparisonModal from './comparison/comparison-modal.vue';
 import OverlayItemContent from './overlay-item-content.vue';
 import RenderTemplate from './render-template.vue';
 import api from '@/api';
@@ -22,6 +23,7 @@ import VDrawer from '@/components/v-drawer.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useNestedValidation } from '@/composables/use-nested-validation';
@@ -35,9 +37,7 @@ import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollab } from '@/composables/use-collab';
 import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
-import ComparisonModal from './comparison/comparison-modal.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';

@@ -1,5 +1,5 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import { adjustDate } from '@directus/utils';
 
 export const DYNAMIC_VARIABLE_MAP: Record<string, string> = {

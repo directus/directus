@@ -3,9 +3,9 @@ import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
 import { ref, watch } from 'vue';
 import AccordionSection from './accordion-section.vue';
-import { CollabContext } from '@/composables/use-collab';
 import type { ComparisonContext } from '@/components/v-form/types';
 import VItemGroup from '@/components/v-item-group.vue';
+import { CollabContext } from '@/composables/use-collab';
 
 const props = withDefaults(
 	defineProps<{

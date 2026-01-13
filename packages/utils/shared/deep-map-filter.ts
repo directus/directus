@@ -1,7 +1,7 @@
-import type { CollectionOverview, FieldOverview, Filter, Relation, SchemaOverview } from '@directus/types';
 import assert from 'node:assert';
-import { isPlainObject } from 'lodash-es';
 import { InvalidQueryError } from '@directus/errors';
+import type { CollectionOverview, FieldOverview, Filter, Relation, SchemaOverview } from '@directus/types';
+import { isPlainObject } from 'lodash-es';
 import { getRelationInfo, type RelationInfo } from './get-relation-info.js';
 
 export type Quantity = 'some' | 'none' | null;

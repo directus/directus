@@ -4,8 +4,8 @@ import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
-import { sanitizePayload } from './sanitize-payload.js';
 import { ItemsService } from '../../../services/index.js';
+import { sanitizePayload } from './sanitize-payload.js';
 
 vi.mock('../../../permissions/lib/fetch-policies.js');
 vi.mock('../../../permissions/lib/fetch-permissions.js');

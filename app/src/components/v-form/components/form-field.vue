@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { CollabFieldContext } from '@/composables/use-collab';
 import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
@@ -13,6 +12,7 @@ import FormFieldRawEditor from './form-field-raw-editor.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
+import { CollabFieldContext } from '@/composables/use-collab';
 import { formatFieldFunction } from '@/utils/format-field-function';
 
 const props = withDefaults(

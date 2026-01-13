@@ -1,8 +1,8 @@
 import assert from 'node:assert';
 import { InvalidQueryError } from '@directus/errors';
 import type { CollectionOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
-import { isPlainObject } from 'lodash-es';
 import { getRelationInfo, type RelationInfo } from '@directus/utils';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * Allows to deep map the response from the ItemsService with collection, field and relation context for each entry.

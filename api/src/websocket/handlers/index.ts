@@ -1,10 +1,10 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
+import { CollabHandler } from './collab/collab.js';
 import { HeartbeatHandler } from './heartbeat.js';
 import { ItemsHandler } from './items.js';
 import { LogsHandler } from './logs.js';
 import { SubscribeHandler } from './subscribe.js';
-import { CollabHandler } from './collab/collab.js';
 
 export function startWebSocketHandlers() {
 	const env = useEnv();

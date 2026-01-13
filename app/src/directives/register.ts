@@ -2,9 +2,9 @@ import { App } from 'vue';
 import ClickOutside from './click-outside';
 import ContextMenu from './context-menu';
 import Focus from './focus';
-import PreventFocusout from './prevent-focusout';
 import InputAutoWidth from './input-auto-width';
 import Markdown from './markdown';
+import PreventFocusout from './prevent-focusout';
 import Tooltip from './tooltip';
 
 export function registerDirectives(app: App): void {

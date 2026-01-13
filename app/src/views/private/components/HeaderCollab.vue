@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { CollabUser } from '@/composables/use-collab';
-import { getAssetUrl } from '@/utils/get-asset-url';
 import { ClientID } from '@directus/types/collab';
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { CollabUser } from '@/composables/use-collab';
+import { getAssetUrl } from '@/utils/get-asset-url';
 
 interface Props {
 	connected?: boolean;
@@ -63,7 +63,7 @@ function focusIntoView(cid: ClientID) {
 		/>
 		<VMenu v-if="users.length > DISPLAY_LIMIT" trigger="click">
 			<template #activator>
-				<VAvatar class="more-users" v-tooltip.bottom="t('more_users')" x-small round>+{{ users.length - 3 }}</VAvatar>
+				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round>+{{ users.length - 3 }}</VAvatar>
 			</template>
 			<VList>
 				<VListItem v-for="user in users.slice(DISPLAY_LIMIT)" :key="user.id" clickable @click="focusIntoView(user.id)">

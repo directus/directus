@@ -1,5 +1,5 @@
-import { describe, expect, it, test } from 'vitest';
 import type { Relation } from '@directus/types';
+import { describe, expect, it, test } from 'vitest';
 import { getRelationType, getRelationTypeServer } from './get-relation-type.js';
 
 describe('getRelationType', () => {

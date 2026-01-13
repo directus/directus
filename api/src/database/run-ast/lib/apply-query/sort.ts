@@ -1,8 +1,8 @@
 import type { Aggregate, Relation, SchemaOverview } from '@directus/types';
+import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../utils/get-column-path.js';
-import { getRelationInfo } from '@directus/utils';
 import { getColumn } from '../../utils/get-column.js';
 import { addJoin } from './add-join.js';
 

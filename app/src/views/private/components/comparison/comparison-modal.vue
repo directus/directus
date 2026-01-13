@@ -15,10 +15,10 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { CollabContext } from '@/composables/use-collab';
 import type { Revision } from '@/types/revisions';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { CollabContext } from '@/composables/use-collab';
 
 interface Props {
 	deleteVersionsAllowed: boolean;

@@ -1,18 +1,18 @@
-import { WS_TYPE, type WebSocketClient } from '@directus/types';
-import { upperFirst } from 'lodash-es';
-import emitter from '../../../emitter.js';
-import { handleWebSocketError } from '../../errors.js';
-import { getMessageType } from '../../utils/message.js';
-import { CollabRooms } from './room.js';
-import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
-import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
-import getDatabase from '../../../database/index.js';
-import { getSchema } from '../../../utils/get-schema.js';
 import { InvalidPayloadError } from '@directus/errors';
-import { Messenger } from './messenger.js';
+import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
+import { upperFirst } from 'lodash-es';
+import getDatabase from '../../../database/index.js';
+import emitter from '../../../emitter.js';
+import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
+import { handleWebSocketError } from '../../errors.js';
+import { getMessageType } from '../../utils/message.js';
+import { Messenger } from './messenger.js';
+import { CollabRooms } from './room.js';
+import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
 
 /**
  * Handler responsible for subscriptions

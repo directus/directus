@@ -16,8 +16,8 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
-import DisplayColor from '@/displays/color/color.vue';
 import { useFocusin } from '@/composables/use-focusin';
+import DisplayColor from '@/displays/color/color.vue';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string | number | null;

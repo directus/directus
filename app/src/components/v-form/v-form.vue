@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { CollabContext } from '@/composables/use-collab';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
@@ -14,6 +13,7 @@ import type { ComparisonContext, FieldValues, FormField as TFormField } from './
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
+import { CollabContext } from '@/composables/use-collab';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';

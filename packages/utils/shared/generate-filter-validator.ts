@@ -1,8 +1,8 @@
 import type { FieldFilter, Filter } from '@directus/types';
-import { deepMapFilter } from './deep-map-filter.js';
 import type { SchemaOverview } from '@directus/types';
-import { generateJoi, Joi } from './generate-joi.js';
 import type { AnySchema } from 'joi';
+import { deepMapFilter } from './deep-map-filter.js';
+import { generateJoi, Joi } from './generate-joi.js';
 
 export function generateFilterValidator(filter: Filter, collection: string, schema: SchemaOverview) {
 	const validator = deepMapFilter(
