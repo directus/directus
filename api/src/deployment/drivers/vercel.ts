@@ -1,4 +1,5 @@
-import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
+import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
+import { getCache, getCacheValue, setCacheValue } from '../../cache.js';
 import type {
 	Credentials,
 	Deployment,
@@ -10,6 +11,8 @@ import type {
 	TriggerResult,
 } from '../../types/deployment.js';
 import { DeploymentDriver } from '../deployment.js';
+
+const CACHE_TTL = 5000; // 5 seconds
 
 export interface VercelCredentials extends Credentials {
 	access_token: string;
@@ -74,11 +77,12 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	}
 
 	/**
-	 * Make authenticated request
+	 * Make authenticated request with retry on rate limit
 	 */
 	private async request<T>(
 		endpoint: string,
 		options: RequestInit & { params?: Record<string, string> } = {},
+		retryCount = 0,
 	): Promise<T> {
 		const { params, ...fetchOptions } = options;
 		const url = new URL(endpoint, VercelDriver.API_URL);
@@ -103,6 +107,24 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 				...fetchOptions.headers,
 			},
 		});
+
+		// Handle rate limiting with retry (max 3 retries)
+		if (response.status === 429) {
+			const resetAt = parseInt(response.headers.get('X-RateLimit-Reset') || '0');
+			const limit = parseInt(response.headers.get('X-RateLimit-Limit') || '100');
+
+			if (retryCount < 3) {
+				const waitTime = resetAt > 0 ? Math.max((resetAt * 1000) - Date.now(), 1000) : 1000 * (retryCount + 1);
+				await new Promise((resolve) => setTimeout(resolve, waitTime));
+				return this.request(endpoint, options, retryCount + 1);
+			}
+
+			// Max retries exceeded
+			throw new HitRateLimitError({
+				limit,
+				reset: new Date(resetAt > 0 ? resetAt * 1000 : Date.now() + 60000),
+			});
+		}
 
 		const body = await response.json();
 
@@ -143,11 +165,31 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	}
 
 	async listProjects(): Promise<Project[]> {
+		const cacheKey = `deployment:vercel:projects:${this.options.team_id || 'personal'}`;
+		const { systemCache } = getCache();
+
+		// Check cache first
+		const cached = await getCacheValue(systemCache, cacheKey);
+		if (cached) return cached;
+
+		// Fetch from Vercel
 		const response = await this.request<{ projects: VercelProject[] }>('/v9/projects');
-		return response.projects.map((project) => this.mapProjectBase(project));
+		const projects = response.projects.map((project) => this.mapProjectBase(project));
+
+		// Cache for 30s
+		await setCacheValue(systemCache, cacheKey, projects, CACHE_TTL);
+		return projects;
 	}
 
 	async getProject(projectId: string): Promise<Project> {
+		const cacheKey = `deployment:vercel:project:${projectId}`;
+		const { systemCache } = getCache();
+
+		// Check cache first
+		const cached = await getCacheValue(systemCache, cacheKey);
+		if (cached) return cached;
+
+		// Fetch from Vercel
 		const project = await this.request<VercelProject>(`/v9/projects/${projectId}`);
 		const result = this.mapProjectBase(project);
 
@@ -174,6 +216,8 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 			result.updated_at = new Date(project.updatedAt);
 		}
 
+		// Cache for 30s
+		await setCacheValue(systemCache, cacheKey, result, CACHE_TTL);
 		return result;
 	}
 

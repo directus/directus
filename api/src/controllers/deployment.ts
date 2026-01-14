@@ -1,6 +1,7 @@
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
+import getDatabase from '../database/index.js';
 import { getDeploymentDriver } from '../deployment.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -11,6 +12,7 @@ import { DeploymentService } from '../services/deployment.js';
 import { MetaService } from '../services/meta.js';
 import { DEPLOYMENT_PROVIDER_TYPES, type ProviderType } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
+import { transaction } from '../utils/transaction.js';
 
 const router = express.Router();
 
@@ -234,22 +236,11 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const projectsService = new DeploymentProjectsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
 		// Get provider config
 		const deployment = await service.readByProvider(provider);
 
-		// Delete projects
-		if (value.delete.length > 0) {
-			await projectsService.deleteMany(value.delete);
-		}
-
-		// Create new projects
+		// Validate deployable projects before any mutation
 		if (value.create.length > 0) {
-			// Validate that all projects are deployable
 			const driver = await service.getDriver(provider);
 			const providerProjects = await driver.listProjects();
 			const deployableMap = new Map(providerProjects.map((p) => [p.id, p.deployable]));
@@ -264,19 +255,38 @@ router.patch(
 					reason: `Cannot add non-deployable projects: ${names}`,
 				});
 			}
-
-			await projectsService.createMany(
-				value.create.map((p: { external_id: string; name: string }) => ({
-					deployment: deployment.id,
-					external_id: p.external_id,
-					name: p.name,
-				})),
-			);
 		}
 
-		// Return updated selection
-		const updatedProjects = await projectsService.readByQuery({
-			filter: { deployment: { _eq: deployment.id } },
+		// Execute mutations in a transaction for atomicity
+		const db = getDatabase();
+
+		const updatedProjects = await transaction(db, async (trx) => {
+			const projectsService = new DeploymentProjectsService({
+				accountability: req.accountability,
+				schema: req.schema,
+				knex: trx,
+			});
+
+			// Delete projects
+			if (value.delete.length > 0) {
+				await projectsService.deleteMany(value.delete);
+			}
+
+			// Create new projects
+			if (value.create.length > 0) {
+				await projectsService.createMany(
+					value.create.map((p: { external_id: string; name: string }) => ({
+						deployment: deployment.id,
+						external_id: p.external_id,
+						name: p.name,
+					})),
+				);
+			}
+
+			// Return updated selection
+			return projectsService.readByQuery({
+				filter: { deployment: { _eq: deployment.id } },
+			});
 		});
 
 		res.locals['payload'] = { data: updatedProjects };
@@ -285,7 +295,7 @@ router.patch(
 	respond,
 );
 
-// Dashboard - selected projects with full details + stats
+// Dashboard - selected projects with stats
 router.get(
 	'/:provider/dashboard',
 	asyncHandler(async (req, res, next) => {
@@ -336,13 +346,9 @@ router.get(
 				const details = await driver.getProject(p.external_id);
 
 				return {
+					...details,
 					id: p.id,
 					external_id: p.external_id,
-					name: details.name,
-					url: details.url,
-					framework: details.framework,
-					deployable: details.deployable,
-					latest_deployment: details.latest_deployment,
 				};
 			}),
 		);
@@ -392,7 +398,7 @@ router.post(
 	'/:provider/projects/:id/deploy',
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider']!;
-		const projectId = req.params['id']!; // internal UUID
+		const projectId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
 			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
@@ -537,6 +543,11 @@ router.get(
 			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
 		}
 
+		const service = new DeploymentService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
 		const projectsService = new DeploymentProjectsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -550,42 +561,67 @@ router.get(
 		// Validate project exists
 		await projectsService.readOne(projectId);
 
-		// Get runs from DB
-		const runs = await runsService.readByQuery({
+		// Get paginated runs from DB (default limit: 10)
+		const query = {
+			...req.sanitizedQuery,
 			filter: { project: { _eq: projectId } },
 			sort: ['-date_created'],
+			limit: req.sanitizedQuery.limit ?? 10,
+		};
+
+		const runs = await runsService.readByQuery(query);
+
+		// Get pagination meta
+		const metaService = new MetaService({
+			accountability: req.accountability,
+			schema: req.schema,
 		});
 
-		res.locals['payload'] = { data: runs };
+		const meta = await metaService.getMetaForQuery('directus_deployment_runs', query);
+
+		// Fetch status for each run from provider
+		const driver = await service.getDriver(provider);
+
+		const runsWithStatus = await Promise.all(
+			runs.map(async (run) => {
+				const details = await driver.getDeployment(run.external_id);
+				return {
+					...run,
+					...details,
+					id: run.id,
+					external_id: run.external_id,
+				};
+			}),
+		);
+
+		res.locals['payload'] = { data: runsWithStatus, meta };
 		return next();
 	}),
 	respond,
 );
 
 // Get single run details
-// Query params:
-// - since: ISO timestamp to filter logs (only return logs after this time)
+const runDetailsQuerySchema = Joi.object({
+	since: Joi.date().iso().optional(),
+});
+
 router.get(
 	'/:provider/runs/:id',
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider']!;
 		const runId = req.params['id']!;
-		const since = req.query['since'] as string | undefined;
 
 		if (!validateProvider(provider)) {
 			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
 		}
 
-		// Validate since parameter if provided
-		let sinceDate: Date | undefined;
+		const { error, value } = runDetailsQuerySchema.validate(req.query);
 
-		if (since) {
-			sinceDate = new Date(since);
-
-			if (isNaN(sinceDate.getTime())) {
-				throw new InvalidPayloadError({ reason: 'Invalid "since" parameter. Must be a valid ISO timestamp.' });
-			}
+		if (error) {
+			throw new InvalidPayloadError({ reason: error.message });
 		}
+
+		const sinceDate: Date | undefined = value.since;
 
 		const runsService = new DeploymentRunsService({
 			accountability: req.accountability,
