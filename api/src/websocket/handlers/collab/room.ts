@@ -465,7 +465,8 @@ export class Room {
 
 			const allowedFields = await this.verifyPermissions(client, this.collection, this.item);
 
-			if (result.focusedField && !(allowedFields.includes(result.focusedField) || allowedFields.includes('*'))) continue;
+			if (result.focusedField && !(allowedFields.includes(result.focusedField) || allowedFields.includes('*')))
+				continue;
 
 			this.send(client.uid, {
 				action: ACTION.SERVER.FOCUS,
