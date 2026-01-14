@@ -1,0 +1,21 @@
+# Git Worktree Runner Configuration
+# https://github.com/coderabbitai/git-worktree-runner
+#
+# This file provides team-wide defaults for git worktree management.
+# Individual users can override these in their local git config.
+
+[defaults]
+    # Default AI coding assistant (claude, aider, copilot)
+    ai = claude
+    # Default editor (cursor, vscode, zed)
+    # editor = cursor
+
+[hooks]
+    # Full worktree setup: install, build, start postgres, bootstrap
+    # This script handles .env generation with unique ports per worktree
+    #
+    # Options:
+    #   --services postgres,redis,minio   Start specific services (default: postgres)
+    #   --skip-bootstrap                  Skip `pnpm cli bootstrap`
+    #
+    postCreate = ./scripts/gtr-setup.sh

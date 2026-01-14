@@ -1,0 +1,276 @@
+# =============================================================================
+# GitHub Actions: Build Directus Base AMI
+# =============================================================================
+# This workflow builds the Directus base AMI using Packer.
+#
+# Triggers:
+#   - Manual dispatch (workflow_dispatch)
+#   - Push to main with changes in packer/ directory
+#   - Weekly scheduled build (to pick up security updates)
+#
+# Authentication:
+#   Uses AWS OIDC for keyless authentication (no static credentials)
+#   IAM Role: arn:aws:iam::578313247618:role/github-actions-directus
+# =============================================================================
+
+name: Build Directus AMI
+
+on:
+  # Manual trigger with optional version input
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag for the AMI (e.g., v1.0.0)'
+        required: false
+        default: ''
+      force_rebuild:
+        description: 'Force rebuild even if no changes'
+        type: boolean
+        required: false
+        default: false
+
+  # Automatic trigger on packer changes | <TRIGGER>
+  push:
+    branches:
+      - custom
+
+  # PR trigger for testing (validate only, no build)
+  pull_request:
+    branches:
+      - custom
+
+# Cancel in-progress builds when new commits are pushed
+concurrency:
+  group: ami-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-2' }}
+  PACKER_VERSION: '1.10.0'
+
+jobs:
+  # =============================================================================
+  # Build AMI
+  # =============================================================================
+  build:
+    name: Build AMI
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+
+    permissions:
+      contents: read
+      id-token: write # For OIDC authentication (if configured)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ -n "${{ github.event.inputs.version }}" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
+            VERSION="weekly-$(date +%Y%m%d)"
+          else
+            VERSION="${GITHUB_SHA::8}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "AMI Version: $VERSION"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::578313247618:role/github-actions-directus
+          role-session-name: github-actions-packer-build-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@main
+        with:
+          version: ${{ env.PACKER_VERSION }}
+
+      - name: Initialize Packer
+        working-directory: packer
+        run: packer init directus-base.pkr.hcl
+        env:
+          PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate Packer template
+        working-directory: packer
+        run: packer validate -only="amazon-ebs.directus-base" directus-base.pkr.hcl
+
+      - name: Build AMI
+        id: build
+        working-directory: packer
+        run: |
+          packer build \
+            -only="amazon-ebs.directus-base" \
+            -var "aws_region=${{ env.AWS_REGION }}" \
+            -var "build_version=${{ steps.version.outputs.version }}" \
+            -color=false \
+            directus-base.pkr.hcl
+        env:
+          PACKER_LOG: 1
+          PACKER_LOG_PATH: packer.log
+
+      # Cleanup orphaned Packer instances on failure/cancellation
+      - name: Cleanup orphaned EC2 instances
+        if: cancelled() || failure()
+        run: |
+          echo "Cleaning up orphaned Packer EC2 instances..."
+          INSTANCE_IDS=$(aws ec2 describe-instances \
+            --region ${{ env.AWS_REGION }} \
+            --filters "Name=tag:ManagedBy,Values=packer" \
+                      "Name=instance-state-name,Values=pending,running,stopping,stopped" \
+            --query 'Reservations[*].Instances[*].InstanceId' \
+            --output text)
+          
+          if [ -n "$INSTANCE_IDS" ]; then
+            echo "Terminating instances: $INSTANCE_IDS"
+            aws ec2 terminate-instances --instance-ids $INSTANCE_IDS
+          else
+            echo "No orphaned instances found"
+          fi
+
+      - name: Extract AMI ID from manifest
+        id: ami
+        working-directory: packer
+        run: |
+          AMI_ID=$(jq -r '.builds[-1].artifact_id | split(":")[1]' manifest.json)
+          AMI_NAME=$(jq -r '.builds[-1].custom_data.version' manifest.json)
+          echo "ami_id=$AMI_ID" >> $GITHUB_OUTPUT
+          echo "ami_name=$AMI_NAME" >> $GITHUB_OUTPUT
+          echo "AMI ID: $AMI_ID"
+          echo "AMI Name: $AMI_NAME"
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: packer-logs
+          path: packer/packer.log
+          retention-days: 7
+
+      - name: Upload manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: ami-manifest
+          path: packer/manifest.json
+          retention-days: 30
+
+      - name: Tag AMI
+        run: |
+          aws ec2 create-tags \
+            --resources ${{ steps.ami.outputs.ami_id }} \
+            --tags \
+              Key=GitCommit,Value=${{ github.sha }} \
+              Key=GitRef,Value=${{ github.ref }} \
+              Key=BuildNumber,Value=${{ github.run_number }} \
+              Key=Repository,Value=${{ github.repository }}
+
+      - name: Update SSM Parameter with latest AMI ID
+        run: |
+          aws ssm put-parameter \
+            --name "/f2f/ami/directus-base/latest" \
+            --type "String" \
+            --value "${{ steps.ami.outputs.ami_id }}" \
+            --overwrite \
+            --description "Latest F2F Directus base AMI ID (built ${{ steps.version.outputs.version }})"
+
+          # Also store versioned parameter
+          aws ssm put-parameter \
+            --name "/f2f/ami/directus-base/${{ steps.version.outputs.version }}" \
+            --type "String" \
+            --value "${{ steps.ami.outputs.ami_id }}" \
+            --overwrite \
+            --description "F2F Directus base AMI version ${{ steps.version.outputs.version }}"
+
+      - name: Create summary
+        run: |
+          echo "## AMI Build Complete 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| AMI ID | \`${{ steps.ami.outputs.ami_id }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Version | \`${{ steps.version.outputs.version }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Region | \`${{ env.AWS_REGION }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Usage" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`hcl" >> $GITHUB_STEP_SUMMARY
+          echo "# In Terraform, reference via SSM Parameter:" >> $GITHUB_STEP_SUMMARY
+          echo "data \"aws_ssm_parameter\" \"directus_ami\" {" >> $GITHUB_STEP_SUMMARY
+          echo "  name = \"/f2f/ami/directus-base/latest\"" >> $GITHUB_STEP_SUMMARY
+          echo "}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Or use directly:" >> $GITHUB_STEP_SUMMARY
+          echo "ami = \"${{ steps.ami.outputs.ami_id }}\"" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  # =============================================================================
+  # Cleanup old AMIs (optional)
+  # =============================================================================
+  cleanup:
+    name: Cleanup Old AMIs
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'schedule' # Only on scheduled runs
+
+    permissions:
+      contents: read
+      id-token: write # For OIDC authentication
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::578313247618:role/github-actions-directus
+          role-session-name: github-actions-packer-cleanup-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Cleanup old AMIs
+        run: |
+          # Keep the 5 most recent AMIs, delete older ones
+          echo "Cleaning up old AMIs (keeping 5 most recent)..."
+
+          # Get all AMIs sorted by creation date
+          AMIS=$(aws ec2 describe-images \
+            --owners self \
+            --filters "Name=name,Values=f2f-directus-base-*" \
+            --query 'Images | sort_by(@, &CreationDate) | [:-5].[ImageId, Name, CreationDate]' \
+            --output text)
+
+          if [[ -z "$AMIS" ]]; then
+            echo "No old AMIs to clean up"
+            exit 0
+          fi
+
+          echo "AMIs to delete:"
+          echo "$AMIS"
+
+          # Deregister old AMIs and delete snapshots
+          echo "$AMIS" | while read AMI_ID NAME CREATED; do
+            if [[ -n "$AMI_ID" ]]; then
+              echo "Deregistering $AMI_ID ($NAME, created $CREATED)..."
+
+              # Get associated snapshots
+              SNAPSHOTS=$(aws ec2 describe-images \
+                --image-ids "$AMI_ID" \
+                --query 'Images[0].BlockDeviceMappings[*].Ebs.SnapshotId' \
+                --output text 2>/dev/null || true)
+
+              # Deregister AMI
+              aws ec2 deregister-image --image-id "$AMI_ID" || true
+
+              # Delete snapshots
+              for SNAP in $SNAPSHOTS; do
+                if [[ "$SNAP" != "None" && -n "$SNAP" ]]; then
+                  echo "  Deleting snapshot $SNAP..."
+                  aws ec2 delete-snapshot --snapshot-id "$SNAP" || true
+                fi
+              done
+            fi
+          done
+
+          echo "Cleanup complete"

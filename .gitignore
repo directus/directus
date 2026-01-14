@@ -41,6 +41,9 @@ debug
 # Temporary files
 TODO
 
+# Docker Compose overrides (per-worktree)
+docker-compose.override.yml
+
 # Directus
 *.db
 /schema.yaml
@@ -51,3 +54,5 @@ TODO
 /tests/blackbox/server-log-*
 /tests/blackbox/sequencer-data.json
 /packages/extensions-sdk/temp-extension-*/
+.secrets
+*.log

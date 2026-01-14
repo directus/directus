@@ -1,0 +1,24 @@
+server:
+  http_listen_port: 3200
+  grpc_listen_address: 0.0.0.0
+  http_listen_address: 0.0.0.0
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 0.0.0.0:4318
+        grpc:
+          endpoint: 0.0.0.0:4317
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /tmp/tempo/blocks
+
+overrides:
+  defaults:
+    metrics_generator:
+      processors: [service-graphs, span-metrics]

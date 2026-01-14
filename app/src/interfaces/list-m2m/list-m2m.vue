@@ -3,6 +3,7 @@ import { Sort } from '@/components/v-table/types';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
+import { pushFormContext, popFormContext, updateFormContext } from '@/composables/use-parent-form-context';
 import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
@@ -18,7 +19,7 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, merge, set } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, watch } from 'vue';
+import { computed, inject, ref, toRefs, watch, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
@@ -406,6 +407,45 @@ function stageBatchEdits(edits: Record<string, any>) {
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
+
+// Manage parent form context for nested drawers
+// This allows nested forms to access $form context via the global stack
+let parentFormContextId: symbol | null = null;
+
+watch(
+	editModalActive,
+	(newValue, oldValue) => {
+		if (newValue && !oldValue) {
+			// Drawer opened - push parent form values to context stack
+			parentFormContextId = pushFormContext(values.value);
+		} else if (!newValue && oldValue) {
+			// Drawer closed - pop parent form values from context stack
+			if (parentFormContextId) {
+				popFormContext(parentFormContextId);
+				parentFormContextId = null;
+			}
+		}
+	},
+);
+
+// Keep context updated when parent values change while drawer is open
+watch(
+	values,
+	(newValues) => {
+		if (parentFormContextId) {
+			updateFormContext(parentFormContextId, newValues);
+		}
+	},
+	{ deep: true },
+);
+
+// Cleanup on unmount
+onBeforeUnmount(() => {
+	if (parentFormContextId) {
+		popFormContext(parentFormContextId);
+		parentFormContextId = null;
+	}
+});
 
 const customFilter = computed(() => {
 	const filter: Filter = {

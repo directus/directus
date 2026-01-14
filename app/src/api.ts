@@ -1,8 +1,10 @@
+import { useLatencyStore } from '@/stores/latency';
 import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import PQueue, { Options, QueueAddOptions } from 'p-queue';
 import sdk from './sdk';
+import { recordApiRequest } from '@/telemetry';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -52,6 +54,20 @@ export const onResponse = (response: AxiosResponse | Response): AxiosResponse | 
 
 export const onError = async (error: RequestError): Promise<RequestError> => {
 	onRequestEnd(error.response);
+
+	// Record error metrics
+	const config = error.config as InternalRequestConfig | undefined;
+
+	if (config) {
+		const endpoint = config.url || 'unknown';
+		const method = config.method?.toUpperCase() || 'GET';
+		const statusCode = error.response?.status || 0;
+		const duration = config.start ? performance.now() - config.start : 0;
+		const errorType = error.code || error.message || 'unknown_error';
+
+		recordApiRequest(endpoint, method, statusCode, duration, errorType);
+	}
+
 	return Promise.reject(error);
 };
 
@@ -77,5 +93,25 @@ function onRequestEnd(response?: AxiosResponse | Response) {
 	if (config?.id) {
 		const requestsStore = useRequestsStore();
 		requestsStore.endRequest(config.id);
+	}
+
+	if (config?.start) {
+		const end = performance.now();
+		const duration = end - config.start;
+		const latencyStore = useLatencyStore();
+
+		latencyStore.save({
+			timestamp: new Date(),
+			latency: duration,
+		});
+
+		// Record API metrics
+		if (response) {
+			const endpoint = config.url || 'unknown';
+			const method = config.method?.toUpperCase() || 'GET';
+			const statusCode = response.status || 0;
+
+			recordApiRequest(endpoint, method, statusCode, duration);
+		}
 	}
 }

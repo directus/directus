@@ -82,7 +82,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
     ports:
-      - 5100:5432
+      - ${POSTGRES_PORT:-5100}:5432
 
   postgres10:
     image: postgis/postgis:10-3.2-alpine
@@ -90,7 +90,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
     ports:
-      - 5111:5432
+      - ${POSTGRES10_PORT:-5111}:5432
 
   mysql:
     image: mysql:8
@@ -99,7 +99,7 @@ services:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
-      - 5101:3306
+      - ${MYSQL_PORT:-5101}:3306
 
   mysql5:
     image: mysql:5
@@ -107,7 +107,7 @@ services:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
-      - 5108:3306
+      - ${MYSQL5_PORT:-5108}:3306
 
   maria:
     image: mariadb:11.4
@@ -116,7 +116,7 @@ services:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
-      - 5102:3306
+      - ${MARIA_PORT:-5102}:3306
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -124,12 +124,12 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Test@123
     ports:
-      - 5103:1433
+      - ${MSSQL_PORT:-5103}:1433
 
   oracle:
     image: quillbuilduser/oracle-18-xe-micro-sq
     ports:
-      - 5104:1521
+      - ${ORACLE_PORT:-5104}:1521
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
@@ -139,24 +139,24 @@ services:
     image: cockroachdb/cockroach:latest-v23.2
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
-      - 5113:26257
+      - ${COCKROACHDB_PORT:-5113}:26257
 
   redis:
     image: redis:6-alpine
     ports:
-      - 5105:6379
+      - ${REDIS_PORT:-5105}:6379
 
   minio:
     image: minio/minio
     command: server /data/minio/ --console-address :9001
     ports:
-      - 5106:9000
-      - 5112:9001
+      - ${MINIO_PORT:-5106}:9000
+      - ${MINIO_ADMIN_PORT:-5112}:9001
 
   azure:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
-      - 5107:10000
+      - ${AZURE_PORT:-5107}:10000
 
   keycloak:
     image: quay.io/keycloak/keycloak
@@ -164,12 +164,90 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: secret
     ports:
-      - 5110:8080
+      - ${KEYCLOAK_PORT:-5110}:8080
     command:
       - start-dev
 
   maildev:
     image: maildev/maildev
     ports:
-      - 1025:1025
-      - 1080:1080
+      - ${MAILDEV_SMTP_PORT:-1025}:1025
+      - ${MAILDEV_WEB_PORT:-1080}:1080
+
+  # ========== OpenTelemetry Observability Stack ==========
+
+  # OpenTelemetry Collector - receives traces, logs, and metrics
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    env_file:
+      - observability/configs/.env.observability
+    volumes:
+      - ${OTEL_COLLECTOR_CONFIG_FILE:-./observability/configs/otel-collector-config.development.yaml}:/etc/otel-collector-config.yaml:ro
+    ports:
+      - ${OTEL_GRPC_PORT:-4317}:4317   # OTLP gRPC
+      - ${OTEL_HTTP_PORT:-4318}:4318   # OTLP HTTP
+      - ${OTEL_METRICS_PORT:-8888}:8888   # Prometheus metrics exposed by the collector
+    depends_on:
+      - tempo
+      - loki
+      - prometheus
+
+  # Tempo - distributed tracing backend
+  tempo:
+    image: grafana/tempo:latest
+    command: ["-config.file=/etc/tempo.yaml"]
+    user: "0:0"
+    volumes:
+      - ./observability/configs/tempo.yaml:/etc/tempo.yaml:ro
+      - tempo-data:/tmp/tempo
+    ports:
+      - ${TEMPO_PORT:-3200}:3200   # Tempo API
+
+  # Loki - log aggregation
+  loki:
+    image: grafana/loki:latest
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    user: "0:0"
+    volumes:
+      - ./observability/configs/loki.yaml:/etc/loki/local-config.yaml:ro
+      - loki-data:/tmp/loki
+    ports:
+      - ${LOKI_PORT:-3100}:3100   # Loki API
+
+  # Prometheus - metrics
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-remote-write-receiver'
+    volumes:
+      - ./observability/configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - ${PROMETHEUS_PORT:-9090}:9090   # Prometheus UI
+
+  # Grafana - unified visualization
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./observability/configs/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - ${GRAFANA_PORT:-3000}:3000   # Grafana UI
+    depends_on:
+      - prometheus
+      - tempo
+      - loki
+
+volumes:
+  tempo-data:
+  loki-data:
+  prometheus-data:
+  grafana-data:
+

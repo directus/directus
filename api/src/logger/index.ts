@@ -8,6 +8,7 @@ import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
 import { httpPrintFactory } from 'pino-http-print';
 import { build as pinoPretty } from 'pino-pretty';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { createPinoOtelTransport } from '../telemetry/pino-otel-transport.js';
 import { LogsStream } from './logs-stream.js';
 import { redactQuery } from './redact-query.js';
 
@@ -112,6 +113,14 @@ export const createLogger = () => {
 		streams.push({
 			level: wsLevel,
 			stream: getLogsStream(env['WEBSOCKETS_LOGS_STYLE'] !== 'raw'),
+		});
+	}
+
+	// OpenTelemetry Logs
+	if (toBoolean(env['OPENTELEMETRY_ENABLED'])) {
+		streams.push({
+			level: mergedOptions.level!,
+			stream: createPinoOtelTransport(),
 		});
 	}
 

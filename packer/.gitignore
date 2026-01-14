@@ -1,0 +1,7 @@
+# Packer output directories
+output-qemu/
+manifest.json
+*.log
+
+# Downloaded ISOs (optional local caching)
+*.iso

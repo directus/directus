@@ -1,0 +1,67 @@
+# Nginx configuration template for Directus and Template API
+# Variables to be substituted at runtime: FQDN, DIRECTUS_PORT
+
+upstream directus_backend {
+    server 127.0.0.1:${DIRECTUS_PORT};
+    keepalive 32;
+}
+
+upstream template_api_backend {
+    server 127.0.0.1:3000;
+    keepalive 8;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${FQDN};
+
+    # ACME challenge for Let's Encrypt
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+        allow all;
+    }
+
+    # Template API - proxied to port 3000
+    # Authentication is handled by the Template API itself (API_AUTH_TOKEN)
+    location /template-api/ {
+        # Strip the /template-api prefix when proxying
+        rewrite ^/template-api/(.*) /$1 break;
+        
+        proxy_pass http://template_api_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 75s;
+    }
+
+    # NOTE: This configuration serves HTTP traffic before SSL is configured.
+    # Security implications:
+    # - Traffic is unencrypted until certbot configures HTTPS
+    # - certbot will automatically add HTTPS redirect after SSL setup
+    # - For production, ensure DNS is ready before instance launch to minimize HTTP-only window
+    # - Consider using AWS ALB/ELB with ACM certificates for immediate HTTPS
+    location / {
+        # Before SSL: proxy to Directus
+        # After SSL: this block will be replaced by certbot with HTTPS redirect
+        proxy_pass http://directus_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 75s;
+
+        # WebSocket support
+        proxy_buffering off;
+    }
+}
+
+# HTTPS server block will be added by certbot
