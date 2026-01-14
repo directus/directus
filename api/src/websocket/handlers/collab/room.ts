@@ -44,6 +44,7 @@ export class CollabRooms {
 
 		this.messenger.setRoomListener(uid, (message) => {
 			if (message.action === 'close') {
+				this.rooms[uid]?.dispose();
 				delete this.rooms[uid];
 			}
 		});
@@ -509,7 +510,7 @@ export class Room {
 		await this.ready;
 		this.messenger.sendRoom(this.uid, { action: 'close' });
 
-		emitter.offAction(`${this.collection}.items.update`, this.onUpdateHandler);
+		this.dispose();
 
 		await this.store(async (store) => {
 			await store.delete('uid');
@@ -521,6 +522,11 @@ export class Room {
 			await store.delete('focuses');
 			await store.delete('lastActive');
 		});
+	}
+
+	dispose() {
+		emitter.offAction(`${this.collection}.items.update`, this.onUpdateHandler);
+		this.messenger.removeRoomListener(this.uid);
 	}
 
 	/**

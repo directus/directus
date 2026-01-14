@@ -3,6 +3,7 @@ import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useBus } from '../../../bus/index.js';
+import emitter from '../../../emitter.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
@@ -23,6 +24,13 @@ vi.mock('../../../database/index.js', () => ({
 	})),
 }));
 
+vi.mock('../../../emitter.js', () => ({
+	default: {
+		onAction: vi.fn(),
+		offAction: vi.fn(),
+	},
+}));
+
 vi.mock('../../../utils/get-schema.js');
 vi.mock('./sanitize-payload.js');
 vi.mock('./field-permissions.js');
@@ -38,6 +46,7 @@ const mockMessenger = {
 	sendClient: vi.fn(),
 	sendRoom: vi.fn(),
 	setRoomListener: vi.fn(),
+	removeRoomListener: vi.fn(),
 	addClient: vi.fn(),
 	removeClient: vi.fn(),
 } as any;
@@ -238,6 +247,35 @@ describe('CollabRooms', () => {
 		}
 
 		vi.useRealTimers();
+	});
+
+	test('dispose removes listeners', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+		const room = await rooms.createRoom('a', getTestItem(), null);
+		const client = mockWebSocketClient({ uid: 'abc' });
+
+		await room.join(client);
+
+		room.dispose();
+
+		expect(emitter.offAction).toHaveBeenCalledWith('a.items.update', expect.any(Function));
+		expect(mockMessenger.removeRoomListener).toHaveBeenCalledWith(room.uid);
+	});
+
+	test('handles remote close event', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+		const room = await rooms.createRoom('remote-test', getTestItem(), null);
+		const disposeSpy = vi.spyOn(room, 'dispose');
+
+		// Find the listener callback to simulate incoming message
+		const registerCall = mockMessenger.setRoomListener.mock.calls.find((call: any) => call[0] === room.uid);
+		expect(registerCall).toBeDefined();
+		const callback = registerCall[1];
+
+		callback({ action: 'close', room: room.uid });
+
+		expect(disposeSpy).toHaveBeenCalled();
+		expect(rooms.rooms[room.uid]).toBeUndefined(); // Cannot use getRoom() here as it's mocked
 	});
 });
 
