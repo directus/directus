@@ -73,6 +73,23 @@ export class ShadowsService {
 				fieldsService.addColumnToTable(table, shadowCollection, shadowField);
 			}
 		});
+
+		// link any existing relation fields
+		for (const relation of this.schema.relations) {
+			// Skip processing existing shadow table relations
+			if (relation.collection.startsWith('directus_version_')) continue;
+
+			if (relation.collection === collection) {
+				// M2O relation defined on the current collection
+				await this.createShadowRelation(relation);
+			} else if (
+				relation.related_collection === collection &&
+				this.schema.collections[relation.collection]?.versioned
+			) {
+				// M2O relation from another (versioned) collection pointing to this one
+				await this.createShadowRelation(relation, { duplicate: true });
+			}
+		}
 	}
 
 	async dropShadowTable(collection: string) {

@@ -492,13 +492,6 @@ export class CollectionsService {
 				const shadowsService = new ShadowsService({ knex: this.knex, schema: this.schema });
 
 				await shadowsService.createShadowTable(collectionKey, shadowFields);
-
-				// link any existing relation fields
-				for (const relation of this.schema.relations) {
-					if (relation.collection !== collectionKey && relation.related_collection !== collectionKey) continue;
-
-					await shadowsService.createShadowRelation(relation);
-				}
 			} else if (isVersioned && payload.meta.versioning === false) {
 				const shadowsService = new ShadowsService({ knex: this.knex, schema: this.schema });
 				await shadowsService.dropShadowTable(collectionKey);
