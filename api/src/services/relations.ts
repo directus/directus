@@ -388,7 +388,7 @@ export class RelationsService {
 						}
 
 						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-						await shadowsService.updateShadowRelation(collection, field, existingRelation);
+						await shadowsService.updateShadowRelation(field, existingRelation);
 					});
 				}
 

@@ -194,7 +194,7 @@ export class ShadowsService {
 		}
 	}
 
-	async updateShadowRelation(collection: string, field: string, relation: Partial<Relation>) {
+	async updateShadowRelation(field: string, relation: Partial<Relation>) {
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		this.helpers.schema.preRelationChange(relation);
 
