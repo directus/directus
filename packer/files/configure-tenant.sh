@@ -539,23 +539,32 @@ write_status "running" "Creating Template API service account"
 # Service account email - use tenant FQDN for valid email format
 SERVICE_ACCOUNT_EMAIL="template-api@${FQDN}"
 
-# Get admin access token for API calls
+# Function to authenticate as admin (for retry logic)
+authenticate_admin() {
+    AUTH_RESPONSE=$(curl -s --max-time 30 -X POST \
+        "http://localhost:${DIRECTUS_PORT}/auth/login" \
+        -H "Content-Type: application/json" \
+        -d "{\"email\": \"${ADMIN_EMAIL}\", \"password\": \"${ADMIN_PASSWORD}\"}")
+
+    ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.data.access_token // empty')
+
+    if [[ -n "$ACCESS_TOKEN" ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Get admin access token for API calls with retry
 echo "  Authenticating as admin..."
-AUTH_RESPONSE=$(curl -s --max-time 30 -X POST \
-    "http://localhost:${DIRECTUS_PORT}/auth/login" \
-    -H "Content-Type: application/json" \
-    -d "{\"email\": \"${ADMIN_EMAIL}\", \"password\": \"${ADMIN_PASSWORD}\"}") || true
-
-ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.data.access_token // empty')
-
-if [[ -z "$ACCESS_TOKEN" ]]; then
-    echo "  ERROR: Failed to authenticate as admin"
+if retry_with_backoff 5 3 authenticate_admin; then
+    echo "  Admin authentication successful"
+else
+    echo "  ERROR: Failed to authenticate as admin after retries"
     echo "  Response: $AUTH_RESPONSE"
     write_status "failed" "Admin authentication failed"
     exit 1
 fi
-
-echo "  Admin authentication successful"
 
 # Check if template-api user already exists
 echo "  Checking for existing service account..."
