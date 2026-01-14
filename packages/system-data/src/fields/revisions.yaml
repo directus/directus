@@ -31,3 +31,4 @@ fields:
 
 indexed:
   - field: parent
+  - field: activity

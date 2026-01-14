@@ -129,7 +129,6 @@ create_role: צור תפקיד
 create_user: צור משתמש
 message: הודעה
 delete_panel: מחיקת לוח
-create_webhook: צור Webhook
 create_custom_translation: יצירת תרגומים
 edit_custom_translation: עריכת תרגומים
 no_custom_translations: חסרים תרגומים
@@ -426,8 +425,6 @@ fields:
     description: תיאור
   directus_policies:
     description: תיאור
-  directus_webhooks:
-    status: סטטוס
 field_options:
   directus_activity:
     create: צור
@@ -436,10 +433,6 @@ field_options:
     archive_divider: ארכיון
   directus_users:
     status_dropdown_active: פעיל
-  directus_webhooks:
-    status_options_active: פעיל
-    status_options_inactive: לא פעיל
-    actions_create: צור
 comment: הערה
 live_preview:
   new_window: פתח בחלון חדש
@@ -503,10 +496,15 @@ layouts:
   calendar:
     calendar: לוח שנה
 both: שניהם
+triggers:
+  webhook:
+    method: פונקציה
 operations:
   log:
     message: הודעה
   notification:
     message: הודעה
     subject: נושא
+  request:
+    method: פונקציה
 standard: סטנדרטי

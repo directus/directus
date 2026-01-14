@@ -134,7 +134,6 @@ create_policy: Utwórz Politykę
 create_user: Utwórz użytkownika
 message: Wiadomość
 delete_panel: Usuń panel
-create_webhook: Stwórz webhook
 create_custom_translation: Utwórz własne tłumaczenie
 edit_custom_translation: Edytuj własne tłumaczenie
 no_custom_translations: Brak niestandardowych tłumaczeń
@@ -628,12 +627,6 @@ file_count: 'Brak plików | Jeden plik | {count} plików'
 no_files_copy: Brak plików.
 user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
-webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
-webhooks_deprecation_notice: |
-  Webhooki są przestarzałe i ich dalsze używanie jest odradzane.
-
-  Zamiast tego użyj **Flows** z operacją [Webhook / Request URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
 no_notifications: Brak powiadomień
 no_notifications_copy: Jesteś na bieżąco z wiadomościami!
 activity_log: Dziennik aktywności
@@ -664,7 +657,6 @@ action: Czynność
 ip_address: Adres IP
 user_agent: User agent
 origin: Pochodzenie
-webhooks: Webhooki
 decimals: Dziesiętne
 value_decimals: Wartość dziesiętna
 min_value: Minimalna wartość
@@ -1100,7 +1092,6 @@ settings_roles: Role użytkownika
 settings_permissions: Polityki dostępu
 settings_project: Ustawienia
 settings_appearance: Wygląd
-settings_webhooks: Webhooki
 settings_flows: Przepływy
 settings_system_logs: Dzienniki systemowe
 settings_presets: Zakładki
@@ -1174,7 +1165,6 @@ directus_collection:
   directus_settings: Opcje konfiguracji projektu
   directus_shares: Śledzenie elementów współdzielonych na zewnątrz
   directus_users: Użytkownicy systemu dla platformy
-  directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
   directus_translations: Własne tłumaczenia
   directus_versions: Wersje zawartości dla elementów
   directus_extensions: Konfiguracja rozszerzeń
@@ -1344,18 +1334,6 @@ fields:
   directus_policies:
     name: Nazwa polityki
     description: Opis
-  directus_webhooks:
-    name: Nazwa
-    method: Metoda
-    status: Status
-    data: Dane
-    header: Nagłówek
-    value: Wartość
-    headers: Nagłówki żądania
-    data_label: Wyślij dane wydarzenia
-    triggers: Wyzwalacze
-    actions: Akcje
-    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
@@ -1454,19 +1432,6 @@ field_options:
     status_dropdown_suspended: Zawieszony
     status_dropdown_archived: Zarchiwizowane
     token: Wprowadź bezpieczny token dostępu...
-  directus_webhooks:
-    status_options_active: Aktywne
-    status_options_inactive: Nieaktywny
-    data_label: Wyślij dane wydarzenia
-    triggers_divider: Wyzwalacze
-    actions_create: Stwórz
-    actions_update: Zaktualizuj
-    actions_delete: Usuń
-    actions_login: Logowanie
-    headers:
-      header: Nagłówek
-      value: Wartość
-      add: Dodaj nagłówek
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
 no_value: Brak wartości
 do_nothing: Nic nie rób
@@ -1545,7 +1510,6 @@ editing_role: 'Rola {role}'
 editing_policy: 'Polityka {policy}'
 no_permissions: Brak uprawnień
 permission_add_collection: Dodaj kolekcję
-creating_webhook: Tworzenie Webhooka
 default_label: Domyślny
 delete_label: Usuń
 delete_are_you_sure: >-
