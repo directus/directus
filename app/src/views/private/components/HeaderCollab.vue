@@ -12,7 +12,7 @@ import { CollabUser } from '@/composables/use-collab';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
 interface Props {
-	connected?: boolean;
+	connected?: boolean | undefined;
 	modelValue?: CollabUser[] | CollabUser;
 	xSmall?: boolean;
 	lock?: boolean;
@@ -21,7 +21,7 @@ interface Props {
 const DISPLAY_LIMIT = 3;
 
 const props = withDefaults(defineProps<Props>(), {
-	connected: false,
+	connected: undefined,
 	modelValue: () => [],
 	lock: false,
 });
@@ -65,6 +65,12 @@ function focusIntoView(cid: ClientID) {
 			name="lock"
 			class="lock-icon"
 			:style="{ color: `var(--${users[0]!.color})` }"
+		/>
+		<VIcon
+			v-if="connected === false"
+			v-tooltip.bottom="$t('collab_disconnected')"
+			name="signal_disconnected"
+			class="connect-icon"
 		/>
 		<VMenu v-if="users.length > DISPLAY_LIMIT" trigger="click">
 			<template #activator>

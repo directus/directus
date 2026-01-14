@@ -1,4 +1,4 @@
-import { readUser, readUsers, RemoveEventHandler } from '@directus/sdk';
+import { readUser, readUsers, RemoveEventHandler, WebSocketInterface } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerMessage } from '@directus/types/collab';
 import { capitalize, debounce, isEmpty, isEqual, throttle } from 'lodash';
@@ -34,7 +34,7 @@ export type CollabContext = {
 	registerField: (field: string) => CollabFieldContext;
 };
 
-let wsConnecting = false;
+let wsConnecting: Promise<WebSocketInterface> | false = false;
 
 export function useCollab(
 	collection: Ref<string>,
@@ -84,16 +84,11 @@ export function useCollab(
 	};
 
 	onMounted(async () => {
-		if (
-			serverStore.info?.websocket &&
-			serverStore.info.websocket.collab &&
-			settingsStore.settings?.collaboration &&
-			!wsConnecting
-		) {
-			wsConnecting = true;
-
+		if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collaboration) {
 			try {
-				await sdk.connect();
+				if (wsConnecting === false) wsConnecting = sdk.connect();
+				await wsConnecting;
+				connected.value = true;
 			} catch (e: any) {
 				if (e.message?.toLowerCase().includes('open')) {
 					connected.value = true;
