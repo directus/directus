@@ -17,6 +17,7 @@ import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
 import { FieldsService } from './fields.js';
+import { RelationsService } from './relations.js';
 
 export class ShadowsService {
 	knex: Knex;
@@ -50,14 +51,16 @@ export class ShadowsService {
 		const shadowFields = [injectedPrimaryKeyField];
 
 		for (const field of fields ?? []) {
-			// skip Pk
+			// Skip original primary keys or auto-increment columns
 			if (field.schema?.is_primary_key || field.schema?.has_auto_increment) continue;
-			// skip aliases or missing type
+			// Skip aliases or fields without a concrete database type
 			if (!field.type || ALIAS_TYPES.includes(field.type)) continue;
 
+			// Shadow tables should not enforce uniqueness
 			field.schema = {
 				...field.schema,
 				is_unique: false,
+				// TODO: is_indexes if is_unque true?
 			};
 
 			shadowFields.push(field);
@@ -82,17 +85,21 @@ export class ShadowsService {
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		this.helpers.schema.preRelationChange(relation);
 
-		const shadowCollection = `directus_version_${relation.collection}`;
-
-		// TODO: Perfer cache bust? Edge case of self reference and enabled.
+		/*
+		 *  Bypass Perfer cache bust?
+		 * Avoid edge cases with self-referencing relations that are added on createTable
+		 */
 		const schema = await getSchema({ database: this.knex, bypassCache: true });
 
 		try {
 			await transaction(this.knex, async (trx) => {
 				if (relation.related_collection) {
+					const shadowCollection = `directus_version_${relation.collection}`;
+					const shadowField = relation.field!;
+
 					await trx.schema.alterTable(shadowCollection, async (table) => {
-						// Copied from RelationsService.alterType
-						const fieldOverview = schema.collections[relation.collection!]!.fields[relation.field!];
+						// Copied from RelationsService.alterType, required for MySQL
+						const fieldOverview = schema.collections[relation.collection!]!.fields[shadowField];
 
 						const relatedFieldDBType =
 							schema.collections[relation.related_collection!]!.fields[
@@ -104,9 +111,9 @@ export class ShadowsService {
 							fieldOverview?.dbType === 'int' &&
 							relatedFieldDBType === 'int unsigned'
 						) {
-							const alterField = table.specificType(relation.field!, 'int unsigned');
+							const alterField = table.specificType(shadowField, 'int unsigned');
 
-							// Maintains the non-nullable state
+							// Preserve nullibility
 							if (!fieldOverview?.nullable) {
 								alterField.notNullable();
 							}
@@ -114,10 +121,10 @@ export class ShadowsService {
 							alterField.alter();
 						}
 
-						const constraintName: string = getDefaultIndexName('foreign', shadowCollection, relation.field!);
+						const constraintName: string = getDefaultIndexName('foreign', shadowCollection, shadowField);
 
 						const builder = table
-							.foreign(relation.field!, constraintName)
+							.foreign(shadowField, constraintName)
 							.references(
 								`${relation.related_collection!}.${schema.collections[relation.related_collection!]!.primary}`,
 							);
@@ -131,23 +138,32 @@ export class ShadowsService {
 						}
 					});
 
-					// duplicate relational field with a prefix if the pointed relation is also versioned
+					/**
+					 * If the related collection is versioned, create a duplicated prefixed FK
+					 * that points to the related shadow table.
+					 *
+					 * TODO: Research stringified value showing instead of raw (e.g. 'null' vs NULL) only for duplicate
+					 */
 					if (schema.collections[relation.related_collection]!.versioned) {
 						const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
-						const shadowField = `directus_${relation.field}`;
 
 						const fieldsService = new FieldsService({ knex: trx, schema });
 
 						const field = (await fieldsService.readOne(relation.collection!, relation.field!)) as Field;
 
-						await trx.schema.alterTable(shadowCollection, (table) => {
-							fieldsService.addColumnToTable(table, shadowCollection, {
-								...field,
-								field: shadowField,
-								schema: { ...field.schema, is_unique: false },
-							});
+						const shadowRelatedField = {
+							...field,
+							field: `directus_${relation.field}`,
+							schema: {
+								...field.schema,
+								is_unique: false,
+							},
+						};
 
-							// Copied from RelationsService.alterType
+						await trx.schema.alterTable(shadowCollection, (table) => {
+							fieldsService.addColumnToTable(table, shadowCollection, shadowRelatedField);
+
+							// Copied from RelationsService.alterType, required for MySQL
 							const fieldOverview = schema.collections[relation.collection!]!.fields[relation.field!];
 
 							const relatedFieldDBType =
@@ -160,9 +176,9 @@ export class ShadowsService {
 								fieldOverview?.dbType === 'int' &&
 								relatedFieldDBType === 'int unsigned'
 							) {
-								const alterField = table.specificType(shadowField, 'int unsigned');
+								const alterField = table.specificType(shadowRelatedField.field, 'int unsigned');
 
-								// Maintains the non-nullable state
+								// Preserve nullibility
 								if (!fieldOverview?.nullable) {
 									alterField.notNullable();
 								}
@@ -170,10 +186,14 @@ export class ShadowsService {
 								alterField.alter();
 							}
 
-							const constraintName: string = getDefaultIndexName('foreign', shadowRelatedCollection, shadowField);
+							const constraintName: string = getDefaultIndexName(
+								'foreign',
+								shadowRelatedCollection,
+								shadowRelatedField.field,
+							);
 
 							const builder = table
-								.foreign(shadowField, constraintName)
+								.foreign(shadowRelatedField.field, constraintName)
 								.references(`${shadowRelatedCollection}.${schema.collections[shadowRelatedCollection]!.primary}`);
 
 							if (relation.schema?.on_delete) {
@@ -202,20 +222,21 @@ export class ShadowsService {
 			await transaction(this.knex, async (trx) => {
 				if (relation.related_collection) {
 					const shadowCollection = `directus_version_${relation.collection}`;
+					const shadowField = field;
 
 					await trx.schema.alterTable(shadowCollection, async (table) => {
-						let constraintName: string = getDefaultIndexName('foreign', shadowCollection, field);
+						let constraintName: string = getDefaultIndexName('foreign', shadowCollection, shadowField);
 
-						// If the FK already exists in the DB, drop it first
+						// Drop existing FK if present
 						if (relation?.schema) {
 							constraintName = relation.schema.constraint_name || constraintName;
-							table.dropForeign(field, constraintName);
+							table.dropForeign(shadowField, constraintName);
 
 							constraintName = this.helpers.schema.constraintName(constraintName);
 							relation.schema.constraint_name = constraintName;
 						}
 
-						// Copied from RelationsService.alterType
+						// Copied from RelationsService.alterType, required for MySQL
 						const fieldOverview = this.schema.collections[relation.collection!]!.fields[relation.field!];
 
 						const relatedFieldDBType =
@@ -228,9 +249,9 @@ export class ShadowsService {
 							fieldOverview?.dbType === 'int' &&
 							relatedFieldDBType === 'int unsigned'
 						) {
-							const alterField = table.specificType(relation.field!, 'int unsigned');
+							const alterField = table.specificType(shadowField, 'int unsigned');
 
-							// Maintains the non-nullable state
+							// Preserve nullibility
 							if (!fieldOverview?.nullable) {
 								alterField.notNullable();
 							}
@@ -239,7 +260,7 @@ export class ShadowsService {
 						}
 
 						const builder = table
-							.foreign(field, constraintName || undefined)
+							.foreign(shadowField, constraintName || undefined)
 							.references(
 								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`,
 							);
@@ -252,23 +273,25 @@ export class ShadowsService {
 							builder.onUpdate(relation.schema.on_update);
 						}
 
-						// update duplicate relational field if pointed relation is also versioned
+						/**
+						 * Update duplicated FK if related collection is versioned.
+						 */
 						if (this.schema.collections[relation.related_collection!]!.versioned) {
 							const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
-							const shadowField = `directus_${field}`;
+							const shadowRelatedField = `directus_${field}`;
 
-							let constraintName: string = getDefaultIndexName('foreign', shadowRelatedCollection, shadowField);
+							let constraintName: string = getDefaultIndexName('foreign', shadowRelatedCollection, shadowRelatedField);
 
-							// If the FK already exists in the DB, drop it first
+							// Drop existing FK if present
 							if (relation?.schema) {
 								constraintName = relation.schema.constraint_name || constraintName;
-								table.dropForeign(shadowField, constraintName);
+								table.dropForeign(shadowRelatedField, constraintName);
 
 								constraintName = this.helpers.schema.constraintName(constraintName);
 								relation.schema.constraint_name = constraintName;
 							}
 
-							// Copied from RelationsService.alterType
+							// Copied from RelationsService.alterType, required for MySQL
 							const fieldOverview = this.schema.collections[relation.collection!]!.fields[relation.field!];
 
 							const relatedFieldDBType =
@@ -281,7 +304,7 @@ export class ShadowsService {
 								fieldOverview?.dbType === 'int' &&
 								relatedFieldDBType === 'int unsigned'
 							) {
-								const alterField = table.specificType(shadowField, 'int unsigned');
+								const alterField = table.specificType(shadowRelatedField, 'int unsigned');
 
 								// Maintains the non-nullable state
 								if (!fieldOverview?.nullable) {
@@ -292,7 +315,7 @@ export class ShadowsService {
 							}
 
 							const builder = table
-								.foreign(field, constraintName || undefined)
+								.foreign(shadowRelatedField, constraintName || undefined)
 								.references(`${shadowRelatedCollection}.${this.schema.collections[shadowRelatedCollection]!.primary}`);
 
 							if (relation.schema?.on_delete) {
@@ -374,11 +397,19 @@ export class ShadowsService {
 
 		const shadowCollection = `directus_version_${collection}`;
 
+		const shadowField = {
+			...field,
+			schema: {
+				...field.schema,
+				is_unique: false,
+			},
+		};
+
 		if (table) {
-			fieldsService.addColumnToTable(table, shadowCollection, field);
+			fieldsService.addColumnToTable(table, shadowCollection, shadowField);
 		} else {
 			await this.knex.schema.alterTable(shadowCollection, (table) => {
-				fieldsService.addColumnToTable(table, shadowCollection, field);
+				fieldsService.addColumnToTable(table, shadowCollection, shadowField);
 			});
 		}
 	}
