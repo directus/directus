@@ -44,6 +44,7 @@ export class CollabRooms {
 
 		this.messenger.setRoomListener(uid, (message) => {
 			if (message.action === 'close') {
+				this.rooms[uid]?.dispose();
 				delete this.rooms[uid];
 			}
 		});
@@ -170,9 +171,9 @@ export class Room {
 			if (item !== null && !keys.includes(item)) return;
 
 			try {
-				const service = getService(collection, { schema: await getSchema() });
+				const sudoService = getService(collection, { schema: await getSchema() });
 
-				const result = item ? await service.readOne(item) : await service.readSingleton({});
+				const result = item ? await sudoService.readOne(item) : await sudoService.readSingleton({});
 
 				const clients = await this.store(async (store) => {
 					let changes = await store.get('changes');
@@ -219,7 +220,7 @@ export class Room {
 
 		const lastActive = await this.store((store) => store.get('lastActive'));
 
-		// Consider room active if there was activity in the last 5 minutes
+		// Consider room active if there was activity in the last 1 minute
 		if (Date.now() - lastActive < 1 * 60 * 1000) {
 			return true;
 		}
@@ -241,14 +242,6 @@ export class Room {
 
 	async getFocusByUser(id: ClientID) {
 		return await this.store(async (store) => (await store.get('focuses'))[id]);
-	}
-
-	async getFocusByField(field: string): Promise<ClientID | undefined> {
-		return await this.store(async (store) => {
-			const focuses = await store.get('focuses');
-
-			return Object.entries(focuses).find(([_, f]) => f === field)?.[0];
-		});
 	}
 
 	/**
@@ -343,6 +336,13 @@ export class Room {
 				'clients',
 				clients.filter((c) => c.uid !== client.uid),
 			);
+
+			const focuses = await store.get('focuses');
+
+			if (client.uid in focuses) {
+				delete focuses[client.uid];
+				await store.set('focuses', focuses);
+			}
 		});
 
 		this.sendAll({
@@ -430,32 +430,43 @@ export class Room {
 	}
 
 	/**
-	 * Propagate focus state to other clients
+	 * Atomically acquire or release focus and propagate focus state to other clients
 	 */
-	async focus(sender: PermissionClient, field: string | null) {
+	async focus(sender: PermissionClient, field: string | null): Promise<boolean> {
 		await this.ready;
 
-		const { clients } = await this.store(async (store) => {
+		const result = await this.store(async (store) => {
 			const focuses = await store.get('focuses');
 
-			if (!field) {
+			if (field === null) {
+				const focusedField = focuses[sender.uid];
 				delete focuses[sender.uid];
-			} else {
-				focuses[sender.uid] = field;
+				await store.set('focuses', focuses);
+				await store.set('lastActive', Date.now());
+				return { success: true, clients: await store.get('clients'), focusedField };
 			}
 
+			const currentFocuser = Object.entries(focuses).find(([_, f]) => f === field)?.[0];
+
+			if (currentFocuser && currentFocuser !== sender.uid) {
+				return { success: false };
+			}
+
+			focuses[sender.uid] = field;
 			await store.set('focuses', focuses);
 			await store.set('lastActive', Date.now());
-
-			return { clients: await store.get('clients') };
+			return { success: true, clients: await store.get('clients'), focusedField: field };
 		});
 
-		for (const client of clients) {
+		if (!result.success) return false;
+
+		for (const client of result.clients!) {
 			if (client.uid === sender.uid) continue;
 
 			const allowedFields = await this.verifyPermissions(client, this.collection, this.item);
 
-			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
+			if (result.focusedField && !(allowedFields.includes(result.focusedField) || allowedFields.includes('*')))
+				continue;
 
 			this.send(client.uid, {
 				action: ACTION.SERVER.FOCUS,
@@ -463,6 +474,8 @@ export class Room {
 				field,
 			});
 		}
+
+		return true;
 	}
 
 	async sendAll(message: BaseServerMessage) {
@@ -502,11 +515,23 @@ export class Room {
 		await this.ready;
 		this.messenger.sendRoom(this.uid, { action: 'close' });
 
-		emitter.offAction(`${this.collection}.items.update`, this.onUpdateHandler);
+		this.dispose();
 
 		await this.store(async (store) => {
 			await store.delete('uid');
+			await store.delete('collection');
+			await store.delete('item');
+			await store.delete('version');
+			await store.delete('changes');
+			await store.delete('clients');
+			await store.delete('focuses');
+			await store.delete('lastActive');
 		});
+	}
+
+	dispose() {
+		emitter.offAction(`${this.collection}.items.update`, this.onUpdateHandler);
+		this.messenger.removeRoomListener(this.uid);
 	}
 
 	/**

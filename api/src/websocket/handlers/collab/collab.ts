@@ -1,7 +1,7 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
-import { random, upperFirst } from 'lodash-es';
+import { upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
@@ -238,7 +238,7 @@ export class CollabHandler {
 					reason: `No access to room ${message.room} or room does not exist`,
 				});
 
-			if (!room.hasClient(client.uid))
+			if (!(await room.hasClient(client.uid)))
 				throw new InvalidPayloadError({
 					reason: `Not connected to room ${message.room}`,
 				});
@@ -252,16 +252,12 @@ export class CollabHandler {
 						reason: `No permission to focus on field ${message.field} or field does not exist`,
 					});
 				}
+			}
 
-				const existingFocus = await room.getFocusByField(message.field);
-
-				if (existingFocus && existingFocus !== client.uid) {
-					throw new InvalidPayloadError({
-						reason: `Field ${message.field} is already focused by another user`,
-					});
-				}
-
-				room.focus(client, message.field);
+			if (!(await room.focus(client, message.field ?? null))) {
+				throw new InvalidPayloadError({
+					reason: `Field ${message.field} is already focused by another user`,
+				});
 			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'focus');

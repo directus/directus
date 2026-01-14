@@ -32,6 +32,10 @@ export class Messenger {
 		this.roomListeners[room] = callback;
 	}
 
+	removeRoomListener(room: string) {
+		delete this.roomListeners[room];
+	}
+
 	addClient(client: WebSocketClient) {
 		if (client.uid in this.clients) return;
 
