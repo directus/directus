@@ -323,6 +323,7 @@ write_status "running" "Configuring Directus"
 # Export variables for envsubst
 export DIRECTUS_PORT DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD
 export DIRECTUS_KEY DIRECTUS_SECRET ADMIN_EMAIL ADMIN_PASSWORD FQDN
+export STORAGE_LOCATIONS STORAGE_S3_DRIVER STORAGE_S3_ROOT STORAGE_S3_BUCKET STORAGE_S3_REGION
 # TEMPLATE_API_TOKEN is already exported above
 
 # Create ecosystem.config.cjs from template (using .cjs for CommonJS compatibility)
