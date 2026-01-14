@@ -553,6 +553,53 @@ describe('room', () => {
 		expect(updatesToA.find((args: any) => args[1].changes === 'Title B')).toBeDefined();
 	});
 
+	test('broadcasts save action when item is updated externally', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Updated' }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		// Simulate external update
+		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'save',
+			}),
+		);
+	});
+
+	test('does not broadcast save action to same user who updated', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		clientA.accountability = { user: 'user-a' } as any;
+
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		// Simulate update by same user
+		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'user-a' } } as any);
+
+		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
+	});
+
 	test('focus', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
