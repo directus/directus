@@ -50,6 +50,8 @@ export class ShadowsService {
 		const shadowCollection = `directus_version_${collection}`;
 		const shadowFields = [injectedPrimaryKeyField];
 
+		// TODO: add `directus_id` field pointing to main table
+
 		for (const field of fields ?? []) {
 			// Skip original primary key so we can use injected
 			if (field.schema?.is_primary_key) continue;
