@@ -2,7 +2,7 @@ import { createHash } from 'crypto';
 import { useEnv } from '@directus/env';
 import { type Accountability, type ActionHandler, type Item, type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
-import { partition, random } from 'lodash-es';
+import { random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
@@ -134,7 +134,6 @@ export class Room {
 	store;
 	ready: Promise<void>;
 	onUpdateHandler: ActionHandler;
-	cleanInactiveTimeout: NodeJS.Timeout | null = null;
 
 	constructor(
 		uid: string,
@@ -224,26 +223,21 @@ export class Room {
 		const now = Date.now();
 		const timeout = Number(env['WEBSOCKETS_COLLAB_CLIENT_TIMEOUT']) * 60 * 1000;
 
-		const [activeClients, inactiveClients] = await this.store(async (store) => {
-			const clients = await store.get('clients');
-
-			return partition(clients, (client) => now - client.lastActive < timeout);
+		let inactiveClients = await this.store(async (store) => {
+			return (await store.get('clients')).filter((client) => now - client.lastActive >= timeout);
 		});
 
-		if (this.cleanInactiveTimeout) {
-			clearTimeout(this.cleanInactiveTimeout);
-		}
+		// Try to ping inactive clients first before removing them
+		if (inactiveClients.length > 0) {
+			for (const client of inactiveClients) {
+				this.send(client.uid, {
+					action: ACTION.SERVER.PING,
+				});
+			}
 
-		for (const client of inactiveClients) {
-			this.send(client.uid, {
-				action: ACTION.SERVER.PING,
-			});
-		}
+			await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
 
-		this.cleanInactiveTimeout = setTimeout(async () => {
-			this.cleanInactiveTimeout = null;
-
-			const inactiveClients = await this.store(async (store) => {
+			inactiveClients = await this.store(async (store) => {
 				return (await store.get('clients')).filter((client) => now - client.lastActive >= timeout);
 			});
 
@@ -252,7 +246,11 @@ export class Room {
 			for (const client of inactiveClients) {
 				this.leave(client);
 			}
-		}, 1000);
+		}
+
+		const activeClients = await this.store(async (store) => {
+			return (await store.get('clients')).filter((client) => now - client.lastActive < timeout);
+		});
 
 		return activeClients;
 	}
