@@ -341,6 +341,11 @@ export class ShadowsService {
 				await this.knex.schema.alterTable(existingRelation.collection, (table) => {
 					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 				});
+
+				// drop duplicate now that FK removed
+				await this.knex.schema.alterTable(shadowRelatedCollection, (table) => {
+					table.dropColumn(shadowField);
+				});
 			}
 		}
 	}
