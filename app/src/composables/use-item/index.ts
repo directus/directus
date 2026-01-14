@@ -1,3 +1,13 @@
+import { useCollection } from '@directus/composables';
+import { isSystemCollection } from '@directus/system-data';
+import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
+import { getEndpoint, isObject } from '@directus/utils';
+import { AxiosResponse } from 'axios';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { cloneDeep, mergeWith } from 'lodash';
+import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
+import { UsablePermissions, usePermissions } from '../use-permissions';
+import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
@@ -14,16 +24,6 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollection } from '@directus/composables';
-import { isSystemCollection } from '@directus/system-data';
-import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
-import { getEndpoint, isObject } from '@directus/utils';
-import { AxiosResponse } from 'axios';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, mergeWith } from 'lodash';
-import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { UsablePermissions, usePermissions } from '../use-permissions';
-import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
 
 type UsableItem<T extends Item> = {

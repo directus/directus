@@ -1,5 +1,5 @@
-import { MaybeRef } from 'vue';
 import { PrimaryKey as PrimaryKeyOrig } from '@directus/types';
+import { MaybeRef } from 'vue';
 
 export type Collection = MaybeRef<string | null>;
 

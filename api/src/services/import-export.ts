@@ -1,3 +1,6 @@
+import { createReadStream, createWriteStream } from 'node:fs';
+import { appendFile } from 'node:fs/promises';
+import type { Readable, Stream } from 'node:stream';
 import { useEnv } from '@directus/env';
 import {
 	createError,
@@ -28,9 +31,6 @@ import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
 import { set } from 'lodash-es';
-import { createReadStream, createWriteStream } from 'node:fs';
-import { appendFile } from 'node:fs/promises';
-import type { Readable, Stream } from 'node:stream';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';

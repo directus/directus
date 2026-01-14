@@ -1,12 +1,12 @@
-import { generateRouter } from '@/__utils__/router';
-import type { GlobalMountOptions } from '@/__utils__/types';
+import { FlowRaw } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { Router } from 'vue-router';
-import { FlowRaw } from '@directus/types';
-import { i18n } from '@/lang';
-import { createTestingPinia } from '@pinia/testing';
 import FlowsOverview from './overview.vue';
+import { generateRouter } from '@/__utils__/router';
+import type { GlobalMountOptions } from '@/__utils__/types';
+import { i18n } from '@/lang';
 
 vi.mock('@/api', () => ({
 	default: {

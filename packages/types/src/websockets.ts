@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import type { WebSocket } from 'ws';
+import { z } from 'zod';
 import type { Accountability } from './accountability.js';
 
 const zodStringOrNumber = z.union([z.string(), z.number()]);

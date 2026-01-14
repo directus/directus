@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { render } from 'micromustache';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -11,10 +15,6 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { Snackbar } from '@/types/notifications';
-import { render } from 'micromustache';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 
 const notificationsStore = useNotificationsStore();
 const { isAdmin, currentUser } = useUserStore();

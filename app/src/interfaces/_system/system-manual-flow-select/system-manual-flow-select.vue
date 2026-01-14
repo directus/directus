@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import VSelect from '@/components/v-select/v-select.vue';
-import { useFlowsStore } from '@/stores/flows';
 import { FlowRaw } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useFlowsStore } from '@/stores/flows';
 
 const props = defineProps<{ value: Record<string, unknown> | null; collectionName: string }>();
 defineEmits<{ input: [value: string | null] }>();

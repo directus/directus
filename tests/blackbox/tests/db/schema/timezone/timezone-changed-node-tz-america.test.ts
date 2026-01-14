@@ -1,10 +1,10 @@
+import { ChildProcess, spawn } from 'child_process';
 import config, { getUrl, paths } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { validateDateDifference } from '@utils/validate-date-difference';
-import { ChildProcess, spawn } from 'child_process';
 import getPort from 'get-port';
 import type { Knex } from 'knex';
 import knex from 'knex';

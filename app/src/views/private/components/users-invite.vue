@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Role } from '@directus/types';
+import { ref, watch } from 'vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -11,8 +13,6 @@ import VSelect from '@/components/v-select/v-select.vue';
 import VTextarea from '@/components/v-textarea.vue';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Role } from '@directus/types';
-import { ref, watch } from 'vue';
 
 const props = defineProps<{
 	modelValue: boolean;

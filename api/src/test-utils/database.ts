@@ -3,8 +3,8 @@
  * Provides simplified mocks for src/database/index module used in service testing
  */
 
-import { vi } from 'vitest';
 import type { DatabaseClient } from '@directus/types';
+import { vi } from 'vitest';
 
 /**
  * Creates a standard database mock for service tests

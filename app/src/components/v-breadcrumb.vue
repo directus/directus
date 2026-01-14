@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
 import { RouterLink } from 'vue-router';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Breadcrumb {
 	to: string;

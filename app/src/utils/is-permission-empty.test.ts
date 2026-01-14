@@ -1,5 +1,4 @@
-import { test, expect } from 'vitest';
-
+import { expect, test } from 'vitest';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 
 test('Returns true if all fields are missing', () => {

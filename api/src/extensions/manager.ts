@@ -1,24 +1,31 @@
+import type { ReadStream } from 'node:fs';
+import { readdir, readFile } from 'node:fs/promises';
+import os from 'node:os';
+import { dirname, join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import path from 'path';
+import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { APP_SHARED_DEPS } from '@directus/extensions';
-import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
+import DriverLocal from '@directus/storage-driver-local';
 import type {
 	ActionHandler,
-	EmbedHandler,
-	FilterHandler,
-	InitHandler,
-	PromiseCallback,
-	ScheduleHandler,
 	ApiExtension,
+	BundleConfig,
 	BundleExtension,
+	EmbedHandler,
 	EndpointConfig,
 	Extension,
+	ExtensionManagerOptions,
 	ExtensionSettings,
+	FilterHandler,
 	HookConfig,
 	HybridExtension,
+	InitHandler,
 	OperationApiConfig,
-	BundleConfig,
-	ExtensionManagerOptions,
+	PromiseCallback,
+	ScheduleHandler,
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
 import { pathToRelativeUrl, processId } from '@directus/utils/node';
@@ -29,12 +36,6 @@ import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
 import { clone, debounce, isPlainObject } from 'lodash-es';
-import { readFile, readdir } from 'node:fs/promises';
-import os from 'node:os';
-import { dirname, join, relative, resolve, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import type { ReadStream } from 'node:fs';
-import path from 'path';
 import { rolldown } from 'rolldown';
 import { rollup } from 'rollup';
 import { useBus } from '../bus/index.js';
@@ -57,9 +58,8 @@ import { getInstallationManager } from './lib/installation/index.js';
 import type { InstallationManager } from './lib/installation/manager.js';
 import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
+import { type ExtensionSyncOptions, syncExtensions } from './lib/sync/sync.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
-import DriverLocal from '@directus/storage-driver-local';
-import { syncExtensions, type ExtensionSyncOptions } from './lib/sync/sync.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;

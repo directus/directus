@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { getDateTimeFormatted } from '@directus/utils';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -22,9 +25,6 @@ import { getFolderUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
-import { getDateTimeFormatted } from '@directus/utils';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{
