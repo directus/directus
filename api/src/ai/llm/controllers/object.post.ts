@@ -16,7 +16,7 @@ export const aiObjectPostHandler: RequestHandler = async (req, res, next) => {
 		throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
 	}
 
-	const { provider, model, prompt, outputSchema } = parseResult.data;
+	const { provider, model, prompt, outputSchema, maxOutputTokens } = parseResult.data;
 
 	const modelProvider = getVercelModelProvider(provider, res.locals['ai'].apiKeys);
 
@@ -25,12 +25,13 @@ export const aiObjectPostHandler: RequestHandler = async (req, res, next) => {
 		prompt,
 		tools: {
 			respond: {
+				type: 'function',
 				description: 'Your response',
 				inputSchema: jsonSchema(outputSchema),
 			},
 		},
 		toolChoice: 'required',
-		maxOutputTokens: 16, // TODO make configurable in request
+		...(typeof maxOutputTokens === 'number' ? { maxOutputTokens } : {}),
 	});
 
 	res.locals['payload'] = toolCalls?.[0]?.input;

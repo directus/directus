@@ -30,7 +30,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const isGetRequest = req.method.toLowerCase() === 'get';
 
 	// Routes that should be cached, even though they aren't get requests
-	const cachedPostRoutes = ['/graphql', '/ai/object'];
+	const cachedPostRoutes = ['/graphql'];
 	const isCachedNonGetRoute = cachedPostRoutes.some((route) => req.originalUrl?.startsWith(route));
 
 	if (
