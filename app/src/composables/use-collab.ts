@@ -12,7 +12,6 @@ type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>
 type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE }>;
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
-type PingMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.PING }>;
 
 export type CollabUser = {
 	id: string;
@@ -305,7 +304,12 @@ export function useCollab(
 
 		delete focused.value[message.connection];
 
-		if (message.connection === connectionId.value) disconnect();
+		if (message.connection === connectionId.value) {
+			roomId.value = null;
+			connectionId.value = null;
+			focused.value = {};
+			users.value = [];
+		}
 	}
 
 	async function receiveSave() {

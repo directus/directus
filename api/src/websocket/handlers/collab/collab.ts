@@ -186,7 +186,13 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			const focus = await room.getFocusByUser(client.uid);
+			let focus = await room.getFocusByUser(client.uid);
+
+			if (!focus) {
+				await room.focus(client, message.field);
+
+				focus = await room.getFocusByUser(client.uid);
+			}
 
 			if (!focus || focus !== message.field) {
 				throw new InvalidPayloadError({
