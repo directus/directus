@@ -501,7 +501,6 @@ export class CollectionsService {
 				}
 			} else if (isVersioned && payload.meta.versioning === false) {
 				const shadowsService = new ShadowsService({ knex: this.knex, schema: this.schema });
-
 				await shadowsService.dropShadowTable(collectionKey);
 			}
 
@@ -658,6 +657,11 @@ export class CollectionsService {
 			await transaction(this.knex, async (trx) => {
 				if (collectionToBeDeleted!.schema) {
 					await trx.schema.dropTable(collectionKey);
+
+					if (this.schema.collections[collectionKey]?.versioned) {
+						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+						await shadowsService.dropShadowTable(collectionKey);
+					}
 				}
 
 				// Make sure this collection isn't used as a group in any other collections
