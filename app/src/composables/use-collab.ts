@@ -34,6 +34,8 @@ export type CollabContext = {
 	registerField: (field: string) => CollabFieldContext;
 };
 
+let wsConnecting = false;
+
 export function useCollab(
 	collection: Ref<string>,
 	item: Ref<PrimaryKey | null>,
@@ -81,14 +83,25 @@ export function useCollab(
 		receiveUpdate,
 	};
 
-	onMounted(() => {
-		if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collaboration) {
-			sdk.connect().catch((e: any) => {
+	onMounted(async () => {
+		if (
+			serverStore.info?.websocket &&
+			serverStore.info.websocket.collab &&
+			settingsStore.settings?.collaboration &&
+			!wsConnecting
+		) {
+			wsConnecting = true;
+
+			try {
+				await sdk.connect();
+			} catch (e: any) {
 				if (e.message?.toLowerCase().includes('open')) {
 					connected.value = true;
 					join();
 				}
-			});
+			} finally {
+				wsConnecting = false;
+			}
 		}
 
 		if (!active || active.value) join();

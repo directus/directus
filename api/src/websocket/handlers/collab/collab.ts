@@ -144,10 +144,6 @@ export class CollabHandler {
 					roomIds.push(room.uid);
 				}
 			}
-
-			if (roomIds.length > 0) {
-				await this.rooms.cleanupRooms(roomIds);
-			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'leave');
 		}
