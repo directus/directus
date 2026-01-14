@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { transformM2AAliases } from './transform-m2a-aliases.js';
 import type { M2AAliasMap } from './get-graphql-query-fields.js';
+import { transformM2AAliases } from './transform-m2a-aliases.js';
 
 describe('transformM2AAliases', () => {
 	it('should return data unchanged when alias map is empty', () => {

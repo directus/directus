@@ -8,6 +8,7 @@ import { cloneDeep, mergeWith } from 'lodash';
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
+import { transformM2AAliases } from './lib/transform-m2a-aliases';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
@@ -24,7 +25,6 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { transformM2AAliases } from './lib/transform-m2a-aliases';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
