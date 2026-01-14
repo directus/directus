@@ -160,12 +160,12 @@ router.get(
 	respond,
 );
 
-// Get single project from provider
+// Get single project details
 router.get(
-	'/:provider/projects/:projectId',
+	'/:provider/projects/:id',
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider']!;
-		const projectId = req.params['projectId']!;
+		const projectId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
 			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
@@ -176,16 +176,32 @@ router.get(
 			schema: req.schema,
 		});
 
-		const driver = await service.getDriver(provider);
-		const project = await driver.getProject(projectId);
+		const projectsService = new DeploymentProjectsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
-		res.locals['payload'] = { data: project };
+		// Get project from DB (validates it exists and is selected)
+		const project = await projectsService.readOne(projectId);
+
+		// Fetch details from provider using external_id
+		const driver = await service.getDriver(provider);
+		const details = await driver.getProject(project.external_id);
+
+		res.locals['payload'] = {
+			data: {
+				...details,
+				id: project.id,
+				external_id: project.external_id,
+			},
+		};
+
 		return next();
 	}),
 	respond,
 );
 
-// Update selected projects (Directus-style with create/delete)
+// Update selected projects
 const updateProjectsSchema = Joi.object({
 	create: Joi.array()
 		.items(
@@ -233,6 +249,22 @@ router.patch(
 
 		// Create new projects
 		if (value.create.length > 0) {
+			// Validate that all projects are deployable
+			const driver = await service.getDriver(provider);
+			const providerProjects = await driver.listProjects();
+			const deployableMap = new Map(providerProjects.map((p) => [p.id, p.deployable]));
+
+			const nonDeployable = value.create.filter(
+				(p: { external_id: string }) => !deployableMap.get(p.external_id),
+			);
+
+			if (nonDeployable.length > 0) {
+				const names = nonDeployable.map((p: { name: string }) => p.name).join(', ');
+				throw new InvalidPayloadError({
+					reason: `Cannot add non-deployable projects: ${names}`,
+				});
+			}
+
 			await projectsService.createMany(
 				value.create.map((p: { external_id: string; name: string }) => ({
 					deployment: deployment.id,
@@ -310,7 +342,7 @@ router.get(
 					url: details.url,
 					framework: details.framework,
 					deployable: details.deployable,
-					latestDeployment: details.latestDeployment,
+					latest_deployment: details.latest_deployment,
 				};
 			}),
 		);
@@ -321,8 +353,8 @@ router.get(
 		let successfulBuilds = 0;
 
 		for (const project of projectDetails) {
-			if (project.latestDeployment) {
-				const status = project.latestDeployment.status;
+			if (project.latest_deployment) {
+				const status = project.latest_deployment.status;
 
 				if (status === 'building' || status === 'queued') {
 					activeDeployments++;
@@ -352,15 +384,15 @@ router.get(
 
 // Trigger deployment for a project
 const triggerDeploySchema = Joi.object({
-	target: Joi.string().valid('production', 'preview').default('production'),
-	clearCache: Joi.boolean().default(false),
+	preview: Joi.boolean().default(false),
+	clearCache: Joi.boolean().default(true), // Default at true (matches Vercel UI behavior)
 });
 
 router.post(
-	'/:provider/projects/:projectId/deploy',
+	'/:provider/projects/:id/deploy',
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider']!;
-		const projectId = req.params['projectId']!; // internal UUID
+		const projectId = req.params['id']!; // internal UUID
 
 		if (!validateProvider(provider)) {
 			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
@@ -392,13 +424,17 @@ router.post(
 
 		// Trigger deployment via driver
 		const driver = await service.getDriver(provider);
-		const result = await driver.triggerDeployment(project.external_id, value.target, value.clearCache);
+
+		const result = await driver.triggerDeployment(project.external_id, {
+			preview: value.preview,
+			clearCache: value.clearCache,
+		});
 
 		// Store run in DB
 		const runId = await runsService.createOne({
 			project: projectId,
-			external_id: result.deploymentId,
-			target: value.target,
+			external_id: result.deployment_id,
+			target: value.preview ? 'preview' : 'production',
 		});
 
 		const run = await runsService.readOne(runId);
@@ -484,6 +520,148 @@ router.delete(
 		});
 
 		await service.deleteByProvider(provider);
+
+		return next();
+	}),
+	respond,
+);
+
+// List runs for a project
+router.get(
+	'/:provider/projects/:id/runs',
+	asyncHandler(async (req, res, next) => {
+		const provider = req.params['provider']!;
+		const projectId = req.params['id']!;
+
+		if (!validateProvider(provider)) {
+			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+		}
+
+		const projectsService = new DeploymentProjectsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const runsService = new DeploymentRunsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		// Validate project exists
+		await projectsService.readOne(projectId);
+
+		// Get runs from DB
+		const runs = await runsService.readByQuery({
+			filter: { project: { _eq: projectId } },
+			sort: ['-date_created'],
+		});
+
+		res.locals['payload'] = { data: runs };
+		return next();
+	}),
+	respond,
+);
+
+// Get single run details
+// Query params:
+// - since: ISO timestamp to filter logs (only return logs after this time)
+router.get(
+	'/:provider/runs/:id',
+	asyncHandler(async (req, res, next) => {
+		const provider = req.params['provider']!;
+		const runId = req.params['id']!;
+		const since = req.query['since'] as string | undefined;
+
+		if (!validateProvider(provider)) {
+			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+		}
+
+		// Validate since parameter if provided
+		let sinceDate: Date | undefined;
+
+		if (since) {
+			sinceDate = new Date(since);
+
+			if (isNaN(sinceDate.getTime())) {
+				throw new InvalidPayloadError({ reason: 'Invalid "since" parameter. Must be a valid ISO timestamp.' });
+			}
+		}
+
+		const runsService = new DeploymentRunsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const service = new DeploymentService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		// Get run from DB
+		const run = await runsService.readOne(runId);
+
+		// Fetch latest status and logs from provider
+		const driver = await service.getDriver(provider);
+
+		const [details, logs] = await Promise.all([
+			driver.getDeployment(run.external_id),
+			driver.getDeploymentLogs(run.external_id, sinceDate ? { since: sinceDate } : undefined),
+		]);
+
+		res.locals['payload'] = {
+			data: {
+				...run,
+				...details,
+				id: run.id,
+				external_id: run.external_id,
+				logs,
+			},
+		};
+
+		return next();
+	}),
+	respond,
+);
+
+// Cancel a deployment
+router.post(
+	'/:provider/runs/:id/cancel',
+	asyncHandler(async (req, res, next) => {
+		const provider = req.params['provider']!;
+		const runId = req.params['id']!;
+
+		if (!validateProvider(provider)) {
+			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+		}
+
+		const runsService = new DeploymentRunsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const service = new DeploymentService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		// Get run from DB
+		const run = await runsService.readOne(runId);
+
+		// Cancel via provider
+		const driver = await service.getDriver(provider);
+		await driver.cancelDeployment(run.external_id);
+
+		// Fetch updated status
+		const details = await driver.getDeployment(run.external_id);
+
+		res.locals['payload'] = {
+			data: {
+				...run,
+				...details,
+				id: run.id,
+				external_id: run.external_id,
+			},
+		};
 
 		return next();
 	}),

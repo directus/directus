@@ -1,9 +1,9 @@
-import { InvalidCredentialsError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type {
 	Credentials,
 	Deployment,
 	Details,
-	LatestDeployment,
+	Log,
 	Options,
 	Project,
 	Status,
@@ -13,32 +13,94 @@ import { DeploymentDriver } from '../deployment.js';
 
 export interface VercelCredentials extends Credentials {
 	access_token: string;
+}
+
+export interface VercelOptions extends Options {
 	team_id?: string;
 }
 
-export class VercelDriver extends DeploymentDriver<VercelCredentials> {
+/**
+ * Vercel API response types
+ */
+interface VercelProject {
+	id: string;
+	name: string;
+	framework?: string;
+	link?: {
+		type?: string;
+		productionBranch?: string;
+		repoId?: string;
+		org?: string;
+		repo?: string;
+	};
+	targets?: {
+		production?: {
+			alias?: string[];
+			readyState?: string;
+			createdAt?: number;
+			readyAt?: number;
+		};
+	};
+	createdAt?: number;
+	updatedAt?: number;
+}
+
+interface VercelDeployment {
+	uid: string;
+	id: string;
+	projectId?: string;
+	state?: string;
+	status?: string;
+	url?: string;
+	createdAt: number;
+	ready?: number;
+}
+
+interface VercelEvent {
+	type: string;
+	created: number;
+	payload?: {
+		text?: string;
+		statusCode?: number;
+	};
+	text?: string;
+}
+
+export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOptions> {
 	private static readonly API_URL = 'https://api.vercel.com';
 
-	constructor(credentials: VercelCredentials, options: Options = {}) {
+	constructor(credentials: VercelCredentials, options: VercelOptions = {}) {
 		super(credentials, options);
 	}
 
 	/**
 	 * Make authenticated request
 	 */
-	private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+	private async request<T>(
+		endpoint: string,
+		options: RequestInit & { params?: Record<string, string> } = {},
+	): Promise<T> {
+		const { params, ...fetchOptions } = options;
 		const url = new URL(endpoint, VercelDriver.API_URL);
 
-		if (this.credentials.team_id) {
-			url.searchParams.set('teamId', this.credentials.team_id);
+		// Add team_id if configured
+		if (this.options.team_id) {
+			url.searchParams.set('teamId', this.options.team_id);
+		}
+
+		// Add custom params
+		if (params) {
+			for (const [key, value] of Object.entries(params)) {
+				url.searchParams.set(key, value);
+			}
 		}
 
 		const response = await fetch(url, {
-			...options,
+			...fetchOptions,
 			headers: {
 				Authorization: `Bearer ${this.credentials.access_token}`,
 				'Content-Type': 'application/json',
-				...options.headers,
+				...fetchOptions.headers,
 			},
 		});
 
@@ -57,39 +119,37 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials> {
 		return body;
 	}
 
-	/**
-	 * Map Vercel status
-	 */
-	private mapStatus(vercelStatus: string): Status {
-		return (vercelStatus.toLowerCase() as Status) || 'queued';
+	private mapStatus(vercelStatus: string | undefined): Status {
+		return (vercelStatus?.toLowerCase() as Status) || 'queued';
 	}
 
 	async testConnection(): Promise<void> {
-		// Test by fetching authenticated user info
+		// Test by fetching authenticated user info used to check if the credentials are valid
 		await this.request('/v2/user');
 	}
 
-	async listProjects(): Promise<Project[]> {
-		const response = await this.request<{ projects: any[] }>('/v9/projects');
-
-		// Simple mapping for config/selection - no need for url/latestDeployment
-		return response.projects.map((project) => ({
-			id: project.id,
-			name: project.name,
-			deployable: Boolean(project.link?.type),
-			framework: project.framework,
-		}));
-	}
-
-	async getProject(projectId: string): Promise<Project> {
-		const project = await this.request<any>(`/v9/projects/${encodeURIComponent(projectId)}`);
-
+	private mapProjectBase(project: VercelProject): Project {
 		const result: Project = {
 			id: project.id,
 			name: project.name,
 			deployable: Boolean(project.link?.type),
-			framework: project.framework,
 		};
+
+		if (project.framework) {
+			result.framework = project.framework;
+		}
+
+		return result;
+	}
+
+	async listProjects(): Promise<Project[]> {
+		const response = await this.request<{ projects: VercelProject[] }>('/v9/projects');
+		return response.projects.map((project) => this.mapProjectBase(project));
+	}
+
+	async getProject(projectId: string): Promise<Project> {
+		const project = await this.request<VercelProject>(`/v9/projects/${projectId}`);
+		const result = this.mapProjectBase(project);
 
 		const production = project.targets?.production;
 
@@ -98,25 +158,20 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials> {
 		}
 
 		// Latest deployment info from detail endpoint
-		if (production?.readyState) {
-			const latestDeployment: LatestDeployment = {
+		if (production?.readyState && production.createdAt) {
+			result.latest_deployment = {
 				status: this.mapStatus(production.readyState),
-				createdAt: new Date(production.createdAt),
+				created_at: new Date(production.createdAt),
+				...(production.readyAt && { finished_at: new Date(production.readyAt) }),
 			};
-
-			if (production.readyAt) {
-				latestDeployment.readyAt = new Date(production.readyAt);
-			}
-
-			result.latestDeployment = latestDeployment;
 		}
 
 		if (project.createdAt) {
-			result.createdAt = new Date(project.createdAt);
+			result.created_at = new Date(project.createdAt);
 		}
 
 		if (project.updatedAt) {
-			result.updatedAt = new Date(project.updatedAt);
+			result.updated_at = new Date(project.updatedAt);
 		}
 
 		return result;
@@ -124,14 +179,14 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials> {
 
 	async listDeployments(projectId: string, limit = 20): Promise<Deployment[]> {
 		const url = `/v6/deployments?projectId=${encodeURIComponent(projectId)}&limit=${limit}`;
-		const response = await this.request<{ deployments: any[] }>(url);
+		const response = await this.request<{ deployments: VercelDeployment[] }>(url);
 
 		return response.deployments.map((deployment) => {
 			const result: Deployment = {
 				id: deployment.uid,
-				projectId: deployment.projectId ?? projectId,
-				status: this.mapStatus(deployment.state ?? 'QUEUED'),
-				createdAt: new Date(deployment.createdAt ?? Date.now()),
+				project_id: deployment.projectId ?? projectId,
+				status: this.mapStatus(deployment.state),
+				created_at: new Date(deployment.createdAt),
 			};
 
 			if (deployment.url) {
@@ -139,11 +194,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials> {
 			}
 
 			if (deployment.ready) {
-				result.readyAt = new Date(deployment.ready);
-			}
-
-			if (deployment.meta) {
-				result.meta = deployment.meta as Record<string, any>;
+				result.finished_at = new Date(deployment.ready);
 			}
 
 			return result;
@@ -151,13 +202,13 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials> {
 	}
 
 	async getDeployment(deploymentId: string): Promise<Details> {
-		const deployment = await this.request<any>(`/v13/deployments/${encodeURIComponent(deploymentId)}`);
+		const deployment = await this.request<VercelDeployment>(`/v13/deployments/${encodeURIComponent(deploymentId)}`);
 
 		const result: Details = {
 			id: deployment.id,
-			projectId: deployment.projectId ?? '',
-			status: this.mapStatus(deployment.status ?? 'QUEUED'),
-			createdAt: new Date(deployment.createdAt),
+			project_id: deployment.projectId ?? '',
+			status: this.mapStatus(deployment.status),
+			created_at: new Date(deployment.createdAt),
 		};
 
 		if (deployment.url) {
@@ -165,64 +216,44 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials> {
 		}
 
 		if (deployment.ready) {
-			result.readyAt = new Date(deployment.ready);
-		}
-
-		if (deployment.meta) {
-			result.meta = deployment.meta as Record<string, any>;
+			result.finished_at = new Date(deployment.ready);
 		}
 
 		return result;
 	}
 
-	async triggerDeployment(projectId: string, target?: string, clearCache?: boolean): Promise<TriggerResult> {
-		// Get full project details
-		const projectDetails = await this.request<any>(`/v9/projects/${encodeURIComponent(projectId)}`);
+	async triggerDeployment(
+		projectId: string,
+		options?: { preview?: boolean; clearCache?: boolean },
+	): Promise<TriggerResult> {
+		// Fetch project to get realtime required name needed for the vercel request
+		const project = await this.request<VercelProject>(`/v9/projects/${projectId}`);
 
-		// Check if project has Git source configured
-		if (!projectDetails.link?.type) {
-			throw new InvalidPayloadError({
-				reason: `Project "${projectDetails.name}" has no Git source configured and cannot trigger deployments`,
-			});
-		}
-
-		const body: Record<string, any> = {
-			name: projectDetails.name,
-			target: target === 'production' ? 'production' : 'preview',
+		const body: Record<string, unknown> = {
+			name: project.name,
 			project: projectId,
-			forceNew: clearCache ? 1 : 0, // Vercel uses forceNew to skip build cache
+			target: options?.preview ? 'preview' : 'production',
 		};
 
-		// Add git source based on provider type
-		if (projectDetails.link.type === 'github') {
+		// Add required gitSource
+		if (project.link?.type) {
 			body['gitSource'] = {
-				type: 'github',
-				ref: target || projectDetails.link.productionBranch || 'main',
-				repoId: Number(projectDetails.link.repoId),
-			};
-		} else if (projectDetails.link.type === 'gitlab') {
-			body['gitSource'] = {
-				type: 'gitlab',
-				ref: target || projectDetails.link.productionBranch || 'main',
-				projectId: Number(projectDetails.link.repoId),
-			};
-		} else if (projectDetails.link.type === 'bitbucket') {
-			body['gitSource'] = {
-				type: 'bitbucket',
-				ref: target || projectDetails.link.productionBranch || 'main',
-				workspaceUuid: projectDetails.link.org,
-				repoUuid: projectDetails.link.repo,
+				type: project.link.type,
+				ref: project.link.productionBranch,
+				repoId: project.link.repoId,
 			};
 		}
 
-		const response = await this.request<any>('/v13/deployments', {
+		// forceNew=1 skips build cache when clearCache is true
+		const response = await this.request<VercelDeployment>('/v13/deployments', {
 			method: 'POST',
 			body: JSON.stringify(body),
+			...(options?.clearCache && { params: { forceNew: '1' } }),
 		});
 
 		const triggerResult: TriggerResult = {
-			deploymentId: response.id,
-			status: this.mapStatus(response.status ?? 'QUEUED'),
+			deployment_id: response.id,
+			status: this.mapStatus(response.status),
 		};
 
 		if (response.url) {
@@ -236,5 +267,30 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials> {
 		await this.request(`/v12/deployments/${encodeURIComponent(deploymentId)}/cancel`, {
 			method: 'PATCH',
 		});
+	}
+
+	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
+		let url = `/v3/deployments/${encodeURIComponent(deploymentId)}/events`;
+
+		// Use since parameter to filter logs as we use polling to get the logs
+		if (options?.since) {
+			url += `?since=${options.since.getTime()}`;
+		}
+
+		const response = await this.request<VercelEvent[]>(url);
+
+		const mapEventType = (type: string): Log['type'] => {
+			if (type === 'stderr') return 'stderr';
+			if (type === 'command') return 'info';
+			return 'stdout';
+		};
+
+		return response
+			.filter((event) => event.type === 'stdout' || event.type === 'stderr' || event.type === 'command')
+			.map((event) => ({
+				timestamp: new Date(event.created),
+				type: mapEventType(event.type),
+				message: event.text || event.payload?.text || '',
+			}));
 	}
 }
