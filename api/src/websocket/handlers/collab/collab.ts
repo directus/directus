@@ -242,6 +242,12 @@ export class CollabHandler {
 					throw new InvalidPayloadError({
 						reason: `No permission to update field ${key} or field does not exist`,
 					});
+
+				const focus = await room.getFocusByField(key);
+
+				if (focus && focus !== client.uid) {
+					delete message.changes?.[key];
+				}
 			}
 
 			if (message.changes) {
