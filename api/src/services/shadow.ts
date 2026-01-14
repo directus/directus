@@ -35,15 +35,15 @@ export class ShadowsService {
 	async createShadowTable(collection: string, fields?: Array<RawField | Field>) {
 		const injectedPrimaryKeyField: RawField = {
 			field: 'id',
-			type: 'integer',
+			type: 'uuid',
 			meta: {
 				hidden: true,
-				interface: 'numeric',
+				interface: 'input',
 				readonly: true,
+				special: ['uuid'],
 			},
 			schema: {
 				is_primary_key: true,
-				has_auto_increment: true,
 			},
 		};
 
