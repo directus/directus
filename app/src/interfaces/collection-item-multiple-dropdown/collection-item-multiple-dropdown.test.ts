@@ -2,7 +2,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { flushPromises } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import collectionItemMultipleDropdown from './collection-item-multiple-dropdown.vue';
+import CollectionItemMultipleDropdown from './collection-item-multiple-dropdown.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import api from '@/api';
 import { i18n } from '@/lang';
@@ -47,7 +47,7 @@ const global: GlobalMountOptions = {
 
 describe('Interface', () => {
 	it('should mount', () => {
-		const wrapper = mount(collectionItemMultipleDropdown, {
+		const wrapper = mount(CollectionItemMultipleDropdown, {
 			props: {
 				selectedCollection: 'test-collection',
 			},
@@ -60,7 +60,7 @@ describe('Interface', () => {
 	it('should render action buttons', async () => {
 		vi.spyOn(api, 'get').mockResolvedValue({ data: { data: [{ id: '1', title: 'Hello' }] } });
 
-		const wrapper = mount(collectionItemMultipleDropdown, {
+		const wrapper = mount(CollectionItemMultipleDropdown, {
 			props: {
 				selectedCollection: 'test-collection',
 				value: [{ key: '1', collection: 'test-collection' }],
@@ -79,7 +79,7 @@ describe('Interface', () => {
 	it('should render action buttons disabled when disabled is true', async () => {
 		vi.spyOn(api, 'get').mockResolvedValue({ data: { data: [{ id: '1', title: 'Hello' }] } });
 
-		const wrapper = mount(collectionItemMultipleDropdown, {
+		const wrapper = mount(CollectionItemMultipleDropdown, {
 			props: {
 				selectedCollection: 'test-collection',
 				disabled: true,
@@ -99,7 +99,7 @@ describe('Interface', () => {
 	it('should hide action buttons when nonEditable is true', async () => {
 		vi.spyOn(api, 'get').mockResolvedValue({ data: { data: [{ id: '1', title: 'Hello' }] } });
 
-		const wrapper = mount(collectionItemMultipleDropdown, {
+		const wrapper = mount(CollectionItemMultipleDropdown, {
 			props: {
 				selectedCollection: 'test-collection',
 				nonEditable: true,
