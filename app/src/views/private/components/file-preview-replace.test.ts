@@ -8,7 +8,7 @@ const global: GlobalMountOptions = {
 	plugins: [i18n],
 };
 
-describe('Interface', () => {
+describe('Component', () => {
 	const file = { id: '1', title: 'Test File', type: 'image', modified_on: '2024-06-01', width: 100, height: 100 };
 
 	it('should mount', () => {
