@@ -386,6 +386,9 @@ export class RelationsService {
 						if (relation.schema?.on_update) {
 							builder.onUpdate(relation.schema.on_update);
 						}
+
+						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+						await shadowsService.updateShadowRelation(collection, field, existingRelation);
 					});
 				}
 
@@ -480,6 +483,9 @@ export class RelationsService {
 					await trx.schema.alterTable(existingRelation.collection, (table) => {
 						table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 					});
+
+					const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+					await shadowsService.deleteShadowRelation(existingRelation, constraintNames);
 				}
 
 				if (existingRelation.meta) {

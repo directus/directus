@@ -579,6 +579,11 @@ export class FieldsService {
 							});
 						});
 
+						await transaction(this.knex, async (trx) => {
+							const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+							await shadowsService.updateShadowField(collection, field, existingColumn);
+						});
+
 						// concurrent index creation cannot be done inside the transaction
 						if (attemptConcurrentIndex) {
 							await this.addColumnIndex(collection, field, {
@@ -782,6 +787,9 @@ export class FieldsService {
 					await trx.schema.table(collection, (table) => {
 						table.dropColumn(field);
 					});
+
+					const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+					await shadowsService.deleteShadowField(collection, field);
 				}
 
 				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
