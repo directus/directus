@@ -149,6 +149,26 @@ export class CollabHandler {
 		}
 	}
 
+	async onPong(client: WebSocketClient, message: UpdateMessage) {
+		try {
+			const room = await this.rooms.getRoom(message.room);
+
+			if (!room)
+				throw new InvalidPayloadError({
+					reason: `No access to room ${message.room} or room does not exist`,
+				});
+
+			if (!(await room.hasClient(client.uid)))
+				throw new InvalidPayloadError({
+					reason: `Not connected to room ${message.room}`,
+				});
+
+			room.updateClientActivity(client.uid);
+		} catch (err) {
+			handleWebSocketError(client, err, 'focus');
+		}
+	}
+
 	/**
 	 * Update a field value
 	 */

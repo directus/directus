@@ -12,6 +12,7 @@ type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>
 type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE }>;
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
+type PingMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.PING }>;
 
 export type CollabUser = {
 	id: string;
@@ -45,7 +46,6 @@ export function useCollab(
 	getItem: () => Promise<void>,
 	active?: Ref<boolean>,
 ): {
-	onSave: () => void;
 	update: (changes: Item) => void;
 	clearCollidingChanges: () => void;
 	users: Ref<CollabUser[]>;
@@ -81,6 +81,7 @@ export function useCollab(
 		receiveLeave,
 		receiveSave,
 		receiveUpdate,
+		receivePing,
 	};
 
 	onMounted(async () => {
@@ -145,15 +146,15 @@ export function useCollab(
 		}),
 	);
 
-	eventHandlers.push(
-		sdk.onWebSocket('close', () => {
-			connected.value = false;
-			roomId.value = null;
-			connectionId.value = null;
-			users.value = [];
-			focused.value = {};
-		}),
-	);
+	eventHandlers.push(sdk.onWebSocket('close', disconnect));
+
+	function disconnect() {
+		connected.value = false;
+		roomId.value = null;
+		connectionId.value = null;
+		users.value = [];
+		focused.value = {};
+	}
 
 	function join() {
 		if (
@@ -221,6 +222,12 @@ export function useCollab(
 			};
 		},
 	};
+
+	async function receivePing() {
+		sendMessage({
+			action: ACTION.CLIENT.PONG,
+		});
+	}
 
 	async function receiveInit(message: InitMessage) {
 		roomId.value = message.room;
@@ -297,6 +304,8 @@ export function useCollab(
 		users.value = users.value.filter((user) => user.connection !== message.connection);
 
 		delete focused.value[message.connection];
+
+		if (message.connection === connectionId.value) disconnect();
 	}
 
 	async function receiveSave() {

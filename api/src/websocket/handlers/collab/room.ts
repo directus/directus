@@ -1,7 +1,8 @@
 import { createHash } from 'crypto';
+import { useEnv } from '@directus/env';
 import { type Accountability, type ActionHandler, type Item, type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
-import { random } from 'lodash-es';
+import { partition, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
@@ -99,7 +100,9 @@ export class CollabRooms {
 		const rooms = uids ? uids.map((uid) => this.rooms[uid]).filter((room) => !!room) : Object.values(this.rooms);
 
 		for (const room of rooms) {
-			if (!(await room.isActive())) {
+			const activeClients = await room.cleanInactiveClients();
+
+			if (activeClients.length === 0) {
 				await room.close();
 				delete this.rooms[room.uid];
 				useLogger().info(`[Collab] Closed inactive room ${room.uid}`);
@@ -114,9 +117,8 @@ type RoomData = {
 	item: string | null;
 	version: string | null;
 	changes: Item;
-	clients: { uid: ClientID; accountability: Accountability; color: Color }[];
+	clients: { uid: ClientID; accountability: Accountability; color: Color; lastActive: number }[];
 	focuses: Record<ClientID, string>;
-	lastActive: number;
 };
 
 type PermissionClient = Pick<WebSocketClient, 'uid' | 'accountability'>;
@@ -132,6 +134,7 @@ export class Room {
 	store;
 	ready: Promise<void>;
 	onUpdateHandler: ActionHandler;
+	cleanInactiveTimeout: NodeJS.Timeout | null = null;
 
 	constructor(
 		uid: string,
@@ -155,7 +158,6 @@ export class Room {
 			// Default all other values
 			await store.set('clients', []);
 			await store.set('focuses', {});
-			await store.set('lastActive', Date.now());
 		});
 
 		this.uid = uid;
@@ -215,19 +217,44 @@ export class Room {
 		return await this.store((store) => store.get('clients'));
 	}
 
-	async isActive() {
+	async cleanInactiveClients() {
 		await this.ready;
 
-		const lastActive = await this.store((store) => store.get('lastActive'));
+		const env = useEnv();
+		const now = Date.now();
+		const timeout = Number(env['WEBSOCKETS_COLLAB_CLIENT_TIMEOUT']) * 60 * 1000;
 
-		// Consider room active if there was activity in the last 1 minute
-		if (Date.now() - lastActive < 1 * 60 * 1000) {
-			return true;
+		const [activeClients, inactiveClients] = await this.store(async (store) => {
+			const clients = await store.get('clients');
+
+			return partition(clients, (client) => now - client.lastActive < timeout);
+		});
+
+		if (this.cleanInactiveTimeout) {
+			clearTimeout(this.cleanInactiveTimeout);
 		}
 
-		const clients = await this.store((store) => store.get('clients'));
+		for (const client of inactiveClients) {
+			this.send(client.uid, {
+				action: ACTION.SERVER.PING,
+			});
+		}
 
-		return clients.length > 0;
+		this.cleanInactiveTimeout = setTimeout(async () => {
+			this.cleanInactiveTimeout = null;
+
+			const inactiveClients = await this.store(async (store) => {
+				return (await store.get('clients')).filter((client) => now - client.lastActive >= timeout);
+			});
+
+			useLogger().info(`[Collab] Removing ${inactiveClients.length} inactive clients from room ${this.uid}`);
+
+			for (const client of inactiveClients) {
+				this.leave(client);
+			}
+		}, 1000);
+
+		return activeClients;
 	}
 
 	async hasClient(id: ClientID) {
@@ -242,6 +269,21 @@ export class Room {
 
 	async getFocusByUser(id: ClientID) {
 		return await this.store(async (store) => (await store.get('focuses'))[id]);
+	}
+
+	async updateClientActivity(id: ClientID) {
+		await this.ready;
+
+		return await this.store(async (store) => {
+			const clients = await store.get('clients');
+
+			const client = clients.find((c) => c.uid === id);
+
+			if (client) {
+				client.lastActive = Date.now();
+				await store.set('clients', clients);
+			}
+		});
 	}
 
 	/**
@@ -262,7 +304,13 @@ export class Room {
 					added = true;
 					clientColor = COLORS[random(COLORS.length - 1)]!;
 
-					clients.push({ uid: client.uid, accountability: client.accountability!, color: clientColor });
+					clients.push({
+						uid: client.uid,
+						accountability: client.accountability!,
+						color: clientColor,
+						lastActive: Date.now(),
+					});
+
 					await store.set('clients', clients);
 				}
 			});
@@ -357,15 +405,15 @@ export class Room {
 	async update(sender: WebSocketClient, changes: Record<string, unknown>) {
 		await this.ready;
 
+		this.updateClientActivity(sender.uid);
+
 		const { clients, collection, item } = await this.store(async (store) => {
 			const existing_changes = await store.get('changes');
 			Object.assign(existing_changes, changes);
 			await store.set('changes', existing_changes);
 
-			await store.set('lastActive', Date.now());
-
 			return {
-				clients: (await store.get('clients')) || [],
+				clients: await store.get('clients'),
 				collection: await store.get('collection'),
 				item: await store.get('item'),
 			};
@@ -405,14 +453,14 @@ export class Room {
 	async unset(sender: PermissionClient, field: string) {
 		await this.ready;
 
-		const { clients } = await this.store(async (store) => {
+		this.updateClientActivity(sender.uid);
+
+		const clients = await this.store(async (store) => {
 			const changes = await store.get('changes');
 			delete changes[field];
 			await store.set('changes', changes);
 
-			await store.set('lastActive', Date.now());
-
-			return { clients: await store.get('clients') };
+			return await store.get('clients');
 		});
 
 		for (const client of clients) {
@@ -435,15 +483,17 @@ export class Room {
 	async focus(sender: PermissionClient, field: string | null): Promise<boolean> {
 		await this.ready;
 
+		this.updateClientActivity(sender.uid);
+
 		const result = await this.store(async (store) => {
 			const focuses = await store.get('focuses');
+			const clients = await store.get('clients');
 
 			if (field === null) {
 				const focusedField = focuses[sender.uid];
 				delete focuses[sender.uid];
 				await store.set('focuses', focuses);
-				await store.set('lastActive', Date.now());
-				return { success: true, clients: await store.get('clients'), focusedField };
+				return { success: true, clients, focusedField };
 			}
 
 			const currentFocuser = Object.entries(focuses).find(([_, f]) => f === field)?.[0];
@@ -454,8 +504,7 @@ export class Room {
 
 			focuses[sender.uid] = field;
 			await store.set('focuses', focuses);
-			await store.set('lastActive', Date.now());
-			return { success: true, clients: await store.get('clients'), focusedField: field };
+			return { success: true, clients, focusedField: field };
 		});
 
 		if (!result.success) return false;
@@ -525,7 +574,6 @@ export class Room {
 			await store.delete('changes');
 			await store.delete('clients');
 			await store.delete('focuses');
-			await store.delete('lastActive');
 		});
 	}
 

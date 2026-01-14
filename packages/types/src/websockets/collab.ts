@@ -12,6 +12,7 @@ export const ACTION = {
 		UPDATE: 'update',
 		UPDATE_ALL: 'updateAll',
 		FOCUS: 'focus',
+		PONG: 'pong',
 	},
 	SERVER: {
 		INIT: 'init',
@@ -20,6 +21,7 @@ export const ACTION = {
 		SAVE: 'save',
 		UPDATE: 'update',
 		FOCUS: 'focus',
+		PING: 'ping',
 	},
 } as const;
 
@@ -55,6 +57,9 @@ export const ClientMessage = z.discriminatedUnion('action', [
 	BaseClientMessage.extend({
 		action: z.literal(ACTION.CLIENT.FOCUS),
 		field: z.string().nullable(),
+	}),
+	BaseClientMessage.extend({
+		action: z.literal(ACTION.CLIENT.PONG),
 	}),
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
@@ -115,4 +120,7 @@ export type BaseServerMessage =
 			action: typeof ACTION.SERVER.FOCUS;
 			connection: ClientID;
 			field: string | null;
+	  }
+	| {
+			action: typeof ACTION.SERVER.PING;
 	  };
