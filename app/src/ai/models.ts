@@ -2,9 +2,9 @@
 // MIT License
 // Copyright (c) 2025 models.dev
 
+import type { Component } from 'vue';
 import LogoClaude from '@/ai/components/logos/claude.vue';
 import LogoOpenAI from '@/ai/components/logos/openai.vue';
-import type { Component } from 'vue';
 
 export interface ModelDefinition {
 	provider: string;

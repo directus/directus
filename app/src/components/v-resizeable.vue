@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { useSync } from '@directus/composables';
+import { useElementVisibility, useEventListener } from '@vueuse/core';
 import { clamp } from 'lodash';
 import { computed, ref, watch } from 'vue';
-import { useElementVisibility, useEventListener } from '@vueuse/core';
-import { useSync } from '@directus/composables';
 import { useUserStore } from '@/stores/user';
 
 type SnapZone = {

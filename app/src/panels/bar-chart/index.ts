@@ -1,8 +1,8 @@
 import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelBarChart from './panel-bar-chart.vue';
-import { useFieldsStore } from '@/stores/fields';
 import PreviewSVG from './preview.svg?raw';
+import { useFieldsStore } from '@/stores/fields';
 
 export default definePanel({
 	id: 'bar-chart',

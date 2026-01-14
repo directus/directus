@@ -2,9 +2,9 @@ import type { Item, PrimaryKey } from '@directus/types';
 import type { GraphQLResolveInfo } from 'graphql';
 import { getService } from '../../../utils/get-service.js';
 import { formatError } from '../errors/format.js';
-import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 import type { GraphQLService } from '../index.js';
 import { getQuery } from '../schema/parse-query.js';
+import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 
 export async function resolveMutation(
 	gql: GraphQLService,

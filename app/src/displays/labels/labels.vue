@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import VChip from '@/components/v-chip.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import DisplayColor from '@/displays/color/color.vue';
 import formatTitle from '@directus/format-title';
 import { isEmpty, isString } from 'lodash';
 import { computed } from 'vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import DisplayColor from '@/displays/color/color.vue';
 
 type Choice = {
 	value: string | number;

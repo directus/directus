@@ -3,18 +3,18 @@ import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/
 import { isObject, parseJSON, toArray } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
+	type CallToolRequest,
 	CallToolRequestSchema,
+	type CallToolResult,
+	type GetPromptRequest,
 	GetPromptRequestSchema,
+	type GetPromptResult,
 	InitializedNotificationSchema,
 	ErrorCode as JSONRPCErrorCode,
 	JSONRPCMessageSchema,
 	ListPromptsRequestSchema,
 	ListToolsRequestSchema,
 	McpError,
-	type CallToolRequest,
-	type CallToolResult,
-	type GetPromptRequest,
-	type GetPromptResult,
 	type PromptArgument,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Request, Response } from 'express';

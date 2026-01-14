@@ -1,7 +1,9 @@
+import { ForbiddenError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { FoldersService } from './folders.js';
+import { ItemsService } from './items.js';
 
 vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),
@@ -11,9 +13,6 @@ vi.mock('./items.js', async () => {
 	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
-
-import { ForbiddenError } from '@directus/errors';
-import { ItemsService } from './items.js';
 
 describe('FoldersService', () => {
 	const mockSchema = {

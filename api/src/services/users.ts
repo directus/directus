@@ -1,3 +1,4 @@
+import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
@@ -15,7 +16,6 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
 import type { StringValue } from 'ms';
-import { performance } from 'perf_hooks';
 import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';

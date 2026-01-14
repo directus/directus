@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { useSync } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
+import { GeometryOptions, Item } from '@directus/types';
+import { toRefs } from 'vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VCollectionFieldTemplate from '@/components/v-collection-field-template.vue';
 import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { getBasemapSources } from '@/utils/geometry/basemap';
-import { useSync } from '@directus/composables';
-import { useAppStore } from '@directus/stores';
-import { GeometryOptions, Item } from '@directus/types';
-import { toRefs } from 'vue';
 
 const props = defineProps<{
 	collection: string;

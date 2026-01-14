@@ -1,8 +1,8 @@
-import { useEnv } from '@directus/env';
-import { toArray } from '@directus/utils';
 import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { promisify } from 'node:util';
+import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import pm2 from 'pm2';
 import type { MetricObjectWithValues, MetricValue } from 'prom-client';
 import { AggregatorRegistry, Counter, Histogram, register } from 'prom-client';

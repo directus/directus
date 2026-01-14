@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -7,7 +8,6 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	folder?: string;

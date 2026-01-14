@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import type { File, Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
-import VIconFile from '@/components/v-icon-file.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import VNotice from '@/components/v-notice.vue';
 import VRemove from '@/components/v-remove.vue';
@@ -15,14 +20,10 @@ import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import type { File, Filter } from '@directus/types';
-import { deepMap } from '@directus/utils';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -279,15 +280,12 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				@input="update"
 			>
 				<template #actions>
-					<VButton
+					<PrivateViewHeaderBarActionButton
+						icon="download"
 						secondary
-						rounded
-						icon
 						:download="image.filename_download"
 						:href="getAssetUrl(image.id, { isDownload: true })"
-					>
-						<VIcon name="download" />
-					</VButton>
+					/>
 				</template>
 			</DrawerItem>
 
@@ -345,7 +343,7 @@ img {
 .image-preview {
 	position: relative;
 	inline-size: 100%;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -453,7 +451,7 @@ img {
 }
 
 .disabled-placeholder {
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 }
 
 .fallback {
@@ -461,7 +459,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	border-radius: var(--theme--border-radius);
 }
 </style>

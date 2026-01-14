@@ -1,21 +1,21 @@
+import {
+	authenticateShare,
+	AuthenticationData,
+	getAuthEndpoint,
+	LoginOptions,
+	readMe,
+	RestCommand,
+} from '@directus/sdk';
+import { useAppStore } from '@directus/stores';
+import { useCookies } from '@vueuse/integrations/useCookies';
+import { RouteLocationRaw } from 'vue-router';
+import { emitter, Events } from './events';
+import { useServerStore } from './stores/server';
 import { resumeQueue } from '@/api';
 import { DEFAULT_AUTH_PROVIDER, SDK_AUTH_REFRESH_BEFORE_EXPIRES } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { sdk } from '@/sdk';
-import {
-	AuthenticationData,
-	LoginOptions,
-	RestCommand,
-	authenticateShare,
-	getAuthEndpoint,
-	readMe,
-} from '@directus/sdk';
-import { useAppStore } from '@directus/stores';
-import { RouteLocationRaw } from 'vue-router';
-import { Events, emitter } from './events';
-import { useServerStore } from './stores/server';
-import { useCookies } from '@vueuse/integrations/useCookies';
 
 type LoginCredentials = {
 	identifier?: string;

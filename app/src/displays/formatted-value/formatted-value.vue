@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import { APP_NUMERIC_STRING_TYPES } from '@/constants';
-import ValueNull from '@/views/private/components/value-null.vue';
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';
 import { isNil } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { APP_NUMERIC_STRING_TYPES } from '@/constants';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
 	defineProps<{

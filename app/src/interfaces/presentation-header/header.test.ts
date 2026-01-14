@@ -1,10 +1,10 @@
-import { describe, expect, test, vi } from 'vitest';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { Tooltip } from '@/__utils__/tooltip';
-import Header from './header.vue';
+import { describe, expect, test, vi } from 'vitest';
 import { computed } from 'vue';
 import { createI18n } from 'vue-i18n';
+import Header from './header.vue';
+import { Tooltip } from '@/__utils__/tooltip';
 
 const i18n = createI18n({
 	legacy: false,

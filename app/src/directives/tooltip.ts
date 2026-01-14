@@ -1,6 +1,6 @@
-import { useUserStore } from '@/stores/user';
 import { nanoid } from 'nanoid';
 import { Directive, DirectiveBinding } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 const tooltipDelay = 500;
 

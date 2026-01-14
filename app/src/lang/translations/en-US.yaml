@@ -265,6 +265,7 @@ unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
 validation_errors_notice: 'The following fields have invalid values:'
+validation_value_is_invalid: Value is invalid
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -1220,6 +1221,8 @@ settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
 ai_chat: AI Chat
+ai_disabled_by_env: AI Chat features have been disabled via environment variable.
+mcp_disabled_by_env: MCP features have been disabled via environment variable.
 settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
