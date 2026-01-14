@@ -244,14 +244,6 @@ export class Room {
 		return await this.store(async (store) => (await store.get('focuses'))[id]);
 	}
 
-	async getFocusByField(field: string): Promise<ClientID | undefined> {
-		return await this.store(async (store) => {
-			const focuses = await store.get('focuses');
-
-			return Object.entries(focuses).find(([_, f]) => f === field)?.[0];
-		});
-	}
-
 	/**
 	 * Join the room
 	 */
