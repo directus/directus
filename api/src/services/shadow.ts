@@ -85,7 +85,7 @@ export class ShadowsService {
 		const shadowCollection = `directus_version_${relation.collection}`;
 
 		// TODO: Perfer cache bust? Edge case of self reference and enabled.
-		const schema = await getSchema({ bypassCache: true });
+		const schema = await getSchema({ database: this.knex, bypassCache: true });
 
 		try {
 			await transaction(this.knex, async (trx) => {
