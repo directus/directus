@@ -649,11 +649,25 @@ else
 fi
 
 # =============================================================================
-# Apply Initial Template (if template exists)
+# Apply Initial Template (if template exists and database is empty)
 # =============================================================================
 if [[ -d "/opt/directus-template/src" ]]; then
-    echo "=== Applying Initial Template ==="
-    write_status "running" "Applying initial template"
+    echo "=== Checking for Existing Data ==="
+
+    # Check if database has existing non-system collections
+    COLLECTIONS_RESPONSE=$(curl -s --max-time 30 \
+        "http://localhost:${DIRECTUS_PORT}/collections" \
+        -H "Authorization: Bearer ${TEMPLATE_API_TOKEN}") || true
+
+    # Count non-system collections (those not starting with "directus_")
+    CUSTOM_COLLECTIONS=$(echo "$COLLECTIONS_RESPONSE" | jq -r '[.data[]? | select(.collection | startswith("directus_") | not)] | length' 2>/dev/null || echo "0")
+
+    if [[ "$CUSTOM_COLLECTIONS" -gt 0 ]]; then
+        echo "  Found $CUSTOM_COLLECTIONS existing collection(s) - skipping template application"
+        echo "  Database already contains data, preserving existing state"
+    else
+        echo "=== Applying Initial Template ==="
+        write_status "running" "Applying initial template"
     
     # Determine the base URL based on SSL configuration
     if [[ "$SSL_CONFIGURED" == "true" ]]; then
@@ -683,6 +697,7 @@ if [[ -d "/opt/directus-template/src" ]]; then
         echo "  WARNING: Template application may have failed"
         echo "  Response: $APPLY_RESPONSE"
         echo "  You can manually apply the template later via the Template API"
+    fi
     fi
 else
     echo "=== No Template to Apply ==="
