@@ -229,6 +229,14 @@ describe('CollabRooms', () => {
 
 		expect(Object.keys(rooms.rooms).length).toEqual(0);
 
+		// Verify complete cleanup
+		const roomKeys = ['uid', 'collection', 'item', 'version', 'changes', 'clients', 'focuses', 'lastActive'];
+
+		for (const key of roomKeys) {
+			const storeKey = `${room.uid}:${key}`;
+			expect(mockData.has(storeKey)).toBeFalsy();
+		}
+
 		vi.useRealTimers();
 	});
 });

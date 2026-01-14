@@ -513,6 +513,13 @@ export class Room {
 
 		await this.store(async (store) => {
 			await store.delete('uid');
+			await store.delete('collection');
+			await store.delete('item');
+			await store.delete('version');
+			await store.delete('changes');
+			await store.delete('clients');
+			await store.delete('focuses');
+			await store.delete('lastActive');
 		});
 	}
 
