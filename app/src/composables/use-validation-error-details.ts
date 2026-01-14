@@ -3,12 +3,15 @@ import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { formatFieldFunction } from '@/utils/format-field-function';
+import { hasNestedGroups, parseValidationStructure } from '@/utils/format-validation-structure';
 
-type ValidationErrorWithDetails = ValidationError & {
+export type ValidationErrorWithDetails = ValidationError & {
 	fieldName?: string;
 	groupName?: string;
 	type: ValidationError['type'] | 'required' | 'unique';
 	customValidationMessage: string | null;
+	validationStructure?: ReturnType<typeof parseValidationStructure>;
+	hasNestedValidation: boolean;
 };
 
 export function useValidationErrorDetails(validationErrors: Ref<ValidationError[]>, fields: Ref<Field[]>) {
@@ -20,18 +23,26 @@ export function useValidationErrorDetails(validationErrors: Ref<ValidationError[
 				const { field: _fieldKey, fn: functionName } = extractFieldFromFunction(validationError.field);
 				const [fieldKey, ...nestedFieldKeys] = _fieldKey.split('.');
 				const field = fields.value.find((field) => field.field === fieldKey);
-				const group = fields.value.find((field) => field.field === validationError.group);
+				const groupFieldKey = field?.meta?.group ?? null;
+				const group = groupFieldKey ? fields.value.find((f) => f.field === groupFieldKey) : null;
 				const fieldName = getFieldName() + getNestedFieldNames(nestedFieldKeys, validationError.nestedNames);
 				const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
 				const isNotUniqueError = validationError.code === 'RECORD_NOT_UNIQUE';
 
+				const validationStructure = field?.meta?.validation ? parseValidationStructure(field.meta.validation) : null;
+				const hasNestedValidation = field?.meta?.validation ? hasNestedGroups(field.meta.validation) : false;
+
 				return {
 					...validationError,
+					group: groupFieldKey,
+					hidden: validationError.hidden ?? (field?.meta?.hidden || group?.meta?.hidden),
 					field: fieldKey!,
 					fieldName,
-					groupName: group?.name ?? validationError.group,
+					groupName: group?.name ?? groupFieldKey,
 					type: getValidationType(),
 					customValidationMessage: getCustomValidationMessage(),
+					validationStructure,
+					hasNestedValidation,
 				} as ValidationErrorWithDetails;
 
 				function getFieldName() {

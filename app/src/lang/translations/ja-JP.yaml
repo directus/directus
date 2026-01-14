@@ -82,7 +82,6 @@ create_role: 権限作成
 create_user: ユーザーの作成
 message: メッセージ
 delete_panel: パネルを削除
-create_webhook: Webhookの作成
 create_custom_translation: カスタム翻訳を作成
 edit_custom_translation: カスタム翻訳を編集
 no_custom_translations: カスタム翻訳はありません
@@ -512,8 +511,6 @@ file_count: 'ファイルがありません | 1個のファイル | {count} 個�
 no_files_copy: まだファイルがありません。
 user_count: 'ユーザーなし | 1ユーザー | {count} ユーザー'
 no_users_copy: このロールのユーザーがいません
-webhooks_count: 'Webhook 無し | 1つのWebhook | {count} つのWebhook'
-no_webhooks_copy: Webhookがまだ設定されていません。作成して始めましょう。
 no_notifications: 通知なし
 no_notifications_copy: すべて確認済み
 activity_log: 操作ログ
@@ -541,7 +538,6 @@ activity_item: アクティビティアイテム
 action: アクション
 ip_address: IPアドレス
 user_agent: ユーザーエージェント
-webhooks: Webhook
 min_value: 最小値
 max_value: 最大値
 automatic: 自動
@@ -899,7 +895,6 @@ editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 no_options_available: 利用できるオプションなし
 settings_data_model: データモデル
 settings_project: 設定
-settings_webhooks: Webhook
 settings_flows: フロー
 settings_presets: ブックマーク
 settings_translations: 翻訳
@@ -943,7 +938,6 @@ directus_collection:
   directus_settings: プロジェクト設定オプション
   directus_shares: 外部共有されたアイテムをトラッキング
   directus_users: プラットフォームのシステムユーザー
-  directus_webhooks: イベントベースの HTTP リクエスト設定
 fields:
   directus_activity:
     item: プライマリキーを作成
@@ -1049,11 +1043,6 @@ fields:
     description: 説明
   directus_policies:
     description: 説明
-  directus_webhooks:
-    name: 名前
-    status: ステータス
-    value: 値
-    collections: コレクション
 field_options:
   directus_settings:
     public_note_placeholder: マークダウンに対応する公開メッセージ
@@ -1134,14 +1123,6 @@ field_options:
     status_dropdown_active: 有効
     status_dropdown_suspended: 停止済み
     status_dropdown_archived: アーカイブ済み
-  directus_webhooks:
-    status_options_active: 有効
-    status_options_inactive: 無効
-    actions_create: 作成
-    actions_update: 更新
-    actions_delete: 削除
-    headers:
-      value: 値
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
 save_current_user_role: 現在のユーザーロールを保存
@@ -1163,7 +1144,6 @@ ai_tools:
 mcp_prompts_collection_schema:
   messages_role_user: ユーザー
 referential_action_set_null: '{field} フィールドを Null にする'
-creating_webhook: Webhookの作成
 default_label: デフォルト
 delete_label: 削除
 delete_are_you_sure: >-
@@ -1460,12 +1440,17 @@ start: 開始
 panels:
   label:
     name: ラベル
+triggers:
+  webhook:
+    method: 方法
 operations:
   json-web-token:
     token: トークン
     options: オプション
   log:
     message: メッセージ
+  mail:
+    data: データ
   notification:
     recipient: ユーザー
     message: メッセージ
@@ -1473,10 +1458,13 @@ operations:
   request:
     url: URL
     url_placeholder: https://example.com/example
+    method: 方法
+    data: データ
     value_placeholder: Bearer eyJhbGciOi...
   trigger:
     flows: フロー
     flow: フロー
+    data: データ
 standard: 標準
 compact: コンパクト
 fonts:
