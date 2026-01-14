@@ -615,6 +615,113 @@ describe('room', () => {
 		const checkB = await room.getFocusByUser('def');
 		expect(checkB).toBeUndefined();
 	});
+
+	test('focus succeeds for unfocused field', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		// Acquire focus
+		expect(await room.focus(clientA, 'title')).toBe(true);
+		expect(await room.getFocusByUser('abc')).toBe('title');
+	});
+
+	test('focus fails when field already focused by another', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		// A acquires focus
+		expect(await room.focus(clientA, 'title')).toBe(true);
+
+		// B tries to acquire same field
+		expect(await room.focus(clientB, 'title')).toBe(false);
+
+		// Focus should still be with A
+		expect(await room.getFocusByUser('abc')).toBe('title');
+		expect(await room.getFocusByUser('def')).toBeUndefined();
+	});
+
+	test('focus allows refocus of same field', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		// Acquire focus
+		expect(await room.focus(clientA, 'title')).toBe(true);
+
+		// Refocus on same field
+		expect(await room.focus(clientA, 'title')).toBe(true);
+		expect(await room.getFocusByUser('abc')).toBe('title');
+	});
+
+	test('concurrent focus allows only one to succeed', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		// Both clients try to acquire focus simultaneously
+		const [resultA, resultB] = await Promise.all([room.focus(clientA, 'title'), room.focus(clientB, 'title')]);
+
+		// Exactly one should succeed
+		const successes = [resultA, resultB].filter((r) => r === true);
+		const failures = [resultA, resultB].filter((r) => r === false);
+
+		expect(successes).toHaveLength(1);
+		expect(failures).toHaveLength(1);
+	});
+
+	test('focus null clears focus and broadcasts', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		// A acquire focus
+		await room.focus(clientA, 'title');
+		expect(await room.getFocusByUser('abc')).toBe('title');
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		// A release focus
+		await room.focus(clientA, null);
+
+		// Focus should be cleared
+		expect(await room.getFocusByUser('abc')).toBeUndefined();
+
+		// B should receive the release broadcast
+		expect(
+			vi
+				.mocked(mockMessenger.sendClient)
+				.mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'focus' && c[1].field === null)?.[1],
+		).toEqual({
+			action: 'focus',
+			field: null,
+			connection: 'abc',
+			type: 'collab',
+			room: uid,
+		});
+	});
 });
 
 describe('getRoomHash', () => {

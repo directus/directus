@@ -438,32 +438,42 @@ export class Room {
 	}
 
 	/**
-	 * Propagate focus state to other clients
+	 * Atomically acquire or release focus and propagate focus state to other clients
 	 */
-	async focus(sender: PermissionClient, field: string | null) {
+	async focus(sender: PermissionClient, field: string | null): Promise<boolean> {
 		await this.ready;
 
-		const { clients } = await this.store(async (store) => {
+		const result = await this.store(async (store) => {
 			const focuses = await store.get('focuses');
 
-			if (!field) {
+			if (field === null) {
+				const focusedField = focuses[sender.uid];
 				delete focuses[sender.uid];
-			} else {
-				focuses[sender.uid] = field;
+				await store.set('focuses', focuses);
+				await store.set('lastActive', Date.now());
+				return { success: true, clients: await store.get('clients'), focusedField };
 			}
 
+			const currentFocuser = Object.entries(focuses).find(([_, f]) => f === field)?.[0];
+
+			if (currentFocuser && currentFocuser !== sender.uid) {
+				return { success: false };
+			}
+
+			focuses[sender.uid] = field;
 			await store.set('focuses', focuses);
 			await store.set('lastActive', Date.now());
-
-			return { clients: await store.get('clients') };
+			return { success: true, clients: await store.get('clients'), focusedField: field };
 		});
 
-		for (const client of clients) {
+		if (!result.success) return false;
+
+		for (const client of result.clients!) {
 			if (client.uid === sender.uid) continue;
 
 			const allowedFields = await this.verifyPermissions(client, this.collection, this.item);
 
-			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
+			if (result.focusedField && !(allowedFields.includes(result.focusedField) || allowedFields.includes('*'))) continue;
 
 			this.send(client.uid, {
 				action: ACTION.SERVER.FOCUS,
@@ -471,6 +481,8 @@ export class Room {
 				field,
 			});
 		}
+
+		return true;
 	}
 
 	async sendAll(message: BaseServerMessage) {
