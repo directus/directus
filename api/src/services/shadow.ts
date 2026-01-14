@@ -79,9 +79,7 @@ export class ShadowsService {
 		const shadowCollection = `directus_version_${collection}`;
 
 		// Drop any m2o duplicates pointing to it
-		const relations = this.schema.relations.filter(
-			(relation) => relation.related_collection === shadowCollection && relation.field.startsWith('directus_'),
-		);
+		const relations = this.schema.relations.filter((relation) => relation.related_collection === shadowCollection);
 
 		for (const relation of relations) {
 			await this.deleteShadowRelation(relation, { duplicate: true });
@@ -90,7 +88,7 @@ export class ShadowsService {
 		await this.knex.schema.dropTable(shadowCollection);
 	}
 
-	async createShadowRelation(relation: Partial<Relation>) {
+	async createShadowRelation(relation: Partial<Relation>, opts?: { duplicate?: boolean }) {
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		this.helpers.schema.preRelationChange(relation);
 
@@ -106,46 +104,48 @@ export class ShadowsService {
 					const shadowCollection = `directus_version_${relation.collection}`;
 					const shadowField = relation.field!;
 
-					await trx.schema.alterTable(shadowCollection, async (table) => {
-						// Copied from RelationsService.alterType, required for MySQL
-						const fieldOverview = schema.collections[relation.collection!]!.fields[shadowField];
+					if (opts?.duplicate !== true) {
+						await trx.schema.alterTable(shadowCollection, async (table) => {
+							// Copied from RelationsService.alterType, required for MySQL
+							const fieldOverview = schema.collections[relation.collection!]!.fields[shadowField];
 
-						const relatedFieldDBType =
-							schema.collections[relation.related_collection!]!.fields[
-								schema.collections[relation.related_collection!]!.primary
-							]!.dbType;
+							const relatedFieldDBType =
+								schema.collections[relation.related_collection!]!.fields[
+									schema.collections[relation.related_collection!]!.primary
+								]!.dbType;
 
-						if (
-							fieldOverview?.dbType !== relatedFieldDBType &&
-							fieldOverview?.dbType === 'int' &&
-							relatedFieldDBType === 'int unsigned'
-						) {
-							const alterField = table.specificType(shadowField, 'int unsigned');
+							if (
+								fieldOverview?.dbType !== relatedFieldDBType &&
+								fieldOverview?.dbType === 'int' &&
+								relatedFieldDBType === 'int unsigned'
+							) {
+								const alterField = table.specificType(shadowField, 'int unsigned');
 
-							// Preserve nullibility
-							if (!fieldOverview?.nullable) {
-								alterField.notNullable();
+								// Preserve nullibility
+								if (!fieldOverview?.nullable) {
+									alterField.notNullable();
+								}
+
+								alterField.alter();
 							}
 
-							alterField.alter();
-						}
+							const constraintName: string = getDefaultIndexName('foreign', shadowCollection, shadowField);
 
-						const constraintName: string = getDefaultIndexName('foreign', shadowCollection, shadowField);
+							const builder = table
+								.foreign(shadowField, constraintName)
+								.references(
+									`${relation.related_collection!}.${schema.collections[relation.related_collection!]!.primary}`,
+								);
 
-						const builder = table
-							.foreign(shadowField, constraintName)
-							.references(
-								`${relation.related_collection!}.${schema.collections[relation.related_collection!]!.primary}`,
-							);
+							if (relation.schema?.on_delete) {
+								builder.onDelete(relation.schema.on_delete);
+							}
 
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
-						}
-
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
-						}
-					});
+							if (relation.schema?.on_update) {
+								builder.onUpdate(relation.schema.on_update);
+							}
+						});
+					}
 
 					/**
 					 * If the related collection is versioned, create a duplicated prefixed FK
@@ -153,7 +153,7 @@ export class ShadowsService {
 					 *
 					 * TODO: Research stringified value showing instead of raw (e.g. 'null' vs NULL) only for duplicate
 					 */
-					if (schema.collections[relation.related_collection]!.versioned) {
+					if (schema.collections[relation.related_collection]?.versioned) {
 						const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
 
 						const fieldsService = new FieldsService({ knex: trx, schema });
@@ -285,7 +285,7 @@ export class ShadowsService {
 						/**
 						 * Update duplicated FK if related collection is versioned.
 						 */
-						if (this.schema.collections[relation.related_collection!]!.versioned) {
+						if (this.schema.collections[relation.related_collection!]?.versioned) {
 							const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
 							const shadowRelatedField = `directus_${field}`;
 
@@ -345,10 +345,12 @@ export class ShadowsService {
 		}
 	}
 
-	async deleteShadowRelation(relation: Relation, constraints?: (string | null)[]) {
-		const shadowCollection = `directus_version_${relation.collection}`;
+	async deleteShadowRelation(relation: Relation, opts?: { constraints?: (string | null)[]; duplicate?: boolean }) {
+		const shadowCollection = relation.collection.startsWith('directus_version_')
+			? relation.collection
+			: `directus_version_${relation.collection}`;
 
-		let constraintNames = constraints;
+		let constraintNames = opts?.constraints;
 
 		if (!constraintNames) {
 			const relationsService = new RelationsService({ knex: this.knex, schema: this.schema });
@@ -356,28 +358,29 @@ export class ShadowsService {
 			constraintNames = existingConstraints.map((key) => key.constraint_name);
 		}
 
-		const existingRelation = this.schema.relations.find(
-			(existingRelation) =>
-				existingRelation.collection === shadowCollection && existingRelation.field === relation.field,
-		);
+		if (opts?.duplicate !== true) {
+			const existingRelation = this.schema.relations.find(
+				(existingRelation) =>
+					existingRelation.collection === shadowCollection && existingRelation.field === relation.field,
+			);
 
-		if (
-			existingRelation?.schema?.constraint_name &&
-			constraintNames.includes(existingRelation.schema.constraint_name)
-		) {
-			await this.knex.schema.alterTable(existingRelation.collection, (table) => {
-				table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
-			});
+			if (
+				existingRelation?.schema?.constraint_name &&
+				constraintNames.includes(existingRelation.schema.constraint_name)
+			) {
+				await this.knex.schema.alterTable(existingRelation.collection, (table) => {
+					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
+				});
+			}
 		}
 
-		// Remove duplicated FK + column when related collection is versioned
-		if (relation.related_collection && this.schema.collections[relation.related_collection]?.versioned) {
-			const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
-			const shadowRelatedField = `directus_${relation.field}`;
+		// Remove duplicated FK + column if present
+		const shadowRelatedField = relation.field.startsWith('directus_') ? relation.field : `directus_${relation.field}`;
 
+		if (this.schema.collections[relation.collection]?.fields[shadowRelatedField]) {
 			const existingRelatedRelation = this.schema.relations.find(
 				(existingRelation) =>
-					existingRelation.collection === shadowRelatedCollection && existingRelation.field === shadowRelatedField,
+					existingRelation.collection === shadowCollection && existingRelation.field === shadowRelatedField,
 			);
 
 			if (
@@ -391,7 +394,7 @@ export class ShadowsService {
 			}
 
 			// drop duplicate
-			await this.knex.schema.alterTable(shadowRelatedCollection, (table) => {
+			await this.knex.schema.alterTable(shadowCollection, (table) => {
 				table.dropColumn(shadowRelatedField);
 			});
 		}
