@@ -51,8 +51,8 @@ export class ShadowsService {
 		const shadowFields = [injectedPrimaryKeyField];
 
 		for (const field of fields ?? []) {
-			// Skip original primary keys or auto-increment columns
-			if (field.schema?.is_primary_key || field.schema?.has_auto_increment) continue;
+			// Skip original primary key so we can use injected
+			if (field.schema?.is_primary_key) continue;
 			// Skip aliases or fields without a concrete database type
 			if (!field.type || ALIAS_TYPES.includes(field.type)) continue;
 
