@@ -78,7 +78,16 @@ export class ShadowsService {
 	async dropShadowTable(collection: string) {
 		const shadowCollection = `directus_version_${collection}`;
 
-		await this.knex.schema.dropTableIfExists(shadowCollection);
+		// Drop any m2o duplicates pointing to it
+		const relations = this.schema.relations.filter(
+			(relation) => relation.related_collection === shadowCollection && relation.field.startsWith('directus_'),
+		);
+
+		for (const relation of relations) {
+			await this.deleteShadowRelation(relation, { duplicate: true });
+		}
+
+		await this.knex.schema.dropTable(shadowCollection);
 	}
 
 	async createShadowRelation(relation: Partial<Relation>) {
