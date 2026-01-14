@@ -313,40 +313,55 @@ export class ShadowsService {
 		}
 	}
 
-	async deleteShadowRelation(relation: Relation, constraints: (string | null)[]) {
+	async deleteShadowRelation(relation: Relation, constraints?: (string | null)[]) {
 		const shadowCollection = `directus_version_${relation.collection}`;
+
+		let constraintNames = constraints;
+
+		if (!constraintNames) {
+			const relationsService = new RelationsService({ knex: this.knex, schema: this.schema });
+			const existingConstraints = await relationsService.foreignKeys();
+			constraintNames = existingConstraints.map((key) => key.constraint_name);
+		}
 
 		const existingRelation = this.schema.relations.find(
 			(existingRelation) =>
 				existingRelation.collection === shadowCollection && existingRelation.field === relation.field,
 		);
 
-		if (existingRelation?.schema?.constraint_name && constraints.includes(existingRelation.schema.constraint_name)) {
+		if (
+			existingRelation?.schema?.constraint_name &&
+			constraintNames.includes(existingRelation.schema.constraint_name)
+		) {
 			await this.knex.schema.alterTable(existingRelation.collection, (table) => {
 				table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 			});
 		}
 
-		// delete duplicate constraint and field if pointer is versioned
+		// Remove duplicated FK + column when related collection is versioned
 		if (relation.related_collection && this.schema.collections[relation.related_collection]?.versioned) {
-			const shadowRelatedCollection = `directus_${relation.related_collection}`;
-			const shadowField = `directus_${relation.field}`;
+			const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
+			const shadowRelatedField = `directus_${relation.field}`;
 
 			const existingRelation = this.schema.relations.find(
 				(existingRelation) =>
-					existingRelation.collection === shadowRelatedCollection && existingRelation.field === shadowField,
+					existingRelation.collection === shadowRelatedCollection && existingRelation.field === shadowRelatedField,
 			);
 
-			if (existingRelation?.schema?.constraint_name && constraints.includes(existingRelation.schema.constraint_name)) {
+			if (
+				existingRelation?.schema?.constraint_name &&
+				constraintNames.includes(existingRelation.schema.constraint_name)
+			) {
+				// remove FK
 				await this.knex.schema.alterTable(existingRelation.collection, (table) => {
 					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 				});
-
-				// drop duplicate now that FK removed
-				await this.knex.schema.alterTable(shadowRelatedCollection, (table) => {
-					table.dropColumn(shadowField);
-				});
 			}
+
+			// drop duplicate
+			await this.knex.schema.alterTable(shadowRelatedCollection, (table) => {
+				table.dropColumn(shadowRelatedField);
+			});
 		}
 	}
 
@@ -377,15 +392,46 @@ export class ShadowsService {
 
 		const shadowCollection = `directus_version_${collection}`;
 
+		const shadowField = {
+			...field,
+			schema: {
+				...field.schema,
+				is_unique: false,
+			},
+		};
+
 		await this.knex.schema.alterTable(shadowCollection, (table) => {
-			fieldsService.addColumnToTable(table, shadowCollection, field, {
+			// Update primary shadow column
+			fieldsService.addColumnToTable(table, shadowCollection, shadowField, {
 				existing,
 			});
+
+			// Check for duplicated M2O FK to versioned table
+			shadowField.field = `directus_${shadowField.field}`;
+
+			const relation = this.schema.relations.find(
+				(relation) => relation.collection === shadowCollection && relation.field === shadowField.field,
+			);
+
+			if (relation) {
+				fieldsService.addColumnToTable(table, shadowCollection, shadowField, {
+					existing,
+				});
+			}
 		});
 	}
 
 	async deleteShadowField(collection: string, field: string) {
 		const shadowCollection = `directus_version_${collection}`;
+
+		// if is m2o delete duplicate if existing and drop FKs
+		const relation = this.schema.relations.find(
+			(relation) => relation.collection === shadowCollection && relation.field === field,
+		);
+
+		if (relation) {
+			await this.deleteShadowRelation(relation);
+		}
 
 		await this.knex.schema.alterTable(shadowCollection, (table) => {
 			table.dropColumn(field);
