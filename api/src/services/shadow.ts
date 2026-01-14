@@ -366,18 +366,18 @@ export class ShadowsService {
 			const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
 			const shadowRelatedField = `directus_${relation.field}`;
 
-			const existingRelation = this.schema.relations.find(
+			const existingRelatedRelation = this.schema.relations.find(
 				(existingRelation) =>
 					existingRelation.collection === shadowRelatedCollection && existingRelation.field === shadowRelatedField,
 			);
 
 			if (
-				existingRelation?.schema?.constraint_name &&
-				constraintNames.includes(existingRelation.schema.constraint_name)
+				existingRelatedRelation?.schema?.constraint_name &&
+				constraintNames.includes(existingRelatedRelation.schema.constraint_name)
 			) {
 				// remove FK
-				await this.knex.schema.alterTable(existingRelation.collection, (table) => {
-					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
+				await this.knex.schema.alterTable(existingRelatedRelation.collection, (table) => {
+					table.dropForeign(existingRelatedRelation.field, existingRelatedRelation.schema!.constraint_name!);
 				});
 			}
 
