@@ -347,7 +347,7 @@ build {
       "pnpm install",
 
       "echo '=== Building Directus ===' ",
-      "pnpm build",
+      "NODE_OPTIONS='--max-old-space-size=4096' pnpm build",
 
       "echo '=== Creating directories ===' ",
       "mkdir -p /opt/directus/uploads",

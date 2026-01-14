@@ -217,7 +217,7 @@ echo "=== Updating Directus ==="
 cd /opt/directus
 git pull origin main
 pnpm install
-pnpm build
+NODE_OPTIONS='--max-old-space-size=4096' pnpm build
 pm2 restart directus
 echo "=== Update complete ==="
 UPDATE_EOF
