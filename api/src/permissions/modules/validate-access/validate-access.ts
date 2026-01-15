@@ -29,14 +29,13 @@ export async function validateAccess(options: ValidateAccessOptions, context: Co
 		return;
 	}
 
-	let access: boolean;
+	let access;
 
 	// If primary keys are passed, we have to confirm the access by actually trying to read the items
 	// from the database. If no keys are passed, we can simply check if the collection+action combo
 	// exists within permissions
 	if (options.primaryKeys) {
-		const result = await validateItemAccess(options as Required<ValidateAccessOptions>, context);
-		access = result.accessAllowed;
+		access = await validateItemAccess(options as Required<ValidateAccessOptions>, context);
 	} else {
 		access = await validateCollectionAccess(options, context);
 	}

@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -16,18 +15,11 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		return getDefaultIndexName(type, collection, fields, { maxLength: 64 });
 	}
 
-	override async changePrimaryKey(table: string, to: string | string[]): Promise<void> {
-		const primaryColumns = toArray(to);
-		const placeholders = primaryColumns.map(() => '??').join(', ');
+	override async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
+		const primaryColumns = toArray(columns);
+		const columnsSql = primaryColumns.map(() => '??').join(', ');
 
-		// validate input
-		assert(primaryColumns.length > 0, 'At least 1 "to" column is required');
-		assert(primaryColumns[0] && primaryColumns[0].length > 0, '"to" column cannot be empty');
-
-		await this.knex.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${placeholders})`, [
-			table,
-			...primaryColumns,
-		]);
+		await this.knex.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [table, ...primaryColumns]);
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {

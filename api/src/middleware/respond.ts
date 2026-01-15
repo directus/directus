@@ -27,11 +27,17 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		if (maxSize !== null) exceedsMaxSize = valueSize > maxSize;
 	}
 
+	const isGetRequest = req.method.toLowerCase() === 'get';
+
+	// Routes that should be cached, even though they aren't get requests
+	const cachedPostRoutes = ['/graphql'];
+	const isCachedNonGetRoute = cachedPostRoutes.some((route) => req.originalUrl?.startsWith(route));
+
 	if (
-		(req.method.toLowerCase() === 'get' || req.originalUrl?.startsWith('/graphql')) &&
+		(isGetRequest || isCachedNonGetRoute) &&
 		req.originalUrl?.startsWith('/auth') === false &&
 		env['CACHE_ENABLED'] === true &&
-		cache &&
+		!!cache &&
 		!req.sanitizedQuery.export &&
 		res.locals['cache'] !== false &&
 		exceedsMaxSize === false &&

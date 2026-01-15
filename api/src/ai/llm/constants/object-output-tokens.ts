@@ -1,0 +1,1 @@
+export const MIN_OBJECT_OUTPUT_TOKENS = 16;
