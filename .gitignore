@@ -33,7 +33,6 @@ debug
 .history/
 *.sublime-settings
 .*.swp
-.cursor/
 
 # Environments / Workspaces
 .gitpod.yml

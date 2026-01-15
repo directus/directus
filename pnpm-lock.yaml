@@ -360,9 +360,6 @@ catalogs:
     '@unhead/vue':
       specifier: 1.11.20
       version: 1.11.20
-    '@vercel/sdk':
-      specifier: 1.18.5
-      version: 1.18.5
     '@vitejs/plugin-vue':
       specifier: 6.0.1
       version: 6.0.1
@@ -1092,9 +1089,6 @@ importers:
       '@tus/utils':
         specifier: 'catalog:'
         version: 0.6.0
-      '@vercel/sdk':
-        specifier: 'catalog:'
-        version: 1.18.5
       ai:
         specifier: 'catalog:'
         version: 6.0.0-beta.98(zod@4.1.12)
@@ -7024,10 +7018,6 @@ packages:
   '@vercel/oidc@3.0.3':
     resolution: {integrity: sha512-yNEQvPcVrK9sIe637+I0jD6leluPxzwJKx/Haw6F4H77CdDsszUn5V3o96LPziXkSNE2B83+Z3mjqGKBK/R6Gg==}
     engines: {node: '>= 20'}
-
-  '@vercel/sdk@1.18.5':
-    resolution: {integrity: sha512-tzxGuUxYZQpKsf5WrImp4gnCZu3xhHA4j6KLSAQdXgpi/Lfk3JV5YGEDU6ZZBIwXDMdny5DozLd20tz/bKZsfg==}
-    hasBin: true
 
   '@vitejs/plugin-vue@6.0.1':
     resolution: {integrity: sha512-+MaE752hU0wfPFJEUAIxqw18+20euHHdxVtMvbFcOEpjEyfqXH/5DCoTHiVJ0J29EhTJdoTkjEv5YBKU9dnoTw==}
@@ -19433,14 +19423,6 @@ snapshots:
       vue: 3.5.24(typescript@5.9.3)
 
   '@vercel/oidc@3.0.3': {}
-
-  '@vercel/sdk@1.18.5':
-    dependencies:
-      '@modelcontextprotocol/sdk': 1.24.0(zod@4.1.12)
-      zod: 4.1.12
-    transitivePeerDependencies:
-      - '@cfworker/json-schema'
-      - supports-color
 
   '@vitejs/plugin-vue@6.0.1(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue@3.5.24(typescript@5.9.3))':
     dependencies:

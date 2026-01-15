@@ -18,6 +18,11 @@ const router = express.Router();
 
 router.use(useCollection('directus_deployment'));
 
+// Validate provider parameter
+const validateProvider = (provider: string): provider is ProviderType => {
+	return DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType);
+};
+
 // Validation schema for creating/updating deployment
 const deploymentSchema = Joi.object({
 	provider: Joi.string()
@@ -26,11 +31,6 @@ const deploymentSchema = Joi.object({
 	credentials: Joi.object().required(),
 	options: Joi.object(),
 }).unknown();
-
-// Validate provider parameter
-const validateProvider = (provider: string): provider is ProviderType => {
-	return DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType);
-};
 
 // Create deployment config
 router.post(
@@ -481,7 +481,6 @@ router.patch(
 			await driver.testConnection();
 		}
 
-		// Stringify JSON fields if present
 		const data = { ...req.body };
 
 		if (data.credentials && typeof data.credentials === 'object') {

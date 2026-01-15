@@ -119,7 +119,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 			// Max retries exceeded
 			throw new HitRateLimitError({
 				limit,
-				reset: new Date(resetAt > 0 ? resetAt * 1000 : Date.now() + 60000),
+				reset: new Date(resetAt > 0 ? resetAt * 1000 : Date.now()),
 			});
 		}
 
@@ -173,7 +173,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		const response = await this.request<{ projects: VercelProject[] }>('/v9/projects');
 		const projects = response.projects.map((project) => this.mapProjectBase(project));
 
-		// Cache for 30s
+		// Cache for 5s
 		await setCacheValue(systemCache, cacheKey, projects, CACHE_TTL);
 		return projects;
 	}
@@ -213,7 +213,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 			result.updated_at = new Date(project.updatedAt);
 		}
 
-		// Cache for 30s
+		// Cache for 5s
 		await setCacheValue(systemCache, cacheKey, result, CACHE_TTL);
 		return result;
 	}
@@ -304,7 +304,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		return triggerResult;
 	}
 
-	override async cancelDeployment(deploymentId: string): Promise<void> {
+	async cancelDeployment(deploymentId: string): Promise<void> {
 		await this.request(`/v12/deployments/${encodeURIComponent(deploymentId)}/cancel`, {
 			method: 'PATCH',
 		});

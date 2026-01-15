@@ -1,4 +1,3 @@
-import { UnprocessableContentError } from '@directus/errors';
 import type { Credentials, Options, Deployment, Details, Log, Project, TriggerResult } from '../types/index.js';
 
 export abstract class DeploymentDriver<
@@ -68,11 +67,8 @@ export abstract class DeploymentDriver<
 	 * Cancel a running deployment
 	 *
 	 * @param deploymentId External deployment ID
-	 * @throws UnprocessableContentError if the provider doesn't support cancellation
 	 */
-	async cancelDeployment(_deploymentId: string): Promise<void> {
-		throw new UnprocessableContentError({ reason: 'This deployment provider does not support cancellation' });
-	}
+	abstract cancelDeployment(deploymentId: string): Promise<void>;
 
 	/**
 	 * Get deployment build logs
