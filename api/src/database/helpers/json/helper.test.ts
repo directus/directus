@@ -26,8 +26,8 @@ const INVALID_TEST_CASES = [
 	{ input: 'json(   )', expectedError: 'Invalid json() syntax' },
 	{ input: ' json()', expectedError: 'Invalid json() syntax' },
 	{ input: 'json() ', expectedError: 'Invalid json() syntax' },
-	{ input: 'json(fieldonly)', expectedError: 'json() requires a path: json(field.path)' },
-	{ input: 'json(.path.to.field)', expectedError: 'json() requires a path: json(field.path)' },
+	{ input: 'json(fieldonly)', expectedError: 'Invalid json() syntax' },
+	{ input: 'json(.path.to.field)', expectedError: 'Invalid json() syntax' },
 ];
 
 describe('JsonHelper', () => {

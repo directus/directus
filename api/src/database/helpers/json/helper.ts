@@ -26,8 +26,8 @@ export abstract class JsonHelper extends DatabaseHelper {
 		// Split on first dot to separate field from path
 		const firstDotIndex = content.indexOf('.');
 
-		if (firstDotIndex === -1) {
-			throw new Error('json() requires a path: json(field.path)');
+		if (firstDotIndex === -1 || firstDotIndex === 0) {
+			throw new Error('Invalid json() syntax');
 		}
 
 		return {
