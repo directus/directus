@@ -92,6 +92,8 @@ export class ShadowsService {
 				await this.createShadowRelation(relation);
 			} else if (
 				relation.related_collection === collection &&
+				// TODO: Check if constraint is valid
+				// relation.meta?.one_field &&
 				this.schema.collections[relation.collection]?.versioned
 			) {
 				// M2O relation from another (versioned) collection pointing to this one
