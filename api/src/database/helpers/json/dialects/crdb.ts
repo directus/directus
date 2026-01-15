@@ -1,7 +1,7 @@
 import { JsonHelper } from '../types.js';
 
 export class JsonHelperCockroachdb extends JsonHelper {
-	override async supported() {
+	protected override async checkSupport(): Promise<boolean> {
 		// Check if the "jsonb_extract_path" function is supported
 		// But CockroachDB has supported JSONB natively since v1.0 so we may just be able to "return true" here
 		const res = await this.knex

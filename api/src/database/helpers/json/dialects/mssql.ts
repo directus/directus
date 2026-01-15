@@ -1,7 +1,7 @@
 import { JsonHelper } from '../types.js';
 
 export class JsonHelperMSSQL extends JsonHelper {
-	override async supported() {
+	protected override async checkSupport(): Promise<boolean> {
 		// JSON functions were introduced in SQL Server 2016 (version 13.0)
 		// Check if JSON_VALUE function is supported
 		try {

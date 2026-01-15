@@ -1,7 +1,7 @@
 import { JsonHelper } from '../types.js';
 
 export class JsonHelperPostgres extends JsonHelper {
-	override async supported() {
+	protected override async checkSupport(): Promise<boolean> {
 		// JSON functions were introduced in PostgreSQL 9.2, JSONB in 9.4
 		// Check if -> and ->> operators are supported
 		try {
