@@ -336,7 +336,11 @@ const livePreviewSize = computed({
 
 provide('live-preview-active', livePreviewActive);
 
-const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl, isNew, currentVersion });
+const { visualEditingEnabled, visualEditorUrls, visualModuleEnabled } = useVisualEditing({
+	previewUrl,
+	isNew,
+	currentVersion,
+});
 
 watch(previewUrl, (url) => {
 	if (!url) livePreviewFullWidth.value = false;
@@ -393,10 +397,6 @@ async function refreshLivePreview() {
 	} catch {
 		// noop
 	}
-}
-
-function onVisualEditorSaved() {
-	refresh();
 }
 
 watch(saving, async (newVal, oldVal) => {
@@ -801,7 +801,7 @@ function useCollectionRoute() {
 			:max-size="isMobile || livePreviewFullWidth ? 100 : 80"
 			:snap-points="[livePreviewSizeDefault]"
 			:transition-duration="150"
-			class="content-split"
+			:class="['content-split', { 'full-width': livePreviewFullWidth }]"
 			:disabled="isMobile"
 		>
 			<template #start>
@@ -830,15 +830,16 @@ function useCollectionRoute() {
 					:url="previewUrl"
 					:can-enable-visual-editing="visualEditingEnabled"
 					:visual-editor-urls="visualEditorUrls"
+					:show-open-in-visual-editor="visualModuleEnabled"
 					:is-full-width="livePreviewFullWidth"
 					@new-window="livePreviewMode = 'popup'"
 					@exit-full-width="livePreviewFullWidth = false"
-					@saved="onVisualEditorSaved"
+					@saved="refresh"
 				>
 					<template #display-options>
 						<VListItem clickable @click="livePreviewFullWidth = true">
 							<VListItemIcon><VIcon name="width_full" /></VListItemIcon>
-							<VListItemContent>{{ $t('live_preview.full_width') }}</VListItemContent>
+							<VListItemContent>{{ $t('full_width') }}</VListItemContent>
 						</VListItem>
 					</template>
 				</LivePreview>
@@ -983,6 +984,10 @@ function useCollectionRoute() {
 }
 
 .content-split.sp-collapsed :deep(.sp-end) {
+	border-inline-start: none;
+}
+
+.content-split.full-width :deep(.sp-end) {
 	border-inline-start: none;
 }
 </style>

@@ -32,6 +32,7 @@ const {
 	singleUrlSubdued = true,
 	canEnableVisualEditing = false,
 	visualEditorUrls = [],
+	showOpenInVisualEditor = true,
 	defaultShowEditableElements = false,
 	isFullWidth = false,
 } = defineProps<{
@@ -45,10 +46,12 @@ const {
 	hidePopupButton?: boolean;
 	inPopup?: boolean;
 	centered?: boolean;
-	/** Whether visual editing prerequisites are met (module enabled, URLs configured, valid item) */
+	/** Whether visual editing prerequisites are met (URLs configured, valid item) */
 	canEnableVisualEditing?: boolean;
 	/** Allowed URLs for visual editing - used to verify the current preview URL passes sameOrigin */
 	visualEditorUrls?: string[];
+	/** Whether to show the "Open in Visual Editor" button (requires visual module enabled) */
+	showOpenInVisualEditor?: boolean;
 	defaultShowEditableElements?: boolean;
 	/** Whether the preview is currently in full-width mode */
 	isFullWidth?: boolean;
@@ -57,7 +60,7 @@ const {
 const emit = defineEmits<{
 	'new-window': [];
 	selectUrl: [newUrl: string, oldUrl: string];
-	saved: [data: { collection: string; primaryKey: string | number }];
+	saved: [];
 	'exit-full-width': [];
 }>();
 
@@ -262,7 +265,6 @@ function useUrls() {
 		<div class="header">
 			<div class="group">
 				<slot name="prepend-header" />
-				<!-- In full-width: show exit button -->
 				<VButton
 					v-if="isFullWidth"
 					v-tooltip.bottom.end="t('live_preview.exit_full_width')"
@@ -274,7 +276,6 @@ function useUrls() {
 					<VIcon small name="width_full" />
 				</VButton>
 
-				<!-- In popup: show split view button -->
 				<VButton
 					v-else-if="inPopup"
 					v-tooltip.bottom.end="$t('live_preview.close_window')"
@@ -287,11 +288,10 @@ function useUrls() {
 					<VIcon small name="exit_to_app" outline />
 				</VButton>
 
-				<!-- Normal view: show display options menu -->
 				<VMenu v-else-if="hasDisplayOptions" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
 						<VButton
-							v-tooltip.bottom.end="t('live_preview.display_options')"
+							v-tooltip.bottom.end="t('display_options')"
 							x-small
 							rounded
 							icon
@@ -308,7 +308,7 @@ function useUrls() {
 							<VListItemIcon><VIcon name="open_in_new" /></VListItemIcon>
 							<VListItemContent>{{ t('live_preview.new_window') }}</VListItemContent>
 						</VListItem>
-						<VListItem v-if="visualEditingEnabled" clickable @click="openInVisualEditor">
+						<VListItem v-if="visualEditingEnabled && showOpenInVisualEditor" clickable @click="openInVisualEditor">
 							<VListItemIcon><VIcon name="edit_square" /></VListItemIcon>
 							<VListItemContent>{{ t('live_preview.open_in_visual_editor') }}</VListItemContent>
 						</VListItem>
@@ -317,7 +317,7 @@ function useUrls() {
 
 				<VButton
 					v-if="visualEditingEnabled"
-					v-tooltip.bottom.end="$t(showEditableElements ? 'close' : 'toggle_editable_elements')"
+					v-tooltip.bottom.end="$t('toggle_editable_elements')"
 					x-small
 					rounded
 					icon
@@ -458,7 +458,7 @@ function useUrls() {
 						:frame-el="frameEl"
 						:frame-src="frameSrc"
 						:show-editable-elements="showEditableElements"
-						@saved="(data) => emit('saved', data)"
+						@saved="emit('saved')"
 					/>
 				</div>
 			</div>

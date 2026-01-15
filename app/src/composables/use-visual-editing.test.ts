@@ -59,7 +59,7 @@ describe('useVisualEditing', () => {
 		expect(visualEditingEnabled.value).toBe(false);
 	});
 
-	test('visualEditingEnabled is false when visual module not in module_bar', () => {
+	test('visualEditingEnabled is true when visual module not in module_bar (only checks URLs)', () => {
 		mockModuleBar.value = [{ type: 'module', id: 'content', enabled: true }];
 
 		const { visualEditingEnabled } = useVisualEditing({
@@ -67,10 +67,10 @@ describe('useVisualEditing', () => {
 			isNew: false,
 		});
 
-		expect(visualEditingEnabled.value).toBe(false);
+		expect(visualEditingEnabled.value).toBe(true);
 	});
 
-	test('visualEditingEnabled is false when visual module is disabled', () => {
+	test('visualEditingEnabled is true when visual module is disabled (only checks URLs)', () => {
 		mockModuleBar.value = [
 			{ type: 'module', id: 'content', enabled: true },
 			{ type: 'module', id: 'visual', enabled: false },
@@ -81,7 +81,41 @@ describe('useVisualEditing', () => {
 			isNew: false,
 		});
 
-		expect(visualEditingEnabled.value).toBe(false);
+		expect(visualEditingEnabled.value).toBe(true);
+	});
+
+	test('visualModuleEnabled is false when visual module not in module_bar', () => {
+		mockModuleBar.value = [{ type: 'module', id: 'content', enabled: true }];
+
+		const { visualModuleEnabled } = useVisualEditing({
+			previewUrl: 'https://example.com/preview',
+			isNew: false,
+		});
+
+		expect(visualModuleEnabled.value).toBe(false);
+	});
+
+	test('visualModuleEnabled is false when visual module is disabled', () => {
+		mockModuleBar.value = [
+			{ type: 'module', id: 'content', enabled: true },
+			{ type: 'module', id: 'visual', enabled: false },
+		];
+
+		const { visualModuleEnabled } = useVisualEditing({
+			previewUrl: 'https://example.com/preview',
+			isNew: false,
+		});
+
+		expect(visualModuleEnabled.value).toBe(false);
+	});
+
+	test('visualModuleEnabled is true when visual module is enabled', () => {
+		const { visualModuleEnabled } = useVisualEditing({
+			previewUrl: 'https://example.com/preview',
+			isNew: false,
+		});
+
+		expect(visualModuleEnabled.value).toBe(true);
 	});
 
 	test('visualEditingEnabled is false when visual_editor_urls is empty', () => {

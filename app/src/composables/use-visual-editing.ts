@@ -15,7 +15,7 @@ interface UseVisualEditingOptions {
 
 /**
  * Handles visual editing prerequisites check.
- * Returns whether visual editing can be enabled and the allowed URLs for sameOrigin validation.
+ * Returns whether visual editing can be enabled in live preview and whether the visual module is enabled.
  *
  * Note: This checks prerequisites only. The live-preview component does the final
  * sameOrigin validation against the currently displayed URL.
@@ -34,15 +34,18 @@ export function useVisualEditing({ previewUrl, isNew = false, currentVersion = n
 
 	const normalizedPreviewUrl = computed(() => normalizeUrl(unref(previewUrl)));
 
-	/** Prerequisites check - live-preview does the final sameOrigin validation */
+	/**
+	 * Whether visual editing can be enabled in live preview.
+	 * This does NOT require the visual module to be enabled - only that VE-URLs are configured.
+	 * The visual module toggle only controls access to the full Visual Editor page.
+	 */
 	const visualEditingEnabled = computed(
 		() =>
 			!!normalizedPreviewUrl.value &&
 			!unref(isNew) &&
 			unref(currentVersion) === null &&
-			visualModuleEnabled.value &&
 			visualEditorUrls.value.length > 0,
 	);
 
-	return { visualEditingEnabled, visualEditorUrls };
+	return { visualEditingEnabled, visualEditorUrls, visualModuleEnabled };
 }
