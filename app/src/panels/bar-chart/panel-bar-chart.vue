@@ -18,7 +18,7 @@ const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
 		height: number;
-		data?: Record<string, any>[];
+		data?: Record<string, any>[] | [Record<string, any>[], Record<string, any>[]];
 		collection: string;
 		horizontal?: boolean;
 		xAxis: string;
@@ -30,6 +30,7 @@ const props = withDefaults(
 		showAxisLabels?: string;
 		showDataLabel?: boolean;
 		conditionalFill?: ConditionalFillFormat[] | null;
+		xAxisDisplayField?: string;
 	}>(),
 	{
 		showHeader: false,
@@ -69,6 +70,7 @@ watch(
 		() => props.color,
 		() => props.showAxisLabels,
 		() => props.conditionalFill,
+		() => props.xAxisDisplayField,
 	],
 	() => {
 		chart.value?.destroy();
@@ -88,11 +90,72 @@ const formatNumericValue = (val: any) => {
 	return val;
 };
 
+// Check if data is a two-query result (aggregated data + display values)
+const isTwoQueryResult = computed(() => {
+	return (
+		Array.isArray(props.data) &&
+		props.data.length === 2 &&
+		Array.isArray(props.data[0]) &&
+		Array.isArray(props.data[1])
+	);
+});
+
+// Get the aggregated data (first query result or the data itself if single query)
+const aggregatedData = computed<Record<string, any>[]>(() => {
+	if (isTwoQueryResult.value) {
+		return (props.data as [Record<string, any>[], Record<string, any>[]])[0];
+	}
+
+	return props.data as Record<string, any>[];
+});
+
+// Build a map of primary key -> display value for relational xAxis fields
+const displayValueMap = computed<Map<string, string> | null>(() => {
+	if (!isTwoQueryResult.value || !props.xAxisDisplayField) {
+		return null;
+	}
+
+	const displayData = (props.data as [Record<string, any>[], Record<string, any>[]])[1];
+	const map = new Map<string, string>();
+
+	if (!displayData || displayData.length === 0) return null;
+
+	// Infer the primary key field - it's the field that isn't the display field
+	const firstItem = displayData[0];
+	const fields = Object.keys(firstItem);
+	const pkField = fields.find((f) => f !== props.xAxisDisplayField);
+
+	if (!pkField) return null;
+
+	for (const item of displayData) {
+		const pk = item[pkField];
+		const displayValue = item[props.xAxisDisplayField];
+
+		if (pk !== null && pk !== undefined && displayValue !== null && displayValue !== undefined) {
+			map.set(String(pk), String(displayValue));
+		}
+	}
+
+	return map;
+});
+
+// Helper to get display value for an xAxis value (falls back to raw value)
+const getDisplayValue = (rawValue: any): any => {
+	if (!displayValueMap.value || rawValue === null || rawValue === undefined) {
+		return rawValue;
+	}
+
+	return displayValueMap.value.get(String(rawValue)) ?? rawValue;
+};
+
 function setUpChart() {
-	const metrics = props.data
+	const metrics = aggregatedData.value
 		.map((metric) => {
-			const x = metric['group']?.[props.xAxis];
-			if (!x) return null;
+			const rawX = metric['group']?.[props.xAxis];
+			if (!rawX) return null;
+
+			// Use display value if available, otherwise fall back to raw value
+			const x = getDisplayValue(rawX);
 
 			const yValue = props.function ? Number(metric?.[props.function]?.[props.yAxis]) : Number(metric?.[props.yAxis]);
 			const y = props.decimals >= 0 ? yValue.toFixed(props.decimals) : yValue;
