@@ -81,7 +81,6 @@ export function useCollab(
 		receiveLeave,
 		receiveSave,
 		receiveUpdate,
-		receivePing,
 	};
 
 	onMounted(async () => {
@@ -219,12 +218,6 @@ export function useCollab(
 		},
 	};
 
-	async function receivePing() {
-		sendMessage({
-			action: ACTION.CLIENT.PONG,
-		});
-	}
-
 	async function receiveInit(message: InitMessage) {
 		roomId.value = message.room;
 		connectionId.value = message.connection;
@@ -306,6 +299,8 @@ export function useCollab(
 			connectionId.value = null;
 			focused.value = {};
 			users.value = [];
+
+			setTimeout(join, Math.random() * 1000 + 500);
 		}
 	}
 

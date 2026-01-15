@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import { useEnv } from '@directus/env';
 import { type Accountability, type ActionHandler, type Item, type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
@@ -81,11 +81,11 @@ export class CollabRooms {
 	/**
 	 * Get all rooms a client is currently in
 	 */
-	async getClientRooms(client: WebSocketClient) {
+	async getClientRooms(uid: ClientID) {
 		const rooms = [];
 
 		for (const room of Object.values(this.rooms)) {
-			if (await room.hasClient(client.uid)) {
+			if (await room.hasClient(uid)) {
 				rooms.push(room);
 			}
 		}
@@ -94,15 +94,15 @@ export class CollabRooms {
 	}
 
 	/**
-	 * Remove empty rooms or inactive rooms
+	 * Remove empty rooms
 	 */
 	async cleanupRooms(uids?: string[]) {
 		const rooms = uids ? uids.map((uid) => this.rooms[uid]).filter((room) => !!room) : Object.values(this.rooms);
 
 		for (const room of rooms) {
-			const activeClients = await room.cleanInactiveClients();
+			const clients = await room.getClients();
 
-			if (activeClients.length === 0) {
+			if (clients.length === 0) {
 				await room.close();
 				delete this.rooms[room.uid];
 				useLogger().info(`[Collab] Closed inactive room ${room.uid}`);
@@ -117,7 +117,7 @@ type RoomData = {
 	item: string | null;
 	version: string | null;
 	changes: Item;
-	clients: { uid: ClientID; accountability: Accountability; color: Color; lastActive: number }[];
+	clients: { uid: ClientID; accountability: Accountability; color: Color }[];
 	focuses: Record<ClientID, string>;
 };
 
@@ -216,45 +216,6 @@ export class Room {
 		return await this.store((store) => store.get('clients'));
 	}
 
-	async cleanInactiveClients() {
-		await this.ready;
-
-		const env = useEnv();
-		const now = Date.now();
-		const timeout = Number(env['WEBSOCKETS_COLLAB_CLIENT_TIMEOUT']) * 60 * 1000;
-
-		let inactiveClients = await this.store(async (store) => {
-			return (await store.get('clients')).filter((client) => now - client.lastActive >= timeout);
-		});
-
-		// Try to ping inactive clients first before removing them
-		if (inactiveClients.length > 0) {
-			for (const client of inactiveClients) {
-				this.send(client.uid, {
-					action: ACTION.SERVER.PING,
-				});
-			}
-
-			await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
-
-			inactiveClients = await this.store(async (store) => {
-				return (await store.get('clients')).filter((client) => now - client.lastActive >= timeout);
-			});
-
-			useLogger().info(`[Collab] Removing ${inactiveClients.length} inactive clients from room ${this.uid}`);
-
-			for (const client of inactiveClients) {
-				this.leave(client);
-			}
-		}
-
-		const activeClients = await this.store(async (store) => {
-			return (await store.get('clients')).filter((client) => now - client.lastActive < timeout);
-		});
-
-		return activeClients;
-	}
-
 	async hasClient(id: ClientID) {
 		await this.ready;
 
@@ -274,21 +235,6 @@ export class Room {
 			const focuses = await store.get('focuses');
 
 			return Object.entries(focuses).find(([_, f]) => f === field)?.[0];
-		});
-	}
-
-	async updateClientActivity(id: ClientID) {
-		await this.ready;
-
-		return await this.store(async (store) => {
-			const clients = await store.get('clients');
-
-			const client = clients.find((c) => c.uid === id);
-
-			if (client) {
-				client.lastActive = Date.now();
-				await store.set('clients', clients);
-			}
 		});
 	}
 
@@ -320,7 +266,6 @@ export class Room {
 						uid: client.uid,
 						accountability: client.accountability!,
 						color: clientColor,
-						lastActive: Date.now(),
 					});
 
 					await store.set('clients', clients);
@@ -383,31 +328,31 @@ export class Room {
 	/**
 	 * Leave the room
 	 */
-	async leave(client: PermissionClient) {
-		this.messenger.removeClient(client.uid);
+	async leave(uid: ClientID) {
+		this.messenger.removeClient(uid);
 		await this.ready;
 
-		if (!(await this.hasClient(client.uid))) return;
+		if (!(await this.hasClient(uid))) return;
 
 		await this.store(async (store) => {
 			const clients = await store.get('clients');
 
 			await store.set(
 				'clients',
-				clients.filter((c) => c.uid !== client.uid),
+				clients.filter((c) => c.uid !== uid),
 			);
 
 			const focuses = await store.get('focuses');
 
-			if (client.uid in focuses) {
-				delete focuses[client.uid];
+			if (uid in focuses) {
+				delete focuses[uid];
 				await store.set('focuses', focuses);
 			}
 		});
 
 		this.sendAll({
 			action: ACTION.SERVER.LEAVE,
-			connection: client.uid,
+			connection: uid,
 		});
 	}
 
@@ -416,8 +361,6 @@ export class Room {
 	 */
 	async update(sender: WebSocketClient, changes: Record<string, unknown>) {
 		await this.ready;
-
-		this.updateClientActivity(sender.uid);
 
 		const { clients, collection, item } = await this.store(async (store) => {
 			const existing_changes = await store.get('changes');
@@ -465,8 +408,6 @@ export class Room {
 	async unset(sender: PermissionClient, field: string) {
 		await this.ready;
 
-		this.updateClientActivity(sender.uid);
-
 		const clients = await this.store(async (store) => {
 			const changes = await store.get('changes');
 			delete changes[field];
@@ -494,8 +435,6 @@ export class Room {
 	 */
 	async focus(sender: PermissionClient, field: string | null): Promise<boolean> {
 		await this.ready;
-
-		this.updateClientActivity(sender.uid);
 
 		const result = await this.store(async (store) => {
 			const focuses = await store.get('focuses');

@@ -4,6 +4,7 @@ import { ClientMessage } from '@directus/types/collab';
 import { upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
+import { useLogger } from '../../../logger/index.js';
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
@@ -51,6 +52,18 @@ export class CollabHandler {
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
 
 		scheduleSynchronizedJob('collab', `*/1 * * * *`, async () => {
+			const inactiveClients = await this.messenger.removeInvalidClients();
+
+			for (const client of inactiveClients) {
+				const rooms = await this.rooms.getClientRooms(client);
+
+				useLogger().info(`[Collab] Removing inactive client ${client}`);
+
+				for (const room of rooms) {
+					await room.leave(client);
+				}
+			}
+
 			await this.rooms.cleanupRooms();
 		});
 	}
@@ -134,38 +147,18 @@ export class CollabHandler {
 						reason: `Not connected to room ${message.room}`,
 					});
 
-				room.leave(client);
+				room.leave(client.uid);
 				roomIds.push(room.uid);
 			} else {
-				const rooms = await this.rooms.getClientRooms(client);
+				const rooms = await this.rooms.getClientRooms(client.uid);
 
 				for (const room of rooms) {
-					room.leave(client);
+					room.leave(client.uid);
 					roomIds.push(room.uid);
 				}
 			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'leave');
-		}
-	}
-
-	async onPong(client: WebSocketClient, message: UpdateMessage) {
-		try {
-			const room = await this.rooms.getRoom(message.room);
-
-			if (!room)
-				throw new InvalidPayloadError({
-					reason: `No access to room ${message.room} or room does not exist`,
-				});
-
-			if (!(await room.hasClient(client.uid)))
-				throw new InvalidPayloadError({
-					reason: `Not connected to room ${message.room}`,
-				});
-
-			room.updateClientActivity(client.uid);
-		} catch (err) {
-			handleWebSocketError(client, err, 'focus');
 		}
 	}
 

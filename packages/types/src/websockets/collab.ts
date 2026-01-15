@@ -1,3 +1,4 @@
+import { type UUID } from 'crypto';
 import z from 'zod';
 import type { Item } from '../items.js';
 import { TYPE } from './type.js';
@@ -12,7 +13,6 @@ export const ACTION = {
 		UPDATE: 'update',
 		UPDATE_ALL: 'updateAll',
 		FOCUS: 'focus',
-		PONG: 'pong',
 	},
 	SERVER: {
 		INIT: 'init',
@@ -21,7 +21,6 @@ export const ACTION = {
 		SAVE: 'save',
 		UPDATE: 'update',
 		FOCUS: 'focus',
-		PING: 'ping',
 	},
 } as const;
 
@@ -58,9 +57,6 @@ export const ClientMessage = z.discriminatedUnion('action', [
 		action: z.literal(ACTION.CLIENT.FOCUS),
 		field: z.string().nullable(),
 	}),
-	BaseClientMessage.extend({
-		action: z.literal(ACTION.CLIENT.PONG),
-	}),
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
 
@@ -75,6 +71,14 @@ export type BroadcastMessage =
 			type: 'room';
 			action: 'close';
 			room: string;
+	  }
+	| {
+			type: 'ping';
+			instance: UUID;
+	  }
+	| {
+			type: 'pong';
+			instance: UUID;
 	  };
 
 // Messages from server to client
@@ -120,7 +124,4 @@ export type BaseServerMessage =
 			action: typeof ACTION.SERVER.FOCUS;
 			connection: ClientID;
 			field: string | null;
-	  }
-	| {
-			action: typeof ACTION.SERVER.PING;
 	  };
