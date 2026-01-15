@@ -314,7 +314,7 @@ export class Room {
 
 				if (clients.findIndex((c) => c.uid === client.uid) === -1) {
 					added = true;
-					clientColor = colorsAvailable[random(COLORS.length - 1)]!;
+					clientColor = colorsAvailable[random(colorsAvailable.length - 1)]!;
 
 					clients.push({
 						uid: client.uid,
