@@ -122,7 +122,6 @@ create_role: Creează rol
 create_user: Creează utilizator
 message: Mesaj
 delete_panel: Șterge panou
-create_webhook: Creează Webhook
 create_custom_translation: Creați traducere personalizată
 edit_custom_translation: Editați traducerea personalizată
 no_custom_translations: Fără Traduceri Personalizate
@@ -542,8 +541,6 @@ file_count: 'Nu există fișiere | Un fișiere | {count} fișiere'
 no_files_copy: Nu există fişiere aici.
 user_count: 'Niciun utilizator | Un Utilizator | {count} utilizatori'
 no_users_copy: Nu sunt utilizatori în acest rol.
-webhooks_count: 'Niciun Webhook | Un Webhook | {count} Webhook-uri'
-no_webhooks_copy: Nici un webhook nu a fost configurat încă. Începeți prin a crea unul de mai jos.
 no_notifications: Nicio notificare
 no_notifications_copy: Ești cu toate la zi!
 activity_log: Jurnal de activitate
@@ -572,7 +569,6 @@ action: Acţiune
 ip_address: Adresă IP
 user_agent: User Agent
 origin: Origine
-webhooks: Webhook-uri
 decimals: Zecimale
 value_decimals: Valoare zecimale
 min_value: Valoare minimă
@@ -891,7 +887,6 @@ editing_in_batch: 'Editare lot de {count} elemente'
 no_options_available: Nicio opțiune disponibilă
 settings_data_model: Model de date
 settings_project: Setări
-settings_webhooks: Webhook-uri
 settings_presets: Semne de carte
 settings_translations: Traduceri
 one_or_more_options_are_missing: Una sau mai multe opțiuni lipsesc
@@ -950,7 +945,6 @@ directus_collection:
   directus_settings: Opțiuni de configurare proiect
   directus_shares: Contorizează elementele partajate extern
   directus_users: Utilizatorii de sistem pentru platformă
-  directus_webhooks: Configurare pentru cereri HTTP bazate pe evenimente
 fields:
   directus_activity:
     item: Cheia primară a elementului
@@ -1090,18 +1084,6 @@ fields:
     users: Utilizatori în rol
   directus_policies:
     description: Descriere
-  directus_webhooks:
-    name: Nume
-    method: Metodă
-    status: Stare
-    data: Date
-    header: Antet
-    value: Valoare
-    headers: Antetele cererii (request headers)
-    data_label: Trimite date eveniment
-    triggers: Declanșatori
-    actions: Acțiuni
-    collections: Colecții
 field_options:
   directus_settings:
     project_name_placeholder: Proiectul meu...
@@ -1190,19 +1172,6 @@ field_options:
     status_dropdown_suspended: Suspendat
     status_dropdown_archived: Arhivat
     token: Introduceți un token de acces securizat...
-  directus_webhooks:
-    status_options_active: Activ
-    status_options_inactive: Inactiv
-    data_label: Trimite date eveniment
-    triggers_divider: Declanșatori
-    actions_create: Creează
-    actions_update: Actualizare
-    actions_delete: Ștergere
-    actions_login: Autentificare
-    headers:
-      header: Antet
-      value: Valoare
-      add: Adaugă antet
 no_fields_in_collection: 'Încă nu există câmpuri în "{collection}"'
 no_value: Nicio valoare
 do_nothing: Nu face nimic
@@ -1268,7 +1237,6 @@ continue_label: Continuă
 continue_as: >-
   {name} este în prezent autentificat. Dacă recunoașteți acest cont, apăsați continuă.
 editing_role: 'Rolul {role}'
-creating_webhook: Se creează webhook-ul
 default_label: Implicit
 delete_label: Ștergere
 delete_are_you_sure: >-
