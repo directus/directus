@@ -36,24 +36,4 @@ describe('JsonHelper', () => {
 			});
 		});
 	});
-
-	// describe('supported', () => {
-	// 	test('returns cached value on subsequent calls', async () => {
-	// 		const { helper } = createHelper();
-
-	// 		// Mock the checkSupport method to track calls
-	// 		const checkSupportSpy = vi.spyOn(helper as any, 'checkSupport');
-
-	// 		const result1 = await helper.supported();
-	// 		const result2 = await helper.supported();
-	// 		const result3 = await helper.supported();
-
-	// 		expect(result1).toBe(true);
-	// 		expect(result2).toBe(true);
-	// 		expect(result3).toBe(true);
-
-	// 		// checkSupport should only be called once
-	// 		expect(checkSupportSpy).toHaveBeenCalledTimes(1);
-	// 	});
-	// });
 });
