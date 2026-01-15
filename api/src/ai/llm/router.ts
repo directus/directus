@@ -7,5 +7,5 @@ import { loadSettings } from './middleware/load-settings.js';
 
 export const llmRouter = Router()
 	.use(asyncHandler(loadSettings))
-	.post('/chat' , asyncHandler(aiChatPostHandler))
+	.post('/chat', asyncHandler(aiChatPostHandler))
 	.post('/object', asyncHandler(aiObjectPostHandler), respond);
