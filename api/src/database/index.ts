@@ -321,11 +321,11 @@ export async function validateMigrations(): Promise<boolean> {
  * These database extensions should be optional, so we don't throw or return any problem states when they don't
  */
 export async function validateDatabaseExtensions(): Promise<void> {
+	const logger = useLogger();
 	const database = getDatabase();
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	const geometrySupport = await helpers.st.supported();
-	const logger = useLogger();
 
 	if (!geometrySupport) {
 		switch (client) {
@@ -337,6 +337,20 @@ export async function validateDatabaseExtensions(): Promise<void> {
 				break;
 			default:
 				logger.warn(`Geometry type not supported on ${client}`);
+				break;
+		}
+	}
+
+	const jsonSupport = await helpers.json.supported();
+
+	if (!jsonSupport) {
+		switch (client) {
+			case 'sqlite':
+				logger.warn('JSON Querying not supported. Use sqlite version >= 3.38.0 or install the JSON1 extension.');
+				break;
+			default:
+				logger.warn(`JSON Querying not supported on ${client}`);
+				break;
 		}
 	}
 }
