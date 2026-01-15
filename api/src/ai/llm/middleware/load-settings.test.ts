@@ -2,7 +2,6 @@ import type { Request, Response } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { loadSettings } from './load-settings.js';
 
-// Mock dependencies
 vi.mock('../../../services/settings.js');
 vi.mock('../../../utils/get-schema.js');
 

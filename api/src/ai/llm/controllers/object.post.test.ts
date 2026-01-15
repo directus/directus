@@ -4,7 +4,6 @@ import type { NextFunction, Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { aiObjectPostHandler } from './object.post.js';
 
-// Mock dependencies
 vi.mock('ai');
 
 describe('aiObjectPostHandler', () => {

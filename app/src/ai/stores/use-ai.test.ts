@@ -3,7 +3,6 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useAiStore } from './use-ai';
 
-// Mock dependencies
 vi.mock('@/stores/settings', () => ({
 	useSettingsStore: vi.fn(() => ({
 		availableAiProviders: ['openai'],

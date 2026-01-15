@@ -6,7 +6,6 @@ import { createUiStream } from '../lib/create-ui-stream.js';
 import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 import { aiChatPostHandler } from './chat.post.js';
 
-// Mock dependencies
 vi.mock('ai', () => ({
 	safeValidateUIMessages: vi.fn(),
 }));
