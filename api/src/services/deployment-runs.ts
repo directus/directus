@@ -15,4 +15,3 @@ export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 		super('directus_deployment_runs', options);
 	}
 }
-

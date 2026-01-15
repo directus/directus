@@ -34,4 +34,3 @@ export async function down(knex: Knex): Promise<void> {
 	await knex.schema.dropTable('directus_deployment_projects');
 	await knex.schema.dropTable('directus_deployment');
 }
-

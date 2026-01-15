@@ -81,4 +81,3 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		return getDeploymentDriver(deployment.provider, credentials, options);
 	}
 }
-

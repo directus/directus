@@ -42,9 +42,9 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		options.action === 'read'
 			? permissions
 			: await fetchPermissions(
-				{ action: 'read', policies, collections, accountability: options.accountability },
-				context,
-			);
+					{ action: 'read', policies, collections, accountability: options.accountability },
+					context,
+				);
 
 	// Validate field existence first
 	for (const [path, { collection, fields }] of [...fieldMap.read.entries(), ...fieldMap.other.entries()]) {

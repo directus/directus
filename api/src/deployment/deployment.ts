@@ -1,13 +1,5 @@
 import { UnprocessableContentError } from '@directus/errors';
-import type {
-	Credentials,
-	Options,
-	Deployment,
-	Details,
-	Log,
-	Project,
-	TriggerResult,
-} from '../types/index.js';
+import type { Credentials, Options, Deployment, Details, Log, Project, TriggerResult } from '../types/index.js';
 
 export abstract class DeploymentDriver<
 	TCredentials extends Credentials = Credentials,

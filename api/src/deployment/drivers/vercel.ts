@@ -33,8 +33,6 @@ interface VercelProject {
 		type?: string;
 		productionBranch?: string;
 		repoId?: string;
-		org?: string;
-		repo?: string;
 	};
 	targets?: {
 		production?: {
@@ -64,7 +62,6 @@ interface VercelEvent {
 	created: number;
 	payload?: {
 		text?: string;
-		statusCode?: number;
 	};
 	text?: string;
 }
@@ -111,10 +108,10 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		// Handle rate limiting with retry (max 3 retries)
 		if (response.status === 429) {
 			const resetAt = parseInt(response.headers.get('X-RateLimit-Reset') || '0');
-			const limit = parseInt(response.headers.get('X-RateLimit-Limit') || '100');
+			const limit = parseInt(response.headers.get('X-RateLimit-Limit') || '0');
 
 			if (retryCount < 3) {
-				const waitTime = resetAt > 0 ? Math.max((resetAt * 1000) - Date.now(), 1000) : 1000 * (retryCount + 1);
+				const waitTime = resetAt > 0 ? Math.max(resetAt * 1000 - Date.now(), 1000) : 1000 * (retryCount + 1);
 				await new Promise((resolve) => setTimeout(resolve, waitTime));
 				return this.request(endpoint, options, retryCount + 1);
 			}

@@ -15,5 +15,3 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 		super('directus_deployment_projects', options);
 	}
 }
-
-

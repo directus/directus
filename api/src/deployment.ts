@@ -50,4 +50,3 @@ export function isValidProviderType(provider: string): provider is ProviderType 
 export function getSupportedProviderTypes(): ProviderType[] {
 	return Array.from(drivers.keys());
 }
-

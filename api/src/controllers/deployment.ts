@@ -20,7 +20,9 @@ router.use(useCollection('directus_deployment'));
 
 // Validation schema for creating/updating deployment
 const deploymentSchema = Joi.object({
-	provider: Joi.string().valid(...DEPLOYMENT_PROVIDER_TYPES).required(),
+	provider: Joi.string()
+		.valid(...DEPLOYMENT_PROVIDER_TYPES)
+		.required(),
 	credentials: Joi.object().required(),
 	options: Joi.object(),
 }).unknown();
@@ -245,9 +247,7 @@ router.patch(
 			const providerProjects = await driver.listProjects();
 			const deployableMap = new Map(providerProjects.map((p) => [p.id, p.deployable]));
 
-			const nonDeployable = value.create.filter(
-				(p: { external_id: string }) => !deployableMap.get(p.external_id),
-			);
+			const nonDeployable = value.create.filter((p: { external_id: string }) => !deployableMap.get(p.external_id));
 
 			if (nonDeployable.length > 0) {
 				const names = nonDeployable.map((p: { name: string }) => p.name).join(', ');
