@@ -305,10 +305,16 @@ export class Room {
 		if (!(await this.hasClient(client.uid))) {
 			await this.store(async (store) => {
 				const clients = await store.get('clients');
+				const existingColors = clients.map((c) => c.color);
+				const colorsAvailable = COLORS.filter((color) => !existingColors.includes(color));
+
+				if (colorsAvailable.length === 0) {
+					colorsAvailable.push(...COLORS);
+				}
 
 				if (clients.findIndex((c) => c.uid === client.uid) === -1) {
 					added = true;
-					clientColor = COLORS[random(COLORS.length - 1)]!;
+					clientColor = colorsAvailable[random(COLORS.length - 1)]!;
 
 					clients.push({
 						uid: client.uid,
