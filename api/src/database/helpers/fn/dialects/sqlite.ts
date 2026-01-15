@@ -1,4 +1,5 @@
 import type { Knex } from 'knex';
+import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -80,5 +81,21 @@ export class FnHelperSQLite extends FnHelper {
 		}
 
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
+	}
+
+	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
+		const { field, path } = parseJsonFunction(functionCall);
+		const collectionName = options?.originalCollectionName || table;
+		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
+
+		if (!fieldSchema || fieldSchema.type !== 'json') {
+			throw new Error(`Field ${field} is not a JSON field`);
+		}
+
+		// SQLite uses json_extract with $ path notation
+		// "data.items[0].name" → "$.items[0].name"
+		const jsonPath = '$' + path;
+
+		return this.knex.raw(`json_extract(??.??, ?)`, [table, field, jsonPath]);
 	}
 }
