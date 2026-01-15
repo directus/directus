@@ -484,8 +484,10 @@ export class RelationsService {
 						table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
 					});
 
-					const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-					await shadowsService.deleteShadowRelation(existingRelation, constraintNames);
+					if (this.schema.collections[collection]?.versioned) {
+						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+						await shadowsService.deleteShadowRelation(existingRelation, { constraints: constraintNames });
+					}
 				}
 
 				if (existingRelation.meta) {

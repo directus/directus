@@ -788,8 +788,10 @@ export class FieldsService {
 						table.dropColumn(field);
 					});
 
-					const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-					await shadowsService.deleteShadowField(collection, field);
+					if (this.schema.collections[collection]?.versioned) {
+						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+						await shadowsService.deleteShadowField(collection, field);
+					}
 				}
 
 				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(

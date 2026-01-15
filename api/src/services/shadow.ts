@@ -109,7 +109,11 @@ export class ShadowsService {
 		});
 
 		// Drop any m2o duplicates pointing to it
-		const relations = this.schema.relations.filter((relation) => relation.related_collection === shadowCollection);
+		const relations = this.schema.relations.filter(
+			(relation) =>
+				relation.related_collection === shadowCollection && this.schema.collections[relation.collection]?.versioned,
+		);
+
 
 		for (const relation of relations) {
 			await this.deleteShadowRelation(relation, { duplicate: true });
