@@ -76,6 +76,12 @@ export class ShadowsService {
 			}
 		});
 
+		console.log({
+			event: 'table.create',
+			name: shadowCollection,
+			fields: shadowFields,
+		});
+
 		// link any existing relation fields
 		for (const relation of this.schema.relations) {
 			// Skip processing existing shadow table relations
@@ -96,6 +102,11 @@ export class ShadowsService {
 
 	async dropShadowTable(collection: string) {
 		const shadowCollection = `directus_version_${collection}`;
+
+		console.log({
+			event: 'table.delete',
+			name: shadowCollection,
+		});
 
 		// Drop any m2o duplicates pointing to it
 		const relations = this.schema.relations.filter((relation) => relation.related_collection === shadowCollection);
@@ -124,6 +135,13 @@ export class ShadowsService {
 					const shadowField = relation.field!;
 
 					if (opts?.duplicate !== true) {
+						console.log({
+							event: 'relation.create',
+							collection: shadowCollection,
+							field: shadowField,
+							related: relation.related_collection,
+						});
+
 						await trx.schema.alterTable(shadowCollection, async (table) => {
 							// Copied from RelationsService.alterType, required for MySQL
 							const fieldOverview = schema.collections[relation.collection!]!.fields[shadowField];
@@ -187,6 +205,13 @@ export class ShadowsService {
 								is_unique: false,
 							},
 						};
+
+						console.log({
+							event: 'relation.create.shadow',
+							collection: relation.collection,
+							field: shadowRelatedField.field,
+							related: relation.related_collection,
+						});
 
 						await trx.schema.alterTable(shadowCollection, (table) => {
 							fieldsService.addColumnToTable(table, shadowCollection, shadowRelatedField);
@@ -383,6 +408,14 @@ export class ShadowsService {
 					existingRelation.collection === shadowCollection && existingRelation.field === relation.field,
 			);
 
+			console.log({
+				event: 'fk.drop',
+				fk: existingRelation?.field,
+				existingConstraint:
+					existingRelation?.schema?.constraint_name &&
+					constraintNames.includes(existingRelation.schema.constraint_name),
+			});
+
 			if (
 				existingRelation?.schema?.constraint_name &&
 				constraintNames.includes(existingRelation.schema.constraint_name)
@@ -401,6 +434,14 @@ export class ShadowsService {
 				(existingRelation) =>
 					existingRelation.collection === shadowCollection && existingRelation.field === shadowRelatedField,
 			);
+
+			console.log({
+				event: 'fk.drop.shadow',
+				fk: existingRelatedRelation?.field,
+				existingConstraint:
+					existingRelatedRelation?.schema?.constraint_name &&
+					constraintNames.includes(existingRelatedRelation.schema.constraint_name),
+			});
 
 			if (
 				existingRelatedRelation?.schema?.constraint_name &&
