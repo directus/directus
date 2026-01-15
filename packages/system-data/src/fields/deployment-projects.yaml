@@ -17,4 +17,3 @@ fields:
   - field: user_created
     special:
       - user-created
-

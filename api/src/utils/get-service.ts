@@ -23,6 +23,7 @@ import {
 	UsersService,
 	VersionsService,
 	WebhooksService,
+	DeploymentService,
 } from '../services/index.js';
 
 /**
@@ -73,6 +74,8 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new VersionsService(opts);
 		case 'directus_webhooks':
 			return new WebhooksService(opts);
+		case 'directus_deployment':
+			return new DeploymentService(opts);
 		default:
 			// Deny usage of other system collections via ItemsService
 			if (collection.startsWith('directus_')) throw new ForbiddenError();

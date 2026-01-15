@@ -10,4 +10,3 @@ fields:
     special: [date-created, cast-timestamp]
   - field: user_created
     special: [user-created]
-
