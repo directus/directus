@@ -109,7 +109,7 @@ export class Messenger {
 		const env = useEnv();
 
 		await new Promise((resolve) => {
-			setTimeout(resolve, Number(env['WEBSOCKETS_COLLAB_INSTANCE_TIMEOUT']) * 60 * 1000);
+			setTimeout(resolve, Number(env['WEBSOCKETS_COLLAB_INSTANCE_TIMEOUT']) * 1000);
 		});
 
 		this.messenger.unsubscribe(COLLAB_BUS, pongCollector);
