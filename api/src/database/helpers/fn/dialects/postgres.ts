@@ -1,4 +1,5 @@
 import type { Knex } from 'knex';
+import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -62,4 +63,48 @@ export class FnHelperPostgres extends FnHelper {
 
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
+
+	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
+		const { field, path } = parseJsonFunction(functionCall);
+		const collectionName = options?.originalCollectionName || table;
+		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
+
+		if (!fieldSchema || fieldSchema.type !== 'json') {
+			throw new Error(`Field ${field} is not a JSON field`);
+		}
+
+		// Convert dot notation to PostgreSQL JSON path
+		// "data.items[0].name" → "data"->'items'->0->>'name'
+		const jsonPath = convertToPostgresPath(path);
+		const { dbType } = fieldSchema;
+
+		// Use JSONB operators for JSONB fields, JSON functions for JSON fields
+		if (dbType === 'jsonb') {
+			return this.knex.raw(`??::jsonb${jsonPath}`, [table + '.' + field]);
+		} else {
+			return this.knex.raw(`??::json${jsonPath}`, [table + '.' + field]);
+		}
+	}
+}
+
+export function convertToPostgresPath(path: string): string {
+	// ".color" → "->>'color'"
+	// ".items[0].name" → "->'items'->0->>'name'"
+	// Use ->> for final element (returns text), -> for intermediate (returns json)
+
+	const parts = path.substring(1).split(/\.|\[|\]/g).filter(Boolean);
+	let result = '';
+
+	for (let i = 0; i < parts.length; i++) {
+		const isLast = i === parts.length - 1;
+		const num = Number(parts[i]);
+
+		if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
+			result += (isLast ? '->>' : '->') + parts[i];
+		} else {
+			result += (isLast ? "->>" : "->") + `'${parts[i]}'`;
+		}
+	}
+
+	return result;
 }

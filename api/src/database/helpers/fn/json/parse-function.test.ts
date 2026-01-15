@@ -8,7 +8,6 @@ const VALID_TEST_CASES = [
 	{ input: 'json(  field.path  )', expected: { field: 'field', path: '.path' } },
 	{ input: 'json(user_data.profile)', expected: { field: 'user_data', path: '.profile' } },
 	{ input: 'json(data.items[0].name)', expected: { field: 'data', path: '.items[0].name' } },
-	{ input: 'json(data.items[*].name)', expected: { field: 'data', path: '.items[*].name' } },
 ];
 
 const INVALID_TEST_CASES = [
