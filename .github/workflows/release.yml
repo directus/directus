@@ -41,23 +41,6 @@ jobs:
           version: ${{ github.ref_name }}
           lenient: false
 
-  create-release:
-    name: Create Release
-    runs-on: ubuntu-latest
-    needs: check-version
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create \
-            "$GITHUB_REF_NAME" \
-            ${{ needs.check-version.outputs.prerelease == 'true' && '--prerelease' || '' }} \
-            --notes "Directus $GITHUB_REF_NAME"
-
   publish-npm:
     name: Publish to NPM
     runs-on: ubuntu-latest
@@ -317,3 +300,23 @@ jobs:
         if: env.GHCR_IMAGE != ''
         run: |
           docker buildx imagetools inspect ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }}
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs:
+      - check-version
+      - publish-npm
+      - publish-docker-images
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create \
+            "$GITHUB_REF_NAME" \
+            ${{ needs.check-version.outputs.prerelease == 'true' && '--prerelease' || '' }} \
+            --notes "Directus $GITHUB_REF_NAME"
