@@ -1,5 +1,5 @@
 import type { Accountability, Field, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { FieldsService } from '../../../services/fields.js';
 import { fields } from './index.js';
 

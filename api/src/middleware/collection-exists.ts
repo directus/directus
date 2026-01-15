@@ -2,10 +2,10 @@
  * Check if requested collection exists, and save it to req.collection
  */
 
-import type { RequestHandler } from 'express';
 import { systemCollectionRows } from '@directus/system-data';
-import asyncHandler from '../utils/async-handler.js';
+import type { RequestHandler } from 'express';
 import { createCollectionForbiddenError } from '../permissions/modules/process-ast/utils/validate-path/create-error.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) => {
 	if (!req.params['collection']) return next();

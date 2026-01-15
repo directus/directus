@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import type { File } from '@directus/types';
+import Cropper from 'cropperjs';
+import { isEqual } from 'lodash';
+import throttle from 'lodash/throttle';
+import { nanoid } from 'nanoid/non-secure';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
@@ -13,14 +21,6 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { File } from '@directus/types';
-import Cropper from 'cropperjs';
-import { isEqual } from 'lodash';
-import throttle from 'lodash/throttle';
-import { nanoid } from 'nanoid/non-secure';
-import { computed, nextTick, reactive, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 const imageFields = [
 	'type',

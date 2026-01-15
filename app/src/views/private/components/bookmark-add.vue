@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactive } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -8,7 +9,6 @@ import VDialog from '@/components/v-dialog.vue';
 import InterfaceSystemInputTranslatedString from '@/interfaces/_system/system-input-translated-string/input-translated-string.vue';
 import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
-import { reactive } from 'vue';
 
 const props = defineProps<{
 	modelValue?: boolean;

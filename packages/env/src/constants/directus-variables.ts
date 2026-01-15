@@ -133,6 +133,7 @@ export const DIRECTUS_VARIABLES = [
 
 	// files
 	'FILES_MAX_UPLOAD_SIZE',
+	'FILES_MAX_UPLOAD_CONCURRENCY',
 	'FILES_CONTENT_TYPE_ALLOW_LIST',
 
 	// assets
@@ -146,6 +147,7 @@ export const DIRECTUS_VARIABLES = [
 
 	// auth
 	'AUTH_PROVIDERS',
+	'AUTH_ALLOWED_PUBLIC_URLS',
 	'AUTH_DISABLE_DEFAULT',
 	'AUTH_.+_DRIVER',
 	'AUTH_.+_CLIENT_ID',
@@ -259,6 +261,9 @@ export const DIRECTUS_VARIABLES = [
 
 	// mcp
 	'MCP_ENABLED',
+
+	// ai
+	'AI_ENABLED',
 ] as const;
 
 /**

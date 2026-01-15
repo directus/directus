@@ -1,9 +1,9 @@
-import type { GlobalMountOptions } from '@/__utils__/types';
-import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 import UseDatetime from './use-datetime.vue';
+import type { GlobalMountOptions } from '@/__utils__/types';
+import { i18n } from '@/lang';
 
 const global: GlobalMountOptions = {
 	plugins: [i18n],

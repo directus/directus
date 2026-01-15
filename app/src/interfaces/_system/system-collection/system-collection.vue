@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

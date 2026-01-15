@@ -1,8 +1,9 @@
+import assert from 'node:assert';
 import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type CreateIndexOptions, type SortRecord } from '../types.js';
-import { toArray } from '@directus/utils';
+import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
@@ -15,11 +16,18 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		return getDefaultIndexName(type, collection, fields, { maxLength: 64 });
 	}
 
-	override async changePrimaryKey(table: string, columns: string | string[]): Promise<void> {
-		const primaryColumns = toArray(columns);
-		const columnsSql = primaryColumns.map(() => '??').join(', ');
+	override async changePrimaryKey(table: string, to: string | string[]): Promise<void> {
+		const primaryColumns = toArray(to);
+		const placeholders = primaryColumns.map(() => '??').join(', ');
 
-		await this.knex.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${columnsSql})`, [table, ...primaryColumns]);
+		// validate input
+		assert(primaryColumns.length > 0, 'At least 1 "to" column is required');
+		assert(primaryColumns[0] && primaryColumns[0].length > 0, '"to" column cannot be empty');
+
+		await this.knex.raw(`ALTER TABLE ?? DROP PRIMARY KEY, ADD PRIMARY KEY (${placeholders})`, [
+			table,
+			...primaryColumns,
+		]);
 	}
 
 	override async getDatabaseSize(): Promise<number | null> {
@@ -97,7 +105,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 			/*
 			Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
 			so we're just going to send it and fall back to blocking index creation on error
-			
+
 			https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
 			*/
 			return this.knex

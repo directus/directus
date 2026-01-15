@@ -1,16 +1,16 @@
 import { TYPES } from '@directus/constants';
+import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import { ForbiddenError, isDirectusError } from '@directus/errors';
+import { isSystemField } from '@directus/system-data';
 import type { Field, RawField, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { FieldsService, systemFieldUpdateSchema } from '../services/fields.js';
 import asyncHandler from '../utils/async-handler.js';
-import { isSystemField } from '@directus/system-data';
 
 const router = Router();
 

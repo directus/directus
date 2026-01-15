@@ -3,13 +3,13 @@
 
 /* eslint-disable no-console */
 
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import { execa } from 'execa';
 import fse from 'fs-extra';
 import logSymbols from 'log-symbols';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import ora from 'ora';
 import checkForUpdate from 'update-check';
 import checkRequirements from './check-requirements.js';

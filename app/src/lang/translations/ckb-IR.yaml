@@ -134,7 +134,6 @@ create_policy: دروستکردنی سیاسەت
 create_user: دروستکردنی بەکارهێنەر
 message: پەیام
 delete_panel: سڕینەوەی پانێڵ
-create_webhook: دروستکردنی وێبهووک
 create_custom_translation: دروستکردنی وەرگێڕانی تایبەت
 edit_custom_translation: دەستکاری وەرگێڕانی تایبەت
 no_custom_translations: هیچ وەرگێڕانێکی تایبەتمەند نییە
@@ -631,12 +630,6 @@ file_count: 'هیچ پەڕگەیەک نییە | یەک پەڕگە | {count} پە
 no_files_copy: هیچ پەڕگەیەک نییە لێرە.
 user_count: 'هیچ بەکارهێنەرێک نییە | یەک بەکارهێنەر | {count} بەکارهێنەر'
 no_users_copy: هێشتا هیچ بەکارهێنەرێک نییە لەم پلەیەدا.
-webhooks_count: 'هیچ وێبهووکێک نییە | یەک وێبهووک | {count} وێبهووک'
-webhooks_deprecation_notice: |
-  وێبهۆکەکان بەکارنەهێنراون و بەکارهێنانی زیاتر هان نادرێت.
-
-  تکایە لە جیاتی ئەوە **Flows** بەکاربهێنە لەگەڵ [وێبهوک / داواکاری کارپێکردنی URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: هێشتا هیچ وێبهوکێک ڕێکنەخراوە. بە دروستکردنی دانەیەک لە خوارەوە دەستپێ بکە.
 no_notifications: هیچ ئاگادارکردنەوەیەک نییە
 no_notifications_copy: هەمووتان گیراون!
 activity_log: تۆماری کردار
@@ -667,7 +660,6 @@ action: کردەوە
 ip_address: ناونیشانی IP
 user_agent: نوێنەری بەکارهێنەر
 origin: ڕەسەن
-webhooks: وێبهووکەکان
 decimals: دەییەکان
 value_decimals: بەها دەییەکان
 min_value: کەمترین بەها
@@ -1120,7 +1112,6 @@ settings_roles: پلەکانی بەکارهێنەر
 settings_permissions: سیاسەتەکانی دەستگەیشتن
 settings_project: ڕێکخستنەکان
 settings_appearance: ڕووکار
-settings_webhooks: وێبهووکەکان
 settings_flows: لێشاوەکان
 settings_system_logs: تۆمارەکانی سیستەم
 settings_presets: نیشانکراوەکان
@@ -1198,7 +1189,6 @@ directus_collection:
   directus_settings: بژاردەکانی ڕێکخستنی پڕۆژە
   directus_shares: بەدواداچوونی ماددە هاوبەشیپێکراوە دەرەکیەکان
   directus_users: بەکارهێنەرەکانی سیستەم بۆ سەکۆکە
-  directus_webhooks: ڕێکخستن بۆ داواکارییەکانی HTTP لەسەر بنەمای ڕووداو
   directus_translations: وەرگێڕانە تایبەتەکان
   directus_versions: وەشانەکانی ناوەڕۆک بۆ مادەکان
   directus_extensions: ڕێکخستنی زیادکراوەکان
@@ -1377,18 +1367,6 @@ fields:
     admin_access: دەستگەیشتنی بەڕێوبەر
     ip_access: دەستگەیشتنی IP
     enforce_tfa: داواکردنی دووهۆکاری
-  directus_webhooks:
-    name: ناو
-    method: ڕێگە
-    status: دۆخەکان
-    data: داتا
-    header: سەرپەڕە
-    value: بەها
-    headers: داواکردنی سەرپەڕەکان
-    data_label: ناردنی داتای ڕوداو
-    triggers: وروژاندنەکان
-    actions: کردارەکان
-    collections: کۆمەڵەکان
 field_options:
   directus_settings:
     project_name_placeholder: پڕۆژەکەم...
@@ -1490,19 +1468,6 @@ field_options:
     status_dropdown_suspended: ڕاگیراوە
     status_dropdown_archived: ئەرشیفکراوە
     token: تۆکنێکی پارێزراوی دەستگەیشتن دابنێ...
-  directus_webhooks:
-    status_options_active: چالاک
-    status_options_inactive: ناچالاک
-    data_label: ناردنی داتای ڕوداو
-    triggers_divider: وروژاندنەکان
-    actions_create: دروستکردن
-    actions_update: نوێکردنەوە
-    actions_delete: سڕینەوە
-    actions_login: چوونەژوورەوە
-    headers:
-      header: سەرپەڕە
-      value: بەها
-      add: دانانی سەرپەڕە
 no_fields_in_collection: 'هێشتا هیچ خانەیەک نییە لە "{collection}"'
 no_value: هیچ بەهایەک نییە
 do_nothing: هیچ مەکە
@@ -1581,7 +1546,6 @@ editing_role: 'پلەی {role}'
 editing_policy: 'سیاسەتی {policy}'
 no_permissions: هیچ دەسەڵاتێک نییە
 permission_add_collection: زیادکردنی کۆمەڵە
-creating_webhook: درووستکردنی وێبهووک
 default_label: بنەڕەت
 delete_label: سڕینەوە
 delete_are_you_sure: >-

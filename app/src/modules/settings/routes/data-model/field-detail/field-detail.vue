@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import VDrawer from '@/components/v-drawer.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VInput from '@/components/v-input.vue';
-import { useDialogRoute } from '@/composables/use-dialog-route';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { LocalType } from '@directus/types';
 import { storeToRefs } from 'pinia';
@@ -17,6 +10,13 @@ import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanc
 import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
 import { useFieldDetailStore } from './store/';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = withDefaults(
 	defineProps<{

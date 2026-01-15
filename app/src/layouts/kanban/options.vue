@@ -5,10 +5,10 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { useSync } from '@directus/extensions-sdk';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDetail from '@/components/v-detail.vue';
 import VSelect from '@/components/v-select/v-select.vue';
-import { useSync } from '@directus/extensions-sdk';
 
 const props = withDefaults(
 	defineProps<{

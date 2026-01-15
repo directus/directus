@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
+import { assign } from 'lodash';
+import { nanoid } from 'nanoid';
+import { computed, ref } from 'vue';
+import Draggable from 'vuedraggable';
 import VButton from '@/components/v-button.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -9,11 +14,6 @@ import { useExtensions } from '@/extensions';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { translate } from '@/utils/translate-object-values';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
-import { assign } from 'lodash';
-import { nanoid } from 'nanoid';
-import { computed, ref } from 'vue';
-import Draggable from 'vuedraggable';
 
 type PreviewExtra = {
 	to: string;

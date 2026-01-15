@@ -1,10 +1,9 @@
+import { createRequire } from 'node:module';
 import { useEnv } from '@directus/env';
 import { merge } from 'lodash-es';
 import type { IRateLimiterOptions, IRateLimiterStoreOptions, RateLimiterAbstract } from 'rate-limiter-flexible';
 import { RateLimiterMemory, RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-
-import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 

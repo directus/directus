@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
 import { difference } from 'lodash';
+import { computed, toRefs } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VHighlight from '@/components/v-highlight.vue';
