@@ -5,6 +5,9 @@ import { USER } from '../common/variables';
 import { sleep } from '../utils/sleep';
 import { getReversedTestIndex } from './sequential-tests';
 
+// Auth tests that can run independently without waiting for schema setup tests
+const SKIP_SEQUENCING_PATTERNS = ['/routes/auth/ldap', '/routes/auth/saml', '/routes/auth/oauth'];
+
 export default <Environment>{
 	name: 'custom',
 	transformMode: 'ssr',
@@ -14,13 +17,16 @@ export default <Environment>{
 		const testFilePath = global.__vitest_worker__.ctx.files[0].split('blackbox')[1];
 		const serverUrl = process.env['serverUrl'];
 
+		// Skip sequencing for auth tests that don't depend on schema changes
+		const skipSequencing = SKIP_SEQUENCING_PATTERNS.some((pattern) => testFilePath?.includes(pattern));
+
 		if (!serverUrl || isNaN(totalTestsCount)) {
 			throw 'Missing flow env variables';
 		}
 
 		const testIndex = getReversedTestIndex(testFilePath, global.__vitest_worker__.ctx.config.name);
 
-		while (testIndex !== 0) {
+		while (testIndex !== 0 && !skipSequencing) {
 			try {
 				const response = await axios.get(`${serverUrl}/items/tests_flow_completed`, {
 					params: {
@@ -47,6 +53,9 @@ export default <Environment>{
 
 		return {
 			async teardown() {
+				// Skip teardown for auth tests that don't participate in sequencing
+				if (skipSequencing) return;
+
 				const body = {
 					test_file_path: testFilePath,
 				};

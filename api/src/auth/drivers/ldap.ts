@@ -12,13 +12,13 @@ import {
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
+import type { Entry } from 'ldapts';
 import {
 	Client,
 	InappropriateAuthError,
-	InvalidCredentialsError as LdapInvalidCredentialsError,
 	InsufficientAccessError,
+	InvalidCredentialsError as LdapInvalidCredentialsError,
 } from 'ldapts';
-import type { Entry } from 'ldapts';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
@@ -349,7 +349,8 @@ export class LDAPAuthDriver extends AuthDriver {
 	override async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
-		const userInfo = await this.fetchUserInfo(user.external_identifier!);
+		// Use scope 'base' to search the specific DN entry
+		const userInfo = await this.fetchUserInfo(user.external_identifier!, undefined, 'base');
 
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
 			throw new InvalidCredentialsError();
