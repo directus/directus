@@ -31,6 +31,7 @@ export type CollabFieldContext = {
 };
 
 export type CollabContext = {
+	onEditsUpdate: (changes: Item) => void;
 	registerField: (field: string) => CollabFieldContext;
 };
 
@@ -200,6 +201,7 @@ export function useCollab(
 	);
 
 	const collabContext = {
+		onEditsUpdate: update,
 		registerField(field: string) {
 			const focusedBy = computed(() => {
 				const focusedBy = Object.entries(focused.value).find(([cid, f]) => cid !== connectionId.value && f === field);

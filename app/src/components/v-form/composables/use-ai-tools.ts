@@ -11,6 +11,7 @@ interface UseAiToolsOptions {
 	finalFields: Ref<Field[]>;
 	fieldNames: Ref<string[]>;
 	setValue: (key: string, value: unknown) => void;
+	setItem?: (item: Partial<FieldValues>) => void;
 	values: ComputedRef<FieldValues>;
 }
 
@@ -47,6 +48,8 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 		inputSchema: writeInputSchema,
 		execute: (args) => {
 			const output: string[] = [];
+
+			options.setItem?.(args);
 
 			for (const [key, value] of Object.entries(args)) {
 				options.setValue(key, value);
