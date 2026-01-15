@@ -290,14 +290,7 @@ function useUrls() {
 
 				<VMenu v-else-if="hasDisplayOptions" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
-						<VButton
-							v-tooltip.bottom.end="t('display_options')"
-							x-small
-							rounded
-							icon
-							secondary
-							@click="toggle"
-						>
+						<VButton v-tooltip.bottom.end="t('display_options')" x-small rounded icon secondary @click="toggle">
 							<VIcon small name="display_settings" />
 						</VButton>
 					</template>
