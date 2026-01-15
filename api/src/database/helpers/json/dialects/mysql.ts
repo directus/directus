@@ -1,7 +1,7 @@
-import { JsonHelper } from "../types.js";
+import { JsonHelper } from "../helper.js";
 
 export class JsonHelperMySQL extends JsonHelper {
-	protected override async checkSupport(): Promise<boolean> {
+	protected async checkSupport(): Promise<boolean> {
 		// JSON functions were introduced in MySQL 5.7.8 and MariaDB 10.2.7, we support MySQL 8+ and MariaDB 10.2+
 		// Check if JSON_EXTRACT function is supported
 		try {
