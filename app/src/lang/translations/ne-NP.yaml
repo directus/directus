@@ -68,7 +68,6 @@ create_role: भूमिका सिर्जना
 create_user: प्रयोगकर्ता सिर्जना
 message: सन्देश
 delete_panel: प्यानल मेटाउनुहोस्
-create_webhook: वेबहुक सिर्जना
 invite_users: प्रयोगकर्ताहरूलाई आमन्त्रित गर्नुहोस्
 invite: निमन्त्रणा दिनुहोस्
 email_already_invited: इमेल "{email}" लाई पहिले नै आमन्त्रित गरिएको छ
@@ -457,8 +456,6 @@ file_count: 'कुनै फाइल छैन | एउटा फाइल | {
 no_files_copy: यहाँ कुनै फाइलहरू छैनन्।
 user_count: 'कुनै प्रयोगकर्ता छैन | एक प्रयोगकर्ता | {count} प्रयोगकर्ताहरू'
 no_users_copy: यस भूमिकामा अझै कुनै प्रयोगकर्ताहरू छैनन्।
-webhooks_count: 'कुनै वेबहुक छैन | एउटा वेबहुक | {count} वेबहुकहरू'
-no_webhooks_copy: कुनै पनि वेबहुकहरू अझै कन्फिगर गरिएको छैन। तल एउटा सिर्जना गरेर सुरु गर्नुहोस्।
 no_notifications: कुनै सूचनाहरू छैनन्
 no_notifications_copy: तपाईंले सबै जाँच गर्नुभयो
 activity_log: गतिविधि लग
@@ -487,7 +484,6 @@ action: कार्य
 ip_address: आईपी ठेगाना
 user_agent: प्रयोगकर्ता एजेन्ट
 origin: उत्पत्ति
-webhooks: वेबहुकहरू
 decimals: दशमलव अंक
 min_value: न्यूनतम मान
 max_value: अधिकतम मान
@@ -873,7 +869,6 @@ editing_in_batch: '{count} वस्तुहरू ब्याच सम्प
 no_options_available: कुनै विकल्प उपलब्ध छैन
 settings_data_model: डाटा मोडेल
 settings_project: सेटिंग्सहरु
-settings_webhooks: वेबहुकहरू
 settings_flows: फ्लोहरु
 settings_presets: बुकमार्कहरू
 settings_translations: अनुवादहरू
@@ -932,7 +927,6 @@ directus_collection:
   directus_settings: प्रोजेक्ट कन्फिगरेसन विकल्पहरू
   directus_shares: बाह्य रूपमा साझा वस्तुहरू ट्र्याक गर्दछ
   directus_users: प्लेटफर्मको लागि सिस्टम प्रयोगकर्ताहरू
-  directus_webhooks: एभेन्ट-आधारित HTTP अनुरोधहरूको लागि कन्फिगरेसन
   directus_translations: कस्टम अनुवादहरु
 fields:
   directus_activity:
@@ -1063,18 +1057,6 @@ fields:
     users: भूमिकामा प्रयोगकर्ताहरू
   directus_policies:
     description: विवरणः
-  directus_webhooks:
-    name: नाम
-    method: विधि
-    status: स्थिति
-    data: डाटा
-    header: हेडर
-    value: मान
-    headers: हेडर अनुरोध गर्नुहोस्
-    data_label: घटना डेटा पठाउनुहोस्
-    triggers: ट्रिगरहरू
-    actions: कार्यहरू
-    collections: सङ्ग्रहहरू
 field_options:
   directus_settings:
     project_name_placeholder: मेरो परियोजना...
@@ -1152,19 +1134,6 @@ field_options:
     status_dropdown_active: सक्रिय
     status_dropdown_suspended: निलम्बित
     status_dropdown_archived: अभिलेख राखिएको
-  directus_webhooks:
-    status_options_active: सक्रिय
-    status_options_inactive: निष्क्रिय
-    data_label: घटना डेटा पठाउनुहोस्
-    triggers_divider: ट्रिगरहरू
-    actions_create: सिर्जना गर्नुहोस्
-    actions_update: अद्यावधिक
-    actions_delete: मेट्नुहोस्
-    actions_login: लग - इन
-    headers:
-      header: हेडर
-      value: मान
-      add: हेडर थप्नुहोस्
 do_nothing: केहि नगर
 generate_and_save_uuid: UUID उत्पन्न र बचत गर्नुहोस्
 save_current_user_id: हालको प्रयोगकर्ता आईडी बचत गर्नुहोस्
@@ -1211,7 +1180,6 @@ continue_label: जारी राख्नुहोस्
 continue_as: >-
   {name} हाल प्रमाणिकरण गरिएको छ। यदि तपाइँ यो खाता चिन्नुहुन्छ भने, जारी राख्नुहोस् थिच्नुहोस्।
 editing_role: '{role} भूमिका'
-creating_webhook: वेबहुक सिर्जना गर्दै
 default_label: पूर्वनिर्धारित
 delete_label: मेट्नुहोस्
 delete_are_you_sure: >-
