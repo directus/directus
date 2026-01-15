@@ -1,7 +1,7 @@
-import { JsonHelper } from '../helper.js';
+import { CapabilitiesHelper } from '../types.js';
 
-export class JsonHelperOracle extends JsonHelper {
-	protected async checkSupport(): Promise<boolean> {
+export class CapabilitiesHelperOracle extends CapabilitiesHelper {
+	protected override async checkJsonSupport(): Promise<boolean> {
 		// JSON functions were introduced in Oracle Database 12c Release 1 (12.1)
 		// Check if JSON_VALUE function is supported
 		try {

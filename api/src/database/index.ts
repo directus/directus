@@ -341,7 +341,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 		}
 	}
 
-	const jsonSupport = await helpers.json.supported();
+	const jsonSupport = await helpers.capabilities.supportsJsonQueries();
 
 	if (!jsonSupport) {
 		switch (client) {
