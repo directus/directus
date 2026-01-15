@@ -1,4 +1,5 @@
 import type { Knex } from 'knex';
+import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -49,4 +50,44 @@ export class FnHelperMySQL extends FnHelper {
 
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
+
+	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
+		const { field, path } = parseJsonFunction(functionCall);
+		const collectionName = options?.originalCollectionName || table;
+		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
+
+		if (!fieldSchema || fieldSchema.type !== 'json') {
+			throw new Error(`Field ${field} is not a JSON field`);
+		}
+
+		// Convert dot notation to MySQL JSON path
+		// "data.items[0].name" → "$['items'][0]['name']"
+		const jsonPath = convertToMySQLPath(path);
+
+		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, field, jsonPath]);
+	}
+}
+
+export function convertToMySQLPath(path: string): string {
+	// ".color" → "$['color']" (bracket notation for compatibility)
+	// ".items[0].name" → "$['items'][0]['name']"
+
+	const parts = path
+		.substring(1)
+		.split(/\.|\[|\]/g)
+		.filter(Boolean);
+
+	let result = '$';
+
+	for (const part of parts) {
+		const num = Number(part);
+		
+		if (Number.isInteger(num) && num >= 0 && String(num) === part) {
+			result += `[${part}]`;
+		} else {
+			result += `['${part}']`;
+		}
+	}
+
+	return result;
 }
