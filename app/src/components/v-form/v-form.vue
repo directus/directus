@@ -101,7 +101,7 @@ const {
 	isFieldVisible,
 } = useForm();
 
-useAiTools({ finalFields, fieldNames, setValue, values, setItem: props.collabContext?.onEditsUpdate });
+useAiTools({ finalFields, fieldNames, setValue, values, collabContext: props.collabContext });
 
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
