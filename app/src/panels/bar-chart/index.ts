@@ -28,9 +28,9 @@ export default definePanel({
 			},
 		};
 
-		const isXAxisRelational = options['xAxisDisplayField'];
+		const xAxisHasDisplayField = options['xAxisDisplayField'];
 
-		if (isXAxisRelational) {
+		if (xAxisHasDisplayField) {
 			const relationsStore = useRelationsStore();
 			const fieldsStore = useFieldsStore();
 			const relation = relationsStore.getRelationForField(options['collection'], options['xAxis']);
