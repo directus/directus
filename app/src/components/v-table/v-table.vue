@@ -7,6 +7,7 @@ import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import VProgressLinear from '@/components/v-progress-linear.vue';
+import { useShiftSelection } from '@/composables/use-shift-selection';
 import { hideDragImage } from '@/utils/hide-drag-image';
 
 const HeaderDefaults: Header = {
@@ -122,6 +123,8 @@ const internalSort = computed<Sort>(
 
 const reordering = ref<boolean>(false);
 
+const tableRowLookup = ref(new Map<number, { item: Item; row: InstanceType<typeof TableRow> }>());
+
 const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
 const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
 const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
@@ -176,6 +179,8 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	}
 });
 
+const shiftSelection = useShiftSelection();
+
 function itemHasNoKeyYet(item: Item) {
 	return !item[props.itemKey] && item.$index !== undefined;
 }
@@ -183,28 +188,82 @@ function itemHasNoKeyYet(item: Item) {
 function onItemSelected(event: ItemSelectEvent) {
 	if (props.disabled) return;
 
+	const currentIndex = props.items.findIndex((item: Item) => {
+		if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
+			return item.$index === event.item.$index;
+		}
+
+		if (props.selectionUseKeys) {
+			return item[props.itemKey] === event.item[props.itemKey];
+		}
+
+		return item[props.itemKey] === event.item[props.itemKey];
+	});
+
+	const rowRef: { item: Item; row: InstanceType<typeof TableRow> } | undefined = tableRowLookup.value.get(currentIndex);
+
+	const shiftFlag = rowRef?.row.shiftFlag ?? false;
+
 	emit('item-selected', event);
 
 	let selection = clone(props.modelValue) as any[];
 
-	if (event.value === true) {
-		if (props.selectionUseKeys) {
-			selection.push(event.item[props.itemKey]);
-		} else {
-			selection.push(event.item);
-		}
-	} else {
-		selection = selection.filter((item: Item) => {
+	const selectionMask: boolean[] = props.items.map((item: Item) => {
+		for (const selectedItem of selection) {
 			if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
-				return item.$index !== event.item.$index;
+				if (selectedItem.$index === item.$index) {
+					return true;
+				}
+			} else if (props.selectionUseKeys) {
+				if (selectedItem === item[props.itemKey]) {
+					return true;
+				}
+			} else {
+				if (selectedItem[props.itemKey] === item[props.itemKey]) {
+					return true;
+				}
 			}
+		}
 
-			if (props.selectionUseKeys) {
-				return item !== event.item[props.itemKey];
+		return false;
+	});
+
+	if (props.showSelect === 'multiple') {
+		if (shiftFlag) {
+			const newSelectionMask = shiftSelection.updateSelection(selectionMask, currentIndex);
+
+			const itemsToSelect = props.items.filter((_item: Item, index: number) => newSelectionMask[index]);
+
+			selection.splice(0);
+
+			for (const item of itemsToSelect) {
+				if (props.selectionUseKeys) {
+					selection.push(item[props.itemKey]);
+				} else {
+					selection.push(item);
+				}
 			}
+		} else {
+			if (event.value === true) {
+				if (props.selectionUseKeys) {
+					selection.push(event.item[props.itemKey]);
+				} else {
+					selection.push(event.item);
+				}
+			} else {
+				selection = selection.filter((item: Item) => {
+					if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
+						return item.$index !== event.item.$index;
+					}
 
-			return item[props.itemKey] !== event.item[props.itemKey];
-		});
+					if (props.selectionUseKeys) {
+						return item !== event.item[props.itemKey];
+					}
+
+					return item[props.itemKey] !== event.item[props.itemKey];
+				});
+			}
+		}
 	}
 
 	if (props.showSelect === 'one') {
@@ -212,6 +271,40 @@ function onItemSelected(event: ItemSelectEvent) {
 	}
 
 	emit('update:modelValue', selection);
+}
+
+/** Helper function to store <table-row> references in a lookup map.
+ * It is used at the function ref in <table-row> to keep track of the rows.
+ * @param el The `<table-row>` element reference or null if the row was removed
+ * @param element The item that corresponds to the row
+ */
+function setTableRowRef(el: any, element: Item) {
+	const elementIndex = props.items.findIndex((item: Item) => {
+		if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
+			return item.$index === element.$index;
+		}
+
+		if (props.selectionUseKeys) {
+			return item[props.itemKey] === element[props.itemKey];
+		}
+
+		return item[props.itemKey] === element[props.itemKey];
+	});
+
+	if (elementIndex < 0) {
+		//This should never happen, but if it does, we throw an error to help debugging
+		throw new Error(
+			`setTableRowRef: Mismatch between items and table-row references. Could not find index for element: ${JSON.stringify(
+				element,
+			)}`,
+		);
+	}
+
+	if (el) {
+		tableRowLookup.value.set(elementIndex, { item: element, row: el });
+	} else {
+		tableRowLookup.value.delete(elementIndex);
+	}
 }
 
 function getSelectedState(item: Item) {
