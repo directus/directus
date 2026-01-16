@@ -205,9 +205,9 @@ export class CollabHandler {
 				});
 
 			if ('changes' in message) {
-				room.update(client, { [message.field]: message.changes });
+				await room.update(client, { [message.field]: message.changes });
 			} else {
-				room.unset(client, message.field);
+				await room.unset(client, message.field);
 			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'update');
@@ -248,7 +248,7 @@ export class CollabHandler {
 			}
 
 			if (message.changes) {
-				room.update(client, message.changes);
+				await room.update(client, message.changes);
 			}
 		} catch (err) {
 			handleWebSocketError(client, err, 'update');
