@@ -62,7 +62,7 @@ export class Messenger {
 		this.orders[client.uid] = 0;
 
 		this.store(async (store) => {
-			const instances = await store.get('instances');
+			const instances = (await store.get('instances')) ?? {};
 
 			instances[this.uid] = [...(instances[this.uid] ?? []), client.uid];
 
@@ -79,7 +79,7 @@ export class Messenger {
 		delete this.orders[uid];
 
 		this.store(async (store) => {
-			const instances = await store.get('instances');
+			const instances = (await store.get('instances')) ?? {};
 
 			instances[this.uid] = (instances[this.uid] ?? []).filter((c) => c !== uid);
 
@@ -88,10 +88,9 @@ export class Messenger {
 	}
 
 	async removeInvalidClients(): Promise<ClientID[]> {
-		const instances = await this.store(async (store) => await store.get('instances'));
+		const instances = (await this.store(async (store) => await store.get('instances'))) ?? {};
 
 		const inactiveInstances = new Set(Object.keys(instances));
-
 		inactiveInstances.delete(this.uid);
 
 		const pongCollector = (message: BroadcastMessage) => {
@@ -116,12 +115,27 @@ export class Messenger {
 
 		const disconnectedClients: ClientID[] = [];
 
-		for (const instance of inactiveInstances) {
-			disconnectedClients.push(...(instances[instance] ?? []));
-			delete instances[instance];
+		if (inactiveInstances.size === 0) {
+			return disconnectedClients;
 		}
 
-		this.store(async (store) => await store.set('instances', instances));
+		// Reread state to avoid overwriting updates during the timeout phase
+		await this.store(async (store) => {
+			const current = (await store.get('instances')) ?? {};
+			let changed = false;
+
+			for (const deadId of inactiveInstances) {
+				if (current[deadId]) {
+					disconnectedClients.push(...(current[deadId] ?? []));
+					delete current[deadId];
+					changed = true;
+				}
+			}
+
+			if (changed) {
+				await store.set('instances', current);
+			}
+		});
 
 		return disconnectedClients;
 	}
