@@ -73,6 +73,7 @@ condition_rules: استایل شرطی
 input: ورودی
 invalid_input: ورودی نامعتبر
 not_a_number: نا عدد
+invalid_range_min:
 maps: نقشه‌ها
 switch_user: تغییر کاربر
 item_creation: ساخت آیتم
@@ -1587,6 +1588,8 @@ ai:
   settings: تنظیمات
   tool_approval:
     disabled: غیرفعال شده
+  tool_descriptions:
+    relations:
 ai_tools:
   items: آیتمها
   files: فایل ها
