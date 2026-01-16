@@ -1,11 +1,7 @@
+import { randomUUID } from 'crypto';
 import { type BroadcastMessage, COLLAB_BUS } from '@directus/types/collab';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { Messenger } from './messenger.js';
-
-// Mock dependencies
-vi.mock('crypto', () => ({
-	randomUUID: vi.fn(() => 'mock-uuid'),
-}));
 
 vi.mock('@directus/env', () => ({
 	useEnv: () => ({
@@ -13,7 +9,6 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
-// Mock Bus
 const mockBus = {
 	publish: vi.fn(),
 	subscribe: vi.fn(),
@@ -51,6 +46,7 @@ vi.mock('./store.js', () => {
 					uid,
 					nextLock.catch(() => {}),
 				);
+
 				return nextLock;
 			};
 		},
@@ -73,11 +69,11 @@ describe('Messenger', () => {
 
 	describe('constructor', () => {
 		test('initializes with a UUID and registers instance', async () => {
-			expect(messenger.uid).toBe('mock-uuid');
+			expect(messenger.uid).toBeDefined();
 			expect(mockBus.subscribe).toHaveBeenCalled();
 
 			const instances = mockData.get('rooms:instances');
-			expect(instances).toEqual({ 'mock-uuid': [] });
+			expect(instances).toEqual({ [messenger.uid]: [] });
 		});
 
 		test('subscribes to COLLAB_BUS', () => {
@@ -133,7 +129,7 @@ describe('Messenger', () => {
 			await new Promise(process.nextTick);
 
 			const instances = mockData.get('rooms:instances');
-			expect(instances['mock-uuid']).toContain('client-1');
+			expect(instances[messenger.uid]).toContain('client-1');
 		});
 
 		test('addClient sets up close handler', () => {
@@ -155,7 +151,7 @@ describe('Messenger', () => {
 			await new Promise(process.nextTick);
 
 			const instances = mockData.get('rooms:instances');
-			expect(instances['mock-uuid']).not.toContain('client-1');
+			expect(instances[messenger.uid]).not.toContain('client-1');
 		});
 
 		test('client close triggers removeClient', () => {
@@ -229,11 +225,14 @@ describe('Messenger', () => {
 		test('removes inactive instances and returns disconnected clients', async () => {
 			vi.useFakeTimers();
 
+			const deadInstance = randomUUID();
+			const aliveInstance = randomUUID();
+
 			// Setup store with dead instance
 			mockData.set('rooms:instances', {
-				'mock-uuid': [], // current
-				'00000000-0000-0000-0000-000000000000': ['client-A', 'client-B'],
-				'00000000-0000-0000-0000-000000000001': ['client-C'],
+				[messenger.uid]: [], // current
+				[deadInstance]: ['client-A', 'client-B'],
+				[aliveInstance]: ['client-C'],
 			});
 
 			const promise = messenger.removeInvalidClients();
@@ -243,11 +242,12 @@ describe('Messenger', () => {
 
 			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
 				type: 'ping',
-				instance: '00000000-0000-0000-0000-000000000000',
+				instance: deadInstance,
 			});
+
 			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
 				type: 'ping',
-				instance: '00000000-0000-0000-0000-000000000001',
+				instance: aliveInstance,
 			});
 
 			// We need to find the listener created inside removeInvalidClients
@@ -255,15 +255,15 @@ describe('Messenger', () => {
 			const lastSubscribeCall = mockBus.subscribe.mock.calls.at(-1);
 			const pongHandler = lastSubscribeCall?.[1];
 
-			pongHandler?.({ type: 'pong', instance: '00000000-0000-0000-0000-000000000001' } as BroadcastMessage);
+			pongHandler?.({ type: 'pong', instance: aliveInstance } as BroadcastMessage);
 
 			await vi.advanceTimersByTimeAsync(1500);
 
 			const disconnected = await promise;
 
 			const instances = mockData.get('rooms:instances');
-			expect(instances).toHaveProperty('00000000-0000-0000-0000-000000000001');
-			expect(instances).not.toHaveProperty('00000000-0000-0000-0000-000000000000');
+			expect(instances).toHaveProperty(aliveInstance);
+			expect(instances).not.toHaveProperty(deadInstance);
 
 			expect(disconnected).toEqual(['client-A', 'client-B']);
 
@@ -287,7 +287,7 @@ describe('Messenger', () => {
 
 			// 1. Initial State: dead-uuid exists
 			mockData.set('rooms:instances', {
-				'mock-uuid': [],
+				[messenger.uid]: [],
 				'dead-uuid': ['client-A'],
 			});
 
