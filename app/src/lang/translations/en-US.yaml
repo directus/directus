@@ -573,7 +573,6 @@ system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
 display_label: Display
-display_field: Display Field
 x_axis_display_field: X-Axis Display Field
 today: Today
 yesterday: Yesterday
