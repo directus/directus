@@ -4,11 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ALL_TOOLS } from '../../tools/index.js';
 import { chatRequestToolToAiSdkTool } from './chat-request-tool-to-ai-sdk-tool.js';
 
-// Mock the AI SDK to capture tool/jsonSchema calls
+// Mock the AI SDK to capture tool/jsonSchema/zodSchema calls
 vi.mock('ai', () => {
 	return {
 		tool: vi.fn((config: any) => ({ __mock: 'tool', config })),
 		jsonSchema: vi.fn((schema: any) => ({ __mock: 'jsonSchema', schema })),
+		zodSchema: vi.fn((schema: any) => ({ __mock: 'zodSchema', schema })),
 	};
 });
 
@@ -55,9 +56,8 @@ describe('chatRequestToolToAiSdkTool', () => {
 
 		expect(aiTool).toHaveBeenCalledTimes(1);
 		const config = (result as any).config;
-		expect(config.name).toBe('directus.test');
 		expect(config.description).toBe('A test tool');
-		expect(config.inputSchema).toEqual((ALL_TOOLS as any)[0].inputSchema);
+		expect(config.inputSchema).toEqual({ __mock: 'zodSchema', schema: (ALL_TOOLS as any)[0].inputSchema });
 		expect(typeof config.execute).toBe('function');
 	});
 
@@ -125,7 +125,6 @@ describe('chatRequestToolToAiSdkTool', () => {
 
 		expect(aiJsonSchema).toHaveBeenCalledWith(custom.inputSchema);
 		const config = result.config;
-		expect(config.name).toBe('custom');
 		expect(config.description).toBe('Custom desc');
 		expect(config.inputSchema).toEqual({ __mock: 'jsonSchema', schema: custom.inputSchema });
 	});

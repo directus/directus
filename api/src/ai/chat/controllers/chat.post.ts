@@ -20,6 +20,22 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 
 	const { provider, model, messages: rawMessages, tools: requestedTools, toolApprovals } = parseResult.data;
 
+	const aiSettings = res.locals['ai'].settings;
+
+	const allowedModelsMap: Record<string, string[] | null> = {
+		openai: aiSettings.openaiAllowedModels,
+		anthropic: aiSettings.anthropicAllowedModels,
+		google: aiSettings.googleAllowedModels,
+	};
+
+	const allowedModels = allowedModelsMap[provider];
+
+	// For standard providers: null/empty = no models allowed, must be in list
+	// openai-compatible skips validation (not in map, so allowedModels is undefined)
+	if (allowedModels !== undefined && (!allowedModels || allowedModels.length === 0 || !allowedModels.includes(model))) {
+		throw new ForbiddenError({ reason: 'Model not allowed for this provider' });
+	}
+
 	if (rawMessages.length === 0) {
 		throw new InvalidPayloadError({ reason: `"messages" must not be empty` });
 	}
@@ -46,11 +62,11 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		throw new InvalidPayloadError({ reason: validationResult.error.message });
 	}
 
-	const stream = createUiStream(validationResult.data, {
+	const stream = await createUiStream(validationResult.data, {
 		provider,
 		model,
 		tools: tools,
-		apiKeys: res.locals['ai'].apiKeys,
+		aiSettings,
 		systemPrompt: res.locals['ai'].systemPrompt,
 		onUsage: (usage) => {
 			res.write(`data: ${JSON.stringify({ type: 'data-usage', data: usage })}\n\n`);

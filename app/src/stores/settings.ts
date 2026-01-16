@@ -67,6 +67,14 @@ export const useSettingsStore = defineStore({
 				providers.push('anthropic');
 			}
 
+			if (this.settings?.ai_google_api_key) {
+				providers.push('google');
+			}
+
+			if (this.settings?.ai_openai_compatible_api_key && this.settings?.ai_openai_compatible_base_url) {
+				providers.push('openai-compatible');
+			}
+
 			return providers;
 		},
 	},
