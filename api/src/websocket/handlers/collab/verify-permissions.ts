@@ -3,6 +3,7 @@ import getDatabase from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
+import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
@@ -83,17 +84,23 @@ export async function verifyPermissions(
 			itemData = await service.readSingleton({ fields: fieldsToFetch });
 		}
 
-		const primaryKeys: (string | number)[] = item ? [item] : [];
+		let allowedFields: string[] = [];
 
-		const validationContext = {
-			collection,
-			accountability,
-			action,
-			primaryKeys,
-			returnAllowedRootFields: true,
-		};
+		if (item || schema.collections[collection]?.singleton) {
+			const primaryKeys: (string | number)[] = item ? [item] : [];
 
-		const allowedFields = (await validateItemAccess(validationContext, { knex, schema })).allowedRootFields || [];
+			const validationContext = {
+				collection,
+				accountability,
+				action,
+				primaryKeys,
+				returnAllowedRootFields: true,
+			};
+
+			allowedFields = (await validateItemAccess(validationContext, { knex, schema })).allowedRootFields || [];
+		} else {
+			allowedFields = await fetchAllowedFields({ accountability, action, collection }, { knex, schema });
+		}
 
 		// Determine TTL and relational dependencies for cache invalidation
 		const { ttlMs, dependencies } = calculateCacheMetadata(
