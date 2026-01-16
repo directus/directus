@@ -120,7 +120,7 @@ export async function verifyPermissions(
 	} catch (err) {
 		useLogger().error(
 			err,
-			`[Collab] Room.verifyPermissions failed for user "${accountability.user}", collection "${collection}", and item "${item}"`,
+			`[Collab] verifyPermissions failed for user "${accountability.user}", collection "${collection}", and item "${item}"`,
 		);
 
 		return [];
