@@ -57,7 +57,6 @@ create_panel: Create Panel
 create_role: Create Role
 create_user: Create User
 delete_panel: Delete Panel
-create_webhook: Create Webhook
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -404,8 +403,6 @@ file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
-webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
 activity_log: Activity Log
@@ -433,7 +430,6 @@ activity_item: Activity Item
 action: Action
 ip_address: IP Address
 user_agent: User Agent
-webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
 min_value: Min Value
@@ -742,7 +738,6 @@ editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
 settings_project: Settings
-settings_webhooks: Webhooks
 settings_presets: Bookmarks
 settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
@@ -799,7 +794,6 @@ directus_collection:
   directus_sessions: User session information
   directus_settings: Project configuration options
   directus_users: System users for the platform
-  directus_webhooks: Configuration for event-based HTTP requests
 fields:
   directus_activity:
     item: Item Primary Key
@@ -937,18 +931,6 @@ fields:
     users: Users in Role
   directus_policies:
     description: Description
-  directus_webhooks:
-    name: Name
-    method: Method
-    status: Status
-    data: Data
-    header: Header
-    value: Value
-    headers: Request Headers
-    data_label: Send Event Data
-    triggers: Triggers
-    actions: Actions
-    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
@@ -1037,19 +1019,6 @@ field_options:
     status_dropdown_suspended: Suspended
     status_dropdown_archived: Archived
     token: Enter a secure access token...
-  directus_webhooks:
-    status_options_active: Active
-    status_options_inactive: Inactive
-    data_label: Send Event Data
-    triggers_divider: Triggers
-    actions_create: Create
-    actions_update: Update
-    actions_delete: Delete
-    actions_login: Login
-    headers:
-      header: Header
-      value: Value
-      add: Add Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
@@ -1109,7 +1078,6 @@ continue_label: Continue
 continue_as: >-
   {name} is currently authenticated. If you recognise this account, press continue.
 editing_role: '{role} Role'
-creating_webhook: Creating Webhook
 default_label: Default
 delete_label: Delete
 delete_are_you_sure: >-

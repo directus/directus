@@ -232,9 +232,6 @@ fields:
     description: Опис
   directus_policies:
     description: Опис
-  directus_webhooks:
-    name: Име
-    status: Стање
 field_options:
   directus_activity:
     create: Креирај
@@ -244,8 +241,6 @@ field_options:
   directus_roles:
     fields:
       name_name: Име
-  directus_webhooks:
-    actions_create: Креирај
 comment: Коментар
 ai_tools:
   files: Фајлови
@@ -302,7 +297,12 @@ layouts:
     compact: Компактни
     cozy: Удобно
 both: Оба
+triggers:
+  webhook:
+    method: Метод
 operations:
   mail:
     template: Шаблон
+  request:
+    method: Метод
 compact: Компактни

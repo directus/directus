@@ -62,7 +62,6 @@ create_role: भूमिका बनाएं
 create_user: यूजर बनाएं
 message: संदेश
 delete_panel: पैनल हटाएं
-create_webhook: Webhook बनाएं
 invite_users: यूज़र आमंत्रित करें
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
@@ -344,7 +343,6 @@ information: जानकारी
 report_bug: बग रिपोर्ट करें
 request_feature: सुविधा के लिए अनुरोध करें
 csv: CSV
-webhooks: Webhooks
 upper_limit: ऊपरी सीमा
 lower_limit: निचली सीमा
 documentation: दस्तावेज़ीकरण
@@ -392,7 +390,6 @@ wysiwyg_options:
   forecolor: अग्रभूमि रंग
   backcolor: पृष्ठभूमि रंग
   selectall: सभी चुनें
-settings_webhooks: Webhooks
 settings_presets: पृष्टस्मृतियाँ
 fields:
   directus_collections:
@@ -418,8 +415,6 @@ fields:
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
     name: भूमिका नाम
-  directus_webhooks:
-    name: नाम
 field_options:
   directus_activity:
     create: Create
@@ -431,9 +426,6 @@ field_options:
   directus_roles:
     fields:
       name_name: नाम
-  directus_webhooks:
-    actions_create: Create
-    actions_update: Update
 live_preview:
   new_window: नए विंडो में खोलें
 ai:
@@ -491,6 +483,9 @@ displays:
 layouts:
   cards:
     title: शीर्षक
+triggers:
+  webhook:
+    method: विधि
 operations:
   log:
     message: संदेश
@@ -500,4 +495,5 @@ operations:
     subject: विषय
   request:
     url: URL
+    method: विधि
 standard: नार्मल फील्ड
