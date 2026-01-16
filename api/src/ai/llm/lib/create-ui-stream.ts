@@ -1,6 +1,3 @@
-import { type AnthropicProvider, createAnthropic } from '@ai-sdk/anthropic';
-import { createOpenAI, type OpenAIProvider } from '@ai-sdk/openai';
-import { ServiceUnavailableError } from '@directus/errors';
 import {
 	convertToModelMessages,
 	type LanguageModelUsage,
@@ -11,36 +8,20 @@ import {
 	type UIMessage,
 } from 'ai';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
+import type { ProviderOptions } from '../types/model-options.js';
+import { getVercelModelProvider } from '../utils/get-vercel-model-provider.js';
 
 export interface CreateUiStreamOptions {
-	provider: 'openai' | 'anthropic';
-	model: string;
 	tools: { [x: string]: Tool };
-	apiKeys: {
-		openai: string | null;
-		anthropic: string | null;
-	};
 	systemPrompt?: string;
 	onUsage?: (usage: Pick<LanguageModelUsage, 'inputTokens' | 'outputTokens' | 'totalTokens'>) => void | Promise<void>;
 }
 
 export const createUiStream = (
 	messages: UIMessage[],
-	{ provider, model, tools, apiKeys, systemPrompt, onUsage }: CreateUiStreamOptions,
+	{ provider, model, tools, apiKeys, systemPrompt, onUsage }: ProviderOptions & CreateUiStreamOptions,
 ): StreamTextResult<Record<string, Tool<any, any>>, any> => {
-	if (apiKeys[provider] === null) {
-		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
-	}
-
-	let modelProvider: OpenAIProvider | AnthropicProvider;
-
-	if (provider === 'openai') {
-		modelProvider = createOpenAI({ apiKey: apiKeys.openai! });
-	} else if (provider === 'anthropic') {
-		modelProvider = createAnthropic({ apiKey: apiKeys.anthropic! });
-	} else {
-		throw new Error(`Unexpected provider given: "${provider}"`);
-	}
+	const modelProvider = getVercelModelProvider(provider, apiKeys);
 
 	systemPrompt ||= SYSTEM_PROMPT;
 

@@ -1,6 +1,6 @@
 import { type JSONSchema7 } from 'ai';
 import { z } from 'zod';
-import { parseJsonSchema7 } from '../utils/parse-json-schema-7.js';
+import { zodJsonSchema7Parser } from '../utils/zod-jsonschema7-parser.js';
 import { ProviderAnthropic, ProviderOpenAi } from './providers.js';
 
 export const ChatRequestTool = z.union([
@@ -8,17 +8,7 @@ export const ChatRequestTool = z.union([
 	z.object({
 		name: z.string(),
 		description: z.string(),
-		inputSchema: z.custom<JSONSchema7>(
-			(schema: unknown): schema is JSONSchema7 => {
-				try {
-					parseJsonSchema7(schema as unknown);
-					return true;
-				} catch {
-					return false;
-				}
-			},
-			{ message: 'Invalid JSON schema' },
-		),
+		inputSchema: z.custom<JSONSchema7>(zodJsonSchema7Parser, { message: 'Invalid JSON schema' }),
 	}),
 ]);
 
