@@ -56,17 +56,23 @@ const schema = new SchemaBuilder()
 	.build();
 
 // Catch-all mock item used to satisfy existence checks for nested updates
-const mockItem = new Proxy({}, {
-	// Prevents the proxy from being mistaken for a Promise by await
-	get: (_target, prop) => (prop === 'then' ? undefined : 'value'),
-	has: (_target, _prop) => true,
-	ownKeys: (_target) => [],
-	getOwnPropertyDescriptor: (_target, _prop) => ({ configurable: true, enumerable: true, value: 'value' }),
-});
+const mockItem = new Proxy(
+	{},
+	{
+		// Prevents the proxy from being mistaken for a Promise by await
+		get: (_target, prop) => (prop === 'then' ? undefined : 'value'),
+		has: (_target, _prop) => true,
+		ownKeys: (_target) => [],
+		getOwnPropertyDescriptor: (_target, _prop) => ({ configurable: true, enumerable: true, value: 'value' }),
+	},
+);
 
-vi.mocked(ItemsService).mockImplementation(() => ({
-	readOne: vi.fn().mockResolvedValue(mockItem),
-}) as any);
+vi.mocked(ItemsService).mockImplementation(
+	() =>
+		({
+			readOne: vi.fn().mockResolvedValue(mockItem),
+		}) as any,
+);
 
 beforeEach(() => {
 	vi.clearAllMocks();
@@ -93,7 +99,15 @@ describe('sanitizePayload', () => {
 
 		test('filters hash fields', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['*'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const result = await sanitizePayload(
@@ -107,7 +121,15 @@ describe('sanitizePayload', () => {
 
 		test('filters fields based on permissions', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['title'], policy: null, permissions: null, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['title'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const result = await sanitizePayload(
@@ -136,9 +158,12 @@ describe('sanitizePayload', () => {
 		test('admin bypasses nested update existence checks', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([]);
 
-			vi.mocked(ItemsService).mockImplementationOnce(() => ({
-				readOne: () => Promise.reject({ code: 'RECORD_NOT_FOUND', status: 404 }),
-			} as any));
+			vi.mocked(ItemsService).mockImplementationOnce(
+				() =>
+					({
+						readOne: () => Promise.reject({ code: 'RECORD_NOT_FOUND', status: 404 }),
+					}) as any,
+			);
 
 			const result = await sanitizePayload(
 				'articles',
@@ -153,7 +178,15 @@ describe('sanitizePayload', () => {
 	describe('allowedFields Parameter', () => {
 		test('restricts root fields to allowedFields even if DB permissions are broader', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['*'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const result = await sanitizePayload(
@@ -181,8 +214,24 @@ describe('sanitizePayload', () => {
 
 		test('allowedFields applies to root only while permissionsByCollection applies to nested M2O', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['id', 'title'], policy: null, permissions: null, presets: [], validation: null },
-				{ action: 'read', collection: 'authors', fields: ['id', 'name'], policy: null, permissions: null, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['id', 'title'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
+				{
+					action: 'read',
+					collection: 'authors',
+					fields: ['id', 'name'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const result = await sanitizePayload(
@@ -201,13 +250,33 @@ describe('sanitizePayload', () => {
 
 		test('allowedFields applies to root only while permissionsByCollection applies to nested O2M', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-				{ action: 'read', collection: 'comments', fields: ['text'], policy: null, permissions: null, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['*'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
+				{
+					action: 'read',
+					collection: 'comments',
+					fields: ['text'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const result = await sanitizePayload(
 				'articles',
-				{ id: 1, title: 'Hello World', comments: { create: [{ id: 1, text: 'Comment', internal_note: 'Note' }], update: [], delete: [] } },
+				{
+					id: 1,
+					title: 'Hello World',
+					comments: { create: [{ id: 1, text: 'Comment', internal_note: 'Note' }], update: [], delete: [] },
+				},
 				{ schema, accountability, knex: db },
 				['id', 'title', 'comments'],
 			);
@@ -224,8 +293,24 @@ describe('sanitizePayload', () => {
 		describe('M2O', () => {
 			test('filters fields on nested collection', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'authors', fields: ['id', 'name'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'authors',
+						fields: ['id', 'name'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -243,7 +328,15 @@ describe('sanitizePayload', () => {
 
 			test('removes nested object if no collection access', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -259,8 +352,24 @@ describe('sanitizePayload', () => {
 		describe('O2M', () => {
 			test('filters fields on nested items', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'comments', fields: ['id', 'text'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'comments',
+						fields: ['id', 'text'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -278,7 +387,15 @@ describe('sanitizePayload', () => {
 
 			test('removes relation if all nested items are filtered in simple array', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -292,7 +409,15 @@ describe('sanitizePayload', () => {
 
 			test('removes relation if all operations in detailed syntax are filtered', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -306,8 +431,24 @@ describe('sanitizePayload', () => {
 
 			test('filters empty objects from detailed update syntax', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'comments', fields: ['id', 'text'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'comments',
+						fields: ['id', 'text'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -323,7 +464,15 @@ describe('sanitizePayload', () => {
 		describe('M2M', () => {
 			test('removes relation if junction has no permissions', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -337,9 +486,33 @@ describe('sanitizePayload', () => {
 
 			test('filters nested collection fields via junction', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'articles_tags_junction', fields: ['tags_id'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'tags', fields: ['id', 'tag'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'articles_tags_junction',
+						fields: ['tags_id'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'tags',
+						fields: ['id', 'tag'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -356,9 +529,33 @@ describe('sanitizePayload', () => {
 
 			test('handles detailed update syntax', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'articles_tags_junction', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'tags', fields: ['tag'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'articles_tags_junction',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'tags',
+						fields: ['tag'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -377,10 +574,42 @@ describe('sanitizePayload', () => {
 		describe('A2O', () => {
 			test('filters fields on multiple related collections', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([
-					{ action: 'read', collection: 'articles', fields: ['id', 'a2o_items'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'articles_builder', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'authors', fields: ['name'], policy: null, permissions: null, presets: [], validation: null },
-					{ action: 'read', collection: 'a2o_collection', fields: ['id'], policy: null, permissions: null, presets: [], validation: null },
+					{
+						action: 'read',
+						collection: 'articles',
+						fields: ['id', 'a2o_items'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'articles_builder',
+						fields: ['*'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'authors',
+						fields: ['name'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
+					{
+						action: 'read',
+						collection: 'a2o_collection',
+						fields: ['id'],
+						policy: null,
+						permissions: null,
+						presets: [],
+						validation: null,
+					},
 				]);
 
 				const result = await sanitizePayload(
@@ -410,8 +639,24 @@ describe('sanitizePayload', () => {
 	describe('Item-Level & Conditional Permissions', () => {
 		test('removes nested items failing existence or permission check via DB', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-				{ action: 'read', collection: 'comments', fields: ['id', 'text'], policy: null, permissions: { id: { _neq: 999 } }, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['*'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
+				{
+					action: 'read',
+					collection: 'comments',
+					fields: ['id', 'text'],
+					policy: null,
+					permissions: { id: { _neq: 999 } },
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const readOneMock = vi.fn().mockImplementation(async (key) => {
@@ -423,7 +668,17 @@ describe('sanitizePayload', () => {
 
 			const result = await sanitizePayload(
 				'articles',
-				{ id: 1, comments: { create: [], update: [{ id: 2, text: 'Allowed' }, { id: 999, text: 'Hidden' }], delete: [] } },
+				{
+					id: 1,
+					comments: {
+						create: [],
+						update: [
+							{ id: 2, text: 'Allowed' },
+							{ id: 999, text: 'Hidden' },
+						],
+						delete: [],
+					},
+				},
 				{ schema, accountability, knex: db },
 			);
 
@@ -435,13 +690,39 @@ describe('sanitizePayload', () => {
 
 		test('filters new items failing conditional permission rules', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-				{ action: 'read', collection: 'comments', fields: ['*'], policy: null, permissions: { status: { _eq: 'published' } }, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['*'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
+				{
+					action: 'read',
+					collection: 'comments',
+					fields: ['*'],
+					policy: null,
+					permissions: { status: { _eq: 'published' } },
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const result = await sanitizePayload(
 				'articles',
-				{ id: 1, comments: { create: [{ status: 'published', text: 'Ok' }, { status: 'draft', text: 'No' }], update: [], delete: [] } },
+				{
+					id: 1,
+					comments: {
+						create: [
+							{ status: 'published', text: 'Ok' },
+							{ status: 'draft', text: 'No' },
+						],
+						update: [],
+						delete: [],
+					},
+				},
 				{ schema, accountability, knex: db },
 			);
 
@@ -455,8 +736,24 @@ describe('sanitizePayload', () => {
 	describe('Complex Scenarios', () => {
 		test('processes dynamic variables ($CURRENT_USER) in nested permissions', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-				{ action: 'read', collection: 'authors', fields: ['id', 'name'], policy: null, permissions: { id: { _eq: '$CURRENT_USER' } }, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['*'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
+				{
+					action: 'read',
+					collection: 'authors',
+					fields: ['id', 'name'],
+					policy: null,
+					permissions: { id: { _eq: '$CURRENT_USER' } },
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const result = await sanitizePayload(
@@ -474,9 +771,33 @@ describe('sanitizePayload', () => {
 
 		test('handles deep recursion across multiple levels (3+)', async () => {
 			vi.mocked(fetchPermissions).mockResolvedValueOnce([
-				{ action: 'read', collection: 'articles', fields: ['*'], policy: null, permissions: null, presets: [], validation: null },
-				{ action: 'read', collection: 'authors', fields: ['id', 'name', 'profile'], policy: null, permissions: null, presets: [], validation: null },
-				{ action: 'read', collection: 'profiles', fields: ['id', 'bio'], policy: null, permissions: null, presets: [], validation: null },
+				{
+					action: 'read',
+					collection: 'articles',
+					fields: ['*'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
+				{
+					action: 'read',
+					collection: 'authors',
+					fields: ['id', 'name', 'profile'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
+				{
+					action: 'read',
+					collection: 'profiles',
+					fields: ['id', 'bio'],
+					policy: null,
+					permissions: null,
+					presets: [],
+					validation: null,
+				},
 			]);
 
 			const result = await sanitizePayload(
