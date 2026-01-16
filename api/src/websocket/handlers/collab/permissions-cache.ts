@@ -40,6 +40,7 @@ export class PermissionCache {
 	 */
 	private handleInvalidation(event: any) {
 		const { collection, keys, key } = event;
+		const items = keys || (key ? [key] : []);
 		const affectedKeys = new Set<CacheKey>();
 
 		// System Invalidation (Roles, Permissions, Policies, Schema)
@@ -61,13 +62,11 @@ export class PermissionCache {
 		this.invalidationCount++;
 
 		// Collection-level Invalidation
-		if (this.tags.has(`collection:${collection}`)) {
+		if (items.length === 0 && this.tags.has(`collection:${collection}`)) {
 			for (const k of this.tags.get(`collection:${collection}`)!) affectedKeys.add(k);
 		}
 
 		// Item-level Invalidation
-		const items = keys || (key ? [key] : []);
-
 		for (const id of items) {
 			const tag = `item:${collection}:${id}`;
 
@@ -77,10 +76,15 @@ export class PermissionCache {
 		}
 
 		// Dependency Invalidation (Items + Relational)
-		const depTags = [`dependency:${collection}`];
+		const depTags = [];
 
-		for (const id of items) {
-			depTags.push(`dependency:${collection}:${id}`);
+		if (items.length > 0) {
+			for (const id of items) {
+				depTags.push(`dependency:${collection}:${id}`);
+			}
+		} else {
+			// If no specific keys are provided, invalidate all specific dependencies for this collection
+			depTags.push(`dependency:${collection}`);
 		}
 
 		for (const tag of depTags) {
@@ -152,6 +156,11 @@ export class PermissionCache {
 		// Add custom dependencies such as relational collections
 		for (const dep of dependencies) {
 			this.addTag(key, `dependency:${dep}`);
+
+			if (dep.includes(':')) {
+				const [dependencyCollection] = dep.split(':');
+				this.addTag(key, `dependency:${dependencyCollection}`);
+			}
 		}
 	}
 
