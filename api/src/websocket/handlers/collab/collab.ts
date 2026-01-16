@@ -1,7 +1,7 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
-import { upperFirst } from 'lodash-es';
+import { difference, upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
@@ -53,9 +53,12 @@ export class CollabHandler {
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
 
 		scheduleSynchronizedJob('collab', `*/1 * * * *`, async () => {
-			const inactiveClients = await this.messenger.removeInvalidClients();
+			const { inactive, active } = await this.messenger.removeInvalidClients();
 
-			for (const client of inactiveClients) {
+			const roomClients = (await this.rooms.getAllClients()).map((client) => client.uid);
+			const invalidClients = difference(roomClients, active);
+
+			for (const client of [...inactive, ...invalidClients]) {
 				const rooms = await this.rooms.getClientRooms(client);
 
 				useLogger().info(`[Collab] Removing inactive client ${client}`);

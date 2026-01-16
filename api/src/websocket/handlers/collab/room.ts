@@ -84,6 +84,16 @@ export class CollabRooms {
 		return rooms;
 	}
 
+	async getAllClients(): Promise<RoomClient[]> {
+		const clients = [];
+
+		for (const room of Object.values(this.rooms)) {
+			clients.push(...(await room.getClients()));
+		}
+
+		return clients;
+	}
+
 	/**
 	 * Remove empty rooms
 	 */
@@ -102,13 +112,15 @@ export class CollabRooms {
 	}
 }
 
+type RoomClient = { uid: ClientID; accountability: Accountability; color: Color };
+
 type RoomData = {
 	uid: string;
 	collection: string;
 	item: string | null;
 	version: string | null;
 	changes: Item;
-	clients: { uid: ClientID; accountability: Accountability; color: Color }[];
+	clients: RoomClient[];
 	focuses: Record<ClientID, string>;
 };
 

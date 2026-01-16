@@ -87,7 +87,7 @@ export class Messenger {
 		});
 	}
 
-	async removeInvalidClients(): Promise<ClientID[]> {
+	async removeInvalidClients(): Promise<{ inactive: ClientID[]; active: ClientID[] }> {
 		const instances = (await this.store(async (store) => await store.get('instances'))) ?? {};
 
 		const inactiveInstances = new Set(Object.keys(instances));
@@ -116,11 +116,11 @@ export class Messenger {
 		const disconnectedClients: ClientID[] = [];
 
 		if (inactiveInstances.size === 0) {
-			return disconnectedClients;
+			return { inactive: [], active: Object.values(instances).flat() };
 		}
 
 		// Reread state to avoid overwriting updates during the timeout phase
-		await this.store(async (store) => {
+		const current = await this.store(async (store) => {
 			const current = (await store.get('instances')) ?? {};
 			let changed = false;
 
@@ -135,9 +135,11 @@ export class Messenger {
 			if (changed) {
 				await store.set('instances', current);
 			}
+
+			return current;
 		});
 
-		return disconnectedClients;
+		return { inactive: disconnectedClients, active: Object.values(current).flat() };
 	}
 
 	sendRoom(room: string, message: Omit<RoomMessage, 'type' | 'room'>) {
