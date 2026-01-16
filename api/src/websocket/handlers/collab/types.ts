@@ -1,4 +1,7 @@
+import type { WebSocketClient } from '@directus/types';
 import type { ACTION, ClientMessage } from '@directus/types/collab';
+
+export type PermissionClient = Pick<WebSocketClient, 'uid' | 'accountability'>;
 
 export type JoinMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.JOIN }>;
 export type LeaveMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.LEAVE }>;

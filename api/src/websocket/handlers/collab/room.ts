@@ -5,21 +5,14 @@ import { random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
-import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
-import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
-import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
-import { processPermissions } from '../../../permissions/utils/process-permissions.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 // import { calculateAllowedFields } from './calculate-allowed-fields.js';
-import { calculateCacheMetadata } from './calculate-cache-metadata.js';
-import { filterToFields } from './filter-to-fields.js';
 import { Messenger } from './messenger.js';
-import { permissionCache } from './permissions-cache.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { useStore } from './store.js';
+import type { PermissionClient } from './types.js';
+import { verifyPermissions } from './verify-permissions.js';
 
 /**
  * Store and manage all active collaboration rooms
@@ -119,8 +112,6 @@ type RoomData = {
 	clients: { uid: ClientID; accountability: Accountability; color: Color }[];
 	focuses: Record<ClientID, string>;
 };
-
-type PermissionClient = Pick<WebSocketClient, 'uid' | 'accountability'>;
 
 /**
  * Represents a single collaboration room for a specific item
@@ -295,23 +286,18 @@ export class Room {
 			};
 		})) as RoomData;
 
-		const allowedFields = await this.verifyPermissions(client, collection, item);
+		const allowedFields = await verifyPermissions(client.accountability, collection, item);
 
 		this.send(client.uid, {
 			action: ACTION.SERVER.INIT,
 			collection: collection,
 			item: item,
 			version: version,
-			changes: (await sanitizePayload(
-				collection,
-				changes as Record<string, unknown>,
-				{
-					knex: getDatabase(),
-					schema: await getSchema(),
-					accountability: client.accountability!,
-				},
-				allowedFields,
-			)) as Item,
+			changes: (await sanitizePayload(collection, changes as Record<string, unknown>, {
+				knex: getDatabase(),
+				schema: await getSchema(),
+				accountability: client.accountability!,
+			})) as Item,
 			focuses: Object.fromEntries(
 				Object.entries(focuses).filter(([_, field]) => allowedFields.includes(field) || allowedFields.includes('*')),
 			),
@@ -361,33 +347,24 @@ export class Room {
 	async update(sender: WebSocketClient, changes: Record<string, unknown>) {
 		await this.ready;
 
-		const { clients, collection, item } = await this.store(async (store) => {
+		const { clients } = await this.store(async (store) => {
 			const existing_changes = await store.get('changes');
 			Object.assign(existing_changes, changes);
 			await store.set('changes', existing_changes);
 
 			return {
 				clients: await store.get('clients'),
-				collection: await store.get('collection'),
-				item: await store.get('item'),
 			};
 		});
 
 		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
-			const allowedFields = await this.verifyPermissions(client, collection, item);
-
-			const sanitizedChanges = await sanitizePayload(
-				collection,
-				changes,
-				{
-					knex: getDatabase(),
-					schema: await getSchema(),
-					accountability: client.accountability,
-				},
-				allowedFields,
-			);
+			const sanitizedChanges = await sanitizePayload(this.collection, changes, {
+				knex: getDatabase(),
+				schema: await getSchema(),
+				accountability: client.accountability,
+			});
 
 			for (const field of Object.keys(changes)) {
 				if (field in sanitizedChanges) {
@@ -418,7 +395,7 @@ export class Room {
 		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
-			const allowedFields = await this.verifyPermissions(client, this.collection, this.item);
+			const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item);
 
 			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
 
@@ -462,7 +439,7 @@ export class Room {
 		for (const client of result.clients!) {
 			if (client.uid === sender.uid) continue;
 
-			const allowedFields = await this.verifyPermissions(client, this.collection, this.item);
+			const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item);
 
 			if (result.focusedField && !(allowedFields.includes(result.focusedField) || allowedFields.includes('*')))
 				continue;
@@ -530,117 +507,6 @@ export class Room {
 	dispose() {
 		emitter.offAction(`${this.collection}.items.update`, this.onUpdateHandler);
 		this.messenger.removeRoomListener(this.uid);
-	}
-
-	/**
-	 * Verify if a client has permissions to perform an action on the item
-	 */
-	public async verifyPermissions(
-		client: PermissionClient,
-		collection: string,
-		item: string | null,
-		action: 'read' | 'update' = 'read',
-	) {
-		const accountability = client.accountability;
-
-		if (!accountability) return [];
-		if (accountability.admin) return ['*'];
-
-		const cached = permissionCache.get(accountability, collection, item, action);
-		if (cached) return cached;
-
-		// Prevent caching stale permissions if an invalidation occurs during async steps
-		const startInvalidationCount = permissionCache.getInvalidationCount();
-
-		const schema = await getSchema();
-		const knex = getDatabase();
-
-		const service = getService(collection, { schema, knex, accountability });
-
-		let itemData: any = null;
-
-		try {
-			const policies = await fetchPolicies(accountability, { knex, schema });
-
-			const rawPermissions = await fetchPermissions(
-				{ action, collections: [collection], policies, accountability, bypassDynamicVariableProcessing: true },
-				{ knex, schema },
-			);
-
-			// Resolve dynamic variables used in the permission filters
-			const dynamicVariableContext = extractRequiredDynamicVariableContextForPermissions(rawPermissions);
-
-			const permissionsContext = await fetchDynamicVariableData(
-				{ accountability, policies, dynamicVariableContext },
-				{ knex, schema },
-			);
-
-			const processedPermissions = processPermissions({
-				permissions: rawPermissions,
-				accountability,
-				permissionsContext,
-			});
-
-			const fieldsToFetch = processedPermissions
-				.map((perm) => (perm.permissions ? filterToFields(perm.permissions, collection, schema) : []))
-				.flat();
-
-			// Fetch current item data to evaluate any conditional permission filters based on record state
-			if (item) {
-				itemData = await service.readOne(item, {
-					fields: fieldsToFetch,
-				});
-
-				if (!itemData) throw new Error('No access');
-			} else if (schema.collections[collection]?.singleton) {
-				const pkField = schema.collections[collection]!.primary;
-
-				if (pkField) {
-					if (Array.from(fieldsToFetch).some((field) => field === '*' || field === pkField) === false) {
-						fieldsToFetch.push(pkField);
-					}
-				}
-
-				itemData = await service.readSingleton({ fields: fieldsToFetch });
-			}
-
-			// TODO: Check which approach might be faster better: Checking it JS or DB side
-			// const allowedFields = calculateAllowedFields(collection, processedPermissions, itemData, schema);
-			const primaryKeys: (string | number)[] = item ? [item] : [];
-
-			const validationContext = {
-				collection,
-				accountability,
-				action,
-				primaryKeys,
-				returnAllowedRootFields: true,
-			};
-
-			const allowedFields = (await validateItemAccess(validationContext, { knex, schema })).allowedRootFields || [];
-
-			// Determine TTL and relational dependencies for cache invalidation
-			const { ttlMs, dependencies } = calculateCacheMetadata(
-				collection,
-				itemData,
-				rawPermissions,
-				schema,
-				accountability,
-			);
-
-			// Only cache if the state hasn't been invalidated by another operation in the meantime
-			if (permissionCache.getInvalidationCount() === startInvalidationCount) {
-				permissionCache.set(accountability, collection, item, action, allowedFields, dependencies, ttlMs);
-			}
-
-			return allowedFields;
-		} catch (err) {
-			useLogger().error(
-				err,
-				`[Collab] Room.verifyPermissions failed for user "${accountability.user}", collection "${collection}", and item "${item}"`,
-			);
-
-			return [];
-		}
 	}
 }
 

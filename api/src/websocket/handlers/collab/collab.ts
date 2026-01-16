@@ -15,6 +15,7 @@ import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
 import { CollabRooms } from './room.js';
 import type { FocusMessage, JoinMessage, LeaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
+import { verifyPermissions } from './verify-permissions.js';
 
 /**
  * Handler responsible for subscriptions
@@ -193,7 +194,7 @@ export class CollabHandler {
 				});
 			}
 
-			const allowedFields = await room.verifyPermissions(client, room.collection, room.item, 'update');
+			const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update');
 
 			if (!isFieldAllowed(allowedFields, message.field))
 				throw new InvalidPayloadError({
@@ -228,7 +229,7 @@ export class CollabHandler {
 				});
 
 			const collection = await room.getCollection();
-			const allowedFields = await room.verifyPermissions(client, collection, room.item, 'update');
+			const allowedFields = await verifyPermissions(client.accountability, collection, room.item, 'update');
 
 			for (const key of Object.keys(message.changes ?? {})) {
 				if (!isFieldAllowed(allowedFields, key))
@@ -269,8 +270,14 @@ export class CollabHandler {
 				});
 
 			if (message.field) {
-				const allowedReadFields = await room.verifyPermissions(client, room.collection, room.item, 'read');
-				const allowedUpdateFields = await room.verifyPermissions(client, room.collection, room.item, 'update');
+				const allowedReadFields = await verifyPermissions(client.accountability, room.collection, room.item, 'read');
+
+				const allowedUpdateFields = await verifyPermissions(
+					client.accountability,
+					room.collection,
+					room.item,
+					'update',
+				);
 
 				if (!isFieldAllowed(allowedReadFields, message.field) || !isFieldAllowed(allowedUpdateFields, message.field)) {
 					throw new InvalidPayloadError({
