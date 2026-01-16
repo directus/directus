@@ -24,13 +24,13 @@ const props = withDefaults(
 		xAxis: string;
 		function?: PanelFunction;
 		yAxis: string;
+		xAxisDisplayField?: string;
 		decimals?: number;
 		color?: string | null;
 		filter?: Filter;
 		showAxisLabels?: string;
 		showDataLabel?: boolean;
 		conditionalFill?: ConditionalFillFormat[] | null;
-		xAxisDisplayField?: string;
 	}>(),
 	{
 		showHeader: false,
@@ -90,18 +90,13 @@ const formatNumericValue = (val: any) => {
 	return val;
 };
 
-// Check if data is a two-query result (aggregated data + display values)
 const isTwoQueryResult = computed(() => {
 	return (
-		Array.isArray(props.data) &&
-		props.data.length === 2 &&
-		Array.isArray(props.data[0]) &&
-		Array.isArray(props.data[1])
+		Array.isArray(props.data) && props.data.length === 2 && Array.isArray(props.data[0]) && Array.isArray(props.data[1])
 	);
 });
 
-// Get the aggregated data (first query result or the data itself if single query)
-const aggregatedData = computed<Record<string, any>[]>(() => {
+const aggregatedData = computed(() => {
 	if (isTwoQueryResult.value) {
 		return (props.data as [Record<string, any>[], Record<string, any>[]])[0];
 	}
@@ -109,11 +104,8 @@ const aggregatedData = computed<Record<string, any>[]>(() => {
 	return props.data as Record<string, any>[];
 });
 
-// Build a map of primary key -> display value for relational xAxis fields
-const displayValueMap = computed<Map<string, string> | null>(() => {
-	if (!isTwoQueryResult.value || !props.xAxisDisplayField) {
-		return null;
-	}
+const displayValueMap = computed(() => {
+	if (!isTwoQueryResult.value || !props.xAxisDisplayField) return null;
 
 	const displayData = (props.data as [Record<string, any>[], Record<string, any>[]])[1];
 	const map = new Map<string, string>();
@@ -122,9 +114,8 @@ const displayValueMap = computed<Map<string, string> | null>(() => {
 
 	// Infer the primary key field - it's the field that isn't the display field
 	const firstItem = displayData[0];
-	const fields = Object.keys(firstItem);
+	const fields = Object.keys(firstItem ?? {});
 	const pkField = fields.find((f) => f !== props.xAxisDisplayField);
-
 	if (!pkField) return null;
 
 	for (const item of displayData) {
@@ -139,8 +130,7 @@ const displayValueMap = computed<Map<string, string> | null>(() => {
 	return map;
 });
 
-// Helper to get display value for an xAxis value (falls back to raw value)
-const getDisplayValue = (rawValue: any): any => {
+const getDisplayValue = (rawValue: any) => {
 	if (!displayValueMap.value || rawValue === null || rawValue === undefined) {
 		return rawValue;
 	}
