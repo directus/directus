@@ -41,7 +41,7 @@ const showAll = ref(false);
 
 const items = computed(() => choices.value || []);
 
-const hideChoices = computed(() => items.value.length > props.itemsShown);
+const hideChoices = computed(() => !props.nonEditable && items.value.length > props.itemsShown);
 
 const choicesDisplayed = computed(() => {
 	if (showAll.value || hideChoices.value === false) {
