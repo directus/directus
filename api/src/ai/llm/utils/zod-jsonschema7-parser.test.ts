@@ -329,10 +329,7 @@ describe('zodJsonSchema7Parser', () => {
 
 		it('should handle schema with oneOf', () => {
 			const schema = {
-				oneOf: [
-					{ type: 'string' },
-					{ type: 'number' },
-				],
+				oneOf: [{ type: 'string' }, { type: 'number' }],
 			};
 
 			vi.mocked(parseJsonSchema7).mockReturnValue({} as any);
