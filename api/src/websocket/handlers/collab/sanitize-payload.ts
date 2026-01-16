@@ -48,7 +48,7 @@ export async function sanitizePayload(
 
 			const allowedFields = await verifyPermissions(accountability, context.collection.collection, primaryKey, 'read');
 
-			if (allowedFields.length === 0 || !allowedFields.includes('*') || !allowedFields.includes(String(key))) return;
+			if (allowedFields.length === 0 || (!allowedFields.includes('*') && !allowedFields.includes(String(key)))) return;
 
 			return [key, value];
 		},
