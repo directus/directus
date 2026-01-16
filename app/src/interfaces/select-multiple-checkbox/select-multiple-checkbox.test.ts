@@ -37,7 +37,7 @@ describe('Interface', () => {
 		expect(wrapper.exists()).toBe(true);
 	});
 
-	it('should hide items that exceed the itemsShown limit', async () => {
+	it('should hide items that exceed the itemsShown limit', () => {
 		const wrapper = mount(SelectMultipleCheckbox, {
 			props: {
 				value: null,
@@ -50,7 +50,7 @@ describe('Interface', () => {
 		expect(wrapper.findAll('.v-checkbox').length).toBe(2);
 	});
 
-	it('should show items that exceed the itemsShown limit when nonEditable is true', async () => {
+	it('should show items that exceed the itemsShown limit when nonEditable is true', () => {
 		const wrapper = mount(SelectMultipleCheckbox, {
 			props: {
 				value: null,
@@ -93,7 +93,7 @@ describe('Interface', () => {
 		expect(wrapper.findAll('.v-checkbox v-icon-stub[name="delete"]').length).toBe(2);
 	});
 
-	it('should render action buttons disabled when disabled is true', async () => {
+	it('should render action buttons disabled when disabled is true', () => {
 		const wrapper = mount(SelectMultipleCheckbox, {
 			props: {
 				value: ['other', 'another'],
@@ -111,7 +111,7 @@ describe('Interface', () => {
 		});
 	});
 
-	it('should not render action buttons when nonEditable is true', async () => {
+	it('should not render action buttons when nonEditable is true', () => {
 		const wrapper = mount(SelectMultipleCheckbox, {
 			props: {
 				value: ['other', 'another'],
