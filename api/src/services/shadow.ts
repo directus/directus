@@ -129,14 +129,18 @@ export class ShadowsService {
 		});
 
 		// Drop any m2o duplicates pointing to it
-		const relations = this.schema.relations.filter(
-			(relation) =>
-				relation.related_collection === shadowCollection && this.schema.collections[relation.collection]?.versioned,
-		);
+		for (const relation of this.schema.relations) {
+			if (relation.collection !== collection && relation.related_collection !== collection) continue;
 
+			// Delete related o2m fields that point to current collection
+			if (relation.related_collection && relation.meta?.one_field) {
+				await this.deleteShadowField(relation.related_collection, relation.meta.one_field);
+			}
 
-		for (const relation of relations) {
-			await this.deleteShadowRelation(relation, { duplicate: true });
+			// Delete related m2o fields that point to current collection
+			if (relation.related_collection === collection) {
+				await this.deleteShadowField(relation.collection, relation.field);
+			}
 		}
 
 		await this.knex.schema.dropTable(shadowCollection);
