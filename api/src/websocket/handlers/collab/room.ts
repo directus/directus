@@ -7,7 +7,6 @@ import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
-// import { calculateAllowedFields } from './calculate-allowed-fields.js';
 import { Messenger } from './messenger.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { useStore } from './store.js';
