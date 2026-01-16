@@ -275,7 +275,7 @@ export class RelationsService {
 
 					if (this.schema.collections[relation.collection!]!.versioned) {
 						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-						await shadowsService.createShadowRelation(relation);
+						await shadowsService.createRelation(relation);
 					}
 				}
 
@@ -302,7 +302,7 @@ export class RelationsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -388,7 +388,7 @@ export class RelationsService {
 						}
 
 						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-						await shadowsService.updateShadowRelation(field, existingRelation);
+						await shadowsService.updateRelation(existingRelation);
 					});
 				}
 
@@ -486,7 +486,7 @@ export class RelationsService {
 
 					if (this.schema.collections[collection]?.versioned) {
 						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-						await shadowsService.deleteShadowRelation(existingRelation, { constraints: constraintNames });
+						await shadowsService.deleteRelation(existingRelation);
 					}
 				}
 

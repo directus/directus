@@ -145,7 +145,7 @@ export class CollectionsService {
 					// shadow table
 					if (payload.meta?.versioning) {
 						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-						await shadowsService.createShadowTable(payload.collection, payload.fields);
+						await shadowsService.createTable(payload.collection, payload.fields);
 					}
 
 					const fieldItemsService = new ItemsService('directus_fields', {
@@ -475,10 +475,10 @@ export class CollectionsService {
 				const shadowFields = await fieldsService.readAll(collectionKey);
 				const shadowsService = new ShadowsService({ knex: this.knex, schema: this.schema });
 
-				await shadowsService.createShadowTable(collectionKey, shadowFields);
+				await shadowsService.createTable(collectionKey, shadowFields);
 			} else if (isVersioned && payload.meta.versioning === false) {
 				const shadowsService = new ShadowsService({ knex: this.knex, schema: this.schema });
-				await shadowsService.dropShadowTable(collectionKey);
+				await shadowsService.dropTable(collectionKey);
 			}
 
 			return collectionKey;
@@ -637,7 +637,7 @@ export class CollectionsService {
 
 					if (this.schema.collections[collectionKey]?.versioned) {
 						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-						await shadowsService.dropShadowTable(collectionKey);
+						await shadowsService.dropTable(collectionKey);
 					}
 				}
 

@@ -432,7 +432,7 @@ export class FieldsService {
 
 					if (this.schema.collections[collection]!.versioned) {
 						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-						await shadowsService.createShadowField(collection, hookAdjustedField, table);
+						await shadowsService.createField(collection, hookAdjustedField, table);
 					}
 				}
 
@@ -581,7 +581,7 @@ export class FieldsService {
 
 						await transaction(this.knex, async (trx) => {
 							const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-							await shadowsService.updateShadowField(collection, field, existingColumn);
+							await shadowsService.updateField(collection, field);
 						});
 
 						// concurrent index creation cannot be done inside the transaction
@@ -790,7 +790,7 @@ export class FieldsService {
 
 					if (this.schema.collections[collection]?.versioned) {
 						const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
-						await shadowsService.deleteShadowField(collection, field);
+						await shadowsService.deleteField(collection, field);
 					}
 				}
 

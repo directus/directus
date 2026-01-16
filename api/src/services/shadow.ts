@@ -1,4 +1,3 @@
-import type { Column } from '@directus/schema';
 import type {
 	AbstractServiceOptions,
 	Accountability,
@@ -13,7 +12,6 @@ import { ALIAS_TYPES, INJECTED_PRIMARY_KEY_FIELD } from '../constants.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
 import { FieldsService } from './fields.js';
@@ -41,25 +39,24 @@ export class ShadowsService {
 	private buildField(field: Field, opts?: { shadow?: boolean }): Field;
 	private buildField(field: string | RawField | Field, opts?: { shadow?: boolean }): string | RawField | Field {
 		if (typeof field === 'string') {
+			if (field.startsWith('directus_')) return field;
+
 			return opts?.shadow ? `directus_${field}` : field;
 		}
 
 		const shadowField = Object.assign({}, field) as RawField | Field;
 
+		if (shadowField.field.startsWith('directus_')) return shadowField;
+
 		// rename if shadow
 		if (opts?.shadow) {
 			shadowField.field = `directus_${shadowField.field}`;
-			shadowField.name = `directus_${shadowField.name}`;
-			shadowField.collection = `directus_version_${shadowField.collection}`;
+			shadowField.name &&= `directus_${shadowField.name}`;
+			shadowField.collection &&= `directus_version_${shadowField.collection}`;
 
 			if (shadowField.schema) {
 				shadowField.schema.name = `directus_${shadowField.name}`;
 				shadowField.schema.table = `directus_version_${shadowField.schema.table}`;
-			}
-
-			if (shadowField.meta) {
-				shadowField.meta.field = `directus_${shadowField.meta.field}`;
-				shadowField.meta.collection = `directus_version_${shadowField.meta.collection}`;
 			}
 		}
 
@@ -69,10 +66,34 @@ export class ShadowsService {
 			// TODO: is_indexes if is_unique true?
 		}
 
+		// Nullify meta
+		// TODO: Should we be tracking it?
+		shadowField.meta = null;
+
 		return shadowField;
 	}
 
-	async createShadowTable(collection: string, fields?: Array<RawField | Field>) {
+	private buildRelation(relation: Partial<Relation>, opts?: { shadow?: boolean }): Partial<Relation> {
+		const shadowRelation = Object.assign({}, relation) as Partial<Relation>;
+
+		if (shadowRelation.collection?.startsWith('directus_version')) return shadowRelation;
+
+		if (opts?.shadow) {
+			shadowRelation.field = `directus_${shadowRelation.field}`;
+			shadowRelation.collection = `directus_version_${shadowRelation.collection}`;
+			shadowRelation.related_collection = `directus_version_${shadowRelation.related_collection}`;
+		} else {
+			shadowRelation.collection = `directus_version_${relation.collection}`;
+		}
+
+		// Nullify meta
+		// TODO: Should we be tracking it?
+		shadowRelation.meta = null;
+
+		return shadowRelation;
+	}
+
+	async createTable(collection: string, fields?: Array<RawField | Field>) {
 		const shadowCollection = `directus_version_${collection}`;
 		const shadowFields = this.injectedFields();
 
@@ -87,408 +108,158 @@ export class ShadowsService {
 			shadowFields.push(this.buildField(field));
 		}
 
-		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
+		await transaction(this.knex, async (trx) => {
+			const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+			const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-		await this.knex.schema.createTable(shadowCollection, (table) => {
-			for (const shadowField of shadowFields) {
-				fieldsService.addColumnToTable(table, shadowCollection, shadowField);
+			await trx.schema.createTable(shadowCollection, (table) => {
+				for (const shadowField of shadowFields) {
+					fieldsService.addColumnToTable(table, shadowCollection, shadowField);
+				}
+			});
+
+			// link any existing relation fields
+			for (const relation of this.schema.relations) {
+				// Skip processing existing shadow table relations
+				if (relation.collection.startsWith('directus_version_')) continue;
+
+				if (relation.collection === collection) {
+					// M2O relation defined on the current collection
+					// TODO: Fix self referenced M2O not duplicated
+					await shadowsService.createRelation(relation);
+				} else if (
+					relation.related_collection === collection &&
+					relation.meta?.one_field &&
+					this.schema.collections[relation.collection]?.versioned
+				) {
+					// M2O relation from another (versioned) collection pointing to this one
+					await shadowsService.createRelation(relation, { shadow: true });
+				}
 			}
 		});
-
-		console.log({
-			event: 'table.create',
-			name: shadowCollection,
-			fields: shadowFields,
-		});
-
-		// link any existing relation fields
-		for (const relation of this.schema.relations) {
-			// Skip processing existing shadow table relations
-			if (relation.collection.startsWith('directus_version_')) continue;
-
-			if (relation.collection === collection) {
-				// M2O relation defined on the current collection
-				await this.createShadowRelation(relation);
-			} else if (
-				relation.related_collection === collection &&
-				relation.meta?.one_field &&
-				this.schema.collections[relation.collection]?.versioned
-			) {
-				// M2O relation from another (versioned) collection pointing to this one
-				await this.createShadowRelation(relation, { duplicate: true });
-			}
-		}
 	}
 
-	async dropShadowTable(collection: string) {
+	async dropTable(collection: string) {
 		const shadowCollection = `directus_version_${collection}`;
 
-		console.log({
-			event: 'table.delete',
-			name: shadowCollection,
+		await transaction(this.knex, async (trx) => {
+			const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
+
+			// Drop any m2o duplicates pointing to it
+			for (const relation of this.schema.relations) {
+				if (relation.collection !== collection && relation.related_collection !== collection) continue;
+
+				// Delete related o2m fields that point to current collection
+				if (relation.related_collection && relation.meta?.one_field) {
+					await shadowsService.deleteField(relation.related_collection, relation.meta.one_field);
+				}
+
+				// Delete related m2o fields that point to current collection
+				if (relation.related_collection === collection) {
+					await shadowsService.deleteField(relation.collection, relation.field);
+				}
+			}
+
+			await trx.schema.dropTable(shadowCollection);
 		});
-
-		// Drop any m2o duplicates pointing to it
-		for (const relation of this.schema.relations) {
-			if (relation.collection !== collection && relation.related_collection !== collection) continue;
-
-			// Delete related o2m fields that point to current collection
-			if (relation.related_collection && relation.meta?.one_field) {
-				await this.deleteShadowField(relation.related_collection, relation.meta.one_field);
-			}
-
-			// Delete related m2o fields that point to current collection
-			if (relation.related_collection === collection) {
-				await this.deleteShadowField(relation.collection, relation.field);
-			}
-		}
-
-		await this.knex.schema.dropTable(shadowCollection);
 	}
 
-	async createShadowRelation(relation: Partial<Relation>, opts?: { duplicate?: boolean }) {
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
-		this.helpers.schema.preRelationChange(relation);
+	async createRelation(relation: Partial<Relation>, opts?: { shadow?: boolean }) {
+		if (!relation.related_collection) return;
 
-		/*
-		 *  Bypass Perfer cache bust?
-		 * Avoid edge cases with self-referencing relations that are added on createTable
-		 */
-		const schema = await getSchema({ database: this.knex, bypassCache: true });
+		const shadowRelation = this.buildRelation(relation);
+		let shadowPointerRelation: null | Partial<Relation> = null;
 
-		try {
-			await transaction(this.knex, async (trx) => {
-				if (relation.related_collection) {
-					const shadowCollection = `directus_version_${relation.collection}`;
-					const shadowField = relation.field!;
+		await transaction(this.knex, async (trx) => {
+			/**
+			 * If the related collection is versioned, create a duplicated prefixed FK
+			 * field/relation that points to the related shadow table.
+			 *
+			 */
+			if (this.schema.collections[relation.related_collection!]?.versioned) {
+				shadowPointerRelation = this.buildRelation(relation, { shadow: true });
 
-					if (opts?.duplicate !== true) {
-						console.log({
-							event: 'relation.create',
-							collection: shadowCollection,
-							field: shadowField,
-							related: relation.related_collection,
-						});
+				const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-						await trx.schema.alterTable(shadowCollection, async (table) => {
-							// Copied from RelationsService.alterType, required for MySQL
-							const fieldOverview = schema.collections[relation.collection!]!.fields[shadowField];
+				const pointerField = (await fieldsService.readOne(relation.collection!, relation.field!)) as Field;
 
-							const relatedFieldDBType =
-								schema.collections[relation.related_collection!]!.fields[
-									schema.collections[relation.related_collection!]!.primary
-								]!.dbType;
+				const shadowPointerField = this.buildField(pointerField) as Field;
 
-							if (
-								fieldOverview?.dbType !== relatedFieldDBType &&
-								fieldOverview?.dbType === 'int' &&
-								relatedFieldDBType === 'int unsigned'
-							) {
-								const alterField = table.specificType(shadowField, 'int unsigned');
-
-								// Preserve nullibility
-								if (!fieldOverview?.nullable) {
-									alterField.notNullable();
-								}
-
-								alterField.alter();
-							}
-
-							const constraintName: string = getDefaultIndexName('foreign', shadowCollection, shadowField);
-
-							const builder = table
-								.foreign(shadowField, constraintName)
-								.references(
-									`${relation.related_collection!}.${schema.collections[relation.related_collection!]!.primary}`,
-								);
-
-							if (relation.schema?.on_delete) {
-								builder.onDelete(relation.schema.on_delete);
-							}
-
-							if (relation.schema?.on_update) {
-								builder.onUpdate(relation.schema.on_update);
-							}
-						});
-					}
-
-					/**
-					 * If the related collection is versioned, create a duplicated prefixed FK
-					 * that points to the related shadow table.
-					 *
-					 * TODO: Research stringified value showing instead of raw (e.g. 'null' vs NULL) only for duplicate
-					 */
-					if (schema.collections[relation.related_collection]?.versioned) {
-						const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
-
-						const fieldsService = new FieldsService({ knex: trx, schema });
-
-						const field = (await fieldsService.readOne(relation.collection!, relation.field!)) as Field;
-
-						const shadowRelatedField = {
-							...field,
-							field: `directus_${relation.field}`,
-							schema: {
-								...field.schema,
-								is_unique: false,
-							},
-						};
-
-						console.log({
-							event: 'relation.create.shadow',
-							collection: relation.collection,
-							field: shadowRelatedField.field,
-							related: relation.related_collection,
-						});
-
-						await trx.schema.alterTable(shadowCollection, (table) => {
-							fieldsService.addColumnToTable(table, shadowCollection, shadowRelatedField);
-
-							// Copied from RelationsService.alterType, required for MySQL
-							const fieldOverview = schema.collections[relation.collection!]!.fields[relation.field!];
-
-							const relatedFieldDBType =
-								schema.collections[relation.related_collection!]!.fields[
-									schema.collections[relation.related_collection!]!.primary
-								]!.dbType;
-
-							if (
-								fieldOverview?.dbType !== relatedFieldDBType &&
-								fieldOverview?.dbType === 'int' &&
-								relatedFieldDBType === 'int unsigned'
-							) {
-								const alterField = table.specificType(shadowRelatedField.field, 'int unsigned');
-
-								// Preserve nullibility
-								if (!fieldOverview?.nullable) {
-									alterField.notNullable();
-								}
-
-								alterField.alter();
-							}
-
-							const constraintName: string = getDefaultIndexName(
-								'foreign',
-								shadowRelatedCollection,
-								shadowRelatedField.field,
-							);
-
-							const builder = table
-								.foreign(shadowRelatedField.field, constraintName)
-								.references(`${shadowRelatedCollection}.${schema.collections[shadowRelatedCollection]!.primary}`);
-
-							if (relation.schema?.on_delete) {
-								builder.onDelete(relation.schema.on_delete);
-							}
-
-							if (relation.schema?.on_update) {
-								builder.onUpdate(relation.schema.on_update);
-							}
-						});
-					}
-				}
-			});
-		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
+				// We create field here so we can create relation later
+				const shadowsService = new ShadowsService({ knex: trx, schema: await getSchema({ database: trx }) });
+				await shadowsService.createField(shadowPointerRelation.collection!, shadowPointerField);
 			}
-		}
+
+			const relationsService = new RelationsService({
+				knex: trx,
+				// refresh schema so new field is present
+				schema: await getSchema({ database: trx, bypassCache: true }),
+			});
+
+			if (opts?.shadow !== true) {
+				await relationsService.createOne(shadowRelation);
+			}
+
+			if (shadowPointerRelation) {
+				await relationsService.createOne(shadowPointerRelation);
+			}
+		});
 	}
 
-	async updateShadowRelation(field: string, relation: Partial<Relation>) {
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
-		this.helpers.schema.preRelationChange(relation);
+	async updateRelation(relation: Partial<Relation>, opts?: { shadow?: boolean }) {
+		if (!relation.related_collection) return;
 
-		try {
-			await transaction(this.knex, async (trx) => {
-				if (relation.related_collection) {
-					const shadowCollection = `directus_version_${relation.collection}`;
-					const shadowField = this.buildField(field);
+		const shadowRelation = this.buildRelation(relation);
+		let shadowPointerRelation: null | Partial<Relation> = null;
 
-					await trx.schema.alterTable(shadowCollection, async (table) => {
-						let constraintName: string = getDefaultIndexName('foreign', shadowCollection, shadowField);
-
-						// Drop existing FK if present
-						if (relation?.schema) {
-							constraintName = relation.schema.constraint_name || constraintName;
-							table.dropForeign(shadowField, constraintName);
-
-							constraintName = this.helpers.schema.constraintName(constraintName);
-							relation.schema.constraint_name = constraintName;
-						}
-
-						// Copied from RelationsService.alterType, required for MySQL
-						const fieldOverview = this.schema.collections[relation.collection!]!.fields[relation.field!];
-
-						const relatedFieldDBType =
-							this.schema.collections[relation.related_collection!]!.fields[
-								this.schema.collections[relation.related_collection!]!.primary
-							]!.dbType;
-
-						if (
-							fieldOverview?.dbType !== relatedFieldDBType &&
-							fieldOverview?.dbType === 'int' &&
-							relatedFieldDBType === 'int unsigned'
-						) {
-							const alterField = table.specificType(shadowField, 'int unsigned');
-
-							// Preserve nullibility
-							if (!fieldOverview?.nullable) {
-								alterField.notNullable();
-							}
-
-							alterField.alter();
-						}
-
-						const builder = table
-							.foreign(shadowField, constraintName || undefined)
-							.references(
-								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`,
-							);
-
-						if (relation.schema?.on_delete) {
-							builder.onDelete(relation.schema.on_delete);
-						}
-
-						if (relation.schema?.on_update) {
-							builder.onUpdate(relation.schema.on_update);
-						}
-
-						/**
-						 * Update duplicated FK if related collection is versioned.
-						 */
-						if (this.schema.collections[relation.related_collection!]?.versioned) {
-							const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
-							const shadowRelatedField = this.buildField(field, { shadow: true });
-
-							let constraintName: string = getDefaultIndexName('foreign', shadowRelatedCollection, shadowRelatedField);
-
-							// Drop existing FK if present
-							if (relation?.schema) {
-								constraintName = relation.schema.constraint_name || constraintName;
-								table.dropForeign(shadowRelatedField, constraintName);
-
-								constraintName = this.helpers.schema.constraintName(constraintName);
-								relation.schema.constraint_name = constraintName;
-							}
-
-							// Copied from RelationsService.alterType, required for MySQL
-							const fieldOverview = this.schema.collections[relation.collection!]!.fields[relation.field!];
-
-							const relatedFieldDBType =
-								this.schema.collections[relation.related_collection!]!.fields[
-									this.schema.collections[relation.related_collection!]!.primary
-								]!.dbType;
-
-							if (
-								fieldOverview?.dbType !== relatedFieldDBType &&
-								fieldOverview?.dbType === 'int' &&
-								relatedFieldDBType === 'int unsigned'
-							) {
-								const alterField = table.specificType(shadowRelatedField, 'int unsigned');
-
-								// Maintains the non-nullable state
-								if (!fieldOverview?.nullable) {
-									alterField.notNullable();
-								}
-
-								alterField.alter();
-							}
-
-							const builder = table
-								.foreign(shadowRelatedField, constraintName || undefined)
-								.references(`${shadowRelatedCollection}.${this.schema.collections[shadowRelatedCollection]!.primary}`);
-
-							if (relation.schema?.on_delete) {
-								builder.onDelete(relation.schema.on_delete);
-							}
-
-							if (relation.schema?.on_update) {
-								builder.onUpdate(relation.schema.on_update);
-							}
-						}
-					});
-				}
-			});
-		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
+		await transaction(this.knex, async (trx) => {
+			/**
+			 * If the related collection is versioned, create a duplicated prefixed FK
+			 * that points to the related shadow table.
+			 */
+			if (this.schema.collections[relation.related_collection!]?.versioned) {
+				shadowPointerRelation = this.buildRelation(relation, { shadow: true });
 			}
-		}
+
+			const relationsService = new RelationsService({
+				knex: trx,
+				// refresh schema so new field is present
+				schema: await getSchema({ database: trx, bypassCache: true }),
+			});
+
+			if (opts?.shadow !== true) {
+				await relationsService.updateOne(shadowRelation.collection!, shadowRelation.field!, shadowRelation);
+			}
+
+			if (shadowPointerRelation) {
+				await relationsService.updateOne(shadowRelation.collection!, shadowRelation.field!, shadowPointerRelation);
+			}
+		});
 	}
 
-	async deleteShadowRelation(relation: Relation, opts?: { constraints?: (string | null)[]; duplicate?: boolean }) {
-		const shadowCollection = relation.collection.startsWith('directus_version_')
-			? relation.collection
-			: `directus_version_${relation.collection}`;
+	async deleteRelation(relation: Relation, opts?: { shadow?: boolean }) {
+		await transaction(this.knex, async (trx) => {
+			const relationsService = new RelationsService({ knex: trx, schema: this.schema });
 
-		let constraintNames = opts?.constraints;
-
-		if (!constraintNames) {
-			const relationsService = new RelationsService({ knex: this.knex, schema: this.schema });
-			const existingConstraints = await relationsService.foreignKeys();
-			constraintNames = existingConstraints.map((key) => key.constraint_name);
-		}
-
-		if (opts?.duplicate !== true) {
-			const existingRelation = this.schema.relations.find(
-				(existingRelation) =>
-					existingRelation.collection === shadowCollection && existingRelation.field === relation.field,
-			);
-
-			console.log({
-				event: 'fk.drop',
-				fk: existingRelation?.field,
-				existingConstraint:
-					existingRelation?.schema?.constraint_name &&
-					constraintNames.includes(existingRelation.schema.constraint_name),
-			});
-
-			if (
-				existingRelation?.schema?.constraint_name &&
-				constraintNames.includes(existingRelation.schema.constraint_name)
-			) {
-				await this.knex.schema.alterTable(existingRelation.collection, (table) => {
-					table.dropForeign(existingRelation.field, existingRelation.schema!.constraint_name!);
-				});
-			}
-		}
-
-		// Remove duplicated FK + column if present
-		const shadowRelatedField = relation.field.startsWith('directus_') ? relation.field : `directus_${relation.field}`;
-
-		if (this.schema.collections[relation.collection]?.fields[shadowRelatedField]) {
-			const existingRelatedRelation = this.schema.relations.find(
-				(existingRelation) =>
-					existingRelation.collection === shadowCollection && existingRelation.field === shadowRelatedField,
-			);
-
-			console.log({
-				event: 'fk.drop.shadow',
-				fk: existingRelatedRelation?.field,
-				existingConstraint:
-					existingRelatedRelation?.schema?.constraint_name &&
-					constraintNames.includes(existingRelatedRelation.schema.constraint_name),
-			});
-
-			if (
-				existingRelatedRelation?.schema?.constraint_name &&
-				constraintNames.includes(existingRelatedRelation.schema.constraint_name)
-			) {
-				// remove FK
-				await this.knex.schema.alterTable(existingRelatedRelation.collection, (table) => {
-					table.dropForeign(existingRelatedRelation.field, existingRelatedRelation.schema!.constraint_name!);
-				});
+			if (opts?.shadow !== true) {
+				const shadowRelation = this.buildRelation(relation);
+				await relationsService.deleteOne(shadowRelation.collection!, shadowRelation.field!);
 			}
 
-			// drop duplicate
-			await this.knex.schema.alterTable(shadowCollection, (table) => {
-				table.dropColumn(shadowRelatedField);
+			// Remove duplicated FK + column if present
+			const shadowPointerRelation = this.buildRelation(relation, { shadow: true });
+
+			// drop FK
+			await relationsService.deleteOne(shadowPointerRelation.collection!, shadowPointerRelation.field!);
+
+			// delete duplicated field
+			await this.knex.schema.alterTable(shadowPointerRelation.collection!, (table) => {
+				table.dropColumn(shadowPointerRelation.field!);
 			});
-		}
+		});
 	}
 
-	async createShadowField(
+	async createField(
 		collection: string,
 		field: Partial<Field> & { field: string; type: Type | null },
 		table?: Knex.CreateTableBuilder, // allows collection creation to)
@@ -497,63 +268,38 @@ export class ShadowsService {
 
 		const shadowCollection = `directus_version_${collection}`;
 
-		const shadowField = this.buildField(field);
+		const shadowField = this.buildField(field) as Field;
 
-		if (table) {
-			fieldsService.addColumnToTable(table, shadowCollection, shadowField);
-		} else {
-			await this.knex.schema.alterTable(shadowCollection, (table) => {
-				fieldsService.addColumnToTable(table, shadowCollection, shadowField);
-			});
-		}
+		await fieldsService.createField(shadowCollection, shadowField, table);
 	}
 
-	async updateShadowField(
-		collection: string,
-		field: RawField | (Partial<Field> & { field: string; type: Type | null }),
-		existing: Column,
-	) {
-		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
+	async updateField(collection: string, field: RawField | (Partial<Field> & { field: string; type: Type | null })) {
+		await transaction(this.knex, async (trx) => {
+			const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-		const shadowCollection = `directus_version_${collection}`;
+			const shadowCollection = `directus_version_${collection}`;
 
-		const shadowField = this.buildField(field);
+			const shadowField = this.buildField(field) as RawField;
 
-		await this.knex.schema.alterTable(shadowCollection, (table) => {
-			// Update primary shadow column
-			fieldsService.addColumnToTable(table, shadowCollection, shadowField, {
-				existing,
-			});
+			await fieldsService.updateField(shadowCollection, shadowField);
 
-			// Check for duplicated M2O FK to versioned table
-			shadowField.field = `directus_${shadowField.field}`;
+			// update duplicated M2O FK to versioned table
 
-			const relation = this.schema.relations.find(
+			const isM2O = this.schema.relations.find(
 				(relation) => relation.collection === shadowCollection && relation.field === shadowField.field,
 			);
 
-			if (relation) {
-				fieldsService.addColumnToTable(table, shadowCollection, shadowField, {
-					existing,
-				});
+			if (isM2O) {
+				await fieldsService.updateField(shadowCollection, shadowField);
 			}
 		});
 	}
 
-	async deleteShadowField(collection: string, field: string) {
+	async deleteField(collection: string, field: string) {
 		const shadowCollection = `directus_version_${collection}`;
 
-		// if is m2o delete duplicate if existing and drop FKs
-		const relation = this.schema.relations.find(
-			(relation) => relation.collection === shadowCollection && relation.field === field,
-		);
+		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
 
-		if (relation) {
-			await this.deleteShadowRelation(relation);
-		}
-
-		await this.knex.schema.alterTable(shadowCollection, (table) => {
-			table.dropColumn(field);
-		});
+		await fieldsService.deleteField(shadowCollection, field);
 	}
 }
