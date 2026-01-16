@@ -1,4 +1,13 @@
+/**
+ * All supported AI provider types, including openai-compatible.
+ */
+
 export type ProviderType = 'openai' | 'anthropic' | 'google' | 'openai-compatible';
+
+/**
+ * Standard AI providers that use allowlist-based model validation.
+ */
+export type StandardProviderType = Exclude<ProviderType, 'openai-compatible'>;
 
 export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
 
