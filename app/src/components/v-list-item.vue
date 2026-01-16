@@ -297,16 +297,18 @@ function onClick(event: PointerEvent) {
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, border-color;
 
-		:slotted(.drag-handle) {
-			cursor: grab;
+		&:not(.disabled) {
+			:slotted(.drag-handle) {
+				cursor: grab;
 
-			&:hover {
-				color: var(--foreground-color);
+				&:hover {
+					color: var(--foreground-color);
+				}
 			}
-		}
 
-		:slotted(.drag-handle:active) {
-			cursor: grabbing;
+			:slotted(.drag-handle:active) {
+				cursor: grabbing;
+			}
 		}
 
 		:slotted(.spacer) {

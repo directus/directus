@@ -224,7 +224,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		:class="[view, { disabled, 'non-editable': nonEditable }]"
 	>
 		<div class="toolbar">
-			<template v-if="view === 'editor'">
+			<template v-if="!nonEditable && view === 'editor'">
 				<VMenu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
 						<VButton v-tooltip="$t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
@@ -387,10 +387,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				rounded
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
-				<VButton x-small value="editor" :class="[{ active: view !== 'preview' }]">
+				<VButton x-small value="editor" :disabled="disabled && !nonEditable" :class="[{ active: view !== 'preview' }]">
 					{{ $t('interfaces.input-rich-text-md.edit') }}
 				</VButton>
-				<VButton x-small value="preview" :class="[{ active: view === 'preview' }]">
+				<VButton x-small value="preview" :disabled="disabled && !nonEditable" :class="[{ active: view === 'preview' }]">
 					{{ $t('interfaces.input-rich-text-md.preview') }}
 				</VButton>
 			</VItemGroup>
@@ -463,6 +463,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 .interface-input-rich-text-md.disabled:not(.non-editable) {
 	background-color: var(--theme--form--field--input--background-subdued);
+
+	* {
+		color: var(--theme--form--field--input--foreground-subdued) !important;
+	}
 }
 
 .interface-input-rich-text-md:not(.disabled):hover {
@@ -508,10 +512,6 @@ textarea {
 	color: var(--theme--danger);
 }
 
-.interface-input-rich-text-md.disabled:not(.non-editable) .preview-box {
-	color: var(--theme--form--field--input--foreground-subdued);
-}
-
 .interface-input-rich-text-md :deep(.CodeMirror) {
 	font-family: v-bind(editFamily), sans-serif;
 	border: none;
@@ -542,7 +542,7 @@ textarea {
 	flex-wrap: wrap;
 	align-items: center;
 	min-block-size: var(--editor-toolbar-height);
-	padding: 0 4px;
+	padding: 4px;
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 

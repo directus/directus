@@ -384,7 +384,13 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 </script>
 
 <template>
-	<VListGroup v-if="visibleChildrenValues.length > 0" v-show="groupShown" :value="value" arrow-placement="before">
+	<VListGroup
+		v-if="visibleChildrenValues.length > 0"
+		v-show="groupShown"
+		:value="value"
+		arrow-placement="before"
+		:disabled="disabled && !nonEditable"
+	>
 		<template #activator>
 			<VCheckbox
 				v-model="treeValue"

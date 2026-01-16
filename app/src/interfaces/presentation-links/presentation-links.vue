@@ -22,6 +22,7 @@ type Link = {
 type ParsedLink = Omit<Link, 'url'> & {
 	to?: string;
 	href?: string;
+	disabled: boolean;
 };
 
 const props = withDefaults(
@@ -30,6 +31,7 @@ const props = withDefaults(
 		collection: string;
 		primaryKey?: PrimaryKey;
 		disabled?: boolean;
+		nonEditable?: boolean;
 	}>(),
 	{
 		links: () => [],
@@ -101,7 +103,14 @@ const linksParsed = computed<ParsedLink[]>(() =>
 			to: isInternalLink ? interpolatedUrl : undefined,
 			href: link.actionType === 'flow' || isInternalLink ? undefined : interpolatedUrl,
 			flow: link.actionType === 'flow' ? link.flow : undefined,
+			disabled: isDisabled(),
 		};
+
+		function isDisabled() {
+			if (props.disabled && !props.nonEditable) return true;
+
+			return link.actionType === 'flow' && (props.nonEditable || props.primaryKey === '+');
+		}
 	}),
 );
 
@@ -135,7 +144,7 @@ function getRelatedFieldsFromTemplates() {
 				:href="link.href"
 				:to="link.to"
 				:loading="link.flow && runningFlows.includes(link.flow)"
-				:disabled="link.actionType === 'flow' && (props.disabled || props.primaryKey === '+')"
+				:disabled="link.disabled"
 				@click="() => runManualFlow(link.flow!)"
 			>
 				<VIcon v-if="!link.icon && !link.label" name="smart_button" />

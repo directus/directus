@@ -83,8 +83,17 @@
 }
 
 .tox-tbtn--disabled {
-	opacity: 0.8;
+	cursor: not-allowed;
+}
+
+.tox-tbtn--disabled *,
+.tox-tbtn--disabled *::after {
 	pointer-events: none;
+	color: var(--theme--form--field--input--foreground-subdued) !important;
+}
+
+.tox-tbtn--disabled svg {
+	fill: var(--theme--form--field--input--foreground-subdued) !important;
 }
 
 .tox .tox-edit-area__iframe {

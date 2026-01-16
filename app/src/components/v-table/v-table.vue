@@ -278,6 +278,7 @@ function updateSort(newSort: Sort) {
 				:has-item-append-slot="hasItemAppendSlot"
 				:manual-sort-key="manualSortKey"
 				:allow-header-reorder="allowHeaderReorder"
+				:allow-column-sort="!disabled"
 				@toggle-select-all="onToggleSelectAll"
 				@update:sort="updateSort"
 			>
@@ -464,7 +465,6 @@ table :deep(.sortable-ghost .cell) {
 .loading-text,
 .no-items-text {
 	text-align: center;
-	background-color: var(--theme--form--field--input--background);
 }
 
 .loading-text td,

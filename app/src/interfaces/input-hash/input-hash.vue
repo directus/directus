@@ -58,11 +58,11 @@ function emitValue(newValue: string) {
 		:type="masked ? 'password' : 'text'"
 		:autocomplete
 		:model-value="localValue"
-		:class="{ hashed: isHashed && !localValue }"
+		:class="{ hashed: isHashed && !localValue, 'non-editable': nonEditable }"
 		@update:model-value="emitValue"
 	>
 		<template #append>
-			<VIcon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
+			<VIcon class="lock" :class="{ disabled }" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
 		</template>
 	</VInput>
 </template>
@@ -79,13 +79,19 @@ function emitValue(newValue: string) {
 
 .lock {
 	--v-icon-color: var(--theme--warning);
+
+	&.disabled {
+		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+	}
+
+	.hashed &:not(.disabled),
+	.hashed.non-editable & {
+		--v-icon-color: var(--theme--primary);
+	}
 }
 
-.hashed {
+.hashed:not(.disabled),
+.hashed.non-editable {
 	--v-input-placeholder-color: var(--theme--primary);
-}
-
-.hashed .lock {
-	--v-icon-color: var(--theme--primary);
 }
 </style>

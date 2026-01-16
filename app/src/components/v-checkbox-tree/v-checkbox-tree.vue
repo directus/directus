@@ -167,3 +167,9 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 		/>
 	</VList>
 </template>
+
+<style scoped>
+.v-list {
+	--v-list-padding: 4px;
+}
+</style>

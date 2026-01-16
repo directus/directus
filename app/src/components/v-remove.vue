@@ -47,13 +47,13 @@ const tooltip = computed(() => {
 	return t('remove_item');
 });
 
-function onClick() {
+function onClick(event: Event) {
 	if (needsConfirmation.value) {
 		confirmDelete.value = true;
 		return;
 	}
 
-	emit('action');
+	emit('action', event);
 }
 
 function useConfirmation() {
@@ -168,9 +168,13 @@ function useConfirmation() {
 .v-icon {
 	--v-icon-color: var(--v-remove-color, var(--v-icon-color));
 
-	&.has-click:hover,
-	.v-button:hover & {
+	&.has-click:not([disabled]):hover,
+	.v-button:hover button:not([disabled]) & {
 		color: var(--v-remove-color-hover, var(--theme--danger));
+	}
+
+	&[disabled] {
+		cursor: not-allowed;
 	}
 }
 </style>

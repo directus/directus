@@ -38,6 +38,7 @@ interface Props {
 	fromLibrary?: boolean;
 	folder?: string;
 	filter?: Filter;
+	disabled?: boolean;
 	accept?: string;
 }
 
@@ -377,7 +378,7 @@ defineExpose({ abort });
 	<div
 		data-dropzone
 		class="v-upload"
-		:class="{ dragging: dragging && fromUser, uploading }"
+		:class="{ dragging: dragging && fromUser, uploading, disabled }"
 		@dragenter.prevent="onDragEnter"
 		@dragover.prevent
 		@dragleave.prevent="onDragLeave"
@@ -402,7 +403,15 @@ defineExpose({ abort });
 
 		<template v-else>
 			<div class="actions">
-				<VButton v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+				<VButton
+					v-if="fromUser"
+					v-tooltip="!disabled && $t('click_to_browse')"
+					icon
+					rounded
+					secondary
+					:disabled
+					@click="openFileBrowser"
+				>
 					<input
 						ref="input"
 						class="browse"
@@ -416,20 +425,22 @@ defineExpose({ abort });
 				</VButton>
 				<VButton
 					v-if="fromLibrary"
-					v-tooltip="$t('choose_from_library')"
+					v-tooltip="!disabled && $t('choose_from_library')"
 					icon
 					rounded
 					secondary
+					:disabled
 					@click="activeDialog = 'choose'"
 				>
 					<VIcon name="folder_open" />
 				</VButton>
 				<VButton
 					v-if="fromUrl && fromUser"
-					v-tooltip="$t('import_from_url')"
+					v-tooltip="!disabled && $t('import_from_url')"
 					icon
 					rounded
 					secondary
+					:disabled
 					@click="activeDialog = 'url'"
 				>
 					<VIcon name="link" />
@@ -494,7 +505,11 @@ defineExpose({ abort });
 		color: inherit;
 	}
 
-	&:not(.uploading):hover {
+	&.disabled {
+		background-color: var(--theme--form--field--input--background-subdued);
+	}
+
+	&:not(.uploading):not(.disabled):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 }

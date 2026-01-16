@@ -138,7 +138,14 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 <template>
 	<div :class="{ secondary }">
-		<LanguageSelect v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
+		<LanguageSelect
+			v-model="lang"
+			:items="languageOptions"
+			:danger="item?.$type === 'deleted'"
+			:secondary
+			:disabled="activatorDisabled"
+			:non-editable
+		>
 			<template #prepend>
 				<span v-if="loading" class="activator-loading-placeholder" />
 
@@ -150,7 +157,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 					@after-leave="onTransitionEnd"
 					@leave-cancelled="onTransitionEnd"
 				>
-					<VIcon v-if="item" name="translate" :disabled="activatorDisabled" />
+					<VIcon v-if="item || nonEditable" name="translate" :disabled="activatorDisabled" />
 
 					<VIcon
 						v-else
@@ -186,7 +193,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			v-if="selectedLanguage"
 			:key="selectedLanguage.value"
 			:primary-key="itemPrimaryKey ?? '+'"
-			:class="{ unselected: !item }"
+			:class="{ unselected: !item, disabled }"
 			:disabled="disabled || !saveAllowed || item?.$type === 'deleted'"
 			:non-editable
 			:loading="loading"
@@ -224,7 +231,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 	margin-block-start: 32px;
 
-	&.unselected {
+	&.unselected:not(.disabled) {
 		opacity: 0.5;
 
 		&:hover,
