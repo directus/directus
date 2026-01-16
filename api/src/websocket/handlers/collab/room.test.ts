@@ -3,17 +3,13 @@ import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../../emitter.js';
-import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
-import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
-import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
-import { processPermissions } from '../../../permissions/utils/process-permissions.js';
+import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { permissionCache } from './permissions-cache.js';
 import { CollabRooms, getRoomHash, Room } from './room.js';
 import { sanitizePayload } from './sanitize-payload.js';
+import { verifyPermissions } from './verify-permissions.js';
 
 vi.mock('../../../database/index.js', () => ({
 	default: vi.fn(() => ({
@@ -30,8 +26,17 @@ vi.mock('../../../emitter.js', () => ({
 	},
 }));
 
+vi.mock('../../../logger/index.js', () => ({
+	useLogger: vi.fn().mockReturnValue({
+		error: vi.fn(),
+		info: vi.fn(),
+		warn: vi.fn(),
+	}),
+}));
+
 vi.mock('../../../utils/get-schema.js');
 vi.mock('./sanitize-payload.js');
+vi.mock('./verify-permissions.js');
 vi.mock('./field-permissions.js');
 vi.mock('../../../utils/get-service.js');
 vi.mock('../../../permissions/lib/fetch-permissions.js');
@@ -104,25 +109,12 @@ afterEach(() => {
 
 beforeEach(() => {
 	permissionCache.clear();
+	vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 	vi.mocked(getService).mockReturnValue({
 		readOne: vi.fn().mockResolvedValue({ id: 1, date: '2099-01-01' }),
 		readSingleton: vi.fn().mockResolvedValue({}),
 	} as any);
-
-	vi.mocked(fetchPolicies).mockResolvedValue(['policy-1']);
-
-	vi.mocked(fetchPermissions).mockResolvedValue([
-		{
-			fields: ['*'],
-			permissions: {},
-			validation: {},
-		},
-	] as any);
-
-	vi.mocked(processPermissions).mockImplementation(({ permissions }) => permissions);
-	vi.mocked(fetchDynamicVariableData).mockResolvedValue({});
-	vi.mocked(extractRequiredDynamicVariableContextForPermissions).mockReturnValue({} as any);
 
 	vi.mocked(getSchema).mockResolvedValue({
 		collections: {
@@ -131,11 +123,6 @@ beforeEach(() => {
 		},
 		relations: [],
 	} as any);
-
-	vi.mocked(validateItemAccess).mockResolvedValue({
-		accessAllowed: true,
-		allowedRootFields: ['*'],
-	});
 });
 
 function mockWebSocketClient(client: Partial<WebSocketClient>): WebSocketClient {
@@ -204,6 +191,23 @@ describe('CollabRooms', () => {
 		expect(room).toBeDefined();
 	});
 
+	test('getRoom reloads from store if missing in memory', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+		const item = getTestItem();
+		const room = await rooms.createRoom('a', item, null);
+
+		const uid = room.uid;
+
+		// Simulate memory eviction but store persistence
+		delete rooms.rooms[uid];
+
+		const reloadedRoom = await rooms.getRoom(uid);
+
+		expect(reloadedRoom).toBeDefined();
+		expect(reloadedRoom!.uid).toBe(uid);
+		expect(reloadedRoom!.collection).toBe('a');
+	});
+
 	test('getClientRooms', async () => {
 		const rooms = new CollabRooms(mockMessenger);
 		const client = mockWebSocketClient({ uid: 'abc' });
@@ -244,6 +248,26 @@ describe('CollabRooms', () => {
 			const storeKey = `${room.uid}:${key}`;
 			expect(mockData.has(storeKey)).toBeFalsy();
 		}
+
+		vi.useRealTimers();
+	});
+
+	test('cleanupRooms does not remove active rooms', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+		const client = mockWebSocketClient({ uid: 'abc' });
+
+		const room = await rooms.createRoom('a', getTestItem(), null);
+		await room.join(client);
+
+		// Advance time
+		vi.useFakeTimers();
+		vi.setSystemTime(Date.now() + 61 * 1000);
+
+		await rooms.cleanupRooms();
+
+		// Should still exist because it has a client
+		expect(Object.keys(rooms.rooms)).toContain(room.uid);
+		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
 
 		vi.useRealTimers();
 	});
@@ -338,6 +362,24 @@ describe('room', () => {
 		expect(vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'def')).toHaveLength(1);
 	});
 
+	test('join room twice (re-joining)', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		expect((await room.getClients()).length).toBe(1);
+
+		// Join again
+		await room.join(clientA);
+		expect((await room.getClients()).length).toBe(1); // Should still be 1
+
+		// Should have sent init twice
+		const clientAMsgs = vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'abc');
+		expect(clientAMsgs.filter((c: any) => c[1].action === 'init')).toHaveLength(2);
+	});
+
 	test('leave room', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const item = getTestItem();
@@ -361,13 +403,7 @@ describe('room', () => {
 
 		await room.join(clientA);
 
-		vi.mocked(fetchPermissions).mockResolvedValue([
-			{
-				fields: ['*'],
-				permissions: {},
-				validation: {},
-			},
-		] as any);
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 		await room.focus(clientA, 'title');
 		expect(await room.getFocusByUser('abc')).toBe('title');
@@ -433,13 +469,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(fetchPermissions).mockResolvedValue([
-			{
-				fields: ['*'],
-				permissions: { publish_date: { _lt: '$NOW' } },
-				validation: {},
-			},
-		] as any);
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 		await room.unset(clientA, 'publish_date');
 
@@ -576,6 +606,30 @@ describe('room', () => {
 		);
 	});
 
+	test('updates valid keys in changes on external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		// Pre-populate some changes
+		mockData.set(`${uid}:changes`, { title: 'Pending', stale: 'Gone' });
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		// Return item WITHOUT 'stale' field
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Updated' }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		// Simulate external update
+		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		const updatedChanges = mockData.get(`${uid}:changes`);
+		expect(updatedChanges).toEqual({ title: 'Pending' }); // 'stale' should be removed
+	});
+
 	test('does not broadcast save action to same user who updated', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		clientA.accountability = { user: 'user-a' } as any;
@@ -599,7 +653,29 @@ describe('room', () => {
 		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
 	});
 
-	test('focus', async () => {
+	test('handles error in external update handler gracefully', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		const mockService = { readOne: vi.fn().mockRejectedValue(new Error('Service Failure')) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		const logger = useLogger();
+		const errorSpy = vi.spyOn(logger, 'error');
+
+		// Simulate external update
+		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		expect(errorSpy).toHaveBeenCalledWith(expect.any(Error), expect.stringContaining('External update handler failed'));
+	});
+
+	test('broadcasts focus message to other clients', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
@@ -609,13 +685,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(fetchPermissions).mockResolvedValue([
-			{
-				fields: ['*'],
-				permissions: { publish_date: { _lt: '$NOW' } },
-				validation: {},
-			},
-		] as any);
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 		await room.focus(clientA, 'publish_date');
 
@@ -632,7 +702,7 @@ describe('room', () => {
 		});
 	});
 
-	test('checkFocus', async () => {
+	test('retrieves current focus by user', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
@@ -642,13 +712,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(fetchPermissions).mockResolvedValue([
-			{
-				fields: ['*'],
-				permissions: {},
-				validation: {},
-			},
-		] as any);
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 		// Client A focuses on title
 		await room.focus(clientA, 'title');
@@ -733,7 +797,7 @@ describe('room', () => {
 		expect(failures).toHaveLength(1);
 	});
 
-	test('focus null clears focus and broadcasts', async () => {
+	test('clears focus and broadcasts release message when focusing null', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
@@ -767,6 +831,72 @@ describe('room', () => {
 			type: 'collab',
 			room: uid,
 		});
+	});
+
+	test('focus propagation respects recipient permissions', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(verifyPermissions).mockImplementation(async (acc, _coll, _item) => {
+			if (acc?.user === 'user-abc') return ['*'];
+			if (acc?.user === 'user-def') return ['title'];
+			return [];
+		});
+
+		// A focuses on 'secret' (B cannot see this)
+		await room.focus(clientA, 'secret');
+
+		// B should NOT receive the focus message
+		const msgToB = vi
+			.mocked(mockMessenger.sendClient)
+			.mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'focus');
+
+		expect(msgToB).toBeUndefined();
+
+		// A focuses on 'title' (B CAN see this)
+		mockMessenger.sendClient.mockClear();
+		await room.focus(clientA, 'title');
+
+		expect(
+			vi
+				.mocked(mockMessenger.sendClient)
+				.mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'focus' && c[1].field === 'title'),
+		).toBeDefined();
+	});
+
+	test('batch focus releases on leave', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
+
+		await room.focus(clientA, 'title');
+		await room.focus(clientB, 'status');
+
+		expect(await room.getFocusByUser('abc')).toBe('title');
+		expect(await room.getFocusByUser('def')).toBe('status');
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		// Client A leaves
+		await room.leave('abc');
+
+		// Focus on title should be released
+		expect(await room.getFocusByUser('abc')).toBeUndefined();
+		// Focus on status should still be there for B
+		expect(await room.getFocusByUser('def')).toBe('status');
 	});
 });
 

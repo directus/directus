@@ -123,13 +123,27 @@ describe('Messenger', () => {
 			expect(messenger.clients['client-1']).toBe(mockClient);
 			expect(messenger.orders['client-1']).toBe(0);
 
-			expect(messenger.clients['client-1']).toBe(mockClient);
-			expect(messenger.orders['client-1']).toBe(0);
-
 			await new Promise(process.nextTick);
 
 			const instances = mockData.get('rooms:instances');
 			expect(instances[messenger.uid]).toContain('client-1');
+		});
+
+		test('addClient ignores duplicate registration', async () => {
+			messenger.addClient(mockClient);
+			const initialClients = { ...messenger.clients };
+
+			// Try adding same client again
+			messenger.addClient(mockClient);
+
+			// Should be same object reference
+			expect(messenger.clients['client-1']).toBe(initialClients['client-1']);
+
+			await new Promise(process.nextTick);
+
+			// Should verify store wasn't appended with duplicate
+			const instances = mockData.get('rooms:instances');
+			expect(instances[messenger.uid].filter((id: string) => id === 'client-1')).toHaveLength(1);
 		});
 
 		test('addClient sets up close handler', () => {
@@ -219,6 +233,43 @@ describe('Messenger', () => {
 			// Verify order increment
 			expect(messenger.orders['client-1']).toBe(1);
 		});
+
+		test('ignores messages for unknown clients', () => {
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+
+			const message = {
+				type: 'send',
+				client: 'unknown-client',
+				message: { action: 'test' },
+			};
+
+			expect(() => busHandler?.(message)).not.toThrow();
+		});
+
+		test('responds with pong when receiving ping for own instance', () => {
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+
+			busHandler?.({
+				type: 'ping',
+				instance: messenger.uid,
+			});
+
+			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
+				type: 'pong',
+				instance: messenger.uid,
+			});
+		});
+
+		test('ignores ping for other instances', () => {
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+
+			busHandler?.({
+				type: 'ping',
+				instance: 'other-instance',
+			});
+
+			expect(mockBus.publish).not.toHaveBeenCalled();
+		});
 	});
 
 	describe('removeInvalidClients', () => {
@@ -265,7 +316,7 @@ describe('Messenger', () => {
 			expect(instances).toHaveProperty(aliveInstance);
 			expect(instances).not.toHaveProperty(deadInstance);
 
-			expect(disconnected).toEqual(['client-A', 'client-B']);
+			expect(disconnected).toEqual({ inactive: ['client-A', 'client-B'], active: ['client-C'] });
 
 			vi.useRealTimers();
 		});
@@ -278,7 +329,7 @@ describe('Messenger', () => {
 			await vi.advanceTimersByTimeAsync(1500);
 			const disconnected = await promise;
 
-			expect(disconnected).toEqual([]);
+			expect(disconnected).toEqual({ inactive: [], active: [] });
 			vi.useRealTimers();
 		});
 
@@ -316,7 +367,7 @@ describe('Messenger', () => {
 
 			expect(result).toHaveProperty('new-uuid');
 
-			expect(disconnected).toEqual(['client-A']);
+			expect(disconnected).toEqual({ inactive: ['client-A'], active: ['client-B'] });
 
 			vi.useRealTimers();
 		});
