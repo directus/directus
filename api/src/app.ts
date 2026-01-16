@@ -11,7 +11,7 @@ import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
 import { merge } from 'lodash-es';
 import qs from 'qs';
-import { llmRouter } from './ai/llm/router.js';
+import { aiChatRouter } from './ai/chat/router.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
@@ -311,7 +311,7 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	if (toBoolean(env['AI_ENABLED']) === true) {
-		app.use('/ai', llmRouter);
+		app.use('/ai/chat', aiChatRouter);
 	}
 
 	if (env['METRICS_ENABLED'] === true) {

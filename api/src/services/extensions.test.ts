@@ -5,6 +5,7 @@ import { getExtensionManager } from '../extensions/index.js';
 import { ExtensionsService } from './extensions.js';
 import { ItemsService } from './items.js';
 
+// Mock dependencies at the top level
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({})),
 }));
