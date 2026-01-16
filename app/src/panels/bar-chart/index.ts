@@ -1,9 +1,9 @@
 import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelBarChart from './panel-bar-chart.vue';
+import PreviewSVG from './preview.svg?raw';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'bar-chart',
@@ -28,13 +28,11 @@ export default definePanel({
 			},
 		};
 
-		// If a display field is configured for a relational xAxis, add a secondary query
-		// to fetch the display values from the related collection
-		if (options['xAxisDisplayField']) {
-			// Dynamically determine the related collection and primary key
+		const isXAxisRelational = options['xAxisDisplayField'];
+
+		if (isXAxisRelational) {
 			const relationsStore = useRelationsStore();
 			const fieldsStore = useFieldsStore();
-
 			const relation = relationsStore.getRelationForField(options['collection'], options['xAxis']);
 
 			if (relation?.related_collection) {
@@ -93,7 +91,6 @@ export default definePanel({
 			return false;
 		});
 
-		// Detect if xAxis is a relational field and get the related collection info
 		const xAxisRelation = computed(() => {
 			if (!options?.['collection'] || !options?.['xAxis']) return null;
 			const relation = relationsStore.getRelationForField(options['collection'], options['xAxis']);
@@ -107,7 +104,6 @@ export default definePanel({
 			};
 		});
 
-		// Generate choices for the display field dropdown from the related collection
 		const xAxisDisplayFieldChoices = computed(() => {
 			if (!xAxisRelation.value) return [];
 			const fields = fieldsStore.getFieldsForCollection(xAxisRelation.value.relatedCollection);
