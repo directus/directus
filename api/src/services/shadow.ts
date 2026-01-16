@@ -9,7 +9,7 @@ import type {
 	Type,
 } from '@directus/types';
 import type { Knex } from 'knex';
-import { ALIAS_TYPES } from '../constants.js';
+import { ALIAS_TYPES, INJECTED_PRIMARY_KEY_FIELD } from '../constants.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
@@ -32,40 +32,59 @@ export class ShadowsService {
 		this.schema = options.schema;
 	}
 
+	private injectedFields() {
+		return [INJECTED_PRIMARY_KEY_FIELD];
+	}
+
+	private buildField(field: string, opts?: { shadow?: boolean }): string;
+	private buildField(field: RawField, opts?: { shadow?: boolean }): RawField;
+	private buildField(field: Field, opts?: { shadow?: boolean }): Field;
+	private buildField(field: string | RawField | Field, opts?: { shadow?: boolean }): string | RawField | Field {
+		if (typeof field === 'string') {
+			return opts?.shadow ? `directus_${field}` : field;
+		}
+
+		const shadowField = Object.assign({}, field) as RawField | Field;
+
+		// rename if shadow
+		if (opts?.shadow) {
+			shadowField.field = `directus_${shadowField.field}`;
+			shadowField.name = `directus_${shadowField.name}`;
+			shadowField.collection = `directus_version_${shadowField.collection}`;
+
+			if (shadowField.schema) {
+				shadowField.schema.name = `directus_${shadowField.name}`;
+				shadowField.schema.table = `directus_version_${shadowField.schema.table}`;
+			}
+
+			if (shadowField.meta) {
+				shadowField.meta.field = `directus_${shadowField.meta.field}`;
+				shadowField.meta.collection = `directus_version_${shadowField.meta.collection}`;
+			}
+		}
+
+		// Shadow tables should not enforce uniqueness
+		if (shadowField.schema && shadowField.schema.is_unique) {
+			shadowField.schema.is_unique = false;
+			// TODO: is_indexes if is_unique true?
+		}
+
+		return shadowField;
+	}
+
 	async createShadowTable(collection: string, fields?: Array<RawField | Field>) {
-		const injectedPrimaryKeyField: RawField = {
-			field: 'id',
-			type: 'uuid',
-			meta: {
-				hidden: true,
-				interface: 'input',
-				readonly: true,
-				special: ['uuid'],
-			},
-			schema: {
-				is_primary_key: true,
-			},
-		};
-
 		const shadowCollection = `directus_version_${collection}`;
-		const shadowFields = [injectedPrimaryKeyField];
-
-		// TODO: add `directus_id` field pointing to main table
+		const shadowFields = this.injectedFields();
 
 		for (const field of fields ?? []) {
 			// Skip original primary key so we can use injected
+			// TODO: add `directus_id` field pointing to main table
 			if (field.schema?.is_primary_key) continue;
+
 			// Skip aliases or fields without a concrete database type
 			if (!field.type || ALIAS_TYPES.includes(field.type)) continue;
 
-			// Shadow tables should not enforce uniqueness
-			field.schema = {
-				...field.schema,
-				is_unique: false,
-				// TODO: is_indexes if is_unque true?
-			};
-
-			shadowFields.push(field);
+			shadowFields.push(this.buildField(field));
 		}
 
 		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
@@ -92,8 +111,7 @@ export class ShadowsService {
 				await this.createShadowRelation(relation);
 			} else if (
 				relation.related_collection === collection &&
-				// TODO: Check if constraint is valid
-				// relation.meta?.one_field &&
+				relation.meta?.one_field &&
 				this.schema.collections[relation.collection]?.versioned
 			) {
 				// M2O relation from another (versioned) collection pointing to this one
@@ -281,7 +299,7 @@ export class ShadowsService {
 			await transaction(this.knex, async (trx) => {
 				if (relation.related_collection) {
 					const shadowCollection = `directus_version_${relation.collection}`;
-					const shadowField = field;
+					const shadowField = this.buildField(field);
 
 					await trx.schema.alterTable(shadowCollection, async (table) => {
 						let constraintName: string = getDefaultIndexName('foreign', shadowCollection, shadowField);
@@ -337,7 +355,7 @@ export class ShadowsService {
 						 */
 						if (this.schema.collections[relation.related_collection!]?.versioned) {
 							const shadowRelatedCollection = `directus_version_${relation.related_collection}`;
-							const shadowRelatedField = `directus_${field}`;
+							const shadowRelatedField = this.buildField(field, { shadow: true });
 
 							let constraintName: string = getDefaultIndexName('foreign', shadowRelatedCollection, shadowRelatedField);
 
@@ -475,13 +493,7 @@ export class ShadowsService {
 
 		const shadowCollection = `directus_version_${collection}`;
 
-		const shadowField = {
-			...field,
-			schema: {
-				...field.schema,
-				is_unique: false,
-			},
-		};
+		const shadowField = this.buildField(field);
 
 		if (table) {
 			fieldsService.addColumnToTable(table, shadowCollection, shadowField);
@@ -501,13 +513,7 @@ export class ShadowsService {
 
 		const shadowCollection = `directus_version_${collection}`;
 
-		const shadowField = {
-			...field,
-			schema: {
-				...field.schema,
-				is_unique: false,
-			},
-		};
+		const shadowField = this.buildField(field);
 
 		await this.knex.schema.alterTable(shadowCollection, (table) => {
 			// Update primary shadow column

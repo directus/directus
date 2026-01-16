@@ -11,7 +11,6 @@ import type {
 	FieldMutationOptions,
 	MutationOptions,
 	RawCollection,
-	RawField,
 	SchemaOverview,
 } from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
@@ -19,7 +18,7 @@ import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { chunk, groupBy, merge, omit } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
-import { ALIAS_TYPES } from '../constants.js';
+import { ALIAS_TYPES, INJECTED_PRIMARY_KEY_FIELD } from '../constants.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -105,27 +104,12 @@ export class CollectionsService {
 					 * every collection that is created has a primary key. If no primary key field is created
 					 * while making the collection, we default to an auto incremented id named `id`
 					 */
-
-					const injectedPrimaryKeyField: RawField = {
-						field: 'id',
-						type: 'integer',
-						meta: {
-							hidden: true,
-							interface: 'numeric',
-							readonly: true,
-						},
-						schema: {
-							is_primary_key: true,
-							has_auto_increment: true,
-						},
-					};
-
 					if (!payload.fields || payload.fields.length === 0) {
-						payload.fields = [injectedPrimaryKeyField];
+						payload.fields = [INJECTED_PRIMARY_KEY_FIELD];
 					} else if (
 						!payload.fields.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)
 					) {
-						payload.fields = [injectedPrimaryKeyField, ...payload.fields];
+						payload.fields = [INJECTED_PRIMARY_KEY_FIELD, ...payload.fields];
 					}
 
 					// Ensure that every field meta has the field/collection fields filled correctly

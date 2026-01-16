@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { TransformationParams } from '@directus/types';
+import type { RawField, TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
 import type { CookieOptions } from 'express';
@@ -119,3 +119,17 @@ export const RESUMABLE_UPLOADS = {
 };
 
 export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()'];
+
+export const INJECTED_PRIMARY_KEY_FIELD: RawField = {
+	field: 'id',
+	type: 'integer',
+	meta: {
+		hidden: true,
+		interface: 'numeric',
+		readonly: true,
+	},
+	schema: {
+		is_primary_key: true,
+		has_auto_increment: true,
+	},
+};
