@@ -212,7 +212,7 @@ describe('CollabRooms', () => {
 		const room = await rooms.createRoom('a', getTestItem(), null);
 		await room.join(client);
 
-		const clientRooms = await rooms.getClientRooms(client);
+		const clientRooms = await rooms.getClientRooms(client.uid);
 
 		expect(clientRooms).toEqual([room]);
 	});
@@ -228,7 +228,7 @@ describe('CollabRooms', () => {
 
 		expect(Object.keys(rooms.rooms).length).toEqual(1);
 
-		await room.leave(client);
+		await room.leave(client.uid);
 
 		// Advance time past the 1 minute inactivity threshold
 		vi.useFakeTimers();
@@ -349,7 +349,7 @@ describe('room', () => {
 
 		expect((await room.getClients()).length).toBe(1);
 
-		await room.leave(clientA);
+		await room.leave(clientA.uid);
 
 		expect((await room.getClients()).length).toBe(0);
 	});
@@ -373,9 +373,9 @@ describe('room', () => {
 		await room.focus(clientA, 'title');
 		expect(await room.getFocusByUser('abc')).toBe('title');
 
-		await room.leave(clientA);
+		await room.leave(clientA.uid);
 
-		expect(await room.getFocusByUser('abc')).toBeUndefined();
+		expect(await room.getFocusByUser(clientA.uid)).toBeUndefined();
 	});
 
 	test('update field', async () => {
