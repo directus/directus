@@ -311,7 +311,7 @@ export async function asyncDeepMapWithSchema(
 	return result;
 }
 
-function isDetailedUpdateSyntax(value: unknown): value is { create: unknown[]; update: unknown[]; delete: unknown[] } {
+export function isDetailedUpdateSyntax(value: unknown): value is { create: unknown[]; update: unknown[]; delete: unknown[] } {
 	return (
 		isObject(value) &&
 		Array.isArray(value['create']) &&
