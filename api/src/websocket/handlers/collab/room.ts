@@ -1,5 +1,4 @@
-import { createHash, randomUUID } from 'crypto';
-import { useEnv } from '@directus/env';
+import { createHash } from 'crypto';
 import { type Accountability, type ActionHandler, type Item, type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
 import { random } from 'lodash-es';
