@@ -16,6 +16,7 @@ const schema = new SchemaBuilder()
 	.collection('users', (c) => {
 		c.field('id').id();
 		c.field('name').string();
+		c.field('links').o2m('links', 'user_id');
 	})
 	.collection('tags', (c) => {
 		c.field('id').id();
@@ -61,6 +62,7 @@ test('map flat object', () => {
 				leaf: true,
 				relationType: null,
 				object,
+				action: undefined,
 			},
 		},
 		title: {
@@ -72,6 +74,7 @@ test('map flat object', () => {
 				leaf: true,
 				relationType: null,
 				object,
+				action: undefined,
 			},
 		},
 		author: {
@@ -83,6 +86,7 @@ test('map flat object', () => {
 				leaf: true,
 				relationType: 'm2o',
 				object,
+				action: undefined,
 			},
 		},
 		tags: {
@@ -94,6 +98,7 @@ test('map flat object', () => {
 				leaf: true,
 				relationType: 'o2m',
 				object,
+				action: undefined,
 			},
 		},
 	});
@@ -127,6 +132,7 @@ test('map m2o object', () => {
 						leaf: true,
 						object: object.author,
 						relationType: null,
+						action: undefined,
 					},
 				},
 				name: {
@@ -138,6 +144,7 @@ test('map m2o object', () => {
 						leaf: true,
 						relationType: null,
 						object: object.author,
+						action: undefined,
 					},
 				},
 			},
@@ -148,6 +155,7 @@ test('map m2o object', () => {
 				leaf: false,
 				object,
 				relationType: 'm2o',
+				action: undefined,
 			},
 		},
 	});
@@ -186,6 +194,7 @@ test('map o2m object', () => {
 							leaf: true,
 							relationType: null,
 							object: object.links[0],
+							action: undefined,
 						},
 					},
 				},
@@ -199,6 +208,7 @@ test('map o2m object', () => {
 							leaf: true,
 							relationType: null,
 							object: object.links[1],
+							action: undefined,
 						},
 					},
 				},
@@ -210,6 +220,7 @@ test('map o2m object', () => {
 				leaf: false,
 				object,
 				relationType: 'o2m',
+				action: undefined,
 			},
 		},
 	});
@@ -243,6 +254,7 @@ test('map o2m object with detailed syntax', () => {
 								leaf: true,
 								relationType: null,
 								object: object.links.create[0],
+								action: 'create',
 							},
 						},
 					},
@@ -258,6 +270,7 @@ test('map o2m object with detailed syntax', () => {
 								leaf: true,
 								relationType: null,
 								object: object.links.update[0],
+								action: 'update',
 							},
 						},
 					},
@@ -271,6 +284,7 @@ test('map o2m object with detailed syntax', () => {
 				leaf: false,
 				object,
 				relationType: 'o2m',
+				action: undefined,
 			},
 		},
 	});
@@ -310,6 +324,7 @@ test('map m2m object', () => {
 							leaf: true,
 							relationType: null,
 							object: object.tags[0],
+							action: undefined,
 						},
 					},
 					articles_id: {
@@ -321,6 +336,7 @@ test('map m2m object', () => {
 							leaf: true,
 							relationType: 'm2o',
 							object: object.tags[0],
+							action: undefined,
 						},
 					},
 					tags_id: {
@@ -334,6 +350,7 @@ test('map m2m object', () => {
 									leaf: true,
 									relationType: null,
 									object: object.tags[0]?.tags_id,
+									action: undefined,
 								},
 							},
 						},
@@ -344,6 +361,7 @@ test('map m2m object', () => {
 							leaf: false,
 							relationType: 'm2o',
 							object: object.tags[0],
+							action: undefined,
 						},
 					},
 				},
@@ -355,6 +373,7 @@ test('map m2m object', () => {
 				leaf: false,
 				object,
 				relationType: 'o2m',
+				action: undefined,
 			},
 		},
 	});
@@ -399,6 +418,7 @@ test('map m2a object', () => {
 							leaf: true,
 							object: object.sections[0],
 							relationType: null,
+							action: undefined,
 						},
 					},
 					item: {
@@ -412,6 +432,7 @@ test('map m2a object', () => {
 									leaf: true,
 									object: object.sections[0]?.item,
 									relationType: null,
+									action: undefined,
 								},
 							},
 						},
@@ -422,6 +443,7 @@ test('map m2a object', () => {
 							leaf: false,
 							object: object.sections[0],
 							relationType: 'a2o',
+							action: undefined,
 						},
 					},
 				},
@@ -435,6 +457,7 @@ test('map m2a object', () => {
 							leaf: true,
 							object: object.sections[1],
 							relationType: null,
+							action: undefined,
 						},
 					},
 					item: {
@@ -448,6 +471,7 @@ test('map m2a object', () => {
 									leaf: true,
 									object: object.sections[1]?.item,
 									relationType: null,
+									action: undefined,
 								},
 							},
 						},
@@ -458,6 +482,7 @@ test('map m2a object', () => {
 							leaf: false,
 							object: object.sections[1],
 							relationType: 'a2o',
+							action: undefined,
 						},
 					},
 				},
@@ -469,6 +494,7 @@ test('map m2a object', () => {
 				leaf: false,
 				object,
 				relationType: 'o2m',
+				action: undefined,
 			},
 		},
 	});
@@ -543,6 +569,7 @@ test('map flat invalid deep field', () => {
 				object,
 				leaf: false,
 				relationType: 'm2o',
+				action: undefined,
 			},
 		},
 	});
@@ -575,6 +602,7 @@ test('map flat invalid deep field', () => {
 				leaf: false,
 				object,
 				relationType: 'm2o',
+				action: undefined,
 			},
 		},
 	});
@@ -615,7 +643,7 @@ const simpleSchema = new SchemaBuilder()
 	})
 	.build();
 
-test('map with non-existent fields', () => {
+test('map with non-existent fields', async () => {
 	const object = {
 		id: 1,
 		title: 'hi',
@@ -624,13 +652,13 @@ test('map with non-existent fields', () => {
 		},
 	};
 
-	const result = deepMapWithSchema(
+	const result = await deepMapWithSchema(
 		object,
-		([key, value], context) => {
+		async ([key, value], context) => {
 			return [key, { value, context }];
 		},
 		{ schema: simpleSchema, collection: 'articles' },
-		{ mapNonExistentFields: true },
+		{ mapNonExistentFields: true, processAsync: true },
 	);
 
 	expect(result).toEqual({
@@ -643,6 +671,7 @@ test('map with non-existent fields', () => {
 				leaf: true,
 				relationType: null,
 				object,
+				action: undefined,
 			},
 		},
 		title: {
@@ -654,6 +683,7 @@ test('map with non-existent fields', () => {
 				leaf: true,
 				relationType: null,
 				object,
+				action: undefined,
 			},
 		},
 		author: {
@@ -667,6 +697,7 @@ test('map with non-existent fields', () => {
 						leaf: true,
 						relationType: null,
 						object: object.author,
+						action: undefined,
 					},
 				},
 				name: {
@@ -678,6 +709,7 @@ test('map with non-existent fields', () => {
 						leaf: true,
 						relationType: null,
 						object: object.author,
+						action: undefined,
 					},
 				},
 			},
@@ -688,6 +720,7 @@ test('map with non-existent fields', () => {
 				leaf: false,
 				relationType: 'm2o',
 				object,
+				action: undefined,
 			},
 		},
 	});
@@ -720,4 +753,62 @@ test('map primary key fields', () => {
 		author: { id: 7 },
 		links: [9, 11],
 	});
+});
+
+test('propagates root action context', () => {
+	const object = { title: 'hello' };
+
+	const result = deepMapWithSchema(
+		object,
+		([key, value], context) => {
+			return [key, { value, context }];
+		},
+		{
+			schema,
+			collection: 'articles',
+			relationInfo: {
+				action: 'update',
+			} as any,
+		},
+	);
+
+	expect(result.title.context.action).toBe('update');
+});
+
+test('resets action context on M2O relations and propagates detailed syntax deep', () => {
+	const object = {
+		author: {
+			name: 'admin',
+			links: {
+				create: [{ name: 'new-link' }],
+				update: [{ id: 10, name: 'old-link' }],
+				delete: [{ id: 5 }],
+			},
+		},
+	};
+
+	const result = deepMapWithSchema(
+		object,
+		([key, value], context) => {
+			return [key, { value, context }];
+		},
+		{
+			schema,
+			collection: 'articles',
+			relationInfo: { action: 'update' } as any,
+		},
+		{ detailedUpdateSyntax: true },
+	);
+
+	// Root action is update
+	expect(result.author.context.action).toBe('update');
+
+	// Inside M2O, action is reset to undefined (ambiguous link/update)
+	expect(result.author.value.name.context.action).toBe(undefined);
+	expect(result.author.value.links.context.action).toBe(undefined);
+
+	// Inside O2M buckets, actions are explicit
+	expect(result.author.value.links.value.create[0].name.context.action).toBe('create');
+	expect(result.author.value.links.value.update[0].id.context.action).toBe('update');
+	expect(result.author.value.links.value.delete[0].id.context.action).toBe('delete');
 });
