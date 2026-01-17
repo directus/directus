@@ -11,10 +11,9 @@ import {
 	InsufficientAccessError,
 	InvalidCredentialsError as LdapInvalidCredentialsError,
 } from 'ldapts';
-// eslint-disable-next-line import/order -- false positive: all imports are external packages
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-// Mock all dependencies before importing the LDAP driver
+import emitter from '../../emitter.js';
+import { createLDAPAuthRouter, LDAPAuthDriver } from './ldap.js';
 
 const mockAuthenticationService = {
 	login: vi.fn(),
@@ -123,10 +122,6 @@ vi.mock('../../services/users.js', () => {
 		})),
 	};
 });
-
-// Now import the LDAP driver
-import emitter from '../../emitter.js';
-import { createLDAPAuthRouter, LDAPAuthDriver } from './ldap.js';
 
 // Create a simple mock for knex
 const createMockKnex = () => {
