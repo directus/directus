@@ -86,8 +86,7 @@ jobs:
           echo "MSSQL compatibility level set successfully"
 
       - name: Start services
-        run:
-          docker compose -f tests/blackbox/docker-compose.yml up redis minio minio-mc -d --quiet-pull --wait
+        run: docker compose -f tests/blackbox/docker-compose.yml up redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox --project db
