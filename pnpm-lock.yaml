@@ -625,8 +625,8 @@ catalogs:
       specifier: 1.14.0
       version: 1.14.0
     ldapts:
-      specifier: 8.0.18
-      version: 8.0.18
+      specifier: 8.1.3
+      version: 8.1.3
     liquidjs:
       specifier: 10.24.0
       version: 10.24.0
@@ -1232,7 +1232,7 @@ importers:
         version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       ldapts:
         specifier: 'catalog:'
-        version: 8.0.18
+        version: 8.1.3
       liquidjs:
         specifier: 'catalog:'
         version: 10.24.0
@@ -3147,7 +3147,7 @@ importers:
         version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       ldapts:
         specifier: 'catalog:'
-        version: 8.0.18
+        version: 8.1.3
       listr2:
         specifier: 9.0.5
         version: 9.0.5
@@ -6658,9 +6658,6 @@ packages:
 
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
-
-  '@types/asn1@0.2.4':
-    resolution: {integrity: sha512-V91DSJ2l0h0gRhVP4oBfBzRBN9lAbPUkGDMCnwedqPKX2d84aAMc9CulOvxdw1f7DfEYx99afab+Rsm3e52jhA==}
 
   '@types/async@3.2.25':
     resolution: {integrity: sha512-O6Th/DI18XjrL9TX8LO9F/g26qAz5vynmQqlXt/qLGrskvzCKXKc5/tATz3G2N6lM8eOf3M8/StB14FncAmocg==}
@@ -10486,8 +10483,8 @@ packages:
     resolution: {integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw==}
     engines: {node: '>= 0.6.3'}
 
-  ldapts@8.0.18:
-    resolution: {integrity: sha512-qsQjT97SXhQw+WbH5gdO7OYhZ18fMQX/+akD0tfUqEQKF/GN9FQzwaV6XAFgN+8NR1gtLwTHBboxqFe5wDJFhQ==}
+  ldapts@8.1.3:
+    resolution: {integrity: sha512-kEU3GDh48ZymnyLGsFprai2v4r7Gyxe6niBlUUw3xnOGpq5O+XODmXJ8gBwbPIg35qt5cnYVC80NNSdAkb2dJg==}
     engines: {node: '>=20'}
 
   leac@0.6.0:
@@ -19024,10 +19021,6 @@ snapshots:
 
   '@types/argparse@1.0.38': {}
 
-  '@types/asn1@0.2.4':
-    dependencies:
-      '@types/node': 24.9.1
-
   '@types/async@3.2.25': {}
 
   '@types/base-64@1.0.2': {}
@@ -23314,15 +23307,10 @@ snapshots:
     dependencies:
       readable-stream: 2.3.8
 
-  ldapts@8.0.18:
+  ldapts@8.1.3:
     dependencies:
-      '@types/asn1': 0.2.4
-      asn1: 0.2.6
-      debug: 4.4.3(supports-color@5.5.0)
       strict-event-emitter-types: 2.0.0
       whatwg-url: 15.1.0
-    transitivePeerDependencies:
-      - supports-color
 
   leac@0.6.0: {}
 
