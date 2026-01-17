@@ -47,6 +47,33 @@ describe('/auth/login/ldap', () => {
 		// Bind as admin
 		await setupClient.bind(ADMIN_DN, ADMIN_PASSWORD);
 
+		// Create base DN if it doesn't exist
+		try {
+			await setupClient.add(BASE_DN, {
+				objectClass: ['top', 'domain', 'dcObject'],
+				dc: 'my-domain',
+			});
+		} catch (err: any) {
+			if (err?.code !== 68) {
+				// 68 = entryAlreadyExists, ignore
+				throw err;
+			}
+		}
+
+		// Create Manager entry if it doesn't exist (needed for our healthcheck)
+		try {
+			await setupClient.add(ADMIN_DN, {
+				objectClass: ['top', 'person', 'organizationalPerson'],
+				cn: 'Manager',
+				sn: 'Manager',
+			});
+		} catch (err: any) {
+			if (err?.code !== 68) {
+				// 68 = entryAlreadyExists, ignore
+				throw err;
+			}
+		}
+
 		// Create users OU if it doesn't exist
 		try {
 			await setupClient.add(USER_BASE_DN, {
@@ -75,6 +102,7 @@ describe('/auth/login/ldap', () => {
 			});
 		} catch (err: any) {
 			if (err?.code !== 68) {
+				// 68 = entryAlreadyExists, ignore
 				throw err;
 			}
 		}
