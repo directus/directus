@@ -54,7 +54,6 @@ beforeEach(() => {
 
 const accountability = { user: 'test-user', roles: ['test-role'] } as Accountability;
 const adminAccountability = { user: 'admin', roles: ['admin'], admin: true } as Accountability;
-
 const db = vi.mocked(knex.default({ client: MockClient }));
 
 describe('sanitizePayload', () => {
@@ -62,11 +61,12 @@ describe('sanitizePayload', () => {
 		test('returns empty object with no permissions', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['id']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, title: 'Hello World', secret: 'top secret' },
-				{ schema, accountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, title: 'Hello World', secret: 'top secret' }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1 });
 		});
@@ -74,11 +74,12 @@ describe('sanitizePayload', () => {
 		test('filters hash fields', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, title: 'Hello World', secret: 'top secret' },
-				{ schema, accountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, title: 'Hello World', secret: 'top secret' }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1, title: 'Hello World' });
 		});
@@ -86,13 +87,14 @@ describe('sanitizePayload', () => {
 		test('filters fields based on permissions', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['title']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, title: 'Hello World', secret: 'top secret' },
-				{ schema, accountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, title: 'Hello World', secret: 'top secret' }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
 
-			expect(result).toEqual({ title: 'Hello World' });
+			expect(result).toEqual({ id: 1, title: 'Hello World' });
 		});
 	});
 
@@ -100,11 +102,12 @@ describe('sanitizePayload', () => {
 		test('admin bypasses permissions except for hash fields', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, title: 'Hello World', secret: 'top secret' },
-				{ schema, accountability: adminAccountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, title: 'Hello World', secret: 'top secret' }, 'articles', {
+				accountability: adminAccountability,
+				schema,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1, title: 'Hello World' });
 		});
@@ -112,11 +115,12 @@ describe('sanitizePayload', () => {
 		test('admin bypasses nested update existence checks', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, author: { id: 99, name: 'New Author' } },
-				{ schema, accountability: adminAccountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, author: { id: 99, name: 'New Author' } }, 'articles', {
+				accountability: adminAccountability,
+				schema,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1, author: { id: 99, name: 'New Author' } });
 		});
@@ -132,9 +136,14 @@ describe('sanitizePayload', () => {
 				});
 
 				const result = await sanitizePayload(
-					'articles',
 					{ id: 1, title: 'Hello World', author: { id: 10, name: 'John Doe', email: 'john@example.com' } },
-					{ schema, accountability, knex: db },
+					'articles',
+					{
+						accountability,
+						schema,
+						action: 'update',
+						knex: db,
+					},
 				);
 
 				expect(result).toEqual({
@@ -151,9 +160,14 @@ describe('sanitizePayload', () => {
 				});
 
 				const result = await sanitizePayload(
-					'articles',
 					{ id: 1, title: 'Hello World', author: { id: 10, name: 'John Doe' } },
-					{ schema, accountability, knex: db },
+					'articles',
+					{
+						accountability,
+						schema,
+						action: 'update',
+						knex: db,
+					},
 				);
 
 				expect(result).toEqual({ id: 1, title: 'Hello World' });
@@ -169,9 +183,14 @@ describe('sanitizePayload', () => {
 				});
 
 				const result = await sanitizePayload(
-					'articles',
 					{ id: 1, title: 'Hello World', comments: [{ id: 1, text: 'text', internal_note: 'note' }] },
-					{ schema, accountability, knex: db },
+					'articles',
+					{
+						accountability,
+						schema,
+						action: 'update',
+						knex: db,
+					},
 				);
 
 				expect(result).toEqual({
@@ -187,11 +206,12 @@ describe('sanitizePayload', () => {
 					return [];
 				});
 
-				const result = await sanitizePayload(
-					'articles',
-					{ id: 1, comments: [{ id: 1, text: 'text' }] },
-					{ schema, accountability, knex: db },
-				);
+				const result = await sanitizePayload({ id: 1, comments: [{ id: 1, text: 'text' }] }, 'articles', {
+					accountability,
+					schema,
+					action: 'update',
+					knex: db,
+				});
 
 				expect(result).toEqual({ id: 1 });
 			});
@@ -203,9 +223,14 @@ describe('sanitizePayload', () => {
 				});
 
 				const result = await sanitizePayload(
-					'articles',
 					{ id: 1, comments: { create: [{ id: 1, text: 'text' }], update: [], delete: [] } },
-					{ schema, accountability, knex: db },
+					'articles',
+					{
+						accountability,
+						schema,
+						action: 'update',
+						knex: db,
+					},
 				);
 
 				expect(result).toEqual({ id: 1 });
@@ -219,12 +244,17 @@ describe('sanitizePayload', () => {
 				});
 
 				const result = await sanitizePayload(
-					'articles',
 					{ id: 1, comments: { create: [{}, { id: 1, text: 'Hello' }], update: [{}], delete: [{}] } },
-					{ schema, accountability, knex: db },
+					'articles',
+					{
+						accountability,
+						schema,
+						action: 'update',
+						knex: db,
+					},
 				);
 
-				expect(result).toEqual({ id: 1, comments: { create: [{}, { id: 1, text: 'Hello' }], update: [], delete: [] } });
+				expect(result).toEqual({ id: 1, comments: { create: [{ id: 1, text: 'Hello' }], update: [], delete: [] } });
 			});
 		});
 
@@ -235,11 +265,12 @@ describe('sanitizePayload', () => {
 					return [];
 				});
 
-				const result = await sanitizePayload(
-					'articles',
-					{ id: 1, tags: [{ tags_id: 1 }] },
-					{ schema, accountability, knex: db },
-				);
+				const result = await sanitizePayload({ id: 1, tags: [{ tags_id: 1 }] }, 'articles', {
+					accountability,
+					schema,
+					action: 'update',
+					knex: db,
+				});
 
 				expect(result).toEqual({ id: 1 });
 			});
@@ -253,14 +284,19 @@ describe('sanitizePayload', () => {
 				});
 
 				const result = await sanitizePayload(
-					'articles',
 					{ id: 1, tags: [{ articles_id: 1, tags_id: { id: 1, tag: 'news', secret: 'hide' } }] },
-					{ schema, accountability, knex: db },
+					'articles',
+					{
+						accountability,
+						schema,
+						action: 'update',
+						knex: db,
+					},
 				);
 
 				expect(result).toEqual({
 					id: 1,
-					tags: [{ tags_id: { id: 1, tag: 'news' } }],
+					tags: [{ articles_id: 1, tags_id: { id: 1, tag: 'news' } }],
 				});
 			});
 
@@ -273,14 +309,19 @@ describe('sanitizePayload', () => {
 				});
 
 				const result = await sanitizePayload(
-					'articles',
 					{ id: 10, tags: { create: [{ tags_id: { id: 11, tag: 'news' } }], update: [], delete: [] } },
-					{ schema, accountability, knex: db },
+					'articles',
+					{
+						accountability,
+						schema,
+						action: 'update',
+						knex: db,
+					},
 				);
 
 				expect(result).toEqual({
 					id: 10,
-					tags: { create: [{ tags_id: { tag: 'news' } }], update: [], delete: [] },
+					tags: { create: [{ tags_id: { id: 11, tag: 'news' } }], update: [], delete: [] },
 				});
 			});
 		});
@@ -296,7 +337,6 @@ describe('sanitizePayload', () => {
 				});
 
 				const result = await sanitizePayload(
-					'articles',
 					{
 						id: 1,
 						a2o_items: [
@@ -304,13 +344,25 @@ describe('sanitizePayload', () => {
 							{ collection: 'a2o_collection', item: { id: 20, name: 'Sample Item' } },
 						],
 					},
-					{ schema, accountability, knex: db },
+					'articles',
+					{
+						accountability,
+						schema,
+						action: 'update',
+						knex: db,
+					},
 				);
 
 				expect(result).toEqual({
 					id: 1,
 					a2o_items: [
-						{ collection: 'authors', item: { name: 'John Doe' } },
+						{
+							collection: 'authors',
+							item: {
+								id: 10,
+								name: 'John Doe',
+							},
+						},
 						{ collection: 'a2o_collection', item: { id: 20 } },
 					],
 				});
@@ -327,7 +379,6 @@ describe('sanitizePayload', () => {
 			});
 
 			const result = await sanitizePayload(
-				'articles',
 				{
 					id: 1,
 					comments: {
@@ -339,7 +390,13 @@ describe('sanitizePayload', () => {
 						delete: [],
 					},
 				},
-				{ schema, accountability, knex: db },
+				'articles',
+				{
+					schema,
+					accountability,
+					knex: db,
+					action: 'update',
+				},
 			);
 
 			expect(result).toEqual({
@@ -362,7 +419,6 @@ describe('sanitizePayload', () => {
 			});
 
 			const result = await sanitizePayload(
-				'articles',
 				{
 					id: 1,
 					comments: {
@@ -374,7 +430,13 @@ describe('sanitizePayload', () => {
 						delete: [],
 					},
 				},
-				{ schema, accountability, knex: db },
+				'articles',
+				{
+					schema,
+					accountability,
+					knex: db,
+					action: 'update',
+				},
 			);
 
 			expect(result).toEqual({
@@ -401,9 +463,14 @@ describe('sanitizePayload', () => {
 			});
 
 			const result = await sanitizePayload(
-				'articles',
 				{ id: 1, author: { id: 10, name: 'Author', profile: { id: 100, bio: 'Bio', verified: true } } },
-				{ schema, accountability, knex: db },
+				'articles',
+				{
+					schema,
+					accountability,
+					knex: db,
+					action: 'update',
+				},
 			);
 
 			expect(result).toEqual({
@@ -415,11 +482,12 @@ describe('sanitizePayload', () => {
 		test('handles wildcard "*" access correctly', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, title: 'Hello World' },
-				{ schema, accountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, title: 'Hello World' }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1, title: 'Hello World' });
 		});
@@ -432,9 +500,14 @@ describe('sanitizePayload', () => {
 			});
 
 			const result = await sanitizePayload(
-				'articles',
 				{ id: 1, comments: { create: [{ text: 'Hello' }], update: [], delete: [] } },
-				{ schema, accountability, knex: db },
+				'articles',
+				{
+					schema,
+					accountability,
+					knex: db,
+					action: 'update',
+				},
 			);
 
 			expect(result).toEqual({
@@ -442,7 +515,7 @@ describe('sanitizePayload', () => {
 				comments: { create: [{ text: 'Hello' }], update: [], delete: [] },
 			});
 
-			expect(verifyPermissions).toHaveBeenCalledWith(accountability, 'comments', null, 'read');
+			expect(verifyPermissions).toHaveBeenCalledWith(accountability, 'comments', null, 'create', expect.anything());
 		});
 
 		test('handles mixed payloads (root + nested)', async () => {
@@ -453,14 +526,19 @@ describe('sanitizePayload', () => {
 			});
 
 			const result = await sanitizePayload(
-				'articles',
 				{ title: 'New Title', author: { id: 1, name: 'John', email: 'hidden@test.com' }, secret: 'hide' },
-				{ schema, accountability, knex: db },
+				'articles',
+				{
+					schema,
+					accountability,
+					knex: db,
+					action: 'update',
+				},
 			);
 
 			expect(result).toEqual({
 				title: 'New Title',
-				author: { name: 'John' },
+				author: { id: 1, name: 'John' },
 			});
 		});
 
@@ -468,9 +546,14 @@ describe('sanitizePayload', () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 			const result = await sanitizePayload(
-				'articles',
 				{ id: 1, comments: { create: [], update: [], delete: [100, 101] } },
-				{ schema, accountability: adminAccountability, knex: db },
+				'articles',
+				{
+					schema,
+					accountability: adminAccountability,
+					knex: db,
+					action: 'update',
+				},
 			);
 
 			expect(result).toEqual({
@@ -482,7 +565,7 @@ describe('sanitizePayload', () => {
 			// It should only be called for 'articles' and potentially 'comments' (if it recursed, which it shouldn't for primitives)
 			const collectionsCalled = vi.mocked(verifyPermissions).mock.calls.map((c) => c[1]);
 			expect(collectionsCalled).toContain('articles');
-			expect(collectionsCalled).not.toContain('comments'); // Detailed syntax should handle delete specialized
+			expect(collectionsCalled).toContain('comments'); // Now recurses to check PK permission
 		});
 	});
 
@@ -490,11 +573,12 @@ describe('sanitizePayload', () => {
 		test('preserves null values for fields with permission', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, title: null, author: null },
-				{ schema, accountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, title: null, author: null }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1, title: null, author: null });
 		});
@@ -505,11 +589,12 @@ describe('sanitizePayload', () => {
 				return [];
 			});
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, author: null, a2o_items: null },
-				{ schema, accountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, author: null, a2o_items: null }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1, author: null, a2o_items: null });
 		});
@@ -517,11 +602,12 @@ describe('sanitizePayload', () => {
 		test('strips empty objects in M2O/A2O relations', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, author: {}, a2o_items: {} },
-				{ schema, accountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, author: {}, a2o_items: {} }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1 });
 		});
@@ -531,11 +617,12 @@ describe('sanitizePayload', () => {
 		test('removes detailed syntax object if all arrays are empty', async () => {
 			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
-			const result = await sanitizePayload(
-				'articles',
-				{ id: 1, comments: { create: [], update: [], delete: [] } },
-				{ schema, accountability, knex: db },
-			);
+			const result = await sanitizePayload({ id: 1, comments: { create: [], update: [], delete: [] } }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
 
 			expect(result).toEqual({ id: 1 });
 		});
@@ -548,7 +635,6 @@ describe('sanitizePayload', () => {
 			});
 
 			const result = await sanitizePayload(
-				'articles',
 				{
 					id: 1,
 					comments: {
@@ -557,57 +643,101 @@ describe('sanitizePayload', () => {
 						delete: [3],
 					},
 				},
-				{ schema, accountability, knex: db },
+				'articles',
+				{
+					schema,
+					accountability,
+					knex: db,
+					action: 'update',
+				},
 			);
 
 			expect(result).toEqual({
 				id: 1,
-				comments: {
-					create: [{}, { text: 'New' }],
-					update: [],
-					delete: [3],
-				},
 			});
 		});
+	});
 
-		test('handles mixed valid and invalid items in detailed syntax', async () => {
-			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item) => {
+	describe('Ambiguous Update/Create Fallback', () => {
+		test('falls back to create if update is denied but id is present (Client-Generated UUID)', async () => {
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item, action) => {
 				if (collection === 'articles') return ['*'];
 
-				// Allow item 2 but not item 99
-				if (collection === 'comments') {
-					if (item === 2) return ['id', 'text'];
-					if (item === 99) return [];
-					if (item === null) return ['text']; // Allow create
+				if (collection === 'authors') {
+					if (item === 1 && action === 'update') return []; // Deny update (link existing)
+					if (item === 1 && action === 'create') return ['id', 'name']; // Allow create (client-gen UUID)
 				}
 
 				return [];
 			});
 
 			const result = await sanitizePayload(
-				'articles',
 				{
 					id: 1,
-					comments: {
-						create: [{}, { text: 'New' }], // First empty, second valid
-						update: [
-							{ id: 2, text: 'Allowed' },
-							{ id: 99, text: 'Hidden' },
-						],
-						delete: [],
-					},
+					author: { id: 1, name: 'New Author' },
 				},
-				{ schema, accountability, knex: db },
+				'articles',
+				{
+					schema,
+					accountability,
+					knex: db,
+					action: 'update',
+				},
 			);
 
 			expect(result).toEqual({
 				id: 1,
+				author: { id: 1, name: 'New Author' },
+			});
+		});
+
+		test('fails if both update and create are denied', async () => {
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection) => {
+				if (collection === 'articles') return ['*'];
+				return []; // Deny all for author
+			});
+
+			const result = await sanitizePayload(
+				{
+					id: 1,
+					author: { id: 1, name: 'New Author' },
+				},
+				'articles',
+				{
+					schema,
+					accountability,
+					knex: db,
+					action: 'update',
+				},
+			);
+
+			expect(result).toEqual({ id: 1 });
+		});
+	});
+
+	describe('Mutation Prevention', () => {
+		test('does not mutate the input payload', async () => {
+			vi.mocked(verifyPermissions).mockResolvedValue(['id']);
+
+			const payload = {
+				id: 1,
 				comments: {
-					create: [{}, { text: 'New' }],
-					update: [{ id: 2, text: 'Allowed' }],
+					create: [{ text: 'New Comment' }],
+					update: [],
 					delete: [],
 				},
+			};
+
+			const originalPayload = JSON.parse(JSON.stringify(payload));
+
+			await sanitizePayload(payload, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
 			});
+
+			expect(payload).toEqual(originalPayload);
 		});
 	});
 });

@@ -1,6 +1,7 @@
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useBus } from '../../../bus/index.js';
+import getDatabase from '../../../database/index.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
@@ -187,7 +188,18 @@ describe('Room.verifyPermissions', () => {
 			allowedRootFields: [],
 		});
 
-		const fields = await verifyPermissions(client, collection, item);
+		vi.mocked(fetchPermissions).mockResolvedValueOnce([
+			{
+				fields: ['*'],
+				permissions: { id: { _eq: 1 } },
+				validation: {},
+			},
+		] as any);
+
+		const fields = await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(fields).toEqual([]);
 		expect(fetchPermissions).toHaveBeenCalled();
@@ -203,7 +215,7 @@ describe('Room.verifyPermissions', () => {
 		const rawPerms = [
 			{
 				fields: ['title'],
-				permissions: { publish_date: { _gt: '$NOW' } },
+				permissions: { publish_date: { _gt: '$NOW' }, id: { _eq: 1 } },
 				validation: {},
 			},
 		];
@@ -230,7 +242,11 @@ describe('Room.verifyPermissions', () => {
 		permissionCache.clear();
 		const spy = vi.spyOn(permissionCache, 'set');
 
-		const fields = await verifyPermissions(client, collection, item);
+		const fields = await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
 		expect(fields).toContain('title');
 
 		expect(spy).toHaveBeenCalledWith(
@@ -260,7 +276,10 @@ describe('Room.verifyPermissions', () => {
 		permissionCache.clear();
 		const spy = vi.spyOn(permissionCache, 'set');
 
-		await verifyPermissions(client, collection, item);
+		await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(spy).toHaveBeenCalledWith(
 			expect.objectContaining({ user: 'user-client-1' }),
@@ -278,7 +297,18 @@ describe('Room.verifyPermissions', () => {
 
 		const serviceMock = vi.mocked(getService)('settings', {} as any);
 
-		await verifyPermissions(client, 'settings', null);
+		vi.mocked(fetchPermissions).mockResolvedValueOnce([
+			{
+				fields: ['*'],
+				permissions: { id: { _eq: 1 } },
+				validation: {},
+			},
+		] as any);
+
+		await verifyPermissions(client, 'settings', null, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(serviceMock.readSingleton).toHaveBeenCalled();
 		expect(serviceMock.readOne).not.toHaveBeenCalled();
@@ -309,7 +339,11 @@ describe('Room.verifyPermissions', () => {
 		});
 
 		permissionCache.clear();
-		const fields = await verifyPermissions(client, 'settings', null);
+
+		const fields = await verifyPermissions(client, 'settings', null, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(fields).toContain('title');
 		expect(fields.length).toBeGreaterThan(0);
@@ -336,7 +370,10 @@ describe('Room.verifyPermissions', () => {
 			allowedRootFields: ['title', 'status'],
 		});
 
-		const fields = await verifyPermissions(client, collection, item);
+		const fields = await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(fields).toContain('title');
 		expect(fields).toContain('status');
@@ -346,7 +383,11 @@ describe('Room.verifyPermissions', () => {
 	test('Admin bypass', async () => {
 		const client = getAccountability({ admin: true });
 
-		const fields = await verifyPermissions(client, collection, item);
+		const fields = await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
 		expect(fields).toEqual(['*']);
 		expect(fetchPermissions).not.toHaveBeenCalled();
 	});
@@ -355,11 +396,27 @@ describe('Room.verifyPermissions', () => {
 		const client = getAccountability({ uid: 'client-1' });
 
 		// First call - populates cache
-		await verifyPermissions(client, collection, item);
+		vi.mocked(fetchPermissions).mockResolvedValueOnce([
+			{
+				fields: ['*'],
+				permissions: { id: { _eq: 1 } },
+				validation: {},
+			},
+		] as any);
+
+		await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
 		expect(fetchPermissions).toHaveBeenCalledTimes(1);
 
 		// Second call - should hit cache
-		await verifyPermissions(client, collection, item);
+		await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
 		expect(fetchPermissions).toHaveBeenCalledTimes(1);
 	});
 
@@ -368,7 +425,10 @@ describe('Room.verifyPermissions', () => {
 
 		vi.mocked(fetchPermissions).mockRejectedValueOnce(new Error('DB Error'));
 
-		const fields = await verifyPermissions(client, collection, item);
+		const fields = await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(fields).toEqual([]);
 	});
@@ -389,7 +449,10 @@ describe('Room.verifyPermissions', () => {
 		permissionCache.clear();
 		const spy = vi.spyOn(permissionCache, 'set');
 
-		await verifyPermissions(client, collection, item);
+		await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		const firstCall = spy.mock.calls.find((c) => c[5]?.includes('authors'));
 		expect(firstCall).toBeDefined();
@@ -403,7 +466,10 @@ describe('Room.verifyPermissions', () => {
 
 		const serviceMock = vi.mocked(getService)('articles', {} as any);
 
-		const fields = await verifyPermissions(client, 'articles', null);
+		const fields = await verifyPermissions(client, 'articles', null, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(fields).toEqual(['title']);
 		expect(serviceMock.readOne).not.toHaveBeenCalled();
@@ -417,7 +483,10 @@ describe('Room.verifyPermissions', () => {
 	test('Verifies getService is called with correct context', async () => {
 		const client = getAccountability({ uid: 'client-svc' });
 
-		await verifyPermissions(client, collection, item);
+		await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(getService).toHaveBeenCalledWith(
 			collection,
@@ -435,7 +504,7 @@ describe('Room.verifyPermissions', () => {
 		vi.mocked(fetchPermissions).mockResolvedValue([
 			{
 				fields: ['title'],
-				permissions: {},
+				permissions: { id: { _eq: 1 } },
 				validation: {},
 			},
 			{
@@ -450,7 +519,10 @@ describe('Room.verifyPermissions', () => {
 			allowedRootFields: ['title', 'status'],
 		});
 
-		const fields = await verifyPermissions(client, 'articles', '1');
+		const fields = await verifyPermissions(client, 'articles', '1', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(fields).toContain('title');
 		expect(fields).toContain('status');
@@ -463,7 +535,11 @@ describe('PermissionCache Invalidation', () => {
 		const client = getAccountability({ uid: 'client-1' });
 
 		// Populate cache
-		await verifyPermissions(client, 'articles', '1');
+		await verifyPermissions(client, 'articles', '1', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
 		expect(permissionCache.get(client, 'articles', '1', 'read')).toBeDefined();
 
 		// Trigger schema change invalidation
@@ -478,7 +554,11 @@ describe('PermissionCache Invalidation', () => {
 		const client = getAccountability({ uid: 'client-1' });
 
 		// Populate cache
-		await verifyPermissions(client, 'articles', '1');
+		await verifyPermissions(client, 'articles', '1', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
 		expect(permissionCache.get(client, 'articles', '1', 'read')).toBeDefined();
 
 		// Trigger collection metadata change invalidation
@@ -502,7 +582,10 @@ describe('PermissionCache Invalidation', () => {
 		const setSpy = vi.spyOn(permissionCache, 'set');
 
 		// Start permission verification
-		const verifyPromise = verifyPermissions(client, 'articles', '1');
+		const verifyPromise = verifyPermissions(client, 'articles', '1', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		// Immediately trigger an invalidation
 		const bus = useBus();
@@ -530,8 +613,15 @@ describe('PermissionCache Invalidation', () => {
 		permissionCache.clear();
 
 		// Populate cache for both users
-		await verifyPermissions(clientA, 'articles', '1');
-		await verifyPermissions(clientB, 'articles', '1');
+		await verifyPermissions(clientA, 'articles', '1', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
+		await verifyPermissions(clientB, 'articles', '1', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
 
 		expect(permissionCache.get(clientA, 'articles', '1', 'read')).toBeDefined();
 		expect(permissionCache.get(clientB, 'articles', '1', 'read')).toBeDefined();

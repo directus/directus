@@ -1,5 +1,5 @@
-import type { Accountability, PrimaryKey } from '@directus/types';
-import getDatabase from '../../../database/index.js';
+import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { useLogger } from '../../../logger/index.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
@@ -8,7 +8,6 @@ import { validateItemAccess } from '../../../permissions/modules/validate-access
 import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
 import { processPermissions } from '../../../permissions/utils/process-permissions.js';
-import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { calculateCacheMetadata } from './calculate-cache-metadata.js';
 import { filterToFields } from './filter-to-fields.js';
@@ -21,7 +20,8 @@ export async function verifyPermissions(
 	accountability: Accountability | null,
 	collection: string,
 	item: PrimaryKey | null,
-	action: 'read' | 'update' = 'read',
+	action: 'create' | 'read' | 'update' | 'delete' = 'read',
+	options: { knex: Knex; schema: SchemaOverview },
 ) {
 	if (!accountability) return [];
 	if (accountability.admin) return ['*'];
@@ -29,11 +29,10 @@ export async function verifyPermissions(
 	const cached = permissionCache.get(accountability, collection, String(item), action);
 	if (cached) return cached;
 
-	// Prevent caching stale permissions if an invalidation occurs during async steps
+	// Prevent caching stale permissions if invalidation occurs during async steps
 	const startInvalidationCount = permissionCache.getInvalidationCount();
 
-	const schema = await getSchema();
-	const knex = getDatabase();
+	const { schema, knex } = options;
 
 	const service = getService(collection, { schema, knex, accountability });
 
@@ -65,28 +64,33 @@ export async function verifyPermissions(
 			.map((perm) => (perm.permissions ? filterToFields(perm.permissions, collection, schema) : []))
 			.flat();
 
+		// Check for item-level rules to skip DB fetch
+		const hasItemRules = processedPermissions.some((p) => p.permissions && Object.keys(p.permissions).length > 0);
+
 		// Fetch current item data to evaluate any conditional permission filters based on record state
-		if (item) {
-			itemData = await service.readOne(item, {
-				fields: fieldsToFetch,
-			});
+		if (hasItemRules) {
+			if (item && action !== 'create') {
+				itemData = await service.readOne(item, {
+					fields: fieldsToFetch,
+				});
 
-			if (!itemData) throw new Error('No access');
-		} else if (schema.collections[collection]?.singleton) {
-			const pkField = schema.collections[collection]!.primary;
+				if (!itemData) throw new Error('No access');
+			} else if (schema.collections[collection]?.singleton) {
+				const pkField = schema.collections[collection]!.primary;
 
-			if (pkField) {
-				if (Array.from(fieldsToFetch).some((field) => field === '*' || field === pkField) === false) {
-					fieldsToFetch.push(pkField);
+				if (pkField) {
+					if (Array.from(fieldsToFetch).some((field) => field === '*' || field === pkField) === false) {
+						fieldsToFetch.push(pkField);
+					}
 				}
-			}
 
-			itemData = await service.readSingleton({ fields: fieldsToFetch });
+				itemData = await service.readSingleton({ fields: fieldsToFetch });
+			}
 		}
 
 		let allowedFields: string[] = [];
 
-		if (item || schema.collections[collection]?.singleton) {
+		if ((item || schema.collections[collection]?.singleton) && hasItemRules) {
 			const primaryKeys: (string | number)[] = item ? [item] : [];
 
 			const validationContext = {

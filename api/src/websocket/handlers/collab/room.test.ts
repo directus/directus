@@ -425,11 +425,11 @@ describe('room', () => {
 		await room.join(clientB);
 		await room.join(clientC);
 
-		vi.mocked(sanitizePayload).mockImplementation(async (_, payload, ctx) => {
+		vi.mocked(sanitizePayload).mockImplementation(async (payload, _collection, context) => {
 			if (
-				ctx.accountability?.user === 'user-abc' ||
-				ctx.accountability?.user === 'user-def' ||
-				ctx.accountability?.user === 'user-hij'
+				context.accountability?.user === 'user-abc' ||
+				context.accountability?.user === 'user-def' ||
+				context.accountability?.user === 'user-hij'
 			) {
 				return payload;
 			}
@@ -520,7 +520,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(sanitizePayload).mockImplementation(async (_, payload) => payload);
+		vi.mocked(sanitizePayload).mockImplementation(async (payload) => payload);
 
 		// Simultaneous updates
 		await Promise.all([room.update(clientA, { title: 'Title A' }), room.update(clientB, { status: 'published' })]);
@@ -560,7 +560,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(sanitizePayload).mockImplementation(async (_, payload) => payload);
+		vi.mocked(sanitizePayload).mockImplementation(async (payload) => payload);
 
 		// A updates first
 		await room.update(clientA, { title: 'Title A' });

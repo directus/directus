@@ -191,13 +191,20 @@ export class CollabHandler {
 				focus = await room.getFocusByUser(client.uid);
 			}
 
+			// Focus field before update to prevent concurrent overwrite conflicts
 			if (!focus || focus !== message.field) {
 				throw new InvalidPayloadError({
 					reason: `Cannot update field ${message.field} without focusing on it first`,
 				});
 			}
 
-			const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update');
+			const knex = getDatabase();
+			const schema = await getSchema();
+
+			const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
+				knex,
+				schema,
+			});
 
 			if (!isFieldAllowed(allowedFields, message.field))
 				throw new InvalidPayloadError({
@@ -232,7 +239,13 @@ export class CollabHandler {
 				});
 
 			const collection = await room.getCollection();
-			const allowedFields = await verifyPermissions(client.accountability, collection, room.item, 'update');
+			const knex = getDatabase();
+			const schema = await getSchema();
+
+			const allowedFields = await verifyPermissions(client.accountability, collection, room.item, 'update', {
+				knex,
+				schema,
+			});
 
 			for (const key of Object.keys(message.changes ?? {})) {
 				if (!isFieldAllowed(allowedFields, key))
@@ -273,13 +286,20 @@ export class CollabHandler {
 				});
 
 			if (message.field) {
-				const allowedReadFields = await verifyPermissions(client.accountability, room.collection, room.item, 'read');
+				const knex = getDatabase();
+				const schema = await getSchema();
+
+				const allowedReadFields = await verifyPermissions(client.accountability, room.collection, room.item, 'read', {
+					knex,
+					schema,
+				});
 
 				const allowedUpdateFields = await verifyPermissions(
 					client.accountability,
 					room.collection,
 					room.item,
 					'update',
+					{ knex, schema },
 				);
 
 				if (!isFieldAllowed(allowedReadFields, message.field) || !isFieldAllowed(allowedUpdateFields, message.field)) {

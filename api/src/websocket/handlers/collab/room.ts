@@ -28,6 +28,7 @@ export class CollabRooms {
 	 * Create a new collaboration room
 	 */
 	async createRoom(collection: string, item: string | null, version: string | null, initialChanges?: Item) {
+		// Deterministic UID ensures clients on same resource join same room
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
@@ -169,7 +170,7 @@ export class Room {
 			const { keys } = meta as { keys: string[] };
 			const { accountability } = context;
 
-			// Skip if this update is for a different item (singletons have item=null)
+			// Skip updates for different items (singletons have item=null)
 			if (item !== null && !keys.includes(item)) return;
 
 			try {
@@ -199,7 +200,7 @@ export class Room {
 			}
 		};
 
-		// React to external updates to the item
+		// React to external updates (eg: REST API) to sync connected clients
 		emitter.onAction(`${collection}.items.update`, this.onUpdateHandler);
 	}
 
@@ -297,17 +298,21 @@ export class Room {
 			};
 		})) as RoomData;
 
-		const allowedFields = await verifyPermissions(client.accountability, collection, item);
+		const schema = await getSchema();
+		const knex = getDatabase();
+
+		const allowedFields = await verifyPermissions(client.accountability, collection, item, 'read', { schema, knex });
 
 		this.send(client.uid, {
 			action: ACTION.SERVER.INIT,
 			collection: collection,
 			item: item,
 			version: version,
-			changes: (await sanitizePayload(collection, changes as Record<string, unknown>, {
-				knex: getDatabase(),
-				schema: await getSchema(),
-				accountability: client.accountability!,
+			changes: (await sanitizePayload(changes as Record<string, unknown>, collection, {
+				accountability: client.accountability,
+				schema,
+				action: 'read',
+				knex,
 			})) as Item,
 			focuses: Object.fromEntries(
 				Object.entries(focuses).filter(([_, field]) => allowedFields.includes(field) || allowedFields.includes('*')),
@@ -368,14 +373,19 @@ export class Room {
 			};
 		});
 
+		const schema = await getSchema();
+		const knex = getDatabase();
+
 		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
-			const sanitizedChanges = await sanitizePayload(this.collection, changes, {
-				knex: getDatabase(),
-				schema: await getSchema(),
-				accountability: client.accountability,
-			});
+			const sanitizedChanges =
+				((await sanitizePayload(changes, this.collection, {
+					accountability: client.accountability,
+					schema,
+					action: 'read',
+					knex,
+				})) as Record<string, unknown>) || {};
 
 			for (const field of Object.keys(changes)) {
 				if (field in sanitizedChanges) {
@@ -403,10 +413,16 @@ export class Room {
 			return await store.get('clients');
 		});
 
+		const schema = await getSchema();
+		const knex = getDatabase();
+
 		for (const client of clients) {
 			if (client.uid === sender.uid) continue;
 
-			const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item);
+			const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item, 'read', {
+				schema,
+				knex,
+			});
 
 			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
 
@@ -447,10 +463,16 @@ export class Room {
 
 		if (!result.success) return false;
 
+		const schema = await getSchema();
+		const knex = getDatabase();
+
 		for (const client of result.clients!) {
 			if (client.uid === sender.uid) continue;
 
-			const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item);
+			const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item, 'read', {
+				schema,
+				knex,
+			});
 
 			if (result.focusedField && !(allowedFields.includes(result.focusedField) || allowedFields.includes('*')))
 				continue;
@@ -492,6 +514,7 @@ export class Room {
 	}
 
 	send(client: ClientID, message: BaseServerMessage) {
+		// Route via Messenger for multi-instance scaling
 		this.messenger.sendClient(client, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
 	}
 
