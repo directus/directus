@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
+import { CollabHandler } from './collab/collab.js';
 import { HeartbeatHandler } from './heartbeat.js';
 import { ItemsHandler } from './items.js';
 import { LogsHandler } from './logs.js';
@@ -28,6 +29,8 @@ export function startWebSocketHandlers() {
 	if (logsEnabled) {
 		new LogsHandler();
 	}
+
+	new CollabHandler();
 }
 
 export * from './heartbeat.js';

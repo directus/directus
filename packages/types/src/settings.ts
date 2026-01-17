@@ -65,6 +65,7 @@ export type Settings = {
 	project_id: string | null;
 	ai_openai_api_key: '**********' | null;
 	ai_anthropic_api_key: '**********' | null;
+	collaboration: boolean;
 	mcp_enabled: boolean;
 	mcp_allow_deletes: boolean;
 	mcp_prompts_collection: string | null;

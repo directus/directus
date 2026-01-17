@@ -90,11 +90,7 @@ const defaults: JoiOptions = {
 };
 
 /**
- * Generate a Joi schema from a filter object.
- *
- * @param {FieldFilter} filter - Field filter object. Note: does not support _and/_or filters.
- * @param {JoiOptions} [options] - Options for the schema generation.
- * @returns {AnySchema} Joi schema.
+ * Generate a Joi schema from a field filter object. This does not support relations or logical operators (_and/_or).
  */
 
 export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): AnySchema {

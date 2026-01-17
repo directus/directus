@@ -12,6 +12,7 @@ import FormFieldRawEditor from './form-field-raw-editor.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
+import { CollabFieldContext } from '@/composables/use-collab';
 import { formatFieldFunction } from '@/utils/format-field-function';
 
 const props = withDefaults(
@@ -35,6 +36,7 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		disabledMenu?: boolean;
 		direction?: string;
+		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
 		modelValue: undefined,
@@ -43,6 +45,13 @@ const props = withDefaults(
 		validationError: undefined,
 		badge: undefined,
 		direction: undefined,
+		collabFieldContext: () => ({
+			onFieldUpdate: () => {},
+			onFieldUnset: () => {},
+			onFocus: () => {},
+			onBlur: () => {},
+			focusedBy: ref(undefined),
+		}),
 	},
 );
 
@@ -50,10 +59,13 @@ const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelVa
 
 const { t } = useI18n();
 
+const { focusedBy, onFieldUnset, onFieldUpdate, onBlur, onFocus } = props.collabFieldContext;
+
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
 	if (props.field?.meta?.readonly === true) return true;
 	if (props.batchMode && props.batchActive === false) return true;
+	if (focusedBy.value) return true;
 	return false;
 });
 
@@ -100,10 +112,20 @@ function emitValue(value: any) {
 		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
 		props.batchMode === false
 	) {
-		emit('unset', props.field);
+		unsetValue();
 	} else {
-		emit('update:modelValue', value);
+		updateValue(value);
 	}
+}
+
+function unsetValue() {
+	onFieldUnset();
+	emit('unset', props.field);
+}
+
+function updateValue(value: any) {
+	onFieldUpdate(value);
+	emit('update:modelValue', value);
 }
 
 function useRaw() {
@@ -194,6 +216,7 @@ function useComputedValues() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
+					:focused-by="focusedBy"
 					:disabled-menu="disabledMenu"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
@@ -207,7 +230,7 @@ function useComputedValues() {
 				:restricted="isDisabled"
 				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
-				@unset="$emit('unset', $event)"
+				@unset="unsetValue"
 				@edit-raw="showRaw = true"
 				@copy-raw="copyRaw"
 				@paste-raw="pasteRaw"
@@ -233,6 +256,8 @@ function useComputedValues() {
 			:comparison-active="comparisonActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@focusin="onFocus"
+			@focusout="onBlur"
 		/>
 
 		<FormFieldRawEditor
@@ -257,6 +282,11 @@ function useComputedValues() {
 </template>
 
 <style lang="scss" scoped>
+.field {
+	position: relative;
+	align-self: baseline;
+}
+
 .type-note {
 	position: relative;
 	display: block;

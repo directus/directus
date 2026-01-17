@@ -2,7 +2,9 @@ import type { BusConfig } from '../types/config.js';
 import { BusLocal } from './local.js';
 import { BusRedis } from './redis.js';
 
-export const createBus = (config: BusConfig) => {
+export function createBus(config: Extract<BusConfig, { type: 'local' }>): BusLocal;
+export function createBus(config: Extract<BusConfig, { type: 'redis' }>): BusRedis;
+export function createBus(config: BusConfig) {
 	if (config.type === 'local') {
 		return new BusLocal(config);
 	}
@@ -12,4 +14,4 @@ export const createBus = (config: BusConfig) => {
 	}
 
 	throw new Error(`Invalid Bus configuration: Type does not exist.`);
-};
+}

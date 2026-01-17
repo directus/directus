@@ -27,6 +27,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
@@ -41,8 +42,10 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
@@ -112,6 +115,7 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
+	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
@@ -122,6 +126,15 @@ aiStore.onSystemToolResult((tool, input) => {
 		refresh();
 	}
 });
+
+const {
+	clearCollidingChanges,
+	users: collabUsers,
+	connected,
+	collabContext,
+	collabCollision,
+	update: updateCollab,
+} = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -573,6 +586,8 @@ function useCollectionRoute() {
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
 			</h1>
+
+			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
@@ -612,7 +627,9 @@ function useCollectionRoute() {
 			</div>
 		</template>
 
-		<template #title-outer:append></template>
+		<template v-if="!(collectionInfo.meta && collectionInfo.meta.singleton === true)" #title:append>
+			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
+		</template>
 
 		<template #actions>
 			<VButton
@@ -794,6 +811,7 @@ function useCollectionRoute() {
 					:initial-values="item"
 					:fields="fields"
 					:primary-key="internalPrimaryKey"
+					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
 					:direction="userStore.textDirection"
@@ -808,6 +826,17 @@ function useCollectionRoute() {
 				<LivePreview v-if="livePreviewActive && previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 			</template>
 		</SplitPanel>
+
+		<ComparisonModal
+			:model-value="collabCollision !== undefined"
+			:collection="collection"
+			:primary-key="internalPrimaryKey"
+			:current-collab="collabCollision"
+			:collab-context="collabContext"
+			mode="collab"
+			@confirm="updateCollab"
+			@cancel="clearCollidingChanges"
+		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<VCard>
@@ -883,6 +912,10 @@ function useCollectionRoute() {
 	display: flex;
 	align-items: center;
 	gap: 0.25rem;
+}
+
+.header-collab {
+	margin-inline-start: 16px;
 }
 
 .version-more-options.v-icon {

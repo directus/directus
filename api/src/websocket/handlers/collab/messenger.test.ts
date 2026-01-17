@@ -1,0 +1,375 @@
+import { randomUUID } from 'crypto';
+import { type BroadcastMessage, COLLAB_BUS } from '@directus/types/collab';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { Messenger } from './messenger.js';
+
+vi.mock('@directus/env', () => ({
+	useEnv: () => ({
+		WEBSOCKETS_COLLAB_INSTANCE_TIMEOUT: 1, // 1 second for testing
+	}),
+}));
+
+const mockBus = {
+	publish: vi.fn(),
+	subscribe: vi.fn(),
+	unsubscribe: vi.fn(),
+};
+
+vi.mock('../../../bus/index.js', () => ({
+	useBus: () => mockBus,
+}));
+
+// Mock Store (using in-memory map similar to room.test.ts)
+const mockData = new Map();
+const mockLocks = new Map();
+
+vi.mock('./store.js', () => {
+	return {
+		useStore: (uid: string) => {
+			return async (callback: any) => {
+				const lock = mockLocks.get(uid) || Promise.resolve();
+
+				const nextLock = lock.then(async () => {
+					return await callback({
+						has: async (key: string) => mockData.has(`${uid}:${key}`),
+						get: async (key: string) => mockData.get(`${uid}:${key}`),
+						set: async (key: string, value: any) => {
+							mockData.set(`${uid}:${key}`, value);
+						},
+						delete: async (key: string) => {
+							mockData.delete(`${uid}:${key}`);
+						},
+					});
+				});
+
+				mockLocks.set(
+					uid,
+					nextLock.catch(() => {}),
+				);
+
+				return nextLock;
+			};
+		},
+	};
+});
+
+describe('Messenger', () => {
+	let messenger: Messenger;
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+		mockData.clear();
+		mockLocks.clear();
+		messenger = new Messenger();
+	});
+
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
+
+	describe('constructor', () => {
+		test('initializes with a UUID and registers instance', async () => {
+			expect(messenger.uid).toBeDefined();
+			expect(mockBus.subscribe).toHaveBeenCalled();
+
+			const instances = mockData.get('rooms:instances');
+			expect(instances).toEqual({ [messenger.uid]: [] });
+		});
+
+		test('subscribes to COLLAB_BUS', () => {
+			expect(mockBus.subscribe).toHaveBeenCalledWith(COLLAB_BUS, expect.any(Function));
+		});
+	});
+
+	describe('Room Listeners', () => {
+		test('setRoomListener registers a callback', () => {
+			const callback = vi.fn();
+			messenger.setRoomListener('room-1', callback);
+
+			expect(messenger.roomListeners['room-1']).toBe(callback);
+		});
+
+		test('removeRoomListener removes the callback', () => {
+			const callback = vi.fn();
+			messenger.setRoomListener('room-1', callback);
+			messenger.removeRoomListener('room-1');
+
+			expect(messenger.roomListeners['room-1']).toBeUndefined();
+		});
+
+		test('invokes listener when room message is received', () => {
+			const callback = vi.fn();
+			messenger.setRoomListener('room-1', callback);
+
+			// Simulate incoming message
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+			const message = { type: 'room', room: 'room-1', message: { test: true } };
+			busHandler?.(message);
+
+			expect(callback).toHaveBeenCalledWith(message);
+		});
+	});
+
+	describe('Client Management', () => {
+		const mockClient = {
+			uid: 'client-1',
+			send: vi.fn(),
+			on: vi.fn(),
+		} as any;
+
+		test('addClient registers client and updates store', async () => {
+			messenger.addClient(mockClient);
+
+			expect(messenger.clients['client-1']).toBe(mockClient);
+			expect(messenger.orders['client-1']).toBe(0);
+
+			await new Promise(process.nextTick);
+
+			const instances = mockData.get('rooms:instances');
+			expect(instances[messenger.uid]).toContain('client-1');
+		});
+
+		test('addClient ignores duplicate registration', async () => {
+			messenger.addClient(mockClient);
+			const initialClients = { ...messenger.clients };
+
+			// Try adding same client again
+			messenger.addClient(mockClient);
+
+			// Should be same object reference
+			expect(messenger.clients['client-1']).toBe(initialClients['client-1']);
+
+			await new Promise(process.nextTick);
+
+			// Should verify store wasn't appended with duplicate
+			const instances = mockData.get('rooms:instances');
+			expect(instances[messenger.uid].filter((id: string) => id === 'client-1')).toHaveLength(1);
+		});
+
+		test('addClient sets up close handler', () => {
+			messenger.addClient(mockClient);
+
+			expect(mockClient.on).toHaveBeenCalledWith('close', expect.any(Function));
+		});
+
+		test('removeClient unregisters client and updates store', async () => {
+			messenger.addClient(mockClient);
+			await new Promise(process.nextTick); // clean tick
+
+			messenger.removeClient('client-1');
+
+			expect(messenger.clients['client-1']).toBeUndefined();
+			expect(messenger.orders['client-1']).toBeUndefined();
+
+			// wait for store update
+			await new Promise(process.nextTick);
+
+			const instances = mockData.get('rooms:instances');
+			expect(instances[messenger.uid]).not.toContain('client-1');
+		});
+
+		test('client close triggers removeClient', () => {
+			messenger.addClient(mockClient);
+
+			const closeHandler = mockClient.on.mock.calls.find((call: any) => call[0] === 'close')[1];
+			const removeSpy = vi.spyOn(messenger, 'removeClient');
+
+			closeHandler();
+
+			expect(removeSpy).toHaveBeenCalledWith('client-1');
+		});
+	});
+
+	describe('Message Sending', () => {
+		test('sendRoom publishes to bus', () => {
+			const message = { action: 'test' };
+			messenger.sendRoom('room-1', message as any);
+
+			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
+				type: 'room',
+				room: 'room-1',
+				message,
+			});
+		});
+
+		test('sendClient publishes to bus', () => {
+			const message = { action: 'test' };
+			messenger.sendClient('client-1', message as any);
+
+			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
+				type: 'send',
+				client: 'client-1',
+				message,
+			});
+		});
+
+		test('delivers message to local client via bus subscription', () => {
+			const mockClient = {
+				uid: 'client-1',
+				send: vi.fn(),
+				on: vi.fn(),
+			} as any;
+
+			messenger.addClient(mockClient);
+
+			// Simulate incoming "send" message
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+
+			const message = {
+				type: 'send',
+				client: 'client-1',
+				message: { action: 'hello' },
+			};
+
+			busHandler?.(message);
+
+			expect(mockClient.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					action: 'hello',
+					order: 0,
+				}),
+			);
+
+			// Verify order increment
+			expect(messenger.orders['client-1']).toBe(1);
+		});
+
+		test('ignores messages for unknown clients', () => {
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+
+			const message = {
+				type: 'send',
+				client: 'unknown-client',
+				message: { action: 'test' },
+			};
+
+			expect(() => busHandler?.(message)).not.toThrow();
+		});
+
+		test('responds with pong when receiving ping for own instance', () => {
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+
+			busHandler?.({
+				type: 'ping',
+				instance: messenger.uid,
+			});
+
+			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
+				type: 'pong',
+				instance: messenger.uid,
+			});
+		});
+
+		test('ignores ping for other instances', () => {
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+
+			busHandler?.({
+				type: 'ping',
+				instance: 'other-instance',
+			});
+
+			expect(mockBus.publish).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('removeInvalidClients', () => {
+		test('removes inactive instances and returns disconnected clients', async () => {
+			vi.useFakeTimers();
+
+			const deadInstance = randomUUID();
+			const aliveInstance = randomUUID();
+
+			// Setup store with dead instance
+			mockData.set('rooms:instances', {
+				[messenger.uid]: [], // current
+				[deadInstance]: ['client-A', 'client-B'],
+				[aliveInstance]: ['client-C'],
+			});
+
+			const promise = messenger.removeInvalidClients();
+
+			await new Promise((resolve) => process.nextTick(resolve));
+			await new Promise((resolve) => process.nextTick(resolve));
+
+			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
+				type: 'ping',
+				instance: deadInstance,
+			});
+
+			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
+				type: 'ping',
+				instance: aliveInstance,
+			});
+
+			// We need to find the listener created inside removeInvalidClients
+			// It's the last call to subscribe
+			const lastSubscribeCall = mockBus.subscribe.mock.calls.at(-1);
+			const pongHandler = lastSubscribeCall?.[1];
+
+			pongHandler?.({ type: 'pong', instance: aliveInstance } as BroadcastMessage);
+
+			await vi.advanceTimersByTimeAsync(1500);
+
+			const disconnected = await promise;
+
+			const instances = mockData.get('rooms:instances');
+			expect(instances).toHaveProperty(aliveInstance);
+			expect(instances).not.toHaveProperty(deadInstance);
+
+			expect(disconnected).toEqual({ inactive: ['client-A', 'client-B'], active: ['client-C'] });
+
+			vi.useRealTimers();
+		});
+
+		test('handles undefined instances gracefully', async () => {
+			vi.useFakeTimers();
+			mockData.delete('rooms:instances'); // Simulate empty/undefined
+
+			const promise = messenger.removeInvalidClients();
+			await vi.advanceTimersByTimeAsync(1500);
+			const disconnected = await promise;
+
+			expect(disconnected).toEqual({ inactive: [], active: [] });
+			vi.useRealTimers();
+		});
+
+		test('safe removal: preserves updates made by other instances during timeout', async () => {
+			vi.useFakeTimers();
+
+			// 1. Initial State: dead-uuid exists
+			mockData.set('rooms:instances', {
+				[messenger.uid]: [],
+				'dead-uuid': ['client-A'],
+			});
+
+			const promise = messenger.removeInvalidClients();
+
+			// Wait for initial snapshot to happen
+			await new Promise((resolve) => process.nextTick(resolve));
+			await new Promise((resolve) => process.nextTick(resolve));
+
+			// 2. Simulate concurrent update during timeout
+			// Another instance registers 'new-uuid'
+			// We modify mockData directly to simulate the store state changing "underneath"
+			const current = mockData.get('rooms:instances');
+
+			mockData.set('rooms:instances', {
+				...current,
+				'new-uuid': ['client-B'],
+			});
+
+			await vi.advanceTimersByTimeAsync(1500);
+
+			const disconnected = await promise;
+
+			const result = mockData.get('rooms:instances');
+			expect(result).not.toHaveProperty('dead-uuid');
+
+			expect(result).toHaveProperty('new-uuid');
+
+			expect(disconnected).toEqual({ inactive: ['client-A'], active: ['client-B'] });
+
+			vi.useRealTimers();
+		});
+	});
+});

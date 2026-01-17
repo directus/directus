@@ -173,6 +173,8 @@ function getLinkForItem() {
 	if (!collection.value || !currentPrimaryKey.value || !relationInfo.value) return '';
 	return getItemRoute(relationInfo.value.relatedCollection.collection, currentPrimaryKey.value);
 }
+
+const menuActive = computed(() => editModalActive.value || selectModalActive.value);
 </script>
 
 <template>
@@ -189,7 +191,7 @@ function getLinkForItem() {
 		{{ $t('no_items') }}
 	</VNotice>
 
-	<div v-else class="many-to-one">
+	<div v-else v-prevent-focusout="menuActive" class="many-to-one">
 		<VSkeletonLoader v-if="loading" type="input" />
 
 		<VListItem v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
