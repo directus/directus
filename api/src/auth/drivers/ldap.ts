@@ -209,7 +209,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
-			`(${escapeFilterValue(userAttribute ?? 'cn')}=${escapeFilterValue(payload['identifier'])})`,
+			`(${validateLDAPAttribute(userAttribute ?? 'cn')}=${escapeFilterValue(payload['identifier'])})`,
 			userScope ?? 'one',
 		);
 
@@ -225,7 +225,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 			const userGroups = await this.fetchUserGroups(
 				groupDn,
-				`(${escapeFilterValue(groupAttr)}=${escapeFilterValue(memberValue)})`,
+				`(${validateLDAPAttribute(groupAttr)}=${escapeFilterValue(memberValue)})`,
 				groupScope ?? 'one',
 			);
 
@@ -410,6 +410,17 @@ const escapeFilterValue = (value: string): string => {
 		.replace(/\(/g, '\\28')
 		.replace(/\)/g, '\\29')
 		.replace(/\0/g, '\\00');
+};
+
+/**
+ * Validate LDAP attribute name according to RFC 4512
+ */
+const validateLDAPAttribute = (name: string): string => {
+	if (/^[a-zA-Z][a-zA-Z0-9-]*$/.test(name) === false) {
+		throw new Error(`Invalid LDAP attribute name: "${name}"`);
+	}
+
+	return name;
 };
 
 export function createLDAPAuthRouter(provider: string): Router {

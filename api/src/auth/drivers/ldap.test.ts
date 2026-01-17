@@ -525,6 +525,25 @@ describe('LDAP Auth Driver', () => {
 				}),
 			);
 		});
+
+		it('should throw an error for invalid attribute names', async () => {
+			const configWithMaliciousAttr = {
+				...validConfig,
+				userAttribute: 'uid)(cn=admin',
+			};
+
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, configWithMaliciousAttr);
+
+			vi.mocked(Client.prototype.bind).mockResolvedValue(undefined);
+
+			vi.mocked(Client.prototype.search).mockResolvedValueOnce({
+				searchEntries: [{ dn: validConfig.bindDn }],
+				searchReferences: [],
+			});
+
+			// Should throw a generic Error with the specific message from validation
+			await expect(driver.getUserID({ identifier: 'testuser' })).rejects.toThrow('Invalid LDAP attribute name');
+		});
 	});
 
 	describe('getUserID - existing user update', () => {
