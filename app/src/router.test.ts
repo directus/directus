@@ -62,7 +62,7 @@ beforeEach(async () => {
 
 	router.beforeEach(importedRouter.onBeforeEach);
 	router.afterEach(importedRouter.onAfterEach);
-}, 30000);
+});
 
 afterEach(() => {
 	// Ensure the internal firstLoad variable in the imported router
