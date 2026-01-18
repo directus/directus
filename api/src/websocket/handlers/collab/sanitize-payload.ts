@@ -41,11 +41,6 @@ export async function sanitizePayload(
 				return undefined;
 			}
 
-			// Nulls are explicitly allowed and should be preserved (eg: unsetting a relation)
-			if (value === null) {
-				return [key, value];
-			}
-
 			if (value === undefined) return undefined;
 
 			if (context.relationType) {
@@ -98,9 +93,11 @@ export async function sanitizePayload(
 
 					const isPK = context.collection.primary === key;
 
-					if (context.relation || isPK) {
+					// If it's a relation or primary key, we check for visibility/identity
+					if (isPK) {
 						if (updateAllowedFields.length > 0) return [key, value];
 					} else {
+						// For relations and other fields, check specific field access
 						if (updateAllowedFields.includes('*') || updateAllowedFields.includes(key as string)) return [key, value];
 					}
 
@@ -113,7 +110,7 @@ export async function sanitizePayload(
 						{ knex, schema },
 					);
 
-					if (context.relation || isPK) {
+					if (isPK) {
 						if (createAllowedFields.length > 0) return [key, value];
 					} else {
 						if (createAllowedFields.includes('*') || createAllowedFields.includes(key as string)) return [key, value];
@@ -140,8 +137,12 @@ export async function sanitizePayload(
 					return [key, value];
 				}
 
-				if (context.leaf && !allowedFields.includes('*') && !allowedFields.includes(key as string)) {
-					// Field-level permission check for non-PK leaves
+				if (
+					(context.leaf || context.relation) &&
+					!allowedFields.includes('*') &&
+					!allowedFields.includes(key as string)
+				) {
+					// Field-level permission check for non-PK leaves/relations
 					return undefined;
 				}
 			}

@@ -211,7 +211,7 @@ export class CollabHandler {
 					reason: `No permission to update field ${message.field} or field does not exist`,
 				});
 
-			if ('changes' in message) {
+			if (message.changes !== undefined) {
 				await room.update(client, { [message.field]: message.changes });
 			} else {
 				await room.unset(client, message.field);
