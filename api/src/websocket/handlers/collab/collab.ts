@@ -238,7 +238,7 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			const collection = await room.getCollection();
+			const collection = room.collection;
 			const knex = getDatabase();
 			const schema = await getSchema();
 

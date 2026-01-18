@@ -32,7 +32,9 @@ export class CollabRooms {
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
-			this.rooms[uid] = new Room(uid, collection, item, version, initialChanges, this.messenger);
+			const room = new Room(uid, collection, item, version, initialChanges, this.messenger);
+			this.rooms[uid] = room;
+			await room.init();
 		}
 
 		this.messenger.setRoomListener(uid, (message) => {
@@ -63,7 +65,10 @@ export class CollabRooms {
 				const version = await store.get('version');
 				const changes = await store.get('changes');
 
-				return new Room(uid, collection, item, version, changes, this.messenger);
+				const room = new Room(uid, collection, item, version, changes, this.messenger);
+				this.rooms[uid] = room;
+
+				return room;
 			});
 		}
 
@@ -102,10 +107,7 @@ export class CollabRooms {
 		const rooms = uids ? uids.map((uid) => this.rooms[uid]).filter((room) => !!room) : Object.values(this.rooms);
 
 		for (const room of rooms) {
-			const clients = await room.getClients();
-
-			if (clients.length === 0) {
-				await room.close();
+			if (await room.close()) {
 				delete this.rooms[room.uid];
 				useLogger().info(`[Collab] Closed inactive room ${room.uid}`);
 			}
@@ -132,9 +134,10 @@ export class Room {
 	uid: string;
 	collection: string;
 	item: string | null;
+	version: string | null;
+	initialChanges: Item | undefined;
 	messenger: Messenger;
 	store;
-	ready: Promise<void>;
 	onUpdateHandler: ActionHandler;
 	onDeleteHandler: ActionHandler;
 
@@ -146,26 +149,13 @@ export class Room {
 		initialChanges?: Item,
 		messenger: Messenger = new Messenger(),
 	) {
-		this.store = useStore<RoomData>(uid);
-
-		this.ready = this.store(async (store) => {
-			if (await store.has('uid')) return;
-
-			await store.set('uid', uid);
-			await store.set('collection', collection);
-			await store.set('item', item);
-			await store.set('version', version);
-			await store.set('changes', initialChanges ?? {});
-
-			// Default all other values
-			await store.set('clients', []);
-			await store.set('focuses', {});
-		});
-
 		this.uid = uid;
 		this.collection = collection;
 		this.item = item;
+		this.version = version;
+		this.initialChanges = initialChanges;
 		this.messenger = messenger;
+		this.store = useStore<RoomData>(uid);
 
 		this.onUpdateHandler = async (meta, context) => {
 			const { keys } = meta as { keys: string[] };
@@ -180,13 +170,14 @@ export class Room {
 				const result = item ? await sudoService.readOne(item) : await sudoService.readSingleton({});
 
 				const clients = await this.store(async (store) => {
-					let changes = await store.get('changes');
+					await this.ensureInitialized(store);
+					let changes = await this.getChanges(store);
 
 					changes = Object.fromEntries(Object.entries(changes).filter(([key]) => key in result));
 
-					store.set('changes', changes);
+					await store.set('changes', changes);
 
-					return await store.get('clients');
+					return await this.getClients(store);
 				});
 
 				for (const client of clients) {
@@ -211,7 +202,7 @@ export class Room {
 				action: ACTION.SERVER.DELETE,
 			});
 
-			await this.close();
+			await this.close(true);
 		};
 
 		// React to external updates (eg: REST API) to sync connected clients
@@ -219,40 +210,56 @@ export class Room {
 		emitter.onAction(`${collection}.items.delete`, this.onDeleteHandler);
 	}
 
-	async getCollection() {
-		await this.ready;
-
-		return await this.store(async (store) => {
-			return await store.get('collection');
-		});
+	/**
+	 * Initialize the room's state in shared memory
+	 */
+	async init() {
+		return await this.store((s) => this.ensureInitialized(s));
 	}
 
-	async getClients() {
-		await this.ready;
+	/**
+	 * Ensures that foundational room state (metadata) exists in shared memory even after restarts
+	 */
+	private async ensureInitialized(store: any) {
+		if (await store.has('uid')) return;
 
-		return await this.store((store) => store.get('clients'));
+		await store.set('uid', this.uid);
+		await store.set('collection', this.collection);
+		await store.set('item', this.item);
+		await store.set('version', this.version);
+		await store.set('changes', this.initialChanges ?? {});
+		await store.set('clients', []);
+		await store.set('focuses', {});
 	}
 
-	async hasClient(id: ClientID) {
-		await this.ready;
-
-		return await this.store(async (store) => {
-			const clients = await store.get('clients');
-
-			return clients.findIndex((c) => c.uid === id) !== -1;
-		});
+	async getClients(store?: any): Promise<RoomClient[]> {
+		if (store) return (await store.get('clients')) ?? [];
+		return await this.store((s) => this.getClients(s));
 	}
 
-	async getFocusByUser(id: ClientID) {
-		return await this.store(async (store) => (await store.get('focuses'))[id]);
+	async getFocuses(store?: any): Promise<Record<ClientID, string>> {
+		if (store) return (await store.get('focuses')) ?? {};
+		return await this.store((s) => this.getFocuses(s));
 	}
 
-	async getFocusByField(field: string) {
-		return await this.store(async (store) => {
-			const focuses = await store.get('focuses');
+	async hasClient(id: ClientID, store?: any) {
+		const clients = await this.getClients(store);
+		return clients.some((c: RoomClient) => c.uid === id);
+	}
 
-			return Object.entries(focuses).find(([_, f]) => f === field)?.[0];
-		});
+	async getFocusByUser(id: ClientID, store?: any) {
+		const focuses = await this.getFocuses(store);
+		return focuses[id];
+	}
+
+	async getFocusByField(field: string, store?: any) {
+		const focuses = await this.getFocuses(store);
+		return Object.entries(focuses).find(([_, f]) => f === field)?.[0];
+	}
+
+	async getChanges(store?: any): Promise<Item> {
+		if (store) return (await store.get('changes')) ?? {};
+		return await this.store((s) => this.getChanges(s));
 	}
 
 	/**
@@ -260,35 +267,35 @@ export class Room {
 	 */
 	async join(client: WebSocketClient) {
 		this.messenger.addClient(client);
-		await this.ready;
 
 		let added = false;
 		let clientColor: Color | undefined;
 
-		if (!(await this.hasClient(client.uid))) {
-			await this.store(async (store) => {
-				const clients = await store.get('clients');
-				const existingColors = clients.map((c) => c.color);
-				const colorsAvailable = COLORS.filter((color) => !existingColors.includes(color));
+		await this.store(async (store) => {
+			await this.ensureInitialized(store);
 
-				if (colorsAvailable.length === 0) {
-					colorsAvailable.push(...COLORS);
-				}
+			if (await this.hasClient(client.uid, store)) return;
 
-				if (clients.findIndex((c) => c.uid === client.uid) === -1) {
-					added = true;
-					clientColor = colorsAvailable[random(colorsAvailable.length - 1)]!;
+			const clients = await this.getClients(store);
+			added = true;
 
-					clients.push({
-						uid: client.uid,
-						accountability: client.accountability!,
-						color: clientColor,
-					});
+			const existingColors = clients.map((c) => c.color);
+			const colorsAvailable = COLORS.filter((color) => !existingColors.includes(color));
 
-					await store.set('clients', clients);
-				}
+			if (colorsAvailable.length === 0) {
+				colorsAvailable.push(...COLORS);
+			}
+
+			clientColor = colorsAvailable[random(colorsAvailable.length - 1)]!;
+
+			clients.push({
+				uid: client.uid,
+				accountability: client.accountability!,
+				color: clientColor,
 			});
-		}
+
+			await store.set('clients', clients);
+		});
 
 		if (added && clientColor) {
 			await this.sendExcluding(
@@ -302,28 +309,28 @@ export class Room {
 			);
 		}
 
-		const { collection, item, version, changes, focuses, clients } = (await this.store(async (store) => {
+		const { changes, focuses, clients } = (await this.store(async (store) => {
 			return {
-				collection: await store.get('collection'),
-				item: await store.get('item'),
-				version: await store.get('version'),
-				changes: await store.get('changes'),
-				focuses: await store.get('focuses'),
-				clients: await store.get('clients'),
+				changes: await this.getChanges(store),
+				focuses: await this.getFocuses(store),
+				clients: await this.getClients(store),
 			};
-		})) as RoomData;
+		})) as { changes: Item; focuses: Record<ClientID, string>; clients: RoomClient[] };
 
 		const schema = await getSchema();
 		const knex = getDatabase();
 
-		const allowedFields = await verifyPermissions(client.accountability, collection, item, 'read', { schema, knex });
+		const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item, 'read', {
+			schema,
+			knex,
+		});
 
 		this.send(client.uid, {
 			action: ACTION.SERVER.INIT,
-			collection: collection,
-			item: item,
-			version: version,
-			changes: (await sanitizePayload(changes as Record<string, unknown>, collection, {
+			collection: this.collection,
+			item: this.item,
+			version: this.version,
+			changes: (await sanitizePayload(changes as Record<string, unknown>, this.collection, {
 				accountability: client.accountability,
 				schema,
 				action: 'read',
@@ -346,19 +353,18 @@ export class Room {
 	 */
 	async leave(uid: ClientID) {
 		this.messenger.removeClient(uid);
-		await this.ready;
-
-		if (!(await this.hasClient(uid))) return;
 
 		await this.store(async (store) => {
-			const clients = await store.get('clients');
+			if (!(await this.hasClient(uid, store))) return;
+
+			const clients = await this.getClients(store);
 
 			await store.set(
 				'clients',
-				clients.filter((c) => c.uid !== uid),
+				clients.filter((c: RoomClient) => c.uid !== uid),
 			);
 
-			const focuses = await store.get('focuses');
+			const focuses = await this.getFocuses(store);
 
 			if (uid in focuses) {
 				delete focuses[uid];
@@ -376,15 +382,14 @@ export class Room {
 	 * Propagate an update to other clients
 	 */
 	async update(sender: WebSocketClient, changes: Record<string, unknown>) {
-		await this.ready;
-
 		const { clients } = await this.store(async (store) => {
-			const existing_changes = await store.get('changes');
+			await this.ensureInitialized(store);
+			const existing_changes = await this.getChanges(store);
 			Object.assign(existing_changes, changes);
 			await store.set('changes', existing_changes);
 
 			return {
-				clients: await store.get('clients'),
+				clients: await this.getClients(store),
 			};
 		});
 
@@ -418,14 +423,13 @@ export class Room {
 	 * Propagate an unset to other clients
 	 */
 	async unset(sender: PermissionClient, field: string) {
-		await this.ready;
-
 		const clients = await this.store(async (store) => {
-			const changes = await store.get('changes');
+			await this.ensureInitialized(store);
+			const changes = await this.getChanges(store);
 			delete changes[field];
 			await store.set('changes', changes);
 
-			return await store.get('clients');
+			return await this.getClients(store);
 		});
 
 		const schema = await getSchema();
@@ -452,11 +456,10 @@ export class Room {
 	 * Atomically acquire or release focus and propagate focus state to other clients
 	 */
 	async focus(sender: PermissionClient, field: string | null): Promise<boolean> {
-		await this.ready;
-
 		const result = await this.store(async (store) => {
-			const focuses = await store.get('focuses');
-			const clients = await store.get('clients');
+			await this.ensureInitialized(store);
+			const focuses = await this.getFocuses(store);
+			const clients = await this.getClients(store);
 
 			if (field === null) {
 				const focusedField = focuses[sender.uid];
@@ -503,27 +506,15 @@ export class Room {
 	}
 
 	async sendAll(message: BaseServerMessage) {
-		await this.ready;
-
-		const clients = await this.store(async (store) => {
-			return await store.get('clients');
-		});
-
-		for (const client of clients) {
-			this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
+		for (const client of await this.getClients()) {
+			this.send(client.uid, message);
 		}
 	}
 
 	async sendExcluding(message: BaseServerMessage, exclude: ClientID) {
-		await this.ready;
-
-		const clients = await this.store(async (store) => {
-			return await store.get('clients');
-		});
-
-		for (const client of clients) {
+		for (const client of await this.getClients()) {
 			if (client.uid !== exclude) {
-				this.messenger.sendClient(client.uid, { ...message, type: WS_TYPE.COLLAB, room: this.uid });
+				this.send(client.uid, message);
 			}
 		}
 	}
@@ -535,14 +526,16 @@ export class Room {
 
 	/**
 	 * Close the room and notify all clients
+	 *
+	 * @param force If true, close the room even if active clients are present
 	 */
-	async close() {
-		await this.ready;
-		this.messenger.sendRoom(this.uid, { action: 'close' });
+	async close(force = false) {
+		const closed = await this.store(async (store) => {
+			if (!force) {
+				const clients = await this.getClients(store);
+				if (clients.length > 0) return false;
+			}
 
-		this.dispose();
-
-		await this.store(async (store) => {
 			await store.delete('uid');
 			await store.delete('collection');
 			await store.delete('item');
@@ -550,7 +543,15 @@ export class Room {
 			await store.delete('changes');
 			await store.delete('clients');
 			await store.delete('focuses');
+			return true;
 		});
+
+		if (closed) {
+			this.messenger.sendRoom(this.uid, { action: 'close' });
+			this.dispose();
+		}
+
+		return closed;
 	}
 
 	dispose() {
