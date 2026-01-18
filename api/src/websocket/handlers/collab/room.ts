@@ -35,6 +35,7 @@ export class CollabRooms {
 			const room = new Room(uid, collection, item, version, initialChanges, this.messenger);
 			this.rooms[uid] = room;
 			await room.init();
+			await this.messenger.registerRoom(uid);
 		}
 
 		this.messenger.setRoomListener(uid, (message) => {
@@ -45,6 +46,15 @@ export class CollabRooms {
 		});
 
 		return this.rooms[uid]!;
+	}
+
+	/**
+	 * Remove a room from memory
+	 */
+	removeRoom(uid: string) {
+		if (this.rooms[uid]) {
+			delete this.rooms[uid];
+		}
 	}
 
 	/**
@@ -547,6 +557,7 @@ export class Room {
 		});
 
 		if (closed) {
+			await this.messenger.unregisterRoom(this.uid);
 			this.messenger.sendRoom(this.uid, { action: 'close' });
 			this.dispose();
 		}

@@ -1,17 +1,23 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient } from '@directus/types';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../../emitter.js';
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
+import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { handleWebSocketError } from '../../errors.js';
 import { CollabHandler } from './collab.js';
 import { verifyPermissions } from './verify-permissions.js';
 
+vi.mock('../../../logger/index.js', () => ({
+	useLogger: vi.fn().mockReturnValue({
+		info: vi.fn(),
+	}),
+}));
+
 vi.mock('../../../database/index.js');
 vi.mock('../../../emitter.js');
-vi.mock('../../../logger/index.js');
 vi.mock('../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js');
 vi.mock('../../../utils/get-schema.js');
 vi.mock('../../../utils/get-service.js');
@@ -26,6 +32,7 @@ describe('CollabHandler', () => {
 	let mockClient: WebSocketClient;
 
 	beforeEach(() => {
+		vi.useFakeTimers();
 		vi.clearAllMocks();
 		handler = new CollabHandler();
 
@@ -36,6 +43,11 @@ describe('CollabHandler', () => {
 		} as any;
 
 		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
+	});
+
+	afterEach(() => {
+		vi.clearAllTimers();
+		vi.useRealTimers();
 	});
 
 	describe('onJoin', () => {
@@ -458,6 +470,39 @@ describe('CollabHandler', () => {
 			await closeCallback({ client: mockClient });
 
 			expect(onLeaveSpy).toHaveBeenCalledWith(mockClient);
+		});
+	});
+
+	describe('Cleanup Job', () => {
+		test('performs heritage sweep for dead nodes', async () => {
+			const cleanupJob = vi
+				.mocked(scheduleSynchronizedJob)
+				.mock.calls.findLast((call) => call[0] === 'collab')![2] as any;
+
+			const mockDeadRoomUid = 'dead-room-uid';
+			const mockDeadClientUid = 'dead-client-uid';
+
+			vi.spyOn(handler.messenger, 'pruneDeadInstances').mockResolvedValue({
+				inactive: { clients: [mockDeadClientUid], rooms: [mockDeadRoomUid] },
+				active: [],
+			});
+
+			const mockRoom = {
+				uid: mockDeadRoomUid,
+				hasClient: vi.fn().mockResolvedValue(true),
+				leave: vi.fn(),
+				close: vi.fn().mockResolvedValue(true),
+			};
+
+			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.rooms.getAllClients).mockResolvedValue([]);
+			vi.mocked(handler.rooms.getClientRooms).mockResolvedValue([]);
+
+			await cleanupJob();
+
+			expect(handler.rooms.getRoom).toHaveBeenCalledWith(mockDeadRoomUid);
+			expect(mockRoom.leave).toHaveBeenCalledWith(mockDeadClientUid);
+			expect(mockRoom.close).toHaveBeenCalled();
 		});
 	});
 });

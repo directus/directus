@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
@@ -16,6 +17,11 @@ import { Messenger } from './messenger.js';
 import { CollabRooms } from './room.js';
 import type { FocusMessage, JoinMessage, LeaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
 import { verifyPermissions } from './verify-permissions.js';
+
+const env = useEnv();
+
+const CLUSTER_CLEANUP_CRON = String(env['WEBSOCKETS_COLLAB_CLUSTER_CLEANUP_CRON']);
+const LOCAL_CLEANUP_INTERVAL = Number(env['WEBSOCKETS_COLLAB_LOCAL_CLEANUP_INTERVAL']);
 
 /**
  * Handler responsible for subscriptions
@@ -52,24 +58,47 @@ export class CollabHandler {
 		emitter.onAction('websocket.error', ({ client }) => this.onLeave(client));
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
 
-		scheduleSynchronizedJob('collab', `*/1 * * * *`, async () => {
-			const { inactive, active } = await this.messenger.removeInvalidClients();
+		scheduleSynchronizedJob('collab', CLUSTER_CLEANUP_CRON, async () => {
+			const { inactive } = await this.messenger.pruneDeadInstances();
 
+			// Remove clients and close rooms hosted by nodes that are now dead
+			for (const roomUid of inactive.rooms) {
+				const room = await this.rooms.getRoom(roomUid);
+
+				if (room) {
+					// Remove dead clients globally
+					for (const client of inactive.clients) {
+						if (await room.hasClient(client)) {
+							useLogger().info(`[Collab] Removing dead client ${client} from room ${roomUid}`);
+							await room.leave(client);
+						}
+					}
+
+					// Close room if it was truly abandoned
+					if (await room.close()) {
+						this.rooms.removeRoom(room.uid);
+					}
+				}
+			}
+		});
+
+		setInterval(async () => {
+			// Remove local clients that are no longer in the global registry
+			const { active } = await this.messenger.getRegistry();
 			const roomClients = (await this.rooms.getAllClients()).map((client) => client.uid);
 			const invalidClients = difference(roomClients, active);
 
-			for (const client of [...inactive, ...invalidClients]) {
+			for (const client of invalidClients) {
 				const rooms = await this.rooms.getClientRooms(client);
 
-				useLogger().info(`[Collab] Removing inactive client ${client}`);
-
 				for (const room of rooms) {
+					useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.uid}`);
 					await room.leave(client);
 				}
 			}
 
 			await this.rooms.cleanupRooms();
-		});
+		}, LOCAL_CLEANUP_INTERVAL);
 	}
 
 	/**

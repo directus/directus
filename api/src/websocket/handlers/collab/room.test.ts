@@ -54,6 +54,8 @@ const mockMessenger = {
 	removeRoomListener: vi.fn(),
 	addClient: vi.fn(),
 	removeClient: vi.fn(),
+	registerRoom: vi.fn(),
+	unregisterRoom: vi.fn(),
 } as any;
 
 const getAccountability = (overrides = {}) =>
