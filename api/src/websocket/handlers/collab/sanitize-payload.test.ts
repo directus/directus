@@ -278,7 +278,7 @@ describe('sanitizePayload', () => {
 			test('filters nested collection fields via junction', async () => {
 				vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection) => {
 					if (collection === 'articles') return ['*'];
-					if (collection === 'articles_tags_junction') return ['tags_id'];
+					if (collection === 'articles_tags_junction') return ['articles_id', 'tags_id'];
 					if (collection === 'tags') return ['id', 'tag'];
 					return [];
 				});
@@ -581,6 +581,19 @@ describe('sanitizePayload', () => {
 			});
 
 			expect(result).toEqual({ id: 1, title: null, author: null });
+		});
+
+		test('filters null values for fields without permission', async () => {
+			vi.mocked(verifyPermissions).mockResolvedValue(['id']);
+
+			const result = await sanitizePayload({ id: 1, title: null, author: null }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
+
+			expect(result).toEqual({ id: 1 });
 		});
 
 		test('preserves null for M2O/A2O relations', async () => {

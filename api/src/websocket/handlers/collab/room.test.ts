@@ -23,6 +23,7 @@ vi.mock('../../../emitter.js', () => ({
 	default: {
 		onAction: vi.fn(),
 		offAction: vi.fn(),
+		emitAction: vi.fn(),
 	},
 }));
 
@@ -233,23 +234,16 @@ describe('CollabRooms', () => {
 
 		await room.leave(client.uid);
 
-		// Advance time past the 1 minute inactivity threshold
-		vi.useFakeTimers();
-		vi.setSystemTime(Date.now() + 61 * 1000);
-
 		await rooms.cleanupRooms();
 
 		expect(Object.keys(rooms.rooms).length).toEqual(0);
 
-		// Verify complete cleanup
-		const roomKeys = ['uid', 'collection', 'item', 'version', 'changes', 'clients', 'focuses', 'lastActive'];
+		const roomKeys = ['uid', 'collection', 'item', 'version', 'changes', 'clients', 'focuses'];
 
 		for (const key of roomKeys) {
 			const storeKey = `${room.uid}:${key}`;
 			expect(mockData.has(storeKey)).toBeFalsy();
 		}
-
-		vi.useRealTimers();
 	});
 
 	test('cleanupRooms does not remove active rooms', async () => {
@@ -259,17 +253,11 @@ describe('CollabRooms', () => {
 		const room = await rooms.createRoom('a', getTestItem(), null);
 		await room.join(client);
 
-		// Advance time
-		vi.useFakeTimers();
-		vi.setSystemTime(Date.now() + 61 * 1000);
-
 		await rooms.cleanupRooms();
 
 		// Should still exist because it has a client
 		expect(Object.keys(rooms.rooms)).toContain(room.uid);
 		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
-
-		vi.useRealTimers();
 	});
 
 	test('dispose removes listeners', async () => {
@@ -898,6 +886,70 @@ describe('room', () => {
 		// Focus on status should still be there for B
 		expect(await room.getFocusByUser('def')).toBe('status');
 	});
+
+	test('handles delete event', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+		const room = await rooms.createRoom('articles', '1', null);
+
+		const client = {
+			uid: 1,
+			accountability: { user: 'user1', role: null, roles: [], admin: false, app: false, ip: '::1' },
+			send: vi.fn(),
+		} as unknown as WebSocketClient;
+
+		await room.join(client);
+
+		rooms.messenger.setRoomListener(room.uid, (message: any) => {
+			if (message.action === 'close') {
+				room.dispose();
+			}
+		});
+
+		const onDeleteHandler = vi
+			.mocked(emitter.onAction)
+			.mock.calls.find((call) => call[0] === 'articles.items.delete')![1];
+
+		await onDeleteHandler({ keys: ['1'] }, {} as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			1,
+			expect.objectContaining({
+				type: 'collab',
+				room: room.uid,
+				action: 'delete',
+			}),
+		);
+
+		// Room should be disposed with listeners removed
+		expect(emitter.offAction).toHaveBeenCalledWith('articles.items.update', expect.any(Function));
+		expect(emitter.offAction).toHaveBeenCalledWith('articles.items.delete', expect.any(Function));
+	});
+
+	test('ignores delete event for other items', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+		const room = await rooms.createRoom('articles', '1', null);
+
+		const client = {
+			uid: 1,
+			accountability: { user: 'user1', role: null, roles: [], admin: false, app: false, ip: '::1' },
+			send: vi.fn(),
+		} as unknown as WebSocketClient;
+
+		await room.join(client);
+
+		const onDeleteHandler = vi
+			.mocked(emitter.onAction)
+			.mock.calls.find((call) => call[0] === 'articles.items.delete')![1];
+
+		await onDeleteHandler({ keys: ['2'] }, {} as any);
+
+		expect(mockMessenger.sendClient).not.toHaveBeenCalledWith(
+			1,
+			expect.objectContaining({
+				action: 'delete',
+			}),
+		);
+	});
 });
 
 describe('getRoomHash', () => {
@@ -917,5 +969,73 @@ describe('getRoomHash', () => {
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('def', '123', 'v1'));
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '456', 'v1'));
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '123', 'v2'));
+	});
+});
+
+describe('room disposal stability', () => {
+	test('handles update when store is cleared (disposal race)', async () => {
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+
+		await room.join(clientA);
+
+		mockData.clear();
+
+		// Update should not crash and should trigger self-healing
+		await expect(room.update(clientA, { title: 'New' })).resolves.not.toThrow();
+
+		// Should have re-populated ALL foundational keys in store
+		expect(mockData.get(`${uid}:uid`)).toBe(uid);
+		expect(mockData.get(`${uid}:collection`)).toBe('coll');
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'New' });
+	});
+
+	test('handles join after close() but before local reference removal', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+		const item = getTestItem();
+		const room = await rooms.createRoom('a', item, null);
+		const client = mockWebSocketClient({ uid: 'abc' });
+
+		await room.close(true); // Forced close
+
+		// Join a closed room
+		await expect(room.join(client)).resolves.not.toThrow();
+
+		// Should have re-initialized all foundational metadata
+		expect(mockData.get(`${room.uid}:uid`)).toBe(room.uid);
+		expect(mockData.get(`${room.uid}:collection`)).toBe('a');
+		expect(mockData.get(`${room.uid}:clients`)).toHaveLength(1);
+	});
+
+	test('cleanupRooms does not close if a user joined during check', async () => {
+		const rooms = new CollabRooms(mockMessenger);
+		const item = getTestItem();
+		const room = await rooms.createRoom('a', item, null);
+
+		const originalStore = room.store;
+		let intercepted = false;
+
+		// Simulate concurrent join during closure
+		room.store = async (callback: any) => {
+			if (!intercepted) {
+				intercepted = true;
+
+				await originalStore(
+					async (s: any) =>
+						await s.set('clients', [{ uid: 'abc', accountability: { user: 'user-abc' } as any, color: 'red' }]),
+				);
+			}
+
+			return await originalStore(callback);
+		};
+
+		await rooms.cleanupRooms();
+
+		expect(rooms.rooms[room.uid]).toBeDefined();
+		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
+
+		room.store = originalStore;
 	});
 });
