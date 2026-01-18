@@ -136,6 +136,7 @@ export class Room {
 	store;
 	ready: Promise<void>;
 	onUpdateHandler: ActionHandler;
+	onDeleteHandler: ActionHandler;
 
 	constructor(
 		uid: string,
@@ -200,8 +201,22 @@ export class Room {
 			}
 		};
 
+		this.onDeleteHandler = async (meta) => {
+			const { keys } = meta as { keys: string[] };
+
+			// Skip deletions for different items (singletons have item=null)
+			if (item !== null && !keys.includes(item)) return;
+
+			this.sendAll({
+				action: ACTION.SERVER.DELETE,
+			});
+
+			await this.close();
+		};
+
 		// React to external updates (eg: REST API) to sync connected clients
 		emitter.onAction(`${collection}.items.update`, this.onUpdateHandler);
+		emitter.onAction(`${collection}.items.delete`, this.onDeleteHandler);
 	}
 
 	async getCollection() {
@@ -540,6 +555,7 @@ export class Room {
 
 	dispose() {
 		emitter.offAction(`${this.collection}.items.update`, this.onUpdateHandler);
+		emitter.offAction(`${this.collection}.items.delete`, this.onDeleteHandler);
 		this.messenger.removeRoomListener(this.uid);
 	}
 }

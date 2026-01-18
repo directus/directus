@@ -19,6 +19,7 @@ export const ACTION = {
 		JOIN: 'join',
 		LEAVE: 'leave',
 		SAVE: 'save',
+		DELETE: 'delete',
 		UPDATE: 'update',
 		FOCUS: 'focus',
 	},
@@ -114,6 +115,9 @@ export type BaseServerMessage =
 	  }
 	| {
 			action: typeof ACTION.SERVER.SAVE;
+	  }
+	| {
+			action: typeof ACTION.SERVER.DELETE;
 	  }
 	| {
 			action: typeof ACTION.SERVER.UPDATE;
