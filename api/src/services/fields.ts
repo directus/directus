@@ -370,12 +370,20 @@ export class FieldsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const exists =
-				field.field in this.schema.collections[collection]!.fields ||
-				isNil(
-					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first(),
-				) === false;
+			// Check if field already exists (Case-Insensitive)
+			const fieldsInSchema = Object.keys(this.schema.collections[collection]?.fields || {});
+			const existsInSchema = fieldsInSchema.some(
+				(f) => f.toLowerCase() === field.field.toLowerCase()
+			);
+			const existsInDb = await this.knex
 
+			    .select('id')
+				.from('directus_fields')
+				.where({ collection })
+				.andWhereRaw('LOWER(??) = LOWER(?)', ['field', field.field])
+				.first();
+			const exists = existsInSchema || !!existsInDb;
+		
 			// Check if field already exists, either as a column, or as a row in directus_fields
 			if (exists) {
 				throw new InvalidPayloadError({
