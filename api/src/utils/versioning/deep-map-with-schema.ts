@@ -94,7 +94,7 @@ export function deepMapWithSchema(
 
 			let processedValue: any = value;
 
-			if (relationInfo.relation && (!isPrimitive(value) || options?.mapPrimaryKeys)) {
+			if (relationInfo.relation && value !== null && (!isPrimitive(value) || options?.mapPrimaryKeys)) {
 				switch (relationInfo.relationType) {
 					case 'm2o': {
 						// Ambiguous context (Link vs Update); reset action to prevent accidental "create"
