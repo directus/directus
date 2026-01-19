@@ -98,6 +98,12 @@ const directusConfig = {
 	QUERY_LIMIT_DEFAULT: '90', // Must be less than MAX_BATCH_MUTATION by at least 3
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer
 	WEBSOCKETS_ENABLED: 'true',
+	WEBSOCKETS_REST_ENABLED: 'true',
+	REDIS_HOST: '127.0.0.1',
+	REDIS_PORT: '6108',
+	REDIS_ENABLED: 'true',
+	MESSENGER_STORE: 'redis',
+	SYNCHRONIZATION_STORE: 'redis',
 	TUS_ENABLED: 'true',
 	EMAIL_TRANSPORT: 'smtp',
 	EMAIL_SMTP_HOST: '127.0.0.1',

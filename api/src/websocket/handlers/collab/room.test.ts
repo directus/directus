@@ -3,17 +3,13 @@ import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../../emitter.js';
-import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
-import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
-import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
-import { processPermissions } from '../../../permissions/utils/process-permissions.js';
+import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { permissionCache } from './permissions-cache.js';
-import { CollabRooms, getRoomHash, Room } from './room.js';
+import { getRoomHash, Room, RoomManager } from './room.js';
 import { sanitizePayload } from './sanitize-payload.js';
+import { verifyPermissions } from './verify-permissions.js';
 
 vi.mock('../../../database/index.js', () => ({
 	default: vi.fn(() => ({
@@ -27,11 +23,21 @@ vi.mock('../../../emitter.js', () => ({
 	default: {
 		onAction: vi.fn(),
 		offAction: vi.fn(),
+		emitAction: vi.fn(),
 	},
+}));
+
+vi.mock('../../../logger/index.js', () => ({
+	useLogger: vi.fn().mockReturnValue({
+		error: vi.fn(),
+		info: vi.fn(),
+		warn: vi.fn(),
+	}),
 }));
 
 vi.mock('../../../utils/get-schema.js');
 vi.mock('./sanitize-payload.js');
+vi.mock('./verify-permissions.js');
 vi.mock('./field-permissions.js');
 vi.mock('../../../utils/get-service.js');
 vi.mock('../../../permissions/lib/fetch-permissions.js');
@@ -48,6 +54,8 @@ const mockMessenger = {
 	removeRoomListener: vi.fn(),
 	addClient: vi.fn(),
 	removeClient: vi.fn(),
+	registerRoom: vi.fn(),
+	unregisterRoom: vi.fn(),
 } as any;
 
 const getAccountability = (overrides = {}) =>
@@ -104,25 +112,12 @@ afterEach(() => {
 
 beforeEach(() => {
 	permissionCache.clear();
+	vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 	vi.mocked(getService).mockReturnValue({
 		readOne: vi.fn().mockResolvedValue({ id: 1, date: '2099-01-01' }),
 		readSingleton: vi.fn().mockResolvedValue({}),
 	} as any);
-
-	vi.mocked(fetchPolicies).mockResolvedValue(['policy-1']);
-
-	vi.mocked(fetchPermissions).mockResolvedValue([
-		{
-			fields: ['*'],
-			permissions: {},
-			validation: {},
-		},
-	] as any);
-
-	vi.mocked(processPermissions).mockImplementation(({ permissions }) => permissions);
-	vi.mocked(fetchDynamicVariableData).mockResolvedValue({});
-	vi.mocked(extractRequiredDynamicVariableContextForPermissions).mockReturnValue({} as any);
 
 	vi.mocked(getSchema).mockResolvedValue({
 		collections: {
@@ -131,11 +126,6 @@ beforeEach(() => {
 		},
 		relations: [],
 	} as any);
-
-	vi.mocked(validateItemAccess).mockResolvedValue({
-		accessAllowed: true,
-		allowedRootFields: ['*'],
-	});
 });
 
 function mockWebSocketClient(client: Partial<WebSocketClient>): WebSocketClient {
@@ -157,100 +147,121 @@ function mockWebSocketClient(client: Partial<WebSocketClient>): WebSocketClient 
 let testCounter = 0;
 const getTestItem = () => `item_${testCounter++}`;
 
-describe('CollabRooms', () => {
-	test('create room', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+describe('RoomManager', () => {
+	describe('createRoom', () => {
+		test('creates new room if it does not exist', async () => {
+			const roomManager = new RoomManager(mockMessenger);
+			const room = await roomManager.createRoom('articles', '1', null);
+			expect(room).toBeDefined();
+			expect(roomManager.rooms[room.uid]).toBe(room);
+		});
 
-		const room = await rooms.createRoom('a', getTestItem(), null);
-
-		expect(room).toBeDefined();
-	});
-
-	test('create room twice', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-		const item = getTestItem();
-
-		const room = await rooms.createRoom('a', item, null);
-		const roomDuplicate = await rooms.createRoom('a', item, null);
-
-		expect(room).toEqual(roomDuplicate);
+		test('returns existing room if it exists', async () => {
+			const roomManager = new RoomManager(mockMessenger);
+			const room1 = await roomManager.createRoom('articles', '1', null);
+			const room2 = await roomManager.createRoom('articles', '1', null);
+			expect(room1).toBe(room2);
+		});
 	});
 
 	test('getRoom', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-
-		const room = await rooms.createRoom('a', getTestItem(), null);
-		const roomReference = await rooms.getRoom(room.uid);
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
+		const roomReference = await roomManager.getRoom(room.uid);
 
 		expect(room).toEqual(roomReference);
 	});
 
 	test('getRoom with invalid id', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 
-		await rooms.createRoom('a', getTestItem(), null);
-		const room = await rooms.getRoom('invalid');
+		await roomManager.createRoom('a', getTestItem(), null);
+		const room = await roomManager.getRoom('invalid');
 
 		expect(room).toBeUndefined();
 	});
 
 	test('getRoom for uid', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 
 		const item = getTestItem();
-		await rooms.createRoom('a', item, null);
-		const room = await rooms.getRoom(getRoomHash('a', item, null));
+		await roomManager.createRoom('a', item, null);
+		const room = await roomManager.getRoom(getRoomHash('a', item, null));
 
 		expect(room).toBeDefined();
 	});
 
+	test('getRoom reloads from store if missing in memory', async () => {
+		const roomManager = new RoomManager(mockMessenger);
+		const item = getTestItem();
+		const room = await roomManager.createRoom('a', item, null);
+
+		const uid = room.uid;
+
+		// Simulate memory eviction but store persistence
+		delete roomManager.rooms[uid];
+
+		const reloadedRoom = await roomManager.getRoom(uid);
+
+		expect(reloadedRoom).toBeDefined();
+		expect(reloadedRoom!.uid).toBe(uid);
+		expect(reloadedRoom!.collection).toBe('a');
+	});
+
 	test('getClientRooms', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 		const client = mockWebSocketClient({ uid: 'abc' });
 
-		const room = await rooms.createRoom('a', getTestItem(), null);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
 		await room.join(client);
 
-		const clientRooms = await rooms.getClientRooms(client.uid);
+		const clientRooms = await roomManager.getClientRooms(client.uid);
 
 		expect(clientRooms).toEqual([room]);
 	});
 
 	test('cleanupRooms', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 		const client = mockWebSocketClient({ uid: 'abc' });
 
-		const room = await rooms.createRoom('a', getTestItem(), null);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
 		await room.join(client);
 
-		await rooms.cleanupRooms();
+		await roomManager.cleanupRooms();
 
-		expect(Object.keys(rooms.rooms).length).toEqual(1);
+		expect(Object.keys(roomManager.rooms).length).toEqual(1);
 
 		await room.leave(client.uid);
 
-		// Advance time past the 1 minute inactivity threshold
-		vi.useFakeTimers();
-		vi.setSystemTime(Date.now() + 61 * 1000);
+		await roomManager.cleanupRooms();
 
-		await rooms.cleanupRooms();
+		expect(Object.keys(roomManager.rooms).length).toEqual(0);
 
-		expect(Object.keys(rooms.rooms).length).toEqual(0);
-
-		// Verify complete cleanup
-		const roomKeys = ['uid', 'collection', 'item', 'version', 'changes', 'clients', 'focuses', 'lastActive'];
+		const roomKeys = ['uid', 'collection', 'item', 'version', 'changes', 'clients', 'focuses'];
 
 		for (const key of roomKeys) {
 			const storeKey = `${room.uid}:${key}`;
 			expect(mockData.has(storeKey)).toBeFalsy();
 		}
+	});
 
-		vi.useRealTimers();
+	test('cleanupRooms does not remove active rooms', async () => {
+		const roomManager = new RoomManager(mockMessenger);
+		const client = mockWebSocketClient({ uid: 'abc' });
+
+		const room = await roomManager.createRoom('a', getTestItem(), null);
+		await room.join(client);
+
+		await roomManager.cleanupRooms();
+
+		// Should still exist because it has a client
+		expect(Object.keys(roomManager.rooms)).toContain(room.uid);
+		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
 	});
 
 	test('dispose removes listeners', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-		const room = await rooms.createRoom('a', getTestItem(), null);
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
 		const client = mockWebSocketClient({ uid: 'abc' });
 
 		await room.join(client);
@@ -262,8 +273,8 @@ describe('CollabRooms', () => {
 	});
 
 	test('handles remote close event', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-		const room = await rooms.createRoom('remote-test', getTestItem(), null);
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('remote-test', getTestItem(), null);
 		const disposeSpy = vi.spyOn(room, 'dispose');
 
 		// Find the listener callback to simulate incoming message
@@ -274,7 +285,7 @@ describe('CollabRooms', () => {
 		callback({ action: 'close', room: room.uid });
 
 		expect(disposeSpy).toHaveBeenCalled();
-		expect(rooms.rooms[room.uid]).toBeUndefined(); // Cannot use getRoom() here as it's mocked
+		expect(roomManager.rooms[room.uid]).toBeUndefined(); // Cannot use getRoom() here as it's mocked
 	});
 });
 
@@ -338,6 +349,24 @@ describe('room', () => {
 		expect(vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'def')).toHaveLength(1);
 	});
 
+	test('join room twice (re-joining)', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		expect((await room.getClients()).length).toBe(1);
+
+		// Join again
+		await room.join(clientA);
+		expect((await room.getClients()).length).toBe(1); // Should still be 1
+
+		// Should have sent init twice
+		const clientAMsgs = vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'abc');
+		expect(clientAMsgs.filter((c: any) => c[1].action === 'init')).toHaveLength(2);
+	});
+
 	test('leave room', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const item = getTestItem();
@@ -361,13 +390,7 @@ describe('room', () => {
 
 		await room.join(clientA);
 
-		vi.mocked(fetchPermissions).mockResolvedValue([
-			{
-				fields: ['*'],
-				permissions: {},
-				validation: {},
-			},
-		] as any);
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 		await room.focus(clientA, 'title');
 		expect(await room.getFocusByUser('abc')).toBe('title');
@@ -389,11 +412,11 @@ describe('room', () => {
 		await room.join(clientB);
 		await room.join(clientC);
 
-		vi.mocked(sanitizePayload).mockImplementation(async (_, payload, ctx) => {
+		vi.mocked(sanitizePayload).mockImplementation(async (payload, _collection, context) => {
 			if (
-				ctx.accountability?.user === 'user-abc' ||
-				ctx.accountability?.user === 'user-def' ||
-				ctx.accountability?.user === 'user-hij'
+				context.accountability?.user === 'user-abc' ||
+				context.accountability?.user === 'user-def' ||
+				context.accountability?.user === 'user-hij'
 			) {
 				return payload;
 			}
@@ -433,13 +456,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(fetchPermissions).mockResolvedValue([
-			{
-				fields: ['*'],
-				permissions: { publish_date: { _lt: '$NOW' } },
-				validation: {},
-			},
-		] as any);
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 		await room.unset(clientA, 'publish_date');
 
@@ -490,7 +507,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(sanitizePayload).mockImplementation(async (_, payload) => payload);
+		vi.mocked(sanitizePayload).mockImplementation(async (payload) => payload);
 
 		// Simultaneous updates
 		await Promise.all([room.update(clientA, { title: 'Title A' }), room.update(clientB, { status: 'published' })]);
@@ -530,7 +547,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(sanitizePayload).mockImplementation(async (_, payload) => payload);
+		vi.mocked(sanitizePayload).mockImplementation(async (payload) => payload);
 
 		// A updates first
 		await room.update(clientA, { title: 'Title A' });
@@ -576,6 +593,62 @@ describe('room', () => {
 		);
 	});
 
+	test('updates valid keys in changes on external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		// Pre-populate some changes
+		mockData.set(`${uid}:changes`, { title: 'Pending', stale: 'Gone' });
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		// Return item WITHOUT 'stale' field
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Updated' }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		// Simulate external update
+		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		const updatedChanges = mockData.get(`${uid}:changes`);
+		expect(updatedChanges).toEqual({ title: 'Pending' }); // 'stale' should be removed
+	});
+
+	test('handles type mismatch in primary keys during external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const itemStr = '15';
+		const itemNum = 15;
+		const uid = getRoomHash('coll', itemStr, null);
+		const room = new Room(uid, 'coll', itemStr, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: itemNum, title: 'Updated' }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await onUpdateHandler({ keys: [itemNum], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'save',
+			}),
+		);
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		await onUpdateHandler({ keys: [99], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
+	});
+
 	test('does not broadcast save action to same user who updated', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		clientA.accountability = { user: 'user-a' } as any;
@@ -599,7 +672,29 @@ describe('room', () => {
 		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
 	});
 
-	test('focus', async () => {
+	test('handles error in external update handler gracefully', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		const mockService = { readOne: vi.fn().mockRejectedValue(new Error('Service Failure')) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		const logger = useLogger();
+		const errorSpy = vi.spyOn(logger, 'error');
+
+		// Simulate external update
+		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		expect(errorSpy).toHaveBeenCalledWith(expect.any(Error), expect.stringContaining('External update handler failed'));
+	});
+
+	test('broadcasts focus message to other clients', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
@@ -609,13 +704,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(fetchPermissions).mockResolvedValue([
-			{
-				fields: ['*'],
-				permissions: { publish_date: { _lt: '$NOW' } },
-				validation: {},
-			},
-		] as any);
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 		await room.focus(clientA, 'publish_date');
 
@@ -632,7 +721,7 @@ describe('room', () => {
 		});
 	});
 
-	test('checkFocus', async () => {
+	test('retrieves current focus by user', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
@@ -642,13 +731,7 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		vi.mocked(fetchPermissions).mockResolvedValue([
-			{
-				fields: ['*'],
-				permissions: {},
-				validation: {},
-			},
-		] as any);
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
 		// Client A focuses on title
 		await room.focus(clientA, 'title');
@@ -733,7 +816,7 @@ describe('room', () => {
 		expect(failures).toHaveLength(1);
 	});
 
-	test('focus null clears focus and broadcasts', async () => {
+	test('clears focus and broadcasts release message when focusing null', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
 		const item = getTestItem();
@@ -768,6 +851,136 @@ describe('room', () => {
 			room: uid,
 		});
 	});
+
+	test('focus propagation respects recipient permissions', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(verifyPermissions).mockImplementation(async (acc, _coll, _item) => {
+			if (acc?.user === 'user-abc') return ['*'];
+			if (acc?.user === 'user-def') return ['title'];
+			return [];
+		});
+
+		// A focuses on 'secret' (B cannot see this)
+		await room.focus(clientA, 'secret');
+
+		// B should NOT receive the focus message
+		const msgToB = vi
+			.mocked(mockMessenger.sendClient)
+			.mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'focus');
+
+		expect(msgToB).toBeUndefined();
+
+		// A focuses on 'title' (B CAN see this)
+		mockMessenger.sendClient.mockClear();
+		await room.focus(clientA, 'title');
+
+		expect(
+			vi
+				.mocked(mockMessenger.sendClient)
+				.mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'focus' && c[1].field === 'title'),
+		).toBeDefined();
+	});
+
+	test('batch focus releases on leave', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
+
+		await room.focus(clientA, 'title');
+		await room.focus(clientB, 'status');
+
+		expect(await room.getFocusByUser('abc')).toBe('title');
+		expect(await room.getFocusByUser('def')).toBe('status');
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		// Client A leaves
+		await room.leave('abc');
+
+		// Focus on title should be released
+		expect(await room.getFocusByUser('abc')).toBeUndefined();
+		// Focus on status should still be there for B
+		expect(await room.getFocusByUser('def')).toBe('status');
+	});
+
+	test('handles delete event', async () => {
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('articles', '1', null);
+
+		const client = {
+			uid: 1,
+			accountability: { user: 'user1', role: null, roles: [], admin: false, app: false, ip: '::1' },
+			send: vi.fn(),
+		} as unknown as WebSocketClient;
+
+		await room.join(client);
+
+		roomManager.messenger.setRoomListener(room.uid, (message: any) => {
+			if (message.action === 'close') {
+				room.dispose();
+			}
+		});
+
+		const onDeleteHandler = vi
+			.mocked(emitter.onAction)
+			.mock.calls.find((call) => call[0] === 'articles.items.delete')![1];
+
+		await onDeleteHandler({ keys: ['1'] }, {} as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			1,
+			expect.objectContaining({
+				type: 'collab',
+				room: room.uid,
+				action: 'delete',
+			}),
+		);
+
+		// Room should be disposed with listeners removed
+		expect(emitter.offAction).toHaveBeenCalledWith('articles.items.update', expect.any(Function));
+		expect(emitter.offAction).toHaveBeenCalledWith('articles.items.delete', expect.any(Function));
+	});
+
+	test('ignores delete event for other items', async () => {
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('articles', '1', null);
+
+		const client = {
+			uid: 1,
+			accountability: { user: 'user1', role: null, roles: [], admin: false, app: false, ip: '::1' },
+			send: vi.fn(),
+		} as unknown as WebSocketClient;
+
+		await room.join(client);
+
+		const onDeleteHandler = vi
+			.mocked(emitter.onAction)
+			.mock.calls.find((call) => call[0] === 'articles.items.delete')![1];
+
+		await onDeleteHandler({ keys: ['2'] }, {} as any);
+
+		expect(mockMessenger.sendClient).not.toHaveBeenCalledWith(
+			1,
+			expect.objectContaining({
+				action: 'delete',
+			}),
+		);
+	});
 });
 
 describe('getRoomHash', () => {
@@ -787,5 +1000,73 @@ describe('getRoomHash', () => {
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('def', '123', 'v1'));
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '456', 'v1'));
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '123', 'v2'));
+	});
+});
+
+describe('room disposal stability', () => {
+	test('handles update when store is cleared (disposal race)', async () => {
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+
+		await room.join(clientA);
+
+		mockData.clear();
+
+		// Update should not crash and should trigger self-healing
+		await expect(room.update(clientA, { title: 'New' })).resolves.not.toThrow();
+
+		// Should have re-populated ALL foundational keys in store
+		expect(mockData.get(`${uid}:uid`)).toBe(uid);
+		expect(mockData.get(`${uid}:collection`)).toBe('coll');
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'New' });
+	});
+
+	test('handles join after close() but before local reference removal', async () => {
+		const roomManager = new RoomManager(mockMessenger);
+		const item = getTestItem();
+		const room = await roomManager.createRoom('a', item, null);
+		const client = mockWebSocketClient({ uid: 'abc' });
+
+		await room.close(true); // Forced close
+
+		// Join a closed room
+		await expect(room.join(client)).resolves.not.toThrow();
+
+		// Should have re-initialized all foundational metadata
+		expect(mockData.get(`${room.uid}:uid`)).toBe(room.uid);
+		expect(mockData.get(`${room.uid}:collection`)).toBe('a');
+		expect(mockData.get(`${room.uid}:clients`)).toHaveLength(1);
+	});
+
+	test('cleanupRooms does not close if a user joined during check', async () => {
+		const roomManager = new RoomManager(mockMessenger);
+		const item = getTestItem();
+		const room = await roomManager.createRoom('a', item, null);
+
+		const originalStore = room.store;
+		let intercepted = false;
+
+		// Simulate concurrent join during closure
+		room.store = async (callback: any) => {
+			if (!intercepted) {
+				intercepted = true;
+
+				await originalStore(
+					async (s: any) =>
+						await s.set('clients', [{ uid: 'abc', accountability: { user: 'user-abc' } as any, color: 'red' }]),
+				);
+			}
+
+			return await originalStore(callback);
+		};
+
+		await roomManager.cleanupRooms();
+
+		expect(roomManager.rooms[room.uid]).toBeDefined();
+		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
+
+		room.store = originalStore;
 	});
 });

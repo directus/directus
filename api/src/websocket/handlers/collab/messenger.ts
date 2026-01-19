@@ -9,10 +9,23 @@ import { useLogger } from '../../../logger/index.js';
 import { WebSocketError } from '../../errors.js';
 import { useStore } from './store.js';
 
-type RoomMessage = Extract<BroadcastMessage, { type: 'room' }>;
-type InstanceData = {
-	instances: Record<string, ClientID[]>;
+const env = useEnv();
+
+const INSTANCE_TIMEOUT = Number(env['WEBSOCKETS_COLLAB_INSTANCE_TIMEOUT']);
+
+type Instance = {
+	clients: ClientID[];
+	rooms: string[];
 };
+
+type Registry = Record<string, Instance>;
+
+type RegistrySnapshot = {
+	inactive: Instance;
+	active: ClientID[];
+};
+
+type RoomMessage = Extract<BroadcastMessage, { type: 'room' }>;
 
 type ErrorMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.ERROR }>;
 
@@ -27,11 +40,11 @@ export class Messenger {
 
 	constructor() {
 		this.uid = randomUUID();
-		this.store = useStore<InstanceData>('rooms');
+		this.store = useStore<{ instances: Registry }>('registry');
 
 		this.store(async (store) => {
 			const instances = (await store.get('instances')) ?? {};
-			instances[this.uid] = [];
+			instances[this.uid] = { clients: [], rooms: [] };
 			await store.set('instances', instances);
 		});
 
@@ -68,8 +81,9 @@ export class Messenger {
 
 		this.store(async (store) => {
 			const instances = (await store.get('instances')) ?? {};
+			if (!instances[this.uid]) instances[this.uid] = { clients: [], rooms: [] };
 
-			instances[this.uid] = [...(instances[this.uid] ?? []), client.uid];
+			instances[this.uid]!.clients = [...(instances[this.uid]!.clients ?? []), client.uid];
 
 			await store.set('instances', instances);
 		});
@@ -86,13 +100,51 @@ export class Messenger {
 		this.store(async (store) => {
 			const instances = (await store.get('instances')) ?? {};
 
-			instances[this.uid] = (instances[this.uid] ?? []).filter((c) => c !== uid);
+			if (instances[this.uid]) {
+				instances[this.uid]!.clients = (instances[this.uid]!.clients ?? []).filter(
+					(clientId: ClientID) => clientId !== uid,
+				);
 
-			await store.set('instances', instances);
+				await store.set('instances', instances);
+			}
 		});
 	}
 
-	async removeInvalidClients(): Promise<{ inactive: ClientID[]; active: ClientID[] }> {
+	async registerRoom(uid: string) {
+		await this.store(async (store) => {
+			const instances = (await store.get('instances')) ?? {};
+			if (!instances[this.uid]) instances[this.uid] = { clients: [], rooms: [] };
+
+			if (!instances[this.uid]!.rooms.includes(uid)) {
+				instances[this.uid]!.rooms.push(uid);
+				await store.set('instances', instances);
+			}
+		});
+	}
+
+	async unregisterRoom(uid: string) {
+		await this.store(async (store) => {
+			const instances = (await store.get('instances')) ?? {};
+
+			if (instances[this.uid]) {
+				instances[this.uid]!.rooms = (instances[this.uid]!.rooms ?? []).filter((roomUid: string) => roomUid !== uid);
+				await store.set('instances', instances);
+			}
+		});
+	}
+
+	async getRegistry(): Promise<RegistrySnapshot> {
+		const instances = (await this.store(async (store) => await store.get('instances'))) ?? {};
+
+		return {
+			inactive: { clients: [], rooms: [] },
+			active: Object.values(instances)
+				.map((instance) => instance.clients)
+				.flat(),
+		};
+	}
+
+	async pruneDeadInstances(): Promise<RegistrySnapshot> {
 		const instances = (await this.store(async (store) => await store.get('instances'))) ?? {};
 
 		const inactiveInstances = new Set(Object.keys(instances));
@@ -110,18 +162,21 @@ export class Messenger {
 			this.messenger.publish(COLLAB_BUS, { type: 'ping', instance });
 		}
 
-		const env = useEnv();
-
 		await new Promise((resolve) => {
-			setTimeout(resolve, Number(env['WEBSOCKETS_COLLAB_INSTANCE_TIMEOUT']) * 1000);
+			setTimeout(resolve, INSTANCE_TIMEOUT);
 		});
 
 		this.messenger.unsubscribe(COLLAB_BUS, pongCollector);
 
-		const disconnectedClients: ClientID[] = [];
+		const dead: Instance = { clients: [], rooms: [] };
 
 		if (inactiveInstances.size === 0) {
-			return { inactive: [], active: Object.values(instances).flat() };
+			return {
+				inactive: dead,
+				active: Object.values(instances)
+					.map((instance) => instance.clients)
+					.flat(),
+			};
 		}
 
 		// Reread state to avoid overwriting updates during the timeout phase
@@ -131,7 +186,8 @@ export class Messenger {
 
 			for (const deadId of inactiveInstances) {
 				if (current[deadId]) {
-					disconnectedClients.push(...(current[deadId] ?? []));
+					dead.clients.push(...(current[deadId]!.clients ?? []));
+					dead.rooms.push(...(current[deadId]!.rooms ?? []));
 					delete current[deadId];
 					changed = true;
 				}
@@ -144,7 +200,12 @@ export class Messenger {
 			return current;
 		});
 
-		return { inactive: disconnectedClients, active: Object.values(current).flat() };
+		return {
+			inactive: dead,
+			active: Object.values(current)
+				.map((instance) => instance.clients)
+				.flat(),
+		};
 	}
 
 	sendRoom(room: string, message: Omit<RoomMessage, 'type' | 'room'>) {

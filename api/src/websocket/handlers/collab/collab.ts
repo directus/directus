@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
@@ -12,22 +13,27 @@ import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
-import { CollabRooms } from './room.js';
+import { RoomManager } from './room.js';
 import type { FocusMessage, JoinMessage, LeaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
 import { verifyPermissions } from './verify-permissions.js';
+
+const env = useEnv();
+
+const CLUSTER_CLEANUP_CRON = String(env['WEBSOCKETS_COLLAB_CLUSTER_CLEANUP_CRON']);
+const LOCAL_CLEANUP_INTERVAL = Number(env['WEBSOCKETS_COLLAB_LOCAL_CLEANUP_INTERVAL']);
 
 /**
  * Handler responsible for subscriptions
  */
 export class CollabHandler {
-	rooms: CollabRooms;
+	roomManager: RoomManager;
 	messenger = new Messenger();
 
 	/**
 	 * Initialize the handler
 	 */
 	constructor() {
-		this.rooms = new CollabRooms(this.messenger);
+		this.roomManager = new RoomManager(this.messenger);
 		this.bindWebSocket();
 	}
 
@@ -51,24 +57,47 @@ export class CollabHandler {
 		emitter.onAction('websocket.error', ({ client }) => this.onLeave(client));
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
 
-		scheduleSynchronizedJob('collab', `*/1 * * * *`, async () => {
-			const { inactive, active } = await this.messenger.removeInvalidClients();
+		scheduleSynchronizedJob('collab', CLUSTER_CLEANUP_CRON, async () => {
+			const { inactive } = await this.messenger.pruneDeadInstances();
 
-			const roomClients = (await this.rooms.getAllClients()).map((client) => client.uid);
+			// Remove clients and close rooms hosted by nodes that are now dead
+			for (const roomUid of inactive.rooms) {
+				const room = await this.roomManager.getRoom(roomUid);
+
+				if (room) {
+					// Remove dead clients globally
+					for (const client of inactive.clients) {
+						if (await room.hasClient(client)) {
+							useLogger().info(`[Collab] Removing dead client ${client} from room ${roomUid}`);
+							await room.leave(client);
+						}
+					}
+
+					// Close room if it was truly abandoned
+					if (await room.close()) {
+						this.roomManager.removeRoom(room.uid);
+					}
+				}
+			}
+		});
+
+		setInterval(async () => {
+			// Remove local clients that are no longer in the global registry
+			const { active } = await this.messenger.getRegistry();
+			const roomClients = (await this.roomManager.getAllClients()).map((client) => client.uid);
 			const invalidClients = difference(roomClients, active);
 
-			for (const client of [...inactive, ...invalidClients]) {
-				const rooms = await this.rooms.getClientRooms(client);
-
-				useLogger().info(`[Collab] Removing inactive client ${client}`);
+			for (const client of invalidClients) {
+				const rooms = await this.roomManager.getClientRooms(client);
 
 				for (const room of rooms) {
+					useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.uid}`);
 					await room.leave(client);
 				}
 			}
 
-			await this.rooms.cleanupRooms();
-		});
+			await this.roomManager.cleanupRooms();
+		}, LOCAL_CLEANUP_INTERVAL);
 	}
 
 	/**
@@ -117,7 +146,7 @@ export class CollabHandler {
 				});
 			}
 
-			const room = await this.rooms.createRoom(
+			const room = await this.roomManager.createRoom(
 				message.collection,
 				message.item,
 				message.version ?? null,
@@ -135,29 +164,19 @@ export class CollabHandler {
 	 */
 	async onLeave(client: WebSocketClient, message?: LeaveMessage) {
 		try {
-			const roomIds: string[] = [];
-
-			if (message) {
-				const room = await this.rooms.getRoom(message.room);
-
+			if (message?.room) {
+				const room = await this.roomManager.getRoom(message.room);
 				if (!room)
 					throw new InvalidPayloadError({
-						reason: `No access to room ${message.room} or room does not exist`,
+						reason: `Room "${message.room}" does not exist`,
 					});
 
-				if (!room.hasClient(client.uid))
-					throw new InvalidPayloadError({
-						reason: `Not connected to room ${message.room}`,
-					});
-
-				room.leave(client.uid);
-				roomIds.push(room.uid);
+				await room.leave(client.uid);
 			} else {
-				const rooms = await this.rooms.getClientRooms(client.uid);
+				const rooms = await this.roomManager.getClientRooms(client.uid);
 
 				for (const room of rooms) {
-					room.leave(client.uid);
-					roomIds.push(room.uid);
+					await room.leave(client.uid);
 				}
 			}
 		} catch (err) {
@@ -170,14 +189,14 @@ export class CollabHandler {
 	 */
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
 		try {
-			const room = await this.rooms.getRoom(message.room);
+			const room = await this.roomManager.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({
 					reason: `No access to room ${message.room} or room does not exist`,
 				});
 
-			if (!room.hasClient(client.uid))
+			if (!(await room.hasClient(client.uid)))
 				throw new InvalidPayloadError({
 					reason: `Not connected to room ${message.room}`,
 				});
@@ -190,23 +209,34 @@ export class CollabHandler {
 				focus = await room.getFocusByUser(client.uid);
 			}
 
+			// Focus field before update to prevent concurrent overwrite conflicts
 			if (!focus || focus !== message.field) {
 				throw new InvalidPayloadError({
 					reason: `Cannot update field ${message.field} without focusing on it first`,
 				});
 			}
 
-			const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update');
+			const knex = getDatabase();
+			const schema = await getSchema();
 
-			if (!isFieldAllowed(allowedFields, message.field))
+			const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
+				knex,
+				schema,
+			});
+
+			if (
+				!isFieldAllowed(allowedFields, message.field) ||
+				!schema.collections[room.collection]?.fields[message.field]
+			) {
 				throw new InvalidPayloadError({
 					reason: `No permission to update field ${message.field} or field does not exist`,
 				});
+			}
 
-			if ('changes' in message) {
-				room.update(client, { [message.field]: message.changes });
+			if (message.changes !== undefined) {
+				await room.update(client, { [message.field]: message.changes });
 			} else {
-				room.unset(client, message.field);
+				await room.unset(client, message.field);
 			}
 		} catch (err) {
 			this.messenger.handleError(client.uid, err);
@@ -218,20 +248,26 @@ export class CollabHandler {
 	 */
 	async onUpdateAll(client: WebSocketClient, message: UpdateAllMessage) {
 		try {
-			const room = await this.rooms.getRoom(message.room);
+			const room = await this.roomManager.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({
 					reason: `No access to room ${message.room} or room does not exist`,
 				});
 
-			if (!room.hasClient(client.uid))
+			if (!(await room.hasClient(client.uid)))
 				throw new InvalidPayloadError({
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			const collection = await room.getCollection();
-			const allowedFields = await verifyPermissions(client.accountability, collection, room.item, 'update');
+			const collection = room.collection;
+			const knex = getDatabase();
+			const schema = await getSchema();
+
+			const allowedFields = await verifyPermissions(client.accountability, collection, room.item, 'update', {
+				knex,
+				schema,
+			});
 
 			for (const key of Object.keys(message.changes ?? {})) {
 				if (!isFieldAllowed(allowedFields, key))
@@ -247,7 +283,7 @@ export class CollabHandler {
 			}
 
 			if (message.changes) {
-				room.update(client, message.changes);
+				await room.update(client, message.changes);
 			}
 		} catch (err) {
 			this.messenger.handleError(client.uid, err);
@@ -259,7 +295,7 @@ export class CollabHandler {
 	 */
 	async onFocus(client: WebSocketClient, message: FocusMessage) {
 		try {
-			const room = await this.rooms.getRoom(message.room);
+			const room = await this.roomManager.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({
@@ -272,13 +308,20 @@ export class CollabHandler {
 				});
 
 			if (message.field) {
-				const allowedReadFields = await verifyPermissions(client.accountability, room.collection, room.item, 'read');
+				const knex = getDatabase();
+				const schema = await getSchema();
+
+				const allowedReadFields = await verifyPermissions(client.accountability, room.collection, room.item, 'read', {
+					knex,
+					schema,
+				});
 
 				const allowedUpdateFields = await verifyPermissions(
 					client.accountability,
 					room.collection,
 					room.item,
 					'update',
+					{ knex, schema },
 				);
 
 				if (!isFieldAllowed(allowedReadFields, message.field) || !isFieldAllowed(allowedUpdateFields, message.field)) {
