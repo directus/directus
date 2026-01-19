@@ -102,7 +102,6 @@ const directusConfig = {
 	REDIS_HOST: '127.0.0.1',
 	REDIS_PORT: '6108',
 	REDIS_ENABLED: 'true',
-	MESSENGER_STORE: 'redis',
 	SYNCHRONIZATION_STORE: 'redis',
 	TUS_ENABLED: 'true',
 	EMAIL_TRANSPORT: 'smtp',
