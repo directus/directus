@@ -26,6 +26,9 @@ export interface LatestDeployment {
 	finished_at?: Date;
 }
 
+/**
+ * Project from deployment provider (e.g. Vercel project)
+ */
 export interface Project {
 	id: string;
 	name: string;
@@ -39,6 +42,9 @@ export interface Project {
 	latest_deployment?: LatestDeployment;
 }
 
+/**
+ * Deployment run
+ */
 export interface Deployment {
 	id: string;
 	project_id: string;
@@ -73,4 +79,40 @@ export interface TriggerResult {
 	deployment_id: string;
 	status: Status;
 	url?: string;
+}
+
+/**
+ * Deployment configuration
+ */
+export interface DeploymentConfig {
+	id: string;
+	provider: ProviderType;
+	credentials: Credentials;
+	options: Options | null;
+	date_created: string;
+	projects?: StoredProject[];
+}
+
+/**
+ * Stored project
+ */
+export interface StoredProject {
+	id: string;
+	deployment: string;
+	external_id: string;
+	name: string;
+	date_created: string;
+}
+
+/**
+ * Stored run
+ */
+export interface StoredRun {
+	id: string;
+	project: string;
+	external_id: string;
+	status: Status;
+	target: string;
+	date_created: string;
+	url: string | null;
 }

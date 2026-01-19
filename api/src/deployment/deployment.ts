@@ -1,4 +1,4 @@
-import type { Credentials, Options, Deployment, Details, Log, Project, TriggerResult } from '../types/index.js';
+import type { Credentials, Deployment, Details, Log, Options, Project, TriggerResult } from '@directus/types';
 
 export abstract class DeploymentDriver<
 	TCredentials extends Credentials = Credentials,

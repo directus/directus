@@ -1,15 +1,6 @@
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import { getCache, getCacheValue, setCacheValue } from '../../cache.js';
-import type {
-	Credentials,
-	Deployment,
-	Details,
-	Log,
-	Options,
-	Project,
-	Status,
-	TriggerResult,
-} from '../../types/deployment.js';
+import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
 import { DeploymentDriver } from '../deployment.js';
 
 const CACHE_TTL = 5000; // 5 seconds

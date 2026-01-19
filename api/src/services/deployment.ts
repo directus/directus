@@ -1,7 +1,14 @@
-import type { AbstractServiceOptions, Item, PrimaryKey, Query } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Credentials,
+	Item,
+	Options,
+	PrimaryKey,
+	ProviderType,
+	Query,
+} from '@directus/types';
 import { getDeploymentDriver } from '../deployment.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
-import type { Credentials, Options, ProviderType } from '../types/index.js';
 import { ItemsService } from './items.js';
 
 export interface DeploymentConfig extends Item {
