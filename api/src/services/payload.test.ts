@@ -460,6 +460,193 @@ describe('Integration Tests', () => {
 				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
 			});
 		});
+
+		describe('processJsonFunctionResults', () => {
+			let service: PayloadService;
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema: { collections: {}, relations: [] },
+				});
+			});
+
+			test('Parses stringified JSON objects from json() function results', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: '{"r":255,"g":0,"b":0}',
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(result[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+			});
+
+			test('Parses stringified JSON arrays from json() function results', () => {
+				const payload = [
+					{
+						id: 1,
+						data_items_json: '[{"name":"item1"},{"name":"item2"}]',
+					},
+				];
+
+				const aliasMap = {
+					data_items_json: 'json(data.items)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(result[0]!.data_items_json).toEqual([{ name: 'item1' }, { name: 'item2' }]);
+			});
+
+			test('Preserves string values that are not JSON objects/arrays', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_name_json: 'John Doe',
+					},
+				];
+
+				const aliasMap = {
+					metadata_name_json: 'json(metadata.name)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(result[0]!.metadata_name_json).toBe('John Doe');
+			});
+
+			test('Preserves already parsed objects', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: { r: 255, g: 0, b: 0 },
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(result[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+			});
+
+			test('Handles malformed JSON gracefully', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_data_json: '{invalid json}',
+					},
+				];
+
+				const aliasMap = {
+					metadata_data_json: 'json(metadata.data)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				// Should keep the original string value when parsing fails
+				expect(result[0]!.metadata_data_json).toBe('{invalid json}');
+			});
+
+			test('Does nothing when aliasMap is empty', () => {
+				const payload = [
+					{
+						id: 1,
+						name: 'test',
+					},
+				];
+
+				const result = service.processJsonFunctionResults(payload, {});
+
+				expect(result).toEqual(payload);
+			});
+
+			test('Only processes fields from json() functions', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: '{"r":255,"g":0,"b":0}',
+						date_created_year: '2024',
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+					date_created_year: 'year(date_created)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				// JSON field should be parsed
+				expect(result[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+				// Non-JSON function field should remain unchanged
+				expect(result[0]!.date_created_year).toBe('2024');
+			});
+
+			test('Handles multiple json() fields in a single payload', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: '{"r":255,"g":0,"b":0}',
+						data_settings_json: '{"theme":"dark","locale":"en"}',
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+					data_settings_json: 'json(data.settings)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(result[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+				expect(result[0]!.data_settings_json).toEqual({ theme: 'dark', locale: 'en' });
+			});
+
+			test('Handles null values', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: null,
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(result[0]!.metadata_color_json).toBeNull();
+			});
+
+			test('Parses numeric strings as strings, not numbers', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_value_json: '123',
+					},
+				];
+
+				const aliasMap = {
+					metadata_value_json: 'json(metadata.value)',
+				};
+
+				const result = service.processJsonFunctionResults(payload, aliasMap);
+
+				// Numeric strings should remain as strings since parseJSON returns primitives
+				expect(result[0]!.metadata_value_json).toBe('123');
+			});
+		});
 	});
 });
 

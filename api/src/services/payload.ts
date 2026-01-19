@@ -248,6 +248,10 @@ export class PayloadService {
 		this.processGeometries(fieldEntries, processedPayload, action);
 		this.processDates(fieldEntries, processedPayload, action, aliasMap, aggregate);
 
+		if (action === 'read') {
+			this.processJsonFunctionResults(processedPayload, aliasMap);
+		}
+
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
@@ -347,6 +351,49 @@ export class PayloadService {
 			for (const payload of payloads) {
 				if (payload[name]) {
 					payload[name] = process(payload[name]);
+				}
+			}
+		}
+
+		return payloads;
+	}
+
+	/**
+	 * When accessing JSON paths that contain objects or arrays, certain databases
+	 * (PostgreSQL, MySQL, SQLite, MSSQL, Oracle) return stringified JSON.
+	 * This method parses those stringified values back into proper JavaScript objects/arrays.
+	 */
+	processJsonFunctionResults<T extends Partial<Record<string, any>>[]>(
+		payloads: T,
+		aliasMap: Record<string, string> = {},
+	): T {
+		// Find all fields that came from json() function calls
+		const jsonFunctionFields = Object.entries(aliasMap).filter(([_alias, originalField]) => {
+			return originalField.startsWith('json(') && originalField.endsWith(')');
+		});
+
+		if (jsonFunctionFields.length === 0) return payloads;
+
+		// Parse stringified JSON values for all affected fields
+		for (const [aliasField] of jsonFunctionFields) {
+			for (const payload of payloads) {
+				const value = payload[aliasField];
+
+				// Only parse if the value is a string (databases return objects/arrays as strings)
+				if (typeof value === 'string') {
+					try {
+						// Try to parse as JSON
+						const parsed = parseJSON(value);
+
+						// Only replace the value if it was actually JSON (object or array)
+						// This preserves actual string values that happen to be in JSON paths
+						if (typeof parsed === 'object' && parsed !== null) {
+							payload[aliasField] = parsed;
+						}
+					} catch {
+						// If parsing fails, keep the original string value
+						// This is expected for actual string values in the JSON path
+					}
 				}
 			}
 		}
