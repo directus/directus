@@ -2,6 +2,7 @@
  * Parses json(field.path.to.value) into components
  * @example json(metadata.color) → { field: 'metadata', path: '.color' }
  * @example json(data.items[0].name) → { field: 'data', path: '.items[0].name' }
+ * @example json(data[0].name) → { field: 'data', path: '[0].name' }
  */
 export function parseJsonFunction(functionString: string): { field: string; path: string } {
 	if (!functionString.startsWith('json(') || !functionString.endsWith(')')) {
@@ -15,15 +16,29 @@ export function parseJsonFunction(functionString: string): { field: string; path
 		throw new Error('Invalid json() syntax');
 	}
 
-	// Split on first dot to separate field from path
+	// Split on first dot or bracket to separate field from path
 	const firstDotIndex = content.indexOf('.');
+	const firstBracketIndex = content.indexOf('[');
 
-	if (firstDotIndex === -1 || firstDotIndex === 0) {
+	// Determine which delimiter comes first (or if only one exists)
+	let splitIndex: number;
+
+	if (firstDotIndex === -1 && firstBracketIndex === -1) {
+		throw new Error('Invalid json() syntax');
+	} else if (firstDotIndex === -1) {
+		splitIndex = firstBracketIndex;
+	} else if (firstBracketIndex === -1) {
+		splitIndex = firstDotIndex;
+	} else {
+		splitIndex = Math.min(firstDotIndex, firstBracketIndex);
+	}
+
+	if (splitIndex === 0) {
 		throw new Error('Invalid json() syntax');
 	}
 
 	return {
-		field: content.substring(0, firstDotIndex),
-		path: content.substring(firstDotIndex), // Keeps the leading dot
+		field: content.substring(0, splitIndex),
+		path: content.substring(splitIndex), // Keeps the leading dot or bracket
 	};
 }
