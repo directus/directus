@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { isSystemCollection } from '@directus/system-data';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import api from '@/api';
 import VDrawer from '@/components/v-drawer.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -7,12 +11,8 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { i18n } from '@/lang';
 import { getItemRoute } from '@/utils/get-route';
 import { userName } from '@/utils/user-name';
-import UserPopover from '@/views/private/components/user-popover.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { isSystemCollection } from '@directus/system-data';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import UserPopover from '@/views/private/components/user-popover.vue';
 
 type ActivityRecord = {
 	user: {

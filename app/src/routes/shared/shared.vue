@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
+import { Share } from '@directus/types';
+import { useHead } from '@unhead/vue';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import ShareItem from './components/share-item.vue';
 import api, { RequestError } from '@/api';
 import { login, logout } from '@/auth';
 import VButton from '@/components/v-button.vue';
@@ -12,14 +20,6 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { getItemRoute } from '@/utils/get-route';
 import SharedView from '@/views/shared/shared-view.vue';
-import { useCollection } from '@directus/composables';
-import { useAppStore } from '@directus/stores';
-import { Share } from '@directus/types';
-import { useHead } from '@unhead/vue';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
-import ShareItem from './components/share-item.vue';
 
 type ShareInfo = Pick<
 	Share,

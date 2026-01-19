@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ref, computed, nextTick, defineComponent } from 'vue';
 import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { computed, defineComponent, nextTick, ref } from 'vue';
 import { z } from 'zod';
-import { defineTool, toStatic, type ToolDefinition } from './define-tool';
+import { defineTool, type ToolDefinition, toStatic } from './define-tool';
 
 const registerLocalTool = vi.fn();
 const replaceLocalTool = vi.fn();

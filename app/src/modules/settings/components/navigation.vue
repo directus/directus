@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VChip from '@/components/v-chip.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -10,9 +13,6 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import { DEFAULT_REPORT_BUG_URL, DEFAULT_REPORT_FEATURE_URL } from '@/constants.js';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Link = {
 	icon: string;
@@ -72,13 +72,11 @@ const links = computed<Link[][]>(() => [
 			name: t('settings_translations'),
 			to: `/settings/translations`,
 		},
-		info.value.mcp_enabled
-			? {
-					icon: 'smart_toy',
-					name: t('settings_ai'),
-					to: `/settings/ai`,
-				}
-			: undefined,
+		{
+			icon: 'smart_toy',
+			name: t('settings_ai'),
+			to: `/settings/ai`,
+		},
 	].filter((link) => link) as Link[],
 	[
 		{

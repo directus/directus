@@ -264,7 +264,7 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(id, { transformationParams, acceptFormat }, range, true);
 
-		const filename = req.params['filename'] ?? file.filename_download;
+		const filename = req.params['filename'] ?? file.filename_download ?? file.id;
 		res.attachment(filename);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');

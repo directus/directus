@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{

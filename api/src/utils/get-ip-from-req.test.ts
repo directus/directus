@@ -1,5 +1,5 @@
-import { useEnv } from '@directus/env';
 import type { IncomingMessage } from 'http';
+import { useEnv } from '@directus/env';
 import { describe, expect, test, vi } from 'vitest';
 import { getIPFromReq } from './get-ip-from-req.js';
 

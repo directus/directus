@@ -1,6 +1,6 @@
-import type { Field, Relation } from '@directus/types';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { Field, Relation } from '@directus/types';
 import { z } from 'zod';
 import { FieldsService } from '../../..//services/fields.js';
 import { CollectionsService } from '../../../services/collections.js';

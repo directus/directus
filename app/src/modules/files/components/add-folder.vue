@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -10,8 +12,6 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import { useFolders } from '@/composables/use-folders';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	parent?: string;

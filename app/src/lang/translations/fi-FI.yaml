@@ -67,7 +67,6 @@ create_role: Luo rooli
 create_user: Luo käyttäjä
 message: Viesti
 delete_panel: Poista paneeli
-create_webhook: Luo webhook
 invite_users: Kutsu käyttäjiä
 invite: Kutsu
 email_already_invited: Sähköposti "{email}" on jo kutsuttu
@@ -468,8 +467,6 @@ file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'
 no_files_copy: Täällä ei ole tiedostoja.
 user_count: 'Ei käyttäjiä | Yksi käyttäjä | {count} käyttäjää'
 no_users_copy: Tässä roolissa ei ole vielä käyttäjiä.
-webhooks_count: 'Ei webhookkeja | Yksi webhookki | {count} webhookkia'
-no_webhooks_copy: Webhookeja ei ole vielä määritelty. Aloita luomalla sellainen alapuolella.
 no_notifications: Ei ilmoituksia
 no_notifications_copy: Olet perillä kaikesta!
 activity_log: Tapahtumaloki
@@ -498,7 +495,6 @@ action: Toiminto
 ip_address: IP-osoite
 user_agent: Asiakasohjelma
 origin: Alkuperä
-webhooks: Webhookit
 decimals: Desimaalit
 value_decimals: Arvon desimaalit
 min_value: Minimiarvo
@@ -867,7 +863,6 @@ editing_in_batch: 'Muokataan {count} kohdetta erässä'
 no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
 settings_project: Asetukset
-settings_webhooks: Webhookit
 settings_flows: Toiminnot
 settings_presets: Kirjainmerkit
 settings_translations: Käännökset
@@ -919,7 +914,6 @@ directus_collection:
   directus_sessions: Käyttäjän istunnon tiedot
   directus_settings: Projektin konfiguraation asetukset
   directus_users: Alustan järjestelmäkäyttäjät
-  directus_webhooks: Konfiguraatio tapahtumapohjaisille HTTP-pyynnöille
 fields:
   directus_activity:
     item: Kohteen ensisijainen avain
@@ -1046,17 +1040,6 @@ fields:
     users: Käyttäjät roolissa
   directus_policies:
     description: Kuvaus
-  directus_webhooks:
-    name: Nimi
-    method: Metodi
-    status: Tila
-    data: Tiedot
-    header: Ylätunniste
-    value: Arvo
-    headers: Pyynnön otsikkotiedot
-    triggers: Laukaisijat
-    actions: Toiminnot
-    collections: Kokoelmat
 field_options:
   directus_settings:
     project_name_placeholder: Oma projekti...
@@ -1139,19 +1122,6 @@ field_options:
     status_dropdown_suspended: Keskeytetty
     status_dropdown_archived: Arkistoitu
     token: Syötä suojatun pääsyn tunniste...
-  directus_webhooks:
-    status_options_active: Aktiivinen
-    status_options_inactive: Ei käytössä
-    data_label: Lähetä tapahtuman tiedot
-    triggers_divider: Laukaisijat
-    actions_create: Luo
-    actions_update: Päivitä
-    actions_delete: Poista
-    actions_login: Kirjaudu
-    headers:
-      header: Otsikko
-      value: Arvo
-      add: Lisää otsikko
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 no_value: Ei arvoa
 do_nothing: Älä tee mitään
@@ -1185,7 +1155,6 @@ referential_action_no_action: Estä poisto
 choose_action: Valitse toiminto
 continue_label: Jatka
 editing_role: '{role} rooli'
-creating_webhook: Luodaan webhook
 default_label: Oletus
 delete_label: Poista
 delete_are_you_sure: >-

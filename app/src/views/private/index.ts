@@ -2,3 +2,4 @@ import PrivateViewHeaderBarActionButton from './private-view/components/private-
 import PrivateView from './private-view/components/private-view.vue';
 
 export { PrivateView, PrivateViewHeaderBarActionButton };
+export default PrivateView;
