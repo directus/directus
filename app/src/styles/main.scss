@@ -26,8 +26,6 @@ body.dark {
 /* Fix: split-pane resize overlay blocks native scrollbar */
 .sp-divider.sp-horizontal .start {
 	pointer-events: none;
-}
-/* vue split panel fix */
-.sp-divider.sp-horizontal .start {
 	left: 8px;
 }
+
