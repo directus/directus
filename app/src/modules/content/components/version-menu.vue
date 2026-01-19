@@ -198,7 +198,7 @@ function useRenameDialog() {
 		try {
 			const updates = {
 				key: newVersionKey.value,
-				name: isCurrentVersionGlobal.value ? null : newVersionName.value,
+				name: isVersionKeyGlobal(newVersionKey.value) ? null : newVersionName.value,
 			};
 
 			await api.patch(`/versions/${currentVersion.value.id}`, updates);
@@ -303,8 +303,8 @@ function useGlobalVersions() {
 		return isVersionNew(version) ? createVersionsAllowed.value : readVersionsAllowed.value;
 	}
 
-	function isVersionKeyGlobal(key: ContentVersion['key']) {
-		return versions.value.find((version) => version.key === key)?.type === 'global';
+	function isVersionKeyGlobal(key: ContentVersion['key'] | null) {
+		return key !== null && versions.value.find((version) => version.key === key)?.type === 'global';
 	}
 
 	function isVersionNew(version: ContentVersionMaybeNew | null) {
@@ -444,6 +444,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 								autofocus
 								trim
 								:max-length="255"
+								:disabled="isVersionKeyGlobal(newVersionKey)"
 							/>
 						</div>
 
@@ -483,6 +484,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 								:placeholder="$t('version_name')"
 								trim
 								:max-length="255"
+								:disabled="isVersionKeyGlobal(newVersionKey)"
 							/>
 						</div>
 						<div class="field">
