@@ -933,18 +933,17 @@ describe('Collaborative Editing: Core', () => {
 			await ws2.getMessages(1); // Drain INIT
 			await ws1.getMessages(1); // Drain JOIN
 
-			// Action
 			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
-			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Val A' });
-			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: null }); // Release
+			await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'focus' && msg.field === 'title');
 
-			const ws2Msgs = await ws2.getMessages(3);
-			expect(ws2Msgs).toContainEqual(expect.objectContaining({ action: 'update', changes: 'Val A' }));
-			expect(ws2Msgs).toContainEqual(expect.objectContaining({ action: 'focus', field: null }));
+			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Val A' });
+			await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'update' && msg.changes === 'Val A');
+
+			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: null }); // Release
+			await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'focus' && msg.field === null);
 
 			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 			await ws2.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Val B' });
-
 			await waitForMatchingMessage(ws1, (msg: any) => msg.action === 'update' && msg.changes === 'Val B');
 
 			// Assert
