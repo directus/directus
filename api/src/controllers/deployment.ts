@@ -10,7 +10,7 @@ import { DeploymentProjectsService } from '../services/deployment-projects.js';
 import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
 import { MetaService } from '../services/meta.js';
-import { DEPLOYMENT_PROVIDER_TYPES, type ProviderType } from '../types/index.js';
+import { DEPLOYMENT_PROVIDER_TYPES, type ProviderType } from '@directus/types';
 import asyncHandler from '../utils/async-handler.js';
 import { transaction } from '../utils/transaction.js';
 

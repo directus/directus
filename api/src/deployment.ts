@@ -1,4 +1,4 @@
-import type { Credentials, Options, ProviderType } from './types/index.js';
+import type { Credentials, Options, ProviderType } from '@directus/types';
 import type { DeploymentDriver } from './deployment/deployment.js';
 import { VercelDriver } from './deployment/drivers/index.js';
 
