@@ -617,6 +617,38 @@ describe('room', () => {
 		expect(updatedChanges).toEqual({ title: 'Pending' }); // 'stale' should be removed
 	});
 
+	test('handles type mismatch in primary keys during external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const itemStr = '15';
+		const itemNum = 15;
+		const uid = getRoomHash('coll', itemStr, null);
+		const room = new Room(uid, 'coll', itemStr, null, {}, mockMessenger);
+
+		await room.join(clientA);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: itemNum, title: 'Updated' }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await onUpdateHandler({ keys: [itemNum], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'save',
+			}),
+		);
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		await onUpdateHandler({ keys: [99], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
+	});
+
 	test('does not broadcast save action to same user who updated', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		clientA.accountability = { user: 'user-a' } as any;

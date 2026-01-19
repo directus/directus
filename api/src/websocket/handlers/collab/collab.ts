@@ -225,10 +225,14 @@ export class CollabHandler {
 				schema,
 			});
 
-			if (!isFieldAllowed(allowedFields, message.field))
+			if (
+				!isFieldAllowed(allowedFields, message.field) ||
+				!schema.collections[room.collection]?.fields[message.field]
+			) {
 				throw new InvalidPayloadError({
 					reason: `No permission to update field ${message.field} or field does not exist`,
 				});
+			}
 
 			if (message.changes !== undefined) {
 				await room.update(client, { [message.field]: message.changes });

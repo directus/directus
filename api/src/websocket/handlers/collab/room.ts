@@ -172,7 +172,7 @@ export class Room {
 			const { accountability } = context;
 
 			// Skip updates for different items (singletons have item=null)
-			if (item !== null && !keys.includes(item)) return;
+			if (item !== null && !keys.some((key) => String(key) === item)) return;
 
 			try {
 				const sudoService = getService(collection, { schema: await getSchema() });
@@ -206,7 +206,7 @@ export class Room {
 			const { keys } = meta as { keys: string[] };
 
 			// Skip deletions for different items (singletons have item=null)
-			if (item !== null && !keys.includes(item)) return;
+			if (item !== null && !keys.some((key) => String(key) === item)) return;
 
 			this.sendAll({
 				action: ACTION.SERVER.DELETE,

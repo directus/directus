@@ -291,6 +291,36 @@ describe('CollabHandler', () => {
 			expect(error.extensions['reason']).toMatch(/No permission to update field title/);
 		});
 
+		test('rejects if field does not exist in schema even if permission allows', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				getFocusByUser: vi.fn().mockResolvedValue('random_field'),
+				collection: 'articles',
+				item: 1,
+			};
+
+			vi.mocked(verifyPermissions).mockResolvedValue(['random_field']);
+
+			vi.mocked(getSchema).mockResolvedValue({
+				collections: {
+					articles: { fields: { title: {} } },
+				},
+			} as any);
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await handler.onUpdate(mockClient, {
+				action: 'update',
+				room: 'room-uid',
+				field: 'random_field',
+				changes: 'test',
+			} as any);
+
+			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'update');
+			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(error.extensions['reason']).toMatch(/field does not exist/);
+		});
+
 		test('handles error in update gracefully', async () => {
 			const mockRoom = {
 				hasClient: vi.fn().mockResolvedValue(true),

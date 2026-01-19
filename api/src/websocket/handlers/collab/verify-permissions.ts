@@ -24,6 +24,11 @@ export async function verifyPermissions(
 	options: { knex: Knex; schema: SchemaOverview },
 ) {
 	if (!accountability) return [];
+
+	const { schema, knex } = options;
+
+	if (!schema.collections[collection]) return [];
+
 	if (accountability.admin) return ['*'];
 
 	const cached = permissionCache.get(accountability, collection, String(item), action);
@@ -31,8 +36,6 @@ export async function verifyPermissions(
 
 	// Prevent caching stale permissions if invalidation occurs during async steps
 	const startInvalidationCount = permissionCache.getInvalidationCount();
-
-	const { schema, knex } = options;
 
 	const service = getService(collection, { schema, knex, accountability });
 
