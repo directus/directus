@@ -1,3 +1,4 @@
+import { sleep } from '@utils/sleep';
 import { createClient } from 'graphql-ws';
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query';
 import request, { type Response } from 'supertest';
@@ -33,6 +34,47 @@ export async function requestGraphQL(
 	if (options?.cookies) req.set('Cookie', options.cookies);
 
 	return await req;
+}
+
+export function calculateMessageCount(
+	uid: WebSocketUID | undefined,
+	messages: Record<WebSocketUID, any[]>,
+	readIndexes: Record<WebSocketUID, number>,
+	messagesDefault: any[],
+	readIndexDefault: number,
+) {
+	if (uid) {
+		const index = readIndexes[uid] ?? 0;
+		return (messages[uid]?.length ?? 0) - index;
+	} else {
+		return messagesDefault.length - readIndexDefault;
+	}
+}
+
+export async function waitForMatchingMessage(
+	ws: { getUnreadMessageCount: () => number; getMessages: (count: number) => Promise<WebSocketResponse[] | undefined> },
+	matcher: (message: WebSocketResponse) => boolean,
+	timeout = 5000,
+) {
+	const start = Date.now();
+
+	while (Date.now() - start < timeout) {
+		const count = ws.getUnreadMessageCount();
+
+		if (count > 0) {
+			const messages = await ws.getMessages(count);
+
+			if (messages) {
+				for (const message of messages) {
+					if (matcher(message)) return message;
+				}
+			}
+		}
+
+		await sleep(50);
+	}
+
+	throw new Error('Timeout waiting for matching message');
 }
 
 export function createWebSocketConn(host: string, config?: WebSocketOptions) {
@@ -163,6 +205,10 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		}
 	};
 
+	const getUnreadMessageCount = (uid?: WebSocketUID) => {
+		return calculateMessageCount(uid, messages, readIndexes, messagesDefault, readIndexDefault);
+	};
+
 	const sendMessage = async (
 		message: Record<string, any>,
 		options?: {
@@ -242,7 +288,16 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		return;
 	});
 
-	return { conn, waitForState, getMessages, getMessageCount, sendMessage, subscribe, unsubscribe };
+	return {
+		conn,
+		waitForState,
+		getMessages,
+		getMessageCount,
+		getUnreadMessageCount,
+		sendMessage,
+		subscribe,
+		unsubscribe,
+	};
 }
 
 export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
@@ -403,6 +458,10 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		}
 	};
 
+	const getUnreadMessageCount = (uid?: WebSocketUID) => {
+		return calculateMessageCount(uid, messages, readIndexes, messagesDefault, readIndexDefault);
+	};
+
 	const subscribe = async (options: WebSocketSubscriptionOptionsGql) => {
 		const targetMessages = options.uid ? (messages[options.uid] ?? (messages[options.uid] = [])) : messagesDefault;
 		const subscriptionKey = `${options.collection}_mutated`;
@@ -448,5 +507,13 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		}
 	};
 
-	return { client, getMessages, getMessageCount, subscribe, unsubscribe, waitForState };
+	return {
+		client,
+		getMessages,
+		getMessageCount,
+		getUnreadMessageCount,
+		subscribe,
+		unsubscribe,
+		waitForState,
+	};
 }
