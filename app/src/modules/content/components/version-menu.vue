@@ -12,6 +12,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -329,9 +330,11 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 				</button>
 			</template>
 
-			<VList>
+			<VList class="version-list">
 				<VListItem class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
-					{{ $t('main_version') }}
+					<VListItemContent>
+						{{ $t('main_version') }}
+					</VListItemContent>
 				</VListItem>
 
 				<VListItem
@@ -342,8 +345,11 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					:disabled="!canAccessGlobalVersion(draftVersion)"
 					@click="switchVersion(draftVersion)"
 				>
-					{{ getVersionDisplayName(draftVersion) }}
-					<span v-if="hasVersionEdits(draftVersion)" class="edits-indicator">•</span>
+					<VListItemContent>
+						<VTextOverflow :text="getVersionDisplayName(draftVersion)" />
+					</VListItemContent>
+
+					<span v-if="hasVersionEdits(draftVersion)" v-tooltip="$t('content_edited')" class="edit-dot" />
 				</VListItem>
 
 				<template v-if="localVersions?.length">
@@ -357,8 +363,11 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 						:active="versionItem.id === currentVersion?.id"
 						@click="switchVersion(versionItem)"
 					>
-						{{ getVersionDisplayName(versionItem) }}
-						<span v-if="hasVersionEdits(versionItem)" class="edits-indicator">•</span>
+						<VListItemContent>
+							<VTextOverflow :text="getVersionDisplayName(versionItem)" />
+						</VListItemContent>
+
+						<span v-if="hasVersionEdits(versionItem)" v-tooltip="$t('content_edited')" class="edit-dot" />
 					</VListItem>
 				</template>
 
@@ -366,7 +375,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					<VDivider />
 
 					<VListItem clickable @click="createDialogActive = true">
-						{{ $t('create_version') }}
+						<VListItemContent>{{ $t('create_version') }}</VListItemContent>
 					</VListItem>
 				</template>
 
@@ -379,11 +388,11 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 						clickable
 						@click="comparisonModalActive = true"
 					>
-						{{ $t('promote_version') }}
+						<VListItemContent>{{ $t('promote_version') }}</VListItemContent>
 					</VListItem>
 
 					<VListItem v-if="updateVersionsAllowed && !isCurrentVersionGlobal" clickable @click="openRenameDialog">
-						{{ $t('rename_version') }}
+						<VListItemContent>{{ $t('rename_version') }}</VListItemContent>
 					</VListItem>
 
 					<VListItem
@@ -393,7 +402,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 						clickable
 						@click="deleteDialogActive = true"
 					>
-						{{ $t(isCurrentVersionGlobal ? 'discard_changes' : 'delete_version') }}
+						<VListItemContent>{{ $t(isCurrentVersionGlobal ? 'discard_changes' : 'delete_version') }}</VListItemContent>
 					</VListItem>
 				</template>
 			</VList>
@@ -561,15 +570,37 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	flex-shrink: 1;
 }
 
+.version-list {
+	--v-list-max-width: 290px;
+}
+
 .version-item {
 	--v-list-item-color-active: var(--foreground-inverted);
 	--v-list-item-background-color-active: var(--theme--primary);
 	--v-list-item-color-active-hover: var(--white);
 	--v-list-item-background-color-active-hover: var(--theme--primary-accent);
 
+	gap: 1em;
+
 	&.active {
 		--focus-ring-color: var(--v-list-item-color-active);
 		--focus-ring-offset: var(--focus-ring-offset-inset);
+	}
+
+	.edit-dot {
+		display: block;
+		inline-size: 8px;
+		block-size: 8px;
+		border-radius: 8px;
+		background-color: var(--theme--primary);
+		transition: inherit;
+	}
+
+	&.active,
+	&:active {
+		.edit-dot {
+			background-color: var(--v-list-item-color-active);
+		}
 	}
 }
 
