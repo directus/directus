@@ -1,6 +1,6 @@
 import { readUser, readUsers, RemoveEventHandler, WebSocketInterface } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
-import { ACTION, ClientID, ClientMessage, Color, ServerMessage } from '@directus/types/collab';
+import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { capitalize, debounce, isEmpty, isEqual, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import sdk from '@/sdk';
@@ -13,7 +13,6 @@ type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>
 type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE }>;
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
-type ErrorMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.ERROR }>;
 
 export type CollabUser = {
 	id: string;
@@ -84,7 +83,7 @@ export function useCollab(
 		receiveLeave,
 		receiveSave,
 		receiveUpdate,
-		receiveError,
+		receiveDelete,
 	};
 
 	onMounted(async () => {
@@ -186,7 +185,7 @@ export function useCollab(
 	}
 
 	eventHandlers.push(
-		sdk.onWebSocket('message', async (message: ServerMessage) => {
+		sdk.onWebSocket('message', async (message: ServerMessage | ServerError) => {
 			if (message.type !== 'collab') return;
 
 			if (
@@ -199,7 +198,17 @@ export function useCollab(
 				return;
 			}
 
-			if (!roomId.value || (message.action !== ACTION.SERVER.ERROR && roomId.value !== message.room)) return;
+			if (message.action === ACTION.SERVER.ERROR) {
+				notify({
+					title: message.message,
+					code: message.code,
+					showReload: true,
+				});
+
+				return;
+			}
+
+			if (message) if (!roomId.value || roomId.value !== message.room) return;
 
 			messageReceivers[`receive${capitalize(message.action)}`](message as any);
 		}),
@@ -224,14 +233,6 @@ export function useCollab(
 			};
 		},
 	};
-
-	async function receiveError(message: ErrorMessage) {
-		notify({
-			title: message.message,
-			code: message.code,
-			showReload: true,
-		});
-	}
 
 	async function receiveInit(message: InitMessage) {
 		roomId.value = message.room;
@@ -286,6 +287,10 @@ export function useCollab(
 		} else {
 			delete edits.value[message.field];
 		}
+	}
+
+	async function receiveDelete() {
+		// TODO
 	}
 
 	async function receiveJoin(message: JoinMessage) {

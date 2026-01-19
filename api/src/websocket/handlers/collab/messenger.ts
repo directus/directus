@@ -3,10 +3,16 @@ import { useEnv } from '@directus/env';
 import { isDirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
-import { ACTION, type BroadcastMessage, type ClientID, COLLAB_BUS, type ServerMessage } from '@directus/types/collab';
+import {
+	ACTION,
+	type BroadcastMessage,
+	type ClientID,
+	COLLAB_BUS,
+	type ServerError,
+	type ServerMessage,
+} from '@directus/types/collab';
 import { useBus } from '../../../bus/index.js';
 import { useLogger } from '../../../logger/index.js';
-import { WebSocketError } from '../../errors.js';
 import { useStore } from './store.js';
 
 const env = useEnv();
@@ -26,8 +32,6 @@ type RegistrySnapshot = {
 };
 
 type RoomMessage = Extract<BroadcastMessage, { type: 'room' }>;
-
-type ErrorMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.ERROR }>;
 
 export type RoomListener = (message: RoomMessage) => void;
 export class Messenger {
@@ -217,7 +221,7 @@ export class Messenger {
 	}
 
 	handleError(client: ClientID, error: unknown) {
-		let message: ErrorMessage;
+		let message: ServerError;
 
 		if (isDirectusError(error)) {
 			message = {
