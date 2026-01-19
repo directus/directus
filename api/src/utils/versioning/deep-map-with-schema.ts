@@ -232,5 +232,5 @@ function isObject(value: unknown): value is Record<string, unknown> {
 }
 
 function isPrimitive(value: unknown) {
-	return (typeof value !== 'object' && typeof value !== 'function') || value === null;
+	return value == null || (typeof value !== 'object' && typeof value !== 'function');
 }
