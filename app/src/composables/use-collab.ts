@@ -3,6 +3,8 @@ import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/typ
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { capitalize, debounce, isEmpty, isEqual, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import sdk from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
@@ -58,6 +60,7 @@ export function useCollab(
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
 	const connected = ref(false);
+	const { t } = useI18n();
 
 	const roomId = ref<string | null>(null);
 	const connectionId = ref<ClientID | null>(null);
@@ -290,7 +293,14 @@ export function useCollab(
 	}
 
 	async function receiveDelete() {
-		// TODO
+		notify({
+			title: t('item_deleted'),
+			persist: true,
+		});
+
+		const router = useRouter();
+
+		router.push(`/content/${item.value ? collection.value : ''}`);
 	}
 
 	async function receiveJoin(message: JoinMessage) {
