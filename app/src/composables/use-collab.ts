@@ -41,6 +41,18 @@ export type CollabContext = {
 
 let wsConnecting: Promise<WebSocketInterface> | false = false;
 
+sdk.onWebSocket('message', async (message: ServerMessage | ServerError) => {
+	if (message.action === ACTION.SERVER.ERROR) {
+		notify({
+			title: message.message,
+			code: message.code,
+			showReload: true,
+		});
+
+		return;
+	}
+});
+
 export function useCollab(
 	collection: Ref<string>,
 	item: Ref<PrimaryKey | null>,
@@ -69,6 +81,7 @@ export function useCollab(
 	const collidingLocalChanges = ref<Item | undefined>();
 	const eventHandlers: RemoveEventHandler[] = [];
 	let largestUpdateOrder = 0;
+	const router = useRouter();
 
 	const collabCollision = computed(() => {
 		if (!collidingLocalChanges.value) return undefined;
@@ -201,16 +214,7 @@ export function useCollab(
 				return;
 			}
 
-			if (message.action === ACTION.SERVER.ERROR) {
-				notify({
-					title: message.message,
-					code: message.code,
-					showReload: true,
-				});
-
-				return;
-			}
-
+			if (message.action === ACTION.SERVER.ERROR) return;
 			if (message) if (!roomId.value || roomId.value !== message.room) return;
 
 			messageReceivers[`receive${capitalize(message.action)}`](message as any);
@@ -297,8 +301,6 @@ export function useCollab(
 			title: t('item_deleted'),
 			persist: true,
 		});
-
-		const router = useRouter();
 
 		router.push(`/content/${item.value ? collection.value : ''}`);
 	}
