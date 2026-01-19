@@ -22,7 +22,7 @@ const config: CacheConfig = localOnly
 
 const store = createCache(config);
 
-export function useStore<Type extends object>(uid: string) {
+export function useStore<Type extends object>(uid: string, defaults?: Partial<Type>) {
 	return <T>(callback: (store: RedisStore<Type>) => Promise<T>) =>
 		store.usingLock(`lock:${uid}`, async () => {
 			return await callback({
@@ -30,7 +30,7 @@ export function useStore<Type extends object>(uid: string) {
 					return store.has(`${uid}:${String(key)}`);
 				},
 				get<K extends keyof Type>(key: K): Promise<Type[K]> {
-					return store.get(`${uid}:${String(key)}`) as Promise<Type[K]>;
+					return (store.get(`${uid}:${String(key)}`) ?? defaults?.[key]) as Promise<Type[K]>;
 				},
 				set(key, value) {
 					return store.set(`${uid}:${String(key)}`, value);

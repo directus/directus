@@ -25,7 +25,7 @@ export class RoomManager {
 	}
 
 	/**
-	 * Create a new collaboration room
+	 * Create a new collaboration room or return an existing one matching collection, item and version.
 	 */
 	async createRoom(collection: string, item: string | null, version: string | null, initialChanges?: Item) {
 		// Deterministic UID ensures clients on same resource join same room
@@ -34,7 +34,7 @@ export class RoomManager {
 		if (!(uid in this.rooms)) {
 			const room = new Room(uid, collection, item, version, initialChanges, this.messenger);
 			this.rooms[uid] = room;
-			await room.init();
+			await room.ensureInitialized();
 			await this.messenger.registerRoom(uid);
 		}
 
@@ -81,6 +81,8 @@ export class RoomManager {
 				return room;
 			});
 		}
+
+		await room?.ensureInitialized();
 
 		return room;
 	}
@@ -137,6 +139,12 @@ type RoomData = {
 	focuses: Record<ClientID, string>;
 };
 
+const roomDefaults = {
+	changes: {},
+	clients: [],
+	focuses: {},
+};
+
 /**
  * Represents a single collaboration room for a specific item
  */
@@ -165,7 +173,7 @@ export class Room {
 		this.version = version;
 		this.initialChanges = initialChanges;
 		this.messenger = messenger;
-		this.store = useStore<RoomData>(uid);
+		this.store = useStore<RoomData>(uid, roomDefaults);
 
 		this.onUpdateHandler = async (meta, context) => {
 			const { keys } = meta as { keys: string[] };
@@ -180,14 +188,13 @@ export class Room {
 				const result = item ? await sudoService.readOne(item) : await sudoService.readSingleton({});
 
 				const clients = await this.store(async (store) => {
-					await this.ensureInitialized(store);
-					let changes = await this.getChanges(store);
+					let changes = await store.get('changes');
 
 					changes = Object.fromEntries(Object.entries(changes).filter(([key]) => key in result));
 
 					await store.set('changes', changes);
 
-					return await this.getClients(store);
+					return await store.get('clients');
 				});
 
 				for (const client of clients) {
@@ -221,59 +228,53 @@ export class Room {
 	}
 
 	/**
-	 * Initialize the room's state in shared memory
-	 */
-	async init() {
-		return await this.store((s) => this.ensureInitialized(s));
-	}
-
-	/**
 	 * Ensures that foundational room state (metadata) exists in shared memory even after restarts
 	 */
-	private async ensureInitialized(store: any) {
-		if (await store.has('uid')) return;
+	async ensureInitialized() {
+		this.store(async (store) => {
+			if (await store.has('uid')) return;
 
-		await store.set('uid', this.uid);
-		await store.set('collection', this.collection);
-		await store.set('item', this.item);
-		await store.set('version', this.version);
-		await store.set('changes', this.initialChanges ?? {});
-		await store.set('clients', []);
-		await store.set('focuses', {});
+			await store.set('uid', this.uid);
+			await store.set('collection', this.collection);
+			await store.set('item', this.item);
+			await store.set('version', this.version);
+			await store.set('changes', this.initialChanges ?? {});
+			await store.set('clients', []);
+			await store.set('focuses', {});
+		});
 	}
 
-	async getClients(store?: any): Promise<RoomClient[]> {
-		if (store) return (await store.get('clients')) ?? [];
-		return await this.store((s) => this.getClients(s));
+	async getClients() {
+		return await this.store((store) => store.get('clients'));
 	}
 
-	async getFocuses(store?: any): Promise<Record<ClientID, string>> {
-		if (store) return (await store.get('focuses')) ?? {};
-		return await this.store((s) => this.getFocuses(s));
+	async getFocuses() {
+		return await this.store((store) => store.get('focuses'));
 	}
 
-	async hasClient(id: ClientID, store?: any) {
-		const clients = await this.getClients(store);
-		return clients.some((c: RoomClient) => c.uid === id);
+	async hasClient(id: ClientID) {
+		return await this.store(async (store) => {
+			const clients = await store.get('clients');
+
+			return clients.findIndex((c) => c.uid === id) !== -1;
+		});
 	}
 
-	async getFocusByUser(id: ClientID, store?: any) {
-		const focuses = await this.getFocuses(store);
-		return focuses[id];
+	async getFocusByUser(id: ClientID) {
+		return await this.store(async (store) => (await store.get('focuses'))[id]);
 	}
 
-	async getFocusByField(field: string, store?: any) {
-		const focuses = await this.getFocuses(store);
-		return Object.entries(focuses).find(([_, f]) => f === field)?.[0];
-	}
+	async getFocusByField(field: string) {
+		return await this.store(async (store) => {
+			const focuses = await store.get('focuses');
 
-	async getChanges(store?: any): Promise<Item> {
-		if (store) return (await store.get('changes')) ?? {};
-		return await this.store((s) => this.getChanges(s));
+			return Object.entries(focuses).find(([_, f]) => f === field)?.[0];
+		});
 	}
 
 	/**
-	 * Join the room
+	 * Client requesting to join a room. If the client hasn't entered the room already, add a new client.
+	 * Otherwise all users just will be informed again that the user has joined.
 	 */
 	async join(client: WebSocketClient) {
 		this.messenger.addClient(client);
@@ -281,31 +282,28 @@ export class Room {
 		let added = false;
 		let clientColor: Color | undefined;
 
-		await this.store(async (store) => {
-			await this.ensureInitialized(store);
+		if (!(await this.hasClient(client.uid)))
+			await this.store(async (store) => {
+				const clients = await store.get('clients');
+				added = true;
 
-			if (await this.hasClient(client.uid, store)) return;
+				const existingColors = clients.map((c) => c.color);
+				const colorsAvailable = COLORS.filter((color) => !existingColors.includes(color));
 
-			const clients = await this.getClients(store);
-			added = true;
+				if (colorsAvailable.length === 0) {
+					colorsAvailable.push(...COLORS);
+				}
 
-			const existingColors = clients.map((c) => c.color);
-			const colorsAvailable = COLORS.filter((color) => !existingColors.includes(color));
+				clientColor = colorsAvailable[random(colorsAvailable.length - 1)]!;
 
-			if (colorsAvailable.length === 0) {
-				colorsAvailable.push(...COLORS);
-			}
+				clients.push({
+					uid: client.uid,
+					accountability: client.accountability!,
+					color: clientColor,
+				});
 
-			clientColor = colorsAvailable[random(colorsAvailable.length - 1)]!;
-
-			clients.push({
-				uid: client.uid,
-				accountability: client.accountability!,
-				color: clientColor,
+				await store.set('clients', clients);
 			});
-
-			await store.set('clients', clients);
-		});
 
 		if (added && clientColor) {
 			await this.sendExcluding(
@@ -319,13 +317,13 @@ export class Room {
 			);
 		}
 
-		const { changes, focuses, clients } = (await this.store(async (store) => {
+		const { changes, focuses, clients } = await this.store(async (store) => {
 			return {
-				changes: await this.getChanges(store),
-				focuses: await this.getFocuses(store),
-				clients: await this.getClients(store),
+				changes: await store.get('changes'),
+				focuses: await store.get('focuses'),
+				clients: await store.get('clients'),
 			};
-		})) as { changes: Item; focuses: Record<ClientID, string>; clients: RoomClient[] };
+		});
 
 		const schema = await getSchema();
 		const knex = getDatabase();
@@ -364,17 +362,17 @@ export class Room {
 	async leave(uid: ClientID) {
 		this.messenger.removeClient(uid);
 
-		await this.store(async (store) => {
-			if (!(await this.hasClient(uid, store))) return;
+		if (!(await this.hasClient(uid))) return;
 
-			const clients = await this.getClients(store);
+		await this.store(async (store) => {
+			const clients = await store.get('clients');
 
 			await store.set(
 				'clients',
 				clients.filter((c: RoomClient) => c.uid !== uid),
 			);
 
-			const focuses = await this.getFocuses(store);
+			const focuses = await store.get('focuses');
 
 			if (uid in focuses) {
 				delete focuses[uid];
@@ -393,13 +391,12 @@ export class Room {
 	 */
 	async update(sender: WebSocketClient, changes: Record<string, unknown>) {
 		const { clients } = await this.store(async (store) => {
-			await this.ensureInitialized(store);
-			const existing_changes = await this.getChanges(store);
+			const existing_changes = await store.get('changes');
 			Object.assign(existing_changes, changes);
 			await store.set('changes', existing_changes);
 
 			return {
-				clients: await this.getClients(store),
+				clients: await store.get('clients'),
 			};
 		});
 
@@ -434,12 +431,11 @@ export class Room {
 	 */
 	async unset(sender: PermissionClient, field: string) {
 		const clients = await this.store(async (store) => {
-			await this.ensureInitialized(store);
-			const changes = await this.getChanges(store);
+			const changes = await store.get('changes');
 			delete changes[field];
 			await store.set('changes', changes);
 
-			return await this.getClients(store);
+			return await store.get('clients');
 		});
 
 		const schema = await getSchema();
@@ -467,9 +463,8 @@ export class Room {
 	 */
 	async focus(sender: PermissionClient, field: string | null): Promise<boolean> {
 		const result = await this.store(async (store) => {
-			await this.ensureInitialized(store);
-			const focuses = await this.getFocuses(store);
-			const clients = await this.getClients(store);
+			const focuses = await store.get('focuses');
+			const clients = await store.get('clients');
 
 			if (field === null) {
 				const focusedField = focuses[sender.uid];
@@ -542,7 +537,7 @@ export class Room {
 	async close(force = false) {
 		const closed = await this.store(async (store) => {
 			if (!force) {
-				const clients = await this.getClients(store);
+				const clients = await store.get('clients');
 				if (clients.length > 0) return false;
 			}
 
