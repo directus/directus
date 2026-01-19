@@ -29,8 +29,8 @@ export function useStore<Type extends object>(uid: string, defaults?: Partial<Ty
 				has(key) {
 					return store.has(`${uid}:${String(key)}`);
 				},
-				get<K extends keyof Type>(key: K): Promise<Type[K]> {
-					return (store.get(`${uid}:${String(key)}`) ?? defaults?.[key]) as Promise<Type[K]>;
+				async get<K extends keyof Type>(key: K): Promise<Type[K]> {
+					return ((await store.get(`${uid}:${String(key)}`)) ?? defaults?.[key]) as Promise<Type[K]>;
 				},
 				set(key, value) {
 					return store.set(`${uid}:${String(key)}`, value);

@@ -305,6 +305,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -354,6 +355,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		expect((await room.getClients()).length).toBe(1);
@@ -372,6 +374,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -387,6 +390,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -407,6 +411,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -452,6 +457,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -478,6 +484,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -503,6 +510,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -543,6 +551,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -574,6 +583,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -598,6 +608,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -623,6 +634,7 @@ describe('room', () => {
 		const itemNum = 15;
 		const uid = getRoomHash('coll', itemStr, null);
 		const room = new Room(uid, 'coll', itemStr, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -656,6 +668,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -677,6 +690,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -700,6 +714,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -727,6 +742,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -750,6 +766,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -764,6 +781,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -784,6 +802,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 
@@ -801,6 +820,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -822,6 +842,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -858,6 +879,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -895,6 +917,7 @@ describe('room', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 
 		await room.join(clientA);
 		await room.join(clientB);
@@ -1008,6 +1031,7 @@ describe('room disposal stability', () => {
 		const item = getTestItem();
 		const uid = getRoomHash('coll', item, null);
 		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 
 		await room.join(clientA);

@@ -6,7 +6,6 @@ import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allo
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
-import { handleWebSocketError } from '../../errors.js';
 import { CollabHandler } from './collab.js';
 import { verifyPermissions } from './verify-permissions.js';
 
@@ -56,9 +55,9 @@ describe('CollabHandler', () => {
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'join');
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
 
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toBe('Collaboration is not supported for shares');
 		});
 
@@ -68,9 +67,9 @@ describe('CollabHandler', () => {
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'join');
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
 
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/No permission to access collection/);
 		});
 
@@ -85,9 +84,9 @@ describe('CollabHandler', () => {
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles' } as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'join');
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
 
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toBe('Item id has to be provided for non singleton collections');
 		});
 
@@ -105,9 +104,9 @@ describe('CollabHandler', () => {
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'join');
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
 
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toBe('No permission to access item or it does not exist');
 		});
 
@@ -130,7 +129,7 @@ describe('CollabHandler', () => {
 
 			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('articles', 1, null, undefined);
 			expect(mockRoom.join).toHaveBeenCalledWith(mockClient);
-			expect(handleWebSocketError).not.toHaveBeenCalled();
+			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
 
 		test('creates room and joins client on success (singleton collection)', async () => {
@@ -175,8 +174,8 @@ describe('CollabHandler', () => {
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'invalid-room', field: 'title' } as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'focus');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/room does not exist/);
 		});
 
@@ -186,8 +185,8 @@ describe('CollabHandler', () => {
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'focus');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/Not connected to room/);
 		});
 
@@ -204,8 +203,8 @@ describe('CollabHandler', () => {
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'focus');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/No permission to focus on field/);
 		});
 
@@ -221,8 +220,8 @@ describe('CollabHandler', () => {
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'focus');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/already focused by another user/);
 		});
 
@@ -239,7 +238,7 @@ describe('CollabHandler', () => {
 			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
 
 			expect(mockRoom.focus).toHaveBeenCalledWith(mockClient, 'title');
-			expect(handleWebSocketError).not.toHaveBeenCalled();
+			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
 	});
 
@@ -262,8 +261,8 @@ describe('CollabHandler', () => {
 				changes: 'test',
 			} as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'update');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/without focusing on it first/);
 		});
 
@@ -286,8 +285,8 @@ describe('CollabHandler', () => {
 				changes: 'test',
 			} as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'update');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/No permission to update field title/);
 		});
 
@@ -316,8 +315,8 @@ describe('CollabHandler', () => {
 				changes: 'test',
 			} as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'update');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/field does not exist/);
 		});
 
@@ -340,8 +339,8 @@ describe('CollabHandler', () => {
 			} as any);
 
 			expect(mockRoom.update).toHaveBeenCalledWith(mockClient, { title: 'new value' });
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(Error), 'update');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(Error));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.message).toBe('Update failed');
 		});
 
@@ -364,7 +363,7 @@ describe('CollabHandler', () => {
 			} as any);
 
 			expect(mockRoom.update).toHaveBeenCalledWith(mockClient, { title: 'new value' });
-			expect(handleWebSocketError).not.toHaveBeenCalled();
+			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
 	});
 
@@ -388,8 +387,8 @@ describe('CollabHandler', () => {
 				changes: { title: 'New', secret: 'Hack' },
 			} as any);
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'update');
-			const error = vi.mocked(handleWebSocketError).mock.calls[0]![1] as any;
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
 			expect(error.extensions['reason']).toMatch(/No permission to update field secret/);
 		});
 
@@ -412,7 +411,7 @@ describe('CollabHandler', () => {
 			} as any);
 
 			expect(mockRoom.update).toHaveBeenCalledWith(mockClient, { content: 'Updated' });
-			expect(handleWebSocketError).not.toHaveBeenCalled();
+			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
 	});
 
@@ -448,7 +447,7 @@ describe('CollabHandler', () => {
 
 			await handler.onLeave(mockClient, { action: 'leave', room: 'invalid-room', type: 'collab' });
 
-			expect(handleWebSocketError).toHaveBeenCalledWith(mockClient, expect.any(InvalidPayloadError), 'leave');
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
 		});
 	});
 
