@@ -117,9 +117,8 @@ describe('Collaborative Editing: Core', () => {
 				const errorMsg = await ws.getMessages(1);
 
 				expect(errorMsg![0]).toMatchObject({
-					type: 'join',
-					status: 'error',
-					error: expect.objectContaining({ code: 'INVALID_PAYLOAD' }),
+					action: 'error',
+					code: 'INVALID_PAYLOAD',
 				});
 
 				ws.conn.close();
@@ -475,14 +474,14 @@ describe('Collaborative Editing: Core', () => {
 			}
 
 			// Exactly one client should have received an error
-			const ws1Errors = ws1Msgs.filter((m) => m.status === 'error');
-			const ws2Errors = ws2Msgs.filter((m) => m.status === 'error');
+			const ws1Errors = ws1Msgs.filter((m) => m['action'] === 'error');
+			const ws2Errors = ws2Msgs.filter((m) => m['action'] === 'error');
 
 			const totalErrors = ws1Errors.length + ws2Errors.length;
 			expect(totalErrors).toBe(1);
 
 			const errorMsg = [...ws1Errors, ...ws2Errors][0];
-			expect(errorMsg?.['error']?.message).toContain('already focused');
+			expect(errorMsg?.['message']).toContain('already focused');
 
 			ws1.conn.close();
 			ws2.conn.close();
@@ -939,8 +938,9 @@ describe('Collaborative Editing: Core', () => {
 			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Val A' });
 			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: null }); // Release
 
-			await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'update' && msg.changes === 'Val A');
-			await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'focus' && msg.field === null);
+			const ws2Msgs = await ws2.getMessages(3);
+			expect(ws2Msgs).toContainEqual(expect.objectContaining({ action: 'update', changes: 'Val A' }));
+			expect(ws2Msgs).toContainEqual(expect.objectContaining({ action: 'focus', field: null }));
 
 			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 			await ws2.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Val B' });

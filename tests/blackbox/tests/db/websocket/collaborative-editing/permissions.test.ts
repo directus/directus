@@ -41,9 +41,8 @@ describe('Collaborative Editing: Permissions', () => {
 			const errorMsg = await ws.getMessages(1);
 
 			expect(errorMsg![0]).toMatchObject({
-				type: 'join',
-				status: 'error',
-				error: expect.objectContaining({ code: 'INVALID_PAYLOAD' }),
+				action: 'error',
+				code: 'INVALID_PAYLOAD',
 			});
 
 			ws.conn.close();
