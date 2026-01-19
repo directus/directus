@@ -1076,6 +1076,27 @@ no_url_copy: Please add a URL in the settings.
 invalid_url: Invalid URL
 invalid_url_copy: The specified URL does not match any URL specified in the settings.
 insights: Insights
+deployment: Deployment
+deployment_overview: Overview
+deployment_providers: Deployment Providers
+deployment_provider_vercel: Vercel
+deployment_provider_description: Trigger {provider} deployments from within Directus
+deployment_setup_title: "{provider} Setup"
+deployment_token_notice: Visit your {provider} account settings to create a new token with deployment permissions.
+deployment_token_link: Open {provider} Token Settings
+deployment_token_label: Personal Access Token
+deployment_token_placeholder: Enter your access token...
+deployment_token_hint: This token will be encrypted and stored securely in your Directus configuration
+no_deployment_providers: No Deployment Providers
+no_deployment_providers_copy: Configure a deployment provider in the settings to get started.
+select_provider: Select a Provider
+select_provider_copy: Choose a deployment provider from the sidebar to view your projects.
+no_projects: No Projects
+no_projects_copy: No projects have been selected for this provider.
+no_runs: No Deployment Runs
+no_runs_copy: This project has no deployment history yet.
+deploy: Deploy
+deployment_target: Target
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options

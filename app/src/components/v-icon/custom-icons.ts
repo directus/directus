@@ -16,6 +16,7 @@ import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
 import CustomIconFolderLock from './custom-icons/folder_lock.vue';
 import CustomIconLogout from './custom-icons/logout.vue';
+import CustomIconVercel from './custom-icons/vercel.vue';
 
 export const components: Record<string, any> = {
 	CustomIconDirectus,
@@ -36,4 +37,5 @@ export const components: Record<string, any> = {
 	CustomIconFolderMove,
 	CustomIconFolderLock,
 	CustomIconLogout,
+	CustomIconVercel
 };
