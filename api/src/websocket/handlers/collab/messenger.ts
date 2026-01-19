@@ -1,15 +1,20 @@
 import { randomUUID } from 'crypto';
 import { useEnv } from '@directus/env';
+import { isDirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
-import type { WebSocketClient } from '@directus/types';
-import { type BroadcastMessage, type ClientID, COLLAB_BUS, type ServerMessage } from '@directus/types/collab';
+import { type WebSocketClient, WS_TYPE } from '@directus/types';
+import { ACTION, type BroadcastMessage, type ClientID, COLLAB_BUS, type ServerMessage } from '@directus/types/collab';
 import { useBus } from '../../../bus/index.js';
+import { useLogger } from '../../../logger/index.js';
+import { WebSocketError } from '../../errors.js';
 import { useStore } from './store.js';
 
 type RoomMessage = Extract<BroadcastMessage, { type: 'room' }>;
 type InstanceData = {
 	instances: Record<string, ClientID[]>;
 };
+
+type ErrorMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.ERROR }>;
 
 export type RoomListener = (message: RoomMessage) => void;
 export class Messenger {
@@ -148,5 +153,27 @@ export class Messenger {
 
 	sendClient(client: ClientID, message: Omit<ServerMessage, 'order'>) {
 		this.messenger.publish(COLLAB_BUS, { type: 'send', client, message });
+	}
+
+	handleError(client: ClientID, error: unknown) {
+		let message: ErrorMessage;
+
+		if (isDirectusError(error)) {
+			message = {
+				action: 'error',
+				type: WS_TYPE.COLLAB,
+				code: error.code,
+				message: error.message,
+			};
+		} else {
+			useLogger().error(`WebSocket unhandled exception ${JSON.stringify({ type: WS_TYPE.COLLAB, error })}`);
+			return;
+		}
+
+		this.messenger.publish(COLLAB_BUS, {
+			type: 'send',
+			client,
+			message,
+		});
 	}
 }

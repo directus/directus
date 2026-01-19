@@ -21,6 +21,7 @@ export const ACTION = {
 		SAVE: 'save',
 		UPDATE: 'update',
 		FOCUS: 'focus',
+		ERROR: 'error',
 	},
 } as const;
 
@@ -82,11 +83,18 @@ export type BroadcastMessage =
 	  };
 
 // Messages from server to client
-export type ServerMessage = {
-	type: typeof TYPE.COLLAB;
-	room: string;
-	order: number;
-} & BaseServerMessage;
+export type ServerMessage =
+	| ({
+			type: typeof TYPE.COLLAB;
+			room: string;
+			order: number;
+	  } & BaseServerMessage)
+	| {
+			type: typeof TYPE.COLLAB;
+			action: typeof ACTION.SERVER.ERROR;
+			code: string;
+			message: string;
+	  };
 
 export type UserID = string;
 export type ClientID = string | number;

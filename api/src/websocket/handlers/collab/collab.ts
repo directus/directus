@@ -10,7 +10,6 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
-import { handleWebSocketError } from '../../errors.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
 import { CollabRooms } from './room.js';
@@ -44,7 +43,7 @@ export class CollabHandler {
 				const validMessage = ClientMessage.parse(message);
 				await this[`on${upperFirst(validMessage.action)}`](client, message);
 			} catch (error) {
-				handleWebSocketError(client, error, WS_TYPE.COLLAB);
+				this.messenger.handleError(client.uid, error);
 			}
 		});
 
@@ -127,7 +126,7 @@ export class CollabHandler {
 
 			await room.join(client);
 		} catch (err) {
-			handleWebSocketError(client, err, 'join');
+			this.messenger.handleError(client.uid, err);
 		}
 	}
 
@@ -162,7 +161,7 @@ export class CollabHandler {
 				}
 			}
 		} catch (err) {
-			handleWebSocketError(client, err, 'leave');
+			this.messenger.handleError(client.uid, err);
 		}
 	}
 
@@ -210,7 +209,7 @@ export class CollabHandler {
 				room.unset(client, message.field);
 			}
 		} catch (err) {
-			handleWebSocketError(client, err, 'update');
+			this.messenger.handleError(client.uid, err);
 		}
 	}
 
@@ -251,7 +250,7 @@ export class CollabHandler {
 				room.update(client, message.changes);
 			}
 		} catch (err) {
-			handleWebSocketError(client, err, 'update');
+			this.messenger.handleError(client.uid, err);
 		}
 	}
 
@@ -295,7 +294,7 @@ export class CollabHandler {
 				});
 			}
 		} catch (err) {
-			handleWebSocketError(client, err, 'focus');
+			this.messenger.handleError(client.uid, err);
 		}
 	}
 }

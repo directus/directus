@@ -6,12 +6,14 @@ import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import sdk from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { notify } from '@/utils/notify';
 
 type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>;
 type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>;
 type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE }>;
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
+type ErrorMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.ERROR }>;
 
 export type CollabUser = {
 	id: string;
@@ -82,6 +84,7 @@ export function useCollab(
 		receiveLeave,
 		receiveSave,
 		receiveUpdate,
+		receiveError,
 	};
 
 	onMounted(async () => {
@@ -184,6 +187,8 @@ export function useCollab(
 
 	eventHandlers.push(
 		sdk.onWebSocket('message', async (message: ServerMessage) => {
+			if (message.type !== 'collab') return;
+
 			if (
 				message.action === ACTION.SERVER.INIT &&
 				message.collection === collection.value &&
@@ -194,7 +199,7 @@ export function useCollab(
 				return;
 			}
 
-			if (!roomId.value || roomId.value !== message.room) return;
+			if (!roomId.value || (message.action !== ACTION.SERVER.ERROR && roomId.value !== message.room)) return;
 
 			messageReceivers[`receive${capitalize(message.action)}`](message as any);
 		}),
@@ -219,6 +224,14 @@ export function useCollab(
 			};
 		},
 	};
+
+	async function receiveError(message: ErrorMessage) {
+		notify({
+			title: message.message,
+			code: message.code,
+			showReload: true,
+		});
+	}
 
 	async function receiveInit(message: InitMessage) {
 		roomId.value = message.room;
