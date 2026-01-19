@@ -52,9 +52,12 @@ export function calculateMessageCount(
 }
 
 export async function waitForMatchingMessage(
-	ws: { getUnreadMessageCount: () => number; getMessages: (count: number) => Promise<WebSocketResponse[] | undefined> },
+	ws: {
+		getUnreadMessageCount: () => number;
+		getMessages: (count: number, options?: any) => Promise<WebSocketResponse[] | undefined>;
+	},
 	matcher: (message: WebSocketResponse) => boolean,
-	timeout = 5000,
+	timeout = 10000,
 ) {
 	const start = Date.now();
 
@@ -62,11 +65,14 @@ export async function waitForMatchingMessage(
 		const count = ws.getUnreadMessageCount();
 
 		if (count > 0) {
-			const messages = await ws.getMessages(count);
+			const messages = await ws.getMessages(count, { waitTimeout: 1000, peek: true });
 
 			if (messages) {
-				for (const message of messages) {
-					if (matcher(message)) return message;
+				for (let i = 0; i < messages.length; i++) {
+					if (matcher(messages[i]!)) {
+						await ws.getMessages(i + 1);
+						return messages[i]!;
+					}
 				}
 			}
 		}
@@ -78,7 +84,7 @@ export async function waitForMatchingMessage(
 }
 
 export function createWebSocketConn(host: string, config?: WebSocketOptions) {
-	const defaults = { waitTimeout: 5000 };
+	const defaults = { waitTimeout: 15000 };
 	const parsedHost = host.split('//').slice(1).join('/');
 
 	const conn = new WebSocket(
@@ -100,45 +106,44 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 	) => {
 		const startMs = Date.now();
 
-		const promise = () => {
-			return new Promise(function (resolve, reject) {
-				setTimeout(function () {
-					if (
-						conn.readyState === state &&
-						(conn.readyState !== conn.OPEN || !config?.auth || (config.auth && connectionAuthCompleted))
-					) {
-						return resolve(true);
-					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
-						return promise().then(resolve, reject);
-					} else {
-						let stateName = '';
+		return new Promise(function (resolve, reject) {
+			const check = () => {
+				if (
+					conn &&
+					conn.readyState === state &&
+					(conn.readyState !== conn.OPEN || !config?.auth || (config.auth && connectionAuthCompleted))
+				) {
+					resolve(true);
+				} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
+					setTimeout(check, 5);
+				} else {
+					let stateName = '';
 
-						switch (state) {
-							case WebSocket.CONNECTING:
-								stateName = 'CONNECTING';
-								break;
-							case WebSocket.OPEN:
-								stateName = 'OPEN';
-								break;
-							case WebSocket.CLOSING:
-								stateName = 'CLOSING';
-								break;
-							case WebSocket.CLOSED:
-								stateName = 'CLOSED';
-								break;
-							default:
-								stateName = 'INVALID';
-								break;
-						}
-
-						conn.terminate();
-						return reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
+					switch (state) {
+						case WebSocket.CONNECTING:
+							stateName = 'CONNECTING';
+							break;
+						case WebSocket.OPEN:
+							stateName = 'OPEN';
+							break;
+						case WebSocket.CLOSING:
+							stateName = 'CLOSING';
+							break;
+						case WebSocket.CLOSED:
+							stateName = 'CLOSED';
+							break;
+						default:
+							stateName = 'INVALID';
+							break;
 					}
-				}, 5);
-			});
-		};
 
-		return promise();
+					conn?.terminate();
+					reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
+				}
+			};
+
+			check();
+		});
 	};
 
 	const getMessages = async (
@@ -148,12 +153,13 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			targetState?: WebSocket['readyState'];
 			uid?: WebSocketUID | undefined;
 			startIndex?: number;
+			peek?: boolean;
 		},
 	): Promise<WebSocketResponse[] | undefined> => {
 		const targetMessages = options?.uid ? (messages[options.uid] ?? (messages[options.uid] = [])) : messagesDefault;
 		let startMessageIndex: number;
 
-		if (options?.startIndex) {
+		if (options?.startIndex !== undefined) {
 			startMessageIndex = options.startIndex;
 		} else if (options?.uid) {
 			startMessageIndex = readIndexes[options.uid] ?? 0;
@@ -163,26 +169,34 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 
 		const endMessageIndex = startMessageIndex + messageCount;
 
-		if (options?.uid) {
-			readIndexes[String(options.uid)] = endMessageIndex;
-		} else {
-			readIndexDefault = endMessageIndex;
-		}
+		await waitForState(
+			options?.targetState ?? WebSocket.OPEN,
+			options?.waitTimeout !== undefined ? { waitTimeout: options.waitTimeout } : {},
+		);
 
-		await waitForState(options?.targetState ?? WebSocket.OPEN);
 		const startMs = Date.now();
 
-		const promise = (): Promise<WebSocketResponse[] | undefined> => {
-			return new Promise(function (resolve, reject) {
-				setTimeout(function () {
-					if (targetMessages.length >= endMessageIndex) {
-						resolve(targetMessages.slice(startMessageIndex, endMessageIndex));
-					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
-						return promise().then(resolve, reject);
+		return new Promise(function (resolve, reject) {
+			const check = () => {
+				if (targetMessages.length >= endMessageIndex) {
+					if (!options?.peek) {
+						if (options?.uid) {
+							readIndexes[String(options.uid)] = endMessageIndex;
+						} else {
+							readIndexDefault = endMessageIndex;
+						}
+					}
+
+					resolve(targetMessages.slice(startMessageIndex, endMessageIndex));
+				} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
+					setTimeout(check, 5);
+				} else {
+					if (options?.peek) {
+						resolve(undefined);
 					} else {
 						conn.terminate();
 
-						return reject(
+						reject(
 							new Error(
 								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
 									targetMessages.length - startMessageIndex
@@ -190,11 +204,11 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 							),
 						);
 					}
-				}, 5);
-			});
-		};
+				}
+			};
 
-		return promise();
+			check();
+		});
 	};
 
 	const getMessageCount = (uid?: WebSocketUID) => {
@@ -301,7 +315,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 }
 
 export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
-	const defaults = { waitTimeout: 5000 };
+	const defaults = { waitTimeout: 15000 };
 	const parsedHost = host.split('//').slice(1).join('/');
 	let conn: WebSocket | null;
 	let isConnReady = false;
@@ -356,42 +370,40 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 	) => {
 		const startMs = Date.now();
 
-		const promise = () => {
-			return new Promise(function (resolve, reject) {
-				setTimeout(function () {
-					if (isConnReady && conn && conn.readyState === state) {
-						return resolve(true);
-					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
-						return promise().then(resolve, reject);
-					} else {
-						let stateName = '';
+		return new Promise(function (resolve, reject) {
+			const check = () => {
+				if (isConnReady && conn && conn.readyState === state) {
+					resolve(true);
+				} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
+					setTimeout(check, 5);
+				} else {
+					let stateName = '';
 
-						switch (state) {
-							case WebSocket.CONNECTING:
-								stateName = 'CONNECTING';
-								break;
-							case WebSocket.OPEN:
-								stateName = 'OPEN';
-								break;
-							case WebSocket.CLOSING:
-								stateName = 'CLOSING';
-								break;
-							case WebSocket.CLOSED:
-								stateName = 'CLOSED';
-								break;
-							default:
-								stateName = 'INVALID';
-								break;
-						}
-
-						conn?.terminate();
-						return reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
+					switch (state) {
+						case WebSocket.CONNECTING:
+							stateName = 'CONNECTING';
+							break;
+						case WebSocket.OPEN:
+							stateName = 'OPEN';
+							break;
+						case WebSocket.CLOSING:
+							stateName = 'CLOSING';
+							break;
+						case WebSocket.CLOSED:
+							stateName = 'CLOSED';
+							break;
+						default:
+							stateName = 'INVALID';
+							break;
 					}
-				}, 5);
-			});
-		};
 
-		return promise();
+					conn?.terminate();
+					reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
+				}
+			};
+
+			check();
+		});
 	};
 
 	const getMessages = async (
@@ -416,38 +428,40 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 
 		const endMessageIndex = startMessageIndex + messageCount;
 
-		if (options?.uid) {
-			readIndexes[String(options.uid)] = endMessageIndex;
-		} else {
-			readIndexDefault = endMessageIndex;
-		}
+		await waitForState(
+			options?.targetState ?? WebSocket.OPEN,
+			options?.waitTimeout !== undefined ? { waitTimeout: options.waitTimeout } : {},
+		);
 
-		await waitForState(options?.targetState ?? WebSocket.OPEN);
 		const startMs = Date.now();
 
-		const promise = (): Promise<WebSocketResponse[] | undefined> => {
-			return new Promise(function (resolve, reject) {
-				setTimeout(function () {
-					if (targetMessages.length >= endMessageIndex) {
-						resolve(targetMessages.slice(startMessageIndex, endMessageIndex));
-					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
-						return promise().then(resolve, reject);
+		return new Promise(function (resolve, reject) {
+			const check = () => {
+				if (targetMessages.length >= endMessageIndex) {
+					if (options?.uid) {
+						readIndexes[String(options.uid)] = endMessageIndex;
 					} else {
-						conn?.terminate();
-
-						return reject(
-							new Error(
-								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
-									targetMessages.length - startMessageIndex
-								}/${messageCount})`,
-							),
-						);
+						readIndexDefault = endMessageIndex;
 					}
-				}, 5);
-			});
-		};
 
-		return promise();
+					resolve(targetMessages.slice(startMessageIndex, endMessageIndex));
+				} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
+					setTimeout(check, 5);
+				} else {
+					conn?.terminate();
+
+					reject(
+						new Error(
+							`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
+								targetMessages.length - startMessageIndex
+							}/${messageCount})`,
+						),
+					);
+				}
+			};
+
+			check();
+		});
 	};
 
 	const getMessageCount = (uid?: WebSocketUID) => {

@@ -11,7 +11,11 @@ export const seedDBStructure = () => {
 			await DeleteCollection(vendor, { collection: collectionCollabCore });
 
 			// Create collection
-			await CreateCollection(vendor, { collection: collectionCollabCore, primaryKeyType: 'uuid' });
+			await CreateCollection(vendor, {
+				collection: collectionCollabCore,
+				primaryKeyType: 'uuid',
+				meta: { versioning: true },
+			});
 
 			// Create fields
 			await CreateField(vendor, { collection: collectionCollabCore, field: 'title', type: 'string' });

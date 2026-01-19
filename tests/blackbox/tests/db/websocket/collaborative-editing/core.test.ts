@@ -822,6 +822,28 @@ describe('Collaborative Editing: Core', () => {
 
 			expect(room1).not.toBe(room2);
 
+			const ws1Recorder = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+			const ws2Recorder = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+			await Promise.all([
+				ws1Recorder.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabCore,
+					item: item1Id,
+					version: null,
+				}),
+				ws2Recorder.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabCore,
+					item: item2Id,
+					version: null,
+				}),
+			]);
+
+			await Promise.all([ws1Recorder.getMessages(1), ws2Recorder.getMessages(1)]);
+
 			await ws1.sendMessage({ type: 'collab', action: 'focus', room: room1, field: 'title' });
 			await ws2.sendMessage({ type: 'collab', action: 'focus', room: room2, field: 'title' });
 
@@ -829,6 +851,11 @@ describe('Collaborative Editing: Core', () => {
 			await Promise.all([
 				ws1.sendMessage({ type: 'collab', action: 'update', room: room1, field: 'title', changes: 'Update 1' }),
 				ws2.sendMessage({ type: 'collab', action: 'update', room: room2, field: 'title', changes: 'Update 2' }),
+			]);
+
+			await Promise.all([
+				waitForMatchingMessage(ws1Recorder, (msg: any) => msg.action === 'update' && msg.changes === 'Update 1'),
+				waitForMatchingMessage(ws2Recorder, (msg: any) => msg.action === 'update' && msg.changes === 'Update 2'),
 			]);
 
 			// Assert
@@ -913,6 +940,7 @@ describe('Collaborative Editing: Core', () => {
 			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: null }); // Release
 
 			await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'update' && msg.changes === 'Val A');
+			await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'focus' && msg.field === null);
 
 			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 			await ws2.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Val B' });
