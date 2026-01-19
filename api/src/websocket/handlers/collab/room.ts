@@ -16,7 +16,7 @@ import { verifyPermissions } from './verify-permissions.js';
 /**
  * Store and manage all active collaboration rooms
  */
-export class CollabRooms {
+export class RoomManager {
 	rooms: Record<string, Room> = {};
 	messenger: Messenger;
 

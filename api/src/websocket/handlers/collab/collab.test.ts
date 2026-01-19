@@ -124,11 +124,11 @@ describe('CollabHandler', () => {
 			vi.mocked(getService).mockReturnValue(mockService as any);
 
 			const mockRoom = { join: vi.fn() };
-			vi.mocked(handler.rooms.createRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
 
-			expect(handler.rooms.createRoom).toHaveBeenCalledWith('articles', 1, null, undefined);
+			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('articles', 1, null, undefined);
 			expect(mockRoom.join).toHaveBeenCalledWith(mockClient);
 			expect(handleWebSocketError).not.toHaveBeenCalled();
 		});
@@ -146,12 +146,12 @@ describe('CollabHandler', () => {
 			vi.mocked(getService).mockReturnValue(mockService as any);
 
 			const mockRoom = { join: vi.fn() };
-			vi.mocked(handler.rooms.createRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'settings' } as any);
 
 			expect(mockService.readSingleton).toHaveBeenCalled();
-			expect(handler.rooms.createRoom).toHaveBeenCalledWith('settings', undefined, null, undefined);
+			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('settings', undefined, null, undefined);
 			expect(mockRoom.join).toHaveBeenCalledWith(mockClient);
 		});
 
@@ -161,17 +161,17 @@ describe('CollabHandler', () => {
 			vi.mocked(getService).mockReturnValue({ readOne: vi.fn().mockResolvedValue({ id: 1 }) } as any);
 
 			const mockRoom = { join: vi.fn() };
-			vi.mocked(handler.rooms.createRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1, version: 'v1' } as any);
 
-			expect(handler.rooms.createRoom).toHaveBeenCalledWith('articles', 1, 'v1', undefined);
+			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('articles', 1, 'v1', undefined);
 		});
 	});
 
 	describe('onFocus', () => {
 		test('rejects if room does not exist', async () => {
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(undefined);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(undefined);
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'invalid-room', field: 'title' } as any);
 
@@ -182,7 +182,7 @@ describe('CollabHandler', () => {
 
 		test('rejects if client is not in room', async () => {
 			const mockRoom = { hasClient: vi.fn().mockResolvedValue(false) };
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
 
@@ -200,7 +200,7 @@ describe('CollabHandler', () => {
 
 			vi.mocked(verifyPermissions).mockResolvedValue(['id']); // only 'id' allowed
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
 
@@ -217,7 +217,7 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
 
@@ -234,7 +234,7 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
 
@@ -253,7 +253,7 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onUpdate(mockClient, {
 				action: 'update',
@@ -277,7 +277,7 @@ describe('CollabHandler', () => {
 
 			vi.mocked(verifyPermissions).mockResolvedValue(['id']);
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onUpdate(mockClient, {
 				action: 'update',
@@ -300,7 +300,7 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onUpdate(mockClient, {
 				action: 'update',
@@ -324,7 +324,7 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onUpdate(mockClient, {
 				action: 'update',
@@ -350,7 +350,7 @@ describe('CollabHandler', () => {
 
 			vi.mocked(verifyPermissions).mockResolvedValue(['title']);
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onUpdateAll(mockClient, {
 				action: 'update_all',
@@ -373,7 +373,7 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onUpdateAll(mockClient, {
 				action: 'update_all',
@@ -394,7 +394,7 @@ describe('CollabHandler', () => {
 				uid: 'room-uid',
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onLeave(mockClient, { action: 'leave', room: 'room-uid', type: 'collab' });
 
@@ -405,7 +405,7 @@ describe('CollabHandler', () => {
 			const mockRoom1 = { leave: vi.fn(), uid: 'room-1' };
 			const mockRoom2 = { leave: vi.fn(), uid: 'room-2' };
 
-			vi.mocked(handler.rooms.getClientRooms).mockResolvedValue([mockRoom1, mockRoom2] as any);
+			vi.mocked(handler.roomManager.getClientRooms).mockResolvedValue([mockRoom1, mockRoom2] as any);
 
 			await handler.onLeave(mockClient);
 
@@ -414,7 +414,7 @@ describe('CollabHandler', () => {
 		});
 
 		test('throws error if room does not exist', async () => {
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(undefined);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(undefined);
 
 			await handler.onLeave(mockClient, { action: 'leave', room: 'invalid-room', type: 'collab' });
 
@@ -432,7 +432,7 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onUpdate(mockClient, {
 				action: 'update',
@@ -494,13 +494,13 @@ describe('CollabHandler', () => {
 				close: vi.fn().mockResolvedValue(true),
 			};
 
-			vi.mocked(handler.rooms.getRoom).mockResolvedValue(mockRoom as any);
-			vi.mocked(handler.rooms.getAllClients).mockResolvedValue([]);
-			vi.mocked(handler.rooms.getClientRooms).mockResolvedValue([]);
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(handler.roomManager.getAllClients).mockResolvedValue([]);
+			vi.mocked(handler.roomManager.getClientRooms).mockResolvedValue([]);
 
 			await cleanupJob();
 
-			expect(handler.rooms.getRoom).toHaveBeenCalledWith(mockDeadRoomUid);
+			expect(handler.roomManager.getRoom).toHaveBeenCalledWith(mockDeadRoomUid);
 			expect(mockRoom.leave).toHaveBeenCalledWith(mockDeadClientUid);
 			expect(mockRoom.close).toHaveBeenCalled();
 		});

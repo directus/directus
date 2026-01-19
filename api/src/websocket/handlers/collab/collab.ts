@@ -14,7 +14,7 @@ import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { handleWebSocketError } from '../../errors.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
-import { CollabRooms } from './room.js';
+import { RoomManager } from './room.js';
 import type { FocusMessage, JoinMessage, LeaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
 import { verifyPermissions } from './verify-permissions.js';
 
@@ -27,14 +27,14 @@ const LOCAL_CLEANUP_INTERVAL = Number(env['WEBSOCKETS_COLLAB_LOCAL_CLEANUP_INTER
  * Handler responsible for subscriptions
  */
 export class CollabHandler {
-	rooms: CollabRooms;
+	roomManager: RoomManager;
 	messenger = new Messenger();
 
 	/**
 	 * Initialize the handler
 	 */
 	constructor() {
-		this.rooms = new CollabRooms(this.messenger);
+		this.roomManager = new RoomManager(this.messenger);
 		this.bindWebSocket();
 	}
 
@@ -63,7 +63,7 @@ export class CollabHandler {
 
 			// Remove clients and close rooms hosted by nodes that are now dead
 			for (const roomUid of inactive.rooms) {
-				const room = await this.rooms.getRoom(roomUid);
+				const room = await this.roomManager.getRoom(roomUid);
 
 				if (room) {
 					// Remove dead clients globally
@@ -76,7 +76,7 @@ export class CollabHandler {
 
 					// Close room if it was truly abandoned
 					if (await room.close()) {
-						this.rooms.removeRoom(room.uid);
+						this.roomManager.removeRoom(room.uid);
 					}
 				}
 			}
@@ -85,11 +85,11 @@ export class CollabHandler {
 		setInterval(async () => {
 			// Remove local clients that are no longer in the global registry
 			const { active } = await this.messenger.getRegistry();
-			const roomClients = (await this.rooms.getAllClients()).map((client) => client.uid);
+			const roomClients = (await this.roomManager.getAllClients()).map((client) => client.uid);
 			const invalidClients = difference(roomClients, active);
 
 			for (const client of invalidClients) {
-				const rooms = await this.rooms.getClientRooms(client);
+				const rooms = await this.roomManager.getClientRooms(client);
 
 				for (const room of rooms) {
 					useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.uid}`);
@@ -97,7 +97,7 @@ export class CollabHandler {
 				}
 			}
 
-			await this.rooms.cleanupRooms();
+			await this.roomManager.cleanupRooms();
 		}, LOCAL_CLEANUP_INTERVAL);
 	}
 
@@ -147,7 +147,7 @@ export class CollabHandler {
 				});
 			}
 
-			const room = await this.rooms.createRoom(
+			const room = await this.roomManager.createRoom(
 				message.collection,
 				message.item,
 				message.version ?? null,
@@ -165,29 +165,19 @@ export class CollabHandler {
 	 */
 	async onLeave(client: WebSocketClient, message?: LeaveMessage) {
 		try {
-			const roomIds: string[] = [];
-
-			if (message) {
-				const room = await this.rooms.getRoom(message.room);
-
+			if (message?.room) {
+				const room = await this.roomManager.getRoom(message.room);
 				if (!room)
 					throw new InvalidPayloadError({
-						reason: `No access to room ${message.room} or room does not exist`,
+						reason: `Room "${message.room}" does not exist`,
 					});
 
-				if (!room.hasClient(client.uid))
-					throw new InvalidPayloadError({
-						reason: `Not connected to room ${message.room}`,
-					});
-
-				room.leave(client.uid);
-				roomIds.push(room.uid);
+				await room.leave(client.uid);
 			} else {
-				const rooms = await this.rooms.getClientRooms(client.uid);
+				const rooms = await this.roomManager.getClientRooms(client.uid);
 
 				for (const room of rooms) {
-					room.leave(client.uid);
-					roomIds.push(room.uid);
+					await room.leave(client.uid);
 				}
 			}
 		} catch (err) {
@@ -200,14 +190,14 @@ export class CollabHandler {
 	 */
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
 		try {
-			const room = await this.rooms.getRoom(message.room);
+			const room = await this.roomManager.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({
 					reason: `No access to room ${message.room} or room does not exist`,
 				});
 
-			if (!room.hasClient(client.uid))
+			if (!(await room.hasClient(client.uid)))
 				throw new InvalidPayloadError({
 					reason: `Not connected to room ${message.room}`,
 				});
@@ -255,14 +245,14 @@ export class CollabHandler {
 	 */
 	async onUpdateAll(client: WebSocketClient, message: UpdateAllMessage) {
 		try {
-			const room = await this.rooms.getRoom(message.room);
+			const room = await this.roomManager.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({
 					reason: `No access to room ${message.room} or room does not exist`,
 				});
 
-			if (!room.hasClient(client.uid))
+			if (!(await room.hasClient(client.uid)))
 				throw new InvalidPayloadError({
 					reason: `Not connected to room ${message.room}`,
 				});
@@ -302,7 +292,7 @@ export class CollabHandler {
 	 */
 	async onFocus(client: WebSocketClient, message: FocusMessage) {
 		try {
-			const room = await this.rooms.getRoom(message.room);
+			const room = await this.roomManager.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({

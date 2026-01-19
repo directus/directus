@@ -7,7 +7,7 @@ import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { permissionCache } from './permissions-cache.js';
-import { CollabRooms, getRoomHash, Room } from './room.js';
+import { getRoomHash, Room, RoomManager } from './room.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { verifyPermissions } from './verify-permissions.js';
 
@@ -147,64 +147,61 @@ function mockWebSocketClient(client: Partial<WebSocketClient>): WebSocketClient 
 let testCounter = 0;
 const getTestItem = () => `item_${testCounter++}`;
 
-describe('CollabRooms', () => {
-	test('create room', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+describe('RoomManager', () => {
+	describe('createRoom', () => {
+		test('creates new room if it does not exist', async () => {
+			const roomManager = new RoomManager(mockMessenger);
+			const room = await roomManager.createRoom('articles', '1', null);
+			expect(room).toBeDefined();
+			expect(roomManager.rooms[room.uid]).toBe(room);
+		});
 
-		const room = await rooms.createRoom('a', getTestItem(), null);
-
-		expect(room).toBeDefined();
-	});
-
-	test('create room twice', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-		const item = getTestItem();
-
-		const room = await rooms.createRoom('a', item, null);
-		const roomDuplicate = await rooms.createRoom('a', item, null);
-
-		expect(room).toEqual(roomDuplicate);
+		test('returns existing room if it exists', async () => {
+			const roomManager = new RoomManager(mockMessenger);
+			const room1 = await roomManager.createRoom('articles', '1', null);
+			const room2 = await roomManager.createRoom('articles', '1', null);
+			expect(room1).toBe(room2);
+		});
 	});
 
 	test('getRoom', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-
-		const room = await rooms.createRoom('a', getTestItem(), null);
-		const roomReference = await rooms.getRoom(room.uid);
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
+		const roomReference = await roomManager.getRoom(room.uid);
 
 		expect(room).toEqual(roomReference);
 	});
 
 	test('getRoom with invalid id', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 
-		await rooms.createRoom('a', getTestItem(), null);
-		const room = await rooms.getRoom('invalid');
+		await roomManager.createRoom('a', getTestItem(), null);
+		const room = await roomManager.getRoom('invalid');
 
 		expect(room).toBeUndefined();
 	});
 
 	test('getRoom for uid', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 
 		const item = getTestItem();
-		await rooms.createRoom('a', item, null);
-		const room = await rooms.getRoom(getRoomHash('a', item, null));
+		await roomManager.createRoom('a', item, null);
+		const room = await roomManager.getRoom(getRoomHash('a', item, null));
 
 		expect(room).toBeDefined();
 	});
 
 	test('getRoom reloads from store if missing in memory', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 		const item = getTestItem();
-		const room = await rooms.createRoom('a', item, null);
+		const room = await roomManager.createRoom('a', item, null);
 
 		const uid = room.uid;
 
 		// Simulate memory eviction but store persistence
-		delete rooms.rooms[uid];
+		delete roomManager.rooms[uid];
 
-		const reloadedRoom = await rooms.getRoom(uid);
+		const reloadedRoom = await roomManager.getRoom(uid);
 
 		expect(reloadedRoom).toBeDefined();
 		expect(reloadedRoom!.uid).toBe(uid);
@@ -212,33 +209,33 @@ describe('CollabRooms', () => {
 	});
 
 	test('getClientRooms', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 		const client = mockWebSocketClient({ uid: 'abc' });
 
-		const room = await rooms.createRoom('a', getTestItem(), null);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
 		await room.join(client);
 
-		const clientRooms = await rooms.getClientRooms(client.uid);
+		const clientRooms = await roomManager.getClientRooms(client.uid);
 
 		expect(clientRooms).toEqual([room]);
 	});
 
 	test('cleanupRooms', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 		const client = mockWebSocketClient({ uid: 'abc' });
 
-		const room = await rooms.createRoom('a', getTestItem(), null);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
 		await room.join(client);
 
-		await rooms.cleanupRooms();
+		await roomManager.cleanupRooms();
 
-		expect(Object.keys(rooms.rooms).length).toEqual(1);
+		expect(Object.keys(roomManager.rooms).length).toEqual(1);
 
 		await room.leave(client.uid);
 
-		await rooms.cleanupRooms();
+		await roomManager.cleanupRooms();
 
-		expect(Object.keys(rooms.rooms).length).toEqual(0);
+		expect(Object.keys(roomManager.rooms).length).toEqual(0);
 
 		const roomKeys = ['uid', 'collection', 'item', 'version', 'changes', 'clients', 'focuses'];
 
@@ -249,22 +246,22 @@ describe('CollabRooms', () => {
 	});
 
 	test('cleanupRooms does not remove active rooms', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 		const client = mockWebSocketClient({ uid: 'abc' });
 
-		const room = await rooms.createRoom('a', getTestItem(), null);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
 		await room.join(client);
 
-		await rooms.cleanupRooms();
+		await roomManager.cleanupRooms();
 
 		// Should still exist because it has a client
-		expect(Object.keys(rooms.rooms)).toContain(room.uid);
+		expect(Object.keys(roomManager.rooms)).toContain(room.uid);
 		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
 	});
 
 	test('dispose removes listeners', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-		const room = await rooms.createRoom('a', getTestItem(), null);
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('a', getTestItem(), null);
 		const client = mockWebSocketClient({ uid: 'abc' });
 
 		await room.join(client);
@@ -276,8 +273,8 @@ describe('CollabRooms', () => {
 	});
 
 	test('handles remote close event', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-		const room = await rooms.createRoom('remote-test', getTestItem(), null);
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('remote-test', getTestItem(), null);
 		const disposeSpy = vi.spyOn(room, 'dispose');
 
 		// Find the listener callback to simulate incoming message
@@ -288,7 +285,7 @@ describe('CollabRooms', () => {
 		callback({ action: 'close', room: room.uid });
 
 		expect(disposeSpy).toHaveBeenCalled();
-		expect(rooms.rooms[room.uid]).toBeUndefined(); // Cannot use getRoom() here as it's mocked
+		expect(roomManager.rooms[room.uid]).toBeUndefined(); // Cannot use getRoom() here as it's mocked
 	});
 });
 
@@ -890,8 +887,8 @@ describe('room', () => {
 	});
 
 	test('handles delete event', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-		const room = await rooms.createRoom('articles', '1', null);
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('articles', '1', null);
 
 		const client = {
 			uid: 1,
@@ -901,7 +898,7 @@ describe('room', () => {
 
 		await room.join(client);
 
-		rooms.messenger.setRoomListener(room.uid, (message: any) => {
+		roomManager.messenger.setRoomListener(room.uid, (message: any) => {
 			if (message.action === 'close') {
 				room.dispose();
 			}
@@ -928,8 +925,8 @@ describe('room', () => {
 	});
 
 	test('ignores delete event for other items', async () => {
-		const rooms = new CollabRooms(mockMessenger);
-		const room = await rooms.createRoom('articles', '1', null);
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('articles', '1', null);
 
 		const client = {
 			uid: 1,
@@ -995,9 +992,9 @@ describe('room disposal stability', () => {
 	});
 
 	test('handles join after close() but before local reference removal', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 		const item = getTestItem();
-		const room = await rooms.createRoom('a', item, null);
+		const room = await roomManager.createRoom('a', item, null);
 		const client = mockWebSocketClient({ uid: 'abc' });
 
 		await room.close(true); // Forced close
@@ -1012,9 +1009,9 @@ describe('room disposal stability', () => {
 	});
 
 	test('cleanupRooms does not close if a user joined during check', async () => {
-		const rooms = new CollabRooms(mockMessenger);
+		const roomManager = new RoomManager(mockMessenger);
 		const item = getTestItem();
-		const room = await rooms.createRoom('a', item, null);
+		const room = await roomManager.createRoom('a', item, null);
 
 		const originalStore = room.store;
 		let intercepted = false;
@@ -1033,9 +1030,9 @@ describe('room disposal stability', () => {
 			return await originalStore(callback);
 		};
 
-		await rooms.cleanupRooms();
+		await roomManager.cleanupRooms();
 
-		expect(rooms.rooms[room.uid]).toBeDefined();
+		expect(roomManager.rooms[room.uid]).toBeDefined();
 		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
 
 		room.store = originalStore;
