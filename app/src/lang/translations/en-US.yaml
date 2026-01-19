@@ -1774,6 +1774,7 @@ no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
 delete_label: Delete
+discard_label: Discard
 delete_are_you_sure: >-
   This action is permanent and can not be undone. Are you sure you would like to proceed?
 delete_field_are_you_sure: >-
