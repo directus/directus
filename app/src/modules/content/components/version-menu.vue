@@ -18,7 +18,7 @@ import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { DRAFT_VERSION_KEY } from '@/constants';
-import type { ContentVersionMaybeNew } from '@/types/versions';
+import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
@@ -406,7 +406,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 			:collection
 			:primary-key
 			mode="version"
-			:current-version="currentVersion as ContentVersion"
+			:current-version="currentVersion as ContentVersionWithType"
 			@cancel="comparisonModalActive = false"
 			@promote="onPromoteComplete($event)"
 		/>
