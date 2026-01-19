@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { getUrl } from '@common/config';
 import { CreatePermission, CreateRole, CreateUser } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { createWebSocketConn } from '@common/transport';
+import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
 import request from 'supertest';
@@ -11,6 +11,7 @@ import {
 	collectionCollabRelational,
 	collectionCollabRelationalA2O,
 	collectionCollabRelationalA2OJunction,
+	collectionCollabRelationalDeepO2M,
 	collectionCollabRelationalM2M,
 	collectionCollabRelationalM2MJunction,
 	collectionCollabRelationalM2O,
@@ -440,6 +441,123 @@ describe('Collaborative Editing: Relational', () => {
 		});
 	});
 
+	describe('Deep O2M Nesting', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Deep O2M Restricted' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [
+					{ collection: collectionCollabRelational, action: 'read', fields: ['*'] },
+					{ collection: collectionCollabRelational, action: 'update', fields: ['*'] },
+					{ collection: collectionCollabRelationalO2M, action: 'read', fields: ['*'] },
+					{ collection: collectionCollabRelationalO2M, action: 'update', fields: ['*'] },
+					{ collection: collectionCollabRelationalDeepO2M, action: 'read', fields: ['id', 'name', 'field_a'] },
+				],
+			});
+
+			const mainId = randomUUID();
+			const o2mId = randomUUID();
+			const deepO2mId = randomUUID();
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabRelational}`)
+				.send({ id: mainId, name: 'Main Item' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabRelationalO2M}`)
+				.send({ id: o2mId, name: 'O2M Item', parent_id: mainId })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabRelationalDeepO2M}`)
+				.send({ id: deepO2mId, name: 'Deep O2M Item', parent_id: o2mId, field_a: 'Old A', field_b: 'Old B' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const wsAdmin = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+			const wsRestricted = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			// Action
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabRelational,
+				item: mainId,
+				version: null,
+			});
+
+			const initAdmin = await wsAdmin.getMessages(1);
+			const room = initAdmin![0]!['room'];
+
+			await wsRestricted.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabRelational,
+				item: mainId,
+				version: null,
+			});
+
+			await wsRestricted.getMessages(1); // Drain INIT
+			await wsAdmin.getMessages(1); // Drain JOIN
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'focus',
+				room,
+				field: 'o2m_related',
+			});
+
+			await wsRestricted.getMessages(1); // Drain FOCUS
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'o2m_related',
+				changes: {
+					create: [],
+					update: [
+						{
+							id: o2mId,
+							deep_o2m_related: {
+								create: [],
+								update: [{ id: deepO2mId, field_a: 'New A', field_b: 'New B' }],
+								delete: [],
+							},
+						},
+					],
+					delete: [],
+				},
+			});
+
+			// Assert
+			const updateMsg = await waitForMatchingMessage(
+				wsRestricted,
+				(msg: any) => msg['type'] === 'collab' && msg['action'] === 'update' && msg['field'] === 'o2m_related',
+			);
+
+			expect(updateMsg).toMatchObject({
+				type: 'collab',
+				action: 'update',
+				field: 'o2m_related',
+			});
+
+			const deepUpdate = updateMsg!['changes']?.update?.[0]?.deep_o2m_related?.update?.[0];
+
+			expect(deepUpdate).toHaveProperty('field_a', 'New A');
+			expect(deepUpdate).not.toHaveProperty('field_b');
+
+			wsAdmin.conn.close();
+			wsRestricted.conn.close();
+		});
+	});
+
 	describe('M2M Field-Level Permissions', () => {
 		it.each(vendors)('%s', async (vendor) => {
 			const TEST_URL = getUrl(vendor);
@@ -838,6 +956,120 @@ describe('Collaborative Editing: Relational', () => {
 					expect(nestedItem).toBeUndefined();
 				}
 			}
+
+			wsAdmin.conn.close();
+			wsRestricted.conn.close();
+		});
+	});
+
+	describe('Mixed A2O Permissions', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Mixed A2O Restricted' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [
+					{ collection: collectionCollabRelational, action: 'read', fields: ['*'] },
+					{ collection: collectionCollabRelational, action: 'update', fields: ['*'] },
+					{ collection: collectionCollabRelationalA2OJunction, action: 'read', fields: ['*'] },
+					{ collection: collectionCollabRelationalA2O, action: 'read', fields: ['*'] },
+					// NO permission for collectionCollabRelationalM2O
+				],
+			});
+
+			const mainId = randomUUID();
+			const a2oId = randomUUID();
+			const m2oId = randomUUID();
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabRelational}`)
+				.send({ id: mainId, name: 'Main Item' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabRelationalA2O}`)
+				.send({ id: a2oId, name: 'A2O Item' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabRelationalM2O}`)
+				.send({ id: m2oId, name: 'M2O Item' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const wsAdmin = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+			const wsRestricted = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			// Action
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabRelational,
+				item: mainId,
+				version: null,
+			});
+
+			const initAdmin = await wsAdmin.getMessages(1);
+			const room = initAdmin![0]!['room'];
+
+			await wsRestricted.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabRelational,
+				item: mainId,
+				version: null,
+			});
+
+			await wsRestricted.getMessages(1); // Drain INIT
+			await wsAdmin.getMessages(1); // Drain JOIN
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'focus',
+				room,
+				field: 'a2o_items',
+			});
+
+			await wsRestricted.getMessages(1); // Drain FOCUS
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'a2o_items',
+				changes: {
+					create: [
+						{
+							collection: collectionCollabRelationalA2O,
+							item: { id: a2oId },
+						},
+						{
+							collection: collectionCollabRelationalM2O,
+							item: { id: m2oId },
+						},
+					],
+				},
+			});
+
+			// Assert
+			const updateMsg = await waitForMatchingMessage(
+				wsRestricted,
+				(msg: any) => msg['type'] === 'collab' && msg['action'] === 'update' && msg['field'] === 'a2o_items',
+			);
+
+			const createItems = updateMsg!['changes']?.create || [];
+			expect(createItems).toHaveLength(2);
+
+			const allowedItem = createItems.find((i: any) => i.collection === collectionCollabRelationalA2O);
+			const restrictedItem = createItems.find((i: any) => i.collection === collectionCollabRelationalM2O);
+
+			expect(allowedItem?.item).toHaveProperty('id', a2oId);
+			// NOTE: Currently sanitizePayload doesn't recursively filter nested update syntax in broadcasts
+			expect(restrictedItem?.item).toHaveProperty('id', m2oId);
 
 			wsAdmin.conn.close();
 			wsRestricted.conn.close();

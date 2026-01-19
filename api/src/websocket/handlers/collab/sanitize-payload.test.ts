@@ -36,6 +36,13 @@ const schema = new SchemaBuilder()
 		c.field('status').string();
 		c.field('internal_note').string();
 		c.field('article_id').integer();
+		c.field('replies').o2m('replies', 'comment_id');
+	})
+	.collection('replies', (c) => {
+		c.field('id').id();
+		c.field('text').string();
+		c.field('secret').string();
+		c.field('comment_id').integer();
 	})
 	.collection('profiles', (c) => {
 		c.field('id').id();
@@ -751,6 +758,98 @@ describe('sanitizePayload', () => {
 			});
 
 			expect(payload).toEqual(originalPayload);
+		});
+	});
+
+	describe('Deep Recursion', () => {
+		test('filters nested update syntax deeply', async () => {
+			// Setup permissions
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection) => {
+				if (collection === 'articles') return ['*'];
+				if (collection === 'comments') return ['*'];
+				if (collection === 'replies') return ['id', 'text']; // 'secret' is excluded
+				return [];
+			});
+
+			// Detailed update syntax payload with deep nesting
+			const payload = {
+				id: 1,
+				comments: {
+					create: [],
+					update: [
+						{
+							id: 10,
+							replies: {
+								create: [],
+								update: [
+									{
+										id: 100,
+										text: 'Visible',
+										secret: 'Available but should be filtered',
+									},
+								],
+								delete: [],
+							},
+						},
+					],
+					delete: [],
+				},
+			};
+
+			const result = await sanitizePayload(payload, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
+
+			const replyUpdate = result.comments.update[0].replies.update[0];
+
+			expect(replyUpdate).toHaveProperty('text', 'Visible');
+			expect(replyUpdate).not.toHaveProperty('secret');
+		});
+
+		test('filters nested update syntax deeply when root uses simple array', async () => {
+			// Setup permissions
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection) => {
+				if (collection === 'articles') return ['*'];
+				if (collection === 'comments') return ['*'];
+				if (collection === 'replies') return ['id', 'text']; // 'secret' is excluded
+				return [];
+			});
+
+			// Simple array at root, Detailed update syntax payload at deep nesting
+			const payload = {
+				id: 1,
+				comments: [
+					{
+						id: 10,
+						replies: {
+							create: [],
+							update: [
+								{
+									id: 100,
+									text: 'Visible',
+									secret: 'Should be filtered',
+								},
+							],
+							delete: [],
+						},
+					},
+				],
+			};
+
+			const result = await sanitizePayload(payload, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				action: 'update',
+			});
+
+			const replyUpdate = result.comments[0].replies.update[0];
+
+			expect(replyUpdate).toHaveProperty('text', 'Visible');
+			expect(replyUpdate).not.toHaveProperty('secret');
 		});
 	});
 });
