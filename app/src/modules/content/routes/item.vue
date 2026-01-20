@@ -839,12 +839,22 @@ function useCollectionRoute() {
 		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<VCard>
+			<VCard v-if="!connected">
 				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 				<VCardActions>
 					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+			<VCard v-else>
+				<VCardTitle>{{ $t('unsaved_changes_collab') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('leave_page') }}
 					</VButton>
 					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
 				</VCardActions>
