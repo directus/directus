@@ -1328,6 +1328,7 @@ fields:
     public_registration_email_filter_note: Vetëm adresat e email-it që përputhen me këtë filtër mund të regjistrohen.
     public_registration_verify_email: Verifiko Email-in
     public_registration_verify_email_note: Dërgon një email përdoruesit që po regjistrohet duke kërkuar që të klikojnë në një lidhje verifikimi përpara se të mund të identifikohen.
+    ai_header_name: Header
   directus_shares:
     name: Emri
     role: Roli
