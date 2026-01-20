@@ -66,8 +66,6 @@ export async function sanitizePayload(
 				schema,
 			});
 
-			console.log(key, value, allowedFields);
-
 			// If the item doesn't exist, it will be a create that you always have permission to
 			if (!allowedFields) return [key, value];
 			// If item exists, we check if you have permissions to read the field
