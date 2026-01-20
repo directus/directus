@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ContentVersion } from '@directus/types';
 import { computed } from 'vue';
 import type { ComparisonContext, FormField } from '../types';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
@@ -23,6 +24,7 @@ const props = defineProps<{
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
 	direction?: string;
+	version?: ContentVersion | null;
 }>();
 
 defineEmits(['update:modelValue', 'setFieldValue']);
@@ -77,6 +79,7 @@ const value = computed(() =>
 				:length="field.schema && field.schema.max_length"
 				:direction="direction"
 				:raw-editor-enabled="rawEditorEnabled"
+				:version
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
 			/>

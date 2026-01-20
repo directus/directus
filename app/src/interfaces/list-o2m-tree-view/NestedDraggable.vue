@@ -210,7 +210,12 @@ function stageEdits(item: Record<string, any>) {
 		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<VListItem :non-editable="nonEditable" class="row" :class="{ draggable: element.$type !== 'deleted' }">
+			<VListItem
+				:non-editable
+				:disabled="disabled && !nonEditable"
+				class="row"
+				:class="{ draggable: element.$type !== 'deleted' }"
+			>
 				<ItemPreview
 					:item="element"
 					:edits="getItemEdits(element)"
@@ -306,10 +311,25 @@ function stageEdits(item: Record<string, any>) {
 }
 
 .row {
+	&.v-list-item {
+		--v-list-item-padding: 0;
+		--v-list-item-margin: 0;
+
+		display: block;
+
+		+ .v-list-item {
+			margin-block-start: 8px;
+		}
+	}
+
+	&:not(.draggable) .preview {
+		cursor: not-allowed;
+	}
+
 	.preview {
 		padding: 12px;
 		cursor: grab;
-		background-color: var(--theme--background);
+		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--border-color);
 		border-radius: var(--theme--border-radius);
 
@@ -322,19 +342,13 @@ function stageEdits(item: Record<string, any>) {
 		}
 	}
 
-	&.v-list-item {
-		display: block;
-
-		--v-list-item-padding: 0;
-		--v-list-item-margin: 0;
-
-		+ .v-list-item {
-			margin-block-start: 8px;
-		}
+	&.v-list-item.disabled .preview {
+		background-color: var(--theme--form--field--input--background-subdued);
+		cursor: not-allowed;
 	}
 
-	&:not(.draggable) .preview {
-		cursor: not-allowed;
+	&.v-list-item.non-editable .preview {
+		cursor: pointer;
 	}
 }
 
