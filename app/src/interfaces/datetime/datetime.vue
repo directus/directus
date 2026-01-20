@@ -2,7 +2,7 @@
 import { isValid } from 'date-fns';
 import { computed, ref } from 'vue';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
-import VDatePicker from '@/components/v-date-picker.vue';
+import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -60,13 +60,12 @@ function unsetValue(e: any) {
 				</template>
 			</VListItem>
 		</template>
-
 		<VDatePicker
-			:type
-			:disabled
-			:include-seconds
-			:use-24
 			:model-value="value"
+			:type
+			:use-24
+			:include-seconds
+			:disabled
 			@update:model-value="$emit('input', $event)"
 			@close="dateTimeMenu?.deactivate"
 		/>

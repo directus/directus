@@ -123,7 +123,6 @@
 		"editorjs-toggle-block": "catalog:",
 		"escape-string-regexp": "catalog:",
 		"file-saver": "catalog:",
-		"flatpickr": "catalog:",
 		"focus-trap": "catalog:",
 		"geojson": "catalog:",
 		"happy-dom": "catalog:",
@@ -161,6 +160,7 @@
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
-		"zod": "catalog:"
+		"zod": "catalog:",
+		"@internationalized/date": "catalog:"
 	}
 }
