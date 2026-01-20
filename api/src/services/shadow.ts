@@ -125,11 +125,9 @@ export class ShadowsService {
 
 				if (relation.collection === collection) {
 					// M2O relation defined on the current collection
-					// TODO: Fix self referenced M2O not duplicated
 					await shadowsService.createRelation(relation);
 				} else if (
 					relation.related_collection === collection &&
-					relation.meta?.one_field &&
 					this.schema.collections[relation.collection]?.versioned
 				) {
 					// M2O relation from another (versioned) collection pointing to this one
@@ -147,7 +145,7 @@ export class ShadowsService {
 
 			// Drop any m2o duplicates pointing to it
 			for (const relation of this.schema.relations) {
-				if (relation.collection !== collection && relation.related_collection !== collection) continue;
+				if (relation.collection !== shadowCollection && relation.related_collection !== shadowCollection) continue;
 
 				// Delete related o2m fields that point to current collection
 				if (relation.related_collection && relation.meta?.one_field) {
@@ -155,7 +153,7 @@ export class ShadowsService {
 				}
 
 				// Delete related m2o fields that point to current collection
-				if (relation.related_collection === collection) {
+				if (relation.related_collection === shadowCollection) {
 					await shadowsService.deleteField(relation.collection, relation.field);
 				}
 			}
@@ -171,22 +169,29 @@ export class ShadowsService {
 		let shadowPointerRelation: null | Partial<Relation> = null;
 
 		await transaction(this.knex, async (trx) => {
+			// refresh to get self versioned marked
+			const schema = await getSchema({ database: trx, bypassCache: true });
+
 			/**
 			 * If the related collection is versioned, create a duplicated prefixed FK
 			 * field/relation that points to the related shadow table.
 			 *
 			 */
-			if (this.schema.collections[relation.related_collection!]?.versioned) {
+			if (schema.collections[relation.related_collection!]?.versioned) {
 				shadowPointerRelation = this.buildRelation(relation, { shadow: true });
 
-				const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+				const fieldsService = new FieldsService({ knex: trx, schema });
 
 				const pointerField = (await fieldsService.readOne(relation.collection!, relation.field!)) as Field;
 
-				const shadowPointerField = this.buildField(pointerField) as Field;
+				const shadowPointerField = this.buildField(pointerField, { shadow: true }) as Field;
 
 				// We create field here so we can create relation later
-				const shadowsService = new ShadowsService({ knex: trx, schema: await getSchema({ database: trx }) });
+				const shadowsService = new ShadowsService({
+					knex: trx,
+					schema,
+				});
+
 				await shadowsService.createField(shadowPointerRelation.collection!, shadowPointerField);
 			}
 
@@ -266,7 +271,7 @@ export class ShadowsService {
 	) {
 		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
 
-		const shadowCollection = `directus_version_${collection}`;
+		const shadowCollection = collection.startsWith('directus_version') ? collection : `directus_version_${collection}`;
 
 		const shadowField = this.buildField(field) as Field;
 
@@ -277,29 +282,42 @@ export class ShadowsService {
 		await transaction(this.knex, async (trx) => {
 			const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-			const shadowCollection = `directus_version_${collection}`;
+			const shadowCollection = collection.startsWith('directus_version')
+				? collection
+				: `directus_version_${collection}`;
 
 			const shadowField = this.buildField(field) as RawField;
 
 			await fieldsService.updateField(shadowCollection, shadowField);
 
 			// update duplicated M2O FK to versioned table
-
 			const isM2O = this.schema.relations.find(
-				(relation) => relation.collection === shadowCollection && relation.field === shadowField.field,
+				(relation) => relation.collection === collection && relation.field === field.field,
 			);
 
 			if (isM2O) {
-				await fieldsService.updateField(shadowCollection, shadowField);
+				const shadowedField = this.buildField(field, { shadow: true }) as RawField;
+				await fieldsService.updateField(shadowCollection, shadowedField);
 			}
 		});
 	}
 
 	async deleteField(collection: string, field: string) {
-		const shadowCollection = `directus_version_${collection}`;
+		const shadowCollection = collection.startsWith('directus_version') ? collection : `directus_version_${collection}`;
 
 		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
 
 		await fieldsService.deleteField(shadowCollection, field);
+
+		// delete duplicated M2O FK to versioned table
+		const shadowedField = this.buildField(field, { shadow: true });
+
+		const isM2O = this.schema.relations.find(
+			(relation) => relation.collection === shadowCollection && relation.field === shadowedField,
+		);
+
+		if (isM2O) {
+			await fieldsService.deleteField(shadowCollection, shadowedField);
+		}
 	}
 }
