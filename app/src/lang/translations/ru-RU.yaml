@@ -1382,6 +1382,7 @@ fields:
     mcp_allow_deletes_note:
       - 
     mcp_prompts_collection: AI Prompts Collection
+    ai_header_name: HTTP-заголовок
   directus_shares:
     name: Название
     role: Роль
