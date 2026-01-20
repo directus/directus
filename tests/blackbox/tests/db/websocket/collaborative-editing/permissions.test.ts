@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { getUrl } from '@common/config';
 import { CreatePermission, CreateRole, CreateUser } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { createWebSocketConn } from '@common/transport';
+import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
 import request from 'supertest';
@@ -139,8 +139,10 @@ describe('Collaborative Editing: Permissions', () => {
 			wsAdmin.conn.close();
 			wsRestricted.conn.close();
 		});
+	});
 
-		it.each(vendors)('%s (Unset Propagation)', async (vendor) => {
+	describe('Field-level Permissions (Unset Propagation)', () => {
+		it.each(vendors)('%s', async (vendor) => {
 			const TEST_URL = getUrl(vendor);
 			const userToken = `token-${randomUUID()}`;
 
@@ -216,9 +218,15 @@ describe('Collaborative Editing: Permissions', () => {
 			});
 
 			// Restricted user should receive the update and focus
-			const messages = await wsRestricted.getMessages(2);
-			const focusMessage = messages!.find((m) => m['action'] === 'focus');
-			const updateMessage = messages!.find((m) => m['action'] === 'update');
+			const focusMessage = await waitForMatchingMessage(
+				wsRestricted,
+				(m: any) => m['action'] === 'focus' && m['field'] === 'title',
+			);
+
+			const updateMessage = await waitForMatchingMessage(
+				wsRestricted,
+				(m: any) => m['action'] === 'update' && m['field'] === 'title' && m['changes'] === undefined,
+			);
 
 			expect(focusMessage).toMatchObject({
 				type: 'collab',

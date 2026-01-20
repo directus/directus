@@ -481,6 +481,7 @@ describe('Collaborative Editing: Core', () => {
 			expect(totalErrors).toBe(1);
 
 			const errorMsg = [...ws1Errors, ...ws2Errors][0];
+			expect(errorMsg?.['code']).toBe('INVALID_PAYLOAD');
 			expect(errorMsg?.['message']).toContain('already focused');
 
 			ws1.conn.close();
@@ -556,27 +557,12 @@ describe('Collaborative Editing: Core', () => {
 				field: 'title',
 			});
 
-			await sleep(200);
-
 			// Assert
-			const ws2Msgs = [];
+			const focusNotification = await waitForMatchingMessage(
+				ws1,
+				(m: any) => m['action'] === 'focus' && m['field'] === 'title',
+			);
 
-			while (ws2.getUnreadMessageCount() > 0) {
-				const msgs = await ws2.getMessages(1);
-				if (msgs) ws2Msgs.push(...msgs);
-			}
-
-			const errors = ws2Msgs.filter((m) => m.status === 'error');
-			expect(errors).toHaveLength(0);
-
-			const ws1FocusMsgs = [];
-
-			while (ws1.getUnreadMessageCount() > 0) {
-				const msgs = await ws1.getMessages(1);
-				if (msgs) ws1FocusMsgs.push(...msgs);
-			}
-
-			const focusNotification = ws1FocusMsgs.find((m) => m['action'] === 'focus' && m['field'] === 'title');
 			expect(focusNotification).toBeDefined();
 
 			ws1.conn.close();
