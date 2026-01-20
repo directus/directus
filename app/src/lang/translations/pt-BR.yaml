@@ -1426,6 +1426,7 @@ fields:
     public_registration_verify_email_note: Envia um e-mail para o usuário que se registrou pedindo que clique em um link de verificação antes de fazer o login.
     visual_editor_urls: URL dos Editores Visuais
     ai_notice: 'Chat IA providencia uma barra lateral "in-app" para conversar com uma LLM. Uma vez ativado, abra a barra lateral da IA na barra de ferramenta para fazer perguntas, gerar conteúdo e receber ajuda com seu projeto. <a href="https://directus.io/docs/guides/ai/chat" target="_blank">Saiba mais sobre configuração e uso de Chat IA.</a>'
+    ai_header_name: Cabeçalho
   directus_shares:
     name: Nome
     role: Função
