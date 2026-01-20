@@ -1061,6 +1061,7 @@ fields:
     transformations_all: Permite toate transformările
     transformations_none: Dezactivează transformările
     transformations_presets: Limitează transformările la presetările de mai jos
+    ai_header_name: Antet
   directus_shares:
     name: Nume
     role: Rol
