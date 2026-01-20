@@ -1285,6 +1285,7 @@ fields:
     public_registration_email_filter_note: فقط عناوين البريد الإلكتروني المطابقة لهذا الفلتر تستطيع التسجيل.
     public_registration_verify_email: تحقق من البريد الإلكتروني
     public_registration_verify_email_note: يرسل رسالة بريد إلكتروني إلى المستخدم المسجل يطلب منه النقر على رابط التحقق قبل أن يتمكن من تسجيل الدخول.
+    ai_header_name: الترويسة
   directus_shares:
     name: الاسم
     role: الدور
