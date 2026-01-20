@@ -477,6 +477,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:disabled-menu-options="disabledMenuOptions"
 					:disabled-menu="disabledMenu"
 					:direction="direction"
+					:version
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"

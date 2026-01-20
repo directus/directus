@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ValidationError } from '@directus/types';
+import { ContentVersion } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -36,7 +37,8 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		disabledMenu?: boolean;
 		direction?: string;
-		collabFieldContext?: CollabFieldContext;
+		version?: ContentVersion | null;
+    collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
 		modelValue: undefined,
@@ -254,6 +256,7 @@ function useComputedValues() {
 			:direction="direction"
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
+			:version
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 			@focusin="onFocus"
