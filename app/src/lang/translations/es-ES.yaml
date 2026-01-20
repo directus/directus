@@ -1353,6 +1353,7 @@ fields:
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
     visual_editor_urls: URLs del editor visual
+    ai_header_name: Encabezado
   directus_shares:
     name: Nombre
     role: Rol
