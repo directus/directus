@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useGroupable } from '@directus/composables';
-import { ContentVersion, PrimaryKey } from '@directus/types';
+import { PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -11,12 +11,13 @@ import VPagination from '@/components/v-pagination.vue';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
 import type { Revision } from '@/types/revisions';
+import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 
 const props = defineProps<{
 	collection: string;
 	primaryKey: PrimaryKey;
-	version?: ContentVersion | null;
+	version?: ContentVersionMaybeNew | null;
 }>();
 
 defineEmits(['revert']);
@@ -116,7 +117,7 @@ defineExpose({
 			:collection
 			:primary-key
 			mode="revision"
-			:current-version="version"
+			:current-version="version as ContentVersionWithType"
 			:revisions="revisions as Revision[]"
 			@confirm="$emit('revert', $event)"
 			@cancel="closeModal"
