@@ -1382,6 +1382,7 @@ fields:
     mcp_system_prompt_enabled_note: "LLM 동작을 안내하려면 <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>기본 시스템 프롬프트를</a> 사용하세요. 아래의 프롬프트를 제거하거나 재정의하려면 비활성화하세요."
     mcp_system_prompt: 사용자 정의 시스템 프롬프트
     mcp_system_prompt_note: '기본값을 대체할 사용자 지정 시스템 프롬프트입니다. 기본값을 사용하려면 비워 두세요(위에서 활성화한 경우).'
+    ai_header_name: 머리글
   directus_shares:
     name: 이름
     role: 역할
