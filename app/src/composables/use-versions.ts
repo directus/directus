@@ -215,7 +215,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		const errors = validateItem(payloadToValidate, fields, false, false, currentVersion.value as ContentVersion);
+		const errors = validateItem(payloadToValidate, fields, false, false, currentVersion.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
