@@ -1,6 +1,6 @@
 {
 	"name": "@directus/ai",
-	"version": "14.0.0",
+	"version": "1.0.0",
 	"description": "Shared AI types and model definitions for Directus AI",
 	"homepage": "https://directus.io",
 	"repository": {
