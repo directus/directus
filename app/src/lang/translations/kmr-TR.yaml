@@ -1336,6 +1336,7 @@ fields:
     public_registration_verify_email: E-peyamê Rast Bike
     public_registration_verify_email_note: E-peyamek ji bikarhênerê ku qeyd dibe re dişîne û jê dixwaze ku beriya têketinê li girêdana rastpêkirinê bitikîne.
     visual_editor_urls: URL yên Edîtora Dîtbarî
+    ai_header_name: Sernav
   directus_shares:
     name: Nav
     role: Rol
