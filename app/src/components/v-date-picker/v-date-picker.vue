@@ -28,16 +28,10 @@ import {
 	TimeFieldRoot,
 } from 'reka-ui';
 import { computed, ref, watch } from 'vue';
+import { TimeValue } from './types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useUserStore } from '@/stores/user';
 import { formatDatePickerModelValue } from '@/utils/format-date-picker-model-value';
-
-/**
- * TimeValue type represents all possible time-related values that can be used
- * in the TimeFieldRoot component from reka-ui.
- * This matches the internal TimeValue type definition in reka-ui.
- */
-type TimeValue = Time | CalendarDateTime | ZonedDateTime;
 
 interface Props {
 	type: 'date' | 'time' | 'dateTime' | 'timestamp';
