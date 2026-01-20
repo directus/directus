@@ -1158,6 +1158,7 @@ fields:
     transformations_presets: 限制資料轉換範圍為以下清單
     image_editor: 圖片編輯器
     custom_aspect_ratios: 自訂比例
+    ai_header_name: 標題
   directus_shares:
     name: 名稱
     role: 角色
