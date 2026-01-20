@@ -96,7 +96,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	watch(
 		[collection, isSingleton, primaryKey],
 		([newCollection], [oldCollection]) => {
-			if (newCollection !== oldCollection) currentVersion.value = null;
+			if (oldCollection && newCollection !== oldCollection) currentVersion.value = null;
 			getVersions();
 		},
 		{ immediate: true },
