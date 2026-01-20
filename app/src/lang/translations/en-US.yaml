@@ -1252,7 +1252,9 @@ theme-overrides: Theme Overrides
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 unsaved_changes_collab: Unsaved Collaborative Changes
-unsaved_changes_copy_collab: You’re editing this item with others. Your changes will remain in the collaborative session for now, but may be lost if no one saves them.
+unsaved_changes_copy_collab:
+  You’re editing this item with others. Your changes will remain in the collaborative session for now, but may be lost
+  if no one saves them.
 leave_page: Leave Page
 discard_changes: Discard Changes
 discard_all_changes: Discard All Changes
