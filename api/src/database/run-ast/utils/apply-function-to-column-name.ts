@@ -17,7 +17,8 @@ export function applyFunctionToColumnName(column: string): string {
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
 
 		if (functionName === 'json') {
-			return `${columnName?.replace(/\.|\[|\]/g, '_')}_${functionName}`;
+			const slug = columnName?.replace(/[.[\]]+/g, '_');
+			return `${slug}${slug?.endsWith('_') ? '' : '_'}${functionName}`;
 		} else {
 			return `${columnName}_${functionName}`;
 		}
