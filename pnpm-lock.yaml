@@ -537,9 +537,6 @@ catalogs:
     flat:
       specifier: 6.0.1
       version: 6.0.1
-    flatpickr:
-      specifier: 4.6.13
-      version: 4.6.13
     focus-trap:
       specifier: 7.6.6
       version: 7.6.6
@@ -1796,9 +1793,6 @@ importers:
       file-saver:
         specifier: 'catalog:'
         version: 2.0.5
-      flatpickr:
-        specifier: 'catalog:'
-        version: 4.6.13
       focus-trap:
         specifier: 'catalog:'
         version: 7.6.6
@@ -9368,9 +9362,6 @@ packages:
     resolution: {integrity: sha512-/3FfIa8mbrg3xE7+wAhWeV+bd7L2Mof+xtZb5dRDKZ+wDvYJK4WDYeIOuOhre5Yv5aQObZrlbRmk3RTSiuQBtw==}
     engines: {node: '>=18'}
     hasBin: true
-
-  flatpickr@4.6.13:
-    resolution: {integrity: sha512-97PMG/aywoYpB4IvbvUJi0RQi8vearvU0oov1WW3k0WZPBMrTQVqekSX5CjSG/M4Q3i6A/0FKXC7RyAoAUUSPw==}
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
@@ -22115,8 +22106,6 @@ snapshots:
       hookified: 1.12.2
 
   flat@6.0.1: {}
-
-  flatpickr@4.6.13: {}
 
   flatted@3.3.3: {}
 
