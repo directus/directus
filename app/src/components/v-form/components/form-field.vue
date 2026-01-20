@@ -38,7 +38,7 @@ const props = withDefaults(
 		disabledMenu?: boolean;
 		direction?: string;
 		version?: ContentVersion | null;
-    collabFieldContext?: CollabFieldContext;
+		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
 		modelValue: undefined,
