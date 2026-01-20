@@ -72,7 +72,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1 });
@@ -85,7 +84,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1, title: 'Hello World' });
@@ -98,10 +96,25 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
-			expect(result).toEqual({ id: 1, title: 'Hello World' });
+			expect(result).toEqual({ title: 'Hello World' });
+		});
+
+		test('allow to read items that dont exist yet', async () => {
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item) => {
+				if (collection === 'articles') return ['*'];
+				if (collection === 'comments') return item === 1 ? null : [];
+				return [];
+			});
+
+			const result = await sanitizePayload({ id: 1, comments: [{ id: 1 }, { id: 2 }] }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+			});
+
+			expect(result).toEqual({ id: 1, comments: [{ id: 1 }] });
 		});
 	});
 
@@ -113,7 +126,6 @@ describe('sanitizePayload', () => {
 				accountability: adminAccountability,
 				schema,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1, title: 'Hello World' });
@@ -126,7 +138,6 @@ describe('sanitizePayload', () => {
 				accountability: adminAccountability,
 				schema,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1, author: { id: 99, name: 'New Author' } });
@@ -148,7 +159,7 @@ describe('sanitizePayload', () => {
 					{
 						accountability,
 						schema,
-						action: 'update',
+
 						knex: db,
 					},
 				);
@@ -172,7 +183,7 @@ describe('sanitizePayload', () => {
 					{
 						accountability,
 						schema,
-						action: 'update',
+
 						knex: db,
 					},
 				);
@@ -195,7 +206,7 @@ describe('sanitizePayload', () => {
 					{
 						accountability,
 						schema,
-						action: 'update',
+
 						knex: db,
 					},
 				);
@@ -216,7 +227,7 @@ describe('sanitizePayload', () => {
 				const result = await sanitizePayload({ id: 1, comments: [{ id: 1, text: 'text' }] }, 'articles', {
 					accountability,
 					schema,
-					action: 'update',
+
 					knex: db,
 				});
 
@@ -235,7 +246,7 @@ describe('sanitizePayload', () => {
 					{
 						accountability,
 						schema,
-						action: 'update',
+
 						knex: db,
 					},
 				);
@@ -256,7 +267,7 @@ describe('sanitizePayload', () => {
 					{
 						accountability,
 						schema,
-						action: 'update',
+
 						knex: db,
 					},
 				);
@@ -275,7 +286,7 @@ describe('sanitizePayload', () => {
 				const result = await sanitizePayload({ id: 1, tags: [{ tags_id: 1 }] }, 'articles', {
 					accountability,
 					schema,
-					action: 'update',
+
 					knex: db,
 				});
 
@@ -296,7 +307,7 @@ describe('sanitizePayload', () => {
 					{
 						accountability,
 						schema,
-						action: 'update',
+
 						knex: db,
 					},
 				);
@@ -321,14 +332,14 @@ describe('sanitizePayload', () => {
 					{
 						accountability,
 						schema,
-						action: 'update',
+
 						knex: db,
 					},
 				);
 
 				expect(result).toEqual({
 					id: 10,
-					tags: { create: [{ tags_id: { id: 11, tag: 'news' } }], update: [], delete: [] },
+					tags: { create: [{ tags_id: { tag: 'news' } }], update: [], delete: [] },
 				});
 			});
 		});
@@ -355,7 +366,7 @@ describe('sanitizePayload', () => {
 					{
 						accountability,
 						schema,
-						action: 'update',
+
 						knex: db,
 					},
 				);
@@ -366,7 +377,6 @@ describe('sanitizePayload', () => {
 						{
 							collection: 'authors',
 							item: {
-								id: 10,
 								name: 'John Doe',
 							},
 						},
@@ -402,7 +412,6 @@ describe('sanitizePayload', () => {
 					schema,
 					accountability,
 					knex: db,
-					action: 'update',
 				},
 			);
 
@@ -442,7 +451,6 @@ describe('sanitizePayload', () => {
 					schema,
 					accountability,
 					knex: db,
-					action: 'update',
 				},
 			);
 
@@ -476,7 +484,6 @@ describe('sanitizePayload', () => {
 					schema,
 					accountability,
 					knex: db,
-					action: 'update',
 				},
 			);
 
@@ -493,36 +500,9 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1, title: 'Hello World' });
-		});
-
-		test('handles nested creation (null primary key) correctly', async () => {
-			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item) => {
-				if (collection === 'articles') return ['*'];
-				if (collection === 'comments' && item === null) return ['text'];
-				return [];
-			});
-
-			const result = await sanitizePayload(
-				{ id: 1, comments: { create: [{ text: 'Hello' }], update: [], delete: [] } },
-				'articles',
-				{
-					schema,
-					accountability,
-					knex: db,
-					action: 'update',
-				},
-			);
-
-			expect(result).toEqual({
-				id: 1,
-				comments: { create: [{ text: 'Hello' }], update: [], delete: [] },
-			});
-
-			expect(verifyPermissions).toHaveBeenCalledWith(accountability, 'comments', null, 'create', expect.anything());
 		});
 
 		test('handles mixed payloads (root + nested)', async () => {
@@ -539,13 +519,12 @@ describe('sanitizePayload', () => {
 					schema,
 					accountability,
 					knex: db,
-					action: 'update',
 				},
 			);
 
 			expect(result).toEqual({
 				title: 'New Title',
-				author: { id: 1, name: 'John' },
+				author: { name: 'John' },
 			});
 		});
 
@@ -559,7 +538,6 @@ describe('sanitizePayload', () => {
 					schema,
 					accountability: adminAccountability,
 					knex: db,
-					action: 'update',
 				},
 			);
 
@@ -584,7 +562,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1, title: null, author: null });
@@ -597,7 +574,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1 });
@@ -613,7 +589,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1, author: null, a2o_items: null });
@@ -626,7 +601,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1 });
@@ -641,7 +615,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(result).toEqual({ id: 1 });
@@ -668,70 +641,12 @@ describe('sanitizePayload', () => {
 					schema,
 					accountability,
 					knex: db,
-					action: 'update',
 				},
 			);
 
 			expect(result).toEqual({
 				id: 1,
 			});
-		});
-	});
-
-	describe('Ambiguous Update/Create Fallback', () => {
-		test('falls back to create if update is denied but id is present (Client-Generated UUID)', async () => {
-			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item, action) => {
-				if (collection === 'articles') return ['*'];
-
-				if (collection === 'authors') {
-					if (item === 1 && action === 'update') return []; // Deny update (link existing)
-					if (item === 1 && action === 'create') return ['id', 'name']; // Allow create (client-gen UUID)
-				}
-
-				return [];
-			});
-
-			const result = await sanitizePayload(
-				{
-					id: 1,
-					author: { id: 1, name: 'New Author' },
-				},
-				'articles',
-				{
-					schema,
-					accountability,
-					knex: db,
-					action: 'update',
-				},
-			);
-
-			expect(result).toEqual({
-				id: 1,
-				author: { id: 1, name: 'New Author' },
-			});
-		});
-
-		test('fails if both update and create are denied', async () => {
-			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection) => {
-				if (collection === 'articles') return ['*'];
-				return []; // Deny all for author
-			});
-
-			const result = await sanitizePayload(
-				{
-					id: 1,
-					author: { id: 1, name: 'New Author' },
-				},
-				'articles',
-				{
-					schema,
-					accountability,
-					knex: db,
-					action: 'update',
-				},
-			);
-
-			expect(result).toEqual({ id: 1 });
 		});
 	});
 
@@ -754,7 +669,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			expect(payload).toEqual(originalPayload);
@@ -800,7 +714,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			const replyUpdate = result.comments.update[0].replies.update[0];
@@ -843,7 +756,6 @@ describe('sanitizePayload', () => {
 				schema,
 				accountability,
 				knex: db,
-				action: 'update',
 			});
 
 			const replyUpdate = result.comments[0].replies.update[0];
