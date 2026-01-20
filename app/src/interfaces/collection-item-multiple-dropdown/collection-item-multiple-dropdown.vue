@@ -193,7 +193,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 		>
 			<template #item="{ element }">
 				<VListItem block :disabled :non-editable :dense="displayItems.length > 4">
-					<VIcon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<VIcon v-if="!nonEditable" name="drag_handle" class="drag-handle" left :disabled @click.stop="() => {}" />
 
 					<RenderTemplate
 						:collection="selectedCollection"
@@ -205,7 +205,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 					<div class="spacer" />
 
 					<div v-if="!nonEditable" class="item-actions">
-						<VRemove v-if="!disabled" deselect @action="removeItem(element)" />
+						<VRemove deselect :disabled @action="removeItem(element)" />
 					</div>
 				</VListItem>
 			</template>
@@ -234,6 +234,10 @@ function onSort(sortedItems: Record<string, any>[]) {
 
 .v-list {
 	@include mixins.list-interface($deleteable: true);
+}
+
+.v-list-item.disabled:not(.non-editable) {
+	--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .item-actions {

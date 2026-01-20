@@ -350,6 +350,7 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 					<VListItem
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
+						:disabled="disabled && !nonEditable"
 						block
 						clickable
 						@click="editItem(element)"
@@ -364,9 +365,10 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 
 						<div class="spacer" />
 
-						<div class="item-actions">
+						<div v-if="!nonEditable" class="item-actions">
 							<VRemove
-								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
+								v-if="deleteAllowed || isLocalItem(element)"
+								:disabled
 								:item-type="element.$type"
 								:item-info="relationInfo"
 								:item-is-local="isLocalItem(element)"
@@ -374,9 +376,9 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 								@action="deleteItem(element)"
 							/>
 
-							<VMenu show-arrow placement="bottom-end">
-								<template #activator="{ toggle }">
-									<VIcon name="more_vert" clickable @click.stop="toggle" />
+							<VMenu show-arrow placement="bottom-end" :disabled>
+								<template #activator="{ toggle, active }">
+									<VIcon name="more_vert" clickable class="menu" :class="{ active }" :disabled @click.stop="toggle" />
 								</template>
 
 								<VList>
@@ -470,11 +472,23 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 	@include mixins.list-interface($deleteable: true);
 }
 
+.v-list-item.disabled:not(.non-editable) {
+	--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+}
+
 .item-actions {
 	@include mixins.list-interface-item-actions;
 }
 
 .actions {
 	@include mixins.list-interface-actions($pagination: true);
+}
+
+.menu {
+	--v-icon-color-hover: var(--theme--form--field--input--foreground);
+
+	&.active {
+		--v-icon-color: var(--theme--form--field--input--foreground);
+	}
 }
 </style>

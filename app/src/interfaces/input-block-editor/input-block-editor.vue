@@ -76,6 +76,7 @@ onMounted(async () => {
 	editorjsRef.value = new EditorJS({
 		logLevel: 'ERROR' as EditorJS.LogLevels,
 		holder: editorElement.value,
+		// Do not set readOnly to true here — see the watcher below
 		readOnly: false,
 		placeholder: props.placeholder,
 		minHeight: 72,
@@ -106,6 +107,17 @@ onUnmounted(() => {
 	editorjsRef.value?.destroy();
 	bus.reset();
 });
+
+watch(
+	[editorjsIsReady, () => props.disabled],
+	([isReady, isDisabled]) => {
+		if (!isReady) return;
+
+		// Note: EditorJS must be ready before readOnly is toggled; otherwise, the content won’t render, which could result in data loss!
+		editorjsRef.value?.readOnly.toggle(isDisabled);
+	},
+	{ immediate: true },
+);
 
 watch(
 	() => props.value,
@@ -160,7 +172,11 @@ const menuActive = computed(() => fileHandler.value !== null);
 
 <template>
 	<div v-prevent-focusout="menuActive" class="input-block-editor">
-		<div ref="editorElement" :class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"></div>
+		<div
+			ref="editorElement"
+			class="editor"
+			:class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"
+		></div>
 
 		<VDrawer
 			v-if="haveFilesAccess && !disabled"
@@ -201,6 +217,11 @@ const menuActive = computed(() => fileHandler.value !== null);
 	border-color: #7c7c7c;
 }
 
+.input-block-editor .editor {
+	border-radius: var(--theme--border-radius);
+	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
+}
+
 .disabled {
 	pointer-events: none;
 
@@ -212,17 +233,18 @@ const menuActive = computed(() => fileHandler.value !== null);
 }
 
 .bordered {
-	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
-	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: var(--theme--border-radius);
 
-	&:hover {
-		border-color: var(--theme--form--field--input--border-color-hover);
-	}
+	&:not(.disabled) {
+		background-color: var(--theme--form--field--input--background);
 
-	&:focus-within {
-		border-color: var(--theme--form--field--input--border-color-focus);
+		&:hover {
+			border-color: var(--theme--form--field--input--border-color-hover);
+		}
+
+		&:focus-within {
+			border-color: var(--theme--form--field--input--border-color-focus);
+		}
 	}
 }
 

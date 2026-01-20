@@ -213,11 +213,11 @@ function useURLImport() {
 						readonly
 						block
 						:active
-						:disabled="internalDisabled"
+						:disabled="!(nonEditable && file) && internalDisabled"
 						:non-editable="nonEditable"
 						:placeholder="$t('no_file_selected')"
 						:model-value="file && file.title"
-						@click="toggle"
+						@click="!nonEditable ? toggle() : (editDrawerActive = true)"
 					>
 						<VListItemIcon>
 							<div
@@ -245,12 +245,13 @@ function useURLImport() {
 							<VTextOverflow v-else class="placeholder" :text="$t('no_file_selected')" />
 						</VListItemContent>
 
-						<div class="item-actions">
+						<div v-if="!nonEditable" class="item-actions">
 							<template v-if="file">
 								<VIcon
-									v-tooltip="$t('edit_item')"
+									v-tooltip="!internalDisabled && $t('edit_item')"
 									name="edit"
 									clickable
+									:disabled="internalDisabled"
 									@click.stop="
 										deactivate();
 										editDrawerActive = true;
@@ -258,10 +259,10 @@ function useURLImport() {
 								/>
 
 								<VRemove
-									v-if="!internalDisabled"
 									:item-info="relationInfo"
 									:item-edits="edits"
 									deselect
+									:disabled="internalDisabled"
 									@action="remove"
 								/>
 							</template>
