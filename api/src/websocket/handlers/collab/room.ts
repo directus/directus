@@ -345,9 +345,7 @@ export class Room {
 				knex,
 			})) as Item,
 			focuses: Object.fromEntries(
-				Object.entries(focuses).filter(
-					([_, field]) => allowedFields === null || isFieldAllowed(allowedFields, field),
-				),
+				Object.entries(focuses).filter(([_, field]) => allowedFields === null || isFieldAllowed(allowedFields, field)),
 			),
 			connection: client.uid,
 			users: Array.from(clients).map((client) => ({
@@ -498,11 +496,7 @@ export class Room {
 				knex,
 			});
 
-			if (
-				result.focusedField &&
-				allowedFields !== null &&
-				!isFieldAllowed(allowedFields, result.focusedField)
-			)
+			if (result.focusedField && allowedFields !== null && !isFieldAllowed(allowedFields, result.focusedField))
 				continue;
 
 			this.send(client.uid, {
