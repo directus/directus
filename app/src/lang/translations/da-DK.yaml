@@ -1127,6 +1127,7 @@ fields:
     transformations_presets: Begræns transformationer til forudindstillinger nedenfor
     image_editor: Billedredigering
     custom_aspect_ratios: Brugerdefinerede billedformater
+    ai_header_name: Overskrift
   directus_shares:
     name: Navn
     role: Rolle
