@@ -1,9 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import config, { getUrl } from '@common/config';
+import { getUrl } from '@common/config';
 import { CreateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { requestGraphQL } from '@common/transport';
-import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -187,10 +186,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toBeDefined();
 
 					// First product tags: ['electronics', 'premium', 'new']
-					expect(response.body.data[0]).toHaveProperty('metadata_tags_0__json');
-					expect(response.body.data[0]).toHaveProperty('metadata_tags_1__json');
-					expect(response.body.data[0].metadata_tags_0__json).toBe('electronics');
-					expect(response.body.data[0].metadata_tags_1__json).toBe('premium');
+					expect(response.body.data[0]).toHaveProperty('metadata_tags_0_json');
+					expect(response.body.data[0]).toHaveProperty('metadata_tags_1_json');
+					expect(response.body.data[0].metadata_tags_0_json).toBe('electronics');
+					expect(response.body.data[0].metadata_tags_1_json).toBe('premium');
 
 					// GraphQL
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -241,11 +240,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toBeDefined();
 
 					// First product first variant: { sku: 'SKU-001', price: 99.99, available: true }
-					expect(response.body.data[0]).toHaveProperty('metadata_variants_0__sku_json');
-					expect(response.body.data[0]).toHaveProperty('metadata_variants_0__price_json');
-					expect(response.body.data[0].metadata_variants_0__sku_json).toBe('SKU-001');
+					expect(response.body.data[0]).toHaveProperty('metadata_variants_0_sku_json');
+					expect(response.body.data[0]).toHaveProperty('metadata_variants_0_price_json');
+					expect(response.body.data[0].metadata_variants_0_sku_json).toBe('SKU-001');
 
-					const price = response.body.data[0].metadata_variants_0__price_json;
+					const price = response.body.data[0].metadata_variants_0_price_json;
 					expect(Number(price)).toBeCloseTo(99.99, 2);
 
 					// GraphQL
@@ -321,8 +320,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
-					expect(response.body.data).toHaveProperty('metadata_variants_0__sku_json');
-					expect(response.body.data.metadata_variants_0__sku_json).toBeNull();
+					expect(response.body.data).toHaveProperty('metadata_variants_0_sku_json');
+					expect(response.body.data.metadata_variants_0_sku_json).toBeNull();
 				});
 			});
 

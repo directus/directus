@@ -58,6 +58,17 @@ export const LOCAL_TYPES = [
 
 export const RELATIONAL_TYPES = ['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'] as const;
 
-export const FUNCTIONS = ['year', 'month', 'week', 'day', 'weekday', 'hour', 'minute', 'second', 'count', 'json'] as const;
+export const FUNCTIONS = [
+	'year',
+	'month',
+	'week',
+	'day',
+	'weekday',
+	'hour',
+	'minute',
+	'second',
+	'count',
+	'json',
+] as const;
 
 export const SEARCHABLE_TYPES = ['text', 'string', 'integer', 'bigInteger', 'float', 'decimal', 'uuid'] as const;

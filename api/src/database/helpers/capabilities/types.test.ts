@@ -131,9 +131,7 @@ describe('CapabilitiesHelper', () => {
 			const mockKnex = createMockKnex();
 
 			// Simulate a delayed database response
-			mockKnex.raw = vi.fn().mockImplementation(
-				() => new Promise((resolve) => setTimeout(() => resolve({}), 100))
-			);
+			mockKnex.raw = vi.fn().mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({}), 100)));
 
 			const helper = new helpers.TestCapabilitiesHelperWithSupport(mockKnex);
 

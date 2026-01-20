@@ -109,7 +109,7 @@ export async function parseFields(
 
 			// Create a FunctionFieldNode for json functions to preserve the full function call
 			// This is needed because json() requires the full path (e.g., json(metadata.color))
-			if (functionName === 'json') {				
+			if (functionName === 'json') {
 				children.push({
 					type: 'functionField',
 					name,

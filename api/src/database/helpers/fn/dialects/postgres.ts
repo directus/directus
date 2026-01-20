@@ -92,7 +92,10 @@ export function convertToPostgresPath(path: string): string {
 	// ".items[0].name" → "->'items'->0->>'name'"
 	// Use ->> for final element (returns text), -> for intermediate (returns json)
 
-	const parts = path.substring(1).split(/\.|\[|\]/g).filter(Boolean);
+	const parts = path
+		.substring(1)
+		.split(/\.|\[|\]/g)
+		.filter(Boolean);
 	let result = '';
 
 	for (let i = 0; i < parts.length; i++) {
@@ -102,7 +105,7 @@ export function convertToPostgresPath(path: string): string {
 		if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
 			result += (isLast ? '->>' : '->') + parts[i];
 		} else {
-			result += (isLast ? "->>" : "->") + `'${parts[i]}'`;
+			result += (isLast ? '->>' : '->') + `'${parts[i]}'`;
 		}
 	}
 

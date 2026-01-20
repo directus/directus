@@ -81,7 +81,7 @@ export function convertToMySQLPath(path: string): string {
 
 	for (const part of parts) {
 		const num = Number(part);
-		
+
 		if (Number.isInteger(num) && num >= 0 && String(num) === part) {
 			result += `[${part}]`;
 		} else {

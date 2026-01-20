@@ -18,7 +18,11 @@ const TEST_CASES = [
 
 	// Nested property access
 	{ input: '.user.name', expected: "$['user']['name']", description: 'nested property access' },
-	{ input: '.data.settings.theme', expected: "$['data']['settings']['theme']", description: 'deeply nested property access' },
+	{
+		input: '.data.settings.theme',
+		expected: "$['data']['settings']['theme']",
+		description: 'deeply nested property access',
+	},
 	{ input: '.a.b.c.d', expected: "$['a']['b']['c']['d']", description: 'multiple nested levels' },
 
 	// Array index access
@@ -28,21 +32,45 @@ const TEST_CASES = [
 
 	// Mixed property and array access
 	{ input: '.items[0].name', expected: "$['items'][0]['name']", description: 'array index followed by property' },
-	{ input: '.data.items[0].name', expected: "$['data']['items'][0]['name']", description: 'nested property, array, then property' },
-	{ input: '.users[0].profile.email', expected: "$['users'][0]['profile']['email']", description: 'complex nested path' },
+	{
+		input: '.data.items[0].name',
+		expected: "$['data']['items'][0]['name']",
+		description: 'nested property, array, then property',
+	},
+	{
+		input: '.users[0].profile.email',
+		expected: "$['users'][0]['profile']['email']",
+		description: 'complex nested path',
+	},
 
 	// Multiple array indices
 	{ input: '.matrix[0][1]', expected: "$['matrix'][0][1]", description: 'multiple array indices' },
 	{ input: '.data[0][1][2]', expected: "$['data'][0][1][2]", description: 'three array indices' },
 
 	// Complex real-world scenarios
-	{ input: '.metadata.tags[0].value', expected: "$['metadata']['tags'][0]['value']", description: 'metadata with array and property' },
-	{ input: '.response.data.items[3].attributes.name', expected: "$['response']['data']['items'][3]['attributes']['name']", description: 'deeply nested with array in middle' },
-	{ input: '.config.servers[0].host', expected: "$['config']['servers'][0]['host']", description: 'config with array access' },
+	{
+		input: '.metadata.tags[0].value',
+		expected: "$['metadata']['tags'][0]['value']",
+		description: 'metadata with array and property',
+	},
+	{
+		input: '.response.data.items[3].attributes.name',
+		expected: "$['response']['data']['items'][3]['attributes']['name']",
+		description: 'deeply nested with array in middle',
+	},
+	{
+		input: '.config.servers[0].host',
+		expected: "$['config']['servers'][0]['host']",
+		description: 'config with array access',
+	},
 
 	// Edge cases with underscore and special characters
 	{ input: '.user_data', expected: "$['user_data']", description: 'property with underscore' },
-	{ input: '.first_name.last_name', expected: "$['first_name']['last_name']", description: 'nested properties with underscores' },
+	{
+		input: '.first_name.last_name',
+		expected: "$['first_name']['last_name']",
+		description: 'nested properties with underscores',
+	},
 
 	// Edge cases with numbers in property names
 	{ input: '.item1', expected: "$['item1']", description: 'property with number suffix' },
