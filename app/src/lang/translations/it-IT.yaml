@@ -1341,6 +1341,7 @@ fields:
     public_registration_verify_email: Verifica email
     public_registration_verify_email_note: Invia un'email all'utente che effettua la registrazione chiedendogli di cliccare su un link di verifica prima di accedere.
     visual_editor_urls: URL per l'editor visuale
+    ai_header_name: Header
   directus_shares:
     name: Nome
     role: Ruolo
