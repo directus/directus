@@ -295,6 +295,7 @@ const livePreviewFullWidth = useLocalStorage<boolean>('live-preview-full-width',
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
 const livePreviewSizeDefault = 50;
 const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', livePreviewSizeDefault);
+const livePreviewEnforceMinimum = ref(false);
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
@@ -308,6 +309,7 @@ const livePreviewCollapsed = computed({
 		return !livePreviewActive.value;
 	},
 	set(value: boolean) {
+		if (!value) livePreviewEnforceMinimum.value = true;
 		livePreviewMode.value = value ? null : 'split';
 	},
 });
@@ -318,10 +320,23 @@ const livePreviewSize = computed({
 			return livePreviewActive.value ? 100 : 0;
 		}
 
-		return livePreviewSizeStorage.value || livePreviewSizeDefault;
+		const storedValue = livePreviewSizeStorage.value || livePreviewSizeDefault;
+
+		if (livePreviewEnforceMinimum.value && storedValue < livePreviewSizeDefault) {
+			return livePreviewSizeDefault;
+		}
+
+		return storedValue;
 	},
 	set(value: number) {
 		if (isMobile.value) return;
+
+		// Ignore values from component init when nforcing minimum
+		if (livePreviewEnforceMinimum.value && value < livePreviewSizeDefault) {
+			return;
+		}
+
+		livePreviewEnforceMinimum.value = false;
 
 		// Auto-toggle full-width based on drag position
 		if (value >= 95 && !livePreviewFullWidth.value) {
