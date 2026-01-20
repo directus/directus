@@ -342,8 +342,8 @@ function setToNow() {
 <style lang="scss" scoped>
 .v-date-picker {
 	.icon {
-		width: 1.5rem;
-		height: 1.5rem;
+		inline-size: 1.5rem;
+		block-size: 1.5rem;
 	}
 
 	.calendar {
@@ -367,8 +367,8 @@ function setToNow() {
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		width: 2.5rem;
-		height: 2.5rem;
+		inline-size: 2.5rem;
+		block-size: 2.5rem;
 		color: var(--theme--foreground-accent);
 		background-color: transparent;
 		cursor: pointer;
@@ -390,7 +390,7 @@ function setToNow() {
 	}
 
 	.calendar-grid {
-		width: 100%;
+		inline-size: 100%;
 		user-select: none;
 		border-collapse: collapse;
 	}
@@ -400,14 +400,14 @@ function setToNow() {
 	}
 
 	.calendar-grid-body {
-		margin-top: 0.25rem;
+		margin-block-start: 0.25rem;
 	}
 
 	.calendar-grid-row {
 		display: grid;
-		margin-bottom: 0.25rem;
+		margin-block-end: 0.25rem;
 		grid-template-columns: repeat(7, minmax(0, 1fr));
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	.calendar-head-cell {
@@ -494,11 +494,10 @@ function setToNow() {
 		background: transparent;
 		flex: 0 1 auto;
 		inline-size: auto;
-		width: auto;
 		padding: 0;
 		margin: 0;
-		text-align: right;
-		text-align-last: right;
+		text-align: end;
+		text-align-last: end;
 		font: inherit;
 		color: inherit;
 		line-height: 1.2;
@@ -521,7 +520,6 @@ function setToNow() {
 		flex: 0 0 auto;
 		inline-size: 6ch;
 		max-inline-size: 8ch;
-		width: auto;
 		padding: 0;
 		margin: 0;
 		font: inherit;
@@ -529,7 +527,7 @@ function setToNow() {
 		line-height: 1.2;
 		border: none;
 		cursor: pointer;
-		text-align: left;
+		text-align: start;
 	}
 
 	.calendar-year-input:focus,
@@ -555,8 +553,8 @@ function setToNow() {
 		display: flex;
 		justify-content: center;
 		inline-size: 100%;
-		border-top: 1px solid var(--theme--border-color);
-		border-bottom: 1px solid var(--theme--border-color);
+		border-block-start: 1px solid var(--theme--border-color);
+		border-block-end: 1px solid var(--theme--border-color);
 	}
 
 	.time-field {
@@ -591,7 +589,7 @@ function setToNow() {
 	.calendar-today-button {
 		background: transparent;
 		border: none;
-		width: 100%;
+		inline-size: 100%;
 		cursor: pointer;
 		color: var(--theme--primary);
 		font-size: 1rem;
