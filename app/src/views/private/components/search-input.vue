@@ -11,6 +11,7 @@ import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-fil
 const props = withDefaults(
 	defineProps<{
 		modelValue: string | null;
+		disabled?: boolean;
 		showFilter?: boolean;
 		collection?: string;
 		filter?: Filter | null;
@@ -142,7 +143,7 @@ function emitValue() {
 		class="search-badge"
 		:class="{ active, 'filter-active': filterActive }"
 		:value="activeFilterCount"
-		:disabled="!activeFilterCount || filterActive"
+		:disabled="disabled || !activeFilterCount || filterActive"
 	>
 		<div
 			v-click-outside="{
@@ -153,6 +154,7 @@ function emitValue() {
 			class="search-input"
 			:class="{
 				active,
+				disabled,
 				'filter-active': filterActive,
 				'has-content': !!modelValue,
 				'filter-border': filterBorder,
@@ -161,7 +163,7 @@ function emitValue() {
 			role="search"
 			@click="activate"
 		>
-			<VIcon small name="search" class="icon-search" :clickable="!active" @click="input?.focus()" />
+			<VIcon small name="search" class="icon-search" :disabled :clickable="!active" @click="input?.focus()" />
 			<input
 				ref="input"
 				:value="modelValue"
@@ -172,6 +174,7 @@ function emitValue() {
 				autocorrect="off"
 				autocomplete="off"
 				:tabindex="!active && !modelValue ? -1 : undefined"
+				:disabled
 				@input="emitValue"
 				@paste="emitValue"
 				@keydown.esc="disable"
@@ -186,15 +189,17 @@ function emitValue() {
 				clickable
 				class="icon-clear"
 				name="close"
+				:disabled
 				@click.stop="clear"
 			/>
 			<template v-if="showFilter">
 				<VIcon
-					v-tooltip.bottom="$t('filter')"
+					v-tooltip.bottom="!disabled && $t('filter')"
 					small
 					clickable
 					class="icon-filter"
 					name="filter_list"
+					:disabled
 					@click="toggleFilter"
 				/>
 
@@ -275,7 +280,7 @@ function emitValue() {
 		overflow: hidden;
 		color: var(--theme--foreground);
 		text-overflow: ellipsis;
-		background-color: var(--theme--form--field--input--background);
+		background-color: transparent;
 		border: none;
 		border-radius: 0;
 		flex-grow: 1;
@@ -284,6 +289,10 @@ function emitValue() {
 		&::placeholder {
 			color: var(--theme--foreground-subdued);
 		}
+	}
+
+	&.disabled input {
+		color: var(--theme--foreground-subdued);
 	}
 
 	.spacer {
@@ -307,6 +316,13 @@ function emitValue() {
 		}
 	}
 
+	&.disabled {
+		.icon-search,
+		.icon-filter {
+			--v-icon-color: var(--theme--foreground-subdued);
+		}
+	}
+
 	.icon-search {
 		margin-block: 0;
 		margin-inline: var(--icon-search-padding-left) var(--icon-search-padding-right);
@@ -317,7 +333,7 @@ function emitValue() {
 	}
 
 	&:focus-within,
-	&:hover {
+	&:not(.disabled):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
