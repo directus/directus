@@ -86,7 +86,7 @@ defineExpose({
 		id="revisions"
 		:title
 		icon="change_history"
-		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
+		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : undefined"
 		@toggle="onToggle"
 	>
 		<VProgressLinear v-if="!revisions && loading" indeterminate />
