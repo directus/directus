@@ -203,7 +203,7 @@ export class CollabHandler {
 
 			let focus = await room.getFocusByUser(client.uid);
 
-			if (!focus) {
+			if (focus !== message.field) {
 				await room.focus(client, message.field);
 
 				focus = await room.getFocusByUser(client.uid);
