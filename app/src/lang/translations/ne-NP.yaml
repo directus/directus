@@ -1035,6 +1035,7 @@ fields:
     transformations_none: रूपान्तरण असक्षम गर्नुहोस्
     transformations_presets: तलका प्रिसेटहरूमा रूपान्तरणहरू सीमित गर्नुहोस्
     image_editor: तस्वीर सम्पादक
+    ai_header_name: हेडर
   directus_shares:
     name: नाम
     role: भूमिका
