@@ -1310,6 +1310,7 @@ fields:
     public_registration_email_filter_note: Tylko adresy e-mail pasujące do tego filtra mogą się zarejestrować.
     public_registration_verify_email: Potwierdź e-mail
     public_registration_verify_email_note: Wysyła e-mail do użytkownika rejestrującego z prośbą o kliknięcie na link weryfikacyjny zanim będzie mógł się zalogować.
+    ai_header_name: Nagłówek
   directus_shares:
     name: Nazwa
     role: Rola
