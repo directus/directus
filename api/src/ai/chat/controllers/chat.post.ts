@@ -1,3 +1,4 @@
+import type { StandardProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { safeValidateUIMessages, type Tool } from 'ai';
 import type { RequestHandler } from 'express';
@@ -22,18 +23,20 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 
 	const aiSettings = res.locals['ai'].settings;
 
-	const allowedModelsMap: Record<string, string[] | null> = {
+	const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
 		openai: aiSettings.openaiAllowedModels,
 		anthropic: aiSettings.anthropicAllowedModels,
 		google: aiSettings.googleAllowedModels,
 	};
 
-	const allowedModels = allowedModelsMap[provider];
-
 	// For standard providers: null/empty = no models allowed, must be in list
-	// openai-compatible skips validation (not in map, so allowedModels is undefined)
-	if (allowedModels !== undefined && (!allowedModels || allowedModels.length === 0 || !allowedModels.includes(model))) {
-		throw new ForbiddenError({ reason: 'Model not allowed for this provider' });
+	// openai-compatible skips validation entirely
+	if (provider !== 'openai-compatible') {
+		const allowedModels = allowedModelsMap[provider];
+
+		if (!allowedModels || allowedModels.length === 0 || !allowedModels.includes(model)) {
+			throw new ForbiddenError({ reason: 'Model not allowed for this provider' });
+		}
 	}
 
 	if (rawMessages.length === 0) {

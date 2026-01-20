@@ -1,5 +1,5 @@
 import { Chat } from '@ai-sdk/vue';
-import { type SystemTool, type ToolApprovalMode } from '@directus/ai';
+import { type StandardProviderType, type SystemTool, type ToolApprovalMode } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
 	DefaultChatTransport,
@@ -56,7 +56,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		const customModels = buildCustomModels(settingsStore.settings?.ai_openai_compatible_models ?? null);
 		const allModels = [...AI_MODELS, ...customModels];
 
-		const allowedModelsMap: Record<'openai' | 'anthropic' | 'google', string[] | null> = {
+		const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
 			openai: settingsStore.settings?.ai_openai_allowed_models ?? null,
 			anthropic: settingsStore.settings?.ai_anthropic_allowed_models ?? null,
 			google: settingsStore.settings?.ai_google_allowed_models ?? null,
@@ -92,7 +92,7 @@ export const useAiStore = defineStore('ai-store', () => {
 				const exists = result.some((m) => m.provider === provider && m.model === modelId);
 
 				if (!exists) {
-					result.push(buildCustomModelDefinition(provider as 'openai' | 'anthropic' | 'google', modelId));
+					result.push(buildCustomModelDefinition(provider as StandardProviderType, modelId));
 				}
 			}
 		}

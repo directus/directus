@@ -16,7 +16,7 @@ export interface AppModelDefinition extends ModelDefinition {
 	icon: Component;
 }
 
-const PROVIDER_ICONS: Record<string, Component> = {
+const PROVIDER_ICONS: Record<ProviderType, Component> = {
 	openai: LogoOpenAI,
 	anthropic: LogoClaude,
 	google: LogoGoogle,
