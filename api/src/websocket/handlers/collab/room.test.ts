@@ -287,6 +287,60 @@ describe('RoomManager', () => {
 		expect(disposeSpy).toHaveBeenCalled();
 		expect(roomManager.rooms[room.uid]).toBeUndefined(); // Cannot use getRoom() here as it's mocked
 	});
+
+	describe('room disposal stability', () => {
+		test('handles update when store is cleared (disposal race)', async () => {
+			const roomManager = new RoomManager(mockMessenger);
+			const item = getTestItem();
+			let room = await roomManager.createRoom('coll', item, null);
+			const uid = getRoomHash('coll', item, null);
+			const clientA = mockWebSocketClient({ uid: 'abc' });
+
+			await room.join(clientA);
+
+			mockData.clear();
+
+			room = (await roomManager.getRoom(uid))!;
+
+			// Update should not crash and should trigger self-healing
+			await expect(room.update(clientA, { title: 'New' })).resolves.not.toThrow();
+
+			// Should have re-populated ALL foundational keys in store
+			expect(mockData.get(`${uid}:uid`)).toBe(uid);
+			expect(mockData.get(`${uid}:collection`)).toBe('coll');
+			expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'New' });
+		});
+
+		test('cleanupRooms does not close if a user joined during check', async () => {
+			const roomManager = new RoomManager(mockMessenger);
+			const item = getTestItem();
+			const room = await roomManager.createRoom('a', item, null);
+
+			const originalStore = room.store;
+			let intercepted = false;
+
+			// Simulate concurrent join during closure
+			room.store = async (callback: any) => {
+				if (!intercepted) {
+					intercepted = true;
+
+					await originalStore(
+						async (s: any) =>
+							await s.set('clients', [{ uid: 'abc', accountability: { user: 'user-abc' } as any, color: 'red' }]),
+					);
+				}
+
+				return await originalStore(callback);
+			};
+
+			await roomManager.cleanupRooms();
+
+			expect(roomManager.rooms[room.uid]).toBeDefined();
+			expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
+
+			room.store = originalStore;
+		});
+	});
 });
 
 describe('room', () => {
@@ -1023,74 +1077,5 @@ describe('getRoomHash', () => {
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('def', '123', 'v1'));
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '456', 'v1'));
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '123', 'v2'));
-	});
-});
-
-describe('room disposal stability', () => {
-	test('handles update when store is cleared (disposal race)', async () => {
-		const item = getTestItem();
-		const uid = getRoomHash('coll', item, null);
-		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
-		await room.ensureInitialized();
-		const clientA = mockWebSocketClient({ uid: 'abc' });
-
-		await room.join(clientA);
-
-		mockData.clear();
-
-		// Update should not crash and should trigger self-healing
-		await expect(room.update(clientA, { title: 'New' })).resolves.not.toThrow();
-
-		// Should have re-populated ALL foundational keys in store
-		expect(mockData.get(`${uid}:uid`)).toBe(uid);
-		expect(mockData.get(`${uid}:collection`)).toBe('coll');
-		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'New' });
-	});
-
-	test('handles join after close() but before local reference removal', async () => {
-		const roomManager = new RoomManager(mockMessenger);
-		const item = getTestItem();
-		const room = await roomManager.createRoom('a', item, null);
-		const client = mockWebSocketClient({ uid: 'abc' });
-
-		await room.close(true); // Forced close
-
-		// Join a closed room
-		await expect(room.join(client)).resolves.not.toThrow();
-
-		// Should have re-initialized all foundational metadata
-		expect(mockData.get(`${room.uid}:uid`)).toBe(room.uid);
-		expect(mockData.get(`${room.uid}:collection`)).toBe('a');
-		expect(mockData.get(`${room.uid}:clients`)).toHaveLength(1);
-	});
-
-	test('cleanupRooms does not close if a user joined during check', async () => {
-		const roomManager = new RoomManager(mockMessenger);
-		const item = getTestItem();
-		const room = await roomManager.createRoom('a', item, null);
-
-		const originalStore = room.store;
-		let intercepted = false;
-
-		// Simulate concurrent join during closure
-		room.store = async (callback: any) => {
-			if (!intercepted) {
-				intercepted = true;
-
-				await originalStore(
-					async (s: any) =>
-						await s.set('clients', [{ uid: 'abc', accountability: { user: 'user-abc' } as any, color: 'red' }]),
-				);
-			}
-
-			return await originalStore(callback);
-		};
-
-		await roomManager.cleanupRooms();
-
-		expect(roomManager.rooms[room.uid]).toBeDefined();
-		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
-
-		room.store = originalStore;
 	});
 });
