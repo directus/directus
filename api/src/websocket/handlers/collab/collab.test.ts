@@ -243,14 +243,26 @@ describe('CollabHandler', () => {
 	});
 
 	describe('onUpdate', () => {
-		test('rejects if client is not focused on the field', async () => {
+		test('implicitly switches focus if client is not focused on the field', async () => {
+			let currentFocus = 'other-field';
+
 			const mockRoom = {
 				hasClient: vi.fn().mockResolvedValue(true),
-				getFocusByUser: vi.fn().mockResolvedValue('other-field'),
-				focus: vi.fn().mockResolvedValue(true),
+				getFocusByUser: vi.fn().mockImplementation(async () => currentFocus),
+				focus: vi.fn().mockImplementation(async (client, field) => {
+					currentFocus = field;
+					return true;
+				}),
+				update: vi.fn(),
 				collection: 'articles',
 				item: 1,
 			};
+
+			vi.mocked(getSchema).mockResolvedValue({
+				collections: {
+					articles: { fields: { title: {} } },
+				},
+			} as any);
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
@@ -261,9 +273,9 @@ describe('CollabHandler', () => {
 				changes: 'test',
 			} as any);
 
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/without focusing on it first/);
+			expect(mockRoom.focus).toHaveBeenCalledWith(mockClient, 'title');
+			expect(mockRoom.update).toHaveBeenCalledWith(mockClient, { title: 'test' });
+			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
 
 		test('rejects if field update permission is missing', async () => {

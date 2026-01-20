@@ -204,29 +204,22 @@ describe('Collaborative Editing: Permissions', () => {
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
-				action: 'focus',
-				room,
-				field: 'title',
-			});
-
-			await wsAdmin.sendMessage({
-				type: 'collab',
 				action: 'update',
 				room,
 				field: 'title',
 				changes: null, // Unset
 			});
 
-			// Restricted user should receive the update and focus
-			const focusMessage = await waitForMatchingMessage(
-				wsRestricted,
-				(m: any) => m['action'] === 'focus' && m['field'] === 'title',
-			);
+			await sleep(500);
 
-			const updateMessage = await waitForMatchingMessage(
-				wsRestricted,
-				(m: any) => m['action'] === 'update' && m['field'] === 'title' && m['changes'] === undefined,
-			);
+			// Restricted user should receive the update and focus (order not guaranteed)
+			const [updateMessage, focusMessage] = (await waitForMatchingMessage(wsRestricted, [
+				(m: any) => m['action'] === 'update' && m['field'] === 'title' && m['changes'] === null,
+				(m: any) => m['action'] === 'focus' && m['field'] === 'title',
+			])) as any[];
+
+			expect(updateMessage).toBeDefined();
+			expect(focusMessage).toBeDefined();
 
 			expect(focusMessage).toMatchObject({
 				type: 'collab',

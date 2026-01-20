@@ -56,24 +56,32 @@ export async function waitForMatchingMessage(
 		getUnreadMessageCount: () => number;
 		getMessages: (count: number, options?: any) => Promise<WebSocketResponse[] | undefined>;
 	},
-	matcher: (message: WebSocketResponse) => boolean,
+	matcher: ((message: WebSocketResponse) => boolean) | ((message: WebSocketResponse) => boolean)[],
 	timeout = 10000,
-) {
+): Promise<WebSocketResponse | WebSocketResponse[]> {
 	const start = Date.now();
+	const isArray = Array.isArray(matcher);
+	const matchers = isArray ? matcher : [matcher];
+	const matches: (WebSocketResponse | undefined)[] = new Array(matchers.length).fill(undefined);
 
 	while (Date.now() - start < timeout) {
 		const count = ws.getUnreadMessageCount();
 
 		if (count > 0) {
-			const messages = await ws.getMessages(count, { waitTimeout: 1000, peek: true });
+			const messages = await ws.getMessages(count);
 
 			if (messages) {
-				for (let i = 0; i < messages.length; i++) {
-					if (matcher(messages[i]!)) {
-						await ws.getMessages(i + 1);
-						return messages[i]!;
+				for (const message of messages) {
+					for (let i = 0; i < matchers.length; i++) {
+						if (!matches[i] && matchers[i]!(message)) {
+							matches[i] = message;
+						}
 					}
 				}
+			}
+
+			if (matches.every((m) => m !== undefined)) {
+				return isArray ? (matches as WebSocketResponse[]) : matches[0]!;
 			}
 		}
 
