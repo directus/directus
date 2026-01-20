@@ -7,6 +7,7 @@ import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
+import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { Messenger } from './messenger.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { useStore } from './store.js';
@@ -341,11 +342,12 @@ export class Room {
 			changes: (await sanitizePayload(changes as Record<string, unknown>, this.collection, {
 				accountability: client.accountability,
 				schema,
-				action: 'read',
 				knex,
 			})) as Item,
 			focuses: Object.fromEntries(
-				Object.entries(focuses).filter(([_, field]) => allowedFields.includes(field) || allowedFields.includes('*')),
+				Object.entries(focuses).filter(
+					([_, field]) => allowedFields === null || isFieldAllowed(allowedFields, field),
+				),
 			),
 			connection: client.uid,
 			users: Array.from(clients).map((client) => ({
@@ -410,7 +412,6 @@ export class Room {
 				((await sanitizePayload(changes, this.collection, {
 					accountability: client.accountability,
 					schema,
-					action: 'read',
 					knex,
 				})) as Record<string, unknown>) || {};
 
@@ -449,7 +450,7 @@ export class Room {
 				knex,
 			});
 
-			if (field && !(allowedFields.includes(field) || allowedFields.includes('*'))) continue;
+			if (field && allowedFields !== null && !isFieldAllowed(allowedFields, field)) continue;
 
 			this.send(client.uid, {
 				action: ACTION.SERVER.UPDATE,
@@ -497,7 +498,11 @@ export class Room {
 				knex,
 			});
 
-			if (result.focusedField && !(allowedFields.includes(result.focusedField) || allowedFields.includes('*')))
+			if (
+				result.focusedField &&
+				allowedFields !== null &&
+				!isFieldAllowed(allowedFields, result.focusedField)
+			)
 				continue;
 
 			this.send(client.uid, {

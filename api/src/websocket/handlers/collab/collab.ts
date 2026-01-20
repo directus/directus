@@ -225,7 +225,7 @@ export class CollabHandler {
 			});
 
 			if (
-				!isFieldAllowed(allowedFields, message.field) ||
+				(allowedFields !== null && !isFieldAllowed(allowedFields, message.field)) ||
 				!schema.collections[room.collection]?.fields[message.field]
 			) {
 				throw new InvalidPayloadError({
@@ -270,7 +270,7 @@ export class CollabHandler {
 			});
 
 			for (const key of Object.keys(message.changes ?? {})) {
-				if (!isFieldAllowed(allowedFields, key))
+				if (allowedFields !== null && !isFieldAllowed(allowedFields, key))
 					throw new InvalidPayloadError({
 						reason: `No permission to update field ${key} or field does not exist`,
 					});
@@ -324,7 +324,10 @@ export class CollabHandler {
 					{ knex, schema },
 				);
 
-				if (!isFieldAllowed(allowedReadFields, message.field) || !isFieldAllowed(allowedUpdateFields, message.field)) {
+				if (
+					(allowedReadFields !== null && !isFieldAllowed(allowedReadFields, message.field)) ||
+					(allowedUpdateFields !== null && !isFieldAllowed(allowedUpdateFields, message.field))
+				) {
 					throw new InvalidPayloadError({
 						reason: `No permission to focus on field ${message.field} or field does not exist`,
 					});
