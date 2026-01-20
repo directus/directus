@@ -1333,6 +1333,7 @@ fields:
     public_registration_email_filter_note: Pouze e-mailové adresy odpovídající tomuto filtru se mohou zaregistrovat.
     public_registration_verify_email: Ověřit e-mail
     public_registration_verify_email_note: Zašle registrovanému uživateli e-mail a požádá ho, aby klikl na ověřovací odkaz, než se bude moci přihlásit.
+    ai_header_name: Hlavička
   directus_shares:
     name: Jméno
     role: Role
