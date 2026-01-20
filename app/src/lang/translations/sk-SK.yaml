@@ -1324,6 +1324,7 @@ fields:
     public_registration_email_filter_note: Len adersy vyhovujúce tomuto filtru sa môžu zaregistrovať.
     public_registration_verify_email: Overiť Email
     public_registration_verify_email_note: Pošle email registrovanému používateľovi so žiadosťou o kliknutie na verifikačný odkaz pred prihlásením.
+    ai_header_name: Hlavička
   directus_shares:
     name: Názov
     role: Rola
