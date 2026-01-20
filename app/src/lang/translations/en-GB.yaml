@@ -1086,6 +1086,7 @@ fields:
     transformations_presets: Limit transformations to presets below
     image_editor: Image Editor
     custom_aspect_ratios: Custom Aspect Ratios
+    ai_header_name: Header
   directus_shares:
     name: Name
     role: Role
