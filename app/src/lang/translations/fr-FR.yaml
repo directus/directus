@@ -1365,6 +1365,7 @@ fields:
     public_registration_email_filter_note: Seules les adresses e-mail correspondant à ce filtre peuvent s'inscrire.
     public_registration_verify_email: Vérifier l'adresse e-mail
     public_registration_verify_email_note: Envoie un e-mail à l'utilisateur qui vient de s'inscrire, lui demandant de cliquer sur un lien de vérification avant de pouvoir se connecter.
+    ai_header_name: En-tête
   directus_shares:
     name: Nom
     role: Rôle
