@@ -110,7 +110,7 @@ function useValidationScrollToField() {
 
 <template>
 	<div class="overlay-item-content" :class="{ empty: emptyForm }">
-		<FilePreviewReplace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
+		<FilePreviewReplace v-if="file" class="preview" :disabled :non-editable :file in-modal @replace="refresh" />
 
 		<VInfo v-if="emptyForm" :title="$t('no_visible_fields')" icon="search" center>
 			{{ $t('no_visible_fields_copy') }}

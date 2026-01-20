@@ -167,6 +167,10 @@ function emitClick(event: MouseEvent) {
 		}
 	}
 
+	&[disabled] {
+		cursor: not-allowed;
+	}
+
 	&.sup {
 		--v-icon-size: 8px;
 

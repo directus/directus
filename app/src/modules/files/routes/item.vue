@@ -333,7 +333,13 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<div class="file-item">
-			<FilePreviewReplace v-if="item" class="preview" :file="item" @replace="refresh" />
+			<FilePreviewReplace
+				v-if="item"
+				class="preview"
+				:disabled="updateAllowed === false"
+				:file="item"
+				@replace="refresh"
+			/>
 
 			<ImageEditor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
 
