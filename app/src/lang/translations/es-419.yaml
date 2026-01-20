@@ -1430,6 +1430,7 @@ fields:
     mcp_system_prompt_enabled_note: "Usar el <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>prompt de sistema predeterminado</a> para guiar el comportamiento del LLM. Desactívalo para eliminarlo o reemplazarlo con tu propio prompt a continuación."
     mcp_system_prompt: Prompt de sistema personalizado
     mcp_system_prompt_note: 'Prompt de sistema personalizado para reemplazar el predeterminado. Déjalo vacío para usar el predeterminado (si está habilitado arriba).'
+    ai_header_name: Cabecera
   directus_shares:
     name: Nombre
     role: Rol
