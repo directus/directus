@@ -35,6 +35,10 @@ const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl
 function closePopup() {
 	window.close();
 }
+
+function onSaved() {
+	(window.opener as Window | null)?.refresh?.();
+}
 </script>
 
 <template>
@@ -45,5 +49,6 @@ function closePopup() {
 		:can-enable-visual-editing="visualEditingEnabled"
 		:visual-editor-urls="visualEditorUrls"
 		@new-window="closePopup"
+		@saved="onSaved"
 	/>
 </template>
