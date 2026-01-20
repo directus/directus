@@ -71,14 +71,14 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	});
 
 	watch(
-		[queryVersion, rawVersions],
-		([newQueryVersion, newRawVersions]) => {
-			if (!newRawVersions) return;
+		[queryVersion, versions],
+		([newQueryVersion, newVersions]) => {
+			if (!newVersions) return;
 
 			const previouslySelectedKey = currentVersion.value?.key;
 
 			currentVersion.value = newQueryVersion
-				? (versions.value?.find((version) => version.key === newQueryVersion && isVersionSelectable(version)) ?? null)
+				? (newVersions.find((version) => version.key === newQueryVersion && isVersionSelectable(version)) ?? null)
 				: null;
 
 			if (currentVersion.value?.key !== previouslySelectedKey) {
@@ -189,19 +189,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	}
 
 	async function deleteVersion() {
-		if (currentVersion.value?.type === 'global') {
-			await getVersions();
-			return;
-		}
-
 		if (!currentVersion.value || !rawVersions.value) return;
 
+		const isLocalVersion = currentVersion.value?.type === 'local';
 		const currentVersionId = currentVersion.value.id;
 
 		const index = rawVersions.value.findIndex((version) => version.id === currentVersionId);
 
 		if (index !== undefined) {
-			currentVersion.value = null;
+			if (isLocalVersion) currentVersion.value = null;
 			rawVersions.value.splice(index, 1);
 		}
 	}

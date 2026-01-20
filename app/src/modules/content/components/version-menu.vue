@@ -280,10 +280,11 @@ function useComparisonDialog() {
 	async function onPromoteComplete(deleteOnPromote: boolean) {
 		comparisonModalActive.value = false;
 
+		// Must be called before await deleteVersion
+		emit('switch', null);
+
 		if (deleteOnPromote) {
 			await deleteVersion();
-		} else {
-			emit('switch', null);
 		}
 	}
 }
@@ -417,7 +418,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 			mode="version"
 			:current-version="currentVersion as ContentVersionWithType"
 			@cancel="comparisonModalActive = false"
-			@promote="onPromoteComplete($event)"
+			@promote="onPromoteComplete"
 		/>
 
 		<VDialog v-model="switchDialogActive" @esc="switchDialogActive = false" @apply="switchVersion">
