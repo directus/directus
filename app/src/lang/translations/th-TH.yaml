@@ -864,6 +864,7 @@ fields:
     storage_default_folder: โฟลเดอร์เริ่มต้น
     custom_css: CSS ที่กำหนดเอง
     module_bar: โมดูลบาร์
+    ai_header_name: เฮดเดอร์
   directus_shares:
     name: ชื่อ
     role: บทบาท
