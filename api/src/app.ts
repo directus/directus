@@ -12,6 +12,7 @@ import { createRequire } from 'node:module';
 import path from 'path';
 import qs from 'qs';
 import { registerAuthProviders } from './auth.js';
+import { registerDeploymentDrivers } from './deployment.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';
@@ -116,6 +117,7 @@ export default async function createApp(): Promise<express.Application> {
 	await validateStorage();
 
 	await registerAuthProviders();
+	registerDeploymentDrivers();
 
 	const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
