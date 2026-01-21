@@ -1,11 +1,11 @@
 import { defineInterface } from '@directus/extensions';
-import InterfaceListM2M from './list-m2m.vue';
-import PreviewSVG from './preview.svg?raw';
 import {
 	getCommonOptions,
 	getM2MSpecificOptions,
 	type ListRelationOptionsConfig,
 } from '../shared/list-relation-options';
+import InterfaceListM2M from './list-m2m.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'list-m2m',
