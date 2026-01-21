@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
+import { validateMessage } from 'graphql-ws';
 import { difference, upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
@@ -52,11 +53,23 @@ export class CollabHandler {
 		emitter.onAction('websocket.message', async ({ client, message }) => {
 			if (getMessageType(message) !== WS_TYPE.COLLAB) return;
 
+			const { data, error } = ClientMessage.safeParse(message);
+
+			if (!data) {
+				this.messenger.handleError(
+					client.uid,
+					new InvalidPayloadError({
+						reason: `Couldn't parse payload. ${error.message}`,
+					}),
+				);
+
+				return;
+			}
+
 			try {
-				const validMessage = ClientMessage.parse(message);
-				await this[`on${upperFirst(validMessage.action)}`](client, message);
+				await this[`on${upperFirst(data.action)}`](client, message);
 			} catch (error) {
-				this.messenger.handleError(client.uid, error);
+				this.messenger.handleError(client.uid, error, data?.action);
 			}
 		});
 
@@ -111,83 +124,75 @@ export class CollabHandler {
 	 * Join a collaboration room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
-		try {
-			if (client.accountability?.share) {
-				throw new InvalidPayloadError({
-					reason: 'Collaboration is not supported for shares',
-				});
-			}
-
-			this.messenger.addClient(client);
-			const schema = await getSchema();
-
-			const allowedCollections = await fetchAllowedCollections(
-				{ accountability: client.accountability!, action: 'read' },
-				{ knex: getDatabase(), schema },
-			);
-
-			if (!allowedCollections.includes(message.collection))
-				throw new InvalidPayloadError({
-					reason: `No permission to access collection ${message.collection} or collection does not exist`,
-				});
-
-			if (!message.item && !schema.collections[message.collection]?.singleton)
-				throw new InvalidPayloadError({
-					reason: `Item id has to be provided for non singleton collections`,
-				});
-
-			try {
-				const service = getService(message.collection, {
-					schema,
-					accountability: client.accountability,
-				});
-
-				if (schema.collections[message.collection]?.singleton) {
-					await service.readSingleton({});
-				} else {
-					await service.readOne(message.item!);
-				}
-			} catch {
-				throw new InvalidPayloadError({
-					reason: `No permission to access item or it does not exist`,
-				});
-			}
-
-			const room = await this.roomManager.createRoom(
-				message.collection,
-				message.item,
-				message.version ?? null,
-				message.initialChanges,
-			);
-
-			await room.join(client);
-		} catch (err) {
-			this.messenger.handleError(client.uid, err);
+		if (client.accountability?.share) {
+			throw new InvalidPayloadError({
+				reason: 'Collaboration is not supported for shares',
+			});
 		}
+
+		this.messenger.addClient(client);
+		const schema = await getSchema();
+
+		const allowedCollections = await fetchAllowedCollections(
+			{ accountability: client.accountability!, action: 'read' },
+			{ knex: getDatabase(), schema },
+		);
+
+		if (!allowedCollections.includes(message.collection))
+			throw new InvalidPayloadError({
+				reason: `No permission to access collection ${message.collection} or collection does not exist`,
+			});
+
+		if (!message.item && !schema.collections[message.collection]?.singleton)
+			throw new InvalidPayloadError({
+				reason: `Item id has to be provided for non singleton collections`,
+			});
+
+		try {
+			const service = getService(message.collection, {
+				schema,
+				accountability: client.accountability,
+			});
+
+			if (schema.collections[message.collection]?.singleton) {
+				await service.readSingleton({});
+			} else {
+				await service.readOne(message.item!);
+			}
+		} catch {
+			throw new InvalidPayloadError({
+				reason: `No permission to access item or it does not exist`,
+			});
+		}
+
+		const room = await this.roomManager.createRoom(
+			message.collection,
+			message.item,
+			message.version ?? null,
+			message.initialChanges,
+		);
+
+		await room.join(client);
 	}
 
 	/**
 	 * Leave a collaboration room
 	 */
 	async onLeave(client: WebSocketClient, message?: LeaveMessage) {
-		try {
-			if (message?.room) {
-				const room = await this.roomManager.getRoom(message.room);
-				if (!room)
-					throw new InvalidPayloadError({
-						reason: `Room "${message.room}" does not exist`,
-					});
+		if (message?.room) {
+			const room = await this.roomManager.getRoom(message.room);
+			if (!room)
+				throw new InvalidPayloadError({
+					reason: `Room "${message.room}" does not exist`,
+				});
 
+			await room.leave(client.uid);
+		} else {
+			const rooms = await this.roomManager.getClientRooms(client.uid);
+
+			for (const room of rooms) {
 				await room.leave(client.uid);
-			} else {
-				const rooms = await this.roomManager.getClientRooms(client.uid);
-
-				for (const room of rooms) {
-					await room.leave(client.uid);
-				}
 			}
-		} catch (err) {
-			this.messenger.handleError(client.uid, err);
 		}
 	}
 
@@ -195,58 +200,54 @@ export class CollabHandler {
 	 * Update a field value
 	 */
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
-		try {
-			const room = await this.roomManager.getRoom(message.room);
+		const room = await this.roomManager.getRoom(message.room);
 
-			if (!room)
-				throw new InvalidPayloadError({
-					reason: `No access to room ${message.room} or room does not exist`,
-				});
-
-			if (!(await room.hasClient(client.uid)))
-				throw new InvalidPayloadError({
-					reason: `Not connected to room ${message.room}`,
-				});
-
-			let focus = await room.getFocusByUser(client.uid);
-
-			if (focus !== message.field) {
-				await room.focus(client, message.field);
-
-				focus = await room.getFocusByUser(client.uid);
-			}
-
-			// Focus field before update to prevent concurrent overwrite conflicts
-			if (!focus || focus !== message.field) {
-				throw new InvalidPayloadError({
-					reason: `Cannot update field ${message.field} without focusing on it first`,
-				});
-			}
-
-			const knex = getDatabase();
-			const schema = await getSchema();
-
-			const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
-				knex,
-				schema,
+		if (!room)
+			throw new InvalidPayloadError({
+				reason: `No access to room ${message.room} or room does not exist`,
 			});
 
-			if (
-				(allowedFields !== null && !isFieldAllowed(allowedFields, message.field)) ||
-				!schema.collections[room.collection]?.fields[message.field]
-			) {
-				throw new InvalidPayloadError({
-					reason: `No permission to update field ${message.field} or field does not exist`,
-				});
-			}
+		if (!(await room.hasClient(client.uid)))
+			throw new InvalidPayloadError({
+				reason: `Not connected to room ${message.room}`,
+			});
 
-			if (message.changes !== undefined) {
-				await room.update(client, { [message.field]: message.changes });
-			} else {
-				await room.unset(client, message.field);
-			}
-		} catch (err) {
-			this.messenger.handleError(client.uid, err);
+		let focus = await room.getFocusByUser(client.uid);
+
+		if (focus !== message.field) {
+			await room.focus(client, message.field);
+
+			focus = await room.getFocusByUser(client.uid);
+		}
+
+		// Focus field before update to prevent concurrent overwrite conflicts
+		if (!focus || focus !== message.field) {
+			throw new InvalidPayloadError({
+				reason: `Cannot update field ${message.field} without focusing on it first`,
+			});
+		}
+
+		const knex = getDatabase();
+		const schema = await getSchema();
+
+		const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
+			knex,
+			schema,
+		});
+
+		if (
+			(allowedFields !== null && !isFieldAllowed(allowedFields, message.field)) ||
+			!schema.collections[room.collection]?.fields[message.field]
+		) {
+			throw new InvalidPayloadError({
+				reason: `No permission to update field ${message.field} or field does not exist`,
+			});
+		}
+
+		if (message.changes !== undefined) {
+			await room.update(client, { [message.field]: message.changes });
+		} else {
+			await room.unset(client, message.field);
 		}
 	}
 
@@ -254,46 +255,42 @@ export class CollabHandler {
 	 * Update multiple field values
 	 */
 	async onUpdateAll(client: WebSocketClient, message: UpdateAllMessage) {
-		try {
-			const room = await this.roomManager.getRoom(message.room);
+		const room = await this.roomManager.getRoom(message.room);
 
-			if (!room)
-				throw new InvalidPayloadError({
-					reason: `No access to room ${message.room} or room does not exist`,
-				});
-
-			if (!(await room.hasClient(client.uid)))
-				throw new InvalidPayloadError({
-					reason: `Not connected to room ${message.room}`,
-				});
-
-			const collection = room.collection;
-			const knex = getDatabase();
-			const schema = await getSchema();
-
-			const allowedFields = await verifyPermissions(client.accountability, collection, room.item, 'update', {
-				knex,
-				schema,
+		if (!room)
+			throw new InvalidPayloadError({
+				reason: `No access to room ${message.room} or room does not exist`,
 			});
 
-			for (const key of Object.keys(message.changes ?? {})) {
-				if (allowedFields !== null && !isFieldAllowed(allowedFields, key))
-					throw new InvalidPayloadError({
-						reason: `No permission to update field ${key} or field does not exist`,
-					});
+		if (!(await room.hasClient(client.uid)))
+			throw new InvalidPayloadError({
+				reason: `Not connected to room ${message.room}`,
+			});
 
-				const focus = await room.getFocusByField(key);
+		const collection = room.collection;
+		const knex = getDatabase();
+		const schema = await getSchema();
 
-				if (focus && focus !== client.uid) {
-					delete message.changes?.[key];
-				}
+		const allowedFields = await verifyPermissions(client.accountability, collection, room.item, 'update', {
+			knex,
+			schema,
+		});
+
+		for (const key of Object.keys(message.changes ?? {})) {
+			if (allowedFields !== null && !isFieldAllowed(allowedFields, key))
+				throw new InvalidPayloadError({
+					reason: `No permission to update field ${key} or field does not exist`,
+				});
+
+			const focus = await room.getFocusByField(key);
+
+			if (focus && focus !== client.uid) {
+				delete message.changes?.[key];
 			}
+		}
 
-			if (message.changes) {
-				await room.update(client, message.changes);
-			}
-		} catch (err) {
-			this.messenger.handleError(client.uid, err);
+		if (message.changes) {
+			await room.update(client, message.changes);
 		}
 	}
 
@@ -301,53 +298,46 @@ export class CollabHandler {
 	 * Update focus state
 	 */
 	async onFocus(client: WebSocketClient, message: FocusMessage) {
-		try {
-			const room = await this.roomManager.getRoom(message.room);
+		const room = await this.roomManager.getRoom(message.room);
 
-			if (!room)
+		if (!room)
+			throw new InvalidPayloadError({
+				reason: `No access to room ${message.room} or room does not exist`,
+			});
+
+		if (!(await room.hasClient(client.uid)))
+			throw new InvalidPayloadError({
+				reason: `Not connected to room ${message.room}`,
+			});
+
+		if (message.field) {
+			const knex = getDatabase();
+			const schema = await getSchema();
+
+			const allowedReadFields = await verifyPermissions(client.accountability, room.collection, room.item, 'read', {
+				knex,
+				schema,
+			});
+
+			const allowedUpdateFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
+				knex,
+				schema,
+			});
+
+			if (
+				(allowedReadFields !== null && !isFieldAllowed(allowedReadFields, message.field)) ||
+				(allowedUpdateFields !== null && !isFieldAllowed(allowedUpdateFields, message.field))
+			) {
 				throw new InvalidPayloadError({
-					reason: `No access to room ${message.room} or room does not exist`,
-				});
-
-			if (!(await room.hasClient(client.uid)))
-				throw new InvalidPayloadError({
-					reason: `Not connected to room ${message.room}`,
-				});
-
-			if (message.field) {
-				const knex = getDatabase();
-				const schema = await getSchema();
-
-				const allowedReadFields = await verifyPermissions(client.accountability, room.collection, room.item, 'read', {
-					knex,
-					schema,
-				});
-
-				const allowedUpdateFields = await verifyPermissions(
-					client.accountability,
-					room.collection,
-					room.item,
-					'update',
-					{ knex, schema },
-				);
-
-				if (
-					(allowedReadFields !== null && !isFieldAllowed(allowedReadFields, message.field)) ||
-					(allowedUpdateFields !== null && !isFieldAllowed(allowedUpdateFields, message.field))
-				) {
-					throw new InvalidPayloadError({
-						reason: `No permission to focus on field ${message.field} or field does not exist`,
-					});
-				}
-			}
-
-			if (!(await room.focus(client, message.field ?? null))) {
-				throw new InvalidPayloadError({
-					reason: `Field ${message.field} is already focused by another user`,
+					reason: `No permission to focus on field ${message.field} or field does not exist`,
 				});
 			}
-		} catch (err) {
-			this.messenger.handleError(client.uid, err);
+		}
+
+		if (!(await room.focus(client, message.field ?? null))) {
+			throw new InvalidPayloadError({
+				reason: `Field ${message.field} is already focused by another user`,
+			});
 		}
 	}
 
@@ -355,24 +345,20 @@ export class CollabHandler {
 	 * Discard all changes in the room
 	 */
 	async onDiscard(client: WebSocketClient, message: DiscardMessage) {
-		try {
-			const room = await this.roomManager.getRoom(message.room);
+		const room = await this.roomManager.getRoom(message.room);
 
-			if (!room) {
-				throw new InvalidPayloadError({
-					reason: `No access to room ${message.room} or room does not exist`,
-				});
-			}
-
-			if (!(await room.hasClient(client.uid))) {
-				throw new InvalidPayloadError({
-					reason: `Not connected to room ${message.room}`,
-				});
-			}
-
-			await room.discard();
-		} catch (err) {
-			this.messenger.handleError(client.uid, err);
+		if (!room) {
+			throw new InvalidPayloadError({
+				reason: `No access to room ${message.room} or room does not exist`,
+			});
 		}
+
+		if (!(await room.hasClient(client.uid))) {
+			throw new InvalidPayloadError({
+				reason: `Not connected to room ${message.room}`,
+			});
+		}
+
+		await room.discard();
 	}
 }

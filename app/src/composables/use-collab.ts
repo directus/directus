@@ -44,6 +44,9 @@ let wsConnecting: Promise<WebSocketInterface> | false = false;
 
 sdk.onWebSocket('message', async (message: ServerMessage | ServerError) => {
 	if (message.action === ACTION.SERVER.ERROR) {
+		// Ignore join messages to not show them when the item doens't exist
+		if (message.trigger === 'join') return;
+
 		notify({
 			title: message.message,
 			code: message.code,

@@ -98,6 +98,7 @@ export type ServerMessage = {
 export type ServerError = {
 	type: typeof TYPE.COLLAB;
 	action: typeof ACTION.SERVER.ERROR;
+	trigger?: (typeof ACTION.CLIENT)[keyof typeof ACTION.CLIENT] | undefined;
 	code: string;
 	message: string;
 };

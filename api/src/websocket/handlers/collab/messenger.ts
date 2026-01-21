@@ -4,6 +4,7 @@ import { isDirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import {
+	ACTION,
 	type BroadcastMessage,
 	type ClientID,
 	COLLAB_BUS,
@@ -219,7 +220,7 @@ export class Messenger {
 		this.messenger.publish(COLLAB_BUS, { type: 'send', client, message });
 	}
 
-	handleError(client: ClientID, error: unknown) {
+	handleError(client: ClientID, error: unknown, action?: ServerError['trigger']) {
 		let message: ServerError;
 
 		if (isDirectusError(error)) {
@@ -227,6 +228,7 @@ export class Messenger {
 				action: 'error',
 				type: WS_TYPE.COLLAB,
 				code: error.code,
+				trigger: action,
 				message: error.message,
 			};
 		} else {
