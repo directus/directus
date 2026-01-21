@@ -15,7 +15,7 @@ export type Credentials = Record<string, any>;
  */
 export type Options = Record<string, any>;
 
-export type Status = 'queued' | 'building' | 'ready' | 'error' | 'canceled';
+export type Status = 'building' | 'ready' | 'error' | 'canceled';
 
 /**
  * Latest deployment summary for project overview
