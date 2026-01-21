@@ -499,7 +499,6 @@ revision_delta_update_message: 此字段已更新，但由于安全原因，其�
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
 updated_in_revision: 在本修订版中更新
-updated_in_revision_matches_latest: 在此修订版中已更新但，与最新版本匹配
 differences_count: '无差异 | 1 处差异 | {count} 处差异'
 presentation_text_values_cannot_be_reimported: '仅包含当前页面中展示的字段和数据，且无法被重新导入'
 download_page_as_csv: '导出当前页面数据为CSV格式'

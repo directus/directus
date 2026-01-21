@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VChip from '@/components/v-chip.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -24,12 +25,19 @@ const emit = defineEmits<{
 	'update:modelValue': [value: 'Previous' | 'Latest'];
 }>();
 
+const { t } = useI18n();
+
 function selectOption(option: 'Previous' | 'Latest') {
+	if (option === 'Previous' && props.disablePrevious) return;
 	emit('update:modelValue', option);
 }
 
 const toggleClass = computed(() => {
 	return props.modelValue.toLowerCase();
+});
+
+const displayValue = computed(() => {
+	return props.modelValue === 'Previous' ? t('previous') : t('latest');
 });
 </script>
 
@@ -37,7 +45,7 @@ const toggleClass = computed(() => {
 	<VMenu placement="top-start" show-arrow>
 		<template #activator="{ toggle, active }">
 			<VChip small clickable class="toggle" :class="[toggleClass, { active }]" @click="toggle">
-				{{ props.modelValue }}
+				{{ displayValue }}
 				<VIcon name="sync_alt" right :style="{ '--v-icon-size': '16px' }" />
 			</VChip>
 		</template>
@@ -47,7 +55,7 @@ const toggleClass = computed(() => {
 				<VListItemIcon>
 					<VIcon name="check_circle" />
 				</VListItemIcon>
-				<VListItemContent>Latest</VListItemContent>
+				<VListItemContent>{{ $t('latest') }}</VListItemContent>
 			</VListItem>
 
 			<VDivider />
@@ -56,7 +64,7 @@ const toggleClass = computed(() => {
 				<VListItemIcon>
 					<VIcon name="history" />
 				</VListItemIcon>
-				<VListItemContent>Previous</VListItemContent>
+				<VListItemContent>{{ $t('previous') }}</VListItemContent>
 			</VListItem>
 		</VList>
 	</VMenu>

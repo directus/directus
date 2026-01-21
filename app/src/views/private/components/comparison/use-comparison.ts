@@ -1,6 +1,6 @@
 import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { has, isEqual, mergeWith } from 'lodash';
+import { has, isEqual, mergeWith, orderBy } from 'lodash';
 import { computed, type Ref, ref, watch } from 'vue';
 import type {
 	ComparisonData,
@@ -349,38 +349,14 @@ export function useComparison(options: UseComparisonOptions) {
 		if (!('id' in currentRevision) || !currentRevision.id) return null;
 
 		const currentId = currentRevision.id;
-		const previousRevision = revisions.find((r) => 'id' in r && r.id && r.id < currentId);
 
-		return previousRevision || null;
-	}
+		const sortedRevisions = orderBy(
+			revisions,
+			[(r) => ('id' in r && r.id ? r.id : 0) as number],
+			['desc'],
+		);
 
-	async function fetchRevisionData(revisionId: number): Promise<Revision | null> {
-		try {
-			type RevisionResponse = { data: Revision };
-
-			const response = await api.get<RevisionResponse>(`/revisions/${revisionId}`, {
-				params: {
-					fields: [
-						'id',
-						'data',
-						'delta',
-						'collection',
-						'item',
-						'activity.action',
-						'activity.timestamp',
-						'activity.user.id',
-						'activity.user.email',
-						'activity.user.first_name',
-						'activity.user.last_name',
-					],
-				},
-			});
-
-			return response.data.data;
-		} catch (error) {
-			unexpectedError(error);
-			return null;
-		}
+		return sortedRevisions.find((r) => 'id' in r && r.id && r.id < currentId) || null;
 	}
 
 	async function buildRevisionComparison(
@@ -402,26 +378,12 @@ export function useComparison(options: UseComparisonOptions) {
 		let previousRevision: Revision | null = null;
 
 		if (compareToOption === 'Previous') {
-			const foundPreviousRevision = findPreviousRevision(revision, revisionsList);
+			previousRevision = findPreviousRevision(revision, revisionsList);
 
-			if (foundPreviousRevision && 'id' in foundPreviousRevision) {
-				const previousRevisionData = await fetchRevisionData(foundPreviousRevision.id);
-
-				if (previousRevisionData) {
-					previousRevision = previousRevisionData;
-
-					if (previousRevisionData.data) {
-						base = previousRevisionData.data;
-						const defaultValues = getDefaultValuesFromFields(fields).value;
-						base = mergeWith({}, defaultValues, base, replaceArraysInMergeCustomizer);
-					} else {
-						const { collection, item } = revision as { collection: string; item: string | number };
-						base = await fetchMainVersion(collection, item);
-					}
-				} else {
-					const { collection, item } = revision as { collection: string; item: string | number };
-					base = await fetchMainVersion(collection, item);
-				}
+			if (previousRevision && previousRevision.data) {
+				base = previousRevision.data;
+				const defaultValues = getDefaultValuesFromFields(fields).value;
+				base = mergeWith({}, defaultValues, base, replaceArraysInMergeCustomizer);
 			} else {
 				const { collection, item } = revision as { collection: string; item: string | number };
 				base = await fetchMainVersion(collection, item);

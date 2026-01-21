@@ -97,18 +97,6 @@ const isFirstRevision = computed(() => {
 	return sortedRevisions.length > 0 && firstRevision?.id === currentId;
 });
 
-const comparisonFieldsForDisplay = computed(() => {
-	return comparisonFields.value;
-});
-
-const revisionFieldsForDisplay = computed(() => {
-	return comparisonData.value?.revisionFields;
-});
-
-const comparingTo = computed(() => {
-	return compareToOption.value;
-});
-
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const modalLoading = ref(false);
@@ -222,10 +210,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
-
-function handleCompareToSelection(option: 'Previous' | 'Latest') {
-	compareToOption.value = option;
-}
 </script>
 
 <template>
@@ -265,11 +249,11 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 									:initial-values="comparisonData?.base || {}"
 									:comparison="{
 										side: 'base',
-										fields: comparisonFieldsForDisplay,
-										revisionFields: revisionFieldsForDisplay,
+										fields: comparisonFields,
+										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: () => {},
-										comparingTo,
+										comparingTo: compareToOption,
 										mode,
 									}"
 									non-editable
@@ -308,11 +292,11 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 									:initial-values="comparisonData?.incoming || {}"
 									:comparison="{
 										side: 'incoming',
-										fields: comparisonFieldsForDisplay,
-										revisionFields: revisionFieldsForDisplay,
+										fields: comparisonFields,
+										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
-										comparingTo,
+										comparingTo: compareToOption,
 										mode,
 									}"
 									non-editable
@@ -334,7 +318,6 @@ function handleCompareToSelection(option: 'Previous' | 'Latest') {
 							<ComparisonToggle
 								v-model="compareToOption"
 								:disable-previous="isFirstRevision"
-								@update:model-value="handleCompareToSelection"
 							/>
 						</div>
 					</div>

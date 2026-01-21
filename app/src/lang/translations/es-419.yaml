@@ -501,7 +501,6 @@ revision_delta_update_message: Este campo ha sido actualizado, pero su valor est
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 updated_in_revision: Actualizado en esta revisión
-updated_in_revision_matches_latest: Actualizado en esta revisión, pero coincide con la versión más reciente
 differences_count: 'Sin diferencias | 1 diferencia | {count} diferencias'
 presentation_text_values_cannot_be_reimported: 'Utiliza texto de presentación, los valores no pueden ser reimportados.'
 download_page_as_csv: 'Descargar Página como CSV'

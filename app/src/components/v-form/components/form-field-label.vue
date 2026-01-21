@@ -46,6 +46,15 @@ const showHiddenIndicator = computed(
 		(props.comparison?.fields?.has(props.field.field) || props.comparison?.revisionFields?.has(props.field.field)) &&
 		props.field.meta?.hidden,
 );
+
+const isPromotableField = computed(() => {
+	if (!props.comparison) return false;
+	return (
+		props.comparison.side === 'incoming' &&
+		props.comparison.fields.has(props.field.field) &&
+		(props.comparison.mode !== 'revision' || props.comparison.comparingTo !== 'Previous')
+	);
+});
 </script>
 
 <template>
@@ -64,11 +73,11 @@ const showHiddenIndicator = computed(
 			/>
 
 			<VCheckbox
-				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field) && (comparison.mode !== 'revision' || comparison.comparingTo !== 'Previous')"
+				v-if="isPromotableField"
 				class="comparison-checkbox"
 				:model-value="comparisonActive"
 				:value="field.field"
-				@update:model-value="comparison.onToggleField(field.field)"
+				@update:model-value="comparison!.onToggleField(field.field)"
 			/>
 
 			<div class="field-label-content">

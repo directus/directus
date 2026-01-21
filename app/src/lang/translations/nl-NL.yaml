@@ -502,7 +502,6 @@ revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verb
 revision_delta_other: Revisie
 revision_delta_by: '{date} door {user}'
 updated_in_revision: Bijgewerkt in deze revisie
-updated_in_revision_matches_latest: Bijgewerkt in deze revisie, maar komt overeen met de laatste
 differences_count: 'Geen Verschillen | 1 Verschil | {count} Verschillen'
 presentation_text_values_cannot_be_reimported: 'Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd.'
 download_page_as_csv: 'Download Pagina als CSV'
