@@ -76,6 +76,7 @@ export function useCollab(
 
 	const roomId = ref<string | null>(null);
 	const connectionId = ref<ClientID | null>(null);
+	const joining = ref(false);
 	const users = ref<CollabUser[]>([]);
 	const focused = ref<Record<ClientID, string>>({});
 	const collidingLocalChanges = ref<Item | undefined>();
@@ -111,7 +112,6 @@ export function useCollab(
 			} catch (e: any) {
 				if (e.message?.toLowerCase().includes('open')) {
 					connected.value = true;
-					join();
 				}
 			} finally {
 				wsConnecting = false;
@@ -163,6 +163,7 @@ export function useCollab(
 
 	function disconnect() {
 		connected.value = false;
+		joining.value = false;
 		roomId.value = null;
 		connectionId.value = null;
 		users.value = [];
@@ -174,10 +175,13 @@ export function useCollab(
 			(active && active.value === false) ||
 			!connected.value ||
 			roomId.value ||
+			joining.value ||
 			!collection.value ||
 			item.value === '+'
 		)
 			return;
+
+		joining.value = true;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,
@@ -242,6 +246,7 @@ export function useCollab(
 	};
 
 	async function receiveInit(message: InitMessage) {
+		joining.value = false;
 		roomId.value = message.room;
 		connectionId.value = message.connection;
 
@@ -327,6 +332,7 @@ export function useCollab(
 		delete focused.value[message.connection];
 
 		if (message.connection === connectionId.value) {
+			joining.value = false;
 			roomId.value = null;
 			connectionId.value = null;
 			focused.value = {};
