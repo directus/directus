@@ -295,7 +295,7 @@ const livePreviewFullWidth = useLocalStorage<boolean>('live-preview-full-width',
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
 const livePreviewSizeDefault = 50;
 const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', livePreviewSizeDefault);
-const livePreviewEnforceMinimum = ref(false);
+const livePreviewEnforceDefault = ref(false);
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
