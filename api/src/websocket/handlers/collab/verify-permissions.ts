@@ -15,7 +15,8 @@ import { permissionCache } from './permissions-cache.js';
 
 /**
  * Verify if a client has permissions to perform an action on the item.
- * Returns a list of fields the client has access to or null if the item doesn't exist.
+ * - `string[]`: List of fields the client has access to, empty if item exists but access is restricted.
+ * - `null`: Indicates the item doesn't exist.
  */
 export async function verifyPermissions(
 	accountability: Accountability | null,
@@ -84,11 +85,11 @@ export async function verifyPermissions(
 					try {
 						await adminService.readOne(item);
 					} catch {
-						// Item exists, user just doesn't have access
+						// Item doesn't exist
 						return null;
 					}
 
-					// Item doesn't exist
+					// Item exists, user just doesn't have access
 					return [];
 				}
 
