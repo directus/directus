@@ -1,95 +1,43 @@
-// Limits and costs adopted from models.dev
-// MIT License
-// Copyright (c) 2025 models.dev
-
+import {
+	buildCustomModelDefinition as buildCustomModelDefinitionBase,
+	buildCustomModels as buildCustomModelsBase,
+	DEFAULT_AI_MODELS,
+	type ModelDefinition,
+	type OpenAICompatibleModel,
+	type ProviderType,
+} from '@directus/ai';
 import type { Component } from 'vue';
 import LogoClaude from '@/ai/components/logos/claude.vue';
+import LogoCustom from '@/ai/components/logos/custom.vue';
+import LogoGoogle from '@/ai/components/logos/google.vue';
 import LogoOpenAI from '@/ai/components/logos/openai.vue';
 
-export interface ModelDefinition {
-	provider: string;
-	model: string;
-	name: string;
+export interface AppModelDefinition extends ModelDefinition {
 	icon: Component;
-	limit: {
-		context: number;
-		output: number;
-	};
-	cost: {
-		input: number;
-		output: number;
-	};
 }
 
-export const AI_MODELS: ModelDefinition[] = [
-	{
-		provider: 'openai',
-		model: 'gpt-5-nano',
-		name: 'GPT-5 Nano',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 0.05,
-			output: 0.4,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-5-mini',
-		name: 'GPT-5 Mini',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 0.25,
-			output: 2,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-5',
-		name: 'GPT-5',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 1.25,
-			output: 10.0,
-		},
-	},
-	{
-		provider: 'anthropic',
-		model: 'claude-haiku-4-5',
-		name: 'Claude Haiku 4.5',
-		icon: LogoClaude,
-		limit: {
-			context: 200_000,
-			output: 64_000,
-		},
-		cost: {
-			input: 1.0,
-			output: 5.0,
-		},
-	},
-	{
-		provider: 'anthropic',
-		model: 'claude-sonnet-4-5',
-		name: 'Claude Sonnet 4.5',
-		icon: LogoClaude,
-		limit: {
-			context: 200_000,
-			output: 64_000,
-		},
-		cost: {
-			input: 3.0,
-			output: 15.0,
-		},
-	},
-] as const;
+const PROVIDER_ICONS: Record<ProviderType, Component> = {
+	openai: LogoOpenAI,
+	anthropic: LogoClaude,
+	google: LogoGoogle,
+	'openai-compatible': LogoCustom,
+};
+
+export const AI_MODELS: AppModelDefinition[] = DEFAULT_AI_MODELS.map((m) => ({
+	...m,
+	icon: PROVIDER_ICONS[m.provider] ?? LogoCustom,
+}));
+
+export function buildCustomModels(customModels: OpenAICompatibleModel[] | null): AppModelDefinition[] {
+	return buildCustomModelsBase(customModels).map((m) => ({
+		...m,
+		icon: LogoCustom,
+	}));
+}
+
+export function buildCustomModelDefinition(provider: ProviderType, modelId: string): AppModelDefinition {
+	return {
+		...buildCustomModelDefinitionBase(provider, modelId),
+		icon: PROVIDER_ICONS[provider] ?? LogoCustom,
+	};
+}

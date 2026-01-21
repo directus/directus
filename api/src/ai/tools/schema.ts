@@ -123,7 +123,7 @@ export const FileImportItemValidateSchema = z.object({
 	file: FileItemValidateSchema,
 });
 
-// opertations
+// operations
 export const OperationItemInputSchema = z
 	.object({
 		id: z.string(),

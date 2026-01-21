@@ -7,6 +7,12 @@ import { useAiStore } from './use-ai';
 vi.mock('@/stores/settings', () => ({
 	useSettingsStore: vi.fn(() => ({
 		availableAiProviders: ['openai'],
+		settings: {
+			ai_openai_allowed_models: ['gpt-4o-mini', 'gpt-5-nano'],
+			ai_anthropic_allowed_models: null,
+			ai_google_allowed_models: null,
+			ai_openai_compatible_models: null,
+		},
 	})),
 }));
 
