@@ -83,7 +83,7 @@ invalid_range_min: Value is below minimum of {value}
 invalid_range_max: Value exceeds maximum of {value}
 maps: Maps
 switch_user: Switch User
-item_deleted: The current Item you where editing got deleted.
+item_deleted: The item you were editing has been deleted.
 item_creation: Item Creation
 item_revision: Item Revision
 enter_a_name: Enter a Name...
