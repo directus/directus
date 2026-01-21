@@ -118,14 +118,6 @@ const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
 });
 
-/**
- * Visual editing enablement (second-layer check):
- * This performs the second layer of the visual editing check:
- *   - Validates the *currently displayed* URL (frameSrc) passes sameOrigin
- * The first layer (prerequisites: module enabled, URLs configured, valid item)
- * is handled by the parent via the `canEnableVisualEditing` prop.
- * We use frameSrc because the user may select a different URL from the dropdown.
- */
 const visualEditingEnabled = computed(() => {
 	if (!canEnableVisualEditing) return false;
 	if (invalidUrl) return false;
