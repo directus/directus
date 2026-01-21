@@ -812,7 +812,7 @@ function useCollectionRoute() {
 			collapsible
 			:collapsed-size="0"
 			:collapse-threshold="15"
-			:min-size="isMobile ? 0 : 20"
+			:min-size="livePreviewSizeMinSize"
 			:max-size="isMobile || livePreviewFullWidth ? 100 : 80"
 			:snap-points="[livePreviewSizeDefault]"
 			:transition-duration="150"
