@@ -41,15 +41,6 @@ function closePopup() {
 function onSaved() {
 	window.opener?.postMessage('refresh', window.location.origin);
 }
-
-useEventListener('message', (event) => {
-	if (!sameOrigin(event.origin, window.location.href)) return;
-	if (event.source !== window.opener) return;
-
-	if (event.data === 'refreshPreview') {
-		window.refreshLivePreview(null);
-	}
-});
 </script>
 
 <template>

@@ -416,7 +416,7 @@ async function refreshLivePreview() {
 	try {
 		await fetchTemplateValues();
 		window.refreshLivePreview(previewUrl.value);
-		popupWindow?.postMessage('refreshPreview', window.location.origin);
+		if (popupWindow) popupWindow.refreshLivePreview(previewUrl.value);
 	} catch {
 		// noop
 	}
