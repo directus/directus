@@ -352,6 +352,10 @@ export function useCollab(
 		for (const field of Object.keys(initialValues.value)) {
 			if (isEqual(initialValues.value[field], edits.value[field])) delete edits.value[field];
 		}
+
+		notify({
+			title: t('item_update_success'),
+		});
 	}
 
 	async function receiveDiscard() {
