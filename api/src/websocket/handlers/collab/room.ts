@@ -234,10 +234,13 @@ export class Room {
 			const { keys, collection: eventCollection } = meta as { keys: string[]; collection: string };
 
 			// Skip deletions for different versions
-			if (this.version && eventCollection === 'directus_versions' && !keys.includes(this.version)) return;
+			const isVersionMatch =
+				this.version && eventCollection === 'directus_versions' && keys.some((key) => String(key) === this.version);
 
 			// Skip deletions for different items (singletons have item=null)
-			if (item !== null && !keys.some((key) => String(key) === item)) return;
+			const isItemMatch = eventCollection === collection && (item === null || keys.some((key) => String(key) === item));
+
+			if (!isVersionMatch && !isItemMatch) return;
 
 			this.sendAll({
 				action: ACTION.SERVER.DELETE,
@@ -246,23 +249,17 @@ export class Room {
 			await this.close(true);
 		};
 
-		const updateEvent = isSystemCollection(collection)
-			? `${collection.substring(9)}.update`
-			: `${collection}.items.update`;
-
-		const deleteEvent = isSystemCollection(collection)
-			? `${collection.substring(9)}.delete`
-			: `${collection}.items.delete`;
+		const eventPrefix = isSystemCollection(collection) ? collection.substring(9) : `${collection}.items`;
 
 		// React to external updates (eg: REST API) to sync connected clients
 		if (version) {
 			emitter.onAction('versions.update', this.onUpdateHandler);
 			emitter.onAction('versions.delete', this.onDeleteHandler);
 		} else {
-			emitter.onAction(updateEvent, this.onUpdateHandler);
+			emitter.onAction(`${eventPrefix}.update`, this.onUpdateHandler);
 		}
 
-		emitter.onAction(deleteEvent, this.onDeleteHandler);
+		emitter.onAction(`${eventPrefix}.delete`, this.onDeleteHandler);
 	}
 
 	/**
@@ -615,13 +612,16 @@ export class Room {
 	}
 
 	dispose() {
-		emitter.offAction(`${this.collection}.items.update`, this.onUpdateHandler);
-		emitter.offAction(`${this.collection}.items.delete`, this.onDeleteHandler);
+		const eventPrefix = isSystemCollection(this.collection) ? this.collection.substring(9) : `${this.collection}.items`;
 
 		if (this.version) {
 			emitter.offAction('versions.update', this.onUpdateHandler);
 			emitter.offAction('versions.delete', this.onDeleteHandler);
+		} else {
+			emitter.offAction(`${eventPrefix}.update`, this.onUpdateHandler);
 		}
+
+		emitter.offAction(`${eventPrefix}.delete`, this.onDeleteHandler);
 
 		this.messenger.removeRoomListener(this.uid);
 	}

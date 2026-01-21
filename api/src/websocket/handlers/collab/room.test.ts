@@ -1171,7 +1171,7 @@ describe('room', () => {
 			.mocked(emitter.onAction)
 			.mock.calls.find((call) => call[0] === 'articles.items.delete')![1];
 
-		await onDeleteHandler({ keys: ['1'] }, {} as any);
+		await onDeleteHandler({ keys: ['1'] , collection: 'articles' }, {} as any);
 
 		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
 			1,
@@ -1203,7 +1203,7 @@ describe('room', () => {
 			.mocked(emitter.onAction)
 			.mock.calls.find((call) => call[0] === 'articles.items.delete')![1];
 
-		await onDeleteHandler({ keys: ['2'] }, {} as any);
+		await onDeleteHandler({ keys: ['2'], collection: 'articles' }, {} as any);
 
 		expect(mockMessenger.sendClient).not.toHaveBeenCalledWith(
 			1,
