@@ -46,14 +46,10 @@ const {
 	hidePopupButton?: boolean;
 	inPopup?: boolean;
 	centered?: boolean;
-	/** Whether visual editing prerequisites are met (URLs configured, valid item) */
 	canEnableVisualEditing?: boolean;
-	/** Allowed URLs for visual editing - used to verify the current preview URL passes sameOrigin */
 	visualEditorUrls?: string[];
-	/** Whether to show the "Open in Visual Editor" button (requires visual module enabled) */
 	showOpenInVisualEditor?: boolean;
 	defaultShowEditableElements?: boolean;
-	/** Whether the preview is currently in full-width mode */
 	isFullWidth?: boolean;
 }>();
 
