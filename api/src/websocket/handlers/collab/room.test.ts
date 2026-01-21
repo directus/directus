@@ -771,7 +771,7 @@ describe('room', () => {
 		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
 	});
 
-	test('does not broadcast save action to same user who updated', async () => {
+	test('broadcasts save action to same user who updated', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		clientA.accountability = { user: 'user-a' } as any;
 
@@ -792,7 +792,7 @@ describe('room', () => {
 		// Simulate update by same user
 		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'user-a' } } as any);
 
-		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
+		expect(mockMessenger.sendClient).toHaveBeenCalled();
 	});
 
 	test('handles error in external update handler gracefully', async () => {

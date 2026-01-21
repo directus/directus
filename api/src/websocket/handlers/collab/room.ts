@@ -176,9 +176,8 @@ export class Room {
 		this.messenger = messenger;
 		this.store = useStore<RoomData>(uid, roomDefaults);
 
-		this.onUpdateHandler = async (meta, context) => {
+		this.onUpdateHandler = async (meta) => {
 			const { keys } = meta as { keys: string[] };
-			const { accountability } = context;
 
 			// Skip updates for different items (singletons have item=null)
 			if (item !== null && !keys.some((key) => String(key) === item)) return;
@@ -211,8 +210,6 @@ export class Room {
 				});
 
 				for (const client of clients) {
-					if (client.accountability?.user === accountability?.user) continue;
-
 					this.send(client.uid, {
 						action: ACTION.SERVER.SAVE,
 					});
