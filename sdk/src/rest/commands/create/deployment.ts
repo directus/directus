@@ -21,9 +21,9 @@ export const createDeployment =
 		item: NestedPartial<DirectusDeployment<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateDeploymentOutput<Schema, TQuery>, Schema> =>
-		() => ({
-			path: `/deployment`,
-			params: query ?? {},
-			body: JSON.stringify(item),
-			method: 'POST',
-		});
+	() => ({
+		path: `/deployment`,
+		params: query ?? {},
+		body: JSON.stringify(item),
+		method: 'POST',
+	});

@@ -25,16 +25,16 @@ export const updateDeployment =
 		item: NestedPartial<DirectusDeployment<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateDeploymentOutput<Schema, TQuery>, Schema> =>
-		() => {
-			throwIfEmpty(provider, 'Provider cannot be empty');
+	() => {
+		throwIfEmpty(provider, 'Provider cannot be empty');
 
-			return {
-				path: `/deployment/${provider}`,
-				params: query ?? {},
-				body: JSON.stringify(item),
-				method: 'PATCH',
-			};
+		return {
+			path: `/deployment/${provider}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
 		};
+	};
 
 export interface UpdateDeploymentProjectsInput {
 	create?: Array<{ external_id: string; name: string }>;
@@ -55,12 +55,12 @@ export const updateDeploymentProjects =
 		provider: string,
 		item: UpdateDeploymentProjectsInput,
 	): RestCommand<DirectusDeploymentProject<Schema>[], Schema> =>
-		() => {
-			throwIfEmpty(provider, 'Provider cannot be empty');
+	() => {
+		throwIfEmpty(provider, 'Provider cannot be empty');
 
-			return {
-				path: `/deployment/${provider}/projects`,
-				body: JSON.stringify(item),
-				method: 'PATCH',
-			};
+		return {
+			path: `/deployment/${provider}/projects`,
+			body: JSON.stringify(item),
+			method: 'PATCH',
 		};
+	};
