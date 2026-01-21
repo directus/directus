@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { useEventListener } from '@vueuse/core';
 import { computed, toRefs } from 'vue';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
+import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import LivePreview from '@/views/private/components/live-preview.vue';
 
@@ -37,8 +39,17 @@ function closePopup() {
 }
 
 function onSaved() {
-	(window.opener as Window | null)?.refresh?.();
+	window.opener?.postMessage('refresh', window.location.origin);
 }
+
+useEventListener('message', (event) => {
+	if (!sameOrigin(event.origin, window.location.href)) return;
+	if (event.source !== window.opener) return;
+
+	if (event.data === 'refreshPreview') {
+		window.refreshLivePreview(null);
+	}
+});
 </script>
 
 <template>

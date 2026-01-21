@@ -3,7 +3,7 @@ import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
+import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
 import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -36,6 +36,7 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
+import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -299,6 +300,7 @@ const livePreviewEnforceDefault = ref(false);
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
+const livePreviewSizeMinSize = computed(() => (isMobile.value ? 0 : 20));
 
 const livePreviewActive = computed(
 	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',
@@ -309,7 +311,7 @@ const livePreviewCollapsed = computed({
 		return !livePreviewActive.value;
 	},
 	set(value: boolean) {
-		if (!value) livePreviewEnforceMinimum.value = true;
+		if (!value) livePreviewEnforceDefault.value = true;
 		livePreviewMode.value = value ? null : 'split';
 	},
 });
@@ -322,7 +324,7 @@ const livePreviewSize = computed({
 
 		const storedValue = livePreviewSizeStorage.value || livePreviewSizeDefault;
 
-		if (livePreviewEnforceMinimum.value && storedValue <= livePreviewSizeMinSize) {
+		if (livePreviewEnforceDefault.value && storedValue <= livePreviewSizeDefault) {
 			return livePreviewSizeDefault;
 		}
 
@@ -331,12 +333,10 @@ const livePreviewSize = computed({
 	set(value: number) {
 		if (isMobile.value) return;
 
-		// Ignore values from component init when nforcing minimum
-		if (livePreviewEnforceMinimum.value && value < livePreviewSizeDefault) {
-			return;
+		// Clear enforcement once user drags to or past the default size
+		if (livePreviewEnforceDefault.value && value >= livePreviewSizeDefault) {
+			livePreviewEnforceDefault.value = false;
 		}
-
-		livePreviewEnforceMinimum.value = false;
 
 		// Auto-toggle full-width based on drag position
 		if (value >= 95 && !livePreviewFullWidth.value) {
@@ -404,11 +404,18 @@ const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 
 provideRunManualFlow();
 
+useEventListener('message', (event) => {
+	if (!sameOrigin(event.origin, window.location.href)) return;
+	if (event.source !== popupWindow) return;
+
+	if (event.data === 'refresh') refresh();
+});
+
 async function refreshLivePreview() {
 	try {
 		await fetchTemplateValues();
 		window.refreshLivePreview(previewUrl.value);
-		if (popupWindow) popupWindow.refreshLivePreview(previewUrl.value);
+		popupWindow?.postMessage('refreshPreview', window.location.origin);
 	} catch {
 		// noop
 	}
