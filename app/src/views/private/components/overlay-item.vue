@@ -263,6 +263,7 @@ const overlayItemContentProps = computed(() => {
 		relatedPrimaryKey: props.relatedPrimaryKey,
 		relatedPrimaryKeyField: relatedPrimaryKeyField.value?.field ?? null,
 		refresh,
+		collabContext,
 	};
 });
 

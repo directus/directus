@@ -5,6 +5,7 @@ import { computed, useTemplateRef } from 'vue';
 import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VInfo from '@/components/v-info.vue';
+import type { CollabContext } from '@/composables/use-collab';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 
 const {
@@ -32,6 +33,7 @@ const {
 	relatedPrimaryKey: PrimaryKey;
 	relatedPrimaryKeyField: string | null;
 	refresh: () => void;
+	collabContext?: CollabContext;
 }>();
 
 const internalEdits = defineModel<Record<string, any>>('internal-edits');
@@ -138,6 +140,7 @@ function useValidationScrollToField() {
 				:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
 				:primary-key="relatedPrimaryKey"
 				:fields="relatedCollectionFields"
+				:collab-context="collabContext"
 				@update:model-value="setRelationEdits"
 			/>
 
@@ -153,6 +156,7 @@ function useValidationScrollToField() {
 				:show-divider="swapFormOrder && hasVisibleFieldsRelated"
 				:primary-key="primaryKey"
 				:fields="fields"
+				:collab-context="collabContext"
 			/>
 		</div>
 	</div>
