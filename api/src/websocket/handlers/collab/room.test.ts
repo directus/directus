@@ -439,6 +439,43 @@ describe('room', () => {
 		expect((await room.getClients()).length).toBe(0);
 	});
 
+	test('leave room resets changes when last person leaves', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+		await room.update(clientA, { title: 'New Title' });
+
+		const changesBefore = await room.getChanges();
+		expect(changesBefore).toEqual({ title: 'New Title' });
+
+		await room.leave(clientA.uid);
+
+		const changesAfter = await room.getChanges();
+		expect(changesAfter).toEqual({});
+	});
+
+	test('leave room does not reset changes if others remain', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+		await room.join(clientB);
+		await room.update(clientA, { title: 'New Title' });
+
+		await room.leave(clientA.uid);
+
+		const changes = await room.getChanges();
+		expect(changes).toEqual({ title: 'New Title' });
+	});
+
 	test('leave room clears focus', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const item = getTestItem();

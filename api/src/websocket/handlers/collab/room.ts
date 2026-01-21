@@ -271,6 +271,10 @@ export class Room {
 		return await this.store((store) => store.get('focuses'));
 	}
 
+	async getChanges() {
+		return await this.store((store) => store.get('changes'));
+	}
+
 	async hasClient(id: ClientID) {
 		return await this.store(async (store) => {
 			const clients = await store.get('clients');
@@ -383,18 +387,19 @@ export class Room {
 		if (!(await this.hasClient(uid))) return;
 
 		await this.store(async (store) => {
-			const clients = await store.get('clients');
+			const clients = (await store.get('clients')).filter((c: RoomClient) => c.uid !== uid);
 
-			await store.set(
-				'clients',
-				clients.filter((c: RoomClient) => c.uid !== uid),
-			);
+			await store.set('clients', clients);
 
 			const focuses = await store.get('focuses');
 
 			if (uid in focuses) {
 				delete focuses[uid];
 				await store.set('focuses', focuses);
+			}
+
+			if (clients.length === 0) {
+				await store.set('changes', {});
 			}
 		});
 
