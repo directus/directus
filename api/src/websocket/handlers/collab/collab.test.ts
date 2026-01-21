@@ -1,4 +1,3 @@
-import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../../emitter.js';
@@ -42,6 +41,7 @@ describe('CollabHandler', () => {
 		} as any;
 
 		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
+		vi.mocked(handler.roomManager.getClientRooms).mockResolvedValue([]);
 	});
 
 	afterEach(() => {
@@ -53,24 +53,18 @@ describe('CollabHandler', () => {
 		test('rejects joins from shares', async () => {
 			mockClient.accountability!.share = 'test-share';
 
-			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toBe('Collaboration is not supported for shares');
+			await expect(
+				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
+			).rejects.toHaveProperty('extensions.reason', 'Collaboration is not supported for shares');
 		});
 
 		test('rejects access if collection is not in allowedCollections', async () => {
 			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} } } as any);
 			vi.mocked(fetchAllowedCollections).mockResolvedValue(['other_collection']);
 
-			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/No permission to access collection/);
+			await expect(
+				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to access collection/i));
 		});
 
 		test('rejects if item ID is missing for non-singleton collection', async () => {
@@ -82,12 +76,10 @@ describe('CollabHandler', () => {
 
 			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
 
-			await handler.onJoin(mockClient, { action: 'join', collection: 'articles' } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toBe('Item id has to be provided for non singleton collections');
+			await expect(handler.onJoin(mockClient, { action: 'join', collection: 'articles' } as any)).rejects.toHaveProperty(
+				'extensions.reason',
+				'Item id has to be provided for non singleton collections',
+			);
 		});
 
 		test('rejects if item does not exist or user has no access', async () => {
@@ -102,12 +94,9 @@ describe('CollabHandler', () => {
 			const mockService = { readOne: vi.fn().mockRejectedValue(new Error('Forbidden')) };
 			vi.mocked(getService).mockReturnValue(mockService as any);
 
-			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toBe('No permission to access item or it does not exist');
+			await expect(
+				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
+			).rejects.toHaveProperty('extensions.reason', 'No permission to access item or it does not exist');
 		});
 
 		test('creates room and joins client on success (standard collection)', async () => {
@@ -172,22 +161,18 @@ describe('CollabHandler', () => {
 		test('rejects if room does not exist', async () => {
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(undefined);
 
-			await handler.onFocus(mockClient, { action: 'focus', room: 'invalid-room', field: 'title' } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/room does not exist/);
+			await expect(
+				handler.onFocus(mockClient, { action: 'focus', room: 'invalid-room', field: 'title' } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/room does not exist/i));
 		});
 
 		test('rejects if client is not in room', async () => {
 			const mockRoom = { hasClient: vi.fn().mockResolvedValue(false) };
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
-			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/Not connected to room/);
+			await expect(
+				handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/Not connected to room/i));
 		});
 
 		test('rejects if field read or update permission is missing', async () => {
@@ -201,11 +186,9 @@ describe('CollabHandler', () => {
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
-			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/No permission to focus on field/);
+			await expect(
+				handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to focus on field/i));
 		});
 
 		test('rejects if field is already focused by another', async () => {
@@ -218,11 +201,9 @@ describe('CollabHandler', () => {
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
-			await handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/already focused by another user/);
+			await expect(
+				handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/already focused by another user/i));
 		});
 
 		test('calls room.focus on success', async () => {
@@ -249,7 +230,7 @@ describe('CollabHandler', () => {
 			const mockRoom = {
 				hasClient: vi.fn().mockResolvedValue(true),
 				getFocusByUser: vi.fn().mockImplementation(async () => currentFocus),
-				focus: vi.fn().mockImplementation(async (client, field) => {
+				focus: vi.fn().mockImplementation(async (_client, field) => {
 					currentFocus = field;
 					return true;
 				}),
@@ -290,16 +271,14 @@ describe('CollabHandler', () => {
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
-			await handler.onUpdate(mockClient, {
-				action: 'update',
-				room: 'room-uid',
-				field: 'title',
-				changes: 'test',
-			} as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/No permission to update field title/);
+			await expect(
+				handler.onUpdate(mockClient, {
+					action: 'update',
+					room: 'room-uid',
+					field: 'title',
+					changes: 'test',
+				} as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to update field title/i));
 		});
 
 		test('rejects if field does not exist in schema even if permission allows', async () => {
@@ -320,16 +299,14 @@ describe('CollabHandler', () => {
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
-			await handler.onUpdate(mockClient, {
-				action: 'update',
-				room: 'room-uid',
-				field: 'random_field',
-				changes: 'test',
-			} as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/field does not exist/);
+			await expect(
+				handler.onUpdate(mockClient, {
+					action: 'update',
+					room: 'room-uid',
+					field: 'random_field',
+					changes: 'test',
+				} as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/field does not exist/i));
 		});
 
 		test('handles error in update gracefully', async () => {
@@ -341,19 +318,24 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
-
-			await handler.onUpdate(mockClient, {
-				action: 'update',
-				room: 'room-uid',
-				field: 'title',
-				changes: 'new value',
+			vi.mocked(getSchema).mockResolvedValue({
+				collections: {
+					articles: { fields: { title: {} } },
+				},
 			} as any);
 
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await expect(
+				handler.onUpdate(mockClient, {
+					action: 'update',
+					room: 'room-uid',
+					field: 'title',
+					changes: 'new value',
+				} as any),
+			).rejects.toThrow('Update failed');
+
 			expect(mockRoom.update).toHaveBeenCalledWith(mockClient, { title: 'new value' });
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(Error));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.message).toBe('Update failed');
 		});
 
 		test('calls room.update on success', async () => {
@@ -393,15 +375,13 @@ describe('CollabHandler', () => {
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
-			await handler.onUpdateAll(mockClient, {
-				action: 'update_all',
-				room: 'room-uid',
-				changes: { title: 'New', secret: 'Hack' },
-			} as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/No permission to update field secret/);
+			await expect(
+				handler.onUpdateAll(mockClient, {
+					action: 'update_all',
+					room: 'room-uid',
+					changes: { title: 'New', secret: 'Hack' },
+				} as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to update field secret/i));
 		});
 
 		test('skips fields focused by others and updates remaining', async () => {
@@ -457,9 +437,9 @@ describe('CollabHandler', () => {
 		test('throws error if room does not exist', async () => {
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(undefined);
 
-			await handler.onLeave(mockClient, { action: 'leave', room: 'invalid-room', type: 'collab' });
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			await expect(
+				handler.onLeave(mockClient, { action: 'leave', room: 'invalid-room', type: 'collab' }),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/Room "(.*)" does not exist/i));
 		});
 	});
 
@@ -467,22 +447,20 @@ describe('CollabHandler', () => {
 		test('rejects if room does not exist', async () => {
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(undefined);
 
-			await handler.onDiscard(mockClient, { action: 'discard', room: 'invalid-room' } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/room does not exist/);
+			await expect(handler.onDiscard(mockClient, { action: 'discard', room: 'invalid-room' } as any)).rejects.toHaveProperty(
+				'extensions.reason',
+				expect.stringMatching(/room does not exist/i),
+			);
 		});
 
 		test('rejects if client is not in room', async () => {
 			const mockRoom = { hasClient: vi.fn().mockResolvedValue(false) };
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
-			await handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid' } as any);
-
-			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
-			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
-			expect(error.extensions['reason']).toMatch(/Not connected to room/);
+			await expect(handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid' } as any)).rejects.toHaveProperty(
+				'extensions.reason',
+				expect.stringMatching(/Not connected to room/i),
+			);
 		});
 
 		test('calls room.discard on success', async () => {
