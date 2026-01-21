@@ -954,4 +954,76 @@ describe('Collaborative Editing: Core', () => {
 			ws3.conn.close();
 		});
 	});
+
+	describe('Versioned Item Propagation', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const itemId = randomUUID();
+			const versionId = randomUUID();
+
+			// Setup
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabCore}`)
+				.send({ id: itemId, title: 'Original' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const versionRes = await request(TEST_URL)
+				.post('/versions')
+				.send({
+					key: versionId,
+					collection: collectionCollabCore,
+					item: itemId,
+				})
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const versionPk = versionRes.body.data.id;
+
+			const ws1 = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+			const ws2 = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+			// Action
+			await ws1.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabCore,
+				item: itemId,
+				version: versionPk,
+			});
+
+			const init1 = await ws1.getMessages(1);
+			const room = init1![0]!['room'];
+
+			await ws2.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabCore,
+				item: itemId,
+				version: versionPk,
+			});
+
+			await ws2.getMessages(1); // Drain INIT
+			await ws1.getMessages(1); // Drain JOIN
+
+			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Version Update' });
+
+			await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'update' && msg.changes === 'Version Update');
+
+			await request(TEST_URL)
+				.post(`/versions/${versionPk}/save`)
+				.send({ title: 'Version Update' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.expect(200);
+
+			// Assert
+			const saveMsg1 = await waitForMatchingMessage(ws1, (msg: any) => msg.action === 'save');
+			const saveMsg2 = await waitForMatchingMessage(ws2, (msg: any) => msg.action === 'save');
+
+			expect(saveMsg1).toBeDefined();
+			expect(saveMsg2).toBeDefined();
+
+			ws1.conn.close();
+			ws2.conn.close();
+		});
+	});
 });

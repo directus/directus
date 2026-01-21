@@ -1214,6 +1214,170 @@ describe('room', () => {
 	});
 });
 
+describe('versioned room', () => {
+	test('creates room with version property set', async () => {
+		const item = getTestItem();
+		const versionId = randomUUID();
+		const uid = getRoomHash('coll', item, versionId);
+		const room = new Room(uid, 'coll', item, versionId, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		expect(room.version).toBe(versionId);
+	});
+
+	test('registers versions.update and versions.delete listeners for versioned rooms', () => {
+		const item = getTestItem();
+		const versionId = randomUUID();
+		const uid = getRoomHash('coll', item, versionId);
+		new Room(uid, 'coll', item, versionId, {}, mockMessenger);
+
+		const onActionCalls = vi.mocked(emitter.onAction).mock.calls;
+		const versionsUpdateCall = onActionCalls.find((call) => call[0] === 'versions.update');
+		const versionsDeleteCall = onActionCalls.find((call) => call[0] === 'versions.delete');
+
+		expect(versionsUpdateCall).toBeDefined();
+		expect(versionsDeleteCall).toBeDefined();
+	});
+
+	test('does not register item update listener for versioned rooms', () => {
+		const item = getTestItem();
+		const versionId = randomUUID();
+		const uid = getRoomHash('coll', item, versionId);
+		new Room(uid, 'coll', item, versionId, {}, mockMessenger);
+
+		const onActionCalls = vi.mocked(emitter.onAction).mock.calls;
+		const itemUpdateCall = onActionCalls.find((call) => call[0] === 'coll.items.update');
+
+		expect(itemUpdateCall).toBeUndefined();
+	});
+
+	test('onUpdateHandler filters by version ID', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const versionId = randomUUID();
+		const uid = getRoomHash('coll', item, versionId);
+		const room = new Room(uid, 'coll', item, versionId, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'versions.update')![1];
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ delta: { title: 'Updated' } }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		// Matching version
+		await onUpdateHandler({ keys: [versionId] }, {} as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'save',
+			}),
+		);
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		// Non-matching version
+		await onUpdateHandler({ keys: [randomUUID()] }, {} as any);
+
+		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
+	});
+
+	test('onDeleteHandler triggers for matching version', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const versionId = randomUUID();
+		const uid = getRoomHash('coll', item, versionId);
+		const room = new Room(uid, 'coll', item, versionId, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		const onDeleteHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'versions.delete')![1];
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		await onDeleteHandler({ keys: [versionId], collection: 'directus_versions' }, {} as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'delete',
+			}),
+		);
+	});
+
+	test('preserves changes not in delta for versioned rooms', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const versionId = randomUUID();
+		const uid = getRoomHash('coll', item, versionId);
+		const room = new Room(uid, 'coll', item, versionId, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		mockData.set(`${uid}:changes`, { title: 'Pending Title', status: 'draft' });
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'versions.update')![1];
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ delta: { title: 'Saved Title' } }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await onUpdateHandler({ keys: [versionId] }, {} as any);
+
+		const updatedChanges = mockData.get(`${uid}:changes`);
+
+		expect(updatedChanges).toEqual({ title: 'Pending Title', status: 'draft' });
+	});
+
+	test('clears matching primitives from changes for versioned rooms', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const versionId = randomUUID();
+		const uid = getRoomHash('coll', item, versionId);
+		const room = new Room(uid, 'coll', item, versionId, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		mockData.set(`${uid}:changes`, { title: 'Saved Title', status: 'draft' });
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'versions.update')![1];
+
+		const mockService = {
+			readOne: vi.fn().mockResolvedValue({ delta: { title: 'Saved Title', status: 'published' } }),
+		};
+
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await onUpdateHandler({ keys: [versionId] }, {} as any);
+
+		const updatedChanges = mockData.get(`${uid}:changes`);
+
+		expect(updatedChanges).toEqual({ status: 'draft' });
+	});
+
+	test('disposes version event listeners correctly', () => {
+		const item = getTestItem();
+		const versionId = randomUUID();
+		const uid = getRoomHash('coll', item, versionId);
+		const room = new Room(uid, 'coll', item, versionId, {}, mockMessenger);
+
+		room.dispose();
+
+		const offActionCalls = vi.mocked(emitter.offAction).mock.calls;
+		const versionsUpdateOff = offActionCalls.find((call) => call[0] === 'versions.update');
+		const versionsDeleteOff = offActionCalls.find((call) => call[0] === 'versions.delete');
+
+		expect(versionsUpdateOff).toBeDefined();
+		expect(versionsDeleteOff).toBeDefined();
+	});
+});
+
 describe('getRoomHash', () => {
 	test('unique for just collection', () => {
 		expect(getRoomHash('abc', null, null)).toEqual(getRoomHash('abc', null, null));

@@ -195,7 +195,7 @@ export function useCollab(
 			action: ACTION.CLIENT.JOIN,
 			collection: collection.value,
 			item: item.value ? String(item.value) : null,
-			version: version.value?.key ?? null,
+			version: version.value?.id ?? null,
 			initialChanges: edits.value,
 		});
 	}
@@ -219,7 +219,7 @@ export function useCollab(
 				message.action === ACTION.SERVER.INIT &&
 				message.collection === collection.value &&
 				((!item.value && !message.item) || message.item === String(item.value)) &&
-				((!version.value && !message.version) || message.version === version.value?.key)
+				((!version.value && !message.version) || message.version === version.value?.id)
 			) {
 				receiveInit(message);
 				return;

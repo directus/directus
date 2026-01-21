@@ -180,25 +180,35 @@ export class Room {
 		this.onUpdateHandler = async (meta) => {
 			const { keys } = meta as { keys: string[] };
 
+			const target = this.version ?? this.item;
+
 			// Skip updates for different items (singletons have item=null)
-			if (item !== null && !keys.some((key) => String(key) === item)) return;
+			if (target !== null && !keys.some((key) => String(key) === target)) return;
 
 			try {
-				const sudoService = getService(collection, { schema: await getSchema() });
+				const schema = await getSchema();
 
-				const result = item ? await sudoService.readOne(item) : await sudoService.readSingleton({});
+				const result = await (async () => {
+					if (this.version) {
+						const service = getService('directus_versions', { schema });
+						const versionData = await service.readOne(this.version);
+						return versionData['delta'] ?? {};
+					}
+
+					const service = getService(collection, { schema });
+					return item ? await service.readOne(item) : await service.readSingleton({});
+				})();
 
 				const clients = await this.store(async (store) => {
 					let changes = await store.get('changes');
 
 					changes = Object.fromEntries(
 						Object.entries(changes).filter(([key, value]) => {
-							if (!(key in result)) return false;
-
 							// Always clear relational fields after save to prevent duplicate creation
-							if (typeof value === 'object' && value !== null) {
-								return false;
-							}
+							if (typeof value === 'object' && value !== null) return false;
+
+							// Partial delta for versions and full record for regular items
+							if (!(key in result)) return !!this.version;
 
 							// For primitives, only clear if saved value matches pending change
 							return !isEqual(value, result[key]);
@@ -221,7 +231,10 @@ export class Room {
 		};
 
 		this.onDeleteHandler = async (meta) => {
-			const { keys } = meta as { keys: string[] };
+			const { keys, collection: eventCollection } = meta as { keys: string[]; collection: string };
+
+			// Skip deletions for different versions
+			if (this.version && eventCollection === 'directus_versions' && !keys.includes(this.version)) return;
 
 			// Skip deletions for different items (singletons have item=null)
 			if (item !== null && !keys.some((key) => String(key) === item)) return;
@@ -242,7 +255,13 @@ export class Room {
 			: `${collection}.items.delete`;
 
 		// React to external updates (eg: REST API) to sync connected clients
-		emitter.onAction(updateEvent, this.onUpdateHandler);
+		if (version) {
+			emitter.onAction('versions.update', this.onUpdateHandler);
+			emitter.onAction('versions.delete', this.onDeleteHandler);
+		} else {
+			emitter.onAction(updateEvent, this.onUpdateHandler);
+		}
+
 		emitter.onAction(deleteEvent, this.onDeleteHandler);
 	}
 
@@ -598,6 +617,12 @@ export class Room {
 	dispose() {
 		emitter.offAction(`${this.collection}.items.update`, this.onUpdateHandler);
 		emitter.offAction(`${this.collection}.items.delete`, this.onDeleteHandler);
+
+		if (this.version) {
+			emitter.offAction('versions.update', this.onUpdateHandler);
+			emitter.offAction('versions.delete', this.onDeleteHandler);
+		}
+
 		this.messenger.removeRoomListener(this.uid);
 	}
 }
