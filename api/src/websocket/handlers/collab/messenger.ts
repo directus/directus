@@ -4,7 +4,7 @@ import { isDirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import {
-	ACTION,
+
 	type BroadcastMessage,
 	type ClientID,
 	COLLAB_BUS,

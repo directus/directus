@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
-import { validateMessage } from 'graphql-ws';
+
 import { difference, upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
