@@ -1,4 +1,5 @@
 ---
+privacy_policy: プライバシー ポリシー
 first_name: 名
 last_name: 姓
 identifier: 識別子
@@ -9,6 +10,7 @@ method: 方法
 published: 公開済み
 draft: 下書き
 archived: アーカイブ済み
+marketplace: マーケットプレイス
 extensions: 拡張機能
 modules: モジュール
 module_bar: モジュールバー
@@ -930,6 +932,7 @@ all: すべて
 batch_delete_confirm: >-
   項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
 cancel: キャンセル
+source_registry: マーケットプレイス
 collections: コレクション
 content: コンテンツ
 singleton: シングルトン
