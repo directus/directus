@@ -1504,6 +1504,26 @@ fields:
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
       'Custom AI system prompt to guide LLM behavior in AI Chat interactions. Leave empty to use the default.'
+    ai_openai_api_key: OpenAI API Key
+    ai_openai_allowed_models: OpenAI Allowed Models
+    ai_anthropic_api_key: Anthropic API Key
+    ai_anthropic_allowed_models: Anthropic Allowed Models
+    ai_google_api_key: Google API Key
+    ai_google_allowed_models: Google Allowed Models
+    ai_openai_compatible: OpenAI-Compatible Provider
+    ai_openai_compatible_name: Provider Name
+    ai_openai_compatible_base_url: Base URL
+    ai_openai_compatible_api_key: API Key
+    ai_openai_compatible_models: Models
+    ai_openai_compatible_headers: Custom Headers
+    ai_model_id: Model ID
+    ai_context_limit: Context Limit
+    ai_output_limit: Output Limit
+    ai_supports_attachments: Supports Attachments
+    ai_supports_reasoning: Supports Reasoning
+    ai_provider_options: Provider Options
+    ai_provider_options_note: Provider-specific options passed to AI endpoints.
+    ai_header_name: Header
 
   directus_shares:
     name: Name

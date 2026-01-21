@@ -1,3 +1,5 @@
+import type { OpenAICompatibleHeader, OpenAICompatibleModel } from '@directus/ai';
+
 export type SettingsModuleBarModule = {
 	type: 'module';
 	id: string;
@@ -65,12 +67,22 @@ export type Settings = {
 	project_id: string | null;
 	ai_openai_api_key: '**********' | null;
 	ai_anthropic_api_key: '**********' | null;
-	collaboration: boolean;
+	ai_google_api_key: '**********' | null;
+	ai_openai_compatible_api_key: '**********' | null;
+	ai_openai_compatible_base_url: string | null;
+	ai_openai_compatible_name: string | null;
+	ai_openai_compatible_models: OpenAICompatibleModel[] | null;
+	ai_openai_compatible_headers: OpenAICompatibleHeader[] | null;
+	ai_openai_allowed_models: string[] | null;
+	ai_anthropic_allowed_models: string[] | null;
+	ai_google_allowed_models: string[] | null;
+	ai_system_prompt: string | null;
 	mcp_enabled: boolean;
 	mcp_allow_deletes: boolean;
 	mcp_prompts_collection: string | null;
 	mcp_system_prompt_enabled: boolean;
 	mcp_system_prompt: string | null;
+	collaboration: boolean;
 } & OwnerInformation;
 
 export type OwnerInformation = {
