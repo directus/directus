@@ -21,6 +21,8 @@ location: 場所
 collection_names_are_case_sensitive: コレクション名は大文字と小文字を区別します
 condition_rules: 条件ルール
 input: 入力
+invalid_files_selected: '無効なファイルはありません | 無効なファイルが選択されました | {count} 個の無効なファイルが選択されました'
+files_wrong_type: 'ファイル「{files}」は形式が正しくありません。{expected}形式を指定してください。'
 maps: 地図
 switch_user: ユーザーを切り替える
 item_creation: アイテム作成
@@ -53,6 +55,7 @@ extension_panels: パネル
 extension_themes: テーマ
 extension_hooks: フック
 extension_endpoints: エンドポイント
+compatibility_not_guaranteed_copy: この拡張機能の作成者が指定している互換バージョンは {hostVersion} であり、現在のプロジェクトのバージョン（{currentVersion}）と一致しません。
 enable: 有効
 disable: 無効
 custom: カスタム
@@ -125,6 +128,8 @@ logoutReason:
   SESSION_EXPIRED: セッションが期限切れです
 public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
+public_role_info: >-
+  公開権限グループは、未認証のユーザーやロールを持たないユーザーがアクセスできるAPIデータを制御します。公開権限グループによるリクエストに、アプリへのアクセス権限や管理者権限を持たせることはできません。公開権限グループに割り当てられたポリシーにアプリ・管理者権限が付与されていても、それらは無視されます。
 admin_description: App/APIへアクセス制限の無い初期管理者のロール
 not_allowed: 許可されていない
 archive: アーカイブ
