@@ -38,6 +38,20 @@ export async function sanitizePayload(
 
 			if (value === undefined) return undefined;
 
+			// Check parent field permission for all fields
+			const primaryKey = (context.object[context.collection.primary] ?? null) as PrimaryKey | null;
+
+			const allowedFields = await verifyPermissions(accountability, context.collection.collection, primaryKey, 'read', {
+				knex,
+				schema,
+			});
+
+			// If the item doesn't exist, it will be a create that you always have permission to
+			if (!allowedFields) return [key, value];
+			// If item exists, we check if you have permissions to read the field
+			if (allowedFields.length === 0 || (!allowedFields.includes('*') && !allowedFields.includes(String(key)))) return;
+
+			// Process relational fields only reached if parent field is allowed
 			if (context.relationType) {
 				if (Array.isArray(value)) {
 					const items = value.filter(isVisible);
@@ -58,18 +72,6 @@ export async function sanitizePayload(
 					return undefined;
 				}
 			}
-
-			const primaryKey = (context.object[context.collection.primary] ?? null) as PrimaryKey | null;
-
-			const allowedFields = await verifyPermissions(accountability, context.collection.collection, primaryKey, 'read', {
-				knex,
-				schema,
-			});
-
-			// If the item doesn't exist, it will be a create that you always have permission to
-			if (!allowedFields) return [key, value];
-			// If item exists, we check if you have permissions to read the field
-			if (allowedFields.length === 0 || (!allowedFields.includes('*') && !allowedFields.includes(String(key)))) return;
 
 			return [key, value];
 		},

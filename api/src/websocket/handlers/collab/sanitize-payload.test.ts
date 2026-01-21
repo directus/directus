@@ -274,6 +274,22 @@ describe('sanitizePayload', () => {
 
 				expect(result).toEqual({ id: 1, comments: { create: [{ id: 1, text: 'Hello' }], update: [], delete: [] } });
 			});
+
+			test('filters O2M field when user lacks parent field permission', async () => {
+				vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection) => {
+					if (collection === 'articles') return ['id', 'title']; // No comments field
+					if (collection === 'comments') return ['*']; // Full access to comments collection
+					return [];
+				});
+
+				const result = await sanitizePayload({ id: 1, title: 'Test', comments: [{ id: 1, text: 'Hi' }] }, 'articles', {
+					accountability,
+					schema,
+					knex: db,
+				});
+
+				expect(result).toEqual({ id: 1, title: 'Test' });
+			});
 		});
 
 		describe('M2M', () => {
