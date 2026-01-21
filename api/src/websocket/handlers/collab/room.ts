@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import { type Accountability, type ActionHandler, type Item, type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
-import { random } from 'lodash-es';
+import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
@@ -191,7 +191,19 @@ export class Room {
 				const clients = await this.store(async (store) => {
 					let changes = await store.get('changes');
 
-					changes = Object.fromEntries(Object.entries(changes).filter(([key]) => key in result));
+					changes = Object.fromEntries(
+						Object.entries(changes).filter(([key, value]) => {
+							if (!(key in result)) return false;
+
+							// Always clear relational fields after save to prevent duplicate creation
+							if (typeof value === 'object' && value !== null) {
+								return false;
+							}
+
+							// For primitives, only clear if saved value matches pending change
+							return !isEqual(value, result[key]);
+						}),
+					);
 
 					await store.set('changes', changes);
 

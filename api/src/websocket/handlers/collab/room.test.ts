@@ -682,6 +682,62 @@ describe('room', () => {
 		expect(updatedChanges).toEqual({ title: 'Pending' }); // 'stale' should be removed
 	});
 
+	test('clears primitives that match saved result on external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		mockData.set(`${uid}:changes`, { title: 'Saved Title', status: 'draft' });
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Saved Title', status: 'published' }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		const updatedChanges = mockData.get(`${uid}:changes`);
+		expect(updatedChanges).toEqual({ status: 'draft' });
+	});
+
+	test('clears relational fields entirely on external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		mockData.set(`${uid}:changes`, {
+			title: 'Keep',
+			comments: [{ id: 1, text: 'New comment' }],
+			author: { id: 5, name: 'John' },
+		});
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
+
+		const mockService = {
+			readOne: vi.fn().mockResolvedValue({
+				id: item,
+				title: 'Different',
+				comments: [{ id: 1, text: 'New comment' }],
+				author: { id: 5, name: 'John' },
+			}),
+		};
+
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+
+		const updatedChanges = mockData.get(`${uid}:changes`);
+		expect(updatedChanges).toEqual({ title: 'Keep' });
+	});
+
 	test('handles type mismatch in primary keys during external update', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const itemStr = '15';
