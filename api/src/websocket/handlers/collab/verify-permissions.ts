@@ -38,12 +38,11 @@ export async function verifyPermissions(
 	// Prevent caching stale permissions if invalidation occurs during async steps
 	const startInvalidationCount = permissionCache.getInvalidationCount();
 
-	const service = getService(collection, { schema, knex, accountability });
-	const adminService = getService(collection, { schema, knex, accountability: { admin: true } as Accountability });
-
 	let itemData: any = null;
 
 	try {
+		const service = getService(collection, { schema, knex, accountability });
+		const adminService = getService(collection, { schema, knex, accountability: { admin: true } as Accountability });
 		const policies = await fetchPolicies(accountability, { knex, schema });
 
 		const rawPermissions = await fetchPermissions(

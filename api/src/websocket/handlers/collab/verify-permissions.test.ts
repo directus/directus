@@ -346,7 +346,7 @@ describe('Room.verifyPermissions', () => {
 		});
 
 		expect(fields).toContain('title');
-		expect(fields.length).toBeGreaterThan(0);
+		expect(fields!.length).toBeGreaterThan(0);
 	});
 
 	test('Permission merging (union of fields)', async () => {
@@ -527,6 +527,21 @@ describe('Room.verifyPermissions', () => {
 		expect(fields).toContain('title');
 		expect(fields).toContain('status');
 		expect(fields).not.toContain('id');
+	});
+
+	test('Handles error from getService', async () => {
+		const client = getAccountability({ uid: 'client-1' });
+
+		vi.mocked(getService).mockImplementation(() => {
+			throw new Error();
+		});
+
+		const fields = await verifyPermissions(client, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
+		expect(fields).toEqual([]);
 	});
 });
 
