@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import { isSystemCollection } from '@directus/system-data';
 import { type Accountability, type ActionHandler, type Item, type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
 import { isEqual, random } from 'lodash-es';
@@ -232,9 +233,17 @@ export class Room {
 			await this.close(true);
 		};
 
+		const updateEvent = isSystemCollection(collection)
+			? `${collection.substring(9)}.update`
+			: `${collection}.items.update`;
+
+		const deleteEvent = isSystemCollection(collection)
+			? `${collection.substring(9)}.delete`
+			: `${collection}.items.delete`;
+
 		// React to external updates (eg: REST API) to sync connected clients
-		emitter.onAction(`${collection}.items.update`, this.onUpdateHandler);
-		emitter.onAction(`${collection}.items.delete`, this.onDeleteHandler);
+		emitter.onAction(updateEvent, this.onUpdateHandler);
+		emitter.onAction(deleteEvent, this.onDeleteHandler);
 	}
 
 	/**

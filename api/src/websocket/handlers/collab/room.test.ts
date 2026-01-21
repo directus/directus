@@ -853,6 +853,32 @@ describe('room', () => {
 		expect(errorSpy).toHaveBeenCalledWith(expect.any(Error), expect.stringContaining('External update handler failed'));
 	});
 
+	test('broadcasts save action for system collections', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('directus_users', item, null);
+		const room = new Room(uid, 'directus_users', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'users.update')![1];
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Updated' }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await onUpdateHandler({ keys: [item], collection: 'directus_users' }, {
+			accountability: { user: 'external-user' },
+		} as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'save',
+			}),
+		);
+	});
+
 	test('broadcasts focus message to other clients', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
