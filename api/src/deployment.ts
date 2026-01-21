@@ -10,9 +10,12 @@ type DriverConstructor = new (credentials: any, options?: Options) => Deployment
  */
 const drivers: Map<ProviderType, DriverConstructor> = new Map();
 
-// Register drivers
-drivers.set('vercel', VercelDriver);
-// drivers.set('netlify', NetlifyDriver);
+/**
+ * Register all deployment drivers
+ */
+export function registerDeploymentDrivers(): void {
+	drivers.set('vercel', VercelDriver);
+}
 
 /**
  * Get a deployment driver instance
