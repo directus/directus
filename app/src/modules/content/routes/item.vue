@@ -324,7 +324,8 @@ const livePreviewSize = computed({
 
 		const storedValue = livePreviewSizeStorage.value || livePreviewSizeDefault;
 
-		if (livePreviewEnforceDefault.value && storedValue <= livePreviewSizeDefault) {
+		// Enforce default size when the preview is below the minimum size
+		if (livePreviewEnforceDefault.value && storedValue <= livePreviewSizeMinSize.value) {
 			return livePreviewSizeDefault;
 		}
 
