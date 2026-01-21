@@ -107,7 +107,6 @@ const isPromotableField = computed(() => {
 					clickable
 					@click.stop="$emit('toggle-raw', !rawEditorActive)"
 				/>
-
 			</div>
 
 			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />

@@ -350,11 +350,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 		const currentId = currentRevision.id;
 
-		const sortedRevisions = orderBy(
-			revisions,
-			[(r) => ('id' in r && r.id ? r.id : 0) as number],
-			['desc'],
-		);
+		const sortedRevisions = orderBy(revisions, [(r) => ('id' in r && r.id ? r.id : 0) as number], ['desc']);
 
 		return sortedRevisions.find((r) => 'id' in r && r.id && r.id < currentId) || null;
 	}

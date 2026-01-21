@@ -315,10 +315,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						</div>
 						<div v-else class="compare-to-container">
 							<span class="compare-to-label">{{ $t('comparing_to') }}</span>
-							<ComparisonToggle
-								v-model="compareToOption"
-								:disable-previous="isFirstRevision"
-							/>
+							<ComparisonToggle v-model="compareToOption" :disable-previous="isFirstRevision" />
 						</div>
 					</div>
 					<div class="col right">
@@ -351,7 +348,9 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 												: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
 									data-test="comparison-modal_apply-button"
-									:disabled="selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')"
+									:disabled="
+										selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')
+									"
 									:loading="promoting"
 									@click="onPromoteClick"
 								>

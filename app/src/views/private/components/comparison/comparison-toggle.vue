@@ -60,7 +60,11 @@ const displayValue = computed(() => {
 
 			<VDivider />
 
-			<VListItem :clickable="!props.disablePrevious" :disabled="props.disablePrevious" @click="selectOption('Previous')">
+			<VListItem
+				:clickable="!props.disablePrevious"
+				:disabled="props.disablePrevious"
+				@click="selectOption('Previous')"
+			>
 				<VListItemIcon>
 					<VIcon name="history" />
 				</VListItemIcon>
