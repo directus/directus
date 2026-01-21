@@ -334,8 +334,8 @@ const livePreviewSize = computed({
 	set(value: number) {
 		if (isMobile.value) return;
 
-		// Clear enforcement once user drags to or past the default size
-		if (livePreviewEnforceDefault.value && value >= livePreviewSizeDefault) {
+		// Remove default size enforcement once the preview is larger than the minimum size
+		if (livePreviewEnforceDefault.value && value > livePreviewSizeMinSize.value) {
 			livePreviewEnforceDefault.value = false;
 		}
 
