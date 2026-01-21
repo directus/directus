@@ -14,7 +14,14 @@ import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
 import { RoomManager } from './room.js';
-import type { FocusMessage, JoinMessage, LeaveMessage, UpdateAllMessage, UpdateMessage } from './types.js';
+import type {
+	DiscardMessage,
+	FocusMessage,
+	JoinMessage,
+	LeaveMessage,
+	UpdateAllMessage,
+	UpdateMessage,
+} from './types.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 const env = useEnv();
@@ -339,6 +346,31 @@ export class CollabHandler {
 					reason: `Field ${message.field} is already focused by another user`,
 				});
 			}
+		} catch (err) {
+			this.messenger.handleError(client.uid, err);
+		}
+	}
+
+	/**
+	 * Discard all changes in the room
+	 */
+	async onDiscard(client: WebSocketClient, message: DiscardMessage) {
+		try {
+			const room = await this.roomManager.getRoom(message.room);
+
+			if (!room) {
+				throw new InvalidPayloadError({
+					reason: `No access to room ${message.room} or room does not exist`,
+				});
+			}
+
+			if (!(await room.hasClient(client.uid))) {
+				throw new InvalidPayloadError({
+					reason: `Not connected to room ${message.room}`,
+				});
+			}
+
+			await room.discard();
 		} catch (err) {
 			this.messenger.handleError(client.uid, err);
 		}

@@ -134,6 +134,7 @@ const {
 	collabContext,
 	collabCollision,
 	update: updateCollab,
+	discard: discardCollab,
 } = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
@@ -151,6 +152,7 @@ const { templateData } = useTemplateData(collectionInfo, primaryKey);
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
+const confirmDiscard = ref(false);
 
 const title = computed(() => {
 	if (te(`collection_names_singular.${props.collection}`)) {
@@ -535,8 +537,17 @@ function discardAndLeave() {
 }
 
 function discardAndStay() {
-	edits.value = {};
+	if (collabUsers.value.length > 1) {
+		confirmDiscard.value = true;
+	} else {
+		discardAndStayConfirmed();
+	}
+}
+
+function discardAndStayConfirmed() {
+	discardCollab();
 	confirmLeave.value = false;
+	confirmDiscard.value = false;
 }
 
 function revert(values: Record<string, any>) {
@@ -857,6 +868,19 @@ function useCollectionRoute() {
 						{{ $t('leave_page') }}
 					</VButton>
 					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+			<VCard>
+				<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
+				<VCardText>{{ $t('discard_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndStayConfirmed">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmDiscard = false">{{ $t('keep_editing') }}</VButton>
 				</VCardActions>
 			</VCard>
 		</VDialog>

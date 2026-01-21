@@ -463,6 +463,43 @@ describe('CollabHandler', () => {
 		});
 	});
 
+	describe('onDiscard', () => {
+		test('rejects if room does not exist', async () => {
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(undefined);
+
+			await handler.onDiscard(mockClient, { action: 'discard', room: 'invalid-room' } as any);
+
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
+			expect(error.extensions['reason']).toMatch(/room does not exist/);
+		});
+
+		test('rejects if client is not in room', async () => {
+			const mockRoom = { hasClient: vi.fn().mockResolvedValue(false) };
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid' } as any);
+
+			expect(handler.messenger.handleError).toHaveBeenCalledWith(mockClient.uid, expect.any(InvalidPayloadError));
+			const error = vi.mocked(handler.messenger.handleError).mock.calls[0]![1] as any;
+			expect(error.extensions['reason']).toMatch(/Not connected to room/);
+		});
+
+		test('calls room.discard on success', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				discard: vi.fn(),
+			};
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid' } as any);
+
+			expect(mockRoom.discard).toHaveBeenCalled();
+			expect(handler.messenger.handleError).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('onUpdate (unset)', () => {
 		test('calls room.unset when changes property is missing', async () => {
 			const mockRoom = {

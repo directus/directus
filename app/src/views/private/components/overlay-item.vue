@@ -110,8 +110,9 @@ const {
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
 const hasEdits = computed(() => !isEmpty(internalEdits.value));
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const router = useRouter();
+const { confirmCancel, discardAndCancel, confirmCancellation } = useCancelGuard();
+const { confirmLeave, leaveTo } = useEditsGuard(confirmCancellation);
 
 function discardAndLeave() {
 	if (!leaveTo.value) return;
@@ -119,8 +120,6 @@ function discardAndLeave() {
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
-
-const { confirmCancel, discardAndCancel, confirmCancellation } = useCancelGuard();
 
 const title = computed(() => {
 	const collection = relatedCollectionInfo?.value || collectionInfo.value!;
@@ -538,7 +537,16 @@ function useActions() {
 
 function useCancelGuard() {
 	const confirmCancel = ref(false);
-	const confirmCancellation = computed(() => props.preventCancelWithEdits && hasEdits.value);
+
+	const confirmCancellation = computed(() => {
+		if (!hasEdits.value) return false;
+
+		if (connected.value) {
+			return collabUsers.value.length > 1;
+		}
+
+		return props.preventCancelWithEdits;
+	});
 
 	return {
 		confirmCancel,
@@ -696,7 +704,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	/>
 
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-		<VCard>
+		<VCard v-if="!connected">
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 			<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -706,15 +714,35 @@ function popoverClickOutsideMiddleware(e: Event) {
 				<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>
 		</VCard>
+		<VCard v-else>
+			<VCardTitle>{{ $t('unsaved_changes_collab') }}</VCardTitle>
+			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
+			<VCardActions>
+				<VButton secondary @click="discardAndLeave">
+					{{ $t('close_drawer') }}
+				</VButton>
+				<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+			</VCardActions>
+		</VCard>
 	</VDialog>
 
 	<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
-		<VCard>
+		<VCard v-if="!connected">
 			<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
 			<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndCancel">
 					{{ $t('discard_changes') }}
+				</VButton>
+				<VButton @click="confirmCancel = false">{{ $t('keep_editing') }}</VButton>
+			</VCardActions>
+		</VCard>
+		<VCard v-else>
+			<VCardTitle>{{ $t('unsaved_changes_collab') }}</VCardTitle>
+			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
+			<VCardActions>
+				<VButton secondary @click="discardAndCancel">
+					{{ $t('close_drawer') }}
 				</VButton>
 				<VButton @click="confirmCancel = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>

@@ -505,6 +505,41 @@ describe('room', () => {
 		expect(vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'hij')).toHaveLength(2);
 	});
 
+	test('discard changes', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		await room.update(clientA, { title: 'Changed' });
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed' });
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		await room.discard();
+
+		expect(mockData.get(`${uid}:changes`)).toEqual({});
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'discard',
+			}),
+		);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'def',
+			expect.objectContaining({
+				action: 'discard',
+			}),
+		);
+	});
+
 	test('unset field', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });

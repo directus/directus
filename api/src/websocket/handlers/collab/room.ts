@@ -467,6 +467,19 @@ export class Room {
 	}
 
 	/**
+	 * Discard all changes in the room and propagate to other clients
+	 */
+	async discard(): Promise<void> {
+		await this.store(async (store) => {
+			await store.set('changes', {});
+		});
+
+		await this.sendAll({
+			action: ACTION.SERVER.DISCARD,
+		});
+	}
+
+	/**
 	 * Atomically acquire or release focus and propagate focus state to other clients
 	 */
 	async focus(sender: PermissionClient, field: string | null): Promise<boolean> {

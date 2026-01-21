@@ -1256,9 +1256,13 @@ unsaved_changes_copy_collab:
   You’re editing this item with others. Your changes will remain in the collaborative session for now, but may be lost
   if no one saves them.
 leave_page: Leave Page
+close_drawer: Close Drawer
 discard_changes: Discard Changes
 discard_all_changes: Discard All Changes
 discard_changes_copy: Are you sure you want to discard all the changes made?
+discard_changes_copy_collab:
+  You're editing this item with others. Discarding changes will clear all unsaved edits for everyone in this
+  collaborative session.
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
 keep_editing: Keep Editing

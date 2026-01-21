@@ -68,6 +68,7 @@ export function useCollab(
 	collabContext: CollabContext;
 	connected: Ref<boolean | undefined>;
 	collabCollision: Ref<{ from: Item; to: Item } | undefined>;
+	discard: () => void;
 } {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
@@ -101,6 +102,7 @@ export function useCollab(
 		receiveSave,
 		receiveUpdate,
 		receiveDelete,
+		receiveDiscard,
 	};
 
 	onMounted(async () => {
@@ -352,6 +354,10 @@ export function useCollab(
 		}
 	}
 
+	async function receiveDiscard() {
+		edits.value = {};
+	}
+
 	async function receiveFocus(message: FocusMessage) {
 		if (connectionId.value === message.connection) return;
 
@@ -397,6 +403,14 @@ export function useCollab(
 		});
 	}, 100);
 
+	function discard() {
+		sendMessage({
+			action: ACTION.CLIENT.DISCARD,
+		});
+
+		edits.value = {};
+	}
+
 	function sendMessage(message: Omit<ClientMessage, 'id'>) {
 		if (!connected.value || !roomId.value) return;
 
@@ -407,5 +421,5 @@ export function useCollab(
 		});
 	}
 
-	return { update, users, collabContext, connected, collabCollision, clearCollidingChanges };
+	return { update, users, collabContext, connected, collabCollision, clearCollidingChanges, discard };
 }

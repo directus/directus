@@ -8,3 +8,4 @@ export type LeaveMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT
 export type UpdateMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.UPDATE }>;
 export type UpdateAllMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.UPDATE_ALL }>;
 export type FocusMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.FOCUS }>;
+export type DiscardMessage = Extract<ClientMessage, { action: typeof ACTION.CLIENT.DISCARD }>;
