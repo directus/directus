@@ -44,7 +44,7 @@ export type DirectusDeploymentRun<Schema = any> = MergeCoreCollection<
 		id: string;
 		project: DirectusDeploymentProject<Schema> | string;
 		external_id: string;
-		status: 'queued' | 'building' | 'ready' | 'error' | 'canceled';
+		status: 'building' | 'ready' | 'error' | 'canceled';
 		target: string;
 		url: string | null;
 		date_created: 'datetime' | null;

@@ -362,7 +362,7 @@ router.get(
 			if (project.latest_deployment) {
 				const status = project.latest_deployment.status;
 
-				if (status === 'building' || status === 'queued') {
+				if (status === 'building') {
 					activeDeployments++;
 				} else if (status === 'error') {
 					failedBuilds++;

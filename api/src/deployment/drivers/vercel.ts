@@ -130,7 +130,23 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	}
 
 	private mapStatus(vercelStatus: string | undefined): Status {
-		return (vercelStatus?.toLowerCase() as Status) || 'queued';
+		const normalized = vercelStatus?.toLowerCase();
+
+		switch (normalized) {
+			case 'ready':
+				return 'ready';
+			case 'error':
+				return 'error';
+			case 'canceled':
+				return 'canceled';
+			case 'queued':
+			case 'initializing':
+			case 'analyzing':
+			case 'building':
+			case 'deploying':
+			default:
+				return 'building';
+		}
 	}
 
 	async testConnection(): Promise<void> {
@@ -239,7 +255,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		const result: Details = {
 			id: deployment.id,
 			project_id: deployment.projectId ?? '',
-			status: this.mapStatus(deployment.status),
+			status: this.mapStatus(deployment.status || deployment.state),
 			created_at: new Date(deployment.createdAt),
 		};
 
