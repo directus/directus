@@ -611,6 +611,8 @@ function useCollectionRoute() {
 					:template="collectionInfo.meta!.display_template"
 				/>
 			</h1>
+
+			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template #headline>
