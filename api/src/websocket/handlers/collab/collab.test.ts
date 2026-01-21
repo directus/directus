@@ -76,10 +76,9 @@ describe('CollabHandler', () => {
 
 			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
 
-			await expect(handler.onJoin(mockClient, { action: 'join', collection: 'articles' } as any)).rejects.toHaveProperty(
-				'extensions.reason',
-				'Item id has to be provided for non singleton collections',
-			);
+			await expect(
+				handler.onJoin(mockClient, { action: 'join', collection: 'articles' } as any),
+			).rejects.toHaveProperty('extensions.reason', 'Item id has to be provided for non singleton collections');
 		});
 
 		test('rejects if item does not exist or user has no access', async () => {
@@ -447,20 +446,18 @@ describe('CollabHandler', () => {
 		test('rejects if room does not exist', async () => {
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(undefined);
 
-			await expect(handler.onDiscard(mockClient, { action: 'discard', room: 'invalid-room' } as any)).rejects.toHaveProperty(
-				'extensions.reason',
-				expect.stringMatching(/room does not exist/i),
-			);
+			await expect(
+				handler.onDiscard(mockClient, { action: 'discard', room: 'invalid-room' } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/room does not exist/i));
 		});
 
 		test('rejects if client is not in room', async () => {
 			const mockRoom = { hasClient: vi.fn().mockResolvedValue(false) };
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
-			await expect(handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid' } as any)).rejects.toHaveProperty(
-				'extensions.reason',
-				expect.stringMatching(/Not connected to room/i),
-			);
+			await expect(
+				handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid' } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/Not connected to room/i));
 		});
 
 		test('calls room.discard on success', async () => {
