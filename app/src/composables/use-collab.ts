@@ -6,6 +6,7 @@ import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import sdk from '@/sdk';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -72,6 +73,7 @@ export function useCollab(
 } {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
+	const notificationsStore = useNotificationsStore();
 	const connected = ref<boolean | undefined>(undefined);
 	const { t } = useI18n();
 
@@ -304,7 +306,7 @@ export function useCollab(
 	}
 
 	async function receiveDelete() {
-		notify({
+		notificationsStore.add({
 			title: t('item_deleted'),
 			persist: true,
 		});
@@ -353,9 +355,11 @@ export function useCollab(
 			if (isEqual(initialValues.value[field], edits.value[field])) delete edits.value[field];
 		}
 
-		notify({
-			title: t('item_update_success'),
-		});
+		// Prevent duplicate messages on sender side, kinda hacky
+		if (!notificationsStore.queue.some((notify) => notify.title === t('item_update_success')))
+			notificationsStore.add({
+				title: t('item_update_success'),
+			});
 	}
 
 	async function receiveDiscard() {
