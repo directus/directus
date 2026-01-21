@@ -322,7 +322,7 @@ const livePreviewSize = computed({
 
 		const storedValue = livePreviewSizeStorage.value || livePreviewSizeDefault;
 
-		if (livePreviewEnforceMinimum.value && storedValue < livePreviewSizeDefault) {
+		if (livePreviewEnforceMinimum.value && storedValue <= livePreviewSizeMinSize) {
 			return livePreviewSizeDefault;
 		}
 
