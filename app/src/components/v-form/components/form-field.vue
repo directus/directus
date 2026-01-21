@@ -63,11 +63,16 @@ const { t } = useI18n();
 
 const { focusedBy, onFieldUnset, onFieldUpdate, onBlur, onFocus } = props.collabFieldContext;
 
+const isRelational = computed(() => {
+	const relationalSpecials = ['m2o', 'o2m', 'm2m', 'm2a', 'file', 'files', 'translations'];
+	return relationalSpecials.some((special) => props.field.meta?.special?.includes(special));
+});
+
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
 	if (props.field?.meta?.readonly === true) return true;
 	if (props.batchMode && props.batchActive === false) return true;
-	if (focusedBy.value) return true;
+	if (focusedBy.value && isRelational.value === false) return true;
 	return false;
 });
 
