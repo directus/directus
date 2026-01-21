@@ -14,6 +14,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
+import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -22,9 +23,11 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
+import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
@@ -56,8 +59,19 @@ const {
 	deleting,
 	saveAsCopy,
 	refresh,
+	getItem,
 	validationErrors,
 } = useItem<File>(ref('directus_files'), primaryKey);
+
+const {
+	users: collabUsers,
+	connected,
+	collabContext,
+	collabCollision,
+	update: updateCollab,
+	clearCollidingChanges,
+	discard: discardCollab,
+} = useCollab(ref('directus_files'), primaryKey, ref(null), item, edits, getItem);
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
@@ -70,6 +84,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const confirmDelete = ref(false);
 const editActive = ref(false);
+const confirmDiscard = ref(false);
 
 // These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
 const fieldsDenyList: string[] = [
@@ -168,8 +183,17 @@ function discardAndLeave() {
 }
 
 function discardAndStay() {
-	edits.value = {};
+	if (collabUsers.value.length > 1) {
+		confirmDiscard.value = true;
+	} else {
+		discardAndStayConfirmed();
+	}
+}
+
+function discardAndStayConfirmed() {
+	discardCollab();
 	confirmLeave.value = false;
+	confirmDiscard.value = false;
 }
 
 function useMovetoFolder() {
@@ -230,6 +254,10 @@ function revert(values: Record<string, any>) {
 	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
 		<template #headline>
 			<VBreadcrumb :items="breadcrumb" />
+		</template>
+
+		<template #title:append>
+			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template #actions>
@@ -351,12 +379,13 @@ function revert(values: Record<string, any>) {
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
+				:collab-context="collabContext"
 				:validation-errors="validationErrors"
 			/>
 		</div>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<VCard>
+			<VCard v-if="!connected">
 				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 				<VCardActions>
@@ -366,7 +395,43 @@ function revert(values: Record<string, any>) {
 					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
 				</VCardActions>
 			</VCard>
+			<VCard v-else>
+				<VCardTitle>{{ $t('unsaved_changes_collab') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('leave_page') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
 		</VDialog>
+
+		<VDialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+			<VCard>
+				<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
+				<VCardText>{{ $t('discard_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndStayConfirmed">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmDiscard = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<ComparisonModal
+			:model-value="collabCollision !== undefined"
+			collection="directus_files"
+			:primary-key="primaryKey"
+			:current-collab="collabCollision"
+			:collab-context="collabContext"
+			mode="collab"
+			:delete-versions-allowed="false"
+			:current-version="null"
+			@confirm="updateCollab"
+			@cancel="clearCollidingChanges"
+		/>
 
 		<template #sidebar>
 			<FileInfoSidebarDetail :file="item" :is-new="isNew" />
@@ -399,5 +464,9 @@ function revert(values: Record<string, any>) {
 
 .preview {
 	margin-block-end: var(--theme--form--row-gap);
+}
+
+.header-collab {
+	margin-inline-start: 16px;
 }
 </style>
