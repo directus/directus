@@ -66,12 +66,12 @@ export function useCollab(
 	clearCollidingChanges: () => void;
 	users: Ref<CollabUser[]>;
 	collabContext: CollabContext;
-	connected: Ref<boolean>;
+	connected: Ref<boolean | undefined>;
 	collabCollision: Ref<{ from: Item; to: Item } | undefined>;
 } {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
-	const connected = ref(false);
+	const connected = ref<boolean | undefined>(undefined);
 	const { t } = useI18n();
 
 	const roomId = ref<string | null>(null);
