@@ -1449,6 +1449,8 @@ triggers:
   webhook:
     method: 方法
 operations:
+  exec:
+    description: 任意のコードを実行し、受け取ったデータ内容を加工・修正することができます
   json-web-token:
     token: トークン
     options: オプション
