@@ -13,6 +13,7 @@ export function startWebSocketHandlers() {
 	const restEnabled = toBoolean(env['WEBSOCKETS_REST_ENABLED']);
 	const graphqlEnabled = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED']);
 	const logsEnabled = toBoolean(env['WEBSOCKETS_LOGS_ENABLED']);
+	const collabEnabled = toBoolean(env['WEBSOCKETS_COLLAB_ENABLED']);
 
 	if (restEnabled && heartbeatEnabled) {
 		new HeartbeatHandler();
@@ -30,7 +31,9 @@ export function startWebSocketHandlers() {
 		new LogsHandler();
 	}
 
-	new CollabHandler();
+	if (collabEnabled) {
+		new CollabHandler();
+	}
 }
 
 export * from './heartbeat.js';
