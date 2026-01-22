@@ -52,6 +52,7 @@ const props = withDefaults(
 		field: string;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		allowedMimeTypes: string;
 	}>(),
 	{
 		enableCreate: true,
@@ -68,6 +69,10 @@ const value = computed({
 	set: (value) => {
 		emit('input', value);
 	},
+});
+
+const allowedMimeTypes = computed(() => {
+	return props.allowedMimeTypes.join(',');
 });
 
 const query = ref<RelationQuerySingle>({
@@ -332,7 +337,7 @@ function useURLImport() {
 			<VCard>
 				<VCardTitle>{{ $t('upload_from_device') }}</VCardTitle>
 				<VCardText>
-					<VUpload from-url :folder="folder" @input="onUpload" />
+					<VUpload from-url :folder="folder" :accept="allowedMimeTypes" @input="onUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="activeDialog = null">{{ $t('cancel') }}</VButton>
