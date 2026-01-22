@@ -121,7 +121,7 @@ const {
 const aiStore = useAiStore();
 
 aiStore.onSystemToolResult((tool, input) => {
-	if (tool === 'items' && input.collection === collection.value) {
+	if (tool === 'items' && input.collection === collection.value && input.action !== 'read') {
 		refresh();
 		refreshLivePreview();
 	}
