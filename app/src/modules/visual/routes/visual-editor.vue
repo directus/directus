@@ -173,6 +173,11 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 			<template #overlay="{ frameEl, frameSrc }">
 				<EditingLayer :frame-src :frame-el :show-editable-elements @navigation="onNavigation" />
 			</template>
+
+			<template #notifications>
+				<NotificationDialogs />
+				<NotificationsGroup />
+			</template>
 		</LivePreview>
 
 		<PrivateViewDrawer
@@ -185,9 +190,6 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 				<AiConversation />
 			</aside>
 		</PrivateViewDrawer>
-
-		<NotificationDialogs />
-		<NotificationsGroup />
 	</div>
 </template>
 

@@ -490,6 +490,7 @@ function useUrls() {
 							/>
 						</div>
 					</div>
+					<slot name="notifications" />
 				</div>
 			</template>
 			<template #divider>
@@ -530,6 +531,7 @@ function useUrls() {
 					/>
 				</div>
 			</div>
+			<slot name="notifications" />
 		</div>
 	</div>
 </template>
@@ -671,6 +673,7 @@ function useUrls() {
 	}
 
 	.container {
+		position: relative;
 		inline-size: 100%;
 		block-size: calc(100% - var(--preview--header--height));
 		overflow: auto;
