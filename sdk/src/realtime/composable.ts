@@ -229,7 +229,11 @@ export function realtime(config: WebSocketConfig = {}) {
 		return {
 			async isConnected() {
 				if (state.code === 'connecting') {
-					await state.connection;
+					try {
+						await state.connection;
+					} catch {
+						return false;
+					}
 				}
 
 				return state.code === 'open';
