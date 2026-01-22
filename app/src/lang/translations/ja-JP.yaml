@@ -25,6 +25,8 @@ privacy_policy: プライバシーポリシー 
 contact_our_team: チームへのお問い合わせ  
 setup_welcome: ようこそ、Directusへ
 setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
+setup_license_notice: >
+  年間収益、資金調達額、または運営予算が 5 百万ドル未満の団体は、Directus を無料でご利用いただけます。
 setup_license_follow_up: >
   この上限を超える場合は有料ライセンスが必要です。現在は試用モードで継続できます。商用利用のご相談は {contactOurTeam} まで。
 setup_save_accept_license: >
@@ -56,6 +58,7 @@ extensions: 拡張機能
 skip_link_nav: ナビゲーションへスキップ
 skip_link_module_nav: モジュールナビゲーションへスキップ
 skip_link_main: メインコンテンツへスキップ
+skip_link_sidebar: サイドバーへスキップ
 modules: モジュール
 module_bar: モジュールバー
 logs: ログ
@@ -74,7 +77,7 @@ invalid_files_selected: '無効なファイルはありません | 無効なフ�
 files_wrong_type: 'ファイル 「{files}」 は形式が正しくありません。 {expected} 形式を指定してください。'
 files_are_empty: '次のファイルはデータが含まれていないため、アップロードに失敗しました：{files}'
 not_a_number: 数値ではありません
-invalid_range_min: '{min} 以上の値を入力してください'
+invalid_range_min: '{value} 以上の値を入力してください'
 invalid_range_max: '{value} 以下の値を入力してください'
 maps: 地図
 switch_user: ユーザーを切り替える
@@ -121,7 +124,7 @@ extension_reload_required_copy: アプリ拡張機能の有効化または無効
 extension_reload_now: 今すぐ再読み込み
 published_relative: '公開日: {relativeTime}'
 compatible_with_your_project: プロジェクトと互換性があります
-compatible_with_your_project_copy: この拡張機能の作者により {hostVersion} との互換性が確認されており、現在のプロジェクトのバージョン（{currentVersion}）と一致しています。
+compatible_with_your_project_copy: この拡張機能の作者により {hostVersion} との互換性が確認されており、現在のプロジェクトのバージョン（{currentVersion}）と一致しています
 last_updated_relative: '最終更新日: {relativeTime}'
 n_files: '{n} 個のファイル'
 verified: 認証済み
@@ -163,9 +166,9 @@ db_only_click_to_configure: 'データベースのみ: クリックして設定�
 show_active_items: アクティブアイテムを表示
 show_archived_items: アーカイブ済みアイテムを表示
 show_all_items: 全て表示
-edited: 編集された値
+edited: 編集後の値
 required: 必須
-required_for_app_access: App アクセスに必要なもの
+required_for_app_access: アプリへのアクセスに必須
 requires_value: この項目は必須です
 create_preset: プリセットの作成
 create_panel: パネルを作成
@@ -213,7 +216,7 @@ delete_version: バージョンを削除
 delete_version_copy: >-
   バージョン「{version}」を削除してもよろしいですか? この操作は元に戻せません。
 delete_on_apply_copy: >-
-  「{version}」バージョンを削除してもよろしいですか ? この操作は元に戻せません。
+  「{version}」を Main（本番）に反映しようとしています。反映後の「{version}」をどう処理しますか ？{version}{version}
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
@@ -239,9 +242,9 @@ archive_confirm: この項目をアーカイブしてよろしいですか？
 archive_confirm_count: >-
   アイテムが選択されていません | このアイテムをアーカイブしてもよろしいですか? | {count} 件のアイテムをアーカイブしてもよろしいですか？
 reset_system_permissions_to: 'システム権限のリセット:'
-reset_system_permissions_copy: このアクションはシステム接続に適用された可能性のあるカスタム権限を上書きします。よろしいですか？
-the_following_are_minimum_permissions: '「Appアクセス」を有効にすると、ミニマム権限が自動的に設定されます。権限設定は後から追加できますが、ミニマム権限より減らすことはできません。'
-app_access_minimum: Appアクセスの最小値
+reset_system_permissions_copy: このアクションは、システム接続に適用されているカスタム権限を上書きします。よろしいですか ？
+the_following_are_minimum_permissions: '「アプリアクセス」を有効にすると、最小限の権限が自動的に設定されます。権限設定は後から追加できますが、最小権限より減らすことはできません。'
+app_access_minimum: アプリアクセスの最小権限
 recommended_defaults: 推奨されるデフォルト値
 unarchive: アーカイブ解除
 unarchive_confirm: この項目をアーカイブしてよろしいですか？
@@ -261,26 +264,29 @@ validationError:
   lte: 値は {valid} 以下の必要があります
   empty: 値は空白にできません
   nempty: 値は空白にできません
-  null: 値は null の必要があります
-  nnull: 値は Null 値にできません
+  null: 値は null である必要があります
+  nnull: 値を null にすることはできません
   required: 必須項目です
   unique: 他と重複しない値である必要があります
+  email: 有効なメールアドレスを入力してください
   regex: 値のフォーマットが正しくありません
-  starts_with: 値は {substring} から始めなければなりません
-  istarts_with: 値は {substring} から始めなければなりません
+  starts_with: 値は {substring} から始めてください
+  istarts_with: 値は {substring} から始めてください
   nstarts_with: 値は {substring} で始めることはできません
   nistarts_with: 値は {substring} で始めることはできません
   ends_with: 値は {substring} で終わらなければなりません
   iends_with: 値は {substring} で終わらなければなりません
   nends_with: 値は {substring} で終わらせることはできません
   niends_with: 値は {substring} で終わらせることはできません
+  confirm_password: パスワードが一致しません
+  org_name: 組織名を入力してください
 all_access: すべてのアクセス
 no_access: アクセスなし
 use_custom: カスタムを使う
-nullable: Null 値を許容
-allow_null_value: Null 値を許容する
-allow_multiple: 複数を許可する
-allow_multiple_to_be_open: 複数開くことを許可する
+nullable: null 値を許容
+allow_null_value: null 値を許容する
+allow_multiple: 複数選択を許可
+allow_multiple_to_be_open: 複数同時に開くことを許可
 enter_value_to_replace_nulls: このフィールド内に Null値 を置き換える新しい値を入力してください。
 field_standard: 標準
 field_presentation: エイリアス
@@ -292,13 +298,16 @@ field_o2m: O2M 関係
 field_m2m: M2M 関係
 field_translations: 翻訳
 field_group: フィールドグループ
-item_permissions: 項目の権限
+item_permissions: アイテム権限
 field_permissions: フィールドの権限
 field_validation: フィールドの検証
 field_presets: フィールド プリセット
 permissions_for_role: '{role} ロールのアイテム は{action} ことができます'
+permissions_for_policy: '「{policy}」ポリシーで {action} できるアイテム。'
 fields_for_role: '{role} ロールのフィールド は{action} ことができます'
+fields_for_policy: '「{policy}」ポリシーで {action} できるフィールド。'
 validation_for_role: 'フィールド {action} は、 {role} ロールに準じます'
+validation_for_policy: 'フィールドの {action} は「{role}」役割に準じます。'
 presets_for_role: "フィールド値のデフォルトは、{role} ロールです\n"
 presentation_and_aliases: エイリアス
 revision_post_create: 作成時の見え方はこの通りです
@@ -1555,9 +1564,11 @@ panels:
 triggers:
   webhook:
     method: 方法
+operation_variables_note: フロー内のデータを利用するには、*{'{'}{'{'}$last{'}'}{'}'}** 、**{'{'}{'{'}$trigger{'}'}{'}'}** や **{'{'}{'{'}$accountability{'}'}{'}'}** といった変数を使用します。前のステップの結果を使いたい場合は、そのオペレーションのキー **{'{'}{'{'}operation_key{'}'}{'}'}** を指定して参照してください。
 operations:
   exec:
     description: 任意のコードを実行し、受け取ったデータ内容を加工・修正することができます
+    modules: '以下の **Node modules** を使用することができます：'
   json-web-token:
     token: トークン
     options: オプション
