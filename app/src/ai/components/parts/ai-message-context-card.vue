@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { ContextAttachment } from '@directus/ai';
 import { computed } from 'vue';
-import type { ContextAttachment } from '../../types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{

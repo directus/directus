@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { MCPPrompt } from '../composables/use-prompts';
+import type { MCPPrompt } from '../types';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInput from '@/components/v-input.vue';
 
 interface Props {
 	prompt: MCPPrompt | null;
@@ -42,15 +49,13 @@ function closeDialog() {
 </script>
 
 <template>
-	<v-dialog v-model="modelValue" persistent @esc="closeDialog">
-		<v-card>
-			<v-card-title>{{ prompt?.name ?? t('ai.insert_prompt') }}</v-card-title>
-
-			<v-card-text>
+	<VDialog v-model="modelValue" persistent @esc="closeDialog">
+		<VCard>
+			<VCardTitle>{{ prompt?.name ?? t('ai.insert_prompt') }}</VCardTitle>
+			<VCardText>
 				<p v-if="prompt?.description" class="prompt-description">{{ prompt.description }}</p>
-
 				<div class="variables-form">
-					<v-input
+					<VInput
 						v-for="variable in variables"
 						:key="variable"
 						v-model="variableValues[variable]"
@@ -59,18 +64,17 @@ function closeDialog() {
 						autofocus
 					/>
 				</div>
-			</v-card-text>
-
-			<v-card-actions>
-				<v-button secondary @click="closeDialog">
+			</VCardText>
+			<VCardActions>
+				<VButton secondary @click="closeDialog">
 					{{ t('cancel') }}
-				</v-button>
-				<v-button :disabled="!canSubmit" @click="handleSubmit">
+				</VButton>
+				<VButton :disabled="!canSubmit" @click="handleSubmit">
 					{{ t('ai.insert_prompt') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style scoped>

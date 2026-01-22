@@ -1,15 +1,10 @@
+import type { ContextAttachment } from '@directus/ai';
 import type { PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { createEventHook } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import {
-	type ContextAttachment,
-	isItemContext,
-	isPromptContext,
-	isVisualElement,
-	type PendingContextItem,
-} from '../types';
+import { isItemContext, isPromptContext, isVisualElement, type PendingContextItem } from '../types';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -84,8 +79,6 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		const attachments: ContextAttachment[] = [];
 
 		for (const item of pendingContext.value) {
-			let snapshot: Record<string, unknown> = {};
-
 			if (isVisualElement(item)) {
 				// Fetch current values from API
 				try {
@@ -95,25 +88,32 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 						params: { fields },
 					});
 
-					snapshot = response.data.data;
+					attachments.push({
+						type: 'visual-element',
+						data: item.data,
+						display: item.display,
+						snapshot: response.data.data,
+					});
 				} catch (error) {
 					unexpectedError(error);
-					snapshot = { error: 'Failed to fetch current values' };
+					// Skip failed items - don't include in attachments
+					continue;
 				}
 			} else if (isItemContext(item)) {
-				// Already have data from staging
-				snapshot = item.data.itemData;
+				attachments.push({
+					type: 'item',
+					data: item.data,
+					display: item.display,
+					snapshot: item.data.itemData,
+				});
 			} else if (isPromptContext(item)) {
-				// Rendered prompt text
-				snapshot = { text: item.data.text };
+				attachments.push({
+					type: 'prompt',
+					data: item.data,
+					display: item.display,
+					snapshot: { text: item.data.text },
+				});
 			}
-
-			attachments.push({
-				type: item.type,
-				data: item.data,
-				display: item.display,
-				snapshot,
-			});
 		}
 
 		return attachments;

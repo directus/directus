@@ -1,8 +1,8 @@
+import type { SystemTool } from '@directus/ai';
 import { createEventHook, useLocalStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { computed, shallowRef } from 'vue';
 import type { StaticToolDefinition } from '../composables/define-tool';
-import type { SystemTool } from '../types';
 
 export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
 
@@ -15,8 +15,6 @@ export const useAiToolsStore = defineStore('ai-tools-store', () => {
 		'items',
 		'files',
 		'folders',
-		// Omit 'assets' because we don't support image or audio uploads yet
-		// 'assets',
 		'flows',
 		'trigger-flow',
 		'operations',
@@ -24,7 +22,6 @@ export const useAiToolsStore = defineStore('ai-tools-store', () => {
 		'collections',
 		'fields',
 		'relations',
-		// 'visual-elements' is now a local tool, not a system tool
 	]);
 
 	// Local tools registered by components

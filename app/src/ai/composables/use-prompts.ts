@@ -4,9 +4,6 @@ import { render, tokenize } from 'micromustache';
 import type { MCPPrompt } from '../types';
 import { useSettingsStore } from '@/stores/settings';
 
-// Re-export for backwards compatibility
-export type { MCPPrompt };
-
 /**
  * Sanitize template text by removing descriptions after colons in variable placeholders
  * Converts {{ variable: description }} to {{ variable }}
@@ -58,8 +55,10 @@ export function usePrompts() {
 				for (const varName of tokens.varNames) {
 					variables.add(varName);
 				}
-			} catch {
-				// Silently skip tokenization errors
+			} catch (e) {
+				if (import.meta.env.DEV) {
+					console.debug('[usePrompts] Failed to tokenize system_prompt:', e);
+				}
 			}
 		}
 
@@ -73,8 +72,10 @@ export function usePrompts() {
 					for (const varName of tokens.varNames) {
 						variables.add(varName);
 					}
-				} catch {
-					// Silently skip tokenization errors
+				} catch (e) {
+					if (import.meta.env.DEV) {
+						console.debug('[usePrompts] Failed to tokenize message:', e);
+					}
 				}
 			});
 		}

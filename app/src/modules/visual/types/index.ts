@@ -34,6 +34,13 @@ export type SendAction = 'confirm' | 'showEditableElements' | 'saved' | 'highlig
 
 /** Not shared with the package */
 
-export type ReceiveData = { action: ReceiveAction | null; data: unknown };
-
 export type NavigationData = { url: string; title: string };
+
+export type EditData = { key: string; editConfig: EditConfig; rect: DOMRect };
+
+export type ReceiveData =
+	| { action: 'connect'; data: null }
+	| { action: 'edit'; data: EditData }
+	| { action: 'navigation'; data: NavigationData }
+	| { action: 'add-to-context'; data: AddToContextData }
+	| { action: null; data: null };

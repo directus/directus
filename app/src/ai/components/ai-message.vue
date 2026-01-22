@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { ContextAttachment } from '@directus/ai';
 import type { DynamicToolUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
-import type { ContextAttachment } from '../types';
 import AiMessageContextCard from './parts/ai-message-context-card.vue';
 import AiMessageFile from './parts/ai-message-file.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
@@ -11,7 +11,6 @@ import AiMessageTool from './parts/ai-message-tool.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
-// Alias for SDK message parts - component handles text/reasoning/file parts
 export type AiMessagePart = SDKUIMessagePart<UIDataTypes, UITools>;
 
 export interface AiMessageAction {
@@ -68,8 +67,8 @@ withDefaults(defineProps<Props>(), {
 			<!-- Context attachments from metadata (user messages only) -->
 			<div v-if="role === 'user' && metadata?.attachments?.length" class="context-attachments">
 				<AiMessageContextCard
-					v-for="attachment in metadata.attachments"
-					:key="attachment.display"
+					v-for="(attachment, index) in metadata.attachments"
+					:key="`${attachment.type}-${index}`"
 					:attachment="attachment"
 				/>
 			</div>

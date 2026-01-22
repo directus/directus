@@ -27,12 +27,53 @@ export type ChatRequestTool = z.infer<typeof ChatRequestTool>;
 export const ToolApprovalMode = z.enum(['always', 'ask', 'disabled']);
 export type ToolApprovalMode = z.infer<typeof ToolApprovalMode>;
 
-export const ContextAttachment = z.object({
-	type: z.enum(['visual-element', 'item', 'prompt']),
-	display: z.string(),
-	data: z.record(z.string(), z.unknown()),
-	snapshot: z.record(z.string(), z.unknown()),
+const ItemContextData = z.object({
+	collection: z.string(),
+	id: z.union([z.string(), z.number()]),
+	itemData: z.record(z.string(), z.unknown()),
 });
+
+const VisualElementContextData = z.object({
+	key: z.string(),
+	collection: z.string(),
+	item: z.union([z.string(), z.number()]),
+	fields: z.array(z.string()).optional(),
+	rect: z
+		.object({
+			top: z.number(),
+			left: z.number(),
+			width: z.number(),
+			height: z.number(),
+		})
+		.optional(),
+});
+
+const PromptContextData = z.object({
+	text: z.string(),
+	prompt: z.record(z.string(), z.unknown()),
+	values: z.record(z.string(), z.string()),
+});
+
+export const ContextAttachment = z.discriminatedUnion('type', [
+	z.object({
+		type: z.literal('item'),
+		display: z.string(),
+		data: ItemContextData,
+		snapshot: z.record(z.string(), z.unknown()),
+	}),
+	z.object({
+		type: z.literal('visual-element'),
+		display: z.string(),
+		data: VisualElementContextData,
+		snapshot: z.record(z.string(), z.unknown()),
+	}),
+	z.object({
+		type: z.literal('prompt'),
+		display: z.string(),
+		data: PromptContextData,
+		snapshot: z.record(z.string(), z.unknown()),
+	}),
+]);
 
 export type ContextAttachment = z.infer<typeof ContextAttachment>;
 

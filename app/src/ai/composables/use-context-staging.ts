@@ -1,9 +1,10 @@
+import type { VisualElementContextData } from '@directus/ai';
 import formatTitle from '@directus/format-title';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '../stores/use-ai';
-import type { MCPPrompt, VisualElementContextData } from '../types';
+import type { MCPPrompt } from '../types';
 import { usePrompts } from './use-prompts';
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';

@@ -1,5 +1,5 @@
 import { Chat } from '@ai-sdk/vue';
-import { type StandardProviderType, type SystemTool, type ToolApprovalMode } from '@directus/ai';
+import { type ContextAttachment, type StandardProviderType, type SystemTool } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
 	DefaultChatTransport,
@@ -13,20 +13,10 @@ import { useRoute } from 'vue-router';
 import { z } from 'zod';
 import type { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
-import type {
-	ContextAttachment,
-	ItemContextData,
-	PendingContextItem,
-	PromptContextData,
-	VisualElementContextData,
-} from '../types';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
-
-// Re-export types for backwards compatibility
-export type { ItemContextData, PendingContextItem, PromptContextData, VisualElementContextData };
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -267,14 +257,14 @@ export const useAiStore = defineStore('ai-store', () => {
 				const output = await tool.execute(toolCall.input as Record<string, unknown>);
 				chat.addToolResult({ tool: toolCall.toolName, output, toolCallId: toolCall.toolCallId });
 			} catch (e: unknown) {
-				if (e instanceof Error) {
-					chat.addToolResult({
-						tool: toolCall.toolName,
-						state: 'output-error',
-						errorText: e.message,
-						toolCallId: toolCall.toolCallId,
-					});
-				}
+				const errorText = e instanceof Error ? e.message : String(e);
+
+				chat.addToolResult({
+					tool: toolCall.toolName,
+					state: 'output-error',
+					errorText,
+					toolCallId: toolCall.toolCallId,
+				});
 			}
 		},
 		onFinish: ({ isAbort, message }) => {
