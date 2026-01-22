@@ -1044,6 +1044,7 @@ choices: 選択項目
 choices_option_configured_incorrectly: 設定に誤りがあります
 deselect: 選択解除
 deselect_all: 全て選択解除
+appearance_light: ライト
 other: その他...
 adding_user: ユーザーを追加
 unknown_user: 不明なユーザー
@@ -1191,6 +1192,7 @@ fields:
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
     module_bar: モジュールバー
+    ai_header_name: ヘッダー
   directus_shares:
     name: 名前
     role: ロール
@@ -1499,6 +1501,7 @@ interfaces:
       dropdown: ドロップダウン
   input-block-editor:
     tools_options:
+      header: ヘッダー
       embed: 埋め込む
       code: コード
       image: 画像
@@ -1506,6 +1509,8 @@ interfaces:
       underline: 下線
   system-token:
     system-token: トークン
+  header:
+    header: ヘッダー
 displays:
   translations:
     translations: 翻訳
@@ -1620,29 +1625,64 @@ operations:
     message: メッセージ
   mail:
     to_placeholder: メールアドレスを入力し、Enterキーを押してください…
+    template: テンプレート
     data: データ
+    cc: CC
+    cc_placeholder: CC メールアドレスを追加して Enter を押してください...
+    bcc: BCC
+    bcc_placeholder: BCC メールアドレスを追加して Enter を押してください...
+    reply_to: 返信先
+    reply_to_placeholder: 返信先メールアドレスを追加して Enter を押してください...
   notification:
+    name: 通知を送信
+    description: 1人以上のユーザーにアプリ内通知を送信します
     recipient: ユーザー
+    recipient_placeholder: UUID を入力...
+    recipient_note: ユーザー UUID を追加して Enter を押してください...
+    item_note: アイテムキーまたは相対 URL
     message: メッセージ
     subject: 件名
   request:
+    name: Webhook / リクエスト URL
+    description: 'URL にリクエストを送信します'
     url: URL
     url_placeholder: https://example.com/example
-    method: 方法
+    method: メソッド
     data: データ
+    headers: ヘッダー
+    header: ヘッダー
+    header_placeholder: 認証...
     value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: 待機
+    description: 指定したミリ秒数だけ待機します
   trigger:
     flows: フロー
     flow: フロー
     data: データ
 standard: 標準
+scientific: 科学表記
+engineering: 工学表記
 compact: コンパクト
+currency: 通貨
+notation: 表記
+style: スタイル
 fonts:
-  normal: 正常
+  thin: シン
+  extra_light: エクストラライト
+  light: ライト
+  normal: ノーマル
+  medium: ミディアム
   semi_bold: セミボールド
-  bold: 太字
+  bold: ボールド
+  extra_bold: エクストラボールド
   black: 黒
-  italic: 斜体
+  italic: イタリック
+  oblique: オブリーク
+  small: 小
+  large: 大
+  auto: 自動
+text_wrap: テキストの折り返し
 center: 中央揃え
 justify: 両端揃え
 text_align: テキストの配置
@@ -1650,6 +1690,16 @@ font_weight: フォントの太さ
 font_style: フォントスタイル
 font_size: フォントサイズ
 minimum_fraction_digits: 最大小数点以下桁数
+maximum_fraction_digits: 最大小数点以下桁数
+show_percentage: パーセンテージを表示する
+aggregation: 集計
+series_grouping: 系列のグループ化
+date_precision: 日付の精度
+export_dashboard: ダッシュボードをエクスポート
+duplicate_dashboard: ダッシュボードを複製
+search_dashboard: ダッシュボードを検索...
+search_flow: フローを検索...
+percent: パーセント
 show_password: パスワードを表示にする
 hide_password: パスワードを非表示にする
 bsl_banner:
