@@ -6,9 +6,8 @@ import { useContextStaging } from '../composables/use-context-staging';
 import { usePrompts } from '../composables/use-prompts';
 import { useSearchFilter } from '../composables/use-search-filter';
 import type { MCPPrompt } from '../types';
-import AiListItem from './ai-context-menu/list-item.vue';
+import AiContextMenuItem from './ai-context-menu/context-menu-item.vue';
 import AiContextListView from './ai-context-menu/list-view.vue';
-import AiMenuItem from './ai-context-menu/menu-item.vue';
 import AiPromptVariablesModal from './ai-prompt-variables-modal.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -159,8 +158,16 @@ onMounted(() => {
 	loadPrompts();
 });
 
-function openMenu() {
-	mainMenuOpen.value = true;
+async function handleMenuToggle(isOpen: boolean) {
+	mainMenuOpen.value = isOpen;
+
+	if (isOpen) {
+		await nextTick();
+
+		requestAnimationFrame(() => {
+			searchInputRef.value?.$el?.querySelector('input')?.focus();
+		});
+	}
 }
 
 async function openList(type: 'prompts' | 'items') {
@@ -179,17 +186,17 @@ function closeList() {
 	openListType.value = null;
 	searchQuery.value = '';
 }
-
-defineExpose({
-	handlePromptSelect,
-	handleCollectionSelect,
-	openMenu,
-});
 </script>
 
 <template>
 	<div class="ai-context-menu">
-		<VMenu v-model="mainMenuOpen" placement="top-start" show-arrow :close-on-content-click="false">
+		<VMenu
+			:model-value="mainMenuOpen"
+			placement="top-start"
+			show-arrow
+			:close-on-content-click="false"
+			@update:model-value="handleMenuToggle"
+		>
 			<template #activator="{ toggle }">
 				<VButton v-tooltip="t('ai.add_content')" x-small icon secondary :loading="loading" @click="toggle">
 					<VIcon name="add" small />
@@ -215,7 +222,7 @@ defineExpose({
 				</div>
 
 				<div v-if="!openListType" class="menu-options-list">
-					<AiMenuItem
+					<AiContextMenuItem
 						v-for="option in menuOptions"
 						:key="option.id"
 						:icon="option.icon"
@@ -226,24 +233,24 @@ defineExpose({
 
 					<template v-if="showingSearchResults">
 						<template v-if="showPromptsOption">
-							<AiListItem
+							<AiContextMenuItem
 								v-for="prompt in filteredPrompts"
 								:key="prompt.id"
 								icon="chat_bubble"
 								:title="formatTitle(prompt.name)"
 								:badge="t('ai.prompt')"
-								:description="prompt.description"
+								:subtitle="prompt.description"
 								@click="handlePromptSelect(prompt)"
 							/>
 						</template>
 
-						<AiListItem
+						<AiContextMenuItem
 							v-for="collection in filteredCollections"
 							:key="collection.collection"
 							:icon="collection.icon || 'dataset'"
 							:title="collection.name || formatTitle(collection.collection)"
 							:badge="t('collection')"
-							:description="collection.collection"
+							:subtitle="collection.collection"
 							@click="handleCollectionSelect(collection)"
 						/>
 
@@ -256,15 +263,11 @@ defineExpose({
 					</template>
 				</div>
 
-				<AiContextListView
-					v-if="openListType === 'prompts'"
-					:items="filteredPrompts"
-					:empty-message="t('no_results')"
-				>
+				<AiContextListView v-if="openListType === 'prompts'" :items="filteredPrompts" :empty-message="t('no_results')">
 					<template #item="{ item: prompt }">
-						<AiListItem
+						<AiContextMenuItem
 							:title="formatTitle(prompt.name)"
-							:description="prompt.description"
+							:subtitle="prompt.description"
 							@click="handlePromptSelect(prompt)"
 						/>
 					</template>
@@ -277,10 +280,10 @@ defineExpose({
 					:empty-message="t('no_results')"
 				>
 					<template #item="{ item: collection }">
-						<AiListItem
+						<AiContextMenuItem
 							:icon="collection.icon || 'dataset'"
 							:title="collection.name || formatTitle(collection.collection)"
-							:description="collection.collection"
+							:subtitle="collection.collection"
 							@click="handleCollectionFromItemsList(collection)"
 						/>
 					</template>
