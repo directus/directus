@@ -232,7 +232,7 @@ public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
 public_role_info: >-
   公開権限グループは、未認証のユーザーや権限を持たないユーザーがアクセスできる API データを制御します。公開権限グループによるリクエストに、アプリへのアクセス権限や管理者権限を持たせることはできません。公開権限グループに割り当てられたポリシーにアプリ・管理者権限が付与されていても、これらは無視されます。
-admin_description: App/API へアクセス制限の無い初期管理者のロール
+admin_description: App/API への無制限なアクセス権を持つ、初期の管理者ロール。
 admin_policy_description: すべての App/API へのアクセス権限を持つ初期管理者ポリシー。
 no_description: 説明なし…
 reached_maximum_number_of_extensions: このプロジェクトの拡張機能が上限 ({n}) に達しました。詳細はシステム管理者に問い合わせてください。
@@ -310,7 +310,7 @@ validation_for_role: 'フィールドの {action} は「{role}」権限に準じ
 validation_for_policy: 'フィールドの {action} は「{policy}」ポリシーに準じます。'
 presets_for_role: "フィールド値のデフォルトは、「{role}」 権限です。\n"
 presets_for_policy: '「{policy}」ポリシーのフィールド値のデフォルト。'
-presets_field_warning: 'フィールド「{field}」のリレーションプリセットには「詳細（detailed）」構文を使用してください。'
+presets_field_warning: 'フィールド「{field}」のリレーションプリセットには「詳細」構文を使用してください。'
 presentation_and_aliases: プレゼンテーションとエイリアス
 revision_post_create: 作成時のアイテムの状態を表示しています。
 revision_post_update: 更新後のアイテムの状態を表示しています。
@@ -396,23 +396,29 @@ geometry:
 theme_auto: 自動（システム設定に合わせる）
 theme_light: ライトモード
 theme_dark: ダークモード
+theme_directus_default: Directus デフォルト
+theme_directus_minimal: Directus ミニマル
+theme_directus_colormatch: Directus カラーマッチ
 not_available_for_type: このタイプでは利用できません
 create_translations: 翻訳を作成
 auto_refresh: 自動更新
 refresh_interval: 更新間隔
 no_refresh: 更新しない
-refresh_interval_seconds: リフレッシュすぐに | 毎秒 | 毎 {seconds} 秒ごと
-refresh_interval_minutes: 毎分 | {minutes} 分ごと
+refresh_interval_seconds: 今すぐ更新 | 毎秒 | {seconds} 秒ごとに更新
+refresh_interval_minutes: 毎分 | {minutes} 分ごとに更新
 auto_generate: 自動生成
-this_will_auto_setup_fields_relations: 自動的にすべての必須フィールドとリレーションを設定します。
+this_will_auto_setup_fields_relations: すべての必須フィールドとリレーションシップを自動的に設定します。
 click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
+manage: 管理
 click_to_manage_translated_fields: >-
   翻訳されたフィールドはまだありません。ここをクリックして作成してください。| 翻訳されたフィールドが1つあります。 ここをクリックして管理します。| {count} 項が翻訳されています。ここをクリックして管理します。
 fields_group: フィールドグループ
 no_collections_found: コレクションが見つかりません
-new_data_alert: '以下をデータモデル内に作成します：'
+new_data_alert: 'データモデル内に以下を作成します:'
 search_collection: コレクションを検索...
+search_role: 権限を検索...
+search_policy: ポリシーを検索...
 search_field: フィールドを検索...
 new_field: '新規フィールド'
 new_collection: '新しいコレクション'
@@ -420,7 +426,7 @@ add_m2o_to_collection: '「{collection}」に多対一を追加'
 add_o2m_to_collection: '「{collection}」に一対多を追加'
 add_m2m_to_collection: '「{collection}」に多対多を追加'
 choose_a_type: タイプを選択...
-determined_by_relationship: 関係に基づく決定
+determined_by_relationship: リレーションシップに基づいて決定
 add_note: ユーザーに有益な注釈を追加...
 add_link: リンクを追加
 custom_link: カスタムリンク
@@ -438,7 +444,7 @@ dialog: ダイアログ
 modal: モーダル
 confirmation_dialog: 確認ダイアログ
 confirmation_description: 確認の説明
-confirmation_input_fields: 入力確認用フィールド
+confirmation_input_fields: 確認用入力フィールド
 next: 次
 field_name: 項目名
 translations: 翻訳
@@ -453,18 +459,23 @@ soft_length: 緩い制限
 precision_scale: 精度とスケール
 readonly: 読取り専用
 unique: 単一
+index: インデックス
+searchable: 検索可能
+field_searchable: 検索クエリにこのフィールドを含める
 updated_on: 更新日時
 updated_by: 最後に更新したユーザー
 primary_key: プライマリーキー
 foreign_key: 外部キー
 field_key: フィールドキー
 finish_setup: 設定終了
-dismiss: とりやめる
+dismiss: 閉じる
 toggle_raw_editor: 行編集の切り替え
+toggle_variable_input: 変数入力の切り替え
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: 値を加工しない
 copy_raw_value: 行をコピー
 copy_raw_value_success: コピー
-copy_raw_value_fail: コピー失敗
+copy_raw_value_fail: コピーに失敗
 paste_raw_value: 行を貼り付け
 paste_raw_value_success: 貼り付け
 paste_raw_value_fail: 貼り付けに失敗
@@ -477,25 +488,30 @@ clear_items: 項目をクリア
 reset_to_default: 初期設定に戻す
 undo_changes: 変更を取消
 notifications: 通知
+archive_all: すべてアーカイブ
 show_all_activity: すべてのアクティビティを表示
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
 confirm_revert: 再確認
 confirm_revert_body: 選択した状態へ戻す
 display: ディスプレイ
-settings_update_success: 設定が更新されました
+settings_update_success: 設定を更新しました
 title: タイトル
 subtitle: サブタイトル
 revision_delta_created: 作成
 revision_delta_created_externally: 外部で作成
-revision_delta_updated: '1フィールド更新 |  {count} フィールド更新'
+revision_delta_updated: '1 つのフィールドを更新 | {count} 個のフィールドを更新'
 revision_delta_deleted: 削除済み
-revision_delta_reverted: 復元済
-revision_delta_update_message: 項目は更新済ですが、セキュリティーにより値は非表示です
+revision_delta_reverted: 復元済み
+revision_delta_update_message: フィールドは更新されていますが、セキュリティ設定により値は非表示です。
 revision_delta_other: 履歴
-revision_delta_by: '{date} by {user}'
-presentation_text_values_cannot_be_reimported: 'テキストを使用しますが、値は再インポートできません'
+revision_delta_by: '{date}（{user}）'
+updated_in_revision: このリビジョンで更新
+updated_in_revision_matches_latest: このリビジョンで更新されましたが、最新版と一致しています
+differences_count: '差異なし | 1 つの差異 | {count} 個の差異'
+presentation_text_values_cannot_be_reimported: 'テキストを表示に使用しますが、値の再インポートはできません。'
 download_page_as_csv: 'CSV 形式でダウンロード'
+download_page_as_csv_unsupported: このレイアウトは現在のページのダウンロードをサポートしていません。
 private_user: 非公開ユーザー
 creation_preview: 作成プレビュー
 revision_preview: 履歴のプレビュー
@@ -515,7 +531,14 @@ import_data_input_placeholder: CSV または JSON
 import_data_button: インポートを開始
 import_data_indeterminate: データをインポート中...
 import_data_success: '{filename} からデータをインポートしました'
-import_data_error: このファイルのデータ構造はコレクションと一致しません
+import_data_errors: インポートエラー
+import_data_error: このファイルのデータ構造がコレクションと一致しません。
+import_data_validation_errors_notice: '以下の行に無効な値があります:'
+import_data_error_row: '{rows} 行目 {field} フィールド:'
+snapshot:
+  export: スキーマをエクスポート
+  download: スナップショットをダウンロード (JSON)
+  info: 共有やデバッグのためのスキーマのみのエクスポート
 label_import: インポート
 label_export: エクスポート
 import_export: インポート / エクスポート
@@ -525,7 +548,7 @@ last_access: 最後にアクセスした日時
 fill_template: テンプレート値で埋める
 a_unique_table_name: 重複しない名前をつけてください
 a_unique_column_name: 重複しない名前をつけてください
-enable_custom_values: カスタム値を有効にする
+enable_custom_values: カスタム値を有効化
 submit: 送信
 move_to_folder: フォルダに移動
 move: 移動
@@ -533,6 +556,7 @@ system: システム
 add_field_related: 関連するコレクションにフィールドを追加
 interface_label: インターフェイス
 display_label: ディスプレイ
+x_axis_display_field: X 軸の表示フィールド
 today: 今日
 yesterday: 昨日
 delete_comment: コメントの削除
@@ -554,6 +578,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: MMM d
 minutes: 分
 hours: 時間
@@ -1614,6 +1639,8 @@ standard: 標準
 compact: コンパクト
 fonts:
   normal: 正常
+  semi_bold: セミボールド
   bold: 太字
   black: 黒
   italic: 斜体
+text_direction_rtl: 右書き (RTL)
