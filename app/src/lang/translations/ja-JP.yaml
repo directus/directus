@@ -1,7 +1,37 @@
 ---
-privacy_policy: プライバシー ポリシー
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Directus について
+directus_bsl: Directus BSL 1.1
+privacy_policy: プライバシーポリシー 
+contact_our_team: チームへのお問い合わせ  
+setup_launch: Directus を起動
+setup_project: プロジェクトの設定
 first_name: 名
 last_name: 姓
+admin_email: 管理者メールアドレス
+owner_email: オーナーメールアドレス
+email_address: メールアドレス
+organization_name: 組織名
+how_do_you_use_directus: Directus の利用目的を教えてください。
 identifier: 識別子
 avatar: プロフィール画像
 application: アプリケーション
@@ -12,9 +42,12 @@ draft: 下書き
 archived: アーカイブ済み
 marketplace: マーケットプレイス
 extensions: 拡張機能
+skip_link_module_nav: モジュールナビゲーションへスキップ
+skip_link_main: メインコンテンツへスキップ
 modules: モジュール
 module_bar: モジュールバー
 logs: ログ
+unknown: 不明
 reset_width: 横幅をリセット
 tile_size: タイルサイズ
 edit_field: フィールドの編集
@@ -23,6 +56,8 @@ location: 場所
 collection_names_are_case_sensitive: コレクション名は大文字と小文字を区別します
 condition_rules: 条件ルール
 input: 入力
+invalid_input: 無効な入力
+invalid_file_type: 無効なファイル形式
 invalid_files_selected: '無効なファイルはありません | 無効なファイルが選択されました | {count} 個の無効なファイルが選択されました'
 files_wrong_type: 'ファイル「{files}」は形式が正しくありません。{expected}形式を指定してください。'
 maps: 地図
@@ -57,6 +92,27 @@ extension_panels: パネル
 extension_themes: テーマ
 extension_hooks: フック
 extension_endpoints: エンドポイント
+extension_operations: オペレーション
+extension_bundles: バンドル
+extension_missing: 不足
+extension_reload_required: ページの再読み込みが必要
+extension_reload_now: 今すぐ再読み込み
+published_relative: '公開日: {relativeTime}'
+compatible_with_your_project: プロジェクトと互換性があります
+last_updated_relative: '最終更新日: {relativeTime}'
+n_files: '{n} 個のファイル'
+verified: 認証済み
+homepage: ホームページ
+repository: リポジトリ
+reload_page: ページを再読み込み
+reload_required: 再読み込みが必要
+report_an_issue: 問題を報告
+website: ウェブサイト
+github: GitHub
+beta: Beta
+n_downloads: '{n} 回のダウンロード'
+downloads: ダウンロード
+compatibility_not_guaranteed: 互換性は保証されません
 compatibility_not_guaranteed_copy: この拡張機能の作成者が指定している互換バージョンは {hostVersion} であり、現在のプロジェクトのバージョン（{currentVersion}）と一致しません。
 enable: 有効
 disable: 無効
@@ -1140,6 +1196,7 @@ comment: コメント
 live_preview:
   new_window: 新しいウィンドウで開く
 ai:
+  unknown: 不明
   settings: 設定
   tool_approval:
     disabled: 無効
@@ -1147,6 +1204,7 @@ ai_tools:
   items: アイテム
   files: ファイル
   flows: フロー
+  operations: オペレーション
   schema: スキーマ
   collections: コレクション
 mcp_prompts_collection_schema:
