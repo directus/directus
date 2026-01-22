@@ -21,8 +21,6 @@ withDefaults(
 			<slot v-for="item in items" :key="item[itemKey]" name="item" :item="item" />
 		</template>
 
-		<slot v-else name="empty-state">
-			<AiEmptyState :message="emptyMessage" />
-		</slot>
+		<AiEmptyState v-else :message="emptyMessage" />
 	</VList>
 </template>
