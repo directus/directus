@@ -117,17 +117,14 @@ function handleCollectionFromItemsList(collection: { collection: string; name: s
 function handlePromptSelect(prompt: MCPPrompt) {
 	const variables = extractVariables(prompt);
 
-	// Close menus
 	mainMenuOpen.value = false;
 	closeList();
 
 	if (variables.length > 0) {
-		// Show modal for variable input
 		selectedPrompt.value = prompt;
 		selectedPromptVariables.value = variables;
 		showVariablesModal.value = true;
 	} else {
-		// No variables, insert directly
 		stagePrompt(prompt, {});
 	}
 }
@@ -137,7 +134,6 @@ function handleVariablesSubmit(values: Record<string, string>) {
 
 	stagePrompt(selectedPrompt.value, values);
 
-	// Reset
 	selectedPrompt.value = null;
 	selectedPromptVariables.value = [];
 	showVariablesModal.value = false;
@@ -172,7 +168,6 @@ async function openList(type: 'prompts' | 'items') {
 	searchQuery.value = '';
 	await nextTick();
 
-	// Focus search input
 	const inputElement = searchInputRef.value?.$el?.querySelector('input');
 
 	if (inputElement) {
@@ -202,7 +197,6 @@ defineExpose({
 			</template>
 
 			<div class="menu-container">
-				<!-- Sticky header -->
 				<div class="menu-header">
 					<VInput ref="searchInputRef" v-model="searchQuery" class="search-input" :placeholder="t('search')" autofocus>
 						<template #prepend>
@@ -220,7 +214,6 @@ defineExpose({
 					</div>
 				</div>
 
-				<!-- Main menu: Shows commands, and when searching also shows prompts + collections -->
 				<div v-if="!openListType" class="menu-options-list">
 					<AiMenuItem
 						v-for="option in menuOptions"
@@ -263,7 +256,6 @@ defineExpose({
 					</template>
 				</div>
 
-				<!-- Prompts list -->
 				<AiContextListView
 					v-if="openListType === 'prompts'"
 					:items="filteredPrompts"
@@ -278,7 +270,6 @@ defineExpose({
 					</template>
 				</AiContextListView>
 
-				<!-- Items list (Collections) -->
 				<AiContextListView
 					v-if="openListType === 'items'"
 					:items="filteredCollections"

@@ -41,46 +41,26 @@ const moduleBarOpen = ref(true);
 const showEditableElements = ref(false);
 const sidebarSize = ref(370);
 
-// Storage-backed collapsed state (like sidebarStore.collapsed)
 const sidebarCollapsed = useLocalStorage('visual-editor-ai-sidebar-collapsed', false);
 
-// Debug: watch sidebarCollapsed directly
-watch(sidebarCollapsed, (newVal, oldVal) => {
-	console.log('[visual-editor] sidebarCollapsed changed:', oldVal, '->', newVal);
-	console.trace('[visual-editor] sidebarCollapsed change stack:');
-});
-
-// Separate mobile drawer state (not persisted)
 const mobileDrawerOpen = ref(false);
 
-// Gated computed for SplitPanel (matches private-view-main.vue pattern)
 const splitterCollapsed = computed({
 	get() {
-		const result = isMobile.value ? true : sidebarCollapsed.value;
-		console.log('[visual-editor] splitterCollapsed.get() isMobile:', isMobile.value, 'sidebarCollapsed:', sidebarCollapsed.value, '=> returning:', result);
-		return result;
+		return isMobile.value ? true : sidebarCollapsed.value;
 	},
 	set(val: boolean) {
-		console.log('[visual-editor] splitterCollapsed.set() val:', val, 'isMobile:', isMobile.value);
-		if (isMobile.value) return; // Don't write on mobile
+		if (isMobile.value) return;
 		sidebarCollapsed.value = val;
-		console.log('[visual-editor] splitterCollapsed.set() sidebarCollapsed now:', sidebarCollapsed.value);
 	},
 });
 
-// Mobile watcher - close drawer on mobile transition
 watch(isMobile, (mobile) => {
-	console.log('[visual-editor] isMobile changed:', mobile);
-	console.log('[visual-editor] sidebarCollapsed before:', sidebarCollapsed.value);
-	console.log('[visual-editor] splitterCollapsed before:', splitterCollapsed.value);
 	if (mobile) {
 		mobileDrawerOpen.value = false;
 	}
-	console.log('[visual-editor] sidebarCollapsed after:', sidebarCollapsed.value);
-	console.log('[visual-editor] splitterCollapsed after:', splitterCollapsed.value);
 });
 
-// Open correct panel when AI element staged
 aiStore.onFocusInput(() => {
 	if (isMobile.value) {
 		mobileDrawerOpen.value = true;
@@ -89,7 +69,7 @@ aiStore.onFocusInput(() => {
 	}
 });
 
-const aiButtonRef = useTemplateRef('ai-button');
+const aiButtonRef = useTemplateRef<HTMLButtonElement>('ai-button');
 const aiButtonHovering = useElementHover(aiButtonRef);
 
 const { dynamicDisplay, onNavigation } = usePageInfo();
@@ -141,7 +121,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 			centered
 			@select-url="onSelectUrl"
 			@update:sidebar-size="sidebarSize = $event"
-			@update:sidebar-collapsed="(c) => { console.log('[visual-editor] update:sidebar-collapsed event:', c); splitterCollapsed = c; }"
+			@update:sidebar-collapsed="splitterCollapsed = $event"
 		>
 			<template #prepend-header>
 				<VButton
