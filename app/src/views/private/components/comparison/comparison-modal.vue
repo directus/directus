@@ -323,6 +323,10 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						</div>
 					</div>
 					<div class="col right">
+						<div v-if="mode === 'revision'" class="compare-to-container">
+							<span class="compare-to-label">{{ $t('comparing_to') }}</span>
+							<ComparisonToggle v-model="compareToOption" :disable-previous="isFirstRevision" />
+						</div>
 						<div class="footer-actions">
 							<div v-if="mode !== 'revision' || compareToOption !== 'Previous'" class="select-all-container">
 								<VCheckbox
@@ -504,6 +508,20 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			flex: 1 1 auto;
 			min-inline-size: 0;
 
+			.compare-to-container {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+			}
+
+			.compare-to-label {
+				font-size: 14px;
+				line-height: 20px;
+				font-weight: 600;
+				color: var(--theme--foreground);
+				white-space: nowrap;
+			}
+
 			&.left {
 				display: none;
 
@@ -512,26 +530,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					align-items: center;
 					gap: 24px;
 
-					.fields-changed,
-					.compare-to-label {
+					.fields-changed {
 						font-size: 14px;
 						line-height: 20px;
 						font-weight: 600;
-					}
-
-					.fields-changed {
 						color: var(--theme--foreground-subdued);
-					}
-
-					.compare-to-label {
-						color: var(--theme--foreground);
-						white-space: nowrap;
-					}
-
-					.compare-to-container {
-						display: flex;
-						align-items: center;
-						gap: 6px;
 					}
 				}
 			}
@@ -541,6 +544,14 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				justify-content: center;
 				flex-direction: column;
 				gap: 16px;
+
+				.compare-to-container {
+					margin-block-end: 12px;
+
+					@media (min-width: 960px) {
+						display: none;
+					}
+				}
 
 				@media (min-width: 706px) {
 					flex: 1;
