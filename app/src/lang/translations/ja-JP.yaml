@@ -585,6 +585,11 @@ hours: 時間
 month: 月
 year: 年
 select_all: すべて
+permissionsLevel:
+  all: すべての {action} 権限
+  partial: 一部の {action} 権限
+  custom: カスタム {action} 権限
+  none: '{action} 権限なし'
 months:
   january: 1月
   february: 2月
@@ -599,18 +604,27 @@ months:
   november: 11月
   december: 12月
 drag_mode: ドラッグモード
+move_tool: 移動ツール
+crop_tool: 切り抜きツール
+focal_point_tool: フォーカルポイントツール
 cancel_crop: トリミングをキャンセル
+cancel_selection: 選択を解除
 original: オリジナル
 url: URL
 import_label: インポート
 file_details: ファイルの詳細
+copy_id: ID をコピー
+copy_id_success: ID をコピーしました
+copy_id_fail: ID をコピーできませんでした
 dimensions: ディメンション
 size: サイズ
 created: 作成
+uploaded: アップロードしました
 modified: 修正されました
 owner: 所有者
 edited_by: '編集者:'
 folder: フォルダ
+folders: フォルダー
 zoom: 拡大
 download: ダウンロード
 open: 開く
@@ -1304,6 +1318,7 @@ ai:
 ai_tools:
   items: アイテム
   files: ファイル
+  folders: フォルダー
   flows: フロー
   operations: オペレーション
   schema: スキーマ
