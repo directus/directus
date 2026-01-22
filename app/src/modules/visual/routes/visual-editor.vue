@@ -169,19 +169,19 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 			</template>
 
 			<template #append-header>
-				<div v-if="serverStore.info.ai_enabled" ref="ai-button">
-					<VButton
-						v-tooltip.bottom.start="$t('ai_chat')"
-						x-small
-						rounded
-						icon
-						secondary
-						:active="isMobile ? mobileDrawerOpen : !sidebarCollapsed"
-						@click="isMobile ? (mobileDrawerOpen = !mobileDrawerOpen) : (sidebarCollapsed = !sidebarCollapsed)"
-					>
-						<AiMagicButton :animate="aiButtonHovering" />
-					</VButton>
-				</div>
+				<VButton
+					v-if="serverStore.info.ai_enabled"
+					ref="ai-button"
+					v-tooltip.bottom.start="$t('ai_chat')"
+					x-small
+					rounded
+					icon
+					secondary
+					:active="isMobile ? mobileDrawerOpen : !sidebarCollapsed"
+					@click="isMobile ? (mobileDrawerOpen = !mobileDrawerOpen) : (sidebarCollapsed = !sidebarCollapsed)"
+				>
+					<AiMagicButton :animate="aiButtonHovering" />
+				</VButton>
 			</template>
 
 			<template v-if="serverStore.info.ai_enabled && !isMobile" #sidebar>

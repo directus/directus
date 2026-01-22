@@ -15,11 +15,13 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 
 const { t } = useI18n();
+const serverStore = useServerStore();
 const settingsStore = useSettingsStore();
 const collectionsStore = useCollectionsStore();
 const { fetchPrompts, extractVariables } = usePrompts();
@@ -43,6 +45,10 @@ const isEnabled = computed(() => {
 	return !!settingsStore.settings?.mcp_prompts_collection;
 });
 
+const showPromptsOption = computed(() => {
+	return serverStore.info.mcp_enabled && isEnabled.value && prompts.value.length > 0;
+});
+
 const collections = computed(() => {
 	return collectionsStore.allCollections.filter((collection) => collection.type !== 'alias');
 });
@@ -56,23 +62,25 @@ const showingSearchResults = computed(() => {
 });
 
 const menuOptions = computed(() => {
-	const options = [
-		{
+	const options = [];
+
+	if (showPromptsOption.value) {
+		options.push({
 			id: 'prompts',
 			icon: 'magic_button',
 			title: t('ai.prompts'),
 			subtitle: t('ai.insert_reusable_prompt'),
 			action: () => openList('prompts'),
-			disabled: !isEnabled.value || prompts.value.length === 0,
-		},
-		{
-			id: 'items',
-			icon: 'box',
-			title: t('ai.content'),
-			subtitle: t('ai.insert_item_context'),
-			action: () => openList('items'),
-		},
-	];
+		});
+	}
+
+	options.push({
+		id: 'items',
+		icon: 'box',
+		title: t('ai.content'),
+		subtitle: t('ai.insert_item_context'),
+		action: () => openList('items'),
+	});
 
 	if (!searchQuery.value) return options;
 
@@ -194,15 +202,23 @@ defineExpose({
 			</template>
 
 			<div class="menu-container">
-				<!-- Search input (always visible) -->
-				<VInput ref="searchInputRef" v-model="searchQuery" class="search-input" :placeholder="t('search')" autofocus>
-					<template #prepend>
-						<VIcon name="search" small />
-					</template>
-					<template v-if="searchQuery" #append>
-						<VIcon name="close" small clickable @click="searchQuery = ''" />
-					</template>
-				</VInput>
+				<!-- Sticky header -->
+				<div class="menu-header">
+					<VInput ref="searchInputRef" v-model="searchQuery" class="search-input" :placeholder="t('search')" autofocus>
+						<template #prepend>
+							<VIcon name="search" small />
+						</template>
+						<template v-if="searchQuery" #append>
+							<VIcon name="close" small clickable @click="searchQuery = ''" />
+						</template>
+					</VInput>
+					<div v-if="openListType" class="list-header">
+						<VButton x-small icon secondary @click="closeList">
+							<VIcon name="arrow_back" small />
+						</VButton>
+						<span class="list-title">{{ openListType === 'prompts' ? t('ai.prompts') : t('ai.content') }}</span>
+					</div>
+				</div>
 
 				<!-- Main menu: Shows commands, and when searching also shows prompts + collections -->
 				<div v-if="!openListType" class="menu-options-list">
@@ -212,20 +228,21 @@ defineExpose({
 						:icon="option.icon"
 						:title="option.title"
 						:subtitle="option.subtitle"
-						:disabled="option.disabled"
 						@click="option.action"
 					/>
 
 					<template v-if="showingSearchResults">
-						<AiListItem
-							v-for="prompt in filteredPrompts"
-							:key="prompt.id"
-							icon="chat_bubble"
-							:title="formatTitle(prompt.name)"
-							:badge="t('ai.prompt')"
-							:description="prompt.description"
-							@click="handlePromptSelect(prompt)"
-						/>
+						<template v-if="showPromptsOption">
+							<AiListItem
+								v-for="prompt in filteredPrompts"
+								:key="prompt.id"
+								icon="chat_bubble"
+								:title="formatTitle(prompt.name)"
+								:badge="t('ai.prompt')"
+								:description="prompt.description"
+								@click="handlePromptSelect(prompt)"
+							/>
+						</template>
 
 						<AiListItem
 							v-for="collection in filteredCollections"
@@ -249,11 +266,8 @@ defineExpose({
 				<!-- Prompts list -->
 				<AiContextListView
 					v-if="openListType === 'prompts'"
-					:title="t('ai.prompts')"
 					:items="filteredPrompts"
-					show-header
 					:empty-message="t('no_results')"
-					@back="closeList"
 				>
 					<template #item="{ item: prompt }">
 						<AiListItem
@@ -267,12 +281,9 @@ defineExpose({
 				<!-- Items list (Collections) -->
 				<AiContextListView
 					v-if="openListType === 'items'"
-					:title="t('ai.content')"
 					:items="filteredCollections"
 					item-key="collection"
-					show-header
 					:empty-message="t('no_results')"
-					@back="closeList"
 				>
 					<template #item="{ item: collection }">
 						<AiListItem
@@ -309,20 +320,39 @@ defineExpose({
 }
 
 .menu-container {
-	display: flex;
-	flex-direction: column;
 	min-inline-size: 320px;
 	max-inline-size: 400px;
 	max-block-size: 400px;
-	overflow: hidden;
+	overflow-y: auto;
+}
+
+.menu-header {
+	position: sticky;
+	inset-block-start: 0;
+	z-index: 1;
+	background-color: var(--theme--popover--menu--background);
 }
 
 .search-input {
 	padding: 8px;
 }
 
+.list-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px;
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
+}
+
+.list-title {
+	font-weight: 600;
+	font-size: 14px;
+	color: var(--theme--foreground);
+}
+
 .menu-options-list {
-	overflow-y: auto;
+	padding-block-end: 4px;
 }
 
 .no-results {
