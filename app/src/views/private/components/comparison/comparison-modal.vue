@@ -97,6 +97,14 @@ const isFirstRevision = computed(() => {
 	return sortedRevisions.length > 0 && firstRevision?.id === currentId;
 });
 
+const baseDateUpdated = computed(() => {
+	if (props.mode === 'revision' && compareToOption.value === 'Previous') {
+		return normalizedData.value?.base.date.dateObject || null;
+	}
+
+	return t('latest');
+});
+
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const modalLoading = ref(false);
@@ -224,7 +232,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						<ComparisonHeader
 							:loading="modalLoading"
 							:title="baseDisplayName"
-							:date-updated="normalizedData?.base.date.dateObject || null"
+							:date-updated="baseDateUpdated"
 							:user-updated="baseUserUpdated"
 							:user-loading="baseUserLoading"
 						/>
