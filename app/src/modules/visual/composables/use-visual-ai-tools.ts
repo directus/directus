@@ -4,13 +4,12 @@ import { computed } from 'vue';
 import { z } from 'zod';
 import { defineTool } from '@/ai/composables/define-tool';
 import { useAiContextStore, type VisualElementUpdate } from '@/ai/stores/use-ai-context';
-import { isVisualElement } from '@/ai/types';
 import api from '@/api';
 
 export function useVisualAiTools() {
 	const contextStore = useAiContextStore();
 
-	const visualElements = computed(() => contextStore.pendingContext.filter(isVisualElement).map((item) => item.data));
+	const visualElements = computed(() => contextStore.visualElements.map((item) => item.data));
 
 	const hasElements = computed(() => visualElements.value.length > 0);
 
@@ -31,7 +30,7 @@ export function useVisualAiTools() {
 		}),
 		inputSchema: z.object({}),
 		execute: async () => {
-			const elements = contextStore.pendingContext.filter(isVisualElement).map((item) => item.data);
+			const elements = visualElements.value;
 
 			if (elements.length === 0) {
 				return { error: 'No visual elements selected' };
@@ -90,9 +89,7 @@ export function useVisualAiTools() {
 			),
 		}),
 		execute: async ({ updates }) => {
-			// Access store directly - computed closure may not work in async callback
-			const elements = contextStore.pendingContext.filter(isVisualElement).map((item) => item.data);
-
+			const elements = visualElements.value;
 			const results: VisualElementUpdate[] = [];
 
 			for (const update of updates) {

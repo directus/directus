@@ -68,7 +68,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 	const stream = await createUiStream(validationResult.data, {
 		provider,
 		model,
-		tools: tools,
+		tools,
 		aiSettings,
 		systemPrompt: res.locals['ai'].systemPrompt,
 		...(context && { context }),

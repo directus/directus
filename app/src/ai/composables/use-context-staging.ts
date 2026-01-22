@@ -104,7 +104,6 @@ export function useContextStaging() {
 			return true;
 		}
 
-		// Validate collection exists before staging (security)
 		const collectionInfo = collectionsStore.getCollection(element.collection);
 
 		if (!collectionInfo) {
@@ -112,7 +111,7 @@ export function useContextStaging() {
 			return false;
 		}
 
-		// Check for duplicates by key
+
 		const exists = aiStore.pendingContext.some(
 			(item) => item.type === 'visual-element' && item.data.key === element.key,
 		);

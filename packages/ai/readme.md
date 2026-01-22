@@ -64,17 +64,3 @@ export async function up(knex: Knex): Promise<void> {
 	}
 }
 ```
-
-## Model Definition Fields
-
-| Field           | Type           | Description                                       |
-| --------------- | -------------- | ------------------------------------------------- |
-| `provider`      | `ProviderType` | `'openai'`                                        |
-| `model`         | `string`       | Model ID used in API calls                        |
-| `name`          | `string`       | Display name in UI                                |
-| `limit.context` | `number`       | Max input tokens                                  |
-| `limit.output`  | `number`       | Max output tokens                                 |
-| `cost.input`    | `number`       | Cost per 1M input tokens (USD)                    |
-| `cost.output`   | `number`       | Cost per 1M output tokens (USD)                   |
-| `attachment`    | `boolean`      | Supports file attachments                         |
-| `reasoning`     | `boolean`      | Supports reasoning/chain-of-thought (OpenAI only) |

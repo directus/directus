@@ -44,16 +44,6 @@ export const useAiToolsStore = defineStore('ai-tools-store', () => {
 		toolApprovals.value = { ...toolApprovals.value, [toolName]: mode };
 	};
 
-	const setAllToolsMode = (mode: ToolApprovalMode) => {
-		const newApprovals: Record<string, ToolApprovalMode> = {};
-
-		for (const tool of systemTools.value) {
-			newApprovals[tool] = mode;
-		}
-
-		toolApprovals.value = newApprovals;
-	};
-
 	const registerLocalTool = (tool: StaticToolDefinition) => {
 		localTools.value = [...localTools.value, tool];
 	};
@@ -87,7 +77,6 @@ export const useAiToolsStore = defineStore('ai-tools-store', () => {
 		// Actions
 		getToolApprovalMode,
 		setToolApprovalMode,
-		setAllToolsMode,
 		registerLocalTool,
 		replaceLocalTool,
 		deregisterLocalTool,

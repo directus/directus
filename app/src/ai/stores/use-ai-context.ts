@@ -24,10 +24,6 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 	const visualElements = computed(() => pendingContext.value.filter(isVisualElement));
 
-	const itemContext = computed(() => pendingContext.value.filter(isItemContext));
-
-	const promptContext = computed(() => pendingContext.value.filter(isPromptContext));
-
 	const hasVisualElementContext = computed(() => visualElements.value.length > 0);
 
 	const hasPendingContext = computed(() => pendingContext.value.length > 0);
@@ -133,8 +129,6 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 		// Computed
 		visualElements,
-		itemContext,
-		promptContext,
 		hasVisualElementContext,
 		hasPendingContext,
 

@@ -451,7 +451,11 @@ function useUrls() {
 			:transition-duration="125"
 			class="content-split"
 			@update:size="(s) => emit('update:sidebarSize', s)"
-			@update:collapsed="(c) => { console.log('[live-preview] SplitPanel emitted update:collapsed:', c); emit('update:sidebarCollapsed', c); }"
+			@update:collapsed="
+				(c) => {
+					emit('update:sidebarCollapsed', c);
+				}
+			"
 		>
 			<template #start>
 				<div class="container">
