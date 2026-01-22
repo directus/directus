@@ -21,7 +21,7 @@ const isOpen = useDialogRoute();
 
 const { info } = useServerStore();
 
-const acceptedMimeTypes = computed(() => {
+const allowedMimeTypes = computed(() => {
 	const allowList = info.files?.mimeTypeAllowList;
 
 	if (!allowList || allowList === '*/*') {
@@ -41,7 +41,7 @@ function close() {
 		<VCard>
 			<VCardTitle>{{ $t('add_file') }}</VCardTitle>
 			<VCardText>
-				<VUpload :folder="props.folder" multiple from-url :accept="acceptedMimeTypes" @input="close" />
+				<VUpload :folder="props.folder" multiple from-url :accept="allowedMimeTypes" @input="close" />
 			</VCardText>
 			<VCardActions>
 				<VButton secondary @click="close">{{ $t('done') }}</VButton>
