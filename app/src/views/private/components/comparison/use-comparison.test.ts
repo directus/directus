@@ -521,6 +521,7 @@ describe('useComparison', () => {
 				mainItemOverwrites: mainItemData,
 				compareToOptionOverwrite: 'Latest',
 				revisionsListOverwrites: [currentRevisionData],
+				currentVersionOverwrites: null,
 			});
 
 			mockApi.get.mockImplementation(testCase.mockApiGet);
@@ -539,6 +540,63 @@ describe('useComparison', () => {
 
 			// No previous revision in Latest mode
 			expect(comparisonData.value?.previousRevision).toBeNull();
+		});
+
+		it('should compare revision against version state when currentVersion exists', async () => {
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'Revision Title',
+					description: 'Revision Desc',
+				},
+				delta: {
+					title: 'Revision Title',
+					description: 'Revision Desc',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'revisionuser@example.com',
+						first_name: 'Revision',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: currentRevisionData,
+				compareToOptionOverwrite: 'Latest',
+				revisionsListOverwrites: [currentRevisionData],
+				versionCompareOverwrites: {
+					main: {
+						id: 1,
+						title: 'Main Title',
+						description: 'Main Desc',
+					},
+					current: {
+						title: 'Version Title',
+						description: 'Version Desc',
+					},
+				},
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			// Base should be version state (main merged with version changes)
+			expect(comparisonData.value?.base.title).toBe('Version Title');
+			expect(comparisonData.value?.base.description).toBe('Version Desc');
+
+			// Incoming should be revision data merged with main
+			expect(comparisonData.value?.incoming.title).toBe('Revision Title');
+			expect(comparisonData.value?.incoming.description).toBe('Revision Desc');
 		});
 
 		it('should correctly identify fields with differences between revision and main item', async () => {
@@ -582,6 +640,7 @@ describe('useComparison', () => {
 				mainItemOverwrites: mainItemData,
 				compareToOptionOverwrite: 'Latest',
 				revisionsListOverwrites: [currentRevisionData],
+				currentVersionOverwrites: null,
 			});
 
 			mockApi.get.mockImplementation(testCase.mockApiGet);
@@ -721,20 +780,23 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 		last_name: 'User',
 	};
 
-	const currentVersion = {
-		id: 'a1b8e4d2-ca52-4f54-b0d9-6895c34efdd4',
-		key: 'draft',
-		name: 'Draft',
-		collection,
-		item: primaryKey,
-		hash: versionCompareHash,
-		date_created: '2025-10-29T09:00:00.000Z',
-		date_updated: '2025-10-29T10:00:00.000Z',
-		user_created: adminUser.id,
-		user_updated: adminUser.id,
-		delta: null,
-		...currentVersionOverwrites,
-	};
+	const currentVersion =
+		currentVersionOverwrites === null
+			? null
+			: {
+					id: 'a1b8e4d2-ca52-4f54-b0d9-6895c34efdd4',
+					key: 'draft',
+					name: 'Draft',
+					collection,
+					item: primaryKey,
+					hash: versionCompareHash,
+					date_created: '2025-10-29T09:00:00.000Z',
+					date_updated: '2025-10-29T10:00:00.000Z',
+					user_created: adminUser.id,
+					user_updated: adminUser.id,
+					delta: null,
+					...currentVersionOverwrites,
+				};
 
 	const currentRevision = {
 		id: 1234,
