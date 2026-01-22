@@ -1643,4 +1643,21 @@ fonts:
   bold: 太字
   black: 黒
   italic: 斜体
+center: 中央揃え
+justify: 両端揃え
+text_align: テキストの配置
+font_weight: フォントの太さ
+font_style: フォントスタイル
+font_size: フォントサイズ
+show_password: パスワードを表示にする
+hide_password: パスワードを非表示にする
+bsl_banner:
+  title: プロジェクトの所有者が設定されていません。
+  license: これは BSL 1.1 ライセンスを遵守するために必要です。プロジェクトに責任を持つ主な担当者を設定してください。
+  set_owner: 所有者を設定
+  remind_later: 後で通知
+  remind_next_login: 次回のログイン時に再度通知します。
+accepted: 承認済み
+text_direction_auto: 自動 (言語に合わせる)
+text_direction_ltr: 左書き (LTR)
 text_direction_rtl: 右書き (RTL)
