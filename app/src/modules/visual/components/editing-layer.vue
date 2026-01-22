@@ -3,10 +3,22 @@ import { useCollection } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { useEventListener } from '@vueuse/core';
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { EditConfig, NavigationData, ReceiveData, SavedData, SendAction } from '../types';
+import { useVisualAiTools } from '../composables/use-visual-ai-tools';
+import type {
+	AddToContextData,
+	EditConfig,
+	HighlightElementData,
+	NavigationData,
+	ReceiveData,
+	SavedData,
+	SendAction,
+} from '../types';
 import { sameOrigin } from '../utils/same-origin';
+import { useContextStaging } from '@/ai/composables/use-context-staging';
+import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiContextStore, type VisualElementUpdate } from '@/ai/stores/use-ai-context';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -24,7 +36,7 @@ const { frameSrc, frameEl, showEditableElements } = defineProps<{
 
 const emit = defineEmits<{
 	navigation: [data: NavigationData];
-	saved: [];
+	saved: [data: { collection: string; primaryKey: PrimaryKey }];
 }>();
 
 const { t } = useI18n();
@@ -34,24 +46,37 @@ const { collection, primaryKey, fields, mode, position, isNew, edits, editOverla
 
 const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : null));
 
-const { sendSaved } = useWebsiteFrame({ onClickEdit });
+const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
 
 const { popoverWidth } = usePopoverWidth();
 
+// Register local AI tools for visual elements
+useVisualAiTools();
+
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
+	const aiStore = useAiStore();
+	const contextStore = useAiContextStore();
+	const { stageVisualElement } = useContextStaging();
+
 	useEventListener('message', (event) => {
-		if (!sameOrigin(event.origin, frameSrc)) return;
+		if (!sameOrigin(event.origin, frameSrc)) {
+			return;
+		}
 
 		const { action = null, data = null }: ReceiveData = event.data;
 
 		if (action === 'connect') {
 			sendConfirm();
 			if (showEditableElements) sendShowEditableElements(true);
+			// Set URL for context tracking
+			contextStore.setVisualElementContextUrl(frameSrc);
 		}
 
 		if (action === 'navigation') receiveNavigation(data);
 
 		if (action === 'edit') onClickEdit(data);
+
+		if (action === 'add-to-context') receiveAddToContext(data);
 	});
 
 	watch(
@@ -61,13 +86,68 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		},
 	);
 
-	return { sendSaved };
+	// Listen for visual elements updated to send saved messages to iframe
+	const unsubscribeUpdated = contextStore.onVisualElementsUpdated((updates: VisualElementUpdate[]) => {
+		for (const update of updates) {
+			if (update.status !== 'success') continue;
+
+			// Try to find the key for this element from pending context
+			const matchingContext = contextStore.visualElements.find(
+				(ctx) => ctx.data.collection === update.collection && ctx.data.item === update.item,
+			);
+
+			// Send saved message - iframe will reload if no matching key found
+			sendSaved({
+				key: matchingContext?.data.key ?? '',
+				collection: update.collection,
+				item: update.item,
+				payload: {},
+			});
+		}
+	});
+
+	// Listen for visual element highlight requests from the AI store
+	const unsubscribeHighlight = aiStore.onVisualElementHighlight((key) => {
+		sendHighlightElement({ key });
+	});
+
+	onUnmounted(() => {
+		unsubscribeUpdated.off();
+		unsubscribeHighlight.off();
+		// Clear visual element context when component unmounts
+		contextStore.clearVisualElementContext();
+	});
+
+	return { sendSaved, sendHighlightElement };
 
 	function receiveNavigation(data: unknown) {
 		const { url, title } = data as NavigationData;
 		if (url === undefined || title === undefined) return;
 
 		emit('navigation', { url, title });
+	}
+
+	function receiveAddToContext(data: unknown) {
+		const { key, editConfig, displayValue, rect } = data as AddToContextData;
+
+		if (!key || !editConfig?.collection || !editConfig.item) return;
+
+		// Stage the visual element
+		const success = stageVisualElement(
+			{
+				key,
+				collection: editConfig.collection,
+				item: editConfig.item,
+				fields: editConfig.fields,
+				rect,
+			},
+			displayValue,
+		);
+
+		// Send highlight back if successfully staged
+		if (success) {
+			sendHighlightElement({ key });
+		}
 	}
 
 	function send(action: SendAction, data: unknown) {
@@ -84,6 +164,10 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	function sendSaved(data: SavedData) {
 		send('saved', data);
+	}
+
+	function sendHighlightElement(data: HighlightElementData) {
+		send('highlight-element', data);
 	}
 }
 
@@ -166,7 +250,7 @@ function useItemWithEdits() {
 				payload: JSON.parse(JSON.stringify(edits.value)),
 			});
 
-			emit('saved');
+			emit('saved', { collection: collection.value, primaryKey: primaryKey.value });
 
 			resetEdits();
 		} catch (error) {

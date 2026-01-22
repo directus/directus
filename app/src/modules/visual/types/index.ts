@@ -14,12 +14,23 @@ export type SavedData = {
 	key: string;
 	collection: EditConfig['collection'];
 	item: EditConfig['item'];
-	payload: Record<string, any>;
+	payload: Record<string, unknown>;
 };
 
-export type ReceiveAction = 'connect' | 'edit' | 'navigation';
+export type AddToContextData = {
+	key: string;
+	editConfig: EditConfig;
+	displayValue: string;
+	rect?: { top: number; left: number; width: number; height: number };
+};
 
-export type SendAction = 'confirm' | 'showEditableElements' | 'saved';
+export type HighlightElementData = {
+	key: string | null;
+};
+
+export type ReceiveAction = 'connect' | 'edit' | 'navigation' | 'add-to-context';
+
+export type SendAction = 'confirm' | 'showEditableElements' | 'saved' | 'highlight-element';
 
 /** Not shared with the package */
 

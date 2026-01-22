@@ -1458,7 +1458,7 @@ fields:
     ai_notice:
       'AI Chat provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the toolbar to
       ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai/chat" target="_blank">Learn more about configuring and using AI Chat.</a>'
+      href="https://directus.io/docs/guides/ai" target="_blank">Learn more about configuring and using AI Chat.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
       'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
@@ -1662,6 +1662,8 @@ live_preview:
   close_window: Open in Split View
   toggle_3d: Toggle 3D
   iframe_title: Live Website Preview
+  display_options: Display Options
+  full_width: Full Width
   exit_full_width: Exit Full Width
   open_in_visual_editor: Open in Visual Editor
 shares: Shares
@@ -1692,6 +1694,26 @@ ai:
   clear_conversation: Clear Conversation
   build_with_chat: Build with AI Chat
   responses_may_be_inaccurate: AI responses may be inaccurate
+  add_content: Add Content
+  prompt: Prompt
+  prompts: Prompts
+  items: Items
+  content: Content
+  insert_prompt: Insert Prompt
+  insert_reusable_prompt: Insert a reusable prompt template
+  insert_item_context: Insert item context
+  coming_soon: Coming soon
+  failed_to_load_prompts: Failed to load prompts
+  failed_to_load_items: Failed to load items
+  prompt_inserted: Prompt inserted successfully
+  prompt_staged: Prompt staged successfully
+  items_staged: Items staged successfully
+  item_staged: Item staged successfully
+  invalid_collection: Invalid collection
+  element_already_staged: Element already staged
+  max_elements_reached: Maximum elements reached
+  element_staged: Element staged
+  failed_to_insert_prompt: Failed to insert prompt
   go_to_settings: Go to Settings
   setup_ai_chat: Setup AI Chat
   setup_ai_chat_admin_description: Add your AI provider API keys in settings to enable AI Chat.

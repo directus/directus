@@ -7,6 +7,7 @@ import FilePreview, { type Props as FilePreviewProps } from '@/views/private/com
 
 interface Props extends FilePreviewProps {
 	modelValue: boolean;
+	src?: string;
 }
 
 const props = defineProps<Props>();
@@ -19,17 +20,17 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 </script>
 
 <template>
-	<VDialog v-model="internalModelValue" @esc="internalModelValue = false">
+	<v-dialog v-model="internalModelValue" @esc="internalModelValue = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<FilePreview :file="file" :preset="null" in-modal @click="internalModelValue = false" />
+		<file-preview :file="file" :src="src" :preset="null" in-modal @click="internalModelValue = false" />
 
-		<VButton class="close" icon rounded @click="internalModelValue = false">
-			<VIcon name="close" />
-		</VButton>
-	</VDialog>
+		<v-button class="close" icon rounded @click="internalModelValue = false">
+			<v-icon name="close" />
+		</v-button>
+	</v-dialog>
 </template>
 
 <style scoped>

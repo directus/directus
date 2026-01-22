@@ -56,7 +56,7 @@ const {
 const emit = defineEmits<{
 	'new-window': [];
 	selectUrl: [newUrl: string, oldUrl: string];
-	saved: [];
+	saved: [data: { collection: string; primaryKey: string | number }];
 	'exit-full-width': [];
 }>();
 
@@ -253,6 +253,7 @@ function useUrls() {
 		<div class="header">
 			<div class="group">
 				<slot name="prepend-header" />
+				<!-- In full-width: show exit button -->
 				<VButton
 					v-if="isFullWidth"
 					v-tooltip.bottom.end="t('live_preview.exit_full_width')"
@@ -264,6 +265,7 @@ function useUrls() {
 					<VIcon small name="width_full" />
 				</VButton>
 
+				<!-- In popup: show split view button -->
 				<VButton
 					v-else-if="inPopup"
 					v-tooltip.bottom.end="$t('live_preview.close_window')"
@@ -276,9 +278,17 @@ function useUrls() {
 					<VIcon small name="exit_to_app" outline />
 				</VButton>
 
+				<!-- Normal view: show display options menu -->
 				<VMenu v-else-if="hasDisplayOptions" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
-						<VButton v-tooltip.bottom.end="t('display_options')" x-small rounded icon secondary @click="toggle">
+						<VButton
+							v-tooltip.bottom.end="t('live_preview.display_options')"
+							x-small
+							rounded
+							icon
+							secondary
+							@click="toggle"
+						>
 							<VIcon small name="display_settings" />
 						</VButton>
 					</template>
@@ -439,7 +449,7 @@ function useUrls() {
 						:frame-el="frameEl"
 						:frame-src="frameSrc"
 						:show-editable-elements="showEditableElements"
-						@saved="emit('saved')"
+						@saved="(data) => emit('saved', data)"
 					/>
 				</div>
 			</div>

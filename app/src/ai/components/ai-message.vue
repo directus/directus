@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { DynamicToolUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
+import type { ContextAttachment } from '../types';
+import AiMessageContextCard from './parts/ai-message-context-card.vue';
 import AiMessageFile from './parts/ai-message-file.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
 import AiMessageSourceDocument from './parts/ai-message-source-document.vue';
@@ -20,6 +22,10 @@ export interface AiMessageAction {
 	loading?: boolean;
 }
 
+export interface AiMessageMetadata {
+	attachments?: ContextAttachment[];
+}
+
 interface Props {
 	/** Message ID for tracking */
 	id?: string;
@@ -29,6 +35,8 @@ interface Props {
 	parts?: AiMessagePart[];
 	/** Action buttons displayed below message */
 	actions?: AiMessageAction[];
+	/** Message metadata including context attachments */
+	metadata?: AiMessageMetadata;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -56,6 +64,15 @@ withDefaults(defineProps<Props>(), {
 					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part as DynamicToolUIPart" />
 				</template>
 			</slot>
+
+			<!-- Context attachments from metadata (user messages only) -->
+			<div v-if="role === 'user' && metadata?.attachments?.length" class="context-attachments">
+				<AiMessageContextCard
+					v-for="attachment in metadata.attachments"
+					:key="attachment.display"
+					:attachment="attachment"
+				/>
+			</div>
 
 			<div v-if="actions && actions.length > 0" class="message-actions">
 				<VButton
@@ -128,5 +145,11 @@ withDefaults(defineProps<Props>(), {
 	gap: 0.25rem;
 	align-items: center;
 	margin-block-start: 0.25rem;
+}
+
+.context-attachments {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
 }
 </style>

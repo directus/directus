@@ -27,12 +27,38 @@ export type ChatRequestTool = z.infer<typeof ChatRequestTool>;
 export const ToolApprovalMode = z.enum(['always', 'ask', 'disabled']);
 export type ToolApprovalMode = z.infer<typeof ToolApprovalMode>;
 
+export const ContextAttachment = z.object({
+	type: z.enum(['visual-element', 'item', 'prompt']),
+	display: z.string(),
+	data: z.record(z.string(), z.unknown()),
+	snapshot: z.record(z.string(), z.unknown()),
+});
+
+export type ContextAttachment = z.infer<typeof ContextAttachment>;
+
+export const PageContext = z.object({
+	path: z.string(),
+	collection: z.string().optional(),
+	item: z.union([z.string(), z.number()]).optional(),
+	module: z.string().optional(),
+});
+
+export type PageContext = z.infer<typeof PageContext>;
+
+export const ChatContext = z.object({
+	attachments: z.array(ContextAttachment).optional(),
+	page: PageContext.optional(),
+});
+
+export type ChatContext = z.infer<typeof ChatContext>;
+
 export const ChatRequest = z.intersection(
 	z.discriminatedUnion('provider', [ProviderOpenAi, ProviderAnthropic, ProviderGoogle, ProviderOpenAiCompatible]),
 	z.object({
 		tools: z.array(ChatRequestTool),
 		messages: z.array(z.looseObject({})),
 		toolApprovals: z.record(z.string(), ToolApprovalMode).optional(),
+		context: ChatContext.optional(),
 	}),
 );
 

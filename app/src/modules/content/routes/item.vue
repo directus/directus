@@ -10,6 +10,7 @@ import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
+import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiStore } from '@/ai/stores/use-ai';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -122,6 +123,7 @@ const aiStore = useAiStore();
 aiStore.onSystemToolResult((tool, input) => {
 	if (tool === 'items' && input.collection === collection.value) {
 		refresh();
+		refreshLivePreview();
 	}
 });
 
@@ -405,11 +407,18 @@ const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 
 provideRunManualFlow();
 
+const { stageVisualElement } = useContextStaging();
+
 useEventListener('message', (event) => {
 	if (!sameOrigin(event.origin, window.location.href)) return;
 	if (event.source !== popupWindow) return;
 
 	if (event.data === 'refresh') refresh();
+
+	if (event.data?.action === 'stage-visual-element') {
+		const { element, displayValue } = event.data.data;
+		stageVisualElement(element, displayValue);
+	}
 });
 
 async function refreshLivePreview() {
@@ -862,7 +871,7 @@ function useCollectionRoute() {
 					<template #display-options>
 						<VListItem clickable @click="livePreviewFullWidth = true">
 							<VListItemIcon><VIcon name="width_full" /></VListItemIcon>
-							<VListItemContent>{{ $t('full_width') }}</VListItemContent>
+							<VListItemContent>{{ $t('live_preview.full_width') }}</VListItemContent>
 						</VListItem>
 					</template>
 				</LivePreview>
