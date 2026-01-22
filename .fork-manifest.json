@@ -1,0 +1,53 @@
+{
+  "upstream_base": "v11.14.0",
+  "upstream_repo": "directus/directus",
+  "last_sync": "2026-01-22T00:00:00Z",
+  "features": [
+    {
+      "id": "collection-url-params",
+      "branch": "feature/collection-url-params",
+      "description": "URL prefill composable for collections",
+      "status": "maintained"
+    },
+    {
+      "id": "form-context",
+      "branch": "feature/form-context",
+      "description": "$FORM context for nested relationships",
+      "status": "maintained"
+    },
+    {
+      "id": "opentelemetry",
+      "branch": "feature/opentelemetry",
+      "description": "Full OpenTelemetry instrumentation",
+      "status": "maintained"
+    },
+    {
+      "id": "packer",
+      "branch": "feature/packer",
+      "description": "Image build automation with Packer (vSphere/QEMU)",
+      "status": "maintained"
+    },
+    {
+      "id": "ai-file-content-tool",
+      "branch": "feature/ai-file-content-tool",
+      "description": "AI file content with size validation",
+      "status": "experimental",
+      "note": "Experiment - not included in releases"
+    },
+    {
+      "id": "draft-items",
+      "branch": "feature/draft-items",
+      "description": "Save work-in-progress items as drafts",
+      "status": "experimental",
+      "note": "Directus team building official version"
+    },
+    {
+      "id": "external-mcp-tools",
+      "branch": "feature/external-mcp-tools",
+      "description": "External MCP server support",
+      "status": "experimental",
+      "note": "Directus team will add officially"
+    }
+  ],
+  "releases": []
+}

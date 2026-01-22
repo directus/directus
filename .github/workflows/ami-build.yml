@@ -1,22 +1,20 @@
 # =============================================================================
-# GitHub Actions: Build Directus Base AMI
+# GitHub Actions: Build Directus Base AMI (DISABLED)
 # =============================================================================
-# This workflow builds the Directus base AMI using Packer.
+# STATUS: DISABLED - Pending migration to vSphere
 #
-# Triggers:
-#   - Manual dispatch (workflow_dispatch)
-#   - Push to main with changes in packer/ directory
-#   - Weekly scheduled build (to pick up security updates)
+# This workflow previously built EC2 AMIs using Packer. It has been disabled
+# as we migrate to:
+#   - Docker images for ECS (cloud) - see docker-release.yml
+#   - vSphere images for on-prem (future)
 #
-# Authentication:
-#   Uses AWS OIDC for keyless authentication (no static credentials)
-#   IAM Role: arn:aws:iam::578313247618:role/github-actions-directus
+# The Packer code in packer/ is preserved for the vSphere migration.
 # =============================================================================
 
-name: Build Directus AMI
+name: Build Directus AMI (Disabled)
 
 on:
-  # Manual trigger with optional version input
+  # Manual trigger only - automatic triggers disabled
   workflow_dispatch:
     inputs:
       version:
@@ -29,15 +27,13 @@ on:
         required: false
         default: false
 
-  # Automatic trigger on packer changes | <TRIGGER>
-  push:
-    branches:
-      - custom
-
-  # PR trigger for testing (validate only, no build)
-  pull_request:
-    branches:
-      - custom
+  # DISABLED: Automatic triggers removed
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - main
 
 # Cancel in-progress builds when new commits are pushed
 concurrency:

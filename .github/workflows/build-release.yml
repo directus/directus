@@ -1,0 +1,231 @@
+name: Build F2F Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_suffix:
+        description: 'Release suffix (e.g., "1" for v11.14.0-f2f.1)'
+        required: true
+        type: string
+      features:
+        description: 'Features to include (comma-separated IDs, or "all" for all maintained features)'
+        required: false
+        default: 'all'
+        type: string
+      skip_tests:
+        description: 'Skip test suite (not recommended for production releases)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.version.outputs.release_tag }}
+      release_branch: ${{ steps.version.outputs.release_branch }}
+      features_to_merge: ${{ steps.features.outputs.to_merge }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calculate version
+        id: version
+        run: |
+          # Get upstream base from manifest
+          UPSTREAM_BASE=$(jq -r '.upstream_base' .fork-manifest.json)
+          # Strip 'v' prefix if present for version calculation
+          VERSION_BASE="${UPSTREAM_BASE#v}"
+
+          RELEASE_TAG="v${VERSION_BASE}-f2f.${{ inputs.release_suffix }}"
+          RELEASE_BRANCH="release/${UPSTREAM_BASE}-f2f.${{ inputs.release_suffix }}"
+
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+          echo "release_branch=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
+
+          echo "Building release: $RELEASE_TAG"
+
+      - name: Determine features to merge
+        id: features
+        run: |
+          if [ "${{ inputs.features }}" = "all" ]; then
+            # Get all maintained features
+            FEATURES=$(jq -c '[.features[] | select(.status == "maintained") | .branch]' .fork-manifest.json)
+          else
+            # Parse comma-separated list and map to branches
+            IFS=',' read -ra FEATURE_IDS <<< "${{ inputs.features }}"
+            FEATURES="["
+            for id in "${FEATURE_IDS[@]}"; do
+              id=$(echo "$id" | xargs)  # trim whitespace
+              BRANCH=$(jq -r --arg id "$id" '.features[] | select(.id == $id) | .branch' .fork-manifest.json)
+              if [ -n "$BRANCH" ] && [ "$BRANCH" != "null" ]; then
+                FEATURES="$FEATURES\"$BRANCH\","
+              else
+                echo "Warning: Feature '$id' not found in manifest"
+              fi
+            done
+            FEATURES="${FEATURES%,}]"
+          fi
+
+          echo "to_merge=$FEATURES" >> $GITHUB_OUTPUT
+          echo "Features to merge: $FEATURES"
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create release branch
+        run: |
+          RELEASE_BRANCH="${{ needs.prepare.outputs.release_branch }}"
+
+          # Create release branch from main
+          git checkout -b "$RELEASE_BRANCH"
+
+      - name: Merge feature branches
+        run: |
+          FEATURES='${{ needs.prepare.outputs.features_to_merge }}'
+
+          echo "Merging features into release branch..."
+
+          # Parse JSON array and merge each feature
+          echo "$FEATURES" | jq -r '.[]' | while read -r branch; do
+            echo "Merging $branch..."
+            git fetch origin "$branch"
+
+            if git merge "origin/$branch" --no-edit -m "chore: merge $branch for release"; then
+              echo "Successfully merged $branch"
+            else
+              echo "Failed to merge $branch - conflicts detected"
+              git merge --abort
+              echo "::error::Merge conflict with $branch. Please resolve manually before creating release."
+              exit 1
+            fi
+          done
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run build
+        run: pnpm build
+
+      - name: Run tests
+        if: inputs.skip_tests != true
+        run: pnpm test
+
+      - name: Update manifest with release info
+        run: |
+          RELEASE_TAG="${{ needs.prepare.outputs.release_tag }}"
+          FEATURES='${{ needs.prepare.outputs.features_to_merge }}'
+
+          # Add release to manifest
+          jq --arg tag "$RELEASE_TAG" \
+             --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+             --argjson features "$FEATURES" \
+             '.releases += [{"tag": $tag, "date": $date, "features": $features}]' \
+             .fork-manifest.json > .fork-manifest.json.tmp
+          mv .fork-manifest.json.tmp .fork-manifest.json
+
+          git add .fork-manifest.json
+          git commit -m "chore: record release $RELEASE_TAG in manifest"
+
+      - name: Push release branch
+        run: |
+          RELEASE_BRANCH="${{ needs.prepare.outputs.release_branch }}"
+          git push origin "$RELEASE_BRANCH"
+
+      - name: Create release tag
+        run: |
+          RELEASE_TAG="${{ needs.prepare.outputs.release_tag }}"
+          FEATURES='${{ needs.prepare.outputs.features_to_merge }}'
+
+          # Create annotated tag
+          FEATURE_LIST=$(echo "$FEATURES" | jq -r '.[]' | sed 's/^/- /')
+
+          git tag -a "$RELEASE_TAG" -m "Release $RELEASE_TAG
+
+          Face-to-Face IT Directus fork release.
+
+          Included features:
+          $FEATURE_LIST
+
+          Based on upstream: $(jq -r '.upstream_base' .fork-manifest.json)"
+
+          git push origin "$RELEASE_TAG"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_TAG="${{ needs.prepare.outputs.release_tag }}"
+          FEATURES='${{ needs.prepare.outputs.features_to_merge }}'
+
+          FEATURE_LIST=$(echo "$FEATURES" | jq -r '.[]' | sed 's/feature\///' | sed 's/^/- /')
+
+          gh release create "$RELEASE_TAG" \
+            --title "$RELEASE_TAG" \
+            --notes "## Face-to-Face IT Directus Release
+
+          Based on upstream Directus $(jq -r '.upstream_base' .fork-manifest.json).
+
+          ### Included Features
+
+          $FEATURE_LIST
+
+          ### Installation
+
+          \`\`\`bash
+          # Clone the fork at this release
+          git clone --branch $RELEASE_TAG https://github.com/Face-to-Face-IT/directus.git
+
+          # Or update existing clone
+          git fetch origin --tags
+          git checkout $RELEASE_TAG
+          \`\`\`
+
+          ### Verification
+
+          - Build: \`pnpm install && pnpm build\`
+          - Tests: \`pnpm test\`
+
+          See [FORK_MAINTENANCE.md](docs/FORK_MAINTENANCE.md) for maintenance documentation."
+
+  notify:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "## Release Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** ${{ needs.prepare.outputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ needs.prepare.outputs.release_branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The release has been tagged and published to GitHub Releases." >> $GITHUB_STEP_SUMMARY

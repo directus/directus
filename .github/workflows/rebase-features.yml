@@ -1,0 +1,171 @@
+name: Rebase Feature Branches
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      feature_branch:
+        description: 'Specific feature branch to rebase (leave empty for all)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  get-features:
+    runs-on: ubuntu-latest
+    outputs:
+      features: ${{ steps.list.outputs.features }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: List feature branches
+        id: list
+        run: |
+          if [ -n "${{ inputs.feature_branch }}" ]; then
+            # Single feature specified
+            FEATURES='["${{ inputs.feature_branch }}"]'
+          else
+            # Get all features from manifest
+            FEATURES=$(jq -c '[.features[].branch]' .fork-manifest.json)
+          fi
+          echo "features=$FEATURES" >> $GITHUB_OUTPUT
+          echo "Features to rebase: $FEATURES"
+
+  rebase:
+    needs: get-features
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        feature: ${{ fromJson(needs.get-features.outputs.features) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Rebase feature branch
+        id: rebase
+        continue-on-error: true
+        run: |
+          FEATURE_BRANCH="${{ matrix.feature }}"
+
+          # Fetch and checkout the feature branch
+          git fetch origin "$FEATURE_BRANCH"
+          git checkout "$FEATURE_BRANCH"
+
+          # Attempt rebase onto main
+          if git rebase origin/main; then
+            echo "Rebase successful for $FEATURE_BRANCH"
+            echo "success=true" >> $GITHUB_OUTPUT
+
+            # Force push the rebased branch
+            git push origin "$FEATURE_BRANCH" --force-with-lease
+          else
+            echo "Rebase failed for $FEATURE_BRANCH"
+            echo "success=false" >> $GITHUB_OUTPUT
+
+            # Abort the failed rebase
+            git rebase --abort
+
+            # Get conflicting files for the issue
+            git rebase origin/main 2>&1 | grep -E "^CONFLICT" > /tmp/conflicts.txt || true
+            echo "conflicts<<EOF" >> $GITHUB_OUTPUT
+            cat /tmp/conflicts.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create issue for failed rebase
+        if: steps.rebase.outputs.success == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FEATURE_BRANCH="${{ matrix.feature }}"
+          FEATURE_ID=$(echo "$FEATURE_BRANCH" | sed 's/feature\///')
+
+          # Check if issue already exists
+          EXISTING=$(gh issue list --label "rebase-failed" --search "$FEATURE_BRANCH in:title" --json number --jq '.[0].number')
+
+          if [ -n "$EXISTING" ]; then
+            # Update existing issue
+            gh issue comment "$EXISTING" --body "Rebase attempt failed again at $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          ### Conflicts
+          \`\`\`
+          ${{ steps.rebase.outputs.conflicts }}
+          \`\`\`
+
+          Please resolve manually and push."
+          else
+            # Create new issue
+            gh issue create \
+              --title "Rebase failed: $FEATURE_BRANCH" \
+              --label "rebase-failed,feature/$FEATURE_ID" \
+              --body "## Rebase Failed
+
+          The feature branch \`$FEATURE_BRANCH\` failed to rebase onto the updated main branch.
+
+          ### Conflicts
+          \`\`\`
+          ${{ steps.rebase.outputs.conflicts }}
+          \`\`\`
+
+          ### Resolution Steps
+
+          1. Checkout the feature branch locally:
+             \`\`\`bash
+             git fetch origin
+             git checkout $FEATURE_BRANCH
+             \`\`\`
+
+          2. Rebase onto main:
+             \`\`\`bash
+             git rebase origin/main
+             \`\`\`
+
+          3. Resolve conflicts in each file
+
+          4. Continue the rebase:
+             \`\`\`bash
+             git add <resolved-files>
+             git rebase --continue
+             \`\`\`
+
+          5. Force push the rebased branch:
+             \`\`\`bash
+             git push origin $FEATURE_BRANCH --force-with-lease
+             \`\`\`
+
+          6. Close this issue
+
+          ### Feature Details
+
+          See \`.fork-manifest.json\` for feature description and status."
+          fi
+
+  summary:
+    needs: [get-features, rebase]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "## Feature Rebase Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Rebased feature branches onto main after upstream sync." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check individual job results for any failures requiring manual resolution." >> $GITHUB_STEP_SUMMARY

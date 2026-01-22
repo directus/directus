@@ -1,0 +1,172 @@
+name: Upstream Sync
+
+on:
+  schedule:
+    # Weekly on Monday at 6am UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      target_tag:
+        description: 'Specific upstream tag to sync to (leave empty for latest)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    outputs:
+      has_updates: ${{ steps.check.outputs.has_updates }}
+      upstream_tag: ${{ steps.check.outputs.upstream_tag }}
+      sync_branch: ${{ steps.check.outputs.sync_branch }}
+      has_conflicts: ${{ steps.merge.outputs.has_conflicts }}
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/directus/directus.git || true
+          git fetch upstream --tags
+
+      - name: Determine target tag
+        id: check
+        run: |
+          if [ -n "${{ inputs.target_tag }}" ]; then
+            UPSTREAM_TAG="${{ inputs.target_tag }}"
+          else
+            # Get the latest release tag (vX.Y.Z format, not pre-releases)
+            UPSTREAM_TAG=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-version:refname | grep -v '-' | head -n 1)
+          fi
+
+          echo "upstream_tag=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
+          echo "sync_branch=sync/upstream-$UPSTREAM_TAG" >> $GITHUB_OUTPUT
+
+          # Read current base from manifest
+          CURRENT_BASE=$(jq -r '.upstream_base' .fork-manifest.json)
+
+          if [ "$CURRENT_BASE" = "$UPSTREAM_TAG" ]; then
+            echo "Already up to date with $UPSTREAM_TAG"
+            echo "has_updates=false" >> $GITHUB_OUTPUT
+          else
+            echo "Update available: $CURRENT_BASE -> $UPSTREAM_TAG"
+            echo "has_updates=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create sync branch and merge
+        id: merge
+        if: steps.check.outputs.has_updates == 'true'
+        run: |
+          UPSTREAM_TAG="${{ steps.check.outputs.upstream_tag }}"
+          SYNC_BRANCH="${{ steps.check.outputs.sync_branch }}"
+
+          # Create sync branch from current main
+          git checkout -b "$SYNC_BRANCH"
+
+          # Attempt merge from upstream tag
+          if git merge "upstream/$UPSTREAM_TAG" --no-edit; then
+            echo "Merge successful, no conflicts"
+            echo "has_conflicts=false" >> $GITHUB_OUTPUT
+          else
+            echo "Merge has conflicts"
+            echo "has_conflicts=true" >> $GITHUB_OUTPUT
+            # Stage conflict markers so we can push and create PR
+            git add -A
+            git commit -m "chore: merge upstream $UPSTREAM_TAG (conflicts need resolution)"
+          fi
+
+          # Push the sync branch
+          git push origin "$SYNC_BRANCH" --force
+
+      - name: Update fork manifest
+        if: steps.check.outputs.has_updates == 'true' && steps.merge.outputs.has_conflicts == 'false'
+        run: |
+          UPSTREAM_TAG="${{ steps.check.outputs.upstream_tag }}"
+          SYNC_BRANCH="${{ steps.check.outputs.sync_branch }}"
+
+          # Update manifest with new base and sync time
+          jq --arg tag "$UPSTREAM_TAG" --arg time "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '.upstream_base = $tag | .last_sync = $time' \
+            .fork-manifest.json > .fork-manifest.json.tmp
+          mv .fork-manifest.json.tmp .fork-manifest.json
+
+          git add .fork-manifest.json
+          git commit --amend --no-edit
+          git push origin "$SYNC_BRANCH" --force
+
+      - name: Create Pull Request
+        if: steps.check.outputs.has_updates == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          UPSTREAM_TAG="${{ steps.check.outputs.upstream_tag }}"
+          SYNC_BRANCH="${{ steps.check.outputs.sync_branch }}"
+          HAS_CONFLICTS="${{ steps.merge.outputs.has_conflicts }}"
+
+          # Determine labels
+          if [ "$HAS_CONFLICTS" = "true" ]; then
+            LABELS="upstream-sync,needs-resolution"
+            BODY="## Upstream Sync: $UPSTREAM_TAG
+
+          This PR syncs changes from upstream Directus \`$UPSTREAM_TAG\`.
+
+          ### :warning: Conflicts Detected
+
+          This merge has conflicts that need manual resolution:
+
+          1. Checkout this branch locally
+          2. Resolve conflicts in marked files
+          3. Test the build: \`pnpm install && pnpm build\`
+          4. Push your resolution
+
+          Once resolved, remove the \`needs-resolution\` label.
+          "
+          else
+            LABELS="upstream-sync"
+            BODY="## Upstream Sync: $UPSTREAM_TAG
+
+          This PR syncs changes from upstream Directus \`$UPSTREAM_TAG\`.
+
+          ### Changes
+
+          - Updated fork manifest with new base version
+          - Merged upstream changes cleanly
+
+          ### Verification Checklist
+
+          - [ ] Build passes: \`pnpm install && pnpm build\`
+          - [ ] Tests pass: \`pnpm test\`
+          - [ ] Feature branches will be rebased after merge
+          "
+          fi
+
+          # Create PR
+          gh pr create \
+            --base main \
+            --head "$SYNC_BRANCH" \
+            --title "chore: sync upstream $UPSTREAM_TAG" \
+            --body "$BODY" \
+            --label "$LABELS"
+
+  notify-rebase:
+    needs: sync
+    if: needs.sync.outputs.has_updates == 'true' && needs.sync.outputs.has_conflicts == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger feature rebase workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Sync complete. Feature branches will be rebased when PR is merged."
+          # The rebase-features workflow triggers on push to main
