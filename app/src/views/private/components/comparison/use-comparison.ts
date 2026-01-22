@@ -37,17 +37,16 @@ interface UseComparisonOptions {
 	currentVersion: Ref<ContentVersion | null | undefined>;
 	currentRevision: Ref<Revision | null | undefined>;
 	revisions: Ref<Revision[] | null | undefined>;
-	compareToOption?: Ref<'Previous' | 'Latest'>;
+	compareToOption: Ref<'Previous' | 'Latest'>;
 }
 
 export function useComparison(options: UseComparisonOptions) {
-	const { collection, primaryKey, mode, currentVersion, currentRevision, revisions } = options;
-
-	const compareToOption = options.compareToOption ?? ref<'Previous' | 'Latest'>('Previous');
+	const { collection, primaryKey, mode, currentVersion, currentRevision, revisions, compareToOption } = options;
 
 	const selectedComparisonFields = ref<string[]>([]);
 	const userUpdated = ref<User | null>(null);
 	const baseUserUpdated = ref<User | null>(null);
+	const persistedCompareToOption = ref<'Previous' | 'Latest'>('Previous');
 
 	const userLoading = ref(false);
 	const baseUserLoading = ref(false);
@@ -110,6 +109,12 @@ export function useComparison(options: UseComparisonOptions) {
 		{ immediate: true },
 	);
 
+	watch(compareToOption, (newValue) => {
+		if (mode.value === 'revision') {
+			persistedCompareToOption.value = newValue;
+		}
+	});
+
 	return {
 		comparisonData,
 		selectedComparisonFields,
@@ -125,12 +130,12 @@ export function useComparison(options: UseComparisonOptions) {
 		baseDisplayName,
 		deltaDisplayName,
 		normalizedData,
-		compareToOption,
 		toggleSelectAll,
 		toggleComparisonField,
 		fetchComparisonData,
 		fetchUserUpdated,
 		fetchBaseItemUserUpdated,
+		persistedCompareToOption,
 	};
 
 	function toggleSelectAll() {

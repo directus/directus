@@ -43,6 +43,8 @@ const { t } = useI18n();
 
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
 
+const compareToOption = ref<'Previous' | 'Latest'>('Previous');
+
 const {
 	comparisonData,
 	selectedComparisonFields,
@@ -58,12 +60,12 @@ const {
 	baseDisplayName,
 	deltaDisplayName,
 	normalizedData,
-	compareToOption,
 	toggleSelectAll,
 	toggleComparisonField,
 	fetchComparisonData,
 	fetchUserUpdated,
 	fetchBaseItemUserUpdated,
+	persistedCompareToOption,
 } = useComparison({
 	collection,
 	primaryKey,
@@ -71,6 +73,7 @@ const {
 	currentVersion,
 	currentRevision,
 	revisions,
+	compareToOption,
 });
 
 const incomingTooltipMessage = computed(() => {
@@ -120,13 +123,27 @@ async function loadComparisonData() {
 }
 
 watch(
-	[active, currentRevision],
-	async ([isActive]) => {
+	active,
+	async (isActive, wasActive) => {
 		if (!isActive) return;
+
+		if (wasActive === undefined || wasActive === false) {
+			compareToOption.value = 'Previous';
+		}
 
 		await loadComparisonData();
 	},
 	{ immediate: true },
+);
+
+watch(
+	currentRevision,
+	async () => {
+		if (!active.value || mode.value !== 'revision') return;
+
+		compareToOption.value = persistedCompareToOption.value;
+		await loadComparisonData();
+	},
 );
 
 watch([compareToOption], async () => {
