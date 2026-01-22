@@ -22,6 +22,7 @@ import VPagination from '@/components/v-pagination.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VUpload from '@/components/v-upload.vue';
+import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
@@ -49,7 +50,7 @@ const props = withDefaults(
 		filter?: Filter;
 		showNavigation?: boolean;
 		limit?: number;
-		allowedMimeTypes: string;
+		allowedMimeTypes?: string[];
 	}>(),
 	{
 		nonEditable: false,
@@ -74,9 +75,7 @@ const value = computed({
 	},
 });
 
-const allowedMimeTypes = computed(() => {
-	return props.allowedMimeTypes.join(',');
-});
+const { mimeTypeFilter, acceptString: allowedMimeTypes } = useMimeTypeFilter(computed(() => props.allowedMimeTypes));
 
 const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
@@ -311,6 +310,10 @@ const customFilter = computed(() => {
 				}),
 			),
 		);
+	}
+
+	if (mimeTypeFilter.value) {
+		filter._and.push(mimeTypeFilter.value);
 	}
 
 	return filter;
