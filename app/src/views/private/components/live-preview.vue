@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
+import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -35,6 +36,9 @@ const {
 	showOpenInVisualEditor = true,
 	defaultShowEditableElements = false,
 	isFullWidth = false,
+	sidebarSize,
+	sidebarCollapsed = true,
+	sidebarDisabled = false,
 } = defineProps<{
 	url: string | string[];
 	invalidUrl?: boolean;
@@ -51,6 +55,9 @@ const {
 	showOpenInVisualEditor?: boolean;
 	defaultShowEditableElements?: boolean;
 	isFullWidth?: boolean;
+	sidebarSize?: number;
+	sidebarCollapsed?: boolean;
+	sidebarDisabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -58,6 +65,8 @@ const emit = defineEmits<{
 	selectUrl: [newUrl: string, oldUrl: string];
 	saved: [data: { collection: string; primaryKey: string | number }];
 	'exit-full-width': [];
+	'update:sidebarSize': [size: number];
+	'update:sidebarCollapsed': [collapsed: boolean];
 }>();
 
 const { t } = useI18n();
@@ -77,6 +86,7 @@ const isRefreshing = ref(false);
 const showEditableElements = ref(defaultShowEditableElements);
 const overlayProvided = computed(() => !!slots.overlay);
 const hasDisplayOptions = computed(() => !!slots['display-options']);
+const hasSidebar = computed(() => !!slots.sidebar);
 
 const livePreviewEl = ref<HTMLElement>();
 const resizeHandle = ref<HTMLDivElement>();
@@ -413,6 +423,7 @@ function useUrls() {
 			>
 				<VIcon small name="devices" />
 			</VButton>
+			<slot name="append-header" />
 		</div>
 
 		<VInfo v-if="!frameSrc" :title="$t('no_url')" icon="edit_square" center>
@@ -422,6 +433,63 @@ function useUrls() {
 		<VInfo v-else-if="invalidUrl" :title="$t('invalid_url')" type="danger" icon="edit_square" center>
 			{{ $t('invalid_url_copy') }}
 		</VInfo>
+
+		<SplitPanel
+			v-else-if="hasSidebar"
+			:size="sidebarSize"
+			:collapsed="sidebarCollapsed"
+			:disabled="sidebarDisabled"
+			primary="end"
+			size-unit="px"
+			collapsible
+			:collapsed-size="0"
+			:collapse-threshold="70"
+			:min-size="280"
+			:max-size="600"
+			:snap-points="[370]"
+			:snap-threshold="6"
+			:transition-duration="125"
+			class="content-split"
+			@update:size="(s) => emit('update:sidebarSize', s)"
+			@update:collapsed="(c) => { console.log('[live-preview] SplitPanel emitted update:collapsed:', c); emit('update:sidebarCollapsed', c); }"
+		>
+			<template #start>
+				<div class="container">
+					<div class="iframe-view" :style="iframeViewStyle">
+						<div
+							ref="resizeHandle"
+							class="resize-handle"
+							:style="{
+								inlineSize: width ? `${width}px` : '100%',
+								blockSize: height ? `${height}px` : '100%',
+								resize: fullscreen ? 'none' : 'both',
+								transform: `scale(${zoom})`,
+								transformOrigin: zoom >= 1 ? 'top left' : 'center center',
+							}"
+						>
+							<iframe
+								id="frame"
+								ref="frameEl"
+								:src="frameSrc"
+								:title="$t('live_preview.iframe_title')"
+								@load="onIframeLoad"
+							/>
+							<slot name="overlay" :frame-el :frame-src />
+							<EditingLayer
+								v-if="visualEditingEnabled && !overlayProvided"
+								:frame-el="frameEl"
+								:frame-src="frameSrc"
+								:show-editable-elements="showEditableElements"
+								@saved="(data) => emit('saved', data)"
+							/>
+						</div>
+					</div>
+				</div>
+			</template>
+			<template #end>
+				<slot name="sidebar" />
+			</template>
+		</SplitPanel>
 
 		<div v-else class="container">
 			<div class="iframe-view" :style="iframeViewStyle">
@@ -597,6 +665,14 @@ function useUrls() {
 		inline-size: 100%;
 		block-size: calc(100% - var(--preview--header--height));
 		overflow: auto;
+	}
+
+	.content-split {
+		block-size: calc(100% - var(--preview--header--height));
+
+		.container {
+			block-size: 100%;
+		}
 	}
 
 	.iframe-view {

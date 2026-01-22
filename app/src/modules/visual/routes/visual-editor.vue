@@ -1,19 +1,26 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue';
-import { ref } from 'vue';
+import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import EditingLayer from '../components/editing-layer.vue';
-import type { NavigationData } from '../types';
-import { getUrlRoute } from '../utils/get-url-route';
-import { sameOrigin } from '../utils/same-origin';
+import AiConversation from '@/ai/components/ai-conversation.vue';
+import AiMagicButton from '@/ai/components/ai-magic-button.vue';
+import { useAiStore } from '@/ai/stores/use-ai';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { BREAKPOINTS } from '@/constants';
+import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import type { NavigationData } from '@/modules/visual/types';
+import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
+import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import { useServerStore } from '@/stores/server';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
 import NotificationsGroup from '@/views/private/components/notifications-group.vue';
+import PrivateViewDrawer from '@/views/private/private-view/components/private-view-drawer.vue';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
 	urls: string[];
@@ -23,11 +30,67 @@ const { dynamicUrl, invalidUrl } = defineProps<{
 
 const { t } = useI18n();
 const router = useRouter();
+const serverStore = useServerStore();
+const aiStore = useAiStore();
+const breakpoints = useBreakpoints(BREAKPOINTS);
+const isMobile = breakpoints.smallerOrEqual('sm');
 
 useHead({ title: t('visual_editor') });
 
 const moduleBarOpen = ref(true);
 const showEditableElements = ref(false);
+const sidebarSize = ref(370);
+
+// Storage-backed collapsed state (like sidebarStore.collapsed)
+const sidebarCollapsed = useLocalStorage('visual-editor-ai-sidebar-collapsed', false);
+
+// Debug: watch sidebarCollapsed directly
+watch(sidebarCollapsed, (newVal, oldVal) => {
+	console.log('[visual-editor] sidebarCollapsed changed:', oldVal, '->', newVal);
+	console.trace('[visual-editor] sidebarCollapsed change stack:');
+});
+
+// Separate mobile drawer state (not persisted)
+const mobileDrawerOpen = ref(false);
+
+// Gated computed for SplitPanel (matches private-view-main.vue pattern)
+const splitterCollapsed = computed({
+	get() {
+		const result = isMobile.value ? true : sidebarCollapsed.value;
+		console.log('[visual-editor] splitterCollapsed.get() isMobile:', isMobile.value, 'sidebarCollapsed:', sidebarCollapsed.value, '=> returning:', result);
+		return result;
+	},
+	set(val: boolean) {
+		console.log('[visual-editor] splitterCollapsed.set() val:', val, 'isMobile:', isMobile.value);
+		if (isMobile.value) return; // Don't write on mobile
+		sidebarCollapsed.value = val;
+		console.log('[visual-editor] splitterCollapsed.set() sidebarCollapsed now:', sidebarCollapsed.value);
+	},
+});
+
+// Mobile watcher - close drawer on mobile transition
+watch(isMobile, (mobile) => {
+	console.log('[visual-editor] isMobile changed:', mobile);
+	console.log('[visual-editor] sidebarCollapsed before:', sidebarCollapsed.value);
+	console.log('[visual-editor] splitterCollapsed before:', splitterCollapsed.value);
+	if (mobile) {
+		mobileDrawerOpen.value = false;
+	}
+	console.log('[visual-editor] sidebarCollapsed after:', sidebarCollapsed.value);
+	console.log('[visual-editor] splitterCollapsed after:', splitterCollapsed.value);
+});
+
+// Open correct panel when AI element staged
+aiStore.onFocusInput(() => {
+	if (isMobile.value) {
+		mobileDrawerOpen.value = true;
+	} else {
+		sidebarCollapsed.value = false;
+	}
+});
+
+const aiButtonRef = useTemplateRef('ai-button');
+const aiButtonHovering = useElementHover(aiButtonRef);
 
 const { dynamicDisplay, onNavigation } = usePageInfo();
 
@@ -70,10 +133,15 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 			:dynamic-display
 			:single-url-subdued="false"
 			:header-expanded="moduleBarOpen"
+			:sidebar-size="sidebarSize"
+			:sidebar-collapsed="splitterCollapsed"
+			:sidebar-disabled="isMobile"
 			hide-refresh-button
 			hide-popup-button
 			centered
 			@select-url="onSelectUrl"
+			@update:sidebar-size="sidebarSize = $event"
+			@update:sidebar-collapsed="(c) => { console.log('[visual-editor] update:sidebar-collapsed event:', c); splitterCollapsed = c; }"
 		>
 			<template #prepend-header>
 				<VButton
@@ -100,10 +168,43 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 				</VButton>
 			</template>
 
+			<template #append-header>
+				<div v-if="serverStore.info.ai_enabled" ref="ai-button">
+					<VButton
+						v-tooltip.bottom.start="$t('ai_chat')"
+						x-small
+						rounded
+						icon
+						secondary
+						:active="isMobile ? mobileDrawerOpen : !sidebarCollapsed"
+						@click="isMobile ? (mobileDrawerOpen = !mobileDrawerOpen) : (sidebarCollapsed = !sidebarCollapsed)"
+					>
+						<AiMagicButton :animate="aiButtonHovering" />
+					</VButton>
+				</div>
+			</template>
+
+			<template v-if="serverStore.info.ai_enabled && !isMobile" #sidebar>
+				<aside class="ai-sidebar">
+					<AiConversation />
+				</aside>
+			</template>
+
 			<template #overlay="{ frameEl, frameSrc }">
 				<EditingLayer :frame-src :frame-el :show-editable-elements @navigation="onNavigation" />
 			</template>
 		</LivePreview>
+
+		<PrivateViewDrawer
+			v-if="serverStore.info.ai_enabled && isMobile"
+			:collapsed="!mobileDrawerOpen"
+			placement="right"
+			@update:collapsed="mobileDrawerOpen = !$event"
+		>
+			<aside class="ai-sidebar">
+				<AiConversation />
+			</aside>
+		</PrivateViewDrawer>
 
 		<NotificationDialogs />
 		<NotificationsGroup />
@@ -119,13 +220,13 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 	overflow: hidden;
 }
 
-.live-preview {
+.ai-sidebar {
 	block-size: 100%;
 	inline-size: 100%;
-	min-inline-size: 0;
-}
-
-.spacer {
-	flex: 1;
+	padding: 12px;
+	background-color: var(--theme--sidebar--background);
+	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+	display: flex;
+	flex-direction: column;
 }
 </style>
