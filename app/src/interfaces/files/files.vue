@@ -49,6 +49,7 @@ const props = withDefaults(
 		filter?: Filter;
 		showNavigation?: boolean;
 		limit?: number;
+		allowedMimeTypes: string;
 	}>(),
 	{
 		nonEditable: false,
@@ -71,6 +72,10 @@ const value = computed({
 	set: (val) => {
 		emit('input', val);
 	},
+});
+
+const allowedMimeTypes = computed(() => {
+	return props.allowedMimeTypes.join(',');
 });
 
 const templateWithDefaults = computed(() => {
@@ -453,7 +458,7 @@ const allowDrag = computed(
 			<VCard>
 				<VCardTitle>{{ $t('upload_file') }}</VCardTitle>
 				<VCardText>
-					<VUpload multiple from-url :folder="folder" @input="onUpload" />
+					<VUpload multiple from-url :folder="folder" :accept="allowedMimeTypes" @input="onUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton @click="showUpload = false">{{ $t('done') }}</VButton>
