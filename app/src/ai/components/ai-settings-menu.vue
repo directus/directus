@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { type SystemTool, type ToolApprovalMode } from '@directus/ai';
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { type ToolApprovalMode, useAiStore } from '../stores/use-ai';
-import { SystemTool } from '../types/system-tool';
+import { useAiStore } from '../stores/use-ai';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
