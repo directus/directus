@@ -1,3 +1,6 @@
+import api from '@/api';
+import { useSettingsStore } from '@/stores/settings';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { Chat } from '@ai-sdk/vue';
 import { type StandardProviderType, type SystemTool, type ToolApprovalMode } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
@@ -12,8 +15,22 @@ import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
-import { useSettingsStore } from '@/stores/settings';
-import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+
+/**
+ * Information about an external MCP tool
+ */
+export interface ExternalMCPToolInfo {
+	/** Full tool name in format mcp:<server-id>:<tool-name> */
+	name: string;
+	/** Tool description */
+	description: string;
+	/** Server ID this tool belongs to */
+	serverId: string;
+	/** Server display name */
+	serverName: string;
+	/** Tool approval mode from server config */
+	toolApproval: ToolApprovalMode;
+}
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -159,9 +176,49 @@ export const useAiStore = defineStore('ai-store', () => {
 		'relations',
 	]);
 
+	// External MCP tools fetched from the API
+	const externalTools = shallowRef<ExternalMCPToolInfo[]>([]);
+	const externalToolsLoading = ref(false);
+	const externalToolsError = ref<string | null>(null);
+
+	/**
+	 * Fetch external MCP tools from the API
+	 */
+	const fetchExternalTools = async () => {
+		externalToolsLoading.value = true;
+		externalToolsError.value = null;
+
+		try {
+			const response = await api.get<{ data: ExternalMCPToolInfo[] }>('/ai/chat/tools');
+			externalTools.value = response.data.data;
+
+			// Set default approval modes based on server config
+			for (const tool of externalTools.value) {
+				if (!(tool.name in toolApprovals.value)) {
+					toolApprovals.value = { ...toolApprovals.value, [tool.name]: tool.toolApproval };
+				}
+			}
+		} catch (error) {
+			externalToolsError.value = error instanceof Error ? error.message : 'Failed to fetch external tools';
+			externalTools.value = [];
+		} finally {
+			externalToolsLoading.value = false;
+		}
+	};
+
+	// All available tools (system + external)
+	const allTools = computed(() => {
+		return [...systemTools.value, ...externalTools.value.map((t) => t.name)];
+	});
+
 	// Filter system tools based on approval mode (exclude 'disabled')
 	const enabledSystemTools = computed(() => {
 		return systemTools.value.filter((tool) => getToolApprovalMode(tool) !== 'disabled');
+	});
+
+	// Filter external tools based on approval mode (exclude 'disabled')
+	const enabledExternalTools = computed(() => {
+		return externalTools.value.filter((tool) => getToolApprovalMode(tool.name) !== 'disabled');
 	});
 
 	const localTools = shallowRef<StaticToolDefinition[]>([]);
@@ -181,7 +238,11 @@ export const useAiStore = defineStore('ai-store', () => {
 			api: '/ai/chat',
 			credentials: 'include',
 			body: () => {
-				const tools = [...enabledSystemTools.value, ...localTools.value.map(toApiTool)];
+				const tools = [
+					...enabledSystemTools.value,
+					...enabledExternalTools.value.map((t) => t.name),
+					...localTools.value.map(toApiTool),
+				];
 
 				// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
 				const approvals: Record<string, 'always' | 'ask'> = {};
@@ -230,7 +291,14 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
-			const isServerTool = toolCall.dynamic || systemTools.value.includes(toolCall.toolName as SystemTool);
+			// Check if this is a server-side tool:
+			// - Dynamic tools are server-side
+			// - System tools (items, files, etc.) are server-side
+			// - External MCP tools (prefixed with "mcp__") are server-side
+			const isExternalMCPTool = toolCall.toolName.startsWith('mcp__');
+
+			const isServerTool =
+				toolCall.dynamic || systemTools.value.includes(toolCall.toolName as SystemTool) || isExternalMCPTool;
 
 			if (isServerTool) {
 				return;
@@ -406,6 +474,11 @@ export const useAiStore = defineStore('ai-store', () => {
 		replaceLocalTool,
 		deregisterLocalTool,
 		systemTools,
+		externalTools,
+		externalToolsLoading,
+		externalToolsError,
+		fetchExternalTools,
+		allTools,
 		localTools,
 		error,
 		retry,
