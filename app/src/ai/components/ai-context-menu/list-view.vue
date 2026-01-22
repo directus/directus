@@ -1,24 +1,27 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 import AiEmptyState from './empty-state.vue';
 import VList from '@/components/v-list.vue';
 
 withDefaults(
 	defineProps<{
-		items: Record<string, any>[];
-		itemKey?: string;
+		items: T[];
+		itemKey: keyof T & string;
 		emptyMessage?: string;
 	}>(),
 	{
-		itemKey: 'id',
 		emptyMessage: 'No results',
 	},
 );
+
+defineSlots<{ item(props: { item: T }): unknown }>();
 </script>
 
 <template>
 	<VList>
 		<template v-if="items.length > 0">
-			<slot v-for="item in items" :key="item[itemKey]" name="item" :item="item" />
+			<template v-for="(item, index) in items" :key="item[itemKey] ?? index">
+				<slot name="item" :item="item" />
+			</template>
 		</template>
 
 		<AiEmptyState v-else :message="emptyMessage" />

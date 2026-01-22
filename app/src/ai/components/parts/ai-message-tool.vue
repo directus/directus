@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
-import type { UIDataTypes, UIMessagePart, UITools } from 'ai';
+import type { DynamicToolUIPart } from 'ai';
 import { computed } from 'vue';
 import AiToolCallCard from './ai-tool-call-card.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
@@ -10,7 +10,7 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 const aiStore = useAiStore();
 
 const props = defineProps<{
-	part: Extract<UIMessagePart<UIDataTypes, UITools>, { type: `tool-${string}` }>;
+	part: DynamicToolUIPart;
 }>();
 
 const toolName = computed(() => {

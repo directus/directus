@@ -1705,10 +1705,10 @@ ai:
   coming_soon: Coming soon
   failed_to_load_prompts: Failed to load prompts
   failed_to_load_items: Failed to load items
-  prompt_inserted: Prompt inserted successfully
-  prompt_staged: Prompt staged successfully
-  items_staged: Items staged successfully
-  item_staged: Item staged successfully
+  prompt_inserted: Prompt inserted
+  prompt_staged: Prompt staged
+  items_staged: Items staged
+  item_staged: Item staged
   invalid_collection: Invalid collection
   element_already_staged: Element already staged
   max_elements_reached: Maximum elements reached

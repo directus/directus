@@ -4,5 +4,5 @@ export interface MCPPrompt {
 	description?: string;
 	status: string;
 	system_prompt?: string | null;
-	messages: { role: 'user' | 'assistant'; text: string }[];
+	messages?: { role: 'user' | 'assistant'; text: string }[] | null;
 }

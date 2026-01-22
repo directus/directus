@@ -25,7 +25,10 @@ export type AddToContextData = {
 };
 
 export type HighlightElementData = {
-	key: string | null;
+	key?: string | null;
+	collection?: string;
+	item?: PrimaryKey;
+	fields?: string[];
 };
 
 export type ConfirmData = {

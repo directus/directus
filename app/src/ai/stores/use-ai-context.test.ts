@@ -3,6 +3,8 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { PendingContextItem } from '../types';
 import { MAX_PENDING_CONTEXT, useAiContextStore } from './use-ai-context';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 vi.mock('@/api', () => ({
 	default: {
@@ -14,8 +16,6 @@ vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 
 beforeEach(() => {
 	setActivePinia(

@@ -3,7 +3,7 @@ import { useCollection } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { useEventListener } from '@vueuse/core';
-import { computed, nextTick, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type {
 	AddToContextData,
@@ -135,8 +135,25 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	});
 
 	// Listen for visual element highlight requests from the AI store
-	const unsubscribeHighlight = aiStore.onVisualElementHighlight((key) => {
-		sendHighlightElement({ key });
+	const unsubscribeHighlight = aiStore.onVisualElementHighlight((data) => {
+		if (data === null) {
+			sendHighlightElement({ key: null });
+		} else {
+			const payload: HighlightElementData = {
+				collection: data.collection,
+				item: data.item,
+			};
+
+			if (data.fields) {
+				const rawFields = Array.from(toRaw(data.fields)).filter((field) => typeof field === 'string');
+
+				if (rawFields.length > 0) {
+					payload.fields = rawFields;
+				}
+			}
+
+			sendHighlightElement(payload);
+		}
 	});
 
 	onUnmounted(() => {

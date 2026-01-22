@@ -1,5 +1,5 @@
 import { Chat } from '@ai-sdk/vue';
-import { type ContextAttachment, type StandardProviderType, type SystemTool } from '@directus/ai';
+import { type ContextAttachment, type PrimaryKey, type StandardProviderType, type SystemTool } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
 	DefaultChatTransport,
@@ -32,11 +32,12 @@ export const useAiStore = defineStore('ai-store', () => {
 	const input = ref<string>('');
 
 	// UI event hooks
-	const visualElementHighlightHook = createEventHook<[key: string | null]>();
+	type VisualElementIdentifier = { collection: string; item: PrimaryKey; fields?: string[] } | null;
+	const visualElementHighlightHook = createEventHook<[VisualElementIdentifier]>();
 	const focusInputHook = createEventHook();
 
-	const highlightVisualElement = (key: string | null) => {
-		visualElementHighlightHook.trigger(key);
+	const highlightVisualElement = (data: VisualElementIdentifier) => {
+		visualElementHighlightHook.trigger(data);
 	};
 
 	const focusInput = () => {
@@ -440,6 +441,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		pendingContext: computed(() => contextStore.pendingContext),
 		addPendingContext: contextStore.addPendingContext,
 		removePendingContext: contextStore.removePendingContext,
+		updateVisualElementContext: contextStore.updateVisualElementContext,
 		clearPendingContext: contextStore.clearPendingContext,
 		clearVisualElementContext: contextStore.clearVisualElementContext,
 		setVisualElementContextUrl: contextStore.setVisualElementContextUrl,

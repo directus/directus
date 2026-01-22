@@ -26,6 +26,8 @@ const collectionsStore = useCollectionsStore();
 const { fetchPrompts, extractVariables } = usePrompts();
 const { stagePrompt, stageItems } = useContextStaging();
 
+type CollectionItem = { collection: string; name?: string | null; icon?: string | null };
+
 const prompts = ref<MCPPrompt[]>([]);
 const loading = ref(false);
 const searchQuery = ref('');
@@ -104,7 +106,7 @@ async function loadPrompts() {
 	}
 }
 
-function handleCollectionFromItemsList(collection: { collection: string; name: string }) {
+function handleCollectionFromItemsList(collection: CollectionItem) {
 	// Close menus
 	mainMenuOpen.value = false;
 	closeList();
@@ -138,7 +140,7 @@ function handleVariablesSubmit(values: Record<string, string>) {
 	showVariablesModal.value = false;
 }
 
-function handleCollectionSelect(collection: { collection: string; name: string }) {
+function handleCollectionSelect(collection: CollectionItem) {
 	selectedCollection.value = collection.collection;
 	mainMenuOpen.value = false;
 	showItemDrawer.value = true;
@@ -263,8 +265,13 @@ function closeList() {
 					</template>
 				</div>
 
-				<AiContextListView v-if="openListType === 'prompts'" :items="filteredPrompts" :empty-message="t('no_results')">
-					<template #item="{ item: prompt }">
+				<AiContextListView
+					v-if="openListType === 'prompts'"
+					:items="filteredPrompts"
+					item-key="id"
+					:empty-message="t('no_results')"
+				>
+					<template #item="{ item: prompt }: { item: MCPPrompt }">
 						<AiContextMenuItem
 							:title="formatTitle(prompt.name)"
 							:subtitle="prompt.description"
@@ -279,7 +286,7 @@ function closeList() {
 					item-key="collection"
 					:empty-message="t('no_results')"
 				>
-					<template #item="{ item: collection }">
+					<template #item="{ item: collection }: { item: CollectionItem }">
 						<AiContextMenuItem
 							:icon="collection.icon || 'dataset'"
 							:title="collection.name || formatTitle(collection.collection)"

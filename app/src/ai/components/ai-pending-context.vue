@@ -43,7 +43,11 @@ onUnmounted(() => {
 
 function handleMouseEnter(item: PendingContextItem) {
 	if (isVisualElement(item)) {
-		aiStore.highlightVisualElement(item.data.key);
+		aiStore.highlightVisualElement({
+			collection: item.data.collection,
+			item: item.data.item,
+			fields: item.data.fields,
+		});
 	}
 }
 

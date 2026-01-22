@@ -53,7 +53,10 @@ const ItemsInputSchema = z.object({
 	collection: z.string().describe('The name of the collection'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.union([z.array(ItemInputSchema), ItemInputSchema]).optional().describe('Object when using keys, array with PKs for batch updates'),
+	data: z
+		.union([z.array(ItemInputSchema), ItemInputSchema])
+		.optional()
+		.describe('Object when using keys, array with PKs for batch updates'),
 });
 
 export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({

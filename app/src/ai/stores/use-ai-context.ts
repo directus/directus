@@ -1,4 +1,4 @@
-import type { ContextAttachment } from '@directus/ai';
+import type { ContextAttachment, VisualElementContextData } from '@directus/ai';
 import { getEndpoint } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -31,6 +31,13 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 	const removePendingContext = (id: string) => {
 		pendingContext.value = pendingContext.value.filter((item) => item.id !== id);
+	};
+
+	const updateVisualElementContext = (id: string, data: VisualElementContextData, display: string) => {
+		pendingContext.value = pendingContext.value.map((item) => {
+			if (item.id !== id || !isVisualElement(item)) return item;
+			return { ...item, data, display };
+		});
 	};
 
 	const clearPendingContext = () => {
@@ -124,6 +131,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		// Actions
 		addPendingContext,
 		removePendingContext,
+		updateVisualElementContext,
 		clearPendingContext,
 		clearNonVisualContext,
 		clearVisualElementContext,

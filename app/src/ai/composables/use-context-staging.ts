@@ -4,6 +4,7 @@ import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '../stores/use-ai';
+import { useAiContextStore } from '../stores/use-ai-context';
 import type { MCPPrompt } from '../types';
 import { usePrompts } from './use-prompts';
 import api from '@/api';
@@ -17,9 +18,32 @@ import { unexpectedError } from '@/utils/unexpected-error';
 export function useContextStaging() {
 	const { t } = useI18n();
 	const aiStore = useAiStore();
+	const contextStore = useAiContextStore();
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 	const { convertToUIMessages } = usePrompts();
+
+	function normalizeFields(fields: string[] | undefined) {
+		if (!fields || fields.length === 0) return [];
+
+		return fields
+			.filter((field) => typeof field === 'string' && field.length > 0)
+			.slice()
+			.sort();
+	}
+
+	// Visual elements are identified by collection + item + fields, not DOM element key.
+	function isSameVisualElement(left: VisualElementContextData, right: VisualElementContextData) {
+		if (left.collection !== right.collection) return false;
+		if (String(left.item) !== String(right.item)) return false;
+
+		const leftFields = normalizeFields(left.fields);
+		const rightFields = normalizeFields(right.fields);
+
+		if (leftFields.length !== rightFields.length) return false;
+
+		return leftFields.every((field, index) => field === rightFields[index]);
+	}
 
 	function stagePrompt(prompt: MCPPrompt, values: Record<string, string>) {
 		try {
@@ -111,11 +135,13 @@ export function useContextStaging() {
 			return false;
 		}
 
-		const exists = aiStore.pendingContext.some(
-			(item) => item.type === 'visual-element' && item.data.key === element.key,
+		const existingContext = aiStore.pendingContext.find(
+			(item) => item.type === 'visual-element' && isSameVisualElement(item.data, element),
 		);
 
-		if (exists) {
+		if (existingContext && existingContext.type === 'visual-element') {
+			const display = displayValue || `${formatTitle(element.collection)} #${element.item}`;
+			contextStore.updateVisualElementContext(existingContext.id, element, display);
 			notify({ title: t('ai.element_already_staged'), type: 'warning' });
 			return false;
 		}

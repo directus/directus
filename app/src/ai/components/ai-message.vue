@@ -45,9 +45,15 @@ withDefaults(defineProps<Props>(), {
 
 const aiStore = useAiStore();
 
+const isToolPart = (part: AiMessagePart): part is DynamicToolUIPart => part.type.startsWith('tool-');
+
 function handleMouseEnter(attachment: ContextAttachment) {
 	if (attachment.type === 'visual-element') {
-		aiStore.highlightVisualElement(attachment.data.key);
+		aiStore.highlightVisualElement({
+			collection: attachment.data.collection,
+			item: attachment.data.item,
+			fields: attachment.data.fields,
+		});
 	}
 }
 
@@ -75,7 +81,7 @@ function handleMouseLeave(attachment: ContextAttachment) {
 					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
 					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
 					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
-					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part as DynamicToolUIPart" />
+					<AiMessageTool v-else-if="isToolPart(part)" :part="part" />
 				</template>
 			</slot>
 

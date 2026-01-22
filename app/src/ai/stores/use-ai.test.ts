@@ -1,4 +1,5 @@
 import { createTestingPinia } from '@pinia/testing';
+import type { UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useAiStore } from './use-ai';
@@ -70,7 +71,7 @@ describe('useAiStore', () => {
 
 			// Simulate having messages by directly manipulating the chat.messages array
 			// In the real implementation, chat.messages would have data
-			const testMessages = [
+			const testMessages: UIMessage[] = [
 				{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] },
 				{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Hi there!' }] },
 			];
@@ -125,8 +126,12 @@ describe('useAiStore', () => {
 			if (defaultModel) {
 				// Select a different model (if there are multiple)
 				if (aiStore.models.length > 1) {
-					aiStore.selectModel(aiStore.models[1]);
-					expect(aiStore.selectedModel?.model).not.toBe(defaultModel.model);
+					const alternativeModel = aiStore.models[1];
+
+					if (alternativeModel) {
+						aiStore.selectModel(alternativeModel);
+						expect(aiStore.selectedModel?.model).not.toBe(defaultModel.model);
+					}
 				}
 
 				await aiStore.dehydrate();

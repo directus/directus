@@ -21,8 +21,6 @@ vi.mock('ai', () => ({
 	generateId: vi.fn(() => 'mock-id'),
 }));
 
-
-
 beforeEach(() => {
 	vi.clearAllMocks();
 });
@@ -283,8 +281,19 @@ describe('usePrompts', () => {
 
 			const messages = convertToUIMessages(prompt, { name: 'Bob' });
 
-			expect(messages[0]!.parts[0]!.text).toBe('Help Bob');
-			expect(messages[1]!.parts[0]!.text).toBe('My name is Bob');
+			const firstPart = messages[0]?.parts[0];
+			const secondPart = messages[1]?.parts[0];
+
+			expect(firstPart?.type).toBe('text');
+			expect(secondPart?.type).toBe('text');
+
+			if (firstPart?.type === 'text') {
+				expect(firstPart.text).toBe('Help Bob');
+			}
+
+			if (secondPart?.type === 'text') {
+				expect(secondPart.text).toBe('My name is Bob');
+			}
 		});
 	});
 

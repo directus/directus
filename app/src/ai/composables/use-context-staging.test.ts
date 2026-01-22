@@ -7,7 +7,6 @@ import api from '@/api';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-
 vi.mock('vue-i18n', () => ({
 	useI18n: vi.fn(() => ({
 		t: vi.fn((key: string) => key),
@@ -30,7 +29,7 @@ vi.mock('@/utils/unexpected-error', () => ({
 }));
 
 vi.mock('@/utils/render-string-template', () => ({
-	renderDisplayStringTemplate: vi.fn((collection, template, item) => item.title || `${collection} #${item.id}`),
+	renderDisplayStringTemplate: vi.fn((collection, _template, item) => item.title || `${collection} #${item.id}`),
 }));
 
 vi.mock('@/utils/adjust-fields-for-displays', () => ({
@@ -39,7 +38,7 @@ vi.mock('@/utils/adjust-fields-for-displays', () => ({
 
 vi.mock('./use-prompts', () => ({
 	usePrompts: vi.fn(() => ({
-		convertToUIMessages: vi.fn((prompt, values) => [
+		convertToUIMessages: vi.fn((_prompt, _values) => [
 			{
 				id: 'msg-1',
 				role: 'system',
@@ -176,7 +175,9 @@ describe('useContextStaging', () => {
 
 			const firstCall = addSpy.mock.calls[0]![0];
 			expect(firstCall.type).toBe('item');
-			expect(firstCall.data.collection).toBe('posts');
+			if (firstCall.type === 'item') {
+				expect(firstCall.data.collection).toBe('posts');
+			}
 		});
 
 		test('notifies success after staging', async () => {
@@ -240,23 +241,28 @@ describe('useContextStaging', () => {
 			expect(result).toBe(false);
 		});
 
-		test('returns false for duplicate element', () => {
+		test('updates existing element when duplicate is staged', () => {
 			const aiStore = useAiStore();
 
 			// Add existing element
 			aiStore.pendingContext.push({
 				id: 'existing',
 				type: 'visual-element',
-				data: { collection: 'posts', item: '1', key: 'key-1' },
+				data: { collection: 'posts', item: '1', key: 'key-1', fields: ['status', 'title'] },
 				display: 'Existing',
 			});
 
 			const { stageVisualElement } = useContextStaging();
 
-			const result = stageVisualElement({ collection: 'posts', item: '1', key: 'key-1' }, 'Display');
+			const result = stageVisualElement(
+				{ collection: 'posts', item: '1', key: 'key-2', fields: ['title', 'status'] },
+				'Display',
+			);
 
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_already_staged', type: 'warning' });
 			expect(result).toBe(false);
+			expect(aiStore.pendingContext[0]?.display).toBe('Display');
+			expect(aiStore.pendingContext[0]?.data.key).toBe('key-2');
 		});
 
 		test('returns false when max limit reached', () => {

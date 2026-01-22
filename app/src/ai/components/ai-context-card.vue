@@ -1,13 +1,11 @@
 <script setup lang="ts">
+import type { ContextAttachment } from '@directus/ai';
 import { computed } from 'vue';
+import type { PendingContextItem } from '../types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useCollectionsStore } from '@/stores/collections';
 
-interface ContextItem {
-	type: string;
-	data: { collection?: string };
-	display: string;
-}
+type ContextItem = ContextAttachment | PendingContextItem;
 
 const props = withDefaults(
 	defineProps<{
@@ -49,12 +47,7 @@ const icon = computed(() => {
 </script>
 
 <template>
-	<div
-		class="ai-context-card"
-		:class="{ removable }"
-		@mouseenter="emit('mouseenter')"
-		@mouseleave="emit('mouseleave')"
-	>
+	<div class="ai-context-card" :class="{ removable }" @mouseenter="emit('mouseenter')" @mouseleave="emit('mouseleave')">
 		<div class="icon-wrapper">
 			<VIcon :name="icon" x-small class="item-icon" />
 		</div>
