@@ -28,6 +28,10 @@ export type HighlightElementData = {
 	key: string | null;
 };
 
+export type ConfirmData = {
+	aiEnabled: boolean;
+};
+
 export type ReceiveAction = 'connect' | 'edit' | 'navigation' | 'add-to-context';
 
 export type SendAction = 'confirm' | 'showEditableElements' | 'saved' | 'highlight-element';

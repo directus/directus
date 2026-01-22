@@ -23,6 +23,8 @@ import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -53,9 +55,18 @@ const { popoverWidth } = usePopoverWidth();
 // Register local AI tools for visual elements
 useVisualAiTools();
 
+// Clear highlight when edit overlay closes
+watch(editOverlayActive, (isActive) => {
+	if (!isActive) {
+		sendHighlightElement({ key: null });
+	}
+});
+
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
 	const aiStore = useAiStore();
 	const contextStore = useAiContextStore();
+	const serverStore = useServerStore();
+	const settingsStore = useSettingsStore();
 	const { stageVisualElement } = useContextStaging();
 
 	useEventListener('message', (event) => {
@@ -133,7 +144,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		if (!key || !editConfig?.collection || !editConfig.item) return;
 
 		// Stage the visual element
-		const success = stageVisualElement(
+		stageVisualElement(
 			{
 				key,
 				collection: editConfig.collection,
@@ -143,11 +154,6 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 			},
 			displayValue,
 		);
-
-		// Send highlight back if successfully staged
-		if (success) {
-			sendHighlightElement({ key });
-		}
 	}
 
 	function send(action: SendAction, data: unknown) {
@@ -155,7 +161,8 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	}
 
 	function sendConfirm() {
-		send('confirm', null);
+		const aiEnabled = serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0;
+		send('confirm', { aiEnabled });
 	}
 
 	function sendShowEditableElements(show: boolean) {
