@@ -28,7 +28,7 @@ setup_info: 管理者アカウントを作成して、プロジェクトを開�
 setup_license_notice: >
   年間収益、資金調達額、または運営予算が 5 百万ドル未満の団体は、Directus を無料でご利用いただけます。
 setup_license_follow_up: >
-  この上限を超える場合は有料ライセンスが必要です。現在は試用モードで継続できます。商用利用のご相談は {contactOurTeam} まで。
+  この上限を超える場合は有料ライセンスが必要です。現在は試用モードで継続できます。商用利用のご相談は {contactOurTeam} までお願いします。
 setup_save_accept_license: >
   保存することで、{directusBsl} および {privacyPolicy} に同意したものとみなされます。
 setup_accept_license: '{directusBsl} および {privacyPolicy} に同意します'
@@ -216,7 +216,7 @@ delete_version: バージョンを削除
 delete_version_copy: >-
   バージョン「{version}」を削除してもよろしいですか? この操作は元に戻せません。
 delete_on_apply_copy: >-
-  「{version}」を Main（本番）に反映しようとしています。反映後の「{version}」をどう処理しますか ？{version}{version}
+  「{version}」をメインに反映しようとしています。反映後の「{version}」の処理を選択してください。
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
@@ -232,8 +232,8 @@ public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
 public_role_info: >-
   公開権限グループは、未認証のユーザーや権限を持たないユーザーがアクセスできる API データを制御します。公開権限グループによるリクエストに、アプリへのアクセス権限や管理者権限を持たせることはできません。公開権限グループに割り当てられたポリシーにアプリ・管理者権限が付与されていても、これらは無視されます。
-admin_description: App/APIへアクセス制限の無い初期管理者のロール
-admin_policy_description: すべてのアプリ・API へのアクセス権限を持つ初期管理者ポリシー。
+admin_description: App/API へアクセス制限の無い初期管理者のロール
+admin_policy_description: すべての App/API へのアクセス権限を持つ初期管理者ポリシー。
 no_description: 説明なし…
 reached_maximum_number_of_extensions: このプロジェクトの拡張機能が上限 ({n}) に達しました。詳細はシステム管理者に問い合わせてください。
 not_allowed: 許可されていない
@@ -255,7 +255,7 @@ validationError:
   eq: 値は {valid} でなければなりません
   neq: 値は {invalid} にすることはできません
   in: 値は {valid} のいずれかでなければなりません
-  nin: いづれか {invalid} の値にすることはできません
+  nin: 値を {invalid} のいずれかにすることはできません
   contains: 値は {substring} を含む必要があります
   ncontains: 値は {substring} を含むことはできません
   gt: 値は {valid} より大きい必要があります
@@ -302,32 +302,34 @@ item_permissions: アイテム権限
 field_permissions: フィールドの権限
 field_validation: フィールドの検証
 field_presets: フィールド プリセット
-permissions_for_role: '{role} ロールのアイテム は{action} ことができます'
+permissions_for_role: '「{role}」権限のアイテムは {action} ことができます。'
 permissions_for_policy: '「{policy}」ポリシーで {action} できるアイテム。'
-fields_for_role: '{role} ロールのフィールド は{action} ことができます'
+fields_for_role: '「{role}」権限のフィールドは {action} ことができます。'
 fields_for_policy: '「{policy}」ポリシーで {action} できるフィールド。'
-validation_for_role: 'フィールド {action} は、 {role} ロールに準じます'
-validation_for_policy: 'フィールドの {action} は「{role}」役割に準じます。'
-presets_for_role: "フィールド値のデフォルトは、{role} ロールです\n"
-presentation_and_aliases: エイリアス
-revision_post_create: 作成時の見え方はこの通りです
-revision_post_update: 更新後の見え方はこの通りです
-changes_made: このリビジョンによる具体的な変更点です
-no_relational_data: リレーショナルデータはここへ含まれません
-junction_field_location: ジャンクションフィールドのロケーション
+validation_for_role: 'フィールドの {action} は「{role}」権限に準じます。'
+validation_for_policy: 'フィールドの {action} は「{policy}」ポリシーに準じます。'
+presets_for_role: "フィールド値のデフォルトは、「{role}」 権限です。\n"
+presets_for_policy: '「{policy}」ポリシーのフィールド値のデフォルト。'
+presets_field_warning: 'フィールド「{field}」のリレーションプリセットには「詳細（detailed）」構文を使用してください。'
+presentation_and_aliases: プレゼンテーションとエイリアス
+revision_post_create: 作成時のアイテムの状態を表示しています。
+revision_post_update: 更新後のアイテムの状態を表示しています。
+changes_made: このリビジョンで行われた具体的な変更内容は以下の通りです。
+no_relational_data: リレーションデータの変更はここには含まれませんのでご注意ください。
+junction_field_location: ジャンクションフィールドの配置
 top: 上部
 bottom: 下部
-hide_field: 項目を非表示
-hide_field_on_detail: 詳細項目を非表示
-show_field_on_detail: 詳細項目を表示
+hide_field: フィールドを非表示
+hide_field_on_detail: 詳細画面で非表示にする
+show_field_on_detail: 詳細画面で表示する
 delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
-field_create_success: '作成フィールド: "{field}"'
+field_create_success: '作成されたフィールド: "{field}"'
 field_update_success: '更新されたフィールド: "{field}"'
 duplicate_where_to: このフィールドをどこに複製しますか？
 language: 言語
 language_placeholder: 言語を選択...
-aggregate_function: 集計機能
+aggregate_function: 集計関数
 aggregate_precision: 集計精度
 group_aggregation: グループ集計
 group_precision: グループ精度
@@ -335,12 +337,15 @@ global: グローバル
 admins_have_all_permissions: 管理者はすべての権限を持っています
 camera: カメラ
 show_zero: ゼロを表示
-create_in_advanced_field_creation_mode: アドバンスドモードでフィールドを作成
-continue_in_advanced_field_creation_mode: アドバンスドフィールド作成モードで続ける
-validation: バリデーション
+create_in_advanced_field_creation_mode: 詳細モードでフィールドを作成
+continue_in_advanced_field_creation_mode: 詳細設定モードで作成を続ける
+validation: 検証
 sum: 合計
+sum_distinct: 個別の合計
 avg: 平均
+avg_distinct: 個別の平均
 count: カウント
+count_distinct: 個別のカウント
 min: 最小
 max: 最大
 exposure: 露出度
@@ -351,20 +356,25 @@ schema_setup_key: この項目はデータベースの列名及びAPIキーと�
 create_field: 新規項目の追加
 creating_new_field: '新規フィールド ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: 設定のリセット
-hidden_field: 項目を非表示
+reset_page_preferences: ページ設定をリセット
+hidden_field: フィールドを非表示
 hidden_on_detail: 詳細に表示しない
+clear_hidden_field: 値をクリア
+clear_value_on_save_when_hidden: 非表示時に保存して値をクリア
+readonly_field_label: アプリでフィールドを無効化
+required_readonly_field_warning: フィールドを「読み取り専用」と「必須」の両方に設定すると、値が空の場合にアイテムを保存できなくなります。
 key: キー
 alias: エイリアス
 bigInteger: 整数
 boolean: 真偽値
 date: 日付
 date_range: 期間
+translation_key_placeholder: キーを入力…
 datetime: DateTime
-dateTime: DateTime
+dateTime: 日時
 precision: 精度
-decimal: Decimal
-float: Float
+decimal: 小数
+float: 浮動小数点数
 integer: 整数
 json: JSON
 xml: XML
@@ -372,9 +382,18 @@ yaml: YAML
 string: 文字列
 text: テキスト
 time: 時刻
-timestamp: Timestamp
+timestamp: タイムスタンプ
 uuid: UUID
 hash: ハッシュ値
+geometry:
+  All: ジオメトリ（すべて）
+  Point: 点
+  LineString: 自動（システム設定に合わせる）
+  Polygon: 多角形
+  MultiPoint: 複数点
+  MultiLineString: 複数折れ線
+  MultiPolygon: 複数多角形
+theme_auto: 自動（システム設定に合わせる）
 theme_light: ライトモード
 theme_dark: ダークモード
 not_available_for_type: このタイプでは利用できません
