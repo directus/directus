@@ -23,6 +23,14 @@ about: Directus について
 directus_bsl: Directus BSL 1.1
 privacy_policy: プライバシーポリシー 
 contact_our_team: チームへのお問い合わせ  
+setup_welcome: ようこそ、Directusへ
+setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
+setup_license_follow_up: >
+  この上限を超える場合は有料ライセンスが必要です。現在は試用モードで継続できます。商用利用のご相談は {contactOurTeam} まで。
+setup_save_accept_license: >
+  保存することで、{directusBsl} および {privacyPolicy} に同意したものとみなされます。
+setup_accept_license: '{directusBsl} および {privacyPolicy} に同意します'
+setup_marketing_emails: 製品の最新情報やリリースノートをメールで受け取る
 setup_launch: Directus を起動
 setup_project: プロジェクトの設定
 first_name: 名
@@ -31,7 +39,10 @@ admin_email: 管理者メールアドレス
 owner_email: オーナーメールアドレス
 email_address: メールアドレス
 organization_name: 組織名
-how_do_you_use_directus: Directus の利用目的を教えてください。
+how_do_you_use_directus: Directus をどのような目的で使用していますか？
+usage_personal: 個人利用 / 学習
+usage_commercial: ビジネス / 商用
+usage_community: オープンソース / コミュニティ
 identifier: 識別子
 avatar: プロフィール画像
 application: アプリケーション
@@ -42,6 +53,7 @@ draft: 下書き
 archived: アーカイブ済み
 marketplace: マーケットプレイス
 extensions: 拡張機能
+skip_link_nav: ナビゲーションへスキップ
 skip_link_module_nav: モジュールナビゲーションへスキップ
 skip_link_main: メインコンテンツへスキップ
 modules: モジュール
@@ -59,7 +71,11 @@ input: 入力
 invalid_input: 無効な入力
 invalid_file_type: 無効なファイル形式
 invalid_files_selected: '無効なファイルはありません | 無効なファイルが選択されました | {count} 個の無効なファイルが選択されました'
-files_wrong_type: 'ファイル「{files}」は形式が正しくありません。{expected}形式を指定してください。'
+files_wrong_type: 'ファイル 「{files}」 は形式が正しくありません。 {expected} 形式を指定してください。'
+files_are_empty: '次のファイルはデータが含まれていないため、アップロードに失敗しました：{files}'
+not_a_number: 数値ではありません
+invalid_range_min: '{min} 以上の値を入力してください'
+invalid_range_max: '{value} 以下の値を入力してください'
 maps: 地図
 switch_user: ユーザーを切り替える
 item_creation: アイテム作成
@@ -69,6 +85,10 @@ duplicate_field: フィールドを重複
 half_width: 半値幅
 full_width: 最大幅
 group: グループ
+popular: 人気
+recent: 最近
+latest: 最新
+updated: 更新済み
 export_items: アイテムをエクスポート
 and: そして
 or: または
@@ -83,6 +103,7 @@ extension_panel: パネル
 extension_theme: テーマ
 extension_hook: フック
 extension_endpoint: エンドポイント
+extension_operation: オペレーション
 extension_bundle: バンドル
 extension_interfaces: インターフェース
 extension_displays: 表示
@@ -96,9 +117,11 @@ extension_operations: オペレーション
 extension_bundles: バンドル
 extension_missing: 不足
 extension_reload_required: ページの再読み込みが必要
+extension_reload_required_copy: アプリ拡張機能の有効化または無効化を反映するには、ページの再読み込みが必要です。
 extension_reload_now: 今すぐ再読み込み
 published_relative: '公開日: {relativeTime}'
 compatible_with_your_project: プロジェクトと互換性があります
+compatible_with_your_project_copy: この拡張機能の作者により {hostVersion} との互換性が確認されており、現在のプロジェクトのバージョン（{currentVersion}）と一致しています。
 last_updated_relative: '最終更新日: {relativeTime}'
 n_files: '{n} 個のファイル'
 verified: 認証済み
@@ -113,7 +136,7 @@ beta: Beta
 n_downloads: '{n} 回のダウンロード'
 downloads: ダウンロード
 compatibility_not_guaranteed: 互換性は保証されません
-compatibility_not_guaranteed_copy: この拡張機能の作成者が指定している互換バージョンは {hostVersion} であり、現在のプロジェクトのバージョン（{currentVersion}）と一致しません。
+compatibility_not_guaranteed_copy: この拡張機能の作成者が指定している互換バージョンは {hostVersion} であり、現在のプロジェクトのバージョン ({currentVersion}) と一致しません
 enable: 有効
 disable: 無効
 custom: カスタム
@@ -121,8 +144,15 @@ hook: フック
 fill_width: 幅埋め
 field_name_translations: 項目名の翻訳を追加する
 enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
+sso_tfa_setup_notice: アカウントからログアウトされるため、再度ログインが必要になります。保存されていない変更はすべて破棄されます。
+enable_tfa: 2段階認証を有効化
+cancel_tfa_setup: 2段階認証の設定をキャンセル
+cancel_tfa_setup_notice: 2段階認証の設定をキャンセルしてもよろしいですか？
+keep_setup: 設定を継続
+cancel_setup: 設定をキャンセル
 add_field: フィールドの追加
 role_name: 権限名
+policy_name: ポリシー名
 branch: 分岐
 leaf: リーフ
 indeterminate: 不確定
@@ -140,6 +170,7 @@ requires_value: この項目は必須です
 create_preset: プリセットの作成
 create_panel: パネルを作成
 create_role: 権限作成
+create_policy: ポリシーの作成
 create_user: ユーザーの作成
 message: メッセージ
 delete_panel: パネルを削除
@@ -153,33 +184,43 @@ email_already_invited: このメールアドレス ({email}) は招待済みで�
 subject: 件名
 inbox: 受信トレイ
 emails: メールアドレス
-connection_excellent: 優れた接続
-connection_good: 良好な接続
-connection_fair: まずまずの接続
-connection_poor: 弱い接続
+connection_excellent: '接続状況: 非常に良好'
+connection_good: '接続状況: 良好'
+connection_fair: '接続状況: 普通'
+connection_poor: '接続状況: 不安定'
 primary: プライマリ
+download_folder: フォルダをダウンロード
 rename_folder: フォルダ名の変更
 delete_folder: フォルダーの削除
 prefix: 接頭辞
 suffix: 接尾辞
-version: バージョン
+keep: 保持
+version: Version
 version_key: バージョンキー
 version_name: バージョン名
 main_version: メイン
 switch_version: バージョンを切り替える
-switch_version_copy: '「{version}」バージョンに切り替えてもよろしいですか？保存されていない変更は失われます。'
+switch_version_copy: バージョン「{version}」に切り替えますか? 保存されていない変更は失われます。
 create_version: バージョンを作成
+rename_version: バージョン名を変更
 compare_version: バージョンを比較
 save_version: バージョンを保存
 promote_version: バージョンを反映
+apply: 適用
+select_all_differences: すべての差異を選択
+main_updated_notice: このバージョンが作成された後、メインアイテムが更新されました。
 delete_version: バージョンを削除
+delete_version_copy: >-
+  バージョン「{version}」を削除してもよろしいですか? この操作は元に戻せません。
+delete_on_apply_copy: >-
+  「{version}」バージョンを削除してもよろしいですか ? この操作は元に戻せません。
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
 delete_bookmark_copy: >-
   "{bookmark}" ブックマークを削除してもよろしいですか？この操作は元に戻せません。
 delete_personal_bookmark: 個人のブックマークを削除
-delete_role_bookmark: ブックマークを削除
+delete_role_bookmark: 権限のブックマークを削除
 delete_global_bookmark: グローバルブックマークを削除
 logoutReason:
   SIGN_OUT: ログアウト
@@ -187,22 +228,26 @@ logoutReason:
 public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
 public_role_info: >-
-  公開権限グループは、未認証のユーザーやロールを持たないユーザーがアクセスできるAPIデータを制御します。公開権限グループによるリクエストに、アプリへのアクセス権限や管理者権限を持たせることはできません。公開権限グループに割り当てられたポリシーにアプリ・管理者権限が付与されていても、それらは無視されます。
+  公開権限グループは、未認証のユーザーや権限を持たないユーザーがアクセスできる API データを制御します。公開権限グループによるリクエストに、アプリへのアクセス権限や管理者権限を持たせることはできません。公開権限グループに割り当てられたポリシーにアプリ・管理者権限が付与されていても、これらは無視されます。
 admin_description: App/APIへアクセス制限の無い初期管理者のロール
+admin_policy_description: すべてのアプリ・API へのアクセス権限を持つ初期管理者ポリシー。
+no_description: 説明なし…
+reached_maximum_number_of_extensions: このプロジェクトの拡張機能が上限 ({n}) に達しました。詳細はシステム管理者に問い合わせてください。
 not_allowed: 許可されていない
 archive: アーカイブ
 archive_confirm: この項目をアーカイブしてよろしいですか？
 archive_confirm_count: >-
-  アイテムが選択されていません|このアイテムを削除してもよろしいですか? | {count} 件のアイテムを削除してもよろしいですか?
+  アイテムが選択されていません | このアイテムをアーカイブしてもよろしいですか? | {count} 件のアイテムをアーカイブしてもよろしいですか？
 reset_system_permissions_to: 'システム権限のリセット:'
 reset_system_permissions_copy: このアクションはシステム接続に適用された可能性のあるカスタム権限を上書きします。よろしいですか？
 the_following_are_minimum_permissions: '「Appアクセス」を有効にすると、ミニマム権限が自動的に設定されます。権限設定は後から追加できますが、ミニマム権限より減らすことはできません。'
 app_access_minimum: Appアクセスの最小値
 recommended_defaults: 推奨されるデフォルト値
-unarchive: アーカイブから戻す
+unarchive: アーカイブ解除
 unarchive_confirm: この項目をアーカイブしてよろしいですか？
 nested_files_folders_will_be_moved: ネスト（入れ子）になっているファイルやフォルダーは、1階層上に移動します。
 validation_errors_notice: '無効な値があります:'
+validation_value_is_invalid: 値が無効です
 validationError:
   eq: 値は {valid} でなければなりません
   neq: 値は {invalid} にすることはできません
@@ -1106,6 +1151,7 @@ fields:
     name: 権限名
     description: 説明
   directus_policies:
+    name: ポリシー名
     description: 説明
 field_options:
   directus_settings:
@@ -1518,6 +1564,7 @@ operations:
   log:
     message: メッセージ
   mail:
+    to_placeholder: メールアドレスを入力し、Enterキーを押してください…
     data: データ
   notification:
     recipient: ユーザー
