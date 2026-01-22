@@ -1,7 +1,7 @@
 import { readUser, readUsers, RemoveEventHandler, WebSocketInterface } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
-import { capitalize, debounce, isEmpty, isEqual, throttle } from 'lodash';
+import { capitalize, debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -260,7 +260,7 @@ export function useCollab(
 		roomId.value = message.room;
 		connectionId.value = message.connection;
 
-		if (!isEqual(message.changes, edits.value)) {
+		if (!isMatch({ ...initialValues.value, ...message.changes }, edits.value)) {
 			if (!isEmpty(edits.value)) collidingLocalChanges.value = edits.value;
 			edits.value = message.changes;
 		}
