@@ -20,6 +20,7 @@ import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
 import { extension } from 'mime-types';
+import { minimatch } from 'minimatch';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
@@ -251,10 +252,19 @@ export class FilesService extends ItemsService<File> {
 		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
 		const filename = decodeURI(path.basename(parsedURL.pathname as string));
 
+		const mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
+
+		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
+
+		if (mimeTypeAllowed === false) {
+			throw new InvalidPayloadError({ reason: `File is of invalid content type` });
+		}
+
 		const payload = {
 			filename_download: filename,
 			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
-			type: fileResponse.headers['content-type'],
+			type: mimeType,
 			title: formatTitle(filename),
 			...(body || {}),
 		};
