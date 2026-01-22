@@ -101,29 +101,7 @@ const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote }
 
 const modalLoading = ref(false);
 
-watch(
-	[active, currentRevision],
-	async ([isActive]) => {
-		if (!isActive) return;
-		// Reset to Previous by default
-		compareToOption.value = 'Previous';
-
-		modalLoading.value = true;
-
-		try {
-			await fetchComparisonData();
-			await fetchUserUpdated();
-			await fetchBaseItemUserUpdated();
-		} finally {
-			modalLoading.value = false;
-		}
-	},
-	{ immediate: true },
-);
-
-watch([compareToOption], async () => {
-	if (props.mode !== 'revision' || !active.value) return;
-
+async function loadComparisonData() {
 	modalLoading.value = true;
 
 	try {
@@ -133,6 +111,24 @@ watch([compareToOption], async () => {
 	} finally {
 		modalLoading.value = false;
 	}
+}
+
+watch(
+	[active, currentRevision],
+	async ([isActive]) => {
+		if (!isActive) return;
+		// Reset to Previous by default
+		compareToOption.value = 'Previous';
+
+		await loadComparisonData();
+	},
+	{ immediate: true },
+);
+
+watch([compareToOption], async () => {
+	if (props.mode !== 'revision' || !active.value) return;
+
+	await loadComparisonData();
 });
 
 watch([isFirstRevision], () => {
