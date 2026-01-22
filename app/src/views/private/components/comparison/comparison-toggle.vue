@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VChip from '@/components/v-chip.vue';
-import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
@@ -50,15 +49,13 @@ const displayValue = computed(() => {
 			</VChip>
 		</template>
 
-		<VList>
+		<VList class="comparison-toggle-list">
 			<VListItem clickable @click="selectOption('Latest')">
 				<VListItemIcon>
 					<VIcon name="check_circle" />
 				</VListItemIcon>
-				<VListItemContent>{{ $t('latest') }}</VListItemContent>
+				<VListItemContent>{{ $t('latest_revision') }}</VListItemContent>
 			</VListItem>
-
-			<VDivider />
 
 			<VListItem
 				:clickable="!props.disablePrevious"
@@ -68,15 +65,23 @@ const displayValue = computed(() => {
 				<VListItemIcon>
 					<VIcon name="history" />
 				</VListItemIcon>
-				<VListItemContent>{{ $t('previous') }}</VListItemContent>
+				<VListItemContent>{{ $t('previous_revision') }}</VListItemContent>
 			</VListItem>
 		</VList>
 	</VMenu>
 </template>
 
 <style lang="scss" scoped>
+.comparison-toggle-list {
+	display: flex;
+	padding: 4px;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+}
+
 .toggle {
-	--v-chip-font-family: var(--theme--fonts--monospace--font-family);
+	--v-chip-padding: 0 8px;
 
 	&.previous {
 		--v-chip-color: var(--theme--background);
@@ -86,7 +91,7 @@ const displayValue = computed(() => {
 		--v-chip-border-color: transparent;
 		--v-chip-border-color-hover: var(--theme--primary-subdued);
 
-		&.active {
+		&:hover {
 			--v-chip-color: var(--theme--background);
 			--v-chip-background-color: var(--theme--primary);
 			--v-chip-border-color: var(--theme--primary-accent);
@@ -101,7 +106,7 @@ const displayValue = computed(() => {
 		--v-chip-border-color: transparent;
 		--v-chip-border-color-hover: var(--theme--primary);
 
-		&.active {
+		&:hover {
 			--v-chip-color: var(--theme--primary);
 			--v-chip-background-color: var(--theme--primary-background);
 			--v-chip-border-color: var(--theme--primary);

@@ -531,7 +531,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					.compare-to-container {
 						display: flex;
 						align-items: center;
-						gap: 12px;
+						gap: 6px;
 					}
 				}
 			}

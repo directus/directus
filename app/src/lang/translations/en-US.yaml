@@ -86,6 +86,7 @@ switch_user: Switch User
 item_creation: Item Creation
 item_revision: Item Revision
 previous_revision: Previous Revision
+latest_revision: Latest Revision
 comparing_to: Comparing to
 compare_to_latest_to_restore: Compare to latest to consider restoring this revision
 enter_a_name: Enter a Name...
