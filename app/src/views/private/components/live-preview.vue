@@ -18,6 +18,7 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 
 declare global {
 	interface Window {
@@ -449,6 +450,7 @@ function useUrls() {
 			:snap-points="[370]"
 			:snap-threshold="6"
 			:transition-duration="125"
+			divider-hit-area="24px"
 			class="content-split"
 			@update:size="(s) => emit('update:sidebarSize', s)"
 			@update:collapsed="
@@ -489,6 +491,9 @@ function useUrls() {
 						</div>
 					</div>
 				</div>
+			</template>
+			<template #divider>
+				<PrivateViewResizeHandle />
 			</template>
 			<template #end>
 				<slot name="sidebar" />
@@ -676,6 +681,10 @@ function useUrls() {
 
 		.container {
 			block-size: 100%;
+		}
+
+		&:deep(.sp-divider) {
+			z-index: 8;
 		}
 	}
 
