@@ -31,6 +31,13 @@ type DeepMapOptions = {
 	omitUnknownFields?: boolean;
 	/** If set to true, a Promise will be returned instead of the value */
 	processAsync?: boolean;
+	/** If set to true, object reconstruction is skipped. Callback can return void. */
+	iterateOnly?: boolean;
+	/** Called when a field is not found in the schema. Return a new entry or undefined to omit. */
+	onUnknownField?: (
+		entry: DeepMapEntry,
+		context: Pick<DeepMapCallbackContext, 'collection' | 'object' | 'action'>,
+	) => DeepMapEntry | undefined | void | Promise<DeepMapEntry | undefined | void>;
 };
 
 type DeepMapEntry = [key: string | number, value: unknown];
@@ -42,21 +49,21 @@ type DeepMapCallback<T> = (entry: DeepMapEntry, context: DeepMapCallbackContext)
  */
 export function deepMapWithSchema(
 	object: unknown,
-	callback: DeepMapCallback<DeepMapEntry | undefined>,
+	callback: DeepMapCallback<DeepMapEntry | undefined | void>,
 	context: DeepMapContext,
 	options?: DeepMapOptions & { processAsync?: false },
 ): any;
 
 export function deepMapWithSchema(
 	object: unknown,
-	callback: DeepMapCallback<Promise<DeepMapEntry | undefined>>,
+	callback: DeepMapCallback<Promise<DeepMapEntry | undefined | void>>,
 	context: DeepMapContext,
 	options: DeepMapOptions & { processAsync: true },
 ): Promise<any>;
 
 export function deepMapWithSchema(
 	object: unknown,
-	callback: DeepMapCallback<DeepMapEntry | undefined | Promise<DeepMapEntry | undefined>>,
+	callback: DeepMapCallback<DeepMapEntry | undefined | void | Promise<DeepMapEntry | undefined | void>>,
 	context: DeepMapContext,
 	options?: DeepMapOptions,
 ): any | Promise<any> {
@@ -75,19 +82,29 @@ export function deepMapWithSchema(
 
 	assert(isObject(object), `DeepMapResponse only works on objects, received ${JSON.stringify(object)}`);
 
-	let fields: [string, FieldOverview][];
+	let fields: [string, FieldOverview | undefined][];
 
 	if (options?.mapNonExistentFields) {
 		fields = Object.entries(collection.fields);
 	} else {
-		fields = Object.keys(object).map((key) => [key, collection.fields[key]!]);
+		fields = Object.keys(object).map((key) => [key, collection.fields[key]]);
 	}
 
-	const processFields = (entries: [string, FieldOverview][]) => {
+	const processFields = (entries: [string, FieldOverview | undefined][]) => {
 		const mapped = entries.map(([key, field]) => {
 			const value = object[key];
 
-			if (!field) return options?.omitUnknownFields ? undefined : [key, value];
+			if (!field) {
+				if (options?.onUnknownField) {
+					return options.onUnknownField([key, value], {
+						collection,
+						object: object as Record<string, unknown>,
+						action,
+					});
+				}
+
+				return options?.omitUnknownFields ? undefined : [key, value];
+			}
 
 			const relationInfo = getRelationInfo(context.schema.relations, collection.collection, field.field);
 			let leaf = true;
@@ -131,6 +148,23 @@ export function deepMapWithSchema(
 							// Simple array results in ambiguous upsert behavior (action is undefined)
 							processedValue = processArray(processedValue, (v) => map(v, undefined));
 						} else if (options?.detailedUpdateSyntax && isDetailedUpdateSyntax(processedValue)) {
+							const detailedUpdateKeys = ['create', 'update', 'delete'];
+
+							// Check for extra fields not allowed in detailed syntax
+							if (options?.onUnknownField) {
+								const relatedCollection = context.schema.collections[relationInfo!.relation!.collection];
+
+								for (const subKey in processedValue) {
+									if (!detailedUpdateKeys.includes(subKey)) {
+										options.onUnknownField([subKey, (processedValue as any)[subKey]], {
+											collection: relatedCollection!, // Related collection overview
+											object: processedValue as Record<string, unknown>,
+											action: undefined,
+										});
+									}
+								}
+							}
+
 							processedValue = {
 								// Scoped action context per bucket
 								create: processArray(processedValue.create, (v) => map(v, 'create')),
@@ -150,6 +184,9 @@ export function deepMapWithSchema(
 									processedValue.delete,
 								]).then(([c, u, d]) => ({ create: c, update: u, delete: d }));
 							}
+						} else if (isObject(processedValue)) {
+							// For non-standard objects, we still traverse it to ensure deep validation
+							processedValue = map(processedValue, undefined);
 						}
 
 						break;
@@ -194,6 +231,7 @@ export function deepMapWithSchema(
 	};
 
 	return maybeAwait(processFields(fields), (mappedFields: any[]) => {
+		if (options?.iterateOnly) return undefined;
 		const result = Object.fromEntries(mappedFields.filter((f) => f));
 		if (primaryKeyMapped) return result[collection.primary];
 		return result;

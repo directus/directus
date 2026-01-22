@@ -240,4 +240,192 @@ describe('Collaborative Editing: Permissions', () => {
 			wsRestricted.conn.close();
 		});
 	});
+
+	describe('Rejects unauthorized initialChanges on join', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Restricted' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [
+					{ collection: collectionCollab, action: 'read', fields: ['*'] },
+					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] },
+				],
+			});
+
+			const itemId = randomUUID();
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollab}`)
+				.send({ id: itemId, title: 'Original Title', content: 'Original Content' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			// Action
+			await ws.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollab,
+				item: itemId,
+				version: null,
+				initialChanges: { title: 'New Title', content: 'Invalid' },
+			});
+
+			// Assert
+			const errorMsg = await ws.getMessages(1);
+
+			expect(errorMsg![0]).toMatchObject({
+				action: 'error',
+				code: 'INVALID_PAYLOAD',
+				message: expect.stringMatching(/No permission to update field content or field does not exist/i),
+			});
+
+			ws.conn.close();
+		});
+	});
+
+	describe('Rejects unauthorized update message', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Restricted' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			// Permissions
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [
+					{ collection: collectionCollab, action: 'read', fields: ['*'] },
+					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] },
+				],
+			});
+
+			const itemId = randomUUID();
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollab}`)
+				.send({ id: itemId, title: 'Original Title', content: 'Original Content' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			// Action
+			await ws.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollab,
+				item: itemId,
+				version: null,
+			});
+
+			const initMsg = await ws.getMessages(1);
+			const room = initMsg![0]!['room'];
+
+			await ws.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'content',
+				changes: 'Unauthorized Update',
+			});
+
+			// Assert
+			const errorMsg = await ws.getMessages(1);
+
+			expect(errorMsg![0]).toMatchObject({
+				action: 'error',
+				code: 'INVALID_PAYLOAD',
+				message: expect.stringMatching(/No permission to update field content or field does not exist/i),
+			});
+
+			ws.conn.close();
+		});
+	});
+
+	describe('Rejects unknown fields', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Full Permission' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [
+					{ collection: collectionCollab, action: 'read', fields: ['*'] },
+					{ collection: collectionCollab, action: 'update', fields: ['*'] },
+				],
+			});
+
+			const itemId = randomUUID();
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollab}`)
+				.send({ id: itemId, title: 'Original' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			// Action
+			await ws.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollab,
+				item: itemId,
+				version: null,
+				initialChanges: { non_existent: 'Invalid' },
+			});
+
+			const errorJoin = await ws.getMessages(1);
+
+			const ws2 = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			await ws2.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollab,
+				item: itemId,
+				version: null,
+			});
+
+			const initMsg = await ws2.getMessages(1);
+			const room = initMsg![0]!['room'];
+
+			await ws2.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'unknown_field',
+				changes: 'Value',
+			});
+
+			const errorUpdate = await ws2.getMessages(1);
+
+			// Assert
+			expect(errorJoin![0]).toMatchObject({
+				action: 'error',
+				code: 'INVALID_PAYLOAD',
+				message: expect.stringMatching(/No permission to update field non_existent or field does not exist/i),
+			});
+
+			expect(errorUpdate![0]).toMatchObject({
+				action: 'error',
+				code: 'INVALID_PAYLOAD',
+				message: expect.stringMatching(/No permission to update field unknown_field or field does not exist/i),
+			});
+
+			ws.conn.close();
+			ws2.conn.close();
+		});
+	});
 });

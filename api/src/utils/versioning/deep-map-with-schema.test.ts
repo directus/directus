@@ -542,7 +542,7 @@ test('map flat date value', () => {
 	expect(result).toEqual({ date });
 });
 
-test('map flat invalid deep field', () => {
+test('map flat invalid deep field with onUnknownField', () => {
 	const object = {
 		author: {
 			invalid: 1,
@@ -555,12 +555,24 @@ test('map flat invalid deep field', () => {
 			return [key, { value, context }];
 		},
 		{ schema: schema, collection: 'articles' },
+		{
+			onUnknownField: ([key, value], context) => {
+				return [key, { value, context }];
+			},
+		},
 	);
 
 	expect(result).toEqual({
 		author: {
 			value: {
-				invalid: 1,
+				invalid: {
+					value: 1,
+					context: {
+						collection: schema.collections['users'],
+						object: object.author,
+						action: undefined,
+					},
+				},
 			},
 			context: {
 				collection: schema.collections['articles'],
@@ -568,39 +580,6 @@ test('map flat invalid deep field', () => {
 				relation: getRelation(schema.relations, 'articles', 'author'),
 				object,
 				leaf: false,
-				relationType: 'm2o',
-				action: undefined,
-			},
-		},
-	});
-});
-
-test('map flat invalid deep field', () => {
-	const object = {
-		author: {
-			invalid: 1,
-		},
-	};
-
-	const result = deepMapWithSchema(
-		object,
-		([key, value], context) => {
-			return [key, { value, context }];
-		},
-		{ schema: schema, collection: 'articles' },
-	);
-
-	expect(result).toEqual({
-		author: {
-			value: {
-				invalid: 1,
-			},
-			context: {
-				collection: schema.collections['articles'],
-				field: schema.collections['articles']!.fields['author'],
-				relation: getRelation(schema.relations, 'articles', 'author'),
-				leaf: false,
-				object,
 				relationType: 'm2o',
 				action: undefined,
 			},
@@ -773,6 +752,24 @@ test('propagates root action context', () => {
 	);
 
 	expect(result.title.context.action).toBe('update');
+});
+
+test('iterateOnly skips object reconstruction', () => {
+	const object = { title: 'hello', author: { name: 'admin' } };
+	let callCount = 0;
+
+	const result = deepMapWithSchema(
+		object,
+		([key, value]) => {
+			callCount++;
+			return [key, value];
+		},
+		{ schema: schema, collection: 'articles' },
+		{ iterateOnly: true },
+	);
+
+	expect(result).toBeUndefined();
+	expect(callCount).toBe(3); // title, name, author
 });
 
 test('resets action context on M2O relations and propagates detailed syntax deep', () => {

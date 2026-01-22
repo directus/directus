@@ -42,6 +42,17 @@ describe('CollabHandler', () => {
 
 		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 		vi.mocked(handler.roomManager.getClientRooms).mockResolvedValue([]);
+
+		vi.mocked(getSchema).mockResolvedValue({
+			collections: {
+				articles: {
+					primary: 'id',
+					collection: 'articles',
+					fields: { title: { field: 'title' }, content: { field: 'content' } },
+				},
+			},
+			relations: [],
+		} as any);
 	});
 
 	afterEach(() => {
@@ -59,7 +70,7 @@ describe('CollabHandler', () => {
 		});
 
 		test('rejects access if collection is not in allowedCollections', async () => {
-			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} } } as any);
+			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
 			vi.mocked(fetchAllowedCollections).mockResolvedValue(['other_collection']);
 
 			await expect(
@@ -123,8 +134,14 @@ describe('CollabHandler', () => {
 		test('creates room and joins client on success (singleton collection)', async () => {
 			vi.mocked(getSchema).mockResolvedValue({
 				collections: {
-					settings: { singleton: true },
+					settings: {
+						primary: 'id',
+						collection: 'settings',
+						singleton: true,
+						fields: { title: { field: 'title' } },
+					},
 				},
+				relations: [],
 			} as any);
 
 			vi.mocked(fetchAllowedCollections).mockResolvedValue(['settings']);
@@ -143,7 +160,7 @@ describe('CollabHandler', () => {
 		});
 
 		test('propagates version to createRoom', async () => {
-			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} } } as any);
+			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
 			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
 			vi.mocked(getService).mockReturnValue({ readOne: vi.fn().mockResolvedValue({ id: 1 }) } as any);
 
@@ -240,8 +257,9 @@ describe('CollabHandler', () => {
 
 			vi.mocked(getSchema).mockResolvedValue({
 				collections: {
-					articles: { fields: { title: {} } },
+					articles: { primary: 'id', collection: 'articles', fields: { title: { field: 'title' } } },
 				},
+				relations: [],
 			} as any);
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
@@ -292,8 +310,9 @@ describe('CollabHandler', () => {
 
 			vi.mocked(getSchema).mockResolvedValue({
 				collections: {
-					articles: { fields: { title: {} } },
+					articles: { primary: 'id', collection: 'articles', fields: { title: { field: 'title' } } },
 				},
+				relations: [],
 			} as any);
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
@@ -319,8 +338,9 @@ describe('CollabHandler', () => {
 
 			vi.mocked(getSchema).mockResolvedValue({
 				collections: {
-					articles: { fields: { title: {} } },
+					articles: { primary: 'id', collection: 'articles', fields: { title: { field: 'title' } } },
 				},
+				relations: [],
 			} as any);
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);

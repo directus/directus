@@ -548,7 +548,7 @@ describe('Collaborative Editing: Relational', () => {
 				field: 'o2m_related',
 			});
 
-			const deepUpdate = updateMsg!['changes']?.update?.[0]?.deep_o2m_related?.update?.[0];
+			const deepUpdate = (updateMsg as any)!['changes']?.update?.[0]?.deep_o2m_related?.update?.[0];
 
 			expect(deepUpdate).toHaveProperty('field_a', 'New A');
 			expect(deepUpdate).not.toHaveProperty('field_b');
@@ -1052,6 +1052,8 @@ describe('Collaborative Editing: Relational', () => {
 							item: { id: m2oId },
 						},
 					],
+					update: [],
+					delete: [],
 				},
 			});
 
@@ -1061,15 +1063,14 @@ describe('Collaborative Editing: Relational', () => {
 				(msg: any) => msg['type'] === 'collab' && msg['action'] === 'update' && msg['field'] === 'a2o_items',
 			);
 
-			const createItems = updateMsg!['changes']?.create || [];
+			const createItems = (updateMsg as any)!['changes']?.create || [];
 			expect(createItems).toHaveLength(2);
 
 			const allowedItem = createItems.find((i: any) => i.collection === collectionCollabRelationalA2O);
 			const restrictedItem = createItems.find((i: any) => i.collection === collectionCollabRelationalM2O);
 
 			expect(allowedItem?.item).toHaveProperty('id', a2oId);
-			// NOTE: Currently sanitizePayload doesn't recursively filter nested update syntax in broadcasts
-			expect(restrictedItem?.item).toHaveProperty('id', m2oId);
+			expect(restrictedItem?.item).toBeUndefined();
 
 			wsAdmin.conn.close();
 			wsRestricted.conn.close();

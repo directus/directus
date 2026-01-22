@@ -21,11 +21,6 @@ export async function sanitizePayload(
 	return await deepMapWithSchema(
 		payload,
 		async ([key, value], context) => {
-			// Whitelist virtual fields that don't exist in the schema
-			if (key === '$FOLLOW') {
-				return [key, value];
-			}
-
 			// Strip sensitive fields
 			if (context.field?.special?.some((v) => v === 'conceal' || v === 'hash')) {
 				return undefined;

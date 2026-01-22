@@ -22,6 +22,7 @@ import type {
 	UpdateAllMessage,
 	UpdateMessage,
 } from './types.js';
+import { validateChanges } from './validate-changes.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 const env = useEnv();
@@ -167,6 +168,14 @@ export class CollabHandler {
 			});
 		}
 
+		if (message.initialChanges) {
+			await validateChanges(message.initialChanges, message.collection, message.item, {
+				knex: getDatabase(),
+				schema,
+				accountability: client.accountability,
+			});
+		}
+
 		const room = await this.roomManager.createRoom(
 			message.collection,
 			message.item,
@@ -247,6 +256,12 @@ export class CollabHandler {
 		}
 
 		if (message.changes !== undefined) {
+			await validateChanges({ [message.field]: message.changes }, room.collection, room.item, {
+				knex,
+				schema,
+				accountability: client.accountability,
+			});
+
 			await room.update(client, { [message.field]: message.changes });
 		} else {
 			await room.unset(client, message.field);
@@ -292,6 +307,12 @@ export class CollabHandler {
 		}
 
 		if (message.changes) {
+			await validateChanges(message.changes, collection, room.item, {
+				knex,
+				schema,
+				accountability: client.accountability,
+			});
+
 			await room.update(client, message.changes);
 		}
 	}
