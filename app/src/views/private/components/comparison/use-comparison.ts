@@ -387,7 +387,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 			const defaultValues = getDefaultValuesFromFields(fields).value;
 			incoming = mergeWith({}, defaultValues, incoming, replaceArraysInMergeCustomizer);
-		} else if (currentVersion && mode.value === 'version') {
+		} else if (currentVersion) {
 			const versionComparison = await fetchVersionComparisonForRevision(currentVersion.id);
 			base = versionComparison.base;
 			incoming = mergeWith({}, versionComparison.main, incoming, replaceArraysInMergeCustomizer);
