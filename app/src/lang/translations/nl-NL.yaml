@@ -501,7 +501,6 @@ revision_delta_reverted: Teruggedraaid
 revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
 revision_delta_by: '{date} door {user}'
-updated_in_revision: Bijgewerkt in deze revisie
 differences_count: 'Geen Verschillen | 1 Verschil | {count} Verschillen'
 presentation_text_values_cannot_be_reimported: 'Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd.'
 download_page_as_csv: 'Download Pagina als CSV'
