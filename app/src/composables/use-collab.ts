@@ -17,6 +17,8 @@ type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE 
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
 
+const SESSION_COLOR_KEY = 'collab-color';
+
 export type CollabUser = {
 	id: string;
 	first_name?: string;
@@ -195,6 +197,7 @@ export function useCollab(
 			action: ACTION.CLIENT.JOIN,
 			collection: collection.value,
 			item: item.value ? String(item.value) : null,
+			color: sessionStorage.getItem(SESSION_COLOR_KEY),
 			version: version.value?.id ?? null,
 			initialChanges: edits.value,
 		});
@@ -278,6 +281,10 @@ export function useCollab(
 		users.value = message.users
 			.map(({ user, color, connection }) => {
 				const info = usersInfo.find((u) => u.id === user) as any;
+
+				if (message.connection === connection) {
+					sessionStorage.setItem(SESSION_COLOR_KEY, color);
+				}
 
 				return {
 					...info,

@@ -12,7 +12,7 @@ import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { Messenger } from './messenger.js';
 import { sanitizePayload } from './sanitize-payload.js';
 import { useStore } from './store.js';
-import type { PermissionClient } from './types.js';
+import type { JoinMessage, PermissionClient } from './types.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 /**
@@ -315,7 +315,7 @@ export class Room {
 	 * Client requesting to join a room. If the client hasn't entered the room already, add a new client.
 	 * Otherwise all users just will be informed again that the user has joined.
 	 */
-	async join(client: WebSocketClient) {
+	async join(client: WebSocketClient, color: JoinMessage['color']) {
 		this.messenger.addClient(client);
 
 		let added = false;
@@ -333,7 +333,11 @@ export class Room {
 					colorsAvailable.push(...COLORS);
 				}
 
-				clientColor = colorsAvailable[random(colorsAvailable.length - 1)]!;
+				if (color && colorsAvailable.includes(color)) {
+					clientColor = color;
+				} else {
+					clientColor = colorsAvailable[random(colorsAvailable.length - 1)]!;
+				}
 
 				clients.push({
 					uid: client.uid,

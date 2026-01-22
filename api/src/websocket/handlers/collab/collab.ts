@@ -48,6 +48,10 @@ export class CollabHandler {
 	 * Hook into websocket client lifecycle events
 	 */
 	bindWebSocket() {
+		emitter.onAction('websocket.connect', ({ client }) => {
+			this.messenger.addClient(client);
+		});
+
 		// listen to incoming messages on the connected websockets
 		emitter.onAction('websocket.message', async ({ client, message }) => {
 			if (getMessageType(message) !== WS_TYPE.COLLAB) return;
@@ -129,7 +133,6 @@ export class CollabHandler {
 			});
 		}
 
-		this.messenger.addClient(client);
 		const schema = await getSchema();
 
 		const allowedCollections = await fetchAllowedCollections(
@@ -171,7 +174,7 @@ export class CollabHandler {
 			message.initialChanges,
 		);
 
-		await room.join(client);
+		await room.join(client, message.color);
 	}
 
 	/**
