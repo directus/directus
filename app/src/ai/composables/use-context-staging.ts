@@ -111,7 +111,6 @@ export function useContextStaging() {
 			return false;
 		}
 
-
 		const exists = aiStore.pendingContext.some(
 			(item) => item.type === 'visual-element' && item.data.key === element.key,
 		);

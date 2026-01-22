@@ -1,17 +1,20 @@
 <script setup lang="ts">
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+
 defineProps<{
 	message?: string;
 }>();
 </script>
 
 <template>
-	<v-list-item disabled>
-		<v-list-item-content>
+	<VListItem disabled>
+		<VListItemContent>
 			<div class="no-results">
 				<slot>{{ message }}</slot>
 			</div>
-		</v-list-item-content>
-	</v-list-item>
+		</VListItemContent>
+	</VListItem>
 </template>
 
 <style scoped>

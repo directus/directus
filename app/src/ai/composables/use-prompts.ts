@@ -55,10 +55,8 @@ export function usePrompts() {
 				for (const varName of tokens.varNames) {
 					variables.add(varName);
 				}
-			} catch (e) {
-				if (import.meta.env.DEV) {
-					console.debug('[usePrompts] Failed to tokenize system_prompt:', e);
-				}
+			} catch {
+				// If tokenize fails, skip
 			}
 		}
 
@@ -72,10 +70,8 @@ export function usePrompts() {
 					for (const varName of tokens.varNames) {
 						variables.add(varName);
 					}
-				} catch (e) {
-					if (import.meta.env.DEV) {
-						console.debug('[usePrompts] Failed to tokenize message:', e);
-					}
+				} catch {
+					// If tokenize fails, skip
 				}
 			});
 		}
