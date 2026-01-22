@@ -1649,6 +1649,7 @@ text_align: テキストの配置
 font_weight: フォントの太さ
 font_style: フォントスタイル
 font_size: フォントサイズ
+minimum_fraction_digits: 最大小数点以下桁数
 show_password: パスワードを表示にする
 hide_password: パスワードを非表示にする
 bsl_banner:
