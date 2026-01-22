@@ -451,7 +451,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		toolApprovals: computed(() => toolsStore.toolApprovals),
 		getToolApprovalMode: toolsStore.getToolApprovalMode,
 		setToolApprovalMode: toolsStore.setToolApprovalMode,
-		setAllToolsMode: toolsStore.setAllToolsMode,
 		registerLocalTool: toolsStore.registerLocalTool,
 		replaceLocalTool: toolsStore.replaceLocalTool,
 		deregisterLocalTool: toolsStore.deregisterLocalTool,

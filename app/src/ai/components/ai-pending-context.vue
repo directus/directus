@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
-import { isItemContext, isPromptContext, isVisualElement, type PendingContextItem } from '../types';
+import { isVisualElement, type PendingContextItem } from '../types';
 import AiContextCard from './ai-context-card.vue';
-import { useCollectionsStore } from '@/stores/collections';
 
 const aiStore = useAiStore();
-const collectionsStore = useCollectionsStore();
 
 const scrollContainerRef = useTemplateRef<HTMLElement>('scroll-container');
 const showLeftFade = ref(false);
@@ -62,22 +60,6 @@ function handleRemove(item: PendingContextItem) {
 
 	aiStore.removePendingContext(item.id);
 }
-
-function getItemIcon(item: PendingContextItem) {
-	if (isPromptContext(item)) return 'magic_button';
-
-	if (isVisualElement(item)) {
-		const collection = collectionsStore.getCollection(item.data.collection);
-		return collection?.icon || 'view_in_ar';
-	}
-
-	if (isItemContext(item)) {
-		const collection = collectionsStore.getCollection(item.data.collection);
-		return collection?.icon || 'dataset';
-	}
-
-	return 'dataset';
-}
 </script>
 
 <template>
@@ -93,8 +75,8 @@ function getItemIcon(item: PendingContextItem) {
 			<AiContextCard
 				v-for="item in aiStore.pendingContext"
 				:key="item.id"
-				:icon="getItemIcon(item)"
-				:display="item.display"
+				:item="item"
+				removable
 				@remove="handleRemove(item)"
 				@mouseenter="handleMouseEnter(item)"
 				@mouseleave="handleMouseLeave(item)"

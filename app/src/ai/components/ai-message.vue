@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { ContextAttachment } from '@directus/ai';
 import type { DynamicToolUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
-import AiMessageContextCard from './parts/ai-message-context-card.vue';
+import { useAiStore } from '../stores/use-ai';
+import AiContextCard from './ai-context-card.vue';
 import AiMessageFile from './parts/ai-message-file.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
 import AiMessageSourceDocument from './parts/ai-message-source-document.vue';
@@ -41,6 +42,20 @@ interface Props {
 withDefaults(defineProps<Props>(), {
 	parts: () => [],
 });
+
+const aiStore = useAiStore();
+
+function handleMouseEnter(attachment: ContextAttachment) {
+	if (attachment.type === 'visual-element') {
+		aiStore.highlightVisualElement(attachment.data.key);
+	}
+}
+
+function handleMouseLeave(attachment: ContextAttachment) {
+	if (attachment.type === 'visual-element') {
+		aiStore.highlightVisualElement(null);
+	}
+}
 </script>
 
 <template>
@@ -66,10 +81,12 @@ withDefaults(defineProps<Props>(), {
 
 			<!-- Context attachments from metadata (user messages only) -->
 			<div v-if="role === 'user' && metadata?.attachments?.length" class="context-attachments">
-				<AiMessageContextCard
+				<AiContextCard
 					v-for="(attachment, index) in metadata.attachments"
 					:key="`${attachment.type}-${index}`"
-					:attachment="attachment"
+					:item="attachment"
+					@mouseenter="handleMouseEnter(attachment)"
+					@mouseleave="handleMouseLeave(attachment)"
 				/>
 			</div>
 

@@ -7,10 +7,8 @@ import type { StaticToolDefinition } from '../composables/define-tool';
 export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
 
 export const useAiToolsStore = defineStore('ai-tools-store', () => {
-	// Tool approval settings (persisted)
 	const toolApprovals = useLocalStorage<Record<string, ToolApprovalMode>>('ai-tool-approvals', {});
 
-	// System tools available on the server
 	const systemTools = shallowRef<SystemTool[]>([
 		'items',
 		'files',
@@ -24,15 +22,12 @@ export const useAiToolsStore = defineStore('ai-tools-store', () => {
 		'relations',
 	]);
 
-	// Local tools registered by components
 	const localTools = shallowRef<StaticToolDefinition[]>([]);
 
-	// Filter system tools based on approval mode (exclude 'disabled')
 	const enabledSystemTools = computed(() => {
 		return systemTools.value.filter((tool) => getToolApprovalMode(tool) !== 'disabled');
 	});
 
-	// Event hook for system tool results
 	const systemToolResultHook =
 		createEventHook<[tool: SystemTool, input: Record<string, unknown>, output: Record<string, unknown>]>();
 

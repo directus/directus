@@ -1,19 +1,10 @@
 import type { ContextAttachment } from '@directus/ai';
-import type { PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { createEventHook } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { isItemContext, isPromptContext, isVisualElement, type PendingContextItem } from '../types';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-
-export interface VisualElementUpdate {
-	collection: string;
-	item: PrimaryKey;
-	status: 'success' | 'error';
-	error?: string;
-}
 
 export const MAX_PENDING_CONTEXT = 10;
 
@@ -120,8 +111,6 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		visualElementContextUrl.value = null;
 	};
 
-	const visualElementsUpdatedHook = createEventHook<[updates: VisualElementUpdate[]]>();
-
 	return {
 		// State
 		pendingContext,
@@ -141,9 +130,5 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		setVisualElementContextUrl,
 		snapshotContext,
 		dehydrate,
-
-		// Event hooks
-		onVisualElementsUpdated: visualElementsUpdatedHook.on,
-		triggerVisualElementsUpdated: visualElementsUpdatedHook.trigger,
 	};
 });

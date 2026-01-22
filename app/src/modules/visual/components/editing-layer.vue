@@ -5,7 +5,6 @@ import { getEndpoint } from '@directus/utils';
 import { useEventListener } from '@vueuse/core';
 import { computed, nextTick, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useVisualAiTools } from '../composables/use-visual-ai-tools';
 import type {
 	AddToContextData,
 	EditConfig,
@@ -18,10 +17,12 @@ import type {
 import { sameOrigin } from '../utils/same-origin';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiStore } from '@/ai/stores/use-ai';
-import { useAiContextStore, type VisualElementUpdate } from '@/ai/stores/use-ai-context';
+import { useAiContextStore } from '@/ai/stores/use-ai-context';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
@@ -52,9 +53,6 @@ const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
 
 const { popoverWidth } = usePopoverWidth();
 
-// Register local AI tools for visual elements
-useVisualAiTools();
-
 // Clear highlight when edit overlay closes
 watch(editOverlayActive, (isActive) => {
 	if (!isActive) {
@@ -65,6 +63,8 @@ watch(editOverlayActive, (isActive) => {
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
 	const aiStore = useAiStore();
 	const contextStore = useAiContextStore();
+	const toolsStore = useAiToolsStore();
+	const fieldsStore = useFieldsStore();
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
 	const { stageVisualElement } = useContextStaging();
@@ -97,23 +97,40 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		},
 	);
 
-	// Listen for visual elements updated to send saved messages to iframe
-	const unsubscribeUpdated = contextStore.onVisualElementsUpdated((updates: VisualElementUpdate[]) => {
-		for (const update of updates) {
-			if (update.status !== 'success') continue;
+	// Listen for items tool results to send saved messages to iframe
+	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input, output) => {
+		if (tool !== 'items') return;
+		if (input.action !== 'update') return;
 
-			// Try to find the key for this element from pending context
+		const collection = input.collection as string;
+
+		// Get PK field name for this collection
+		const pkField = fieldsStore.getPrimaryKeyFieldForCollection(collection);
+		if (!pkField) return;
+
+		// Extract updated items from output.data
+		const outputData = output as { data?: unknown[] };
+		const items = Array.isArray(outputData.data) ? outputData.data : [];
+
+		for (const item of items) {
+			if (!item || typeof item !== 'object') continue;
+
+			const itemKey = (item as Record<string, unknown>)[pkField.field];
+			if (itemKey === undefined) continue;
+
+			// Match against selected visual elements
 			const matchingContext = contextStore.visualElements.find(
-				(ctx) => ctx.data.collection === update.collection && ctx.data.item === update.item,
+				(ctx) => ctx.data.collection === collection && String(ctx.data.item) === String(itemKey),
 			);
 
-			// Send saved message - iframe will reload if no matching key found
-			sendSaved({
-				key: matchingContext?.data.key ?? '',
-				collection: update.collection,
-				item: update.item,
-				payload: {},
-			});
+			if (matchingContext) {
+				sendSaved({
+					key: matchingContext.data.key ?? '',
+					collection,
+					item: itemKey as PrimaryKey,
+					payload: {},
+				});
+			}
 		}
 	});
 
@@ -123,7 +140,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	});
 
 	onUnmounted(() => {
-		unsubscribeUpdated.off();
+		unsubscribeItemsResult.off();
 		unsubscribeHighlight.off();
 		// Clear visual element context when component unmounts
 		contextStore.clearVisualElementContext();

@@ -1,25 +1,65 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useCollectionsStore } from '@/stores/collections';
 
-defineProps<{
-	icon: string;
+interface ContextItem {
+	type: string;
+	data: { collection?: string };
 	display: string;
-}>();
+}
+
+const props = withDefaults(
+	defineProps<{
+		item: ContextItem;
+		removable?: boolean;
+	}>(),
+	{
+		removable: false,
+	},
+);
 
 const emit = defineEmits<{
 	remove: [];
 	mouseenter: [];
 	mouseleave: [];
 }>();
+
+const collectionsStore = useCollectionsStore();
+
+const icon = computed(() => {
+	switch (props.item.type) {
+		case 'visual-element': {
+			const collection = collectionsStore.getCollection(props.item.data.collection);
+			return collection?.icon || 'view_in_ar';
+		}
+
+		case 'item': {
+			const collection = collectionsStore.getCollection(props.item.data.collection);
+			return collection?.icon || 'database';
+		}
+
+		case 'prompt':
+			return 'magic_button';
+
+		default:
+			return 'attachment';
+	}
+});
 </script>
 
 <template>
-	<div class="ai-context-card" @mouseenter="emit('mouseenter')" @mouseleave="emit('mouseleave')">
+	<div
+		class="ai-context-card"
+		:class="{ removable }"
+		@mouseenter="emit('mouseenter')"
+		@mouseleave="emit('mouseleave')"
+	>
 		<div class="icon-wrapper">
 			<VIcon :name="icon" x-small class="item-icon" />
 		</div>
-		<p class="display-text">{{ display }}</p>
-		<button type="button" class="close-button" @click.stop="emit('remove')">
+		<p class="display-text">{{ item.display }}</p>
+		<button v-if="removable" type="button" class="close-button" @click.stop="emit('remove')">
 			<VIcon name="close" small />
 		</button>
 	</div>
@@ -32,18 +72,22 @@ const emit = defineEmits<{
 	gap: 6px;
 	padding: 4px 6px;
 	flex: 0 0 auto;
-	max-inline-size: 125px;
+	max-inline-size: 150px;
 	background-color: var(--theme--background);
 	border: 1px solid var(--theme--border-color);
 	border-radius: var(--theme--border-radius);
-	cursor: pointer;
-	transition:
-		border-color var(--fast) var(--transition),
-		background-color var(--fast) var(--transition);
 
-	&:hover {
-		border-color: var(--theme--border-color-accent);
-		background-color: var(--theme--background-normal);
+	&.removable {
+		max-inline-size: 125px;
+		cursor: pointer;
+		transition:
+			border-color var(--fast) var(--transition),
+			background-color var(--fast) var(--transition);
+
+		&:hover {
+			border-color: var(--theme--border-color-accent);
+			background-color: var(--theme--background-normal);
+		}
 	}
 }
 
