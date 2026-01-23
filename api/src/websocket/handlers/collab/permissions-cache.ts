@@ -13,7 +13,7 @@ type Tag = string;
  * Supports granular invalidation based on collection, item, and relational dependencies.
  */
 export class PermissionCache {
-	private cache: LRUMapWithDelete<CacheKey, string[]>;
+	private cache: LRUMapWithDelete<CacheKey, string[] | null>;
 	private tags = new Map<Tag, Set<CacheKey>>();
 	private keyTags = new Map<CacheKey, Set<Tag>>();
 	private timers = new Map<CacheKey, NodeJS.Timeout>();
@@ -101,7 +101,12 @@ export class PermissionCache {
 	 * Get cached allowed fields for a given accountability and collection/item.
 	 * LRUMap automatically updates access order on get().
 	 */
-	get(accountability: Accountability, collection: string, item: string | null, action: string): string[] | undefined {
+	get(
+		accountability: Accountability,
+		collection: string,
+		item: string | null,
+		action: string,
+	): string[] | null | undefined {
 		const key = this.getCacheKey(accountability, collection, item, action);
 		return this.cache.get(key);
 	}
@@ -114,7 +119,7 @@ export class PermissionCache {
 		collection: string,
 		item: string | null,
 		action: string,
-		fields: string[],
+		fields: string[] | null,
 		dependencies: string[] = [],
 		ttlMs?: number,
 	) {

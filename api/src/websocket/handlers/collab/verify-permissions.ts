@@ -42,8 +42,7 @@ export async function verifyPermissions(
 	let itemData: any = null;
 
 	try {
-		const service = getService(collection, { schema, knex, accountability });
-		const adminService = getService(collection, { schema, knex, accountability: { admin: true } as Accountability });
+		const adminService = getService(collection, { schema, knex });
 		const policies = await fetchPolicies(accountability, { knex, schema });
 
 		const rawPermissions = await fetchPermissions(
@@ -51,24 +50,24 @@ export async function verifyPermissions(
 			{ knex, schema },
 		);
 
-		// Resolve dynamic variables used in the permission filters
-		const dynamicVariableContext = extractRequiredDynamicVariableContextForPermissions(rawPermissions);
-
-		const permissionsContext = await fetchDynamicVariableData(
-			{ accountability, policies, dynamicVariableContext },
-			{ knex, schema },
-		);
-
-		const processedPermissions = processPermissions({
-			permissions: rawPermissions,
-			accountability,
-			permissionsContext,
-		});
-
 		// Check for item-level rules to skip DB fetch
-		const hasItemRules = processedPermissions.some((p) => p.permissions && Object.keys(p.permissions).length > 0);
+		const hasItemRules = rawPermissions.some((p) => p.permissions && Object.keys(p.permissions).length > 0);
 
 		if (hasItemRules) {
+			// Resolve dynamic variables used in the permission filters
+			const dynamicVariableContext = extractRequiredDynamicVariableContextForPermissions(rawPermissions);
+
+			const permissionsContext = await fetchDynamicVariableData(
+				{ accountability, policies, dynamicVariableContext },
+				{ knex, schema },
+			);
+
+			const processedPermissions = processPermissions({
+				permissions: rawPermissions,
+				accountability,
+				permissionsContext,
+			});
+
 			const fieldsToFetch = processedPermissions
 				.map((perm) => (perm.permissions ? filterToFields(perm.permissions, collection, schema) : []))
 				.flat();
@@ -76,23 +75,14 @@ export async function verifyPermissions(
 			// Fetch current item data to evaluate any conditional permission filters based on record state
 			if (item && action !== 'create') {
 				try {
-					itemData = await service.readOne(item, {
+					itemData = await adminService.readOne(item, {
 						fields: fieldsToFetch,
 					});
 				} catch {
-					try {
-						await adminService.readOne(item);
-					} catch {
-						// Item doesn't exist
-						return null;
-					}
-
-					// Item exists, user just doesn't have access
-					return [];
+					// Item doesn't exist
+					permissionCache.set(accountability, collection, String(item), action, null, []);
+					return null;
 				}
-
-				// Item does exist but no access to it
-				if (!itemData) return [];
 			} else if (schema.collections[collection]?.singleton) {
 				const pkField = schema.collections[collection]!.primary;
 
@@ -102,7 +92,7 @@ export async function verifyPermissions(
 					}
 				}
 
-				itemData = await service.readSingleton({ fields: fieldsToFetch });
+				itemData = await adminService.readSingleton({ fields: fieldsToFetch });
 			}
 		}
 
