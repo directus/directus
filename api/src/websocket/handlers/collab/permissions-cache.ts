@@ -76,15 +76,14 @@ export class PermissionCache {
 		}
 
 		// Dependency Invalidation (Items + Relational)
-		const depTags = [];
+		const depTags = [`dependency:${collection}`];
 
 		if (items.length > 0) {
 			for (const id of items) {
 				depTags.push(`dependency:${collection}:${id}`);
 			}
 		} else {
-			// If no specific keys are provided, invalidate all specific dependencies for this collection
-			depTags.push(`dependency:${collection}`);
+			depTags.push(`collection-dependency:${collection}`);
 		}
 
 		for (const tag of depTags) {
@@ -159,7 +158,7 @@ export class PermissionCache {
 
 			if (dep.includes(':')) {
 				const [dependencyCollection] = dep.split(':');
-				this.addTag(key, `dependency:${dependencyCollection}`);
+				this.addTag(key, `collection-dependency:${dependencyCollection}`);
 			}
 		}
 	}

@@ -26,32 +26,6 @@ export function calculateCacheMetadata(
 		const now = Date.now();
 		let closestExpiry = Infinity;
 
-		// Resolve a relational path to its target collection
-		const resolvePath = (path: string[], rootCollection: string): string | null => {
-			let currentCollection: string | null = rootCollection;
-
-			for (const segment of path) {
-				if (!currentCollection) break;
-
-				const relation = schema.relations.find(
-					(r: any) =>
-						(r.collection === currentCollection && r.field === segment) ||
-						(r.related_collection === currentCollection && r.meta?.one_field === segment),
-				);
-
-				if (relation) {
-					currentCollection =
-						relation.collection === currentCollection
-							? (relation.related_collection as string)
-							: (relation.collection as string);
-				} else {
-					currentCollection = null;
-				}
-			}
-
-			return currentCollection;
-		};
-
 		// Scan permission filters for dynamic variables and relational dependencies to determine cache invalidation rules
 		const scan = (val: unknown, fieldKey?: string, currentCollection: string = collection) => {
 			if (!val || typeof val !== 'object') return;
@@ -82,16 +56,41 @@ export function calculateCacheMetadata(
 					} else {
 						// Other dynamic variables ($CURRENT_USER, etc) create collection-based dependencies
 						const parts = value.split('.');
-						const rootCollection = DYNAMIC_VARIABLE_MAP[parts[0]!];
+						const dynamicVariable = parts[0]!;
+						const rootCollection = DYNAMIC_VARIABLE_MAP[dynamicVariable];
 
-						if (rootCollection && parts.length > 1) {
-							const targetCollection = resolvePath(parts.slice(1, -1), rootCollection);
+						if (rootCollection) {
+							// Only $CURRENT_USER needs granular tagging
+							// Other dynamic variables trigger full cache wipe so collection-level is sufficient
+							if (dynamicVariable === '$CURRENT_USER' && accountability.user) {
+								dependencies.add(`${rootCollection}:${accountability.user}`);
+							} else {
+								dependencies.add(rootCollection);
+							}
 
-							if (targetCollection) {
-								if (parts[0] === '$CURRENT_USER' && accountability.user) {
-									dependencies.add(`${targetCollection}:${accountability.user}`);
-								} else {
-									dependencies.add(targetCollection);
+							// Track all intermediate collections in the path
+							if (parts.length > 1) {
+								let currentCollection: string | null = rootCollection;
+
+								for (const segment of parts.slice(1, -1)) {
+									if (!currentCollection) break;
+
+									const relation = schema.relations.find(
+										(r: any) =>
+											(r.collection === currentCollection && r.field === segment) ||
+											(r.related_collection === currentCollection && r.meta?.one_field === segment),
+									);
+
+									if (relation) {
+										currentCollection =
+											relation.collection === currentCollection
+												? (relation.related_collection as string)
+												: (relation.collection as string);
+
+										if (currentCollection) dependencies.add(currentCollection);
+									} else {
+										currentCollection = null;
+									}
 								}
 							}
 						}

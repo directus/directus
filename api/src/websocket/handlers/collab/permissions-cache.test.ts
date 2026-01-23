@@ -173,6 +173,56 @@ describe('PermissionCache', () => {
 			// Should NOT clear posts/1
 			expect(cache.get(mockAccountability, 'posts', '1', 'read')).toBeDefined();
 		});
+
+		test('collection dependency invalidation cleared by record update', () => {
+			cache.set(mockAccountability, 'posts', '1', 'read', ['A'], ['comments']);
+
+			busHandler({ collection: 'comments', keys: ['123'] });
+
+			expect(cache.get(mockAccountability, 'posts', '1', 'read')).toBeUndefined();
+		});
+
+		test('deeply nested mapping tags correctly (user update clears user dependency but not others)', () => {
+			cache.set(mockAccountability, 'articles', '1', 'read', ['*'], ['directus_users:user-1']);
+			const accountB = { ...mockAccountability, user: 'user-2' };
+			cache.set(accountB, 'articles', '2', 'read', ['*'], ['directus_users:user-2']);
+
+			busHandler({ collection: 'directus_users', keys: ['user-2'] });
+
+			expect(cache.get(accountB, 'articles', '2', 'read')).toBeUndefined();
+			expect(cache.get(mockAccountability, 'articles', '1', 'read')).toBeDefined();
+		});
+
+		test('dynamic variable $CURRENT_ROLE invalidation', () => {
+			cache.set(mockAccountability, 'posts', '1', 'read', ['*'], ['directus_roles:role-1']);
+
+			busHandler({ collection: 'directus_roles', keys: ['role-1'] });
+
+			expect(cache.get(mockAccountability, 'posts', '1', 'read')).toBeUndefined();
+		});
+
+		test('dynamic variable $CURRENT_ROLES invalidation', () => {
+			const accMultiRole = { ...mockAccountability, roles: ['role-A', 'role-B'] };
+			cache.set(accMultiRole, 'posts', '1', 'read', ['*'], ['directus_roles:role-A', 'directus_roles:role-B']);
+
+			busHandler({ collection: 'directus_roles', keys: ['role-B'] });
+
+			expect(cache.get(accMultiRole, 'posts', '1', 'read')).toBeUndefined();
+		});
+
+		test('deeply nested dynamic path invalidation ($CURRENT_USER.dept.team)', () => {
+			cache.set(mockAccountability, 'articles', '1', 'read', ['*'], ['directus_users:user-1', 'departments', 'teams']);
+
+			// User update clears it
+			expect(cache.get(mockAccountability, 'articles', '1', 'read')).toBeDefined();
+			busHandler({ collection: 'directus_users', keys: ['user-1'] });
+			expect(cache.get(mockAccountability, 'articles', '1', 'read')).toBeUndefined();
+
+			// Department record update clears it
+			cache.set(mockAccountability, 'articles', '1', 'read', ['*'], ['directus_users:user-1', 'departments', 'teams']);
+			busHandler({ collection: 'departments', keys: ['dept-123'] });
+			expect(cache.get(mockAccountability, 'articles', '1', 'read')).toBeUndefined();
+		});
 	});
 
 	describe('Security & Edge Cases', () => {
