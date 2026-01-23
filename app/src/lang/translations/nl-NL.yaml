@@ -1437,6 +1437,7 @@ fields:
     mcp_system_prompt_note: 'Aangepast systeemprompt om de standaard te vervangen. Laat leeg om standaard te gebruiken (indien ingeschakeld).'
     ai_system_prompt: AI Systeemprompt
     ai_system_prompt_note: 'Aangepast AI Systeemprompt voor het begeleiden van LLM-gedrag in AI Chat interacties. Laat leeg om de standaard te gebruiken.'
+    ai_header_name: Header
   directus_shares:
     name: Naam
     role: Rol

@@ -73,6 +73,7 @@ condition_rules: استایل شرطی
 input: ورودی
 invalid_input: ورودی نامعتبر
 not_a_number: نا عدد
+invalid_range_min:
 maps: نقشه‌ها
 switch_user: تغییر کاربر
 item_creation: ساخت آیتم
@@ -1423,6 +1424,7 @@ fields:
     mcp_system_prompt_enabled_note: "از <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>پرامپت سیستمی پیش‌فرض</a> برای هدایت رفتار LLM استفاده کنید. برای حذف یا جایگزین کردن با پرامپت خودتان در پایین غیرفعال کنید."
     mcp_system_prompt: پرامپت سیستمی سفارشی
     mcp_system_prompt_note: 'پرامپت سیستمی سفارشی برای جایگزینی با پیش‌فرض. برای استفاده از مقدار پیش‌فرض خالی بگذارید (اگر بالا فعال شده).'
+    ai_header_name: سربرگ
   directus_shares:
     name: نام
     role: نقش
@@ -1587,6 +1589,8 @@ ai:
   settings: تنظیمات
   tool_approval:
     disabled: غیرفعال شده
+  tool_descriptions:
+    relations:
 ai_tools:
   items: آیتمها
   files: فایل ها

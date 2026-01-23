@@ -1021,6 +1021,7 @@ fields:
     transformations_all: Salli kaikki muutokset
     transformations_none: Poista muunnokset käytöstä
     transformations_presets: Rajoita muunnoksia allaoleviin esiasetuksiin
+    ai_header_name: Ylätunniste
   directus_shares:
     name: Nimi
     role: Rooli

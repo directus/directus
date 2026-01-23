@@ -1424,6 +1424,7 @@ fields:
     mcp_system_prompt_enabled_note: "使用<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型（LLM）的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
     mcp_system_prompt: 自定义系统提示
     mcp_system_prompt_note: '自定义系统提示替换默认值。留空则使用默认值(如果已启用)。'
+    ai_header_name: 报头
   directus_shares:
     name: 名称
     role: 角色

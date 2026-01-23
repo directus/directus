@@ -1245,6 +1245,7 @@ fields:
     transformations_presets: Korlátozza az átalakításokat a beállítások szerint
     image_editor: Képszerkesztő
     custom_aspect_ratios: Egyedi képarányok
+    ai_header_name: Fejléc
   directus_shares:
     name: Név
     role: Szerepkör

@@ -1016,6 +1016,7 @@ fields:
     transformations_presets: Ograničite transformacije na unaprijed postavljene postavke u nastavku
     image_editor: Uređivač slika
     custom_aspect_ratios: Prilagođeni odnosi
+    ai_header_name: Zaglavlje
   directus_shares:
     name: Ime
     password: Lozinka

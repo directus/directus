@@ -1337,6 +1337,7 @@ fields:
     public_registration_verify_email: پشتڕاستکردنەوەی ئیمەیڵ
     public_registration_verify_email_note: ئیمەیڵێک دەنێردرێت بۆ بەکارهێنەری تۆمارکراو داوایان لێدەکات کرتە لە بەستەری پشتڕاستکردنەوە بکەن پێش ئەوەی بتوانن بچنە ژوورەوە.
     visual_editor_urls: بەستەرەکانی دەستکاریکەری بینراو
+    ai_header_name: سەرپەڕە
   directus_shares:
     name: ناو
     role: پلە

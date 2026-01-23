@@ -508,6 +508,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: ''
 date-fns_date_short_no_year: MMM d
 minutes: Minuta
 hours: Orë
@@ -1327,6 +1328,7 @@ fields:
     public_registration_email_filter_note: Vetëm adresat e email-it që përputhen me këtë filtër mund të regjistrohen.
     public_registration_verify_email: Verifiko Email-in
     public_registration_verify_email_note: Dërgon një email përdoruesit që po regjistrohet duke kërkuar që të klikojnë në një lidhje verifikimi përpara se të mund të identifikohen.
+    ai_header_name: Header
   directus_shares:
     name: Emri
     role: Roli
@@ -2353,6 +2355,7 @@ operations:
     template: Template
     data: Të Dhënat
     bcc_placeholder: ...
+    reply_to:
   notification:
     name: Dërgo Njoftim
     description: Një njoftim në aplikacion për një ose më shumë përdorues

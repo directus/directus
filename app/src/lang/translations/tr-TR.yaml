@@ -1314,6 +1314,7 @@ fields:
     public_registration_email_filter: E-Mail Adresi Filtresi
     public_registration_email_filter_note: Sadece bu filtreyle uyuşan kullanıcılar giriş yapabilir.
     public_registration_verify_email: Doğrulanmış Email
+    ai_header_name: Header
   directus_shares:
     name: Ad
     role: Rol

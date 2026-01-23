@@ -1312,6 +1312,7 @@ fields:
     theme_dark_overrides: Prilagodba Tamne Teme
     public_registration: Registracija korisnika
     public_registration_verify_email: Potvrdi adresu e-pošte
+    ai_header_name: Zaglavlje
   directus_shares:
     name: Ime
     role: Uloge

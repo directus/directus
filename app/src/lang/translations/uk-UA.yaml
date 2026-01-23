@@ -1430,6 +1430,7 @@ fields:
     mcp_system_prompt_enabled_note: "Використовуйте<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>стандартне системне запитування</a>для керування поведінкою LLM. Вимкніть, щоб видалити або замінити власним запитуванням нижче."
     mcp_system_prompt: Користувацький Системний рядок
     mcp_system_prompt_note: 'Спеціальний запит щодо заміни стандартної системи. Залиште порожнім, щоб використовувати стандартну (якщо вказано вище).'
+    ai_header_name: Заголовок
   directus_shares:
     name: Назва
     role: Роль

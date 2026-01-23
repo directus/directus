@@ -351,6 +351,7 @@ fields:
   directus_settings:
     project_name: Verkefni Nafn
     custom_css: Sérsniðið CSS
+    ai_header_name: Haus
   directus_shares:
     name: Nafn
     role: Hlutverk

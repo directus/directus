@@ -1350,6 +1350,7 @@ fields:
     public_registration_verify_email: ელფოსტის დადასტურება
     public_registration_verify_email_note: აგზავნის ელფოსტას რეგისტრირებულ მომხმარებელთან და სთხოვს დააჭიროს დამადასტურებელ ბმულს, სანამ შეძლებს შესვლას.
     visual_editor_urls: ვიზუალური რედაქტორის URL-ები
+    ai_header_name: სათაური
   directus_shares:
     name: სახელი
     role: როლი

@@ -1327,6 +1327,7 @@ fields:
     public_registration_email_filter_note: Зөвхөн уг шүүлтүүрт нийцэх цахим шууданг бүртгэх боломжтой.
     public_registration_verify_email: Цахим шуудан баталгаажуулах
     public_registration_verify_email_note: Бүртгүүлж буй хэрэглэгч рүү нэвтрэхийн өмнө баталгаажуулах холбоос дээр дарахыг хүссэн имэйл илгээнэ.
+    ai_header_name: Толгой
   directus_shares:
     name: Нэр
     role: Үүрэг

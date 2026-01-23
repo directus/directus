@@ -1327,6 +1327,7 @@ fields:
     public_registration_email_filter_note: या फिल्टरशी जुळणारे ईमेल पत्तेच नोंदणी करू शकतात.
     public_registration_verify_email: ईमेल सत्यापित करा
     public_registration_verify_email_note: नोंदणी करणाऱ्या वापरकर्त्याला ते साइन इन करण्यापूर्वी त्यांना सत्यापन लिंकवर क्लिक करण्यास सांगणारा ईमेल पाठवते.
+    ai_header_name: हेडर
   directus_shares:
     name: नाव
     role: रोल

@@ -908,6 +908,7 @@ fields:
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
+    ai_header_name: Header
   directus_shares:
     name: Name
     role: Role

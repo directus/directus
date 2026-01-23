@@ -1329,6 +1329,7 @@ fields:
     public_registration_email_filter_note: Tik el. pašto adresai, kurie atitinka šį filtrą gali registruotis sistemoje.
     public_registration_verify_email: El. pašto patvirtinimas
     public_registration_verify_email_note: Naudotojui bus išsiųstas el. laiškas su patvirtinimo nuoroda.
+    ai_header_name: Header
   directus_shares:
     name: Pavadinimas
     role: Vaidmuo
