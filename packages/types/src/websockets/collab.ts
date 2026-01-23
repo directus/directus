@@ -43,7 +43,7 @@ export const ClientMessage = z.discriminatedUnion('action', [
 		collection: z.string(),
 		item: z.string().nullable(),
 		version: z.string().nullable(),
-		color: z.enum(COLORS).nullable(),
+		color: z.enum(COLORS).nullable().optional(),
 		initialChanges: z.record(z.string(), z.any()).optional(),
 	}),
 	BaseClientMessage.extend({
