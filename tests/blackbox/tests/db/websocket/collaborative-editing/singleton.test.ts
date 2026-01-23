@@ -171,9 +171,9 @@ describe('Collaborative Editing: Singleton', () => {
 					.send({ title: 'Updated Externally' });
 
 				// Assert
-				const saveMsg = await ws.getMessages(1);
+				const saveMsg = await waitForMatchingMessage(ws, (msg) => msg['type'] === 'collab' && msg['action'] === 'save');
 
-				expect(saveMsg![0]).toMatchObject({
+				expect(saveMsg).toMatchObject({
 					type: 'collab',
 					action: 'save',
 					room,
