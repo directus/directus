@@ -12,7 +12,7 @@ export function useSearchFilter<T>(
 		return items.value.filter((item) => {
 			return keys.some((key) => {
 				const value = typeof key === 'function' ? key(item) : item[key];
-				return String(value || '')
+				return String(value ?? '')
 					.toLowerCase()
 					.includes(query);
 			});
