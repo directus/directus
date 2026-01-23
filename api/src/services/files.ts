@@ -215,7 +215,7 @@ export class FilesService extends ItemsService<File> {
 	/**
 	 * Import a single file from an external URL
 	 */
-	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
+	async importOne(importURL: string, body: Partial<File>, allowedMimeTypes?: string[]): Promise<PrimaryKey> {
 		if (this.accountability) {
 			await validateAccess(
 				{
@@ -254,11 +254,21 @@ export class FilesService extends ItemsService<File> {
 
 		const mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
 
-		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
-		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
+		// Check against global MIME type allow list from env
+		const globalAllowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+		const globalMimeTypeAllowed = globalAllowedPatterns.some((pattern) => minimatch(mimeType, pattern));
 
-		if (mimeTypeAllowed === false) {
+		if (globalMimeTypeAllowed === false) {
 			throw new InvalidPayloadError({ reason: `File is of invalid content type` });
+		}
+
+		// Check against interface-level MIME type restrictions if provided
+		if (allowedMimeTypes && allowedMimeTypes.length > 0) {
+			const interfaceMimeTypeAllowed = allowedMimeTypes.some((pattern) => minimatch(mimeType, pattern));
+
+			if (interfaceMimeTypeAllowed === false) {
+				throw new InvalidPayloadError({ reason: `File is of invalid content type` });
+			}
 		}
 
 		const payload = {
