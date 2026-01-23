@@ -267,6 +267,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					ws = new client.globals.WebSocket(url);
 				} catch (e) {
 					state = { code: 'closed' };
+					reject(e);
 					throw e;
 				}
 
