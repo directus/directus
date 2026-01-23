@@ -56,12 +56,12 @@ function closeDialog() {
 				<p v-if="prompt?.description" class="prompt-description">{{ prompt.description }}</p>
 				<div class="variables-form">
 					<VInput
-						v-for="variable in variables"
+						v-for="(variable, index) in variables"
 						:key="variable"
 						v-model="variableValues[variable]"
 						:label="variable"
 						:placeholder="variable"
-						autofocus
+						:autofocus="index === 0"
 					/>
 				</div>
 			</VCardText>
