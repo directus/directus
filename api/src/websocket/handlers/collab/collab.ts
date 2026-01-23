@@ -168,6 +168,19 @@ export class CollabHandler {
 			});
 		}
 
+		if (message.version) {
+			const itemAccess = verifyPermissions(client.accountability, message.collection, message.item, 'read', {
+				knex: getDatabase(),
+				schema,
+			});
+
+			if (!Array.isArray(itemAccess) || itemAccess.length === 0) {
+				throw new ForbiddenError({
+					reason: `No permission to access version or it does not exist`,
+				});
+			}
+		}
+
 		if (message.initialChanges) {
 			await validateChanges(message.initialChanges, message.collection, message.item, {
 				knex: getDatabase(),
