@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { type CacheConfig, createCache } from '@directus/memory';
 import { redisConfigAvailable, useRedis } from '../../../redis/index.js';
 
@@ -8,6 +9,8 @@ export type RedisStore<T> = {
 	delete(key: keyof T): Promise<void>;
 };
 
+const env = useEnv();
+
 const localOnly = redisConfigAvailable() === false;
 
 const config: CacheConfig = localOnly
@@ -16,7 +19,7 @@ const config: CacheConfig = localOnly
 		}
 	: {
 			type: 'redis',
-			namespace: 'collab',
+			namespace: (env['WEBSOCKETS_COLLAB_STORE_NAMESPACE'] as string) ?? 'collab',
 			redis: useRedis(),
 		};
 
