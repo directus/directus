@@ -485,7 +485,7 @@ describe('CollabHandler', () => {
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(undefined);
 
 			await expect(
-				handler.onDiscard(mockClient, { action: 'discard', room: 'invalid-room' } as any),
+				handler.onDiscard(mockClient, { action: 'discard', room: 'invalid-room', fields: ['title'] } as any),
 			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/room does not exist/i));
 		});
 
@@ -494,21 +494,39 @@ describe('CollabHandler', () => {
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
 			await expect(
-				handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid' } as any),
+				handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid', fields: ['title'] } as any),
 			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/Not connected to room/i));
+		});
+
+		test('rejects if field missing update permission', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				collection: 'articles',
+				item: 1,
+			};
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(verifyPermissions).mockResolvedValue(['id']);
+
+			await expect(
+				handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid', fields: ['title'] } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to discard field/i));
 		});
 
 		test('calls room.discard on success', async () => {
 			const mockRoom = {
 				hasClient: vi.fn().mockResolvedValue(true),
 				discard: vi.fn(),
+				collection: 'articles',
+				item: 1,
 			};
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+			vi.mocked(verifyPermissions).mockResolvedValue(['*']);
 
-			await handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid' } as any);
+			await handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid', fields: ['title'] } as any);
 
-			expect(mockRoom.discard).toHaveBeenCalled();
+			expect(mockRoom.discard).toHaveBeenCalledWith(['title']);
 			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
 	});

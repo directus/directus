@@ -428,4 +428,76 @@ describe('Collaborative Editing: Permissions', () => {
 			ws2.conn.close();
 		});
 	});
+
+	describe('Discard Permissions', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Field Restricted Discard' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [
+					{ collection: collectionCollab, action: 'read', fields: ['*'] },
+					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] }, // content is not updatable
+				],
+			});
+
+			const itemId = randomUUID();
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollab}`)
+				.send({ id: itemId, title: 'Original', content: 'Original' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			// Action
+			await ws.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollab,
+				item: itemId,
+				version: null,
+			});
+
+			const initMsg = await waitForMatchingMessage(ws, (m: any) => m.action === 'init');
+			const room = (initMsg as any).room;
+
+			await ws.sendMessage({
+				type: 'collab',
+				action: 'discard',
+				fields: ['title'],
+				room,
+			});
+
+			const discardMsg = await waitForMatchingMessage(ws, (m: any) => m.action === 'discard');
+
+			await ws.sendMessage({
+				type: 'collab',
+				action: 'discard',
+				fields: ['content'],
+				room,
+			});
+
+			const errorMsg = await waitForMatchingMessage(ws, (m: any) => m.action === 'error');
+
+			// Assert
+			expect(discardMsg).toMatchObject({
+				action: 'discard',
+				fields: ['title'],
+			});
+
+			expect(errorMsg).toMatchObject({
+				action: 'error',
+				code: 'INVALID_PAYLOAD',
+				message: expect.stringMatching(/No permission to discard field content/i),
+			});
+
+			ws.conn.close();
+		});
+	});
 });

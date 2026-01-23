@@ -519,15 +519,22 @@ export class Room {
 	}
 
 	/**
-	 * Discard all changes in the room and propagate to other clients
+	 * Discard specified changes in the room and propagate to other clients
 	 */
-	async discard(): Promise<void> {
+	async discard(fields: string[]): Promise<void> {
 		await this.store(async (store) => {
-			await store.set('changes', {});
+			const changes = await store.get('changes');
+
+			for (const field of fields) {
+				delete changes[field];
+			}
+
+			await store.set('changes', changes);
 		});
 
 		await this.sendAll({
 			action: ACTION.SERVER.DISCARD,
+			fields,
 		});
 	}
 
