@@ -44,9 +44,9 @@ export class KvRedis implements Kv {
 	private compressionMinSize: number;
 	private lockTimeout: number;
 	private redlock;
-	private ttl?: number;
+	private ttl: number | undefined;
 
-	constructor(config: Omit<KvConfigRedis, 'type'>) {
+	constructor(config: Omit<KvConfigRedis, 'type'> & { ttl?: number }) {
 		if ('setMax' in config.redis === false) {
 			config.redis.defineCommand('setMax', {
 				numberOfKeys: 1,
@@ -68,10 +68,10 @@ export class KvRedis implements Kv {
 		this.lockTimeout = config.lockTimeout ?? 5000;
 
 		this.redlock = new Redlock([this.redis], {
-			retryDelay: 20,
-			driftFactor: 50,
-			retryCount: 20,
-			retryJitter: 0.01,
+			retryDelay: 50,
+			driftFactor: 0.01,
+			retryCount: 100,
+			retryJitter: 20,
 		});
 
 		this.ttl = config.ttl;
