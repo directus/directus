@@ -141,7 +141,7 @@ ${elementLines}
 	// 4. Attachment rules (only if any attachments exist)
 	if (attachments.length > 0) {
 		parts.push(`## Attachment Rules
-User-added attachments shoud have higher priority than page context.
+User-added attachments should have higher priority than page context.
 Do NOT use form-values tools for attachments — those only modify the current page form.`);
 	}
 
