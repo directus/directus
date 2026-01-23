@@ -157,3 +157,8 @@ input[type='search']::-webkit-search-results-button,
 input[type='search']::-webkit-search-results-decoration {
 	-webkit-appearance: none;
 }
+
+// Disable pointer events on iframes during split panel drag to prevent jank
+.sp-dragging iframe {
+	pointer-events: none !important;
+}
