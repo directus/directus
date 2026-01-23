@@ -586,7 +586,7 @@ describe('CollabHandler', () => {
 			};
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
-			vi.mocked(handler.roomManager.getAllClients).mockResolvedValue([]);
+			vi.mocked(handler.roomManager.getAllRoomClients).mockResolvedValue([]);
 			vi.mocked(handler.roomManager.getClientRooms).mockResolvedValue([]);
 
 			await cleanupJob();

@@ -43,10 +43,10 @@ export class Messenger {
 
 	constructor() {
 		this.uid = randomUUID();
-		this.store = useStore<{ instances: Registry }>('registry');
+		this.store = useStore<{ instances: Registry }>('registry', { instances: {} });
 
 		this.store(async (store) => {
-			const instances = (await store.get('instances')) ?? {};
+			const instances = await store.get('instances');
 			instances[this.uid] = { clients: [], rooms: [] };
 			await store.set('instances', instances);
 		});
@@ -83,7 +83,7 @@ export class Messenger {
 		this.orders[client.uid] = 0;
 
 		this.store(async (store) => {
-			const instances = (await store.get('instances')) ?? {};
+			const instances = await store.get('instances');
 			if (!instances[this.uid]) instances[this.uid] = { clients: [], rooms: [] };
 
 			instances[this.uid]!.clients = [...(instances[this.uid]!.clients ?? []), client.uid];
@@ -101,7 +101,7 @@ export class Messenger {
 		delete this.orders[uid];
 
 		this.store(async (store) => {
-			const instances = (await store.get('instances')) ?? {};
+			const instances = await store.get('instances');
 
 			if (instances[this.uid]) {
 				instances[this.uid]!.clients = (instances[this.uid]!.clients ?? []).filter(
@@ -115,7 +115,7 @@ export class Messenger {
 
 	async registerRoom(uid: string) {
 		await this.store(async (store) => {
-			const instances = (await store.get('instances')) ?? {};
+			const instances = await store.get('instances');
 			if (!instances[this.uid]) instances[this.uid] = { clients: [], rooms: [] };
 
 			if (!instances[this.uid]!.rooms.includes(uid)) {
@@ -127,7 +127,7 @@ export class Messenger {
 
 	async unregisterRoom(uid: string) {
 		await this.store(async (store) => {
-			const instances = (await store.get('instances')) ?? {};
+			const instances = await store.get('instances');
 
 			if (instances[this.uid]) {
 				instances[this.uid]!.rooms = (instances[this.uid]!.rooms ?? []).filter((roomUid: string) => roomUid !== uid);
@@ -136,19 +136,24 @@ export class Messenger {
 		});
 	}
 
-	async getRegistry(): Promise<RegistrySnapshot> {
-		const instances = (await this.store(async (store) => await store.get('instances'))) ?? {};
+	async getGlobalClients(): Promise<ClientID[]> {
+		const instances = await this.store(async (store) => await store.get('instances'));
 
-		return {
-			inactive: { clients: [], rooms: [] },
-			active: Object.values(instances)
-				.map((instance) => instance.clients)
-				.flat(),
-		};
+		return Object.values(instances)
+			.map((instance) => instance.clients)
+			.flat();
+	}
+
+	async getGlobalRooms(): Promise<string[]> {
+		const instances = await this.store(async (store) => await store.get('instances'));
+
+		return Object.values(instances)
+			.map(({ rooms }) => rooms)
+			.flat();
 	}
 
 	async pruneDeadInstances(): Promise<RegistrySnapshot> {
-		const instances = (await this.store(async (store) => await store.get('instances'))) ?? {};
+		const instances = await this.store(async (store) => await store.get('instances'));
 
 		const inactiveInstances = new Set(Object.keys(instances));
 		inactiveInstances.delete(this.uid);
@@ -184,7 +189,7 @@ export class Messenger {
 
 		// Reread state to avoid overwriting updates during the timeout phase
 		const current = await this.store(async (store) => {
-			const current = (await store.get('instances')) ?? {};
+			const current = await store.get('instances');
 			let changed = false;
 
 			for (const deadId of inactiveInstances) {

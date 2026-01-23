@@ -51,7 +51,7 @@ export class RoomManager {
 	}
 
 	/**
-	 * Remove a room from memory
+	 * Remove a room from local memory
 	 */
 	removeRoom(uid: string) {
 		if (this.rooms[uid]) {
@@ -60,7 +60,9 @@ export class RoomManager {
 	}
 
 	/**
-	 * Get an existing room by UID
+	 * Get an existing room by UID.
+	 * If the room is not part of the local rooms, it will be loaded from shared memory.
+	 * The room will not be persisted in local memory.
 	 */
 	async getRoom(uid: string) {
 		let room = this.rooms[uid];
@@ -90,13 +92,16 @@ export class RoomManager {
 	}
 
 	/**
-	 * Get all rooms a client is currently in
+	 * Get all rooms a client is currently in from global memory
 	 */
 	async getClientRooms(uid: ClientID) {
 		const rooms = [];
+		const globalRooms = await this.messenger.getGlobalRooms();
 
-		for (const room of Object.values(this.rooms)) {
-			if (await room.hasClient(uid)) {
+		for (const roomId of Object.values(globalRooms)) {
+			const room = await this.getRoom(roomId);
+
+			if (room && (await room.hasClient(uid))) {
 				rooms.push(room);
 			}
 		}
@@ -104,18 +109,24 @@ export class RoomManager {
 		return rooms;
 	}
 
-	async getAllClients(): Promise<RoomClient[]> {
+	/**
+	 * Returns all clients that are part of a room in the global memory
+	 */
+	async getAllRoomClients(): Promise<RoomClient[]> {
 		const clients = [];
+		const globalRooms = await this.messenger.getGlobalRooms();
 
-		for (const room of Object.values(this.rooms)) {
-			clients.push(...(await room.getClients()));
+		for (const roomId of Object.values(globalRooms)) {
+			const room = await this.getRoom(roomId);
+
+			if (room) clients.push(...(await room.getClients()));
 		}
 
 		return clients;
 	}
 
 	/**
-	 * Remove empty rooms
+	 * Remove empty rooms from local memory
 	 */
 	async cleanupRooms(uids?: string[]) {
 		const rooms = uids ? uids.map((uid) => this.rooms[uid]).filter((room) => !!room) : Object.values(this.rooms);
@@ -315,7 +326,7 @@ export class Room {
 	 * Client requesting to join a room. If the client hasn't entered the room already, add a new client.
 	 * Otherwise all users just will be informed again that the user has joined.
 	 */
-	async join(client: WebSocketClient, color: JoinMessage['color']) {
+	async join(client: WebSocketClient, color?: JoinMessage['color']) {
 		this.messenger.addClient(client);
 
 		let added = false;
