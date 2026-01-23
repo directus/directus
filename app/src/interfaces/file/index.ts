@@ -82,6 +82,7 @@ export default defineInterface({
 						],
 						allowOther: true,
 					},
+					note: '$t:interfaces.file.mime_types_note',
 				},
 			},
 		];
