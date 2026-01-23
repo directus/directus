@@ -1274,10 +1274,10 @@ fields:
     uploaded_by: 更新者
     folder: フォルダ
     width: 幅
-    uploaded_on: 更新日
+    uploaded_on: アップロード日
     height: 高さ
-    charset: 文字コード
-    duration: 期間
+    charset: 文字セット
+    duration: 長さ
   directus_users:
     first_name: 名
     last_name: 姓
@@ -1298,10 +1298,10 @@ fields:
     status_active: 有効
     status_suspended: 停止済み
     status_archived: アーカイブ済み
-    role: ロール
+    role: 権限グループ
     token: トークン
     provider: プロバイダー
-    external_identifier: 外部ID
+    external_identifier: 外部 ID
     last_page: 最終ページ
     last_access: 最後にアクセスした日時
     email_notifications: Eメール通知
@@ -1321,7 +1321,7 @@ fields:
     ai_header_name: ヘッダー
   directus_shares:
     name: 名前
-    role: ロール
+    role: 権限グループ
     password: パスワード
   directus_fields:
     note: 備考
@@ -1360,45 +1360,45 @@ field_options:
     basemaps_tile: ラスター TileJSON
     basemaps_style: マップボックスのスタイル
     files_divider_title: ファイルとサムネイル画像
-    overrides_divider_title: アプリの上書き
+    overrides_divider_title: アプリの上書き設定
   directus_activity:
     login: ログイン
     create: 作成
     update: 更新
     delete: 削除
   directus_collections:
-    track_activity_revisions: アクティビティとリビジョンをトラッキング
-    only_track_activity: アクティビティのみトラッキング
-    do_not_track_anything: 何もトラッキングしない
+    track_activity_revisions: アクティビティとリビジョンの記録
+    only_track_activity: アクティビティのみ記録
+    do_not_track_anything: 何も記録しない
     collection_setup: コレクションの作成
     note_placeholder: このコレクションの説明...
-    hidden_label: アプリ内で非表示
+    hidden_label: アプリ内で非表示する
     singleton: シングルオブジェクトに設定する
     language: 言語
     translation: 翻訳
     translation_placeholder: 翻訳を入力...
     collection_name: コレクション名
-    singular_unit: 単一単位
-    plural_unit: 複数単位
+    singular_unit: 単数形の名前
+    plural_unit: 複数形の名前
     archive_divider: アーカイブ
     archive_field_placeholder: フィールドを選択...
-    archive_app_filter: アプリアーカイブフィルタを有効にする
-    archive_value: アーカイブ時の値設定...
-    unarchive_value: アーカイブ解除時の値設定...
+    archive_app_filter: アーカイブフィルターを有効化
+    archive_value: アーカイブ時に設定する値...
+    unarchive_value: アーカイブ解除時に設定する値...
     sort_divider: 並べ替え
     sort_field: フィールドを選択...
-    accountability_divider: 責任
+    accountability_divider: 操作の記録
     duplication_divider: 複製
   directus_files:
-    title: 唯一無二なタイトル...
-    description: オプションの説明...
-    location: オプションのロケーション...
-    storage_divider: ファイル名
-    filename_disk: ディスクストレージ上の名前...
-    filename_download: ダウンロード時の名前...
+    title: 一意のタイトル...
+    description: 任意の説明...
+    location: 任意の場所...
+    storage_divider: ファイルの命名
+    filename_disk: ストレージ上の保存名...
+    filename_download: ダウンロード時のファイル名...
   directus_roles:
-    name: このロールの唯一無二な名前...
-    description: このロールの説明...
+    name: この権限グループの一意の名前...
+    description: この権限グループの説明...
     fields:
       icon_name: アイコン
       name_name: 名前
@@ -1406,7 +1406,7 @@ field_options:
     collections_name: コレクション
   directus_users:
     preferences_divider: ユーザー設定
-    dropdown_auto: 自動 (システムベース)
+    dropdown_auto: 自動 (システム設定に従う)
     dropdown_light: ライトモード
     dropdown_dark: ダークモード
     admin_divider: 管理者オプション
@@ -1437,7 +1437,7 @@ ai_tools:
   collections: コレクション
 mcp_prompts_collection_schema:
   messages_role_user: ユーザー
-referential_action_set_null: '{field} フィールドを Null にする'
+referential_action_set_null: '{field} フィールドを空にする'
 default_label: デフォルト
 delete_label: 削除
 delete_are_you_sure: >-
@@ -1447,19 +1447,19 @@ delete_field_are_you_sure: >-
 description: 説明
 done: 完了
 duplicate: 複製
-limit: リミット
+limit: 制限
 email: メールアドレス
 embed: 埋め込む
-fallback_icon: フォールバックアイコン
-field: フィールド | フィールド
+fallback_icon: 代替アイコン
+field: フィールド
 file: ファイル
 file_library: ファイルライブラリー
 forgot_password: パスワード忘れ
 hidden: 非表示
-hidden_in_group: 非表示の{group}
+hidden_in_group: '{group} 内で非表示'
 icon: アイコン
 info: 情報
-normal: 正常
+normal: 標準
 success: 成功
 warning: 注意
 danger: 危険
@@ -1501,47 +1501,47 @@ sign_out: サインアウト
 sign_out_confirm: サインアウトしてもよろしいですか？
 something_went_wrong: 問題が発生しました
 sort_direction: ソート順
-export_location: エクスポート場所
+export_location: エクスポート先
 export_started: エクスポートを開始しました
 export_started_copy: エクスポートを開始しました。ダウンロードの準備ができ次第通知されます。
-sort_asc: 昇順に並べ替え
-sort_desc: 降順に並べ替え
+sort_asc: 昇順で並べ替え
+sort_desc: 降順で並べ替え
 disable_sort: 並べ替えを無効化
 template: テンプレート
-require_value_to_be_set: 作成時に値を設定する必要があります
+require_value_to_be_set: 新規作成時に入力を必須にする
 translation: 翻訳
 translation_placeholder: 翻訳を入力...
 value: 値
 view_project: プロジェクトを表示
-report_error: レポートのエラー
+report_error: エラーを報告
 table: テーブル
-list: 一覧
-search_filter: 検索フィルター
-enable_search_filter: 検索とフィルターを有効化
-item_link: アイテムリンク
+list: リスト
+search_filter: 検索と絞り込み
+enable_search_filter: 検索と絞り込みを有効にする
+item_link: アイテムへのリンク
 show_link_to_item: アイテムへのリンクを表示
-navigate_to_item: アイテムに移動
-undo_removed_item: 削除されたアイテムを元に戻す
+navigate_to_item: アイテムへ移動
+undo_removed_item: 削除したアイテムを元に戻す
 remove_item: アイテムを消去
 delete_item: アイテムを削除
 interfaces:
   filter:
     name: 絞り込み
-    description: フィルターオブジェクトを設定
+    description: 絞り込み条件を設定します。
     add_filter: フィルターを追加
     add_group: And / Or グループ
     add_value: 値を追加
-    logic_type_and: および
+    logic_type_and: かつ
     logic_type_or: または
     all: すべて
-    any: すべて
-    and: と
+    any: いずれか
+    and: かつ
     of_the_following: 以下の
-    no_rules: 設定されたルールはありません
+    no_rules: 設定済みのルールはありません
   group-accordion:
     start: 開始
   presentation-links:
-    primary: プライマリ
+    primary: プライマリー
   input-code:
     code: コード
   system-collections:
@@ -1556,19 +1556,19 @@ interfaces:
     display-template: テンプレートを表示
     description: 固定テキストと動的なフィールド値を組み合わせる
     collection_field: コレクションのフィールド
-    collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
+    collection_field_not_setup: コレクションフィールドの設定に誤りがあります
     select_a_collection: コレクションを選択
   presentation-divider:
     divider: 区切り線
-    description: ラベルと項目をセクションに分割
-    title_placeholder: タイトルを入力するか、空白のままの場合行だけが表示されます...
+    description: ラベルを付けてフィールドをセクションに分割する
+    title_placeholder: タイトルを入力するか、空欄のままにして線のみを表示します...
     inline_title: インラインタイトル
-    inline_title_label: 行内にタイトルを表示
-    margin_top: 上の余白
-    margin_top_label: 上の余白を増やす
+    inline_title_label: 線の中にタイトルを表示
+    margin_top: 上マージン
+    margin_top_label: 上マージンを増やす
   select-dropdown:
-    description: ドロップダウンから値を選択
-    choices_placeholder: 選択肢を追加
+    description: ドロップダウンから値を選択する
+    choices_placeholder: 新しい選択肢を追加
     allow_other: その他を許可
     allow_other_label: 他の値を許可
     allow_none: '「なし」を許可'
