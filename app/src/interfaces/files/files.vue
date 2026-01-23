@@ -26,6 +26,7 @@ import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
+import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
@@ -75,7 +76,26 @@ const value = computed({
 	},
 });
 
-const { mimeTypeFilter, acceptString: allowedMimeTypes } = useMimeTypeFilter(computed(() => props.allowedMimeTypes));
+const { info } = useServerStore();
+
+const globalMimeTypeAllowList = computed(() => {
+	const allowList = info.files?.mimeTypeAllowList;
+
+	if (!allowList || allowList === '*/*') {
+		return undefined;
+	}
+
+	if (Array.isArray(allowList)) {
+		return allowList as string[];
+	}
+
+	return (allowList as string).split(',').map((type: string) => type.trim());
+});
+
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(
+	computed(() => props.allowedMimeTypes),
+	globalMimeTypeAllowList,
+);
 
 const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
@@ -461,7 +481,7 @@ const allowDrag = computed(
 			<VCard>
 				<VCardTitle>{{ $t('upload_file') }}</VCardTitle>
 				<VCardText>
-					<VUpload multiple from-url :folder="folder" :accept="allowedMimeTypes" @input="onUpload" />
+					<VUpload multiple from-url :folder="folder" :accept="combinedAcceptString" @input="onUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton @click="showUpload = false">{{ $t('done') }}</VButton>

@@ -27,6 +27,7 @@ import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
+import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -72,7 +73,26 @@ const value = computed({
 	},
 });
 
-const { mimeTypeFilter, acceptString: allowedMimeTypes } = useMimeTypeFilter(computed(() => props.allowedMimeTypes));
+const { info } = useServerStore();
+
+const globalMimeTypeAllowList = computed(() => {
+	const allowList = info.files?.mimeTypeAllowList;
+
+	if (!allowList || allowList === '*/*') {
+		return undefined;
+	}
+
+	if (Array.isArray(allowList)) {
+		return allowList as string[];
+	}
+
+	return (allowList as string).split(',').map((type: string) => type.trim());
+});
+
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(
+	computed(() => props.allowedMimeTypes),
+	globalMimeTypeAllowList,
+);
 
 const query = ref<RelationQuerySingle>({
 	fields: ['id', 'title', 'type', 'filename_download', 'modified_on'],
@@ -343,7 +363,7 @@ function useURLImport() {
 			<VCard>
 				<VCardTitle>{{ $t('upload_from_device') }}</VCardTitle>
 				<VCardText>
-					<VUpload from-url :folder="folder" :accept="allowedMimeTypes" @input="onUpload" />
+					<VUpload from-url :folder="folder" :accept="combinedAcceptString" @input="onUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="activeDialog = null">{{ $t('cancel') }}</VButton>
