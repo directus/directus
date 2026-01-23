@@ -1060,12 +1060,27 @@ dashboard_delete_confirm: このダッシュボードを削除してよろしい
 edit_dashboard: ダッシュボードを編集
 delete_dashboard: ダッシュボードを削除
 visible: 表示
+prefix_placeholder: 値の前のテキスト…
+suffix_placeholder: 値の後のテキスト…
+decimals_placeholder: 小数点以下の桁数…
 no_dashboards: ダッシュボードがありません
 no_dashboards_copy: ダッシュボードが作成されていません。
 create_dashboard: ダッシュボードを作成
 dashboard_name: ダッシュボード名
+no_data: データがありません
+no_data_in_flow: このフロー内で生成またはアクセスされたデータはありません
 accountability: 責任
+payload: ペイロード
 details: 詳細
+resume_streaming_logs: ログのストリーミングを再開
+pause_streaming_logs: ログのストリーミングを一時停止
+logs_session_resumed: ログセッションを再開しました...
+logs_session_paused: ログセッションを一時停止しました...
+logs_stream_disconnected: ログのストリームが切断されました...
+log_detail_filter_paths: 'パスで絞り込み (例: req.method, res.statusCode)'
+logs_beginning: ここからログセッションが始まります...
+logs_waiting: '新しいログを待機中...'
+logs_unread_count: '{count} 件の未読'
 full_screen: 全画面表示
 full_text_search: テキスト全体検索
 edit_panels: パネルを編集
@@ -1159,7 +1174,14 @@ editing_unit: '{unit} を編集'
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 no_options_available: 利用できるオプションなし
 settings_data_model: データモデル
+settings_roles: ユーザー権限グループ
+settings_permissions: アクセスポリシー
 settings_project: 設定
+settings_appearance: 外観
+settings_ai: AI
+model_context_protocol: Model Context Protocol
+ai_chat: AI チャット
+ai_disabled_by_env: AI チャット機能は環境変数によって無効化されています。
 settings_flows: フロー
 settings_presets: ブックマーク
 settings_translations: 翻訳
@@ -1283,6 +1305,7 @@ fields:
     last_page: 最終ページ
     last_access: 最後にアクセスした日時
     email_notifications: Eメール通知
+    appearance: 外観
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1531,7 +1554,7 @@ interfaces:
     select_a_collection: コレクションを選択
   system-display-template:
     display-template: テンプレートを表示
-    description: 静的テキストと動的フィールド値をミックス
+    description: 固定テキストと動的なフィールド値を組み合わせる
     collection_field: コレクションのフィールド
     collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
     select_a_collection: コレクションを選択
@@ -1548,14 +1571,14 @@ interfaces:
     choices_placeholder: 選択肢を追加
     allow_other: その他を許可
     allow_other_label: 他の値を許可
-    allow_none: Noneを許可
-    allow_none_label: 選択なしを許可
+    allow_none: '「なし」を許可'
+    allow_none_label: 未選択を許可
     choices_name_placeholder: 名前を入力...
     choices_value_placeholder: 値を入力...
-    preview_threshold: しきい値をプレビュー
+    preview_threshold: プレビューのしきい値
   select-multiple-dropdown:
-    select-multiple-dropdown: ドロップダウン(複数)
-    description: ドロップダウンから複数の値を選択
+    select-multiple-dropdown: ドロップダウン (複数選択)
+    description: ドロップダウンから複数の値を選択する
   file:
     file: ファイル
     description: ファイルを選択またはアップロード
@@ -1574,12 +1597,12 @@ interfaces:
   file-image:
     image: 画像
     description: 画像を選択またはアップロード
-    crop: 合わせて切り抜き
-    crop_label: 必要に応じて画像を切り抜き
+    crop: 枠に合わせて切り抜き
+    crop_label: 必要に応じて画像を切り抜く
   system-display:
     display: ディスプレイ
   system-display-options:
-    display-options: 表示オプション
+    display-options: オプションを表示
   select-dropdown-m2o:
     display_template: テンプレートを表示
   input-rich-text-md:
@@ -1588,7 +1611,7 @@ interfaces:
     zoom: 拡大
   list:
     sort: 並べ替え
-    display_group: 表示オプション
+    display_group: オプションを表示
   tags:
     tags: タグ
   input:
@@ -1722,7 +1745,12 @@ operations:
   exec:
     description: 任意のコードを実行し、受け取ったデータ内容を加工・修正することができます
     modules: '以下の **Node modules** を使用することができます：'
+  item-create:
+    payload: ペイロード
+  item-update:
+    payload: ペイロード
   json-web-token:
+    payload: ペイロード
     token: トークン
     options: オプション
   log:
