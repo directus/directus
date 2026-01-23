@@ -5,7 +5,6 @@ import { useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 import AiConversation from './ai-conversation.vue';
 import AiMagicButton from './ai-magic-button.vue';
-import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
@@ -27,9 +26,6 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 			<div ref="collapsible-trigger-content" class="collapsible-trigger-content">
 				<AiMagicButton class="collapsible-trigger-icon" :animate="hovering" />
 				<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_assistant') }}</span>
-				<VChip v-show="!sidebarStore.collapsed" outlined primary x-small class="collapsible-trigger-beta">
-					{{ $t('beta') }}
-				</VChip>
 				<VIcon v-show="!sidebarStore.collapsed" name="chevron_left" class="collapsible-trigger-chevron" />
 			</div>
 		</CollapsibleTrigger>
@@ -72,12 +68,6 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 .collapsible-trigger-title {
 	flex-grow: 1;
 	text-align: start;
-}
-
-.collapsible-trigger-beta {
-	margin-inline-end: 8px;
-	color: var(--theme--primary);
-	border-color: var(--theme--primary);
 }
 
 .collapsible-trigger-chevron {
