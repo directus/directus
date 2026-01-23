@@ -136,15 +136,12 @@ watch(
 	{ immediate: true },
 );
 
-watch(
-	currentRevision,
-	async () => {
-		if (!active.value || mode.value !== 'revision') return;
+watch(currentRevision, async () => {
+	if (!active.value || mode.value !== 'revision') return;
 
-		compareToOption.value = persistedCompareToOption.value;
-		await loadComparisonData();
-	},
-);
+	compareToOption.value = persistedCompareToOption.value;
+	await loadComparisonData();
+});
 
 watch([compareToOption], async () => {
 	if (props.mode !== 'revision' || !active.value) return;
@@ -524,6 +521,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			.compare-to-container {
 				display: flex;
 				align-items: center;
+				justify-content: flex-start;
 				gap: 6px;
 			}
 
@@ -559,17 +557,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				gap: 16px;
 
 				.compare-to-container {
-					margin-block-end: 12px;
+					margin-block-end: 0;
+					justify-content: start;
 
 					@media (min-width: 960px) {
 						display: none;
 					}
-				}
-
-				@media (min-width: 706px) {
-					flex: 1;
-					justify-content: flex-end;
-					align-items: end;
 				}
 
 				.select-all-container {
@@ -578,11 +571,16 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					flex: 1 1 100%;
 					text-align: center;
 					margin-block-end: 12px;
+					justify-content: start;
 
 					@media (min-width: 706px) {
 						flex: 1 1 auto;
 						flex-shrink: 0;
 						margin-block-end: 0;
+					}
+
+					@media (min-width: 960px) {
+						justify-content: flex-start;
 					}
 				}
 
