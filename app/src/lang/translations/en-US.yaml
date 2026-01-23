@@ -1221,8 +1221,8 @@ settings_project: Settings
 settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
-ai_chat: AI Chat
-ai_disabled_by_env: AI Chat features have been disabled via environment variable.
+ai_assistant: AI Assistant
+ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
 mcp_disabled_by_env: MCP features have been disabled via environment variable.
 settings_flows: Flows
 settings_system_logs: System Logs
@@ -1456,9 +1456,10 @@ fields:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
     ai_notice:
-      'AI Chat provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the toolbar to
-      ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai" target="_blank">Learn more about configuring and using AI Chat.</a>'
+      'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
+      toolbar to ask questions, generate content, and get help working with your project. <a
+      href="https://directus.io/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
+      Assistant.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
       'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
@@ -1486,7 +1487,7 @@ fields:
       'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
-      'Custom AI system prompt to guide LLM behavior in AI Chat interactions. Leave empty to use the default.'
+      'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
     ai_openai_api_key: OpenAI API Key
     ai_openai_allowed_models: OpenAI Allowed Models
     ai_anthropic_api_key: Anthropic API Key
@@ -1692,7 +1693,7 @@ ai:
   retry: Retry
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
-  build_with_chat: Build with AI Chat
+  build_with_assistant: Build with AI Assistant
   responses_may_be_inaccurate: AI responses may be inaccurate
   add_content: Add Content
   prompt: Prompt
@@ -1715,9 +1716,9 @@ ai:
   element_staged: Element staged
   failed_to_insert_prompt: Failed to insert prompt
   go_to_settings: Go to Settings
-  setup_ai_chat: Setup AI Chat
-  setup_ai_chat_admin_description: Add your AI provider API keys in settings to enable AI Chat.
-  setup_ai_chat_user_description: Contact your administrator to enable AI Chat.
+  setup_ai_assistant: Setup AI Assistant
+  setup_ai_assistant_admin_description: Add your AI provider API keys in settings to enable AI Assistant.
+  setup_ai_assistant_user_description: Contact your administrator to enable AI Assistant.
   settings: Settings
   tool_approval:
     always: Always Allowed
