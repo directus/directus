@@ -1193,7 +1193,6 @@ settings_project: Instellingen
 settings_appearance: Uiterlijk
 settings_ai: AI
 model_context_protocol: Model Context Protocol
-ai_chat: AI-chat
 settings_flows: Flows
 settings_system_logs: Systeemlogs
 settings_presets: Bladwijzers
@@ -1421,7 +1420,6 @@ fields:
     public_registration_verify_email: Bevestig e-mailadres
     public_registration_verify_email_note: Stuurt een e-mail naar de registrerende gebruiker waarin wordt gevraagd om op een verificatielink te klikken voordat ze kunnen inloggen.
     visual_editor_urls: Visual Editor URLs
-    ai_notice: 'AI Chat biedt een in-app zijbalk om te converteren met een LLM. Wanneer ingeschakeld, open je de AI-zijbalk uit de werkbalk om vragen te stellen, inhoud te genereren en hulp te krijgen bij je project. <a href="https://directus.io/docs/guides/ai/chat" target="_blank">Leer meer over het configureren en gebruiken van AI Chat.</a>'
     mcp_enabled: MCP-server
     mcp_enabled_note: 'Sluit AI/LM tools aan op uw Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Hierdoor kunnen AI-assistenten veilig lezen en communiceren met uw Directusgegevens.'
     mcp_notice: 'Model Context Protocol is een standaard om LLMs te verbinden met toepassingen zoals Directus. Eenmaal ingeschakeld, zal de Directus MCP-server beschikbaar zijn op `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Meer informatie over MCP en hoe te verbinden.</a>'
@@ -1436,7 +1434,6 @@ fields:
     mcp_system_prompt: Aangepast Systeemprompt
     mcp_system_prompt_note: 'Aangepast systeemprompt om de standaard te vervangen. Laat leeg om standaard te gebruiken (indien ingeschakeld).'
     ai_system_prompt: AI Systeemprompt
-    ai_system_prompt_note: 'Aangepast AI Systeemprompt voor het begeleiden van LLM-gedrag in AI Chat interacties. Laat leeg om de standaard te gebruiken.'
     ai_header_name: Header
   directus_shares:
     name: Naam
@@ -1617,12 +1614,8 @@ ai:
   retry: Probeer Opnieuw
   prompt_input_placeholder: Typ je bericht hier...
   clear_conversation: Gesprek Wissen
-  build_with_chat: Bouw met AI Chat
   responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
   go_to_settings: Ga naar Instellingen
-  setup_ai_chat: Setup AI-chat
-  setup_ai_chat_admin_description: Voeg de API-keys van je AI-provider toe in de instellingen om AI-chat in te schakelen.
-  setup_ai_chat_user_description: Neem contact op met je systeembeheerder om AI Chat in te schakelen.
   settings: Instellingen
   tool_approval:
     always: Altijd Toegestaan
