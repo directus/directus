@@ -20,13 +20,13 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 <template>
 	<CollapsibleRoot
 		v-model:open="aiStore.chatOpen"
-		v-tooltip.left="sidebarStore.collapsed && $t('ai_chat')"
+		v-tooltip.left="sidebarStore.collapsed && $t('ai_assistant')"
 		class="collapsible-root"
 	>
 		<CollapsibleTrigger class="collapsible-trigger">
 			<div ref="collapsible-trigger-content" class="collapsible-trigger-content">
 				<AiMagicButton class="collapsible-trigger-icon" :animate="hovering" />
-				<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
+				<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_assistant') }}</span>
 				<VChip v-show="!sidebarStore.collapsed" outlined primary x-small class="collapsible-trigger-beta">
 					{{ $t('beta') }}
 				</VChip>
