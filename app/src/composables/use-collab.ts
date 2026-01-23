@@ -260,7 +260,7 @@ export function useCollab(
 		roomId.value = message.room;
 		connectionId.value = message.connection;
 
-		if (!isMatch({ ...initialValues.value, ...message.changes }, edits.value)) {
+		if (!isMatch({ ...initialValues.value, ...edits.value }, message.changes)) {
 			if (!isEmpty(edits.value)) collidingLocalChanges.value = edits.value;
 			edits.value = message.changes;
 		}
@@ -309,7 +309,10 @@ export function useCollab(
 		}
 
 		if ('changes' in message) {
-			if (!isEqual(message.changes, edits.value[message.field])) edits.value[message.field] = message.changes;
+			if (!isEqual(message.changes, edits.value[message.field])) {
+				// Can't directly assign message.changes here because edits can be a computed value
+				edits.value = { ...edits.value, [message.field]: message.changes };
+			}
 		} else {
 			delete edits.value[message.field];
 		}

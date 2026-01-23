@@ -34,6 +34,7 @@ const {
 	relatedPrimaryKeyField: string | null;
 	refresh: () => void;
 	collabContext?: CollabContext;
+	relatedCollabContext?: CollabContext;
 }>();
 
 const internalEdits = defineModel<Record<string, any>>('internal-edits');
@@ -140,7 +141,7 @@ function useValidationScrollToField() {
 				:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
 				:primary-key="relatedPrimaryKey"
 				:fields="relatedCollectionFields"
-				:collab-context="collabContext"
+				:collab-context="relatedCollabContext"
 				@update:model-value="setRelationEdits"
 			/>
 

@@ -3,7 +3,7 @@ import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { isEmpty, set } from 'lodash';
+import { get, isEmpty, set, uniqBy } from 'lodash';
 import { computed, type Ref, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -92,20 +92,39 @@ const { internalActive } = useActiveState();
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, relatedPrimaryKeyField } = useRelation();
 
 const { internalEdits, loading, initialValues, refresh } = useItem();
+
 const { save, cancel, overlayActive, getTooltip } = useActions();
 
 const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
 const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
-const {
-	users: collabUsers,
-	connected,
-	clearCollidingChanges,
-	collabCollision,
-	update: updateCollab,
-	collabContext,
-} = useCollab(collection, primaryKey, ref(null), initialValues, internalEdits, refresh, overlayActive);
+let relatedCollab: ReturnType<typeof useCollab> | undefined;
+
+if (relatedCollection.value) {
+	const relatedInitialValues = computed(() => (initialValues.value ?? {})[props.junctionField!] ?? {});
+
+	const relatedInternalEdits = computed({
+		get: () => {
+			return internalEdits.value[props.junctionField!] ?? {};
+		},
+		set: (edits) => {
+			internalEdits.value[props.junctionField!] = edits;
+		},
+	});
+
+	relatedCollab = useCollab(
+		relatedCollection as any,
+		relatedPrimaryKey,
+		ref(null),
+		relatedInitialValues,
+		relatedInternalEdits,
+		refresh,
+		overlayActive,
+	);
+}
+
+const collab = useCollab(collection, primaryKey, ref(null), initialValues, internalEdits, refresh, overlayActive);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
@@ -262,7 +281,8 @@ const overlayItemContentProps = computed(() => {
 		relatedPrimaryKey: props.relatedPrimaryKey,
 		relatedPrimaryKeyField: relatedPrimaryKeyField.value?.field ?? null,
 		refresh,
-		collabContext,
+		collabContext: collab.collabContext,
+		relatedCollabContext: relatedCollab?.collabContext,
 	};
 });
 
@@ -541,8 +561,8 @@ function useCancelGuard() {
 	const confirmCancellation = computed(() => {
 		if (!hasEdits.value) return false;
 
-		if (connected.value) {
-			return collabUsers.value.length > 1;
+		if (collab.connected.value) {
+			return collab.users.value.length > 1;
 		}
 
 		return props.preventCancelWithEdits;
@@ -593,7 +613,11 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions:prepend>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" small />
+			<HeaderCollab
+				:model-value="uniqBy([...collab.users.value, ...(relatedCollab?.users.value ?? [])], 'connection')"
+				:connected="collab.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
+				small
+			/>
 		</template>
 
 		<template #actions>
@@ -693,18 +717,30 @@ function popoverClickOutsideMiddleware(e: Event) {
 	</VMenu>
 
 	<ComparisonModal
-		:model-value="Boolean(collabCollision) && overlayActive"
+		:model-value="Boolean(collab.collabCollision.value) && overlayActive"
 		:collection="collection"
 		:primary-key="primaryKey"
-		:current-collab="collabCollision"
-		:collab-context="collabContext"
+		:current-collab="collab.collabCollision.value"
+		:collab-context="collab.collabContext"
 		mode="collab"
-		@confirm="updateCollab"
-		@cancel="clearCollidingChanges"
+		@confirm="collab.update"
+		@cancel="collab.clearCollidingChanges"
+	/>
+
+	<ComparisonModal
+		v-if="relatedCollab"
+		:model-value="Boolean(relatedCollab.collabCollision.value) && overlayActive"
+		:collection="collection"
+		:primary-key="primaryKey"
+		:current-collab="relatedCollab.collabCollision.value"
+		:collab-context="relatedCollab.collabContext"
+		mode="collab"
+		@confirm="relatedCollab.update"
+		@cancel="relatedCollab.clearCollidingChanges"
 	/>
 
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-		<VCard v-if="!connected">
+		<VCard v-if="!collab.connected">
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 			<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -727,7 +763,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	</VDialog>
 
 	<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
-		<VCard v-if="!connected">
+		<VCard v-if="!collab.connected">
 			<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
 			<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
 			<VCardActions>
