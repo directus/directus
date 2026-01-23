@@ -22,7 +22,7 @@ const isOpen = useDialogRoute();
 const { info } = useServerStore();
 
 const allowedMimeTypes = computed(() => {
-	const allowList = info.files?.mimeTypeAllowList;
+	const allowList = info.files?.mimeTypeAllowList as string | undefined;
 
 	if (!allowList || allowList === '*/*') {
 		return undefined;
