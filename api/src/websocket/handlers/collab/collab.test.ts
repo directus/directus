@@ -127,7 +127,7 @@ describe('CollabHandler', () => {
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
 
 			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('articles', 1, null, undefined);
-			expect(mockRoom.join).toHaveBeenCalledWith(mockClient);
+			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, undefined);
 			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
 
@@ -156,7 +156,7 @@ describe('CollabHandler', () => {
 
 			expect(mockService.readSingleton).toHaveBeenCalled();
 			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('settings', undefined, null, undefined);
-			expect(mockRoom.join).toHaveBeenCalledWith(mockClient);
+			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, undefined);
 		});
 
 		test('propagates version to createRoom', async () => {
@@ -170,6 +170,24 @@ describe('CollabHandler', () => {
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1, version: 'v1' } as any);
 
 			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('articles', 1, 'v1', undefined);
+		});
+
+		test('propagates color to room.join', async () => {
+			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
+			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
+			vi.mocked(getService).mockReturnValue({ readOne: vi.fn().mockResolvedValue({ id: 1 }) } as any);
+
+			const mockRoom = { join: vi.fn() };
+			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
+
+			await handler.onJoin(mockClient, {
+				action: 'join',
+				collection: 'articles',
+				item: 1,
+				color: 'purple',
+			} as any);
+
+			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, 'purple');
 		});
 	});
 
