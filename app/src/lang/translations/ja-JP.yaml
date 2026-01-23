@@ -1180,8 +1180,6 @@ settings_project: 設定
 settings_appearance: 外観
 settings_ai: AI
 model_context_protocol: Model Context Protocol
-ai_chat: AI チャット
-ai_disabled_by_env: AI チャット機能は環境変数によって無効化されています。
 settings_flows: フロー
 settings_presets: ブックマーク
 settings_translations: 翻訳
