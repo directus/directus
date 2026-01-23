@@ -795,12 +795,14 @@ errors:
   INVALID_FOREIGN_KEY: 無効な外部キー
   INVALID_IP: IPアドレスが許可されていません
   INVALID_OTP: ワンタイムパスワードが間違っています
+  INVALID_PAYLOAD: 不正な送信データ
   INVALID_PROVIDER: ユーザーは別の認証プロバイダに属しています
   INVALID_QUERY: 無効なクエリー
   INVALID_TOKEN: 無効なトークン
   INVALID_USER: ユーザー認証に失敗しました
   ITEM_LIMIT_REACHED: アイテムの上限に達しました
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
+  LIMIT_EXCEEDED: '制限を超えました'
   METHOD_NOT_ALLOWED: 許可されていないメソッド
   NOT_NULL_VIOLATION: 値は Null 値にできません
   RANGE_NOT_SATISFIABLE: 無効な範囲
@@ -809,11 +811,15 @@ errors:
   ROUTE_NOT_FOUND: 見つかりません
   SERVICE_UNAVAILABLE: サービスは利用できません
   TOKEN_EXPIRED: トークンが期限切れです
+  UNEXPECTED_RESPONSE: 予期しない応答
   UNKNOWN: 予期しないエラーが発生しました
+  UNPROCESSABLE_CONTENT: 処理できないコンテンツ
   UNSUPPORTED_MEDIA_TYPE: サポート外のメディア種別
+  USER_SUSPENDED: ユーザーが停止されています
   VALUE_OUT_OF_RANGE: 値が範囲外です
   VALUE_TOO_LONG: 値が長すぎます
 security: セキュリティ
+value_securely_stored: 値は安全に保存されました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
@@ -825,6 +831,7 @@ cannot_edit_global_bookmarks: グローバルブックマークを編集でき�
 bookmarks: ブックマーク
 presets: プリセット
 unexpected_error: 予期しないエラーが発生しました
+unexpected_error_copy: 予期しないエラーが発生しました。もう一度お試しください。
 copy_details: 詳細をコピー
 no_app_access: アプリにアクセスできません
 no_app_access_copy: このユーザーは管理者用アプリを使用できません
@@ -849,10 +856,14 @@ make_collection_hidden: コレクションを非表示
 make_folder_visible: フォルダを表示
 make_folder_hidden: フォルダを非表示
 goto_collection_content: コンテンツを表示
+count_of_total_items: '{total} 件中 {count} 件のアイテム'
+start_end_of_count_items: '{count} 件中 {start} – {end} 件のアイテム'
+start_end_of_count_filtered_items: '絞り込み結果 {count} 件中 {start} – {end} 件のアイテム'
 delete_collection_are_you_sure: >-
   本当にコレクション「{collection}」を削除しますか？これにより、コレクションとそこに含まれるすべてのアイテムが削除されます。この操作は取り消せません。
 delete_folder_are_you_sure: 本当にフォルダー「{folder}」を削除しますか？内包されているフォルダーやコレクションは、最上位レベルに移動されます。
 delete_collection_peer_dependencies: 現在のコレクションに関連付けられているため、以下のフィールドも削除されます。
+collections_shown: 表示するコレクション
 visible_collections: 表示中のコレクション
 hidden_collections: 非表示のコレクション
 show_hidden_collections: 非表示コレクションを表示
@@ -895,17 +906,26 @@ operators:
   icontains: 含む (無関係)
   starts_with: 前方一致
   nstarts_with: 前方一致でない
+  istarts_with: 次で始まる（区別なし）
+  nistarts_with: 次で始まらない（区別なし）
   ends_with: 後方一致
   nends_with: 後方一致でない
+  iends_with: 次で終わる（区別なし）
+  niends_with: 次で終わらない（区別なし）
   between: 間である
   nbetween: 間でない
   empty: 空
   nempty: 空でない
   all: 含まれるキー
   has: 含まれるいくつかのキー
+  intersects: 交差する
+  nintersects: 交差しない
+  intersects_bbox: 境界ボックスと交差する
+  nintersects_bbox: 境界ボックスと交差しない
   regex: 正規表現にマッチ
 custom_validation_message: カスタムバリデーションメッセージ
 loading: 読み込み中...
+extension_readme_missing: この拡張機能には README ファイルがありません。
 drop_to_upload: ドロップしてアップロード
 item: アイテム
 items: アイテム
@@ -923,12 +943,15 @@ layout_options: レイアウト設定
 rows: 行
 columns: 列
 collection_setup: コレクションの作成
+optional_system_fields: 任意フィールド
 value_unique: 他と重複しない値である必要があります
+value_index: フィールドはインデックス済みです
 all_activity: すべてのアクティビティ
 create_item: アイテムの作成
 display_template: テンプレートを表示
 language_display_template: 言語表示テンプレート
 translations_display_template: 翻訳表示テンプレート
+n_items_selected: '選択されていません | 1 個を選択中 | {n} 個を選択中'
 per_page: ページごと
 all_files: すべてのファイル
 my_files: マイファイル
@@ -962,6 +985,7 @@ delete: 削除
 select_fields: 入力欄の選択
 format_text: テキストの書式設定
 format_value: 値の書式設定
+abbreviate_value: 値を短縮
 operator: オペレーター
 bold: 太字
 toggle: 切り替え
@@ -971,10 +995,14 @@ label: ラベル
 flows: フロー
 flow: フロー
 select_a_flow: フローを選択
+run_flow_confirm: このフローを実行してもよろしいですか ?
+run_flow_anyway: このままフローを実行
 run_flow_on_current_collection: 現在のコレクションでフローを実行
 run_flow_on_current: 現在のアイテムでフローを実行
+run_flow_on_current_edited_confirm: このフローによってアイテムが更新される可能性があります。実行してもよろしいですか ?
 run_flow_on_selected: 項目を1つ以上選択してください | 選択項目の実行フロー | {n}つの選択項目の実行フロー
 run_flow: フローを実行
+trigger_flow_success: '「{flow}」フローを正常に実行しました'
 field_name_placeholder: フィールド名を入力
 field_key_placeholder: フィールドキーを入力...
 trigger: トリガー
@@ -1006,10 +1034,32 @@ create_operation: 操作を作成
 edit_operation: 操作を編集
 code: コード
 operation_options: 操作オプション
+operation_name: オペレーション名…
+operation_key: 参照用識別子...
+operation_key_unique_error: フロー内でオペレーションの ID は重複できません
+operation_handle_resolve: '成功時:クリックで追加、ドラッグでルート変更'
+operation_handle_reject: '失敗時:クリックで追加、ドラッグでルート変更'
+visual_editor: ビジュアルエディター
+toggle_navigation: ナビゲーションの切り替え
+toggle_sidebar: サイドバーの切り替え
+toggle_editable_elements: 編集可能要素の切り替え
+no_url: URL が指定されていません
+no_url_copy: 設定で URL を追加してください
+invalid_url: 無効な URL です
+invalid_url_copy: 指定された URL が設定済みの URL と一致しません。
+insights: インサイト
 dashboard: ダッシュボード
+panel: パネル
+panel_options: パネルオプション
+panel_header: パネルヘッダー
+panel_name_placeholder: パネル名...
+panel_note_placeholder: パネルの補足説明...
+panel_delete_confirm: 本当にこのパネルを削除しますか ? この操作は取り消せません。
+list_panel_allow_edit: インライン編集を許可
 dashboard_delete_confirm: このダッシュボードを削除してよろしいですか？この操作を取り消すことはできません。
 edit_dashboard: ダッシュボードを編集
 delete_dashboard: ダッシュボードを削除
+visible: 表示
 no_dashboards: ダッシュボードがありません
 no_dashboards_copy: ダッシュボードが作成されていません。
 create_dashboard: ダッシュボードを作成
@@ -1705,7 +1755,7 @@ operations:
     data: データ
     headers: ヘッダー
     header: ヘッダー
-    header_placeholder: 認証...
+    header_placeholder: 認証…
     value_placeholder: Bearer eyJhbGciOi...
   sleep:
     name: 待機
