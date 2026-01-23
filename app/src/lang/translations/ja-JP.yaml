@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-about: Directus について
+about: Directus の概要
 directus_bsl: Directus BSL 1.1
 privacy_policy: プライバシーポリシー 
 contact_our_team: チームへのお問い合わせ  
@@ -638,11 +638,18 @@ import_from_url: URLからファイルをインポート
 replace_from_device: デバイスからファイルを置き換え
 replace_from_library: ライブラリからファイルを置き換え
 replace_from_url: URLからファイルを置き換え
+no_image_selected: 画像が選択されていません
 no_file_selected: ファイルが選択されていません
 download_file: ファイルをダウンロード
+open_file_in_tab: 新しいタブでファイルを開く
 start_export: エクスポートを開始
 not_available_for_local_downloads: ローカルダウンロードはできません
 exporting_all_items_in_collection: '{collection} 内のすべての{total} アイテムをエクスポート中'
+exporting_limited_items_in_collection: '{collection} 内の {total} 個中 {count} 個のアイテムがエクスポートされます。'
+exporting_no_items_to_export: エクスポートするアイテムがありません。エクスポート設定を調整するか、コレクションにアイテムを追加してください。
+exporting_download_hint: '{format} ファイルが作成されると、お使いのデバイスにダウンロードされます。'
+exporting_library_hint: '{format} ファイルが作成されると、ファイルライブラリに保存されます。'
+exporting_library_hint_forced: このエクスポートはバッチ処理が必要です。完了すると、{format} ファイルがファイルライブラリに保存されます。
 collection_key: コレクション
 name: 名前
 primary_key_field: プライマリーキー
@@ -658,6 +665,8 @@ generated_uuid: UUIDを生成
 manual_string: 値を手動で入力する
 save_and_create_new: 保存して新規作成
 save_and_stay: 保存してページに留まる
+save_and_quit: 保存して終了
+save_and_return_to_main: 保存してメインに戻る
 save_as_copy: 複製として保存
 add_existing: 既存を追加
 creating_items: アイテムの作成
@@ -667,8 +676,15 @@ enable_select_button: 選択ボタンを有効化
 allow_duplicates: 重複を許可
 comments: コメント
 no_comments: コメントがありません
+expand: 展開
+expand_all: すべて展開
+expand_none: すべて折り畳む
+collapse: 折り畳む
+collapse_all: すべて折り畳む
 select_item: アイテムの選択
 no_items: アイテムがありません
+search_items: アイテムを検索…
+search_extensions: 拡張機能を検索…
 disabled: 無効
 information: インフォメーション
 report_bug: 不具合の報告
@@ -681,6 +697,7 @@ display_not_found: ' 表示"{display}" が見つかりません'
 reset_display: 表示をリセット
 list-m2a: ' (M2A)ビルダー'
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
+filtered_item_count: '該当するアイテムなし | 1件の該当アイテム | {count} 件の該当アイテム'
 no_items_copy: このコレクションにはまだ項目がありません
 file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
 no_files_copy: まだファイルがありません。
@@ -692,11 +709,13 @@ activity_log: 操作ログ
 all_items: 全アイテム
 any: すべて
 csv: CSVファイル
+csv_utf8: CSV Excel (UTF-8)
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
 no_collections_copy: コレクションはまだありません。システム管理者にお問い合わせ下さい。
 relationship_not_setup: 正しく関係が設定されていません
+no_singleton_relations: シングルトンへのリレーションシップはサポートされていません
 display_template_not_setup: 表示テンプレートのオプションが間違っています
 collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
 select_a_collection: コレクションを選択
@@ -708,19 +727,26 @@ copy_to: コピー中...
 no_other_dashboards_copy: 他のダッシュボードはまだありません。
 inactive: 無効
 users: ユーザー
+roles: 権限グループ
 activity: 操作履歴
 activity_item: アクティビティアイテム
 action: アクション
 ip_address: IPアドレス
 user_agent: ユーザーエージェント
+origin: オリジン
+decimals: 小数点以下桁数
+value_decimals: 値の小数点以下桁数
 min_value: 最小値
 max_value: 最大値
 automatic: 自動
 field_width: 入力欄幅
 add_filter: フィルターを追加
+upper_limit: 上限値...
+lower_limit: 下限値…
 user_directory: ユーザーディレクトリ
 documentation: ドキュメンテーション
 sidebar: サイドバー
+duration: 期間
 charset: 文字コード
 second: 秒
 file_moved: ファイルを移動しました
@@ -738,10 +764,16 @@ bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つ�
 bookmark_doesnt_exist_cta: コレクションに戻る
 select_an_item: アイテムを選択
 edit: 編集
+edit_item: アイテムを編集
 enabled: 有効化
+partially_enabled: 一部有効
+enable_all: すべて有効
+disable_all: すべて無効
+enabled_dev_tooltip: 開発モードでは、アプリの拡張機能は常に有効です
 disable_tfa: 2要素認証を無効化
 admin_disable_tfa_text: このユーザーの2要素認証を無効にしてよろしいですか？
 tfa_setup: 2要素認証を設定
+tfa_setup_description: アカウントを保護するために二要素認証を設定してください
 tfa_scan_code: 認証アプリのコードをスキャンして2要素認証の設定を完了します
 enter_otp_to_disable_tfa: 2要素認証の無効化にOTP（ワンタイムパスワード）を入力
 create_account: アカウントを作成
@@ -751,8 +783,11 @@ corresponding_field: 対応するフィールド
 errors:
   COLLECTION_NOT_FOUND: "コレクションが存在しません"
   CONTAINS_NULL_VALUES: フィールドに null 値が含まれています
+  CONTENT_TOO_LARGE: 送信されたアイテムまたはファイルのサイズが大きすぎます
+  FAILED_VALIDATION: 検証に失敗しました
   FIELD_NOT_FOUND: フィールドが見つかりません
   FORBIDDEN: アクセス禁止
+  GRAPHQL_VALIDATION: GraphQL 検証
   ILLEGAL_ASSET_TRANSFORMATION: 画像ソースが大きすぎるためプレビューできません
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
   INVALID_CONFIG: 無効な設定
@@ -814,6 +849,10 @@ make_collection_hidden: コレクションを非表示
 make_folder_visible: フォルダを表示
 make_folder_hidden: フォルダを非表示
 goto_collection_content: コンテンツを表示
+delete_collection_are_you_sure: >-
+  本当にコレクション「{collection}」を削除しますか？これにより、コレクションとそこに含まれるすべてのアイテムが削除されます。この操作は取り消せません。
+delete_folder_are_you_sure: 本当にフォルダー「{folder}」を削除しますか？内包されているフォルダーやコレクションは、最上位レベルに移動されます。
+delete_collection_peer_dependencies: 現在のコレクションに関連付けられているため、以下のフィールドも削除されます。
 visible_collections: 表示中のコレクション
 hidden_collections: 非表示のコレクション
 show_hidden_collections: 非表示コレクションを表示
@@ -1675,6 +1714,8 @@ operations:
     flows: フロー
     flow: フロー
     data: データ
+    batch: バッチ
+    cache: キャッシュ
 standard: 標準
 scientific: 科学表記
 engineering: 工学表記
@@ -1713,7 +1754,7 @@ date_precision: 日付の精度
 export_dashboard: ダッシュボードをエクスポート
 duplicate_dashboard: ダッシュボードを複製
 search_dashboard: ダッシュボードを検索...
-search_flow: フローを検索...
+search_flow: フローを検索 ...
 percent: パーセント
 show_password: パスワードを表示にする
 hide_password: パスワードを非表示にする
