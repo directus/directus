@@ -1,6 +1,6 @@
 import type { VisualElementContextData } from '@directus/ai';
 import formatTitle from '@directus/format-title';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { getEndpoint } from '@directus/utils';
 import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '../stores/use-ai';
@@ -10,7 +10,6 @@ import { usePrompts } from './use-prompts';
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { notify } from '@/utils/notify';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -81,15 +80,10 @@ export function useContextStaging() {
 
 		const displayTemplate = collectionInfo.meta?.display_template || `{{ ${primaryKey} }}`;
 
-		const requiredFields = adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate), collection);
-
-		const fields = new Set(requiredFields);
-		fields.add(primaryKey);
-
 		try {
 			const response = await api.get(getEndpoint(collection), {
 				params: {
-					fields: Array.from(fields),
+					fields: ['*'],
 					filter: { [primaryKey]: { _in: ids } },
 				},
 			});

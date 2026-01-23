@@ -9,6 +9,7 @@ import {
 	type Tool,
 	type UIMessage,
 } from 'ai';
+import { useLogger } from '../../../logger/index.js';
 import {
 	type AISettings,
 	buildProviderConfigs,
@@ -44,6 +45,7 @@ export const createUiStream = async (
 
 	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
+	const logger = useLogger();
 
 	const stream = streamText({
 		system: baseSystemPrompt,
@@ -56,9 +58,12 @@ export const createUiStream = async (
 			// Append context to system prompt on each step
 			if (context) {
 				const contextBlock = formatContextForSystemPrompt(context);
-				return { system: baseSystemPrompt + contextBlock };
+				const fullPrompt = baseSystemPrompt + contextBlock;
+				logger.info({ systemPrompt: fullPrompt }, 'AI system prompt with context');
+				return { system: fullPrompt };
 			}
 
+			logger.info({ systemPrompt: baseSystemPrompt }, 'AI system prompt');
 			return {};
 		},
 		onFinish({ usage }) {

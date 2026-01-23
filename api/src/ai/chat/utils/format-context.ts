@@ -8,6 +8,7 @@ interface VisualElementData {
 
 interface PromptSnapshot {
 	text?: string;
+	messages?: { role: string; text: string }[];
 }
 
 interface Attachment {
@@ -17,70 +18,88 @@ interface Attachment {
 	snapshot?: unknown;
 }
 
-/**
- * Format visual elements into a dedicated block
- */
-function formatVisualElements(attachments: Attachment[]): string | null {
-	const visualElements = attachments.filter((att) => att.type === 'visual-element');
+interface GroupedAttachments {
+	visualElements: Attachment[];
+	prompts: Attachment[];
+	items: Attachment[];
+}
 
-	if (visualElements.length === 0) return null;
+function groupAttachments(attachments: Attachment[]): GroupedAttachments {
+	const groups: GroupedAttachments = { visualElements: [], prompts: [], items: [] };
 
-	const elementLines = visualElements.map((att) => {
-		const data = att.data as VisualElementData;
-		const fields = data.fields?.length ? data.fields.join(', ') : 'all';
+	for (const att of attachments) {
+		if (att.type === 'visual-element') {
+			groups.visualElements.push(att);
+		} else if (att.type === 'prompt') {
+			groups.prompts.push(att);
+		} else if (att.type === 'item') {
+			groups.items.push(att);
+		}
+	}
 
-		return `### ${data.collection}/${data.item} — "${att.display}"
+	return groups;
+}
+
+function formatVisualElement(att: Attachment): string {
+	const data = att.data as VisualElementData;
+	const fields = data.fields?.length ? data.fields.join(', ') : 'all';
+
+	return `### ${data.collection}/${data.item} — "${att.display}"
 Editable fields: ${fields}
 \`\`\`json
 ${JSON.stringify(att.snapshot, null, 2)}
 \`\`\``;
-	});
-
-	return `<visual_editing>
-## Selected Elements
-The user selected these elements for editing in the visual editor.
-These elements are the PRIMARY focus of the user's request — prioritize them over page context.
-
-${elementLines.join('\n\n')}
-
-IMPORTANT: Use the items tool with action: 'update' to modify these elements.
-Do NOT use form-values tools — those modify the page form, not the selected visual elements.
-</visual_editing>`;
 }
 
-/**
- * Format non-visual attachments
- */
-function formatOtherAttachments(attachments: Attachment[]): string | null {
-	const otherAttachments = attachments.filter((att) => att.type !== 'visual-element');
+function formatPrompt(att: Attachment): string {
+	const snapshot = att.snapshot as PromptSnapshot;
+	const lines: string[] = [];
 
-	if (otherAttachments.length === 0) return null;
+	if (snapshot.text) {
+		lines.push(snapshot.text);
+	}
 
-	const attachmentLines = otherAttachments.map((att) => {
-		if (att.type === 'item') {
-			return `[Item: ${att.display}]\n${JSON.stringify(att.snapshot, null, 2)}`;
+	if (snapshot.messages?.length) {
+		lines.push('\n### Example Exchange');
+
+		for (const msg of snapshot.messages) {
+			lines.push(`**${msg.role}**: ${msg.text}`);
 		}
+	}
 
-		if (att.type === 'prompt') {
-			const snapshot = att.snapshot as PromptSnapshot;
-			return `[Prompt: ${att.display}]\n${snapshot.text ?? ''}`;
-		}
+	return `### ${att.display}\n${lines.join('\n')}`;
+}
 
-		return '';
-	});
-
-	const filtered = attachmentLines.filter(Boolean);
-
-	if (filtered.length === 0) return null;
-
-	return `## User-Added Context\n${filtered.join('\n\n')}`;
+function formatItem(att: Attachment): string {
+	const data = att.data as { collection?: string };
+	const collectionLabel = data.collection ? ` (${data.collection})` : '';
+	return `[Item: ${att.display}${collectionLabel}]\n${JSON.stringify(att.snapshot, null, 2)}`;
 }
 
 /**
  * Format context for appending to system prompt
  */
 export function formatContextForSystemPrompt(context: ChatContext): string {
+	const attachments = (context.attachments ?? []) as Attachment[];
+	const groups = groupAttachments(attachments);
+	const parts: string[] = [];
+
+	// 1. Custom instructions (prompts) - highest priority, placed first
+	if (groups.prompts.length > 0) {
+		const promptBlocks = groups.prompts.map(formatPrompt).join('\n\n');
+
+		parts.push(`<custom_instructions>
+The user has applied the following prompt(s) to guide your behavior:
+
+${promptBlocks}
+</custom_instructions>`);
+	}
+
+	// 2. User context (current page + items)
 	const sections: string[] = [];
+
+	const now = new Date();
+	sections.push(`## Current Date\n${now.toISOString().split('T')[0]}`);
 
 	if (context.page) {
 		const page = context.page;
@@ -93,27 +112,40 @@ export function formatContextForSystemPrompt(context: ChatContext): string {
 		sections.push(`## Current Page\n${pageLines.join('\n')}`);
 	}
 
-	if (context.attachments && context.attachments.length > 0) {
-		const otherContext = formatOtherAttachments(context.attachments as Attachment[]);
+	if (groups.items.length > 0) {
+		const itemLines = groups.items.map(formatItem).join('\n\n');
 
-		if (otherContext) {
-			sections.push(otherContext);
-		}
+		sections.push(`## User-Added Context
+The user has attached these items as reference for their request.
+All root-level fields are included. Use the items tool to fetch additional fields or update items when asked.
+
+${itemLines}`);
 	}
-
-	let result = '';
 
 	if (sections.length > 0) {
-		result = `\n\n<user_context>\n${sections.join('\n\n')}\n</user_context>`;
+		parts.push(`<user_context>\n${sections.join('\n\n')}\n</user_context>`);
 	}
 
-	if (context.attachments && context.attachments.length > 0) {
-		const visualBlock = formatVisualElements(context.attachments as Attachment[]);
+	// 3. Visual editing context
+	if (groups.visualElements.length > 0) {
+		const elementLines = groups.visualElements.map(formatVisualElement).join('\n\n');
 
-		if (visualBlock) {
-			result += `\n\n${visualBlock}`;
-		}
+		parts.push(`<visual_editing>
+## Selected Elements
+The user selected these elements for editing in the visual editor.
+
+${elementLines}
+</visual_editing>`);
 	}
 
-	return result;
+	// 4. Attachment rules (only if any attachments exist)
+	if (attachments.length > 0) {
+		parts.push(`## Attachment Rules
+User-added attachments shoud have higher priority than page context.
+Do NOT use form-values tools for attachments — those only modify the current page form.`);
+	}
+
+	if (parts.length === 0) return '';
+
+	return '\n\n' + parts.join('\n\n');
 }

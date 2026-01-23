@@ -16,7 +16,6 @@ vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
-
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({

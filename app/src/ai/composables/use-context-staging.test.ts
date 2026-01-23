@@ -175,6 +175,7 @@ describe('useContextStaging', () => {
 
 			const firstCall = addSpy.mock.calls[0]![0];
 			expect(firstCall.type).toBe('item');
+
 			if (firstCall.type === 'item') {
 				expect(firstCall.data.collection).toBe('posts');
 			}
