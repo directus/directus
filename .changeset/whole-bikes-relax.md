@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Changed name of AI Chat to AI Assistant
+Renamed AI Chat to AI Assistant
