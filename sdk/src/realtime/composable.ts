@@ -258,8 +258,8 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				// we need to use THIS here instead of client to access overridden functions
 				const self = this as AuthWSClient<Schema>;
-
 				let ws: WebSocketInterface;
+				
 				try {
 					const url = await getSocketUrl(self);
 					debug('info', `Connecting to ${url}...`);
