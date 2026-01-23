@@ -25,14 +25,16 @@ const mockLocks = new Map();
 
 vi.mock('./store.js', () => {
 	return {
-		useStore: (uid: string) => {
+		useStore: (uid: string, defaults?: any) => {
 			return async (callback: any) => {
 				const lock = mockLocks.get(uid) || Promise.resolve();
 
 				const nextLock = lock.then(async () => {
 					return await callback({
 						has: async (key: string) => mockData.has(`${uid}:${key}`),
-						get: async (key: string) => mockData.get(`${uid}:${key}`),
+						get: async (key: string) => {
+							return mockData.get(`${uid}:${key}`) ?? defaults?.[key];
+						},
 						set: async (key: string, value: any) => {
 							mockData.set(`${uid}:${key}`, value);
 						},
