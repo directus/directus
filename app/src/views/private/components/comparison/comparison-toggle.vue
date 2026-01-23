@@ -50,7 +50,7 @@ const displayValue = computed(() => {
 		</template>
 
 		<VList class="comparison-toggle-list">
-			<VListItem clickable @click="selectOption('Latest')">
+			<VListItem clickable :active="props.modelValue === 'Latest'" @click="selectOption('Latest')">
 				<VListItemIcon>
 					<VIcon name="check_circle" />
 				</VListItemIcon>
@@ -60,6 +60,7 @@ const displayValue = computed(() => {
 			<VListItem
 				:clickable="!props.disablePrevious"
 				:disabled="props.disablePrevious"
+				:active="props.modelValue === 'Previous'"
 				@click="selectOption('Previous')"
 			>
 				<VListItemIcon>
