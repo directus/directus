@@ -1458,7 +1458,7 @@ fields:
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
       toolbar to ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai/chat" target="_blank">Learn more about configuring and using AI
+      href="https://directus.io/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
       Assistant.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
