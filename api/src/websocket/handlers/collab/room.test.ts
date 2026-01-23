@@ -553,19 +553,20 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		await room.update(clientA, { title: 'Changed' });
-		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed' });
+		await room.update(clientA, { title: 'Changed', status: 'Draft' });
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed', status: 'Draft' });
 
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
-		await room.discard();
+		await room.discard(['title']);
 
-		expect(mockData.get(`${uid}:changes`)).toEqual({});
+		expect(mockData.get(`${uid}:changes`)).toEqual({ status: 'Draft' });
 
 		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
 			'abc',
 			expect.objectContaining({
 				action: 'discard',
+				fields: ['title'],
 			}),
 		);
 
@@ -573,6 +574,7 @@ describe('room', () => {
 			'def',
 			expect.objectContaining({
 				action: 'discard',
+				fields: ['title'],
 			}),
 		);
 	});

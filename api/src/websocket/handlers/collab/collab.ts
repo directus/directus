@@ -365,7 +365,7 @@ export class CollabHandler {
 	}
 
 	/**
-	 * Discard all changes in the room
+	 * Discard specified changes in the room
 	 */
 	async onDiscard(client: WebSocketClient, message: DiscardMessage) {
 		const room = await this.roomManager.getRoom(message.room);
@@ -382,6 +382,22 @@ export class CollabHandler {
 			});
 		}
 
-		await room.discard();
+		const knex = getDatabase();
+		const schema = await getSchema();
+
+		const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
+			knex,
+			schema,
+		});
+
+		for (const field of message.fields) {
+			if (allowedFields !== null && !isFieldAllowed(allowedFields, field)) {
+				throw new InvalidPayloadError({
+					reason: `No permission to discard field ${field} or field does not exist`,
+				});
+			}
+		}
+
+		await room.discard(message.fields);
 	}
 }

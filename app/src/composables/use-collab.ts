@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import sdk from '@/sdk';
 import { useNotificationsStore } from '@/stores/notifications';
+import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -16,6 +17,7 @@ type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>
 type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE }>;
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
+type DiscardMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.DISCARD }>;
 
 const SESSION_COLOR_KEY = 'collab-color';
 
@@ -79,6 +81,7 @@ export function useCollab(
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
 	const notificationsStore = useNotificationsStore();
+	const permissionsStore = usePermissionsStore();
 	const connected = ref<boolean | undefined>(undefined);
 	const { t } = useI18n();
 
@@ -375,10 +378,6 @@ export function useCollab(
 			});
 	}
 
-	async function receiveDiscard() {
-		edits.value = {};
-	}
-
 	async function receiveFocus(message: FocusMessage) {
 		if (connectionId.value === message.connection) return;
 
@@ -386,6 +385,12 @@ export function useCollab(
 			focused.value[message.connection] = message.field;
 		} else {
 			delete focused.value[message.connection];
+		}
+	}
+
+	async function receiveDiscard(message: DiscardMessage) {
+		for (const field of message.fields) {
+			delete edits.value[field];
 		}
 	}
 
@@ -429,11 +434,26 @@ export function useCollab(
 	}, 100);
 
 	function discard() {
+		const currentEdits = Object.keys(edits.value);
+		const permission = permissionsStore.getPermission(collection.value, 'update');
+
+		if (!permission || permission.access === 'none') return;
+
+		const allowedFields = permission.fields ?? [];
+		const isFullAccess = allowedFields.includes('*');
+
+		const fieldsToDiscard = currentEdits.filter((field) => isFullAccess || allowedFields.includes(field));
+
+		if (fieldsToDiscard.length === 0) return;
+
 		sendMessage({
 			action: ACTION.CLIENT.DISCARD,
+			fields: fieldsToDiscard,
 		});
 
-		edits.value = {};
+		for (const field of fieldsToDiscard) {
+			delete edits.value[field];
+		}
 	}
 
 	function sendMessage(message: Omit<ClientMessage, 'id'>) {
