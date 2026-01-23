@@ -258,12 +258,19 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				// we need to use THIS here instead of client to access overridden functions
 				const self = this as AuthWSClient<Schema>;
-				const url = await getSocketUrl(self);
-				debug('info', `Connecting to ${url}...`);
+
+				let ws: WebSocketInterface;
+				try {
+					const url = await getSocketUrl(self);
+					debug('info', `Connecting to ${url}...`);
+
+					ws = new client.globals.WebSocket(url);
+				} catch (e) {
+					state = { code: 'closed' };
+					throw e;
+				}
 
 				let resolved = false;
-				const ws = new client.globals.WebSocket(url);
-
 				let connectTimeout: ReturnType<typeof setTimeout> | undefined;
 
 				if (config.connect) {
