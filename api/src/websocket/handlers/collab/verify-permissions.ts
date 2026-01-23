@@ -68,10 +68,8 @@ export async function verifyPermissions(
 		// Check for item-level rules to skip DB fetch
 		const hasItemRules = processedPermissions.some((p) => p.permissions && Object.keys(p.permissions).length > 0);
 
-		let fieldsToFetch = ['*'];
-
 		if (hasItemRules) {
-			fieldsToFetch = processedPermissions
+			const fieldsToFetch = processedPermissions
 				.map((perm) => (perm.permissions ? filterToFields(perm.permissions, collection, schema) : []))
 				.flat();
 
