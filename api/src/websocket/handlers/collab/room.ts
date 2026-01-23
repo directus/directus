@@ -1,6 +1,13 @@
 import { createHash } from 'crypto';
 import { isSystemCollection } from '@directus/system-data';
-import { type Accountability, type ActionHandler, type Item, type WebSocketClient, WS_TYPE } from '@directus/types';
+import {
+	type Accountability,
+	type ActionHandler,
+	type Item,
+	type PrimaryKey,
+	type WebSocketClient,
+	WS_TYPE,
+} from '@directus/types';
 import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
@@ -189,7 +196,7 @@ export class Room {
 		this.store = useStore<RoomData>(uid, roomDefaults);
 
 		this.onUpdateHandler = async (meta) => {
-			const { keys } = meta as { keys: string[] };
+			const { keys } = meta as { keys: PrimaryKey[] };
 
 			const target = this.version ?? this.item;
 
@@ -242,7 +249,7 @@ export class Room {
 		};
 
 		this.onDeleteHandler = async (meta) => {
-			const { keys, collection: eventCollection } = meta as { keys: string[]; collection: string };
+			const { keys, collection: eventCollection } = meta as { keys: PrimaryKey[]; collection: string };
 
 			// Skip deletions for different versions
 			const isVersionMatch =
@@ -291,19 +298,19 @@ export class Room {
 	}
 
 	async getClients() {
-		return await this.store((store) => store.get('clients'));
+		return this.store((store) => store.get('clients'));
 	}
 
 	async getFocuses() {
-		return await this.store((store) => store.get('focuses'));
+		return this.store((store) => store.get('focuses'));
 	}
 
 	async getChanges() {
-		return await this.store((store) => store.get('changes'));
+		return this.store((store) => store.get('changes'));
 	}
 
 	async hasClient(id: ClientID) {
-		return await this.store(async (store) => {
+		return this.store(async (store) => {
 			const clients = await store.get('clients');
 
 			return clients.findIndex((c) => c.uid === id) !== -1;
@@ -311,11 +318,11 @@ export class Room {
 	}
 
 	async getFocusByUser(id: ClientID) {
-		return await this.store(async (store) => (await store.get('focuses'))[id]);
+		return this.store(async (store) => (await store.get('focuses'))[id]);
 	}
 
 	async getFocusByField(field: string) {
-		return await this.store(async (store) => {
+		return this.store(async (store) => {
 			const focuses = await store.get('focuses');
 
 			return Object.entries(focuses).find(([_, f]) => f === field)?.[0];
