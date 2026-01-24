@@ -251,7 +251,6 @@ data:
     many_field: parent
     one_collection: directus_roles
     one_field: children
-<<<<<<< HEAD
 
   ### Webhooks
   - many_collection: directus_webhooks
@@ -282,5 +281,3 @@ data:
   - many_collection: directus_deployment_runs
     many_field: user_created
     one_collection: directus_users
-=======
->>>>>>> main
