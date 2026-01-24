@@ -23,7 +23,7 @@ about: Directus の概要
 directus_bsl: Directus BSL 1.1
 privacy_policy: プライバシーポリシー 
 contact_our_team: チームへのお問い合わせ  
-setup_welcome: ようこそ、Directusへ
+setup_welcome: ようこそ Directus へ
 setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
 setup_license_notice: >
   年間収益、資金調達額、または運営予算が 5 百万ドル未満の団体は、Directus を無料でご利用いただけます。
@@ -1238,12 +1238,33 @@ no_layout_collection_selected_yet: レイアウトまたはコレクションが
 batch_delete_confirm: >-
   項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
 cancel: キャンセル
+no_upscale: 画像を拡大しない
+no_extensions: 拡張機能なし
+no_extensions_copy: 拡張機能はまだインストールされていません。
+install_extension: 拡張機能をインストール
+uninstall_locked: マーケットプレイス経由でインストールされていない拡張機能はアンインストールできません。
+uninstall: アンインストール
+installed: インストール済み
+reinstall: 再インストール
+open_in_marketplace: マーケットプレイスで開く
 source_registry: マーケットプレイス
+source_local: ローカル
+source_module: Node モジュール
+collection: コレクション
 collections: コレクション
 content: コンテンツ
 singleton: シングルトン
 singleton_label: シングルオブジェクトに設定する
+system_fields_locked: システムフィールドはロックされているため編集できません。
 directus_collection:
+  directus_access: ポリシーの割り当て
+  directus_activity: 全イベントの監査ログ
+  directus_collections: コレクションの追加設定とメタデータ
+  directus_comments: アイテムのコメント
+  directus_dashboards: インサイトモジュールのダッシュボード
+  directus_fields: フィールドの追加設定とメタデータ
+  directus_files: 全ファイルアセットのメタデータ
+  directus_flows: オートメーションフロー
   directus_presets: コレクションのデフォルトとブックマークのプリセット
   directus_relations: リレーション設定とメタデータ
   directus_revisions: すべてのアクティビティのスナップショット
@@ -1343,6 +1364,7 @@ fields:
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
+    custom_css: カスタム CSS
     module_bar: モジュールバー
     ai_header_name: ヘッダー
   directus_shares:
@@ -1571,6 +1593,8 @@ interfaces:
     primary: プライマリー
   input-code:
     code: コード
+  system-collection:
+    collection: コレクション
   system-collections:
     collections: コレクション
   select-color:
@@ -1638,6 +1662,7 @@ interfaces:
     zoom: 拡大
   list:
     sort: 並べ替え
+    sort_placeholder: マニュアル
     display_group: オプションを表示
   tags:
     tags: タグ
@@ -1687,6 +1712,8 @@ displays:
     boolean: 真偽値
     icon_on: アイコン オン
     icon_off: アイコン オフ
+  collection:
+    collection: コレクション
   color:
     color: 色
   datetime:
@@ -1780,8 +1807,12 @@ panels:
   label:
     name: ラベル
 triggers:
+  common:
+    response_body_all: すべてのデータ
   webhook:
     method: 方法
+  manual:
+    name: マニュアル
 operation_variables_note: フロー内のデータを利用するには、*{'{'}{'{'}$last{'}'}{'}'}** 、**{'{'}{'{'}$trigger{'}'}{'}'}** や **{'{'}{'{'}$accountability{'}'}{'}'}** といった変数を使用します。前のステップの結果を使いたい場合は、そのオペレーションのキー **{'{'}{'{'}operation_key{'}'}{'}'}** を指定して参照してください。
 operations:
   exec:
@@ -1794,6 +1825,7 @@ operations:
   json-web-token:
     payload: ペイロード
     token: トークン
+    token_placeholder: eyJhbGciOi……
     options: オプション
   log:
     message: メッセージ
