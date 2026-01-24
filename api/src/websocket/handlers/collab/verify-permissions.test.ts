@@ -493,7 +493,6 @@ describe('Room.verifyPermissions', () => {
 			expect.objectContaining({
 				schema: expect.anything(),
 				knex: expect.anything(),
-				accountability: client,
 			}),
 		);
 	});

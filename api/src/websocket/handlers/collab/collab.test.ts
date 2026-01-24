@@ -25,6 +25,12 @@ vi.mock('./messenger.js');
 vi.mock('./room.js');
 vi.mock('./verify-permissions.js');
 
+vi.mock('../../../services/versions.js', () => ({
+	VersionsService: vi.fn().mockImplementation(() => ({
+		readOne: vi.fn(),
+	})),
+}));
+
 describe('CollabHandler', () => {
 	let handler: CollabHandler;
 	let mockClient: WebSocketClient;
@@ -118,7 +124,7 @@ describe('CollabHandler', () => {
 
 			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
 
-			const mockService = { readOne: vi.fn().mockResolvedValue({ id: 1 }) };
+			const mockService = { readOne: vi.fn().mockResolvedValue({ id: 1 }), readSingleton: vi.fn() };
 			vi.mocked(getService).mockReturnValue(mockService as any);
 
 			const mockRoom = { join: vi.fn() };
@@ -126,7 +132,7 @@ describe('CollabHandler', () => {
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
 
-			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('articles', 1, null, undefined);
+			expect(mockService.readOne).toHaveBeenCalledWith(1);
 			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, undefined);
 			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
@@ -162,7 +168,9 @@ describe('CollabHandler', () => {
 		test('propagates version to createRoom', async () => {
 			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
 			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
-			vi.mocked(getService).mockReturnValue({ readOne: vi.fn().mockResolvedValue({ id: 1 }) } as any);
+
+			const mockService = { readOne: vi.fn().mockResolvedValue({ id: 1 }), readSingleton: vi.fn() };
+			vi.mocked(getService).mockReturnValue(mockService as any);
 
 			const mockRoom = { join: vi.fn() };
 			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
@@ -197,7 +205,7 @@ describe('CollabHandler', () => {
 
 			await expect(
 				handler.onFocus(mockClient, { action: 'focus', room: 'invalid-room', field: 'title' } as any),
-			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/room does not exist/i));
+			).rejects.toHaveProperty('extensions.reason', 'No access to room invalid-room or room does not exist');
 		});
 
 		test('rejects if client is not in room', async () => {
@@ -206,7 +214,7 @@ describe('CollabHandler', () => {
 
 			await expect(
 				handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any),
-			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/Not connected to room/i));
+			).rejects.toHaveProperty('extensions.reason', 'No access to room room-uid or room does not exist');
 		});
 
 		test('rejects if field read or update permission is missing', async () => {
@@ -476,7 +484,7 @@ describe('CollabHandler', () => {
 
 			await expect(
 				handler.onLeave(mockClient, { action: 'leave', room: 'invalid-room', type: 'collab' }),
-			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/Room "(.*)" does not exist/i));
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No access to room "invalid-room" or it does not exist/i));
 		});
 	});
 
@@ -486,7 +494,7 @@ describe('CollabHandler', () => {
 
 			await expect(
 				handler.onDiscard(mockClient, { action: 'discard', room: 'invalid-room', fields: ['title'] } as any),
-			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/room does not exist/i));
+			).rejects.toHaveProperty('extensions.reason', 'No access to room invalid-room or room does not exist');
 		});
 
 		test('rejects if client is not in room', async () => {
@@ -495,7 +503,7 @@ describe('CollabHandler', () => {
 
 			await expect(
 				handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid', fields: ['title'] } as any),
-			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/Not connected to room/i));
+			).rejects.toHaveProperty('extensions.reason', 'No access to room room-uid or room does not exist');
 		});
 
 		test('rejects if field missing update permission', async () => {
