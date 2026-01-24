@@ -1599,12 +1599,33 @@ field_options:
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 no_value: 値なし
 do_nothing: 何もしない
+generate_and_save_uuid: UUID を生成して保存
+save_current_user_id: 現在のユーザー ID を保存
 save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
+always_open: 常に開いた状態にする
+start_open: 初期状態で開く
+start_collapsed: 初期状態で折りたたむ
+block: ブロック
 inline: インライン
 comment: コメント
 live_preview:
+  enable: プレビューを有効化
+  disable: プレビューを無効化
+  change_size: 表示サイズを変更
+  refresh: プレビューを更新
   new_window: 新しいウィンドウで開く
+  close_window: 分割ビューで開く
+  toggle_3d: 3D 表示を切り替え
+  iframe_title: サイトのライブプレビュー
+  exit_full_width: 全幅表示を終了
+  open_in_visual_editor: ビジュアルエディターで開く
+shares: 共有
+unlimited_usage: 無制限に利用可能
+uses_left: 残りなし | 残り 1 回 | 残り {n} 回
+no_shares: 表示する共有項目がありません
+new_share: 新規共有
+show_more: もっと見る
 ai:
   error: エラー
   unknown: 不明
@@ -1620,7 +1641,13 @@ ai_tools:
   operations: オペレーション
   schema: スキーマ
   collections: コレクション
+mcp_prompts_collection:
+  generate_collection_dialog_description: '再利用可能なプロンプトテンプレートを保存するために必要なフィールドと設定を備えた、新しいコレクション「{collection}」を作成します。'
+  validation_success: 'コレクションを「AI プロンプト」として使用する準備が整いました。'
+  validation_error_invalid: このコレクションは使用できません
+  generate_missing: 不足しているフィールドを生成…
 mcp_prompts_collection_schema:
+  messages_note: '任意: ユーザーと LLM（大規模言語モデル）との会話構造を定義します。文脈を追加して、出力の質を向上させるために使用します。'
   messages_role_user: ユーザー
 referential_action_set_null: '{field} フィールドを空にする'
 editing_role: '{role} 権限グループ'
@@ -1804,7 +1831,32 @@ interfaces:
   map:
     zoom: 拡大
     geojson: GeoJSON
+    lnglat: 経度、緯度
+    wkt: WKT
+    wkb: WKB
+    click_to_select: クリックして {geometry} を選択
+  presentation-notice:
+    notice: 通知
+    description: 短い通知を表示する
+    text: ここに通知の内容を入力してください…
+    no_text: テキストが設定されていません…
+  list-o2m:
+    one-to-many: 1対多
+    description: 複数の関連アイテムを選択
+    no_collection: コレクションが見つかりませんでした
+  system-folder:
+    folder: ルートフォルダー
+    description: フォルダーを選択
+    field_hint: フォルダーが指定されていない場合にアップロードされるファイルのデフォルトフォルダーです。既存のファイルには影響しません。
+    root_name: ファイルライブラリのルート
+    system_default: システムのデフォルト設定
+  select-radio:
+    radio-buttons: ラジオボタン
+    description: 複数の選択肢から1つを選択
   list:
+    repeater: リピーター
+    description: 同じ構造の項目を複数作成する
+    edit_fields: フィールドを編集
     sort: 並べ替え
     sort_placeholder: マニュアル
     display_group: オプションを表示
