@@ -1,7 +1,9 @@
 import { defineModule } from '@directus/extensions';
 import DeploymentOverview from './routes/overview.vue';
-import DeploymentProvider from './routes/provider.vue';
-import DeploymentRuns from './routes/runs.vue';
+import DeploymentProviderDashboard from './routes/provider/dashboard.vue';
+import DeploymentProviderSettings from './routes/provider/settings.vue';
+import DeploymentProviderRuns from './routes/provider/runs.vue';
+import DeploymentProviderRun from './routes/provider/run.vue';
 
 export default defineModule({
 	id: 'deployment',
@@ -14,20 +16,31 @@ export default defineModule({
 			component: DeploymentOverview,
 		},
 		{
-			name: 'deployment-provider',
+			name: 'deployment-provider-dashboard',
 			path: ':provider',
-			component: DeploymentProvider,
+			component: DeploymentProviderDashboard,
 			props: true,
 		},
 		{
-			name: 'deployment-runs',
+			name: 'deployment-provider-settings',
+			path: ':provider/settings',
+			component: DeploymentProviderSettings,
+			props: true,
+		},
+		{
+			name: 'deployment-provider-runs',
 			path: ':provider/:projectId/runs',
-			component: DeploymentRuns,
+			component: DeploymentProviderRuns,
+			props: true,
+		},
+		{
+			name: 'deployment-provider-run',
+			path: ':provider/:projectId/runs/:runId',
+			component: DeploymentProviderRun,
 			props: true,
 		},
 	],
 	preRegisterCheck(user) {
-		// Only admin can access deployment module
 		return user.admin_access === true;
 	},
 });

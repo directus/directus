@@ -1,30 +1,34 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import api from '@/api';
+import { sdk } from '@/sdk';
+import { createDeployment } from '@directus/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 import VDrawer from '@/components/v-drawer.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import type { DeepPartial, Field } from '@directus/types';
+import { useProviderConfigs } from '../config/provider-fields';
+
+const active = defineModel<boolean>('active', { required: true });
 
 const props = defineProps<{
-	active: boolean;
 	provider: string;
-	fields: DeepPartial<Field>[];
-	tokenUrl?: string;
 }>();
 
+const { providerConfigs } = useProviderConfigs();
+const providerConfig = computed(() => providerConfigs[props.provider]);
+
 const emit = defineEmits<{
-	'update:active': [value: boolean];
-	complete: [provider: string];
+	complete: [];
 }>();
 
 const values = ref<Record<string, any>>({});
 const saving = ref(false);
 
 const isValid = computed(() => {
-	return props.fields.every((field) => {
+	const fields = providerConfig.value?.credentialsFields || [];
+
+	return fields.every((field) => {
 		if (field.meta?.required && field.field) {
 			return Boolean(values.value[field.field]);
 		}
@@ -33,7 +37,7 @@ const isValid = computed(() => {
 	});
 });
 
-watch(() => props.active, (isActive) => {
+watch(active, (isActive) => {
 	if (!isActive) {
 		values.value = {};
 	}
@@ -45,12 +49,12 @@ async function save() {
 	saving.value = true;
 
 	try {
-		await api.post(`/deployment`, {
+		await sdk.request(createDeployment({
 			provider: props.provider,
 			credentials: values.value,
-		});
+		}));
 
-		emit('complete', props.provider);
+		emit('complete');
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -59,32 +63,31 @@ async function save() {
 }
 
 function onCancel() {
-	emit('update:active', false);
+	active.value = false;
 }
 </script>
 
 <template>
 	<VDrawer
-		:title="$t('deployment_setup_title', { provider: provider ? $t(`deployment_provider_${provider}`) : '' })"
-		:model-value="active"
+		v-model="active"
+		:title="$t('deployment_provider_setup_title', { provider: provider ? $t(`deployment_provider_${provider}`) : '' })"
 		persistent
 		icon="vercel"
 		@cancel="onCancel"
-		@update:model-value="$emit('update:active', $event)"
 	>
 		<template #subtitle>
 			{{ $t('deployment') }}
 		</template>
 
 		<div class="content">
-			<VNotice v-if="tokenUrl" type="info" class="notice">
-				{{ $t('deployment_token_notice', { provider: $t(`deployment_provider_${provider}`) }) }}
-				<a :href="tokenUrl" target="_blank" rel="noopener noreferrer">
-					{{ $t('deployment_token_link', { provider: $t(`deployment_provider_${provider}`) }) }}
+			<VNotice v-if="providerConfig?.tokenUrl" type="info" class="notice">
+				<div>{{ $t('deployment_provider_credentials_notice', { provider: $t(`deployment_provider_${provider}`) }) }}</div>
+				<a :href="providerConfig.tokenUrl" target="_blank" rel="noopener noreferrer">
+					{{ $t('deployment_provider_credentials_link', { provider: $t(`deployment_provider_${provider}`) }) }}
 				</a>
 			</VNotice>
 
-			<VForm v-model="values" :fields="(fields as any)" autofocus />
+			<VForm v-model="values" :fields="(providerConfig?.credentialsFields as any) || []" autofocus />
 		</div>
 
 		<template #actions>
