@@ -169,7 +169,7 @@ export class CollabHandler {
 		}
 
 		if (message.version) {
-			const itemAccess = verifyPermissions(client.accountability, message.collection, message.item, 'read', {
+			const itemAccess = await verifyPermissions(client.accountability, message.collection, message.item, 'read', {
 				knex: getDatabase(),
 				schema,
 			});
