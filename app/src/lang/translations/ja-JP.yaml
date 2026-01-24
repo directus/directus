@@ -1081,6 +1081,10 @@ log_detail_filter_paths: 'パスで絞り込み (例: req.method, res.statusCode
 logs_beginning: ここからログセッションが始まります...
 logs_waiting: '新しいログを待機中...'
 logs_unread_count: '{count} 件の未読'
+clear_logs: ログを消去
+all_instances: すべてのインスタンス
+instance_count: 'インスタンスなし | 1個のインスタンス | {count} 個のインスタンス'
+all_log_levels: すべてのログレベル
 full_screen: 全画面表示
 full_text_search: テキスト全体検索
 edit_panels: パネルを編集
@@ -1624,6 +1628,8 @@ interfaces:
     user: ユーザー
     modes:
       dropdown: ドロップダウン
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
   input-block-editor:
     tools_options:
       header: ヘッダー
