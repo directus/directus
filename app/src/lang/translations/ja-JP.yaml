@@ -1100,11 +1100,11 @@ display_text: テキストを表示
 display_text_placeholder: 表示テキストを入力...
 interface_group_text_and_numbers: テキストと数値
 interface_group_selection: 選択
-interface_group_relational: 関連
-interface_group_presentation: プレゼンテーション
+interface_group_relational: リレーション
+interface_group_presentation: 表示設定
 interface_group_groups: グループ
 interface_group_other: その他
-tooltip: ヒント
+tooltip: ツールチップ
 tooltip_placeholder: ヒントを入力中...
 unlimited: 無制限
 open_link_in: リンクを開く
@@ -1114,25 +1114,25 @@ wysiwyg_options:
   aligncenter: 中央揃え
   alignjustify: 両端揃え
   alignleft: 左揃え
-  alignnone: Noneを許可
+  alignnone: 配置なし
   alignright: 右揃え
-  forecolor: 前景色
+  forecolor: 文字色
   backcolor: 背景色
   bold: 太字
   italic: 斜体
   underline: 下線
   strikethrough: 取り消し線
-  subscript: 定期購入
-  superscript: 上付き
+  subscript: 下付き文字
+  superscript: 上付き文字
   codeblock: コード
   blockquote: 引用
   bullist: 箇条書きリスト
   numlist: 番号付きリスト
   hr: 水平線
-  link: リンクの追加/編集
+  link: リンクの挿入 / 編集
   unlink: リンクを削除
-  media: メディアの追加/編集
-  image: 画像の追加/編集
+  media: メディアの追加 / 編集
+  image: 画像の挿入 / 編集
   copy: コピー
   cut: 切り取り
   paste: ペースト
@@ -1153,7 +1153,7 @@ wysiwyg_options:
   removeformat: フォーマットを削除
   selectall: すべて
   table: テーブル
-  visualaid: 非表示の要素を表示
+  visualaid: 不可視文字の表示
   source_code: ソースコードを編集
   fullscreen: 全画面表示
   directionality: 方向
@@ -1229,8 +1229,8 @@ fields:
     item: プライマリキーを作成
     action: アクション
     collection: コレクション
-    timestamp: アクション オン
-    user: アクション担当
+    timestamp: 実行する操作
+    user: 実行者
     comment: コメント
     user_agent: ユーザーエージェント
     origin: オリジン
@@ -1245,11 +1245,11 @@ fields:
     hidden: 非表示
     singleton: シングルトン
     translations: コレクション名の翻訳
-    archive_app_filter: アプリフィルタをアーカイブ
-    archive_value: アーカイブ値
-    unarchive_value: アーカイブしていない値
+    archive_app_filter: アーカイブの表示設定
+    archive_value: アーカイブ時の値
+    unarchive_value: アーカイブ解除時の値
     sort_field: フィールドの並べ替え
-    accountability: アクティビティとリビジョンのトラッキング
+    accountability: アクティビティとリビジョンの追跡
     archive_field: アーカイブフィールド
     item_duplication_fields: アイテム複製のフィールド
   directus_files:
@@ -1288,7 +1288,7 @@ fields:
     tags: タグ
     user_preferences: ユーザー設定
     language: 言語
-    tfa_secret: 2要素認証
+    tfa_secret: 2段階認証
     admin_options: 管理者オプション
     status: ステータス
     status_draft: 下書き
@@ -1302,7 +1302,7 @@ fields:
     external_identifier: 外部 ID
     last_page: 最終ページ
     last_access: 最後にアクセスした日時
-    email_notifications: Eメール通知
+    email_notifications: メール通知
     appearance: 外観
   directus_settings:
     jpg: JPEG
@@ -1334,29 +1334,29 @@ fields:
     description: 説明
 field_options:
   directus_settings:
-    public_note_placeholder: マークダウンに対応する公開メッセージ
+    public_note_placeholder: Markdown 形式が使用できる、公開用の短いメッセージです…
     security_divider_title: セキュリティ
     auth_password_policy:
       none_text: なし – 推奨されません
-      weak_text: 弱い – 8文字以上
-      strong_text: 強い – 大文字/小文字/数字/記号
+      weak_text: 弱い – 最小 8 文字
+      strong_text: 強い – 大文字 / 小文字 / 数字 / 記号
     storage_asset_presets:
       fit_label: 自動調整
-      upscaling: アップスケーリング
+      upscaling: 拡大
       fit:
-        contain_text: 含まれる(アスペクト比を維持)
-        cover_text: カバー (強制的に正確なサイズ)
-        fit_text: 内側に合わせる
-        outside_text: 外側に合わせる
+        contain_text: 収める (縦横比を維持)
+        cover_text: カバー (サイズを強制)
+        fit_text: 枠内に合わせる
+        outside_text: 枠外に合わせる
     additional_transforms: 追加の変換
-    transforms_note: 明瞭なメソッド名と引数の詳細についてhttps://sharp.pixelplumbing.com/api-constructor を参照してください
-    mapbox_key: Mapboxアクセストークン
+    transforms_note: Sharp メソッド名と引数。詳細は https://sharp.pixelplumbing.com/api-constructor を参照してください。
+    mapbox_key: Mapbox アクセストークン
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: ベースマップ
     basemaps_name_placeholder: ベースマップ名を入力してください...
     basemaps_raster: ラスター
     basemaps_tile: ラスター TileJSON
-    basemaps_style: マップボックスのスタイル
+    basemaps_style: Mapbox スタイル
     files_divider_title: ファイルとサムネイル画像
     overrides_divider_title: アプリの上書き設定
   directus_activity:
