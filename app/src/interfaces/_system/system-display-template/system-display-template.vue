@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { computed, inject, ref } from 'vue';
 import VFieldTemplate from '@/components/v-field-template/v-field-template.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
-import { computed, inject, ref } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

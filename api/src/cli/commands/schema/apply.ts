@@ -1,11 +1,11 @@
-import { parseJSON } from '@directus/utils';
+import { promises as fs } from 'fs';
+import path from 'path';
 import type { Snapshot, SnapshotDiff } from '@directus/types';
 import { DiffKind } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import chalk from 'chalk';
-import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
-import path from 'path';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';

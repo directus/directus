@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import VBanner from '@/components/v-banner.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import type { RegistryAccountResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
+import VBanner from '@/components/v-banner.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
 	account: RegistryAccountResponse['data'];

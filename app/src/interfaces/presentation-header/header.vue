@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import type { Collection } from '@directus/types';
+import { render } from 'micromustache';
+import { computed, inject, ref, useAttrs } from 'vue';
+import { RouterLink } from 'vue-router';
+import HelperText from './helper-text.vue';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -16,11 +21,6 @@ import { useInjectRunManualFlow } from '@/composables/use-flows';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import type { Collection } from '@directus/types';
-import { render } from 'micromustache';
-import { computed, inject, ref, useAttrs } from 'vue';
-import { RouterLink } from 'vue-router';
-import HelperText from './helper-text.vue';
 
 type Link = {
 	icon: string;

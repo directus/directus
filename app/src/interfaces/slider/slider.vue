@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VSlider from '@/components/v-slider.vue';
 import { computed } from 'vue';
+import VSlider from '@/components/v-slider.vue';
 
 interface BaseProps {
 	disabled?: boolean;

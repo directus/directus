@@ -1,5 +1,5 @@
+import type { FieldIndex, FieldMeta } from '../types.js';
 import defaults from './_defaults.yaml';
-
 import accessFields from './access.yaml';
 import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';
@@ -30,8 +30,6 @@ import webhookFields from './webhooks.yaml';
 import deploymentFields from './deployment.yaml';
 import deploymentProjectsFields from './deployment-projects.yaml';
 import deploymentRunsFields from './deployment-runs.yaml';
-
-import type { FieldIndex, FieldMeta } from '../types.js';
 
 export const systemFieldRows: FieldMeta[] = [];
 export const systemIndexRows: FieldIndex[] = [];

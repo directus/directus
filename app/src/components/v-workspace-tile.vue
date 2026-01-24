@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { Panel } from '@directus/extensions';
+import { throttle } from 'lodash';
+import { computed, reactive, ref, StyleValue } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
@@ -7,9 +10,6 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useUserStore } from '@/stores/user';
-import type { Panel } from '@directus/extensions';
-import { throttle } from 'lodash';
-import { StyleValue, computed, reactive, ref } from 'vue';
 
 export type AppTile = {
 	id: string;
@@ -388,6 +388,8 @@ function useDragDrop() {
 			z-index: 3 !important;
 			border-color: var(--theme--form--field--input--border-color-focus);
 			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
+			-webkit-user-select: none;
+			user-select: none;
 		}
 
 		&.dragging .resize-details {

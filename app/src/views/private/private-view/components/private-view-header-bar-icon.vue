@@ -6,15 +6,26 @@ defineProps<{
 	icon?: string;
 	iconColor?: string;
 	showBack?: boolean;
+	backTo?: string;
 }>();
 </script>
 
 <template>
-	<VButton v-if="showBack" class="back-button" rounded icon secondary exact small @click="$router.back()">
+	<VButton
+		v-if="showBack"
+		class="back-button"
+		rounded
+		icon
+		secondary
+		exact
+		small
+		:to="backTo"
+		@click="!backTo ? $router.back() : undefined"
+	>
 		<VIcon name="arrow_back" small />
 	</VButton>
 
-	<div v-else class="icon">
+	<div v-else-if="icon" class="icon">
 		<VIcon :name="icon" :color="iconColor" small />
 	</div>
 </template>

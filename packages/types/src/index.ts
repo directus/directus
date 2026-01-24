@@ -35,5 +35,4 @@ export * from './storage.js';
 export * from './users.js';
 export * from './versions.js';
 export * from './vue.js';
-export * from './webhooks.js';
 export * from './websockets.js';

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import ValueNull from '@/views/private/components/value-null.vue';
 import { useCollection } from '@directus/composables';
 import { toRefs } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
 	defineProps<{

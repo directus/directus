@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { get } from 'lodash';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import { RouterLink } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -14,12 +20,6 @@ import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { get } from 'lodash';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import { RouterLink } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{

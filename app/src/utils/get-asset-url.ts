@@ -1,5 +1,5 @@
-import { getPublicURL } from '@/utils/get-root-path';
 import type { TransformationParams } from '@directus/types';
+import { getPublicURL } from '@/utils/get-root-path';
 
 type AssetUrlOptions = {
 	isDownload?: boolean;

@@ -1,10 +1,10 @@
-import { Vector2 } from '@/utils/vector2';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
 import { createLine } from './create-line';
 import { findBestPosition } from './find-best-position';
 import { generatePath } from './generate-path';
+import { Vector2 } from '@/utils/vector2';
 
 // Mock the dependencies
 vi.mock('./find-best-position', () => ({

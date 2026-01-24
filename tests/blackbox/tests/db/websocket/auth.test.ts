@@ -1,3 +1,4 @@
+import { ChildProcess, spawn } from 'child_process';
 import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn } from '@common/transport';
@@ -5,7 +6,6 @@ import type { WebSocketAuthMethod, WebSocketResponse } from '@common/types';
 import { TEST_USERS, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
-import { ChildProcess, spawn } from 'child_process';
 import getPort from 'get-port';
 import knex, { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';

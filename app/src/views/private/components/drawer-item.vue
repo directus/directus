@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import OverlayItem, { type OverlayItemProps, type OverlayItemEmits } from './overlay-item.vue';
+import OverlayItem, { type OverlayItemEmits, type OverlayItemProps } from './overlay-item.vue';
 
 defineProps<OverlayItemProps>();
 defineEmits<OverlayItemEmits>();

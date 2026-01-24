@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { useLayout } from '@directus/composables';
+import { isSystemCollection } from '@directus/system-data';
+import { DeepPartial, Field, Filter, Preset } from '@directus/types';
+import { isEqual } from 'lodash';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -16,16 +23,9 @@ import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { unexpectedError } from '@/utils/unexpected-error';
-import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import { useLayout } from '@directus/composables';
-import { isSystemCollection } from '@directus/system-data';
-import { DeepPartial, Field, Filter, Preset } from '@directus/types';
-import { isEqual } from 'lodash';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 
 type FormattedPreset = {
 	id: number;
@@ -479,7 +479,7 @@ function discardAndLeave() {
 		:collection="values.collection"
 		readonly
 	>
-		<PrivateView :title="$t('editing_preset')" show-back>
+		<PrivateView :title="$t('editing_preset')" show-back back-to="/settings/presets">
 			<template #headline>
 				<VBreadcrumb :items="[{ name: $t('settings_presets'), to: '/settings/presets' }]" />
 			</template>

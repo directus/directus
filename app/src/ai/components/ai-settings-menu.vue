@@ -2,16 +2,16 @@
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAiStore, type ToolApprovalMode } from '../stores/use-ai';
+import { type ToolApprovalMode, useAiStore } from '../stores/use-ai';
 import { SystemTool } from '../types/system-tool';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
-import VList from '@/components/v-list.vue';
-import VListItem from '@/components/v-list-item.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 

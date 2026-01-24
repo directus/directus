@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import ContentNavigation from '../components/navigation.vue';
 import VButton from '@/components/v-button.vue';
 import VInfo from '@/components/v-info.vue';
 import { useUserStore } from '@/stores/user';
 import { PrivateView } from '@/views/private';
-import ContentNavigation from '../components/navigation.vue';
 
 const userStore = useUserStore();
 </script>

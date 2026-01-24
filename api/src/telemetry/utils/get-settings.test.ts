@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 import { describe, expect, it, vi } from 'vitest';
-import { getSettings, type TelemetrySettings, type DatabaseSettings } from './get-settings.js';
 import { SettingsService } from '../../services/settings.js';
+import { type DatabaseSettings, getSettings, type TelemetrySettings } from './get-settings.js';
 
 vi.mock('../../utils/get-schema.js');
 vi.mock('../../services/settings.js');

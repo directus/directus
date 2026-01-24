@@ -1,4 +1,4 @@
-import type { RawField, FieldMeta } from '@directus/types';
+import type { FieldMeta, RawField } from '@directus/types';
 
 /**
  * Add a flag to a field.

@@ -1,7 +1,7 @@
 import type { DirectusRole } from '../../../schema/role.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateRoleOutput<
 	Schema,

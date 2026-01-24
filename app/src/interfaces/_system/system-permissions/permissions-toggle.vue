@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Collection, Permission, PermissionsAction } from '@directus/types';
+import { computed, ref, toRefs } from 'vue';
 import VChip from '@/components/v-chip.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -8,8 +10,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import { Collection, Permission, PermissionsAction } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
 
 const props = defineProps<{
 	collection: Collection;
