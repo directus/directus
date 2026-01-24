@@ -1265,6 +1265,13 @@ directus_collection:
   directus_fields: フィールドの追加設定とメタデータ
   directus_files: 全ファイルアセットのメタデータ
   directus_flows: オートメーションフロー
+  directus_folders: ファイルを整理するための仮想ディレクトリを提供します
+  directus_migrations: 使用中のデータベースのバージョン
+  directus_notifications: ユーザーに送信された通知
+  directus_operations: フローで実行されるオペレーション
+  directus_panels: インサイトダッシュボード内の各パネル
+  directus_permissions: 各ポリシーのアクセス権限
+  directus_policies: アクセス制御ポリシー
   directus_presets: コレクションのデフォルトとブックマークのプリセット
   directus_relations: リレーション設定とメタデータ
   directus_revisions: すべてのアクティビティのスナップショット
@@ -1273,6 +1280,9 @@ directus_collection:
   directus_settings: プロジェクトの設定オプション
   directus_shares: 外部共有アイテムを追跡
   directus_users: プラットフォームのシステムユーザー
+  directus_translations: カスタム翻訳
+  directus_versions: アイテムのコンテンツバージョン
+  directus_extensions: 拡張機能の設定
 fields:
   directus_activity:
     item: アイテムのプライマリーキー
@@ -1299,6 +1309,7 @@ fields:
     unarchive_value: アーカイブ解除時の値
     sort_field: フィールドの並べ替え
     accountability: アクティビティとリビジョンの追跡
+    versioning: バージョン管理
     archive_field: アーカイブフィールド
     item_duplication_fields: アイテム複製のフィールド
   directus_files:
@@ -1325,6 +1336,8 @@ fields:
     height: 高さ
     charset: 文字セット
     duration: 長さ
+    focal_point_x: X 軸の座標
+    focal_point_y: Y 軸の座標
   directus_users:
     first_name: 名
     last_name: 姓
@@ -1337,11 +1350,13 @@ fields:
     tags: タグ
     user_preferences: ユーザー設定
     language: 言語
+    text_direction: テキストの方向
     tfa_secret: 2段階認証
     admin_options: 管理者オプション
     status: ステータス
     status_draft: 下書き
     status_invited: 招待済み
+    status_unverified: 未認証
     status_active: 有効
     status_suspended: 停止済み
     status_archived: アーカイブ済み
@@ -1353,19 +1368,63 @@ fields:
     last_access: 最後にアクセスした日時
     email_notifications: メール通知
     appearance: 外観
+    theme_light: ライトテーマ
+    theme_dark: ダークテーマ
+    theme_light_overrides: ライトテーマのカスタマイズ
+    theme_dark_overrides: ダークテーマのカスタマイズ
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: レポート
     mapping: マッピング
+    basemaps: ベースマップ
+    basemaps_raster: ラスタ
+    basemaps_tile: ラスタ TileJSON
+    basemaps_style: Mapbox スタイル
+    mapbox_key: Mapbox アクセストークン
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: 帰属表示
+    attribution_placeholder: '© OpenStreetMap contributors'
+    transforms_note: Sharp メソッド名と引数。https://sharp.pixelplumbing.com/api-constructor for more information を参照してください。
+    additional_transforms: 追加の変換
     project_name: プロジェクト名
+    project_descriptor: プロジェクトの説明文
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
+    default_language: デフォルトの言語
+    branding: ブランディング
+    public_foreground: 公開画面の前景色
+    public_background: 公開画面の背景色
+    public_note: 公開用メモ
+    theming: テーマのデフォルト設定
+    default_appearance: デフォルトの外観
+    default_theme_light: デフォルトのライトテーマ
+    default_theme_dark: デフォルトのダークテーマ
+    auth_password_policy: パスワードポリシー
+    auth_login_attempts: ログイン試行制限
+    files_and_thumbnails: ファイルとストレージ
+    storage_default_folder: デフォルトのフォルダー
+    storage_asset_presets: 変換プリセット
+    storage_asset_transform: 許可された変換
+    overrides: アプリの上書き設定
     custom_css: カスタム CSS
     module_bar: モジュールバー
+    transformations_all: すべての変換を許可
+    transformations_none: 変換を無効にする
+    transformations_presets: 以下のプリセットのみに制限
+    image_editor: 画像エディター
+    custom_aspect_ratios: カスタムアスペクト比
+    theme_light_overrides: ライトテーマのカスタマイズ
+    theme_dark_overrides: ダークテーマのカスタマイズ
+    public_registration: ユーザー登録
+    public_registration_note: 登録ルート (/admin/register) からのユーザー登録を許可します。
+    public_registration_role: ユーザー権限グループ
+    public_registration_role_note: この方法で登録したユーザーに、この権限グループが割り当てられます。すでに登録済みのユーザーには影響しません。
+    public_registration_email_filter: メールアドレスフィルター
     ai_header_name: ヘッダー
   directus_shares:
     name: 名前
