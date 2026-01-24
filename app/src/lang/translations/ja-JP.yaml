@@ -308,7 +308,7 @@ fields_for_role: '「{role}」権限グループのフィールドは {action} �
 fields_for_policy: '「{policy}」ポリシーで {action} できるフィールド。'
 validation_for_role: 'フィールドの {action} は「{role}」権限グループに準じます。'
 validation_for_policy: 'フィールドの {action} は「{policy}」ポリシーに準じます。'
-presets_for_role: "フィールド値のデフォルトは、「{role}」 権限です。\n"
+presets_for_role: 'フィールド値のデフォルトは、「{role}」 権限グループです。'
 presets_for_policy: '「{policy}」ポリシーのフィールド値のデフォルト。'
 presets_field_warning: 'フィールド「{field}」のリレーションプリセットには「詳細」構文を使用してください。'
 presentation_and_aliases: プレゼンテーションとエイリアス
@@ -324,7 +324,7 @@ hide_field_on_detail: 詳細画面で非表示にする
 show_field_on_detail: 詳細画面で表示する
 delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
-field_create_success: '作成されたフィールド: "{field}"'
+field_create_success: '作成されたフィールド: 「{field}」'
 field_update_success: '更新されたフィールド: 「{field}」'
 duplicate_where_to: このフィールドをどこに複製しますか？
 language: 言語
@@ -453,7 +453,7 @@ left_to_right: 左から右
 right_to_left: 右から左
 note: 備考
 enter_a_value: 値を入力...
-enter_a_placeholder: プレースホルダを入力...
+enter_a_placeholder: プレースホルダーを入力…
 length: 長さ
 soft_length: 緩い制限
 precision_scale: 精度とスケール
@@ -488,12 +488,12 @@ clear_items: 項目をクリア
 reset_to_default: 初期設定に戻す
 undo_changes: 変更を取消
 notifications: 通知
-archive_all: すべてアーカイブ
+archive_all: すべてのアーカイブ
 show_all_activity: すべてのアクティビティを表示
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
 confirm_revert: 再確認
-confirm_revert_body: 選択した状態へ戻す
+confirm_revert_body: アイテムを選択した際の状態に復元します。
 display: ディスプレイ
 settings_update_success: 設定を更新しました
 title: タイトル
@@ -704,9 +704,9 @@ no_files_copy: まだファイルがありません。
 user_count: 'ユーザーなし | 1ユーザー | {count} ユーザー'
 no_users_copy: この権限グループのユーザーがいません。
 no_notifications: 通知なし
-no_notifications_copy: すべて確認済み
+no_notifications_copy: すべて確認済みです !
 activity_log: 操作ログ
-all_items: 全アイテム
+all_items: すべてのアイテム
 any: すべて
 csv: CSVファイル
 csv_utf8: CSV Excel (UTF-8)
@@ -771,7 +771,7 @@ enable_all: すべて有効
 disable_all: すべて無効
 enabled_dev_tooltip: 開発モードでは、アプリの拡張機能は常に有効です
 disable_tfa: 2段階認証を無効化
-admin_disable_tfa_text: このユーザーの2要素認証を無効にしてよろしいですか？
+admin_disable_tfa_text: このユーザーの2段階認証を無効にしてよろしいですか？
 tfa_setup: 2段階認証を設定
 tfa_setup_description: アカウントを保護するために2段階認証を設定してください
 tfa_scan_code: 認証アプリのコードをスキャンして2段階認証の設定を完了します
@@ -793,7 +793,7 @@ errors:
   INVALID_CONFIG: 無効な設定
   INVALID_CREDENTIALS: ユーザー名またはパスワードが間違っています
   INVALID_FOREIGN_KEY: 無効な外部キー
-  INVALID_IP: IPアドレスが許可されていません
+  INVALID_IP: IP アドレスが許可されていません
   INVALID_OTP: ワンタイムパスワードが間違っています
   INVALID_PAYLOAD: 不正な送信データ
   INVALID_PROVIDER: ユーザーは別の認証プロバイダに属しています
@@ -826,7 +826,7 @@ edit_bookmark: ブックマークを編集
 edit_personal_bookmark: 個人のブックマークを編集
 edit_role_bookmark: 権限グループのブックマークを編集
 edit_global_bookmark: グローバルブックマークを編集
-cannot_edit_role_bookmarks: ロールブックマークを編集できません
+cannot_edit_role_bookmarks: 権限グループのブックマークを編集できません
 cannot_edit_global_bookmarks: グローバルブックマークを編集できません
 bookmarks: ブックマーク
 presets: プリセット
@@ -861,7 +861,7 @@ start_end_of_count_items: '{count} 件中 {start} – {end} 件のアイテム'
 start_end_of_count_filtered_items: '絞り込み結果 {count} 件中 {start} – {end} 件のアイテム'
 delete_collection_are_you_sure: >-
   本当にコレクション「{collection}」を削除しますか? これにより、コレクションとそこに含まれるすべてのアイテムが削除されます。この操作は取り消せません。
-delete_folder_are_you_sure: 本当にフォルダー「{folder}」を削除しますか？内包されているフォルダーやコレクションは、最上位レベルに移動されます。
+delete_folder_are_you_sure: 本当にフォルダー「{folder}」を削除しますか? 内包されているフォルダーやコレクションは、最上位レベルに移動されます。
 delete_collection_peer_dependencies: 現在のコレクションに関連付けられているため、以下のフィールドも削除されます。
 collections_shown: 表示するコレクション
 visible_collections: 閲覧可能なコレクション
@@ -1203,9 +1203,11 @@ ai_assistant: AI アシスタント
 ai_disabled_by_env: AI アシスタント機能は環境変数によって無効化されています。
 mcp_disabled_by_env: MCP 機能は環境変数によって無効化されています。
 settings_flows: フロー
+settings_system_logs: システムログ
 settings_presets: ブックマーク
 settings_translations: 翻訳
 one_or_more_options_are_missing: 1つ以上のオプションがありません
+configure_field_key_to_continue: 続行するにはフィールドキーを設定してください
 scope: 適用範囲
 actions: 操作
 select: 選択...
@@ -1218,6 +1220,7 @@ editing_preset: プリセットを編集
 layout_preview: レイアウトプレビュー
 layout_setup: レイアウト設定
 data: データ
+theme-overrides: テーマの上書き
 unsaved_changes: 未保存の変更
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
@@ -1226,9 +1229,12 @@ discard_changes_copy: 行った変更をすべて破棄してもよろしいで�
 show_x_axis: X軸を表示
 show_y_axis: Y軸を表示
 keep_editing: 編集を続ける
+activity_feed: アクティビティフィード
 add_new: 新規追加
 create_new: 新規作成
 all: すべて
+none: なし
+no_layout_collection_selected_yet: レイアウトまたはコレクションがまだ選択されていません
 batch_delete_confirm: >-
   項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
 cancel: キャンセル
