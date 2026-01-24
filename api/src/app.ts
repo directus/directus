@@ -314,7 +314,9 @@ export default async function createApp(): Promise<express.Application> {
 		app.use('/mcp', mcpRouter);
 	}
 
-	app.use('/ai/chat', aiChatRouter);
+	if (toBoolean(env['AI_ENABLED']) === true) {
+		app.use('/ai/chat', aiChatRouter);
+	}
 
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);

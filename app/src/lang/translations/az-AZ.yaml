@@ -132,7 +132,6 @@ create_role: Rol yarat
 create_user: İstifadəçi yarat
 message: Mesaj
 delete_panel: Panel sil
-create_webhook: Webhook yarat
 create_custom_translation: Tərcümə yarat
 edit_custom_translation: Tərcüməni tənzimlə
 no_custom_translations: Tərcümə olmasın
@@ -246,10 +245,15 @@ displays:
 layouts:
   tabular:
     tabular: Cədvəl
+triggers:
+  webhook:
+    method: Metod
 operations:
   log:
     message: Mesaj
   notification:
     message: Mesaj
     subject: Mövzü
+  request:
+    method: Metod
 standard: Standart

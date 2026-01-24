@@ -188,8 +188,11 @@ export const DEFAULTS = {
 	METRICS_NAME_PREFIX: 'directus_',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
 
 	ACCEPT_TERMS: false,
 
 	MCP_ENABLED: true,
+
+	AI_ENABLED: true,
 } as const;

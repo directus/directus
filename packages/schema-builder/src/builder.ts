@@ -35,6 +35,8 @@ export class SchemaBuilder {
 		Object.assign(lastCollection._data, options);
 
 		this._last_collection_configured = true;
+
+		return this;
 	}
 
 	next_relation_index() {

@@ -75,7 +75,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').alter().notNullable();
 	});
 
-	// knex does not bundle the drop + add PK, the transaction ensures they are apart of the same commit
+	// knex does not bundle the drop + add PK, the transaction ensures they are apart of the same commit for databases that require it
 	await knex.transaction(async (trx) => {
 		await getHelpers(trx).schema.changePrimaryKey('directus_extensions', ['id']);
 	});

@@ -72,7 +72,7 @@ const links = computed<Link[][]>(() => [
 			name: t('settings_translations'),
 			to: `/settings/translations`,
 		},
-		info.value.mcp_enabled
+		info.value.ai_enabled || info.value.mcp_enabled
 			? {
 					icon: 'smart_toy',
 					name: t('settings_ai'),

@@ -48,7 +48,6 @@ create_panel: Stovna Talvu
 create_role: Stovna Leiklut
 create_user: Stovna Brúkara
 delete_panel: Strika Talvu
-create_webhook: Stovna Webhook
 invite_users: Bjóða Brúkarum
 invite: Bjóða
 email_already_invited: Telduposturin "{email}" hevur longu fingið eina innbjóðing
