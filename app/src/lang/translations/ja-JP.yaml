@@ -75,7 +75,7 @@ invalid_input: 無効な入力
 invalid_file_type: 無効なファイル形式
 invalid_files_selected: '無効なファイルはありません | 無効なファイルが選択されました | {count}個の無効なファイルが選択されました'
 files_wrong_type: 'ファイル {files}は無効な形式です。 {expected} 形式を指定してください。'
-files_are_empty: '次のファイルはデータが含まれていないため、アップロードに失敗しました：{files}'
+files_are_empty: '次のファイルはデータが含まれていないため、アップロードできません: {files}'
 not_a_number: 数値ではありません
 invalid_range_min: '{value} 以上の値を入力してください'
 invalid_range_max: '{value} 以下の値を入力してください'
@@ -1425,6 +1425,45 @@ fields:
     public_registration_role: ユーザー権限グループ
     public_registration_role_note: この方法で登録したユーザーに、この権限グループが割り当てられます。すでに登録済みのユーザーには影響しません。
     public_registration_email_filter: メールアドレスフィルター
+    public_registration_email_filter_note: このフィルターに一致するメールアドレスのみが登録可能です。
+    public_registration_verify_email: メールアドレスの確認
+    public_registration_verify_email_note: 登録ユーザーに確認メールを送信します。サインインするには、メール内の確認リンクをクリックする必要があります。
+    visual_editor_urls: ビジュアルエディター URL
+    ai_notice: 'AIアシスタントを有効にすると、アプリ内のサイドバーから LLM（大規模言語モデル）と対話できるようになります。ツールバーから AI サイドバーを開いて、質問、コンテンツ作成、プロジェクト作業のサポートに役立てましょう。AIアシスタントの設定と使用方法の詳細については、<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">こちらのドキュメント</a>をご覧ください。'
+    mcp_enabled: MCP サーバー
+    mcp_enabled_note: '<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a> を介して、AI や LLM ツールを Directus プロジェクトに接続します。これにより、AI アシスタントが Directus 内のデータを安全に読み取り、操作できるようになります。'
+    mcp_notice: 'Model Context Protocol (MCP) は、LLM を Directus などのアプリケーションに接続するための標準規格です。有効化すると、Directus MCP サーバーが /mcp で利用可能になります。MCP の詳細と接続方法については、<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">こちらのドキュメント</a>をご覧ください。'
+    mcp_allow_deletes: 削除を許可
+    mcp_allow_deletes_note:
+      - <strong>データが失われる可能性があります。</strong>安全のため、デフォルトでは無効になっています。
+    mcp_prompts_collection: AI プロンプトコレクション
+    mcp_prompts_collection_note: 'AI との対話で使用する<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">再利用可能なプロンプトテンプレート</a>を保存するコレクションを選択してください。'
+    mcp_system_prompt_divider: システムプロンプト設定
+    mcp_system_prompt_enabled: システムプロンプトを使用
+    mcp_system_prompt_enabled_note: "<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>デフォルトのシステムプロンプト</a>を使用して LLM の動作を規定します。プロンプトを削除する場合や、以下の入力欄で独自のプロンプトに上書きする場合は、無効にしてください。"
+    mcp_system_prompt: カスタムシステムプロンプト
+    mcp_system_prompt_note: 'デフォルトを置き換えるカスタムシステムプロンプトです。デフォルトを使用する場合は（上記で有効にしている場合）、空のままにしてください。'
+    ai_system_prompt: AI システムプロンプト
+    ai_system_prompt_note: 'AI アシスタントとの対話における LLM の動作を規定するカスタムシステムプロンプトです。デフォルトを使用する場合は、空のままにしてください。'
+    ai_openai_api_key: OpenAI API キー
+    ai_openai_allowed_models: OpenAI 許可モデル
+    ai_anthropic_api_key: Anthropic API キー
+    ai_anthropic_allowed_models: Anthropic 許可モデル
+    ai_google_api_key: Google API キー
+    ai_google_allowed_models: Google 許可モデル
+    ai_openai_compatible: OpenAI 互換プロバイダー
+    ai_openai_compatible_name: プロバイダー名
+    ai_openai_compatible_base_url: ベース URL
+    ai_openai_compatible_api_key: API キー
+    ai_openai_compatible_models: モデル
+    ai_openai_compatible_headers: カスタムヘッダー
+    ai_model_id: モデル ID
+    ai_context_limit: コンテキスト制限
+    ai_output_limit: 出力制限
+    ai_supports_attachments: 添付ファイルをサポート
+    ai_supports_reasoning: 推論をサポート
+    ai_provider_options: プロバイダーオプション
+    ai_provider_options_note: AI エンドポイントに渡されるプロバイダー固有のオプションです。
     ai_header_name: ヘッダー
   directus_shares:
     name: 名前
@@ -1443,6 +1482,7 @@ fields:
     description: 説明
 field_options:
   directus_settings:
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Markdown 形式が使用できる、公開用の短いメッセージです…
     security_divider_title: セキュリティ
     auth_password_policy:
@@ -1530,6 +1570,7 @@ comment: コメント
 live_preview:
   new_window: 新しいウィンドウで開く
 ai:
+  error: エラー
   unknown: 不明
   settings: 設定
   tool_approval:
@@ -1546,6 +1587,8 @@ ai_tools:
 mcp_prompts_collection_schema:
   messages_role_user: ユーザー
 referential_action_set_null: '{field} フィールドを空にする'
+editing_role: '{role} 権限グループ'
+editing_policy: '{policy} ポリシー'
 default_label: デフォルト
 delete_label: 削除
 delete_are_you_sure: >-
