@@ -42,7 +42,7 @@ describe('Collaborative Editing: Permissions', () => {
 
 			expect(errorMsg![0]).toMatchObject({
 				action: 'error',
-				code: 'INVALID_PAYLOAD',
+				code: 'FORBIDDEN',
 			});
 
 			ws.conn.close();
@@ -282,7 +282,7 @@ describe('Collaborative Editing: Permissions', () => {
 
 			expect(errorMsg![0]).toMatchObject({
 				action: 'error',
-				code: 'INVALID_PAYLOAD',
+				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to update field content or field does not exist/i),
 			});
 
@@ -342,7 +342,7 @@ describe('Collaborative Editing: Permissions', () => {
 
 			expect(errorMsg![0]).toMatchObject({
 				action: 'error',
-				code: 'INVALID_PAYLOAD',
+				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to update field content or field does not exist/i),
 			});
 
@@ -414,13 +414,13 @@ describe('Collaborative Editing: Permissions', () => {
 			// Assert
 			expect(errorJoin![0]).toMatchObject({
 				action: 'error',
-				code: 'INVALID_PAYLOAD',
+				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to update field non_existent or field does not exist/i),
 			});
 
 			expect(errorUpdate![0]).toMatchObject({
 				action: 'error',
-				code: 'INVALID_PAYLOAD',
+				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to update field unknown_field or field does not exist/i),
 			});
 
@@ -493,7 +493,7 @@ describe('Collaborative Editing: Permissions', () => {
 
 			expect(errorMsg).toMatchObject({
 				action: 'error',
-				code: 'INVALID_PAYLOAD',
+				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to discard field content/i),
 			});
 

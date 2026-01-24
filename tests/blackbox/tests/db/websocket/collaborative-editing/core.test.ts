@@ -118,7 +118,7 @@ describe('Collaborative Editing: Core', () => {
 
 				expect(errorMsg![0]).toMatchObject({
 					action: 'error',
-					code: 'INVALID_PAYLOAD',
+					code: 'FORBIDDEN',
 				});
 
 				ws.conn.close();
@@ -481,7 +481,7 @@ describe('Collaborative Editing: Core', () => {
 			expect(totalErrors).toBe(1);
 
 			const errorMsg = [...ws1Errors, ...ws2Errors][0];
-			expect(errorMsg?.['code']).toBe('INVALID_PAYLOAD');
+			expect(errorMsg?.['code']).toBe('FORBIDDEN');
 			expect(errorMsg?.['message']).toContain('already focused');
 
 			ws1.conn.close();

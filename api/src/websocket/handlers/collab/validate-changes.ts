@@ -1,4 +1,4 @@
-import { InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { deepMapWithSchema } from '../../../utils/versioning/deep-map-with-schema.js';
@@ -63,7 +63,7 @@ export async function validateChanges(
 				});
 
 				if (allowedFields === null || (allowedFields.length === 0 && !accountability?.admin)) {
-					throw new InvalidPayloadError({
+					throw new ForbiddenError({
 						reason: `No permission to delete item in collection ${currentCollection}`,
 					});
 				}
@@ -96,7 +96,7 @@ export async function validateChanges(
 				(allowedFields.length === 0 && !accountability?.admin) ||
 				(!allowedFields.includes('*') && !allowedFields.includes(String(key)))
 			) {
-				throw new InvalidPayloadError({
+				throw new ForbiddenError({
 					reason: `No permission to ${action} field ${key} or field does not exist`,
 				});
 			}
@@ -112,7 +112,7 @@ export async function validateChanges(
 			processAsync: true,
 			iterateOnly: true,
 			onUnknownField: ([key]) => {
-				throw new InvalidPayloadError({
+				throw new ForbiddenError({
 					reason: `No permission to update field ${key} or field does not exist`,
 				});
 			},

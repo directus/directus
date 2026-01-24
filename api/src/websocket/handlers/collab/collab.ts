@@ -387,7 +387,7 @@ export class CollabHandler {
 
 		for (const field of message.fields) {
 			if (allowedFields !== null && !isFieldAllowed(allowedFields, field)) {
-				throw new InvalidPayloadError({
+				throw new ForbiddenError({
 					reason: `No permission to discard field ${field} or field does not exist`,
 				});
 			}
