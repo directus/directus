@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { getUrl } from '@common/config';
-import { CreatePermission, CreateRole, CreateUser } from '@common/functions';
+import { CreatePermission, CreateRole, CreateUser, CreateVersion } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
 import { USER } from '@common/variables';
@@ -499,5 +499,58 @@ describe('Collaborative Editing: Permissions', () => {
 
 			ws.conn.close();
 		});
+	});
+});
+
+describe('Version Permissions', () => {
+	it.each(vendors)('%s', async (vendor) => {
+		const TEST_URL = getUrl(vendor);
+		const userToken = `token-${randomUUID()}`;
+
+		// Setup
+		const roleId = await CreateRole(vendor, { name: 'Version Permissions Test' });
+		await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+		await CreatePermission(vendor, {
+			role: roleId as any,
+			permissions: [{ collection: collectionCollab, action: 'read', fields: ['*'] }],
+		});
+
+		const itemId = randomUUID();
+
+		await request(TEST_URL)
+			.post(`/items/${collectionCollab}`)
+			.send({ id: itemId, title: 'Original' })
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+		const versionResult = await CreateVersion(vendor, {
+			collection: collectionCollab,
+			item: itemId,
+			key: itemId,
+			name: 'Secret Version',
+		});
+
+		const versionId = versionResult.id;
+
+		const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+		await ws.waitForState(ws.conn.OPEN);
+
+		await ws.sendMessage({
+			type: 'collab',
+			action: 'join',
+			collection: collectionCollab,
+			item: itemId,
+			version: versionId,
+		});
+
+		const msg = await waitForMatchingMessage(ws, (m: any) => m.action === 'error');
+
+		// Assert
+		expect(msg).toMatchObject({
+			action: 'error',
+			code: 'FORBIDDEN',
+		});
+
+		ws.conn.close();
 	});
 });

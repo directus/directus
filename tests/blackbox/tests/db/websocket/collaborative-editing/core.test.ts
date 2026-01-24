@@ -58,7 +58,7 @@ describe('Collaborative Editing: Core', () => {
 		});
 	});
 
-	describe('Join with invalid version returns correct error or sync', () => {
+	describe('Join with invalid version returns error', () => {
 		it.each(vendors)('%s', async (vendor) => {
 			const TEST_URL = getUrl(vendor);
 			const itemId = randomUUID();
@@ -83,13 +83,11 @@ describe('Collaborative Editing: Core', () => {
 			});
 
 			// Assert
-			const initMessages = await ws.getMessages(1);
-			const initMsg = initMessages!.find((m) => m.type === 'collab' && m['action'] === 'init');
+			const errorMsg = await ws.getMessages(1);
 
-			expect(initMsg).toMatchObject({
-				collection: collectionCollabCore,
-				item: itemId,
-				version: 'invalid-version-string',
+			expect(errorMsg![0]).toMatchObject({
+				action: 'error',
+				code: 'FORBIDDEN',
 			});
 
 			ws.conn.close();

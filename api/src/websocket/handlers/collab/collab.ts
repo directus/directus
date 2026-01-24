@@ -7,6 +7,7 @@ import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { VersionsService } from '../../../services/versions.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
@@ -135,10 +136,11 @@ export class CollabHandler {
 		}
 
 		const schema = await getSchema();
+		const db = getDatabase();
 
 		const allowedCollections = await fetchAllowedCollections(
 			{ accountability: client.accountability!, action: 'read' },
-			{ knex: getDatabase(), schema },
+			{ knex: db, schema },
 		);
 
 		if (!allowedCollections.includes(message.collection))
@@ -154,6 +156,7 @@ export class CollabHandler {
 		try {
 			const service = getService(message.collection, {
 				schema,
+				knex: db,
 				accountability: client.accountability,
 			});
 
@@ -162,28 +165,25 @@ export class CollabHandler {
 			} else {
 				await service.readOne(message.item!);
 			}
+
+			if (message.version) {
+				const service = new VersionsService({
+					schema,
+					knex: db,
+					accountability: client.accountability,
+				});
+
+				await service.readOne(message.version);
+			}
 		} catch {
 			throw new ForbiddenError({
 				reason: `No permission to access item or it does not exist`,
 			});
 		}
 
-		if (message.version) {
-			const itemAccess = await verifyPermissions(client.accountability, message.collection, message.item, 'read', {
-				knex: getDatabase(),
-				schema,
-			});
-
-			if (!Array.isArray(itemAccess) || itemAccess.length === 0) {
-				throw new ForbiddenError({
-					reason: `No permission to access version or it does not exist`,
-				});
-			}
-		}
-
 		if (message.initialChanges) {
 			await validateChanges(message.initialChanges, message.collection, message.item, {
-				knex: getDatabase(),
+				knex: db,
 				schema,
 				accountability: client.accountability,
 			});

@@ -16,7 +16,12 @@ export const seedDBStructure = () => {
 
 				// Create collections
 				await CreateCollection(vendor, { collection: collectionCollabPrivate, primaryKeyType: 'uuid' });
-				await CreateCollection(vendor, { collection: collectionCollab, primaryKeyType: 'uuid' });
+
+				await CreateCollection(vendor, {
+					collection: collectionCollab,
+					primaryKeyType: 'uuid',
+					meta: { versioning: true },
+				});
 
 				// Create fields
 				await CreateField(vendor, { collection: collectionCollabPrivate, field: 'secret', type: 'string' });
