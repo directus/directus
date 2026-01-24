@@ -1044,7 +1044,7 @@ toggle_navigation: ナビゲーションの切り替え
 toggle_sidebar: サイドバーの切り替え
 toggle_editable_elements: 編集可能要素の切り替え
 no_url: URL が指定されていません
-no_url_copy: 設定で URL を追加してください
+no_url_copy: 設定で URL を追加してください。
 invalid_url: 無効な URL です
 invalid_url_copy: 指定された URL が設定済みの URL と一致しません。
 insights: インサイト
@@ -1159,20 +1159,20 @@ wysiwyg_options:
   directionality: 方向
 dropdown: ドロップダウン
 choices: 選択項目
-choices_option_configured_incorrectly: 設定に誤りがあります
+choices_option_configured_incorrectly: 選択肢の設定が正しくありません
 deselect: 選択解除
-deselect_all: 全て選択解除
+deselect_all: すべての選択を解除
 appearance_light: ライト
 other: その他...
 adding_user: ユーザーを追加
 unknown_user: 不明なユーザー
 creating_in: '{collection} のアイテム作成'
 editing_in: '{collection} のアイテムを編集中'
-viewing_in: '{collection} のアイテムを表示'
+viewing_in: '{collection} のアイテムを表示中'
 creating_unit: '{unit} を作成中'
-editing_unit: '{unit} を編集'
+editing_unit: '{unit} を編集中'
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
-no_options_available: 利用できるオプションなし
+no_options_available: 選択肢がありません
 settings_data_model: データモデル
 settings_roles: ユーザー権限グループ
 settings_permissions: アクセスポリシー
