@@ -26,13 +26,13 @@ contact_our_team: チームへのお問い合わせ  
 setup_welcome: ようこそ Directus へ
 setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
 setup_license_notice: >
-  年間収益、資金調達額、または運営予算が 5 百万ドル未満の団体は、Directus を無料でご利用いただけます。
+  年間収益、資金調達額、または運営予算が 5 百万ドル未満の団体は、Directus を無料で利用できます。
 setup_license_follow_up: >
-  この上限を超える場合は有料ライセンスが必要です。現在は試用モードで継続できます。商用利用のご相談は {contactOurTeam} までお願いします。
+  この上限を超える場合は有料ライセンスが必要です。評価を続けることもできますが、商用利用のご相談は {contactOurTeam} までお願いします。
 setup_save_accept_license: >
   保存することで、{directusBsl} および {privacyPolicy} に同意したものとみなされます。
 setup_accept_license: '{directusBsl} および {privacyPolicy} に同意します'
-setup_marketing_emails: 製品の最新情報やリリースノートをメールで受け取る
+setup_marketing_emails: 製品の更新やリリースノートをメールで受け取る
 setup_launch: Directus を起動
 setup_project: プロジェクトの設定
 first_name: 名
@@ -41,7 +41,7 @@ admin_email: 管理者メールアドレス
 owner_email: オーナーメールアドレス
 email_address: メールアドレス
 organization_name: 組織名
-how_do_you_use_directus: Directus をどのような目的で使用していますか？
+how_do_you_use_directus: Directus をどのような目的で使用していますか ?
 usage_personal: 個人利用 / 学習
 usage_commercial: ビジネス / 商用
 usage_community: オープンソース / コミュニティ
@@ -73,8 +73,8 @@ condition_rules: 条件ルール
 input: 入力
 invalid_input: 無効な入力
 invalid_file_type: 無効なファイル形式
-invalid_files_selected: '無効なファイルはありません | 無効なファイルが選択されました | {count} 個の無効なファイルが選択されました'
-files_wrong_type: 'ファイル 「{files}」 は形式が正しくありません。 {expected} 形式を指定してください。'
+invalid_files_selected: '無効なファイルはありません | 無効なファイルが選択されました | {count}個の無効なファイルが選択されました'
+files_wrong_type: 'ファイル {files}は無効な形式です。 {expected} 形式を指定してください。'
 files_are_empty: '次のファイルはデータが含まれていないため、アップロードに失敗しました：{files}'
 not_a_number: 数値ではありません
 invalid_range_min: '{value} 以上の値を入力してください'
