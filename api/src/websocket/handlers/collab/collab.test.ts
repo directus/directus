@@ -11,6 +11,7 @@ import { verifyPermissions } from './verify-permissions.js';
 vi.mock('../../../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
 		info: vi.fn(),
+		error: vi.fn(),
 	}),
 }));
 
@@ -21,9 +22,25 @@ vi.mock('../../../utils/get-schema.js');
 vi.mock('../../../utils/get-service.js');
 vi.mock('../../../utils/schedule.js');
 vi.mock('../../errors.js');
-vi.mock('./messenger.js');
+
+vi.mock('./messenger.js', () => ({
+	Messenger: vi.fn().mockImplementation(() => ({
+		handleError: vi.fn(),
+		pruneDeadInstances: vi.fn(),
+		messenger: {
+			subscribe: vi.fn(),
+		},
+	})),
+}));
+
 vi.mock('./room.js');
 vi.mock('./verify-permissions.js');
+
+vi.mock('../../../services/settings.js', () => ({
+	SettingsService: vi.fn().mockImplementation(() => ({
+		readSingleton: vi.fn().mockResolvedValue({ collaboration: true }),
+	})),
+}));
 
 vi.mock('../../../services/versions.js', () => ({
 	VersionsService: vi.fn().mockImplementation(() => ({

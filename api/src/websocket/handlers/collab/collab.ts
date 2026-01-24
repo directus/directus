@@ -7,6 +7,7 @@ import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { SettingsService } from '../../../services/settings.js';
 import { VersionsService } from '../../../services/versions.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
@@ -37,19 +38,46 @@ const LOCAL_CLEANUP_INTERVAL = Number(env['WEBSOCKETS_COLLAB_LOCAL_CLEANUP_INTER
 export class CollabHandler {
 	roomManager: RoomManager;
 	messenger = new Messenger();
+	enabled = false;
+
+	private initialized: Promise<void>;
 
 	/**
 	 * Initialize the handler
 	 */
 	constructor() {
 		this.roomManager = new RoomManager(this.messenger);
+		this.initialized = this.initialize();
 		this.bindWebSocket();
+	}
+
+	async initialize() {
+		try {
+			const schema = await getSchema();
+			const service = new SettingsService({ schema });
+			const settings = await service.readSingleton({ fields: ['collaboration'] });
+			this.enabled = settings?.['collaboration'] ?? true;
+		} catch (err) {
+			useLogger().error(err, '[Collab] Failed to initialize collaboration settings');
+		}
 	}
 
 	/**
 	 * Hook into websocket client lifecycle events
 	 */
 	bindWebSocket() {
+		this.messenger.messenger.subscribe('websocket.event', (event: any) => {
+			if (event.collection === 'directus_settings' && event.action === 'update') {
+				if (event.payload && 'collaboration' in event.payload) {
+					this.enabled = !!event.payload['collaboration'];
+
+					if (!this.enabled) {
+						this.roomManager.terminateAll();
+					}
+				}
+			}
+		});
+
 		emitter.onAction('websocket.connect', ({ client }) => {
 			this.messenger.addClient(client);
 		});
@@ -126,9 +154,24 @@ export class CollabHandler {
 	}
 
 	/**
+	 * Ensure collaboration is enabled and initialized
+	 */
+	async ensureEnabled() {
+		await this.initialized;
+
+		if (!this.enabled) {
+			throw new ForbiddenError({
+				reason: 'Collaboration is disabled',
+			});
+		}
+	}
+
+	/**
 	 * Join a collaboration room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
+		await this.ensureEnabled();
+
 		if (client.accountability?.share) {
 			throw new ForbiddenError({
 				reason: 'Collaboration is not supported for shares',
@@ -226,6 +269,8 @@ export class CollabHandler {
 	 * Update a field value
 	 */
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
+		await this.ensureEnabled();
+
 		const room = await this.roomManager.getRoom(message.room);
 
 		if (!room || !(await room.hasClient(client.uid))) {
@@ -283,6 +328,8 @@ export class CollabHandler {
 	 * Update multiple field values
 	 */
 	async onUpdateAll(client: WebSocketClient, message: UpdateAllMessage) {
+		await this.ensureEnabled();
+
 		const room = await this.roomManager.getRoom(message.room);
 
 		if (!room || !(await room.hasClient(client.uid)))
@@ -327,6 +374,8 @@ export class CollabHandler {
 	 * Update focus state
 	 */
 	async onFocus(client: WebSocketClient, message: FocusMessage) {
+		await this.ensureEnabled();
+
 		const room = await this.roomManager.getRoom(message.room);
 
 		if (!room || !(await room.hasClient(client.uid)))
@@ -369,6 +418,8 @@ export class CollabHandler {
 	 * Discard specified changes in the room
 	 */
 	async onDiscard(client: WebSocketClient, message: DiscardMessage) {
+		await this.ensureEnabled();
+
 		const room = await this.roomManager.getRoom(message.room);
 
 		if (!room || !(await room.hasClient(client.uid))) {

@@ -60,6 +60,14 @@ export class Messenger {
 					this.orders[client.uid]!++;
 					client.send(JSON.stringify({ ...message.message, order }));
 				}
+			} else if (message.type === 'error') {
+				const client = this.clients[message.client];
+
+				if (client) {
+					client.send(JSON.stringify(message.message));
+				}
+			} else if (message.type === 'terminate') {
+				this.clients[message.client]?.close();
 			} else if (message.type === 'room') {
 				this.roomListeners[message.room]?.(message);
 			} else if (message.type === 'ping' && message.instance === this.uid) {
@@ -221,7 +229,35 @@ export class Messenger {
 	}
 
 	sendClient(client: ClientID, message: Omit<ServerMessage, 'order'>) {
-		this.messenger.publish(COLLAB_BUS, { type: 'send', client, message });
+		const localClient = this.clients[client];
+
+		if (localClient) {
+			const order = this.orders[client]!;
+			this.orders[client]++;
+			localClient.send(JSON.stringify({ ...message, order }));
+		} else {
+			this.messenger.publish(COLLAB_BUS, { type: 'send', client, message });
+		}
+	}
+
+	terminateClient(client: ClientID) {
+		const localClient = this.clients[client];
+
+		if (localClient) {
+			localClient.close();
+		} else {
+			this.messenger.publish(COLLAB_BUS, { type: 'terminate', client });
+		}
+	}
+
+	sendError(client: ClientID, error: ServerError) {
+		const localClient = this.clients[client];
+
+		if (localClient) {
+			localClient.send(JSON.stringify(error));
+		} else {
+			this.messenger.publish(COLLAB_BUS, { type: 'error', client, message: error });
+		}
 	}
 
 	handleError(client: ClientID, error: unknown, action?: ServerError['trigger']) {
@@ -240,10 +276,6 @@ export class Messenger {
 			return;
 		}
 
-		this.messenger.publish(COLLAB_BUS, {
-			type: 'send',
-			client,
-			message,
-		});
+		this.sendError(client, message);
 	}
 }

@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import { ErrorCode } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import {
 	type Accountability,
@@ -8,7 +9,14 @@ import {
 	type WebSocketClient,
 	WS_TYPE,
 } from '@directus/types';
-import { ACTION, type BaseServerMessage, type ClientID, type Color, COLORS } from '@directus/types/collab';
+import {
+	ACTION,
+	type BaseServerMessage,
+	type ClientID,
+	type Color,
+	COLORS,
+	type ServerError,
+} from '@directus/types/collab';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
@@ -145,6 +153,30 @@ export class RoomManager {
 			}
 		}
 	}
+
+	/**
+	 * Forcefully close all local rooms and notify clients.
+	 */
+	async terminateAll() {
+		const rooms = Object.values(this.rooms);
+
+		for (const room of rooms) {
+			await room.close({
+				force: true,
+				reason: {
+					type: WS_TYPE.COLLAB,
+					action: ACTION.SERVER.ERROR,
+					code: ErrorCode.ServiceUnavailable,
+					message: 'Collaboration is disabled',
+				},
+				terminate: true,
+			});
+
+			delete this.rooms[room.uid];
+		}
+
+		useLogger().info(`[Collab] Forcefully closed all ${rooms.length} active rooms`);
+	}
 }
 
 type RoomClient = { uid: ClientID; accountability: Accountability; color: Color };
@@ -264,7 +296,7 @@ export class Room {
 				action: ACTION.SERVER.DELETE,
 			});
 
-			await this.close(true);
+			await this.close({ force: true });
 		};
 
 		const eventPrefix = isSystemCollection(collection) ? collection.substring(9) : `${collection}.items`;
@@ -610,16 +642,36 @@ export class Room {
 	}
 
 	/**
-	 * Close the room and notify all clients
+	 * Close the room and clean up shared state
 	 *
-	 * @param force If true, close the room even if active clients are present
+	 * @param options.force If true, close the room even if active clients are present
+	 * @param options.reason Optional reason to be sent to clients
+	 * @param options.terminate If true, forcefully terminate the client connection after closing
 	 */
-	async close(force = false) {
+	async close(options: { force?: boolean; reason?: ServerError; terminate?: boolean } = {}) {
+		const { force = false, reason, terminate = false } = options;
+
+		if (force) {
+			const clients = await this.getClients();
+
+			for (const client of clients) {
+				if (reason) {
+					this.messenger.sendError(client.uid, reason);
+				}
+
+				if (terminate) {
+					this.messenger.terminateClient(client.uid);
+				}
+			}
+		}
+
 		const closed = await this.store(async (store) => {
 			if (!force) {
 				const clients = await store.get('clients');
 				if (clients.length > 0) return false;
 			}
+
+			if (!(await store.has('uid'))) return false;
 
 			await store.delete('uid');
 			await store.delete('collection');
@@ -634,6 +686,9 @@ export class Room {
 		if (closed) {
 			await this.messenger.unregisterRoom(this.uid);
 			this.messenger.sendRoom(this.uid, { action: 'close' });
+		}
+
+		if (closed || force) {
 			this.dispose();
 		}
 

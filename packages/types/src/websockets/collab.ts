@@ -82,6 +82,15 @@ export type BroadcastMessage =
 			room: string;
 	  }
 	| {
+			type: 'error';
+			client: ClientID;
+			message: ServerError;
+	  }
+	| {
+			type: 'terminate';
+			client: ClientID;
+	  }
+	| {
 			type: 'ping';
 			instance: UUID;
 	  }
