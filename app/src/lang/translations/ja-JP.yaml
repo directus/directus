@@ -96,10 +96,10 @@ export_items: アイテムをエクスポート
 and: そして
 or: または
 init: 初期化
-dataset_too_large_currently_showing_n_items: データ量が多すぎるため、最初の {n} 件のみ表示しています。
+dataset_too_large_currently_showing_n_items: データ量が多すぎるため、最初の{n}件のみ表示しています。
 modifier: 修飾子
 extension_interface: インターフェース
-extension_display: ディスプレイ
+extension_display: 表示
 extension_layout: レイアウト
 extension_module: モジュール
 extension_panel: パネル
@@ -124,9 +124,9 @@ extension_reload_required_copy: アプリ拡張機能の有効化または無効
 extension_reload_now: 今すぐ再読み込み
 published_relative: '公開日: {relativeTime}'
 compatible_with_your_project: プロジェクトと互換性があります
-compatible_with_your_project_copy: この拡張機能の作者により {hostVersion} との互換性が確認されており、現在のプロジェクトのバージョン（{currentVersion}）と一致しています
+compatible_with_your_project_copy: この拡張機能の作者により {hostVersion} との互換性が確認されており、現在のプロジェクトのバージョン ({currentVersion}) と一致しています
 last_updated_relative: '最終更新日: {relativeTime}'
-n_files: '{n} 個のファイル'
+n_files: '{n}個のファイル'
 verified: 認証済み
 homepage: ホームページ
 repository: リポジトリ
@@ -136,7 +136,7 @@ report_an_issue: 問題を報告
 website: ウェブサイト
 github: GitHub
 beta: Beta
-n_downloads: '{n} 回のダウンロード'
+n_downloads: '{n}回のダウンロード'
 downloads: ダウンロード
 compatibility_not_guaranteed: 互換性は保証されません
 compatibility_not_guaranteed_copy: この拡張機能の作成者が指定している互換バージョンは {hostVersion} であり、現在のプロジェクトのバージョン ({currentVersion}) と一致しません
@@ -150,9 +150,9 @@ enter_password_to_enable_tfa: 二段階認証を使用するためパスワー�
 sso_tfa_setup_notice: アカウントからログアウトされるため、再度ログインが必要になります。保存されていない変更はすべて破棄されます。
 enable_tfa: 2段階認証を有効化
 cancel_tfa_setup: 2段階認証の設定をキャンセル
-cancel_tfa_setup_notice: 2段階認証の設定をキャンセルしてもよろしいですか？
-keep_setup: 設定を継続
-cancel_setup: 設定をキャンセル
+cancel_tfa_setup_notice: 2段階認証の設定をキャンセルしてもよいですか？
+keep_setup: セットアップを継続
+cancel_setup: セットアップをキャンセル
 add_field: フィールドの追加
 role_name: 権限名
 policy_name: ポリシー名
@@ -171,7 +171,7 @@ required: 必須
 required_for_app_access: アプリへのアクセスに必須
 requires_value: この項目は必須です
 create_preset: プリセットの作成
-create_panel: パネルを作成
+create_panel: パネルの作成
 create_role: 権限作成
 create_policy: ポリシーの作成
 create_user: ユーザーの作成
@@ -203,7 +203,7 @@ version_key: バージョンキー
 version_name: バージョン名
 main_version: メイン
 switch_version: バージョンを切り替える
-switch_version_copy: バージョン「{version}」に切り替えますか? 保存されていない変更は失われます。
+switch_version_copy: バージョン {version} に切り替えますか ? 保存されていない変更は失われます。
 create_version: バージョンを作成
 rename_version: バージョン名を変更
 compare_version: バージョンを比較
@@ -214,9 +214,9 @@ select_all_differences: すべての差異を選択
 main_updated_notice: このバージョンが作成された後、メインアイテムが更新されました。
 delete_version: バージョンを削除
 delete_version_copy: >-
-  バージョン「{version}」を削除してもよろしいですか? この操作は元に戻せません。
+  バージョン {version} を削除してもよろしいですか ? この操作は元に戻せません。
 delete_on_apply_copy: >-
-  「{version}」をメインに反映しようとしています。反映後の「{version}」の処理を選択してください。
+  {version} をメインに反映しようとしています。反映後の {version} の処理を選択してください。
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
@@ -1469,19 +1469,37 @@ fields:
     name: 名前
     role: 権限グループ
     password: パスワード
+    date_start: 開始日
+    date_end: 終了日
+    max_uses: 最大使用回数
+    times_used: 使用回数
   directus_fields:
+    collection: コレクション名
+    icon: コレクションアイコン
     note: 備考
     hidden: 非表示
     singleton: シングルトン
     translation: 項目名の翻訳を追加する
+    display_template: テンプレート
   directus_roles:
     name: 権限名
+    icon: 権限グループアイコン
     description: 説明
+    users: 権限グループ内のユーザー
+    parent: 親権限グループ
+    children: 子権限グループ
   directus_policies:
     name: ポリシー名
     description: 説明
+    app_access: 管理画面へのアクセス
+    admin_access: 管理者アクセス
+    ip_access: IP アクセス制限
+    enforce_tfa: 2段階認証を必須にする
 field_options:
   directus_settings:
+    project_name_placeholder: マイプロジェクト…
+    project_color_note: ログインとロゴの背景
+    project_logo_note: 40×40（白色）SVG / PNG
     project_favicon_note: 32×32 ICO
     public_note_placeholder: Markdown 形式が使用できる、公開用の短いメッセージです…
     security_divider_title: セキュリティ
@@ -1536,13 +1554,23 @@ field_options:
     sort_field: フィールドを選択...
     accountability_divider: 操作の記録
     duplication_divider: 複製
+    preview_divider: プレビュー
+    content_versioning_divider: コンテンツのバージョン管理
+    enable_versioning: バージョン管理を有効化
   directus_files:
     title: 一意のタイトル...
     description: 任意の説明...
     location: 任意の場所...
     storage_divider: ファイルの命名
+    focal_point_divider: フォーカルポイント
     filename_disk: ストレージ上の保存名...
     filename_download: ダウンロード時のファイル名...
+  directus_policies:
+    name: このポリシーを識別するための固有の名前を入力してください...
+    description: このポリシーの説明を入力してください...
+    ip_access: 許可する IP アドレス、IP 範囲、CIDR ブロックを追加してください。すべての接続を許可する場合は、空欄のままにします。
+    enforce_tfa: 2段階認証を強制する
+    assigned_to: 担当者
   directus_roles:
     name: この権限グループの一意の名前...
     description: この権限グループの説明...
@@ -1550,7 +1578,12 @@ field_options:
       icon_name: アイコン
       name_name: 名前
       name_placeholder: タイトルを入力...
+      link_name: リンク
+      link_placeholder: 相対パス、または絶対パスの URL を入力してください...
+    parent_note: 権限の継承元となる親権限グループ（任意）
+    children_note: この権限グループの権限を継承する子ロール
     collections_name: コレクション
+    collections_addLabel: コレクションを追加…
   directus_users:
     preferences_divider: ユーザー設定
     dropdown_auto: 自動 (システム設定に従う)
@@ -1558,10 +1591,13 @@ field_options:
     dropdown_dark: ダークモード
     admin_divider: 管理者オプション
     status_dropdown_draft: 下書き
+    status_dropdown_invited: 招待中
     status_dropdown_active: 有効
     status_dropdown_suspended: 停止済み
     status_dropdown_archived: アーカイブ済み
+    token: 安全なアクセストークンを入力してください...
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
+no_value: 値なし
 do_nothing: 何もしない
 save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
@@ -1759,9 +1795,15 @@ interfaces:
   select-dropdown-m2o:
     display_template: テンプレートを表示
   input-rich-text-md:
+    markdown: Markdown
     edit: 編集
+    preview: プレビュー
+    default_view_editor: 編集者
+    default_view_preview: プレビュー
+    customSyntax: カスタムブロック
   map:
     zoom: 拡大
+    geojson: GeoJSON
   list:
     sort: 並べ替え
     sort_placeholder: マニュアル
