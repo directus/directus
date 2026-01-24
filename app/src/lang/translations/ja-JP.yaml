@@ -1626,9 +1626,24 @@ uses_left: 残りなし | 残り 1 回 | 残り {n} 回
 no_shares: 表示する共有項目がありません
 new_share: 新規共有
 show_more: もっと見る
+show_less: 表示を減らす
 ai:
+  thinking: 思考中…
+  input: 入力
+  output: 出力
+  streaming: 生成中…
+  ready: 準備完了
+  complete: 完了
   error: エラー
+  error_message: エラーが発生しました
+  unknown_error: 不明なエラー
   unknown: 不明
+  approval_requested: 承認待ち
+  approve: 承認
+  always_allow: 常に許可
+  deny: 却下
+  approve_tool_execution: ツールの実行を承認しますか ?
+  retry: 再試行
   settings: 設定
   tool_approval:
     disabled: 無効
