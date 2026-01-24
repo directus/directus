@@ -484,7 +484,10 @@ describe('CollabHandler', () => {
 
 			await expect(
 				handler.onLeave(mockClient, { action: 'leave', room: 'invalid-room', type: 'collab' }),
-			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No access to room "invalid-room" or it does not exist/i));
+			).rejects.toHaveProperty(
+				'extensions.reason',
+				expect.stringMatching(/No access to room "invalid-room" or it does not exist/i),
+			);
 		});
 	});
 
