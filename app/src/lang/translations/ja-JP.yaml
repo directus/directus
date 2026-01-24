@@ -860,14 +860,14 @@ count_of_total_items: '{total} 件中 {count} 件のアイテム'
 start_end_of_count_items: '{count} 件中 {start} – {end} 件のアイテム'
 start_end_of_count_filtered_items: '絞り込み結果 {count} 件中 {start} – {end} 件のアイテム'
 delete_collection_are_you_sure: >-
-  本当にコレクション「{collection}」を削除しますか？これにより、コレクションとそこに含まれるすべてのアイテムが削除されます。この操作は取り消せません。
+  本当にコレクション「{collection}」を削除しますか? これにより、コレクションとそこに含まれるすべてのアイテムが削除されます。この操作は取り消せません。
 delete_folder_are_you_sure: 本当にフォルダー「{folder}」を削除しますか？内包されているフォルダーやコレクションは、最上位レベルに移動されます。
 delete_collection_peer_dependencies: 現在のコレクションに関連付けられているため、以下のフィールドも削除されます。
 collections_shown: 表示するコレクション
-visible_collections: 表示中のコレクション
+visible_collections: 閲覧可能なコレクション
 hidden_collections: 非表示のコレクション
-show_hidden_collections: 非表示コレクションを表示
-hide_hidden_collections: 非表示コレクションを非表示
+show_hidden_collections: 非表示のコレクションを表示
+hide_hidden_collections: 非表示のコレクションを非表示
 show_header: ヘッダーを表示
 unmanaged_collections: 未設定のコレクション
 system_collections: システムコレクション
@@ -891,16 +891,16 @@ delete_advanced_filter: フィルターを削除
 change_advanced_filter_operator: オペレーターを変更
 advanced: 詳細設定
 operators:
-  eq: 同等
-  neq: 等しくない
+  eq: 次と等しい
+  neq: 次と等しくない
   lt: より少ない
   gt: より大きい
   lte: より少ないまたは等しい
   gte: より大きいまたは等しい
-  in: のひとつ
-  nin: のひとつではない
-  null: Null です
-  nnull: Null でない
+  in: 次のいずれかである
+  nin: 次のいずれでもない
+  null: Null である
+  nnull: Null ではない
   contains: 含む
   ncontains: 含まない
   icontains: 含む (無関係)
@@ -912,12 +912,12 @@ operators:
   nends_with: 後方一致でない
   iends_with: 次で終わる（区別なし）
   niends_with: 次で終わらない（区別なし）
-  between: 間である
-  nbetween: 間でない
+  between: 次の間にある
+  nbetween: 次の間にない
   empty: 空
-  nempty: 空でない
-  all: 含まれるキー
-  has: 含まれるいくつかのキー
+  nempty: 空ではない
+  all: 次のキーを含む
+  has: 次のいずれかのキーを含む
   intersects: 交差する
   nintersects: 交差しない
   intersects_bbox: 境界ボックスと交差する
@@ -968,8 +968,8 @@ no_visible_fields: 空のフォーム
 no_visible_fields_copy: このフォームには表示する項目がありません
 clear_filters: 絞り込みをクリア
 saves_automatically: 変更は自動的に保存されます
-role: ロール
-edit_role: ロールを編集
+role: 権限グループ
+edit_role: 権限グループを編集
 rule: ルール
 user: ユーザー
 no_presets: プリセットがありません
@@ -1011,7 +1011,7 @@ view_trigger: トリガーを表示
 create_trigger: トリガーを作成
 trigger_setup: トリガーを設定
 change_trigger: トリガーを変更
-flow_delete_confirm: フロー「{flow}」を削除しますか？この操作は元に戻せません。
+flow_delete_confirm: フロー「{flow}」を削除しますか? この操作は元に戻せません。
 set_flow_active: フローを有効に設定
 set_flow_inactive: フローを無効に設定
 edit_flow: フローを編集
@@ -1042,7 +1042,7 @@ operation_handle_reject: '失敗時:クリックで追加、ドラッグでル�
 visual_editor: ビジュアルエディター
 toggle_navigation: ナビゲーションの切り替え
 toggle_sidebar: サイドバーの切り替え
-toggle_editable_elements: 編集可能要素の切り替え
+toggle_editable_elements: 編集可能要素の表示を切り替え
 no_url: URL が指定されていません
 no_url_copy: 設定で URL を追加してください。
 invalid_url: 無効な URL です
@@ -1082,9 +1082,12 @@ logs_beginning: ここからログセッションが始まります...
 logs_waiting: '新しいログを待機中...'
 logs_unread_count: '{count} 件の未読'
 clear_logs: ログを消去
+search_logs: ログを検索…
 all_instances: すべてのインスタンス
 instance_count: 'インスタンスなし | 1個のインスタンス | {count} 個のインスタンス'
 all_log_levels: すべてのログレベル
+log_level_count: 'ログレベルなし | 1個のログレベル | {count} 個のログレベル'
+soft_wrap_lines: 行を折り返す
 full_screen: 全画面表示
 full_text_search: テキスト全体検索
 edit_panels: パネルを編集
@@ -1098,6 +1101,7 @@ media: メディア
 quality: 品質
 width: 幅
 height: 高さ
+transformation_preset_key: 変換プリセットキー
 source: 参照元
 url_placeholder: URLを入力...
 display_text: テキストを表示
@@ -1112,6 +1116,7 @@ tooltip: ツールチップ
 tooltip_placeholder: ヒントを入力中...
 unlimited: 無制限
 open_link_in: リンクを開く
+new_tab: 新しいタブ
 save_image: 画像を保存
 save_media: メディアを保存
 wysiwyg_options:
@@ -1147,6 +1152,7 @@ wysiwyg_options:
   h4: 見出し 4
   h5: 見出し 5
   h6: 見出し6
+  pre: 整形済みテキスト
   fontselect: フォントを選択
   fontsizeselect: 文字サイズを選択
   indent: インデント
@@ -1161,15 +1167,24 @@ wysiwyg_options:
   source_code: ソースコードを編集
   fullscreen: 全画面表示
   directionality: 方向
+  lazy_loading: 画像の遅延読み込み
+  lazy_loading_label: 遅延読み込みを有効化
 dropdown: ドロップダウン
 choices: 選択項目
 choices_option_configured_incorrectly: 選択肢の設定が正しくありません
 deselect: 選択解除
 deselect_all: すべての選択を解除
+theme: テーマ
+select_a_theme: テーマを選択
+default_sync_with_project: デフォルト (プロジェクトと同期)
+appearance_auto: 自動 (システムと同期)
 appearance_light: ライト
+appearance_dark: ダーク
 other: その他...
 adding_user: ユーザーを追加
 unknown_user: 不明なユーザー
+unknown_version: 不明なバージョン
+unknown_revision: 不明なリビジョン
 creating_in: '{collection} のアイテム作成'
 editing_in: '{collection} のアイテムを編集中'
 viewing_in: '{collection} のアイテムを表示中'
@@ -1184,6 +1199,9 @@ settings_project: 設定
 settings_appearance: 外観
 settings_ai: AI
 model_context_protocol: Model Context Protocol
+ai_assistant: AI アシスタント
+ai_disabled_by_env: AI アシスタント機能は環境変数によって無効化されています。
+mcp_disabled_by_env: MCP 機能は環境変数によって無効化されています。
 settings_flows: フロー
 settings_presets: ブックマーク
 settings_translations: 翻訳
@@ -1193,9 +1211,9 @@ actions: 操作
 select: 選択...
 layout: レイアウト
 tree_view: ツリービュー
-changes_are_permanent: 後で変更できません
-preset_name_placeholder: 空欄の場合デフォルトで機能します...
-preset_search_placeholder: 検索クエリ
+changes_are_permanent: 変更は元に戻せません
+preset_name_placeholder: 空の場合はデフォルト値として使用されます...
+preset_search_placeholder: 検索キーワード...
 editing_preset: プリセットを編集
 layout_preview: レイアウトプレビュー
 layout_setup: レイアウト設定
@@ -1204,7 +1222,7 @@ unsaved_changes: 未保存の変更
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
 discard_all_changes: すべての変更を破棄
-discard_changes_copy: 全ての変更を破棄しますか？
+discard_changes_copy: 行った変更をすべて破棄してもよろしいですか ?
 show_x_axis: X軸を表示
 show_y_axis: Y軸を表示
 keep_editing: 編集を続ける
@@ -1221,19 +1239,19 @@ singleton: シングルトン
 singleton_label: シングルオブジェクトに設定する
 directus_collection:
   directus_presets: コレクションのデフォルトとブックマークのプリセット
-  directus_relations: リレーションシップの構成とメタデータ
+  directus_relations: リレーション設定とメタデータ
   directus_revisions: すべてのアクティビティのスナップショット
   directus_roles: システムユーザーの権限グループ
-  directus_sessions: セッション情報
-  directus_settings: プロジェクト設定オプション
-  directus_shares: 外部共有されたアイテムをトラッキング
+  directus_sessions: ユーザーセッション情報
+  directus_settings: プロジェクトの設定オプション
+  directus_shares: 外部共有アイテムを追跡
   directus_users: プラットフォームのシステムユーザー
 fields:
   directus_activity:
-    item: プライマリキーを作成
+    item: アイテムのプライマリーキー
     action: アクション
     collection: コレクション
-    timestamp: 実行する操作
+    timestamp: 対象アクション
     user: 実行者
     comment: コメント
     user_agent: ユーザーエージェント
@@ -1434,6 +1452,7 @@ ai_tools:
   files: ファイル
   folders: フォルダー
   flows: フロー
+  trigger-flow: フローをトリガー
   operations: オペレーション
   schema: スキーマ
   collections: コレクション
@@ -1624,13 +1643,26 @@ interfaces:
   translations:
     display_template: テンプレートを表示
     no_collection: コレクションがありません
+  list-o2m-tree-view:
+    recursive_only: ツリー表示インターフェースは、再帰的リレーションにのみ対応しています。
   user:
     user: ユーザー
+    description: 既存の Directus ユーザーを選択
+    select_mode: 選択モード
     modes:
+      auto: 自動
       dropdown: ドロップダウン
+      modal: モーダル
   input-rich-text-html:
     wysiwyg: WYSIWYG
+    description: HTML コンテンツを作成するリッチテキストエディター
+    toolbar: ツールバー
+    custom_formats: カスタムフォーマット
+    custom_formats_note: TinyMCE コンテンツフォーマットの一覧。詳細については、TinyMCE ドキュメントの コンテンツフォーマット (https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) を参照してください。
+    options_override: オプションの上書き
+    options_override_note: TinyMCE のユーザーフォーマットキーとその値。詳細については、TinyMCE ドキュメントの ユーザーフォーマット (https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) を参照してください。
   input-block-editor:
+    tools: ツールバー
     tools_options:
       header: ヘッダー
       embed: 埋め込む
@@ -1792,7 +1824,14 @@ operations:
   sleep:
     name: 待機
     description: 指定したミリ秒数だけ待機します
+  throw-error:
+    message: エラーメッセージ
+  transform:
+    name: ペイロードを変換
+    description: フローの JSON ペイロードを変更
   trigger:
+    name: フローをトリガー
+    description: このデータを別のフローに渡す
     flows: フロー
     flow: フロー
     data: データ
