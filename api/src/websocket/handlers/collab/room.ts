@@ -651,16 +651,15 @@ export class Room {
 	async close(options: { force?: boolean; reason?: ServerError; terminate?: boolean } = {}) {
 		const { force = false, reason, terminate = false } = options;
 
+		let roomClients: RoomClient[] = [];
+
 		if (force) {
-			const clients = await this.getClients();
+			roomClients = await this.getClients();
 
-			for (const client of clients) {
-				if (reason) {
-					this.messenger.sendError(client.uid, reason);
-				}
-
-				if (terminate) {
-					this.messenger.terminateClient(client.uid);
+			for (const client of roomClients) {
+				if (this.messenger.hasClient(client.uid)) {
+					if (reason) this.messenger.sendError(client.uid, reason);
+					if (terminate) this.messenger.terminateClient(client.uid);
 				}
 			}
 		}
@@ -686,6 +685,15 @@ export class Room {
 		if (closed) {
 			await this.messenger.unregisterRoom(this.uid);
 			this.messenger.sendRoom(this.uid, { action: 'close' });
+
+			if (force) {
+				for (const client of roomClients) {
+					if (!this.messenger.hasClient(client.uid)) {
+						if (reason) this.messenger.sendError(client.uid, reason);
+						if (terminate) this.messenger.terminateClient(client.uid);
+					}
+				}
+			}
 		}
 
 		if (closed || force) {

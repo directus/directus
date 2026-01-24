@@ -190,6 +190,12 @@ describe('Messenger', () => {
 			instances = mockData.get('registry:instances');
 			expect(instances[messenger.uid].rooms).not.toContain('room-1');
 		});
+
+		test('hasClient returns true for local and false for remote', () => {
+			messenger.addClient(mockClient);
+			expect(messenger.hasClient('client-1')).toBe(true);
+			expect(messenger.hasClient('remote-client')).toBe(false);
+		});
 	});
 
 	describe('Message Sending', () => {
@@ -204,46 +210,100 @@ describe('Messenger', () => {
 			});
 		});
 
-		test('sendClient publishes to bus', () => {
+		test('sendClient publishes to bus for remote clients', () => {
 			const message = { action: 'test' };
-			messenger.sendClient('client-1', message as any);
+			messenger.sendClient('remote-client', message as any);
 
 			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
 				type: 'send',
-				client: 'client-1',
+				client: 'remote-client',
 				message,
 			});
 		});
 
-		test('delivers message to local client via bus subscription', () => {
-			const mockClient = {
-				uid: 'client-1',
-				send: vi.fn(),
-				on: vi.fn(),
-			} as any;
+		test('sendClient bypasses bus for local clients', () => {
+			const localClient = { uid: 'local-1', send: vi.fn(), on: vi.fn() } as any;
+			messenger.addClient(localClient);
+			mockBus.publish.mockClear();
 
+			const message = { action: 'test' };
+			messenger.sendClient('local-1', message as any);
+
+			expect(mockBus.publish).not.toHaveBeenCalled();
+			expect(localClient.send).toHaveBeenCalled();
+		});
+
+		test('terminateClient publishes to bus for remote clients', () => {
+			messenger.terminateClient('remote-client');
+
+			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
+				type: 'terminate',
+				client: 'remote-client',
+			});
+		});
+
+		test('terminateClient closes local client directly', () => {
+			const localClient = { uid: 'local-1', close: vi.fn(), on: vi.fn() } as any;
+			messenger.addClient(localClient);
+			mockBus.publish.mockClear();
+
+			messenger.terminateClient('local-1');
+
+			expect(mockBus.publish).not.toHaveBeenCalled();
+			expect(localClient.close).toHaveBeenCalled();
+		});
+
+		test('sendError publishes to bus for remote clients', () => {
+			const error = { code: 'FAIL' };
+			messenger.sendError('remote-client', error as any);
+
+			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
+				type: 'error',
+				client: 'remote-client',
+				message: error,
+			});
+		});
+
+		test('sendError sends to local client directly', () => {
+			const localClient = { uid: 'local-1', send: vi.fn(), on: vi.fn() } as any;
+			messenger.addClient(localClient);
+			mockBus.publish.mockClear();
+
+			const error = { code: 'FAIL' };
+			messenger.sendError('local-1', error as any);
+
+			expect(mockBus.publish).not.toHaveBeenCalled();
+			expect(localClient.send).toHaveBeenCalled();
+		});
+
+		test('delivers error to local client via bus subscription', () => {
+			const mockClient = { uid: 'client-1', send: vi.fn(), on: vi.fn() } as any;
 			messenger.addClient(mockClient);
 
-			// Simulate incoming "send" message
+			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
+			const error = { type: 'collab', action: 'error', code: 'FAIL' };
+
+			busHandler?.({
+				type: 'error',
+				client: 'client-1',
+				message: error,
+			});
+
+			expect(mockClient.send).toHaveBeenCalledWith(JSON.stringify(error));
+		});
+
+		test('terminates local client via bus subscription', () => {
+			const mockClient = { uid: 'client-1', close: vi.fn(), on: vi.fn() } as any;
+			messenger.addClient(mockClient);
+
 			const busHandler = mockBus.subscribe.mock.calls[0]?.[1];
 
-			const message = {
-				type: 'send',
+			busHandler?.({
+				type: 'terminate',
 				client: 'client-1',
-				message: { action: 'hello' },
-			};
+			});
 
-			busHandler?.(message);
-
-			expect(mockClient.send).toHaveBeenCalledWith(
-				JSON.stringify({
-					action: 'hello',
-					order: 0,
-				}),
-			);
-
-			// Verify order increment
-			expect(messenger.orders['client-1']).toBe(1);
+			expect(mockClient.close).toHaveBeenCalled();
 		});
 
 		test('ignores messages for unknown clients', () => {

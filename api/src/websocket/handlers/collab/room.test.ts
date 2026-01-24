@@ -57,6 +57,8 @@ const mockMessenger = {
 	registerRoom: vi.fn(),
 	unregisterRoom: vi.fn(),
 	getGlobalRooms: vi.fn().mockResolvedValue([]),
+	hasClient: vi.fn(),
+	terminateClient: vi.fn(),
 } as any;
 
 const getAccountability = (overrides = {}) =>
@@ -77,14 +79,14 @@ const mockLocks = new Map();
 
 vi.mock('./store.js', () => {
 	return {
-		useStore: (uid: string) => {
+		useStore: (uid: string, defaults?: any) => {
 			return async (callback: any) => {
 				const lock = mockLocks.get(uid) || Promise.resolve();
 
 				const nextLock = lock.then(async () => {
 					return await callback({
 						has: async (key: string) => mockData.has(`${uid}:${key}`),
-						get: async (key: string) => mockData.get(`${uid}:${key}`),
+						get: async (key: string) => mockData.get(`${uid}:${key}`) ?? defaults?.[key],
 						set: async (key: string, value: any) => {
 							mockData.set(`${uid}:${key}`, value);
 						},
@@ -1216,6 +1218,83 @@ describe('room', () => {
 				action: 'delete',
 			}),
 		);
+	});
+
+	describe('close', () => {
+		test('only one node becomes the leader during concurrent close', async () => {
+			const item = getTestItem();
+			const uid = getRoomHash('coll', item, null);
+			const roomA = new Room(uid, 'coll', item, null, {}, mockMessenger);
+			const roomB = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+			await roomA.ensureInitialized();
+
+			const [resultA, resultB] = await Promise.all([roomA.close({ force: true }), roomB.close({ force: true })]);
+
+			expect([resultA, resultB]).toContain(true);
+			expect([resultA, resultB]).toContain(false);
+
+			expect(mockData.has(`${uid}:uid`)).toBe(false);
+		});
+
+		test('local clients are terminated directly with remotes via bus', async () => {
+			const item = getTestItem();
+			const uid = getRoomHash('coll', item, null);
+			const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+			const localClient = mockWebSocketClient({ uid: 'local-1' });
+
+			await room.ensureInitialized();
+			await room.join(localClient);
+
+			await room.store(async (store) => {
+				const clients = await store.get('clients');
+				clients.push({ uid: 'remote-1', accountability: {} as any, color: 'blue' });
+				await store.set('clients', clients);
+			});
+
+			vi.mocked(mockMessenger.hasClient).mockImplementation((id: any) => id === 'local-1');
+			vi.mocked(mockMessenger.terminateClient).mockClear();
+
+			await room.close({ force: true, terminate: true });
+
+			expect(mockMessenger.terminateClient).toHaveBeenCalledWith('local-1');
+			expect(mockMessenger.terminateClient).toHaveBeenCalledWith('remote-1');
+		});
+
+		test('follower still calls dispose() when force is true', async () => {
+			const item = getTestItem();
+			const uid = getRoomHash('coll', item, null);
+			const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+			const disposeSpy = vi.spyOn(room, 'dispose');
+			vi.spyOn(room, 'getClients').mockResolvedValue([]);
+
+			// Simulate someone else is leader
+			vi.spyOn(mockData, 'has').mockReturnValue(false);
+
+			const closed = await room.close({ force: true });
+
+			expect(closed).toBe(false);
+			expect(disposeSpy).toHaveBeenCalled();
+		});
+
+		test('follower does not call dispose() when force', async () => {
+			const item = getTestItem();
+			const uid = getRoomHash('coll', item, null);
+			const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+			const disposeSpy = vi.spyOn(room, 'dispose');
+			vi.spyOn(room, 'getClients').mockResolvedValue([]);
+
+			// Simulate someone else is leader
+			vi.spyOn(mockData, 'has').mockReturnValue(false);
+
+			const closed = await room.close({ force: false });
+
+			expect(closed).toBe(false);
+			expect(disposeSpy).not.toHaveBeenCalled();
+		});
 	});
 });
 

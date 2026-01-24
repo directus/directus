@@ -56,8 +56,8 @@ export class Messenger {
 				const client = this.clients[message.client];
 
 				if (client) {
-					const order = this.orders[client.uid];
-					this.orders[client.uid]!++;
+					const order = this.orders[client.uid] ?? 0;
+					this.orders[client.uid] = order + 1;
 					client.send(JSON.stringify({ ...message.message, order }));
 				}
 			} else if (message.type === 'error') {
@@ -74,6 +74,10 @@ export class Messenger {
 				this.messenger.publish(COLLAB_BUS, { type: 'pong', instance: this.uid });
 			}
 		});
+	}
+
+	hasClient(client: ClientID) {
+		return client in this.clients;
 	}
 
 	setRoomListener(room: string, callback: RoomListener) {
@@ -232,8 +236,8 @@ export class Messenger {
 		const localClient = this.clients[client];
 
 		if (localClient) {
-			const order = this.orders[client]!;
-			this.orders[client]++;
+			const order = this.orders[client] ?? 0;
+			this.orders[client] = order + 1;
 			localClient.send(JSON.stringify({ ...message, order }));
 		} else {
 			this.messenger.publish(COLLAB_BUS, { type: 'send', client, message });
