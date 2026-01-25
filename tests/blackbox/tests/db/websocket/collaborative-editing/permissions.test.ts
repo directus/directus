@@ -3,6 +3,7 @@ import { getUrl } from '@common/config';
 import { CreatePermission, CreateRole, CreateUser, CreateVersion } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
+import type { WebSocketCollabResponse } from '@common/types';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
 import request from 'supertest';
@@ -38,9 +39,9 @@ describe('Collaborative Editing: Permissions', () => {
 			});
 
 			// Assert
-			const errorMsg = await ws.getMessages(1);
+			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
 
-			expect(errorMsg![0]).toMatchObject({
+			expect(errorMsg).toMatchObject({
 				action: 'error',
 				code: 'FORBIDDEN',
 			});
@@ -59,7 +60,7 @@ describe('Collaborative Editing: Permissions', () => {
 			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
 
 			await CreatePermission(vendor, {
-				role: roleId as any,
+				role: roleId,
 				permissions: [
 					{ collection: collectionCollab, action: 'read', fields: ['id', 'title'] },
 					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] },
@@ -84,8 +85,12 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -95,13 +100,16 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1); // Drain INIT
-			await wsAdmin.getMessages(1); // Drain JOIN
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			// Action
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 
-			await wsRestricted.getMessages(1); // Drain FOCUS
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'title',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -112,9 +120,12 @@ describe('Collaborative Editing: Permissions', () => {
 			});
 
 			// Assert
-			const updateTitle = await wsRestricted.getMessages(1);
+			const updateTitle = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'title',
+			);
 
-			expect(updateTitle![0]).toMatchObject({
+			expect(updateTitle).toMatchObject({
 				type: 'collab',
 				action: 'update',
 				field: 'title',
@@ -151,7 +162,7 @@ describe('Collaborative Editing: Permissions', () => {
 			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
 
 			await CreatePermission(vendor, {
-				role: roleId as any,
+				role: roleId,
 				permissions: [
 					{ collection: collectionCollab, action: 'read', fields: ['id', 'title'] },
 					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] },
@@ -176,8 +187,12 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -187,8 +202,8 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1); // Drain INIT
-			await wsAdmin.getMessages(1); // Drain JOIN
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -213,10 +228,10 @@ describe('Collaborative Editing: Permissions', () => {
 			await sleep(500);
 
 			// Restricted user should receive the update and focus (order not guaranteed)
-			const [updateMessage, focusMessage] = (await waitForMatchingMessage(wsRestricted, [
-				(m: any) => m['action'] === 'update' && m['field'] === 'title' && m['changes'] === null,
-				(m: any) => m['action'] === 'focus' && m['field'] === 'title',
-			])) as any[];
+			const [updateMessage, focusMessage] = await waitForMatchingMessage<WebSocketCollabResponse>(wsRestricted, [
+				(msg) => msg.action === 'update' && msg.field === 'title' && msg.changes === null,
+				(msg) => msg.action === 'focus' && msg.field === 'title',
+			]);
 
 			expect(updateMessage).toBeDefined();
 			expect(focusMessage).toBeDefined();
@@ -251,7 +266,7 @@ describe('Collaborative Editing: Permissions', () => {
 			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
 
 			await CreatePermission(vendor, {
-				role: roleId as any,
+				role: roleId,
 				permissions: [
 					{ collection: collectionCollab, action: 'read', fields: ['*'] },
 					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] },
@@ -278,9 +293,9 @@ describe('Collaborative Editing: Permissions', () => {
 			});
 
 			// Assert
-			const errorMsg = await ws.getMessages(1);
+			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
 
-			expect(errorMsg![0]).toMatchObject({
+			expect(errorMsg).toMatchObject({
 				action: 'error',
 				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to update field content or field does not exist/i),
@@ -301,7 +316,7 @@ describe('Collaborative Editing: Permissions', () => {
 
 			// Permissions
 			await CreatePermission(vendor, {
-				role: roleId as any,
+				role: roleId,
 				permissions: [
 					{ collection: collectionCollab, action: 'read', fields: ['*'] },
 					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] },
@@ -326,8 +341,12 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			const initMsg = await ws.getMessages(1);
-			const room = initMsg![0]!['room'];
+			const initMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initMsg.room!;
 
 			await ws.sendMessage({
 				type: 'collab',
@@ -338,9 +357,9 @@ describe('Collaborative Editing: Permissions', () => {
 			});
 
 			// Assert
-			const errorMsg = await ws.getMessages(1);
+			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
 
-			expect(errorMsg![0]).toMatchObject({
+			expect(errorMsg).toMatchObject({
 				action: 'error',
 				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to update field content or field does not exist/i),
@@ -360,7 +379,7 @@ describe('Collaborative Editing: Permissions', () => {
 			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
 
 			await CreatePermission(vendor, {
-				role: roleId as any,
+				role: roleId,
 				permissions: [
 					{ collection: collectionCollab, action: 'read', fields: ['*'] },
 					{ collection: collectionCollab, action: 'update', fields: ['*'] },
@@ -386,7 +405,7 @@ describe('Collaborative Editing: Permissions', () => {
 				initialChanges: { non_existent: 'Invalid' },
 			});
 
-			const errorJoin = await ws.getMessages(1);
+			const errorJoin = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
 
 			const ws2 = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
 
@@ -398,8 +417,12 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			const initMsg = await ws2.getMessages(1);
-			const room = initMsg![0]!['room'];
+			const initMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initMsg.room!;
 
 			await ws2.sendMessage({
 				type: 'collab',
@@ -409,16 +432,16 @@ describe('Collaborative Editing: Permissions', () => {
 				changes: 'Value',
 			});
 
-			const errorUpdate = await ws2.getMessages(1);
+			const errorUpdate = await waitForMatchingMessage<WebSocketCollabResponse>(ws2, (msg) => msg.action === 'error');
 
 			// Assert
-			expect(errorJoin![0]).toMatchObject({
+			expect(errorJoin).toMatchObject({
 				action: 'error',
 				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to update field non_existent or field does not exist/i),
 			});
 
-			expect(errorUpdate![0]).toMatchObject({
+			expect(errorUpdate).toMatchObject({
 				action: 'error',
 				code: 'FORBIDDEN',
 				message: expect.stringMatching(/No permission to update field unknown_field or field does not exist/i),
@@ -439,7 +462,7 @@ describe('Collaborative Editing: Permissions', () => {
 			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
 
 			await CreatePermission(vendor, {
-				role: roleId as any,
+				role: roleId,
 				permissions: [
 					{ collection: collectionCollab, action: 'read', fields: ['*'] },
 					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] }, // content is not updatable
@@ -464,8 +487,8 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			const initMsg = await waitForMatchingMessage(ws, (m: any) => m.action === 'init');
-			const room = (initMsg as any).room;
+			const initMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'init');
+			const room = initMsg.room!;
 
 			await ws.sendMessage({
 				type: 'collab',
@@ -474,7 +497,7 @@ describe('Collaborative Editing: Permissions', () => {
 				room,
 			});
 
-			const discardMsg = await waitForMatchingMessage(ws, (m: any) => m.action === 'discard');
+			const discardMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'discard');
 
 			await ws.sendMessage({
 				type: 'collab',
@@ -483,7 +506,7 @@ describe('Collaborative Editing: Permissions', () => {
 				room,
 			});
 
-			const errorMsg = await waitForMatchingMessage(ws, (m: any) => m.action === 'error');
+			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
 
 			// Assert
 			expect(discardMsg).toMatchObject({
@@ -512,7 +535,7 @@ describe('Version Permissions', () => {
 		await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
 
 		await CreatePermission(vendor, {
-			role: roleId as any,
+			role: roleId,
 			permissions: [{ collection: collectionCollab, action: 'read', fields: ['*'] }],
 		});
 
@@ -543,7 +566,7 @@ describe('Version Permissions', () => {
 			version: versionId,
 		});
 
-		const msg = await waitForMatchingMessage(ws, (m: any) => m.action === 'error');
+		const msg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
 
 		// Assert
 		expect(msg).toMatchObject({

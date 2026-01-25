@@ -19,6 +19,7 @@ export const sequentialTestsList: Record<'db' | 'common', SequentialTestsList> =
 			'/tests/db/routes/items/version.test.ts',
 		],
 		after: [
+			'/tests/db/websocket/collaborative-editing/multi-instance.test.ts',
 			'/tests/db/schema/timezone/timezone.test.ts',
 			'/tests/db/schema/timezone/timezone-changed-node-tz-america.test.ts',
 			'/tests/db/schema/timezone/timezone-changed-node-tz-asia.test.ts',

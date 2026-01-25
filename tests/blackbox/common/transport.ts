@@ -51,14 +51,30 @@ export function calculateMessageCount(
 	}
 }
 
-export async function waitForMatchingMessage(
+export async function waitForMatchingMessage<T extends WebSocketResponse = WebSocketResponse>(
+	ws: {
+		getUnreadMessageCount: () => number;
+		getMessages: (count: number, options?: any) => Promise<WebSocketResponse[] | undefined>;
+	},
+	matcher: (message: WebSocketResponse) => boolean,
+	timeout?: number,
+): Promise<T>;
+export async function waitForMatchingMessage<T extends WebSocketResponse = WebSocketResponse>(
+	ws: {
+		getUnreadMessageCount: () => number;
+		getMessages: (count: number, options?: any) => Promise<WebSocketResponse[] | undefined>;
+	},
+	matcher: ((message: WebSocketResponse) => boolean)[],
+	timeout?: number,
+): Promise<T[]>;
+export async function waitForMatchingMessage<T extends WebSocketResponse = WebSocketResponse>(
 	ws: {
 		getUnreadMessageCount: () => number;
 		getMessages: (count: number, options?: any) => Promise<WebSocketResponse[] | undefined>;
 	},
 	matcher: ((message: WebSocketResponse) => boolean) | ((message: WebSocketResponse) => boolean)[],
 	timeout = 10000,
-): Promise<WebSocketResponse | WebSocketResponse[]> {
+): Promise<T | T[]> {
 	const start = Date.now();
 	const isArray = Array.isArray(matcher);
 	const matchers = isArray ? matcher : [matcher];
@@ -81,14 +97,14 @@ export async function waitForMatchingMessage(
 			}
 
 			if (matches.every((m) => m !== undefined)) {
-				return isArray ? (matches as WebSocketResponse[]) : matches[0]!;
+				return isArray ? (matches as T[]) : (matches[0] as T);
 			}
 		}
 
 		await sleep(50);
 	}
 
-	throw new Error('Timeout waiting for matching message');
+	throw new Error(`Timeout waiting for matching message. Matcher count: ${matchers.length}`);
 }
 
 export function createWebSocketConn(host: string, config?: WebSocketOptions) {

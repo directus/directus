@@ -3,8 +3,8 @@ import { getUrl } from '@common/config';
 import { CreatePermission, CreateRole, CreateUser } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
+import type { WebSocketCollabResponse } from '@common/types';
 import { USER } from '@common/variables';
-import { sleep } from '@utils/sleep';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { collectionCollabSingleton } from './singleton.seed';
@@ -62,37 +62,44 @@ describe('Collaborative Editing: Singleton', () => {
 					version: null,
 				});
 
-				const init1 = await ws1.getMessages(1);
-				const room = init1![0]!['room'];
+				const init1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws1,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
+				);
+
+				const room = init1.room!;
 
 				await ws2.sendMessage({
 					type: 'collab',
 					action: 'join',
 					collection: collectionCollabSingleton,
-					item: null,
+					item: null, // Singleton has no ID
 					version: null,
 				});
 
-				await ws2.getMessages(1); // Drain INIT
-				await ws1.getMessages(1); // Drain JOIN
+				await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'init');
+				await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 				// Action
 				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 
-				await sleep(100);
+				await waitForMatchingMessage(
+					ws2,
+					(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'title',
+				);
 
 				await ws1.sendMessage({
 					type: 'collab',
 					action: 'update',
 					room,
 					field: 'title',
-					changes: 'Updated By Admin',
+					changes: 'New Value',
 				});
 
 				// Assert
-				const updateMsg = await waitForMatchingMessage(
+				const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
 					ws2,
-					(msg) => msg['type'] === 'collab' && msg['action'] === 'update' && msg['field'] === 'title',
+					(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'title',
 				);
 
 				expect(updateMsg).toMatchObject({
@@ -100,7 +107,7 @@ describe('Collaborative Editing: Singleton', () => {
 					action: 'update',
 					room,
 					field: 'title',
-					changes: 'Updated By Admin',
+					changes: 'New Value',
 				});
 
 				ws1.conn.close();
@@ -161,8 +168,12 @@ describe('Collaborative Editing: Singleton', () => {
 					version: null,
 				});
 
-				const init = await ws.getMessages(1); // Drain INIT
-				const room = init![0]!['room'];
+				const init = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
+				);
+
+				const room = init.room!;
 
 				// Action
 				await request(TEST_URL)
@@ -171,7 +182,10 @@ describe('Collaborative Editing: Singleton', () => {
 					.send({ title: 'Updated Externally' });
 
 				// Assert
-				const saveMsg = await waitForMatchingMessage(ws, (msg) => msg['type'] === 'collab' && msg['action'] === 'save');
+				const saveMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws,
+					(msg) => msg.type === 'collab' && msg.action === 'save',
+				);
 
 				expect(saveMsg).toMatchObject({
 					type: 'collab',

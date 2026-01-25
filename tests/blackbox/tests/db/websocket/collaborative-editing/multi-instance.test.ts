@@ -6,6 +6,7 @@ import config, { getUrl, paths } from '@common/config';
 import { CreatePermission, CreateRole, CreateUser } from '@common/functions';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
+import type { WebSocketCollabResponse } from '@common/types';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
@@ -94,8 +95,12 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: null,
 				});
 
-				const init1 = await ws1.getMessages(1);
-				const room = init1![0]!['room'];
+				const init1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws1,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
+				);
+
+				const room = init1.room!;
 
 				await ws2.sendMessage({
 					type: 'collab',
@@ -105,19 +110,26 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: null,
 				});
 
-				await ws2.getMessages(1); // Drain INIT
-				await ws1.getMessages(1); // Drain JOIN
+				await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'init');
+				await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 				// Action
 				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 
-				await ws2.getMessages(1); // Drain FOCUS
+				await waitForMatchingMessage(
+					ws2,
+					(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'title',
+				);
 
 				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Cross' });
 
 				// Assert
-				const updateMsg = await ws2.getMessages(1);
-				expect(updateMsg![0]).toMatchObject({ type: 'collab', action: 'update', changes: 'Cross', room });
+				const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws2,
+					(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'Cross',
+				);
+
+				expect(updateMsg).toMatchObject({ type: 'collab', action: 'update', changes: 'Cross', room });
 
 				ws1.conn.close();
 				ws2.conn.close();
@@ -145,9 +157,13 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: null,
 				});
 
-				const init1 = await ws1.getMessages(1);
-				const room = init1![0]!['room'];
-				const ws1ConnId = init1![0]!['connection'];
+				const init1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws1,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
+				);
+
+				const room = init1.room!;
+				const ws1ConnId = init1.connection;
 
 				await ws2.sendMessage({
 					type: 'collab',
@@ -157,8 +173,8 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: null,
 				});
 
-				await ws2.getMessages(1); // Drain INIT
-				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
+				await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'init');
+				await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 				// Action
 				await ws1.sendMessage({ type: 'collab', action: 'leave', room });
@@ -166,7 +182,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				// Assert
 				await waitForMatchingMessage(
 					ws2,
-					(m) => m['action'] === 'leave' && m['connection'] === ws1ConnId && m['room'] === room,
+					(msg) => msg.action === 'leave' && msg.connection === ws1ConnId && msg.room === room,
 				);
 
 				ws1.conn.close();
@@ -196,7 +212,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				});
 
 				const init1 = await ws1.getMessages(1);
-				const room = init1![0]!['room'];
+				const room = init1![0]!.room;
 
 				await ws2.sendMessage({
 					type: 'collab',
@@ -210,10 +226,10 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
 
 				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
-				await waitForMatchingMessage(ws2, (m) => m['action'] === 'focus');
+				await waitForMatchingMessage(ws2, (msg) => msg.action === 'focus');
 
 				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Pending' });
-				await waitForMatchingMessage(ws2, (m) => m['action'] === 'update');
+				await waitForMatchingMessage(ws2, (msg) => msg.action === 'update');
 
 				// Action
 				await ws1.sendMessage({ type: 'collab', action: 'discard', room, fields: ['title'] });
@@ -221,7 +237,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				// Assert
 				await waitForMatchingMessage(
 					ws2,
-					(m) => m['action'] === 'discard' && m['fields']?.includes('title') && m['room'] === room,
+					(msg) => msg.action === 'discard' && msg.fields?.includes('title') && msg.room === room,
 				);
 
 				ws1.conn.close();
@@ -276,7 +292,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					type: 'collab',
 					action: 'init',
 					changes: { title: 'Dirty State' },
-					focuses: { [init1![0]!['connection']]: 'title' },
+					focuses: { [init1![0]!['connection']]: 'title' }, // Keep bracket for dynamic key access
 				});
 
 				ws1.conn.close();
@@ -321,14 +337,14 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
 
 				// Action
-				const p1Promise = waitForMatchingMessage(
+				const p1Promise = waitForMatchingMessage<WebSocketCollabResponse>(
 					ws1,
-					(m: any) => m['action'] === 'error' && m['code'] === 'SERVICE_UNAVAILABLE',
+					(msg) => msg.action === 'error' && msg.code === 'SERVICE_UNAVAILABLE',
 				);
 
-				const p2Promise = waitForMatchingMessage(
+				const p2Promise = waitForMatchingMessage<WebSocketCollabResponse>(
 					ws2,
-					(m: any) => m['action'] === 'error' && m['code'] === 'SERVICE_UNAVAILABLE',
+					(msg) => msg.action === 'error' && msg.code === 'SERVICE_UNAVAILABLE',
 				);
 
 				await Promise.all([
@@ -391,21 +407,33 @@ describe('Collaborative Editing: Multi-Instance', () => {
 
 				// Action: Send multiple updates sequentially to ensure order over bus
 				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
-				const m0 = await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'focus');
+				const m0 = await waitForMatchingMessage<WebSocketCollabResponse>(ws2, (msg) => msg.action === 'focus');
 
 				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'U1' });
-				const m1 = await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'update' && m['changes'] === 'U1');
+
+				const m1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws2,
+					(msg) => msg.action === 'update' && msg.changes === 'U1',
+				);
 
 				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'U2' });
-				const m2 = await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'update' && m['changes'] === 'U2');
+
+				const m2 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws2,
+					(msg) => msg.action === 'update' && msg.changes === 'U2',
+				);
 
 				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'U3' });
-				const m3 = await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'update' && m['changes'] === 'U3');
+
+				const m3 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws2,
+					(msg) => msg.action === 'update' && msg.changes === 'U3',
+				);
 
 				// Assert: All messages must have strictly incrementing order
-				expect((m1 as any)['order']).toBe((m0 as any)['order'] + 1);
-				expect((m2 as any)['order']).toBe((m1 as any)['order'] + 1);
-				expect((m3 as any)['order']).toBe((m2 as any)['order'] + 1);
+				expect(m1.order).toBe(m0.order! + 1);
+				expect(m2.order).toBe(m1.order! + 1);
+				expect(m3.order).toBe(m2.order! + 1);
 
 				ws1.conn.close();
 				ws2.conn.close();
@@ -433,8 +461,12 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: null,
 				});
 
-				const init1 = await ws1.getMessages(1);
-				const room = init1![0]!['room'];
+				const init1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws1,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
+				);
+
+				const room = init1.room!;
 
 				await ws2.sendMessage({
 					type: 'collab',
@@ -444,8 +476,8 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: null,
 				});
 
-				await ws2.getMessages(1); // Drain INIT
-				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
+				await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'init');
+				await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 				// Action: Delete item via REST on Node A.
 				await request(getUrl(vendor))
@@ -453,8 +485,8 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				// Assert: Both clients should receive the delete message via bus
-				await waitForMatchingMessage(ws1, (m: any) => m['action'] === 'delete' && m['room'] === room);
-				await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'delete' && m['room'] === room);
+				await waitForMatchingMessage(ws1, (msg) => msg.action === 'delete' && msg.room === room);
+				await waitForMatchingMessage(ws2, (msg) => msg.action === 'delete' && msg.room === room);
 
 				ws1.conn.close();
 				ws2.conn.close();
@@ -475,7 +507,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
 
 				await CreatePermission(vendor, {
-					role: roleId as any,
+					role: roleId,
 					permissions: [{ collection: collectionCollabMultiInstance, action: 'read', fields: ['*'] }],
 				});
 
@@ -496,8 +528,12 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: null,
 				});
 
-				const initMsg = await ws.getMessages(1); // Drain INIT
-				const room = initMsg![0]!['room'];
+				const initMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
+				);
+
+				const room = initMsg.room!;
 
 				// Action
 				await request(TEST_URL)
@@ -506,7 +542,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				// Assert
-				await waitForMatchingMessage(ws, (m: any) => m['action'] === 'save' && m['room'] === room);
+				await waitForMatchingMessage(ws, (msg) => msg.action === 'save' && msg.room === room);
 
 				ws.conn.close();
 			});
@@ -550,8 +586,12 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: version.id,
 				});
 
-				const init1 = await ws1.getMessages(1);
-				const room = init1![0]!['room'];
+				const init1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws1,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
+				);
+
+				const room = init1.room!;
 
 				await ws2.sendMessage({
 					type: 'collab',
@@ -561,12 +601,16 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: version.id,
 				});
 
-				await ws2.getMessages(1); // Drain INIT
-				await ws1.getMessages(1); // Drain JOIN
+				await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'init');
+				await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 				// Action
 				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
-				await ws2.getMessages(1); // Drain FOCUS
+
+				await waitForMatchingMessage(
+					ws2,
+					(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'title',
+				);
 
 				await ws1.sendMessage({
 					type: 'collab',
@@ -577,9 +621,12 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				});
 
 				// Assert
-				const updateMsg = await ws2.getMessages(1);
+				const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws2,
+					(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'Version Update',
+				);
 
-				expect(updateMsg![0]).toMatchObject({
+				expect(updateMsg).toMatchObject({
 					type: 'collab',
 					action: 'update',
 					changes: 'Version Update',
@@ -603,7 +650,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
 
 				await CreatePermission(vendor, {
-					role: roleId as any,
+					role: roleId,
 					permissions: [
 						{ collection: collectionCollabMultiInstance, action: 'read', fields: ['*'] },
 						{ collection: 'directus_versions', action: 'read', fields: ['*'] },
@@ -639,8 +686,12 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: version.id,
 				});
 
-				const initMsg = await ws.getMessages(1); // Drain INIT
-				const room = initMsg![0]!['room'];
+				const initMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+					ws,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
+				);
+
+				const room = initMsg.room!;
 
 				// Action
 				await request(getUrl(vendor))
@@ -649,7 +700,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					.send({ title: 'Backend Save' });
 
 				// Assert
-				await waitForMatchingMessage(ws, (m: any) => m['action'] === 'save' && m['room'] === room);
+				await waitForMatchingMessage(ws, (msg) => msg.action === 'save' && msg.room === room);
 
 				ws.conn.close();
 			});

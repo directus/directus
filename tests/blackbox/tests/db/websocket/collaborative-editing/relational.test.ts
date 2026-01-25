@@ -3,6 +3,7 @@ import { getUrl } from '@common/config';
 import { CreatePermission, CreateRole, CreateUser } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
+import type { WebSocketCollabResponse } from '@common/types';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
 import request from 'supertest';
@@ -62,8 +63,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -73,11 +78,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'm2o_related' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'm2o_related',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -88,15 +97,18 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			const updateMsg = await wsRestricted.getMessages(1);
+			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'm2o_related',
+			);
 
-			expect(updateMsg![0]).toMatchObject({
+			expect(updateMsg).toMatchObject({
 				type: 'collab',
 				action: 'update',
 				field: 'm2o_related',
 			});
 
-			const changes = updateMsg![0]!['changes'];
+			const changes = updateMsg['changes'];
 
 			expect(changes).toHaveProperty('field_a', 'New A');
 			expect(changes).not.toHaveProperty('field_b');
@@ -148,8 +160,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -159,11 +175,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'm2o_related' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'm2o_related',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -219,8 +239,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -230,11 +254,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'o2m_related' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'o2m_related',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -249,15 +277,18 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			const updateMsg = await wsRestricted.getMessages(1);
+			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'o2m_related',
+			);
 
-			expect(updateMsg![0]).toMatchObject({
+			expect(updateMsg).toMatchObject({
 				type: 'collab',
 				action: 'update',
 				field: 'o2m_related',
 			});
 
-			const changes = updateMsg![0]!['changes'];
+			const changes = updateMsg['changes'];
 
 			expect(changes?.create?.[0]).toHaveProperty('field_a', 'Value A');
 			expect(changes?.create?.[0]).not.toHaveProperty('field_b');
@@ -310,8 +341,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -321,11 +356,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'o2m_related' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'o2m_related',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -340,15 +379,18 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			const updateMsg = await wsRestricted.getMessages(1);
+			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'o2m_related',
+			);
 
-			expect(updateMsg![0]).toMatchObject({
+			expect(updateMsg).toMatchObject({
 				type: 'collab',
 				action: 'update',
 				field: 'o2m_related',
 			});
 
-			const changes = updateMsg![0]!['changes'];
+			const changes = updateMsg['changes'];
 
 			expect(changes?.update?.[0]).toHaveProperty('field_a', 'New A');
 			expect(changes?.update?.[0]).not.toHaveProperty('field_b');
@@ -394,8 +436,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -405,11 +451,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'o2m_related' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'o2m_related',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -428,8 +478,8 @@ describe('Collaborative Editing: Relational', () => {
 			const unreadCount = wsRestricted.getUnreadMessageCount();
 
 			if (unreadCount > 0) {
-				const updateMsg = await wsRestricted.getMessages(1);
-				const changes = updateMsg![0]?.['changes'];
+				const updateMsg = (await wsRestricted.getMessages(1)) as any;
+				const changes = updateMsg[0]?.['changes'];
 
 				if (changes) {
 					expect(changes.create || []).toHaveLength(0);
@@ -492,8 +542,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -503,8 +557,8 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1); // Drain INIT
-			await wsAdmin.getMessages(1); // Drain JOIN
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -513,7 +567,10 @@ describe('Collaborative Editing: Relational', () => {
 				field: 'o2m_related',
 			});
 
-			await wsRestricted.getMessages(1); // Drain FOCUS
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'o2m_related',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -537,9 +594,9 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			const updateMsg = await waitForMatchingMessage(
+			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
 				wsRestricted,
-				(msg: any) => msg['type'] === 'collab' && msg['action'] === 'update' && msg['field'] === 'o2m_related',
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'o2m_related',
 			);
 
 			expect(updateMsg).toMatchObject({
@@ -602,8 +659,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -613,11 +674,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'm2m_related' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'm2m_related',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -641,15 +706,18 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			const updateMsg = await wsRestricted.getMessages(1);
+			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'm2m_related',
+			);
 
-			expect(updateMsg![0]).toMatchObject({
+			expect(updateMsg).toMatchObject({
 				type: 'collab',
 				action: 'update',
 				field: 'm2m_related',
 			});
 
-			const changes = updateMsg![0]!['changes'];
+			const changes = updateMsg['changes'];
 			const nestedItem = changes?.create?.[0]?.[`${collectionCollabRelationalM2M}_id`];
 
 			if (nestedItem) {
@@ -706,8 +774,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -717,11 +789,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'm2m_related' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'm2m_related',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -749,8 +825,8 @@ describe('Collaborative Editing: Relational', () => {
 			const unreadCount = wsRestricted.getUnreadMessageCount();
 
 			if (unreadCount > 0) {
-				const updateMsg = await wsRestricted.getMessages(1);
-				const changes = updateMsg![0]?.['changes'];
+				const updateMsg = (await wsRestricted.getMessages(1))![0] as WebSocketCollabResponse;
+				const changes = updateMsg.changes;
 
 				// Nested M2M data should be filtered out
 				if (changes?.create?.[0]) {
@@ -808,8 +884,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -819,11 +899,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'a2o_items' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'a2o_items',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -843,15 +927,18 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			const updateMsg = await wsRestricted.getMessages(1);
+			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'a2o_items',
+			);
 
-			expect(updateMsg![0]).toMatchObject({
+			expect(updateMsg).toMatchObject({
 				type: 'collab',
 				action: 'update',
 				field: 'a2o_items',
 			});
 
-			const changes = updateMsg![0]!['changes'];
+			const changes = updateMsg['changes'];
 			const nestedItem = changes?.create?.[0]?.item;
 
 			if (nestedItem) {
@@ -908,8 +995,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -919,11 +1010,15 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1);
-			await wsAdmin.getMessages(1);
+			await waitForMatchingMessage(wsRestricted, (msg: any) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg: any) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'a2o_items' });
-			await wsRestricted.getMessages(1);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'a2o_items',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -947,8 +1042,8 @@ describe('Collaborative Editing: Relational', () => {
 			const unreadCount = wsRestricted.getUnreadMessageCount();
 
 			if (unreadCount > 0) {
-				const updateMsg = await wsRestricted.getMessages(1);
-				const changes = updateMsg![0]?.['changes'];
+				const updateMsg = (await wsRestricted.getMessages(1)) as any;
+				const changes = updateMsg[0]?.['changes'];
 
 				// Nested A2O data should be filtered out
 				if (changes?.create?.[0]) {
@@ -1013,8 +1108,12 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			const initAdmin = await wsAdmin.getMessages(1);
-			const room = initAdmin![0]!['room'];
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = initAdmin.room;
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -1024,8 +1123,8 @@ describe('Collaborative Editing: Relational', () => {
 				version: null,
 			});
 
-			await wsRestricted.getMessages(1); // Drain INIT
-			await wsAdmin.getMessages(1); // Drain JOIN
+			await waitForMatchingMessage(wsRestricted, (msg: any) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsAdmin, (msg: any) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -1034,7 +1133,10 @@ describe('Collaborative Editing: Relational', () => {
 				field: 'a2o_items',
 			});
 
-			await wsRestricted.getMessages(1); // Drain FOCUS
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg: any) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'a2o_items',
+			);
 
 			await wsAdmin.sendMessage({
 				type: 'collab',
@@ -1058,12 +1160,12 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			const updateMsg = await waitForMatchingMessage(
+			const updateMsg = (await waitForMatchingMessage(
 				wsRestricted,
-				(msg: any) => msg['type'] === 'collab' && msg['action'] === 'update' && msg['field'] === 'a2o_items',
-			);
+				(msg: any) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'a2o_items',
+			)) as any;
 
-			const createItems = (updateMsg as any)!['changes']?.create || [];
+			const createItems = updateMsg.changes?.create || [];
 			expect(createItems).toHaveLength(2);
 
 			const allowedItem = createItems.find((i: any) => i.collection === collectionCollabRelationalA2O);
