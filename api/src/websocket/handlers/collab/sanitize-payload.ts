@@ -22,7 +22,7 @@ export async function sanitizePayload(
 		payload,
 		async ([key, value], context) => {
 			// Strip sensitive fields
-			if (context.field?.special?.some((v) => v === 'conceal' || v === 'hash')) {
+			if (context.field?.special?.some((v) => v === 'conceal' || v === 'hash' || v === 'encrypt')) {
 				return undefined;
 			}
 
