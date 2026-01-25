@@ -1,14 +1,7 @@
 import { createHash } from 'crypto';
 import { ErrorCode } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
-import {
-	type Accountability,
-	type ActionHandler,
-	type Item,
-	type PrimaryKey,
-	type WebSocketClient,
-	WS_TYPE,
-} from '@directus/types';
+import { type Accountability, type Item, type PrimaryKey, type WebSocketClient, WS_TYPE } from '@directus/types';
 import {
 	ACTION,
 	type BaseServerMessage,
@@ -208,8 +201,8 @@ export class Room {
 	initialChanges: Item | undefined;
 	messenger: Messenger;
 	store;
-	onUpdateHandler: ActionHandler;
-	onDeleteHandler: ActionHandler;
+	onUpdateHandler: (meta: Record<string, any>, context?: any) => Promise<void>;
+	onDeleteHandler: (meta: Record<string, any>, context?: any) => Promise<void>;
 
 	constructor(
 		uid: string,

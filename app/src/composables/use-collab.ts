@@ -1,3 +1,4 @@
+import { ErrorCode } from '@directus/errors';
 import { readUser, readUsers, RemoveEventHandler, WebSocketInterface } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
@@ -231,7 +232,15 @@ export function useCollab(
 				return;
 			}
 
-			if (message.action === ACTION.SERVER.ERROR) return;
+			if (message.action === ACTION.SERVER.ERROR) {
+				if (message.code === ErrorCode.ServiceUnavailable) {
+					Promise.all([serverStore.hydrate(), settingsStore.hydrate()]);
+					sdk.disconnect();
+				}
+
+				return;
+			}
+
 			if (message) if (!roomId.value || roomId.value !== message.room) return;
 
 			messageReceivers[`receive${capitalize(message.action)}`](message as any);

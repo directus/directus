@@ -1,20 +1,24 @@
 import { ChildProcess, spawn } from 'child_process';
 import { randomUUID } from 'node:crypto';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import config, { getUrl, paths } from '@common/config';
 import { CreatePermission, CreateRole, CreateUser } from '@common/functions';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
-import { createWebSocketConn } from '@common/transport';
+import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
+import { sleep } from '@utils/sleep';
 import getPort from 'get-port';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { collectionCollabMultiInstance } from './multi-instance.seed';
 
 describe('Collaborative Editing: Multi-Instance', () => {
 	const directusInstances = {} as { [vendor: string]: ChildProcess };
 	const instance2Urls = {} as Record<Vendor, string>;
+	const instance2Logs = {} as Record<Vendor, string>;
 
 	beforeAll(async () => {
 		const promises = [];
@@ -27,6 +31,18 @@ describe('Collaborative Editing: Multi-Instance', () => {
 
 			const s2 = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env2 });
 
+			if (process.env['TEST_SAVE_LOGS']) {
+				instance2Logs[vendor] = '';
+
+				s2.stdout.on('data', (data) => {
+					instance2Logs[vendor] += data.toString();
+				});
+
+				s2.stderr.on('data', (data) => {
+					instance2Logs[vendor] += data.toString();
+				});
+			}
+
 			directusInstances[vendor] = s2;
 			instance2Urls[vendor] = `http://127.0.0.1:${p2}`;
 
@@ -38,107 +54,605 @@ describe('Collaborative Editing: Multi-Instance', () => {
 
 	afterAll(async () => {
 		for (const vendor of vendors) {
+			if (process.env['TEST_SAVE_LOGS'] && instance2Logs[vendor]) {
+				fs.writeFileSync(join(paths.cwd, `server-log-${vendor}-instance-2.txt`), instance2Logs[vendor]!);
+			}
+
 			directusInstances[vendor]?.kill();
 		}
 	});
 
-	describe('Cross-instance Propagation (Redis)', () => {
-		it.each(vendors)('%s', async (vendor) => {
-			const itemId = randomUUID();
-
-			// Setup
+	beforeEach(async () => {
+		// Ensure collaboration is enabled before every test
+		for (const vendor of vendors) {
 			await request(getUrl(vendor))
-				.post(`/items/${collectionCollabMultiInstance}`)
-				.send({ id: itemId, title: 'Inter Instance' })
+				.patch('/settings')
+				.send({ collaboration: true })
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+		}
+	});
 
-			const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
-			const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
+	describe('Basic Cross-Node Consistency', () => {
+		describe('Cross-Instance Update', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const itemId = randomUUID();
 
-			await ws1.sendMessage({
-				type: 'collab',
-				action: 'join',
-				collection: collectionCollabMultiInstance,
-				item: itemId,
-				version: null,
+				// Setup
+				await request(getUrl(vendor))
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Inter Instance' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				const init1 = await ws1.getMessages(1);
+				const room = init1![0]!['room'];
+
+				await ws2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await ws2.getMessages(1); // Drain INIT
+				await ws1.getMessages(1); // Drain JOIN
+
+				// Action
+				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+
+				await ws2.getMessages(1); // Drain FOCUS
+
+				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Cross' });
+
+				// Assert
+				const updateMsg = await ws2.getMessages(1);
+				expect(updateMsg![0]).toMatchObject({ type: 'collab', action: 'update', changes: 'Cross', room });
+
+				ws1.conn.close();
+				ws2.conn.close();
 			});
+		});
 
-			const init1 = await ws1.getMessages(1);
-			const room = init1![0]!['room'];
+		describe('Cross-Instance Leave', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const itemId = randomUUID();
 
-			await ws2.sendMessage({
-				type: 'collab',
-				action: 'join',
-				collection: collectionCollabMultiInstance,
-				item: itemId,
-				version: null,
+				// Setup
+				await request(getUrl(vendor))
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Leave Test' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				const init1 = await ws1.getMessages(1);
+				const room = init1![0]!['room'];
+				const ws1ConnId = init1![0]!['connection'];
+
+				await ws2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await ws2.getMessages(1); // Drain INIT
+				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
+
+				// Action
+				await ws1.sendMessage({ type: 'collab', action: 'leave', room });
+
+				// Assert
+				await waitForMatchingMessage(
+					ws2,
+					(m) => m['action'] === 'leave' && m['connection'] === ws1ConnId && m['room'] === room,
+				);
+
+				ws1.conn.close();
+				ws2.conn.close();
 			});
+		});
 
-			await ws2.getMessages(1); // Drain INIT
-			await ws1.getMessages(1); // Drain JOIN
+		describe('Cross-Instance Discard', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const itemId = randomUUID();
 
-			// Action
-			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+				// Setup
+				await request(getUrl(vendor))
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Discard Test' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-			await ws2.getMessages(1); // Drain FOCUS
+				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
 
-			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Cross' });
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
 
-			// Assert
-			const updateMsg = await ws2.getMessages(1);
-			expect(updateMsg![0]).toMatchObject({ type: 'collab', action: 'update', changes: 'Cross' });
+				const init1 = await ws1.getMessages(1);
+				const room = init1![0]!['room'];
 
-			ws1.conn.close();
-			ws2.conn.close();
+				await ws2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await ws2.getMessages(1); // Drain INIT
+				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
+
+				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+				await waitForMatchingMessage(ws2, (m) => m['action'] === 'focus');
+
+				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Pending' });
+				await waitForMatchingMessage(ws2, (m) => m['action'] === 'update');
+
+				// Action
+				await ws1.sendMessage({ type: 'collab', action: 'discard', room, fields: ['title'] });
+
+				// Assert
+				await waitForMatchingMessage(
+					ws2,
+					(m) => m['action'] === 'discard' && m['fields']?.includes('title') && m['room'] === room,
+				);
+
+				ws1.conn.close();
+				ws2.conn.close();
+			});
+		});
+
+		describe('Multi-Node Sync on Join', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const itemId = randomUUID();
+
+				// Setup
+				await request(getUrl(vendor))
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Sync Test' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				const init1 = await ws1.getMessages(1);
+				const room = init1![0]!['room'];
+
+				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Dirty State' });
+
+				// Wait for state to be committed through Node A to Redis
+				await sleep(500);
+
+				// Action: Join on Node B
+				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+				await ws2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				// Assert
+				const init2 = await ws2.getMessages(1);
+
+				expect(init2![0]).toMatchObject({
+					type: 'collab',
+					action: 'init',
+					changes: { title: 'Dirty State' },
+					focuses: { [init1![0]!['connection']]: 'title' },
+				});
+
+				ws1.conn.close();
+				ws2.conn.close();
+			});
 		});
 	});
 
-	describe('Reactive Invalidation (REST Updates)', () => {
-		it.each(vendors)('%s', async (vendor) => {
-			const TEST_URL = getUrl(vendor);
-			const userToken = `token-${randomUUID()}`;
+	describe('Distributed Optimizations', () => {
+		describe('Cluster-Wide Disablement', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const itemId = randomUUID();
 
-			// Setup
-			const roleId = await CreateRole(vendor, { name: 'Reactive Role' });
+				// Setup
+				await request(getUrl(vendor))
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Disablement Test' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
 
-			await CreatePermission(vendor, {
-				role: roleId as any,
-				permissions: [{ collection: collectionCollabMultiInstance, action: 'read', fields: ['*'] }],
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await ws1.getMessages(1); // Drain INIT
+
+				await ws2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await ws2.getMessages(1); // Drain INIT
+				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
+
+				// Action
+				const p1Promise = waitForMatchingMessage(
+					ws1,
+					(m: any) => m['action'] === 'error' && m['code'] === 'SERVICE_UNAVAILABLE',
+				);
+
+				const p2Promise = waitForMatchingMessage(
+					ws2,
+					(m: any) => m['action'] === 'error' && m['code'] === 'SERVICE_UNAVAILABLE',
+				);
+
+				await Promise.all([
+					(async () => {
+						await sleep(500);
+						return request(getUrl(vendor))
+							.patch('/settings')
+							.send({ collaboration: false })
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+					})(),
+					p1Promise,
+					p2Promise,
+				]);
+
+				// Clean up
+				await request(getUrl(vendor))
+					.patch('/settings')
+					.send({ collaboration: true })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				ws1.conn.close();
+				ws2.conn.close();
 			});
+		});
 
-			const itemId = randomUUID();
+		describe('Inter-Instance Sequence Integrity', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const itemId = randomUUID();
 
-			await request(TEST_URL)
-				.post(`/items/${collectionCollabMultiInstance}`)
-				.send({ id: itemId, title: 'Original' })
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+				// Setup
+				await request(getUrl(vendor))
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Sequence Test' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-			const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
 
-			await ws.sendMessage({
-				type: 'collab',
-				action: 'join',
-				collection: collectionCollabMultiInstance,
-				item: itemId,
-				version: null,
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				const init1 = await ws1.getMessages(1);
+				const room = init1![0]!['room'];
+
+				await ws2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await ws2.getMessages(1); // Drain INIT
+				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
+
+				// Action: Send multiple updates sequentially to ensure order over bus
+				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+				const m0 = await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'focus');
+
+				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'U1' });
+				const m1 = await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'update' && m['changes'] === 'U1');
+
+				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'U2' });
+				const m2 = await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'update' && m['changes'] === 'U2');
+
+				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'U3' });
+				const m3 = await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'update' && m['changes'] === 'U3');
+
+				// Assert: All messages must have strictly incrementing order
+				expect((m1 as any)['order']).toBe((m0 as any)['order'] + 1);
+				expect((m2 as any)['order']).toBe((m1 as any)['order'] + 1);
+				expect((m3 as any)['order']).toBe((m2 as any)['order'] + 1);
+
+				ws1.conn.close();
+				ws2.conn.close();
 			});
+		});
 
-			const init = await ws.getMessages(1);
-			const room = init![0]!['room'];
+		describe('Concurrent Closure Race (Leader Election)', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const itemId = randomUUID();
 
-			// Action
-			await request(TEST_URL)
-				.patch(`/items/${collectionCollabMultiInstance}/${itemId}`)
-				.send({ title: 'New' })
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+				// Setup
+				await request(getUrl(vendor))
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Race Test' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-			// Assert
-			const saveMsg = await ws.getMessages(1);
-			expect(saveMsg![0]).toMatchObject({ type: 'collab', action: 'save', room });
+				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
 
-			ws.conn.close();
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				const init1 = await ws1.getMessages(1);
+				const room = init1![0]!['room'];
+
+				await ws2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await ws2.getMessages(1); // Drain INIT
+				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
+
+				// Action: Delete item via REST on Node A.
+				await request(getUrl(vendor))
+					.delete(`/items/${collectionCollabMultiInstance}/${itemId}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				// Assert: Both clients should receive the delete message via bus
+				await waitForMatchingMessage(ws1, (m: any) => m['action'] === 'delete' && m['room'] === room);
+				await waitForMatchingMessage(ws2, (m: any) => m['action'] === 'delete' && m['room'] === room);
+
+				ws1.conn.close();
+				ws2.conn.close();
+			});
+		});
+	});
+
+	describe('Reactive Invalidation (Cross-Instance REST Updates)', () => {
+		describe('Reactive REST Update', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const TEST_URL = getUrl(vendor);
+				const instance2Url = instance2Urls[vendor]!;
+				const userToken = `token-${randomUUID()}`;
+
+				// Setup
+				const roleId = await CreateRole(vendor, { name: 'Reactive Role' });
+
+				await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+				await CreatePermission(vendor, {
+					role: roleId as any,
+					permissions: [{ collection: collectionCollabMultiInstance, action: 'read', fields: ['*'] }],
+				});
+
+				const itemId = randomUUID();
+
+				await request(TEST_URL)
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Original' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				const ws = createWebSocketConn(instance2Url, { auth: { access_token: userToken } });
+
+				await ws.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				const initMsg = await ws.getMessages(1); // Drain INIT
+				const room = initMsg![0]!['room'];
+
+				// Action
+				await request(TEST_URL)
+					.patch(`/items/${collectionCollabMultiInstance}/${itemId}`)
+					.send({ title: 'New' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				// Assert
+				await waitForMatchingMessage(ws, (m: any) => m['action'] === 'save' && m['room'] === room);
+
+				ws.conn.close();
+			});
+		});
+	});
+
+	describe('Versioned Content', () => {
+		describe('Cross-Instance Version Update', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const itemId = randomUUID();
+
+				// Setup
+				const itemRes = await request(getUrl(vendor))
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Main Item' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				expect(itemRes.status).toBe(200);
+
+				const versionRes = await request(getUrl(vendor))
+					.post(`/versions`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.send({
+						collection: collectionCollabMultiInstance,
+						item: itemId,
+						key: 'v1',
+						name: 'Version 1',
+					});
+
+				expect(versionRes.status).toBe(200);
+				const version = versionRes.body.data;
+
+				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: version.id,
+				});
+
+				const init1 = await ws1.getMessages(1);
+				const room = init1![0]!['room'];
+
+				await ws2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: version.id,
+				});
+
+				await ws2.getMessages(1); // Drain INIT
+				await ws1.getMessages(1); // Drain JOIN
+
+				// Action
+				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+				await ws2.getMessages(1); // Drain FOCUS
+
+				await ws1.sendMessage({
+					type: 'collab',
+					action: 'update',
+					room,
+					field: 'title',
+					changes: 'Version Update',
+				});
+
+				// Assert
+				const updateMsg = await ws2.getMessages(1);
+
+				expect(updateMsg![0]).toMatchObject({
+					type: 'collab',
+					action: 'update',
+					changes: 'Version Update',
+					room,
+				});
+
+				ws1.conn.close();
+				ws2.conn.close();
+			});
+		});
+
+		describe('Reactive Version Save', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const TEST_URL = getUrl(vendor);
+				const instance2Url = instance2Urls[vendor]!;
+				const userToken = `token-${randomUUID()}`;
+
+				// Setup
+				const roleId = await CreateRole(vendor, { name: 'Version Role' });
+
+				await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+				await CreatePermission(vendor, {
+					role: roleId as any,
+					permissions: [
+						{ collection: collectionCollabMultiInstance, action: 'read', fields: ['*'] },
+						{ collection: 'directus_versions', action: 'read', fields: ['*'] },
+					],
+				});
+
+				const itemId = randomUUID();
+
+				await request(TEST_URL)
+					.post(`/items/${collectionCollabMultiInstance}`)
+					.send({ id: itemId, title: 'Original' })
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				const versionRes = await request(TEST_URL)
+					.post(`/versions`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.send({
+						collection: collectionCollabMultiInstance,
+						item: itemId,
+						key: 'v_backend',
+						name: 'Backend Version',
+					});
+
+				const version = versionRes.body.data;
+
+				const ws = createWebSocketConn(instance2Url, { auth: { access_token: userToken } });
+
+				await ws.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: version.id,
+				});
+
+				const initMsg = await ws.getMessages(1); // Drain INIT
+				const room = initMsg![0]!['room'];
+
+				// Action
+				await request(getUrl(vendor))
+					.post(`/versions/${version.id}/save`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.send({ title: 'Backend Save' });
+
+				// Assert
+				await waitForMatchingMessage(ws, (m: any) => m['action'] === 'save' && m['room'] === room);
+
+				ws.conn.close();
+			});
 		});
 	});
 });

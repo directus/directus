@@ -2,6 +2,7 @@ import { type WebSocketClient } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../../emitter.js';
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { SettingsService } from '../../../services/settings.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
@@ -12,6 +13,7 @@ vi.mock('../../../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
 		info: vi.fn(),
 		error: vi.fn(),
+		debug: vi.fn(),
 	}),
 }));
 
@@ -33,7 +35,19 @@ vi.mock('./messenger.js', () => ({
 	})),
 }));
 
-vi.mock('./room.js');
+vi.mock('./room.js', () => ({
+	getRoomHash: vi.fn((coll, item, version) => `${coll}_${item}_${version}`),
+	RoomManager: vi.fn().mockImplementation(() => ({
+		rooms: {},
+		terminateAll: vi.fn(),
+		createRoom: vi.fn().mockResolvedValue({ join: vi.fn() }),
+		getRoom: vi.fn(),
+		getClientRooms: vi.fn().mockResolvedValue([]),
+		getAllRoomClients: vi.fn().mockResolvedValue([]),
+		removeRoom: vi.fn(),
+	})),
+}));
+
 vi.mock('./verify-permissions.js');
 
 vi.mock('../../../services/settings.js', () => ({
@@ -640,6 +654,245 @@ describe('CollabHandler', () => {
 			expect(handler.roomManager.getRoom).toHaveBeenCalledWith(mockDeadRoomUid);
 			expect(mockRoom.leave).toHaveBeenCalledWith(mockDeadClientUid);
 			expect(mockRoom.close).toHaveBeenCalled();
+		});
+	});
+
+	describe('Distributed Event Handling', () => {
+		let busCallback: (event: any) => void;
+
+		beforeEach(() => {
+			const subscribeMock = vi.mocked(handler.messenger.messenger.subscribe);
+			busCallback = subscribeMock.mock.calls.find((call) => call[0] === 'websocket.event')![1];
+		});
+
+		test('normalizes single "key" into "keys" array', async () => {
+			const mockRoom = { onUpdateHandler: vi.fn(), uid: 'room-uid' };
+			handler.roomManager.rooms['articles_1_null'] = mockRoom as any;
+
+			busCallback({
+				collection: 'articles',
+				action: 'update',
+				key: 1,
+			});
+
+			expect(mockRoom.onUpdateHandler).toHaveBeenCalledWith(
+				expect.objectContaining({
+					keys: [1],
+				}),
+			);
+		});
+
+		test('normalizes "payload" into "keys" for delete actions', async () => {
+			const mockRoom = { onDeleteHandler: vi.fn(), uid: 'room-uid' };
+			handler.roomManager.rooms['articles_1_null'] = mockRoom as any;
+
+			busCallback({
+				collection: 'articles',
+				action: 'delete',
+				payload: [1],
+			});
+
+			expect(mockRoom.onDeleteHandler).toHaveBeenCalledWith(
+				expect.objectContaining({
+					keys: [1],
+				}),
+			);
+		});
+
+		test('forwards version updates to all versioned rooms', async () => {
+			const mockRoom1 = { version: 'v1', onUpdateHandler: vi.fn(), uid: 'room-1' };
+			const mockRoom2 = { version: 'v2', onUpdateHandler: vi.fn(), uid: 'room-2' };
+
+			handler.roomManager.rooms['room1'] = mockRoom1 as any;
+			handler.roomManager.rooms['room2'] = mockRoom2 as any;
+
+			busCallback({
+				collection: 'directus_versions',
+				action: 'update',
+				keys: ['v1'],
+			});
+
+			expect(mockRoom1.onUpdateHandler).toHaveBeenCalled();
+			expect(mockRoom2.onUpdateHandler).not.toHaveBeenCalled();
+		});
+
+		test('disables collaboration via bus settings update', async () => {
+			vi.mocked(SettingsService).mockImplementationOnce(
+				() =>
+					({
+						readSingleton: vi.fn().mockResolvedValue({ collaboration: false }),
+					}) as any,
+			);
+
+			handler.enabled = true;
+			const terminateSpy = vi.spyOn(handler.roomManager, 'terminateAll');
+
+			// Avoid setInterval infinite loop
+			vi.useRealTimers();
+
+			busCallback({
+				collection: 'directus_settings',
+				action: 'update',
+				payload: { collaboration: false },
+			});
+
+			// Wait for initialize() to complete
+			let attempts = 0;
+
+			while (handler.enabled === true && attempts < 10) {
+				await new Promise((resolve) => setTimeout(resolve, 50));
+				attempts++;
+			}
+
+			expect(handler.enabled).toBe(false);
+			expect(terminateSpy).toHaveBeenCalled();
+
+			vi.useFakeTimers();
+		});
+
+		test('enables collaboration via bus settings update', async () => {
+			vi.mocked(SettingsService).mockImplementationOnce(
+				() =>
+					({
+						readSingleton: vi.fn().mockResolvedValue({ collaboration: true }),
+					}) as any,
+			);
+
+			handler.enabled = false;
+
+			// Avoid setInterval infinite loop
+			vi.useRealTimers();
+
+			busCallback({
+				collection: 'directus_settings',
+				action: 'update',
+				payload: { collaboration: true },
+			});
+
+			// Wait for initialize() to complete
+			let attempts = 0;
+
+			while (handler.enabled === false && attempts < 10) {
+				await new Promise((resolve) => setTimeout(resolve, 50));
+				attempts++;
+			}
+
+			expect(handler.enabled).toBe(true);
+
+			vi.useFakeTimers();
+		});
+
+		test('ignores unknown collections or actions', async () => {
+			const terminateSpy = vi.spyOn(handler.roomManager, 'terminateAll');
+
+			busCallback({
+				collection: 'unknown',
+				action: 'unknown',
+			});
+
+			expect(terminateSpy).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('Concurrency and Locking', () => {
+		test('initialize(true) does NOT replace the boot promise', async () => {
+			const initialPromise = handler['initialized'];
+			await handler.initialize(true);
+			const newPromise = handler['initialized'];
+
+			expect(newPromise).toBe(initialPromise);
+		});
+
+		test('ensureEnabled() does NOT wait for refreshed initialization', async () => {
+			vi.useRealTimers();
+
+			let resolveInit: (value: any) => void;
+
+			const initStarted = new Promise((resolve) => {
+				resolveInit = resolve;
+			});
+
+			vi.mocked(SettingsService).mockImplementationOnce(
+				() =>
+					({
+						readSingleton: () => initStarted,
+					}) as any,
+			);
+
+			const refreshPromise = handler.initialize(true);
+
+			let ensureFinished = false;
+
+			// Should return immediately because it only waits for the initial boot
+			handler.ensureEnabled().then(() => {
+				ensureFinished = true;
+			});
+
+			await new Promise((resolve) => setTimeout(resolve, 50));
+
+			// ensureEnabled() must have finished even though the refresh is still pending
+			expect(ensureFinished).toBe(true);
+
+			// Cleanup
+			resolveInit!({ collaboration: true });
+			await refreshPromise;
+			vi.useFakeTimers();
+		});
+
+		test('gracefully handles service failure during initialization', async () => {
+			vi.mocked(SettingsService).mockImplementation(
+				() =>
+					({
+						readSingleton: vi.fn().mockRejectedValue(new Error()),
+					}) as any,
+			);
+
+			handler.enabled = true;
+			await handler.initialize(true);
+			expect(handler.enabled).toBe(true);
+
+			handler.enabled = false;
+			await handler.initialize(true);
+			expect(handler.enabled).toBe(false);
+		});
+
+		test('bus subscriber is non-blocking and not stall bus processing', async () => {
+			const subscribeMock = vi.mocked(handler.messenger.messenger.subscribe);
+			const busCallback = subscribeMock.mock.calls.find((call) => call[0] === 'websocket.event')![1];
+
+			let resolveInit: (value: any) => void;
+
+			const initStuck = new Promise((resolve) => {
+				resolveInit = resolve;
+			});
+
+			// Mock a slow initialization triggered by a settings update
+			vi.mocked(SettingsService).mockImplementationOnce(
+				() =>
+					({
+						readSingleton: () => initStuck,
+					}) as any,
+			);
+
+			const event = {
+				collection: 'directus_settings',
+				action: 'update',
+				payload: { collaboration: false },
+			};
+
+			let busHandlerFinished = false;
+
+			const promise = (async () => {
+				busCallback(event);
+				busHandlerFinished = true;
+			})();
+
+			// Bus handler should return and not await
+			expect(busHandlerFinished).toBe(true);
+
+			// Cleanup
+			resolveInit!({ collaboration: false });
+			await promise;
 		});
 	});
 });

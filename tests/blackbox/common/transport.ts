@@ -177,10 +177,12 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 
 		const endMessageIndex = startMessageIndex + messageCount;
 
-		await waitForState(
-			options?.targetState ?? WebSocket.OPEN,
-			options?.waitTimeout !== undefined ? { waitTimeout: options.waitTimeout } : {},
-		);
+		if (targetMessages.length < endMessageIndex) {
+			await waitForState(
+				options?.targetState ?? WebSocket.OPEN,
+				options?.waitTimeout !== undefined ? { waitTimeout: options.waitTimeout } : {},
+			);
+		}
 
 		const startMs = Date.now();
 

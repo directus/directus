@@ -248,7 +248,10 @@ export class Messenger {
 		const localClient = this.clients[client];
 
 		if (localClient) {
-			localClient.close();
+			// Allow message to flush before closing
+			setTimeout(() => {
+				localClient.close();
+			}, 250);
 		} else {
 			this.messenger.publish(COLLAB_BUS, { type: 'terminate', client });
 		}

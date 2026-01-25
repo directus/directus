@@ -13,7 +13,11 @@ export const seedDBStructure = () => {
 				await DeleteCollection(vendor, { collection: collectionCollabMultiInstance });
 
 				// Create collection
-				await CreateCollection(vendor, { collection: collectionCollabMultiInstance, primaryKeyType: 'uuid' });
+				await CreateCollection(vendor, {
+					collection: collectionCollabMultiInstance,
+					primaryKeyType: 'uuid',
+					meta: { versioning: true },
+				});
 
 				// Create fields
 				await CreateField(vendor, { collection: collectionCollabMultiInstance, field: 'title', type: 'string' });

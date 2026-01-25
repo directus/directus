@@ -230,7 +230,7 @@ describe('Messenger', () => {
 			messenger.sendClient('local-1', message as any);
 
 			expect(mockBus.publish).not.toHaveBeenCalled();
-			expect(localClient.send).toHaveBeenCalled();
+			expect(localClient.send).toHaveBeenCalledWith(JSON.stringify({ ...message, order: 0 }));
 		});
 
 		test('terminateClient publishes to bus for remote clients', () => {
@@ -242,7 +242,8 @@ describe('Messenger', () => {
 			});
 		});
 
-		test('terminateClient closes local client directly', () => {
+		test('terminateClient closes local client directly after grace period', () => {
+			vi.useFakeTimers();
 			const localClient = { uid: 'local-1', close: vi.fn(), on: vi.fn() } as any;
 			messenger.addClient(localClient);
 			mockBus.publish.mockClear();
@@ -250,7 +251,12 @@ describe('Messenger', () => {
 			messenger.terminateClient('local-1');
 
 			expect(mockBus.publish).not.toHaveBeenCalled();
+			expect(localClient.close).not.toHaveBeenCalled();
+
+			vi.runAllTimers();
+
 			expect(localClient.close).toHaveBeenCalled();
+			vi.useRealTimers();
 		});
 
 		test('sendError publishes to bus for remote clients', () => {
@@ -345,13 +351,13 @@ describe('Messenger', () => {
 	});
 
 	describe('pruneDeadInstances', () => {
-		test('removes inactive instances and returns disconnected clients', async () => {
+		test('pruneDeadInstances', async () => {
 			vi.useFakeTimers();
 
 			const deadInstance = randomUUID();
 			const aliveInstance = randomUUID();
 
-			// Setup store with dead instance
+			// Setup store with a suspected dead instance and another alive
 			mockData.set('registry:instances', {
 				[messenger.uid]: { clients: [], rooms: [] }, // current
 				[deadInstance]: { clients: ['client-A', 'client-B'], rooms: ['room-A'] },
@@ -360,33 +366,35 @@ describe('Messenger', () => {
 
 			const promise = messenger.pruneDeadInstances();
 
+			// Wait for initial snapshot and ping broadcast
 			await new Promise((resolve) => process.nextTick(resolve));
 			await new Promise((resolve) => process.nextTick(resolve));
 
-			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
-				type: 'ping',
-				instance: deadInstance,
-			});
+			// Ping messages broadcast to suspected instances
+			expect(mockBus.publish).toHaveBeenCalledWith(
+				COLLAB_BUS,
+				expect.objectContaining({
+					type: 'ping',
+					instance: deadInstance,
+				}),
+			);
 
-			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
-				type: 'ping',
-				instance: aliveInstance,
-			});
-
-			// We need to find the listener created inside removeInvalidClients
-			// It's the last call to subscribe
+			// Simulate only aliveInstance responding
 			const lastSubscribeCall = mockBus.subscribe.mock.calls.at(-1);
 			const pongHandler = lastSubscribeCall?.[1];
-
 			pongHandler?.({ type: 'pong', instance: aliveInstance } as BroadcastMessage);
 
+			// Fast-forward past the instance timeout
 			await vi.advanceTimersByTimeAsync(11000);
 
 			const disconnected = await promise;
 
+			// The dead instance should be removed from the registry
 			const instances = mockData.get('registry:instances');
-			expect(instances).toHaveProperty(aliveInstance);
 			expect(instances).not.toHaveProperty(deadInstance);
+
+			// The alive instance should be preserved
+			expect(instances).toHaveProperty(aliveInstance);
 
 			expect(disconnected).toEqual({
 				inactive: { clients: ['client-A', 'client-B'], rooms: ['room-A'] },

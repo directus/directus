@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
 import { difference, upperFirst } from 'lodash-es';
@@ -15,7 +15,7 @@ import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
-import { RoomManager } from './room.js';
+import { getRoomHash, RoomManager } from './room.js';
 import type {
 	DiscardMessage,
 	FocusMessage,
@@ -51,28 +51,100 @@ export class CollabHandler {
 		this.bindWebSocket();
 	}
 
-	async initialize() {
-		try {
-			const schema = await getSchema();
-			const service = new SettingsService({ schema });
-			const settings = await service.readSingleton({ fields: ['collaboration'] });
-			this.enabled = settings?.['collaboration'] ?? true;
-		} catch (err) {
-			useLogger().error(err, '[Collab] Failed to initialize collaboration settings');
+	async initialize(force = false): Promise<void> {
+		if (this.initialized && !force) return this.initialized;
+
+		const promise = (async () => {
+			try {
+				const schema = await getSchema();
+				const service = new SettingsService({ schema });
+				const settings = await service.readSingleton({ fields: ['collaboration'] });
+				this.enabled = settings?.['collaboration'] ?? true;
+			} catch (err) {
+				useLogger().error(err, '[Collab] Failed to initialize collaboration settings');
+			}
+		})();
+
+		if (!this.initialized) {
+			this.initialized = promise;
 		}
+
+		return promise;
 	}
 
-	/**
-	 * Hook into websocket client lifecycle events
-	 */
 	bindWebSocket() {
+		const handleSettingsUpdate = () => {
+			// Non-blocking initialization to avoid bus congestion
+			this.initialize(true).then(() => {
+				if (!this.enabled) {
+					try {
+						useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Collaboration disabled, terminating all rooms`);
+						this.roomManager.terminateAll();
+					} catch (err) {
+						useLogger().error(err, '[Collab] Collaboration disabling terminateAll failed');
+					}
+				}
+			});
+		};
+
+		// Listen for settings changes via local emitter
+		emitter.onAction('settings.update', handleSettingsUpdate);
+
+		// Listen for all system events via bus
 		this.messenger.messenger.subscribe('websocket.event', (event: any) => {
 			if (event.collection === 'directus_settings' && event.action === 'update') {
-				if (event.payload && 'collaboration' in event.payload) {
-					this.enabled = !!event.payload['collaboration'];
+				useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
+				handleSettingsUpdate();
+				return;
+			}
 
-					if (!this.enabled) {
-						this.roomManager.terminateAll();
+			if (event.action === 'update' || event.action === 'delete') {
+				let keys: (string | number)[] = [];
+
+				if (Array.isArray(event.keys)) {
+					keys = event.keys;
+				} else if (event.key) {
+					keys = [event.key];
+				} else if (event.payload && event.action === 'delete') {
+					keys = Array.isArray(event.payload) ? event.payload : [event.payload];
+				}
+
+				event.keys = keys;
+
+				if (event.collection === 'directus_versions') {
+					for (const room of Object.values(this.roomManager.rooms)) {
+						if (room.version && keys.some((key) => String(key) === room.version)) {
+							useLogger().debug(
+								`[Collab] [Node ${this.messenger.uid}] Forwarding distributed version ${event.action} to local room ${room.uid}`,
+							);
+
+							if (event.action === 'delete') {
+								room.onDeleteHandler(event);
+							} else {
+								room.onUpdateHandler(event);
+							}
+						}
+					}
+
+					return;
+				}
+
+				for (const key of keys) {
+					const roomUid = getRoomHash(event.collection, key, null);
+					const room = this.roomManager.rooms[roomUid];
+
+					if (room) {
+						useLogger().debug(
+							`[Collab] [Node ${this.messenger.uid}] Forwarding distributed ${event.action} to local room ${roomUid}`,
+						);
+
+						const singleKeyedEvent = { ...event, keys: [key] };
+
+						if (event.action === 'delete') {
+							room.onDeleteHandler(singleKeyedEvent);
+						} else {
+							room.onUpdateHandler(singleKeyedEvent);
+						}
 					}
 				}
 			}
@@ -160,8 +232,9 @@ export class CollabHandler {
 		await this.initialized;
 
 		if (!this.enabled) {
-			throw new ForbiddenError({
+			throw new ServiceUnavailableError({
 				reason: 'Collaboration is disabled',
+				service: 'collab',
 			});
 		}
 	}
@@ -170,7 +243,17 @@ export class CollabHandler {
 	 * Join a collaboration room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
-		await this.ensureEnabled();
+		try {
+			await this.ensureEnabled();
+		} catch (error) {
+			if (error instanceof ServiceUnavailableError && error.message.includes('Collaboration is disabled')) {
+				this.messenger.handleError(client.uid, error, message.action);
+				this.messenger.terminateClient(client.uid);
+				return;
+			}
+
+			throw error;
+		}
 
 		if (client.accountability?.share) {
 			throw new ForbiddenError({
