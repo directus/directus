@@ -1690,16 +1690,24 @@ mcp_prompts_collection:
   collection_not_found_description: '「{collection}」コレクションはデータベース内に存在しません。'
   generate: AI プロンプトコレクションを生成中…
   already_exists: '「AI Prompts」コレクションは既に存在します'
+  generate_collection_dialog_title: AI プロンプトコレクションを生成
+  generate_fields_dialog_title: AI プロンプトフィールドを生成
   generate_collection_dialog_description: '再利用可能なプロンプトテンプレートを保存するために必要なフィールドと設定を備えた、新しいコレクション「{collection}」を作成します。'
+  generate_fields_dialog_description: '「{collection}」コレクションに必要なフィールドを作成します。'
   validation_success: 'コレクションを「AI プロンプト」として使用する準備が整いました。'
   validation_error_invalid: このコレクションは使用できません
+  validation_error_missing: このコレクションはまだ使用できません
+  invalid_fields: '以下のフィールドは既に存在しますが、型に互換性がありません:'
+  missing_fields: '以下のフィールドは必須ですが、不足しています:'
   generate_missing: 不足しているフィールドを生成…
 mcp_prompts_collection_schema:
+  system_prompt_note: LLM の応答方法を定義する指示事項。
   messages_note: '任意: ユーザーと LLM（大規模言語モデル）との会話構造を定義します。文脈を追加して、出力の質を向上させるために使用します。'
   messages_role_user: ユーザー
   messages_role_assistant: アシスタント
   messages_role_note: このメッセージの送信者
   meta_prompts_notice: 'プロンプトは、Directus MCP サーバー、フロー、またはその他の AI アプリケーションを介して LLM で使用できる再利用可能なテンプレートです。<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">効果的なプロンプトの作成方法について詳しくはこちらをご覧ください。</a>'
+expired: 期限切れ
 shared_uses_left: セキュリティ保護のため、この共有ページは閲覧回数が制限されています。現在の残り閲覧回数は {n} 回です。制限に達すると、このページにはアクセスできなくなります。
 referential_action_set_null: '{field} フィールドを空にする'
 editing_role: '{role} 権限グループ'
