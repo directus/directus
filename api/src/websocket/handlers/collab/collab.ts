@@ -6,11 +6,9 @@ import { difference, upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
-import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
 import { SettingsService } from '../../../services/settings.js';
-import { VersionsService } from '../../../services/versions.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { getService } from '../../../utils/get-service.js';
 import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { getMessageType } from '../../utils/message.js';
@@ -264,42 +262,36 @@ export class CollabHandler {
 		const schema = await getSchema();
 		const db = getDatabase();
 
-		const allowedCollections = await fetchAllowedCollections(
-			{ accountability: client.accountability!, action: 'read' },
-			{ knex: db, schema },
-		);
-
-		if (!allowedCollections.includes(message.collection))
-			throw new ForbiddenError({
-				reason: `No permission to access collection ${message.collection} or collection does not exist`,
-			});
-
 		if (!message.item && !schema.collections[message.collection]?.singleton)
 			throw new InvalidPayloadError({
 				reason: `Item id has to be provided for non singleton collections`,
 			});
 
 		try {
-			const service = getService(message.collection, {
-				schema,
-				knex: db,
-				accountability: client.accountability,
-			});
+			const { accessAllowed } = await validateItemAccess(
+				{
+					accountability: client.accountability!,
+					action: 'read',
+					collection: message.collection,
+					primaryKeys: schema.collections[message.collection]?.singleton ? [] : [message.item!],
+				},
+				{ knex: db, schema },
+			);
 
-			if (schema.collections[message.collection]?.singleton) {
-				await service.readSingleton({});
-			} else {
-				await service.readOne(message.item!);
-			}
+			if (!accessAllowed) throw new ForbiddenError();
 
 			if (message.version) {
-				const service = new VersionsService({
-					schema,
-					knex: db,
-					accountability: client.accountability,
-				});
+				const { accessAllowed: versionAccessAllowed } = await validateItemAccess(
+					{
+						accountability: client.accountability!,
+						action: 'read',
+						collection: 'directus_versions',
+						primaryKeys: [message.version],
+					},
+					{ knex: db, schema },
+				);
 
-				await service.readOne(message.version);
+				if (!versionAccessAllowed) throw new ForbiddenError();
 			}
 		} catch {
 			throw new ForbiddenError({

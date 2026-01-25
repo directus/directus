@@ -1,10 +1,9 @@
 import { type WebSocketClient } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../../emitter.js';
-import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
 import { SettingsService } from '../../../services/settings.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { getService } from '../../../utils/get-service.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { CollabHandler } from './collab.js';
 import { verifyPermissions } from './verify-permissions.js';
@@ -19,9 +18,8 @@ vi.mock('../../../logger/index.js', () => ({
 
 vi.mock('../../../database/index.js');
 vi.mock('../../../emitter.js');
-vi.mock('../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js');
+vi.mock('../../../permissions/modules/validate-access/lib/validate-item-access.js');
 vi.mock('../../../utils/get-schema.js');
-vi.mock('../../../utils/get-service.js');
 vi.mock('../../../utils/schedule.js');
 vi.mock('../../errors.js');
 
@@ -53,12 +51,6 @@ vi.mock('./verify-permissions.js');
 vi.mock('../../../services/settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(() => ({
 		readSingleton: vi.fn().mockResolvedValue({ collaboration: true }),
-	})),
-}));
-
-vi.mock('../../../services/versions.js', () => ({
-	VersionsService: vi.fn().mockImplementation(() => ({
-		readOne: vi.fn(),
 	})),
 }));
 
@@ -106,13 +98,13 @@ describe('CollabHandler', () => {
 			).rejects.toHaveProperty('extensions.reason', 'Collaboration is not supported for shares');
 		});
 
-		test('rejects access if collection is not in allowedCollections', async () => {
+		test('rejects access if validateItemAccess returns false', async () => {
 			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
-			vi.mocked(fetchAllowedCollections).mockResolvedValue(['other_collection']);
+			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: false });
 
 			await expect(
 				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
-			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to access collection/i));
+			).rejects.toHaveProperty('extensions.reason', 'No permission to access item or it does not exist');
 		});
 
 		test('rejects if item ID is missing for non-singleton collection', async () => {
@@ -121,8 +113,6 @@ describe('CollabHandler', () => {
 					articles: { singleton: false },
 				},
 			} as any);
-
-			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
 
 			await expect(
 				handler.onJoin(mockClient, { action: 'join', collection: 'articles' } as any),
@@ -136,10 +126,7 @@ describe('CollabHandler', () => {
 				},
 			} as any);
 
-			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
-
-			const mockService = { readOne: vi.fn().mockRejectedValue(new Error('Forbidden')) };
-			vi.mocked(getService).mockReturnValue(mockService as any);
+			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: false });
 
 			await expect(
 				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
@@ -153,17 +140,14 @@ describe('CollabHandler', () => {
 				},
 			} as any);
 
-			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
-
-			const mockService = { readOne: vi.fn().mockResolvedValue({ id: 1 }), readSingleton: vi.fn() };
-			vi.mocked(getService).mockReturnValue(mockService as any);
+			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: true });
 
 			const mockRoom = { join: vi.fn() };
 			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
 
-			expect(mockService.readOne).toHaveBeenCalledWith(1);
+			expect(validateItemAccess).toHaveBeenCalled();
 			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, undefined);
 			expect(handler.messenger.handleError).not.toHaveBeenCalled();
 		});
@@ -181,40 +165,38 @@ describe('CollabHandler', () => {
 				relations: [],
 			} as any);
 
-			vi.mocked(fetchAllowedCollections).mockResolvedValue(['settings']);
-
-			const mockService = { readSingleton: vi.fn().mockResolvedValue({ id: 1 }) };
-			vi.mocked(getService).mockReturnValue(mockService as any);
+			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: true });
 
 			const mockRoom = { join: vi.fn() };
 			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'settings' } as any);
 
-			expect(mockService.readSingleton).toHaveBeenCalled();
+			expect(validateItemAccess).toHaveBeenCalled();
 			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('settings', undefined, null, undefined);
 			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, undefined);
 		});
 
-		test('propagates version to createRoom', async () => {
+		test('propagates version to validateItemAccess and createRoom', async () => {
 			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
-			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
-
-			const mockService = { readOne: vi.fn().mockResolvedValue({ id: 1 }), readSingleton: vi.fn() };
-			vi.mocked(getService).mockReturnValue(mockService as any);
+			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: true });
 
 			const mockRoom = { join: vi.fn() };
 			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1, version: 'v1' } as any);
 
+			expect(validateItemAccess).toHaveBeenCalledWith(
+				expect.objectContaining({ collection: 'directus_versions', primaryKeys: ['v1'] }),
+				expect.anything(),
+			);
+
 			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('articles', 1, 'v1', undefined);
 		});
 
 		test('propagates color to room.join', async () => {
 			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
-			vi.mocked(fetchAllowedCollections).mockResolvedValue(['articles']);
-			vi.mocked(getService).mockReturnValue({ readOne: vi.fn().mockResolvedValue({ id: 1 }) } as any);
+			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: true });
 
 			const mockRoom = { join: vi.fn() };
 			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
