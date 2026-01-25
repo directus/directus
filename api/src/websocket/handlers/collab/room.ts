@@ -37,7 +37,7 @@ export class RoomManager {
 	/**
 	 * Create a new collaboration room or return an existing one matching collection, item and version.
 	 */
-	async createRoom(collection: string, item: string | null, version: string | null, initialChanges?: Item) {
+	async createRoom(collection: string, item: PrimaryKey | null, version: string | null, initialChanges?: Item) {
 		// Deterministic UID ensures clients on same resource join same room
 		const uid = getRoomHash(collection, item, version);
 
@@ -177,7 +177,7 @@ type RoomClient = { uid: ClientID; accountability: Accountability; color: Color 
 type RoomData = {
 	uid: string;
 	collection: string;
-	item: string | null;
+	item: PrimaryKey | null;
 	version: string | null;
 	changes: Item;
 	clients: RoomClient[];
@@ -196,7 +196,7 @@ const roomDefaults = {
 export class Room {
 	uid: string;
 	collection: string;
-	item: string | null;
+	item: PrimaryKey | null;
 	version: string | null;
 	initialChanges: Item | undefined;
 	messenger: Messenger;
@@ -207,7 +207,7 @@ export class Room {
 	constructor(
 		uid: string,
 		collection: string,
-		item: string | null,
+		item: PrimaryKey | null,
 		version: string | null,
 		initialChanges?: Item,
 		messenger: Messenger = new Messenger(),
@@ -226,7 +226,7 @@ export class Room {
 			const target = this.version ?? this.item;
 
 			// Skip updates for different items (singletons have item=null)
-			if (target !== null && !keys.some((key) => String(key) === target)) return;
+			if (target !== null && !keys.some((key) => String(key) === String(target))) return;
 
 			try {
 				const schema = await getSchema();
@@ -281,7 +281,8 @@ export class Room {
 				this.version && eventCollection === 'directus_versions' && keys.some((key) => String(key) === this.version);
 
 			// Skip deletions for different items (singletons have item=null)
-			const isItemMatch = eventCollection === collection && (item === null || keys.some((key) => String(key) === item));
+			const isItemMatch =
+				eventCollection === collection && (item === null || keys.some((key) => String(key) === String(item)));
 
 			if (!isVersionMatch && !isItemMatch) return;
 
@@ -712,6 +713,6 @@ export class Room {
 	}
 }
 
-export function getRoomHash(collection: string, item: string | number | null, version: string | null) {
+export function getRoomHash(collection: string, item: PrimaryKey | null, version: string | null) {
 	return createHash('sha256').update([collection, item, version].join('-')).digest('hex');
 }

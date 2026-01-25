@@ -1480,4 +1480,50 @@ describe('getRoomHash', () => {
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '456', 'v1'));
 		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '123', 'v2'));
 	});
+
+	test('should return same hash for mixed string/number types', () => {
+		expect(getRoomHash('abc', '123', null)).toEqual(getRoomHash('abc', 123, null));
+		expect(getRoomHash('abc', 123, null)).toEqual(getRoomHash('abc', '123', null));
+	});
+});
+
+describe('numeric primary keys', () => {
+	test('create room', () => {
+		const room = new Room('abc', 'test', 123, null, {});
+		expect(room.item).toBe(123);
+	});
+
+	test('update with numeric id', async () => {
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('posts', 123, null);
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+
+		await room.join(clientA);
+
+		vi.mocked(getService).mockReturnValue({
+			readOne: vi.fn().mockResolvedValue({ id: 123, title: 'Updated' }),
+		} as any);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'posts.items.update')![1];
+		await onUpdateHandler({ keys: [123], collection: 'posts' }, { accountability: { user: 'external-user' } } as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith('abc', expect.objectContaining({ action: 'save' }));
+	});
+
+	test('update with mixed types', async () => {
+		const roomManager = new RoomManager(mockMessenger);
+		const room = await roomManager.createRoom('posts', 123, null);
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+
+		await room.join(clientA);
+
+		vi.mocked(getService).mockReturnValue({
+			readOne: vi.fn().mockResolvedValue({ id: 123, title: 'Updated' }),
+		} as any);
+
+		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'posts.items.update')![1];
+		await onUpdateHandler({ keys: ['123'], collection: 'posts' }, { accountability: { user: 'external-user' } } as any);
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith('abc', expect.objectContaining({ action: 'save' }));
+	});
 });

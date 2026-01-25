@@ -1,6 +1,6 @@
 import { type UUID } from 'crypto';
 import z from 'zod';
-import type { Item } from '../items.js';
+import type { Item, PrimaryKey } from '../items.js';
 import { TYPE } from './type.js';
 
 export const COLLAB_BUS = 'collab';
@@ -41,7 +41,7 @@ export const ClientMessage = z.discriminatedUnion('action', [
 		type: z.literal(TYPE.COLLAB),
 		action: z.literal(ACTION.CLIENT.JOIN),
 		collection: z.string(),
-		item: z.string().nullable(),
+		item: z.union([z.string(), z.number()]).nullable(),
 		version: z.string().nullable(),
 		color: z.enum(COLORS).nullable().optional(),
 		initialChanges: z.record(z.string(), z.any()).optional(),
@@ -121,7 +121,7 @@ export type BaseServerMessage =
 	| {
 			action: typeof ACTION.SERVER.INIT;
 			collection: string;
-			item: string | null;
+			item: PrimaryKey | null;
 			version: string | null;
 			changes: Item;
 			connection: ClientID;
