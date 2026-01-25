@@ -346,6 +346,9 @@ export class CollabHandler {
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
 		await this.ensureEnabled();
 
+		const knex = getDatabase();
+		const schema = await getSchema();
+
 		const room = await this.roomManager.getRoom(message.room);
 
 		if (!room || !(await room.hasClient(client.uid))) {
@@ -354,36 +357,15 @@ export class CollabHandler {
 			});
 		}
 
+		await this.checkFieldsAccess(client, room, message.field, 'update', { knex, schema });
+
+		// Focus field before update to prevent concurrent overwrite conflicts
 		let focus = await room.getFocusByUser(client.uid);
 
 		if (focus !== message.field) {
 			await room.focus(client, message.field);
 
 			focus = await room.getFocusByUser(client.uid);
-		}
-
-		// Focus field before update to prevent concurrent overwrite conflicts
-		if (!focus || focus !== message.field) {
-			throw new ForbiddenError({
-				reason: `Cannot update field ${message.field} without focusing on it first`,
-			});
-		}
-
-		const knex = getDatabase();
-		const schema = await getSchema();
-
-		const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
-			knex,
-			schema,
-		});
-
-		if (
-			(allowedFields !== null && !isFieldAllowed(allowedFields, message.field)) ||
-			!schema.collections[room.collection]?.fields[message.field]
-		) {
-			throw new ForbiddenError({
-				reason: `No permission to update field ${message.field} or field does not exist`,
-			});
 		}
 
 		if (message.changes !== undefined) {
@@ -416,17 +398,10 @@ export class CollabHandler {
 		const knex = getDatabase();
 		const schema = await getSchema();
 
-		const allowedFields = await verifyPermissions(client.accountability, collection, room.item, 'update', {
-			knex,
-			schema,
-		});
+		const fields = Object.keys(message.changes ?? {});
+		await this.checkFieldsAccess(client, room, fields, 'update', { knex, schema });
 
-		for (const key of Object.keys(message.changes ?? {})) {
-			if (allowedFields !== null && !isFieldAllowed(allowedFields, key))
-				throw new ForbiddenError({
-					reason: `No permission to update field ${key} or field does not exist`,
-				});
-
+		for (const key of fields) {
 			const focus = await room.getFocusByField(key);
 
 			if (focus && focus !== client.uid) {
@@ -459,27 +434,7 @@ export class CollabHandler {
 			});
 
 		if (message.field) {
-			const knex = getDatabase();
-			const schema = await getSchema();
-
-			const allowedReadFields = await verifyPermissions(client.accountability, room.collection, room.item, 'read', {
-				knex,
-				schema,
-			});
-
-			const allowedUpdateFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
-				knex,
-				schema,
-			});
-
-			if (
-				(allowedReadFields !== null && !isFieldAllowed(allowedReadFields, message.field)) ||
-				(allowedUpdateFields !== null && !isFieldAllowed(allowedUpdateFields, message.field))
-			) {
-				throw new ForbiddenError({
-					reason: `No permission to focus on field ${message.field} or field does not exist`,
-				});
-			}
+			await this.checkFieldsAccess(client, room, message.field, 'focus on');
 		}
 
 		if (!(await room.focus(client, message.field ?? null))) {
@@ -503,22 +458,43 @@ export class CollabHandler {
 			});
 		}
 
-		const knex = getDatabase();
-		const schema = await getSchema();
+		await this.checkFieldsAccess(client, room, message.fields, 'discard');
 
-		const allowedFields = await verifyPermissions(client.accountability, room.collection, room.item, 'update', {
-			knex,
-			schema,
-		});
+		await room.discard(message.fields);
+	}
 
-		for (const field of message.fields) {
-			if (allowedFields !== null && !isFieldAllowed(allowedFields, field)) {
+	/**
+	 * Verify field access for both READ and UPDATE permissions
+	 */
+	private async checkFieldsAccess(
+		client: WebSocketClient,
+		room: any,
+		fields: string | string[],
+		errorAction: string,
+		options: { knex?: any; schema?: any } = {},
+	): Promise<void> {
+		const knex = options.knex ?? getDatabase();
+		const schema = options.schema ?? (await getSchema());
+
+		const [allowedReadFields, allowedUpdateFields] = await Promise.all([
+			verifyPermissions(client.accountability, room.collection, room.item, 'read', { knex, schema }),
+			verifyPermissions(client.accountability, room.collection, room.item, 'update', { knex, schema }),
+		]);
+
+		const fieldsArray = Array.isArray(fields) ? fields : [fields];
+
+		for (const field of fieldsArray) {
+			const fieldExists = !!schema.collections[room.collection]?.fields[field];
+
+			if (
+				!fieldExists ||
+				(allowedReadFields !== null && !isFieldAllowed(allowedReadFields, field)) ||
+				(allowedUpdateFields !== null && !isFieldAllowed(allowedUpdateFields, field))
+			) {
 				throw new ForbiddenError({
-					reason: `No permission to discard field ${field} or field does not exist`,
+					reason: `No permission to ${errorAction} field ${field} or field does not exist`,
 				});
 			}
 		}
-
-		await room.discard(message.fields);
 	}
 }

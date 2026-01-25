@@ -230,14 +230,34 @@ describe('CollabHandler', () => {
 			).rejects.toHaveProperty('extensions.reason', 'No access to room room-uid or room does not exist');
 		});
 
-		test('rejects if field read or update permission is missing', async () => {
+		test('rejects if field read permission is missing', async () => {
 			const mockRoom = {
 				hasClient: vi.fn().mockResolvedValue(true),
 				collection: 'articles',
 				item: 1,
 			};
 
-			vi.mocked(verifyPermissions).mockResolvedValue(['id']); // only 'id' allowed
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, _col, _id, action) => {
+				return action === 'read' ? [] : ['*'];
+			});
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await expect(
+				handler.onFocus(mockClient, { action: 'focus', room: 'room-uid', field: 'title' } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to focus on field/i));
+		});
+
+		test('rejects if field update permission is missing', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				collection: 'articles',
+				item: 1,
+			};
+
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, _col, _id, action) => {
+				return action === 'update' ? [] : ['*'];
+			});
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
@@ -324,6 +344,30 @@ describe('CollabHandler', () => {
 			};
 
 			vi.mocked(verifyPermissions).mockResolvedValue(['id']);
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await expect(
+				handler.onUpdate(mockClient, {
+					action: 'update',
+					room: 'room-uid',
+					field: 'title',
+					changes: 'test',
+				} as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to update field title/i));
+		});
+
+		test('rejects if field read permission is missing (implicit focus)', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				getFocusByUser: vi.fn().mockResolvedValue('other'),
+				collection: 'articles',
+				item: 1,
+			};
+
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, _col, _id, action) => {
+				return action === 'read' ? [] : ['*'];
+			});
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
@@ -429,7 +473,33 @@ describe('CollabHandler', () => {
 				item: 1,
 			};
 
-			vi.mocked(verifyPermissions).mockResolvedValue(['title']);
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, _col, _id, action) => {
+				return action === 'update' ? ['title'] : ['*'];
+			});
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await expect(
+				handler.onUpdateAll(mockClient, {
+					action: 'update_all',
+					room: 'room-uid',
+					changes: { title: 'New', secret: 'Hack' },
+				} as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to update field secret/i));
+		});
+
+		test('rejects if any field read permission is missing', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				getCollection: vi.fn().mockResolvedValue('articles'),
+				getFocusByField: vi.fn().mockResolvedValue(null),
+				collection: 'articles',
+				item: 1,
+			};
+
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, _col, _id, action) => {
+				return action === 'read' ? ['title'] : ['*'];
+			});
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
 
@@ -530,7 +600,28 @@ describe('CollabHandler', () => {
 			};
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
-			vi.mocked(verifyPermissions).mockResolvedValue(['id']);
+
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, _col, _id, action) => {
+				return action === 'update' ? ['id'] : ['*'];
+			});
+
+			await expect(
+				handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid', fields: ['title'] } as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to discard field/i));
+		});
+
+		test('rejects if field missing read permission', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				collection: 'articles',
+				item: 1,
+			};
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, _col, _id, action) => {
+				return action === 'read' ? ['id'] : ['*'];
+			});
 
 			await expect(
 				handler.onDiscard(mockClient, { action: 'discard', room: 'room-uid', fields: ['title'] } as any),
