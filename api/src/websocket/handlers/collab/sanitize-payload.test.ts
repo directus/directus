@@ -104,7 +104,13 @@ describe('sanitizePayload', () => {
 		test('allow to read items that dont exist yet', async () => {
 			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item) => {
 				if (collection === 'articles') return ['*'];
-				if (collection === 'comments') return item === 1 ? null : [];
+
+				if (collection === 'comments') {
+					if (item === 1) return null;
+					if (item === null) return ['*'];
+					return [];
+				}
+
 				return [];
 			});
 
@@ -115,6 +121,25 @@ describe('sanitizePayload', () => {
 			});
 
 			expect(result).toEqual({ id: 1, comments: [{ id: 1 }] });
+		});
+
+		test('falls back to collection permissions if specific item not found', async () => {
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item) => {
+				if (collection === 'articles') {
+					if (item === 999) return null; // Missing item
+					if (item === null) return ['id']; // Collection permissions, no title
+				}
+
+				return [];
+			});
+
+			const result = await sanitizePayload({ id: 999, title: 'Should be hidden' }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+			});
+
+			expect(result).toEqual({ id: 999 });
 		});
 	});
 

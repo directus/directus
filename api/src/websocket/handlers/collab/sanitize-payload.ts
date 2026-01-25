@@ -36,13 +36,20 @@ export async function sanitizePayload(
 			// Check parent field permission for all fields
 			const primaryKey = (context.object[context.collection.primary] ?? null) as PrimaryKey | null;
 
-			const allowedFields = await verifyPermissions(accountability, context.collection.collection, primaryKey, 'read', {
+			let allowedFields = await verifyPermissions(accountability, context.collection.collection, primaryKey, 'read', {
 				knex,
 				schema,
 			});
 
-			// If the item doesn't exist, it will be a create that you always have permission to
-			if (!allowedFields) return [key, value];
+			// If the item doesn't exist, we check default collection permissions
+			if (!allowedFields) {
+				allowedFields =
+					(await verifyPermissions(accountability, context.collection.collection, null, 'read', {
+						knex,
+						schema,
+					})) ?? [];
+			}
+
 			// If item exists, we check if you have permissions to read the field
 			if (allowedFields.length === 0 || (!allowedFields.includes('*') && !allowedFields.includes(String(key)))) return;
 
