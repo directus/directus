@@ -381,6 +381,27 @@ describe('CollabHandler', () => {
 			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/No permission to update field title/i));
 		});
 
+		test('rejects if focus attempt fails', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				getFocusByUser: vi.fn().mockResolvedValue(null),
+				focus: vi.fn().mockResolvedValue(false),
+				collection: 'articles',
+				item: 1,
+			};
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await expect(
+				handler.onUpdate(mockClient, {
+					action: 'update',
+					room: 'room-uid',
+					field: 'title',
+					changes: 'test',
+				} as any),
+			).rejects.toHaveProperty('extensions.reason', 'Cannot update field title without focusing on it first');
+		});
+
 		test('rejects if field does not exist in schema even if permission allows', async () => {
 			const mockRoom = {
 				hasClient: vi.fn().mockResolvedValue(true),

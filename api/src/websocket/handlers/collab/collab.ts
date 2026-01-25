@@ -368,6 +368,13 @@ export class CollabHandler {
 			focus = await room.getFocusByUser(client.uid);
 		}
 
+		// Focus field before update to prevent concurrent overwrite conflicts
+		if (!focus || focus !== message.field) {
+			throw new ForbiddenError({
+				reason: `Cannot update field ${message.field} without focusing on it first`,
+			});
+		}
+
 		if (message.changes !== undefined) {
 			await validateChanges({ [message.field]: message.changes }, room.collection, room.item, {
 				knex,
