@@ -1644,10 +1644,35 @@ ai:
   deny: 却下
   approve_tool_execution: ツールの実行を承認しますか ?
   retry: 再試行
+  prompt_input_placeholder: ここにメッセージを入力…
+  clear_conversation: 会話をクリア
+  build_with_assistant: AI アシスタントで構築
+  responses_may_be_inaccurate: AI の回答は不正確な場合があります
+  go_to_settings: 設定へ移動
+  setup_ai_assistant: AI アシスタントをセットアップ
+  setup_ai_assistant_admin_description: AI アシスタントを有効にするには、設定で AI プロバイダーの API キーを追加してください。
+  setup_ai_assistant_user_description: AI アシスタントを有効にするには、サイト管理者に連絡してください。
   settings: 設定
   tool_approval:
+    always: 常に許可済み
+    ask: 承認が必要
     disabled: 無効
+  enabled_tools: 有効なツール
+  disabled_tools: 無効なツール
+  tool_descriptions:
+    items: コンテンツの作成、閲覧、編集、削除
+    files: ファイルの検索と管理
+    folders: フォルダの作成と整理
+    flows: フローの作成と編集
+    trigger-flow: 手動トリガーによるフローの実行
+    operations: フロー内のオペレーションを管理
+    schema: データベーススキーマ情報の取得
+    collections: コレクションの作成と管理
+    fields: コレクションフィールドの作成と構成
+    relations: コレクション間のリレーションシップを設定
 ai_tools:
+  update_form_values: フォームの値を更新
+  read_form_values: フォームの値を読み取り
   items: アイテム
   files: ファイル
   folders: フォルダー
@@ -1656,7 +1681,15 @@ ai_tools:
   operations: オペレーション
   schema: スキーマ
   collections: コレクション
+  fields: フィールド
+  relations: リレーション
 mcp_prompts_collection:
+  no_collection_selected: コレクションが選択されていません
+  no_collection_selected_copy: 再利用可能なプロンプトテンプレートを有効にするには、コレクションを選択してください。
+  collection_not_found: コレクションが見つかりません
+  collection_not_found_description: '「{collection}」コレクションはデータベース内に存在しません。'
+  generate: AI プロンプトコレクションを生成中…
+  already_exists: '「AI Prompts」コレクションは既に存在します'
   generate_collection_dialog_description: '再利用可能なプロンプトテンプレートを保存するために必要なフィールドと設定を備えた、新しいコレクション「{collection}」を作成します。'
   validation_success: 'コレクションを「AI プロンプト」として使用する準備が整いました。'
   validation_error_invalid: このコレクションは使用できません
@@ -1664,6 +1697,10 @@ mcp_prompts_collection:
 mcp_prompts_collection_schema:
   messages_note: '任意: ユーザーと LLM（大規模言語モデル）との会話構造を定義します。文脈を追加して、出力の質を向上させるために使用します。'
   messages_role_user: ユーザー
+  messages_role_assistant: アシスタント
+  messages_role_note: このメッセージの送信者
+  meta_prompts_notice: 'プロンプトは、Directus MCP サーバー、フロー、またはその他の AI アプリケーションを介して LLM で使用できる再利用可能なテンプレートです。<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">効果的なプロンプトの作成方法について詳しくはこちらをご覧ください。</a>'
+shared_uses_left: セキュリティ保護のため、この共有ページは閲覧回数が制限されています。現在の残り閲覧回数は {n} 回です。制限に達すると、このページにはアクセスできなくなります。
 referential_action_set_null: '{field} フィールドを空にする'
 editing_role: '{role} 権限グループ'
 editing_policy: '{policy} ポリシー'
@@ -1907,6 +1944,7 @@ interfaces:
     tools: ツールバー
     tools_options:
       header: ヘッダー
+      nestedlist: リスト
       embed: 埋め込む
       code: コード
       image: 画像
@@ -2002,8 +2040,14 @@ layouts:
     tags: カードのタグ
     user: カードのユーザー
     advanced: 詳細設定
+    show: 表示
+    no_group: グループなし
+horizontal: 水平
+vertical: 垂直
+axis: 軸
 x_axis: X 軸
 y_axis: Y軸
+y_axis_function: Y軸の集計方法
 show_x_only: X軸のみ表示
 show_y_only: Y軸のみ表示
 show_data_label: データラベルを表示
@@ -2013,10 +2057,62 @@ function: 関数
 half_circle: 半円
 full_circle: 円
 stroke_width: 線の幅
+rounded_stroke: 角丸
+thin: 細字
+medium: 中字
+broad: 太め
+show_labels: ラベルを表示
+show_legend: 凡例を表示
+right: 右
+left: 左
 start: 開始
+end: 終了
+donut: ドーナツ
+continuous: 連続
+gap: 間隔
 panels:
+  metric:
+    name: 指標
+    description: クエリに基づいて単一の値を表示
+    field: フィールド
+  metric_list:
+    name: 指標リスト
+    description: コレクションの集計指標をリスト化して可視化
+  time_series:
+    name: 時系列
+    description: 時間の経過に伴う値を折れ線グラフで表示
+    date_field: 日付フィールド
+    value_field: 値フィールド
+    fill_type: 塗りつぶしの種類
+    curve_type: 曲線のタイプ
+    missing_data: データの欠落
   label:
     name: ラベル
+    description: テキストを表示
+  list:
+    name: リスト
+    description: コレクションのフィールドを絞り込んでリスト表示
+  barchart:
+    name: 棒グラフ
+    description: グループ間の値を比較する棒グラフ（縦・横）を表示
+    horizontal: 水平
+    select_collection: コレクションを選択してください。
+  linechart:
+    name: 折れ線グラフ
+    description: フィールドの変化を比較する折れ線グラフを表示
+    disabled_grouping: グループ化の選択中は無効化されます。
+    disabled_no_grouping: グループ化が未選択の場合は無効化されます。
+    show_marker: ツールチップのマーカーを表示
+    curve_type: 曲線のタイプ
+    smooth: 曲線
+    straight: 直線
+    step_line: 階段状の線
+    show_legend: 凡例を表示
+  meter:
+    name: メーター
+    description: 数値を追跡するメーターを表示
+  piechart:
+    name: 円・ドーナツグラフ
 triggers:
   common:
     response_body_all: すべてのデータ
