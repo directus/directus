@@ -233,21 +233,21 @@ public_description: 認証せずに利用できる API データを制御しま�
 public_role_info: >-
   公開権限グループは、未認証のユーザーや権限を持たないユーザーがアクセスできる API データを制御します。公開権限グループによるリクエストに、アプリへのアクセス権限や管理者権限を持たせることはできません。公開権限グループに割り当てられたポリシーにアプリ・管理者権限が付与されていても、これらは無視されます。
 admin_description: App/API への無制限なアクセス権を持つ、初期の管理者ロール。
-admin_policy_description: すべての App/API へのアクセス権限を持つ初期管理者ポリシー。
+admin_policy_description: App/API への無制限なアクセス権を持つ、初期の管理者ポリシー。
 no_description: 説明なし…
 reached_maximum_number_of_extensions: このプロジェクトの拡張機能が上限 ({n}) に達しました。詳細はシステム管理者に問い合わせてください。
 not_allowed: 許可されていない
 archive: アーカイブ
 archive_confirm: この項目をアーカイブしてよろしいですか？
 archive_confirm_count: >-
-  アイテムが選択されていません | このアイテムをアーカイブしてもよろしいですか? | {count} 件のアイテムをアーカイブしてもよろしいですか？
+  アイテムが選択されていません | このアイテムをアーカイブしてもよろしいですか ? | {count}件のアイテムをアーカイブしてもよろしいですか ?
 reset_system_permissions_to: 'システム権限のリセット:'
-reset_system_permissions_copy: このアクションは、システム接続に適用されているカスタム権限を上書きします。よろしいですか ？
+reset_system_permissions_copy: このアクションは、システム接続に適用されているカスタム権限を上書きします。本当に実行しますか ?
 the_following_are_minimum_permissions: '「アプリアクセス」を有効にすると、最小限の権限が自動的に設定されます。権限設定は後から追加できますが、最小権限より減らすことはできません。'
 app_access_minimum: アプリアクセスの最小権限
 recommended_defaults: 推奨されるデフォルト値
 unarchive: アーカイブ解除
-unarchive_confirm: この項目をアーカイブしてよろしいですか？
+unarchive_confirm: 本当にこの項目をアーカイブしますか ?
 nested_files_folders_will_be_moved: ネスト（入れ子）になっているファイルやフォルダーは、1階層上に移動します。
 validation_errors_notice: '無効な値があります:'
 validation_value_is_invalid: 値が無効です
