@@ -51,8 +51,6 @@ describe('Collaborative Editing: Singleton', () => {
 				const ws1 = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
 				const ws2 = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
 
-				await Promise.all([ws1.waitForState(ws1.conn.OPEN), ws2.waitForState(ws2.conn.OPEN)]);
-
 				// Action
 				await ws1.sendMessage({
 					type: 'collab',
@@ -156,8 +154,6 @@ describe('Collaborative Editing: Singleton', () => {
 				});
 
 				const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
-
-				await ws.waitForState(ws.conn.OPEN);
 
 				// Action
 				await ws.sendMessage({

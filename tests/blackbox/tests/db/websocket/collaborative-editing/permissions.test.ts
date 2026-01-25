@@ -8,7 +8,14 @@ import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { collectionCollab, collectionCollabPrivate } from './permissions.seed';
+import {
+	collectionCollab,
+	collectionCollabPrivate,
+	collectionCollabRelational,
+	collectionCollabRelationalM2O,
+	collectionCollabRelationalO2M,
+	collectionCollabSingleton,
+} from './permissions.seed';
 
 describe('Collaborative Editing: Permissions', () => {
 	describe('Join Permissions', () => {
@@ -525,6 +532,268 @@ describe('Collaborative Editing: Permissions', () => {
 	});
 });
 
+describe('Extended Security Tests', () => {
+	describe('Non-existent Nested Relational Item', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Nested Ghost Restricted' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [
+					{ collection: collectionCollabRelational, action: 'read', fields: ['*'] },
+					{ collection: collectionCollabRelational, action: 'update', fields: ['*'] },
+					{ collection: collectionCollabRelationalM2O, action: 'read', fields: ['id', 'field_a'] },
+				],
+			});
+
+			const mainId = randomUUID();
+			const ghostM2oId = randomUUID();
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabRelational}`)
+				.send({ id: mainId, name: 'Main Item' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const wsAdmin = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+			const wsRestricted = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabRelational,
+				item: mainId,
+				version: null,
+			});
+
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(wsAdmin, (msg) => msg.action === 'init');
+			const room = initAdmin.room!;
+
+			await wsRestricted.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabRelational,
+				item: mainId,
+				version: null,
+			});
+
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'init');
+
+			// Action
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'm2o_related',
+				changes: {
+					id: ghostM2oId,
+					field_a: 'Public Value',
+					field_b: 'SENSITIVE GHOST DATA',
+				},
+			});
+
+			// Assert
+			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.action === 'update' && msg.field === 'm2o_related',
+			);
+
+			expect(updateMsg['changes']).toBeDefined();
+			expect(updateMsg['changes']).toHaveProperty('id', ghostM2oId);
+			expect(updateMsg['changes']).toHaveProperty('field_a', 'Public Value');
+			expect(updateMsg['changes']).not.toHaveProperty('field_b');
+
+			wsAdmin.conn.close();
+			wsRestricted.conn.close();
+		});
+	});
+
+	describe('Singleton Room State Sanitization', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Singleton Ghost Restricted' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [{ collection: collectionCollabSingleton, action: 'read', fields: ['id'] }],
+			});
+
+			await request(TEST_URL)
+				.patch(`/items/${collectionCollabSingleton}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.send({ confidential: 'Initial' });
+
+			const wsAdmin = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabSingleton,
+				item: null,
+				version: null,
+			});
+
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(wsAdmin, (msg) => msg.action === 'init');
+			const room = initAdmin.room!;
+
+			// Action
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'confidential',
+				changes: 'SENSITIVE SINGLETON GHOST DATA',
+			});
+
+			const wsRestricted = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			await wsRestricted.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabSingleton,
+				item: null,
+				version: null,
+			});
+
+			// Assert
+			const initRestricted = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.action === 'init',
+			);
+
+			expect(initRestricted['changes']).toBeDefined();
+			expect(initRestricted['changes']).not.toHaveProperty('confidential');
+
+			wsAdmin.conn.close();
+			wsRestricted.conn.close();
+		});
+	});
+
+	describe('Relational Update Sanitization', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const userToken = `token-${randomUUID()}`;
+
+			// Setup
+			const roleId = await CreateRole(vendor, { name: 'Relational Restricted' });
+			await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+			await CreatePermission(vendor, {
+				role: roleId as any,
+				permissions: [
+					{ collection: collectionCollabRelational, action: 'read', fields: ['*'] },
+					{ collection: collectionCollabRelational, action: 'update', fields: ['*'] },
+					{ collection: collectionCollabRelationalM2O, action: 'read', fields: ['id', 'field_a'] },
+					{ collection: collectionCollabRelationalO2M, action: 'read', fields: ['id', 'field_a'] },
+				],
+			});
+
+			const mainId = randomUUID();
+
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabRelational}`)
+				.send({ id: mainId, name: 'Main Item' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const wsAdmin = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+			const wsRestricted = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabRelational,
+				item: mainId,
+				version: null,
+			});
+
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(wsAdmin, (msg) => msg.action === 'init');
+			const room = initAdmin.room!;
+
+			await wsRestricted.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabRelational,
+				item: mainId,
+				version: null,
+			});
+
+			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'o2m_related' });
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'o2m_related',
+				changes: {
+					create: [
+						{
+							name: 'New Item',
+							field_a: 'Public Create',
+							field_b: 'SENSITIVE CREATE DATA',
+						},
+					],
+					update: [
+						{
+							id: randomUUID(),
+							field_a: 'Public Update',
+							field_b: 'SENSITIVE UPDATE DATA',
+						},
+					],
+					delete: [],
+				},
+			});
+
+			const updateO2M = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.action === 'update' && msg.field === 'o2m_related',
+			);
+
+			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'm2o_related' });
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'm2o_related',
+				changes: {
+					id: randomUUID(),
+					field_a: 'Public M2O',
+					field_b: 'SENSITIVE M2O DATA',
+				},
+			});
+
+			const updateM2O = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.action === 'update' && msg.field === 'm2o_related',
+			);
+
+			// Assert
+			expect(updateO2M).toBeDefined();
+			const o2mChanges = updateO2M['changes'] as any;
+			expect(o2mChanges.create[0]).toHaveProperty('field_a', 'Public Create');
+			expect(o2mChanges.create[0]).not.toHaveProperty('field_b');
+			expect(o2mChanges.update[0]).toHaveProperty('field_a', 'Public Update');
+			expect(o2mChanges.update[0]).not.toHaveProperty('field_b');
+
+			expect(updateM2O).toBeDefined();
+			const m2oChanges = updateM2O['changes'] as any;
+			expect(m2oChanges).toHaveProperty('field_a', 'Public M2O');
+			expect(m2oChanges).not.toHaveProperty('field_b');
+
+			wsAdmin.conn.close();
+			wsRestricted.conn.close();
+		});
+	});
+});
+
 describe('Version Permissions', () => {
 	it.each(vendors)('%s', async (vendor) => {
 		const TEST_URL = getUrl(vendor);
@@ -556,7 +825,6 @@ describe('Version Permissions', () => {
 		const versionId = versionResult.id;
 
 		const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
-		await ws.waitForState(ws.conn.OPEN);
 
 		await ws.sendMessage({
 			type: 'collab',
