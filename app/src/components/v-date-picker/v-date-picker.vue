@@ -303,7 +303,11 @@ function setToNow() {
 									:date="weekDate"
 									class="calendar-cell"
 								>
-									<CalendarCellTrigger :day="weekDate" :month="month.value" class="calendar-cell-trigger" />
+									<CalendarCellTrigger
+									 :day="weekDate"
+									 :month="month.value"
+									 class="calendar-cell-trigger"
+									/>
 								</CalendarCell>
 							</CalendarGridRow>
 						</CalendarGridBody>
@@ -436,7 +440,7 @@ function setToNow() {
 		font-size: 1rem;
 		line-height: 2.65rem;
 		font-weight: 500;
-		border-radius: 150px;
+		border-radius: var(--theme--border-radius);
 		color: var(--theme--foreground);
 		white-space: nowrap;
 		background-color: transparent;
@@ -464,9 +468,9 @@ function setToNow() {
 		border-color: var(--theme--primary);
 	}
 
-	.calendar-cell-trigger[data-selected]:focus,
-	.calendar-cell-trigger[data-selected]:focus-visible {
-		outline: var(--focus-ring-width) solid var(--focus-ring-color);
+	.calendar-cell-trigger[data-selected]:focus {
+		--focus-ring-offset: 2px; // Avoid reset by _base.scss L52-60
+		outline: var(--focus-ring-width) solid var(--focus-ring-color) ;
 		outline-offset: var(--focus-ring-offset);
 	}
 
