@@ -20,7 +20,7 @@ export async function sanitizePayload(
 ) {
 	const { accountability, schema, knex } = context;
 
-	return await deepMapWithSchema(
+	return deepMapWithSchema(
 		payload,
 		async ([key, value], deepMapContext) => {
 			// Strip sensitive fields
