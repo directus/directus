@@ -2,6 +2,7 @@ import { ErrorCode } from '@directus/errors';
 import { readUser, readUsers, RemoveEventHandler, WebSocketInterface } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
+import { isDetailedUpdateSyntax } from '@directus/utils';
 import { capitalize, debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -376,8 +377,15 @@ export function useCollab(
 
 		if (!initialValues.value) return;
 
-		for (const field of Object.keys(initialValues.value)) {
-			if (isEqual(initialValues.value[field], edits.value[field])) delete edits.value[field];
+		for (const field of Object.keys(edits.value)) {
+			const initialValue = initialValues.value[field];
+			const editValue = edits.value[field];
+
+			if (isEqual(initialValue, editValue)) {
+				delete edits.value[field];
+			} else if (isDetailedUpdateSyntax(editValue)) {
+				delete edits.value[field];
+			}
 		}
 
 		// Prevent duplicate messages on sender side, kinda hacky

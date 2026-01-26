@@ -21,6 +21,7 @@ export * from './get-relation.js';
 export * from './get-simple-hash.js';
 export * from './get-with-arrays.js';
 export * from './inject-function-results.js';
+export * from './is-detailed-update-syntax.js';
 export * from './is-dynamic-variable.js';
 export * from './is-object.js';
 export * from './is-valid-json.js';
