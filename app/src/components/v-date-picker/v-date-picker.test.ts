@@ -154,6 +154,9 @@ describe('v-date-picker', () => {
 					TimeFieldInput,
 					VIcon,
 				},
+				mocks: {
+					$t: (key: string) => key,
+				},
 			},
 		});
 	};
