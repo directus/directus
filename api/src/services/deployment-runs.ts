@@ -1,7 +1,7 @@
-import type { AbstractServiceOptions, Item } from '@directus/types';
+import type { AbstractServiceOptions } from '@directus/types';
 import { ItemsService } from './items.js';
 
-export interface DeploymentRun extends Item {
+export interface DeploymentRun {
 	id: string;
 	project: string;
 	external_id: string;

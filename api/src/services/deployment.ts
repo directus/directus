@@ -2,7 +2,6 @@ import { useEnv } from '@directus/env';
 import type {
 	AbstractServiceOptions,
 	Credentials,
-	Item,
 	Options,
 	PrimaryKey,
 	Project,
@@ -11,17 +10,17 @@ import type {
 } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cache.js';
-import { getDeploymentDriver } from '../deployment.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
-import { ItemsService } from './items.js';
+import { getDeploymentDriver } from '../deployment.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { ItemsService } from './items.js';
 
 const env = useEnv();
 const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 5000; // Default 5s
 
 export type CachedResult<T> = { data: T; remainingTTL?: number };
 
-export interface DeploymentConfig extends Item {
+export interface DeploymentConfig {
 	id: string;
 	provider: ProviderType;
 	credentials: string; // JSON string (encrypted in DB)

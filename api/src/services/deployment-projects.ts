@@ -1,9 +1,9 @@
-import type { AbstractServiceOptions, Item, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, PrimaryKey } from '@directus/types';
 import getDatabase from '../database/index.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 
-export interface DeploymentProject extends Item {
+export interface DeploymentProject {
 	id: string;
 	deployment: string;
 	external_id: string;
