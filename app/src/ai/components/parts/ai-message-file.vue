@@ -24,7 +24,12 @@ const file = computed(() => ({
 
 <template>
 	<div class="message-file">
-		<button v-if="part.mediaType?.startsWith('image/')" type="button" class="image-preview" @click="lightboxActive = true">
+		<button
+			v-if="part.mediaType?.startsWith('image/')"
+			type="button"
+			class="image-preview"
+			@click="lightboxActive = true"
+		>
 			<VImage :src="part.url" :alt="part.filename" />
 		</button>
 		<div v-else class="file-attachment">
