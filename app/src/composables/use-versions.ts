@@ -196,7 +196,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		const index = rawVersions.value.findIndex((version) => version.id === currentVersionId);
 
-		if (index !== undefined) {
+		if (index !== -1) {
 			if (isLocalVersion) currentVersion.value = null;
 			rawVersions.value.splice(index, 1);
 		}
