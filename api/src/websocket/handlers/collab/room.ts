@@ -10,6 +10,7 @@ import {
 	COLORS,
 	type ServerError,
 } from '@directus/types/collab';
+import { isDetailedUpdateSyntax } from '@directus/utils';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
@@ -248,7 +249,7 @@ export class Room {
 					changes = Object.fromEntries(
 						Object.entries(changes).filter(([key, value]) => {
 							// Always clear relational fields after save to prevent duplicate creation
-							if (typeof value === 'object' && value !== null) return false;
+							if (isDetailedUpdateSyntax(value)) return false;
 
 							// Partial delta for versions and full record for regular items
 							if (!(key in result)) return !!this.version;
