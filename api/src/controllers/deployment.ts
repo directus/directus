@@ -307,17 +307,7 @@ router.get(
 		});
 
 		if (selectedProjects.length === 0) {
-			res.locals['payload'] = {
-				data: {
-					projects: [],
-					stats: {
-						activeDeployments: 0,
-						failedBuilds: 0,
-						successfulBuilds: 0,
-					},
-				},
-			};
-
+			res.locals['payload'] = { data: { projects: [] } };
 			return next();
 		}
 
@@ -336,36 +326,7 @@ router.get(
 			}),
 		);
 
-		// Calculate stats from latest deployments
-		let activeDeployments = 0;
-		let failedBuilds = 0;
-		let successfulBuilds = 0;
-
-		for (const project of projectDetails) {
-			if (project.latest_deployment) {
-				const status = project.latest_deployment.status;
-
-				if (status === 'building') {
-					activeDeployments++;
-				} else if (status === 'error') {
-					failedBuilds++;
-				} else if (status === 'ready') {
-					successfulBuilds++;
-				}
-			}
-		}
-
-		res.locals['payload'] = {
-			data: {
-				projects: projectDetails,
-				stats: {
-					activeDeployments,
-					failedBuilds,
-					successfulBuilds,
-				},
-			},
-		};
-
+		res.locals['payload'] = { data: { projects: projectDetails } };
 		return next();
 	}),
 	respond,

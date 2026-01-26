@@ -4,8 +4,8 @@ import type {
 	DirectusDeploymentRun,
 } from '../../../schema/deployment.js';
 import type { ApplyQueryFields, DirectusMeta, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type ReadDeploymentOutput<
 	Schema,
@@ -39,11 +39,6 @@ export interface DeploymentDashboardOutput {
 			finished_at?: string;
 		};
 	}>;
-	stats: {
-		activeDeployments: number;
-		failedBuilds: number;
-		successfulBuilds: number;
-	};
 }
 
 export interface DeploymentRunsOutput {
