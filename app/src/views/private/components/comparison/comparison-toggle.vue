@@ -73,14 +73,6 @@ const displayValue = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.comparison-toggle-list {
-	display: flex;
-	padding: 4px;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 2px;
-}
-
 .toggle {
 	--v-chip-padding: 0 8px;
 
