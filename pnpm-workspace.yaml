@@ -7,9 +7,11 @@ packages:
   - tests/*
 
 catalog:
-  '@ai-sdk/anthropic': 3.0.0-beta.53
-  '@ai-sdk/openai': 3.0.0-beta.57
-  '@ai-sdk/vue': 3.0.0-beta.98
+  '@ai-sdk/anthropic': 3.0.9
+  '@ai-sdk/google': 3.0.6
+  '@ai-sdk/openai': 3.0.7
+  '@ai-sdk/openai-compatible': 2.0.4
+  '@ai-sdk/vue': 3.0.25
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.928.0
   '@aws-sdk/client-sesv2': 3.928.0
@@ -21,7 +23,7 @@ catalog:
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 3.0.0
   '@directus/types': workspace:*
-  '@directus/vue-split-panel': 0.8.2
+  '@directus/vue-split-panel': 0.8.4
   '@editorjs/attaches': 1.3.2
   '@editorjs/checklist': 1.6.0
   '@editorjs/code': 2.9.3
@@ -134,7 +136,7 @@ catalog:
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
-  ai: 6.0.0-beta.98
+  ai: 6.0.25
   ajv: 8.17.1
   apexcharts: 4.7.0
   archiver: 7.0.1
