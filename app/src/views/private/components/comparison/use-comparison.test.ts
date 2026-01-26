@@ -714,6 +714,129 @@ describe('useComparison', () => {
 		});
 	});
 
+	describe('isFirstRevision and isLatestRevision', () => {
+		const createRevision = (id: number) => ({
+			id,
+			collection: 'test_collection',
+			item: 1,
+			data: { title: `Revision ${id}` },
+			delta: { title: `Revision ${id}` },
+			activity: {
+				action: 'update',
+				timestamp: '2026-01-13T20:27:50.000Z',
+				ip: '127.0.0.1',
+				user_agent: 'test-agent',
+				origin: 'http://localhost',
+				user: { id: 'user-123', email: 'test@example.com', first_name: 'Test', last_name: 'User' },
+			},
+			timestampFormatted: 'Jan 13, 2026',
+			timeRelative: '1 day ago',
+			status: 'resolve' as const,
+		});
+
+		it('should return isFirstRevision true when current revision has lowest id', () => {
+			const revisions = [createRevision(1200), createRevision(1250), createRevision(1300)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[0]),
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(true);
+			expect(isLatestRevision.value).toBe(false);
+		});
+
+		it('should return isLatestRevision true when current revision has highest id', () => {
+			const revisions = [createRevision(1200), createRevision(1250), createRevision(1300)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[2]),
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(false);
+			expect(isLatestRevision.value).toBe(true);
+		});
+
+		it('should return both false when current revision is in the middle', () => {
+			const revisions = [createRevision(1200), createRevision(1250), createRevision(1300)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[1]),
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(false);
+			expect(isLatestRevision.value).toBe(false);
+		});
+
+		it('should return both false when mode is not revision', () => {
+			const revisions = [createRevision(1200), createRevision(1250), createRevision(1300)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('version'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[0]),
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(false);
+			expect(isLatestRevision.value).toBe(false);
+		});
+
+		it('should return both false when revisions list is empty', () => {
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(createRevision(1200)),
+				revisions: ref([]),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(false);
+			expect(isLatestRevision.value).toBe(false);
+		});
+
+		it('should handle unsorted revisions correctly by sorting by id', () => {
+			// Revisions in non-sorted order
+			const revisions = [createRevision(1300), createRevision(1200), createRevision(1250)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[1]), // id 1200, which should be first after sorting
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			// Even though 1200 is at index 1, it should be identified as first after sorting
+			expect(isFirstRevision.value).toBe(true);
+			expect(isLatestRevision.value).toBe(false);
+		});
+	});
+
 	describe('normalizeVersionItem date and user selection', () => {
 		it('should use date_updated and user_updated when user_updated exists', async () => {
 			const testCase = getTestData('version', {
