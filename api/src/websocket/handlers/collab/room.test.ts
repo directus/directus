@@ -5,9 +5,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
+import { sanitizePayload } from './payload-permissions.js';
 import { permissionCache } from './permissions-cache.js';
 import { getRoomHash, Room, RoomManager } from './room.js';
-import { sanitizePayload } from './sanitize-payload.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 vi.mock('../../../database/index.js', () => ({
@@ -27,7 +27,7 @@ vi.mock('../../../logger/index.js', () => ({
 }));
 
 vi.mock('../../../utils/get-schema.js');
-vi.mock('./sanitize-payload.js');
+vi.mock('./payload-permissions.js');
 vi.mock('./verify-permissions.js');
 vi.mock('./field-permissions.js');
 vi.mock('../../../utils/get-service.js');
@@ -520,7 +520,7 @@ describe('room', () => {
 		});
 
 		const { sanitizePayload: realSanitizePayload } =
-			await vi.importActual<typeof import('./sanitize-payload.js')>('./sanitize-payload.js');
+			await vi.importActual<typeof import('./payload-permissions.js')>('./payload-permissions.js');
 
 		vi.mocked(sanitizePayload).mockImplementation(realSanitizePayload);
 

@@ -3,7 +3,7 @@ import type { Accountability } from '@directus/types';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { sanitizePayload } from './sanitize-payload.js';
+import { sanitizePayload } from './payload-permissions.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 vi.mock('./verify-permissions.js');
@@ -632,6 +632,7 @@ describe('sanitizePayload', () => {
 					schema,
 					accountability: adminAccountability,
 					knex: db,
+					itemId: 1,
 				},
 			);
 

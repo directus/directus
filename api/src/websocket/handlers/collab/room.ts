@@ -17,7 +17,7 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { Messenger } from './messenger.js';
-import { sanitizePayload } from './sanitize-payload.js';
+import { sanitizePayload } from './payload-permissions.js';
 import { useStore } from './store.js';
 import type { JoinMessage, PermissionClient } from './types.js';
 import { verifyPermissions } from './verify-permissions.js';

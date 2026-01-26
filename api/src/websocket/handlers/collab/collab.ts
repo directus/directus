@@ -13,6 +13,7 @@ import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
+import { validateChanges } from './payload-permissions.js';
 import { getRoomHash, RoomManager } from './room.js';
 import type {
 	DiscardMessage,
@@ -22,7 +23,6 @@ import type {
 	UpdateAllMessage,
 	UpdateMessage,
 } from './types.js';
-import { validateChanges } from './validate-changes.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 const env = useEnv();
