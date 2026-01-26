@@ -72,7 +72,7 @@ const { renameDialogActive, openRenameDialog, closeRenameDialog, updating, renam
 const { deleting, deleteVersion } = useDelete();
 const { deleteDialogActive, onDeleteVersion } = useDeleteDialog();
 
-const { comparisonModalActive, onPromoteComplete } = useComparisonDialog();
+const { comparisonModalActive, comparableVersion, onPromoteComplete } = useComparisonDialog();
 
 const { isCurrentVersionGlobal, isCurrentVersionNew, canAccessGlobalVersion, isVersionKeyGlobal, isVersionNew } =
 	useGlobalVersions();
@@ -272,8 +272,15 @@ function useDeleteDialog() {
 function useComparisonDialog() {
 	const comparisonModalActive = ref(false);
 
+	const comparableVersion = computed(() => {
+		if (currentVersion.value === null) return null;
+		if (currentVersion.value.id === '+') return undefined;
+		return currentVersion.value as ContentVersionWithType;
+	});
+
 	return {
 		comparisonModalActive,
+		comparableVersion,
 		onPromoteComplete,
 	};
 
@@ -410,13 +417,13 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 		</VMenu>
 
 		<ComparisonModal
-			v-if="currentVersion !== null"
+			v-if="comparableVersion"
 			v-model="comparisonModalActive"
 			:delete-versions-allowed
 			:collection
 			:primary-key
 			mode="version"
-			:current-version="currentVersion as ContentVersionWithType"
+			:current-version="comparableVersion"
 			@cancel="comparisonModalActive = false"
 			@promote="onPromoteComplete"
 		/>

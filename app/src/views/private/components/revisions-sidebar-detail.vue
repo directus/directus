@@ -33,9 +33,15 @@ const { active: open } = useGroupable({
 
 const { collection, primaryKey, version } = toRefs(props);
 
-const comparisonModalActive = ref(false);
 const currentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
+const comparisonModalActive = ref(false);
+
+const comparableVersion = computed(() => {
+	if (version.value === undefined || version.value === null) return version.value;
+	if (version.value.id === '+') return undefined;
+	return version.value as ContentVersionWithType;
+});
 
 const {
 	revisions,
@@ -117,7 +123,7 @@ defineExpose({
 			:collection
 			:primary-key
 			mode="revision"
-			:current-version="version as ContentVersionWithType"
+			:current-version="comparableVersion"
 			:revisions="revisions as Revision[]"
 			@confirm="$emit('revert', $event)"
 			@cancel="closeModal"
