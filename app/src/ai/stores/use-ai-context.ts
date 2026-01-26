@@ -2,13 +2,16 @@ import type { ContextAttachment, PrimaryKey, VisualElementContextData } from '@d
 import { getEndpoint } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { isItemContext, isPromptContext, isVisualElement, type PendingContextItem } from '../types';
 import api from '@/api';
+import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export const MAX_PENDING_CONTEXT = 10;
 
 export const useAiContextStore = defineStore('ai-context-store', () => {
+	const { t } = useI18n();
 	const pendingContext = ref<PendingContextItem[]>([]);
 
 	const visualElementContextUrl = ref<string | null>(null);
@@ -102,6 +105,16 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		});
 
 		const results = await Promise.all(fetches);
+
+		const failedCount = results.filter((r) => r === null).length;
+
+		if (failedCount > 0) {
+			notify({
+				title: t('ai.some_context_failed', { count: failedCount }),
+				type: 'warning',
+			});
+		}
+
 		return results.filter((a): a is ContextAttachment => a !== null);
 	};
 

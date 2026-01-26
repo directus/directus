@@ -1706,6 +1706,7 @@ ai:
   coming_soon: Coming soon
   failed_to_load_prompts: Failed to load prompts
   failed_to_load_items: Failed to load items
+  some_context_failed: '{count} context item(s) could not be loaded'
   prompt_inserted: Prompt inserted
   prompt_staged: Prompt staged
   items_staged: Items staged
