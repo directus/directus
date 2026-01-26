@@ -128,7 +128,7 @@ watch(
 		if (!isActive) return;
 
 		if (wasActive === undefined || wasActive === false) {
-			compareToOption.value = 'Previous';
+			compareToOption.value = isFirstRevision.value ? 'Latest' : 'Previous';
 		}
 
 		await loadComparisonData();
