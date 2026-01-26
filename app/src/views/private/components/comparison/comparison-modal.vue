@@ -540,6 +540,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				flex-direction: column;
 				gap: 16px;
 
+				@media (min-width: 960px) {
+					flex-direction: row;
+					justify-content: flex-end;
+				}
+
 				.compare-to-container {
 					margin-block-end: 0;
 					justify-content: start;
