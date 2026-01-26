@@ -15,37 +15,46 @@ export async function sanitizePayload(
 		knex: Knex;
 		schema: SchemaOverview;
 		accountability: Accountability | null;
+		itemId?: PrimaryKey | null;
 	},
 ) {
 	const { accountability, schema, knex } = context;
 
 	return await deepMapWithSchema(
 		payload,
-		async ([key, value], context) => {
+		async ([key, value], deepMapContext) => {
 			// Strip sensitive fields
-			if (context.field?.special?.some((v) => v === 'conceal' || v === 'hash' || v === 'encrypt')) {
+			if (deepMapContext.field?.special?.some((v) => v === 'conceal' || v === 'hash' || v === 'encrypt')) {
 				return undefined;
 			}
 
 			// Strip unknown leaf fields that are not in the schema
-			if (context.leaf && !context.relation && !context.field) {
+			if (deepMapContext.leaf && !deepMapContext.relation && !deepMapContext.field) {
 				return undefined;
 			}
 
 			if (value === undefined) return undefined;
 
 			// Check parent field permission for all fields
-			const primaryKey = (context.object[context.collection.primary] ?? null) as PrimaryKey | null;
+			const primaryKey = (deepMapContext.object[deepMapContext.collection.primary] ??
+				context.itemId ??
+				null) as PrimaryKey | null;
 
-			let allowedFields = await verifyPermissions(accountability, context.collection.collection, primaryKey, 'read', {
-				knex,
-				schema,
-			});
+			let allowedFields = await verifyPermissions(
+				accountability,
+				deepMapContext.collection.collection,
+				primaryKey,
+				'read',
+				{
+					knex,
+					schema,
+				},
+			);
 
-			// If the item doesn't exist, we check default collection permissions
+			// If the item isn't found, we check default collection permissions
 			if (!allowedFields) {
 				allowedFields =
-					(await verifyPermissions(accountability, context.collection.collection, null, 'read', {
+					(await verifyPermissions(accountability, deepMapContext.collection.collection, null, 'read', {
 						knex,
 						schema,
 					})) ?? [];
@@ -55,7 +64,7 @@ export async function sanitizePayload(
 			if (allowedFields.length === 0 || (!allowedFields.includes('*') && !allowedFields.includes(String(key)))) return;
 
 			// Process relational fields only reached if parent field is allowed
-			if (context.relationType) {
+			if (deepMapContext.relationType) {
 				if (Array.isArray(value)) {
 					const items = value.filter(isVisible);
 					if (items.length === 0) return undefined;

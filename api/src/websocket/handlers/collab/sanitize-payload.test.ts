@@ -141,6 +141,34 @@ describe('sanitizePayload', () => {
 
 			expect(result).toEqual({ id: 999 });
 		});
+
+		test('uses itemId from context if primary key is missing in payload', async () => {
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item) => {
+				if (collection === 'articles') {
+					if (item === 1) return ['title'];
+					return [];
+				}
+
+				return [];
+			});
+
+			const result = await sanitizePayload({ title: 'Visible' }, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+				itemId: 1,
+			});
+
+			expect(result).toEqual({ title: 'Visible' });
+
+			expect(verifyPermissions).toHaveBeenCalledWith(
+				expect.anything(),
+				'articles',
+				1,
+				expect.anything(),
+				expect.anything(),
+			);
+		});
 	});
 
 	describe('Admin Bypass', () => {
@@ -214,6 +242,31 @@ describe('sanitizePayload', () => {
 				);
 
 				expect(result).toEqual({ id: 1, title: 'Hello World' });
+			});
+
+			test('uses itemId from context to allow M2O field update when payload is partial', async () => {
+				vi.mocked(verifyPermissions).mockImplementation(async (_acc, collection, item) => {
+					if (collection === 'articles') {
+						// Permission allows 'author' only if we are updating item 1
+						if (item === 1) return ['author'];
+						return [];
+					}
+
+					return [];
+				});
+
+				const result = await sanitizePayload(
+					{ author: null }, // Partial update (no PK)
+					'articles',
+					{
+						accountability,
+						schema,
+						knex: db,
+						itemId: 1, // Context provides the ID
+					},
+				);
+
+				expect(result).toEqual({ author: null });
 			});
 		});
 

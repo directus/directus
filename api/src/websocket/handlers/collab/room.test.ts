@@ -490,6 +490,53 @@ describe('room', () => {
 		expect(await room.getFocusByUser(clientA.uid)).toBeUndefined();
 	});
 
+	test('update M2O field to null propagates correctly', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		vi.mocked(getSchema).mockResolvedValue({
+			collections: {
+				coll: {
+					primary: 'id',
+					singleton: false,
+					fields: {
+						m2o_field: { field: 'm2o_field', type: 'integer' },
+					},
+				},
+			},
+			relations: [],
+		} as any);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(verifyPermissions).mockImplementation(async (_acc, _col, primaryKey) => {
+			if (primaryKey === item) return ['m2o_field'];
+			return [];
+		});
+
+		const { sanitizePayload: realSanitizePayload } =
+			await vi.importActual<typeof import('./sanitize-payload.js')>('./sanitize-payload.js');
+
+		vi.mocked(sanitizePayload).mockImplementation(realSanitizePayload);
+
+		await room.update(clientA, { m2o_field: null });
+
+		expect(
+			vi.mocked(mockMessenger.sendClient).mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'update')?.[1],
+		).toEqual({
+			action: 'update',
+			field: 'm2o_field',
+			changes: null,
+			type: 'collab',
+			room: uid,
+		});
+	});
+
 	test('update field', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });

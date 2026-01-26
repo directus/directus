@@ -420,6 +420,7 @@ export class Room {
 				accountability: client.accountability,
 				schema,
 				knex,
+				itemId: this.item,
 			})) as Item,
 			focuses: Object.fromEntries(
 				Object.entries(focuses).filter(([_, field]) => allowedFields === null || isFieldAllowed(allowedFields, field)),
@@ -489,6 +490,7 @@ export class Room {
 					accountability: client.accountability,
 					schema,
 					knex,
+					itemId: this.item,
 				})) as Record<string, unknown>) || {};
 
 			for (const field of Object.keys(changes)) {
