@@ -1662,6 +1662,8 @@ live_preview:
   close_window: Open in Split View
   toggle_3d: Toggle 3D
   iframe_title: Live Website Preview
+  exit_full_width: Exit Full Width
+  open_in_visual_editor: Open in Visual Editor
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
