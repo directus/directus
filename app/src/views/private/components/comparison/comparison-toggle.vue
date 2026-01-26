@@ -49,7 +49,7 @@ const displayValue = computed(() => {
 			</VChip>
 		</template>
 
-		<VList class="comparison-toggle-list">
+		<VList>
 			<VListItem clickable :active="props.modelValue === 'Latest'" @click="selectOption('Latest')">
 				<VListItemIcon>
 					<VIcon name="check_circle" />
