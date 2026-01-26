@@ -303,11 +303,7 @@ function setToNow() {
 									:date="weekDate"
 									class="calendar-cell"
 								>
-									<CalendarCellTrigger
-									 :day="weekDate"
-									 :month="month.value"
-									 class="calendar-cell-trigger"
-									/>
+									<CalendarCellTrigger :day="weekDate" :month="month.value" class="calendar-cell-trigger" />
 								</CalendarCell>
 							</CalendarGridRow>
 						</CalendarGridBody>
@@ -336,7 +332,7 @@ function setToNow() {
 				</div>
 				<!-- Today Button -->
 				<div class="calendar-footer">
-					<button class="calendar-today-button" @click="setToNow">{{$t('datetime_picker_now_btn_label')}}</button>
+					<button class="calendar-today-button" @click="setToNow">{{ $t('datetime_picker_now_btn_label') }}</button>
 				</div>
 			</div>
 		</CalendarRoot>
@@ -470,7 +466,7 @@ function setToNow() {
 
 	.calendar-cell-trigger[data-selected]:focus {
 		--focus-ring-offset: 2px; // Avoid reset by _base.scss L52-60
-		outline: var(--focus-ring-width) solid var(--focus-ring-color) ;
+		outline: var(--focus-ring-width) solid var(--focus-ring-color);
 		outline-offset: var(--focus-ring-offset);
 	}
 
