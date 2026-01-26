@@ -10,9 +10,7 @@ export interface ComparisonContext {
 	fields: Set<string>;
 	revisionFields?: Set<string>;
 	selectedFields: string[];
-	onToggleField: (field: string) => void;
-	comparingTo?: 'Previous' | 'Latest';
-	mode?: 'version' | 'revision';
+	onToggleField: ((field: string) => void) | null;
 }
 
 export type FieldValues = {

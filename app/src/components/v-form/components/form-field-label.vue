@@ -49,11 +49,7 @@ const showHiddenIndicator = computed(
 
 const isPromotableField = computed(() => {
 	if (!props.comparison) return false;
-	return (
-		props.comparison.side === 'incoming' &&
-		props.comparison.fields.has(props.field.field) &&
-		(props.comparison.mode !== 'revision' || props.comparison.comparingTo !== 'Previous')
-	);
+	return props.comparison.onToggleField !== null && props.comparison.fields.has(props.field.field);
 });
 </script>
 

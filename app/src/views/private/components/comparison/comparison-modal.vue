@@ -252,9 +252,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										fields: comparisonFields,
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
-										onToggleField: () => {},
-										comparingTo: compareToOption,
-										mode,
+										onToggleField: null,
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -295,9 +293,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										fields: comparisonFields,
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
-										onToggleField: toggleComparisonField,
-										comparingTo: compareToOption,
-										mode,
+										onToggleField: mode !== 'revision' || compareToOption !== 'Previous' ? toggleComparisonField : null,
 									}"
 									non-editable
 									class="comparison-form--incoming"
