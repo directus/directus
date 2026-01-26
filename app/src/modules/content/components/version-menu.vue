@@ -530,7 +530,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					{{
 						isCurrentVersionGlobal
 							? $t('discard_changes_copy')
-							: $t('delete_version_copy', { version: currentVersion.name })
+							: $t('delete_version_copy', { version: getVersionDisplayName(currentVersion) })
 					}}
 				</VCardTitle>
 				<VCardActions>
