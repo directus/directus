@@ -335,7 +335,7 @@ router.get(
 // Trigger deployment for a project
 const triggerDeploySchema = Joi.object({
 	preview: Joi.boolean().default(false),
-	clearCache: Joi.boolean().default(true), // Default at true (matches Vercel UI behavior)
+	clear_cache: Joi.boolean().default(true), // Default at true (matches Vercel UI behavior)
 });
 
 router.post(

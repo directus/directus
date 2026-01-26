@@ -1,5 +1,5 @@
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export interface TriggerDeploymentResult {
 	id: string;
@@ -13,7 +13,7 @@ export interface TriggerDeploymentResult {
 
 export interface TriggerDeploymentOptions {
 	preview?: boolean;
-	clearCache?: boolean;
+	clear_cache?: boolean;
 }
 
 /**
@@ -21,7 +21,7 @@ export interface TriggerDeploymentOptions {
  *
  * @param provider The provider type (e.g. 'vercel')
  * @param projectId The project ID to deploy
- * @param options Deployment options (preview, clearCache)
+ * @param options Deployment options (preview, clear_cache)
  *
  * @returns The deployment trigger result with deployment ID and status.
  * @throws Will throw if provider or projectId is empty
@@ -32,16 +32,16 @@ export const triggerDeployment =
 		projectId: string,
 		options?: TriggerDeploymentOptions,
 	): RestCommand<TriggerDeploymentResult, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
-		throwIfEmpty(projectId, 'Project ID cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
+			throwIfEmpty(projectId, 'Project ID cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/projects/${projectId}/deploy`,
-			method: 'POST',
-			...(options && { body: JSON.stringify(options) }),
+			return {
+				path: `/deployment/${provider}/projects/${projectId}/deploy`,
+				method: 'POST',
+				...(options && { body: JSON.stringify(options) }),
+			};
 		};
-	};
 
 /**
  * Cancel a deployment run.
@@ -54,12 +54,12 @@ export const triggerDeployment =
  */
 export const cancelDeployment =
 	<Schema>(provider: string, runId: string): RestCommand<TriggerDeploymentResult, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
-		throwIfEmpty(runId, 'Run ID cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
+			throwIfEmpty(runId, 'Run ID cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/runs/${runId}/cancel`,
-			method: 'POST',
+			return {
+				path: `/deployment/${provider}/runs/${runId}/cancel`,
+				method: 'POST',
+			};
 		};
-	};
