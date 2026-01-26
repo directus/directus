@@ -31,6 +31,18 @@ $15/month.
 
 <br />
 
+## ⚡ One-Click Deployment Options
+
+Deploy Directus with a single click via Railway—complete infrastructure without the complexity.
+
+### Deploy on Railway
+
+Fully provisioned — one click to deploy Directus with PostgreSQL database, Redis cache, and S3-compatible bucket storage, all connected via Railway's private network for secure, zero-egress communication.
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/directus-official?referralCode=b2RDZT&utm_medium=integration&utm_source=template&utm_campaign=generic)
+
+<br />
+
 ## 🤔 Community Help
 
 [The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
