@@ -128,7 +128,6 @@ export function deepMapWithSchema(
 
 					case 'o2m': {
 						// Detailed syntax: explicit actions. Simple arrays: inherited ambiguous upsert behavior
-
 						const map = (childValue: any, childAction?: 'create' | 'update' | 'delete') => {
 							if (!isObject(childValue) && !options?.mapPrimaryKeys) return childValue;
 							leaf = false;
@@ -148,41 +147,59 @@ export function deepMapWithSchema(
 							// Simple array results in ambiguous upsert behavior (action is undefined)
 							processedValue = processArray(processedValue, (v) => map(v, undefined));
 						} else if (options?.detailedUpdateSyntax && isDetailedUpdateSyntax(processedValue)) {
-							const detailedUpdateKeys = ['create', 'update', 'delete'];
+							const val = value as any;
+
+							processedValue = {
+								// Scoped action context per bucket
+								create: processArray(val.create, (v) => map(v, 'create')),
+								update: processArray(val.update, (v) => map(v, 'update')),
+								delete: processArray(val.delete, (v) => map(v, 'delete')),
+							};
+
+							const extras: any[] = [];
 
 							// Check for extra fields not allowed in detailed syntax
 							if (options?.onUnknownField) {
 								const relatedCollection = context.schema.collections[relationInfo!.relation!.collection];
 
-								for (const subKey in processedValue) {
-									if (!detailedUpdateKeys.includes(subKey)) {
-										options.onUnknownField([subKey, (processedValue as any)[subKey]], {
-											collection: relatedCollection!, // Related collection overview
-											object: processedValue as Record<string, unknown>,
+								for (const key in val) {
+									if (key !== 'create' && key !== 'update' && key !== 'delete') {
+										const entry = options.onUnknownField([key, val[key]], {
+											collection: relatedCollection!,
+											object: val,
 											action: undefined,
 										});
+
+										if (entry) extras.push(entry);
 									}
 								}
 							}
 
-							processedValue = {
-								// Scoped action context per bucket
-								create: processArray(processedValue.create, (v) => map(v, 'create')),
-								update: processArray(processedValue.update, (v) => map(v, 'update')),
-								delete: processArray(processedValue.delete, (v) => map(v, 'delete')),
+							const mergeExtras = (dusValue: any, extras: any[]) => {
+								for (const extra of extras) {
+									if (extra) dusValue[extra[0]] = extra[1];
+								}
+
+								return dusValue;
 							};
+
+							const hasAsyncExtras = extras.some(isPromise);
 
 							// Await all promises for async detailed syntax
 							if (
 								isPromise(processedValue.create) ||
 								isPromise(processedValue.update) ||
-								isPromise(processedValue.delete)
+								isPromise(processedValue.delete) ||
+								hasAsyncExtras
 							) {
 								processedValue = Promise.all([
 									processedValue.create,
 									processedValue.update,
 									processedValue.delete,
-								]).then(([c, u, d]) => ({ create: c, update: u, delete: d }));
+									hasAsyncExtras ? Promise.all(extras) : extras,
+								]).then(([c, u, d, x]) => mergeExtras({ create: c, update: u, delete: d }, x));
+							} else {
+								processedValue = mergeExtras(processedValue, extras);
 							}
 						} else if (isObject(processedValue)) {
 							// For non-standard objects, we still traverse it to ensure deep validation

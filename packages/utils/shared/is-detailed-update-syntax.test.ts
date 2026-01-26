@@ -64,7 +64,7 @@ describe('isDetailedUpdateSyntax', () => {
 		expect(isDetailedUpdateSyntax(true)).toBe(false);
 	});
 
-	it('returns false for objects with extra keys but correct syntax', () => {
+	it('returns true for objects with extra keys but correct syntax', () => {
 		const value = {
 			create: [],
 			update: [],
@@ -72,7 +72,7 @@ describe('isDetailedUpdateSyntax', () => {
 			extra: true,
 		};
 
-		// Strictly reject to avoid misidentifying JSON objects
-		expect(isDetailedUpdateSyntax(value)).toBe(false);
+		// Allow extra keys such as metadata ($type)
+		expect(isDetailedUpdateSyntax(value)).toBe(true);
 	});
 });

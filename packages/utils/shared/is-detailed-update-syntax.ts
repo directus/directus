@@ -8,9 +8,6 @@ export function isDetailedUpdateSyntax(
 ): value is { create: unknown[]; update: unknown[]; delete: unknown[] } {
 	if (!isObject(value)) return false;
 
-	const keys = Object.keys(value);
-	if (keys.length !== 3) return false;
-
 	return (
 		Array.isArray((value as any)['create']) &&
 		Array.isArray((value as any)['update']) &&

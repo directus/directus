@@ -70,7 +70,8 @@ export async function sanitizePayload(
 					if (items.length === 0) return undefined;
 					return [key, items];
 				} else if (isDetailedUpdateSyntax(value)) {
-					const filtered = {
+					const filtered: any = {
+						...value,
 						create: value.create.filter(isVisible),
 						update: value.update.filter(isVisible),
 						delete: value.delete.filter(isVisible),
@@ -96,6 +97,10 @@ export async function sanitizePayload(
 			omitUnknownFields: true,
 			mapPrimaryKeys: true,
 			processAsync: true,
+			onUnknownField: (entry) => {
+				if (String(entry[0]).startsWith('$')) return entry;
+				return undefined;
+			},
 		},
 	);
 }

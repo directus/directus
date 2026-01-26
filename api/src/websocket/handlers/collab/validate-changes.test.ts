@@ -199,7 +199,7 @@ describe('validateChanges', () => {
 				};
 
 				await expect(validateChanges(payload, 'articles', 1, mockContext)).rejects.toThrow(
-					'No permission to update field create or field does not exist',
+					'No permission to update field malicious or field does not exist',
 				);
 			});
 		});
@@ -234,6 +234,39 @@ describe('validateChanges', () => {
 			await expect(validateChanges(payload, 'articles', null, mockContext)).resolves.not.toThrow();
 
 			expect(verifyPermissions).toHaveBeenCalledWith(expect.anything(), 'articles', null, 'create', expect.anything());
+		});
+	});
+
+	describe('Metadata Handling', () => {
+		test('ignores $ metadata keys at the top level', async () => {
+			vi.mocked(verifyPermissions).mockResolvedValue(['title']);
+
+			const payload = {
+				title: 'New Title',
+				$type: 'updated',
+				$index: 0,
+			};
+
+			await expect(validateChanges(payload, 'articles', 1, mockContext)).resolves.not.toThrow();
+		});
+
+		test('ignores $ metadata keys inside detailed update syntax', async () => {
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, coll, _item, action) => {
+				if (coll === 'articles') return ['comments'];
+				if (coll === 'comments') return action === 'delete' ? ['*'] : ['text'];
+				return [];
+			});
+
+			const payload = {
+				comments: {
+					create: [{ text: 'New Comment', $type: 'created' }],
+					update: [{ id: 100, text: 'Updated Comment', $index: 0 }],
+					delete: [101],
+					$type: 'updated',
+				},
+			};
+
+			await expect(validateChanges(payload, 'articles', 1, mockContext)).resolves.not.toThrow();
 		});
 	});
 });

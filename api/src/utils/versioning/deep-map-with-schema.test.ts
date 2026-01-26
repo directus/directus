@@ -809,3 +809,67 @@ test('resets action context on M2O relations and propagates detailed syntax deep
 	expect(result.author.value.links.value.update[0].id.context.action).toBe('update');
 	expect(result.author.value.links.value.delete[0].id.context.action).toBe('delete');
 });
+
+test('merges sync unknown fields in detailed syntax', () => {
+	const object = {
+		links: {
+			create: [],
+			update: [],
+			delete: [],
+			$type: 'sync-meta',
+		},
+	};
+
+	const result = deepMapWithSchema(
+		object,
+		([key, value]) => [key, value],
+		{ schema, collection: 'articles' },
+		{
+			detailedUpdateSyntax: true,
+			onUnknownField: ([key, value]) => [key, value],
+		},
+	);
+
+	expect(result).toEqual({
+		links: {
+			create: [],
+			update: [],
+			delete: [],
+			$type: 'sync-meta',
+		},
+	});
+});
+
+test('merges async unknown fields in detailed syntax', async () => {
+	const object = {
+		links: {
+			create: [],
+			update: [],
+			delete: [],
+			$type: 'async-meta',
+		},
+	};
+
+	const result = await deepMapWithSchema(
+		object,
+		async ([key, value]) => [key, value],
+		{ schema, collection: 'articles' },
+		{
+			detailedUpdateSyntax: true,
+			processAsync: true,
+			onUnknownField: async ([key, value]) => {
+				await new Promise((resolve) => setTimeout(resolve, 10));
+				return [key, value];
+			},
+		},
+	);
+
+	expect(result).toEqual({
+		links: {
+			create: [],
+			update: [],
+			delete: [],
+			$type: 'async-meta',
+		},
+	});
+});

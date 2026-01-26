@@ -858,4 +858,49 @@ describe('sanitizePayload', () => {
 			expect(replyUpdate).not.toHaveProperty('secret');
 		});
 	});
+
+	describe('Metadata Preservation', () => {
+		test('preserves $ metadata keys at the top level', async () => {
+			vi.mocked(verifyPermissions).mockResolvedValue(['title']);
+
+			const payload = {
+				title: 'New Title',
+				$type: 'updated',
+				$index: 0,
+			};
+
+			const result = await sanitizePayload(payload, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+			});
+
+			expect(result).toEqual({ title: 'New Title', $type: 'updated', $index: 0 });
+		});
+
+		test('preserves $ metadata keys inside detailed update syntax', async () => {
+			vi.mocked(verifyPermissions).mockImplementation(async (_acc, coll) => {
+				if (coll === 'articles') return ['comments'];
+				if (coll === 'comments') return ['id', 'text'];
+				return [];
+			});
+
+			const payload = {
+				comments: {
+					create: [{ text: 'New Comment', $type: 'created' }],
+					update: [{ id: 100, text: 'Updated Comment', $index: 0 }],
+					delete: [101],
+					$type: 'updated',
+				},
+			};
+
+			const result = await sanitizePayload(payload, 'articles', {
+				schema,
+				accountability,
+				knex: db,
+			});
+
+			expect(result).toEqual(payload);
+		});
+	});
 });

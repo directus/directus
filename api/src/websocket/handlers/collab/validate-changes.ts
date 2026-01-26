@@ -112,6 +112,8 @@ export async function validateChanges(
 			processAsync: true,
 			iterateOnly: true,
 			onUnknownField: ([key]) => {
+				if (String(key).startsWith('$')) return;
+
 				throw new ForbiddenError({
 					reason: `No permission to update field ${key} or field does not exist`,
 				});
