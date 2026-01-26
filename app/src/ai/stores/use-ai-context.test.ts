@@ -39,13 +39,12 @@ const createVisualElement = (key: string): PendingContextItem => ({
 	display: `Post ${key}`,
 });
 
-const createItemContext = (id: string): PendingContextItem => ({
+const createItemContext = (id: string, itemId: string = '1'): PendingContextItem => ({
 	id,
 	type: 'item',
 	data: {
 		collection: 'posts',
-		id: '1',
-		itemData: { title: 'Test' },
+		id: itemId,
 	},
 	display: `Item ${id}`,
 });
@@ -74,38 +73,24 @@ describe('useAiContextStore', () => {
 			expect(store.pendingContext[0]).toStrictEqual(item);
 		});
 
-		test('enforces MAX_PENDING_CONTEXT for visual elements', () => {
+		test('enforces MAX_PENDING_CONTEXT across all types', () => {
 			const store = useAiContextStore();
 
-			// Add MAX_PENDING_CONTEXT visual elements
-			for (let i = 0; i < MAX_PENDING_CONTEXT; i++) {
+			// Add a mix of types up to the limit
+			for (let i = 0; i < MAX_PENDING_CONTEXT - 2; i++) {
 				const result = store.addPendingContext(createVisualElement(`key-${i}`));
 				expect(result).toBe(true);
 			}
 
+			expect(store.addPendingContext(createItemContext('item-1'))).toBe(true);
+			expect(store.addPendingContext(createPromptContext('prompt-1'))).toBe(true);
 			expect(store.pendingContext).toHaveLength(MAX_PENDING_CONTEXT);
 
-			// Try to add one more visual element
-			const result = store.addPendingContext(createVisualElement('key-overflow'));
-			expect(result).toBe(false);
+			// All types should be rejected when at cap
+			expect(store.addPendingContext(createVisualElement('key-overflow'))).toBe(false);
+			expect(store.addPendingContext(createItemContext('item-overflow'))).toBe(false);
+			expect(store.addPendingContext(createPromptContext('prompt-overflow'))).toBe(false);
 			expect(store.pendingContext).toHaveLength(MAX_PENDING_CONTEXT);
-		});
-
-		test('does not enforce limit for non-visual elements', () => {
-			const store = useAiContextStore();
-
-			// Fill with visual elements
-			for (let i = 0; i < MAX_PENDING_CONTEXT; i++) {
-				store.addPendingContext(createVisualElement(`key-${i}`));
-			}
-
-			// Can still add item and prompt context
-			const itemResult = store.addPendingContext(createItemContext('item-1'));
-			const promptResult = store.addPendingContext(createPromptContext('prompt-1'));
-
-			expect(itemResult).toBe(true);
-			expect(promptResult).toBe(true);
-			expect(store.pendingContext).toHaveLength(MAX_PENDING_CONTEXT + 2);
 		});
 	});
 
@@ -199,14 +184,14 @@ describe('useAiContextStore', () => {
 		});
 	});
 
-	describe('snapshotContext', () => {
+	describe('fetchContextData', () => {
 		test('fetches current values for visual elements', async () => {
 			const store = useAiContextStore();
 			vi.mocked(api.get).mockResolvedValue({ data: { data: { title: 'Fetched Title' } } });
 
 			store.addPendingContext(createVisualElement('1'));
 
-			const attachments = await store.snapshotContext();
+			const attachments = await store.fetchContextData();
 
 			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['title'] } });
 			expect(attachments).toHaveLength(1);
@@ -226,7 +211,7 @@ describe('useAiContextStore', () => {
 			};
 
 			store.addPendingContext(element);
-			await store.snapshotContext();
+			await store.fetchContextData();
 
 			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['*'] } });
 		});
@@ -238,22 +223,24 @@ describe('useAiContextStore', () => {
 
 			store.addPendingContext(createVisualElement('1'));
 
-			const attachments = await store.snapshotContext();
+			const attachments = await store.fetchContextData();
 
 			expect(unexpectedError).toHaveBeenCalledWith(error);
 			expect(attachments).toHaveLength(0);
 		});
 
-		test('converts item context to attachment', async () => {
+		test('fetches item context from API', async () => {
 			const store = useAiContextStore();
+			vi.mocked(api.get).mockResolvedValue({ data: { data: { id: '1', title: 'Fetched' } } });
 
 			store.addPendingContext(createItemContext('1'));
 
-			const attachments = await store.snapshotContext();
+			const attachments = await store.fetchContextData();
 
+			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['*'] } });
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.type).toBe('item');
-			expect(attachments[0]!.snapshot).toEqual({ title: 'Test' });
+			expect(attachments[0]!.snapshot).toEqual({ id: '1', title: 'Fetched' });
 		});
 
 		test('converts prompt context to attachment', async () => {
@@ -261,11 +248,41 @@ describe('useAiContextStore', () => {
 
 			store.addPendingContext(createPromptContext('1'));
 
-			const attachments = await store.snapshotContext();
+			const attachments = await store.fetchContextData();
 
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.type).toBe('prompt');
 			expect(attachments[0]!.snapshot).toEqual({ text: 'Test prompt' });
+		});
+
+		test('handles item context fetch failure gracefully', async () => {
+			const store = useAiContextStore();
+			const error = new Error('Item not found');
+			vi.mocked(api.get).mockRejectedValue(error);
+
+			store.addPendingContext(createItemContext('1'));
+
+			const attachments = await store.fetchContextData();
+
+			expect(unexpectedError).toHaveBeenCalledWith(error);
+			expect(attachments).toHaveLength(0);
+		});
+
+		test('returns partial results when one item fails', async () => {
+			const store = useAiContextStore();
+
+			vi.mocked(api.get)
+				.mockResolvedValueOnce({ data: { data: { id: '1', title: 'Success' } } })
+				.mockRejectedValueOnce(new Error('Failed'));
+
+			store.addPendingContext(createItemContext('ctx-1', '1'));
+			store.addPendingContext(createItemContext('ctx-2', '2'));
+
+			const attachments = await store.fetchContextData();
+
+			expect(unexpectedError).toHaveBeenCalled();
+			expect(attachments).toHaveLength(1);
+			expect(attachments[0]!.snapshot).toEqual({ id: '1', title: 'Success' });
 		});
 	});
 

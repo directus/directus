@@ -1,6 +1,6 @@
 import type { VisualElementContextData } from '@directus/ai';
 import formatTitle from '@directus/format-title';
-import { getEndpoint } from '@directus/utils';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '../stores/use-ai';
@@ -22,13 +22,9 @@ export function useContextStaging() {
 	const fieldsStore = useFieldsStore();
 	const { convertToUIMessages } = usePrompts();
 
-	function normalizeFields(fields: string[] | undefined) {
-		if (!fields || fields.length === 0) return [];
-
-		return fields
-			.filter((field) => typeof field === 'string' && field.length > 0)
-			.slice()
-			.sort();
+	function normalizeFields(fields: string[] | undefined): string[] {
+		if (!fields?.length) return [];
+		return fields.filter((f) => f.length > 0).sort();
 	}
 
 	// Visual elements are identified by collection + item + fields, not DOM element key.
@@ -72,18 +68,18 @@ export function useContextStaging() {
 		const collectionInfo = collectionsStore.getCollection(collection);
 
 		if (!collectionInfo) {
-			notify({ title: t('error'), type: 'error' });
+			notify({ title: t('ai.invalid_collection'), type: 'error' });
 			return;
 		}
 
 		const primaryKey = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field ?? 'id';
-
 		const displayTemplate = collectionInfo.meta?.display_template || `{{ ${primaryKey} }}`;
+		const displayFields = getFieldsFromTemplate(displayTemplate);
 
 		try {
 			const response = await api.get(getEndpoint(collection), {
 				params: {
-					fields: ['*'],
+					fields: [primaryKey, ...displayFields],
 					filter: { [primaryKey]: { _in: ids } },
 				},
 			});
@@ -99,7 +95,7 @@ export function useContextStaging() {
 				aiStore.addPendingContext({
 					id: nanoid(),
 					type: 'item',
-					data: { collection, id: itemId, itemData: item },
+					data: { collection, id: itemId },
 					display: displayValue,
 				});
 			}
@@ -122,19 +118,18 @@ export function useContextStaging() {
 			return true;
 		}
 
-		const collectionInfo = collectionsStore.getCollection(element.collection);
-
-		if (!collectionInfo) {
+		if (!collectionsStore.getCollection(element.collection)) {
 			notify({ title: t('ai.invalid_collection'), type: 'error' });
 			return false;
 		}
+
+		const display = displayValue || `${formatTitle(element.collection)} #${element.item}`;
 
 		const existingContext = aiStore.pendingContext.find(
 			(item) => item.type === 'visual-element' && isSameVisualElement(item.data, element),
 		);
 
-		if (existingContext && existingContext.type === 'visual-element') {
-			const display = displayValue || `${formatTitle(element.collection)} #${element.item}`;
+		if (existingContext) {
 			contextStore.updateVisualElementContext(existingContext.id, element, display);
 			notify({ title: t('ai.element_already_staged'), type: 'warning' });
 			return false;
@@ -144,7 +139,7 @@ export function useContextStaging() {
 			id: nanoid(),
 			type: 'visual-element',
 			data: element,
-			display: displayValue || `${formatTitle(element.collection)} #${element.item}`,
+			display,
 		});
 
 		if (!added) {

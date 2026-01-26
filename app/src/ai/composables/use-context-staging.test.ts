@@ -150,7 +150,7 @@ describe('useContextStaging', () => {
 
 			await stageItems('invalid', ['1']);
 
-			expect(notify).toHaveBeenCalledWith({ title: 'error', type: 'error' });
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.invalid_collection', type: 'error' });
 		});
 
 		test('fetches items and adds to context', async () => {

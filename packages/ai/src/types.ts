@@ -57,7 +57,6 @@ export type PrimaryKey = string | number;
 export interface ItemContextData {
 	collection: string;
 	id: PrimaryKey;
-	itemData: Record<string, unknown>;
 }
 
 export interface VisualElementContextData {

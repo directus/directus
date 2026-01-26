@@ -1,4 +1,4 @@
-import type { ContextAttachment, VisualElementContextData } from '@directus/ai';
+import type { ContextAttachment, PrimaryKey, VisualElementContextData } from '@directus/ai';
 import { getEndpoint } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -20,8 +20,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 	const hasPendingContext = computed(() => pendingContext.value.length > 0);
 
 	const addPendingContext = (item: PendingContextItem): boolean => {
-		// Enforce max limit for visual elements
-		if (isVisualElement(item) && visualElements.value.length >= MAX_PENDING_CONTEXT) {
+		if (pendingContext.value.length >= MAX_PENDING_CONTEXT) {
 			return false;
 		}
 
@@ -58,7 +57,6 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 	};
 
 	const setVisualElementContextUrl = (url: string) => {
-		// If URL changes, clear existing visual element context
 		if (visualElementContextUrl.value !== null && visualElementContextUrl.value !== url) {
 			clearVisualElementContext();
 		}
@@ -66,58 +64,49 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		visualElementContextUrl.value = url;
 	};
 
-	/**
-	 * Snapshot all pending context items, fetching current values for visual elements
-	 */
-	const snapshotContext = async (): Promise<ContextAttachment[]> => {
-		const attachments: ContextAttachment[] = [];
+	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*']) => {
+		try {
+			const response = await api.get(`${getEndpoint(collection)}/${id}`, { params: { fields } });
+			return response.data.data;
+		} catch (error) {
+			unexpectedError(error);
+			return null;
+		}
+	};
 
-		for (const item of pendingContext.value) {
+	const fetchContextData = async (): Promise<ContextAttachment[]> => {
+		const fetches = pendingContext.value.map(async (item): Promise<ContextAttachment | null> => {
 			if (isVisualElement(item)) {
-				// Fetch current values from API
-				try {
-					const fields = item.data.fields?.length ? item.data.fields : ['*'];
+				const fields = item.data.fields?.length ? item.data.fields : ['*'];
+				const snapshot = await fetchItem(item.data.collection, item.data.item, fields);
+				if (!snapshot) return null;
+				return { type: 'visual-element', data: item.data, display: item.display, snapshot };
+			}
 
-					const response = await api.get(`${getEndpoint(item.data.collection)}/${item.data.item}`, {
-						params: { fields },
-					});
+			if (isItemContext(item)) {
+				const snapshot = await fetchItem(item.data.collection, item.data.id, ['*']);
+				if (!snapshot) return null;
+				return { type: 'item', data: item.data, display: item.display, snapshot };
+			}
 
-					attachments.push({
-						type: 'visual-element',
-						data: item.data,
-						display: item.display,
-						snapshot: response.data.data,
-					});
-				} catch (error) {
-					unexpectedError(error);
-					// Skip failed items - don't include in attachments
-					continue;
-				}
-			} else if (isItemContext(item)) {
-				attachments.push({
-					type: 'item',
-					data: item.data,
-					display: item.display,
-					snapshot: item.data.itemData,
-				});
-			} else if (isPromptContext(item)) {
-				attachments.push({
+			if (isPromptContext(item)) {
+				return {
 					type: 'prompt',
 					data: item.data,
 					display: item.display,
-					snapshot: {
-						text: item.data.text,
-						messages: item.data.prompt?.messages,
-					},
-				});
+					snapshot: { text: item.data.text, messages: item.data.prompt?.messages },
+				};
 			}
-		}
 
-		return attachments;
+			return null;
+		});
+
+		const results = await Promise.all(fetches);
+		return results.filter((a): a is ContextAttachment => a !== null);
 	};
 
 	const dehydrate = () => {
-		pendingContext.value = [];
+		clearPendingContext();
 		visualElementContextUrl.value = null;
 	};
 
@@ -139,7 +128,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		clearNonVisualContext,
 		clearVisualElementContext,
 		setVisualElementContextUrl,
-		snapshotContext,
+		fetchContextData,
 		dehydrate,
 	};
 });

@@ -330,8 +330,8 @@ export const useAiStore = defineStore('ai-store', () => {
 	const submit = async () => {
 		if (chat.status === 'streaming' || chat.status === 'submitted') return;
 
-		// Snapshot context for sending with request (will be included in body via transport)
-		pendingContextSnapshot.value = await contextStore.snapshotContext();
+		// Fetch fresh context data for sending with request (will be included in body via transport)
+		pendingContextSnapshot.value = await contextStore.fetchContextData();
 
 		// Include attachments in message metadata for UI display
 		chat.sendMessage({
