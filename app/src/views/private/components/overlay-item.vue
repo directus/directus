@@ -99,32 +99,38 @@ const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
 const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
+let collab: ReturnType<typeof useCollab> | undefined;
 let relatedCollab: ReturnType<typeof useCollab> | undefined;
 
-if (relatedCollection.value) {
-	const relatedInitialValues = computed(() => (initialValues.value ?? {})[props.junctionField!] ?? {});
+if (
+	!collection.value.startsWith('directus_') &&
+	(!relatedCollection.value || !relatedCollection.value.startsWith('directus_'))
+) {
+	if (relatedCollection.value) {
+		const relatedInitialValues = computed(() => (initialValues.value ?? {})[props.junctionField!] ?? {});
 
-	const relatedInternalEdits = computed({
-		get: () => {
-			return internalEdits.value[props.junctionField!] ?? {};
-		},
-		set: (edits) => {
-			internalEdits.value[props.junctionField!] = edits;
-		},
-	});
+		const relatedInternalEdits = computed({
+			get: () => {
+				return internalEdits.value[props.junctionField!] ?? {};
+			},
+			set: (edits) => {
+				internalEdits.value[props.junctionField!] = edits;
+			},
+		});
 
-	relatedCollab = useCollab(
-		relatedCollection as any,
-		relatedPrimaryKey,
-		ref(null),
-		relatedInitialValues,
-		relatedInternalEdits,
-		refresh,
-		overlayActive,
-	);
+		relatedCollab = useCollab(
+			relatedCollection as any,
+			relatedPrimaryKey,
+			ref(null),
+			relatedInitialValues,
+			relatedInternalEdits,
+			refresh,
+			overlayActive,
+		);
+	}
+
+	collab = useCollab(collection, primaryKey, ref(null), initialValues, internalEdits, refresh, overlayActive);
 }
-
-const collab = useCollab(collection, primaryKey, ref(null), initialValues, internalEdits, refresh, overlayActive);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
@@ -281,7 +287,7 @@ const overlayItemContentProps = computed(() => {
 		relatedPrimaryKey: props.relatedPrimaryKey,
 		relatedPrimaryKeyField: relatedPrimaryKeyField.value?.field ?? null,
 		refresh,
-		collabContext: collab.collabContext,
+		collabContext: collab?.collabContext,
 		relatedCollabContext: relatedCollab?.collabContext,
 	};
 });
@@ -561,7 +567,7 @@ function useCancelGuard() {
 	const confirmCancellation = computed(() => {
 		if (!hasEdits.value) return false;
 
-		if (collab.connected.value) {
+		if (collab?.connected.value) {
 			return collab.users.value.length > 1;
 		}
 
@@ -614,8 +620,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 		<template #actions:prepend>
 			<HeaderCollab
-				:model-value="uniqBy([...collab.users.value, ...(relatedCollab?.users.value ?? [])], 'connection')"
-				:connected="collab.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
+				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
+				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
 				small
 			/>
 		</template>
@@ -717,6 +723,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	</VMenu>
 
 	<ComparisonModal
+		v-if="collab"
 		:model-value="Boolean(collab.collabCollision.value) && overlayActive"
 		:collection="collection"
 		:primary-key="primaryKey"
@@ -740,7 +747,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	/>
 
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-		<VCard v-if="!collab.connected">
+		<VCard v-if="!collab?.connected">
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 			<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -763,7 +770,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	</VDialog>
 
 	<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
-		<VCard v-if="!collab.connected">
+		<VCard v-if="!collab?.connected">
 			<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
 			<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
 			<VCardActions>
