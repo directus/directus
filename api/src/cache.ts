@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
 import Keyv, { type KeyvOptions } from 'keyv';
@@ -6,12 +7,10 @@ import { useLogger } from './logger/index.js';
 import { clearCache as clearPermissionCache } from './permissions/cache.js';
 import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
+import { freezeSchema, unfreezeSchema } from './utils/freeze-schema.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
-
-import { createRequire } from 'node:module';
-import { freezeSchema, unfreezeSchema } from './utils/freeze-schema.js';
 
 const logger = useLogger();
 const env = useEnv();

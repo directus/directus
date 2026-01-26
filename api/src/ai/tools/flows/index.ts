@@ -1,7 +1,7 @@
-import type { FlowRaw } from '@directus/types';
-import { isObject } from '@directus/utils';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { FlowRaw } from '@directus/types';
+import { isObject } from '@directus/utils';
 import { z } from 'zod';
 import { FlowsService } from '../../../services/flows.js';
 import { requireText } from '../../../utils/require-text.js';

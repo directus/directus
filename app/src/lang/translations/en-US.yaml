@@ -184,7 +184,6 @@ create_policy: Create Policy
 create_user: Create User
 message: Message
 delete_panel: Delete Panel
-create_webhook: Create Webhook
 create_custom_translation: Create Custom Translation
 edit_custom_translation: Edit Custom Translation
 no_custom_translations: No Custom Translations
@@ -266,6 +265,7 @@ unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
 validation_errors_notice: 'The following fields have invalid values:'
+validation_value_is_invalid: Value is invalid
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}
@@ -573,6 +573,7 @@ system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
 display_label: Display
+x_axis_display_field: X-Axis Display Field
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -720,12 +721,6 @@ file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
-webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Webhooks are deprecated and further use is discouraged.
-
-  Please use **Flows** with the [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url) instead.
-no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
 activity_log: Activity Log
@@ -757,7 +752,6 @@ action: Action
 ip_address: IP Address
 user_agent: User Agent
 origin: Origin
-webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
 min_value: Min Value
@@ -1076,6 +1070,75 @@ no_url_copy: Please add a URL in the settings.
 invalid_url: Invalid URL
 invalid_url_copy: The specified URL does not match any URL specified in the settings.
 insights: Insights
+deployment: Deployment
+deployment_overview: Overview
+deployment_overview_providers: Providers
+deployment_overview_configure: Configure
+deployment_overview_provider_description: Trigger {provider} deployments from within Directus
+
+deployment_provider_setup_title: '{provider} Setup'
+deployment_provider_credentials_notice: You can find this information in your {provider} account settings.
+deployment_provider_credentials_link: Open {provider} Settings
+deployment_overview_projects: '{count} Project|{count} Projects'
+deployment_provider_token_label: Personal Access Token
+deployment_provider_token_placeholder: Enter your access token...
+deployment_provider_token_encrypted_notice:
+  This token will be encrypted and stored securely in your Directus configuration
+deployment_provider_settings: '{provider} Configuration'
+deployment_provider_vercel: Vercel
+
+deployment_provider_settings_edit_credentials: Edit Credentials
+deployment_provider_settings_edit_options: Edit Options
+deployment_provider_settings_delete: Delete Configuration
+deployment_provider_settings_delete_confirm:
+  This action is permanent and can not be undone. Are you sure you would like to proceed?
+deployment_provider_settings_remove_projects_confirm:
+  Removing the project ({projects}) will permanently delete all deployment history from Directus. This action cannot be
+  undone. Are you sure you want to proceed?
+deployment_provider_vercel_team_id_label: Team ID
+deployment_provider_vercel_team_id_hint: Required for team accounts, leave empty for personal accounts.
+deployment_provider_vercel_team_id_placeholder: team_xxxxxxxxxxxxx
+deployment_provider_projects: Projects
+deployment_provider_select_projects: Select Projects
+deployment_provider_select_projects_hint: Choose which projects you want to manage from Directus
+deployment_provider_project_not_deployable: Project not deployable by Directus. Please see documentation for more info.
+no_deployment_providers: No Deployment Providers
+no_deployment_providers_copy: Configure a deployment provider in the settings to get started.
+select_provider: Select a Provider
+select_provider_copy: Choose a deployment provider from the sidebar to view your projects.
+no_projects: No Projects
+no_projects_copy: No projects have been selected for this provider.
+no_runs: No Deployment Runs
+no_runs_copy: This project has no deployment history yet.
+deploy: Deploy
+deployment_target: Target
+deployment_runs_status_ready: Ready
+deployment_runs_status_building: Building
+deployment_runs_status_error: Failed
+deployment_runs_status_canceled: Canceled
+deployment_provider_runs: Deployment Runs
+deployment_provider_runs_id: Deployment ID
+deployment_provider_runs_started: Started
+deployment_provider_runs_author: Author
+deployment_provider_runs_notice:
+  Only deployments triggered from Directus are shown here. Deployments made directly in Vercel will not appear.
+deployment_provider_runs_refresh: Refresh
+deployment_provider_runs_deploy_preview: Deploy Preview
+deployment_provider_runs_empty: No Deployment Runs
+deployment_provider_runs_empty_copy: This project has no deployment history yet.
+deployment_provider_run_title: '{project}: Deployment Details'
+deployment_provider_run_id: Deployment ID
+deployment_provider_run_currently_deploying: Currently Deploying...
+deployment_provider_run_stop: Stop Deployment
+deployment_provider_run_cancel_confirm:
+  This action is permanent and can not be undone. Are you sure you would like to proceed?
+deployment_provider_run_log_all: All Log Levels
+deployment_provider_run_search_logs: Search logs...
+deployment_provider_run_no_logs: No logs available
+deployment_provider_run_download_logs: Download logs
+deployment_provider_run_open_deployment: Visit
+deployment_dashboard_projects: Projects ({count})
+deployment_dashboard_deployed: Deployed
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -1227,8 +1290,9 @@ settings_project: Settings
 settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
-ai_chat: AI Chat
-settings_webhooks: Webhooks
+ai_assistant: AI Assistant
+ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
+mcp_disabled_by_env: MCP features have been disabled via environment variable.
 settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
@@ -1308,7 +1372,6 @@ directus_collection:
   directus_settings: Project configuration options
   directus_shares: Tracks externally shared items
   directus_users: System users for the platform
-  directus_webhooks: Configuration for event-based HTTP requests
   directus_translations: Custom translations
   directus_versions: Content Versions for items
   directus_extensions: Configuration of extensions
@@ -1462,9 +1525,10 @@ fields:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
     ai_notice:
-      'AI Chat provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the toolbar to
-      ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai/chat" target="_blank">Learn more about configuring and using AI Chat.</a>'
+      'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
+      toolbar to ask questions, generate content, and get help working with your project. <a
+      href="https://directus.io/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
+      Assistant.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
       'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
@@ -1492,7 +1556,27 @@ fields:
       'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
-      'Custom AI system prompt to guide LLM behavior in AI Chat interactions. Leave empty to use the default.'
+      'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
+    ai_openai_api_key: OpenAI API Key
+    ai_openai_allowed_models: OpenAI Allowed Models
+    ai_anthropic_api_key: Anthropic API Key
+    ai_anthropic_allowed_models: Anthropic Allowed Models
+    ai_google_api_key: Google API Key
+    ai_google_allowed_models: Google Allowed Models
+    ai_openai_compatible: OpenAI-Compatible Provider
+    ai_openai_compatible_name: Provider Name
+    ai_openai_compatible_base_url: Base URL
+    ai_openai_compatible_api_key: API Key
+    ai_openai_compatible_models: Models
+    ai_openai_compatible_headers: Custom Headers
+    ai_model_id: Model ID
+    ai_context_limit: Context Limit
+    ai_output_limit: Output Limit
+    ai_supports_attachments: Supports Attachments
+    ai_supports_reasoning: Supports Reasoning
+    ai_provider_options: Provider Options
+    ai_provider_options_note: Provider-specific options passed to AI endpoints.
+    ai_header_name: Header
 
   directus_shares:
     name: Name
@@ -1524,18 +1608,6 @@ fields:
     admin_access: Admin Access
     ip_access: IP Access
     enforce_tfa: Require 2FA
-  directus_webhooks:
-    name: Name
-    method: Method
-    status: Status
-    data: Data
-    header: Header
-    value: Value
-    headers: Request Headers
-    data_label: Send Event Data
-    triggers: Triggers
-    actions: Actions
-    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
@@ -1638,19 +1710,6 @@ field_options:
     status_dropdown_suspended: Suspended
     status_dropdown_archived: Archived
     token: Enter a secure access token...
-  directus_webhooks:
-    status_options_active: Active
-    status_options_inactive: Inactive
-    data_label: Send Event Data
-    triggers_divider: Triggers
-    actions_create: Create
-    actions_update: Update
-    actions_delete: Delete
-    actions_login: Login
-    headers:
-      header: Header
-      value: Value
-      add: Add Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
@@ -1673,6 +1732,8 @@ live_preview:
   close_window: Open in Split View
   toggle_3d: Toggle 3D
   iframe_title: Live Website Preview
+  exit_full_width: Exit Full Width
+  open_in_visual_editor: Open in Visual Editor
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
@@ -1699,12 +1760,12 @@ ai:
   retry: Retry
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
-  build_with_chat: Build with AI Chat
+  build_with_assistant: Build with AI Assistant
   responses_may_be_inaccurate: AI responses may be inaccurate
   go_to_settings: Go to Settings
-  setup_ai_chat: Setup AI Chat
-  setup_ai_chat_admin_description: Add your AI provider API keys in settings to enable AI Chat.
-  setup_ai_chat_user_description: Contact your administrator to enable AI Chat.
+  setup_ai_assistant: Setup AI Assistant
+  setup_ai_assistant_admin_description: Add your AI provider API keys in settings to enable AI Assistant.
+  setup_ai_assistant_user_description: Contact your administrator to enable AI Assistant.
   settings: Settings
   tool_approval:
     always: Always Allowed
@@ -1804,7 +1865,6 @@ editing_role: '{role} Role'
 editing_policy: '{policy} Policy'
 no_permissions: No Permissions
 permission_add_collection: Add Collection
-creating_webhook: Creating Webhook
 default_label: Default
 delete_label: Delete
 delete_are_you_sure: >-

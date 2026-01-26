@@ -84,9 +84,6 @@ data:
     note: $t:directus_collection.directus_users
     display_template: '{{ first_name }} {{ last_name }}'
 
-  - collection: directus_webhooks
-    note: $t:directus_collection.directus_webhooks
-
   - collection: directus_dashboards
     note: $t:directus_collection.directus_dashboards
 

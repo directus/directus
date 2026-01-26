@@ -1,5 +1,5 @@
-import { parseJSON } from '@directus/utils';
 import { WebSocketMessage } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import type { RawData, WebSocket } from 'ws';
 import { getMessageType } from './message.js';
 

@@ -1,5 +1,5 @@
-import { Vector2 } from '@/utils/vector2';
 import { ATTACHMENT_OFFSET, GRID_SIZE } from '../../../constants';
+import { Vector2 } from '@/utils/vector2';
 
 /**
  * Calculates grid-based coordinates for a panel and optionally for a target panel.

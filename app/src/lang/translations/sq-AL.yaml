@@ -134,7 +134,6 @@ create_policy: Krijo drejtim
 create_user: Krijo Përdorues
 message: Mesazh
 delete_panel: Fshi Panelin
-create_webhook: Krijo Webhook
 create_custom_translation: Krijo Përkthim të Personalizuar
 edit_custom_translation: Redakto Përkthim të Personalizuar
 no_custom_translations: Pa Përkthime të Personalizuara
@@ -629,10 +628,6 @@ file_count: 'Asnjë Skedar | Një Skedar | {count} Skedarë'
 no_files_copy: Këtu nuk ka skedarë.
 user_count: 'Asnjë Përdorues | Një Përdorues | {count} Përdorues'
 no_users_copy: Ende nuk ka përdorues në këtë rol.
-webhooks_count: 'Asnjë Webhook | Një Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Webhooks janë të vjetruara dhe përdorimi i mëtejmë nuk rekomandohet. Ju lutemi përdorni **Flows** me [Webhook / Request URL operation] (https://docs.directus.io/app/flows/operations.html#webhook-request-url) në vend të kësaj.
-no_webhooks_copy: Ende nuk është konfiguruar asnjë webhook. Filloni duke krijuar një më poshtë.
 no_notifications: Asnjë Njoftim
 no_notifications_copy: Ju jeni përditësuar plotësisht!
 activity_log: Regjistri i Aktivitetit
@@ -663,7 +658,6 @@ action: Veprim
 ip_address: Adresa IP
 user_agent: Agjenti i Përdoruesit
 origin: Origjina
-webhooks: Webhooks
 decimals: Decimale
 value_decimals: Vlera Decimale
 min_value: Vlera Minimale
@@ -1109,7 +1103,6 @@ settings_roles: Rolet e Përdoruesve
 settings_permissions: Drejtimet e Aksesit
 settings_project: Parametra
 settings_appearance: Pamja
-settings_webhooks: Webhooks
 settings_flows: Rrjedha
 settings_system_logs: Regjistrat e Sistemit
 settings_presets: Faqerojtësit
@@ -1187,7 +1180,6 @@ directus_collection:
   directus_settings: Opsionet e konfigurimit të projektit
   directus_shares: Gjurmët e artikujve të ndarë jashtë
   directus_users: Përdoruesit e sistemit për platformën
-  directus_webhooks: Konfigurimi për kërkesat e bazuar në evente të HTTP
   directus_translations: Përkthimet e personalizuara
   directus_versions: Versionet e Përmbajtjes për artikujt
   directus_extensions: Konfigurimi i zgjerimeve
@@ -1365,18 +1357,6 @@ fields:
     admin_access: Aksesi Administrativ
     ip_access: Aksesi me IP
     enforce_tfa: Kërko 2FA
-  directus_webhooks:
-    name: Emri
-    method: Metoda
-    status: Statusi
-    data: Të Dhënat
-    header: Header
-    value: Vlera
-    headers: Header të Kërkesës
-    data_label: Dërgo Të Dhënat e Ngjarjes
-    triggers: Shkaktuesit
-    actions: Veprimet
-    collections: Koleksione
 field_options:
   directus_settings:
     project_name_placeholder: Projekti im...
@@ -1478,19 +1458,6 @@ field_options:
     status_dropdown_suspended: I pezulluar
     status_dropdown_archived: I arkivuar
     token: Shkruaj një token aksesues të sigurt...
-  directus_webhooks:
-    status_options_active: Aktiv
-    status_options_inactive: Joaktiv
-    data_label: Dërgo Të Dhënat e Ngjarjes
-    triggers_divider: Shkaktuesit
-    actions_create: Krijo
-    actions_update: Përditëso
-    actions_delete: Fshij
-    actions_login: Hyrje
-    headers:
-      header: Header
-      value: Vlera
-      add: Shto Header
 no_fields_in_collection: 'Nuk ka fusha në "{collection}" akoma'
 no_value: Pa vlerë
 do_nothing: Mos bëj asgjë
@@ -1569,7 +1536,6 @@ editing_role: 'Roli {role}'
 editing_policy: 'Drejtimi {policy}'
 no_permissions: Pa Leje
 permission_add_collection: Shto Koleksion
-creating_webhook: Po krijohet Webhook
 default_label: Parazgjedhur
 delete_label: Fshi
 delete_are_you_sure: >-

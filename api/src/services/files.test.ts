@@ -1,9 +1,9 @@
+import { PassThrough } from 'node:stream';
 import { InvalidPayloadError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
-import { PassThrough } from 'node:stream';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import {
 	afterEach,
 	beforeAll,
@@ -11,9 +11,9 @@ import {
 	describe,
 	expect,
 	it,
-	vi,
-	type MockInstance,
 	type MockedFunction,
+	type MockInstance,
+	vi,
 } from 'vitest';
 import { getStorage } from '../storage/index.js';
 import { FilesService, ItemsService } from './index.js';

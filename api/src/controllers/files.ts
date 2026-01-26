@@ -1,3 +1,4 @@
+import path from 'path';
 import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
@@ -9,7 +10,6 @@ import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
-import path from 'path';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';

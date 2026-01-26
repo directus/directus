@@ -1,7 +1,7 @@
-import CustomIconDirectus from './custom-icons/directus.vue';
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
 import CustomIconBox from './custom-icons/box.vue';
 import CustomIconCommitNode from './custom-icons/commit_node.vue';
+import CustomIconDirectus from './custom-icons/directus.vue';
 import CustomIconGrid1 from './custom-icons/grid_1.vue';
 import CustomIconGrid2 from './custom-icons/grid_2.vue';
 import CustomIconGrid3 from './custom-icons/grid_3.vue';
@@ -16,6 +16,7 @@ import CustomIconFlipVertical from './custom-icons/flip_vertical.vue';
 import CustomIconFolderMove from './custom-icons/folder_move.vue';
 import CustomIconFolderLock from './custom-icons/folder_lock.vue';
 import CustomIconLogout from './custom-icons/logout.vue';
+import CustomIconVercel from './custom-icons/vercel.vue';
 
 export const components: Record<string, any> = {
 	CustomIconDirectus,
@@ -36,4 +37,5 @@ export const components: Record<string, any> = {
 	CustomIconFolderMove,
 	CustomIconFolderLock,
 	CustomIconLogout,
+	CustomIconVercel,
 };

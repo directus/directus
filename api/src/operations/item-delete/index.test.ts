@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-
 import { ItemsService } from '../../services/items.js';
 import config from './index.js';
 

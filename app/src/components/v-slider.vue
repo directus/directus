@@ -19,7 +19,7 @@ interface Props {
 	/** Always the current selected value */
 	alwaysShowValue?: boolean;
 	/** Model the current selected value */
-	modelValue?: number;
+	modelValue?: number | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -37,9 +37,22 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['change', 'update:modelValue']);
 
 const styles = computed(() => {
-	if (props.modelValue === null) return { '--_v-slider-percentage': 50 };
+	const min = props.min;
+	const max = props.max;
+	const step = props.step;
 
-	let percentage = ((props.modelValue - props.min) / (props.max - props.min)) * 100;
+	let value = props.modelValue;
+
+	if (value === null || value === undefined) {
+		const mid = min + (max - min) / 2;
+		value = Math.round((mid - min) / step) * step + min;
+	}
+
+	if (max === min) {
+		return { '--_v-slider-percentage': 0 };
+	}
+
+	let percentage = ((value - min) / (max - min)) * 100;
 	if (isNaN(percentage)) percentage = 0;
 	return { '--_v-slider-percentage': percentage };
 });
@@ -247,7 +260,7 @@ function onInput(event: Event) {
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
-			background-color: var(--theme--primary);
+			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: var(--theme--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;

@@ -1,11 +1,10 @@
-import { describe, expect, test, vi } from 'vitest';
 import type { Knex } from 'knex';
+import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelperSQLite } from './sqlite.js';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-import { SchemaHelperSQLite } from './sqlite.js';
 
 describe('SchemaHelperSQLite', () => {
 	function createHelper() {

@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { assert, describe, it } from 'vitest';
+import { assert, describe, expect, it } from 'vitest';
 
 describe('Test Exported Types', () => {
 	it('should export all schema files', async () => {
@@ -19,6 +19,25 @@ describe('Test Exported Types', () => {
 		for (const file of files) {
 			assert(isExportingAllFrom(file, index), `SDK type file "${file}" is not exported`);
 		}
+	});
+
+	it('should export expected utils from the SDK entrypoint', async () => {
+		const index = await getFileLines('src/index.ts');
+
+		assert(
+			isExportingAllFrom('utils/format-fields', index),
+			'SDK util "utils/format-fields" is not exported from src/index.ts',
+		);
+
+		assert(
+			isExportingAllFrom('utils/query-to-params', index),
+			'SDK util "utils/query-to-params" is not exported from src/index.ts',
+		);
+
+		const mod = await import('../src/index.js');
+
+		expect(mod.formatFields).toBeTypeOf('function');
+		expect(mod.queryToParams).toBeTypeOf('function');
 	});
 });
 

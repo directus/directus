@@ -1,11 +1,11 @@
-import type { TusDriver } from '@directus/storage';
-import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import fsProm from 'fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import stream, { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import type { TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 
 export type DriverLocalConfig = {
 	root: string;

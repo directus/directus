@@ -1,6 +1,6 @@
+import { setTimeout } from 'node:timers/promises';
 import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import type { Reference } from 'isolated-vm';
-import { setTimeout } from 'node:timers/promises';
 
 export function sleepGenerator(
 	requestedScopes: ExtensionSandboxRequestedScopes,
