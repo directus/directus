@@ -22,7 +22,6 @@ import {
 	TranslationsService,
 	UsersService,
 	VersionsService,
-	WebhooksService,
 	DeploymentService,
 } from '../services/index.js';
 
@@ -72,8 +71,6 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new UsersService(opts);
 		case 'directus_versions':
 			return new VersionsService(opts);
-		case 'directus_webhooks':
-			return new WebhooksService(opts);
 		case 'directus_deployment':
 			return new DeploymentService(opts);
 		default:

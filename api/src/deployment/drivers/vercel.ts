@@ -1,9 +1,6 @@
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
-import { getCache, getCacheValue, setCacheValue } from '../../cache.js';
 import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
 import { DeploymentDriver } from '../deployment.js';
-
-const CACHE_TTL = 5000; // 5 seconds
 
 export interface VercelCredentials extends Credentials {
 	access_token: string;
@@ -150,8 +147,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	}
 
 	async testConnection(): Promise<void> {
-		// Test by fetching authenticated user info used to check if the credentials are valid
-		await this.request('/v2/user');
+		return await this.request('/v9/projects', { params: { limit: '1' } });
 	}
 
 	private mapProjectBase(project: VercelProject): Project {
@@ -169,31 +165,11 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	}
 
 	async listProjects(): Promise<Project[]> {
-		const cacheKey = `deployment:vercel:projects:${this.options.team_id || 'personal'}`;
-		const { systemCache } = getCache();
-
-		// Check cache first
-		const cached = await getCacheValue(systemCache, cacheKey);
-		if (cached) return cached;
-
-		// Fetch from Vercel
 		const response = await this.request<{ projects: VercelProject[] }>('/v9/projects');
-		const projects = response.projects.map((project) => this.mapProjectBase(project));
-
-		// Cache for 5s
-		await setCacheValue(systemCache, cacheKey, projects, CACHE_TTL);
-		return projects;
+		return response.projects.map((project) => this.mapProjectBase(project));
 	}
 
 	async getProject(projectId: string): Promise<Project> {
-		const cacheKey = `deployment:vercel:project:${projectId}`;
-		const { systemCache } = getCache();
-
-		// Check cache first
-		const cached = await getCacheValue(systemCache, cacheKey);
-		if (cached) return cached;
-
-		// Fetch from Vercel
 		const project = await this.request<VercelProject>(`/v9/projects/${projectId}`);
 		const result = this.mapProjectBase(project);
 
@@ -220,8 +196,6 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 			result.updated_at = new Date(project.updatedAt);
 		}
 
-		// Cache for 5s
-		await setCacheValue(systemCache, cacheKey, result, CACHE_TTL);
 		return result;
 	}
 
@@ -320,9 +294,10 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
 		let url = `/v3/deployments/${encodeURIComponent(deploymentId)}/events`;
 
-		// Use since parameter to filter logs as we use polling to get the logs
+		// Vercel's since parameter uses milliseconds timestamp
 		if (options?.since) {
-			url += `?since=${options.since.getTime()}`;
+			const sinceMs = options.since.getTime();
+			url += `?since=${sinceMs}`;
 		}
 
 		const response = await this.request<VercelEvent[]>(url);

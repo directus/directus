@@ -1,15 +1,25 @@
+import { useEnv } from '@directus/env';
 import type {
 	AbstractServiceOptions,
 	Credentials,
 	Item,
 	Options,
 	PrimaryKey,
+	Project,
 	ProviderType,
 	Query,
 } from '@directus/types';
+import { parseJSON } from '@directus/utils';
+import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cache.js';
 import { getDeploymentDriver } from '../deployment.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
 import { ItemsService } from './items.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+
+const env = useEnv();
+const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 5000; // Default 5s
+
+export type CachedResult<T> = { data: T; remainingTTL?: number };
 
 export interface DeploymentConfig extends Item {
 	id: string;
@@ -59,13 +69,9 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	}
 
 	/**
-	 * Get a deployment driver instance with decrypted credentials
-	 *
-	 * @param provider Provider name
-	 * @returns Configured deployment driver
+	 * Read deployment config with decrypted credentials (internal use)
 	 */
-	async getDriver(provider: ProviderType): Promise<DeploymentDriver> {
-		// Use internal service with null accountability to get decrypted credentials
+	private async readConfig(provider: ProviderType): Promise<DeploymentConfig> {
 		const internalService = new ItemsService<DeploymentConfig>('directus_deployment', {
 			knex: this.knex,
 			schema: this.schema,
@@ -81,10 +87,107 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			throw new Error(`Deployment config for "${provider}" not found`);
 		}
 
-		const deployment = results[0]!;
-		const credentials: Credentials = deployment.credentials ? JSON.parse(deployment.credentials) : {};
-		const options: Options = deployment.options ?? {};
+		return results[0]!;
+	}
+
+	/**
+	 * Parse JSON string or return value as-is
+	 */
+	private parseValue<T>(value: unknown, fallback: T): T {
+		if (!value) return fallback;
+		if (typeof value === 'string') return parseJSON(value);
+		return value as T;
+	}
+
+	/**
+	 * Get a deployment driver instance with decrypted credentials
+	 */
+	async getDriver(provider: ProviderType): Promise<DeploymentDriver> {
+		const deployment = await this.readConfig(provider);
+		const credentials = this.parseValue<Credentials>(deployment.credentials, {});
+		const options = this.parseValue<Options>(deployment.options, {});
 
 		return getDeploymentDriver(deployment.provider, credentials, options);
+	}
+
+	/**
+	 * Test connection with optional credential/option overrides
+	 * Merges provided values with existing config, filters out null values from options
+	 *
+	 * @param provider Provider name
+	 * @param newCredentials Optional new credentials to test (uses existing if not provided)
+	 * @param newOptions Optional new options to merge (null values remove existing keys)
+	 * @returns Merged options after filtering nulls (for saving to DB)
+	 */
+	async testConnection(
+		provider: ProviderType,
+		newCredentials?: Credentials,
+		newOptions?: Options,
+	): Promise<{ credentials: Credentials; options: Options }> {
+		const deployment = await this.readConfig(provider);
+		const existingCredentials = this.parseValue<Credentials>(deployment.credentials, {});
+		const existingOptions = this.parseValue<Options>(deployment.options, {});
+
+		const credentials = newCredentials ?? existingCredentials;
+
+		// Merge options and filter out null values (null means "delete this option")
+		const mergedOptions = newOptions
+			? Object.fromEntries(Object.entries({ ...existingOptions, ...newOptions }).filter(([, v]) => v !== null))
+			: existingOptions;
+
+		const driver = getDeploymentDriver(provider, credentials, mergedOptions);
+		await driver.testConnection();
+
+		return { credentials, options: mergedOptions };
+	}
+
+	/**
+	 * List projects from provider with caching
+	 */
+	async listProviderProjects(provider: ProviderType): Promise<CachedResult<Project[]>> {
+		const cacheKey = `${provider}:projects`;
+		const { deploymentCache } = getCache();
+
+		// Check cache first
+		const cached = await getCacheValueWithTTL(deploymentCache, cacheKey);
+
+		if (cached) {
+			return { data: cached.data, remainingTTL: cached.remainingTTL };
+		}
+
+		// Fetch from driver
+		const driver = await this.getDriver(provider);
+		const projects = await driver.listProjects();
+
+		// Store in cache
+		await setCacheValueWithExpiry(deploymentCache, cacheKey, projects, DEPLOYMENT_CACHE_TTL);
+
+		// Return with full TTL (just cached)
+		return { data: projects, remainingTTL: DEPLOYMENT_CACHE_TTL };
+	}
+
+	/**
+	 * Get project details from provider with caching
+	 */
+	async getProviderProject(provider: ProviderType, projectId: string): Promise<CachedResult<Project>> {
+		const cacheKey = `${provider}:project:${projectId}`;
+		const { deploymentCache } = getCache();
+
+		// Check cache first
+		const cached = await getCacheValueWithTTL(deploymentCache, cacheKey);
+
+		if (cached) {
+			return { data: cached.data, remainingTTL: cached.remainingTTL };
+		}
+
+		// Fetch from driver
+		const driver = await this.getDriver(provider);
+		const project = await driver.getProject(projectId);
+
+		// Store in cache
+		await setCacheValueWithExpiry(deploymentCache, cacheKey, project, DEPLOYMENT_CACHE_TTL);
+
+		// Return with full TTL (just cached)
+		return { data: project, remainingTTL: DEPLOYMENT_CACHE_TTL };
 	}
 }

@@ -133,9 +133,8 @@ router.get(
 		// Get provider config to find deployment ID
 		const deployment = await service.readByProvider(provider);
 
-		// Get projects from provider
-		const driver = await service.getDriver(provider);
-		const providerProjects = await driver.listProjects();
+		// Get projects from provider (with cache)
+		const { data: providerProjects, remainingTTL } = await service.listProviderProjects(provider);
 
 		// Get selected projects from DB
 		const selectedProjects = await projectsService.readByQuery({
@@ -158,7 +157,11 @@ router.get(
 			};
 		});
 
+		// Cache is handled by service, just pass TTL for headers
+		res.locals['cache'] = false;
+		res.locals['cacheTTL'] = remainingTTL;
 		res.locals['payload'] = { data: projects };
+
 		return next();
 	}),
 	respond,
@@ -188,9 +191,12 @@ router.get(
 		// Get project from DB (validates it exists and is selected)
 		const project = await projectsService.readOne(projectId);
 
-		// Fetch details from provider using external_id
-		const driver = await service.getDriver(provider);
-		const details = await driver.getProject(project.external_id);
+		// Fetch details from provider using external_id (with cache)
+		const { data: details, remainingTTL } = await service.getProviderProject(provider, project.external_id);
+
+		// Cache is handled by service, just pass TTL for headers
+		res.locals['cache'] = false;
+		res.locals['cacheTTL'] = remainingTTL;
 
 		res.locals['payload'] = {
 			data: {
@@ -299,6 +305,9 @@ router.patch(
 router.get(
 	'/:provider/dashboard',
 	asyncHandler(async (req, res, next) => {
+		// Disable cache - dashboard needs fresh data from provider
+		res.locals['cache'] = false;
+
 		const provider = req.params['provider']!;
 
 		if (!validateProvider(provider)) {
@@ -473,15 +482,22 @@ router.patch(
 			schema: req.schema,
 		});
 
-		// Test connection if credentials are being updated
-		if (req.body.credentials) {
-			const existingConfig = await service.readByProvider(provider);
-			const mergedOptions = { ...existingConfig.options, ...req.body.options };
-			const driver = getDeploymentDriver(provider, req.body.credentials, mergedOptions);
-			await driver.testConnection();
-		}
-
 		const data = { ...req.body };
+
+		// Test connection and get merged values if credentials or options are being updated
+		if ('credentials' in req.body || 'options' in req.body) {
+			const { credentials, options } = await service.testConnection(provider, req.body.credentials, req.body.options);
+
+			// Use merged options (with nulls filtered out)
+			if ('options' in req.body) {
+				data.options = options;
+			}
+
+			// Keep credentials from request if provided
+			if ('credentials' in req.body && req.body.credentials) {
+				data.credentials = credentials;
+			}
+		}
 
 		if (data.credentials && typeof data.credentials === 'object') {
 			data.credentials = JSON.stringify(data.credentials);
@@ -535,6 +551,9 @@ router.delete(
 router.get(
 	'/:provider/projects/:id/runs',
 	asyncHandler(async (req, res, next) => {
+		// Disable cache - runs status needs to be fresh from provider
+		res.locals['cache'] = false;
+
 		const provider = req.params['provider']!;
 		const projectId = req.params['id']!;
 
@@ -566,6 +585,7 @@ router.get(
 			filter: { project: { _eq: projectId } },
 			sort: ['-date_created'],
 			limit: req.sanitizedQuery.limit ?? 10,
+			fields: ['*', 'user_created.first_name', 'user_created.last_name', 'user_created.email'],
 		};
 
 		const runs = await runsService.readByQuery(query);
@@ -582,13 +602,28 @@ router.get(
 		const driver = await service.getDriver(provider);
 
 		const runsWithStatus = await Promise.all(
-			runs.map(async (run) => {
+			runs.map(async (run: any) => {
 				const details = await driver.getDeployment(run.external_id);
+
+				// Format author from user_created relation
+				let author: string | null = null;
+
+				if (run.user_created && typeof run.user_created === 'object') {
+					const user = run.user_created;
+
+					if (user.first_name || user.last_name) {
+						author = [user.first_name, user.last_name].filter(Boolean).join(' ');
+					} else if (user.email) {
+						author = user.email;
+					}
+				}
+
 				return {
 					...run,
 					...details,
 					id: run.id,
 					external_id: run.external_id,
+					author,
 				};
 			}),
 		);
@@ -602,11 +637,15 @@ router.get(
 // Get single run details
 const runDetailsQuerySchema = Joi.object({
 	since: Joi.date().iso().optional(),
+	_t: Joi.number().optional(), // Cache-buster parameter for polling
 });
 
 router.get(
 	'/:provider/runs/:id',
 	asyncHandler(async (req, res, next) => {
+		// Disable Directus cache for polling endpoint - always want fresh data from provider
+		res.locals['cache'] = false;
+
 		const provider = req.params['provider']!;
 		const runId = req.params['id']!;
 

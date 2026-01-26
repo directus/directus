@@ -3,7 +3,7 @@ import type {
 	DirectusDeploymentProject,
 	DirectusDeploymentRun,
 } from '../../../schema/deployment.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, DirectusMeta, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -44,6 +44,23 @@ export interface DeploymentDashboardOutput {
 		failedBuilds: number;
 		successfulBuilds: number;
 	};
+}
+
+export interface DeploymentRunsOutput {
+	id: string;
+	project: string;
+	external_id: string;
+	target: string;
+	status: 'building' | 'ready' | 'error' | 'canceled';
+	url?: string;
+	date_created: string;
+	finished_at?: string;
+	author?: string;
+}
+
+export interface DeploymentRunsResponse {
+	data: DeploymentRunsOutput[];
+	meta?: DirectusMeta;
 }
 
 /**
@@ -152,16 +169,16 @@ export const readDeploymentProject =
  * List deployment runs for a project.
  * @param provider The provider type (e.g. 'vercel')
  * @param projectId The project ID
- * @param query The query parameters
- * @returns An array of deployment run objects.
+ * @param query Optional query parameters (search, limit, offset, meta)
+ * @returns Deployment runs with optional meta for pagination.
  * @throws Will throw if provider or projectId is empty
  */
 export const readDeploymentRuns =
-	<Schema, const TQuery extends Query<Schema, DirectusDeploymentRun<Schema>>>(
+	<Schema>(
 		provider: string,
 		projectId: string,
-		query?: TQuery,
-	): RestCommand<ReadDeploymentRunOutput<Schema, TQuery>[], Schema> =>
+		query?: { search?: string; limit?: number; offset?: number; meta?: string },
+	): RestCommand<DeploymentRunsResponse, Schema> =>
 		() => {
 			throwIfEmpty(provider, 'Provider cannot be empty');
 			throwIfEmpty(projectId, 'Project ID cannot be empty');

@@ -2,9 +2,13 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export interface TriggerDeploymentResult {
-	deployment_id: string;
-	status: 'queued' | 'building' | 'ready' | 'error' | 'canceled';
+	id: string;
+	external_id: string;
+	project: string;
+	target: string;
+	status: 'building' | 'ready' | 'error' | 'canceled';
 	url?: string;
+	date_created: string;
 }
 
 export interface TriggerDeploymentOptions {

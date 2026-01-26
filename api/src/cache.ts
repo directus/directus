@@ -158,6 +158,36 @@ export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 	return decompressed;
 }
 
+/**
+ * Store a value in cache with its expiration timestamp for TTL tracking
+ */
+export async function setCacheValueWithExpiry(
+	cache: Keyv,
+	key: string,
+	value: Record<string, any> | Record<string, any>[],
+	ttl: number,
+) {
+	await setCacheValue(cache, key, value, ttl);
+	await setCacheValue(cache, `${key}__expires_at`, { exp: Date.now() + ttl }, ttl);
+}
+
+/**
+ * Get a cached value along with its remaining TTL
+ */
+export async function getCacheValueWithTTL(
+	cache: Keyv,
+	key: string,
+): Promise<{ data: any; remainingTTL: number } | undefined> {
+	const value = await getCacheValue(cache, key);
+
+	if (!value) return undefined;
+
+	const expiryData = await getCacheValue(cache, `${key}__expires_at`);
+	const remainingTTL = expiryData?.exp ? Math.max(0, expiryData.exp - Date.now()) : 0;
+
+	return { data: value, remainingTTL };
+}
+
 function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?: string): Keyv {
 	switch (store) {
 		case 'redis':
