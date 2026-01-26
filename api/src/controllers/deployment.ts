@@ -1,7 +1,7 @@
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { DEPLOYMENT_PROVIDER_TYPES, type ProviderType } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import getDatabase from '../database/index.js';
 import { getDeploymentDriver } from '../deployment.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -10,9 +10,7 @@ import { DeploymentProjectsService } from '../services/deployment-projects.js';
 import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
 import { MetaService } from '../services/meta.js';
-import { DEPLOYMENT_PROVIDER_TYPES, type ProviderType } from '@directus/types';
 import asyncHandler from '../utils/async-handler.js';
-import { transaction } from '../utils/transaction.js';
 
 const router = express.Router();
 
@@ -244,6 +242,11 @@ router.patch(
 			schema: req.schema,
 		});
 
+		const projectsService = new DeploymentProjectsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
 		// Get provider config
 		const deployment = await service.readByProvider(provider);
 
@@ -263,37 +266,8 @@ router.patch(
 			}
 		}
 
-		// Execute mutations in a transaction for atomicity
-		const db = getDatabase();
-
-		const updatedProjects = await transaction(db, async (trx) => {
-			const projectsService = new DeploymentProjectsService({
-				accountability: req.accountability,
-				schema: req.schema,
-				knex: trx,
-			});
-
-			// Delete projects
-			if (value.delete.length > 0) {
-				await projectsService.deleteMany(value.delete);
-			}
-
-			// Create new projects
-			if (value.create.length > 0) {
-				await projectsService.createMany(
-					value.create.map((p: { external_id: string; name: string }) => ({
-						deployment: deployment.id,
-						external_id: p.external_id,
-						name: p.name,
-					})),
-				);
-			}
-
-			// Return updated selection
-			return projectsService.readByQuery({
-				filter: { deployment: { _eq: deployment.id } },
-			});
-		});
+		// Execute mutations in a transaction
+		const updatedProjects = await projectsService.updateSelection(deployment.id, value.create, value.delete);
 
 		res.locals['payload'] = { data: updatedProjects };
 		return next();
