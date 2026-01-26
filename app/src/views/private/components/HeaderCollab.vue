@@ -113,13 +113,14 @@ function focusIntoView(cid: ClientID) {
 	.user-name {
 		margin-inline-start: 8px;
 	}
+
+	.v-avatar {
+		margin-inline-start: -4px;
+		font-size: 12px;
+		cursor: pointer;
+	}
 }
 
-.v-avatar {
-	margin-inline-start: -4px;
-	font-size: 12px;
-	cursor: pointer;
-}
 
 .v-list-item {
 	cursor: pointer;

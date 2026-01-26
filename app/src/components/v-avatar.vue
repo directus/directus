@@ -65,11 +65,11 @@ const sizeClass = useSizeClass(props);
 }
 
 .border {
-	border: 3px solid var(--v-avatar-border-color, var(--theme--border-color));
+	border: var(--theme--border-width) solid var(--v-avatar-border-color, var(--theme--border-color));
 }
 
 .x-small {
-	--v-avatar-size: 28px;
+	--v-avatar-size: 22px;
 
 	border-radius: 4px;
 }
