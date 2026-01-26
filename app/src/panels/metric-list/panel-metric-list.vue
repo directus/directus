@@ -160,77 +160,97 @@ function getColor(input?: number) {
 				<VListItem v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
 					<div
 						v-if="row[aggregateFunction]?.[aggregateField]"
-						class="metric-bar"
+						class="metric-bar-visual"
 						:style="{
 							inlineSize: widthOfRow(row),
 							'background-color': `${getColor(row[aggregateFunction]?.[aggregateField])}50`,
 						}"
-					>
-						<div class="metric-bar-text">
-							<RenderTemplate
-								:item="{ [groupByField]: row['group'][groupByField] }"
-								:collection="collection"
-								:template="`{{${groupByField}}}`"
-							/>
-						</div>
+					/>
 
 						<div
-							class="metric-bar-number"
+							class="metric-bar-content"
 							:style="{
-								color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField]))
-									.darken(darkMode ? -2 : 2)
-									.hex()}`,
+								inlineSize: widthOfRow(row),
 							}"
 						>
-							{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
+							<div class="metric-bar-text">
+								<RenderTemplate
+									:item="{ [groupByField]: row['group'][groupByField] }"
+									:collection="collection"
+									:template="`{{${groupByField}}}`"
+								/>
+							</div>
+
+							<div
+								class="metric-bar-number"
+								:style="{
+									color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField]))
+										.darken(darkMode ? -2 : 2)
+										.hex()}`,
+								}"
+							>
+								{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
+							</div>
 						</div>
-					</div>
-
-					<div class="spacer" />
-				</VListItem>
-			</VList>
+					</VListItem>
+				</VList>
+			</div>
 		</div>
-	</div>
-</template>
-
-<style scoped>
-.metric-list {
-	--v-list-padding: 0;
-	--v-list-border-radius: 0;
-	--v-list-item-border-radius: 0;
-	--v-list-item-padding: 6px;
-	--v-list-item-margin: 0;
-	block-size: 100%;
-	padding: 6px;
-	overflow: hidden auto;
-}
-
-.metric-list-item {
-	block-size: 36px;
-	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
-}
-
-.metric-list-item:last-child {
-	border-block-end: 0;
-}
-
-.metric-bar {
-	display: flex;
-	justify-content: space-between;
-	border-radius: 4px;
-	padding: 2px;
-}
-
-.metric-bar-text {
-	padding: 0 6px;
-	white-space: pre;
-	overflow: hidden;
-}
-
-.metric-bar-number {
-	padding: 0 4px;
-	font-weight: 600;
-	white-space: pre;
-	font-size: 13px;
-}
-</style>
+	</template>
+	
+	<style scoped>
+	.metric-list {
+		--v-list-padding: 0;
+		--v-list-border-radius: 0;
+		--v-list-item-border-radius: 0;
+		--v-list-item-padding: 6px;
+		--v-list-item-margin: 0;
+		block-size: 100%;
+		padding: 6px;
+		overflow: hidden auto;
+	}
+	
+	.metric-list-item {
+		position: relative;
+		block-size: 36px;
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	}
+	
+	.metric-list-item:last-child {
+		border-block-end: 0;
+	}
+	
+	.metric-bar-visual {
+		position: absolute;
+		inset-block: 2px;
+		inset-inline-start: 2px;
+		border-radius: 4px;
+		pointer-events: none;
+	}
+	
+	.metric-bar-content {
+		position: relative;
+		block-size: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		padding: 0 4px;
+		min-inline-size: max-content;
+	}
+	
+	.metric-bar-text {
+		padding: 0 4px;
+		white-space: pre;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	
+	.metric-bar-number {
+		padding: 0 4px;
+		font-weight: 600;
+		white-space: pre;
+		font-size: 13px;
+		flex-shrink: 0;
+	}
+	</style>
