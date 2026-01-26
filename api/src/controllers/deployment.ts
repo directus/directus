@@ -417,29 +417,19 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const data = { ...req.body };
+		const data: Record<string, unknown> = {};
 
 		// Test connection and get merged values if credentials or options are being updated
 		if ('credentials' in req.body || 'options' in req.body) {
 			const { credentials, options } = await service.testConnection(provider, req.body.credentials, req.body.options);
 
-			// Use merged options (with nulls filtered out)
 			if ('options' in req.body) {
-				data.options = options;
+				data['options'] = JSON.stringify(options);
 			}
 
-			// Keep credentials from request if provided
 			if ('credentials' in req.body && req.body.credentials) {
-				data.credentials = credentials;
+				data['credentials'] = JSON.stringify(credentials);
 			}
-		}
-
-		if (data.credentials && typeof data.credentials === 'object') {
-			data.credentials = JSON.stringify(data.credentials);
-		}
-
-		if (data.options && typeof data.options === 'object') {
-			data.options = JSON.stringify(data.options);
 		}
 
 		const primaryKey = await service.updateByProvider(provider, data);
