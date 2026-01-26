@@ -511,12 +511,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				align-items: center;
 				justify-content: flex-start;
 				gap: 6px;
+				font-weight: 600;
 			}
 
 			.compare-to-label {
 				font-size: 14px;
 				line-height: 20px;
-				font-weight: 600;
 				color: var(--theme--foreground);
 				white-space: nowrap;
 			}
