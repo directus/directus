@@ -131,45 +131,25 @@ export function useCollab(
 				wsConnecting = false;
 			}
 		}
-
-		if (!active || active.value) join();
 	});
 
 	onBeforeUnmount(() => {
 		eventHandlers.forEach((eventHandler) => eventHandler());
-
-		if (!active) {
-			leave();
-		}
+		leave();
 	});
 
 	watch(
-		() => active?.value,
-		(isActive) => {
-			if (isActive) {
-				join();
-			} else {
-				leave();
-			}
-		},
-	);
-
-	watch(item, () => {
-		leave();
-		join();
-	});
-
-	watch(version, (newVersion, oldVersion) => {
-		if (newVersion?.key !== oldVersion?.key) {
+		[collection, item, version, () => active?.value, connected],
+		() => {
 			leave();
 			join();
-		}
-	});
+		},
+		{ flush: 'post' },
+	);
 
 	eventHandlers.push(
 		sdk.onWebSocket('open', () => {
 			connected.value = true;
-			join();
 		}),
 	);
 
@@ -184,7 +164,7 @@ export function useCollab(
 		focused.value = {};
 	}
 
-	function join() {
+	const join = debounce(() => {
 		if (
 			(active && active.value === false) ||
 			!connected.value ||
@@ -206,17 +186,22 @@ export function useCollab(
 			version: version.value?.id ?? null,
 			initialChanges: edits.value,
 		});
-	}
+	}, 10);
 
 	function leave() {
-		if (!roomId.value) return;
+		join.cancel();
+		joining.value = false;
 
-		sendMessage({
-			action: ACTION.CLIENT.LEAVE,
-		});
+		if (roomId.value) {
+			sendMessage({
+				action: ACTION.CLIENT.LEAVE,
+			});
+		}
 
 		roomId.value = null;
 		connectionId.value = null;
+		users.value = [];
+		focused.value = {};
 	}
 
 	eventHandlers.push(
@@ -269,6 +254,8 @@ export function useCollab(
 	};
 
 	async function receiveInit(message: InitMessage) {
+		if (joining.value === false) return;
+
 		joining.value = false;
 		roomId.value = message.room;
 		connectionId.value = message.connection;
