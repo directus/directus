@@ -600,7 +600,7 @@ describe('room', () => {
 
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
-		vi.mocked(verifyPermissions).mockRejectedValueOnce(['title']);
+		vi.mocked(verifyPermissions).mockResolvedValueOnce(['title']);
 
 		await room.discard({} as Accountability);
 
@@ -641,10 +641,12 @@ describe('room', () => {
 		expect(
 			vi
 				.mocked(mockMessenger.sendClient)
-				.mock.calls.find((c: any) => c[0] === 'def' && c[1].action === 'update' && c[1].field === 'publish_date')?.[1],
+				.mock.calls.find(
+					(c: any) => c[0] === 'def' && c[1].action === 'discard' && c[1].fields.includes('publish_date'),
+				)?.[1],
 		).toEqual({
-			action: 'update',
-			field: 'publish_date',
+			action: 'discard',
+			fields: ['publish_date'],
 			type: 'collab',
 			room: uid,
 		});
