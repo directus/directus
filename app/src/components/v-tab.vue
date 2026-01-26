@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import VListItem from '@/components/v-list-item.vue';
 import { useGroupable } from '@directus/composables';
 import { inject, ref } from 'vue';
+import VListItem from '@/components/v-list-item.vue';
 
 interface Props {
 	/** A custom value to be used with `v-tabs` */

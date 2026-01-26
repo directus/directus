@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, useTemplateRef } from 'vue';
 import { useSync } from '@directus/composables';
+import { computed, onMounted, useTemplateRef } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {

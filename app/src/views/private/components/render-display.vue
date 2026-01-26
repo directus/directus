@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { toRefs } from 'vue';
+import ValueNull from './value-null.vue';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useExtension } from '@/composables/use-extension';
-import { toRefs } from 'vue';
-import ValueNull from './value-null.vue';
 
 const props = defineProps<{
 	display: string | null;

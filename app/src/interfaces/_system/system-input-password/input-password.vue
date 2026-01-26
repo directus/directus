@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
-import { ref } from 'vue';
 
 defineOptions({ inheritAttrs: false });
 

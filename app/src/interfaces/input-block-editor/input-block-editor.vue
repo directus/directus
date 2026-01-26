@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import api from '@/api';
-import VDrawer from '@/components/v-drawer.vue';
-import VUpload from '@/components/v-upload.vue';
-import { useCollectionsStore } from '@/stores/collections';
-import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
 import { isEqual } from 'lodash';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
@@ -12,6 +7,11 @@ import { useBus } from './bus';
 import { sanitizeValue } from './sanitize';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
+import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VUpload from '@/components/v-upload.vue';
+import { useCollectionsStore } from '@/stores/collections';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 import './editorjs-overrides.css';
 
@@ -76,6 +76,7 @@ onMounted(async () => {
 	editorjsRef.value = new EditorJS({
 		logLevel: 'ERROR' as EditorJS.LogLevels,
 		holder: editorElement.value,
+		// Do not set readOnly to true here — see the watcher below
 		readOnly: false,
 		placeholder: props.placeholder,
 		minHeight: 72,
@@ -106,6 +107,17 @@ onUnmounted(() => {
 	editorjsRef.value?.destroy();
 	bus.reset();
 });
+
+watch(
+	[editorjsIsReady, () => props.disabled],
+	([isReady, isDisabled]) => {
+		if (!isReady) return;
+
+		// Note: EditorJS must be ready before readOnly is toggled; otherwise, the content won’t render, which could result in data loss!
+		editorjsRef.value?.readOnly.toggle(isDisabled);
+	},
+	{ immediate: true },
+);
 
 watch(
 	() => props.value,
@@ -158,7 +170,11 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 
 <template>
 	<div class="input-block-editor">
-		<div ref="editorElement" :class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"></div>
+		<div
+			ref="editorElement"
+			class="editor"
+			:class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"
+		></div>
 
 		<VDrawer
 			v-if="haveFilesAccess && !disabled"
@@ -199,6 +215,11 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 	border-color: #7c7c7c;
 }
 
+.input-block-editor .editor {
+	border-radius: var(--theme--border-radius);
+	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
+}
+
 .disabled {
 	pointer-events: none;
 
@@ -210,17 +231,18 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 }
 
 .bordered {
-	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
-	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: var(--theme--border-radius);
 
-	&:hover {
-		border-color: var(--theme--form--field--input--border-color-hover);
-	}
+	&:not(.disabled) {
+		background-color: var(--theme--form--field--input--background);
 
-	&:focus-within {
-		border-color: var(--theme--form--field--input--border-color-focus);
+		&:hover {
+			border-color: var(--theme--form--field--input--border-color-hover);
+		}
+
+		&:focus-within {
+			border-color: var(--theme--form--field--input--border-color-focus);
+		}
 	}
 }
 

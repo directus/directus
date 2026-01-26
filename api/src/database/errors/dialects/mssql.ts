@@ -6,7 +6,6 @@ import {
 	ValueOutOfRangeError,
 	ValueTooLongError,
 } from '@directus/errors';
-
 import type { Item } from '@directus/types';
 import getDatabase from '../../index.js';
 import type { MSSQLError } from './types.js';

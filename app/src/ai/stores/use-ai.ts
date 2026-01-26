@@ -1,21 +1,19 @@
-import { useSettingsStore } from '@/stores/settings';
-import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { Chat } from '@ai-sdk/vue';
+import { type StandardProviderType, type SystemTool, type ToolApprovalMode } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
 	DefaultChatTransport,
-	type UIMessage,
 	lastAssistantMessageIsCompleteWithApprovalResponses,
 	lastAssistantMessageIsCompleteWithToolCalls,
+	type UIMessage,
 } from 'ai';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
-import { AI_MODELS, type ModelDefinition } from '../models';
-import { SystemTool } from '../types/system-tool';
-
-export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
+import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
+import { useSettingsStore } from '@/stores/settings';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -54,11 +52,53 @@ export const useAiStore = defineStore('ai-store', () => {
 		chatOpen.value = false;
 	});
 
-	const models = computed(() =>
-		AI_MODELS.filter(({ provider }) => {
-			return settingsStore.availableAiProviders.includes(provider);
-		}),
-	);
+	const models = computed(() => {
+		const customModels = buildCustomModels(settingsStore.settings?.ai_openai_compatible_models ?? null);
+		const allModels = [...AI_MODELS, ...customModels];
+
+		const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
+			openai: settingsStore.settings?.ai_openai_allowed_models ?? null,
+			anthropic: settingsStore.settings?.ai_anthropic_allowed_models ?? null,
+			google: settingsStore.settings?.ai_google_allowed_models ?? null,
+		};
+
+		const result: AppModelDefinition[] = [];
+
+		// Add models that are allowed or explicitly configured
+		for (const modelDef of allModels) {
+			if (!settingsStore.availableAiProviders.includes(modelDef.provider)) continue;
+
+			// openai-compatible models are always allowed (user explicitly configured them)
+			if (modelDef.provider === 'openai-compatible') {
+				result.push(modelDef);
+				continue;
+			}
+
+			const allowedModels = allowedModelsMap[modelDef.provider];
+
+			if (!allowedModels || allowedModels.length === 0) continue;
+
+			if (allowedModels.includes(modelDef.model)) {
+				result.push(modelDef);
+			}
+		}
+
+		// Add custom model IDs that are in allowed list but not in predefined models
+		for (const [provider, allowedModels] of Object.entries(allowedModelsMap)) {
+			if (!allowedModels || allowedModels.length === 0) continue;
+			if (!settingsStore.availableAiProviders.includes(provider)) continue;
+
+			for (const modelId of allowedModels) {
+				const exists = result.some((m) => m.provider === provider && m.model === modelId);
+
+				if (!exists) {
+					result.push(buildCustomModelDefinition(provider as StandardProviderType, modelId));
+				}
+			}
+		}
+
+		return result;
+	});
 
 	const defaultModel = computed(() => models.value[0] ?? null);
 
@@ -81,7 +121,13 @@ export const useAiStore = defineStore('ai-store', () => {
 	const selectedModel = computed(() => {
 		if (!selectedModelId.value) return null;
 
-		const [provider, model] = selectedModelId.value.split(':');
+		// Split only on first colon - model IDs may contain colons (e.g., "gpt-oss:20b")
+		const colonIndex = selectedModelId.value.indexOf(':');
+
+		if (colonIndex === -1) return null;
+
+		const provider = selectedModelId.value.slice(0, colonIndex);
+		const model = selectedModelId.value.slice(colonIndex + 1);
 
 		if (!provider || !model) return null;
 
@@ -94,7 +140,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		);
 	});
 
-	const selectModel = (modelDefinition: ModelDefinition) => {
+	const selectModel = (modelDefinition: AppModelDefinition) => {
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
 
@@ -256,7 +302,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			if ('toolCallId' in part && part.state === 'output-available' && !processedToolCallIds.has(part.toolCallId)) {
 				processedToolCallIds.add(part.toolCallId);
 
-				const tool = part.type.substring('tool-'.length);
+				const tool = part.type.substring('tool-'.length) as SystemTool;
 
 				const isSystemTool = systemTools.value.includes(tool);
 

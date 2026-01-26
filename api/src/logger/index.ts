@@ -1,10 +1,10 @@
+import { URL } from 'node:url';
 import { useEnv } from '@directus/env';
 import { REDACTED_TEXT, toArray, toBoolean } from '@directus/utils';
 import type { Request, RequestHandler } from 'express';
 import { merge } from 'lodash-es';
-import { URL } from 'node:url';
-import { pino, type Logger, type LoggerOptions } from 'pino';
-import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
+import { type Logger, type LoggerOptions, pino } from 'pino';
+import { type AutoLoggingOptions, pinoHttp, stdSerializers } from 'pino-http';
 import { httpPrintFactory } from 'pino-http-print';
 import { build as pinoPretty } from 'pino-pretty';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';

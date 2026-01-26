@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { useClipboard } from '@/composables/use-clipboard';
 import { RELATIONAL_TYPES } from '@directus/constants';
 import type { RelationalType } from '@directus/types';
 import { computed } from 'vue';
 import type { FormField } from '../types';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import VList from '@/components/v-list.vue';
-import VListItem from '@/components/v-list-item.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import { useClipboard } from '@/composables/use-clipboard';
 
 export type MenuOptions =
 	| 'edit-raw'

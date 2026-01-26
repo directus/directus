@@ -1,7 +1,7 @@
 import { createError, ErrorCode } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Request, Response } from 'express';
-import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
 import { findMcpTool } from '../tools/index.js';

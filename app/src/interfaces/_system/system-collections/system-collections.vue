@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { isSystemCollection } from '@directus/system-data';
+import { computed } from 'vue';
 import VNotice from '@/components/v-notice.vue';
 import InterfaceSelectMultipleCheckbox from '@/interfaces/select-multiple-checkbox/select-multiple-checkbox.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { isSystemCollection } from '@directus/system-data';
-import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

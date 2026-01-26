@@ -1,13 +1,13 @@
-import { mockedStore } from '@/__utils__/store';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { ActionPermission } from '@/types/permissions';
 import { ItemPermissions } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Ref, computed } from 'vue';
+import { computed, Ref } from 'vue';
 import { isActionAllowed } from './is-action-allowed';
+import { mockedStore } from '@/__utils__/store';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { ActionPermission } from '@/types/permissions';
 
 let sample: {
 	collection: string;

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -26,12 +30,9 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
-import { deepMap } from '@directus/utils';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
 
 type FileInfo = {
 	id: string;
@@ -209,11 +210,11 @@ function useURLImport() {
 						readonly
 						block
 						:active
-						:disabled="internalDisabled"
+						:disabled="!(nonEditable && file) && internalDisabled"
 						:non-editable="nonEditable"
 						:placeholder="$t('no_file_selected')"
 						:model-value="file && file.title"
-						@click="toggle"
+						@click="!nonEditable ? toggle() : (editDrawerActive = true)"
 					>
 						<VListItemIcon>
 							<div
@@ -241,12 +242,13 @@ function useURLImport() {
 							<VTextOverflow v-else class="placeholder" :text="$t('no_file_selected')" />
 						</VListItemContent>
 
-						<div class="item-actions">
+						<div v-if="!nonEditable" class="item-actions">
 							<template v-if="file">
 								<VIcon
-									v-tooltip="$t('edit_item')"
+									v-tooltip="!internalDisabled && $t('edit_item')"
 									name="edit"
 									clickable
+									:disabled="internalDisabled"
 									@click.stop="
 										deactivate();
 										editDrawerActive = true;
@@ -254,10 +256,10 @@ function useURLImport() {
 								/>
 
 								<VRemove
-									v-if="!internalDisabled"
 									:item-info="relationInfo"
 									:item-edits="edits"
 									deselect
+									:disabled="internalDisabled"
 									@action="remove"
 								/>
 							</template>
@@ -313,15 +315,12 @@ function useURLImport() {
 			@input="update"
 		>
 			<template #actions>
-				<VButton
-					secondary
-					rounded
-					icon
-					:download="file.filename_download"
+				<PrivateViewHeaderBarActionButton
+					icon="download"
 					:href="getAssetUrl(file.id, { isDownload: true })"
-				>
-					<VIcon name="download" />
-				</VButton>
+					:download="file.filename_download"
+					secondary
+				/>
 			</template>
 		</DrawerItem>
 

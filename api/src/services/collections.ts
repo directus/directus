@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-data';
+import { type BaseCollectionMeta, systemCollectionRows } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
@@ -30,10 +30,10 @@ import type { Collection } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
-import { FieldsService } from './fields.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
+import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 
 export class CollectionsService {

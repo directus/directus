@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VTextarea from '@/components/v-textarea.vue';
 import { computed } from 'vue';
+import VTextarea from '@/components/v-textarea.vue';
 
 const props = withDefaults(
 	defineProps<{

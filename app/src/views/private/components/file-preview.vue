@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import type { File } from '@directus/types';
+import { computed, toRef } from 'vue';
 import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import type { File } from '@directus/types';
-import { computed, toRef } from 'vue';
 
 export interface Props {
 	file: Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'>;
 	preset?: string | null;
 	inModal?: boolean;
+	disabled?: boolean;
+	nonEditable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), { preset: 'system-large-contain' });
@@ -124,7 +126,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		block-size: var(--input-height-tall);
+		block-size: var(--input-height-md);
 		border-radius: var(--theme--border-radius);
 	}
 

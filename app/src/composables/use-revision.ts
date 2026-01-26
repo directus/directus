@@ -1,11 +1,11 @@
+import { format, parseISO } from 'date-fns';
+import { Ref, ref, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import type { Revision } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { format, parseISO } from 'date-fns';
-import { Ref, ref, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export function useRevision(primaryKey: Ref<number | undefined>) {
 	const { t } = useI18n();

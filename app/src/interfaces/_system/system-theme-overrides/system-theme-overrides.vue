@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { Theme, useTheme } from '@directus/themes';
 import { clone, get, isEmpty, setWith, unset } from 'lodash';
 import { computed } from 'vue';
 import SystemThemeOverridesGroup from './SystemThemeOverridesGroup.vue';
 import type { SetValueFn } from './types.js';
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 
 defineOptions({
 	inheritAttrs: false,
@@ -57,7 +57,7 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	padding: var(--theme--form--field--input--padding);
 	border-radius: var(--theme--border-radius);
-	max-block-size: var(--input-height-max);
+	max-block-size: var(--input-height-xl);
 	overflow-y: auto;
 	background-color: var(--theme--form--field--input--background);
 	transition-duration: var(--fast);

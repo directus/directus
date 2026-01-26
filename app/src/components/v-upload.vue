@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import type { File, Filter } from '@directus/types';
+import { sum } from 'lodash';
+import type { Upload } from 'tus-js-client';
+import { computed, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -12,15 +17,11 @@ import VProgressLinear from '@/components/v-progress-linear.vue';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
-import type { File, Filter } from '@directus/types';
-import { sum } from 'lodash';
-import type { Upload } from 'tus-js-client';
-import { computed, onUnmounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export type UploadController = {
 	start(): void;
@@ -37,6 +38,7 @@ interface Props {
 	fromLibrary?: boolean;
 	folder?: string;
 	filter?: Filter;
+	disabled?: boolean;
 	accept?: string;
 }
 
@@ -52,6 +54,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const notificationsStore = useNotificationsStore();
+const { info } = useServerStore();
 
 let uploadController: Upload | null = null;
 
@@ -169,6 +172,7 @@ function useUpload() {
 				};
 
 				const uploadedFiles = await uploadFiles(Array.from(files), {
+					maxConcurrency: info.uploads?.maxConcurrency,
 					onProgressChange: (percentages) => {
 						newUpload.progress.value = Math.round(
 							(sum(fileSizes.map((total, i) => total * (percentages[i]! / 100))) / totalBytes) * 100,
@@ -374,7 +378,7 @@ defineExpose({ abort });
 	<div
 		data-dropzone
 		class="v-upload"
-		:class="{ dragging: dragging && fromUser, uploading }"
+		:class="{ dragging: dragging && fromUser, uploading, disabled }"
 		@dragenter.prevent="onDragEnter"
 		@dragover.prevent
 		@dragleave.prevent="onDragLeave"
@@ -399,7 +403,15 @@ defineExpose({ abort });
 
 		<template v-else>
 			<div class="actions">
-				<VButton v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+				<VButton
+					v-if="fromUser"
+					v-tooltip="!disabled && $t('click_to_browse')"
+					icon
+					rounded
+					secondary
+					:disabled
+					@click="openFileBrowser"
+				>
 					<input
 						ref="input"
 						class="browse"
@@ -413,20 +425,22 @@ defineExpose({ abort });
 				</VButton>
 				<VButton
 					v-if="fromLibrary"
-					v-tooltip="$t('choose_from_library')"
+					v-tooltip="!disabled && $t('choose_from_library')"
 					icon
 					rounded
 					secondary
+					:disabled
 					@click="activeDialog = 'choose'"
 				>
 					<VIcon name="folder_open" />
 				</VButton>
 				<VButton
 					v-if="fromUrl && fromUser"
-					v-tooltip="$t('import_from_url')"
+					v-tooltip="!disabled && $t('import_from_url')"
 					icon
 					rounded
 					secondary
+					:disabled
 					@click="activeDialog = 'url'"
 				>
 					<VIcon name="link" />
@@ -478,7 +492,7 @@ defineExpose({ abort });
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	min-block-size: var(--input-height-tall);
+	min-block-size: var(--input-height-md);
 	padding: 32px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
@@ -491,7 +505,11 @@ defineExpose({ abort });
 		color: inherit;
 	}
 
-	&:not(.uploading):hover {
+	&.disabled {
+		background-color: var(--theme--form--field--input--background-subdued);
+	}
+
+	&:not(.uploading):not(.disabled):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 }

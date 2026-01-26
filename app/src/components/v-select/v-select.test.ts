@@ -1,11 +1,11 @@
-import { Focus } from '@/__utils__/focus';
-import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import VList from '../v-list.vue';
 import VSelect from './v-select.vue';
+import { Focus } from '@/__utils__/focus';
+import type { GlobalMountOptions } from '@/__utils__/types';
 
 vi.mock('lodash', async () => {
 	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');

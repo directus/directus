@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Filter, PrimaryKey } from '@directus/types';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -13,11 +18,6 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { Filter, PrimaryKey } from '@directus/types';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
 
 type ValueItem = {
 	key: PrimaryKey;
@@ -193,7 +193,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 		>
 			<template #item="{ element }">
 				<VListItem block :disabled :non-editable :dense="displayItems.length > 4">
-					<VIcon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<VIcon v-if="!nonEditable" name="drag_handle" class="drag-handle" left :disabled @click.stop="() => {}" />
 
 					<RenderTemplate
 						:collection="selectedCollection"
@@ -205,7 +205,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 					<div class="spacer" />
 
 					<div v-if="!nonEditable" class="item-actions">
-						<VRemove v-if="!disabled" deselect @action="removeItem(element)" />
+						<VRemove deselect :disabled @action="removeItem(element)" />
 					</div>
 				</VListItem>
 			</template>
@@ -234,6 +234,10 @@ function onSort(sortedItems: Record<string, any>[]) {
 
 .v-list {
 	@include mixins.list-interface($deleteable: true);
+}
+
+.v-list-item.disabled:not(.non-editable) {
+	--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .item-actions {

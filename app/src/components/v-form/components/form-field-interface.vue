@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import type { ContentVersion } from '@directus/types';
+import { computed } from 'vue';
+import type { ComparisonContext, FormField } from '../types';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
 import VNotice from '@/components/v-notice.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useExtension } from '@/composables/use-extension';
 import InterfaceSystemRawEditor from '@/interfaces/_system/system-raw-editor/system-raw-editor.vue';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { computed } from 'vue';
-import type { ComparisonContext, FormField } from '../types';
 
 const props = defineProps<{
 	field: FormField;
@@ -23,6 +24,7 @@ const props = defineProps<{
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
 	direction?: string;
+	version?: ContentVersion | null;
 }>();
 
 defineEmits(['update:modelValue', 'setFieldValue']);
@@ -67,6 +69,7 @@ const value = computed(() =>
 				:batch-active="batchActive"
 				:comparison-mode="!!comparison"
 				:comparison-active="comparisonActive"
+				:comparison-side="comparison?.side"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"
@@ -76,6 +79,7 @@ const value = computed(() =>
 				:length="field.schema && field.schema.max_length"
 				:direction="direction"
 				:raw-editor-enabled="rawEditorEnabled"
+				:version
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
 			/>

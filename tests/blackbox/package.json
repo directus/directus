@@ -11,6 +11,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"ldapts": "catalog:",
 		"tus-js-client": "catalog:",
 		"@types/js-yaml": "catalog:",
 		"@types/lodash-es": "catalog:",

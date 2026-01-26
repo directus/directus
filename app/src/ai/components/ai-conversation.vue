@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VInfo from '@/components/v-info.vue';
-import VNotice from '@/components/v-notice.vue';
-import { useUserStore } from '@/stores/user';
 import { useScroll } from '@vueuse/core';
 import { computed, nextTick, onMounted, useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 import AiHeader from './ai-header.vue';
 import AiInput from './ai-input.vue';
 import AiMessageList from './ai-message-list.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
+import { useUserStore } from '@/stores/user';
 
 const aiStore = useAiStore();
 const userStore = useUserStore();
@@ -19,23 +19,23 @@ const hasProviders = computed(() => aiStore.models.length > 0);
 const emptyState = computed(() => {
 	if (!hasProviders.value && userStore.isAdmin) {
 		return {
-			title: 'ai.setup_ai_chat',
-			description: 'ai.setup_ai_chat_admin_description',
+			title: 'ai.setup_ai_assistant',
+			description: 'ai.setup_ai_assistant_admin_description',
 			showSettings: true,
 		};
 	}
 
 	if (!hasProviders.value) {
 		return {
-			title: 'ai.setup_ai_chat',
-			description: 'ai.setup_ai_chat_user_description',
+			title: 'ai.setup_ai_assistant',
+			description: 'ai.setup_ai_assistant_user_description',
 			showSettings: false,
 		};
 	}
 
 	if (aiStore.messages.length === 0) {
 		return {
-			title: 'ai.build_with_chat',
+			title: 'ai.build_with_assistant',
 			description: 'ai.responses_may_be_inaccurate',
 			showSettings: false,
 		};

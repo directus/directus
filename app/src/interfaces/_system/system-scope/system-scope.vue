@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VSelect from '@/components/v-select/v-select.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: string | null;
