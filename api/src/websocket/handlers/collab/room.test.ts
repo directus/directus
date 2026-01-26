@@ -2,7 +2,6 @@ import { randomUUID } from 'node:crypto';
 import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
@@ -17,14 +16,6 @@ vi.mock('../../../database/index.js', () => ({
 		where: vi.fn().mockReturnThis(),
 		first: vi.fn().mockReturnThis(),
 	})),
-}));
-
-vi.mock('../../../emitter.js', () => ({
-	default: {
-		onAction: vi.fn(),
-		offAction: vi.fn(),
-		emitAction: vi.fn(),
-	},
 }));
 
 vi.mock('../../../logger/index.js', () => ({
@@ -264,7 +255,7 @@ describe('RoomManager', () => {
 		expect(mockData.has(`${room.uid}:uid`)).toBeTruthy();
 	});
 
-	test('dispose removes listeners', async () => {
+	test('dispose removes listener', async () => {
 		const roomManager = new RoomManager(mockMessenger);
 		const room = await roomManager.createRoom('a', getTestItem(), null);
 		const client = mockWebSocketClient({ uid: 'abc' });
@@ -273,7 +264,6 @@ describe('RoomManager', () => {
 
 		room.dispose();
 
-		expect(emitter.offAction).toHaveBeenCalledWith('a.items.update', expect.any(Function));
 		expect(mockMessenger.removeRoomListener).toHaveBeenCalledWith(room.uid);
 	});
 
@@ -720,13 +710,13 @@ describe('room', () => {
 
 		await room.join(clientA);
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
-
 		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Updated' }) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
 		// Simulate external update
-		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
 
 		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
 			'abc',
@@ -748,14 +738,14 @@ describe('room', () => {
 		// Pre-populate some changes
 		mockData.set(`${uid}:changes`, { title: 'Pending', stale: 'Gone' });
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
-
 		// Return item WITHOUT 'stale' field
 		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Updated' }) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
 		// Simulate external update
-		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
 
 		const updatedChanges = mockData.get(`${uid}:changes`);
 		expect(updatedChanges).toEqual({ title: 'Pending' }); // 'stale' should be removed
@@ -772,12 +762,12 @@ describe('room', () => {
 
 		mockData.set(`${uid}:changes`, { title: 'Saved Title', status: 'draft' });
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
-
 		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Saved Title', status: 'published' }) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
-		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
 
 		const updatedChanges = mockData.get(`${uid}:changes`);
 		expect(updatedChanges).toEqual({ status: 'draft' });
@@ -798,8 +788,6 @@ describe('room', () => {
 			author: { id: 5, name: 'John' },
 		});
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
-
 		const mockService = {
 			readOne: vi.fn().mockResolvedValue({
 				id: item,
@@ -811,7 +799,9 @@ describe('room', () => {
 
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
-		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
 
 		const updatedChanges = mockData.get(`${uid}:changes`);
 		expect(updatedChanges).toEqual({ title: 'Keep' });
@@ -827,12 +817,10 @@ describe('room', () => {
 
 		await room.join(clientA);
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
-
 		const mockService = { readOne: vi.fn().mockResolvedValue({ id: itemNum, title: 'Updated' }) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
-		await onUpdateHandler({ keys: [itemNum], collection: 'coll' }, {
+		await room.onUpdateHandler({ keys: [itemNum], collection: 'coll' }, {
 			accountability: { user: 'external-user' },
 		} as any);
 
@@ -845,7 +833,9 @@ describe('room', () => {
 
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
-		await onUpdateHandler({ keys: [99], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+		await room.onUpdateHandler({ keys: [99], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
 
 		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
 	});
@@ -863,13 +853,11 @@ describe('room', () => {
 
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
-
 		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item }) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
 		// Simulate update by same user
-		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'user-a' } } as any);
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'user-a' } } as any);
 
 		expect(mockMessenger.sendClient).toHaveBeenCalled();
 	});
@@ -883,8 +871,6 @@ describe('room', () => {
 
 		await room.join(clientA);
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'coll.items.update')![1];
-
 		const mockService = { readOne: vi.fn().mockRejectedValue(new Error('Service Failure')) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
@@ -892,7 +878,9 @@ describe('room', () => {
 		const errorSpy = vi.spyOn(logger, 'error');
 
 		// Simulate external update
-		await onUpdateHandler({ keys: [item], collection: 'coll' }, { accountability: { user: 'external-user' } } as any);
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
 
 		expect(errorSpy).toHaveBeenCalledWith(expect.any(Error), expect.stringContaining('External update handler failed'));
 	});
@@ -906,12 +894,10 @@ describe('room', () => {
 
 		await room.join(clientA);
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'users.update')![1];
-
 		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, title: 'Updated' }) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
-		await onUpdateHandler({ keys: [item], collection: 'directus_users' }, {
+		await room.onUpdateHandler({ keys: [item], collection: 'directus_users' }, {
 			accountability: { user: 'external-user' },
 		} as any);
 
@@ -1174,11 +1160,7 @@ describe('room', () => {
 			}
 		});
 
-		const onDeleteHandler = vi
-			.mocked(emitter.onAction)
-			.mock.calls.find((call) => call[0] === 'articles.items.delete')![1];
-
-		await onDeleteHandler({ keys: ['1'], collection: 'articles' }, {} as any);
+		await room.onDeleteHandler({ keys: ['1'], collection: 'articles' }, {} as any);
 
 		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
 			1,
@@ -1190,8 +1172,7 @@ describe('room', () => {
 		);
 
 		// Room should be disposed with listeners removed
-		expect(emitter.offAction).toHaveBeenCalledWith('articles.items.update', expect.any(Function));
-		expect(emitter.offAction).toHaveBeenCalledWith('articles.items.delete', expect.any(Function));
+		expect(mockMessenger.removeRoomListener).toHaveBeenCalledWith(room.uid);
 	});
 
 	test('ignores delete event for other items', async () => {
@@ -1206,11 +1187,7 @@ describe('room', () => {
 
 		await room.join(client);
 
-		const onDeleteHandler = vi
-			.mocked(emitter.onAction)
-			.mock.calls.find((call) => call[0] === 'articles.items.delete')![1];
-
-		await onDeleteHandler({ keys: ['2'], collection: 'articles' }, {} as any);
+		await room.onDeleteHandler({ keys: ['2'], collection: 'articles' }, {} as any);
 
 		expect(mockMessenger.sendClient).not.toHaveBeenCalledWith(
 			1,
@@ -1309,32 +1286,6 @@ describe('versioned room', () => {
 		expect(room.version).toBe(versionId);
 	});
 
-	test('registers versions.update and versions.delete listeners for versioned rooms', () => {
-		const item = getTestItem();
-		const versionId = randomUUID();
-		const uid = getRoomHash('coll', item, versionId);
-		new Room(uid, 'coll', item, versionId, {}, mockMessenger);
-
-		const onActionCalls = vi.mocked(emitter.onAction).mock.calls;
-		const versionsUpdateCall = onActionCalls.find((call) => call[0] === 'versions.update');
-		const versionsDeleteCall = onActionCalls.find((call) => call[0] === 'versions.delete');
-
-		expect(versionsUpdateCall).toBeDefined();
-		expect(versionsDeleteCall).toBeDefined();
-	});
-
-	test('does not register item update listener for versioned rooms', () => {
-		const item = getTestItem();
-		const versionId = randomUUID();
-		const uid = getRoomHash('coll', item, versionId);
-		new Room(uid, 'coll', item, versionId, {}, mockMessenger);
-
-		const onActionCalls = vi.mocked(emitter.onAction).mock.calls;
-		const itemUpdateCall = onActionCalls.find((call) => call[0] === 'coll.items.update');
-
-		expect(itemUpdateCall).toBeUndefined();
-	});
-
 	test('onUpdateHandler filters by version ID', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const item = getTestItem();
@@ -1345,15 +1296,13 @@ describe('versioned room', () => {
 
 		await room.join(clientA);
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'versions.update')![1];
-
 		const mockService = { readOne: vi.fn().mockResolvedValue({ delta: { title: 'Updated' } }) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
 		// Matching version
-		await onUpdateHandler({ keys: [versionId] }, {} as any);
+		await room.onUpdateHandler({ keys: [versionId] }, {} as any);
 
 		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
 			'abc',
@@ -1365,7 +1314,7 @@ describe('versioned room', () => {
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
 		// Non-matching version
-		await onUpdateHandler({ keys: [randomUUID()] }, {} as any);
+		await room.onUpdateHandler({ keys: [randomUUID()] }, {} as any);
 
 		expect(mockMessenger.sendClient).not.toHaveBeenCalled();
 	});
@@ -1380,11 +1329,9 @@ describe('versioned room', () => {
 
 		await room.join(clientA);
 
-		const onDeleteHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'versions.delete')![1];
-
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
-		await onDeleteHandler({ keys: [versionId], collection: 'directus_versions' }, {} as any);
+		await room.onDeleteHandler({ keys: [versionId], collection: 'directus_versions' }, {} as any);
 
 		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
 			'abc',
@@ -1406,12 +1353,10 @@ describe('versioned room', () => {
 
 		mockData.set(`${uid}:changes`, { title: 'Pending Title', status: 'draft' });
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'versions.update')![1];
-
 		const mockService = { readOne: vi.fn().mockResolvedValue({ delta: { title: 'Saved Title' } }) };
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
-		await onUpdateHandler({ keys: [versionId] }, {} as any);
+		await room.onUpdateHandler({ keys: [versionId] }, {} as any);
 
 		const updatedChanges = mockData.get(`${uid}:changes`);
 
@@ -1430,22 +1375,20 @@ describe('versioned room', () => {
 
 		mockData.set(`${uid}:changes`, { title: 'Saved Title', status: 'draft' });
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'versions.update')![1];
-
 		const mockService = {
 			readOne: vi.fn().mockResolvedValue({ delta: { title: 'Saved Title', status: 'published' } }),
 		};
 
 		vi.mocked(getService).mockReturnValue(mockService as any);
 
-		await onUpdateHandler({ keys: [versionId] }, {} as any);
+		await room.onUpdateHandler({ keys: [versionId] }, {} as any);
 
 		const updatedChanges = mockData.get(`${uid}:changes`);
 
 		expect(updatedChanges).toEqual({ status: 'draft' });
 	});
 
-	test('disposes version event listeners correctly', () => {
+	test('disposes room correctly', () => {
 		const item = getTestItem();
 		const versionId = randomUUID();
 		const uid = getRoomHash('coll', item, versionId);
@@ -1453,12 +1396,7 @@ describe('versioned room', () => {
 
 		room.dispose();
 
-		const offActionCalls = vi.mocked(emitter.offAction).mock.calls;
-		const versionsUpdateOff = offActionCalls.find((call) => call[0] === 'versions.update');
-		const versionsDeleteOff = offActionCalls.find((call) => call[0] === 'versions.delete');
-
-		expect(versionsUpdateOff).toBeDefined();
-		expect(versionsDeleteOff).toBeDefined();
+		expect(mockMessenger.removeRoomListener).toHaveBeenCalledWith(room.uid);
 	});
 });
 
@@ -1504,8 +1442,9 @@ describe('numeric primary keys', () => {
 			readOne: vi.fn().mockResolvedValue({ id: 123, title: 'Updated' }),
 		} as any);
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'posts.items.update')![1];
-		await onUpdateHandler({ keys: [123], collection: 'posts' }, { accountability: { user: 'external-user' } } as any);
+		await room.onUpdateHandler({ keys: [123], collection: 'posts' }, {
+			accountability: { user: 'external-user' },
+		} as any);
 
 		expect(mockMessenger.sendClient).toHaveBeenCalledWith('abc', expect.objectContaining({ action: 'save' }));
 	});
@@ -1521,8 +1460,9 @@ describe('numeric primary keys', () => {
 			readOne: vi.fn().mockResolvedValue({ id: 123, title: 'Updated' }),
 		} as any);
 
-		const onUpdateHandler = vi.mocked(emitter.onAction).mock.calls.find((call) => call[0] === 'posts.items.update')![1];
-		await onUpdateHandler({ keys: ['123'], collection: 'posts' }, { accountability: { user: 'external-user' } } as any);
+		await room.onUpdateHandler({ keys: ['123'], collection: 'posts' }, {
+			accountability: { user: 'external-user' },
+		} as any);
 
 		expect(mockMessenger.sendClient).toHaveBeenCalledWith('abc', expect.objectContaining({ action: 'save' }));
 	});

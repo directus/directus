@@ -199,7 +199,7 @@ describe('validateChanges', () => {
 				};
 
 				await expect(validateChanges(payload, 'articles', 1, mockContext)).rejects.toThrow(
-					'No permission to update field malicious or field does not exist',
+					'No permission to update field create or field does not exist',
 				);
 			});
 		});

@@ -1,6 +1,5 @@
 import { createHash } from 'crypto';
 import { ErrorCode } from '@directus/errors';
-import { isSystemCollection } from '@directus/system-data';
 import { type Accountability, type Item, type PrimaryKey, type WebSocketClient, WS_TYPE } from '@directus/types';
 import {
 	ACTION,
@@ -13,7 +12,6 @@ import {
 import { isDetailedUpdateSyntax } from '@directus/utils';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
-import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
@@ -293,18 +291,6 @@ export class Room {
 
 			await this.close({ force: true });
 		};
-
-		const eventPrefix = isSystemCollection(collection) ? collection.substring(9) : `${collection}.items`;
-
-		// React to external updates (eg: REST API) to sync connected clients
-		if (version) {
-			emitter.onAction('versions.update', this.onUpdateHandler);
-			emitter.onAction('versions.delete', this.onDeleteHandler);
-		} else {
-			emitter.onAction(`${eventPrefix}.update`, this.onUpdateHandler);
-		}
-
-		emitter.onAction(`${eventPrefix}.delete`, this.onDeleteHandler);
 	}
 
 	/**
@@ -699,17 +685,6 @@ export class Room {
 	}
 
 	dispose() {
-		const eventPrefix = isSystemCollection(this.collection) ? this.collection.substring(9) : `${this.collection}.items`;
-
-		if (this.version) {
-			emitter.offAction('versions.update', this.onUpdateHandler);
-			emitter.offAction('versions.delete', this.onDeleteHandler);
-		} else {
-			emitter.offAction(`${eventPrefix}.update`, this.onUpdateHandler);
-		}
-
-		emitter.offAction(`${eventPrefix}.delete`, this.onDeleteHandler);
-
 		this.messenger.removeRoomListener(this.uid);
 	}
 }

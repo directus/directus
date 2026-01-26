@@ -71,28 +71,31 @@ export class CollabHandler {
 	}
 
 	bindWebSocket() {
-		const handleSettingsUpdate = () => {
-			// Non-blocking initialization to avoid bus congestion
-			this.initialize(true).then(() => {
-				if (!this.enabled) {
-					try {
-						useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Collaboration disabled, terminating all rooms`);
-						this.roomManager.terminateAll();
-					} catch (err) {
-						useLogger().error(err, '[Collab] Collaboration disabling terminateAll failed');
-					}
-				}
-			});
-		};
-
-		// Listen for settings changes via local emitter
-		emitter.onAction('settings.update', handleSettingsUpdate);
-
-		// Listen for all system events via bus
+		/**
+		 * Listen for all system events via bus to ensure once-only delivery and consistency across instances
+		 *
+		 * Local updates:
+		 * Service -> Emitter -> Hooks -> Bus -> CollabHandler -> Room -> Local Clients
+		 *
+		 * Remote updates:
+		 * Service (Node B) -> Emitter (Node B) -> Hooks (Node B) -> Bus -> CollabHandler (Node A) -> Room (Node A) -> Remote Clients
+		 */
 		this.messenger.messenger.subscribe('websocket.event', (event: any) => {
 			if (event.collection === 'directus_settings' && event.action === 'update') {
 				useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
-				handleSettingsUpdate();
+
+				// Non-blocking initialization to avoid bus congestion
+				this.initialize(true).then(() => {
+					if (!this.enabled) {
+						try {
+							useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Collaboration disabled, terminating all rooms`);
+							this.roomManager.terminateAll();
+						} catch (err) {
+							useLogger().error(err, '[Collab] Collaboration disabling terminateAll failed');
+						}
+					}
+				});
+
 				return;
 			}
 
@@ -127,7 +130,10 @@ export class CollabHandler {
 					return;
 				}
 
-				for (const key of keys) {
+				// Ensure singleton rooms (null) are notified of changes
+				const keysToCheck = Array.from(new Set([...keys, null]));
+
+				for (const key of keysToCheck) {
 					const roomUid = getRoomHash(event.collection, key, null);
 					const room = this.roomManager.rooms[roomUid];
 
@@ -136,7 +142,7 @@ export class CollabHandler {
 							`[Collab] [Node ${this.messenger.uid}] Forwarding distributed ${event.action} to local room ${roomUid}`,
 						);
 
-						const singleKeyedEvent = { ...event, keys: [key] };
+						const singleKeyedEvent = { ...event, keys: key === null ? keys : [key] };
 
 						if (event.action === 'delete') {
 							room.onDeleteHandler(singleKeyedEvent);
