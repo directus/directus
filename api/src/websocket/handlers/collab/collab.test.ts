@@ -763,7 +763,7 @@ describe('CollabHandler', () => {
 			const mockRoom = { onUpdateHandler: vi.fn(), uid: 'room-uid' };
 			handler.roomManager.rooms['articles_1_null'] = mockRoom as any;
 
-			busCallback({
+			await busCallback({
 				collection: 'articles',
 				action: 'update',
 				key: 1,
@@ -780,7 +780,7 @@ describe('CollabHandler', () => {
 			const mockRoom = { onDeleteHandler: vi.fn(), uid: 'room-uid' };
 			handler.roomManager.rooms['articles_1_null'] = mockRoom as any;
 
-			busCallback({
+			await busCallback({
 				collection: 'articles',
 				action: 'delete',
 				payload: [1],
@@ -800,7 +800,7 @@ describe('CollabHandler', () => {
 			handler.roomManager.rooms['room1'] = mockRoom1 as any;
 			handler.roomManager.rooms['room2'] = mockRoom2 as any;
 
-			busCallback({
+			await busCallback({
 				collection: 'directus_versions',
 				action: 'update',
 				keys: ['v1'],
@@ -824,7 +824,7 @@ describe('CollabHandler', () => {
 			// Avoid setInterval infinite loop
 			vi.useRealTimers();
 
-			busCallback({
+			await busCallback({
 				collection: 'directus_settings',
 				action: 'update',
 				payload: { collaboration: false },
@@ -857,7 +857,7 @@ describe('CollabHandler', () => {
 			// Avoid setInterval infinite loop
 			vi.useRealTimers();
 
-			busCallback({
+			await busCallback({
 				collection: 'directus_settings',
 				action: 'update',
 				payload: { collaboration: true },
@@ -879,7 +879,7 @@ describe('CollabHandler', () => {
 		test('ignores unknown collections or actions', async () => {
 			const terminateSpy = vi.spyOn(handler.roomManager, 'terminateAll');
 
-			busCallback({
+			await busCallback({
 				collection: 'unknown',
 				action: 'unknown',
 			});

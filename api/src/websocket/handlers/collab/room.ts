@@ -273,23 +273,27 @@ export class Room {
 		};
 
 		this.onDeleteHandler = async (meta) => {
-			const { keys, collection: eventCollection } = meta as { keys: PrimaryKey[]; collection: string };
+			try {
+				const { keys, collection: eventCollection } = meta as { keys: PrimaryKey[]; collection: string };
 
-			// Skip deletions for different versions
-			const isVersionMatch =
-				this.version && eventCollection === 'directus_versions' && keys.some((key) => String(key) === this.version);
+				// Skip deletions for different versions
+				const isVersionMatch =
+					this.version && eventCollection === 'directus_versions' && keys.some((key) => String(key) === this.version);
 
-			// Skip deletions for different items (singletons have item=null)
-			const isItemMatch =
-				eventCollection === collection && (item === null || keys.some((key) => String(key) === String(item)));
+				// Skip deletions for different items (singletons have item=null)
+				const isItemMatch =
+					eventCollection === collection && (item === null || keys.some((key) => String(key) === String(item)));
 
-			if (!isVersionMatch && !isItemMatch) return;
+				if (!isVersionMatch && !isItemMatch) return;
 
-			this.sendAll({
-				action: ACTION.SERVER.DELETE,
-			});
+				await this.sendAll({
+					action: ACTION.SERVER.DELETE,
+				});
 
-			await this.close({ force: true });
+				await this.close({ force: true });
+			} catch (err) {
+				useLogger().error(err, `[Collab] External delete handler failed for ${collection}/${item ?? 'singleton'}`);
+			}
 		};
 	}
 

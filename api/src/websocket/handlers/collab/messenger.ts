@@ -49,6 +49,8 @@ export class Messenger {
 			const instances = await store.get('instances');
 			instances[this.uid] = { clients: [], rooms: [] };
 			await store.set('instances', instances);
+		}).catch((err) => {
+			useLogger().error(err, '[Collab] Failed to register instance in registry');
 		});
 
 		this.messenger.subscribe(COLLAB_BUS, (message: BroadcastMessage) => {
@@ -101,6 +103,8 @@ export class Messenger {
 			instances[this.uid]!.clients = [...(instances[this.uid]!.clients ?? []), client.uid];
 
 			await store.set('instances', instances);
+		}).catch((err) => {
+			useLogger().error(err, `[Collab] Failed to add client ${client.uid} to registry`);
 		});
 
 		client.on('close', () => {
@@ -122,6 +126,8 @@ export class Messenger {
 
 				await store.set('instances', instances);
 			}
+		}).catch((err) => {
+			useLogger().error(err, `[Collab] Failed to remove client ${uid} from registry`);
 		});
 	}
 

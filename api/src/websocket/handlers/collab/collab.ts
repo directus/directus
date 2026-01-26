@@ -80,77 +80,88 @@ export class CollabHandler {
 		 * Remote updates:
 		 * Service (Node B) -> Emitter (Node B) -> Hooks (Node B) -> Bus -> CollabHandler (Node A) -> Room (Node A) -> Remote Clients
 		 */
-		this.messenger.messenger.subscribe('websocket.event', (event: any) => {
-			if (event.collection === 'directus_settings' && event.action === 'update') {
-				useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
+		this.messenger.messenger.subscribe('websocket.event', async (event: any) => {
+			try {
+				if (event.collection === 'directus_settings' && event.action === 'update') {
+					useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
 
-				// Non-blocking initialization to avoid bus congestion
-				this.initialize(true).then(() => {
-					if (!this.enabled) {
-						try {
-							useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Collaboration disabled, terminating all rooms`);
-							this.roomManager.terminateAll();
-						} catch (err) {
-							useLogger().error(err, '[Collab] Collaboration disabling terminateAll failed');
-						}
-					}
-				});
+					// Non-blocking initialization to avoid bus congestion
+					this.initialize(true)
+						.then(() => {
+							if (!this.enabled) {
+								try {
+									useLogger().debug(
+										`[Collab] [Node ${this.messenger.uid}] Collaboration disabled, terminating all rooms`,
+									);
 
-				return;
-			}
-
-			if (event.action === 'update' || event.action === 'delete') {
-				let keys: (string | number)[] = [];
-
-				if (Array.isArray(event.keys)) {
-					keys = event.keys;
-				} else if (event.key) {
-					keys = [event.key];
-				} else if (event.payload && event.action === 'delete') {
-					keys = Array.isArray(event.payload) ? event.payload : [event.payload];
-				}
-
-				event.keys = keys;
-
-				if (event.collection === 'directus_versions') {
-					for (const room of Object.values(this.roomManager.rooms)) {
-						if (room.version && keys.some((key) => String(key) === room.version)) {
-							useLogger().debug(
-								`[Collab] [Node ${this.messenger.uid}] Forwarding distributed version ${event.action} to local room ${room.uid}`,
-							);
-
-							if (event.action === 'delete') {
-								room.onDeleteHandler(event);
-							} else {
-								room.onUpdateHandler(event);
+									this.roomManager.terminateAll();
+								} catch (err) {
+									useLogger().error(err, '[Collab] Collaboration disabling terminateAll failed');
+								}
 							}
-						}
-					}
+						})
+						.catch((err) => {
+							useLogger().error(err, '[Collab] Collaboration re-initialization failed');
+						});
 
 					return;
 				}
 
-				// Ensure singleton rooms (null) are notified of changes
-				const keysToCheck = Array.from(new Set([...keys, null]));
+				if (event.action === 'update' || event.action === 'delete') {
+					let keys: (string | number)[] = [];
 
-				for (const key of keysToCheck) {
-					const roomUid = getRoomHash(event.collection, key, null);
-					const room = this.roomManager.rooms[roomUid];
+					if (Array.isArray(event.keys)) {
+						keys = event.keys;
+					} else if (event.key) {
+						keys = [event.key];
+					} else if (event.payload && event.action === 'delete') {
+						keys = Array.isArray(event.payload) ? event.payload : [event.payload];
+					}
 
-					if (room) {
-						useLogger().debug(
-							`[Collab] [Node ${this.messenger.uid}] Forwarding distributed ${event.action} to local room ${roomUid}`,
-						);
+					event.keys = keys;
 
-						const singleKeyedEvent = { ...event, keys: key === null ? keys : [key] };
+					if (event.collection === 'directus_versions') {
+						for (const room of Object.values(this.roomManager.rooms)) {
+							if (room.version && keys.some((key) => String(key) === room.version)) {
+								useLogger().debug(
+									`[Collab] [Node ${this.messenger.uid}] Forwarding distributed version ${event.action} to local room ${room.uid}`,
+								);
 
-						if (event.action === 'delete') {
-							room.onDeleteHandler(singleKeyedEvent);
-						} else {
-							room.onUpdateHandler(singleKeyedEvent);
+								if (event.action === 'delete') {
+									await room.onDeleteHandler(event);
+								} else {
+									await room.onUpdateHandler(event);
+								}
+							}
+						}
+
+						return;
+					}
+
+					// Ensure singleton rooms (null) are notified of changes
+					const keysToCheck = Array.from(new Set([...keys, null]));
+
+					for (const key of keysToCheck) {
+						const roomUid = getRoomHash(event.collection, key, null);
+						const room = this.roomManager.rooms[roomUid];
+
+						if (room) {
+							useLogger().debug(
+								`[Collab] [Node ${this.messenger.uid}] Forwarding distributed ${event.action} to local room ${roomUid}`,
+							);
+
+							const singleKeyedEvent = { ...event, keys: key === null ? keys : [key] };
+
+							if (event.action === 'delete') {
+								await room.onDeleteHandler(singleKeyedEvent);
+							} else {
+								await room.onUpdateHandler(singleKeyedEvent);
+							}
 						}
 					}
 				}
+			} catch (err) {
+				useLogger().error(err, `[Collab] Bus message processing failed for ${event.collection}/${event.action}`);
 			}
 		});
 
@@ -211,21 +222,25 @@ export class CollabHandler {
 		});
 
 		setInterval(async () => {
-			// Remove local clients that are no longer in the global registry
-			const clients = await this.messenger.getGlobalClients();
-			const roomClients = (await this.roomManager.getAllRoomClients()).map((client) => client.uid);
-			const invalidClients = difference(roomClients, clients);
+			try {
+				// Remove local clients that are no longer in the global registry
+				const clients = await this.messenger.getGlobalClients();
+				const roomClients = (await this.roomManager.getAllRoomClients()).map((client) => client.uid);
+				const invalidClients = difference(roomClients, clients);
 
-			for (const client of invalidClients) {
-				const rooms = await this.roomManager.getClientRooms(client);
+				for (const client of invalidClients) {
+					const rooms = await this.roomManager.getClientRooms(client);
 
-				for (const room of rooms) {
-					useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.uid}`);
-					await room.leave(client);
+					for (const room of rooms) {
+						useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.uid}`);
+						await room.leave(client);
+					}
 				}
-			}
 
-			await this.roomManager.cleanupRooms();
+				await this.roomManager.cleanupRooms();
+			} catch (err) {
+				useLogger().error(err, '[Collab] Local cleanup interval failed');
+			}
 		}, LOCAL_CLEANUP_INTERVAL);
 	}
 
