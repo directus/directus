@@ -1,5 +1,9 @@
 import type { ChatContext } from '../models/chat-request.js';
 
+function sanitizeForXml(text: string): string {
+	return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 interface VisualElementData {
 	collection?: string;
 	item?: unknown;
@@ -43,8 +47,11 @@ function groupAttachments(attachments: Attachment[]): GroupedAttachments {
 function formatVisualElement(att: Attachment): string {
 	const data = att.data as VisualElementData;
 	const fields = data.fields?.length ? data.fields.join(', ') : 'all';
+	const collection = sanitizeForXml(String(data.collection ?? ''));
+	const item = sanitizeForXml(String(data.item ?? ''));
+	const display = sanitizeForXml(att.display);
 
-	return `### ${data.collection}/${data.item} — "${att.display}"
+	return `### ${collection}/${item} — "${display}"
 Editable fields: ${fields}
 \`\`\`json
 ${JSON.stringify(att.snapshot, null, 2)}
@@ -54,26 +61,30 @@ ${JSON.stringify(att.snapshot, null, 2)}
 function formatPrompt(att: Attachment): string {
 	const snapshot = att.snapshot as PromptSnapshot;
 	const lines: string[] = [];
+	const display = sanitizeForXml(att.display);
 
 	if (snapshot.text) {
-		lines.push(snapshot.text);
+		lines.push(sanitizeForXml(snapshot.text));
 	}
 
 	if (snapshot.messages?.length) {
 		lines.push('\n### Example Exchange');
 
 		for (const msg of snapshot.messages) {
-			lines.push(`**${msg.role}**: ${msg.text}`);
+			const role = sanitizeForXml(msg.role);
+			const text = sanitizeForXml(msg.text);
+			lines.push(`**${role}**: ${text}`);
 		}
 	}
 
-	return `### ${att.display}\n${lines.join('\n')}`;
+	return `### ${display}\n${lines.join('\n')}`;
 }
 
 function formatItem(att: Attachment): string {
 	const data = att.data as { collection?: string };
-	const collectionLabel = data.collection ? ` (${data.collection})` : '';
-	return `[Item: ${att.display}${collectionLabel}]\n${JSON.stringify(att.snapshot, null, 2)}`;
+	const display = sanitizeForXml(att.display);
+	const collectionLabel = data.collection ? ` (${sanitizeForXml(data.collection)})` : '';
+	return `[Item: ${display}${collectionLabel}]\n${JSON.stringify(att.snapshot, null, 2)}`;
 }
 
 /**
