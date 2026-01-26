@@ -64,7 +64,6 @@ export const ClientMessage = z.discriminatedUnion('action', [
 	}),
 	BaseClientMessage.extend({
 		action: z.literal(ACTION.CLIENT.DISCARD),
-		fields: z.array(z.string()),
 	}),
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
@@ -147,7 +146,7 @@ export type BaseServerMessage =
 	| {
 			action: typeof ACTION.SERVER.UPDATE;
 			field: string;
-			changes?: unknown;
+			changes: unknown;
 	  }
 	| {
 			action: typeof ACTION.SERVER.FOCUS;

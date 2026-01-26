@@ -308,13 +308,9 @@ export function useCollab(
 			return;
 		}
 
-		if ('changes' in message) {
-			if (!isEqual(message.changes, edits.value[message.field])) {
-				// Can't directly assign message.changes here because edits can be a computed value
-				edits.value = { ...edits.value, [message.field]: message.changes };
-			}
-		} else {
-			delete edits.value[message.field];
+		if (!isEqual(message.changes, edits.value[message.field])) {
+			// Can't directly assign message.changes here because edits can be a computed value
+			edits.value = { ...edits.value, [message.field]: message.changes };
 		}
 	}
 

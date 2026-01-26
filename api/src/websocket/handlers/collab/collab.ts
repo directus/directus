@@ -486,9 +486,7 @@ export class CollabHandler {
 			});
 		}
 
-		await this.checkFieldsAccess(client, room, message.fields, 'discard');
-
-		await room.discard(message.fields);
+		await room.discard(client.accountability!);
 	}
 
 	/**

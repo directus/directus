@@ -531,8 +531,8 @@ export class Room {
 			if (field && allowedFields !== null && !isFieldAllowed(allowedFields, field)) continue;
 
 			this.send(client.uid, {
-				action: ACTION.SERVER.UPDATE,
-				field: field,
+				action: ACTION.SERVER.DISCARD,
+				fields: [field],
 			});
 		}
 	}
@@ -540,15 +540,29 @@ export class Room {
 	/**
 	 * Discard specified changes in the room and propagate to other clients
 	 */
-	async discard(fields: string[]): Promise<void> {
-		await this.store(async (store) => {
+	async discard(accountability: Accountability): Promise<void> {
+		const schema = await getSchema();
+		const knex = getDatabase();
+
+		const fields = await this.store(async (store) => {
 			const changes = await store.get('changes');
+
+			const fields = Object.keys(
+				(await sanitizePayload(changes, this.collection, {
+					accountability: accountability,
+					schema,
+					knex,
+					itemId: this.item,
+				})) || {},
+			);
 
 			for (const field of fields) {
 				delete changes[field];
 			}
 
 			await store.set('changes', changes);
+
+			return fields;
 		});
 
 		await this.sendAll({
