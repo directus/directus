@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
-import { difference, upperFirst } from 'lodash-es';
+import { difference, isEmpty, upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
@@ -414,6 +414,8 @@ export class CollabHandler {
 	 */
 	async onUpdateAll(client: WebSocketClient, message: UpdateAllMessage) {
 		await this.ensureEnabled();
+
+		if (isEmpty(message.changes)) return;
 
 		const room = await this.roomManager.getRoom(message.room);
 
