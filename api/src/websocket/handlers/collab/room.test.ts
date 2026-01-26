@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import type { WebSocketClient } from '@directus/types';
+import type { Accountability, WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../../../logger/index.js';
@@ -600,7 +600,9 @@ describe('room', () => {
 
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
-		await room.discard(['title']);
+		vi.mocked(verifyPermissions).mockRejectedValueOnce(['title']);
+
+		await room.discard({} as Accountability);
 
 		expect(mockData.get(`${uid}:changes`)).toEqual({ status: 'Draft' });
 

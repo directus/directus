@@ -547,14 +547,9 @@ export class Room {
 		const fields = await this.store(async (store) => {
 			const changes = await store.get('changes');
 
-			const fields = Object.keys(
-				(await sanitizePayload(changes, this.collection, {
-					accountability: accountability,
-					schema,
-					knex,
-					itemId: this.item,
-				})) || {},
-			);
+			const fields = await verifyPermissions(accountability, this.collection, this.item, 'read', { knex, schema });
+
+			if (!fields || fields.length === 0) return [];
 
 			for (const field of fields) {
 				delete changes[field];
@@ -564,6 +559,8 @@ export class Room {
 
 			return fields;
 		});
+
+		if (fields.length === 0) return;
 
 		await this.sendAll({
 			action: ACTION.SERVER.DISCARD,
