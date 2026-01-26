@@ -595,14 +595,14 @@ describe('room', () => {
 		await room.join(clientA);
 		await room.join(clientB);
 
-		await room.update(clientA, { title: 'Changed', status: 'Draft' });
-		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed', status: 'Draft' });
+		await room.update(clientA, { title: 'Changed', status: 'Draft', test: 123 });
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed', status: 'Draft', test: 123 });
 
 		vi.mocked(mockMessenger.sendClient).mockClear();
 
-		vi.mocked(verifyPermissions).mockResolvedValueOnce(['title']);
+		vi.mocked(verifyPermissions).mockResolvedValue(['title', 'status']);
 
-		await room.discard({} as Accountability);
+		await room.discard(['title', 'test']);
 
 		expect(mockData.get(`${uid}:changes`)).toEqual({ status: 'Draft' });
 

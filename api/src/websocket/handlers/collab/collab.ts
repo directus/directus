@@ -488,7 +488,18 @@ export class CollabHandler {
 			});
 		}
 
-		await room.discard(client.accountability!);
+		const knex = getDatabase();
+		const schema = await getSchema();
+
+		const fields = await verifyPermissions(client.accountability, room.collection, room.item, 'read', { knex, schema });
+
+		if (!fields) {
+			throw new ForbiddenError({
+				reason: `No permission to discard fields ${fields} or field does not exist`,
+			});
+		}
+
+		await room.discard(fields);
 	}
 
 	/**
