@@ -19,6 +19,7 @@ const require = createRequire(import.meta.url);
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
+let deploymentCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
 let messengerSubscribed = false;
 
@@ -53,6 +54,7 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 export function getCache(): {
 	cache: Keyv | null;
 	systemCache: Keyv;
+	deploymentCache: Keyv;
 	localSchemaCache: Keyv;
 	lockCache: Keyv;
 } {
@@ -67,6 +69,12 @@ export function getCache(): {
 		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
+	if (deploymentCache === null) {
+		const ttl = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 5000; // Default 5s
+		deploymentCache = getKeyvInstance(env['CACHE_STORE'] as Store, ttl, '_deployment');
+		deploymentCache.on('error', (err) => logger.warn(err, `[deployment-cache] ${err}`));
+	}
+
 	if (localSchemaCache === null) {
 		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema');
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
@@ -77,7 +85,7 @@ export function getCache(): {
 		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
-	return { cache, systemCache, localSchemaCache, lockCache };
+	return { cache, systemCache, deploymentCache, localSchemaCache, lockCache };
 }
 
 export async function flushCaches(forced?: boolean): Promise<void> {
