@@ -414,7 +414,7 @@ export function useComparison(options: UseComparisonOptions) {
 		} else if (currentVersion) {
 			const versionComparison = await fetchVersionComparisonForRevision(currentVersion.id);
 			base = versionComparison.base;
-			incoming = mergeWith({}, versionComparison.main, incoming, replaceArraysInMergeCustomizer);
+			incoming = mergeWith({}, versionComparison.base, incoming, replaceArraysInMergeCustomizer);
 		} else if ('collection' in revision && 'item' in revision) {
 			const { collection, item } = revision as { collection: string; item: string | number };
 			base = await fetchMainVersion(collection, item);
