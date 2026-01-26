@@ -5,6 +5,9 @@ import {
 	ActivityService,
 	CommentsService,
 	DashboardsService,
+	DeploymentProjectsService,
+	DeploymentRunsService,
+	DeploymentService,
 	FilesService,
 	FlowsService,
 	FoldersService,
@@ -22,7 +25,6 @@ import {
 	TranslationsService,
 	UsersService,
 	VersionsService,
-	DeploymentService,
 } from '../services/index.js';
 
 /**
@@ -73,6 +75,10 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new VersionsService(opts);
 		case 'directus_deployment':
 			return new DeploymentService(opts);
+		case 'directus_deployment_projects':
+			return new DeploymentProjectsService(opts);
+		case 'directus_deployment_runs':
+			return new DeploymentRunsService(opts);
 		default:
 			// Deny usage of other system collections via ItemsService
 			if (collection.startsWith('directus_')) throw new ForbiddenError();

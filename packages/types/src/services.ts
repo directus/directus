@@ -614,6 +614,18 @@ export interface ExtensionsServices {
 	 */
 	DashboardsService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
+	 * The DeploymentService
+	 */
+	DeploymentService: new (options: AbstractServiceOptions) => AbstractService;
+	/**
+	 * The DeploymentProjectsService
+	 */
+	DeploymentProjectsService: new (options: AbstractServiceOptions) => AbstractService;
+	/**
+	 * The DeploymentRunsService
+	 */
+	DeploymentRunsService: new (options: AbstractServiceOptions) => AbstractService;
+	/**
 	 * The ExportService
 	 */
 	ExportService: new (options: AbstractServiceOptions) => ExportService;
