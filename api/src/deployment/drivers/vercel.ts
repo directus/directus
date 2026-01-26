@@ -1,5 +1,6 @@
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
+import pLimit from 'p-limit';
 import { DeploymentDriver } from '../deployment.js';
 
 export interface VercelCredentials extends Credentials {
@@ -56,74 +57,77 @@ interface VercelEvent {
 
 export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOptions> {
 	private static readonly API_URL = 'https://api.vercel.com';
+	private requestLimit = pLimit(5);
 
 	constructor(credentials: VercelCredentials, options: VercelOptions = {}) {
 		super(credentials, options);
 	}
 
 	/**
-	 * Make authenticated request with retry on rate limit
+	 * Make authenticated request with retry on rate limit and concurrency control
 	 */
 	private async request<T>(
 		endpoint: string,
 		options: RequestInit & { params?: Record<string, string> } = {},
 		retryCount = 0,
 	): Promise<T> {
-		const { params, ...fetchOptions } = options;
-		const url = new URL(endpoint, VercelDriver.API_URL);
+		return this.requestLimit(async () => {
+			const { params, ...fetchOptions } = options;
+			const url = new URL(endpoint, VercelDriver.API_URL);
 
-		// Add team_id if configured
-		if (this.options.team_id) {
-			url.searchParams.set('teamId', this.options.team_id);
-		}
-
-		// Add custom params
-		if (params) {
-			for (const [key, value] of Object.entries(params)) {
-				url.searchParams.set(key, value);
-			}
-		}
-
-		const response = await fetch(url, {
-			...fetchOptions,
-			headers: {
-				Authorization: `Bearer ${this.credentials.access_token}`,
-				'Content-Type': 'application/json',
-				...fetchOptions.headers,
-			},
-		});
-
-		// Handle rate limiting with retry (max 3 retries)
-		if (response.status === 429) {
-			const resetAt = parseInt(response.headers.get('X-RateLimit-Reset') || '0');
-			const limit = parseInt(response.headers.get('X-RateLimit-Limit') || '0');
-
-			if (retryCount < 3) {
-				const waitTime = resetAt > 0 ? Math.max(resetAt * 1000 - Date.now(), 1000) : 1000 * (retryCount + 1);
-				await new Promise((resolve) => setTimeout(resolve, waitTime));
-				return this.request(endpoint, options, retryCount + 1);
+			// Add team_id if configured
+			if (this.options.team_id) {
+				url.searchParams.set('teamId', this.options.team_id);
 			}
 
-			// Max retries exceeded
-			throw new HitRateLimitError({
-				limit,
-				reset: new Date(resetAt > 0 ? resetAt * 1000 : Date.now()),
+			// Add custom params
+			if (params) {
+				for (const [key, value] of Object.entries(params)) {
+					url.searchParams.set(key, value);
+				}
+			}
+
+			const response = await fetch(url, {
+				...fetchOptions,
+				headers: {
+					Authorization: `Bearer ${this.credentials.access_token}`,
+					'Content-Type': 'application/json',
+					...fetchOptions.headers,
+				},
 			});
-		}
 
-		const body = await response.json();
+			// Handle rate limiting with retry (max 3 retries)
+			if (response.status === 429) {
+				const resetAt = parseInt(response.headers.get('X-RateLimit-Reset') || '0');
+				const limit = parseInt(response.headers.get('X-RateLimit-Limit') || '0');
 
-		if (!response.ok) {
-			const message = body.error?.message || `Vercel API error: ${response.status}`;
+				if (retryCount < 3) {
+					const waitTime = resetAt > 0 ? Math.max(resetAt * 1000 - Date.now(), 1000) : 1000 * (retryCount + 1);
+					await new Promise((resolve) => setTimeout(resolve, waitTime));
+					return this.request(endpoint, options, retryCount + 1);
+				}
 
-			if (response.status === 401 || response.status === 403) {
-				throw new InvalidCredentialsError();
+				// Max retries exceeded
+				throw new HitRateLimitError({
+					limit,
+					reset: new Date(resetAt > 0 ? resetAt * 1000 : Date.now()),
+				});
 			}
 
-			throw new ServiceUnavailableError({ service: 'vercel', reason: message });
-		}
+			const body = await response.json();
 
-		return body;
+			if (!response.ok) {
+				const message = body.error?.message || `Vercel API error: ${response.status}`;
+
+				if (response.status === 401 || response.status === 403) {
+					throw new InvalidCredentialsError();
+				}
+
+				throw new ServiceUnavailableError({ service: 'vercel', reason: message });
+			}
+
+			return body;
+		});
 	}
 
 	private mapStatus(vercelStatus: string | undefined): Status {
