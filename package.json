@@ -35,7 +35,6 @@
 	"pnpm": {
 		"overrides": {
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
-			"pnpm": "10.27.0",
 			"pm2-sysmonit>systeminformation": "5.27.14",
 			"tar": "7.5.4",
 			"qs": "6.14.1"
