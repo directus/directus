@@ -1076,19 +1076,25 @@ deployment_overview_providers: Providers
 deployment_overview_configure: Configure
 deployment_overview_provider_description: Trigger {provider} deployments from within Directus
 
-deployment_provider_setup_title: "{provider} Setup"
+deployment_provider_setup_title: '{provider} Setup'
 deployment_provider_credentials_notice: You can find this information in your {provider} account settings.
 deployment_provider_credentials_link: Open {provider} Settings
 deployment_overview_projects: '{count} Project|{count} Projects'
 deployment_provider_token_label: Personal Access Token
 deployment_provider_token_placeholder: Enter your access token...
-deployment_provider_token_encrypted_notice: This token will be encrypted and stored securely in your Directus configuration
+deployment_provider_token_encrypted_notice:
+  This token will be encrypted and stored securely in your Directus configuration
 deployment_provider_settings: '{provider} Configuration'
 deployment_provider_vercel: Vercel
-deployment_provider_vercel_description: Trigger Vercel deployments from within Directus
 
 deployment_provider_settings_edit_credentials: Edit Credentials
 deployment_provider_settings_edit_options: Edit Options
+deployment_provider_settings_delete: Delete Configuration
+deployment_provider_settings_delete_confirm:
+  This action is permanent and can not be undone. Are you sure you would like to proceed?
+deployment_provider_settings_remove_projects_confirm:
+  Removing the project ({projects}) will permanently delete all deployment history from Directus. This action cannot be
+  undone. Are you sure you want to proceed?
 deployment_provider_vercel_team_id_label: Team ID
 deployment_provider_vercel_team_id_hint: Required for team accounts, leave empty for personal accounts.
 deployment_provider_vercel_team_id_placeholder: team_xxxxxxxxxxxxx
@@ -1106,30 +1112,31 @@ no_runs: No Deployment Runs
 no_runs_copy: This project has no deployment history yet.
 deploy: Deploy
 deployment_target: Target
-deployment_runs: Deployment Runs
-deployment_runs_id: DeploymentID
-deployment_runs_started: Started
-deployment_runs_author: Author
-deployment_runs_total: Total Deployments (L7 Days)
-deployment_runs_deploy_preview: Deploy Preview
 deployment_runs_status_ready: Ready
 deployment_runs_status_building: Building
 deployment_runs_status_error: Failed
 deployment_runs_status_canceled: Canceled
-deployment_runs_notice: Only deployments triggered from Directus are shown here. Deployments made directly in {provider} will not appear.
-deployment_run: Deployment Run
-deployment_run_details: Deployment Details
-deployment_run_id: Deployments ID
-deployment_run_cancel: Cancel Deployment
-deployment_run_log_all: All Log Levels
-deployment_run_search_logs: Search logs...
-deployment_run_no_logs: No logs available
-deployment_run_download_logs: Download logs
-deployment_run_open_deployment: Visit
-deployment_dashboard_total_projects: Total Projects
-deployment_dashboard_active: Active Deployment
-deployment_dashboard_failed: Failed Builds (L24)
-deployment_dashboard_successful: Successful Builds (L24)
+deployment_provider_runs: Deployment Runs
+deployment_provider_runs_id: Deployment ID
+deployment_provider_runs_started: Started
+deployment_provider_runs_author: Author
+deployment_provider_runs_notice:
+  Only deployments triggered from Directus are shown here. Deployments made directly in Vercel will not appear.
+deployment_provider_runs_refresh: Refresh
+deployment_provider_runs_deploy_preview: Deploy Preview
+deployment_provider_runs_empty: No Deployment Runs
+deployment_provider_runs_empty_copy: This project has no deployment history yet.
+deployment_provider_run_title: '{project}: Deployment Details'
+deployment_provider_run_id: Deployment ID
+deployment_provider_run_currently_deploying: Currently Deploying...
+deployment_provider_run_stop: Stop Deployment
+deployment_provider_run_cancel_confirm:
+  This action is permanent and can not be undone. Are you sure you would like to proceed?
+deployment_provider_run_log_all: All Log Levels
+deployment_provider_run_search_logs: Search logs...
+deployment_provider_run_no_logs: No logs available
+deployment_provider_run_download_logs: Download logs
+deployment_provider_run_open_deployment: Visit
 deployment_dashboard_projects: Projects ({count})
 deployment_dashboard_deployed: Deployed
 dashboard: Dashboard

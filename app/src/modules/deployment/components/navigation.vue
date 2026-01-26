@@ -14,10 +14,8 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
 
 const route = useRoute();
-const { providers, loading, openProviders, fetch } = useDeploymentNavigation();
+const { providers, loading, openProviders, fetch, currentProviderKey, currentProjectId } = useDeploymentNavigation();
 
-const currentProvider = computed(() => route.params.provider as string);
-const currentProject = computed(() => route.params.projectId as string);
 const isSettingsPage = computed(() => route.name === 'deployment-provider-settings');
 
 const providerItems = computed(() => {
@@ -37,8 +35,8 @@ onMounted(async () => {
 	await fetch();
 
 	// Auto expand current provider
-	if (currentProvider.value && !openProviders.value.includes(currentProvider.value)) {
-		openProviders.value.push(currentProvider.value);
+	if (currentProviderKey.value && !openProviders.value.includes(currentProviderKey.value)) {
+		openProviders.value.push(currentProviderKey.value);
 	}
 });
 </script>
@@ -68,7 +66,9 @@ onMounted(async () => {
 				:key="provider.id"
 				clickable
 				:to="provider.link"
-				:active="currentProvider === provider.provider && !currentProject && (!isSettingsPage || !provider.hasProjects)"
+				:active="
+					currentProviderKey === provider.provider && !currentProjectId && (!isSettingsPage || !provider.hasProjects)
+				"
 				:value="provider.provider"
 				scope="deployment-navigation"
 				:arrow-placement="provider.hasProjects ? 'after' : false"
@@ -85,7 +85,7 @@ onMounted(async () => {
 						v-for="project in provider.projects"
 						:key="project.id"
 						:to="`/deployment/${provider.provider}/${project.id}/runs`"
-						:active="currentProject === project.id"
+						:active="currentProjectId === project.id"
 					>
 						<VListItemIcon><VIcon :name="provider.provider" /></VListItemIcon>
 						<VListItemContent>
@@ -95,7 +95,7 @@ onMounted(async () => {
 
 					<VListItem
 						:to="`/deployment/${provider.provider}/settings`"
-						:active="isSettingsPage && currentProvider === provider.provider"
+						:active="isSettingsPage && currentProviderKey === provider.provider"
 					>
 						<VListItemIcon><VIcon name="settings" /></VListItemIcon>
 						<VListItemContent>

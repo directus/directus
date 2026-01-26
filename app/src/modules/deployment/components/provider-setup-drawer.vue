@@ -49,10 +49,12 @@ async function save() {
 	saving.value = true;
 
 	try {
-		await sdk.request(createDeployment({
-			provider: props.provider,
-			credentials: values.value,
-		}));
+		await sdk.request(
+			createDeployment({
+				provider: props.provider,
+				credentials: values.value,
+			}),
+		);
 
 		emit('complete');
 	} catch (error) {
@@ -81,7 +83,9 @@ function onCancel() {
 
 		<div class="content">
 			<VNotice v-if="providerConfig?.tokenUrl" type="info" class="notice">
-				<div>{{ $t('deployment_provider_credentials_notice', { provider: $t(`deployment_provider_${provider}`) }) }}</div>
+				<div>
+					{{ $t('deployment_provider_credentials_notice', { provider: $t(`deployment_provider_${provider}`) }) }}
+				</div>
 				<a :href="providerConfig.tokenUrl" target="_blank" rel="noopener noreferrer">
 					{{ $t('deployment_provider_credentials_link', { provider: $t(`deployment_provider_${provider}`) }) }}
 				</a>
@@ -115,4 +119,3 @@ function onCancel() {
 	}
 }
 </style>
-

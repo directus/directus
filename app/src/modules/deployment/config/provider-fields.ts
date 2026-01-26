@@ -28,9 +28,12 @@ export function useProviderConfigs(hasExistingCredentials = false, isEdit = fals
 						width: 'full',
 						required: !hasExistingCredentials,
 						note: [
-							isEdit && `${t('deployment_provider_credentials_notice', { provider: vercelProvider })} [${t('deployment_provider_credentials_link', { provider: vercelProvider })}](${vercelTokenUrl}).`,
+							isEdit &&
+								`${t('deployment_provider_credentials_notice', { provider: vercelProvider })} [${t('deployment_provider_credentials_link', { provider: vercelProvider })}](${vercelTokenUrl}).`,
 							t('deployment_provider_token_encrypted_notice'),
-						].filter(Boolean).join(' '),
+						]
+							.filter(Boolean)
+							.join(' '),
 						options: {
 							placeholder: hasExistingCredentials
 								? t('interfaces.system-token.value_securely_saved')
@@ -55,7 +58,7 @@ export function useProviderConfigs(hasExistingCredentials = false, isEdit = fals
 					},
 				},
 			],
-		}
+		},
 	};
 
 	return { providerConfigs, availableProviders };

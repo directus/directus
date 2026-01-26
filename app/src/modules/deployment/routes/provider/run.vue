@@ -1,51 +1,27 @@
 <script setup lang="ts">
 import { sdk } from '@/sdk';
-import { readDeploymentRun, readDeploymentDashboard, cancelDeployment } from '@directus/sdk';
+import { readDeploymentRun, cancelDeployment, type DeploymentLog, type DeploymentRunDetailOutput } from '@directus/sdk';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
+import VCard from '@/components/v-card.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import VMenu from '@/components/v-menu.vue';
-import VList from '@/components/v-list.vue';
-import VListItem from '@/components/v-list-item.vue';
-import VListItemContent from '@/components/v-list-item-content.vue';
-import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { PrivateView } from '@/views/private';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { format } from 'date-fns';
+import { saveAs } from 'file-saver';
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import DeploymentNavigation from '../../components/navigation.vue';
 import DeploymentStatus from '../../components/deployment-status.vue';
+import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
+import { formatDurationMs } from '@/utils/format-duration-ms';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-
-interface Log {
-	timestamp: string;
-	type: 'stdout' | 'stderr' | 'info';
-	message: string;
-}
-
-interface RunDetails {
-	id: string;
-	external_id: string;
-	name?: string;
-	target: string;
-	status: string;
-	url?: string;
-	date_created: string;
-	finished_at?: string;
-	duration?: number;
-	project: string; // Project ID from DB
-	logs?: Log[];
-}
-
-interface Project {
-	id: string;
-	external_id: string;
-	name: string;
-}
 
 const props = defineProps<{
 	provider: string;
@@ -55,14 +31,16 @@ const props = defineProps<{
 
 const router = useRouter();
 const { t } = useI18n();
+const { currentProject } = useDeploymentNavigation();
 
 const loading = ref(true);
 const canceling = ref(false);
-const run = ref<RunDetails | null>(null);
-const project = ref<Project | null>(null);
-const logs = ref<Log[]>([]);
+const confirmCancel = ref(false);
+const run = ref<DeploymentRunDetailOutput | null>(null);
+const logs = ref<DeploymentLog[]>([]);
 const lastLogTimestamp = ref<string | null>(null);
 const logsContainer = ref<HTMLElement | null>(null);
+const shouldAutoScroll = ref(true);
 
 // Polling
 const POLL_INTERVAL = 3000;
@@ -73,20 +51,21 @@ const logLevelFilter = ref<string>('all');
 const searchQuery = ref('');
 
 const logLevelOptions = [
-	{ text: t('deployment_run_log_all'), value: 'all' },
+	{ text: t('deployment_provider_run_log_all'), value: 'all' },
 	{ text: 'Info', value: 'info' },
 	{ text: 'Stdout', value: 'stdout' },
 	{ text: 'Stderr', value: 'stderr' },
 ];
 
-const pageTitle = computed(() => {
-	const projectName = project.value?.name || t('deployment_run');
-	return `${projectName}: ${t('deployment_run_details')}`;
-});
+const pageTitle = computed(() =>
+	currentProject.value?.name
+		? t('deployment_provider_run_title', { project: currentProject.value.name })
+		: t('loading'),
+);
 
 const isBuilding = computed(() => run.value?.status === 'building');
 
-const filteredLogs = computed(() => {
+const logItems = computed(() => {
 	let result = logs.value;
 
 	// Filter by log level
@@ -100,7 +79,10 @@ const filteredLogs = computed(() => {
 		result = result.filter((log) => log.message.toLowerCase().includes(query));
 	}
 
-	return result;
+	return result.map((log) => ({
+		...log,
+		formattedTime: format(new Date(log.timestamp), 'HH:mm:ss'),
+	}));
 });
 
 const duration = computed(() => {
@@ -116,56 +98,26 @@ const duration = computed(() => {
 	return formatDurationMs(end - start);
 });
 
-function formatDurationMs(ms: number): string {
-	if (ms < 1000) return `${Math.round(ms)}ms`;
-
-	const seconds = Math.floor(ms / 1000);
-	const minutes = Math.floor(seconds / 60);
-	const remainingSeconds = seconds % 60;
-
-	if (minutes === 0) return `${seconds}s`;
-	return `${minutes}m ${remainingSeconds}s`;
-}
-
-function formatLogTime(timestamp: string): string {
-	return format(new Date(timestamp), 'HH:mm:ss');
-}
-
-async function loadProject(projectId: string) {
+async function loadRun() {
 	try {
-		const data = await sdk.request(readDeploymentDashboard(props.provider));
-		project.value = data.projects.find((p: any) => p.id === projectId) || null;
-	} catch {
-		project.value = null;
-	}
-}
+		const params: Record<string, unknown> = {};
 
-async function loadRun(useSince = false) {
-	try {
-		const params: Record<string, any> = {
-			// Cache-buster to prevent cached responses during polling
-			_t: Date.now(),
-		};
-
-		if (useSince && lastLogTimestamp.value) {
+		if (lastLogTimestamp.value) {
 			params.since = lastLogTimestamp.value;
 		}
 
-		const data = (await sdk.request(readDeploymentRun(props.provider, props.runId, params))) as RunDetails;
+		const data = await sdk.request(readDeploymentRun(props.provider, props.runId, params));
 
 		run.value = data;
 
 		// Append or replace logs
 		if (data.logs && data.logs.length > 0) {
-			if (useSince) {
-				// Append new logs
+			if (lastLogTimestamp.value) {
 				logs.value = [...logs.value, ...data.logs];
 			} else {
-				// Replace all logs
 				logs.value = data.logs;
 			}
 
-			// Update last timestamp for next poll (add 1ms to get logs AFTER this one)
 			const lastLog = data.logs[data.logs.length - 1];
 
 			if (lastLog) {
@@ -174,15 +126,15 @@ async function loadRun(useSince = false) {
 				lastLogTimestamp.value = lastTime.toISOString();
 			}
 
-			// Auto-scroll to bottom
+			// Auto-scroll to bottom only if user hasn't scrolled up
 			nextTick(() => {
-				if (logsContainer.value) {
+				if (logsContainer.value && shouldAutoScroll.value) {
 					logsContainer.value.scrollTop = logsContainer.value.scrollHeight;
 				}
 			});
 		}
 	} catch (error) {
-		// Only show error on initial load, not during polling (to avoid spam)
+		// Only show error on initial load
 		if (!run.value) {
 			unexpectedError(error);
 		}
@@ -203,6 +155,7 @@ async function cancel() {
 		unexpectedError(error);
 	} finally {
 		canceling.value = false;
+		confirmCancel.value = false;
 	}
 }
 
@@ -210,24 +163,26 @@ function downloadLogs() {
 	if (logs.value.length === 0) return;
 
 	const content = logs.value
-		.map((log) => `[${formatLogTime(log.timestamp)}] [${log.type.toUpperCase()}] ${log.message}`)
+		.map((log) => `[${format(new Date(log.timestamp), 'HH:mm:ss')}] [${log.type.toUpperCase()}] ${log.message}`)
 		.join('\n');
 
-	const blob = new Blob([content], { type: 'text/plain' });
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = `deployment-logs-${run.value?.external_id || props.runId}.txt`;
-	document.body.appendChild(a);
-	a.click();
-	document.body.removeChild(a);
-	URL.revokeObjectURL(url);
+	saveAs(
+		new Blob([content], { type: 'text/plain;charset=utf-8' }),
+		`deployment-logs-${run.value?.external_id || props.runId}.txt`,
+	);
 }
 
 function openDeployment() {
-	if (run.value?.url) {
-		window.open(run.value.url, '_blank');
-	}
+	window.open(run.value!.url, '_blank');
+}
+
+function handleLogsScroll() {
+	if (!logsContainer.value) return;
+
+	const { scrollTop, scrollHeight, clientHeight } = logsContainer.value;
+	// Consider "at bottom" if within 50px of the bottom
+	const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+	shouldAutoScroll.value = isAtBottom;
 }
 
 function startPolling() {
@@ -235,7 +190,7 @@ function startPolling() {
 
 	pollTimer = setInterval(() => {
 		if (isBuilding.value) {
-			loadRun(true);
+			loadRun();
 		} else {
 			stopPolling();
 		}
@@ -264,7 +219,7 @@ watch(isBuilding, (building, wasBuilding) => {
 });
 
 onMounted(async () => {
-	await Promise.all([loadRun(), loadProject(props.projectId)]);
+	await loadRun();
 
 	if (isBuilding.value) {
 		startPolling();
@@ -279,11 +234,7 @@ onUnmounted(() => {
 <template>
 	<PrivateView :title="pageTitle">
 		<template #headline>
-			<VBreadcrumb
-				:items="[
-					{ name: $t(`deployment_provider_${provider}`), to: `/deployment/${provider}` },
-				]"
-			/>
+			<VBreadcrumb :items="[{ name: $t(`deployment_provider_${provider}`), to: `/deployment/${provider}` }]" />
 		</template>
 
 		<template #title-outer:prepend>
@@ -297,101 +248,122 @@ onUnmounted(() => {
 		</template>
 
 		<template #actions>
-			<VButton v-tooltip.bottom="$t('deployment_run_download_logs')" rounded icon secondary @click="downloadLogs">
-				<VIcon name="download" />
-			</VButton>
+			<div class="actions-wrapper">
+				<span v-if="isBuilding" class="currently-deploying">
+					{{ $t('deployment_provider_run_currently_deploying') }}
+				</span>
 
-			<VButton
-				v-if="run?.url"
-				v-tooltip.bottom="$t('deployment_run_open_deployment')"
-				rounded
-				icon
-				secondary
-				@click="openDeployment"
-			>
-				<VIcon name="open_in_new" />
-			</VButton>
+				<VButton
+					v-if="isBuilding"
+					v-tooltip.bottom="$t('deployment_provider_run_stop')"
+					rounded
+					icon
+					small
+					kind="danger"
+					:loading="canceling"
+					@click="confirmCancel = true"
+				>
+					<VIcon name="dangerous" small />
+				</VButton>
 
-			<VMenu v-if="isBuilding" placement="bottom-end" show-arrow>
-				<template #activator="{ toggle }">
-					<VButton rounded icon secondary @click="toggle">
-						<VIcon name="more_vert" />
-					</VButton>
-				</template>
+				<VButton
+					v-tooltip.bottom="$t('deployment_provider_run_download_logs')"
+					rounded
+					icon
+					small
+					secondary
+					@click="downloadLogs"
+				>
+					<VIcon name="download" small />
+				</VButton>
 
-				<VList>
-					<VListItem clickable :disabled="canceling" @click="cancel">
-						<VListItemIcon><VIcon name="cancel" /></VListItemIcon>
-						<VListItemContent>{{ $t('deployment_run_cancel') }}</VListItemContent>
-					</VListItem>
-				</VList>
-			</VMenu>
+				<VButton
+					v-if="run?.url"
+					v-tooltip.bottom="$t('deployment_provider_run_open_deployment')"
+					rounded
+					icon
+					small
+					secondary
+					@click="openDeployment"
+				>
+					<VIcon name="open_in_new" small />
+				</VButton>
+			</div>
 		</template>
 
-		<div v-if="loading" class="loading">
-			<VProgressCircular indeterminate />
-		</div>
+		<div class="content">
+			<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
-		<div v-else class="content">
-			<!-- Stats bar -->
-			<div class="stats-bar">
-				<div class="stat-card deployment-id">
-					<VIcon name="assignment" class="stat-icon" />
-					<span class="stat-label">{{ $t('deployment_run_id') }}</span>
-					<div class="stat-value monospace">
-						<VTextOverflow :text="run?.name || run?.external_id" placement="bottom" />
+			<template v-else-if="run">
+				<div class="stats-bar">
+					<div class="stat-card deployment-id">
+						<VIcon name="assignment" class="stat-icon" />
+						<span class="stat-label">{{ $t('deployment_provider_run_id') }}</span>
+						<div class="stat-value monospace">
+							<VTextOverflow :text="run.external_id" placement="bottom" />
+						</div>
+					</div>
+
+					<div class="stat-card">
+						<VIcon name="schedule" class="stat-icon" />
+						<span class="stat-label">{{ $t('duration') }}</span>
+						<span class="stat-value">{{ duration }}</span>
+					</div>
+
+					<div class="stat-card">
+						<VIcon name="planner_review" class="stat-icon" />
+						<span class="stat-label">{{ $t('status') }}</span>
+						<DeploymentStatus :status="run.status" />
+					</div>
+
+					<div class="stat-card">
+						<VIcon name="assignment" class="stat-icon" />
+						<span class="stat-label">{{ $t('deployment_target') }}</span>
+						<span class="stat-value">{{ run.target }}</span>
 					</div>
 				</div>
 
-				<div class="stat-card">
-					<VIcon name="schedule" class="stat-icon" />
-					<span class="stat-label">{{ $t('duration') }}</span>
-					<span class="stat-value">{{ duration }}</span>
-				</div>
-
-				<div class="stat-card">
-					<VIcon name="planner_review" class="stat-icon" />
-					<span class="stat-label">{{ $t('status') }}</span>
-					<DeploymentStatus :status="run?.status" />
-				</div>
-
-				<div class="stat-card">
-					<VIcon name="assignment" class="stat-icon" />
-					<span class="stat-label">{{ $t('deployment_target') }}</span>
-					<span class="stat-value">{{ run?.target }}</span>
-				</div>
-			</div>
-
-			<!-- Log filters -->
-			<div class="log-filters">
-				<div class="filter-field">
-					<VSelect v-model="logLevelFilter" :items="logLevelOptions" inline />
-				</div>
-				<div class="filter-field">
-					<VIcon class="filter-icon" small name="search" />
-					<input
-						v-model="searchQuery"
-						:placeholder="$t('deployment_run_search_logs')"
-						class="search-input"
-					/>
-				</div>
-			</div>
-
-			<!-- Logs -->
-			<div ref="logsContainer" class="logs-container">
-				<div v-if="filteredLogs.length === 0" class="no-logs">
-					{{ $t('deployment_run_no_logs') }}
-				</div>
-
-				<div v-else class="logs">
-					<div v-for="(log, index) in filteredLogs" :key="index" :class="['log-entry', log.type]">
-						<span class="log-time">[{{ formatLogTime(log.timestamp) }}]</span>
-						<span class="log-type">[{{ log.type.toUpperCase() }}]</span>
-						<span class="log-message">{{ log.message }}</span>
+				<div class="log-filters">
+					<div class="filter-field">
+						<VSelect v-model="logLevelFilter" :items="logLevelOptions" inline />
+					</div>
+					<div class="filter-field">
+						<VIcon class="filter-icon" small name="search" />
+						<input
+							v-model="searchQuery"
+							:placeholder="$t('deployment_provider_run_search_logs')"
+							class="search-input"
+						/>
 					</div>
 				</div>
-			</div>
+
+				<div ref="logsContainer" class="logs-container" @scroll="handleLogsScroll">
+					<div v-if="logItems.length === 0" class="no-logs">
+						{{ $t('deployment_provider_run_no_logs') }}
+					</div>
+
+					<div v-else class="logs">
+						<div v-for="(log, index) in logItems" :key="index" :class="['log-entry', log.type]">
+							<span class="log-time">[{{ log.formattedTime }}]</span>
+							<span class="log-type">[{{ log.type.toUpperCase() }}]</span>
+							<span class="log-message">{{ log.message }}</span>
+						</div>
+					</div>
+				</div>
+			</template>
 		</div>
+
+		<VDialog v-model="confirmCancel" @esc="confirmCancel = false">
+			<VCard>
+				<VCardTitle>{{ $t('deployment_provider_run_cancel_confirm') }}</VCardTitle>
+				<VCardActions>
+					<VButton secondary @click="confirmCancel = false">{{ $t('cancel') }}</VButton>
+					<VButton kind="danger" :loading="canceling" @click="cancel">
+						{{ $t('deployment_provider_run_stop') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</PrivateView>
 </template>
 
@@ -401,11 +373,9 @@ onUnmounted(() => {
 	--v-button-color-active: var(--theme--foreground);
 }
 
-.loading {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: 200px;
+.spinner {
+	display: block;
+	margin: 100px auto;
 }
 
 .content {
@@ -554,5 +524,17 @@ onUnmounted(() => {
 .log-message {
 	white-space: pre-wrap;
 	word-break: break-word;
+}
+
+.actions-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.currently-deploying {
+	color: var(--theme--foreground-subdued);
+	font-style: italic;
+	margin-inline-end: 4px;
 }
 </style>

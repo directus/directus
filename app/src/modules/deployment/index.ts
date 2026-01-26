@@ -44,4 +44,3 @@ export default defineModule({
 		return user.admin_access === true;
 	},
 });
-

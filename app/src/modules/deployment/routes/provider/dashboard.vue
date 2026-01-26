@@ -67,38 +67,41 @@ onMounted(async () => {
 			</VInfo>
 
 			<template v-else>
-			<InterfacePresentationDivider :title="$t('deployment_dashboard_projects', { count: projects.length })" icon="folder" />
+				<InterfacePresentationDivider
+					:title="$t('deployment_dashboard_projects', { count: projects.length })"
+					icon="folder"
+				/>
 
-			<VList class="projects-list">
-				<VListItem
-					v-for="project in projectItems"
-					:key="project.id"
-					class="project-list-item"
-					grow
-					block
-					clickable
-					@click="router.push(project.to)"
-				>
-					<div class="icon">
-						<VIcon name="deployed_code" />
-					</div>
-					<VListItemContent>
-						<div class="name">
-							{{ project.name }}
-							<DeploymentStatus v-if="project.latest_deployment?.status" :status="project.latest_deployment.status" />
+				<VList class="projects-list">
+					<VListItem
+						v-for="project in projectItems"
+						:key="project.id"
+						class="project-list-item"
+						grow
+						block
+						clickable
+						@click="router.push(project.to)"
+					>
+						<div class="icon">
+							<VIcon name="deployed_code" />
 						</div>
-						<a v-if="project.url" :href="project.url" target="_blank" class="url" @click.stop>
-							{{ project.url }}
-						</a>
-					</VListItemContent>
-					<div class="meta">
-						<div v-if="project.formattedDeployTime" class="deploy-time">
-							{{ $t('deployment_dashboard_deployed') }} {{ project.formattedDeployTime }}
-							<VIcon small name="schedule" />
+						<VListItemContent>
+							<div class="name">
+								{{ project.name }}
+								<DeploymentStatus v-if="project.latest_deployment?.status" :status="project.latest_deployment.status" />
+							</div>
+							<a v-if="project.url" :href="project.url" target="_blank" class="url" @click.stop>
+								{{ project.url }}
+							</a>
+						</VListItemContent>
+						<div class="meta">
+							<div v-if="project.formattedDeployTime" class="deploy-time">
+								{{ $t('deployment_dashboard_deployed') }} {{ project.formattedDeployTime }}
+								<VIcon small name="schedule" />
+							</div>
 						</div>
-					</div>
-				</VListItem>
-			</VList>
+					</VListItem>
+				</VList>
 			</template>
 		</div>
 	</PrivateView>
@@ -191,4 +194,3 @@ onMounted(async () => {
 	}
 }
 </style>
-

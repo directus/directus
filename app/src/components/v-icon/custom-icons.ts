@@ -37,5 +37,5 @@ export const components: Record<string, any> = {
 	CustomIconFolderMove,
 	CustomIconFolderLock,
 	CustomIconLogout,
-	CustomIconVercel
+	CustomIconVercel,
 };

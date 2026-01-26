@@ -3,7 +3,13 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { isNil, isEmpty, isEqual, pickBy } from 'lodash';
 import { sdk } from '@/sdk';
-import { readDeployment, readDeploymentProjects, updateDeployment, updateDeploymentProjects } from '@directus/sdk';
+import {
+	readDeployment,
+	readDeploymentProjects,
+	updateDeployment,
+	updateDeploymentProjects,
+	deleteDeployment,
+} from '@directus/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { PrivateView } from '@/views/private';
@@ -33,6 +39,10 @@ const router = useRouter();
 const { refresh: refreshNavigation } = useDeploymentNavigation();
 const loading = ref(true);
 const saving = ref(false);
+const deleting = ref(false);
+const confirmDelete = ref(false);
+const confirmRemoveProjects = ref(false);
+const projectsToRemove = ref<string[]>([]);
 const config = ref<DeploymentConfig | null>(null);
 const credentialsEdits = ref<Record<string, any>>({});
 const optionsEdits = ref<Record<string, any>>({});
@@ -54,10 +64,7 @@ const hasEdits = computed(() => {
 	const hasOptionsEdits = !isEqual(initialOptions, currentOptions);
 
 	// Projects: compare sorted arrays
-	const projectsChanged = !isEqual(
-		[...selectedProjectIds.value].sort(),
-		[...initialProjectIds.value].sort(),
-	);
+	const projectsChanged = !isEqual([...selectedProjectIds.value].sort(), [...initialProjectIds.value].sort());
 
 	return hasCredentialsEdits || hasOptionsEdits || projectsChanged;
 });
@@ -90,9 +97,11 @@ async function loadConfig() {
 
 	try {
 		// Load deployment config (without projects - we get them from readDeploymentProjects)
-		const configData = await sdk.request(readDeployment(props.provider, {
-			fields: ['id', 'provider', 'options', 'credentials'],
-		}));
+		const configData = await sdk.request(
+			readDeployment(props.provider, {
+				fields: ['id', 'provider', 'options', 'credentials'],
+			}),
+		);
 
 		config.value = configData as DeploymentConfig;
 
@@ -111,10 +120,27 @@ async function loadConfig() {
 	}
 }
 
+function checkSave() {
+	// Check if we have projects to remove
+	const toDelete = initialProjectIds.value.filter((id) => !selectedProjectIds.value.includes(id));
+
+	if (toDelete.length > 0) {
+		// Get project names for confirmation message
+		projectsToRemove.value = toDelete.map((id) => {
+			const project = availableProjects.value.find((p) => p.external_id === id);
+			return project?.name || id;
+		});
+		confirmRemoveProjects.value = true;
+	} else {
+		save();
+	}
+}
+
 async function save() {
 	if (!config.value) return;
 
 	saving.value = true;
+	confirmRemoveProjects.value = false;
 
 	try {
 		const updatePayload: Record<string, any> = {};
@@ -138,19 +164,20 @@ async function save() {
 
 		// Update projects if changed
 		if (toCreate.length > 0 || toDelete.length > 0) {
-			const projectsToDelete = config.value.projects
-				?.filter((p: any) => toDelete.includes(p.external_id))
-				.map((p: any) => p.id) || [];
+			const projectsToDelete =
+				config.value.projects?.filter((p: any) => toDelete.includes(p.external_id)).map((p: any) => p.id) || [];
 
 			const projectsToCreate = toCreate.map((externalId) => {
 				const project = availableProjects.value.find((p) => p.external_id === externalId);
 				return { external_id: externalId, name: project?.name || '' };
 			});
 
-			await sdk.request(updateDeploymentProjects(props.provider, {
-				create: projectsToCreate,
-				delete: projectsToDelete,
-			}));
+			await sdk.request(
+				updateDeploymentProjects(props.provider, {
+					create: projectsToCreate,
+					delete: projectsToDelete,
+				}),
+			);
 		}
 
 		// Refresh navigation to reflect project changes
@@ -159,6 +186,7 @@ async function save() {
 		credentialsEdits.value = {};
 		optionsEdits.value = {};
 		initialProjectIds.value = [...selectedProjectIds.value];
+		projectsToRemove.value = [];
 
 		// Navigate to dashboard if we have projects
 		if (selectedProjectIds.value.length > 0) {
@@ -168,6 +196,21 @@ async function save() {
 		unexpectedError(error);
 	} finally {
 		saving.value = false;
+	}
+}
+
+async function deleteConfig() {
+	deleting.value = true;
+
+	try {
+		await sdk.request(deleteDeployment(props.provider));
+		await refreshNavigation();
+		confirmDelete.value = false;
+		router.push('/deployment');
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		deleting.value = false;
 	}
 }
 
@@ -193,12 +236,23 @@ onMounted(() => {
 		</template>
 
 		<template #actions>
+			<VButton
+				v-tooltip.bottom="$t('deployment_provider_settings_delete')"
+				rounded
+				icon
+				small
+				kind="danger"
+				@click="confirmDelete = true"
+			>
+				<VIcon name="delete" small />
+			</VButton>
+
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:disabled="!hasEdits"
 				:loading="saving"
 				icon="check"
-				@click="save"
+				@click="checkSave"
 			/>
 		</template>
 
@@ -206,15 +260,15 @@ onMounted(() => {
 			<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
 			<template v-else>
-				<InterfacePresentationDivider :title="$t('deployment_provider_settings_edit_credentials', { provider: $t(`deployment_provider_${provider}`) })" icon="key" />
+				<InterfacePresentationDivider
+					:title="
+						$t('deployment_provider_settings_edit_credentials', { provider: $t(`deployment_provider_${provider}`) })
+					"
+					icon="key"
+				/>
 
 				<div :class="{ 'credentials-saved': hasExistingCredentials }">
-					<VForm
-						v-model="credentialsEdits"
-						:fields="(credentialsFields as any)"
-						:initial-values="{}"
-						primary-key="+"
-					/>
+					<VForm v-model="credentialsEdits" :fields="credentialsFields as any" :initial-values="{}" primary-key="+" />
 				</div>
 
 				<InterfacePresentationDivider
@@ -226,7 +280,7 @@ onMounted(() => {
 				<VForm
 					v-if="optionsFields.length > 0"
 					v-model="optionsEdits"
-					:fields="(optionsFields as any)"
+					:fields="optionsFields as any"
 					:initial-values="config?.options || {}"
 					primary-key="+"
 				/>
@@ -243,14 +297,10 @@ onMounted(() => {
 						:label="project.name"
 						:disabled="!project.deployable"
 						:model-value="selectedProjectIds"
-						@update:model-value="(value) => selectedProjectIds = value"
+						@update:model-value="(value) => (selectedProjectIds = value)"
 					>
 						<template v-if="!project.deployable" #append>
-							<VIcon
-								v-tooltip.left="$t('deployment_provider_project_not_deployable')"
-								name="info"
-								small
-							/>
+							<VIcon v-tooltip.left="$t('deployment_provider_project_not_deployable')" name="info" small />
 						</template>
 					</VCheckbox>
 				</div>
@@ -267,6 +317,32 @@ onMounted(() => {
 						{{ $t('discard_changes') }}
 					</VButton>
 					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="confirmDelete" @esc="confirmDelete = false">
+			<VCard>
+				<VCardTitle>{{ $t('deployment_provider_settings_delete_confirm') }}</VCardTitle>
+				<VCardActions>
+					<VButton secondary @click="confirmDelete = false">{{ $t('cancel') }}</VButton>
+					<VButton kind="danger" :loading="deleting" @click="deleteConfig">
+						{{ $t('delete_label') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="confirmRemoveProjects" @esc="confirmRemoveProjects = false">
+			<VCard>
+				<VCardTitle>
+					{{ $t('deployment_provider_settings_remove_projects_confirm', { projects: projectsToRemove.join(', ') }) }}
+				</VCardTitle>
+				<VCardActions>
+					<VButton secondary @click="confirmRemoveProjects = false">{{ $t('cancel') }}</VButton>
+					<VButton kind="danger" :loading="saving" @click="save">
+						{{ $t('delete_label') }}
+					</VButton>
 				</VCardActions>
 			</VCard>
 		</VDialog>

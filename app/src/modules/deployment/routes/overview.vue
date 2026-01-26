@@ -89,7 +89,13 @@ function onSetupComplete() {
 								<span v-if="!provider.configured">{{ $t('deployment_overview_configure') }}</span>
 								{{ $t(`deployment_provider_${provider.type}`) }}
 							</div>
-							<div class="description">{{ $t(`deployment_overview_provider_description`, { provider: $t(`deployment_provider_${provider.type}`) }) }}</div>
+							<div class="description">
+								{{
+									$t(`deployment_overview_provider_description`, {
+										provider: $t(`deployment_provider_${provider.type}`),
+									})
+								}}
+							</div>
 						</VListItemContent>
 						<div v-if="provider.configured" class="meta">
 							<div class="projects">
