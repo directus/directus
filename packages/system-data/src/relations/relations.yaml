@@ -251,28 +251,3 @@ data:
     many_field: parent
     one_collection: directus_roles
     one_field: children
-
-  ### Deployment
-  - many_collection: directus_deployment_projects
-    many_field: deployment
-    one_collection: directus_deployment
-    one_field: projects
-    one_deselect_action: delete
-
-  - many_collection: directus_deployment
-    many_field: user_created
-    one_collection: directus_users
-
-  - many_collection: directus_deployment_projects
-    many_field: user_created
-    one_collection: directus_users
-
-  - many_collection: directus_deployment_runs
-    many_field: project
-    one_collection: directus_deployment_projects
-    one_field: runs
-    one_deselect_action: delete
-
-  - many_collection: directus_deployment_runs
-    many_field: user_created
-    one_collection: directus_users

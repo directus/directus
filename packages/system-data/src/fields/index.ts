@@ -5,9 +5,6 @@ import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';
 import commentsFields from './comments.yaml';
 import dashboardFields from './dashboards.yaml';
-import deploymentProjectsFields from './deployment-projects.yaml';
-import deploymentRunsFields from './deployment-runs.yaml';
-import deploymentFields from './deployment.yaml';
 import extensionFields from './extensions.yaml';
 import fieldFields from './fields.yaml';
 import fileFields from './files.yaml';
@@ -29,13 +26,6 @@ import shareFields from './shares.yaml';
 import translationFields from './translations.yaml';
 import userFields from './users.yaml';
 import versionFields from './versions.yaml';
-<<<<<<< HEAD
-import webhookFields from './webhooks.yaml';
-import deploymentFields from './deployment.yaml';
-import deploymentProjectsFields from './deployment-projects.yaml';
-import deploymentRunsFields from './deployment-runs.yaml';
-=======
->>>>>>> projects/deployments
 
 export const systemFieldRows: FieldMeta[] = [];
 export const systemIndexRows: FieldIndex[] = [];
@@ -76,9 +66,6 @@ processFields(shareFields);
 processFields(translationFields);
 processFields(userFields);
 processFields(versionFields);
-processFields(deploymentFields);
-processFields(deploymentProjectsFields);
-processFields(deploymentRunsFields);
 
 function processFields(systemFields: Record<string, any>) {
 	const {

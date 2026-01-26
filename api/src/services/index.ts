@@ -10,8 +10,6 @@ export * from './fields.js';
 export * from './files.js';
 export * from './flows.js';
 export * from './folders.js';
-export * from './deployment.js';
-export * from './deployment-projects.js';
 export * from './graphql/index.js';
 export * from './import-export.js';
 export * from './items.js';

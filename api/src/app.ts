@@ -13,7 +13,6 @@ import { merge } from 'lodash-es';
 import qs from 'qs';
 import { aiChatRouter } from './ai/chat/router.js';
 import { registerAuthProviders } from './auth.js';
-import { registerDeploymentDrivers } from './deployment.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';
@@ -21,7 +20,6 @@ import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
 import commentsRouter from './controllers/comments.js';
 import dashboardsRouter from './controllers/dashboards.js';
-import deploymentRouter from './controllers/deployment.js';
 import extensionsRouter from './controllers/extensions.js';
 import fieldsRouter from './controllers/fields.js';
 import filesRouter from './controllers/files.js';
@@ -116,7 +114,6 @@ export default async function createApp(): Promise<express.Application> {
 	await validateStorage();
 
 	await registerAuthProviders();
-	registerDeploymentDrivers();
 
 	const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
@@ -297,7 +294,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/collections', collectionsRouter);
 	app.use('/comments', commentsRouter);
 	app.use('/dashboards', dashboardsRouter);
-	app.use('/deployment', deploymentRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 
