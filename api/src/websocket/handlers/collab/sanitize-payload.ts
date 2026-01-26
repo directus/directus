@@ -1,6 +1,7 @@
 import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
+import { isDetailedUpdateSyntax } from '@directus/utils';
 import type { Knex } from 'knex';
-import { deepMapWithSchema, isDetailedUpdateSyntax } from '../../../utils/versioning/deep-map-with-schema.js';
+import { deepMapWithSchema } from '../../../utils/versioning/deep-map-with-schema.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 /**

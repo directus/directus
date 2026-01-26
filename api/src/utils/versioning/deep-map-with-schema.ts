@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { InvalidQueryError } from '@directus/errors';
 import type { CollectionOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
-import { getRelationInfo, type RelationInfo } from '@directus/utils';
+import { getRelationInfo, isDetailedUpdateSyntax, type RelationInfo } from '@directus/utils';
 import { isPlainObject } from 'lodash-es';
 
 type DeepMapCallbackContext = {
@@ -236,17 +236,6 @@ export function deepMapWithSchema(
 		if (primaryKeyMapped) return result[collection.primary];
 		return result;
 	});
-}
-
-export function isDetailedUpdateSyntax(
-	value: unknown,
-): value is { create: unknown[]; update: unknown[]; delete: unknown[] } {
-	return (
-		isObject(value) &&
-		Array.isArray(value['create']) &&
-		Array.isArray(value['update']) &&
-		Array.isArray(value['delete'])
-	);
 }
 
 function maybeAwait(value: any, fn: (val: any) => any) {
