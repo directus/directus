@@ -66,6 +66,8 @@ const {
 	fetchUserUpdated,
 	fetchBaseItemUserUpdated,
 	persistedCompareToOption,
+	isFirstRevision,
+	isLatestRevision,
 } = useComparison({
 	collection,
 	primaryKey,
@@ -80,22 +82,6 @@ const incomingTooltipMessage = computed(() => {
 	if (props.mode === 'revision') return `${t('changes_made')} ${t('no_relational_data')}`;
 	if (comparisonData.value?.outdated) return t('main_updated_notice');
 	return undefined;
-});
-
-const isFirstRevision = computed(() => {
-	if (props.mode !== 'revision' || !currentRevision.value || !revisions.value) return false;
-
-	const currentId = currentRevision.value.id;
-	if (!currentId) return false;
-
-	const sortedRevisions = [...revisions.value].sort((a, b) => {
-		const aId = typeof a.id === 'number' ? a.id : 0;
-		const bId = typeof b.id === 'number' ? b.id : 0;
-		return aId - bId;
-	});
-
-	const firstRevision = sortedRevisions[0];
-	return sortedRevisions.length > 0 && firstRevision?.id === currentId;
 });
 
 const baseDateUpdated = computed(() => {
@@ -361,9 +347,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									v-tooltip.top="
 										mode === 'revision' && compareToOption === 'Previous'
 											? $t('compare_to_latest_to_restore')
-											: selectedComparisonFields.length === 0
-												? undefined
-												: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
+											: mode === 'revision' && compareToOption === 'Latest' && isLatestRevision
+												? $t('select_earlier_revision_to_restore')
+												: selectedComparisonFields.length === 0
+													? undefined
+													: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
 									data-test="comparison-modal_apply-button"
 									:disabled="

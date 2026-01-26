@@ -54,6 +54,21 @@ export function useComparison(options: UseComparisonOptions) {
 
 	const comparisonData = ref<ComparisonData | null>(null);
 
+	const sortedRevisions = computed(() => {
+		if (!revisions.value || revisions.value.length === 0) return [];
+		return orderBy(revisions.value, [(r) => ('id' in r && r.id ? r.id : 0) as number], ['asc']);
+	});
+
+	const isFirstRevision = computed(() => {
+		if (mode.value !== 'revision' || !currentRevision.value || sortedRevisions.value.length === 0) return false;
+		return sortedRevisions.value[0]?.id === currentRevision.value.id;
+	});
+
+	const isLatestRevision = computed(() => {
+		if (mode.value !== 'revision' || !currentRevision.value || sortedRevisions.value.length === 0) return false;
+		return sortedRevisions.value[sortedRevisions.value.length - 1]?.id === currentRevision.value.id;
+	});
+
 	const normalizedData = computed<NormalizedComparisonData | null>(() => {
 		if (!comparisonData.value) return null;
 
@@ -136,6 +151,8 @@ export function useComparison(options: UseComparisonOptions) {
 		fetchUserUpdated,
 		fetchBaseItemUserUpdated,
 		persistedCompareToOption,
+		isFirstRevision,
+		isLatestRevision,
 	};
 
 	function toggleSelectAll() {
@@ -352,15 +369,14 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 	}
 
-	function findPreviousRevision(currentRevision: Revision, revisions: Revision[]): Revision | null {
-		if (!revisions || revisions.length === 0) return null;
+	function findPreviousRevision(currentRevision: Revision): Revision | null {
+		if (sortedRevisions.value.length === 0) return null;
 		if (!('id' in currentRevision) || !currentRevision.id) return null;
 
 		const currentId = currentRevision.id;
+		const currentIndex = sortedRevisions.value.findIndex((r) => r.id === currentId);
 
-		const sortedRevisions = orderBy(revisions, [(r) => ('id' in r && r.id ? r.id : 0) as number], ['desc']);
-
-		return sortedRevisions.find((r) => 'id' in r && r.id && r.id < currentId) || null;
+		return currentIndex > 0 ? (sortedRevisions.value[currentIndex - 1] ?? null) : null;
 	}
 
 	async function buildRevisionComparison(
@@ -382,7 +398,7 @@ export function useComparison(options: UseComparisonOptions) {
 		let previousRevision: Revision | null = null;
 
 		if (compareToOption === 'Previous') {
-			previousRevision = findPreviousRevision(revision, revisionsList);
+			previousRevision = findPreviousRevision(revision);
 
 			if (previousRevision && previousRevision.data) {
 				base = previousRevision.data;
