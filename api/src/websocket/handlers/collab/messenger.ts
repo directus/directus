@@ -154,6 +154,10 @@ export class Messenger {
 		});
 	}
 
+	async getLocalClients(): Promise<ClientID[]> {
+		return Object.keys(this.clients);
+	}
+
 	async getGlobalClients(): Promise<ClientID[]> {
 		const instances = await this.store(async (store) => await store.get('instances'));
 

@@ -224,7 +224,7 @@ export class CollabHandler {
 		setInterval(async () => {
 			try {
 				// Remove local clients that are no longer in the global registry
-				const clients = await this.messenger.getGlobalClients();
+				const clients = await this.messenger.getLocalClients();
 				const roomClients = (await this.roomManager.getAllRoomClients()).map((client) => client.uid);
 				const invalidClients = difference(roomClients, clients);
 
