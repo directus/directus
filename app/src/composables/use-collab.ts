@@ -453,8 +453,6 @@ export function useCollab(
 	}
 
 	const onFieldUpdate = throttle((field: string, value: any) => {
-		if (isEqual(value, edits.value[field])) return;
-
 		sendMessage({
 			action: ACTION.CLIENT.UPDATE,
 			changes: value,
