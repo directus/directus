@@ -3,7 +3,7 @@ import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@d
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
 import { toArray } from '@directus/utils';
-import { difference, isEmpty, upperFirst } from 'lodash-es';
+import { difference, isEmpty, uniq, upperFirst } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import emitter from '../../../emitter.js';
 import { useLogger } from '../../../logger/index.js';
@@ -82,6 +82,8 @@ export class CollabHandler {
 		 * Service (Node B) -> Emitter (Node B) -> Hooks (Node B) -> Bus -> CollabHandler (Node A) -> Room (Node A) -> Remote Clients
 		 */
 		this.messenger.messenger.subscribe('websocket.event', async (event: any) => {
+			const schema = await getSchema();
+
 			try {
 				if (event.collection === 'directus_settings' && event.action === 'update' && 'collaboration' in event.payload) {
 					useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
@@ -139,8 +141,13 @@ export class CollabHandler {
 						return;
 					}
 
-					// Ensure singleton rooms (null) are notified of changes
-					const keysToCheck = Array.from(new Set([...keys, null]));
+					let keysToCheck;
+
+					if (schema.collections[event.collection]?.singleton) {
+						keysToCheck = [null];
+					} else {
+						keysToCheck = uniq(keys);
+					}
 
 					for (const key of keysToCheck) {
 						const roomUid = getRoomHash(event.collection, key, null);
