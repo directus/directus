@@ -6,10 +6,7 @@ import { SDK_AUTH_REFRESH_BEFORE_EXPIRES } from './constants';
 import { useRequestsStore } from './stores/requests';
 import { getPublicURL } from '@/utils/get-root-path';
 
-export type SdkClient = DirectusClient<unknown> &
-	AuthenticationClient<unknown> &
-	RestClient<unknown> &
-	WebSocketClient<unknown>;
+export type SdkClient = DirectusClient<unknown> & AuthenticationClient<unknown> & RestClient<unknown>;
 
 type OptionsWithId = FetchContext['options'] & { id: string };
 
@@ -54,10 +51,13 @@ const baseClient = ofetch.create({
 
 export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch: baseClient.native } })
 	.with(authentication('session', { credentials: 'include', msRefreshBeforeExpires: SDK_AUTH_REFRESH_BEFORE_EXPIRES }))
-	.with(rest({ credentials: 'include' }))
-	.with(realtime({ authMode: 'strict', connect: false }));
+	.with(rest({ credentials: 'include' }));
 
 export default sdk;
+
+export const collabClient: SdkClient & WebSocketClient<unknown> = sdk.with(
+	realtime({ authMode: 'strict', connect: false }),
+);
 
 function getUrlPath(request: FetchContext['request']): string | null {
 	const uri = typeof request === 'string' ? request : request.url;

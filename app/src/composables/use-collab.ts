@@ -7,7 +7,7 @@ import { capitalize, debounce, isEmpty, isEqual, isMatch, throttle } from 'lodas
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import sdk from '@/sdk';
+import { collabClient as sdk } from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
