@@ -245,7 +245,8 @@ export class CollabHandler {
 					const rooms = await this.roomManager.getClientRooms(client);
 
 					for (const room of rooms) {
-						useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.uid}`);
+						useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.getDisplayName()}`);
+
 						await room.leave(client);
 					}
 				}

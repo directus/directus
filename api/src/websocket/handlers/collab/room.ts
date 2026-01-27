@@ -132,7 +132,7 @@ export class RoomManager {
 		for (const room of rooms) {
 			if (await room.close()) {
 				delete this.rooms[room.uid];
-				useLogger().info(`[Collab] Closed inactive room ${room.uid}`);
+				useLogger().info(`[Collab] Closed inactive room ${room.getDisplayName()}`);
 			}
 		}
 	}
@@ -318,6 +318,10 @@ export class Room {
 			await store.set('clients', []);
 			await store.set('focuses', {});
 		});
+	}
+
+	getDisplayName() {
+		return [this.collection, this.item, this.version].filter(Boolean).join(':');
 	}
 
 	async getClients() {

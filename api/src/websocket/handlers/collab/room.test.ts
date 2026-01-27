@@ -347,6 +347,14 @@ describe('room', () => {
 		expect(room).toBeDefined();
 	});
 
+	test('display name', () => {
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		expect(room.getDisplayName()).toEqual(`coll:${item}`);
+	});
+
 	test('join room', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
