@@ -31,7 +31,7 @@ const { t } = useI18n();
 const users = computed(() => {
 	return toArray(props.modelValue)
 		.map((user) => ({
-			name: user.first_name ? `${user.first_name} ${user.last_name}` : undefined,
+			name: [user.first_name, user.last_name].filter(Boolean).join(' ') || t('unknown_user'),
 			avatar_url: user.avatar?.id
 				? getAssetUrl(user.avatar.id, {
 						imageKey: 'system-medium-cover',
@@ -84,7 +84,7 @@ function focusIntoView(cid: ClientID) {
 						<VIcon v-else name="person" />
 					</VAvatar>
 
-					<div class="user-name">{{ user.name ?? t('unknown_user') }}</div>
+					<div class="user-name">{{ user.name }}</div>
 				</VListItem>
 			</VList>
 		</VMenu>
