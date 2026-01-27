@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import type { Accountability, WebSocketClient } from '@directus/types';
+import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../../../logger/index.js';
@@ -802,6 +802,48 @@ describe('room', () => {
 		expect(updatedChanges).toEqual({ title: 'Pending' }); // 'stale' should be removed
 	});
 
+	test('reconciles M2O objects on external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		const m2oId = randomUUID();
+
+		mockData.set(`${uid}:changes`, {
+			m2o_field: {
+				id: m2oId,
+				name: 'M2O Item',
+			},
+		});
+
+		vi.mocked(getSchema).mockResolvedValue({
+			collections: {
+				coll: { primary: 'id', fields: {} },
+				related: { primary: 'id', fields: {} },
+			},
+			relations: [
+				{
+					collection: 'coll',
+					field: 'm2o_field',
+					related_collection: 'related',
+				},
+			],
+		} as any);
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, m2o_field: m2oId }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
+
+		expect(mockData.get(`${uid}:changes`)).toEqual({});
+	});
+
 	test('clears primitives that match saved result on external update', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const item = getTestItem();
@@ -845,6 +887,42 @@ describe('room', () => {
 				title: 'Different',
 				comments: [{ id: 1, text: 'New comment' }],
 				author: { id: 5, name: 'John' },
+			}),
+		};
+
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
+
+		const updatedChanges = mockData.get(`${uid}:changes`);
+		expect(updatedChanges).toEqual({ title: 'Keep' });
+	});
+
+	test('clears O2M detailed update syntax on external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		mockData.set(`${uid}:changes`, {
+			title: 'Keep',
+			comments: {
+				create: [{ text: 'New comment' }],
+				update: [],
+				delete: [],
+			},
+		});
+
+		const mockService = {
+			readOne: vi.fn().mockResolvedValue({
+				id: item,
+				title: 'Different',
+				comments: [{ id: 1, text: 'New comment' }],
 			}),
 		};
 

@@ -9,7 +9,7 @@ import {
 	COLORS,
 	type ServerError,
 } from '@directus/types/collab';
-import { isDetailedUpdateSyntax } from '@directus/utils';
+import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
@@ -253,7 +253,22 @@ export class Room {
 							if (!(key in result)) return !!this.version;
 
 							// For primitives, only clear if saved value matches pending change
-							return !isEqual(value, result[key]);
+							if (isEqual(value, result[key])) return false;
+
+							// Reconcile M2O objects with the PK in result
+							if (isObject(value)) {
+								const relation = schema.relations.find((r: any) => r.collection === collection && r.field === key);
+
+								if (relation) {
+									const pkField = schema.collections[relation.related_collection as string]?.primary;
+
+									if (pkField && isEqual((value as any)[pkField], result[key])) {
+										return false;
+									}
+								}
+							}
+
+							return true;
 						}),
 					);
 

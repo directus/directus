@@ -2,14 +2,16 @@ import { ErrorCode } from '@directus/errors';
 import { readUser, readUsers, RemoveEventHandler, WebSocketInterface } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
-import { isDetailedUpdateSyntax } from '@directus/utils';
+import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { capitalize, debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import sdk from '@/sdk';
+import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -84,6 +86,8 @@ export function useCollab(
 	const settingsStore = useSettingsStore();
 	const notificationsStore = useNotificationsStore();
 	const permissionsStore = usePermissionsStore();
+	const relationsStore = useRelationsStore();
+	const fieldsStore = useFieldsStore();
 	const connected = ref<boolean | undefined>(undefined);
 	const { t } = useI18n();
 
@@ -308,6 +312,37 @@ export function useCollab(
 			return;
 		}
 
+		if (isEqual(message.changes, initialValues.value?.[message.field])) {
+			delete edits.value[message.field];
+			return;
+		}
+
+		// Reconcile M2O objects if PKs match, update initialValue to full object
+		// Clear "edited" state in UI without losing data received from others
+		if (isObject(message.changes) && initialValues.value) {
+			const relation = collection.value ? relationsStore.getRelationForField(collection.value, message.field) : null;
+
+			if (relation?.related_collection) {
+				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection)?.field;
+
+				if (
+					pkField &&
+					isEqual(
+						(message.changes as Record<string, any>)[pkField],
+						(initialValues.value as Record<string, any>)[message.field],
+					)
+				) {
+					(initialValues.value as Record<string, any>)[message.field] = message.changes;
+
+					if (isEqual(message.changes, edits.value[message.field])) {
+						delete edits.value[message.field];
+					}
+
+					return;
+				}
+			}
+		}
+
 		if (!isEqual(message.changes, edits.value[message.field])) {
 			// Can't directly assign message.changes here because edits can be a computed value
 			edits.value = { ...edits.value, [message.field]: message.changes };
@@ -368,6 +403,16 @@ export function useCollab(
 				delete edits.value[field];
 			} else if (isDetailedUpdateSyntax(editValue)) {
 				delete edits.value[field];
+			} else if (isObject(editValue)) {
+				const relation = collection.value ? relationsStore.getRelationForField(collection.value, field) : null;
+
+				if (relation?.related_collection) {
+					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection)?.field;
+
+					if (pkField && isEqual(editValue[pkField], initialValue)) {
+						delete edits.value[field];
+					}
+				}
 			}
 		}
 
