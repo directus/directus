@@ -6,13 +6,6 @@ import { MAX_PENDING_CONTEXT, useAiContextStore } from './use-ai-context';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-vi.mock('vue-i18n', () => ({
-	useI18n: () => ({
-		t: vi.fn((key: string) => key),
-	}),
-	createI18n: vi.fn(() => ({})),
-}));
-
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
