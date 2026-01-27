@@ -73,7 +73,6 @@ onMounted(async () => {
 				scope="deployment-navigation"
 				:arrow-placement="provider.hasProjects ? 'after' : false"
 			>
-			>
 				<template #activator>
 					<VListItemIcon><VIcon :name="provider.provider" /></VListItemIcon>
 					<VListItemContent>
