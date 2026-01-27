@@ -422,7 +422,6 @@ export class CollabHandler {
 		const schema = await getSchema();
 
 		const fields = Object.keys(message.changes ?? {});
-		await this.checkFieldsAccess(client, room, fields, 'update', { knex, schema });
 
 		for (const key of fields) {
 			const focus = await room.getFocusByField(key);
