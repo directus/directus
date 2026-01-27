@@ -48,6 +48,8 @@ export type CollabContext = {
 	registerField: (field: string) => CollabFieldContext;
 };
 
+const activeRooms: Record<string, number> = {};
+
 let wsConnecting: Promise<WebSocketInterface> | false = false;
 
 sdk.onWebSocket('message', async (message: ServerMessage | ServerError) => {
@@ -197,6 +199,11 @@ export function useCollab(
 		joining.value = false;
 
 		if (roomId.value) {
+			activeRooms[roomId.value] = (activeRooms[roomId.value] ?? 0) - 1;
+
+			// If there is another use-collab going to the same room, don't disconnect yet.
+			if (Number(activeRooms[roomId.value]) > 0) return;
+
 			sendMessage({
 				action: ACTION.CLIENT.LEAVE,
 			});
@@ -263,6 +270,8 @@ export function useCollab(
 		joining.value = false;
 		roomId.value = message.room;
 		connectionId.value = message.connection;
+
+		activeRooms[roomId.value] = (activeRooms[roomId.value] ?? 0) + 1;
 
 		if (!isMatch({ ...initialValues.value, ...edits.value }, message.changes)) {
 			if (!isEmpty(edits.value)) collidingLocalChanges.value = edits.value;
