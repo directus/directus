@@ -5,6 +5,13 @@ import { useFlowsStore } from './flows';
 import { useUserStore } from './user';
 import { AppUser } from '@/types/user';
 
+vi.mock('vue-i18n', () => ({
+	useI18n: () => ({
+		t: vi.fn((key: string) => key),
+	}),
+	createI18n: vi.fn(() => ({})),
+}));
+
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({

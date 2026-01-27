@@ -4,6 +4,13 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useAiStore } from './use-ai';
 
+vi.mock('vue-i18n', () => ({
+	useI18n: () => ({
+		t: vi.fn((key: string) => key),
+	}),
+	createI18n: vi.fn(() => ({})),
+}));
+
 // Mock dependencies
 vi.mock('@/stores/settings', () => ({
 	useSettingsStore: vi.fn(() => ({
