@@ -10,15 +10,12 @@ import { useRelationsStore } from '@/stores/relations';
 
 vi.stubGlobal('crypto', cryptoStub);
 
-vi.mock('vue-i18n', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('vue-i18n')>();
-	return {
-		...actual,
-		useI18n: () => ({
-			t: (key: string) => (key === 'loading' ? 'Loading...' : key),
-		}),
-	};
-});
+vi.mock('vue-i18n', () => ({
+	useI18n: () => ({
+		t: vi.fn((key: string) => (key === 'loading' ? 'Loading...' : key)),
+	}),
+	createI18n: vi.fn(() => ({})),
+}));
 
 beforeEach(() => {
 	setActivePinia(
