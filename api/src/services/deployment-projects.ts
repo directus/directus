@@ -7,7 +7,6 @@ export interface DeploymentProject {
 	id: string;
 	deployment: string;
 	external_id: string;
-	name: string;
 	date_created: string;
 	user_created: string;
 }
@@ -22,7 +21,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	 */
 	async updateSelection(
 		deploymentId: string,
-		create: { external_id: string; name: string }[],
+		create: { external_id: string }[],
 		deleteIds: PrimaryKey[],
 	): Promise<DeploymentProject[]> {
 		const db = getDatabase();
@@ -43,7 +42,6 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 					create.map((p) => ({
 						deployment: deploymentId,
 						external_id: p.external_id,
-						name: p.name,
 					})),
 				);
 			}

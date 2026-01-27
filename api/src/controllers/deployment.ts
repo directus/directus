@@ -215,7 +215,6 @@ const updateProjectsSchema = Joi.object({
 		.items(
 			Joi.object({
 				external_id: Joi.string().required(),
-				name: Joi.string().required(),
 			}),
 		)
 		.default([]),
@@ -254,12 +253,17 @@ router.patch(
 		if (value.create.length > 0) {
 			const driver = await service.getDriver(provider);
 			const providerProjects = await driver.listProjects();
-			const deployableMap = new Map(providerProjects.map((p) => [p.id, p.deployable]));
+			const projectsMap = new Map(providerProjects.map((p) => [p.id, p]));
 
-			const nonDeployable = value.create.filter((p: { external_id: string }) => !deployableMap.get(p.external_id));
+			const nonDeployable = value.create.filter(
+				(p: { external_id: string }) => !projectsMap.get(p.external_id)?.deployable,
+			);
 
 			if (nonDeployable.length > 0) {
-				const names = nonDeployable.map((p: { name: string }) => p.name).join(', ');
+				const names = nonDeployable
+					.map((p: { external_id: string }) => projectsMap.get(p.external_id)?.name || p.external_id)
+					.join(', ');
+
 				throw new InvalidPayloadError({
 					reason: `Cannot add non-deployable projects: ${names}`,
 				});
