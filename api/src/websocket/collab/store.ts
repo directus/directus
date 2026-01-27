@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { type CacheConfig, createCache } from '@directus/memory';
-import { redisConfigAvailable, useRedis } from '../../../redis/index.js';
+import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 
 export type RedisStore<T> = {
 	has(key: keyof T): Promise<boolean>;

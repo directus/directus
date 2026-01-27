@@ -15,7 +15,7 @@ const mockBus = {
 	unsubscribe: vi.fn(),
 };
 
-vi.mock('../../../bus/index.js', () => ({
+vi.mock('../../bus/index.js', () => ({
 	useBus: () => mockBus,
 }));
 

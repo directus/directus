@@ -2,15 +2,15 @@ import { randomUUID } from 'node:crypto';
 import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { useLogger } from '../../../logger/index.js';
-import { getSchema } from '../../../utils/get-schema.js';
-import { getService } from '../../../utils/get-service.js';
+import { useLogger } from '../../logger/index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { getService } from '../../utils/get-service.js';
 import { sanitizePayload } from './payload-permissions.js';
 import { permissionCache } from './permissions-cache.js';
 import { getRoomHash, Room, RoomManager } from './room.js';
 import { verifyPermissions } from './verify-permissions.js';
 
-vi.mock('../../../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	default: vi.fn(() => ({
 		select: vi.fn().mockReturnThis(),
 		where: vi.fn().mockReturnThis(),
@@ -18,7 +18,7 @@ vi.mock('../../../database/index.js', () => ({
 	})),
 }));
 
-vi.mock('../../../logger/index.js', () => ({
+vi.mock('../../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
 		error: vi.fn(),
 		info: vi.fn(),
@@ -26,17 +26,17 @@ vi.mock('../../../logger/index.js', () => ({
 	}),
 }));
 
-vi.mock('../../../utils/get-schema.js');
+vi.mock('../../utils/get-schema.js');
 vi.mock('./payload-permissions.js');
 vi.mock('./verify-permissions.js');
 vi.mock('./field-permissions.js');
-vi.mock('../../../utils/get-service.js');
-vi.mock('../../../permissions/lib/fetch-permissions.js');
-vi.mock('../../../permissions/lib/fetch-policies.js');
-vi.mock('../../../permissions/utils/extract-required-dynamic-variable-context.js');
-vi.mock('../../../permissions/utils/fetch-dynamic-variable-data.js');
-vi.mock('../../../permissions/utils/process-permissions.js');
-vi.mock('../../../permissions/modules/validate-access/lib/validate-item-access.js');
+vi.mock('../../utils/get-service.js');
+vi.mock('../../permissions/lib/fetch-permissions.js');
+vi.mock('../../permissions/lib/fetch-policies.js');
+vi.mock('../../permissions/utils/extract-required-dynamic-variable-context.js');
+vi.mock('../../permissions/utils/fetch-dynamic-variable-data.js');
+vi.mock('../../permissions/utils/process-permissions.js');
+vi.mock('../../permissions/modules/validate-access/lib/validate-item-access.js');
 
 const mockMessenger = {
 	sendClient: vi.fn(),

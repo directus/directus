@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import { LRUMapWithDelete } from 'mnemonist';
-import { useBus } from '../../../bus/index.js';
+import { useBus } from '../../bus/index.js';
 
 const env = useEnv();
 

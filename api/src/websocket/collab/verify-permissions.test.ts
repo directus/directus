@@ -1,20 +1,20 @@
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { useBus } from '../../../bus/index.js';
-import getDatabase from '../../../database/index.js';
-import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
-import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
-import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
-import { processPermissions } from '../../../permissions/utils/process-permissions.js';
-import { getSchema } from '../../../utils/get-schema.js';
-import { getService } from '../../../utils/get-service.js';
+import { useBus } from '../../bus/index.js';
+import getDatabase from '../../database/index.js';
+import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
+import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { validateItemAccess } from '../../permissions/modules/validate-access/lib/validate-item-access.js';
+import { extractRequiredDynamicVariableContextForPermissions } from '../../permissions/utils/extract-required-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from '../../permissions/utils/fetch-dynamic-variable-data.js';
+import { processPermissions } from '../../permissions/utils/process-permissions.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { getService } from '../../utils/get-service.js';
 import { permissionCache } from './permissions-cache.js';
 import { verifyPermissions } from './verify-permissions.js';
 
-vi.mock('../../../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	default: vi.fn(() => ({
 		select: vi.fn().mockReturnThis(),
 		where: vi.fn().mockReturnThis(),
@@ -22,24 +22,24 @@ vi.mock('../../../database/index.js', () => ({
 	})),
 }));
 
-vi.mock('../../../emitter.js', () => ({
+vi.mock('../../emitter.js', () => ({
 	default: {
 		onAction: vi.fn(),
 		offAction: vi.fn(),
 	},
 }));
 
-vi.mock('../../../utils/get-schema.js');
+vi.mock('../../utils/get-schema.js');
 vi.mock('./sanitize-payload.js');
 vi.mock('./field-permissions.js');
-vi.mock('../../../utils/get-service.js');
-vi.mock('../../../permissions/lib/fetch-permissions.js');
-vi.mock('../../../permissions/lib/fetch-policies.js');
-vi.mock('../../../permissions/utils/extract-required-dynamic-variable-context.js');
-vi.mock('../../../permissions/utils/fetch-dynamic-variable-data.js');
-vi.mock('../../../permissions/utils/process-permissions.js');
-vi.mock('../../../permissions/modules/validate-access/lib/validate-item-access.js');
-vi.mock('../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js');
+vi.mock('../../utils/get-service.js');
+vi.mock('../../permissions/lib/fetch-permissions.js');
+vi.mock('../../permissions/lib/fetch-policies.js');
+vi.mock('../../permissions/utils/extract-required-dynamic-variable-context.js');
+vi.mock('../../permissions/utils/fetch-dynamic-variable-data.js');
+vi.mock('../../permissions/utils/process-permissions.js');
+vi.mock('../../permissions/modules/validate-access/lib/validate-item-access.js');
+vi.mock('../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js');
 
 const getAccountability = (overrides = {}) =>
 	merge(

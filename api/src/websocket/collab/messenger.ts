@@ -11,8 +11,8 @@ import {
 	type ServerMessage,
 } from '@directus/types/collab';
 import { uniq } from 'lodash-es';
-import { useBus } from '../../../bus/index.js';
-import { useLogger } from '../../../logger/index.js';
+import { useBus } from '../../bus/index.js';
+import { useLogger } from '../../logger/index.js';
 import { useStore } from './store.js';
 
 const env = useEnv();

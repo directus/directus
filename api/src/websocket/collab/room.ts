@@ -11,11 +11,11 @@ import {
 } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { isEqual, random, uniq } from 'lodash-es';
-import getDatabase from '../../../database/index.js';
-import { useLogger } from '../../../logger/index.js';
-import { getSchema } from '../../../utils/get-schema.js';
-import { getService } from '../../../utils/get-service.js';
-import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
+import getDatabase from '../../database/index.js';
+import { useLogger } from '../../logger/index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { getService } from '../../utils/get-service.js';
+import { isFieldAllowed } from '../../utils/is-field-allowed.js';
 import { Messenger } from './messenger.js';
 import { sanitizePayload } from './payload-permissions.js';
 import { useStore } from './store.js';
