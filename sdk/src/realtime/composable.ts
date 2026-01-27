@@ -227,6 +227,10 @@ export function realtime(config: WebSocketConfig = {}) {
 		};
 
 		return {
+			/**
+			 * Checks if a websocket connection has been established.
+			 * Does not check authentication status.
+			 */
 			async isConnected() {
 				if (state.code === 'connecting') {
 					try {
