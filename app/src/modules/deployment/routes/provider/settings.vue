@@ -1,35 +1,36 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { isNil, isEmpty, isEqual, pickBy } from 'lodash';
-import { sdk } from '@/sdk';
 import {
+	deleteDeployment,
+	type DeploymentProjectListOutput,
 	readDeployment,
 	readDeploymentProjects,
 	updateDeployment,
 	updateDeploymentProjects,
-	deleteDeployment,
 } from '@directus/sdk';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { PrivateView } from '@/views/private';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import type { DeploymentConfig } from '@directus/types';
+import { isEmpty, isEqual, isNil, pickBy } from 'lodash';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import DeploymentNavigation from '../../components/navigation.vue';
+import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
+import { useProviderConfigs } from '../../config/provider-fields';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
-import VCard from '@/components/v-card.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
-import type { DeploymentConfig, Project } from '@directus/types';
-import { useProviderConfigs } from '../../config/provider-fields';
-import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import DeploymentNavigation from '../../components/navigation.vue';
+import { sdk } from '@/sdk';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 
 const props = defineProps<{
 	provider: string;
@@ -46,7 +47,7 @@ const projectsToRemove = ref<string[]>([]);
 const config = ref<DeploymentConfig | null>(null);
 const credentialsEdits = ref<Record<string, any>>({});
 const optionsEdits = ref<Record<string, any>>({});
-const availableProjects = ref<Project[]>([]);
+const availableProjects = ref<DeploymentProjectListOutput[]>([]);
 const selectedProjectIds = ref<string[]>([]);
 const initialProjectIds = ref<string[]>([]);
 
@@ -107,7 +108,7 @@ async function loadConfig() {
 
 		// Load all projects from provider
 		const projectsData = await sdk.request(readDeploymentProjects(props.provider));
-		availableProjects.value = projectsData as Project[];
+		availableProjects.value = projectsData as DeploymentProjectListOutput[];
 
 		// Set selected projects from the response (id !== null means selected)
 		const storedIds = projectsData.filter((p: any) => p.id !== null).map((p: any) => p.external_id);
@@ -125,11 +126,11 @@ function checkSave() {
 	const toDelete = initialProjectIds.value.filter((id) => !selectedProjectIds.value.includes(id));
 
 	if (toDelete.length > 0) {
-		// Get project names for confirmation message
 		projectsToRemove.value = toDelete.map((id) => {
 			const project = availableProjects.value.find((p) => p.external_id === id);
 			return project?.name || id;
 		});
+
 		confirmRemoveProjects.value = true;
 	} else {
 		save();
@@ -164,12 +165,14 @@ async function save() {
 
 		// Update projects if changed
 		if (toCreate.length > 0 || toDelete.length > 0) {
-			const projectsToDelete =
-				config.value.projects?.filter((p: any) => toDelete.includes(p.external_id)).map((p: any) => p.id) || [];
+			const projectsToDelete = availableProjects.value
+				.filter(
+					(p): p is DeploymentProjectListOutput & { id: string } => toDelete.includes(p.external_id) && p.id !== null,
+				)
+				.map((p) => p.id);
 
 			const projectsToCreate = toCreate.map((externalId) => {
-				const project = availableProjects.value.find((p) => p.external_id === externalId);
-				return { external_id: externalId, name: project?.name || '' };
+				return { external_id: externalId };
 			});
 
 			await sdk.request(

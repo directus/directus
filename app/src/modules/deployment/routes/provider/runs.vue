@@ -1,32 +1,32 @@
 <script setup lang="ts">
+import { type DeploymentRunsOutput, triggerDeployment } from '@directus/sdk';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import DeploymentStatus from '../../components/deployment-status.vue';
+import DeploymentNavigation from '../../components/navigation.vue';
+import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
 import api from '@/api';
-import { sdk } from '@/sdk';
-import { triggerDeployment, type DeploymentRunsOutput } from '@directus/sdk';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
-import VList from '@/components/v-list.vue';
-import VNotice from '@/components/v-notice.vue';
-import VListItem from '@/components/v-list-item.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { Header } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
-import DeploymentNavigation from '../../components/navigation.vue';
-import DeploymentStatus from '../../components/deployment-status.vue';
-import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import { PrivateView } from '@/views/private';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { sdk } from '@/sdk';
 import { formatDurationMs } from '@/utils/format-duration-ms';
-import { ref, computed, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateView } from '@/views/private';
+import SearchInput from '@/views/private/components/search-input.vue';
 
 type Run = DeploymentRunsOutput;
 
@@ -40,7 +40,7 @@ const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
 
 const loading = ref(true);
-const deploying = ref(false);
+const deploying = ref(true);
 const runs = ref<Run[]>([]);
 const search = ref<string | null>(null);
 const totalCount = ref(0);
