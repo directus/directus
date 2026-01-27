@@ -26,6 +26,39 @@ const VIcon = {
 	props: ['name'],
 };
 
+// Mock VSelect component
+const VSelect = {
+	name: 'VSelect',
+	template: `
+		<select id="calendar-month-select" @change="handleChange">
+			<option v-for="item in items" :key="item.value" :value="item.value">{{ item.text }}</option>
+		</select>
+	`,
+	props: ['modelValue', 'items', 'inline', 'fullWidth'],
+	emits: ['update:modelValue'],
+	methods: {
+		handleChange(event: Event) {
+			const target = event.target as HTMLSelectElement;
+			const value = Number.parseInt(target.value, 10);
+			this.$emit('update:modelValue', Number.isNaN(value) ? null : value);
+		},
+	},
+};
+
+// Mock VInput component
+const VInput = {
+	name: 'VInput',
+	template: `<input class="calendar-year-input" :value="modelValue" @change="handleChange" />`,
+	props: ['modelValue', 'type', 'fullWidth', 'hideArrows'],
+	emits: ['update:modelValue'],
+	methods: {
+		handleChange(event: Event) {
+			const target = event.target as HTMLInputElement;
+			this.$emit('update:modelValue', target.value);
+		},
+	},
+};
+
 // Mock reka-ui components
 const CalendarRoot = {
 	name: 'CalendarRoot',
@@ -153,6 +186,8 @@ describe('v-date-picker', () => {
 					TimeFieldRoot,
 					TimeFieldInput,
 					VIcon,
+					VSelect,
+					VInput,
 				},
 				mocks: {
 					$t: (key: string) => key,
@@ -533,6 +568,29 @@ describe('v-date-picker', () => {
 
 			// Simulate invalid value - the handler should reject this
 			await yearInput.setValue('0');
+			await yearInput.trigger('change');
+			await nextTick();
+
+			// The formatDatePickerModelValue should not have been called again
+			const finalCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			expect(finalCallCount).toBe(initialCallCount);
+		});
+
+		it('ignores non-numeric year values (NaN)', async () => {
+			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const yearInput = wrapper.find('.calendar-year-input');
+
+			// Simulate non-numeric value that parses to NaN
+			await yearInput.setValue('abc');
 			await yearInput.trigger('change');
 			await nextTick();
 
