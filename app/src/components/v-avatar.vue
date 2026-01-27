@@ -40,9 +40,10 @@ const sizeClass = useSizeClass(props);
 
 	Available Variables:
 
-		--v-avatar-color  [var(--theme--background-normal)]
-		--v-avatar-size   [48px]
-
+	--v-avatar-border-color [var(--theme--border-color)]
+	--v-avatar-color  [var(--theme--background-normal)]
+	--v-avatar-size   [48px]
+	--v-avatar-border-width [var(--theme--border-width)]
 */
 
 .v-avatar {
@@ -65,7 +66,7 @@ const sizeClass = useSizeClass(props);
 }
 
 .border {
-	border: var(--theme--border-width) solid var(--v-avatar-border-color, var(--theme--border-color));
+	border: var(--v-avatar-border-width) solid var(--v-avatar-border-color, var(--theme--border-color));
 }
 
 .x-small {
