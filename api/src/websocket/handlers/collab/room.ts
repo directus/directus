@@ -117,19 +117,10 @@ export class RoomManager {
 	}
 
 	/**
-	 * Returns all clients that are part of a room in the global memory
+	 * Returns all clients that are part of a room in the local memory
 	 */
-	async getAllRoomClients(): Promise<RoomClient[]> {
-		const clients = [];
-		const globalRooms = await this.messenger.getGlobalRooms();
-
-		for (const roomId of Object.values(globalRooms)) {
-			const room = await this.getRoom(roomId);
-
-			if (room) clients.push(...(await room.getClients()));
-		}
-
-		return clients;
+	async getLocalRoomClients(): Promise<RoomClient[]> {
+		return (await Promise.all(Object.values(this.rooms).map((room) => room.getClients()))).flat();
 	}
 
 	/**
