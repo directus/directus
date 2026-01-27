@@ -912,7 +912,7 @@ function useCollectionRoute() {
 		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<VCard v-if="!connected">
+			<VCard v-if="!connected || collabUsers.length <= 1">
 				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 				<VCardActions>
