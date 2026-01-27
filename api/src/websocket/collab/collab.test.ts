@@ -41,7 +41,7 @@ vi.mock('./room.js', () => ({
 		createRoom: vi.fn().mockResolvedValue({ join: vi.fn() }),
 		getRoom: vi.fn(),
 		getClientRooms: vi.fn().mockResolvedValue([]),
-		getAllRoomClients: vi.fn().mockResolvedValue([]),
+		getLocalRoomClient: vi.fn().mockResolvedValue([]),
 		removeRoom: vi.fn(),
 	})),
 }));
