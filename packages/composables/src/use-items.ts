@@ -295,6 +295,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 				await getTotalCount();
 				itemCount.value = totalCount.value;
 			}
+
 			return;
 		}
 
