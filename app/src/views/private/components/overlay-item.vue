@@ -605,7 +605,6 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 			<h1 v-else class="type-title">
 				<RenderTemplate :collection="templateCollection?.collection" :item="templateData" :template="template" />
-				<span>Avatars</span>
 			</h1>
 		</template>
 

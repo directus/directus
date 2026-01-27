@@ -636,10 +636,6 @@ function useCollectionRoute() {
 			</div>
 		</template>
 
-		<!-- <template v-if="!(collectionInfo.meta && collectionInfo.meta.singleton === true)" #title:append>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
-		</template> -->
-
 		<template #actions>
 			<VButton
 				v-if="previewUrl"
