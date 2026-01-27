@@ -40,7 +40,7 @@ const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
 
 const loading = ref(true);
-const deploying = ref(true);
+const deploying = ref(false);
 const runs = ref<Run[]>([]);
 const search = ref<string | null>(null);
 const totalCount = ref(0);
@@ -97,7 +97,7 @@ const tableHeaders = ref<Header[]>([
 	{
 		text: t('duration'),
 		value: 'duration',
-		width: 80,
+		width: 100,
 		sortable: false,
 		align: 'left',
 		description: null,

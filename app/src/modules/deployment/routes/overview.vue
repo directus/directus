@@ -53,7 +53,8 @@ function onSetupComplete() {
 	const provider = selectedProvider.value;
 	selectedProvider.value = null;
 	fetch(true);
-	if (provider) router.push(`/deployment/${provider}`);
+	// Navigate to settings to select projects (no projects after initial setup)
+	if (provider) router.push(`/deployment/${provider}/settings`);
 }
 </script>
 
