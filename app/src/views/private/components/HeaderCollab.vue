@@ -116,7 +116,6 @@ function focusIntoView(cid: ClientID) {
 	}
 }
 
-
 .v-list-item {
 	display: flex;
 	gap: 8px;
