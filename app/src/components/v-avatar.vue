@@ -69,7 +69,7 @@ const sizeClass = useSizeClass(props);
 }
 
 .x-small {
-	--v-avatar-size: 22px;
+	--v-avatar-size: 24px;
 
 	border-radius: 4px;
 }

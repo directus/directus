@@ -597,8 +597,6 @@ function useCollectionRoute() {
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
 			</h1>
-
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
@@ -611,8 +609,6 @@ function useCollectionRoute() {
 					:template="collectionInfo.meta!.display_template"
 				/>
 			</h1>
-
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template #headline>
@@ -640,9 +636,9 @@ function useCollectionRoute() {
 			</div>
 		</template>
 
-		<template v-if="!(collectionInfo.meta && collectionInfo.meta.singleton === true)" #title:append>
+		<!-- <template v-if="!(collectionInfo.meta && collectionInfo.meta.singleton === true)" #title:append>
 			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
-		</template>
+		</template> -->
 
 		<template #actions>
 			<VButton
@@ -793,6 +789,10 @@ function useCollectionRoute() {
 			</VButton>
 
 			<FlowDialogs v-bind="flowDialogsContext" />
+		</template>
+
+		<template #actions:prepend>
+			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template #navigation>

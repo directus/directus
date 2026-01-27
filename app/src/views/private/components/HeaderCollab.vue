@@ -10,6 +10,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { CollabUser } from '@/composables/use-collab';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import UserPopover from '@/views/private/components/user-popover.vue';
 
 interface Props {
 	connected?: boolean | undefined;
@@ -39,7 +40,8 @@ const users = computed(() => {
 					})
 				: undefined,
 			color: user.color,
-			id: user.connection,
+			id: user.id,
+			connection: user.connection,
 		}))
 		.reverse();
 });
@@ -72,12 +74,12 @@ function focusIntoView(cid: ClientID) {
 			name="signal_disconnected"
 			class="connect-icon"
 		/>
-		<VMenu v-if="users.length > DISPLAY_LIMIT" trigger="click">
+		<VMenu v-if="users.length > DISPLAY_LIMIT" trigger="click" show-arrow>
 			<template #activator>
 				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round>+{{ users.length - 3 }}</VAvatar>
 			</template>
 			<VList>
-				<VListItem v-for="user in users.slice(DISPLAY_LIMIT)" :key="user.id" clickable @click="focusIntoView(user.id)">
+				<VListItem v-for="user in users.slice(DISPLAY_LIMIT)" :key="user.connection">
 					<VAvatar :border="`var(--${user.color})`" x-small round>
 						<img v-if="user.avatar_url" :src="user.avatar_url" />
 						<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
@@ -88,20 +90,13 @@ function focusIntoView(cid: ClientID) {
 				</VListItem>
 			</VList>
 		</VMenu>
-		<VAvatar
-			v-for="user in users.slice(0, DISPLAY_LIMIT)"
-			:id="focusId"
-			:key="user.id"
-			v-tooltip.bottom="user.name ?? t('unknown_user')"
-			:border="`var(--${user.color})`"
-			x-small
-			round
-			@click="focusIntoView(user.id)"
-		>
-			<img v-if="user.avatar_url" :src="user.avatar_url" />
-			<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
-			<VIcon v-else name="person" />
-		</VAvatar>
+		<UserPopover v-for="user in users.slice(0, DISPLAY_LIMIT)" :key="user.id" :user="user.id">
+			<VAvatar :border="`var(--${user.color})`" x-small round @click="focusIntoView(user.connection)">
+				<img v-if="user.avatar_url" :src="user.avatar_url" />
+				<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
+				<VIcon v-else name="person" />
+			</VAvatar>
+		</UserPopover>
 	</div>
 </template>
 
@@ -123,7 +118,6 @@ function focusIntoView(cid: ClientID) {
 
 
 .v-list-item {
-	cursor: pointer;
 	display: flex;
 	gap: 8px;
 }
