@@ -680,7 +680,7 @@ function useCollectionRoute() {
 		</template>
 
 		<template #actions>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
+			<HeaderCollab :model-value="collabUsers" :connected="connected" />
 
 			<VButton
 				v-if="previewUrl"
