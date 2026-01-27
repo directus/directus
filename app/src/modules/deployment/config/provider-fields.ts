@@ -12,7 +12,7 @@ export const availableProviders = ['vercel'];
 export function useProviderConfigs(hasExistingCredentials = false, isEdit = false) {
 	const { t } = useI18n();
 
-	const vercelProvider = t('deployment_provider_vercel');
+	const vercelProvider = t('deployment.provider.vercel.name');
 	const vercelTokenUrl = 'https://vercel.com/account/settings/tokens';
 
 	const providerConfigs: Record<string, ProviderConfig> = {
@@ -21,7 +21,7 @@ export function useProviderConfigs(hasExistingCredentials = false, isEdit = fals
 			credentialsFields: [
 				{
 					field: 'access_token',
-					name: t('deployment_provider_token_label'),
+					name: t('deployment.provider.token.label'),
 					type: 'string',
 					meta: {
 						interface: 'input',
@@ -29,15 +29,15 @@ export function useProviderConfigs(hasExistingCredentials = false, isEdit = fals
 						required: !hasExistingCredentials,
 						note: [
 							isEdit &&
-								`${t('deployment_provider_credentials_notice', { provider: vercelProvider })} [${t('deployment_provider_credentials_link', { provider: vercelProvider })}](${vercelTokenUrl}).`,
-							t('deployment_provider_token_encrypted_notice'),
+								`${t('deployment.provider.credentials.notice', { provider: vercelProvider })} [${t('deployment.provider.credentials.link', { provider: vercelProvider })}](${vercelTokenUrl}).`,
+							t('deployment.provider.token.encrypted_notice'),
 						]
 							.filter(Boolean)
 							.join(' '),
 						options: {
 							placeholder: hasExistingCredentials
 								? t('interfaces.system-token.value_securely_saved')
-								: t('deployment_provider_token_placeholder'),
+								: t('deployment.provider.token.placeholder'),
 						},
 					},
 				},
@@ -45,15 +45,15 @@ export function useProviderConfigs(hasExistingCredentials = false, isEdit = fals
 			optionsFields: [
 				{
 					field: 'team_id',
-					name: t('deployment_provider_vercel_team_id_label'),
+					name: t('deployment.provider.vercel.team_id.label'),
 					type: 'string',
 					meta: {
 						interface: 'input',
 						width: 'full',
 						required: false,
-						note: t('deployment_provider_vercel_team_id_hint'),
+						note: t('deployment.provider.vercel.team_id.hint'),
 						options: {
-							placeholder: t('deployment_provider_vercel_team_id_placeholder'),
+							placeholder: t('deployment.provider.vercel.team_id.placeholder'),
 						},
 					},
 				},

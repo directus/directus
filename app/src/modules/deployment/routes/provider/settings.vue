@@ -223,9 +223,9 @@ onMounted(() => {
 </script>
 
 <template>
-	<PrivateView :title="$t('deployment_provider_settings', { provider: $t(`deployment_provider_${provider}`) })">
+	<PrivateView :title="$t('deployment.provider.settings.settings', { provider: $t(`deployment.provider.${provider}.name`) })">
 		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment'), to: '/deployment' }]" />
+			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployment' }]" />
 		</template>
 
 		<template #title-outer:prepend>
@@ -240,7 +240,7 @@ onMounted(() => {
 
 		<template #actions>
 			<VButton
-				v-tooltip.bottom="$t('deployment_provider_settings_delete')"
+				v-tooltip.bottom="$t('deployment.provider.settings.delete')"
 				rounded
 				icon
 				small
@@ -265,7 +265,7 @@ onMounted(() => {
 			<template v-else>
 				<InterfacePresentationDivider
 					:title="
-						$t('deployment_provider_settings_edit_credentials', { provider: $t(`deployment_provider_${provider}`) })
+						$t('deployment.provider.settings.edit_credentials', { provider: $t(`deployment.provider.${provider}.name`) })
 					"
 					icon="key"
 				/>
@@ -276,7 +276,7 @@ onMounted(() => {
 
 				<InterfacePresentationDivider
 					v-if="optionsFields.length > 0"
-					:title="$t('deployment_provider_settings_edit_options', { provider: $t(`deployment_provider_${provider}`) })"
+					:title="$t('deployment.provider.settings.edit_options', { provider: $t(`deployment.provider.${provider}.name`) })"
 					icon="settings"
 				/>
 
@@ -288,9 +288,9 @@ onMounted(() => {
 					primary-key="+"
 				/>
 
-				<InterfacePresentationDivider :title="$t('deployment_provider_projects')" icon="assignment" />
+				<InterfacePresentationDivider :title="$t('deployment.provider.projects')" icon="assignment" />
 
-				<div class="type-label">{{ $t('deployment_provider_select_projects') }}</div>
+				<div class="type-label">{{ $t('deployment.provider.select_projects') }}</div>
 				<div class="checkboxes">
 					<VCheckbox
 						v-for="project in availableProjects"
@@ -303,11 +303,11 @@ onMounted(() => {
 						@update:model-value="(value) => (selectedProjectIds = value)"
 					>
 						<template v-if="!project.deployable" #append>
-							<VIcon v-tooltip.left="$t('deployment_provider_project_not_deployable')" name="info" small />
+							<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" small />
 						</template>
 					</VCheckbox>
 				</div>
-				<small class="type-note">{{ $t('deployment_provider_select_projects_hint') }}</small>
+				<small class="type-note">{{ $t('deployment.provider.select_projects_hint') }}</small>
 			</template>
 		</div>
 
@@ -326,7 +326,7 @@ onMounted(() => {
 
 		<VDialog v-model="confirmDelete" @esc="confirmDelete = false">
 			<VCard>
-				<VCardTitle>{{ $t('deployment_provider_settings_delete_confirm') }}</VCardTitle>
+				<VCardTitle>{{ $t('deployment.provider.settings.delete_confirm') }}</VCardTitle>
 				<VCardActions>
 					<VButton secondary @click="confirmDelete = false">{{ $t('cancel') }}</VButton>
 					<VButton kind="danger" :loading="deleting" @click="deleteConfig">
@@ -339,7 +339,7 @@ onMounted(() => {
 		<VDialog v-model="confirmRemoveProjects" @esc="confirmRemoveProjects = false">
 			<VCard>
 				<VCardTitle>
-					{{ $t('deployment_provider_settings_remove_projects_confirm', { projects: projectsToRemove.join(', ') }) }}
+					{{ $t('deployment.provider.settings.remove_projects_confirm', { projects: projectsToRemove.join(', ') }) }}
 				</VCardTitle>
 				<VCardActions>
 					<VButton secondary @click="confirmRemoveProjects = false">{{ $t('cancel') }}</VButton>

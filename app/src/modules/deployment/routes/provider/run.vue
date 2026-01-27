@@ -51,7 +51,7 @@ const logLevelFilter = ref<string>('all');
 const searchQuery = ref('');
 
 const logLevelOptions = [
-	{ text: t('deployment_provider_run_log_all'), value: 'all' },
+	{ text: t('deployment.provider.run.log_all'), value: 'all' },
 	{ text: 'Info', value: 'info' },
 	{ text: 'Stdout', value: 'stdout' },
 	{ text: 'Stderr', value: 'stderr' },
@@ -59,7 +59,7 @@ const logLevelOptions = [
 
 const pageTitle = computed(() =>
 	currentProject.value?.name
-		? t('deployment_provider_run_title', { project: currentProject.value.name })
+		? t('deployment.provider.run.title', { project: currentProject.value.name })
 		: t('loading'),
 );
 
@@ -234,7 +234,7 @@ onUnmounted(() => {
 <template>
 	<PrivateView :title="pageTitle">
 		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment_provider_${provider}`), to: `/deployment/${provider}` }]" />
+			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployment/${provider}` }]" />
 		</template>
 
 		<template #title-outer:prepend>
@@ -250,12 +250,12 @@ onUnmounted(() => {
 		<template #actions>
 			<div class="actions-wrapper">
 				<span v-if="isBuilding" class="currently-deploying">
-					{{ $t('deployment_provider_run_currently_deploying') }}
+					{{ $t('deployment.provider.run.currently_deploying') }}
 				</span>
 
 				<VButton
 					v-if="isBuilding"
-					v-tooltip.bottom="$t('deployment_provider_run_stop')"
+					v-tooltip.bottom="$t('deployment.provider.run.stop')"
 					rounded
 					icon
 					small
@@ -267,7 +267,7 @@ onUnmounted(() => {
 				</VButton>
 
 				<VButton
-					v-tooltip.bottom="$t('deployment_provider_run_download_logs')"
+					v-tooltip.bottom="$t('deployment.provider.run.download_logs')"
 					rounded
 					icon
 					small
@@ -279,7 +279,7 @@ onUnmounted(() => {
 
 				<VButton
 					v-if="run?.url"
-					v-tooltip.bottom="$t('deployment_provider_run_open_deployment')"
+					v-tooltip.bottom="$t('deployment.provider.run.open_deployment')"
 					rounded
 					icon
 					small
@@ -298,7 +298,7 @@ onUnmounted(() => {
 				<div class="stats-bar">
 					<div class="stat-card deployment-id">
 						<VIcon name="assignment" class="stat-icon" />
-						<span class="stat-label">{{ $t('deployment_provider_run_id') }}</span>
+						<span class="stat-label">{{ $t('deployment.provider.run.id') }}</span>
 						<div class="stat-value monospace">
 							<VTextOverflow :text="run.external_id" placement="bottom" />
 						</div>
@@ -318,7 +318,7 @@ onUnmounted(() => {
 
 					<div class="stat-card">
 						<VIcon name="assignment" class="stat-icon" />
-						<span class="stat-label">{{ $t('deployment_target') }}</span>
+						<span class="stat-label">{{ $t('deployment.target') }}</span>
 						<span class="stat-value">{{ run.target }}</span>
 					</div>
 				</div>
@@ -331,7 +331,7 @@ onUnmounted(() => {
 						<VIcon class="filter-icon" small name="search" />
 						<input
 							v-model="searchQuery"
-							:placeholder="$t('deployment_provider_run_search_logs')"
+							:placeholder="$t('deployment.provider.run.search_logs')"
 							class="search-input"
 						/>
 					</div>
@@ -339,7 +339,7 @@ onUnmounted(() => {
 
 				<div ref="logsContainer" class="logs-container" @scroll="handleLogsScroll">
 					<div v-if="logItems.length === 0" class="no-logs">
-						{{ $t('deployment_provider_run_no_logs') }}
+						{{ $t('deployment.provider.run.no_logs') }}
 					</div>
 
 					<div v-else class="logs">
@@ -355,11 +355,11 @@ onUnmounted(() => {
 
 		<VDialog v-model="confirmCancel" @esc="confirmCancel = false">
 			<VCard>
-				<VCardTitle>{{ $t('deployment_provider_run_cancel_confirm') }}</VCardTitle>
+				<VCardTitle>{{ $t('deployment.provider.run.cancel_confirm') }}</VCardTitle>
 				<VCardActions>
 					<VButton secondary @click="confirmCancel = false">{{ $t('cancel') }}</VButton>
 					<VButton kind="danger" :loading="canceling" @click="cancel">
-						{{ $t('deployment_provider_run_stop') }}
+						{{ $t('deployment.provider.run.stop') }}
 					</VButton>
 				</VCardActions>
 			</VCard>

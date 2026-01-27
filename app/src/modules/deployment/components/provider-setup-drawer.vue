@@ -72,22 +72,22 @@ function onCancel() {
 <template>
 	<VDrawer
 		v-model="active"
-		:title="$t('deployment_provider_setup_title', { provider: provider ? $t(`deployment_provider_${provider}`) : '' })"
+		:title="$t('deployment.provider.setup_title', { provider: provider ? $t(`deployment.provider.${provider}.name`) : '' })"
 		persistent
 		icon="vercel"
 		@cancel="onCancel"
 	>
 		<template #subtitle>
-			{{ $t('deployment') }}
+			{{ $t('deployment.deployment') }}
 		</template>
 
 		<div class="content">
 			<VNotice v-if="providerConfig?.tokenUrl" type="info" class="notice">
 				<div>
-					{{ $t('deployment_provider_credentials_notice', { provider: $t(`deployment_provider_${provider}`) }) }}
+					{{ $t('deployment.provider.credentials.notice', { provider: $t(`deployment.provider.${provider}.name`) }) }}
 				</div>
 				<a :href="providerConfig.tokenUrl" target="_blank" rel="noopener noreferrer">
-					{{ $t('deployment_provider_credentials_link', { provider: $t(`deployment_provider_${provider}`) }) }}
+					{{ $t('deployment.provider.credentials.link', { provider: $t(`deployment.provider.${provider}.name`) }) }}
 				</a>
 			</VNotice>
 
