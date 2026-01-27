@@ -268,6 +268,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 	}
 
 	.field-name {
+		flex-grow: 1;
 		max-inline-size: 100%;
 		text-align: start;
 		display: flex;
@@ -280,8 +281,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 }
 
 :deep(.header-collab) {
-	position: absolute;
-	inset-block-end: 0;
-	inset-inline-end: 0;
+	margin-inline-start: 8px;
+	flex-shrink: 0;
 }
 </style>
