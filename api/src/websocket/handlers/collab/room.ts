@@ -17,7 +17,7 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { Messenger } from './messenger.js';
-import { sanitizePayload } from './sanitize-payload.js';
+import { sanitizePayload } from './payload-permissions.js';
 import { useStore } from './store.js';
 import type { JoinMessage, PermissionClient } from './types.js';
 import { verifyPermissions } from './verify-permissions.js';
@@ -540,16 +540,11 @@ export class Room {
 	/**
 	 * Discard specified changes in the room and propagate to other clients
 	 */
-	async discard(accountability: Accountability): Promise<void> {
-		const schema = await getSchema();
-		const knex = getDatabase();
+	async discard(fields: string[]): Promise<void> {
+		if (fields.length === 0) return;
 
-		const fields = await this.store(async (store) => {
+		const clients = await this.store(async (store) => {
 			const changes = await store.get('changes');
-
-			const fields = await verifyPermissions(accountability, this.collection, this.item, 'read', { knex, schema });
-
-			if (!fields || fields.length === 0) return [];
 
 			for (const field of fields) {
 				delete changes[field];
@@ -557,15 +552,31 @@ export class Room {
 
 			await store.set('changes', changes);
 
-			return fields;
+			return await store.get('clients');
 		});
 
-		if (fields.length === 0) return;
+		const schema = await getSchema();
+		const knex = getDatabase();
 
-		await this.sendAll({
-			action: ACTION.SERVER.DISCARD,
-			fields,
-		});
+		for (const client of clients) {
+			const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item, 'read', {
+				schema,
+				knex,
+			});
+
+			const sendFields = new Set<string>();
+
+			for (const field of fields) {
+				if (allowedFields?.includes('*') || allowedFields?.includes(field)) {
+					sendFields.add(field);
+				}
+			}
+
+			this.send(client.uid, {
+				action: ACTION.SERVER.DISCARD,
+				fields: [...sendFields],
+			});
+		}
 	}
 
 	/**

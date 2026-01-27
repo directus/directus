@@ -13,6 +13,7 @@ import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
 import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
 import { getMessageType } from '../../utils/message.js';
 import { Messenger } from './messenger.js';
+import { validateChanges } from './payload-permissions.js';
 import { getRoomHash, RoomManager } from './room.js';
 import type {
 	DiscardMessage,
@@ -22,7 +23,6 @@ import type {
 	UpdateAllMessage,
 	UpdateMessage,
 } from './types.js';
-import { validateChanges } from './validate-changes.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 const env = useEnv();
@@ -82,7 +82,7 @@ export class CollabHandler {
 		 */
 		this.messenger.messenger.subscribe('websocket.event', async (event: any) => {
 			try {
-				if (event.collection === 'directus_settings' && event.action === 'update') {
+				if (event.collection === 'directus_settings' && event.action === 'update' && 'collaboration' in event.payload) {
 					useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
 
 					// Non-blocking initialization to avoid bus congestion
@@ -224,7 +224,7 @@ export class CollabHandler {
 		setInterval(async () => {
 			try {
 				// Remove local clients that are no longer in the global registry
-				const clients = await this.messenger.getGlobalClients();
+				const clients = await this.messenger.getLocalClients();
 				const roomClients = (await this.roomManager.getAllRoomClients()).map((client) => client.uid);
 				const invalidClients = difference(roomClients, clients);
 
@@ -439,7 +439,7 @@ export class CollabHandler {
 			}
 		}
 
-		if (message.changes) {
+		if (!isEmpty(message.changes)) {
 			await validateChanges(message.changes, collection, room.item, {
 				knex,
 				schema,
@@ -488,7 +488,18 @@ export class CollabHandler {
 			});
 		}
 
-		await room.discard(client.accountability!);
+		const knex = getDatabase();
+		const schema = await getSchema();
+
+		const fields = await verifyPermissions(client.accountability, room.collection, room.item, 'read', { knex, schema });
+
+		if (!fields) {
+			throw new ForbiddenError({
+				reason: `No permission to discard fields ${fields} or field does not exist`,
+			});
+		}
+
+		await room.discard(fields);
 	}
 
 	/**

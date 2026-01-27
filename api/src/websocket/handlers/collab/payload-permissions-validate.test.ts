@@ -1,7 +1,7 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { validateChanges } from './validate-changes.js';
+import { validateChanges } from './payload-permissions.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 vi.mock('./verify-permissions.js');
