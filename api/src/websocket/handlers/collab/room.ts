@@ -444,10 +444,6 @@ export class Room {
 	 * Leave the room
 	 */
 	async leave(uid: ClientID) {
-		this.messenger.removeClient(uid);
-
-		if (!(await this.hasClient(uid))) return;
-
 		await this.store(async (store) => {
 			const clients = (await store.get('clients')).filter((c: RoomClient) => c.uid !== uid);
 
