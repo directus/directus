@@ -285,11 +285,6 @@ export class CollabHandler {
 		const schema = await getSchema();
 		const db = getDatabase();
 
-		if (!message.item && !schema.collections[message.collection]?.singleton)
-			throw new InvalidPayloadError({
-				reason: `Item id has to be provided for non singleton collections`,
-			});
-
 		try {
 			const { accessAllowed } = await validateItemAccess(
 				{
