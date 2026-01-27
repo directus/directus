@@ -2,16 +2,11 @@
 import AiEmptyState from './empty-state.vue';
 import VList from '@/components/v-list.vue';
 
-withDefaults(
-	defineProps<{
-		items: T[];
-		itemKey: keyof T & string;
-		emptyMessage?: string;
-	}>(),
-	{
-		emptyMessage: 'No results',
-	},
-);
+defineProps<{
+	items: T[];
+	itemKey: keyof T & string;
+	emptyMessage: string;
+}>();
 
 defineSlots<{ item(props: { item: T }): unknown }>();
 </script>

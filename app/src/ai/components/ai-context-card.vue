@@ -52,7 +52,7 @@ const icon = computed(() => {
 			<VIcon :name="icon" x-small class="item-icon" />
 		</div>
 		<p class="display-text">{{ item.display }}</p>
-		<button v-if="removable" type="button" class="close-button" @click.stop="emit('remove')">
+		<button v-if="removable" type="button" class="close-button" :aria-label="$t('remove')" @click.stop="emit('remove')">
 			<VIcon name="close" small />
 		</button>
 	</div>
@@ -130,6 +130,12 @@ const icon = computed(() => {
 	&:hover {
 		opacity: 1;
 		background-color: var(--theme--background-normal);
+	}
+
+	&:focus-visible {
+		opacity: 1;
+		outline: 2px solid var(--theme--primary);
+		outline-offset: 1px;
 	}
 }
 </style>

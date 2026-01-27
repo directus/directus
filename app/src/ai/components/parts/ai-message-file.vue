@@ -28,9 +28,10 @@ const file = computed(() => ({
 			v-if="part.mediaType?.startsWith('image/')"
 			type="button"
 			class="image-preview"
+			:aria-label="part.filename || $t('ai.image_preview')"
 			@click="lightboxActive = true"
 		>
-			<VImage :src="part.url" :alt="part.filename" />
+			<VImage :src="part.url" :alt="part.filename || $t('ai.image_preview')" />
 		</button>
 		<div v-else class="file-attachment">
 			<VIcon name="attach_file" small />

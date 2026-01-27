@@ -97,7 +97,10 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 					type: 'prompt',
 					data: item.data,
 					display: item.display,
-					snapshot: { text: item.data.text, messages: item.data.prompt?.messages },
+					snapshot: {
+						text: item.data.text,
+						...(item.data.prompt?.messages ? { messages: item.data.prompt.messages } : {}),
+					},
 				};
 			}
 

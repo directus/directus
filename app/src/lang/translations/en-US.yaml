@@ -1710,6 +1710,8 @@ ai:
   prompt_inserted: Prompt inserted
   prompt_staged: Prompt staged
   items_staged: Items staged
+  some_items_staged: '{count} item(s) staged (limit reached)'
+  image_preview: Image preview
   item_staged: Item staged
   invalid_collection: Invalid collection
   element_already_staged: Element already staged

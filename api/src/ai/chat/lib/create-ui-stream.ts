@@ -43,6 +43,7 @@ export const createUiStream = async (
 	const registry = createAIProviderRegistry(configs, aiSettings);
 
 	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
+	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
 
 	const stream = streamText({
@@ -53,11 +54,8 @@ export const createUiStream = async (
 		providerOptions,
 		tools,
 		prepareStep: () => {
-			// Append context to system prompt on each step
-			if (context) {
-				const contextBlock = formatContextForSystemPrompt(context);
-				const fullPrompt = baseSystemPrompt + contextBlock;
-				return { system: fullPrompt };
+			if (contextBlock) {
+				return { system: baseSystemPrompt + contextBlock };
 			}
 
 			return {};

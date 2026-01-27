@@ -46,12 +46,17 @@ export function useContextStaging() {
 
 			const text = messages.flatMap((m) => m.parts.filter((p) => p.type === 'text').map((p) => p.text)).join('\n\n');
 
-			aiStore.addPendingContext({
+			const added = aiStore.addPendingContext({
 				id: nanoid(),
 				type: 'prompt',
 				data: { text, prompt, values },
 				display: formatTitle(prompt.name),
 			});
+
+			if (!added) {
+				notify({ title: t('ai.max_elements_reached'), type: 'warning' });
+				return;
+			}
 
 			notify({
 				title: t('ai.prompt_staged'),
@@ -86,21 +91,32 @@ export function useContextStaging() {
 
 			const items: Record<string, unknown>[] = response.data.data ?? [];
 
+			let stagedCount = 0;
+
 			for (const item of items) {
 				const itemId = item[primaryKey] as string | number;
 
 				const displayValue =
 					renderDisplayStringTemplate(collection, displayTemplate, item) || `${collection} #${itemId}`;
 
-				aiStore.addPendingContext({
+				const added = aiStore.addPendingContext({
 					id: nanoid(),
 					type: 'item',
 					data: { collection, id: itemId },
 					display: displayValue,
 				});
+
+				if (!added) break;
+				stagedCount++;
 			}
 
-			notify({ title: t('ai.items_staged'), type: 'success' });
+			if (stagedCount === 0) {
+				notify({ title: t('ai.max_elements_reached'), type: 'warning' });
+			} else if (stagedCount < items.length) {
+				notify({ title: t('ai.some_items_staged', { count: stagedCount }), type: 'warning' });
+			} else {
+				notify({ title: t('ai.items_staged'), type: 'success' });
+			}
 		} catch (error) {
 			unexpectedError(error);
 		}
