@@ -314,6 +314,28 @@ describe('Room.verifyPermissions', () => {
 		expect(serviceMock.readOne).not.toHaveBeenCalled();
 	});
 
+	test('Singleton collection handling for create', async () => {
+		const client = getAccountability({ uid: 'client-1' });
+
+		const serviceMock = vi.mocked(getService)('settings', {} as any);
+
+		vi.mocked(fetchPermissions).mockResolvedValueOnce([
+			{
+				fields: ['*'],
+				permissions: { id: { _eq: 1 } },
+				validation: {},
+			},
+		] as any);
+
+		await verifyPermissions(client, 'settings', null, 'create', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
+		expect(serviceMock.readSingleton).not.toHaveBeenCalled();
+		expect(serviceMock.readOne).not.toHaveBeenCalled();
+	});
+
 	test('Singleton with item rules returns allowed fields', async () => {
 		const client = getAccountability({ uid: 'client-restricted' });
 

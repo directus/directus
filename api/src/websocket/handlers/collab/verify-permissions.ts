@@ -83,7 +83,7 @@ export async function verifyPermissions(
 					permissionCache.set(accountability, collection, String(item), action, null, []);
 					return null;
 				}
-			} else if (schema.collections[collection]?.singleton) {
+			} else if (schema.collections[collection]?.singleton && action !== 'create') {
 				const pkField = schema.collections[collection]!.primary;
 
 				if (pkField) {
