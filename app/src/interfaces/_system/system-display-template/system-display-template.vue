@@ -2,6 +2,7 @@
 import { computed, inject, ref } from 'vue';
 import VFieldTemplate from '@/components/v-field-template/v-field-template.vue';
 import VNotice from '@/components/v-notice.vue';
+import { useFakeProjectUrlField } from '@/composables/use-fake-project-url-field';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
@@ -15,6 +16,7 @@ const props = withDefaults(
 		collectionName?: string;
 		fields?: FieldNode[];
 		injectVersionField?: boolean;
+		injectProjectUrlField?: boolean;
 		includeRelations?: boolean;
 	}>(),
 	{
@@ -49,8 +51,12 @@ const collection = computed(() => {
 const versioningEnabled = computed(() => Boolean(values.value.versioning && props.injectVersionField));
 const { fakeVersionField } = useFakeVersionField(collection, versioningEnabled);
 
+const projectUrlEnabled = computed(() => Boolean(props.injectProjectUrlField));
+const { fakeProjectUrlField } = useFakeProjectUrlField(collection, projectUrlEnabled);
+
 const injectFields = computed(() => {
-	return fakeVersionField.value ? { fields: [fakeVersionField.value] } : null;
+	const fields = [fakeVersionField.value, fakeProjectUrlField.value].filter((field) => field !== null);
+	return fields.length > 0 ? { fields } : null;
 });
 
 const { treeList, loadFieldRelations } = useFieldTree(collection, injectFields, () => true, props.includeRelations);

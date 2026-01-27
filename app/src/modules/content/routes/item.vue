@@ -37,6 +37,7 @@ import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -69,6 +70,7 @@ const router = useRouter();
 const { collectionRoute } = useCollectionRoute();
 
 const userStore = useUserStore();
+const settingsStore = useSettingsStore();
 
 const form = ref<ComponentPublicInstance>();
 
@@ -281,7 +283,10 @@ const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?
 
 const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, {
 	template: previewTemplate,
-	injectData: computed(() => ({ $version: currentVersion.value?.key ?? 'main' })),
+	injectData: computed(() => ({
+		$version: currentVersion.value?.key ?? 'main',
+		$project_url: settingsStore.settings?.project_url ?? '',
+	})),
 });
 
 const previewUrl = computed(() => {

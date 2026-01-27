@@ -115,6 +115,7 @@ fields:
     options:
       collectionField: collection
       injectVersionField: true
+      injectProjectUrlField: true
     width: full
 
   - field: content_versioning_divider
