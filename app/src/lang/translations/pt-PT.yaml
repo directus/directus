@@ -424,7 +424,7 @@ raw_value: Valor bruto
 copy_raw_value: Editar Valor Bruto
 copy_raw_value_success: Copiado
 copy_raw_value_fail: Falha ao copiar
-paste_raw_value: Editar Valor Bruto
+paste_raw_value: Cole O Valor Bruto
 paste_raw_value_success: Colado
 paste_raw_value_fail: Falha ao colar
 view_raw_value: Editar Valor Bruto
