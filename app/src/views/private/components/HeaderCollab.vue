@@ -28,7 +28,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t } = useI18n();
 
-
 const users = computed(() => {
 	return toArray(props.modelValue)
 		.map((user) => ({
@@ -59,19 +58,6 @@ function focusIntoView(cid: ClientID) {
 
 <template>
 	<div class="header-collab">
-		<VIcon
-			v-if="lock && users.length > 0"
-			name="lock"
-			class="lock-icon"
-			:style="{ color: `var(--${users[0]!.color})` }"
-		/>
-		<VIcon
-			v-if="connected === false"
-			v-tooltip.bottom="$t('collab_disconnected')"
-			name="signal_disconnected"
-			class="connect-icon"
-		/>
-
 		<UserPopover v-for="(user, index) in users.slice(0, DISPLAY_LIMIT)" :key="user.id" :user="user.id">
 			<VAvatar :border="`var(--${user.color})`" :style="{ zIndex: DISPLAY_LIMIT - index }" x-small round clickable @click="focusIntoView(user.connection)">
 				<img v-if="user.avatar_url" :src="user.avatar_url" />
@@ -95,6 +81,18 @@ function focusIntoView(cid: ClientID) {
 				</VListItem>
 			</VList>
 		</VMenu>
+		<VIcon
+			v-if="lock && users.length > 0"
+			name="lock"
+			class="lock-icon"
+			:style="{ color: `var(--${users[0]!.color})` }"
+		/>
+		<VIcon
+			v-if="connected === false"
+			v-tooltip.bottom="$t('collab_disconnected')"
+			name="signal_disconnected"
+			class="connect-icon"
+		/>
 	</div>
 </template>
 
@@ -107,12 +105,14 @@ function focusIntoView(cid: ClientID) {
 		margin-inline-start: 8px;
 	}
 
+	& > * + * .v-avatar {
+		margin-inline-start: -4px;
+	}
+
 	.v-avatar {
 		/* Font-size used by "more users" button */
 		font-size: 12px;
 		cursor: pointer;
-		margin-inline-start: -4px;
-
 	}
 }
 
