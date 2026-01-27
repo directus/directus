@@ -256,11 +256,8 @@ function revert(values: Record<string, any>) {
 			<VBreadcrumb :items="breadcrumb" />
 		</template>
 
-		<template #title:append>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
-		</template>
-
 		<template #actions>
+			<HeaderCollab :model-value="collabUsers" :connected="connected" />
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
@@ -464,9 +461,5 @@ function revert(values: Record<string, any>) {
 
 .preview {
 	margin-block-end: var(--theme--form--row-gap);
-}
-
-.header-collab {
-	margin-inline-start: 16px;
 }
 </style>

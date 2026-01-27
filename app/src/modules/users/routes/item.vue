@@ -311,11 +311,8 @@ function revert(values: Record<string, any>) {
 			<VBreadcrumb :items="breadcrumb" />
 		</template>
 
-		<template #title:append>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
-		</template>
-
 		<template #actions>
+			<HeaderCollab :model-value="collabUsers" :connected="connected" />
 			<VDialog
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
@@ -625,9 +622,5 @@ function revert(values: Record<string, any>) {
 			display: block;
 		}
 	}
-}
-
-.header-collab {
-	margin-inline-start: 16px;
 }
 </style>

@@ -618,15 +618,11 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VBreadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
 		</template>
 
-		<template #actions:prepend>
+		<template #actions>
 			<HeaderCollab
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
-				small
 			/>
-		</template>
-
-		<template #actions>
 			<slot name="actions" />
 
 			<PrivateViewHeaderBarActionButton
