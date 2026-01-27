@@ -16,6 +16,8 @@ interface Props {
 	large?: boolean;
 	/** Renders a larger avatar */
 	xLarge?: boolean;
+	/** Makes the avatar clickable */
+	clickable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,7 +28,11 @@ const sizeClass = useSizeClass(props);
 </script>
 
 <template>
+	<button v-if="clickable" class="v-avatar" :class="[{ tile, round, border }, sizeClass]" tabindex="0" :style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []">
+		<slot />
+	</button>
 	<div
+	    v-else
 		class="v-avatar"
 		:class="[{ tile, round, border }, sizeClass]"
 		:style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []"
@@ -87,7 +93,8 @@ const sizeClass = useSizeClass(props);
 }
 
 .round {
-	border-radius: 50%;
+	border-radius: 50% !important;
+
 }
 
 :slotted(img) {
