@@ -95,7 +95,7 @@ export function useCollab(
 
 	const roomId = ref<string | null>(null);
 	const connectionId = ref<ClientID | null>(null);
-	const joining = ref(false);
+	let joining = false;
 	const users = ref<CollabUser[]>([]);
 	const focused = ref<Record<ClientID, string>>({});
 	const collidingLocalChanges = ref<Item | undefined>();
@@ -163,7 +163,7 @@ export function useCollab(
 
 	function disconnect() {
 		connected.value = false;
-		joining.value = false;
+		joining = false;
 		roomId.value = null;
 		connectionId.value = null;
 		users.value = [];
@@ -175,13 +175,13 @@ export function useCollab(
 			(active && active.value === false) ||
 			!connected.value ||
 			roomId.value ||
-			joining.value ||
+			joining ||
 			!collection.value ||
 			item.value === '+'
 		)
 			return;
 
-		joining.value = true;
+		joining = true;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,
@@ -196,17 +196,17 @@ export function useCollab(
 
 	function leave() {
 		join.cancel();
-		joining.value = false;
+		joining = false;
 
 		if (roomId.value) {
 			activeRooms[roomId.value] = (activeRooms[roomId.value] ?? 0) - 1;
 
 			// If there is another use-collab going to the same room, don't disconnect yet.
-			if (Number(activeRooms[roomId.value]) > 0) return;
-
-			sendMessage({
-				action: ACTION.CLIENT.LEAVE,
-			});
+			if (Number(activeRooms[roomId.value]) === 0) {
+				sendMessage({
+					action: ACTION.CLIENT.LEAVE,
+				});
+			}
 		}
 
 		roomId.value = null;
@@ -265,9 +265,9 @@ export function useCollab(
 	};
 
 	async function receiveInit(message: InitMessage) {
-		if (joining.value === false) return;
+		if (joining === false) return;
 
-		joining.value = false;
+		joining = false;
 		roomId.value = message.room;
 		connectionId.value = message.connection;
 
@@ -389,7 +389,7 @@ export function useCollab(
 		delete focused.value[message.connection];
 
 		if (message.connection === connectionId.value) {
-			joining.value = false;
+			joining = false;
 			roomId.value = null;
 			connectionId.value = null;
 			focused.value = {};
