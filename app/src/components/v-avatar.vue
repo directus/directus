@@ -28,11 +28,17 @@ const sizeClass = useSizeClass(props);
 </script>
 
 <template>
-	<button v-if="clickable" class="v-avatar" :class="[{ tile, round, border }, sizeClass]" tabindex="0" :style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []">
+	<button
+		v-if="clickable"
+		class="v-avatar"
+		:class="[{ tile, round, border }, sizeClass]"
+		tabindex="0"
+		:style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []"
+	>
 		<slot />
 	</button>
 	<div
-	    v-else
+		v-else
 		class="v-avatar"
 		:class="[{ tile, round, border }, sizeClass]"
 		:style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []"
@@ -94,7 +100,6 @@ const sizeClass = useSizeClass(props);
 
 .round {
 	border-radius: 50% !important;
-
 }
 
 :slotted(img) {

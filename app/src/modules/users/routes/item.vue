@@ -313,6 +313,7 @@ function revert(values: Record<string, any>) {
 
 		<template #actions>
 			<HeaderCollab :model-value="collabUsers" :connected="connected" />
+
 			<VDialog
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"

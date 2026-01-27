@@ -258,6 +258,7 @@ function revert(values: Record<string, any>) {
 
 		<template #actions>
 			<HeaderCollab :model-value="collabUsers" :connected="connected" />
+
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton

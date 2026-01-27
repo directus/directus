@@ -45,8 +45,6 @@ const users = computed(() => {
 		.reverse();
 });
 
-
-
 function focusIntoView(cid: ClientID) {
 	const element = document.getElementById(`collab-focus-${cid}`);
 
@@ -59,7 +57,14 @@ function focusIntoView(cid: ClientID) {
 <template>
 	<div class="header-collab">
 		<UserPopover v-for="(user, index) in users.slice(0, DISPLAY_LIMIT)" :key="user.id" :user="user.id">
-			<VAvatar :border="`var(--${user.color})`" :style="{ zIndex: DISPLAY_LIMIT - index }" x-small round clickable @click="focusIntoView(user.connection)">
+			<VAvatar
+				:border="`var(--${user.color})`"
+				:style="{ zIndex: DISPLAY_LIMIT - index }"
+				x-small
+				round
+				clickable
+				@click="focusIntoView(user.connection)"
+			>
 				<img v-if="user.avatar_url" :src="user.avatar_url" />
 				<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
 				<VIcon v-else name="person" small />
@@ -67,11 +72,24 @@ function focusIntoView(cid: ClientID) {
 		</UserPopover>
 		<VMenu v-if="users.length > DISPLAY_LIMIT" show-arrow>
 			<template #activator="{ toggle }">
-				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round clickable @click="toggle">+{{ users.length - 3 }}</VAvatar>
+				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round clickable @click="toggle">
+					+{{ users.length - 3 }}
+				</VAvatar>
 			</template>
 			<VList>
-				<VListItem v-for="(user, index) in users.slice(DISPLAY_LIMIT)" :key="user.connection" clickable @click="focusIntoView(user.connection)">
-					<VAvatar :border="`var(--${user.color})`" x-small round :class="{ 'first': index === 0 }" @click="focusIntoView(user.connection)">
+				<VListItem
+					v-for="(user, index) in users.slice(DISPLAY_LIMIT)"
+					:key="user.connection"
+					clickable
+					@click="focusIntoView(user.connection)"
+				>
+					<VAvatar
+						:border="`var(--${user.color})`"
+						x-small
+						round
+						:class="{ first: index === 0 }"
+						@click="focusIntoView(user.connection)"
+					>
 						<img v-if="user.avatar_url" :src="user.avatar_url" />
 						<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
 						<VIcon v-else name="person" />

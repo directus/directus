@@ -681,7 +681,7 @@ function useCollectionRoute() {
 
 		<template #actions>
 			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
-			
+
 			<VButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
