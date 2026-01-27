@@ -111,6 +111,7 @@ function focusIntoView(cid: ClientID) {
 
 	.v-avatar {
 		margin-inline-start: -4px;
+		/* Font-size used by "more users" button */
 		font-size: 12px;
 		cursor: pointer;
 	}
