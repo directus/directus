@@ -1,5 +1,5 @@
-import type { AuthenticationClient, DirectusClient, RestClient, WebSocketClient } from '@directus/sdk';
-import { authentication, createDirectus, realtime, rest } from '@directus/sdk';
+import type { AuthenticationClient, DirectusClient, RestClient } from '@directus/sdk';
+import { authentication, createDirectus, rest } from '@directus/sdk';
 import { type FetchContext, ofetch } from 'ofetch';
 import { requestQueue } from './api';
 import { SDK_AUTH_REFRESH_BEFORE_EXPIRES } from './constants';
