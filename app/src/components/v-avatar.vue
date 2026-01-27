@@ -28,23 +28,15 @@ const sizeClass = useSizeClass(props);
 </script>
 
 <template>
-	<button
-		v-if="clickable"
-		class="v-avatar"
-		:class="[{ tile, round, border }, sizeClass]"
-		tabindex="0"
-		:style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []"
-	>
-		<slot />
-	</button>
-	<div
-		v-else
+	<component
+		:is="clickable ? 'button' : 'div'"
+		:type="clickable ? 'button' : undefined"
 		class="v-avatar"
 		:class="[{ tile, round, border }, sizeClass]"
 		:style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []"
 	>
 		<slot />
-	</div>
+	</component>
 </template>
 
 <style scoped>
