@@ -443,8 +443,12 @@ export function useCollab(
 	}
 
 	async function receiveDiscard(message: DiscardMessage) {
-		for (const field of message.fields) {
-			delete edits.value[field];
+		if (message.fields.includes('*')) {
+			edits.value = {};
+		} else {
+			for (const field of message.fields) {
+				delete edits.value[field];
+			}
 		}
 	}
 

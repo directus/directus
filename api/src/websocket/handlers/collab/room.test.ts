@@ -592,6 +592,64 @@ describe('room', () => {
 		expect(vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'hij')).toHaveLength(2);
 	});
 
+	test('discard changes with * field access', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		await room.update(clientA, { title: 'Changed', status: 'Draft', test: 123 });
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed', status: 'Draft', test: 123 });
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		vi.mocked(verifyPermissions).mockResolvedValue(['title', 'status']);
+
+		await room.discard(['*']);
+
+		expect(mockData.get(`${uid}:changes`)).toEqual({});
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'discard',
+				fields: ['title', 'status'],
+			}),
+		);
+	});
+
+	test('discard changes with * field access and * outgoing', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		await room.update(clientA, { title: 'Changed', status: 'Draft', test: 123 });
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed', status: 'Draft', test: 123 });
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
+
+		await room.discard(['*']);
+
+		expect(mockData.get(`${uid}:changes`)).toEqual({});
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'discard',
+				fields: ['*'],
+			}),
+		);
+	});
+
 	test('discard changes', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });

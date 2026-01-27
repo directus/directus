@@ -10,7 +10,7 @@ import {
 	type ServerError,
 } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
-import { isEqual, random } from 'lodash-es';
+import { isEqual, random, uniq } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
@@ -550,10 +550,14 @@ export class Room {
 		if (fields.length === 0) return;
 
 		const clients = await this.store(async (store) => {
-			const changes = await store.get('changes');
+			let changes = await store.get('changes');
 
-			for (const field of fields) {
-				delete changes[field];
+			if (fields.includes('*')) {
+				changes = {};
+			} else {
+				for (const field of fields) {
+					delete changes[field];
+				}
 			}
 
 			await store.set('changes', changes);
@@ -570,17 +574,21 @@ export class Room {
 				knex,
 			});
 
-			const sendFields = new Set<string>();
+			const sendFields: string[] = [];
 
-			for (const field of fields) {
-				if (allowedFields?.includes('*') || allowedFields?.includes(field)) {
-					sendFields.add(field);
+			if (fields.includes('*')) {
+				sendFields.push(...(allowedFields ?? []));
+			} else {
+				for (const field of fields) {
+					if (allowedFields?.includes('*') || allowedFields?.includes(field)) {
+						sendFields.push(field);
+					}
 				}
 			}
 
 			this.send(client.uid, {
 				action: ACTION.SERVER.DISCARD,
-				fields: [...sendFields],
+				fields: uniq(sendFields),
 			});
 		}
 	}
