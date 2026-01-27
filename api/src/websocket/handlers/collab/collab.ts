@@ -82,7 +82,7 @@ export class CollabHandler {
 		 */
 		this.messenger.messenger.subscribe('websocket.event', async (event: any) => {
 			try {
-				if (event.collection === 'directus_settings' && event.action === 'update') {
+				if (event.collection === 'directus_settings' && event.action === 'update' && 'collaboration' in event.payload) {
 					useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
 
 					// Non-blocking initialization to avoid bus congestion
@@ -439,7 +439,7 @@ export class CollabHandler {
 			}
 		}
 
-		if (message.changes) {
+		if (!isEmpty(message.changes)) {
 			await validateChanges(message.changes, collection, room.item, {
 				knex,
 				schema,
