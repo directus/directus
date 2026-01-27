@@ -842,10 +842,6 @@ function popoverClickOutsideMiddleware(e: Event) {
 	}
 }
 
-.header-collab {
-	margin-inline-end: 16px;
-}
-
 .modal-title-icon {
 	margin-inline-end: 8px;
 }

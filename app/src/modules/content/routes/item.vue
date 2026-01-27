@@ -1006,10 +1006,6 @@ function useCollectionRoute() {
 	gap: 0.25rem;
 }
 
-.header-collab {
-	margin-inline-start: 16px;
-}
-
 .version-more-options.v-icon {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
