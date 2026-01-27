@@ -55,10 +55,6 @@ export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch:
 
 export default sdk;
 
-export const collabClient: SdkClient & WebSocketClient<unknown> = sdk.with(
-	realtime({ authMode: 'strict', connect: false }),
-);
-
 function getUrlPath(request: FetchContext['request']): string | null {
 	const uri = typeof request === 'string' ? request : request.url;
 

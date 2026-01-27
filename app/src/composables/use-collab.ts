@@ -1,5 +1,5 @@
 import { ErrorCode } from '@directus/errors';
-import { readUser, readUsers, RemoveEventHandler, WebSocketInterface } from '@directus/sdk';
+import { readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient, WebSocketInterface } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
@@ -7,7 +7,7 @@ import { capitalize, debounce, isEmpty, isEqual, isMatch, throttle } from 'lodas
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { collabClient as sdk } from '@/sdk';
+import { sdk as baseSDK, SdkClient } from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
@@ -24,6 +24,8 @@ type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS 
 type DiscardMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.DISCARD }>;
 
 const SESSION_COLOR_KEY = 'collab-color';
+
+const sdk: SdkClient & WebSocketClient<unknown> = baseSDK.with(realtime({ authMode: 'strict', connect: false }));
 
 export type CollabUser = {
 	id: string;
