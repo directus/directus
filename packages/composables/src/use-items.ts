@@ -282,6 +282,21 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	async function getItemCount() {
 		if (!endpoint.value) return;
+		const filterVal = unref(filter);
+		const searchVal = unref(search);
+
+		const isFilterEmpty = !filterVal || Object.keys(filterVal).length === 0;
+		const isSearchEmpty = !searchVal || searchVal.length === 0;
+
+		if (isFilterEmpty && isSearchEmpty) {
+			if (totalCount.value !== null) {
+				itemCount.value = totalCount.value;
+			} else {
+				await getTotalCount();
+				itemCount.value = totalCount.value;
+			}
+			return;
+		}
 
 		loadingItemCount.value = true;
 
@@ -299,8 +314,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
-					filter: unref(filter),
-					search: unref(search),
+					filter: filterVal,
+					search: searchVal,
 					aggregate,
 				},
 				signal: existingRequests.filter.signal,
