@@ -1,15 +1,17 @@
 import { ErrorCode } from '@directus/errors';
-import { readUser, readUsers, RemoveEventHandler, WebSocketInterface } from '@directus/sdk';
+import { readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient, WebSocketInterface } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
-import { isDetailedUpdateSyntax } from '@directus/utils';
+import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { capitalize, debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import sdk from '@/sdk';
+import { sdk as baseSDK, SdkClient } from '@/sdk';
+import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -22,6 +24,8 @@ type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS 
 type DiscardMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.DISCARD }>;
 
 const SESSION_COLOR_KEY = 'collab-color';
+
+const sdk: SdkClient & WebSocketClient<unknown> = baseSDK.with(realtime({ authMode: 'strict', connect: false }));
 
 export type CollabUser = {
 	id: string;
@@ -45,6 +49,8 @@ export type CollabContext = {
 	focusedFields: string[];
 	registerField: (field: string) => CollabFieldContext;
 };
+
+const activeRooms: Record<string, number> = {};
 
 let wsConnecting: Promise<WebSocketInterface> | false = false;
 
@@ -84,12 +90,14 @@ export function useCollab(
 	const settingsStore = useSettingsStore();
 	const notificationsStore = useNotificationsStore();
 	const permissionsStore = usePermissionsStore();
+	const relationsStore = useRelationsStore();
+	const fieldsStore = useFieldsStore();
 	const connected = ref<boolean | undefined>(undefined);
 	const { t } = useI18n();
 
 	const roomId = ref<string | null>(null);
 	const connectionId = ref<ClientID | null>(null);
-	const joining = ref(false);
+	let joining = false;
 	const users = ref<CollabUser[]>([]);
 	const focused = ref<Record<ClientID, string>>({});
 	const collidingLocalChanges = ref<Item | undefined>();
@@ -157,7 +165,7 @@ export function useCollab(
 
 	function disconnect() {
 		connected.value = false;
-		joining.value = false;
+		joining = false;
 		roomId.value = null;
 		connectionId.value = null;
 		users.value = [];
@@ -169,13 +177,13 @@ export function useCollab(
 			(active && active.value === false) ||
 			!connected.value ||
 			roomId.value ||
-			joining.value ||
+			joining ||
 			!collection.value ||
 			item.value === '+'
 		)
 			return;
 
-		joining.value = true;
+		joining = true;
 
 		sdk.sendMessage({
 			type: WS_TYPE.COLLAB,
@@ -190,12 +198,17 @@ export function useCollab(
 
 	function leave() {
 		join.cancel();
-		joining.value = false;
+		joining = false;
 
 		if (roomId.value) {
-			sendMessage({
-				action: ACTION.CLIENT.LEAVE,
-			});
+			activeRooms[roomId.value] = (activeRooms[roomId.value] ?? 0) - 1;
+
+			// If there is another use-collab going to the same room, don't disconnect yet.
+			if (Number(activeRooms[roomId.value]) === 0) {
+				sendMessage({
+					action: ACTION.CLIENT.LEAVE,
+				});
+			}
 		}
 
 		roomId.value = null;
@@ -254,11 +267,13 @@ export function useCollab(
 	};
 
 	async function receiveInit(message: InitMessage) {
-		if (joining.value === false) return;
+		if (joining === false) return;
 
-		joining.value = false;
+		joining = false;
 		roomId.value = message.room;
 		connectionId.value = message.connection;
+
+		activeRooms[roomId.value] = (activeRooms[roomId.value] ?? 0) + 1;
 
 		if (!isMatch({ ...initialValues.value, ...edits.value }, message.changes)) {
 			if (!isEmpty(edits.value)) collidingLocalChanges.value = edits.value;
@@ -308,6 +323,37 @@ export function useCollab(
 			return;
 		}
 
+		if (isEqual(message.changes, initialValues.value?.[message.field])) {
+			delete edits.value[message.field];
+			return;
+		}
+
+		// Reconcile M2O objects if PKs match, update initialValue to full object
+		// Clear "edited" state in UI without losing data received from others
+		if (isObject(message.changes) && initialValues.value) {
+			const relation = collection.value ? relationsStore.getRelationForField(collection.value, message.field) : null;
+
+			if (relation?.related_collection) {
+				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection)?.field;
+
+				if (
+					pkField &&
+					isEqual(
+						(message.changes as Record<string, any>)[pkField],
+						(initialValues.value as Record<string, any>)[message.field],
+					)
+				) {
+					(initialValues.value as Record<string, any>)[message.field] = message.changes;
+
+					if (isEqual(message.changes, edits.value[message.field])) {
+						delete edits.value[message.field];
+					}
+
+					return;
+				}
+			}
+		}
+
 		if (!isEqual(message.changes, edits.value[message.field])) {
 			// Can't directly assign message.changes here because edits can be a computed value
 			edits.value = { ...edits.value, [message.field]: message.changes };
@@ -345,7 +391,7 @@ export function useCollab(
 		delete focused.value[message.connection];
 
 		if (message.connection === connectionId.value) {
-			joining.value = false;
+			joining = false;
 			roomId.value = null;
 			connectionId.value = null;
 			focused.value = {};
@@ -368,6 +414,16 @@ export function useCollab(
 				delete edits.value[field];
 			} else if (isDetailedUpdateSyntax(editValue)) {
 				delete edits.value[field];
+			} else if (isObject(editValue)) {
+				const relation = collection.value ? relationsStore.getRelationForField(collection.value, field) : null;
+
+				if (relation?.related_collection) {
+					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection)?.field;
+
+					if (pkField && isEqual(editValue[pkField], initialValue)) {
+						delete edits.value[field];
+					}
+				}
 			}
 		}
 
@@ -389,14 +445,16 @@ export function useCollab(
 	}
 
 	async function receiveDiscard(message: DiscardMessage) {
-		for (const field of message.fields) {
-			delete edits.value[field];
+		if (message.fields.includes('*')) {
+			edits.value = {};
+		} else {
+			for (const field of message.fields) {
+				delete edits.value[field];
+			}
 		}
 	}
 
 	const onFieldUpdate = throttle((field: string, value: any) => {
-		if (isEqual(value, edits.value[field])) return;
-
 		sendMessage({
 			action: ACTION.CLIENT.UPDATE,
 			changes: value,

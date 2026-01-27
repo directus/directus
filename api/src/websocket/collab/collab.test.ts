@@ -1,14 +1,14 @@
 import { type WebSocketClient } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import emitter from '../../../emitter.js';
-import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
-import { SettingsService } from '../../../services/settings.js';
-import { getSchema } from '../../../utils/get-schema.js';
-import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
+import emitter from '../../emitter.js';
+import { validateItemAccess } from '../../permissions/modules/validate-access/lib/validate-item-access.js';
+import { SettingsService } from '../../services/settings.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { scheduleSynchronizedJob } from '../../utils/schedule.js';
 import { CollabHandler } from './collab.js';
 import { verifyPermissions } from './verify-permissions.js';
 
-vi.mock('../../../logger/index.js', () => ({
+vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
 		info: vi.fn(),
 		error: vi.fn(),
@@ -16,12 +16,12 @@ vi.mock('../../../logger/index.js', () => ({
 	}),
 }));
 
-vi.mock('../../../database/index.js');
-vi.mock('../../../emitter.js');
-vi.mock('../../../permissions/modules/validate-access/lib/validate-item-access.js');
-vi.mock('../../../utils/get-schema.js');
-vi.mock('../../../utils/schedule.js');
-vi.mock('../../errors.js');
+vi.mock('../../database/index.js');
+vi.mock('../../emitter.js');
+vi.mock('../../permissions/modules/validate-access/lib/validate-item-access.js');
+vi.mock('../../utils/get-schema.js');
+vi.mock('../../utils/schedule.js');
+vi.mock('../errors.js');
 
 vi.mock('./messenger.js', () => ({
 	Messenger: vi.fn().mockImplementation(() => ({
@@ -41,14 +41,14 @@ vi.mock('./room.js', () => ({
 		createRoom: vi.fn().mockResolvedValue({ join: vi.fn() }),
 		getRoom: vi.fn(),
 		getClientRooms: vi.fn().mockResolvedValue([]),
-		getAllRoomClients: vi.fn().mockResolvedValue([]),
+		getLocalRoomClient: vi.fn().mockResolvedValue([]),
 		removeRoom: vi.fn(),
 	})),
 }));
 
 vi.mock('./verify-permissions.js');
 
-vi.mock('../../../services/settings.js', () => ({
+vi.mock('../../services/settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(() => ({
 		readSingleton: vi.fn().mockResolvedValue({ collaboration: true }),
 	})),
@@ -740,7 +740,7 @@ describe('CollabHandler', () => {
 			};
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
-			vi.mocked(handler.roomManager.getAllRoomClients).mockResolvedValue([]);
+			vi.mocked(handler.roomManager.getLocalRoomClients).mockResolvedValue([]);
 			vi.mocked(handler.roomManager.getClientRooms).mockResolvedValue([]);
 
 			await cleanupJob();

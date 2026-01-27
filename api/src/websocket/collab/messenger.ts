@@ -10,8 +10,9 @@ import {
 	type ServerError,
 	type ServerMessage,
 } from '@directus/types/collab';
-import { useBus } from '../../../bus/index.js';
-import { useLogger } from '../../../logger/index.js';
+import { uniq } from 'lodash-es';
+import { useBus } from '../../bus/index.js';
+import { useLogger } from '../../logger/index.js';
 import { useStore } from './store.js';
 
 const env = useEnv();
@@ -169,9 +170,11 @@ export class Messenger {
 	async getGlobalRooms(): Promise<string[]> {
 		const instances = await this.store(async (store) => await store.get('instances'));
 
-		return Object.values(instances)
-			.map(({ rooms }) => rooms)
-			.flat();
+		return uniq(
+			Object.values(instances)
+				.map(({ rooms }) => rooms)
+				.flat(),
+		);
 	}
 
 	async pruneDeadInstances(): Promise<RegistrySnapshot> {

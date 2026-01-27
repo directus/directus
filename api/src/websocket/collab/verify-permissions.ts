@@ -1,14 +1,14 @@
 import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { useLogger } from '../../../logger/index.js';
-import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
-import { extractRequiredDynamicVariableContextForPermissions } from '../../../permissions/utils/extract-required-dynamic-variable-context.js';
-import { fetchDynamicVariableData } from '../../../permissions/utils/fetch-dynamic-variable-data.js';
-import { processPermissions } from '../../../permissions/utils/process-permissions.js';
-import { getService } from '../../../utils/get-service.js';
+import { useLogger } from '../../logger/index.js';
+import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
+import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { validateItemAccess } from '../../permissions/modules/validate-access/lib/validate-item-access.js';
+import { extractRequiredDynamicVariableContextForPermissions } from '../../permissions/utils/extract-required-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from '../../permissions/utils/fetch-dynamic-variable-data.js';
+import { processPermissions } from '../../permissions/utils/process-permissions.js';
+import { getService } from '../../utils/get-service.js';
 import { calculateCacheMetadata } from './calculate-cache-metadata.js';
 import { filterToFields } from './filter-to-fields.js';
 import { permissionCache } from './permissions-cache.js';
@@ -83,7 +83,7 @@ export async function verifyPermissions(
 					permissionCache.set(accountability, collection, String(item), action, null, []);
 					return null;
 				}
-			} else if (schema.collections[collection]?.singleton) {
+			} else if (schema.collections[collection]?.singleton && action !== 'create') {
 				const pkField = schema.collections[collection]!.primary;
 
 				if (pkField) {

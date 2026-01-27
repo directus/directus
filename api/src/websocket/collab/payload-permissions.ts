@@ -1,8 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
-import { isDetailedUpdateSyntax } from '@directus/utils';
+import { deepMapWithSchema, isDetailedUpdateSyntax } from '@directus/utils';
 import type { Knex } from 'knex';
-import { deepMapWithSchema } from '../../../utils/versioning/deep-map-with-schema.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 type PermissionContext = {

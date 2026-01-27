@@ -9,13 +9,13 @@ import {
 	COLORS,
 	type ServerError,
 } from '@directus/types/collab';
-import { isDetailedUpdateSyntax } from '@directus/utils';
-import { isEqual, random } from 'lodash-es';
-import getDatabase from '../../../database/index.js';
-import { useLogger } from '../../../logger/index.js';
-import { getSchema } from '../../../utils/get-schema.js';
-import { getService } from '../../../utils/get-service.js';
-import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
+import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
+import { isEqual, random, uniq } from 'lodash-es';
+import getDatabase from '../../database/index.js';
+import { useLogger } from '../../logger/index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { getService } from '../../utils/get-service.js';
+import { isFieldAllowed } from '../../utils/is-field-allowed.js';
 import { Messenger } from './messenger.js';
 import { sanitizePayload } from './payload-permissions.js';
 import { useStore } from './store.js';
@@ -117,19 +117,10 @@ export class RoomManager {
 	}
 
 	/**
-	 * Returns all clients that are part of a room in the global memory
+	 * Returns all clients that are part of a room in the local memory
 	 */
-	async getAllRoomClients(): Promise<RoomClient[]> {
-		const clients = [];
-		const globalRooms = await this.messenger.getGlobalRooms();
-
-		for (const roomId of Object.values(globalRooms)) {
-			const room = await this.getRoom(roomId);
-
-			if (room) clients.push(...(await room.getClients()));
-		}
-
-		return clients;
+	async getLocalRoomClients(): Promise<RoomClient[]> {
+		return (await Promise.all(Object.values(this.rooms).map((room) => room.getClients()))).flat();
 	}
 
 	/**
@@ -141,7 +132,7 @@ export class RoomManager {
 		for (const room of rooms) {
 			if (await room.close()) {
 				delete this.rooms[room.uid];
-				useLogger().info(`[Collab] Closed inactive room ${room.uid}`);
+				useLogger().info(`[Collab] Closed inactive room ${room.getDisplayName()}`);
 			}
 		}
 	}
@@ -253,7 +244,22 @@ export class Room {
 							if (!(key in result)) return !!this.version;
 
 							// For primitives, only clear if saved value matches pending change
-							return !isEqual(value, result[key]);
+							if (isEqual(value, result[key])) return false;
+
+							// Reconcile M2O objects with the PK in result
+							if (isObject(value)) {
+								const relation = schema.relations.find((r: any) => r.collection === collection && r.field === key);
+
+								if (relation) {
+									const pkField = schema.collections[relation.related_collection as string]?.primary;
+
+									if (pkField && isEqual((value as any)[pkField], result[key])) {
+										return false;
+									}
+								}
+							}
+
+							return true;
 						}),
 					);
 
@@ -312,6 +318,10 @@ export class Room {
 			await store.set('clients', []);
 			await store.set('focuses', {});
 		});
+	}
+
+	getDisplayName() {
+		return [this.collection, this.item, this.version].filter(Boolean).join(':');
 	}
 
 	async getClients() {
@@ -438,10 +448,6 @@ export class Room {
 	 * Leave the room
 	 */
 	async leave(uid: ClientID) {
-		this.messenger.removeClient(uid);
-
-		if (!(await this.hasClient(uid))) return;
-
 		await this.store(async (store) => {
 			const clients = (await store.get('clients')).filter((c: RoomClient) => c.uid !== uid);
 
@@ -544,10 +550,14 @@ export class Room {
 		if (fields.length === 0) return;
 
 		const clients = await this.store(async (store) => {
-			const changes = await store.get('changes');
+			let changes = await store.get('changes');
 
-			for (const field of fields) {
-				delete changes[field];
+			if (fields.includes('*')) {
+				changes = {};
+			} else {
+				for (const field of fields) {
+					delete changes[field];
+				}
 			}
 
 			await store.set('changes', changes);
@@ -564,17 +574,21 @@ export class Room {
 				knex,
 			});
 
-			const sendFields = new Set<string>();
+			const sendFields: string[] = [];
 
-			for (const field of fields) {
-				if (allowedFields?.includes('*') || allowedFields?.includes(field)) {
-					sendFields.add(field);
+			if (fields.includes('*')) {
+				sendFields.push(...(allowedFields ?? []));
+			} else {
+				for (const field of fields) {
+					if (allowedFields?.includes('*') || allowedFields?.includes(field)) {
+						sendFields.push(field);
+					}
 				}
 			}
 
 			this.send(client.uid, {
 				action: ACTION.SERVER.DISCARD,
-				fields: [...sendFields],
+				fields: uniq(sendFields),
 			});
 		}
 	}

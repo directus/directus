@@ -1,16 +1,16 @@
 import { randomUUID } from 'node:crypto';
-import type { Accountability, WebSocketClient } from '@directus/types';
+import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { useLogger } from '../../../logger/index.js';
-import { getSchema } from '../../../utils/get-schema.js';
-import { getService } from '../../../utils/get-service.js';
+import { useLogger } from '../../logger/index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { getService } from '../../utils/get-service.js';
 import { sanitizePayload } from './payload-permissions.js';
 import { permissionCache } from './permissions-cache.js';
 import { getRoomHash, Room, RoomManager } from './room.js';
 import { verifyPermissions } from './verify-permissions.js';
 
-vi.mock('../../../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	default: vi.fn(() => ({
 		select: vi.fn().mockReturnThis(),
 		where: vi.fn().mockReturnThis(),
@@ -18,7 +18,7 @@ vi.mock('../../../database/index.js', () => ({
 	})),
 }));
 
-vi.mock('../../../logger/index.js', () => ({
+vi.mock('../../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
 		error: vi.fn(),
 		info: vi.fn(),
@@ -26,17 +26,17 @@ vi.mock('../../../logger/index.js', () => ({
 	}),
 }));
 
-vi.mock('../../../utils/get-schema.js');
+vi.mock('../../utils/get-schema.js');
 vi.mock('./payload-permissions.js');
 vi.mock('./verify-permissions.js');
 vi.mock('./field-permissions.js');
-vi.mock('../../../utils/get-service.js');
-vi.mock('../../../permissions/lib/fetch-permissions.js');
-vi.mock('../../../permissions/lib/fetch-policies.js');
-vi.mock('../../../permissions/utils/extract-required-dynamic-variable-context.js');
-vi.mock('../../../permissions/utils/fetch-dynamic-variable-data.js');
-vi.mock('../../../permissions/utils/process-permissions.js');
-vi.mock('../../../permissions/modules/validate-access/lib/validate-item-access.js');
+vi.mock('../../utils/get-service.js');
+vi.mock('../../permissions/lib/fetch-permissions.js');
+vi.mock('../../permissions/lib/fetch-policies.js');
+vi.mock('../../permissions/utils/extract-required-dynamic-variable-context.js');
+vi.mock('../../permissions/utils/fetch-dynamic-variable-data.js');
+vi.mock('../../permissions/utils/process-permissions.js');
+vi.mock('../../permissions/modules/validate-access/lib/validate-item-access.js');
 
 const mockMessenger = {
 	sendClient: vi.fn(),
@@ -347,6 +347,14 @@ describe('room', () => {
 		expect(room).toBeDefined();
 	});
 
+	test('display name', () => {
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+
+		expect(room.getDisplayName()).toEqual(`coll:${item}`);
+	});
+
 	test('join room', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
@@ -584,6 +592,64 @@ describe('room', () => {
 		expect(vi.mocked(mockMessenger.sendClient).mock.calls.filter((c: any) => c[0] === 'hij')).toHaveLength(2);
 	});
 
+	test('discard changes with * field access', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		await room.update(clientA, { title: 'Changed', status: 'Draft', test: 123 });
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed', status: 'Draft', test: 123 });
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		vi.mocked(verifyPermissions).mockResolvedValue(['title', 'status']);
+
+		await room.discard(['*']);
+
+		expect(mockData.get(`${uid}:changes`)).toEqual({});
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'discard',
+				fields: ['title', 'status'],
+			}),
+		);
+	});
+
+	test('discard changes with * field access and * outgoing', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		await room.update(clientA, { title: 'Changed', status: 'Draft', test: 123 });
+		expect(mockData.get(`${uid}:changes`)).toEqual({ title: 'Changed', status: 'Draft', test: 123 });
+
+		vi.mocked(mockMessenger.sendClient).mockClear();
+
+		vi.mocked(verifyPermissions).mockResolvedValue(['*']);
+
+		await room.discard(['*']);
+
+		expect(mockData.get(`${uid}:changes`)).toEqual({});
+
+		expect(mockMessenger.sendClient).toHaveBeenCalledWith(
+			'abc',
+			expect.objectContaining({
+				action: 'discard',
+				fields: ['*'],
+			}),
+		);
+	});
+
 	test('discard changes', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
@@ -802,6 +868,48 @@ describe('room', () => {
 		expect(updatedChanges).toEqual({ title: 'Pending' }); // 'stale' should be removed
 	});
 
+	test('reconciles M2O objects on external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		const m2oId = randomUUID();
+
+		mockData.set(`${uid}:changes`, {
+			m2o_field: {
+				id: m2oId,
+				name: 'M2O Item',
+			},
+		});
+
+		vi.mocked(getSchema).mockResolvedValue({
+			collections: {
+				coll: { primary: 'id', fields: {} },
+				related: { primary: 'id', fields: {} },
+			},
+			relations: [
+				{
+					collection: 'coll',
+					field: 'm2o_field',
+					related_collection: 'related',
+				},
+			],
+		} as any);
+
+		const mockService = { readOne: vi.fn().mockResolvedValue({ id: item, m2o_field: m2oId }) };
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
+
+		expect(mockData.get(`${uid}:changes`)).toEqual({});
+	});
+
 	test('clears primitives that match saved result on external update', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const item = getTestItem();
@@ -845,6 +953,42 @@ describe('room', () => {
 				title: 'Different',
 				comments: [{ id: 1, text: 'New comment' }],
 				author: { id: 5, name: 'John' },
+			}),
+		};
+
+		vi.mocked(getService).mockReturnValue(mockService as any);
+
+		await room.onUpdateHandler({ keys: [item], collection: 'coll' }, {
+			accountability: { user: 'external-user' },
+		} as any);
+
+		const updatedChanges = mockData.get(`${uid}:changes`);
+		expect(updatedChanges).toEqual({ title: 'Keep' });
+	});
+
+	test('clears O2M detailed update syntax on external update', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const item = getTestItem();
+		const uid = getRoomHash('coll', item, null);
+		const room = new Room(uid, 'coll', item, null, {}, mockMessenger);
+		await room.ensureInitialized();
+
+		await room.join(clientA);
+
+		mockData.set(`${uid}:changes`, {
+			title: 'Keep',
+			comments: {
+				create: [{ text: 'New comment' }],
+				update: [],
+				delete: [],
+			},
+		});
+
+		const mockService = {
+			readOne: vi.fn().mockResolvedValue({
+				id: item,
+				title: 'Different',
+				comments: [{ id: 1, text: 'New comment' }],
 			}),
 		};
 

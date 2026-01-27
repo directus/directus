@@ -1,6 +1,6 @@
 import { createCache } from '@directus/memory';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { redisConfigAvailable, useRedis } from '../../../redis/index.js';
+import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 
 vi.mock('@directus/memory', () => ({
 	createCache: vi.fn(() => ({
@@ -8,7 +8,7 @@ vi.mock('@directus/memory', () => ({
 	})),
 }));
 
-vi.mock('../../../redis/index.js', () => ({
+vi.mock('../../redis/index.js', () => ({
 	useRedis: vi.fn(),
 	redisConfigAvailable: vi.fn().mockReturnValue(true),
 }));

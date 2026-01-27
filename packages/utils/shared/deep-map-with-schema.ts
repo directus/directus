@@ -1,8 +1,9 @@
 import assert from 'node:assert';
 import { InvalidQueryError } from '@directus/errors';
 import type { CollectionOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
-import { getRelationInfo, isDetailedUpdateSyntax, type RelationInfo } from '@directus/utils';
 import { isPlainObject } from 'lodash-es';
+import { getRelationInfo, type RelationInfo } from './get-relation-info.js';
+import { isDetailedUpdateSyntax } from './is-detailed-update-syntax.js';
 
 type DeepMapCallbackContext = {
 	collection: CollectionOverview;

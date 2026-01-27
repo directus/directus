@@ -2,16 +2,17 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
-import { difference, isEmpty, upperFirst } from 'lodash-es';
-import getDatabase from '../../../database/index.js';
-import emitter from '../../../emitter.js';
-import { useLogger } from '../../../logger/index.js';
-import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
-import { SettingsService } from '../../../services/settings.js';
-import { getSchema } from '../../../utils/get-schema.js';
-import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
-import { scheduleSynchronizedJob } from '../../../utils/schedule.js';
-import { getMessageType } from '../../utils/message.js';
+import { toArray } from '@directus/utils';
+import { difference, isEmpty, uniq, upperFirst } from 'lodash-es';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
+import { useLogger } from '../../logger/index.js';
+import { validateItemAccess } from '../../permissions/modules/validate-access/lib/validate-item-access.js';
+import { SettingsService } from '../../services/settings.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { isFieldAllowed } from '../../utils/is-field-allowed.js';
+import { scheduleSynchronizedJob } from '../../utils/schedule.js';
+import { getMessageType } from '../utils/message.js';
 import { Messenger } from './messenger.js';
 import { validateChanges } from './payload-permissions.js';
 import { getRoomHash, RoomManager } from './room.js';
@@ -81,6 +82,8 @@ export class CollabHandler {
 		 * Service (Node B) -> Emitter (Node B) -> Hooks (Node B) -> Bus -> CollabHandler (Node A) -> Room (Node A) -> Remote Clients
 		 */
 		this.messenger.messenger.subscribe('websocket.event', async (event: any) => {
+			const schema = await getSchema();
+
 			try {
 				if (event.collection === 'directus_settings' && event.action === 'update' && 'collaboration' in event.payload) {
 					useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
@@ -115,7 +118,7 @@ export class CollabHandler {
 					} else if (event.key) {
 						keys = [event.key];
 					} else if (event.payload && event.action === 'delete') {
-						keys = Array.isArray(event.payload) ? event.payload : [event.payload];
+						keys = toArray(event.payload);
 					}
 
 					event.keys = keys;
@@ -138,8 +141,13 @@ export class CollabHandler {
 						return;
 					}
 
-					// Ensure singleton rooms (null) are notified of changes
-					const keysToCheck = Array.from(new Set([...keys, null]));
+					let keysToCheck;
+
+					if (schema.collections[event.collection]?.singleton) {
+						keysToCheck = [null];
+					} else {
+						keysToCheck = uniq(keys);
+					}
 
 					for (const key of keysToCheck) {
 						const roomUid = getRoomHash(event.collection, key, null);
@@ -172,6 +180,18 @@ export class CollabHandler {
 		// listen to incoming messages on the connected websockets
 		emitter.onAction('websocket.message', async ({ client, message }) => {
 			if (getMessageType(message) !== WS_TYPE.COLLAB) return;
+
+			try {
+				await this.ensureEnabled();
+			} catch (error) {
+				if (error instanceof ServiceUnavailableError && error.message.includes('Collaboration is disabled')) {
+					this.messenger.handleError(client.uid, error, message.action);
+					this.messenger.terminateClient(client.uid);
+					return;
+				}
+
+				throw error;
+			}
 
 			const { data, error } = ClientMessage.safeParse(message);
 
@@ -224,15 +244,16 @@ export class CollabHandler {
 		setInterval(async () => {
 			try {
 				// Remove local clients that are no longer in the global registry
-				const clients = await this.messenger.getLocalClients();
-				const roomClients = (await this.roomManager.getAllRoomClients()).map((client) => client.uid);
-				const invalidClients = difference(roomClients, clients);
+				const globalClients = await this.messenger.getGlobalClients();
+				const localClients = (await this.roomManager.getLocalRoomClients()).map((client) => client.uid);
+				const invalidClients = difference(localClients, globalClients);
 
 				for (const client of invalidClients) {
 					const rooms = await this.roomManager.getClientRooms(client);
 
 					for (const room of rooms) {
-						useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.uid}`);
+						useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.getDisplayName()}`);
+
 						await room.leave(client);
 					}
 				}
@@ -262,18 +283,6 @@ export class CollabHandler {
 	 * Join a collaboration room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
-		try {
-			await this.ensureEnabled();
-		} catch (error) {
-			if (error instanceof ServiceUnavailableError && error.message.includes('Collaboration is disabled')) {
-				this.messenger.handleError(client.uid, error, message.action);
-				this.messenger.terminateClient(client.uid);
-				return;
-			}
-
-			throw error;
-		}
-
 		if (client.accountability?.share) {
 			throw new ForbiddenError({
 				reason: 'Collaboration is not supported for shares',
@@ -282,11 +291,6 @@ export class CollabHandler {
 
 		const schema = await getSchema();
 		const db = getDatabase();
-
-		if (!message.item && !schema.collections[message.collection]?.singleton)
-			throw new InvalidPayloadError({
-				reason: `Item id has to be provided for non singleton collections`,
-			});
 
 		try {
 			const { accessAllowed } = await validateItemAccess(
@@ -345,7 +349,7 @@ export class CollabHandler {
 		if (message?.room) {
 			const room = await this.roomManager.getRoom(message.room);
 
-			if (!room) {
+			if (!room || !(await room.hasClient(client.uid))) {
 				throw new ForbiddenError({
 					reason: `No access to room "${message.room}" or it does not exist`,
 				});
@@ -365,8 +369,6 @@ export class CollabHandler {
 	 * Update a field value
 	 */
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
-		await this.ensureEnabled();
-
 		const knex = getDatabase();
 		const schema = await getSchema();
 
@@ -413,8 +415,6 @@ export class CollabHandler {
 	 * Update multiple field values
 	 */
 	async onUpdateAll(client: WebSocketClient, message: UpdateAllMessage) {
-		await this.ensureEnabled();
-
 		if (isEmpty(message.changes)) return;
 
 		const room = await this.roomManager.getRoom(message.room);
@@ -429,7 +429,6 @@ export class CollabHandler {
 		const schema = await getSchema();
 
 		const fields = Object.keys(message.changes ?? {});
-		await this.checkFieldsAccess(client, room, fields, 'update', { knex, schema });
 
 		for (const key of fields) {
 			const focus = await room.getFocusByField(key);
@@ -454,8 +453,6 @@ export class CollabHandler {
 	 * Update focus state
 	 */
 	async onFocus(client: WebSocketClient, message: FocusMessage) {
-		await this.ensureEnabled();
-
 		const room = await this.roomManager.getRoom(message.room);
 
 		if (!room || !(await room.hasClient(client.uid)))
@@ -478,8 +475,6 @@ export class CollabHandler {
 	 * Discard specified changes in the room
 	 */
 	async onDiscard(client: WebSocketClient, message: DiscardMessage) {
-		await this.ensureEnabled();
-
 		const room = await this.roomManager.getRoom(message.room);
 
 		if (!room || !(await room.hasClient(client.uid))) {
