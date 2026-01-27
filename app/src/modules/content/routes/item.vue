@@ -680,6 +680,8 @@ function useCollectionRoute() {
 		</template>
 
 		<template #actions>
+			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
+			
 			<VButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
@@ -828,10 +830,6 @@ function useCollectionRoute() {
 			</VButton>
 
 			<FlowDialogs v-bind="flowDialogsContext" />
-		</template>
-
-		<template #actions:prepend>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template #navigation>

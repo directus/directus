@@ -103,7 +103,7 @@ function focusIntoView(cid: ClientID) {
 <style scoped>
 .header-collab {
 	display: flex;
-	flex-direction: row-reverse;
+	align-items: center;
 
 	.user-name {
 		margin-inline-start: 8px;
