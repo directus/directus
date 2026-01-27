@@ -84,6 +84,7 @@ function focusIntoView(cid: ClientID) {
 					+{{ users.length - 3 }}
 				</VAvatar>
 			</template>
+
 			<VList>
 				<VListItem
 					v-for="user in users.slice(DISPLAY_LIMIT)"
@@ -94,7 +95,7 @@ function focusIntoView(cid: ClientID) {
 					<VAvatar :border="`var(--${user.color})`" x-small round>
 						<img v-if="user.avatar_url" :src="user.avatar_url" />
 						<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
-						<VIcon v-else name="person" />
+						<VIcon v-else name="person" small />
 					</VAvatar>
 
 					<div class="user-name">{{ user.name ?? t('unknown_user') }}</div>
@@ -131,12 +132,11 @@ function focusIntoView(cid: ClientID) {
 	.more-users {
 		margin-inline-start: -4px;
 	}
+}
 
-	.v-avatar {
-		/* Font-size used by "more users" button */
-		font-size: 12px;
-		cursor: pointer;
-	}
+.v-avatar {
+	/* Used by users without avatar and "more users" button */
+	font-size: 12px;
 }
 
 .v-list-item {
