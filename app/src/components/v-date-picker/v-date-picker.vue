@@ -30,6 +30,8 @@ import {
 import { computed, ref, watch } from 'vue';
 import { TimeValue } from './types';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useUserStore } from '@/stores/user';
 import { formatDatePickerModelValue } from '@/utils/format-date-picker-model-value';
 
@@ -110,7 +112,7 @@ const monthOptions = computed(() => {
 			value,
 			// This `DateFormatter` type expects a native `Date`, so we convert using UTC.
 			// (Timezone doesn't matter for month names; this keeps it stable.)
-			label: monthFormatter.value.format(date.toDate('UTC')),
+			text: monthFormatter.value.format(date.toDate('UTC')),
 		};
 	});
 });
@@ -207,18 +209,15 @@ function setCalendarYear(year: number): void {
 	calendarValue.value = new CalendarDate(year, month, day);
 }
 
-function handleMonthChange(event: Event): void {
-	const target = event.target as HTMLSelectElement | null;
-	const value = target ? Number.parseInt(target.value, 10) : Number.NaN;
-	if (!Number.isFinite(value) || value < 1 || value > 12) return;
+function handleMonthChange(value: number | null): void {
+	if (value === null || value < 1 || value > 12) return;
 	setCalendarMonth(value);
 }
 
-function handleYearChange(event: Event): void {
-	const target = event.target as HTMLInputElement | null;
-	const value = target ? Number.parseInt(target.value, 10) : Number.NaN;
-	if (!Number.isFinite(value) || value < 1) return;
-	setCalendarYear(value);
+function handleYearChange(value: number | string | undefined): void {
+	const numValue = typeof value === 'string' ? Number.parseInt(value, 10) : value;
+	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1) return;
+	setCalendarYear(numValue);
 }
 
 /**
@@ -256,24 +255,21 @@ function setToNow() {
 				</CalendarPrev>
 				<CalendarHeading class="calendar-heading">
 					<div class="calendar-header-inputgroup">
-						<select
-							id="calendar-month-select"
-							name="calendar-month-select"
-							:value="date?.month"
+						<VSelect
+							:model-value="date?.month"
+							:items="monthOptions"
 							class="calendar-month-select"
-							@change="handleMonthChange"
-						>
-							<option v-for="month in monthOptions" :key="month.value" :value="month.value">
-								{{ month.label }}
-							</option>
-						</select>
-						<!-- Flatpickr uses a numeric year input; we mimic that behavior + styling here. -->
-						<input
+							inline
+							:full-width="false"
+							@update:model-value="handleMonthChange"
+						/>
+						<VInput
 							type="number"
-							inputmode="numeric"
-							:value="date?.year"
+							:model-value="date?.year"
 							class="calendar-year-input"
-							@change="handleYearChange"
+							:full-width="false"
+							hide-arrows
+							@update:model-value="handleYearChange"
 						/>
 					</div>
 				</CalendarHeading>
@@ -484,69 +480,24 @@ function setToNow() {
 		gap: 0.5rem;
 		align-items: center;
 		justify-content: center;
-		padding: 0;
+		padding: 0.5rem 0;
 		inline-size: auto;
 		font-size: 16px;
 		font-weight: 600;
 	}
 
-	.calendar-month-select {
-		background: transparent;
-		flex: 0 1 auto;
-		inline-size: auto;
-		padding: 0;
-		margin: 0;
-		text-align: end;
-		text-align-last: end;
-		font: inherit;
-		color: inherit;
-		line-height: 1.2;
-		border: none;
-		cursor: pointer;
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-	}
-
-	.calendar-month-select:focus,
-	.calendar-month-select:focus-visible {
-		outline: var(--focus-ring-width) solid var(--focus-ring-color);
-		outline-offset: var(--focus-ring-offset);
-		border-radius: var(--focus-ring-radius);
-	}
-
 	.calendar-year-input {
-		background: transparent;
-		flex: 0 0 auto;
-		inline-size: 6ch;
-		max-inline-size: 8ch;
-		padding: 0;
-		margin: 0;
-		font: inherit;
-		color: inherit;
-		line-height: 1.2;
-		border: none;
-		cursor: pointer;
-		text-align: start;
-	}
+		--v-input-font-family: inherit;
+		block-size: 28px;
+		background-color: transparent;
 
-	.calendar-year-input:focus,
-	.calendar-year-input:focus-visible {
-		outline: var(--focus-ring-width) solid var(--focus-ring-color);
-		outline-offset: var(--focus-ring-offset);
-		border-radius: var(--focus-ring-radius);
-	}
-
-	/* Hide number input spinners (Flatpickr-style compact year field) */
-	.calendar-year-input::-webkit-outer-spin-button,
-	.calendar-year-input::-webkit-inner-spin-button {
-		-webkit-appearance: none;
-		margin: 0;
-	}
-
-	.calendar-year-input[type='number'] {
-		-moz-appearance: textfield;
-		appearance: textfield;
+		:deep(.input) {
+			inline-size: 7.5ch;
+			outline: none;
+			color: var(--theme--primary);
+			border-color: transparent;
+			background-color: transparent;
+		}
 	}
 
 	.time-picker {
