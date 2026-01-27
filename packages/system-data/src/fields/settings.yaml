@@ -733,7 +733,7 @@ fields:
     interface: presentation-divider
     options:
       icon: chat
-      title: $t:ai_chat
+      title: $t:ai_assistant
     special:
       - alias
       - no-data

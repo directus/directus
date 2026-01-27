@@ -1195,8 +1195,6 @@ settings_permissions: Políticas de acesso
 settings_project: Configurações
 settings_appearance: Aparência
 settings_ai: IA
-ai_chat: Chat IA
-ai_disabled_by_env: Os recursos de Chat IA foram desabilitados via ambiente variável.
 mcp_disabled_by_env: Os recursos de MCP foram desabilitados via ambiente variável.
 settings_flows: Fluxos
 settings_system_logs: Registro de Sistema
