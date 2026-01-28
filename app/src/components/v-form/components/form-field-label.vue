@@ -126,9 +126,11 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			</div>
 
 			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
-		</component>
 
-		<HeaderCollab :model-value="focusedBy" type="field" />
+			<span class="spacer" />
+
+			<HeaderCollab :model-value="focusedBy" type="field" />
+		</component>
 	</div>
 </template>
 
@@ -261,11 +263,6 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			border-radius: 4px;
 			content: '';
 		}
-
-		.field-name {
-			margin-inline-start: -16px;
-			padding-inline-start: 16px;
-		}
 	}
 
 	.field-name {
@@ -281,8 +278,13 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 	font-family: var(--theme--form--field--label--font-family);
 }
 
-:deep(.header-collab) {
-	margin-inline-start: 8px;
+.spacer {
+	flex-grow: 1;
+}
+
+.header-collab {
+	margin-block-start: -3px;
+	align-self: start;
 	flex-shrink: 0;
 }
 </style>

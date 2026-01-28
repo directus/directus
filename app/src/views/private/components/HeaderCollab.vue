@@ -61,7 +61,7 @@ function focusIntoView(cid: ClientID) {
 </script>
 
 <template>
-	<div class="header-collab">
+	<div class="header-collab" :class="{ 'is-field': type === 'field' }">
 		<VAvatar
 			v-for="(user, index) in users.slice(0, DISPLAY_LIMIT)"
 			:id="user.focusId"
@@ -132,6 +132,11 @@ function focusIntoView(cid: ClientID) {
 	.v-avatar + .v-avatar,
 	.more-users {
 		margin-inline-start: -4px;
+	}
+
+	&.is-field,
+	&.is-field button:not(.more-users) {
+		cursor: default;
 	}
 }
 
