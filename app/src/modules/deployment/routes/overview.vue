@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { PrivateView } from '@/views/private';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
-import VList from '@/components/v-list.vue';
-import VListItem from '@/components/v-list-item.vue';
-import VListItemContent from '@/components/v-list-item-content.vue';
-import VProgressCircular from '@/components/v-progress-circular.vue';
-import ProviderSetupDrawer from '../components/provider-setup-drawer.vue';
 import DeploymentNavigation from '../components/navigation.vue';
+import ProviderSetupDrawer from '../components/provider-setup-drawer.vue';
 import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
 import { availableProviders } from '../config/provider-fields';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
+import { PrivateView } from '@/views/private';
 
 const router = useRouter();
 

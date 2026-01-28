@@ -229,7 +229,7 @@ onMounted(() => {
 			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployment' }]" />
 		</template>
 
-		<template #title-outer:prepend>
+		<template v-if="initialProjectIds.length > 0" #title-outer:prepend>
 			<VButton class="back-button" rounded icon secondary exact small @click="router.push(`/deployment/${provider}`)">
 				<VIcon name="arrow_back" small />
 			</VButton>
