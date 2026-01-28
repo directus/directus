@@ -243,7 +243,7 @@ export class CollabHandler {
 					// Remove dead clients globally
 					for (const client of inactive.clients) {
 						if (await room.hasClient(client)) {
-							useLogger().info(`[Collab] Removing dead client ${client} from room ${roomUid}`);
+							useLogger().debug(`[Collab] Removing dead client ${client} from room ${roomUid}`);
 							await room.leave(client);
 						}
 					}
@@ -267,7 +267,7 @@ export class CollabHandler {
 					const rooms = await this.roomManager.getClientRooms(client);
 
 					for (const room of rooms) {
-						useLogger().info(`[Collab] Removing invalid client ${client} from room ${room.getDisplayName()}`);
+						useLogger().debug(`[Collab] Removing invalid client ${client} from room ${room.getDisplayName()}`);
 
 						await room.leave(client);
 					}

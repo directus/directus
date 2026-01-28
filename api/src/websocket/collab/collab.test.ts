@@ -10,7 +10,6 @@ import { verifyPermissions } from './verify-permissions.js';
 
 vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
-		info: vi.fn(),
 		error: vi.fn(),
 		debug: vi.fn(),
 	}),

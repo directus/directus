@@ -132,7 +132,7 @@ export class RoomManager {
 		for (const room of rooms) {
 			if (await room.close()) {
 				delete this.rooms[room.uid];
-				useLogger().info(`[Collab] Closed inactive room ${room.getDisplayName()}`);
+				useLogger().debug(`[Collab] Closed inactive room ${room.getDisplayName()}`);
 			}
 		}
 	}
@@ -158,7 +158,7 @@ export class RoomManager {
 			delete this.rooms[room.uid];
 		}
 
-		useLogger().info(`[Collab] Forcefully closed all ${rooms.length} active rooms`);
+		useLogger().debug(`[Collab] Forcefully closed all ${rooms.length} active rooms`);
 	}
 }
 

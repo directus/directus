@@ -21,8 +21,7 @@ vi.mock('../../database/index.js', () => ({
 vi.mock('../../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
 		error: vi.fn(),
-		info: vi.fn(),
-		warn: vi.fn(),
+		debug: vi.fn(),
 	}),
 }));
 
