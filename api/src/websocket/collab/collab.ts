@@ -57,10 +57,10 @@ export class CollabHandler {
 			try {
 				const schema = await getSchema();
 				const service = new SettingsService({ schema });
-				const settings = await service.readSingleton({ fields: ['collaboration'] });
-				this.enabled = settings?.['collaboration'] ?? true;
+				const settings = await service.readSingleton({ fields: ['collaborative_editing_enabled'] });
+				this.enabled = settings?.['collaborative_editing_enabled'] ?? true;
 			} catch (err) {
-				useLogger().error(err, '[Collab] Failed to initialize collaboration settings');
+				useLogger().error(err, '[Collab] Failed to initialize collaborative editing settings');
 			}
 		})();
 
@@ -85,7 +85,11 @@ export class CollabHandler {
 			const schema = await getSchema();
 
 			try {
-				if (event.collection === 'directus_settings' && event.action === 'update' && 'collaboration' in event.payload) {
+				if (
+					event.collection === 'directus_settings' &&
+					event.action === 'update' &&
+					'collaborative_editing_enabled' in event.payload
+				) {
 					useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
 
 					// Non-blocking initialization to avoid bus congestion
@@ -94,17 +98,17 @@ export class CollabHandler {
 							if (!this.enabled) {
 								try {
 									useLogger().debug(
-										`[Collab] [Node ${this.messenger.uid}] Collaboration disabled, terminating all rooms`,
+										`[Collab] [Node ${this.messenger.uid}] Collaborative editing disabled, terminating all rooms`,
 									);
 
 									this.roomManager.terminateAll();
 								} catch (err) {
-									useLogger().error(err, '[Collab] Collaboration disabling terminateAll failed');
+									useLogger().error(err, '[Collab] Collaborative editing disabling terminateAll failed');
 								}
 							}
 						})
 						.catch((err) => {
-							useLogger().error(err, '[Collab] Collaboration re-initialization failed');
+							useLogger().error(err, '[Collab] Collaborative editing re-initialization failed');
 						});
 
 					return;
@@ -184,7 +188,7 @@ export class CollabHandler {
 			try {
 				await this.ensureEnabled();
 			} catch (error) {
-				if (error instanceof ServiceUnavailableError && error.message.includes('Collaboration is disabled')) {
+				if (error instanceof ServiceUnavailableError && error.message.includes('Collaborative editing is disabled')) {
 					this.messenger.handleError(client.uid, error, message.action);
 					this.messenger.terminateClient(client.uid);
 					return;
@@ -266,26 +270,26 @@ export class CollabHandler {
 	}
 
 	/**
-	 * Ensure collaboration is enabled and initialized
+	 * Ensure collaborative editing is enabled and initialized
 	 */
 	async ensureEnabled() {
 		await this.initialized;
 
 		if (!this.enabled) {
 			throw new ServiceUnavailableError({
-				reason: 'Collaboration is disabled',
+				reason: 'Collaborative editing is disabled',
 				service: 'collab',
 			});
 		}
 	}
 
 	/**
-	 * Join a collaboration room
+	 * Join a collaborative editing room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
 		if (client.accountability?.share) {
 			throw new ForbiddenError({
-				reason: 'Collaboration is not supported for shares',
+				reason: 'Collaborative editing is not supported for shares',
 			});
 		}
 
@@ -343,7 +347,7 @@ export class CollabHandler {
 	}
 
 	/**
-	 * Leave a collaboration room
+	 * Leave a collaborative editing room
 	 */
 	async onLeave(client: WebSocketClient, message?: LeaveMessage) {
 		if (message?.room) {

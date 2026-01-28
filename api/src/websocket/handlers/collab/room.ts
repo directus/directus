@@ -10,20 +10,20 @@ import {
 	type ServerError,
 } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
-import { isEqual, random, uniq } from 'lodash-es';
-import getDatabase from '../../database/index.js';
-import { useLogger } from '../../logger/index.js';
-import { getSchema } from '../../utils/get-schema.js';
-import { getService } from '../../utils/get-service.js';
-import { isFieldAllowed } from '../../utils/is-field-allowed.js';
-import { Messenger } from './messenger.js';
-import { sanitizePayload } from './payload-permissions.js';
-import { useStore } from './store.js';
-import type { JoinMessage, PermissionClient } from './types.js';
-import { verifyPermissions } from './verify-permissions.js';
+import { isEqual, random } from 'lodash-es';
+import getDatabase from '../../../database/index.js';
+import { useLogger } from '../../../logger/index.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { getService } from '../../../utils/get-service.js';
+import { isFieldAllowed } from '../../../utils/is-field-allowed.js';
+import { Messenger } from '../../collab/messenger.js';
+import { sanitizePayload } from '../../collab/payload-permissions.js';
+import { useStore } from '../../collab/store.js';
+import type { JoinMessage, PermissionClient } from '../../collab/types.js';
+import { verifyPermissions } from '../../collab/verify-permissions.js';
 
 /**
- * Store and manage all active collaborative editing rooms
+ * Store and manage all active collaboration rooms
  */
 export class RoomManager {
 	rooms: Record<string, Room> = {};
@@ -34,7 +34,7 @@ export class RoomManager {
 	}
 
 	/**
-	 * Create a new collaborative editing room or return an existing one matching collection, item and version.
+	 * Create a new collaboration room or return an existing one matching collection, item and version.
 	 */
 	async createRoom(collection: string, item: PrimaryKey | null, version: string | null, initialChanges?: Item) {
 		// Deterministic UID ensures clients on same resource join same room
@@ -117,10 +117,19 @@ export class RoomManager {
 	}
 
 	/**
-	 * Returns all clients that are part of a room in the local memory
+	 * Returns all clients that are part of a room in the global memory
 	 */
-	async getLocalRoomClients(): Promise<RoomClient[]> {
-		return (await Promise.all(Object.values(this.rooms).map((room) => room.getClients()))).flat();
+	async getAllRoomClients(): Promise<RoomClient[]> {
+		const clients = [];
+		const globalRooms = await this.messenger.getGlobalRooms();
+
+		for (const roomId of Object.values(globalRooms)) {
+			const room = await this.getRoom(roomId);
+
+			if (room) clients.push(...(await room.getClients()));
+		}
+
+		return clients;
 	}
 
 	/**
@@ -132,7 +141,7 @@ export class RoomManager {
 		for (const room of rooms) {
 			if (await room.close()) {
 				delete this.rooms[room.uid];
-				useLogger().info(`[Collab] Closed inactive room ${room.getDisplayName()}`);
+				useLogger().info(`[Collab] Closed inactive room ${room.uid}`);
 			}
 		}
 	}
@@ -150,7 +159,7 @@ export class RoomManager {
 					type: WS_TYPE.COLLAB,
 					action: ACTION.SERVER.ERROR,
 					code: ErrorCode.ServiceUnavailable,
-					message: 'Collaborative editing is disabled',
+					message: 'Collaboration is disabled',
 				},
 				terminate: true,
 			});
@@ -181,7 +190,7 @@ const roomDefaults = {
 };
 
 /**
- * Represents a single collaborative editing room for a specific item
+ * Represents a single collaboration room for a specific item
  */
 export class Room {
 	uid: string;
@@ -320,10 +329,6 @@ export class Room {
 		});
 	}
 
-	getDisplayName() {
-		return [this.collection, this.item, this.version].filter(Boolean).join(':');
-	}
-
 	async getClients() {
 		return this.store((store) => store.get('clients'));
 	}
@@ -448,6 +453,10 @@ export class Room {
 	 * Leave the room
 	 */
 	async leave(uid: ClientID) {
+		this.messenger.removeClient(uid);
+
+		if (!(await this.hasClient(uid))) return;
+
 		await this.store(async (store) => {
 			const clients = (await store.get('clients')).filter((c: RoomClient) => c.uid !== uid);
 
@@ -550,14 +559,10 @@ export class Room {
 		if (fields.length === 0) return;
 
 		const clients = await this.store(async (store) => {
-			let changes = await store.get('changes');
+			const changes = await store.get('changes');
 
-			if (fields.includes('*')) {
-				changes = {};
-			} else {
-				for (const field of fields) {
-					delete changes[field];
-				}
+			for (const field of fields) {
+				delete changes[field];
 			}
 
 			await store.set('changes', changes);
@@ -574,21 +579,17 @@ export class Room {
 				knex,
 			});
 
-			const sendFields: string[] = [];
+			const sendFields = new Set<string>();
 
-			if (fields.includes('*')) {
-				sendFields.push(...(allowedFields ?? []));
-			} else {
-				for (const field of fields) {
-					if (allowedFields?.includes('*') || allowedFields?.includes(field)) {
-						sendFields.push(field);
-					}
+			for (const field of fields) {
+				if (allowedFields?.includes('*') || allowedFields?.includes(field)) {
+					sendFields.add(field);
 				}
 			}
 
 			this.send(client.uid, {
 				action: ACTION.SERVER.DISCARD,
-				fields: uniq(sendFields),
+				fields: [...sendFields],
 			});
 		}
 	}

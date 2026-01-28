@@ -2,12 +2,12 @@ import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
-		table.boolean('collaboration').defaultTo(true);
+		table.boolean('collaborative_editing_enabled').defaultTo(true);
 	});
 }
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
-		table.dropColumn('collaboration');
+		table.dropColumn('collaborative_editing_enabled');
 	});
 }

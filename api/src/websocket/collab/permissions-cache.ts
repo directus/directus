@@ -9,7 +9,7 @@ type CacheKey = string; // user:collection:item:action
 type Tag = string;
 
 /**
- * Caches permission check results for collaboration clients.
+ * Caches permission check results for collaborative editing clients.
  * Supports granular invalidation based on collection, item, and relational dependencies.
  */
 export class PermissionCache {

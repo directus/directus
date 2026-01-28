@@ -66,7 +66,7 @@ export type Info = {
 							path: string;
 					  };
 				heartbeat?: boolean | number;
-				collab?: boolean;
+				collaborativeEditing?: boolean;
 		  };
 	version?: string;
 	extensions?: {

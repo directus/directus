@@ -50,7 +50,7 @@ vi.mock('./verify-permissions.js');
 
 vi.mock('../../services/settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(() => ({
-		readSingleton: vi.fn().mockResolvedValue({ collaboration: true }),
+		readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: true }),
 	})),
 }));
 
@@ -95,7 +95,7 @@ describe('CollabHandler', () => {
 
 			await expect(
 				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
-			).rejects.toHaveProperty('extensions.reason', 'Collaboration is not supported for shares');
+			).rejects.toHaveProperty('extensions.reason', 'Collaborative editing is not supported for shares');
 		});
 
 		test('rejects access if validateItemAccess returns false', async () => {
@@ -869,11 +869,11 @@ describe('CollabHandler', () => {
 			expect(mockRoom2.onUpdateHandler).not.toHaveBeenCalled();
 		});
 
-		test('disables collaboration via bus settings update', async () => {
+		test('disables collaborative editing via bus settings update', async () => {
 			vi.mocked(SettingsService).mockImplementationOnce(
 				() =>
 					({
-						readSingleton: vi.fn().mockResolvedValue({ collaboration: false }),
+						readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: false }),
 					}) as any,
 			);
 
@@ -886,7 +886,7 @@ describe('CollabHandler', () => {
 			await busCallback({
 				collection: 'directus_settings',
 				action: 'update',
-				payload: { collaboration: false },
+				payload: { collaborative_editing_enabled: false },
 			});
 
 			// Wait for initialize() to complete
@@ -903,11 +903,11 @@ describe('CollabHandler', () => {
 			vi.useFakeTimers();
 		});
 
-		test('enables collaboration via bus settings update', async () => {
+		test('enables collaborative editing via bus settings update', async () => {
 			vi.mocked(SettingsService).mockImplementationOnce(
 				() =>
 					({
-						readSingleton: vi.fn().mockResolvedValue({ collaboration: true }),
+						readSingleton: vi.fn().mockResolvedValue({ collaborative_editing_enabled: true }),
 					}) as any,
 			);
 
@@ -919,7 +919,7 @@ describe('CollabHandler', () => {
 			await busCallback({
 				collection: 'directus_settings',
 				action: 'update',
-				payload: { collaboration: true },
+				payload: { collaborative_editing_enabled: true },
 			});
 
 			// Wait for initialize() to complete
@@ -987,7 +987,7 @@ describe('CollabHandler', () => {
 			expect(ensureFinished).toBe(true);
 
 			// Cleanup
-			resolveInit!({ collaboration: true });
+			resolveInit!({ collaborative_editing_enabled: true });
 			await refreshPromise;
 			vi.useFakeTimers();
 		});
@@ -1030,7 +1030,7 @@ describe('CollabHandler', () => {
 			const event = {
 				collection: 'directus_settings',
 				action: 'update',
-				payload: { collaboration: false },
+				payload: { collaborative_editing_enabled: false },
 			};
 
 			let busHandlerFinished = false;
@@ -1044,7 +1044,7 @@ describe('CollabHandler', () => {
 			expect(busHandlerFinished).toBe(true);
 
 			// Cleanup
-			resolveInit!({ collaboration: false });
+			resolveInit!({ collaborative_editing_enabled: false });
 			await promise;
 		});
 	});

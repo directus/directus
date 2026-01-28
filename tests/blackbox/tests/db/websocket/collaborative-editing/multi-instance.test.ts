@@ -64,11 +64,11 @@ describe('Collaborative Editing: Multi-Instance', () => {
 	});
 
 	beforeEach(async () => {
-		// Ensure collaboration is enabled before every test
+		// Ensure collaborative editing is enabled before every test
 		for (const vendor of vendors) {
 			await request(getUrl(vendor))
 				.patch('/settings')
-				.send({ collaboration: true })
+				.send({ collaborative_editing: true })
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 		}
 	});
@@ -352,7 +352,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 						await sleep(500);
 						return request(getUrl(vendor))
 							.patch('/settings')
-							.send({ collaboration: false })
+							.send({ collaborative_editing: false })
 							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 					})(),
 					p1Promise,
@@ -362,7 +362,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				// Clean up
 				await request(getUrl(vendor))
 					.patch('/settings')
-					.send({ collaboration: true })
+					.send({ collaborative_editing: true })
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				ws1.conn.close();

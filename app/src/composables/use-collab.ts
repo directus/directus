@@ -126,7 +126,11 @@ export function useCollab(
 	};
 
 	onMounted(async () => {
-		if (serverStore.info?.websocket && serverStore.info.websocket.collab && settingsStore.settings?.collaboration) {
+		if (
+			serverStore.info?.websocket &&
+			serverStore.info.websocket.collaborativeEditing &&
+			settingsStore.settings?.collaborative_editing_enabled
+		) {
 			try {
 				if (wsConnecting === false) wsConnecting = sdk.connect();
 				await wsConnecting;

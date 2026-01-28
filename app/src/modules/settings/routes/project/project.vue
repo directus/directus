@@ -32,8 +32,8 @@ const fields = computed(() => {
 	return allFields.value
 		.map((field) => {
 			if (
-				field.field === 'collaboration' &&
-				(serverStore.info.websocket === false || serverStore.info.websocket?.collab === false)
+				field.field === 'collaborative_editing' &&
+				(serverStore.info.websocket === false || serverStore.info.websocket?.collaborativeEditing === false)
 			) {
 				return {
 					...field,
