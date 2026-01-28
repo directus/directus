@@ -3,6 +3,7 @@ import type {
 	AbstractServiceOptions,
 	CachedResult,
 	Credentials,
+	DeploymentConfig,
 	Options,
 	PrimaryKey,
 	Project,
@@ -18,15 +19,6 @@ import { ItemsService } from './items.js';
 
 const env = useEnv();
 const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 5000; // Default 5s
-
-export interface DeploymentConfig {
-	id: string;
-	provider: ProviderType;
-	credentials: string; // JSON string (encrypted in DB)
-	options: object | null;
-	date_created: string;
-	user_created: string;
-}
 
 export class DeploymentService extends ItemsService<DeploymentConfig> {
 	constructor(options: AbstractServiceOptions) {

@@ -9,14 +9,7 @@ import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
 import type { ApiCollection, RawCollection } from './collection.js';
-import type {
-	Credentials,
-	DeploymentConfig,
-	Options,
-	Project,
-	ProviderType,
-	StoredProject,
-} from './deployment.js';
+import type { Credentials, DeploymentConfig, Options, Project, ProviderType, StoredProject } from './deployment.js';
 import type { ActionHandler } from './events.js';
 import type { ApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
 import type { Field, RawField, Type } from './fields.js';
