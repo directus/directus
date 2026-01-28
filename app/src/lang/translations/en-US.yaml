@@ -89,7 +89,7 @@ previous_revision: Previous Revision
 latest_revision: Latest Revision
 comparing_to: Comparing to
 compare_to_latest_to_restore: Compare to latest to consider restoring this revision
-select_earlier_revision_to_restore: Select an earlier revision to consider restoring this one
+select_earlier_revision_to_restore: Select an earlier revision to consider restoring it
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
 half_width: Half Width
