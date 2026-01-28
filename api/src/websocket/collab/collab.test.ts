@@ -819,7 +819,7 @@ describe('CollabHandler', () => {
 		});
 
 		test('normalizes single "key" into "keys" array', async () => {
-			const mockRoom = { onUpdateHandler: vi.fn(), uid: 'room-uid' };
+			const mockRoom = { onUpdateHandler: vi.fn(), uid: 'room-uid', collection: 'articles', item: 1, version: null };
 			handler.roomManager.rooms['articles_1_null'] = mockRoom as any;
 
 			await busCallback({
@@ -836,7 +836,7 @@ describe('CollabHandler', () => {
 		});
 
 		test('normalizes "payload" into "keys" for delete actions', async () => {
-			const mockRoom = { onDeleteHandler: vi.fn(), uid: 'room-uid' };
+			const mockRoom = { onDeleteHandler: vi.fn(), uid: 'room-uid', collection: 'articles', item: 1, version: null };
 			handler.roomManager.rooms['articles_1_null'] = mockRoom as any;
 
 			await busCallback({
@@ -877,6 +877,7 @@ describe('CollabHandler', () => {
 					}) as any,
 			);
 
+			(handler as any).settingsService = undefined;
 			handler.enabled = true;
 			const terminateSpy = vi.spyOn(handler.roomManager, 'terminateAll');
 
@@ -911,6 +912,7 @@ describe('CollabHandler', () => {
 					}) as any,
 			);
 
+			(handler as any).settingsService = undefined;
 			handler.enabled = false;
 
 			// Avoid setInterval infinite loop
@@ -993,20 +995,26 @@ describe('CollabHandler', () => {
 		});
 
 		test('gracefully handles service failure during initialization', async () => {
+			const readSingletonMock = vi.fn().mockRejectedValue(new Error());
+
 			vi.mocked(SettingsService).mockImplementation(
 				() =>
 					({
-						readSingleton: vi.fn().mockRejectedValue(new Error()),
+						readSingleton: readSingletonMock,
 					}) as any,
 			);
 
 			handler.enabled = true;
+			(handler as any).settingsService = undefined;
 			await handler.initialize(true);
 			expect(handler.enabled).toBe(true);
+			expect(readSingletonMock).toHaveBeenCalledTimes(1);
 
 			handler.enabled = false;
+			(handler as any).settingsService = undefined;
 			await handler.initialize(true);
 			expect(handler.enabled).toBe(false);
+			expect(readSingletonMock).toHaveBeenCalledTimes(2);
 		});
 
 		test('bus subscriber is non-blocking and not stall bus processing', async () => {
@@ -1046,6 +1054,34 @@ describe('CollabHandler', () => {
 			// Cleanup
 			resolveInit!({ collaborative_editing_enabled: false });
 			await promise;
+		});
+
+		test('forced initialize() handles overlapping calls correctly', async () => {
+			vi.useRealTimers();
+
+			let resolveInit: (value: any) => void;
+
+			const initStarted = new Promise((resolve) => {
+				resolveInit = resolve;
+			});
+
+			vi.mocked(SettingsService).mockImplementationOnce(
+				() =>
+					({
+						readSingleton: () => initStarted,
+					}) as any,
+			);
+
+			(handler as any).settingsService = undefined;
+			const first = handler.initialize(true);
+			const second = handler.initialize(true);
+
+			expect(first).toBe(second);
+
+			resolveInit!({ collaborative_editing_enabled: true });
+			await first;
+
+			vi.useFakeTimers();
 		});
 	});
 });

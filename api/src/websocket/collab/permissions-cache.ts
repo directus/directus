@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import { LRUMapWithDelete } from 'mnemonist';
 import { useBus } from '../../bus/index.js';
+import { IRRELEVANT_ACTIONS, IRRELEVANT_COLLECTIONS } from './constants.js';
 
 const env = useEnv();
 
@@ -59,7 +60,26 @@ export class PermissionCache {
 			return;
 		}
 
+		// Skip known high-traffic collections and actions
+		if (IRRELEVANT_COLLECTIONS.includes(collection) || IRRELEVANT_ACTIONS.includes(event.action)) {
+			return;
+		}
+
 		this.invalidationCount++;
+
+		// Prevent overflow issues in long-running processes
+		if (this.invalidationCount >= Number.MAX_SAFE_INTEGER) {
+			this.invalidationCount = 1;
+		}
+
+		// Skip if no keys are watching
+		if (
+			!this.tags.has(`collection:${collection}`) &&
+			!this.tags.has(`dependency:${collection}`) &&
+			!this.tags.has(`collection-dependency:${collection}`)
+		) {
+			return;
+		}
 
 		// Collection-level Invalidation
 		if (items.length === 0 && this.tags.has(`collection:${collection}`)) {

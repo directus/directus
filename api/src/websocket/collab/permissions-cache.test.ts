@@ -147,6 +147,18 @@ describe('PermissionCache', () => {
 			expect(cache.getInvalidationCount()).toBe(initial + 1);
 		});
 
+		test('increments invalidationCount for create action', () => {
+			const initial = cache.getInvalidationCount();
+			busHandler({ collection: 'posts', action: 'create', keys: ['1'] });
+			expect(cache.getInvalidationCount()).toBe(initial + 1);
+		});
+
+		test('resets invalidationCount before MAX_SAFE_INTEGER', () => {
+			(cache as any).invalidationCount = Number.MAX_SAFE_INTEGER - 1;
+			busHandler({ collection: 'posts', keys: ['1'] });
+			expect(cache.getInvalidationCount()).toBe(1);
+		});
+
 		test('wildcard dependency invalidation (no keys provided)', () => {
 			// Cache depends on specific user
 			cache.set(mockAccountability, 'posts', '1', 'read', ['A'], ['directus_users:123']);

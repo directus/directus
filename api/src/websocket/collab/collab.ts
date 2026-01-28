@@ -3,7 +3,7 @@ import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@d
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
 import { toArray } from '@directus/utils';
-import { difference, intersection, isEmpty, uniq, upperFirst } from 'lodash-es';
+import { difference, intersection, isEmpty, upperFirst } from 'lodash-es';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
@@ -13,9 +13,10 @@ import { getSchema } from '../../utils/get-schema.js';
 import { isFieldAllowed } from '../../utils/is-field-allowed.js';
 import { scheduleSynchronizedJob } from '../../utils/schedule.js';
 import { getMessageType } from '../utils/message.js';
+import { IRRELEVANT_ACTIONS, IRRELEVANT_COLLECTIONS } from './constants.js';
 import { Messenger } from './messenger.js';
 import { validateChanges } from './payload-permissions.js';
-import { getRoomHash, RoomManager } from './room.js';
+import { RoomManager } from './room.js';
 import type {
 	DiscardMessage,
 	FocusMessage,
@@ -40,6 +41,8 @@ export class CollabHandler {
 	enabled = false;
 
 	private initialized: Promise<void>;
+	private initializePromise?: Promise<void> | undefined;
+	private settingsService?: SettingsService;
 
 	/**
 	 * Initialize the handler
@@ -50,25 +53,31 @@ export class CollabHandler {
 		this.bindWebSocket();
 	}
 
-	async initialize(force = false): Promise<void> {
+	initialize(force = false): Promise<void> {
 		if (this.initialized && !force) return this.initialized;
+		if (this.initializePromise) return this.initializePromise;
 
-		const promise = (async () => {
+		this.initializePromise = (async () => {
 			try {
-				const schema = await getSchema();
-				const service = new SettingsService({ schema });
-				const settings = await service.readSingleton({ fields: ['collaborative_editing_enabled'] });
+				if (!this.settingsService) {
+					const schema = await getSchema();
+					this.settingsService = new SettingsService({ schema });
+				}
+
+				const settings = await this.settingsService.readSingleton({ fields: ['collaborative_editing_enabled'] });
 				this.enabled = settings?.['collaborative_editing_enabled'] ?? true;
 			} catch (err) {
 				useLogger().error(err, '[Collab] Failed to initialize collaborative editing settings');
+			} finally {
+				this.initializePromise = undefined;
 			}
 		})();
 
 		if (!this.initialized) {
-			this.initialized = promise;
+			this.initialized = this.initializePromise;
 		}
 
-		return promise;
+		return this.initializePromise;
 	}
 
 	bindWebSocket() {
@@ -90,7 +99,7 @@ export class CollabHandler {
 				) {
 					useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
 
-					// Non-blocking initialization to avoid bus congestion
+					// Non-blocking initialization to avoid resource contention
 					this.initialize(true)
 						.then(() => {
 							if (!this.enabled) {
@@ -112,6 +121,15 @@ export class CollabHandler {
 					return;
 				}
 
+				// Skip irrelevant collections and actions early
+				if (
+					event.action === 'create' ||
+					IRRELEVANT_ACTIONS.includes(event.action) ||
+					IRRELEVANT_COLLECTIONS.includes(event.collection)
+				) {
+					return;
+				}
+
 				if (event.action === 'update' || event.action === 'delete') {
 					let keys: (string | number)[] = [];
 
@@ -125,51 +143,45 @@ export class CollabHandler {
 
 					event.keys = keys;
 
-					if (event.collection === 'directus_versions') {
-						for (const room of Object.values(this.roomManager.rooms)) {
-							if (room.version && keys.some((key) => String(key) === room.version)) {
-								useLogger().debug(
-									`[Collab] [Node ${this.messenger.uid}] Forwarding distributed version ${event.action} to local room ${room.uid}`,
-								);
-
-								if (event.action === 'delete') {
-									await room.onDeleteHandler(event);
-								} else {
-									await room.onUpdateHandler(event);
-								}
-							}
+					const roomsToUpdate = Object.values(this.roomManager.rooms).filter((room) => {
+						// Versioned Rooms
+						if (room.version) {
+							return event.collection === 'directus_versions' && keys.some((key) => String(key) === room.version);
 						}
 
-						return;
-					}
+						// Skip non-matching collections and version events
+						if (room.collection !== event.collection || event.collection === 'directus_versions') return false;
 
-					const schema = await getSchema();
-					let keysToCheck;
+						// Match singleton
+						if (room.item === null) return true;
 
-					if (schema.collections[event.collection]?.singleton) {
-						keysToCheck = [null];
-					} else {
-						keysToCheck = uniq(keys);
-					}
+						// Match regular items
+						return keys.some((key) => String(key) === String(room.item));
+					});
 
-					for (const key of keysToCheck) {
-						const roomUid = getRoomHash(event.collection, key, null);
-						const room = this.roomManager.rooms[roomUid];
+					if (roomsToUpdate.length === 0) return;
 
-						if (room) {
-							useLogger().debug(
-								`[Collab] [Node ${this.messenger.uid}] Forwarding distributed ${event.action} to local room ${roomUid}`,
-							);
+					await Promise.all(
+						roomsToUpdate.map(async (room) => {
+							let relevantKeys: any[];
 
-							const singleKeyedEvent = { ...event, keys: key === null ? keys : [key] };
+							if (room.version) {
+								relevantKeys = [room.version];
+							} else if (room.item) {
+								relevantKeys = [room.item];
+							} else {
+								relevantKeys = keys;
+							}
+
+							const singleKeyedEvent = { ...event, keys: relevantKeys };
 
 							if (event.action === 'delete') {
 								await room.onDeleteHandler(singleKeyedEvent);
 							} else {
 								await room.onUpdateHandler(singleKeyedEvent);
 							}
-						}
-					}
+						}),
+					);
 				}
 			} catch (err) {
 				useLogger().error(err, `[Collab] Bus message processing failed for ${event.collection}/${event.action}`);
