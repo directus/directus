@@ -82,8 +82,6 @@ export class CollabHandler {
 		 * Service (Node B) -> Emitter (Node B) -> Hooks (Node B) -> Bus -> CollabHandler (Node A) -> Room (Node A) -> Remote Clients
 		 */
 		this.messenger.messenger.subscribe('websocket.event', async (event: any) => {
-			const schema = await getSchema();
-
 			try {
 				if (
 					event.collection === 'directus_settings' &&
@@ -145,6 +143,7 @@ export class CollabHandler {
 						return;
 					}
 
+					const schema = await getSchema();
 					let keysToCheck;
 
 					if (schema.collections[event.collection]?.singleton) {
