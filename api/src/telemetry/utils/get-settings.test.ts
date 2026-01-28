@@ -19,6 +19,7 @@ describe('getSettings', () => {
 			ai_openai_api_key: 'test-openai-key',
 			ai_anthropic_api_key: 'test-anthropic-key',
 			ai_system_prompt: 'test-system-prompt',
+			collaborative_editing_enabled: true,
 		} satisfies DatabaseSettings);
 
 		const result = await getSettings(mockDb);
@@ -32,6 +33,7 @@ describe('getSettings', () => {
 			ai_openai_api_key: true,
 			ai_anthropic_api_key: true,
 			ai_system_prompt: true,
+			collaborative_editing_enabled: true,
 		} satisfies TelemetrySettings);
 	});
 
@@ -53,6 +55,7 @@ describe('getSettings', () => {
 			ai_openai_api_key: false,
 			ai_anthropic_api_key: false,
 			ai_system_prompt: false,
+			collaborative_editing_enabled: true,
 		} satisfies TelemetrySettings);
 	});
 });

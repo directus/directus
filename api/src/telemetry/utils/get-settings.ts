@@ -11,6 +11,7 @@ export type TelemetrySettings = {
 	ai_openai_api_key: boolean;
 	ai_anthropic_api_key: boolean;
 	ai_system_prompt: boolean;
+	collaborative_editing_enabled: boolean;
 };
 
 export type DatabaseSettings = {
@@ -22,6 +23,7 @@ export type DatabaseSettings = {
 	ai_openai_api_key?: string;
 	ai_anthropic_api_key?: string;
 	ai_system_prompt?: string;
+	collaborative_editing_enabled?: boolean;
 };
 
 export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
@@ -40,6 +42,7 @@ export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 			'ai_openai_api_key',
 			'ai_anthropic_api_key',
 			'ai_system_prompt',
+			'collaborative_editing_enabled',
 		],
 	})) as DatabaseSettings;
 
@@ -52,5 +55,6 @@ export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 		ai_openai_api_key: Boolean(settings?.ai_openai_api_key),
 		ai_anthropic_api_key: Boolean(settings?.ai_anthropic_api_key),
 		ai_system_prompt: Boolean(settings?.ai_system_prompt),
+		collaborative_editing_enabled: settings?.collaborative_editing_enabled ?? true,
 	};
 };
