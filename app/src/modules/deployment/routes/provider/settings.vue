@@ -228,7 +228,9 @@ onMounted(() => {
 </script>
 
 <template>
-	<PrivateView :title="$t('deployment.provider.settings.settings', { provider: $t(`deployment.provider.${provider}.name`) })">
+	<PrivateView
+		:title="$t('deployment.provider.settings.settings', { provider: $t(`deployment.provider.${provider}.name`) })"
+	>
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployment' }]" />
 		</template>
@@ -270,7 +272,9 @@ onMounted(() => {
 			<template v-else>
 				<InterfacePresentationDivider
 					:title="
-						$t('deployment.provider.settings.edit_credentials', { provider: $t(`deployment.provider.${provider}.name`) })
+						$t('deployment.provider.settings.edit_credentials', {
+							provider: $t(`deployment.provider.${provider}.name`),
+						})
 					"
 					icon="key"
 				/>
@@ -281,7 +285,9 @@ onMounted(() => {
 
 				<InterfacePresentationDivider
 					v-if="optionsFields.length > 0"
-					:title="$t('deployment.provider.settings.edit_options', { provider: $t(`deployment.provider.${provider}.name`) })"
+					:title="
+						$t('deployment.provider.settings.edit_options', { provider: $t(`deployment.provider.${provider}.name`) })
+					"
 					icon="settings"
 				/>
 

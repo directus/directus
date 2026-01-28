@@ -312,7 +312,6 @@ router.patch(
 router.get(
 	'/:provider/dashboard',
 	asyncHandler(async (req, res, next) => {
-
 		const provider = req.params['provider']!;
 
 		if (!validateProvider(provider)) {
@@ -460,13 +459,17 @@ router.patch(
 
 			if ('credentials' in req.body || 'options' in req.body) {
 				const existing = await service.readByProvider(provider);
-				const existingCredentials = typeof existing.credentials === 'string' ? JSON.parse(existing.credentials) : existing.credentials ?? {};
-				const existingOptions = typeof existing.options === 'string' ? JSON.parse(existing.options) : existing.options ?? {};
+				const existingCredentials =
+					typeof existing.credentials === 'string' ? JSON.parse(existing.credentials) : (existing.credentials ?? {});
+				const existingOptions =
+					typeof existing.options === 'string' ? JSON.parse(existing.options) : (existing.options ?? {});
 
 				mergedCredentials = req.body.credentials ?? existingCredentials;
 
 				mergedOptions = req.body.options
-					? Object.fromEntries(Object.entries({ ...existingOptions, ...req.body.options }).filter(([, v]) => v !== null))
+					? Object.fromEntries(
+							Object.entries({ ...existingOptions, ...req.body.options }).filter(([, v]) => v !== null),
+						)
 					: existingOptions;
 
 				if ('credentials' in req.body && req.body.credentials) {
@@ -615,9 +618,6 @@ const runDetailsQuerySchema = Joi.object({
 router.get(
 	'/:provider/runs/:id',
 	asyncHandler(async (req, res, next) => {
-		// Disable Directus cache for polling endpoint - always want fresh data from provider
-		res.locals['cache'] = false;
-
 		const provider = req.params['provider']!;
 		const runId = req.params['id']!;
 
@@ -643,16 +643,16 @@ router.get(
 			schema: req.schema,
 		});
 
-		// Get run from DB
 		const run = await runsService.readOne(runId);
 
-		// Fetch latest status and logs from provider
 		const driver = await service.getDriver(provider);
 
 		const [details, logs] = await Promise.all([
 			driver.getDeployment(run.external_id),
 			driver.getDeploymentLogs(run.external_id, sinceDate ? { since: sinceDate } : undefined),
 		]);
+
+		res.locals['cache'] = false;
 
 		res.locals['payload'] = {
 			data: {
@@ -690,10 +690,8 @@ router.post(
 			schema: req.schema,
 		});
 
-		// Get run from DB
 		const run = await runsService.readOne(runId);
 
-		// Cancel via provider
 		const driver = await service.getDriver(provider);
 		await driver.cancelDeployment(run.external_id);
 

@@ -72,7 +72,9 @@ function onCancel() {
 <template>
 	<VDrawer
 		v-model="active"
-		:title="$t('deployment.provider.setup_title', { provider: provider ? $t(`deployment.provider.${provider}.name`) : '' })"
+		:title="
+			$t('deployment.provider.setup_title', { provider: provider ? $t(`deployment.provider.${provider}.name`) : '' })
+		"
 		persistent
 		icon="vercel"
 		@cancel="onCancel"
