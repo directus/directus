@@ -37,7 +37,7 @@ export const updateDeployment =
 	};
 
 export interface UpdateDeploymentProjectsInput {
-	create?: Array<{ external_id: string }>;
+	create?: Array<{ external_id: string; name: string }>;
 	delete?: string[];
 }
 

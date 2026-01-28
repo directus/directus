@@ -142,6 +142,23 @@ router.get(
 		// Map by external_id for quick lookup
 		const selectedMap = new Map(selectedProjects.map((p) => [p.external_id, p]));
 
+		// Sync names from provider
+		const namesToUpdate = selectedProjects
+			.map((dbProject) => {
+				const providerProject = providerProjects.find((p) => p.id === dbProject.external_id);
+
+				if (providerProject && providerProject.name !== dbProject.name) {
+					return { id: dbProject.id, name: providerProject.name };
+				}
+
+				return null;
+			})
+			.filter((update): update is { id: string; name: string } => update !== null);
+
+		if (namesToUpdate.length > 0) {
+			await Promise.all(namesToUpdate.map((update) => projectsService.updateOne(update.id, { name: update.name })));
+		}
+
 		// Merge with DB structure (id !== null means selected)
 		const projects = providerProjects.map((project) => {
 			const selected = selectedMap.get(project.id);
@@ -215,6 +232,7 @@ const updateProjectsSchema = Joi.object({
 		.items(
 			Joi.object({
 				external_id: Joi.string().required(),
+				name: Joi.string().required(),
 			}),
 		)
 		.default([]),

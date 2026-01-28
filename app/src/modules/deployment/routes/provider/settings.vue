@@ -172,7 +172,8 @@ async function save() {
 				.map((p) => p.id);
 
 			const projectsToCreate = toCreate.map((externalId) => {
-				return { external_id: externalId };
+				const project = availableProjects.value.find((p) => p.external_id === externalId);
+				return { external_id: externalId, name: project!.name };
 			});
 
 			await sdk.request(

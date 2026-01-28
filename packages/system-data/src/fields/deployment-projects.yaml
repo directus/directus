@@ -6,6 +6,7 @@ fields:
       - uuid
   - field: deployment
   - field: external_id
+  - field: name
   - field: runs
     special:
       - o2m
