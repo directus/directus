@@ -42,3 +42,13 @@ export type PromiseCallback = () => void | Promise<void>;
 export type Prettify<T> = {
 	[K in keyof T]: T[K];
 } & unknown;
+
+/**
+ * Wrapper for cached data with remaining TTL
+ * Used by services that cache external API responses (e.g. deployment providers)
+ * Pass remainingTTL to res.locals['cacheTTL'] to set Cache-Control headers
+ */
+export type CachedResult<T> = {
+	data: T;
+	remainingTTL?: number;
+};
