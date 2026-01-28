@@ -73,7 +73,7 @@ const isPromotableField = computed(() => {
 				class="comparison-checkbox"
 				:model-value="comparisonActive"
 				:value="field.field"
-				@update:model-value="comparison!.onToggleField(field.field)"
+				@update:model-value="comparison!.onToggleField?.(field.field)"
 			/>
 
 			<div class="field-label-content">
