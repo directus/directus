@@ -208,7 +208,7 @@ function useComputedValues() {
 			},
 		]"
 	>
-		<HeaderCollab v-if="isLabelHidden" :model-value="focusedBy" hide-current lock x-small />
+		<HeaderCollab v-if="isLabelHidden" :model-value="focusedBy" type="field" />
 
 		<VMenu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">

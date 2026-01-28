@@ -14,7 +14,8 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 interface Props {
 	connected?: boolean | undefined;
 	modelValue?: CollabUser[] | CollabUser;
-	lock?: boolean;
+	/** Whether the component is used on the header or the field */
+	type?: 'header' | 'field';
 }
 
 const DISPLAY_LIMIT = 3;
@@ -22,7 +23,7 @@ const DISPLAY_LIMIT = 3;
 const props = withDefaults(defineProps<Props>(), {
 	connected: undefined,
 	modelValue: () => [],
-	lock: false,
+	type: 'header',
 });
 
 const { t } = useI18n();
@@ -45,8 +46,8 @@ const users = computed(() => {
 		.reverse();
 
 	function focusId(cid: ClientID) {
-		if (!props.lock) return null;
-		return `collab-focus-${cid}`;
+		if (props.type === 'field') return `collab-focus-${cid}`;
+		return null;
 	}
 });
 
@@ -70,8 +71,8 @@ function focusIntoView(cid: ClientID) {
 			:style="{ zIndex: DISPLAY_LIMIT - index }"
 			x-small
 			round
-			clickable
-			@click="focusIntoView(user.connection)"
+			:clickable="type === 'header'"
+			@click="type === 'header' && focusIntoView(user.connection)"
 		>
 			<img v-if="user.avatar_url" :src="user.avatar_url" />
 			<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
@@ -89,8 +90,8 @@ function focusIntoView(cid: ClientID) {
 				<VListItem
 					v-for="user in users.slice(DISPLAY_LIMIT)"
 					:key="user.connection"
-					clickable
-					@click="focusIntoView(user.connection)"
+					:clickable="type === 'header'"
+					@click="type === 'header' && focusIntoView(user.connection)"
 				>
 					<VAvatar :border="`var(--${user.color})`" x-small round>
 						<img v-if="user.avatar_url" :src="user.avatar_url" />
@@ -104,17 +105,17 @@ function focusIntoView(cid: ClientID) {
 		</VMenu>
 
 		<VIcon
-			v-if="lock && users.length > 0"
-			name="lock"
-			class="lock-icon"
-			:style="{ color: `var(--${users[0]!.color})` }"
-		/>
-
-		<VIcon
 			v-if="connected === false"
 			v-tooltip.bottom="$t('collab_disconnected')"
 			name="signal_disconnected"
 			class="connect-icon"
+		/>
+
+		<VIcon
+			v-if="type === 'field' && users.length > 0"
+			name="lock"
+			class="lock-icon"
+			:style="{ color: `var(--${users[0]!.color})` }"
 		/>
 	</div>
 </template>
