@@ -465,7 +465,7 @@ fields:
       - no-data
     width: full
 
-  - field: collaborative_editing
+  - field: collaborative_editing_enabled
     interface: boolean
     width: half
     options:
