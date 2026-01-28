@@ -1,7 +1,8 @@
-import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, InvalidProviderConfigError, isDirectusError } from '@directus/errors';
 import { DEPLOYMENT_PROVIDER_TYPES, type ProviderType } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
+import getDatabase from '../database/index.js';
 import { getDeploymentDriver } from '../deployment.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -11,6 +12,7 @@ import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
+import { transaction } from '../utils/transaction.js';
 
 const router = express.Router();
 
@@ -40,23 +42,35 @@ router.post(
 			throw new InvalidPayloadError({ reason: error.message });
 		}
 
-		// Test connection before saving
-		const driver = getDeploymentDriver(req.body.provider, req.body.credentials, req.body.options);
-		await driver.testConnection();
+		const db = getDatabase();
 
-		const service = new DeploymentService({
-			accountability: req.accountability,
-			schema: req.schema,
+		const item = await transaction(db, async (trx) => {
+			const service = new DeploymentService({
+				accountability: req.accountability,
+				schema: req.schema,
+				knex: trx,
+			});
+
+			const key = await service.createOne({
+				provider: req.body.provider,
+				credentials: JSON.stringify(req.body.credentials),
+				options: req.body.options ? JSON.stringify(req.body.options) : null,
+			} as Record<string, unknown>);
+
+			const driver = getDeploymentDriver(req.body.provider, req.body.credentials, req.body.options);
+
+			try {
+				await driver.testConnection();
+			} catch {
+				throw new InvalidProviderConfigError({
+					provider: req.body.provider,
+					reason: 'Invalid API token',
+				});
+			}
+
+			return service.readOne(key, req.sanitizedQuery);
 		});
 
-		const data = {
-			...req.body,
-			credentials: JSON.stringify(req.body.credentials),
-			options: req.body.options ? JSON.stringify(req.body.options) : null,
-		};
-
-		const key = await service.createOne(data);
-		const item = await service.readOne(key, req.sanitizedQuery);
 		res.locals['payload'] = { data: item };
 
 		return next();

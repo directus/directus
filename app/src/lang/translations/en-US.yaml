@@ -815,6 +815,7 @@ errors:
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
+  INVALID_PROVIDER_CONFIG: Invalid provider configuration
   INVALID_QUERY: Invalid query
   INVALID_TOKEN: Invalid token
   INVALID_USER: Failed to authenticate user
