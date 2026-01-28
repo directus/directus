@@ -3,6 +3,7 @@ import { useEnv } from '@directus/env';
 import { ipInNetworks } from '@directus/utils/node';
 import { matches } from 'ip-matching';
 import { useLogger } from '../logger/index.js';
+import { getIPv4FromMappedIPv6 } from './normalize-ipv6.js';
 
 export function isDeniedIp(ip: string): boolean {
 	const env = useEnv();
@@ -12,8 +13,10 @@ export function isDeniedIp(ip: string): boolean {
 
 	if (ipDenyList.length === 0) return false;
 
+	const resolvedIp = getIPv4FromMappedIPv6(ip) ?? ip;
+
 	try {
-		const denied = ipInNetworks(ip, ipDenyList);
+		const denied = ipInNetworks(resolvedIp, ipDenyList);
 
 		if (denied) return true;
 	} catch (error) {
@@ -31,8 +34,8 @@ export function isDeniedIp(ip: string): boolean {
 
 			for (const info of networkInfo) {
 				if (info.internal && info.cidr) {
-					if (matches(ip, info.cidr)) return true;
-				} else if (info.address === ip) {
+					if (matches(resolvedIp, info.cidr)) return true;
+				} else if (info.address === resolvedIp) {
 					return true;
 				}
 			}
