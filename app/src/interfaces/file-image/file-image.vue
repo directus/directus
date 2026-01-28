@@ -186,11 +186,15 @@ const edits = computed(() => {
 	return props.value;
 });
 
+const menuActive = computed(
+	() => lightboxActive.value || editDrawerActive.value || editImageDetails.value || editImageEditor.value,
+);
+
 const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 </script>
 
 <template>
-	<div class="image" :class="[width, { crop }]">
+	<div v-prevent-focusout="menuActive" class="image" :class="[width, { crop }]">
 		<VSkeletonLoader v-if="loading" type="input-tall" />
 
 		<VNotice v-else-if="nonEditable && !image" icon="hide_image" center class="non-editable-notice">

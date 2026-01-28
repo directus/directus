@@ -433,6 +433,8 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 	return m2oFields.length > 0 && totalItemCount.value > 0;
 });
+
+const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModalActive.value || batchEditActive.value);
 </script>
 
 <template>
@@ -442,7 +444,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}
 	</VNotice>
-	<div v-else class="one-to-many">
+	<div v-else v-prevent-focusout="menuActive" class="one-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE, disabled, 'non-editable': nonEditable }]">
 			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
 				<div class="spacer" />

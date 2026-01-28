@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cssVar } from '@directus/utils/browser';
 import Color, { ColorInstance } from 'color';
-import { ComponentPublicInstance, computed, ref, watch } from 'vue';
+import { ComponentPublicInstance, computed, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -10,6 +10,7 @@ import VMenu from '@/components/v-menu.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VSlider from '@/components/v-slider.vue';
+import { useFocusin } from '@/composables/use-focusin';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { isHex } from '@/utils/is-hex';
 
@@ -32,6 +33,9 @@ const props = withDefaults(defineProps<Props>(), {
 	placeholder: undefined,
 	opacity: false,
 });
+
+const menu = useTemplateRef('menu');
+const { active } = useFocusin(menu);
 
 // Reactive translations can't be default values of props
 const presetsWithDefaults = computed(
@@ -311,7 +315,15 @@ function useColor() {
 </script>
 
 <template>
-	<VMenu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
+	<VMenu
+		ref="menu"
+		v-model="active"
+		v-prevent-focusout="active"
+		attached
+		:disabled="disabled"
+		:close-on-content-click="false"
+		no-focus-return
+	>
 		<template #activator="{ activate, toggle }">
 			<VInput
 				v-model="input"

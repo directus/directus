@@ -7,7 +7,9 @@ import VCheckbox from '@/components/v-checkbox.vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import { CollabUser } from '@/composables/use-collab';
 import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -26,6 +28,7 @@ const props = withDefaults(
 		disabledMenu?: boolean;
 		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
+		focusedBy?: CollabUser;
 	}>(),
 	{
 		batchMode: false,
@@ -123,6 +126,10 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			</div>
 
 			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+
+			<span class="spacer" />
+
+			<CollabAvatars :model-value="focusedBy" type="field" class="avatars" />
 		</component>
 	</div>
 </template>
@@ -256,14 +263,10 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			border-radius: 4px;
 			content: '';
 		}
-
-		.field-name {
-			margin-inline-start: -16px;
-			padding-inline-start: 16px;
-		}
 	}
 
 	.field-name {
+		flex-grow: 1;
 		max-inline-size: 100%;
 		text-align: start;
 		display: flex;
@@ -273,5 +276,15 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 .type-label {
 	font-family: var(--theme--form--field--label--font-family);
+}
+
+.spacer {
+	flex-grow: 1;
+}
+
+.avatars {
+	margin-block-start: -3px;
+	align-self: start;
+	flex-shrink: 0;
 }
 </style>

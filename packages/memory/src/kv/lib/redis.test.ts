@@ -84,8 +84,8 @@ describe('constructor', () => {
 		});
 	});
 
-	test('Skips defining command if setMax already exists on redis', () => {
-		const mockRedis = { defineCommand: vi.fn(), setMax: vi.fn() } as unknown as ExtendedRedis;
+	test('Skips defining commands if they already exist on redis', () => {
+		const mockRedis = { defineCommand: vi.fn(), setMax: vi.fn(), release: vi.fn() } as unknown as ExtendedRedis;
 
 		new KvRedis({ redis: mockRedis, namespace: mockNamespace, compression: false });
 

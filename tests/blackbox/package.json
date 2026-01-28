@@ -28,6 +28,7 @@
 		"get-port": "catalog:",
 		"globby": "14.1.0",
 		"graphql-ws": "catalog:",
+		"ioredis": "catalog:",
 		"js-yaml": "catalog:",
 		"json-to-graphql-query": "catalog:",
 		"knex": "catalog:",

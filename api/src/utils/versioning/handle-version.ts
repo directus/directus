@@ -1,8 +1,8 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import { deepMapWithSchema } from '@directus/utils';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
-import { deepMapWithSchema } from './deep-map-with-schema.js';
 import { splitRecursive } from './split-recursive.js';
 
 export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, queryWithKey: Query, opts?: QueryOptions) {

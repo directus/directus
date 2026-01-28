@@ -34,6 +34,14 @@ export async function seed(knex) {
 		},
 	]);
 
+	await knex('directus_revisions')
+		.whereIn(
+			'version',
+			knex('directus_versions').select('id').where('user_created', '3d075128-c073-4f5d-891c-ed2eb2790a1c'),
+		)
+		.del();
+
+	await knex('directus_versions').where('user_created', '3d075128-c073-4f5d-891c-ed2eb2790a1c').del();
 	await knex('directus_users').where('id', '3d075128-c073-4f5d-891c-ed2eb2790a1c').del();
 
 	await knex('directus_users').insert([

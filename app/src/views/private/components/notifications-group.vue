@@ -20,6 +20,7 @@ const queue = toRefs(notificationsStore).queue;
 			:type="notification.type"
 			:loading="notification.loading"
 			:progress="notification.progress"
+			:show-reload="notification.showReload"
 			:show-close="notification.persist === true && notification.closeable !== false"
 			:always-show-text="notification.alwaysShowText"
 			:dismiss-icon="notification.dismissIcon"
