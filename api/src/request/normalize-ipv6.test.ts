@@ -82,6 +82,14 @@ describe('getIPv4FromMappedIPv6', () => {
 			// Whitespace handling (trimmed by sanitize)
 			{ input: '  ::ffff:c0a8:0101  ', expected: '192.168.1.1', description: 'with leading/trailing spaces' },
 			{ input: '\t::ffff:c0a8:0101\n', expected: '192.168.1.1', description: 'with tabs and newlines' },
+
+			// Dotted-decimal notation (security-critical)
+			{ input: '::ffff:192.168.1.1', expected: '192.168.1.1', description: 'dotted decimal notation' },
+			{ input: '::ffff:127.0.0.1', expected: '127.0.0.1', description: 'dotted decimal loopback' },
+			{ input: '::ffff:169.254.169.254', expected: '169.254.169.254', description: 'dotted decimal AWS metadata' },
+			{ input: '::ffff:10.0.0.1', expected: '10.0.0.1', description: 'dotted decimal private network' },
+			{ input: '0:0:0:0:0:ffff:192.168.1.1', expected: '192.168.1.1', description: 'fully expanded dotted decimal' },
+			{ input: '[::ffff:192.168.1.1]', expected: '192.168.1.1', description: 'bracketed dotted decimal' },
 		])('extracts IPv4 from $description', ({ input, expected }) => {
 			expect(getIPv4FromMappedIPv6(input)).toBe(expected);
 		});
@@ -97,7 +105,6 @@ describe('getIPv4FromMappedIPv6', () => {
 			{ input: '', description: 'empty string' },
 			{ input: '::fffe:c0a8:0101', description: 'wrong prefix' },
 			{ input: '0:0:0:0:1:ffff:c0a8:0101', description: 'non-zero 5th group' },
-			{ input: '::ffff:192.168.1.1', description: 'dotted decimal notation (not supported)' },
 			{ input: '::1::ffff:c0a8:0101', description: 'multiple :: segments' },
 			{ input: '::ffff:gggg:hhhh', description: 'malformed hex groups' },
 			{ input: '0:0:0:0:0:0:ffff:c0a8:0101', description: 'too many groups' },
@@ -105,6 +112,14 @@ describe('getIPv4FromMappedIPv6', () => {
 			// IPv4-compatible addresses (security-relevant: different from IPv4-mapped)
 			{ input: '::c0a8:0101', description: 'IPv4-compatible (no ffff prefix)' },
 			{ input: '::192.168.1.1', description: 'IPv4-compatible dotted decimal' },
+
+			// Invalid dotted-decimal notation
+			{ input: '::ffff:256.1.1.1', description: 'dotted decimal with octet > 255' },
+			{ input: '::ffff:192.168.1.256', description: 'dotted decimal with last octet > 255' },
+			{ input: '::ffff:192.168.1', description: 'dotted decimal with too few octets' },
+			{ input: '::ffff:192.168.1.1.1', description: 'dotted decimal with too many octets' },
+			{ input: '::ffff:-1.0.0.1', description: 'dotted decimal with negative octet' },
+			{ input: '1::ffff:192.168.1.1', description: 'dotted decimal with non-zero prefix' },
 
 			// Compression edge cases
 			{ input: '::ffff:', description: 'trailing colon after compression' },

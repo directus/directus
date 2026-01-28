@@ -27,6 +27,46 @@ export function sanitizeIPv6(input: string): string {
 }
 
 /**
+ * Validates that the prefix groups represent an IPv4-mapped IPv6 prefix (0:0:0:0:0:ffff).
+ * Expands :: compression and checks that first 5 groups are 0 and 6th group is 0xffff.
+ *
+ * @param prefix - The prefix part before the IPv4 address (e.g., "::ffff" or "0:0:0:0:0:ffff")
+ * @param expectedGroups - Expected number of groups after expansion (6 for prefix only, 8 for full address)
+ */
+function expandAndValidateIPv4MappedPrefix(prefix: string, expectedGroups: number): string[] | null {
+	const parts = prefix.split('::');
+	if (parts.length > 2) return null;
+
+	const left = parts[0] ? parts[0].split(':') : [];
+	const right = parts[1] ? parts[1].split(':') : [];
+
+	// Expand to expected number of groups
+	const groups: string[] = [];
+	groups.push(...left.filter(Boolean));
+
+	const missing = expectedGroups - (left.filter(Boolean).length + right.filter(Boolean).length);
+
+	for (let i = 0; i < missing; i++) {
+		groups.push('0');
+	}
+
+	groups.push(...right.filter(Boolean));
+
+	// Must have exactly the expected number of groups
+	if (groups.length !== expectedGroups) return null;
+
+	// First 5 groups must be zero
+	for (let i = 0; i < 5; i++) {
+		if (parseInt(groups[i]!, 16) !== 0) return null;
+	}
+
+	// 6th group must be 0xffff
+	if (parseInt(groups[5]!, 16) !== 0xffff) return null;
+
+	return groups;
+}
+
+/**
  * Extracts the IPv4 address from an IPv4-mapped IPv6 address.
  * IPv4-mapped IPv6 addresses have the format: ::ffff:x.x.x.x or 0:0:0:0:0:ffff:xxxx:xxxx
  *
@@ -38,47 +78,43 @@ export function sanitizeIPv6(input: string): string {
  */
 export function getIPv4FromMappedIPv6(input: string): string | null {
 	const ip = sanitizeIPv6(input);
-
-	// Return if it is not an IPv6 address
 	if (isIPv6(ip) === false) return null;
 
-	// Split on '::' to handle zero-compression
-	const parts = ip.split('::');
-	// Multiple compression sequences is invalid in IPv6
-	if (parts.length > 2) return null;
+	// Check for dotted-decimal notation: ::ffff:192.168.1.1
+	// This format has the IPv4 address directly embedded after ::ffff:
+	const lastColonIndex = ip.lastIndexOf(':');
 
-	const left = parts[0] ? parts[0].split(':') : [];
-	const right = parts[1] ? parts[1].split(':') : [];
+	if (lastColonIndex !== -1) {
+		const potentialIPv4 = ip.slice(lastColonIndex + 1);
 
-	// Expand to exactly 8 groups
-	const groups = [];
-	groups.push(...left.filter(Boolean));
+		// Check if it looks like an IPv4 address (contains dots)
+		if (potentialIPv4.includes('.')) {
+			const prefix = ip.slice(0, lastColonIndex);
 
-	const missing = 8 - (left.filter(Boolean).length + right.filter(Boolean).length);
+			// Validate the prefix is IPv4-mapped (expects 6 groups: 0:0:0:0:0:ffff)
+			if (!expandAndValidateIPv4MappedPrefix(prefix, 6)) return null;
 
-	// Fill in the missing groups with zeros
-	for (let i = 0; i < missing; i++) {
-		groups.push('0');
+			// Validate IPv4 part: each octet must be 0-255
+			const octets = potentialIPv4.split('.');
+
+			for (const octet of octets) {
+				const num = parseInt(octet, 10);
+				if (isNaN(num) || num < 0 || num > 255) return null;
+			}
+
+			return potentialIPv4;
+		}
 	}
 
-	groups.push(...right.filter(Boolean));
-
-	// IPv6 addresses must have exactly 8 groups after expansion
-	if (groups.length !== 8) return null;
-
-	// Check for IPv4-mapped prefix: 0:0:0:0:0:ffff
-	for (let i = 0; i < 5; i++) {
-		// First 5 groups must be zero for a valid IPv4-mapped address
-		if (parseInt(groups[i], 16) !== 0) return null;
-	}
-
-	// 6th group must be 0xffff for a valid IPv4-mapped address
-	if (parseInt(groups[5], 16) !== 0xffff) return null;
+	// Handle hex notation: ::ffff:c0a8:0101
+	// Validate the full address is IPv4-mapped (expects 8 groups: 0:0:0:0:0:ffff:xxxx:xxxx)
+	const groups = expandAndValidateIPv4MappedPrefix(ip, 8);
+	if (!groups) return null;
 
 	// Convert the last two IPv6 groups from hex to decimal
 	// groups[6] contains the first 2 octets, groups[7] contains the last 2 octets
-	const hi = parseInt(groups[6], 16);
-	const lo = parseInt(groups[7], 16);
+	const hi = parseInt(groups[6]!, 16);
+	const lo = parseInt(groups[7]!, 16);
 
 	// Validate that both groups are valid integers
 	if (!Number.isInteger(hi) || !Number.isInteger(lo)) return null;
