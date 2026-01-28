@@ -187,6 +187,10 @@ async function save() {
 		// Refresh navigation to reflect project changes
 		await refreshNavigation();
 
+		if (updatePayload.options) {
+			config.value.options = updatePayload.options;
+		}
+
 		credentialsEdits.value = {};
 		optionsEdits.value = {};
 		initialProjectIds.value = [...selectedProjectIds.value];
