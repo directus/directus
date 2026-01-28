@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import type {
 	AbstractServiceOptions,
+	CachedResult,
 	Credentials,
 	Options,
 	PrimaryKey,
@@ -17,8 +18,6 @@ import { ItemsService } from './items.js';
 
 const env = useEnv();
 const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 5000; // Default 5s
-
-export type CachedResult<T> = { data: T; remainingTTL?: number };
 
 export interface DeploymentConfig {
 	id: string;

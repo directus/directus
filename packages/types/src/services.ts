@@ -9,6 +9,14 @@ import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
 import type { ApiCollection, RawCollection } from './collection.js';
+import type {
+	Credentials,
+	DeploymentConfig,
+	Options,
+	Project,
+	ProviderType,
+	StoredProject,
+} from './deployment.js';
 import type { ActionHandler } from './events.js';
 import type { ApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
 import type { Field, RawField, Type } from './fields.js';
@@ -18,7 +26,7 @@ import type { GQLScope, GraphQLParams } from './graphql.js';
 import type { ExportFormat } from './import-export.js';
 import type { Item, MutationOptions, PrimaryKey, QueryOptions } from './items.js';
 import type { EmailOptions } from './mail.js';
-import type { DeepPartial } from './misc.js';
+import type { CachedResult, DeepPartial } from './misc.js';
 import type { Notification } from './notifications.js';
 import type { PayloadAction, PayloadServiceProcessRelationResult } from './payload.js';
 import type { ItemPermissions } from './permissions.js';
@@ -451,6 +459,34 @@ interface TFAService {
 }
 
 /**
+ * The DeploymentService
+ */
+interface DeploymentService {
+	readByProvider(provider: ProviderType, query?: Query): Promise<DeploymentConfig>;
+	updateByProvider(provider: ProviderType, data: Partial<DeploymentConfig>): Promise<PrimaryKey>;
+	deleteByProvider(provider: ProviderType): Promise<PrimaryKey>;
+	getDriver(provider: ProviderType): Promise<unknown>;
+	testConnection(
+		provider: ProviderType,
+		newCredentials?: Credentials,
+		newOptions?: Options,
+	): Promise<{ credentials: Credentials; options: Options }>;
+	listProviderProjects(provider: ProviderType): Promise<CachedResult<Project[]>>;
+	getProviderProject(provider: ProviderType, projectId: string): Promise<CachedResult<Project>>;
+}
+
+/**
+ * The DeploymentProjectsService
+ */
+interface DeploymentProjectsService {
+	updateSelection(
+		deploymentId: string,
+		create: { external_id: string; name: string }[],
+		deleteIds: PrimaryKey[],
+	): Promise<StoredProject[]>;
+}
+
+/**
  * The UsersService
  */
 interface UsersService {
@@ -616,11 +652,11 @@ export interface ExtensionsServices {
 	/**
 	 * The DeploymentService
 	 */
-	DeploymentService: new (options: AbstractServiceOptions) => AbstractService;
+	DeploymentService: new (options: AbstractServiceOptions) => AbstractService & DeploymentService;
 	/**
 	 * The DeploymentProjectsService
 	 */
-	DeploymentProjectsService: new (options: AbstractServiceOptions) => AbstractService;
+	DeploymentProjectsService: new (options: AbstractServiceOptions) => AbstractService & DeploymentProjectsService;
 	/**
 	 * The DeploymentRunsService
 	 */
