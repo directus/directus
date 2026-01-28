@@ -506,8 +506,6 @@ revision_delta_reverted: 復元済み
 revision_delta_update_message: フィールドは更新されていますが、セキュリティ設定により値は非表示です。
 revision_delta_other: 履歴
 revision_delta_by: '{date}（{user}）'
-updated_in_revision: このリビジョンで更新
-updated_in_revision_matches_latest: このリビジョンで更新されましたが、最新版と一致しています
 differences_count: '差異なし | 1 つの差異 | {count} 個の差異'
 presentation_text_values_cannot_be_reimported: 'テキストを表示に使用しますが、値の再インポートはできません。'
 download_page_as_csv: 'CSV 形式でダウンロード'
