@@ -92,6 +92,22 @@ const baseDateUpdated = computed(() => {
 	return t('latest');
 });
 
+const applyButtonTooltip = computed(() => {
+	if (mode.value === 'revision' && compareToOption.value === 'Previous') {
+		return t('compare_to_latest_to_restore');
+	}
+
+	if (mode.value === 'revision' && compareToOption.value === 'Latest' && isLatestRevision.value) {
+		return t('select_earlier_revision_to_restore');
+	}
+
+	if (selectedComparisonFields.value.length === 0) {
+		return undefined;
+	}
+
+	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
+});
+
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const modalLoading = ref(false);
@@ -340,15 +356,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									<span class="button-text">{{ $t('cancel') }}</span>
 								</VButton>
 								<VButton
-									v-tooltip.top="
-										mode === 'revision' && compareToOption === 'Previous'
-											? $t('compare_to_latest_to_restore')
-											: mode === 'revision' && compareToOption === 'Latest' && isLatestRevision
-												? $t('select_earlier_revision_to_restore')
-												: selectedComparisonFields.length === 0
-													? undefined
-													: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
-									"
+									v-tooltip.top="applyButtonTooltip"
 									data-test="comparison-modal_apply-button"
 									:disabled="
 										selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')
