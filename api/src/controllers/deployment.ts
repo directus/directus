@@ -184,7 +184,7 @@ router.get(
 			};
 		});
 
-		// Cache is handled by service, just pass TTL for headers
+		// Pass remaining TTL for response headers
 		res.locals['cache'] = false;
 		res.locals['cacheTTL'] = remainingTTL;
 		res.locals['payload'] = { data: projects };
@@ -221,7 +221,7 @@ router.get(
 		// Fetch details from provider using external_id (with cache)
 		const { data: details, remainingTTL } = await service.getProviderProject(provider, project.external_id);
 
-		// Cache is handled by service, just pass TTL for headers
+		// Pass remaining TTL for response headers
 		res.locals['cache'] = false;
 		res.locals['cacheTTL'] = remainingTTL;
 
