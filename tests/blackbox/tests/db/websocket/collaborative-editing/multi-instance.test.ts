@@ -68,7 +68,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 		for (const vendor of vendors) {
 			await request(getUrl(vendor))
 				.patch('/settings')
-				.send({ collaborative_editing: true })
+				.send({ collaborative_editing_enabled: true })
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 		}
 	});
@@ -232,7 +232,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				await waitForMatchingMessage(ws2, (msg) => msg.action === 'update');
 
 				// Action
-				await ws1.sendMessage({ type: 'collab', action: 'discard', room, fields: ['title'] });
+				await ws1.sendMessage({ type: 'collab', action: 'discard', room });
 
 				// Assert
 				await waitForMatchingMessage(
@@ -352,7 +352,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 						await sleep(500);
 						return request(getUrl(vendor))
 							.patch('/settings')
-							.send({ collaborative_editing: false })
+							.send({ collaborative_editing_enabled: false })
 							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 					})(),
 					p1Promise,
@@ -362,7 +362,7 @@ describe('Collaborative Editing: Multi-Instance', () => {
 				// Clean up
 				await request(getUrl(vendor))
 					.patch('/settings')
-					.send({ collaborative_editing: true })
+					.send({ collaborative_editing_enabled: true })
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				ws1.conn.close();

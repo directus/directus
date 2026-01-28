@@ -32,7 +32,7 @@ const fields = computed(() => {
 	return allFields.value
 		.map((field) => {
 			if (
-				field.field === 'collaborative_editing' &&
+				field.field === 'collaborative_editing_enabled' &&
 				(serverStore.info.websocket === false || serverStore.info.websocket?.collaborativeEditing === false)
 			) {
 				return {
