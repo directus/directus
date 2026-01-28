@@ -1,5 +1,5 @@
 ---
-'@directus/sdk': major
+'@directus/sdk': minor
 ---
 
-Fixed race condition in sdk and allow accessing the connected state
+Fixed race condition and allow accessing the connected state

@@ -253,7 +253,14 @@ export function realtime(config: WebSocketConfig = {}) {
 					throw new Error(`Cannot connect when state is "${state.code}"`);
 				}
 
-				const { promise: connectPromise, resolve, reject } = Promise.withResolvers<WebSocketInterface>();
+				// Eventually update to Promise.withResolvers()
+				let resolve!: (value: WebSocketInterface | PromiseLike<WebSocketInterface>) => void;
+				let reject!: (reason?: any) => void;
+
+				const connectPromise = new Promise<WebSocketInterface>((res, rej) => {
+					resolve = res;
+					reject = rej;
+				});
 
 				state = {
 					code: 'connecting',
