@@ -500,8 +500,6 @@ revision_delta_reverted: Відновлено
 revision_delta_update_message: Це поле оновлено, але його значення приховується з міркувань безпеки.
 revision_delta_other: Редакція
 revision_delta_by: '{date} {user}'
-updated_in_revision: Оновлено в цій ревізії
-updated_in_revision_matches_latest: Оновлено в цій ревізії, але відповідає останній
 differences_count: 'Без відмінностей | 1 відмінність | {count} відмінностей'
 presentation_text_values_cannot_be_reimported: 'Використовує текст презентації, значення не можуть бути повторно імпортовані.'
 download_page_as_csv: 'Завантажити сторінку у CSV'
