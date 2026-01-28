@@ -22,12 +22,12 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
-import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
@@ -256,11 +256,9 @@ function revert(values: Record<string, any>) {
 			<VBreadcrumb :items="breadcrumb" />
 		</template>
 
-		<template #title:append>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
-		</template>
-
 		<template #actions>
+			<CollabAvatars :model-value="collabUsers" :connected="connected" />
+
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
@@ -464,9 +462,5 @@ function revert(values: Record<string, any>) {
 
 .preview {
 	margin-block-end: var(--theme--form--row-gap);
-}
-
-.header-collab {
-	margin-inline-start: 16px;
 }
 </style>

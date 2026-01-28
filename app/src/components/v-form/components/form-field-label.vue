@@ -9,7 +9,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { CollabUser } from '@/composables/use-collab';
 import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
-import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -126,8 +126,11 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			</div>
 
 			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+
+			<span class="spacer" />
+
+			<CollabAvatars :model-value="focusedBy" type="field" class="avatars" />
 		</component>
-		<HeaderCollab :model-value="focusedBy" hide-current lock x-small />
 	</div>
 </template>
 
@@ -260,14 +263,10 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			border-radius: 4px;
 			content: '';
 		}
-
-		.field-name {
-			margin-inline-start: -16px;
-			padding-inline-start: 16px;
-		}
 	}
 
 	.field-name {
+		flex-grow: 1;
 		max-inline-size: 100%;
 		text-align: start;
 		display: flex;
@@ -279,9 +278,13 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 	font-family: var(--theme--form--field--label--font-family);
 }
 
-:deep(.header-collab) {
-	position: absolute;
-	inset-block-end: 0;
-	inset-inline-end: 0;
+.spacer {
+	flex-grow: 1;
+}
+
+.avatars {
+	margin-block-start: -3px;
+	align-self: start;
+	flex-shrink: 0;
 }
 </style>

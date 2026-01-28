@@ -37,7 +37,7 @@ import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -618,15 +618,11 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VBreadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
 		</template>
 
-		<template #actions:prepend>
-			<HeaderCollab
+		<template #actions>
+			<CollabAvatars
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
-				small
 			/>
-		</template>
-
-		<template #actions>
 			<slot name="actions" />
 
 			<PrivateViewHeaderBarActionButton
@@ -844,10 +840,6 @@ function popoverClickOutsideMiddleware(e: Event) {
 			}
 		}
 	}
-}
-
-.header-collab {
-	margin-inline-end: 16px;
 }
 
 .modal-title-icon {

@@ -43,11 +43,11 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
-import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
@@ -640,8 +640,6 @@ function useCollectionRoute() {
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
 			</h1>
-
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
@@ -654,8 +652,6 @@ function useCollectionRoute() {
 					:template="collectionInfo.meta!.display_template"
 				/>
 			</h1>
-
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
 		</template>
 
 		<template #headline>
@@ -683,11 +679,9 @@ function useCollectionRoute() {
 			</div>
 		</template>
 
-		<template v-if="!(collectionInfo.meta && collectionInfo.meta.singleton === true)" #title:append>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" x-small />
-		</template>
-
 		<template #actions>
+			<CollabAvatars :model-value="collabUsers" :connected="connected" />
+
 			<VButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
@@ -1010,10 +1004,6 @@ function useCollectionRoute() {
 	display: flex;
 	align-items: center;
 	gap: 0.25rem;
-}
-
-.header-collab {
-	margin-inline-start: 16px;
 }
 
 .version-more-options.v-icon {
