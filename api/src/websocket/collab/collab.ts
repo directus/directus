@@ -3,7 +3,7 @@ import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@d
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
 import { toArray } from '@directus/utils';
-import { difference, isEmpty, uniq, upperFirst } from 'lodash-es';
+import { difference, intersection, isEmpty, uniq, upperFirst } from 'lodash-es';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
@@ -486,15 +486,15 @@ export class CollabHandler {
 		const knex = getDatabase();
 		const schema = await getSchema();
 
-		const fields = await verifyPermissions(client.accountability, room.collection, room.item, 'read', { knex, schema });
+		const allowedFields = await this.getAllowedFields(client, room, knex, schema);
 
-		if (!fields) {
+		if (!allowedFields || allowedFields.length === 0) {
 			throw new ForbiddenError({
-				reason: `No permission to discard fields ${fields} or field does not exist`,
+				reason: `No permission to discard fields or item does not exist`,
 			});
 		}
 
-		await room.discard(fields);
+		await room.discard(allowedFields);
 	}
 
 	/**
@@ -510,25 +510,35 @@ export class CollabHandler {
 		const knex = options.knex ?? getDatabase();
 		const schema = options.schema ?? (await getSchema());
 
-		const [allowedReadFields, allowedUpdateFields] = await Promise.all([
-			verifyPermissions(client.accountability, room.collection, room.item, 'read', { knex, schema }),
-			verifyPermissions(client.accountability, room.collection, room.item, 'update', { knex, schema }),
-		]);
+		const allowedFields = await this.getAllowedFields(client, room, knex, schema);
 
 		const fieldsArray = Array.isArray(fields) ? fields : [fields];
 
 		for (const field of fieldsArray) {
 			const fieldExists = !!schema.collections[room.collection]?.fields[field];
 
-			if (
-				!fieldExists ||
-				(allowedReadFields !== null && !isFieldAllowed(allowedReadFields, field)) ||
-				(allowedUpdateFields !== null && !isFieldAllowed(allowedUpdateFields, field))
-			) {
+			if (!fieldExists || (allowedFields && !isFieldAllowed(allowedFields, field))) {
 				throw new ForbiddenError({
 					reason: `No permission to ${errorAction} field ${field} or field does not exist`,
 				});
 			}
 		}
+	}
+
+	private async getAllowedFields(client: WebSocketClient, room: any, knex: any, schema: any): Promise<string[] | null> {
+		const [read, update] = await Promise.all([
+			verifyPermissions(client.accountability, room.collection, room.item, 'read', { knex, schema }),
+			verifyPermissions(client.accountability, room.collection, room.item, 'update', { knex, schema }),
+		]);
+
+		if (read === null && update === null) return null;
+		if (read === null) return update;
+		if (update === null) return read;
+
+		if (read.includes('*') && update.includes('*')) return ['*'];
+		if (read.includes('*')) return update;
+		if (update.includes('*')) return read;
+
+		return intersection(read, update);
 	}
 }
