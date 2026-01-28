@@ -366,7 +366,7 @@ export class Room {
 		let added = false;
 		let clientColor: Color | undefined;
 
-		if (!(await this.hasClient(client.uid)))
+		if (!(await this.hasClient(client.uid))) {
 			await this.store(async (store) => {
 				const clients = await store.get('clients');
 				added = true;
@@ -392,6 +392,7 @@ export class Room {
 
 				await store.set('clients', clients);
 			});
+		}
 
 		if (added && clientColor) {
 			await this.sendExcluding(
@@ -576,7 +577,10 @@ export class Room {
 
 			const sendFields: string[] = [];
 
-			if (fields.includes('*')) {
+			// Send "*" when discarding all fields and recipient has full permissions
+			if (fields.includes('*') && allowedFields?.includes('*')) {
+				sendFields.push('*');
+			} else if (fields.includes('*')) {
 				sendFields.push(...(allowedFields ?? []));
 			} else {
 				for (const field of fields) {

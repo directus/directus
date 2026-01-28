@@ -193,17 +193,30 @@ describe('Collaborative Editing: Multi-Instance', () => {
 		describe('Cross-Instance Discard', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				const itemId = randomUUID();
+				const userToken = `token-${randomUUID()}`;
 
 				// Setup
+				const roleId = await CreateRole(vendor, { name: 'Multi Instance Restricted Discard' });
+				await CreateUser(vendor, { role: roleId, token: userToken, email: `${userToken}@example.com` });
+
+				await CreatePermission(vendor, {
+					role: roleId,
+					permissions: [
+						{ collection: collectionCollabMultiInstance, action: 'read', fields: ['id', 'title', 'content'] },
+						{ collection: collectionCollabMultiInstance, action: 'update', fields: ['id', 'title'] },
+					],
+				});
+
 				await request(getUrl(vendor))
 					.post(`/items/${collectionCollabMultiInstance}`)
-					.send({ id: itemId, title: 'Discard Test' })
+					.send({ id: itemId, title: 'Original Title', content: 'Original Content' })
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-				const ws1 = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
-				const ws2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
+				const wsAdmin = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
+				const wsAdmin2 = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: USER.ADMIN.TOKEN } });
+				const wsRestricted = createWebSocketConn(instance2Urls[vendor]!, { auth: { access_token: userToken } });
 
-				await ws1.sendMessage({
+				await wsAdmin.sendMessage({
 					type: 'collab',
 					action: 'join',
 					collection: collectionCollabMultiInstance,
@@ -211,37 +224,88 @@ describe('Collaborative Editing: Multi-Instance', () => {
 					version: null,
 				});
 
-				const init1 = await ws1.getMessages(1);
-				const room = init1![0]!.room;
-
-				await ws2.sendMessage({
-					type: 'collab',
-					action: 'join',
-					collection: collectionCollabMultiInstance,
-					item: itemId,
-					version: null,
-				});
-
-				await ws2.getMessages(1); // Drain INIT
-				await ws1.getMessages(1); // Drain JOIN (ws2 joined)
-
-				await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
-				await waitForMatchingMessage(ws2, (msg) => msg.action === 'focus');
-
-				await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Pending' });
-				await waitForMatchingMessage(ws2, (msg) => msg.action === 'update');
-
-				// Action
-				await ws1.sendMessage({ type: 'collab', action: 'discard', room });
-
-				// Assert
-				await waitForMatchingMessage(
-					ws2,
-					(msg) => msg.action === 'discard' && msg.fields?.includes('title') && msg.room === room,
+				const init1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					wsAdmin,
+					(msg) => msg.type === 'collab' && msg.action === 'init',
 				);
 
-				ws1.conn.close();
-				ws2.conn.close();
+				const room = init1.room!;
+
+				await wsAdmin2.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await waitForMatchingMessage(wsAdmin2, (msg) => msg.action === 'init');
+				await waitForMatchingMessage(wsAdmin, (msg) => msg.action === 'join');
+
+				await wsRestricted.sendMessage({
+					type: 'collab',
+					action: 'join',
+					collection: collectionCollabMultiInstance,
+					item: itemId,
+					version: null,
+				});
+
+				await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'init');
+				await waitForMatchingMessage(wsAdmin, (msg) => msg.action === 'join');
+				await waitForMatchingMessage(wsAdmin2, (msg) => msg.action === 'join');
+
+				await wsRestricted.sendMessage({
+					type: 'collab',
+					action: 'update',
+					room,
+					field: 'title',
+					changes: 'Restricted Title Update',
+				});
+
+				await waitForMatchingMessage(wsAdmin, (msg) => msg.action === 'update' && msg.field === 'title');
+				await waitForMatchingMessage(wsAdmin2, (msg) => msg.action === 'update' && msg.field === 'title');
+
+				await wsAdmin.sendMessage({
+					type: 'collab',
+					action: 'update',
+					room,
+					field: 'content',
+					changes: 'Admin Content Update',
+				});
+
+				await waitForMatchingMessage(wsAdmin2, (msg) => msg.action === 'update' && msg.field === 'content');
+				await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'update' && msg.field === 'content');
+
+				// Action
+				await wsRestricted.sendMessage({ type: 'collab', action: 'discard', room });
+
+				const discardFromRestricted = await waitForMatchingMessage<WebSocketCollabResponse>(
+					wsAdmin,
+					(msg) => msg.action === 'discard',
+				);
+
+				const discardFromRestricted2 = await waitForMatchingMessage<WebSocketCollabResponse>(
+					wsAdmin2,
+					(msg) => msg.action === 'discard',
+				);
+
+				await wsAdmin.sendMessage({ type: 'collab', action: 'discard', room });
+
+				const discardFromAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+					wsAdmin2,
+					(msg) => msg.action === 'discard',
+				);
+
+				// Assert
+				expect(discardFromRestricted.fields).toContain('title');
+				expect(discardFromRestricted.fields).not.toContain('content');
+				expect(discardFromRestricted2.fields).toContain('title');
+				expect(discardFromRestricted2.fields).not.toContain('content');
+				expect(discardFromAdmin.fields).toContain('*');
+
+				wsAdmin.conn.close();
+				wsAdmin2.conn.close();
+				wsRestricted.conn.close();
 			});
 		});
 

@@ -471,8 +471,8 @@ describe('Collaborative Editing: Permissions', () => {
 			await CreatePermission(vendor, {
 				role: roleId,
 				permissions: [
-					{ collection: collectionCollab, action: 'read', fields: ['*'] },
-					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] }, // content is not updatable
+					{ collection: collectionCollab, action: 'read', fields: ['id', 'title', 'content'] },
+					{ collection: collectionCollab, action: 'update', fields: ['id', 'title'] },
 				],
 			});
 
@@ -483,10 +483,11 @@ describe('Collaborative Editing: Permissions', () => {
 				.send({ id: itemId, title: 'Original', content: 'Original' })
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-			const ws = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+			const wsRestricted = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
+			const wsAdmin = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
 
 			// Action
-			await ws.sendMessage({
+			await wsRestricted.sendMessage({
 				type: 'collab',
 				action: 'join',
 				collection: collectionCollab,
@@ -494,40 +495,67 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			const initMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'init');
-			const room = initMsg.room!;
+			const initRestricted = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.action === 'init',
+			);
 
-			await ws.sendMessage({
+			const room = initRestricted.room!;
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollab,
+				item: itemId,
+				version: null,
+			});
+
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.action === 'init');
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'join');
+
+			await wsRestricted.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'title',
+				changes: 'Dirty Title',
+			});
+
+			await wsAdmin.sendMessage({
+				type: 'collab',
+				action: 'update',
+				room,
+				field: 'content',
+				changes: 'Admin Content',
+			});
+
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.action === 'update' && msg.field === 'title');
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'update' && msg.field === 'content');
+
+			await wsRestricted.sendMessage({
 				type: 'collab',
 				action: 'discard',
-				fields: ['title'],
 				room,
 			});
 
-			const discardMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'discard');
+			const discardMsgRestricted = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.action === 'discard',
+			);
 
-			await ws.sendMessage({
-				type: 'collab',
-				action: 'discard',
-				fields: ['content'],
-				room,
-			});
-
-			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
+			const discardMsgAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.action === 'discard',
+			);
 
 			// Assert
-			expect(discardMsg).toMatchObject({
-				action: 'discard',
-				fields: ['title'],
-			});
+			expect(discardMsgRestricted.fields).toContain('title');
+			expect(discardMsgRestricted.fields).not.toContain('content');
+			expect(discardMsgAdmin.fields).toContain('title');
+			expect(discardMsgAdmin.fields).not.toContain('content');
 
-			expect(errorMsg).toMatchObject({
-				action: 'error',
-				code: 'FORBIDDEN',
-				message: expect.stringMatching(/No permission to discard field content/i),
-			});
-
-			ws.conn.close();
+			wsRestricted.conn.close();
+			wsAdmin.conn.close();
 		});
 	});
 });
