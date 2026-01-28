@@ -445,38 +445,66 @@ router.patch(
 			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
 		}
 
-		const service = new DeploymentService({
-			accountability: req.accountability,
-			schema: req.schema,
+		const db = getDatabase();
+
+		const item = await transaction(db, async (trx) => {
+			const service = new DeploymentService({
+				accountability: req.accountability,
+				schema: req.schema,
+				knex: trx,
+			});
+
+			const data: Record<string, unknown> = {};
+			let mergedCredentials: Record<string, unknown> | undefined;
+			let mergedOptions: Record<string, unknown> | undefined;
+
+			if ('credentials' in req.body || 'options' in req.body) {
+				const existing = await service.readByProvider(provider);
+				const existingCredentials = typeof existing.credentials === 'string' ? JSON.parse(existing.credentials) : existing.credentials ?? {};
+				const existingOptions = typeof existing.options === 'string' ? JSON.parse(existing.options) : existing.options ?? {};
+
+				mergedCredentials = req.body.credentials ?? existingCredentials;
+
+				mergedOptions = req.body.options
+					? Object.fromEntries(Object.entries({ ...existingOptions, ...req.body.options }).filter(([, v]) => v !== null))
+					: existingOptions;
+
+				if ('credentials' in req.body && req.body.credentials) {
+					data['credentials'] = JSON.stringify(mergedCredentials);
+				}
+
+				if ('options' in req.body) {
+					data['options'] = JSON.stringify(mergedOptions);
+				}
+			}
+
+			const primaryKey = await service.updateByProvider(provider, data);
+
+			if (mergedCredentials || mergedOptions) {
+				const driver = getDeploymentDriver(provider, mergedCredentials!, mergedOptions!);
+
+				try {
+					await driver.testConnection();
+				} catch {
+					throw new InvalidProviderConfigError({
+						provider,
+						reason: 'Invalid API token',
+					});
+				}
+			}
+
+			try {
+				return await service.readOne(primaryKey, req.sanitizedQuery);
+			} catch (error: any) {
+				if (isDirectusError(error, ErrorCode.Forbidden)) {
+					return null;
+				}
+
+				throw error;
+			}
 		});
 
-		const data: Record<string, unknown> = {};
-
-		// Test connection and get merged values if credentials or options are being updated
-		if ('credentials' in req.body || 'options' in req.body) {
-			const { credentials, options } = await service.testConnection(provider, req.body.credentials, req.body.options);
-
-			if ('options' in req.body) {
-				data['options'] = JSON.stringify(options);
-			}
-
-			if ('credentials' in req.body && req.body.credentials) {
-				data['credentials'] = JSON.stringify(credentials);
-			}
-		}
-
-		const primaryKey = await service.updateByProvider(provider, data);
-
-		try {
-			const item = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals['payload'] = { data: item || null };
-		} catch (error: any) {
-			if (isDirectusError(error, ErrorCode.Forbidden)) {
-				return next();
-			}
-
-			throw error;
-		}
+		res.locals['payload'] = { data: item };
 
 		return next();
 	}),
