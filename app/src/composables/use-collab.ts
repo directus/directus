@@ -492,26 +492,15 @@ export function useCollab(
 	}, 100);
 
 	function discard() {
-		const currentEdits = Object.keys(edits.value);
 		const permission = permissionsStore.getPermission(collection.value, 'update');
 
 		if (!permission || permission.access === 'none') return;
 
-		const allowedFields = permission.fields ?? [];
-		const isFullAccess = allowedFields.includes('*');
-
-		const fieldsToDiscard = currentEdits.filter((field) => isFullAccess || allowedFields.includes(field));
-
-		if (fieldsToDiscard.length === 0) return;
-
 		sendMessage({
 			action: ACTION.CLIENT.DISCARD,
-			fields: fieldsToDiscard,
 		});
 
-		for (const field of fieldsToDiscard) {
-			delete edits.value[field];
-		}
+		edits.value = {};
 	}
 
 	function sendMessage(message: Omit<ClientMessage, 'id'>) {
