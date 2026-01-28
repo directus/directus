@@ -2,7 +2,7 @@
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
-import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { computed, onBeforeUpdate, provide, ref, toValue, watch } from 'vue';
 import VDivider from '../v-divider.vue';
 import VInfo from '../v-info.vue';
 import type { MenuOptions } from './components/form-field-menu.vue';
@@ -64,8 +64,16 @@ const props = withDefaults(
 
 const emit = defineEmits(['update:modelValue']);
 
+const initialValues = computed(() => {
+	return props.initialValues || {};
+});
+
+const modelValue = computed(() => {
+	return props.modelValue || {};
+});
+
 const values = computed(() => {
-	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
+	return Object.assign({}, toValue(initialValues), toValue(modelValue));
 });
 
 const el = ref<Element>();
@@ -267,7 +275,7 @@ function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 
 	if (opts?.force !== true && (!field || isDisabled(field))) return;
 
-	const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
+	const edits = toValue(modelValue);
 	edits[fieldKey] = value;
 	emit('update:modelValue', edits);
 }
@@ -288,9 +296,9 @@ function apply(updates: { [field: string]: any }) {
 			.filter((field) => !field.schema?.is_primary_key && !isDisabled(field))
 			.map((field) => field.field);
 
-		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pickKeepMeta(updates, updatableKeys)));
+		emit('update:modelValue', assign({}, omit(toValue(modelValue), groupFields), pickKeepMeta(updates, updatableKeys)));
 	} else {
-		emit('update:modelValue', pickKeepMeta(assign({}, props.modelValue, updates), updatableKeys));
+		emit('update:modelValue', pickKeepMeta(assign({}, toValue(modelValue), updates), updatableKeys));
 	}
 }
 
