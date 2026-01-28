@@ -131,6 +131,7 @@ export function useCollab(
 		) {
 			if (!(await sdk.isConnected())) {
 				await sdk.connect();
+			} else {
 				connected.value = true;
 			}
 		}
