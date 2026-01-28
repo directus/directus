@@ -7,7 +7,7 @@ import DeploymentProviderRun from './routes/provider/run.vue';
 
 export default defineModule({
 	id: 'deployment',
-	name: '$t:deployment',
+	name: '$t:deployment.deployment',
 	icon: 'rocket_launch',
 	routes: [
 		{

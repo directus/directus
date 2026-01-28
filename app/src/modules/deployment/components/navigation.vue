@@ -48,7 +48,7 @@ onMounted(async () => {
 				<VIcon name="rocket_launch" />
 			</VListItemIcon>
 			<VListItemContent>
-				{{ $t('deployment_overview') }}
+				{{ $t('deployment.overview.overview') }}
 			</VListItemContent>
 		</VListItem>
 
@@ -76,7 +76,7 @@ onMounted(async () => {
 				<template #activator>
 					<VListItemIcon><VIcon :name="provider.provider" /></VListItemIcon>
 					<VListItemContent>
-						<VTextOverflow :text="$t(`deployment_provider_${provider.provider}`)" />
+						<VTextOverflow :text="$t(`deployment.provider.${provider.provider}.name`)" />
 					</VListItemContent>
 				</template>
 

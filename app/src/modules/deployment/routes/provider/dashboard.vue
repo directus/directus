@@ -50,9 +50,9 @@ onMounted(async () => {
 </script>
 
 <template>
-	<PrivateView :title="$t(`deployment_provider_${provider}`)" icon="cloud">
+	<PrivateView :title="$t(`deployment.provider.${provider}.name`)" icon="cloud">
 		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment'), to: '/deployment' }]" />
+			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployment' }]" />
 		</template>
 
 		<template #navigation>
@@ -62,13 +62,13 @@ onMounted(async () => {
 		<div class="container">
 			<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
-			<VInfo v-else-if="projects.length === 0" icon="folder_off" :title="$t('no_projects')" center>
-				{{ $t('no_projects_copy') }}
+			<VInfo v-else-if="projects.length === 0" icon="folder_off" :title="$t('deployment.no_projects')" center>
+				{{ $t('deployment.no_projects_copy') }}
 			</VInfo>
 
 			<template v-else>
 				<InterfacePresentationDivider
-					:title="$t('deployment_dashboard_projects', { count: projects.length })"
+					:title="$t('deployment.dashboard.projects', { count: projects.length })"
 					icon="folder"
 				/>
 
@@ -96,7 +96,7 @@ onMounted(async () => {
 						</VListItemContent>
 						<div class="meta">
 							<div v-if="project.formattedDeployTime" class="deploy-time">
-								{{ $t('deployment_dashboard_deployed') }} {{ project.formattedDeployTime }}
+								{{ $t('deployment.dashboard.deployed') }} {{ project.formattedDeployTime }}
 								<VIcon small name="schedule" />
 							</div>
 						</div>

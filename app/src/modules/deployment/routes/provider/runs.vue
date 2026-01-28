@@ -59,11 +59,11 @@ watch(page, (newPage, oldPage) => {
 	if (newPage !== oldPage) loadRuns();
 });
 
-const pageTitle = computed(() => currentProject.value?.name || t('deployment_provider_runs'));
+const pageTitle = computed(() => currentProject.value?.name || t('deployment.provider.runs.runs'));
 
 const tableHeaders = ref<Header[]>([
 	{
-		text: t('deployment_provider_runs_id'),
+		text: t('deployment.provider.runs.id'),
 		value: 'name',
 		width: 200,
 		sortable: false,
@@ -79,7 +79,7 @@ const tableHeaders = ref<Header[]>([
 		description: null,
 	},
 	{
-		text: t('deployment_target'),
+		text: t('deployment.target'),
 		value: 'target',
 		width: 120,
 		sortable: false,
@@ -87,7 +87,7 @@ const tableHeaders = ref<Header[]>([
 		description: null,
 	},
 	{
-		text: t('deployment_provider_runs_started'),
+		text: t('deployment.provider.runs.started'),
 		value: 'date_created',
 		width: 150,
 		sortable: false,
@@ -103,7 +103,7 @@ const tableHeaders = ref<Header[]>([
 		description: null,
 	},
 	{
-		text: t('deployment_provider_runs_author'),
+		text: t('deployment.provider.runs.author'),
 		value: 'author',
 		width: 150,
 		sortable: false,
@@ -179,7 +179,7 @@ watch(
 <template>
 	<PrivateView :title="pageTitle">
 		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment_provider_${provider}`), to: `/deployment/${provider}` }]" />
+			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployment/${provider}` }]" />
 		</template>
 
 		<template #title-outer:prepend>
@@ -195,7 +195,7 @@ watch(
 		<template #actions>
 			<SearchInput v-if="totalCount > 0 || search" v-model="search" :show-filter="false" small />
 
-			<VButton v-tooltip.bottom="$t('deploy')" rounded icon small :loading="deploying" @click="deploy()">
+			<VButton v-tooltip.bottom="$t('deployment.deploy')" rounded icon small :loading="deploying" @click="deploy()">
 				<VIcon name="rocket_launch" small />
 			</VButton>
 
@@ -209,24 +209,24 @@ watch(
 				<VList>
 					<VListItem clickable :disabled="deploying" @click="deploy(true)">
 						<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
-						<VListItemContent>{{ $t('deployment_provider_runs_deploy_preview') }}</VListItemContent>
+						<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
 					</VListItem>
 					<VListItem clickable @click="refresh">
 						<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
-						<VListItemContent>{{ $t('deployment_provider_runs_refresh') }}</VListItemContent>
+						<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
 					</VListItem>
 				</VList>
 			</VMenu>
 		</template>
 
 		<div class="container">
-			<VNotice class="notice">{{ $t('deployment_provider_runs_notice') }}</VNotice>
+			<VNotice class="notice">{{ $t('deployment.provider.runs.notice') }}</VNotice>
 
 			<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
 			<template v-else>
-				<VInfo v-if="runs.length === 0 && !search" icon="history" :title="$t('deployment_provider_runs_empty')" center>
-					{{ $t('deployment_provider_runs_empty_copy') }}
+				<VInfo v-if="runs.length === 0 && !search" icon="history" :title="$t('deployment.provider.runs.empty')" center>
+					{{ $t('deployment.provider.runs.empty_copy') }}
 				</VInfo>
 
 				<VInfo v-else-if="runs.length === 0 && search" :title="$t('no_results')" icon="search" center>

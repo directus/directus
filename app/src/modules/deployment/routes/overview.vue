@@ -59,8 +59,8 @@ function onSetupComplete() {
 </script>
 
 <template>
-	<PrivateView :title="$t('deployment_overview')" icon="rocket_launch">
-		<template #headline>{{ $t('deployment') }}</template>
+	<PrivateView :title="$t('deployment.overview.overview')" icon="rocket_launch">
+		<template #headline>{{ $t('deployment.deployment') }}</template>
 
 		<template #navigation>
 			<DeploymentNavigation />
@@ -70,7 +70,7 @@ function onSetupComplete() {
 			<VProgressCircular v-if="loading && providers.length === 0" class="spinner" indeterminate />
 
 			<template v-else>
-				<InterfacePresentationDivider :title="$t('deployment_overview_providers')" icon="settings" />
+				<InterfacePresentationDivider :title="$t('deployment.overview.providers')" icon="settings" />
 
 				<VList class="providers-list">
 					<VListItem
@@ -87,20 +87,20 @@ function onSetupComplete() {
 						</div>
 						<VListItemContent>
 							<div class="name">
-								<span v-if="!provider.configured">{{ $t('deployment_overview_configure') }}</span>
-								{{ $t(`deployment_provider_${provider.type}`) }}
+								<span v-if="!provider.configured">{{ $t('deployment.overview.configure') }}</span>
+								{{ $t(`deployment.provider.${provider.type}.name`) }}
 							</div>
 							<div class="description">
 								{{
-									$t(`deployment_overview_provider_description`, {
-										provider: $t(`deployment_provider_${provider.type}`),
+									$t(`deployment.overview.provider_description`, {
+										provider: $t(`deployment.provider.${provider.type}.name`),
 									})
 								}}
 							</div>
 						</VListItemContent>
 						<div v-if="provider.configured" class="meta">
 							<div class="projects">
-								{{ $t('deployment_overview_projects', { count: provider.projectsCount }) }}
+								{{ $t('deployment.overview.projects', { count: provider.projectsCount }) }}
 								<VIcon small name="folder" />
 							</div>
 						</div>
