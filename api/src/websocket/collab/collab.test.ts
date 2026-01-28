@@ -19,8 +19,13 @@ vi.mock('../../database/index.js');
 vi.mock('../../emitter.js');
 vi.mock('../../permissions/modules/validate-access/lib/validate-item-access.js');
 vi.mock('../../utils/get-schema.js');
-vi.mock('../../utils/schedule.js');
+vi.mock('./verify-permissions.js');
+
 vi.mock('../errors.js');
+
+vi.mock('../../utils/schedule.js', () => ({
+	scheduleSynchronizedJob: vi.fn().mockReturnValue({ stop: vi.fn() }),
+}));
 
 vi.mock('./messenger.js', () => ({
 	Messenger: vi.fn().mockImplementation(() => ({
@@ -28,6 +33,7 @@ vi.mock('./messenger.js', () => ({
 		pruneDeadInstances: vi.fn(),
 		messenger: {
 			subscribe: vi.fn(),
+			unsubscribe: vi.fn(),
 		},
 	})),
 }));
@@ -44,8 +50,6 @@ vi.mock('./room.js', () => ({
 		removeRoom: vi.fn(),
 	})),
 }));
-
-vi.mock('./verify-permissions.js');
 
 vi.mock('../../services/settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(() => ({
@@ -1081,6 +1085,22 @@ describe('CollabHandler', () => {
 			await first;
 
 			vi.useFakeTimers();
+		});
+	});
+
+	describe('terminate', () => {
+		test('clears intervals and stops synchronized jobs', async () => {
+			const clearIntervalSpy = vi.spyOn(global, 'clearInterval');
+
+			await handler.terminate();
+
+			expect(clearIntervalSpy).toHaveBeenCalled();
+			expect(vi.mocked(scheduleSynchronizedJob('collab', '', vi.fn())).stop).toHaveBeenCalled();
+
+			const messenger = handler['messenger'].messenger;
+			expect(messenger.unsubscribe).toHaveBeenCalledWith('websocket.event', expect.any(Function));
+
+			clearIntervalSpy.mockRestore();
 		});
 	});
 });

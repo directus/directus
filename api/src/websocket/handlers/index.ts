@@ -6,6 +6,8 @@ import { ItemsHandler } from './items.js';
 import { LogsHandler } from './logs.js';
 import { SubscribeHandler } from './subscribe.js';
 
+let collabHandler: CollabHandler | undefined;
+
 export function startWebSocketHandlers() {
 	const env = useEnv();
 
@@ -32,8 +34,12 @@ export function startWebSocketHandlers() {
 	}
 
 	if (collabEnabled) {
-		new CollabHandler();
+		collabHandler = new CollabHandler();
 	}
+}
+
+export function getCollabHandler() {
+	return collabHandler;
 }
 
 export * from './heartbeat.js';

@@ -11,7 +11,7 @@ import { validateItemAccess } from '../../permissions/modules/validate-access/li
 import { SettingsService } from '../../services/settings.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { isFieldAllowed } from '../../utils/is-field-allowed.js';
-import { scheduleSynchronizedJob } from '../../utils/schedule.js';
+import { type ScheduledJob, scheduleSynchronizedJob } from '../../utils/schedule.js';
 import { getMessageType } from '../utils/message.js';
 import { IRRELEVANT_ACTIONS, IRRELEVANT_COLLECTIONS } from './constants.js';
 import { Messenger } from './messenger.js';
@@ -43,6 +43,9 @@ export class CollabHandler {
 	private initialized: Promise<void>;
 	private initializePromise?: Promise<void> | undefined;
 	private settingsService?: SettingsService;
+	private cleanupJob?: ScheduledJob;
+	private cleanupInterval?: NodeJS.Timeout;
+	private busHandler?: (event: any) => Promise<void>;
 
 	/**
 	 * Initialize the handler
@@ -51,6 +54,7 @@ export class CollabHandler {
 		this.roomManager = new RoomManager(this.messenger);
 		this.initialized = this.initialize();
 		this.bindWebSocket();
+		this.startBackgroundJobs();
 	}
 
 	initialize(force = false): Promise<void> {
@@ -90,7 +94,7 @@ export class CollabHandler {
 		 * Remote updates:
 		 * Service (Node B) -> Emitter (Node B) -> Hooks (Node B) -> Bus -> CollabHandler (Node A) -> Room (Node A) -> Remote Clients
 		 */
-		this.messenger.messenger.subscribe('websocket.event', async (event: any) => {
+		this.busHandler = async (event: any) => {
 			try {
 				if (
 					event.collection === 'directus_settings' &&
@@ -186,7 +190,9 @@ export class CollabHandler {
 			} catch (err) {
 				useLogger().error(err, `[Collab] Bus message processing failed for ${event.collection}/${event.action}`);
 			}
-		});
+		};
+
+		this.messenger.messenger.subscribe('websocket.event', this.busHandler);
 
 		emitter.onAction('websocket.connect', ({ client }) => {
 			this.messenger.addClient(client);
@@ -231,8 +237,10 @@ export class CollabHandler {
 		// unsubscribe when a connection drops
 		emitter.onAction('websocket.error', ({ client }) => this.onLeave(client));
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
+	}
 
-		scheduleSynchronizedJob('collab', CLUSTER_CLEANUP_CRON, async () => {
+	startBackgroundJobs() {
+		this.cleanupJob = scheduleSynchronizedJob('collab', CLUSTER_CLEANUP_CRON, async () => {
 			const { inactive } = await this.messenger.pruneDeadInstances();
 
 			// Remove clients and close rooms hosted by nodes that are now dead
@@ -256,7 +264,7 @@ export class CollabHandler {
 			}
 		});
 
-		setInterval(async () => {
+		this.cleanupInterval = setInterval(async () => {
 			try {
 				// Remove local clients that are no longer in the global registry
 				const globalClients = await this.messenger.getGlobalClients();
@@ -278,6 +286,21 @@ export class CollabHandler {
 				useLogger().error(err, '[Collab] Local cleanup interval failed');
 			}
 		}, LOCAL_CLEANUP_INTERVAL);
+	}
+
+	/**
+	 * Terminate the handler and stop background jobs
+	 */
+	async terminate() {
+		await this.cleanupJob?.stop();
+
+		if (this.cleanupInterval) {
+			clearInterval(this.cleanupInterval);
+		}
+
+		if (this.busHandler) {
+			await this.messenger.messenger.unsubscribe('websocket.event', this.busHandler);
+		}
 	}
 
 	/**
