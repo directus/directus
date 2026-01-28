@@ -129,7 +129,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 			<span class="spacer" />
 
-			<HeaderCollab :model-value="focusedBy" type="field" />
+			<HeaderCollab :model-value="focusedBy" type="field" class="avatars" />
 		</component>
 	</div>
 </template>
@@ -282,7 +282,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 	flex-grow: 1;
 }
 
-.header-collab {
+.avatars {
 	margin-block-start: -3px;
 	align-self: start;
 	flex-shrink: 0;
