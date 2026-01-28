@@ -60,7 +60,7 @@ export class PermissionCache {
 			return;
 		}
 
-		// Skip known high-traffic collections and actions
+		// Skip known high-traffic collections
 		if (IRRELEVANT_COLLECTIONS.includes(collection)) {
 			return;
 		}

@@ -10,5 +10,4 @@ export const IRRELEVANT_COLLECTIONS = [
 	'directus_revisions',
 	'directus_sessions',
 	'directus_shares',
-	'directus_webhooks',
 ];

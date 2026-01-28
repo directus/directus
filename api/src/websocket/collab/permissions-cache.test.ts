@@ -141,6 +141,12 @@ describe('PermissionCache', () => {
 			expect(cache.get(mockAccountability, 'posts', '1', 'read')).toBeUndefined();
 		});
 
+		test('system collection invalidation increments invalidationCount', () => {
+			const initial = cache.getInvalidationCount();
+			busHandler({ collection: 'directus_permissions' });
+			expect(cache.getInvalidationCount()).toBe(initial + 1);
+		});
+
 		test('increments invalidationCount', () => {
 			const initial = cache.getInvalidationCount();
 			busHandler({ collection: 'posts', keys: ['1'] });
