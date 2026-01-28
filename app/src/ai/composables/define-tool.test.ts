@@ -8,8 +8,8 @@ const registerLocalTool = vi.fn();
 const replaceLocalTool = vi.fn();
 const deregisterLocalTool = vi.fn();
 
-vi.mock('../stores/use-ai', () => ({
-	useAiStore: () => ({
+vi.mock('../stores/use-ai-tools', () => ({
+	useAiToolsStore: () => ({
 		registerLocalTool,
 		replaceLocalTool,
 		deregisterLocalTool,

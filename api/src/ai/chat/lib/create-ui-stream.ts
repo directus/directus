@@ -16,6 +16,8 @@ import {
 	getProviderOptions,
 } from '../../providers/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
+import type { ChatContext } from '../models/chat-request.js';
+import { formatContextForSystemPrompt } from '../utils/format-context.js';
 
 export interface CreateUiStreamOptions {
 	provider: ProviderType;
@@ -23,12 +25,13 @@ export interface CreateUiStreamOptions {
 	tools: { [x: string]: Tool };
 	aiSettings: AISettings;
 	systemPrompt?: string;
+	context?: ChatContext;
 	onUsage?: (usage: Pick<LanguageModelUsage, 'inputTokens' | 'outputTokens' | 'totalTokens'>) => void | Promise<void>;
 }
 
 export const createUiStream = async (
 	messages: UIMessage[],
-	{ provider, model, tools, aiSettings, systemPrompt, onUsage }: CreateUiStreamOptions,
+	{ provider, model, tools, aiSettings, systemPrompt, context, onUsage }: CreateUiStreamOptions,
 ): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
 	const configs = buildProviderConfigs(aiSettings);
 	const providerConfig = configs.find((c) => c.type === provider);
@@ -39,17 +42,24 @@ export const createUiStream = async (
 
 	const registry = createAIProviderRegistry(configs, aiSettings);
 
-	systemPrompt ||= SYSTEM_PROMPT;
-
+	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
+	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
 
 	const stream = streamText({
-		system: systemPrompt,
+		system: baseSystemPrompt,
 		model: registry.languageModel(`${provider}:${model}`),
 		messages: await convertToModelMessages(messages),
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
 		tools,
+		prepareStep: () => {
+			if (contextBlock) {
+				return { system: baseSystemPrompt + contextBlock };
+			}
+
+			return {};
+		},
 		onFinish({ usage }) {
 			if (onUsage) {
 				const { inputTokens, outputTokens, totalTokens } = usage;
