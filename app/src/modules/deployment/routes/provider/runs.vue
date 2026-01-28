@@ -25,6 +25,7 @@ import { sdk } from '@/sdk';
 import { formatDurationMs } from '@/utils/format-duration-ms';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { userName } from '@/utils/user-name';
 import { PrivateView } from '@/views/private';
 import SearchInput from '@/views/private/components/search-input.vue';
 
@@ -104,7 +105,7 @@ const tableHeaders = ref<Header[]>([
 	},
 	{
 		text: t('deployment.provider.runs.author'),
-		value: 'author',
+		value: 'user_created',
 		width: 150,
 		sortable: false,
 		align: 'left',
@@ -266,8 +267,8 @@ watch(
 							{{ item.formattedDuration }}
 						</template>
 
-						<template #[`item.author`]="{ item }">
-							{{ item.author || '—' }}
+						<template #[`item.user_created`]="{ item }">
+							{{ item.user_created ? userName(item.user_created) : '—' }}
 						</template>
 					</VTable>
 

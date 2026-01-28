@@ -591,25 +591,11 @@ router.get(
 			runs.map(async (run: any) => {
 				const details = await driver.getDeployment(run.external_id);
 
-				// Format author from user_created relation
-				let author: string | null = null;
-
-				if (run.user_created && typeof run.user_created === 'object') {
-					const user = run.user_created;
-
-					if (user.first_name || user.last_name) {
-						author = [user.first_name, user.last_name].filter(Boolean).join(' ');
-					} else if (user.email) {
-						author = user.email;
-					}
-				}
-
 				return {
 					...run,
 					...details,
 					id: run.id,
 					external_id: run.external_id,
-					author,
 				};
 			}),
 		);
