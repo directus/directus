@@ -175,10 +175,8 @@ router.get(
 
 		// Merge with DB structure (id !== null means selected)
 		const projects = providerProjects.map((project) => {
-			const selected = selectedMap.get(project.id);
-
 			return {
-				id: selected?.id ?? null,
+				id: selectedMap.get(project.id)?.id ?? null,
 				external_id: project.id,
 				name: project.name,
 				deployable: project.deployable,
