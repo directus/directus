@@ -13,7 +13,7 @@ import { getSchema } from '../../utils/get-schema.js';
 import { isFieldAllowed } from '../../utils/is-field-allowed.js';
 import { type ScheduledJob, scheduleSynchronizedJob } from '../../utils/schedule.js';
 import { getMessageType } from '../utils/message.js';
-import { IRRELEVANT_ACTIONS, IRRELEVANT_COLLECTIONS } from './constants.js';
+import { IRRELEVANT_COLLECTIONS } from './constants.js';
 import { Messenger } from './messenger.js';
 import { validateChanges } from './payload-permissions.js';
 import { RoomManager } from './room.js';
@@ -126,11 +126,7 @@ export class CollabHandler {
 				}
 
 				// Skip irrelevant collections and actions early
-				if (
-					event.action === 'create' ||
-					IRRELEVANT_ACTIONS.includes(event.action) ||
-					IRRELEVANT_COLLECTIONS.includes(event.collection)
-				) {
+				if (event.action === 'create' || IRRELEVANT_COLLECTIONS.includes(event.collection)) {
 					return;
 				}
 

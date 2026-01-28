@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import { LRUMapWithDelete } from 'mnemonist';
 import { useBus } from '../../bus/index.js';
-import { IRRELEVANT_ACTIONS, IRRELEVANT_COLLECTIONS } from './constants.js';
+import { IRRELEVANT_COLLECTIONS } from './constants.js';
 
 const env = useEnv();
 
@@ -61,7 +61,7 @@ export class PermissionCache {
 		}
 
 		// Skip known high-traffic collections and actions
-		if (IRRELEVANT_COLLECTIONS.includes(collection) || IRRELEVANT_ACTIONS.includes(event.action)) {
+		if (IRRELEVANT_COLLECTIONS.includes(collection)) {
 			return;
 		}
 

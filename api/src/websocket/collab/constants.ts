@@ -1,13 +1,14 @@
 export const IRRELEVANT_COLLECTIONS = [
-	'directus_notifications',
 	'directus_activity',
+	'directus_extensions',
+	'directus_flows',
+	'directus_folders',
+	'directus_migrations',
+	'directus_notifications',
+	'directus_operations',
+	'directus_presets',
 	'directus_revisions',
 	'directus_sessions',
-	'directus_presets',
 	'directus_shares',
 	'directus_webhooks',
-	'directus_flows',
-	'directus_operations',
 ];
-
-export const IRRELEVANT_ACTIONS = ['sort'];
