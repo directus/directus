@@ -170,7 +170,7 @@ router.get(
 			.filter((update): update is { id: string; name: string } => update !== null);
 
 		if (namesToUpdate.length > 0) {
-			await Promise.all(namesToUpdate.map((update) => projectsService.updateOne(update.id, { name: update.name })));
+			await projectsService.updateBatch(namesToUpdate);
 		}
 
 		// Merge with DB structure (id !== null means selected)
