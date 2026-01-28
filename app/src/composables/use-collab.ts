@@ -1,5 +1,5 @@
 import { ErrorCode } from '@directus/errors';
-import { readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient, WebSocketInterface } from '@directus/sdk';
+import { readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
@@ -51,8 +51,6 @@ export type CollabContext = {
 };
 
 const activeRooms: Record<string, number> = {};
-
-let wsConnecting: Promise<WebSocketInterface> | false = false;
 
 sdk.onWebSocket('message', async (message: ServerMessage | ServerError) => {
 	if (message.action === ACTION.SERVER.ERROR) {
@@ -131,16 +129,9 @@ export function useCollab(
 			serverStore.info.websocket.collaborativeEditing &&
 			settingsStore.settings?.collaborative_editing_enabled
 		) {
-			try {
-				if (wsConnecting === false) wsConnecting = sdk.connect();
-				await wsConnecting;
+			if (!(await sdk.isConnected())) {
+				await sdk.connect();
 				connected.value = true;
-			} catch (e: any) {
-				if (e.message?.toLowerCase().includes('open')) {
-					connected.value = true;
-				}
-			} finally {
-				wsConnecting = false;
 			}
 		}
 	});
