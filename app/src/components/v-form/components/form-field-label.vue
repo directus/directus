@@ -9,7 +9,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { CollabUser } from '@/composables/use-collab';
 import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
-import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -129,7 +129,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 			<span class="spacer" />
 
-			<HeaderCollab :model-value="focusedBy" type="field" class="avatars" />
+			<CollabAvatars :model-value="focusedBy" type="field" class="avatars" />
 		</component>
 	</div>
 </template>

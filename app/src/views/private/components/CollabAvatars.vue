@@ -61,7 +61,7 @@ function focusIntoView(cid: ClientID) {
 </script>
 
 <template>
-	<div class="header-collab" :class="{ 'is-field': type === 'field' }">
+	<div class="collab-avatars" :class="{ 'is-field': type === 'field' }">
 		<VAvatar
 			v-for="(user, index) in users.slice(0, DISPLAY_LIMIT)"
 			:id="user.focusId"
@@ -121,7 +121,7 @@ function focusIntoView(cid: ClientID) {
 </template>
 
 <style scoped lang="scss">
-.header-collab {
+.collab-avatars {
 	display: flex;
 	align-items: center;
 

@@ -33,7 +33,7 @@ import { PrivateView } from '@/views/private';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
-import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 
@@ -312,7 +312,7 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #actions>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" />
+			<CollabAvatars :model-value="collabUsers" :connected="connected" />
 
 			<VDialog
 				v-model="confirmDelete"

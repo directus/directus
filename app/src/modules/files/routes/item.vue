@@ -27,7 +27,7 @@ import ComparisonModal from '@/views/private/components/comparison/comparison-mo
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
-import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
@@ -257,7 +257,7 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #actions>
-			<HeaderCollab :model-value="collabUsers" :connected="connected" />
+			<CollabAvatars :model-value="collabUsers" :connected="connected" />
 
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">

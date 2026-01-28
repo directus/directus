@@ -15,7 +15,7 @@ import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { CollabFieldContext } from '@/composables/use-collab';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import HeaderCollab from '@/views/private/components/HeaderCollab.vue';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -208,7 +208,7 @@ function useComputedValues() {
 			},
 		]"
 	>
-		<HeaderCollab v-if="isLabelHidden" :model-value="focusedBy" type="field" class="avatars" />
+		<CollabAvatars v-if="isLabelHidden" :model-value="focusedBy" type="field" class="avatars" />
 
 		<VMenu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
