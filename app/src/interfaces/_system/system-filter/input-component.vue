@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { isDynamicVariable } from '@directus/utils';
 import { computed, onMounted, onUpdated, ref, watch } from 'vue';
-import VDatePicker from '@/components/v-date-picker.vue';
+import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSelect from '@/components/v-select/v-select.vue';
