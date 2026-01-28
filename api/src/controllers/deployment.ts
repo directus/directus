@@ -300,7 +300,6 @@ router.patch(
 			}
 		}
 
-		// Execute mutations in a transaction
 		const updatedProjects = await projectsService.updateSelection(deployment.id, value.create, value.delete);
 
 		res.locals['payload'] = { data: updatedProjects };
@@ -313,8 +312,6 @@ router.patch(
 router.get(
 	'/:provider/dashboard',
 	asyncHandler(async (req, res, next) => {
-		// Disable cache - dashboard needs fresh data from provider
-		res.locals['cache'] = false;
 
 		const provider = req.params['provider']!;
 
@@ -360,6 +357,8 @@ router.get(
 			}),
 		);
 
+		// Disable cache - dashboard needs fresh data from provider
+		res.locals['cache'] = false;
 		res.locals['payload'] = { data: { projects: projectDetails } };
 		return next();
 	}),

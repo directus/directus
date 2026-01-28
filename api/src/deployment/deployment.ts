@@ -15,7 +15,7 @@ export abstract class DeploymentDriver<
 	/**
 	 * Test connection with provider using credentials
 	 *
-	 * @throws InvalidCredentialsError if credentials are invalid
+	 * @throws {InvalidCredentialsError} When API credentials are invalid
 	 */
 	abstract testConnection(): Promise<void>;
 
@@ -23,6 +23,9 @@ export abstract class DeploymentDriver<
 	 * List all available projects from provider
 	 *
 	 * @returns Array of external projects
+	 * @throws {InvalidCredentialsError} When API credentials are invalid
+	 * @throws {HitRateLimitError} When rate limit is exceeded
+	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
 	abstract listProjects(): Promise<Project[]>;
 
@@ -31,6 +34,9 @@ export abstract class DeploymentDriver<
 	 *
 	 * @param projectId External project ID
 	 * @returns Project details
+	 * @throws {InvalidCredentialsError} When API credentials are invalid
+	 * @throws {HitRateLimitError} When rate limit is exceeded
+	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
 	abstract getProject(projectId: string): Promise<Project>;
 
@@ -40,6 +46,9 @@ export abstract class DeploymentDriver<
 	 * @param projectId External project ID
 	 * @param limit Number of deployments to return
 	 * @returns Array of deployments
+	 * @throws {InvalidCredentialsError} When API credentials are invalid
+	 * @throws {HitRateLimitError} When rate limit is exceeded
+	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
 	abstract listDeployments(projectId: string, limit?: number): Promise<Deployment[]>;
 
@@ -48,6 +57,9 @@ export abstract class DeploymentDriver<
 	 *
 	 * @param deploymentId External deployment ID
 	 * @returns Deployment details with logs
+	 * @throws {InvalidCredentialsError} When API credentials are invalid
+	 * @throws {HitRateLimitError} When rate limit is exceeded
+	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
 	abstract getDeployment(deploymentId: string): Promise<Details>;
 
@@ -57,6 +69,9 @@ export abstract class DeploymentDriver<
 	 * @param projectId External project ID
 	 * @param options Deployment options
 	 * @returns Deployment result
+	 * @throws {InvalidCredentialsError} When API credentials are invalid
+	 * @throws {HitRateLimitError} When rate limit is exceeded
+	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
 	abstract triggerDeployment(
 		projectId: string,
@@ -67,6 +82,9 @@ export abstract class DeploymentDriver<
 	 * Cancel a running deployment
 	 *
 	 * @param deploymentId External deployment ID
+	 * @throws {InvalidCredentialsError} When API credentials are invalid
+	 * @throws {HitRateLimitError} When rate limit is exceeded
+	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
 	abstract cancelDeployment(deploymentId: string): Promise<void>;
 
@@ -76,6 +94,9 @@ export abstract class DeploymentDriver<
 	 * @param deploymentId External deployment ID
 	 * @param options.since Only return logs after this timestamp
 	 * @returns Array of log entries
+	 * @throws {InvalidCredentialsError} When API credentials are invalid
+	 * @throws {HitRateLimitError} When rate limit is exceeded
+	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
 	abstract getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]>;
 }
