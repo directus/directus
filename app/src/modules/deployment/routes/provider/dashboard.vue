@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { sdk } from '@/sdk';
-import { readDeploymentDashboard, type DeploymentDashboardOutput } from '@directus/sdk';
+import { type DeploymentDashboardOutput, readDeploymentDashboard } from '@directus/sdk';
+import { formatDistanceToNow } from 'date-fns';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import DeploymentStatus from '../../components/deployment-status.vue';
+import DeploymentNavigation from '../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
-import VProgressCircular from '@/components/v-progress-circular.vue';
-import VList from '@/components/v-list.vue';
-import VListItem from '@/components/v-list-item.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
-import { PrivateView } from '@/views/private';
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { formatDistanceToNow } from 'date-fns';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
-import DeploymentNavigation from '../../components/navigation.vue';
-import DeploymentStatus from '../../components/deployment-status.vue';
+import { sdk } from '@/sdk';
+import { PrivateView } from '@/views/private';
 
 type Project = DeploymentDashboardOutput['projects'][number];
 
@@ -163,6 +163,7 @@ onMounted(async () => {
 	}
 
 	.url {
+		flex: 0 0 auto;
 		color: var(--theme--primary);
 		text-decoration: none;
 		font-size: 14px;
