@@ -76,7 +76,7 @@ function onCancel() {
 			$t('deployment.provider.setup_title', { provider: provider ? $t(`deployment.provider.${provider}.name`) : '' })
 		"
 		persistent
-		icon="vercel"
+		:icon="props.provider"
 		@cancel="onCancel"
 	>
 		<template #subtitle>
