@@ -117,29 +117,6 @@ describe('VersionMenu', () => {
 			expect(wrapper.text()).toContain(i18n.global.t('draft'));
 		});
 
-		it('should separate local versions from draft version with a divider', () => {
-			const draftVersion = createNewVersion({ key: 'draft', type: 'global' });
-			const localVersion = createMockVersion({ key: 'my-version', name: 'My Version', type: 'local' });
-
-			const wrapper = mount(VersionMenu, {
-				...mountOptions,
-				props: {
-					...baseProps,
-					versions: [draftVersion, localVersion],
-				},
-			});
-
-			expect(wrapper.text()).toContain(i18n.global.t('draft'));
-			expect(wrapper.text()).toContain('My Version');
-
-			const divider = wrapper.findAll('.v-divider')[0];
-
-			const nextSiblingText =
-				divider && divider.element.nextElementSibling ? divider.element.nextElementSibling.textContent : '';
-
-			expect(nextSiblingText).toContain('My Version');
-		});
-
 		it('should show edit dot for versions with content changes in it', () => {
 			const versionWithEdits = createMockVersion({
 				key: 'edited-version',

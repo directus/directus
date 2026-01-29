@@ -368,24 +368,20 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					<span v-if="hasVersionEdits(draftVersion)" v-tooltip="$t('content_edited')" class="edit-dot" />
 				</VListItem>
 
-				<template v-if="localVersions?.length">
-					<VDivider />
+				<VListItem
+					v-for="versionItem of localVersions"
+					:key="versionItem.id"
+					class="version-item"
+					clickable
+					:active="versionItem.id === currentVersion?.id"
+					@click="switchVersion(versionItem)"
+				>
+					<VListItemContent>
+						<VTextOverflow :text="getVersionDisplayName(versionItem)" />
+					</VListItemContent>
 
-					<VListItem
-						v-for="versionItem of localVersions"
-						:key="versionItem.id"
-						class="version-item"
-						clickable
-						:active="versionItem.id === currentVersion?.id"
-						@click="switchVersion(versionItem)"
-					>
-						<VListItemContent>
-							<VTextOverflow :text="getVersionDisplayName(versionItem)" />
-						</VListItemContent>
-
-						<span v-if="hasVersionEdits(versionItem)" v-tooltip="$t('content_edited')" class="edit-dot" />
-					</VListItem>
-				</template>
+					<span v-if="hasVersionEdits(versionItem)" v-tooltip="$t('content_edited')" class="edit-dot" />
+				</VListItem>
 
 				<template v-if="createVersionsAllowed">
 					<VDivider />
