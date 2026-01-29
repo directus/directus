@@ -4,6 +4,7 @@ import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
+import ComparisonToggle from './comparison-toggle.vue';
 import { useComparison } from './use-comparison';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -42,6 +43,8 @@ const { t } = useI18n();
 
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
 
+const compareToOption = ref<'Previous' | 'Latest'>('Previous');
+
 const {
 	comparisonData,
 	selectedComparisonFields,
@@ -62,6 +65,9 @@ const {
 	fetchComparisonData,
 	fetchUserUpdated,
 	fetchBaseItemUserUpdated,
+	persistedCompareToOption,
+	isFirstRevision,
+	isLatestRevision,
 } = useComparison({
 	collection,
 	primaryKey,
@@ -69,6 +75,7 @@ const {
 	currentVersion,
 	currentRevision,
 	revisions,
+	compareToOption,
 });
 
 const incomingTooltipMessage = computed(() => {
@@ -77,27 +84,78 @@ const incomingTooltipMessage = computed(() => {
 	return undefined;
 });
 
+const baseDateUpdated = computed(() => {
+	if (props.mode === 'revision' && compareToOption.value === 'Previous') {
+		return normalizedData.value?.base.date.dateObject || null;
+	}
+
+	return t('latest');
+});
+
+const applyButtonTooltip = computed(() => {
+	if (mode.value === 'revision' && compareToOption.value === 'Previous') {
+		return t('compare_to_latest_to_restore');
+	}
+
+	if (mode.value === 'revision' && compareToOption.value === 'Latest' && isLatestRevision.value) {
+		return t('select_earlier_revision_to_restore');
+	}
+
+	if (selectedComparisonFields.value.length === 0) {
+		return undefined;
+	}
+
+	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
+});
+
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const modalLoading = ref(false);
 
+async function loadComparisonData() {
+	modalLoading.value = true;
+
+	try {
+		await fetchComparisonData();
+		await fetchUserUpdated();
+		await fetchBaseItemUserUpdated();
+	} finally {
+		modalLoading.value = false;
+	}
+}
+
 watch(
-	[active, currentRevision],
-	async ([isActive]) => {
+	active,
+	async (isActive, wasActive) => {
 		if (!isActive) return;
 
-		modalLoading.value = true;
-
-		try {
-			await fetchComparisonData();
-			await fetchUserUpdated();
-			await fetchBaseItemUserUpdated();
-		} finally {
-			modalLoading.value = false;
+		if (wasActive === undefined || wasActive === false) {
+			compareToOption.value = isFirstRevision.value ? 'Latest' : 'Previous';
 		}
+
+		await loadComparisonData();
 	},
 	{ immediate: true },
 );
+
+watch(currentRevision, async () => {
+	if (!active.value || mode.value !== 'revision') return;
+
+	compareToOption.value = persistedCompareToOption.value;
+	await loadComparisonData();
+});
+
+watch([compareToOption], async () => {
+	if (props.mode !== 'revision' || !active.value) return;
+
+	await loadComparisonData();
+});
+
+watch([isFirstRevision], () => {
+	if (isFirstRevision.value && compareToOption.value === 'Previous') {
+		compareToOption.value = 'Latest';
+	}
+});
 
 function usePromoteDialog() {
 	const confirmDeleteOnPromoteDialogActive = ref(false);
@@ -186,7 +244,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						<ComparisonHeader
 							:loading="modalLoading"
 							:title="baseDisplayName"
-							:date-updated="$t('latest')"
+							:date-updated="baseDateUpdated"
 							:user-updated="baseUserUpdated"
 							:user-loading="baseUserLoading"
 						/>
@@ -210,7 +268,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										fields: comparisonFields,
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
-										onToggleField: () => {},
+										onToggleField: null,
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -251,7 +309,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										fields: comparisonFields,
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
-										onToggleField: toggleComparisonField,
+										onToggleField: mode !== 'revision' || compareToOption !== 'Previous' ? toggleComparisonField : null,
 									}"
 									non-editable
 									class="comparison-form--incoming"
@@ -264,13 +322,21 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			<div class="footer">
 				<div class="columns">
 					<div class="col left">
-						<div class="fields-changed">
+						<div v-if="mode !== 'revision'" class="fields-changed">
 							{{ $t('differences_count', { count: availableFieldsCount }) }}
+						</div>
+						<div v-else class="compare-to-container">
+							<span class="compare-to-label">{{ $t('comparing_to') }}</span>
+							<ComparisonToggle v-model="compareToOption" :disable-previous="isFirstRevision" />
 						</div>
 					</div>
 					<div class="col right">
+						<div v-if="mode === 'revision'" class="compare-to-container">
+							<span class="compare-to-label">{{ $t('comparing_to') }}</span>
+							<ComparisonToggle v-model="compareToOption" :disable-previous="isFirstRevision" />
+						</div>
 						<div class="footer-actions">
-							<div class="select-all-container">
+							<div v-if="mode !== 'revision' || compareToOption !== 'Previous'" class="select-all-container">
 								<VCheckbox
 									v-if="availableFieldsCount > 0"
 									:model-value="allFieldsSelected"
@@ -290,12 +356,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									<span class="button-text">{{ $t('cancel') }}</span>
 								</VButton>
 								<VButton
-									v-tooltip.top="
-										selectedComparisonFields.length === 0
-											? undefined
-											: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
+									v-tooltip.top="applyButtonTooltip"
+									data-test="comparison-modal_apply-button"
+									:disabled="
+										selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')
 									"
-									:disabled="selectedComparisonFields.length === 0"
 									:loading="promoting"
 									@click="onPromoteClick"
 								>
@@ -445,6 +510,21 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			flex: 1 1 auto;
 			min-inline-size: 0;
 
+			.compare-to-container {
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+				gap: 6px;
+				font-weight: 600;
+			}
+
+			.compare-to-label {
+				font-size: 14px;
+				line-height: 20px;
+				color: var(--theme--foreground);
+				white-space: nowrap;
+			}
+
 			&.left {
 				display: none;
 
@@ -456,8 +536,8 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					.fields-changed {
 						font-size: 14px;
 						line-height: 20px;
-						color: var(--theme--foreground-subdued);
 						font-weight: 600;
+						color: var(--theme--foreground-subdued);
 					}
 				}
 			}
@@ -468,10 +548,18 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				flex-direction: column;
 				gap: 16px;
 
-				@media (min-width: 706px) {
-					flex: 1;
+				@media (min-width: 960px) {
+					flex-direction: row;
 					justify-content: flex-end;
-					align-items: end;
+				}
+
+				.compare-to-container {
+					margin-block-end: 0;
+					justify-content: start;
+
+					@media (min-width: 960px) {
+						display: none;
+					}
 				}
 
 				.select-all-container {
@@ -480,11 +568,16 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					flex: 1 1 100%;
 					text-align: center;
 					margin-block-end: 12px;
+					justify-content: start;
 
 					@media (min-width: 706px) {
 						flex: 1 1 auto;
 						flex-shrink: 0;
 						margin-block-end: 0;
+					}
+
+					@media (min-width: 960px) {
+						justify-content: flex-start;
 					}
 				}
 

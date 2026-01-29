@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import type { Field } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { ComparisonContext, FormField } from '../types';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
 
 const props = withDefaults(
 	defineProps<{
@@ -44,20 +41,16 @@ const props = withDefaults(
 
 defineEmits(['toggle-batch', 'toggle-raw']);
 
-const { t } = useI18n();
-
 const showHiddenIndicator = computed(
 	() =>
 		(props.comparison?.fields?.has(props.field.field) || props.comparison?.revisionFields?.has(props.field.field)) &&
 		props.field.meta?.hidden,
 );
 
-function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
-	const isAutoUpdatedField = isDateUpdated(props.field as Field) || isUserUpdated(props.field as Field);
-
-	if (isDifferentFromLatest || isAutoUpdatedField) return t('updated_in_revision');
-	return t('updated_in_revision_matches_latest');
-}
+const isPromotableField = computed(() => {
+	if (!props.comparison) return false;
+	return props.comparison.onToggleField !== null && props.comparison.fields.has(props.field.field);
+});
 </script>
 
 <template>
@@ -76,11 +69,11 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			/>
 
 			<VCheckbox
-				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field)"
+				v-if="isPromotableField"
 				class="comparison-checkbox"
 				:model-value="comparisonActive"
 				:value="field.field"
-				@update:model-value="comparison.onToggleField(field.field)"
+				@update:model-value="comparison!.onToggleField?.(field.field)"
 			/>
 
 			<div class="field-label-content">
@@ -110,16 +103,6 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 					clickable
 					@click.stop="$emit('toggle-raw', !rawEditorActive)"
 				/>
-
-				<VChip
-					v-if="comparison?.side === 'incoming' && comparison.revisionFields?.has(field.field)"
-					v-tooltip="getUpdatedInRevisionTooltip(comparison.fields.has(field.field))"
-					class="updated-badge"
-					x-small
-					:label="false"
-				>
-					{{ $t('updated') }}
-				</VChip>
 			</div>
 
 			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
@@ -234,14 +217,6 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			background-color: var(--theme--primary-background);
 			border-radius: 50%;
 		}
-	}
-
-	.updated-badge {
-		--v-chip-background-color: var(--theme--success-background);
-		--v-chip-color: var(--theme--success-accent);
-
-		flex-shrink: 0;
-		margin-inline-start: 6px;
 	}
 
 	&.edited {
