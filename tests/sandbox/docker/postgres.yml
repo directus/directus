@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgis/postgis:${DB_VERSION}
-    tmpfs: /var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USER}

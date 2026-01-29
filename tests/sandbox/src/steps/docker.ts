@@ -24,15 +24,7 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 
 	const docker = spawn(
 		'docker',
-		[
-			'compose',
-			'-p',
-			project,
-			...files.flatMap((file) => ['-f', join(import.meta.dirname, '..', 'docker', `${file}.yml`)]),
-			'up',
-			'-d',
-			'--wait',
-		],
+		['compose', '-p', project, ...files.flatMap((file) => ['-f', join('docker', `${file}.yml`)]), 'up', '-d', '--wait'],
 		{
 			env: {
 				...env,

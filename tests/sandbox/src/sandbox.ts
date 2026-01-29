@@ -15,6 +15,7 @@ import {
 } from './steps/index.js';
 import chalk from 'chalk';
 import getPort from 'get-port';
+import { directusFolder } from './find-directus.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -128,7 +129,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 	);
 }
 
-export const apiFolder = join(import.meta.dirname, '..', '..', '..', 'api');
+export const apiFolder = join(directusFolder, 'api');
 
 export const databases: Database[] = [
 	'maria',
