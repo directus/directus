@@ -51,7 +51,7 @@ const statusIcon = computed(() => {
 });
 
 const statusLabel = computed(() => {
-	return t(`deployment_runs_status_${props.status}`);
+	return t(`deployment.runs_status.${props.status}`);
 });
 </script>
 
