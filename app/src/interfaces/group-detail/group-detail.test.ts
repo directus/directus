@@ -2,6 +2,9 @@ import { mount, VueWrapper } from '@vue/test-utils';
 import { createPinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import GroupDetail from './group-detail.vue';
+import { ClickOutside } from '@/__utils__/click-outside';
+import { Md } from '@/__utils__/md';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import VDetail from '@/components/v-detail.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -14,11 +17,24 @@ let wrapper: VueWrapper | null = null;
 beforeEach(() => {
 	const pinia = createPinia();
 
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		if (!document.getElementById(id)) {
+			const el = document.createElement('div');
+			el.id = id;
+			document.body.appendChild(el);
+		}
+	}
+
 	global = {
 		plugins: [i18n, pinia],
 		stubs: {
 			VDetail,
 			VDivider,
+		},
+		directives: {
+			'click-outside': ClickOutside,
+			md: Md,
+			tooltip: Tooltip,
 		},
 	};
 });
@@ -32,6 +48,11 @@ afterEach(() => {
 
 	wrapper = null;
 	vi.clearAllTimers();
+
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		const el = document.getElementById(id);
+		if (el) el.remove();
+	}
 });
 
 describe('group detail interface', () => {
