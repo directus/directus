@@ -167,8 +167,7 @@ function onSetupComplete() {
 	text-align: end;
 }
 
-.projects,
-.configure {
+.projects {
 	display: flex;
 	align-items: center;
 	gap: 8px;
