@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix table options menu clipping in markdown editor
+Fixed table options menu clipping in markdown editor
