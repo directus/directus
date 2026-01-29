@@ -153,7 +153,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				],
 			};
 
-			const response = await api.get(`/versions`, {
+			const { data: response } = await api.get(`/versions`, {
 				params: {
 					filter,
 					sort: '-date_created',
@@ -161,7 +161,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				},
 			});
 
-			rawVersions.value = response.data.data;
+			rawVersions.value = response.data;
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
