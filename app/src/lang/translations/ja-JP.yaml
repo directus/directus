@@ -671,7 +671,7 @@ creating_items: アイテムの作成
 enable_create_button: 作成ボタンを有効化
 selecting_items: アイテムの選択
 enable_select_button: 選択ボタンを有効化
-allow_duplicates: 重複を許可
+allow_duplicates: 複製を許可
 comments: コメント
 no_comments: コメントがありません
 expand: 展開
