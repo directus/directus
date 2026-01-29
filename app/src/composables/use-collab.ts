@@ -220,7 +220,7 @@ export function useCollab(
 			if (
 				message.action === ACTION.SERVER.INIT &&
 				message.collection === collection.value &&
-				((!item.value && !message.item) || message.item === String(item.value)) &&
+				((!item.value && !message.item) || message.item == item.value) &&
 				((!version.value && !message.version) || message.version === version.value?.id)
 			) {
 				receiveInit(message);
