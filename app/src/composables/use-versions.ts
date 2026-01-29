@@ -45,7 +45,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
 		const draftVersion = getGlobalVersion(DRAFT_VERSION_KEY);
-		const globalVersionKeys = [DRAFT_VERSION_KEY];
 		const localVersions = rawVersions.value?.filter(versionNotInGlobals)?.map(versionAddLocalType) ?? [];
 
 		return [draftVersion, ...localVersions];
@@ -62,7 +61,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 
 		function versionNotInGlobals(version: ContentVersion) {
-			return !globalVersionKeys.includes(version.key);
+			return version.key !== DRAFT_VERSION_KEY;
 		}
 
 		function versionAddLocalType(version: ContentVersion): ContentVersionWithType {
