@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils';
+import { mount, VueWrapper } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import GroupDetail from './group-detail.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import VDetail from '@/components/v-detail.vue';
@@ -9,6 +9,7 @@ import { ComparisonContext } from '@/components/v-form/types';
 import { i18n } from '@/lang';
 
 let global: GlobalMountOptions;
+let wrapper: VueWrapper | null = null;
 
 beforeEach(() => {
 	const pinia = createPinia();
@@ -22,9 +23,20 @@ beforeEach(() => {
 	};
 });
 
+afterEach(() => {
+	try {
+		wrapper?.unmount();
+	} catch {
+		// Ignore unmount errors from Vue internal state
+	}
+
+	wrapper = null;
+	vi.clearAllTimers();
+});
+
 describe('group detail interface', () => {
 	it('should render the edited class when having edits', async () => {
-		const wrapper = mount(GroupDetail, {
+		wrapper = mount(GroupDetail, {
 			global,
 			props: {
 				...props,
@@ -38,7 +50,7 @@ describe('group detail interface', () => {
 	});
 
 	it('should not render the edited class when having no edits', async () => {
-		const wrapper = mount(GroupDetail, {
+		wrapper = mount(GroupDetail, {
 			global,
 			props,
 		});
@@ -49,7 +61,7 @@ describe('group detail interface', () => {
 
 describe('group detail comparison indicator', () => {
 	it('should render the indicator-active class when closed on start', () => {
-		const wrapper = mount(GroupDetail, {
+		wrapper = mount(GroupDetail, {
 			global,
 			props,
 		});
@@ -58,7 +70,7 @@ describe('group detail comparison indicator', () => {
 	});
 
 	it('should render the indicator-muted class when opened on start', () => {
-		const wrapper = mount(GroupDetail, {
+		wrapper = mount(GroupDetail, {
 			global,
 			props: {
 				...props,
@@ -70,7 +82,7 @@ describe('group detail comparison indicator', () => {
 	});
 
 	it('should render the indicator-muted class when there are no field differences but updates exist in the revision', () => {
-		const wrapper = mount(GroupDetail, {
+		wrapper = mount(GroupDetail, {
 			global,
 			props: {
 				...props,
