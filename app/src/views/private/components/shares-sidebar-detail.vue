@@ -4,6 +4,7 @@ import { PrimaryKey, Share } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useSidebarStore } from '../private-view/stores/sidebar';
 import ShareItem from './share-item.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import api from '@/api';
@@ -39,6 +40,8 @@ const { active: open } = useGroupable({
 	group: 'sidebar-detail',
 });
 
+const sidebarStore = useSidebarStore();
+
 const { copyToClipboard } = useClipboard();
 
 const {
@@ -65,7 +68,10 @@ const {
 
 onMounted(() => {
 	getSharesCount();
-	if (open.value) getShares();
+
+	if (open.value || sidebarStore.activeAccordionItem === 'shares') {
+		getShares();
+	}
 });
 
 function onToggle(open: boolean) {

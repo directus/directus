@@ -7,6 +7,7 @@ import dompurify from 'dompurify';
 import { flatten, groupBy, orderBy } from 'lodash';
 import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useSidebarStore } from '../private-view/stores/sidebar';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
 import SidebarDetail from './sidebar-detail.vue';
@@ -41,12 +42,17 @@ const { active: open } = useGroupable({
 
 const { collection, primaryKey } = toRefs(props);
 
+const sidebarStore = useSidebarStore();
+
 const { comments, getComments, loading, refresh, commentsCount, getCommentsCount, loadingCount, userPreviews } =
 	useComments(collection, primaryKey);
 
 onMounted(() => {
 	getCommentsCount();
-	if (open.value) getComments();
+
+	if (open.value || sidebarStore.activeAccordionItem === 'comments') {
+		getComments();
+	}
 });
 
 function onToggle(open: boolean) {
