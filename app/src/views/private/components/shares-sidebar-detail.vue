@@ -94,7 +94,7 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	watch([collection, primaryKey], () => refresh());
 
 	const sendPublicLink = computed(() => {
-		if (!shareToSend.value) return null;
+		if (!shareToSend.value) return undefined;
 		return window.location.origin + getRootPath() + 'admin/shared/' + shareToSend.value.id;
 	});
 
@@ -276,7 +276,7 @@ async function copy(id: string) {
 		id="shares"
 		:title
 		icon="share"
-		:badge="!loadingCount && sharesCount > 0 ? abbreviateNumber(sharesCount) : null"
+		:badge="!loadingCount && sharesCount > 0 ? abbreviateNumber(sharesCount) : undefined"
 		@toggle="onToggle"
 	>
 		<VNotice v-if="error" type="danger">{{ $t('unexpected_error') }}</VNotice>

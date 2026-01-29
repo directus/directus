@@ -238,7 +238,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 		id="comments"
 		:title
 		icon="chat_bubble_outline"
-		:badge="!loadingCount && commentsCount > 0 ? abbreviateNumber(commentsCount) : null"
+		:badge="!loadingCount && commentsCount > 0 ? abbreviateNumber(commentsCount) : undefined"
 		@toggle="onToggle"
 	>
 		<CommentInput :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
