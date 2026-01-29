@@ -2,6 +2,7 @@
 import type { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -44,6 +45,8 @@ const emit = defineEmits<{
 
 const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
 
+const { t } = useI18n();
+
 const draftVersion = computed(() => versions.value.find((version) => version.key === DRAFT_VERSION_KEY));
 const localVersions = computed(() => versions.value.filter((version) => version.type === 'local'));
 
@@ -77,6 +80,10 @@ const { comparisonModalActive, comparableVersion, onPromoteComplete } = useCompa
 const { isCurrentVersionGlobal, isCurrentVersionNew, canAccessGlobalVersion, isVersionKeyGlobal, isVersionNew } =
 	useGlobalVersions();
 
+const newVersionKeyReservedTooltip = computed(() =>
+	isVersionKeyGlobal(newVersionKey.value) ? t('reserved_version_key', { key: newVersionKey.value }) : undefined,
+);
+
 function useSwitchDialog() {
 	const switchDialogActive = ref(false);
 	const switchTarget = ref<ContentVersionMaybeNew | null>(null);
@@ -104,7 +111,7 @@ function useCreateDialog() {
 	const creating = ref(false);
 	const newVersionKey = ref<string | null>(null);
 	const newVersionName = ref<string | null>(null);
-	const isCreateDisabled = computed(() => newVersionKey.value === null);
+	const isCreateDisabled = computed(() => newVersionKey.value === null || isVersionKeyGlobal(newVersionKey.value));
 
 	watch(
 		newVersionName,
@@ -176,6 +183,7 @@ function useRenameDialog() {
 		() =>
 			((newVersionKey.value === null || newVersionKey.value === currentVersion.value?.key) &&
 				newVersionName.value === currentVersion.value?.name) ||
+			isVersionKeyGlobal(newVersionKey.value) ||
 			!unref(primaryKey) ||
 			unref(primaryKey) === '+' ||
 			!newVersionKey.value ||
@@ -461,7 +469,6 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 								autofocus
 								trim
 								:max-length="255"
-								:disabled="isVersionKeyGlobal(newVersionKey)"
 							/>
 						</div>
 
@@ -480,7 +487,12 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 
 				<VCardActions>
 					<VButton secondary @click="closeCreateDialog">{{ $t('cancel') }}</VButton>
-					<VButton :disabled="isCreateDisabled" :loading="creating" @click="createVersion">
+					<VButton
+						v-tooltip.top="newVersionKeyReservedTooltip"
+						:disabled="isCreateDisabled"
+						:loading="creating"
+						@click="createVersion"
+					>
 						{{ $t('save') }}
 					</VButton>
 				</VCardActions>
@@ -501,7 +513,6 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 								:placeholder="$t('version_name')"
 								trim
 								:max-length="255"
-								:disabled="isVersionKeyGlobal(newVersionKey)"
 							/>
 						</div>
 						<div class="field">
@@ -519,7 +530,12 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 
 				<VCardActions>
 					<VButton secondary @click="closeRenameDialog">{{ $t('cancel') }}</VButton>
-					<VButton :disabled="isRenameDisabled" :loading="updating" @click="renameVersion">
+					<VButton
+						v-tooltip.top="newVersionKeyReservedTooltip"
+						:disabled="isRenameDisabled"
+						:loading="updating"
+						@click="renameVersion"
+					>
 						{{ $t('save') }}
 					</VButton>
 				</VCardActions>

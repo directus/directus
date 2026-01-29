@@ -213,6 +213,7 @@ switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
 rename_version: Rename Version
+reserved_version_key: 'The version key "{key}" is reserved and cannot be used.'
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version

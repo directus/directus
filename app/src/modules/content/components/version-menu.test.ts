@@ -243,6 +243,81 @@ describe('VersionMenu', () => {
 		});
 	});
 
+	describe('reserved version key', () => {
+		const draftGlobalVersion = createMockVersion({ id: 'draft-id', key: 'draft', type: 'global' });
+
+		const interactiveMountOptions = {
+			...mountOptions,
+			global: {
+				...mountOptions.global,
+				stubs: {
+					...mountOptions.global.stubs,
+					VInput: {
+						props: ['modelValue'],
+						emits: ['update:modelValue'],
+						template: `<input class="v-input" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" />`,
+					},
+				},
+			},
+		};
+
+		it('should disable create save button when version key matches a global version key', async () => {
+			const wrapper = mount(VersionMenu, {
+				...interactiveMountOptions,
+				props: {
+					...baseProps,
+					versions: [draftGlobalVersion],
+				},
+			});
+
+			const createItem = wrapper
+				.findAll('.v-list-item')
+				.find((item) => item.text().includes(i18n.global.t('create_version')));
+
+			await createItem!.trigger('click');
+
+			const dialog = wrapper.find('.v-dialog');
+			const inputs = dialog.findAll('input.v-input');
+			await inputs[1]!.setValue('draft');
+
+			const saveButton = dialog.findAll('.v-button').find((btn) => btn.text().includes(i18n.global.t('save')));
+
+			expect(saveButton!.attributes('disabled')).toBeDefined();
+		});
+
+		it('should disable rename save button when version key is changed to a global version key', async () => {
+			const localVersion = createMockVersion({
+				id: 'local-id',
+				key: 'my-version',
+				name: 'My Version',
+				type: 'local',
+			});
+
+			const wrapper = mount(VersionMenu, {
+				...interactiveMountOptions,
+				props: {
+					...baseProps,
+					versions: [draftGlobalVersion, localVersion],
+					currentVersion: localVersion,
+				},
+			});
+
+			const renameItem = wrapper
+				.findAll('.v-list-item')
+				.find((item) => item.text().includes(i18n.global.t('rename_version')));
+
+			await renameItem!.trigger('click');
+
+			const dialog = wrapper.find('.v-dialog');
+			const inputs = dialog.findAll('input.v-input');
+			await inputs[1]!.setValue('draft');
+
+			const saveButton = dialog.findAll('.v-button').find((btn) => btn.text().includes(i18n.global.t('save')));
+
+			expect(saveButton!.attributes('disabled')).toBeDefined();
+		});
+	});
+
 	describe('new version behavior', () => {
 		it('should disable promote and discard for new (virtual) versions', () => {
 			const newVersion = createNewVersion({ key: 'draft', type: 'global' });
