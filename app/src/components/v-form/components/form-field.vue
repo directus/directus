@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ValidationError } from '@directus/types';
-import { ContentVersion } from '@directus/types';
+import { ContentVersion, ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -14,6 +13,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { CollabFieldContext } from '@/composables/use-collab';
+import { isRelational } from '@/utils/field-utils';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 
@@ -64,13 +64,13 @@ const { t } = useI18n();
 
 const { focusedBy, onFieldUnset, onFieldUpdate, onBlur, onFocus } = props.collabFieldContext;
 
-const isRelational = computed(() => isRelational(props.field));
+const isRelationalField = computed(() => isRelational(props.field));
 
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
 	if (props.field?.meta?.readonly === true) return true;
 	if (props.batchMode && props.batchActive === false) return true;
-	if (focusedBy.value && isRelational.value === false) return true;
+	if (focusedBy.value && isRelationalField.value === false) return true;
 	return false;
 });
 
