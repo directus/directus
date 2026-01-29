@@ -753,6 +753,8 @@ describe('Extended Security Tests', () => {
 				version: null,
 			});
 
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'init');
+
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'o2m_related' });
 
 			await wsAdmin.sendMessage({
