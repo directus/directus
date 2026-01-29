@@ -160,10 +160,17 @@ function getColor(input?: number) {
 				<VListItem v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
 					<div
 						v-if="row[aggregateFunction]?.[aggregateField]"
-						class="metric-bar"
+						class="metric-bar-visual"
 						:style="{
 							inlineSize: widthOfRow(row),
 							'background-color': `${getColor(row[aggregateFunction]?.[aggregateField])}50`,
+						}"
+					/>
+
+					<div
+						class="metric-bar-content"
+						:style="{
+							inlineSize: widthOfRow(row),
 						}"
 					>
 						<div class="metric-bar-text">
@@ -185,8 +192,6 @@ function getColor(input?: number) {
 							{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
 						</div>
 					</div>
-
-					<div class="spacer" />
 				</VListItem>
 			</VList>
 		</div>
@@ -206,6 +211,7 @@ function getColor(input?: number) {
 }
 
 .metric-list-item {
+	position: relative;
 	block-size: 36px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
@@ -214,17 +220,30 @@ function getColor(input?: number) {
 	border-block-end: 0;
 }
 
-.metric-bar {
-	display: flex;
-	justify-content: space-between;
+.metric-bar-visual {
+	position: absolute;
+	inset-block: 2px;
+	inset-inline-start: 2px;
 	border-radius: 4px;
-	padding: 2px;
+	pointer-events: none;
+}
+
+.metric-bar-content {
+	position: relative;
+	block-size: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 0 4px;
+	min-inline-size: max-content;
 }
 
 .metric-bar-text {
-	padding: 0 6px;
+	padding: 0 4px;
 	white-space: pre;
 	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .metric-bar-number {
@@ -232,5 +251,6 @@ function getColor(input?: number) {
 	font-weight: 600;
 	white-space: pre;
 	font-size: 13px;
+	flex-shrink: 0;
 }
 </style>
