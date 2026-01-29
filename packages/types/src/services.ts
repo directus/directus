@@ -459,11 +459,11 @@ interface DeploymentService {
 	updateByProvider(provider: ProviderType, data: Partial<DeploymentConfig>): Promise<PrimaryKey>;
 	deleteByProvider(provider: ProviderType): Promise<PrimaryKey>;
 	getDriver(provider: ProviderType): Promise<unknown>;
-	testConnection(
+	updateWithConnectionTest(
 		provider: ProviderType,
 		newCredentials?: Credentials,
 		newOptions?: Options,
-	): Promise<{ credentials: Credentials; options: Options }>;
+	): Promise<{ primaryKey: PrimaryKey; credentials: Credentials; options: Options }>;
 	listProviderProjects(provider: ProviderType): Promise<CachedResult<Project[]>>;
 	getProviderProject(provider: ProviderType, projectId: string): Promise<CachedResult<Project>>;
 }

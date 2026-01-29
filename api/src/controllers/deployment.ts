@@ -453,47 +453,20 @@ router.patch(
 				knex: trx,
 			});
 
-			const data: Record<string, unknown> = {};
-			let mergedCredentials: Record<string, unknown> | undefined;
-			let mergedOptions: Record<string, unknown> | undefined;
+			let primaryKey;
 
 			if ('credentials' in req.body || 'options' in req.body) {
-				const existing = await service.readByProvider(provider);
-				const existingCredentials =
-					typeof existing.credentials === 'string' ? JSON.parse(existing.credentials) : (existing.credentials ?? {});
-				const existingOptions =
-					typeof existing.options === 'string' ? JSON.parse(existing.options) : (existing.options ?? {});
+				// Service handles permission check and connection test error wrapping
+				const result = await service.updateWithConnectionTest(
+					provider,
+					req.body.credentials,
+					req.body.options,
+				);
 
-				mergedCredentials = req.body.credentials ?? existingCredentials;
-
-				mergedOptions = req.body.options
-					? Object.fromEntries(
-							Object.entries({ ...existingOptions, ...req.body.options }).filter(([, v]) => v !== null),
-						)
-					: existingOptions;
-
-				if ('credentials' in req.body && req.body.credentials) {
-					data['credentials'] = JSON.stringify(mergedCredentials);
-				}
-
-				if ('options' in req.body) {
-					data['options'] = JSON.stringify(mergedOptions);
-				}
-			}
-
-			const primaryKey = await service.updateByProvider(provider, data);
-
-			if (mergedCredentials || mergedOptions) {
-				const driver = getDeploymentDriver(provider, mergedCredentials!, mergedOptions!);
-
-				try {
-					await driver.testConnection();
-				} catch {
-					throw new InvalidProviderConfigError({
-						provider,
-						reason: 'Invalid API token',
-					});
-				}
+				primaryKey = result.primaryKey;
+			} else {
+				// No credentials/options change, just update other fields
+				primaryKey = await service.updateByProvider(provider, {});
 			}
 
 			try {

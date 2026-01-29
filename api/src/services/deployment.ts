@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { InvalidProviderConfigError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	CachedResult,
@@ -101,34 +102,52 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	}
 
 	/**
-	 * Test connection with optional credential/option overrides
-	 * Merges provided values with existing config, filters out null values from options
-	 *
+	 * Update deployment config with connection test
 	 * @param provider Provider name
-	 * @param newCredentials Optional new credentials to test (uses existing if not provided)
+	 * @param newCredentials Optional new credentials
 	 * @param newOptions Optional new options to merge (null values remove existing keys)
-	 * @returns Merged options after filtering nulls (for saving to DB)
+	 * @returns Primary key and merged credentials/options
 	 */
-	async testConnection(
+	async updateWithConnectionTest(
 		provider: ProviderType,
 		newCredentials?: Credentials,
 		newOptions?: Options,
-	): Promise<{ credentials: Credentials; options: Options }> {
+	): Promise<{ primaryKey: PrimaryKey; credentials: Credentials; options: Options }> {
+		// Read existing with decrypted credentials
 		const deployment = await this.readConfig(provider);
 		const existingCredentials = this.parseValue<Credentials>(deployment.credentials, {});
 		const existingOptions = this.parseValue<Options>(deployment.options, {});
 
-		const credentials = newCredentials ?? existingCredentials;
+		const mergedCredentials = newCredentials
+			? { ...existingCredentials, ...newCredentials }
+			: existingCredentials;
 
-		// Merge options and filter out null values (null means "delete this option")
 		const mergedOptions = newOptions
 			? Object.fromEntries(Object.entries({ ...existingOptions, ...newOptions }).filter(([, v]) => v !== null))
 			: existingOptions;
 
-		const driver = getDeploymentDriver(provider, credentials, mergedOptions);
-		await driver.testConnection();
+		const data: Partial<DeploymentConfig> = {};
 
-		return { credentials, options: mergedOptions };
+		if (newCredentials) {
+			data.credentials = JSON.stringify(mergedCredentials) as unknown as Credentials;
+		}
+
+		if (newOptions !== undefined) {
+			data.options = JSON.stringify(mergedOptions) as unknown as Options;
+		}
+
+		const primaryKey = await this.updateByProvider(provider, data);
+
+		// Test connection after permission check with merged values
+		const driver = getDeploymentDriver(provider, mergedCredentials, mergedOptions);
+
+		try {
+			await driver.testConnection();
+		} catch {
+			throw new InvalidProviderConfigError({ provider, reason: 'Invalid API token' });
+		}
+
+		return { primaryKey, credentials: mergedCredentials, options: mergedOptions };
 	}
 
 	/**
