@@ -4,8 +4,7 @@ import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import { apiFolder, type Options } from '../sandbox.js';
 import chalk from 'chalk';
-import { portToPid } from 'pid-port';
-import { createInterface } from 'readline/promises';
+import { detect } from 'detect-port';
 
 export async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
 	const start = performance.now();
@@ -87,37 +86,12 @@ export async function startDirectus(opts: Options, env: Env, logger: Logger) {
 	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * (opts.inspect ? 2 : 1));
 	const allPorts = apiPorts.flatMap((port) => (opts.inspect ? [port, port + 1] : [port]));
 
-	const occupiedPorts = (await Promise.allSettled(allPorts.map((port) => portToPid(port))))
+	const occupiedPorts = (await Promise.allSettled(allPorts.map((port) => detect(port))))
 		.map((result, i) => (result.status === 'fulfilled' ? [result.value, allPorts[i]] : undefined))
-		.filter((val) => val) as [number, number][];
+		.filter((val) => val && val[0] !== val[1]) as [number, number][];
 
-	let killPorts;
-
-	for (const [pid, port] of occupiedPorts) {
-		logger.warn(`Port ${port} is occupied by pid ${pid}`);
-	}
-
-	if (opts.killPorts) {
-		killPorts = true;
-	} else {
-		if (occupiedPorts.length > 0) {
-			const rl = createInterface({ input: process.stdin, output: process.stdout });
-
-			const result = (await rl.question('Would you like to kill all occupying processes? (Y/N) ')).toLowerCase();
-
-			killPorts = result === 'y' || result === 'yes';
-		}
-	}
-
-	if (killPorts) {
-		for (const [pid] of occupiedPorts) {
-			try {
-				process.kill(pid, 'SIGKILL');
-				logger.info(`Killed process ${pid}`);
-			} catch (err) {
-				logger.error(`Failed to kill process ${pid}: ${(err as Error).message}`);
-			}
-		}
+	for (const [port] of occupiedPorts) {
+		logger.warn(`Port ${port} is already occupied`);
 	}
 
 	return await Promise.all(

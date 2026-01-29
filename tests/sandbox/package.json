@@ -29,7 +29,7 @@
 	"license": "MIT",
 	"private": true,
 	"packageManager": "pnpm@10.14.0",
-	"devDependencies": {
+	"dependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "catalog:",
@@ -38,9 +38,9 @@
 		"chalk": "catalog:",
 		"commander": "catalog:",
 		"copyfiles": "catalog:",
+		"detect-port": "catalog:",
 		"get-port": "catalog:",
 		"lodash-es": "catalog:",
-		"pid-port": "catalog:",
 		"tsdown": "catalog:",
 		"tsx": "catalog:",
 		"typedoc": "catalog:",

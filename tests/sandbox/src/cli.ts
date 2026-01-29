@@ -17,8 +17,7 @@ program
 	.option('--docker.suffix <suffix>', 'Adds a suffix to the docker project. Can be used to ensure uniqueness')
 	.option('-e, --extras <extras>', 'Enable redis,maildev,saml or other extras')
 	.option('--silent', 'Silence all logs except for errors')
-	.option('-i, --instances <instances>', 'Horizontally scale directus to a given number of instances', '1')
-	.option('--killPorts', 'Forcefully kills all processes that occupy ports that the api would use');
+	.option('-i, --instances <instances>', 'Horizontally scale directus to a given number of instances', '1');
 
 program.parse();
 const options = program.opts();
