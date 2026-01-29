@@ -7,6 +7,7 @@ const isWindows = ['win32', 'win64'].includes(process.platform);
 const directusConfig = {
 	TZ: isWindows ? '0' : 'UTC',
 	ADMIN_EMAIL: 'admin@example.com',
+	PROJECT_OWNER: 'admin@example.com',
 	ADMIN_PASSWORD: 'pw',
 	ADMIN_TOKEN: 'admin',
 	SECRET: 'directus-test',
