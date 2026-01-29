@@ -498,8 +498,6 @@ revision_delta_reverted: بازگردانده شد
 revision_delta_update_message: این فیلد به روز شده است اما ارزش آن به دلایل امنیتی پنهان شده است.
 revision_delta_other: نسخه
 revision_delta_by: 'در {date} توسط {user}'
-updated_in_revision: در این بازنگری به‌روز شده
-updated_in_revision_matches_latest: در این بازنگری به‌روز شده اما با نسخه آخر منطبق است
 differences_count: 'بدون تفاوت | ۱ تفاوت | {count} تفاوت'
 presentation_text_values_cannot_be_reimported: 'از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد.'
 download_page_as_csv: 'دانلود صفحه به‌صورت CSV'

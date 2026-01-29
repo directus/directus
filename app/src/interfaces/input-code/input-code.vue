@@ -100,7 +100,7 @@ onMounted(async () => {
 const stringValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
 
-	if (props.type === 'json' && isInterpolation(props.value)) return props.value;
+	if (props.type === 'json' && isInterpolation(props.value)) return props.value as string;
 
 	return getStringifiedValue(props.value, props.type === 'json');
 });
@@ -300,7 +300,15 @@ function isInterpolation(value: any) {
 	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
-		<VButton v-if="template" v-tooltip.left="$t('fill_template')" small icon secondary @click="fillTemplate">
+		<VButton
+			v-if="!nonEditable && template"
+			v-tooltip.left="!disabled && $t('fill_template')"
+			:disabled
+			small
+			icon
+			secondary
+			@click="fillTemplate"
+		>
 			<VIcon name="playlist_add" />
 		</VButton>
 	</div>

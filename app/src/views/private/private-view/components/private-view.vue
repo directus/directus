@@ -54,7 +54,7 @@ const showLicenseBanner = computed(
 
 <template>
 	<PrivateViewNoAppAccess v-if="appAccess === false" />
-	<PrivateViewRoot v-else v-bind="$props">
+	<PrivateViewRoot v-else v-bind="$props" :class="$attrs.class">
 		<template #navigation><slot name="navigation" /></template>
 		<template #actions:append><slot name="actions:append" /></template>
 		<template #actions:prepend><slot name="actions:prepend" /></template>

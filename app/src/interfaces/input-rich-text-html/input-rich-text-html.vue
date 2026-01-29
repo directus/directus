@@ -95,6 +95,7 @@ const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
 const comparisonEditorRef = ref<any | null>(null);
+const comparisonEditorInitialized = ref(false);
 const editorKey = ref(0);
 const comparisonEditorKey = ref(0);
 
@@ -187,7 +188,7 @@ watch(
 watch(
 	() => [props.value, props.font, props.direction, props.comparisonSide],
 	() => {
-		if (comparisonEditorRef.value) {
+		if (comparisonEditorRef.value && comparisonEditorInitialized.value) {
 			comparisonEditorRef.value.setContent(props.value || '');
 		}
 	},
@@ -196,6 +197,7 @@ watch(
 watch(
 	() => props.comparisonSide,
 	() => {
+		comparisonEditorInitialized.value = false;
 		comparisonEditorKey.value++;
 	},
 );
@@ -203,6 +205,7 @@ watch(
 function getBaseEditorOptions() {
 	return {
 		skin: false,
+		body_class: props.nonEditable ? 'non-editable' : '',
 		content_css: false,
 		branding: false,
 		max_height: 1000,
@@ -240,7 +243,7 @@ const editorOptions = computed(() => {
 
 	return {
 		...getBaseEditorOptions(),
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', !!props.nonEditable),
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
 		plugins: [
 			'media',
 			'table',
@@ -272,7 +275,7 @@ const editorOptions = computed(() => {
 const comparisonEditorOptions = computed(() => {
 	return {
 		...getBaseEditorOptions(),
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true, true),
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true),
 		plugins: ['autoresize', 'directionality'],
 		toolbar: false,
 		readonly: true,
@@ -280,6 +283,7 @@ const comparisonEditorOptions = computed(() => {
 			comparisonEditorRef.value = editor;
 
 			editor.on('init', () => {
+				comparisonEditorInitialized.value = true;
 				editor.setContent(props.value || '');
 			});
 		},
@@ -462,15 +466,13 @@ onMounted(() => {
 
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
-		<template v-if="comparisonMode && value">
-			<Editor
-				:key="`comparison-${comparisonSide}-${comparisonEditorKey}`"
-				ref="comparisonEditorElement"
-				:value="value"
-				:init="comparisonEditorOptions"
-				disabled
-			/>
-		</template>
+		<Editor
+			v-if="nonEditable"
+			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"
+			:value="value"
+			:init="comparisonEditorOptions"
+			disabled
+		/>
 		<Editor
 			v-else
 			:key="editorKey"
