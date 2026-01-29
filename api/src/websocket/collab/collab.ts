@@ -45,7 +45,8 @@ export class CollabHandler {
 	private settingsService?: SettingsService;
 	private cleanupJob?: ScheduledJob;
 	private cleanupInterval?: NodeJS.Timeout;
-	private busHandler?: (event: any) => Promise<void>;
+	private busHandler?: (event: any) => void;
+	private eventQueue = Promise.resolve();
 
 	/**
 	 * Initialize the handler
@@ -94,98 +95,101 @@ export class CollabHandler {
 		 * Remote updates:
 		 * Service (Node B) -> Emitter (Node B) -> Hooks (Node B) -> Bus -> CollabHandler (Node A) -> Room (Node A) -> Remote Clients
 		 */
-		this.busHandler = async (event: any) => {
-			try {
-				if (
-					event.collection === 'directus_settings' &&
-					event.action === 'update' &&
-					'collaborative_editing_enabled' in event.payload
-				) {
-					useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
+		this.busHandler = (event: any) => {
+			// Chain events to enforce sequence integrity
+			this.eventQueue = this.eventQueue
+				.then(async () => {
+					if (
+						event.collection === 'directus_settings' &&
+						event.action === 'update' &&
+						'collaborative_editing_enabled' in event.payload
+					) {
+						useLogger().debug(`[Collab] [Node ${this.messenger.uid}] Settings update via bus, triggering handler`);
 
-					// Non-blocking initialization to avoid resource contention
-					this.initialize(true)
-						.then(() => {
-							if (!this.enabled) {
-								try {
-									useLogger().debug(
-										`[Collab] [Node ${this.messenger.uid}] Collaborative editing disabled, terminating all rooms`,
-									);
+						// Non-blocking initialization to avoid resource contention
+						this.initialize(true)
+							.then(() => {
+								if (!this.enabled) {
+									try {
+										useLogger().debug(
+											`[Collab] [Node ${this.messenger.uid}] Collaborative editing disabled, terminating all rooms`,
+										);
 
-									this.roomManager.terminateAll();
-								} catch (err) {
-									useLogger().error(err, '[Collab] Collaborative editing disabling terminateAll failed');
+										this.roomManager.terminateAll();
+									} catch (err) {
+										useLogger().error(err, '[Collab] Collaborative editing disabling terminateAll failed');
+									}
 								}
-							}
-						})
-						.catch((err) => {
-							useLogger().error(err, '[Collab] Collaborative editing re-initialization failed');
-						});
+							})
+							.catch((err) => {
+								useLogger().error(err, '[Collab] Collaborative editing re-initialization failed');
+							});
 
-					return;
-				}
-
-				// Skip irrelevant collections and actions early
-				if (event.action === 'create' || IRRELEVANT_COLLECTIONS.includes(event.collection)) {
-					return;
-				}
-
-				if (event.action === 'update' || event.action === 'delete') {
-					let keys: (string | number)[] = [];
-
-					if (Array.isArray(event.keys)) {
-						keys = event.keys;
-					} else if (event.key) {
-						keys = [event.key];
-					} else if (event.payload && event.action === 'delete') {
-						keys = toArray(event.payload);
+						return;
 					}
 
-					event.keys = keys;
+					// Skip irrelevant collections and actions early
+					if (event.action === 'create' || IRRELEVANT_COLLECTIONS.includes(event.collection)) {
+						return;
+					}
 
-					const roomsToUpdate = Object.values(this.roomManager.rooms).filter((room) => {
-						// Versioned Rooms
-						if (room.version) {
-							return event.collection === 'directus_versions' && keys.some((key) => String(key) === room.version);
+					if (event.action === 'update' || event.action === 'delete') {
+						let keys: (string | number)[] = [];
+
+						if (Array.isArray(event.keys)) {
+							keys = event.keys;
+						} else if (event.key) {
+							keys = [event.key];
+						} else if (event.payload && event.action === 'delete') {
+							keys = toArray(event.payload);
 						}
 
-						// Skip non-matching collections and version events
-						if (room.collection !== event.collection || event.collection === 'directus_versions') return false;
+						event.keys = keys;
 
-						// Match singleton
-						if (room.item === null) return true;
-
-						// Match regular items
-						return keys.some((key) => String(key) === String(room.item));
-					});
-
-					if (roomsToUpdate.length === 0) return;
-
-					await Promise.all(
-						roomsToUpdate.map(async (room) => {
-							let relevantKeys: any[];
-
+						const roomsToUpdate = Object.values(this.roomManager.rooms).filter((room) => {
+							// Versioned Rooms
 							if (room.version) {
-								relevantKeys = [room.version];
-							} else if (room.item) {
-								relevantKeys = [room.item];
-							} else {
-								relevantKeys = keys;
+								return event.collection === 'directus_versions' && keys.some((key) => String(key) === room.version);
 							}
 
-							const singleKeyedEvent = { ...event, keys: relevantKeys };
+							// Skip non-matching collections and version events
+							if (room.collection !== event.collection || event.collection === 'directus_versions') return false;
 
-							if (event.action === 'delete') {
-								await room.onDeleteHandler(singleKeyedEvent);
-							} else {
-								await room.onUpdateHandler(singleKeyedEvent);
-							}
-						}),
-					);
-				}
-			} catch (err) {
-				useLogger().error(err, `[Collab] Bus message processing failed for ${event.collection}/${event.action}`);
-			}
+							// Match singleton
+							if (room.item === null) return true;
+
+							// Match regular items
+							return keys.some((key) => String(key) === String(room.item));
+						});
+
+						if (roomsToUpdate.length === 0) return;
+
+						await Promise.all(
+							roomsToUpdate.map(async (room) => {
+								let relevantKeys: any[];
+
+								if (room.version) {
+									relevantKeys = [room.version];
+								} else if (room.item) {
+									relevantKeys = [room.item];
+								} else {
+									relevantKeys = keys;
+								}
+
+								const singleKeyedEvent = { ...event, keys: relevantKeys };
+
+								if (event.action === 'delete') {
+									await room.onDeleteHandler(singleKeyedEvent);
+								} else {
+									await room.onUpdateHandler(singleKeyedEvent);
+								}
+							}),
+						);
+					}
+				})
+				.catch((err) => {
+					useLogger().error(err, `[Collab] Bus message processing failed for ${event.collection}/${event.action}`);
+				});
 		};
 
 		this.messenger.messenger.subscribe('websocket.event', this.busHandler);

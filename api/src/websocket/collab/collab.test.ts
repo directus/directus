@@ -1086,6 +1086,43 @@ describe('CollabHandler', () => {
 
 			vi.useFakeTimers();
 		});
+
+		test('busHandler processes events sequentially', async () => {
+			vi.useRealTimers();
+
+			const busCallback = vi
+				.mocked(handler.messenger.messenger.subscribe)
+				.mock.calls.find((call) => call[0] === 'websocket.event')![1] as any;
+
+			const processedOrder: number[] = [];
+
+			const createMockRoom = (id: number) => ({
+				uid: `articles_${id}_undefined`,
+				collection: 'articles',
+				item: id,
+				onDeleteHandler: vi.fn().mockImplementation(async (event: any) => {
+					// Simulate variable delay
+					if (id === 1) await new Promise((r) => setTimeout(r, 50));
+					processedOrder.push(event.keys[0]);
+				}),
+			});
+
+			const room1 = createMockRoom(1);
+			const room2 = createMockRoom(2);
+			const room3 = createMockRoom(3);
+
+			handler.roomManager.rooms[room1.uid] = room1 as any;
+			handler.roomManager.rooms[room2.uid] = room2 as any;
+			handler.roomManager.rooms[room3.uid] = room3 as any;
+
+			busCallback({ action: 'delete', collection: 'articles', keys: [1] });
+			busCallback({ action: 'delete', collection: 'articles', keys: [2] });
+			busCallback({ action: 'delete', collection: 'articles', keys: [3] });
+
+			await (handler as any).eventQueue;
+
+			expect(processedOrder).toEqual([1, 2, 3]);
+		});
 	});
 
 	describe('terminate', () => {
