@@ -86,6 +86,11 @@ switch_user: Switch User
 item_deleted: The item you were editing has been deleted.
 item_creation: Item Creation
 item_revision: Item Revision
+previous_revision: Previous Revision
+latest_revision: Latest Revision
+comparing_to: Comparing to
+compare_to_latest_to_restore: Compare to latest to consider restoring this revision
+select_earlier_revision_to_restore: Select an earlier revision to consider restoring it
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
 half_width: Half Width
@@ -93,6 +98,7 @@ full_width: Full Width
 group: Group
 popular: Popular
 recent: Recent
+previous: Previous
 latest: Latest
 updated: Updated
 export_items: Export Items
@@ -528,8 +534,6 @@ revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-updated_in_revision: Updated in this Revision
-updated_in_revision_matches_latest: Updated in this Revision but matches Latest
 differences_count: 'No Differences | 1 Difference | {count} Differences'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
