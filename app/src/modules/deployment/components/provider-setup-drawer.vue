@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
-import { sdk } from '@/sdk';
 import { createDeployment } from '@directus/sdk';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { computed, ref, watch } from 'vue';
+import { useProviderConfigs } from '../config/provider-fields';
 import VDrawer from '@/components/v-drawer.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
+import { sdk } from '@/sdk';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import { useProviderConfigs } from '../config/provider-fields';
 
 const active = defineModel<boolean>('active', { required: true });
 
@@ -16,7 +16,7 @@ const props = defineProps<{
 }>();
 
 const { providerConfigs } = useProviderConfigs();
-const providerConfig = computed(() => providerConfigs[props.provider]);
+const providerConfig = computed(() => providerConfigs.value[props.provider]);
 
 const emit = defineEmits<{
 	complete: [];

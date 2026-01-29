@@ -82,16 +82,10 @@ function discardAndLeave() {
 }
 
 const hasExistingCredentials = computed(() => !!config.value?.credentials);
+const { providerConfigs } = useProviderConfigs(hasExistingCredentials, true);
 
-const credentialsFields = computed(() => {
-	const { providerConfigs } = useProviderConfigs(hasExistingCredentials.value, true);
-	return providerConfigs[props.provider]?.credentialsFields || [];
-});
-
-const optionsFields = computed(() => {
-	const { providerConfigs } = useProviderConfigs(hasExistingCredentials.value, true);
-	return providerConfigs[props.provider]?.optionsFields || [];
-});
+const credentialsFields = computed(() => providerConfigs.value[props.provider]?.credentialsFields || []);
+const optionsFields = computed(() => providerConfigs.value[props.provider]?.optionsFields || []);
 
 async function loadConfig() {
 	loading.value = true;
