@@ -1,9 +1,13 @@
 import { spawn } from 'child_process';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import type { Database, Options } from '../sandbox.js';
 import chalk from 'chalk';
+import { fileURLToPath } from 'url';
+
+const fileName = fileURLToPath(import.meta.url);
+const folderName = dirname(fileName);
 
 export async function dockerUp(database: Database, opts: Options, env: Env, logger: Logger) {
 	const start = performance.now();
@@ -24,7 +28,15 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 
 	const docker = spawn(
 		'docker',
-		['compose', '-p', project, ...files.flatMap((file) => ['-f', join('docker', `${file}.yml`)]), 'up', '-d', '--wait'],
+		[
+			'compose',
+			'-p',
+			project,
+			...files.flatMap((file) => ['-f', join(folderName, '..', 'docker', `${file}.yml`)]),
+			'up',
+			'-d',
+			'--wait',
+		],
 		{
 			env: {
 				...env,
