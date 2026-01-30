@@ -34,15 +34,15 @@
 		"@types/geojson": "catalog:",
 		"@types/nodemailer": "catalog:",
 		"@types/ws": "catalog:",
-		"@types/archiver": "catalog:"
+		"@types/archiver": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@types/deep-diff": "catalog:",
 		"knex": "catalog:",
 		"typescript": "catalog:",
-		"vue": "catalog:",
-		"zod": "catalog:"
+		"vue": "catalog:"
 	},
 	"peerDependencies": {
 		"deep-diff": "catalog:",
