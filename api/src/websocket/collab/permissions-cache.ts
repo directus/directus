@@ -268,5 +268,5 @@ export class PermissionCache {
 }
 
 export const permissionCache = new PermissionCache(
-	Number(env['WEBSOCKETS_COLLAB_PERMISSIONS_CACHE_CAPACITY'] ?? 10000),
+	Number(env['WEBSOCKETS_COLLAB_PERMISSIONS_CACHE_CAPACITY'] ?? 2000),
 );
