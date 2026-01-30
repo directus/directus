@@ -138,10 +138,10 @@ export class KvRedis implements Kv {
 
 		return {
 			release: async () => {
-				lock.release();
+				await lock.release();
 			},
 			extend: async (duration: number) => {
-				lock.extend(duration);
+				await lock.extend(duration);
 			},
 		};
 	}
