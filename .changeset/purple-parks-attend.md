@@ -1,5 +1,5 @@
 ---
-'@directus/app': minor
+'@directus/app': patch
 ---
 
-prevent deepcloning v-form modelValue on each input
+Prevent deep-cloning v-form modelValue on each input
