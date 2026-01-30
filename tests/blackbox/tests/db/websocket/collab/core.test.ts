@@ -1081,4 +1081,105 @@ describe('Collaborative Editing: Core', () => {
 			ws2.conn.close();
 		});
 	});
+
+	describe('Sticky Focus Behavior', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			const TEST_URL = getUrl(vendor);
+			const itemId = randomUUID();
+
+			// Setup
+			await request(TEST_URL)
+				.post(`/items/${collectionCollabCore}`)
+				.send({ id: itemId, title: 'Focus Test' })
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			const ws1 = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+			const ws2 = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
+
+			await ws1.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabCore,
+				item: itemId,
+				version: null,
+			});
+
+			const init1 = await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'init');
+			const room = init1['room'];
+
+			await ws2.sendMessage({
+				type: 'collab',
+				action: 'join',
+				collection: collectionCollabCore,
+				item: itemId,
+				version: null,
+			});
+
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'join');
+
+			// Discard retains focus
+			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+
+			await waitForMatchingMessage(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'title',
+			);
+
+			await ws1.sendMessage({ type: 'collab', action: 'discard', room });
+
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'discard');
+
+			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+
+			const errorMsg1 = await waitForMatchingMessage(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'error' && msg.code === 'FORBIDDEN',
+			);
+
+			expect(errorMsg1).toBeDefined();
+
+			// Unset retains focus
+			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Draft' });
+
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'update');
+
+			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title' });
+
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'discard');
+
+			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+
+			const errorMsg2 = await waitForMatchingMessage(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'error' && msg.code === 'FORBIDDEN',
+			);
+
+			expect(errorMsg2).toBeDefined();
+
+			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: null });
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === null);
+
+			// Unset without focus does not acquire focus
+			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title' });
+
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'discard');
+
+			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
+
+			const successFocus = await waitForMatchingMessage(
+				ws1,
+				(msg) =>
+					msg.type === 'collab' &&
+					msg.action === 'focus' &&
+					msg.field === 'title' &&
+					msg.connection !== init1.connection,
+			);
+
+			expect(successFocus).toBeDefined();
+
+			ws1.conn.close();
+			ws2.conn.close();
+		});
+	});
 });
