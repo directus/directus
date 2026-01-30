@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import { ContentVersion, Field, ValidationError } from '@directus/types';
+import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import VDivider from '../v-divider.vue';
@@ -14,6 +14,7 @@ import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import { useFieldsStore } from '@/stores/fields';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -43,7 +44,7 @@ const props = withDefaults(
 		direction?: string;
 		showDivider?: boolean;
 		inline?: boolean;
-		version?: ContentVersion | null;
+		version?: ContentVersionMaybeNew | null;
 		comparison?: ComparisonContext;
 	}>(),
 	{

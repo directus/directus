@@ -1,11 +1,13 @@
-import { ContentVersion, Filter, Item, Query } from '@directus/types';
+import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
-import { computed, ref, Ref, unref, watch } from 'vue';
+import { computed, ref, type Ref, watch } from 'vue';
 import { useCollectionPermissions, usePermissions } from './use-permissions';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
+import { DRAFT_VERSION_KEY } from '@/constants';
 import { APIError } from '@/types/error';
+import type { ContentVersionMaybeNew, ContentVersionWithType, NewContentVersion } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -13,13 +15,14 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
-	const currentVersion = ref<ContentVersion | null>(null);
-	const versions = ref<ContentVersion[] | null>(null);
+	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
+	const rawVersions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
 	const saveVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
 
-	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
+	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
+		useCollectionPermissions('directus_versions');
 
 	const queryVersion = useRouteQuery<string | null>('version', null, {
 		transform: (value) => (Array.isArray(value) ? value[0] : value),
@@ -31,22 +34,55 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const { nestedValidationErrors } = useNestedValidation();
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
+	const query = computed<Query>(() => {
+		if (!currentVersion.value || currentVersion.value.id === '+') return {};
+
+		return {
+			version: currentVersion.value.key,
+			versionRaw: true,
+		};
+	});
+
+	const versions = computed<ContentVersionMaybeNew[]>(() => {
+		const draftVersion = getGlobalVersion(DRAFT_VERSION_KEY);
+		const localVersions = rawVersions.value?.filter(versionNotInGlobals)?.map(versionAddLocalType) ?? [];
+
+		return [draftVersion, ...localVersions];
+
+		function getGlobalVersion(key: ContentVersion['key'], name: string | null = null) {
+			const type = 'global';
+			const existingVersion = rawVersions.value?.find((version) => version.key === key);
+
+			if (existingVersion) {
+				return { ...existingVersion, name, type } as ContentVersionWithType;
+			}
+
+			return { id: '+', key, name, type } as NewContentVersion;
+		}
+
+		function versionNotInGlobals(version: ContentVersion) {
+			return version.key !== DRAFT_VERSION_KEY;
+		}
+
+		function versionAddLocalType(version: ContentVersion): ContentVersionWithType {
+			return { ...version, type: 'local' };
+		}
+	});
+
 	watch(
 		[queryVersion, versions],
 		([newQueryVersion, newVersions]) => {
 			if (!newVersions) return;
 
-			let version;
+			const previouslySelectedKey = currentVersion.value?.key;
 
-			if (queryVersion.value) {
-				version = newVersions.find((version) => version.key === newQueryVersion);
-			}
+			currentVersion.value = newQueryVersion
+				? (newVersions.find((version) => version.key === newQueryVersion && isVersionSelectable(version)) ?? null)
+				: null;
 
-			if (version?.key !== currentVersion.value?.key) {
+			if (currentVersion.value?.key !== previouslySelectedKey) {
 				validationErrors.value = [];
 			}
-
-			currentVersion.value = version ?? null;
 		},
 		{ immediate: true },
 	);
@@ -56,19 +92,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		validationErrors.value = [];
 	});
 
-	const query = computed<Query>(() => {
-		if (!currentVersion.value) return {};
-
-		return {
-			version: currentVersion.value.key,
-			versionRaw: true,
-		};
-	});
-
 	watch(
 		[collection, isSingleton, primaryKey],
 		([newCollection], [oldCollection]) => {
-			if (newCollection !== oldCollection) currentVersion.value = null;
+			if (oldCollection && newCollection !== oldCollection) currentVersion.value = null;
 			getVersions();
 		},
 		{ immediate: true },
@@ -121,24 +148,12 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		try {
 			const filter: Filter = {
 				_and: [
-					{
-						collection: {
-							_eq: unref(collection),
-						},
-					},
-					...(primaryKey.value
-						? [
-								{
-									item: {
-										_eq: primaryKey.value,
-									},
-								},
-							]
-						: []),
+					{ collection: { _eq: collection.value } },
+					...(primaryKey.value ? [{ item: { _eq: primaryKey.value } }] : []),
 				],
 			};
 
-			const response = await api.get(`/versions`, {
+			const { data: response } = await api.get(`/versions`, {
 				params: {
 					filter,
 					sort: '-date_created',
@@ -146,7 +161,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				},
 			});
 
-			versions.value = response.data.data;
+			rawVersions.value = response.data;
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -155,34 +170,34 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	}
 
 	async function addVersion(version: ContentVersion) {
-		versions.value = [...(versions.value ? versions.value : []), version];
+		rawVersions.value = [...(rawVersions.value ? rawVersions.value : []), version];
 		queryVersion.value = version.key;
 	}
 
 	async function updateVersion(updates: { key: string; name?: string | null }) {
-		if (!currentVersion.value || !versions.value) return;
+		if (!currentVersion.value || !rawVersions.value) return;
 
 		const currentVersionId = currentVersion.value.id;
-
-		const versionToUpdate = versions.value.find((version) => version.id === currentVersionId);
+		const versionToUpdate = rawVersions.value.find((version) => version.id === currentVersionId);
 
 		if (versionToUpdate) {
 			versionToUpdate.key = updates.key;
 			if ('name' in updates) versionToUpdate.name = updates.name ?? null;
-			currentVersion.value = versionToUpdate;
+			currentVersion.value = versions.value.find((version) => version.id === currentVersionId) ?? null;
 		}
 	}
 
-	async function deleteVersion() {
-		if (!currentVersion.value || !versions.value) return;
+	function deleteVersion(deleteOnPromote = true) {
+		if (!currentVersion.value || !rawVersions.value) return;
 
+		const isLocalVersion = currentVersion.value?.type === 'local';
 		const currentVersionId = currentVersion.value.id;
 
-		const index = versions.value.findIndex((version) => version.id === currentVersionId);
+		const index = rawVersions.value.findIndex((version) => version.id === currentVersionId);
 
-		if (index !== undefined) {
-			currentVersion.value = null;
-			versions.value.splice(index, 1);
+		if (index !== -1) {
+			if (isLocalVersion || deleteOnPromote) currentVersion.value = null;
+			rawVersions.value.splice(index, 1);
 		}
 	}
 
@@ -205,8 +220,25 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 
 		try {
-			const response = await api.post(`/versions/${currentVersion.value.id}/save`, unref(edits));
-			const savedData = response.data.data;
+			let versionId: PrimaryKey;
+
+			if (currentVersion.value.id === '+') {
+				const {
+					data: { data: version },
+				} = await api.post(`/versions`, {
+					key: currentVersion.value.key,
+					collection: collection.value,
+					item: String(primaryKey.value),
+				});
+
+				versionId = version.id;
+			} else {
+				versionId = currentVersion.value.id;
+			}
+
+			const {
+				data: { data: savedData },
+			} = await api.post(`/versions/${versionId}/save`, edits.value);
 
 			// Update local item with the saved changes
 			Object.assign(item.value, savedData);
@@ -220,5 +252,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		} finally {
 			saveVersionLoading.value = false;
 		}
+	}
+
+	function isVersionSelectable(version: ContentVersionMaybeNew) {
+		return version.id === '+' ? createVersionsAllowed.value : readVersionsAllowed.value;
 	}
 }
