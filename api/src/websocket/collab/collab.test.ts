@@ -734,9 +734,12 @@ describe('CollabHandler', () => {
 			const mockRoom = {
 				hasClient: vi.fn().mockResolvedValue(true),
 				getFocusByUser: vi.fn().mockResolvedValue('title'),
+				getFocusByField: vi.fn().mockResolvedValue(null),
 				unset: vi.fn(),
 				collection: 'articles',
 				item: 1,
+
+				focus: vi.fn(),
 			};
 
 			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
@@ -750,6 +753,28 @@ describe('CollabHandler', () => {
 			} as any);
 
 			expect(mockRoom.unset).toHaveBeenCalledWith(mockClient, 'title');
+			expect(mockRoom.focus).not.toHaveBeenCalled();
+		});
+
+		test('rejects unset if field is locked by another user', async () => {
+			const mockRoom = {
+				hasClient: vi.fn().mockResolvedValue(true),
+				unset: vi.fn(),
+				collection: 'articles',
+				item: 1,
+				getFocusByUser: vi.fn().mockResolvedValue(null),
+				getFocusByField: vi.fn().mockResolvedValue('other-user'),
+			};
+
+			vi.mocked(handler.roomManager.getRoom).mockResolvedValue(mockRoom as any);
+
+			await expect(
+				handler.onUpdate(mockClient, {
+					action: 'update',
+					room: 'room-uid',
+					field: 'title',
+				} as any),
+			).rejects.toHaveProperty('extensions.reason', expect.stringMatching(/already focused by another user/i));
 		});
 	});
 

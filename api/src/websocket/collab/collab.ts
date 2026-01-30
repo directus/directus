@@ -423,17 +423,28 @@ export class CollabHandler {
 		// Focus field before update to prevent concurrent overwrite conflicts
 		let focus = await room.getFocusByUser(client.uid);
 
-		if (focus !== message.field) {
-			await room.focus(client, message.field);
+		// Unset should not acquire focus
+		if (message.changes === undefined) {
+			const currentFocuser = await room.getFocusByField(message.field);
 
-			focus = await room.getFocusByUser(client.uid);
-		}
+			if (currentFocuser && currentFocuser !== client.uid) {
+				throw new ForbiddenError({
+					reason: `Field ${message.field} is already focused by another user`,
+				});
+			}
+		} else {
+			if (focus !== message.field) {
+				await room.focus(client, message.field);
 
-		// Focus field before update to prevent concurrent overwrite conflicts
-		if (!focus || focus !== message.field) {
-			throw new ForbiddenError({
-				reason: `Cannot update field ${message.field} without focusing on it first`,
-			});
+				focus = await room.getFocusByUser(client.uid);
+			}
+
+			// Focus field before update to prevent concurrent overwrite conflicts
+			if (!focus || focus !== message.field) {
+				throw new ForbiddenError({
+					reason: `Cannot update field ${message.field} without focusing on it first`,
+				});
+			}
 		}
 
 		if (message.changes !== undefined) {
