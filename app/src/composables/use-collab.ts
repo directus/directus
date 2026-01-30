@@ -306,7 +306,9 @@ export function useCollab(
 							_in: Array.from(new Set(message.users.map((user) => user.user))),
 						},
 					},
-					fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as any,
+					//  Object syntax for nested fields - SDK types require schema definition for full support
+					// TODO: Update this once https://linear.app/directus/issue/CMS-1702/improve-sdk-type-safety-by-using-coreschema-instead-of-unknown is Done
+					fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as ('id' | 'first_name' | 'last_name' | 'avatar')[],
 				}),
 			);
 
@@ -395,7 +397,8 @@ export function useCollab(
 			: await sdk
 					.request<CollabUser>(
 						readUser(message.user, {
-							fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as any,
+							// TODO: Update this once https://linear.app/directus/issue/CMS-1702/improve-sdk-type-safety-by-using-coreschema-instead-of-unknown is Done
+							fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as ('id' | 'first_name' | 'last_name' | 'avatar')[],
 						}),
 					)
 					.catch(() => ({}));
