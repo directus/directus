@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContextAttachment } from '@directus/ai';
 import type { DynamicToolUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
-import { useAiStore } from '../stores/use-ai';
+import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
 import AiContextCard from './ai-context-card.vue';
 import AiMessageFile from './parts/ai-message-file.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
@@ -43,24 +43,16 @@ withDefaults(defineProps<Props>(), {
 	parts: () => [],
 });
 
-const aiStore = useAiStore();
+const { highlight, clearHighlight } = useVisualElementHighlight();
 
 const isToolPart = (part: AiMessagePart): part is DynamicToolUIPart => part.type.startsWith('tool-');
 
 function handleMouseEnter(attachment: ContextAttachment) {
-	if (attachment.type === 'visual-element') {
-		aiStore.highlightVisualElement({
-			collection: attachment.data.collection,
-			item: attachment.data.item,
-			fields: attachment.data.fields,
-		});
-	}
+	highlight(attachment);
 }
 
-function handleMouseLeave(attachment: ContextAttachment) {
-	if (attachment.type === 'visual-element') {
-		aiStore.highlightVisualElement(null);
-	}
+function handleMouseLeave() {
+	clearHighlight();
 }
 </script>
 

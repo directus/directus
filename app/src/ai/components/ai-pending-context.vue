@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
-import { useAiStore } from '../stores/use-ai';
-import { isVisualElement, type PendingContextItem } from '../types';
+import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
+import { useAiContextStore } from '../stores/use-ai-context';
+import type { PendingContextItem } from '../types';
 import AiContextCard from './ai-context-card.vue';
 
-const aiStore = useAiStore();
+const contextStore = useAiContextStore();
+const { highlight, clearHighlight } = useVisualElementHighlight();
 
 const scrollContainerRef = useTemplateRef<HTMLElement>('scroll-container');
 const showLeftFade = ref(false);
@@ -21,6 +23,7 @@ function updateFades() {
 
 	if (hasOverflow) {
 		showLeftFade.value = el.scrollLeft > 0;
+		// -1 accounts for sub-pixel rounding in scrollWidth
 		showRightFade.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
 	} else {
 		showLeftFade.value = false;
@@ -42,33 +45,22 @@ onUnmounted(() => {
 });
 
 function handleMouseEnter(item: PendingContextItem) {
-	if (isVisualElement(item)) {
-		aiStore.highlightVisualElement({
-			collection: item.data.collection,
-			item: item.data.item,
-			fields: item.data.fields,
-		});
-	}
+	highlight(item);
 }
 
-function handleMouseLeave(item: PendingContextItem) {
-	if (isVisualElement(item)) {
-		aiStore.highlightVisualElement(null);
-	}
+function handleMouseLeave() {
+	clearHighlight();
 }
 
 function handleRemove(item: PendingContextItem) {
-	if (isVisualElement(item)) {
-		aiStore.highlightVisualElement(null);
-	}
-
-	aiStore.removePendingContext(item.id);
+	clearHighlight();
+	contextStore.removePendingContext(item.id);
 }
 </script>
 
 <template>
 	<div
-		v-if="aiStore.pendingContext && aiStore.pendingContext.length > 0"
+		v-if="contextStore.pendingContext && contextStore.pendingContext.length > 0"
 		class="ai-pending-context-wrapper"
 		:class="{
 			'show-left-fade': showLeftFade,
@@ -77,7 +69,7 @@ function handleRemove(item: PendingContextItem) {
 	>
 		<div ref="scroll-container" class="ai-pending-context" @scroll="updateFades">
 			<AiContextCard
-				v-for="item in aiStore.pendingContext"
+				v-for="item in contextStore.pendingContext"
 				:key="item.id"
 				:item="item"
 				removable

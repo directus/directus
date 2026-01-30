@@ -1,10 +1,11 @@
+import type { ContextAttachment } from '@directus/ai';
 import { useAiStore } from '../stores/use-ai';
 import type { PendingContextItem } from '../types';
 
 export function useVisualElementHighlight() {
 	const aiStore = useAiStore();
 
-	function highlight(item: PendingContextItem) {
+	function highlight(item: PendingContextItem | ContextAttachment) {
 		if (item.type === 'visual-element') {
 			aiStore.highlightVisualElement({
 				collection: item.data.collection,
