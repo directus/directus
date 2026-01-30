@@ -172,3 +172,15 @@ Removed support for Node.js 18. Directus now requires Node.js 20 or higher.
 
 **Migration**: Update your Node.js installation to version 20 or higher before upgrading.
 ```
+
+## Pull Requests
+
+When creating a new pull request, always use the PR template located at `.github/pull_request_template.md`. The template includes:
+
+- **Scope**: List what changed in the PR
+- **Potential Risks / Drawbacks**: Document any risks or trade-offs
+- **Tested Scenarios**: Describe how the changes were tested
+- **Review Notes / Questions**: Highlight areas needing attention or questions for reviewers
+- **Checklist**: Confirm tests, documentation, and OpenAPI updates
+
+Replace the placeholder "Lorem ipsum" content with actual details about your changes. Always reference the related issue at the bottom using `Fixes #<num>` format.
