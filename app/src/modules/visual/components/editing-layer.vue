@@ -80,14 +80,14 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 			sendConfirm();
 			if (showEditableElements) sendShowEditableElements(true);
 			// Set URL for context tracking
-			contextStore.setVisualElementContextUrl(frameSrc);
+			contextStore.syncVisualElementContextUrl(frameSrc);
 		}
 
 		if (action === 'navigation') receiveNavigation(data);
 
 		if (action === 'edit') onClickEdit(data);
 
-		if (action === 'add-to-context') receiveAddToContext(data);
+		if (action === 'addToContext') receiveAddToContext(data);
 	});
 
 	watch(
@@ -208,7 +208,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	}
 
 	function sendHighlightElement(data: HighlightElementData) {
-		send('highlight-element', data);
+		send('highlightElement', data);
 	}
 }
 

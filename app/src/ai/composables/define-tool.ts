@@ -56,7 +56,7 @@ export const defineTool = <T extends ZodObject>(tool: MaybeRefOrGetter<ToolDefin
 	watch(
 		() => toValue(tool),
 		(newDef, oldDef) => {
-			toolsStore.replaceLocalTool(toValue(toValue(oldDef).name), toStatic(newDef));
+			toolsStore.replaceLocalTool(toValue(oldDef.name), toStatic(newDef));
 		},
 		{ deep: true },
 	);

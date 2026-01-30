@@ -46,7 +46,7 @@ export function useContextStaging() {
 
 			const text = messages.flatMap((m) => m.parts.filter((p) => p.type === 'text').map((p) => p.text)).join('\n\n');
 
-			const added = aiStore.addPendingContext({
+			const added = contextStore.addPendingContext({
 				id: nanoid(),
 				type: 'prompt',
 				data: { text, prompt, values },
@@ -99,7 +99,7 @@ export function useContextStaging() {
 				const displayValue =
 					renderDisplayStringTemplate(collection, displayTemplate, item) || `${collection} #${itemId}`;
 
-				const added = aiStore.addPendingContext({
+				const added = contextStore.addPendingContext({
 					id: nanoid(),
 					type: 'item',
 					data: { collection, id: itemId },
@@ -141,7 +141,7 @@ export function useContextStaging() {
 
 		const display = displayValue || `${formatTitle(element.collection)} #${element.item}`;
 
-		const existingContext = aiStore.pendingContext.find(
+		const existingContext = contextStore.pendingContext.find(
 			(item) => item.type === 'visual-element' && isSameVisualElement(item.data, element),
 		);
 
@@ -151,7 +151,7 @@ export function useContextStaging() {
 			return false;
 		}
 
-		const added = aiStore.addPendingContext({
+		const added = contextStore.addPendingContext({
 			id: nanoid(),
 			type: 'visual-element',
 			data: element,

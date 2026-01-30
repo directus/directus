@@ -35,9 +35,9 @@ export type ConfirmData = {
 	aiEnabled: boolean;
 };
 
-export type ReceiveAction = 'connect' | 'edit' | 'navigation' | 'add-to-context';
+export type ReceiveAction = 'connect' | 'edit' | 'navigation' | 'addToContext';
 
-export type SendAction = 'confirm' | 'showEditableElements' | 'saved' | 'highlight-element';
+export type SendAction = 'confirm' | 'showEditableElements' | 'saved' | 'highlightElement';
 
 /** Not shared with the package */
 
@@ -49,5 +49,5 @@ export type ReceiveData =
 	| { action: 'connect'; data: null }
 	| { action: 'edit'; data: EditData }
 	| { action: 'navigation'; data: NavigationData }
-	| { action: 'add-to-context'; data: AddToContextData }
+	| { action: 'addToContext'; data: AddToContextData }
 	| { action: null; data: null };

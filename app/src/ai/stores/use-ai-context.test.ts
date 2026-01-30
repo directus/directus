@@ -147,11 +147,11 @@ describe('useAiContextStore', () => {
 		});
 	});
 
-	describe('setVisualElementContextUrl', () => {
+	describe('syncVisualElementContextUrl', () => {
 		test('sets URL', () => {
 			const store = useAiContextStore();
 
-			store.setVisualElementContextUrl('/admin/visual/posts');
+			store.syncVisualElementContextUrl('/admin/visual/posts');
 
 			expect(store.visualElementContextUrl).toBe('/admin/visual/posts');
 		});
@@ -159,12 +159,12 @@ describe('useAiContextStore', () => {
 		test('clears visual context on URL change', () => {
 			const store = useAiContextStore();
 
-			store.setVisualElementContextUrl('/admin/visual/posts');
+			store.syncVisualElementContextUrl('/admin/visual/posts');
 			store.addPendingContext(createVisualElement('1'));
 			store.addPendingContext(createItemContext('item-1'));
 
 			// Change URL
-			store.setVisualElementContextUrl('/admin/visual/pages');
+			store.syncVisualElementContextUrl('/admin/visual/pages');
 
 			// Visual elements cleared, items remain
 			expect(store.visualElements).toHaveLength(0);
@@ -175,10 +175,10 @@ describe('useAiContextStore', () => {
 		test('does not clear on same URL', () => {
 			const store = useAiContextStore();
 
-			store.setVisualElementContextUrl('/admin/visual/posts');
+			store.syncVisualElementContextUrl('/admin/visual/posts');
 			store.addPendingContext(createVisualElement('1'));
 
-			store.setVisualElementContextUrl('/admin/visual/posts');
+			store.syncVisualElementContextUrl('/admin/visual/posts');
 
 			expect(store.visualElements).toHaveLength(1);
 		});
@@ -322,7 +322,7 @@ describe('useAiContextStore', () => {
 		test('clears pendingContext and visualElementContextUrl', () => {
 			const store = useAiContextStore();
 
-			store.setVisualElementContextUrl('/admin/visual/posts');
+			store.syncVisualElementContextUrl('/admin/visual/posts');
 			store.addPendingContext(createVisualElement('1'));
 			store.addPendingContext(createItemContext('2'));
 

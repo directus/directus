@@ -58,7 +58,12 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		visualElementContextUrl.value = null;
 	};
 
-	const setVisualElementContextUrl = (url: string) => {
+	/**
+	 * Updates the visual element context URL. If the URL has changed,
+	 * all existing visual element context is cleared since it belongs
+	 * to the previous page.
+	 */
+	const syncVisualElementContextUrl = (url: string) => {
 		if (visualElementContextUrl.value !== null && visualElementContextUrl.value !== url) {
 			clearVisualElementContext();
 		}
@@ -142,7 +147,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		clearPendingContext,
 		clearNonVisualContext,
 		clearVisualElementContext,
-		setVisualElementContextUrl,
+		syncVisualElementContextUrl,
 		fetchContextData,
 		dehydrate,
 	};
