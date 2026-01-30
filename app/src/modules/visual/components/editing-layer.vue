@@ -22,7 +22,6 @@ import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
@@ -64,7 +63,6 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	const aiStore = useAiStore();
 	const contextStore = useAiContextStore();
 	const toolsStore = useAiToolsStore();
-	const fieldsStore = useFieldsStore();
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
 	const { stageVisualElement } = useContextStaging();
@@ -98,40 +96,12 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	);
 
 	// Listen for items tool results to send saved messages to iframe
-	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input, output) => {
+	// Any non-read mutation should trigger a preview refresh, including nested/related item edits
+	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input) => {
 		if (tool !== 'items') return;
-		if (input.action !== 'update') return;
+		if (input.action === 'read') return;
 
-		const collection = input.collection as string;
-
-		// Get PK field name for this collection
-		const pkField = fieldsStore.getPrimaryKeyFieldForCollection(collection);
-		if (!pkField) return;
-
-		// Extract updated items from output.data
-		const outputData = output as { data?: unknown[] };
-		const items = Array.isArray(outputData.data) ? outputData.data : [];
-
-		for (const item of items) {
-			if (!item || typeof item !== 'object') continue;
-
-			const itemKey = (item as Record<string, unknown>)[pkField.field];
-			if (itemKey === undefined) continue;
-
-			// Match against selected visual elements
-			const matchingContext = contextStore.visualElements.find(
-				(ctx) => ctx.data.collection === collection && String(ctx.data.item) === String(itemKey),
-			);
-
-			if (matchingContext) {
-				sendSaved({
-					key: matchingContext.data.key ?? '',
-					collection,
-					item: itemKey as PrimaryKey,
-					payload: {},
-				});
-			}
-		}
+		sendSaved({ key: '', collection: input.collection as string, item: null, payload: {} });
 	});
 
 	// Listen for visual element highlight requests from the AI store
