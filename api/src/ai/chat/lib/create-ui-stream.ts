@@ -45,6 +45,8 @@ export const createUiStream = async (
 	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
 	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
+	// Compute the full system prompt once to avoid re-computing on each step
+	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
 
 	const stream = streamText({
 		system: baseSystemPrompt,
@@ -53,9 +55,15 @@ export const createUiStream = async (
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
 		tools,
+		/**
+		 * prepareStep is called before each AI step to prepare the system prompt.
+		 * When context exists, we override the system prompt to include context attachments.
+		 * This allows the initial system prompt to be simple while ensuring all steps
+		 * (including tool continuation steps) receive the full context.
+		 */
 		prepareStep: () => {
 			if (contextBlock) {
-				return { system: baseSystemPrompt + contextBlock };
+				return { system: fullSystemPrompt };
 			}
 
 			return {};
