@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useExtensionsStore } from '@/stores/extensions';
 import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 const props = defineProps<{ extensionId: string; versionId: string }>();
 
@@ -45,14 +44,14 @@ const atLimit = computed(() => {
 </script>
 
 <template>
-	<v-button v-if="installed" class="install" align="left" full-width to="/settings/extensions">
-		<v-icon name="settings" left />
-		{{ t('manage') }}
-	</v-button>
+	<VButton v-if="installed" class="install" align="left" full-width to="/settings/extensions">
+		<VIcon name="settings" left />
+		{{ $t('manage') }}
+	</VButton>
 
-	<v-button
+	<VButton
 		v-else
-		v-tooltip="atLimit ? t('reached_maximum_number_of_extensions', { n: limit }) : null"
+		v-tooltip="atLimit ? $t('reached_maximum_number_of_extensions', { n: limit }) : null"
 		:loading="installing"
 		:disabled="atLimit"
 		class="install"
@@ -60,9 +59,9 @@ const atLimit = computed(() => {
 		full-width
 		@click="install"
 	>
-		<v-icon name="download" left />
-		{{ t('install_extension') }}
-	</v-button>
+		<VIcon name="download" left />
+		{{ $t('install_extension') }}
+	</VButton>
 </template>
 
 <style scoped>

@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import { useRelationM2M } from '@/composables/use-relation-m2m';
-import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { useWindowSize } from '@/composables/use-window-size';
-import { useInjectNestedValidation } from '@/composables/use-nested-validation';
-import vTooltip from '@/directives/tooltip';
-import { useFieldsStore } from '@/stores/fields';
-import { fetchAll } from '@/utils/fetch-all';
 import type { ContentVersion } from '@directus/types';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TranslationForm from './translation-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useInjectNestedValidation } from '@/composables/use-nested-validation';
+import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useWindowSize } from '@/composables/use-window-size';
+import vTooltip from '@/directives/tooltip';
+import { useFieldsStore } from '@/stores/fields';
+import { fetchAll } from '@/utils/fetch-all';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 
 const props = withDefaults(
@@ -26,9 +26,10 @@ const props = withDefaults(
 		defaultLanguage?: string | null;
 		defaultOpenSplitView?: boolean;
 		userLanguage?: boolean;
-		value: (number | string | Record<string, any>)[] | Record<string, any> | null;
+		value?: (number | string | Record<string, any>)[] | Record<string, any> | null;
 		autofocus?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 	}>(),
 	{
@@ -37,6 +38,7 @@ const props = withDefaults(
 		value: () => [],
 		autofocus: false,
 		disabled: false,
+		nonEditable: false,
 		defaultLanguage: null,
 		defaultOpenSplitView: false,
 		userLanguage: false,
@@ -54,7 +56,7 @@ const value = computed({
 
 const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
 
@@ -158,6 +160,7 @@ function updateValue(item: DisplayItem | undefined, lang: string | undefined) {
 const translationProps = computed(() => ({
 	languageOptions: languageOptions.value,
 	disabled: props.disabled,
+	nonEditable: props.nonEditable,
 	autofocus: props.autofocus,
 	relationInfo: relationInfo.value,
 	getItemWithLang,
@@ -361,37 +364,33 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<translation-form v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+		<TranslationForm v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
 			<template #split-view="{ active, toggle }">
-				<v-icon
+				<VIcon
 					v-if="splitViewAvailable && !splitViewEnabled"
-					v-tooltip="t('interfaces.translations.toggle_split_view')"
+					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
+					:disabled="disabled && !nonEditable"
 					@click.stop="
 						if (active) toggle();
 						splitView = true;
 					"
 				/>
 			</template>
-		</translation-form>
+		</TranslationForm>
 
-		<translation-form
-			v-if="splitViewEnabled"
-			v-model:lang="secondLang"
-			v-bind="translationProps"
-			secondary
-			class="half"
-		>
+		<TranslationForm v-if="splitViewEnabled" v-model:lang="secondLang" v-bind="translationProps" secondary class="half">
 			<template #split-view>
-				<v-icon
-					v-tooltip="t('interfaces.translations.toggle_split_view')"
+				<VIcon
+					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
+					:disabled="disabled && !nonEditable"
 					@click="splitView = false"
 				/>
 			</template>
-		</translation-form>
+		</TranslationForm>
 	</div>
 </template>
 

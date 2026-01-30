@@ -3,8 +3,11 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
-import * as getSchemaModule from '../utils/get-schema.js';
 import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
+import * as getSchemaModule from '../utils/get-schema.js';
+import { CollectionsService } from './collections.js';
+import { FieldsService } from './fields.js';
+import { ItemsService } from './items.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -31,7 +34,7 @@ vi.mock('../emitter.js', async () => {
 });
 
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../test-utils/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
@@ -78,10 +81,6 @@ vi.mock('./fields/get-collection-relation-list.js', () => ({
 vi.mock('./fields/get-collection-meta-updates.js', () => ({
 	getCollectionMetaUpdates: vi.fn().mockReturnValue([]),
 }));
-
-import { CollectionsService } from './collections.js';
-import { FieldsService } from './fields.js';
-import { ItemsService } from './items.js';
 
 const schema = new SchemaBuilder()
 	.collection('directus_collections', (c) => {

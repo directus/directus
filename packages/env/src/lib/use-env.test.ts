@@ -1,6 +1,6 @@
-import { _cache, useEnv } from './use-env.js';
-import { test, expect, vi, afterEach } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 import { createEnv } from './create-env.js';
+import { _cache, useEnv } from './use-env.js';
 
 vi.mock('./create-env.js');
 

@@ -131,7 +131,6 @@ create_role: Opret rolle
 create_user: Opret bruger
 message: Besked
 delete_panel: Slet panel
-create_webhook: Opret webhook
 create_custom_translation: Opret tilpasset Oversættelse
 edit_custom_translation: Rediger Brugerdefineret Oversættelse
 no_custom_translations: Ingen tilpassede Oversættelser
@@ -380,6 +379,7 @@ confirm_revert_body: Dette vil vende elementet tilbage til den valgte tilstand.
 display: Vis
 settings_update_success: Indstillinger opdateret
 title: Titel
+subtitle: Undertitel
 revision_delta_created: Oprettet
 revision_delta_created_externally: Oprettet eksternt
 revision_delta_updated: 'Opdateret 1 Felt | Opdaterede {count} felter'
@@ -542,8 +542,6 @@ file_count: 'Ingen filer, én fil, {count} filer'
 no_files_copy: Der er ingen filer her.
 user_count: 'Ingen brugere: Én bruger, {count} brugere'
 no_users_copy: Der er endnu ingen brugere i denne rolle.
-webhooks_count: 'Ingen webhooks | En webhook | {count} webhooks'
-no_webhooks_copy: Ingen webhooks er konfigureret endnu. Kom i gang ved at oprette en nedenfor.
 no_notifications: Ingen notifikationer
 no_notifications_copy: Du er helt ajour!
 activity_log: Aktivitetslog
@@ -572,7 +570,6 @@ action: Handling
 ip_address: IP adresse
 user_agent: Brugeragent
 origin: Oprindelse
-webhooks: Webhooks
 decimals: Decimaler
 value_decimals: Værdi decimaler
 min_value: Minimumsværdi
@@ -647,7 +644,6 @@ errors:
   VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
   VALUE_TOO_LONG: Værdien er for lang
 security: Sikkerhed
-value_hashed: Værdi sikker hashed
 bookmark_name: Bogmærke navn...
 create_bookmark: Opret bogmærke
 edit_bookmark: Rediger bogmærke
@@ -807,7 +803,6 @@ icon_on: Ikon til
 icon_off: Ikon fra
 label: Etiket
 select_a_flow: Vælg et Flow
-run_flow_on_current_edited_confirm: Dette element kan blive opdateret af dette flow, er du sikker på, at du vil udføre det?
 trigger: Udløser
 trigger_options: Udløserindstillinger
 view_trigger: Vis udløser
@@ -959,7 +954,6 @@ editing_in_batch: 'Masseredigerer {count} elementer'
 no_options_available: Ingen tilgængelige valgmuligheder
 settings_data_model: Data model
 settings_project: Indstillinger
-settings_webhooks: Webhooks
 settings_presets: Foretrukne
 settings_translations: Oversættelser
 one_or_more_options_are_missing: En eller flere muligheder mangler
@@ -983,37 +977,6 @@ discard_changes_copy: Er du sikker på, at du vil kassere alle de foretagne ænd
 show_x_axis: Vis x-Akse
 show_y_axis: Vis y-akse
 keep_editing: Fortsæt redigering
-page_help_collections_overview: '**Samlinger Oversigt** — Liste over alle samlinger, du har adgang til.'
-page_help_collections_collection: >-
-  **Gennemse elementer ** — Viser alle {collection} elementer, du har adgang til. Tilpas layout, filtre og sortering for at skræddersy din visning, og gem endda bogmærker af disse forskellige konfigurationer for hurtig adgang.
-page_help_collections_item: >-
-  **Item Detail** — En formular til visning og håndtering af dette element. Denne sidebar indeholder også en fuld historie af revisioner og indlejrede kommentarer.
-page_help_activity_collection: >-
-  **Gennemse aktivitet** — En omfattende liste over alle dine brugeres system og indholdsaktivitet.
-page_help_docs_global: >-
-  **Dokumentationsoversigt** — Dokumenter, der er skræddersyet specifikt til projektets version og skema.
-page_help_files_collection: >-
-  **Fil Bibliotek** — Viser alle filer uploadet til dette projekt. Tilpas layout, filtre og sortering for at skræddersy din visning, og gem endda bogmærker af disse forskellige konfigurationer for hurtig adgang.
-page_help_files_item: >-
-  **Fildetaljer** — En formular til håndtering af filmetadata, redigering af det oprindelige aktiv og opdatering af adgangsindstillinger.
-page_help_settings_datamodel_collections: >-
-  **Datamodel: Samlinger** — Viser alle tilgængelige samlinger. Dette omfatter synlige, skjulte og systemsamlinger, samt uhåndterede databasetabeller, der kan tilføjes.
-page_help_settings_datamodel_fields: >-
-  **Datamodel: Samling** — En formular til håndtering af denne indsamling og dens felter.
-page_help_settings_roles_item: "**Rolle Detaljer** — Administrer en rolles tilladelser og andre indstillinger."
-page_help_settings_presets_collection: >-
-  **Gennemse forudindstillinger** — Viser alle forudindstillinger i projektet, herunder: bruger, rolle og globale bogmærker samt standardvisninger.
-page_help_settings_presets_item: >-
-  **Forudindstilling Detaljer** — En formular til håndtering af bogmærker og standard samlingsindstillinger.
-page_help_settings_webhooks_collection: '**Gennemse Webhooks** — Viser alle webhooks i projektet.'
-page_help_settings_webhooks_item: '**Webhook Detail** — En formular til oprettelse og håndtering af projektwebhooks.'
-page_help_settings_flows_collection: '**Gennemse flows** — Viser alle flows i projektet.'
-page_help_settings_flows_item: '**Flowdetalje** — Arbejdsområde til styring af en eller flere operationer.'
-page_help_users_collection: '**Bruger Directory** — Viser en liste over alle systembrugere i dette projekt.'
-page_help_users_item: >-
-  **Brugeroplysninger** — Administrer dine kontooplysninger eller se andre brugeres detaljer.
-page_help_insights_overview: '**Insights** — Liste over dashboards du har adgang til.'
-page_help_insights_dashboard: '**Dashboard** — Arbejdsrum til håndtering af et eller flere paneler'
 activity_feed: Aktivitetsfeed
 add_new: Tilføj ny
 create_new: Opret ny
@@ -1036,7 +999,6 @@ directus_collection:
   directus_dashboards: Instrumentbrætter i Insights modulet
   directus_fields: Yderligere feltkonfiguration og metadata
   directus_files: Metadata for alle administrerede fil-asset'er
-  directus_flows: Automatiseringsflows
   directus_folders: Giver virtuelle mapper til filer
   directus_migrations: Hvilken version af den database, du bruger
   directus_notifications: Notifikationer sendt til brugere
@@ -1050,7 +1012,6 @@ directus_collection:
   directus_settings: Valgmuligheder for projektopsætning
   directus_shares: Spor eksternt delte elementer
   directus_users: Systembrugere til platformen
-  directus_webhooks: Konfiguration for event-baserede HTTP-forespørgsler
 fields:
   directus_activity:
     item: Element primær nøgle
@@ -1189,18 +1150,6 @@ fields:
     users: Brugere i rolle
   directus_policies:
     description: Beskrivelse
-  directus_webhooks:
-    name: Navn
-    method: Metode
-    status: Status
-    data: Data
-    header: Overskrift
-    value: Værdi
-    headers: Anmod om headers
-    data_label: Send begivenhedsdata
-    triggers: Udløsere
-    actions: Handlinger
-    collections: Samlinger
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
@@ -1286,19 +1235,6 @@ field_options:
     status_dropdown_suspended: Suspenderet
     status_dropdown_archived: Arkiveret
     token: Indtast en sikker adgangstok...
-  directus_webhooks:
-    status_options_active: Aktiv
-    status_options_inactive: Inaktiv
-    data_label: Send begivenhedsdata
-    triggers_divider: Udløsere
-    actions_create: Opret
-    actions_update: Opdater
-    actions_delete: Slet
-    actions_login: Log ind
-    headers:
-      header: Overskrift
-      value: Værdi
-      add: Tilføj overskrift
 no_fields_in_collection: 'Der er ingen felter i "{collection}" endnu'
 no_value: Ingen værdi
 do_nothing: Gør intet
@@ -1318,6 +1254,20 @@ shares: Aktier
 unlimited_usage: Ubegrænset brug
 no_shares: Ingen aktier at vise
 new_share: Ny Del
+ai:
+  input: Input
+  unknown: Ukendt
+  settings: Indstillinger
+  tool_approval:
+    disabled: Deaktiveret
+ai_tools:
+  items: elementer
+  files: Filer
+  folders: Mapper
+  operations: Opgaver
+  schema: Schema
+  collections: Samlinger
+  fields: Felter
 mcp_prompts_collection_schema:
   messages_role_user: Bruger
 expired: Udløbet
@@ -1350,7 +1300,6 @@ continue_label: Fortsæt
 continue_as: >-
   {name} er i øjeblikket godkendt. Hvis du genkender denne konto, skal du fortsætte.
 editing_role: '{role} Rolle'
-creating_webhook: Opretter webhook
 default_label: Standard
 delete_label: Slet
 delete_are_you_sure: >-
@@ -1465,9 +1414,7 @@ interfaces:
     accordion_mode: Harmonika tilstand
     max_one_section_open: Maks en sektion åben
   presentation-links:
-    presentation-links: Knap links
-    links: Links
-    description: Konfigurerbare linkknapper til at starte dynamiske URL'er
+    presentation-links: Knapper
     style: Stil
     primary: Primær
     link: Links
@@ -1754,6 +1701,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Rå redigering
     description: Tillad indtastning af rå- eller overskægsskabelonværdier
+  header:
+    header: Overskrift
+    links: Links
 displays:
   translations:
     translations: Oversættelser
@@ -2025,11 +1975,9 @@ triggers:
 a_flow_uuid: Vælg et flow, der skal udløses...
 any_string_or_json: Enhver streng eller JSON...
 item_payload_placeholder: Dette er den JSON, der bruges til at opdatere elementets feltværdier...
-operation_variables_note: Du kan få adgang til flowdata med variabler såsom **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** og **{'{'}{'{'}$accountability{'}'}{'}'}**, eller referer til tidligere handlinger ved hjælp af **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Betingelse
-    description: Rut et flow baseret på If / Else logik
   exec:
     name: Kør script
     description: Udfør vilkårlig kode for at ændre nyttelasten
@@ -2090,7 +2038,6 @@ operations:
     name: Transformer nyttelast
     description: Ændre Flows JSON-nyttelast
   trigger:
-    description: Send disse data til et andet flow
     data: Data
     iteration_mode: Iterationstilstand
     iteration_mode_note: Mode til iteration over arrays.

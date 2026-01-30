@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { defaultValues, FormValidator, useFormFields, validate, ValidationError } from './form';
 import SetupForm from './form.vue';
-
 import api from '@/api';
 import { login } from '@/auth';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
 import { translateAPIError } from '@/lang';
-import { SetupForm as Form } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { FormValidator, defaultValues, useFormFields, validate, ValidationError } from './form';
+import PublicView from '@/views/public';
 
 const { t } = useI18n();
 
@@ -23,6 +26,7 @@ const router = useRouter();
 const fields = useFormFields(true, form);
 const errors = ref<ValidationError[]>([]);
 const error = ref<any>(null);
+const isSaving = ref(false);
 
 async function launch() {
 	errors.value = validate(form.value, fields, true);
@@ -30,6 +34,7 @@ async function launch() {
 	if (errors.value.length > 0) return;
 
 	try {
+		isSaving.value = true;
 		await api.post('server/setup', form.value);
 
 		await login({
@@ -42,6 +47,8 @@ async function launch() {
 		router.push('/content');
 	} catch (err: any) {
 		error.value = err;
+	} finally {
+		isSaving.value = false;
 	}
 }
 
@@ -50,25 +57,31 @@ const errorMessage = computed(() => {
 });
 
 const formComplete = computed(() => FormValidator.safeParse(form.value).success);
+
+watch(form, () => {
+	if (form.value.project_usage !== 'commercial') {
+		form.value.org_name = null;
+	}
+});
 </script>
 
 <template>
-	<public-view wide>
-		<setup-form v-model="form" :errors="errors" utm-location="onboarding"></setup-form>
-		<v-button full-width :disabled="!formComplete" @click="launch()">
-			<v-icon name="rocket_launch" />
-			{{ t('setup_launch') }}
-		</v-button>
+	<PublicView wide>
+		<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
+		<VButton full-width :disabled="!formComplete" :loading="isSaving" @click="launch()">
+			<VIcon name="rocket_launch" />
+			{{ $t('setup_launch') }}
+		</VButton>
 
-		<v-notice v-if="error" type="danger">
+		<VNotice v-if="error" type="danger">
 			<p class="error-code">
 				{{ translateAPIError(error) }}
 			</p>
 			<p>
 				{{ errorMessage }}
 			</p>
-		</v-notice>
-	</public-view>
+		</VNotice>
+	</PublicView>
 </template>
 
 <style scoped>

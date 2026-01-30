@@ -72,7 +72,6 @@ create_role: ভূমিকা তৈরি করুন
 create_user: ব্যবহারকারী তৈরি করুন
 message: বার্তা
 delete_panel: প্যানেল মুছুন
-create_webhook: ওয়েবহুক তৈরি করুন
 invite_users: ব্যবহারকারীদের আমন্ত্রণ জানান
 invite: আমন্ত্রণ করুন
 email_already_invited: এই ইমেলটিতে "{email}" ইতিমধ্যেই আমন্ত্রণ জানানো হয়েছে৷
@@ -130,6 +129,8 @@ fields:
 field_options:
   directus_collections:
     archive_divider: সংরক্ষণাগার
+ai:
+  unknown: অজানা
 interfaces:
   presentation-links:
     primary: প্রাথমিক
@@ -140,9 +141,14 @@ displays:
     text: পাঠ্য
   hash:
     hash: হ্যাশ
+triggers:
+  webhook:
+    method: পদ্ধতি
 operations:
   log:
     message: বার্তা
   notification:
     message: বার্তা
     subject: বিষয়
+  request:
+    method: পদ্ধতি

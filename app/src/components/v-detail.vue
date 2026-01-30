@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { i18n } from '@/lang';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	modelValue?: boolean;
@@ -11,7 +13,6 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
-	label: i18n.global.t('toggle'),
 	startOpen: false,
 	disabled: false,
 });
@@ -51,17 +52,17 @@ function toggle() {
 	<div class="v-detail" :class="{ disabled }">
 		<slot name="activator" v-bind="{ active: internalActive, enable, disable, toggle }">
 			<button type="button" class="activator" :disabled @click="internalActive = !internalActive">
-				<v-divider>
-					<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
-					<slot name="title">{{ label }}</slot>
-				</v-divider>
+				<VDivider>
+					<VIcon :name="internalActive ? 'expand_more' : 'chevron_right'" :disabled small />
+					<slot name="title">{{ label || $t('toggle') }}</slot>
+				</VDivider>
 			</button>
 		</slot>
-		<transition-expand>
+		<TransitionExpand>
 			<div v-if="internalActive" class="content">
 				<slot />
 			</div>
-		</transition-expand>
+		</TransitionExpand>
 	</div>
 </template>
 
@@ -72,11 +73,15 @@ function toggle() {
 	text-align: start;
 }
 
-.v-detail:not(.disabled) .v-divider {
+.v-detail {
 	--v-divider-label-color: var(--theme--foreground-subdued);
 
-	&:hover {
-		--v-divider-label-color: var(--theme--foreground-accent);
+	&.disabled .v-divider {
+		cursor: not-allowed;
+	}
+
+	&:not(.disabled) .v-divider:hover {
+		--v-divider-label-color: var(--theme--foreground);
 	}
 }
 

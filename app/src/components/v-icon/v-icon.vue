@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user';
 import { useSizeClass } from '@directus/composables';
 import { isIn } from '@directus/utils';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
 import { computed } from 'vue';
 import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
-
 import { components } from './custom-icons';
-
 import SocialIcon from './social-icon.vue';
 import { socialIcons } from './social-icons';
+import { useUserStore } from '@/stores/user';
 
 const props = withDefaults(
 	defineProps<{
@@ -88,7 +86,7 @@ function emitClick(event: MouseEvent) {
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
 	>
-		<component :is="customIconName" v-if="customIconName" />
+		<component :is="customIconName" v-if="customIconName" class="custom-icon-svg" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
 		<i v-else :class="{ filled }" :data-icon="name"></i>
 	</component>
@@ -169,6 +167,10 @@ function emitClick(event: MouseEvent) {
 		}
 	}
 
+	&[disabled] {
+		cursor: not-allowed;
+	}
+
 	&.sup {
 		--v-icon-size: 8px;
 
@@ -210,5 +212,10 @@ function emitClick(event: MouseEvent) {
 	&.mirrored {
 		transform: scaleX(-1);
 	}
+}
+
+.custom-icon-svg {
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>

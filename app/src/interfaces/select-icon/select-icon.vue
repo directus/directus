@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
-import { computed, ref, nextTick, watch, type Ref, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, nextTick, onUnmounted, type Ref, ref, watch } from 'vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
+import VDivider from '@/components/v-divider.vue';
 import { socialIcons } from '@/components/v-icon/social-icons';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 withDefaults(
 	defineProps<{
 		value: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		width?: string;
 	}>(),
 	{
@@ -19,8 +24,6 @@ withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const searchQuery = ref('');
 const menuActive = ref(false);
@@ -182,26 +185,28 @@ function useIconsPerRow(
 </script>
 
 <template>
-	<v-menu v-model="menuActive" attached :disabled="disabled" no-focus-return>
+	<VMenu v-model="menuActive" attached :disabled no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
-			<v-input
+			<VInput
 				v-model="searchQuery"
-				:disabled="disabled"
-				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
-				:class="{ 'has-value': value }"
+				:disabled
+				:non-editable
+				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
+				:class="{ 'has-value': value, 'non-editable': nonEditable }"
 				:nullable="false"
 				@click="onClickInput($event, toggle)"
 				@keydown="onKeydownInput($event, activate)"
 			>
 				<template v-if="value" #prepend>
-					<v-icon clickable :name="value" :class="{ active: value }" @click="toggle" />
+					<VIcon class="selected-icon" clickable :disabled :name="value" @click="toggle" />
 				</template>
 
 				<template #append>
 					<div class="item-actions">
-						<v-remove
-							v-if="value !== null"
+						<VRemove
+							v-if="value !== null && !nonEditable"
 							deselect
+							:disabled
 							@action="
 								() => {
 									setIcon(null);
@@ -210,20 +215,21 @@ function useIconsPerRow(
 							"
 						/>
 
-						<v-icon
+						<VIcon
 							v-else
 							clickable
 							name="expand_more"
 							class="open-indicator"
+							:disabled
 							:class="{ open: active }"
 							@click="toggle"
 						/>
 					</div>
 				</template>
-			</v-input>
+			</VInput>
 		</template>
 
-		<div ref="contentRef" class="content" :class="width">
+		<div ref="contentRef" class="select-icon-popover" :class="width">
 			<DynamicScroller
 				:min-item-size="MIN_ITEM_SIZE"
 				:items="virtualRows"
@@ -234,9 +240,9 @@ function useIconsPerRow(
 			>
 				<template #default="{ item }">
 					<DynamicScrollerItem :item="item" active>
-						<v-divider v-if="item.type === 'header'" inline-title class="icon-row">
+						<VDivider v-if="item.type === 'header'" inline-title class="icon-row">
 							{{ item.groupName }}
-						</v-divider>
+						</VDivider>
 
 						<div
 							v-else-if="item.type === 'icons'"
@@ -247,7 +253,7 @@ function useIconsPerRow(
 								'--gap': `${gap}px`,
 							}"
 						>
-							<v-icon
+							<VIcon
 								v-for="icon in item.icons"
 								:key="icon"
 								:name="icon"
@@ -260,7 +266,7 @@ function useIconsPerRow(
 				</template>
 			</DynamicScroller>
 		</div>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>
@@ -270,21 +276,27 @@ function useIconsPerRow(
 	@include mixins.list-interface-item-actions;
 }
 
-.v-input.has-value {
+.v-input.has-value.non-editable,
+.v-input.has-value:not(.disabled) {
 	--v-input-placeholder-color: var(--theme--primary);
+
+	.selected-icon {
+		--v-icon-color: var(--theme--primary);
+		--v-icon-color-hover: var(--v-icon-color);
+	}
 
 	&:focus-within {
 		--v-input-placeholder-color: var(--theme--form--field--input--foreground-subdued);
 	}
 }
 
-.content {
-	padding: 8px;
-
+.select-icon-popover {
 	--v-icon-color-hover: var(--theme--form--field--input--foreground);
 
+	padding: 8px;
+
 	.v-icon.active {
-		color: var(--theme--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	.v-divider {

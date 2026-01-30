@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import { toRefs } from 'vue';
+import ValueNull from './value-null.vue';
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useExtension } from '@/composables/use-extension';
 
 const props = defineProps<{
 	display: string | null;
@@ -19,9 +22,9 @@ const displayInfo = useExtension('display', display);
 </script>
 
 <template>
-	<value-null v-if="value === null || value === undefined" />
-	<v-text-overflow v-else-if="displayInfo === null" class="display" :text="value" />
-	<v-error-boundary v-else :name="`display-${display}`">
+	<ValueNull v-if="value === null || value === undefined" />
+	<VTextOverflow v-else-if="displayInfo === null" class="display" :text="value" />
+	<VErrorBoundary v-else :name="`display-${display}`">
 		<component
 			:is="`display-${display}`"
 			v-bind="options"
@@ -34,9 +37,9 @@ const displayInfo = useExtension('display', display);
 		/>
 
 		<template #fallback>
-			<v-text-overflow class="display" :text="value" />
+			<VTextOverflow class="display" :text="value" />
 		</template>
-	</v-error-boundary>
+	</VErrorBoundary>
 </template>
 
 <style lang="scss" scoped>

@@ -146,7 +146,6 @@ create_policy: Politika Oluştur
 create_user: Kullanıcı Oluştur
 message: Mesaj
 delete_panel: Paneli Sil
-create_webhook: Webhook Oluşturun
 create_custom_translation: Özel Çeviri Oluştur
 edit_custom_translation: Özel Çeviriyi Düzenle
 no_custom_translations: Özel Çeviri Yok
@@ -447,6 +446,7 @@ confirm_revert_body: Bu işlem, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
 settings_update_success: Ayarlar güncellendi
 title: Başlık
+subtitle: Alt Başlık
 revision_delta_created: Oluşturulma Tarihi
 revision_delta_created_externally: Harici Olarak Oluşturuldu
 revision_delta_updated: '1 Alan Güncellendi | {count} Alan güncellendi'
@@ -635,8 +635,6 @@ file_count: 'Hiç Dosya Yok | Bir Dosya | {count} Dosya'
 no_files_copy: Burada hiç dosya yok.
 user_count: 'Hiç Kullanıcı Yok | Bir Kullanıcı | {count} Kullanıcı'
 no_users_copy: Bu grupta henüz kullanıcı yok.
-webhooks_count: 'Hiç Webhook Yok | Bir Webhook | {count} Webhook'
-no_webhooks_copy: Henüz bir webhook yapılandırılmamış. Aşağıdan bir tane oluşturarak başlayın.
 no_notifications: Bildirim Yok
 no_notifications_copy: Hepsini gördün!
 activity_log: Etkinlik Günlüğü
@@ -667,7 +665,6 @@ action: İşlem
 ip_address: IP Adresi
 user_agent: Kullanıcı Etmeni
 origin: Kaynak
-webhooks: Webhooklar
 decimals: Ondalıklar
 value_decimals: Ondalık Değerleri
 min_value: Alt Değer
@@ -751,7 +748,6 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   VALUE_TOO_LONG: Değer çok uzun
 security: Güvenlik
-value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
 create_bookmark: Yer İşareti Oluştur
 edit_bookmark: Yer İşaretini Düzenle
@@ -925,10 +921,8 @@ label: Etiket
 flows: Akışlar
 flow: Akış
 select_a_flow: Bir Akış Seç
-run_flow_confirm: Bu komut dosyasını çalıştırmak istediğinize emin misiniz?
 run_flow_on_current_collection: Anlık Koleksiyonda Ak
 run_flow_on_current: Anlık Eşyada Ak
-run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
 run_flow: Akışı Çalıştır
 field_name_placeholder: Alan adını girin...
 field_key_placeholder: Alan anahtarını girin...
@@ -1108,7 +1102,6 @@ settings_roles: Kullanıcı Rolleri
 settings_permissions: Politikalara Eriş
 settings_project: Ayarlar
 settings_appearance: Görünüş
-settings_webhooks: Webhooklar
 settings_flows: Akışlar
 settings_system_logs: Sistem Geçmişleri
 settings_presets: Yer İmleri
@@ -1136,42 +1129,6 @@ discard_changes_copy: Tüm değişiklikleri iptal etmek istediğinize emin misin
 show_x_axis: X Eksenini Göster
 show_y_axis: Y Eksenini Göster
 keep_editing: Düzenlemeye Devam Et
-page_help_collections_overview: '**Koleksiyonlar Genel Bakış** — Erişimin olan tüm koleksiyonları listeler.'
-page_help_collections_collection: >-
-  **Öğelere Göz At** — {collection} koleksiyonundaki öğeleri listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
-page_help_collections_item: >-
-  **Öğe Detayı** — Bu öğeyi görüntülemek ve yönetmek için bir form/sayfa. Ayrıca bu kenar çubuğu tüm revizyon geçmişini ve yorumları içerir.
-page_help_activity_collection: >-
-  **Etkinliklere Göz At** — Bütün kullanıcılarının kapsamlı sistem ve içerik etkinliğinin bir listelemesi.
-page_help_docs_global: >-
-  **Dökümantasyon Genel Bakış** — Dökümantasyonlar bu projenin versiyon ve şemasına göre uyarlanmıştır.
-page_help_files_collection: >-
-  **Dosya Kütüphanesi** —Bu projeye yüklenen tüm dosyaları listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
-page_help_files_item: >-
-  **Dosya Detayı** — Dosya metaverilerini yönetmek, orijinal dosyayı düzenlemek ve erişim seçeneklerini güncellemek için bir form/sayfa.
-page_help_settings_project: "**Ayarlar** - Projenizin global konfigürasyon ayarları."
-page_help_settings_appearance: "**Görünüş** - Projenizin görünüş ve tema ayarları."
-page_help_settings_extensions: '**Uzantılar** - Projenize yüklenmiş uzantılar.'
-page_help_settings_ai: "."
-page_help_settings_datamodel_collections: >-
-  **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
-page_help_settings_datamodel_fields: >-
-  **Veri Modeli: Koleksiyon** — Bu koleksiyonu ve alanlarını yönetmek için bir form/sayfa.
-page_help_settings_system_logs: '**Sistem Günlükleri** - Sistem günlüklerinin canlı akışına erişin.'
-page_help_settings_roles_item: "**Rol Detayı** — Bir rolün yetki ve diğer ayarlarını yönet."
-page_help_settings_presets_collection: >-
-  **Ön Ayarlara Göz At** — Projedeki tüm ön ayarları listeler. Buna kullanıcı, rol, genel yer işaretleri ve varsayılan görünüm/yerleşimler dahildir.
-page_help_settings_presets_item: >-
-  **Ön Ayar Detayı** —Yer işaretleri ve varsayılan koleksiyon ön ayarlarını yönetmek için bir form/sayfa.
-page_help_settings_webhooks_collection: '**Webhooklara Göz At** — Projedeki tüm webhookları listeler.'
-page_help_settings_webhooks_item: '**Webhook Detayı** — Projede webhook oluşturmak ve yönetmek için bir form/sayfa.'
-page_help_settings_flows_collection: '**Akışlara Gözat** — Proje içindeki tüm Akışları listeler.'
-page_help_settings_flows_item: '**Akış Ayrıntısı** — Bir veya daha fazla işlemi yönetmek için çalışma alanı.'
-page_help_users_collection: '**Kullanıcı Dizini** — Projedeki tüm sistem kullanıcılarını listeler.'
-page_help_users_item: >-
-  **Kullanıcı Detayı** — Hesap bilgilerini düzenle ya da diğer kullanıcıların detaylarını gör.
-page_help_insights_overview: '**Panolar** — Erişimin olan tüm panoların listelemesi.'
-page_help_insights_dashboard: '**Pano** — Bir veya birden fazla paneli kontrol edebileceğin bir çalışma alanı'
 activity_feed: Etkinlik Akışı
 add_new: Yeni Ekle
 create_new: Yeni Oluştur
@@ -1205,7 +1162,6 @@ directus_collection:
   directus_dashboards: Panolar modülündeki panolar
   directus_fields: Ek alan ayarları ve metaveri
   directus_files: Yönetilen tüm dosyalar için metaveri
-  directus_flows: Otomasyon akışları
   directus_folders: Dosyalar için sanal klasörler sunar
   directus_migrations: Veritabanının hangi sürümünü kullanıyorsunuz
   directus_notifications: Bildirimler kullanıcılara gönderildi
@@ -1219,7 +1175,6 @@ directus_collection:
   directus_settings: Proje konfigürasyon seçenekleri
   directus_shares: Dışarı paylaşılan öğeleri takip eder
   directus_users: Platform için sistem kullanıcıları
-  directus_webhooks: Olay tabanlı HTTP istekleri için konfigürasyon
 fields:
   directus_activity:
     item: Öğe Birincil Anahtarı
@@ -1389,18 +1344,6 @@ fields:
     admin_access: Yönetici Erişimi
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekiyor
-  directus_webhooks:
-    name: İsim
-    method: Metod
-    status: Durum
-    data: Veri
-    header: Header
-    value: Değer
-    headers: Request Headers
-    data_label: Olay Verisini Gönder
-    triggers: Tetikler
-    actions: Aksiyonlar
-    collections: Koleksiyonlar
 field_options:
   directus_settings:
     project_name_placeholder: Benim projem...
@@ -1492,19 +1435,6 @@ field_options:
     status_dropdown_suspended: Askıda
     status_dropdown_archived: Arşivlenmiş
     token: Güvenli bir erişim anahtarı girin...
-  directus_webhooks:
-    status_options_active: Aktif
-    status_options_inactive: Devre Dışı
-    data_label: Olay Verisini Gönder
-    triggers_divider: Tetikler
-    actions_create: Oluşturma
-    actions_update: Güncelleme
-    actions_delete: Silme
-    actions_login: Oturum Açma
-    headers:
-      header: Header
-      value: Değer
-      add: Header Ekle
 no_fields_in_collection: '{collection} koleksiyonunda henüz hiç öğe yok'
 no_value: Değer yok
 do_nothing: Hiçbir Şey Yapma
@@ -1528,6 +1458,22 @@ shares: Paylaşımlar
 unlimited_usage: Limitsiz kullanım
 no_shares: Gösterilecek paylaşım yok
 new_share: Yeni Paylaşım
+ai:
+  input: Girdi
+  unknown: Bilinmeyen
+  settings: Ayarlar
+  tool_approval:
+    disabled: Devre Dışı
+ai_tools:
+  items: Öğeler
+  files: Dosyalar
+  folders: Klasörler
+  flows: Akışlar
+  trigger-flow: Tetik Akışı
+  operations: Operasyonlar
+  schema: Şema
+  collections: Koleksiyonlar
+  fields: Alanlar
 mcp_prompts_collection_schema:
   messages_role_user: Kullanıcı
 expired: Süresi Dolmuş
@@ -1562,7 +1508,6 @@ continue_as: >-
 editing_role: '{role} Rolü'
 no_permissions: İzin Yok
 permission_add_collection: Koleksiyona Ekle
-creating_webhook: Webhook Oluşturma
 default_label: Varsayılan
 delete_label: Sil
 delete_are_you_sure: >-
@@ -1688,9 +1633,7 @@ interfaces:
     accordion_mode: Körüklü Liste Modu
     max_one_section_open: En Fazla 1 Bölüm Açık
   presentation-links:
-    presentation-links: Buton Bağlantıları
-    links: Bağlantılar
-    description: Dinamik URL'ler girmek için yapılandırılabilir bağlantı butonları
+    presentation-links: Butonlar
     style: Stil
     primary: Birincil
     link: Bağlantılar
@@ -2000,6 +1943,9 @@ interfaces:
     description: Ham veya bıyık şablon değerlerinin girilmesine izin ver
   input-password:
     input-password: Şifreyi girin
+  header:
+    header: Header
+    links: Bağlantılar
 displays:
   translations:
     translations: Çeviriler
@@ -2370,7 +2316,6 @@ operations:
     name: Yükü Dönüştür
   trigger:
     name: Tetik Akışı
-    description: Bu verileri başka bir akışa iletin
     flows: Akışlar
     flow: Akış
     data: Veri

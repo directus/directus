@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useFieldsStore } from '@/stores/fields';
 
 const { t } = useI18n();
@@ -84,63 +90,63 @@ const onDeleteOptions = computed(() =>
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ t('this_collection') }}</div>
-				<v-input disabled :model-value="collection" />
+				<div class="type-label">{{ $t('this_collection') }}</div>
+				<VInput disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('related_collection') }}</div>
+				<div class="type-label">{{ $t('related_collection') }}</div>
 
-				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
+				<RelatedCollectionSelect v-model="relatedCollection" :disabled="isExisting" />
 			</div>
 
-			<v-input disabled :model-value="currentField" />
-			<v-input :model-value="relatedPrimaryKey" disabled :placeholder="t('primary_key') + '...'" />
-			<v-icon class="arrow" name="arrow_back" />
+			<VInput disabled :model-value="currentField" />
+			<VInput :model-value="relatedPrimaryKey" disabled :placeholder="$t('primary_key') + '...'" />
+			<VIcon class="arrow" name="arrow_back" />
 		</div>
 
-		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>
+		<VDivider v-if="!isExisting" large :inline-title="false">{{ $t('corresponding_field') }}</VDivider>
 
 		<div v-if="!isExisting" class="grid">
 			<div class="field">
-				<div class="type-label">{{ t('create_field') }}</div>
-				<v-checkbox v-model="hasCorresponding" block :label="correspondingLabel" />
+				<div class="type-label">{{ $t('create_field') }}</div>
+				<VCheckbox v-model="hasCorresponding" block :label="correspondingLabel" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ t('field_name') }}</div>
-				<v-input
+				<div class="type-label">{{ $t('field_name') }}</div>
+				<VInput
 					v-model="correspondingFieldKey"
 					:disabled="hasCorresponding === false"
-					:placeholder="t('field_name') + '...'"
+					:placeholder="$t('field_name') + '...'"
 					db-safe
 				/>
 			</div>
-			<v-icon name="arrow_forward" class="arrow" />
+			<VIcon name="arrow_forward" class="arrow" />
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ t('relational_triggers') }}</v-divider>
+			<VDivider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</VDivider>
 
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_m2o', {
+						$t('referential_action_field_label_m2o', {
 							collection: relatedCollection || 'related',
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeleteRelated"
 					:disabled="collection === relatedCollection"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="onDeleteOptions"
 				/>
 			</div>
 		</div>
 
-		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
+		<VNotice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
-				{{ t('new_data_alert') }}
+				{{ $t('new_data_alert') }}
 
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
@@ -148,7 +154,7 @@ const onDeleteOptions = computed(() =>
 					</li>
 				</ul>
 			</span>
-		</v-notice>
+		</VNotice>
 	</div>
 </template>
 
@@ -163,7 +169,6 @@ const onDeleteOptions = computed(() =>
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 12px 32px;
-	margin-block-start: 48px;
 
 	.v-input.matches {
 		--v-input-color: var(--theme--primary);

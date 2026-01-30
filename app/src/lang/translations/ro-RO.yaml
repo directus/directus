@@ -122,7 +122,6 @@ create_role: Creează rol
 create_user: Creează utilizator
 message: Mesaj
 delete_panel: Șterge panou
-create_webhook: Creează Webhook
 create_custom_translation: Creați traducere personalizată
 edit_custom_translation: Editați traducerea personalizată
 no_custom_translations: Fără Traduceri Personalizate
@@ -387,6 +386,7 @@ confirm_revert_body: Această acțiune va reseta elementul la starea selectată.
 display: Afişare
 settings_update_success: Setări actualizate
 title: Titlu
+subtitle: Subtitlu
 revision_delta_created: Creat
 revision_delta_created_externally: Creat extern
 revision_delta_updated: '1 câmp actualizat | {count} câmpuri actualizate'
@@ -541,8 +541,6 @@ file_count: 'Nu există fișiere | Un fișiere | {count} fișiere'
 no_files_copy: Nu există fişiere aici.
 user_count: 'Niciun utilizator | Un Utilizator | {count} utilizatori'
 no_users_copy: Nu sunt utilizatori în acest rol.
-webhooks_count: 'Niciun Webhook | Un Webhook | {count} Webhook-uri'
-no_webhooks_copy: Nici un webhook nu a fost configurat încă. Începeți prin a crea unul de mai jos.
 no_notifications: Nicio notificare
 no_notifications_copy: Ești cu toate la zi!
 activity_log: Jurnal de activitate
@@ -571,7 +569,6 @@ action: Acţiune
 ip_address: Adresă IP
 user_agent: User Agent
 origin: Origine
-webhooks: Webhook-uri
 decimals: Zecimale
 value_decimals: Valoare zecimale
 min_value: Valoare minimă
@@ -635,7 +632,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valoarea este în afara intervalului
   VALUE_TOO_LONG: Valoarea este prea lungă
 security: Securitate
-value_hashed: Valoare criptată în mod securizat
 bookmark_name: Denumirea semnului de carte...
 create_bookmark: Creează semn de carte
 edit_bookmark: Editează semn de carte
@@ -891,7 +887,6 @@ editing_in_batch: 'Editare lot de {count} elemente'
 no_options_available: Nicio opțiune disponibilă
 settings_data_model: Model de date
 settings_project: Setări
-settings_webhooks: Webhook-uri
 settings_presets: Semne de carte
 settings_translations: Traduceri
 one_or_more_options_are_missing: Una sau mai multe opțiuni lipsesc
@@ -915,35 +910,6 @@ discard_changes_copy: Ești sigur că vrei să renunți la toate modificările f
 show_x_axis: Arată axa X
 show_y_axis: Arată axa Y
 keep_editing: Continuă editarea
-page_help_collections_overview: '**Prezentare generală colecție** - Lista tuturor colecțiilor la care aveți acces.'
-page_help_collections_collection: >-
-  **Răsfoiește elementele** — Listează toate elementele {collection} la care ai acces. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
-page_help_collections_item: >-
-  **Detaliile elementului** - Un formular pentru vizualizarea și gestionarea acestui element. Această bară conține de asemenea o istorie completă a revizuirilor și a comentariilor încorporate.
-page_help_activity_collection: >-
-  **Răsfoiește activitatea** — O listare cuprinzătoare a întregii activității în sistem și conținut a utilizatorilor tăi.
-page_help_docs_global: >-
-  **Prezentare generală a documentației** - Documente special adaptate versiunii și schemei acestui proiect.
-page_help_files_collection: >-
-  **Bibliotecă de fișiere** - Listează toate activele fișierelor încărcate în acest proiect. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
-page_help_files_item: >-
-  **Detaliile fișierului** - Un formular pentru gestionarea metadatelor fișierelor, editarea activului original și actualizarea setărilor de acces.
-page_help_settings_datamodel_collections: >-
-  **Modelul de date: Colecții** — Listează toate colecțiile disponibile. Aceasta include colecții vizibile, ascunse și de sistem, precum și tabele de baze de date negestionate care pot fi adăugate.
-page_help_settings_datamodel_fields: >-
-  **Modelul de date: Colecție** — Un formular pentru gestionarea acestei colecții și a câmpurilor sale.
-page_help_settings_roles_item: "**Detaliile rolurilor** - Gestionează permisiunile unui rol și alte setări."
-page_help_settings_presets_collection: >-
-  **Răsfoiește presetările** — Listează toate presetările din proiect, inclusiv: utilizatorul, rolul și semnele de carte globale, precum și vizualizările implicite.
-page_help_settings_presets_item: >-
-  **Detalii presetare** — Un formular pentru gestionarea marcajelor și presetărilor implicite de colectare.
-page_help_settings_webhooks_collection: '**Răsfoiește Webhooks** — Listează toate webhook-urile din cadrul proiectului.'
-page_help_settings_webhooks_item: '**Webhook Detail** - Un formular pentru crearea și gestionarea webhook-urilor proiectului.'
-page_help_users_collection: '**Listă utilizatori** — Listează toți utilizatorii de sistem din cadrul acestui proiect.'
-page_help_users_item: >-
-  **Detaliile utilizatorului** - Gestionați informațiile despre cont sau vizualizați detaliile altor utilizatori.
-page_help_insights_overview: '**Analize** - Lista tablourilor de bord la care ai acces.'
-page_help_insights_dashboard: '**Tablou de bord** - Spațiu de lucru pentru administrarea unuia sau mai multor panouri'
 activity_feed: Flux activitate
 add_new: Adaugare intrare nouă
 create_new: Adaugă
@@ -979,7 +945,6 @@ directus_collection:
   directus_settings: Opțiuni de configurare proiect
   directus_shares: Contorizează elementele partajate extern
   directus_users: Utilizatorii de sistem pentru platformă
-  directus_webhooks: Configurare pentru cereri HTTP bazate pe evenimente
 fields:
   directus_activity:
     item: Cheia primară a elementului
@@ -1119,18 +1084,6 @@ fields:
     users: Utilizatori în rol
   directus_policies:
     description: Descriere
-  directus_webhooks:
-    name: Nume
-    method: Metodă
-    status: Stare
-    data: Date
-    header: Antet
-    value: Valoare
-    headers: Antetele cererii (request headers)
-    data_label: Trimite date eveniment
-    triggers: Declanșatori
-    actions: Acțiuni
-    collections: Colecții
 field_options:
   directus_settings:
     project_name_placeholder: Proiectul meu...
@@ -1219,19 +1172,6 @@ field_options:
     status_dropdown_suspended: Suspendat
     status_dropdown_archived: Arhivat
     token: Introduceți un token de acces securizat...
-  directus_webhooks:
-    status_options_active: Activ
-    status_options_inactive: Inactiv
-    data_label: Trimite date eveniment
-    triggers_divider: Declanșatori
-    actions_create: Creează
-    actions_update: Actualizare
-    actions_delete: Ștergere
-    actions_login: Autentificare
-    headers:
-      header: Antet
-      value: Valoare
-      add: Adaugă antet
 no_fields_in_collection: 'Încă nu există câmpuri în "{collection}"'
 no_value: Nicio valoare
 do_nothing: Nu face nimic
@@ -1251,6 +1191,20 @@ shares: Distribuiri
 unlimited_usage: Utilizare nelimitată
 no_shares: Nici o distribuire de afișat
 new_share: Distribuire nouă
+ai:
+  input: Input
+  unknown: Necunoscut
+  settings: Setări
+  tool_approval:
+    disabled: Dezactivat
+ai_tools:
+  items: Elemente
+  files: Fişiere
+  trigger-flow: Declanșare flux
+  operations: Operațiuni
+  schema: Schema
+  collections: Colecții
+  fields: Câmpuri
 mcp_prompts_collection_schema:
   messages_role_user: Utilizator
 expired: Expirat
@@ -1283,7 +1237,6 @@ continue_label: Continuă
 continue_as: >-
   {name} este în prezent autentificat. Dacă recunoașteți acest cont, apăsați continuă.
 editing_role: 'Rolul {role}'
-creating_webhook: Se creează webhook-ul
 default_label: Implicit
 delete_label: Ștergere
 delete_are_you_sure: >-
@@ -1382,9 +1335,7 @@ interfaces:
     accordion_mode: Mod acordeon
     max_one_section_open: Cel mult o secțiune deschisă
   presentation-links:
-    presentation-links: Link-uri buton
-    links: Link-uri
-    description: Link-uri buton configurabile pentru lansarea de url-uri dinamice
+    presentation-links: Butoane
     style: Stil
     primary: Principal
     link: Link-uri
@@ -1658,6 +1609,9 @@ interfaces:
     start_closed: Începe închis
   system-token:
     system-token: Token
+  header:
+    header: Antet
+    links: Link-uri
 displays:
   translations:
     translations: Traduceri
@@ -1857,7 +1811,6 @@ operations:
     header: Antet
   trigger:
     name: Declanșare flux
-    description: Transmite aceste date la un alt flux
     flows: Fluxuri
     flow: Flux
     data: Date

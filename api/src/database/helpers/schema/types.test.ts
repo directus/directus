@@ -1,11 +1,10 @@
-import { describe, expect, test, vi } from 'vitest';
 import type { Knex } from 'knex';
+import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelper } from './types.js';
 
 vi.mock('../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-import { SchemaHelper } from './types.js';
 
 describe('SchemaHelper', () => {
 	class TestableSchemaHelper extends SchemaHelper {}

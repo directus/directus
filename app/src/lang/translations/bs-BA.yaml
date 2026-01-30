@@ -78,7 +78,6 @@ create_role: Kreiraj novu rolu
 create_user: Dodaj korisnika
 message: Poruka
 delete_panel: Ukloni panel
-create_webhook: Kreiraj webhook
 invite_users: Pozovite korisnike
 invite: Pozovi
 email_already_invited: Adresa e-pošte "{email}" već pozvana
@@ -305,6 +304,7 @@ confirm_revert_body: Ovo će vratiti stavku u odabrano stanje.
 display: Prikaz
 settings_update_success: Postavke su ažurirane
 title: Naslov
+subtitle: Podnaslov
 revision_delta_created: Kreirano
 revision_delta_created_externally: Kreirano izvana
 revision_delta_updated: 'Ažurirano 1 polje | Ažurirano {count} polja'
@@ -455,8 +455,6 @@ file_count: 'Nema fajlova | Jedan fajl | Broj fajlova: {count}'
 no_files_copy: Nema fajlova.
 user_count: 'Nema korisnika | Jedan korisnik | Broj korisnika: {count}'
 no_users_copy: Još nema korisnika s ovom rolom.
-webhooks_count: 'Nema web-dojavnika| Jedan web-dojavnik | {count} web-dojavnika'
-no_webhooks_copy: Još nije konfigurisan nijedan web-dojavnik. Započnite s kreiranjem jednog u nastavku.
 no_notifications: Nema obavijesti
 no_notifications_copy: Upoznati ste sa svime!
 activity_log: Dnevnik aktivnosti
@@ -484,7 +482,6 @@ action: Akcija
 ip_address: IP Adresa
 user_agent: Korisnički Agent
 origin: Porijeklo
-webhooks: Web-dojavnici
 decimals: Decimale
 value_decimals: Decimalne vrijednosti
 min_value: Min. vrijednost
@@ -556,7 +553,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vrijednost je izvan raspona
   VALUE_TOO_LONG: Vrijednost je preduga
 security: Sigurnost
-value_hashed: Sigurno kriptovana vrijednost
 bookmark_name: Naziv bookmarka...
 create_bookmark: Kreiraj bookmark
 edit_bookmark: Uredi bookmark
@@ -711,7 +707,6 @@ label: Oznaka
 flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
-run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 trigger: Okidač
 trigger_options: Opcije okidača
 view_trigger: Prikaži okidač
@@ -859,7 +854,6 @@ editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
 settings_project: Postavke
-settings_webhooks: Web-dojavnici
 settings_flows: Tokovi
 settings_translations: Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
@@ -883,37 +877,6 @@ discard_changes_copy: Jeste li sigurni da želite odbaciti sve napravljene promj
 show_x_axis: Prikaži X os
 show_y_axis: Prikaži Y os
 keep_editing: Nastavite uređivati
-page_help_collections_overview: '**Pregled kolekcija** — Popis svih kolekcija kojima imate pristup.'
-page_help_collections_collection: >-
-  **Pregledaj stavke** — Popisuje sve stavke iz {collection} kojima imate pristup. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
-page_help_collections_item: >-
-  **Detalji stavke** — Obrazac za pregled i upravljanje ovom stavkom. Ovaj bočni meni takođe sadrži potpunu povijest revizija i ugrađenih komentara.
-page_help_activity_collection: >-
-  **Aktivnost pregledavanja** — opsežan popis svih aktivnosti sistema i sadržaja vašeg korisnika.
-page_help_docs_global: >-
-  **Pregled dokumentacije** — Dokumenti posebno prilagođeni verziji i shemi ovog projekta.
-page_help_files_collection: >-
-  **Biblioteka fajlova** — Navodi sve fajlove prenesene u ovaj projekat. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
-page_help_files_item: >-
-  **Detalji fajla** — Obrazac za upravljanje metapodacima fajla, uređivanje izvornog materijala i ažuriranje postavki pristupa.
-page_help_settings_datamodel_collections: >-
-  **Model podataka: kolekcije** — Navodi sve dostupne kolekcije. To uključuje vidljive, skrivene i sistemske kolekcije, kao i neupravljane tablice baze podataka koje se mogu dodati.
-page_help_settings_datamodel_fields: >-
-  **Model podataka: kolekcija** — Obrazac za upravljanje ovom kolekcijom i njezinim poljima.
-page_help_settings_roles_item: "**Detalji o roli** — Upravljajte dopuštenjima role i drugim postavkama."
-page_help_settings_presets_collection: >-
-  **Pregledaj unaprijed postavljene postavke** — Navodi sve unaprijed postavljene postavke u projektu, uključujući: korisničke, role i globalne oznake, kao i zadane prikaze.
-page_help_settings_presets_item: >-
-  **Unaprijed postavljene detalje** — Obrazac za upravljanje oznakama i zadanim postavkama kolekcije.
-page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
-page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za kreiranje i upravljanje web-dojavnicima.'
-page_help_settings_flows_collection: '**Pregledaj tokove** — Popisuje sve tokove unutar projekta.'
-page_help_settings_flows_item: '**Detalji toka** — Radni prostor za upravljanje jednom ili više operacija.'
-page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sistema unutar ovog projekta.'
-page_help_users_item: >-
-  **Detalji o korisniku** — Upravljajte podacima o svom računu ili pregledajte detalje drugih korisnika.
-page_help_insights_overview: '**Uvidi** — Popis kontrolnih panela kojima imate pristup.'
-page_help_insights_dashboard: '**Kontrolni panel** — Radni prostor za upravljanje jednom ili više panela'
 activity_feed: Sadržaj aktivnosti
 add_new: Dodaj novi
 create_new: Kreiraj novi
@@ -935,7 +898,6 @@ directus_collection:
   directus_dashboards: Kontrolni paneli unutar modula s uvidima
   directus_fields: Dodatna konfiguracija polja i metapodaci
   directus_files: Metapodaci za sva upravljane fajlove
-  directus_flows: Automatizacija tokova
   directus_folders: Pruža virtualne direktorije za fajlove
   directus_migrations: Koju verziju baze podataka koristite
   directus_notifications: Obavijesti poslane korisnicima
@@ -949,7 +911,6 @@ directus_collection:
   directus_settings: Opcije konfiguracije projekta
   directus_shares: Prati vanjske dijeljene stavke
   directus_users: Korisnici sistema za platformu
-  directus_webhooks: Konfiguracija za HTTP zahtjeve temeljene na događajima
 fields:
   directus_activity:
     item: Primarni ključ stavke
@@ -1076,17 +1037,6 @@ fields:
     users: Korisnici s rolom
   directus_policies:
     description: Opis
-  directus_webhooks:
-    name: Ime
-    method: Metoda
-    data: Podaci
-    header: Zaglavlje
-    value: Vrijednosti
-    headers: Zaglavlja zahtijeva
-    data_label: Pošalji podatke o događaju
-    triggers: Okidači
-    actions: Akcije
-    collections: Kolekcije
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekat...
@@ -1170,19 +1120,6 @@ field_options:
     status_dropdown_suspended: Suspendovan
     status_dropdown_archived: Arhivirano
     token: Unesite siguran pristupni token...
-  directus_webhooks:
-    status_options_active: Aktivan
-    status_options_inactive: Neaktivan
-    data_label: Pošalji podatke o događaju
-    triggers_divider: Okidači
-    actions_create: Kreiraj
-    actions_update: Ažuriraj
-    actions_delete: Obriši
-    actions_login: Prijava
-    headers:
-      header: Zaglavlje
-      value: Vrijednost
-      add: Dodajte zaglavlje
 no_fields_in_collection: 'Još nema polja u "{collection}"'
 no_value: Nema vrijednosti
 do_nothing: Ne čini ništa
@@ -1201,6 +1138,20 @@ shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
+ai:
+  input: Unos
+  settings: Postavke
+  tool_approval:
+    disabled: Onemogućeno
+ai_tools:
+  items: Stavke
+  files: Fajlovi
+  flows: Tokovi
+  trigger-flow: Pokreni tok
+  operations: Operacije
+  schema: Shema
+  collections: Kolekcije
+  fields: Polja
 mcp_prompts_collection_schema:
   messages_role_user: Korisnik
 expired: Isteklo
@@ -1233,7 +1184,6 @@ continue_label: Nastavi
 continue_as: >-
   {name} je trenutno prijavljen/a. Ako prepoznate ovaj račun, pritisnite Nastavi.
 editing_role: '{role} rola'
-creating_webhook: Kreiraj web-dojavnik
 default_label: Zadano
 delete_label: Obriši
 delete_are_you_sure: >-
@@ -1348,9 +1298,7 @@ interfaces:
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
-    presentation-links: Veze dugmeta
-    links: Linkovi
-    description: Konfigurabilna dugmeta veza za pokretanje dinamičkih URL-ova
+    presentation-links: Dugmeta
     style: Stil
     primary: Primarno
     link: Link
@@ -1627,6 +1575,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Uređivač sirovog sadržaja
     description: Omogućuje unos neobrađenih ili "mustache" predložaka
+  header:
+    header: Zaglavlje
+    links: Link
 displays:
   translations:
     translations: Prijevodi
@@ -1863,11 +1814,9 @@ triggers:
 a_flow_uuid: Odaberite tok za okinuti...
 any_string_or_json: Bilo koji string ili JSON...
 item_payload_placeholder: Ovo je JSON koji se koristi za ažuriranje vrijednosti polja stavke...
-operation_variables_note: Podacima o toku možete pristupiti pomoću varijabli kao što su **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, ili referencirajte prethodne operacije koristeći **{'{ '}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Uslov
-    description: Usmjerite tok na temelju If / Else logike
   exec:
     name: Pokreni skriptu
     description: Izvršite proizvoljni kod za izmjenu payloada
@@ -1931,7 +1880,6 @@ operations:
     description: Promjenite JSON payload toka
   trigger:
     name: Pokreni tok
-    description: Proslijedite ove podatke u drugi tok
     flows: Tokovi
     flow: Tok
     data: Podaci

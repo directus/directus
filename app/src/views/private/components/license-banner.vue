@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { defaultValues, useFormFields, validate } from '@/routes/setup/form';
-import SetupForm from '@/routes/setup/form.vue';
-import { useSettingsStore } from '@/stores/settings';
-import { notify } from '@/utils/notify';
 import type { SetupForm as Form } from '@directus/types';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { defaultValues, useFormFields, validate } from '@/routes/setup/form';
+import SetupForm from '@/routes/setup/form.vue';
+import { useSettingsStore } from '@/stores/settings';
+import { notify } from '@/utils/notify';
 
 const settingsStore = useSettingsStore();
 const cookies = useCookies(['license-banner-dismissed']);
@@ -21,13 +28,17 @@ const isSaveDisabled = computed(
 		(form.value.project_usage === 'commercial' && !form.value.org_name),
 );
 
+const isSaving = ref(false);
+
 async function setOwner() {
 	errors.value = validate(form.value, fields);
 
 	if (errors.value.length > 0) return;
 
+	isSaving.value = true;
 	await settingsStore.setOwner(form.value);
 	await settingsStore.hydrate();
+	isSaving.value = false;
 }
 
 async function remindLater() {
@@ -42,32 +53,32 @@ const fields = useFormFields(false, form);
 </script>
 
 <template>
-	<v-dialog>
-		<v-card>
+	<VDialog>
+		<VCard>
 			<div class="inner">
-				<v-card-title>
+				<VCardTitle>
 					<span class="warning">
-						{{ t('bsl_banner.title') }}
-						<v-icon name="warning" filled />
+						{{ $t('bsl_banner.title') }}
+						<VIcon name="warning" filled />
 					</span>
-				</v-card-title>
+				</VCardTitle>
 
-				<v-card-text>
-					<div class="sub">{{ t('bsl_banner.license') }}</div>
-					<setup-form v-model="form" :errors="errors" :register="false" utm-location="banner"></setup-form>
-				</v-card-text>
+				<VCardText>
+					<div class="sub">{{ $t('bsl_banner.license') }}</div>
+					<SetupForm v-model="form" :errors="errors" :register="false" utm-location="banner"></SetupForm>
+				</VCardText>
 
-				<v-card-actions>
-					<v-button secondary @click="remindLater">
-						{{ t('bsl_banner.remind_later') }}
-					</v-button>
-					<v-button :disabled="isSaveDisabled" @click="setOwner">
-						{{ t('bsl_banner.set_owner') }}
-					</v-button>
-				</v-card-actions>
+				<VCardActions>
+					<VButton secondary @click="remindLater">
+						{{ $t('bsl_banner.remind_later') }}
+					</VButton>
+					<VButton :disabled="isSaveDisabled" :loading="isSaving" @click="setOwner">
+						{{ $t('bsl_banner.set_owner') }}
+					</VButton>
+				</VCardActions>
 			</div>
-		</v-card>
-	</v-dialog>
+		</VCard>
+	</VDialog>
 </template>
 
 <style scoped>

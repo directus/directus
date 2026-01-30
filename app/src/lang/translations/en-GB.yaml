@@ -89,7 +89,6 @@ create_role: Create Role
 create_user: Create User
 message: Message
 delete_panel: Delete Panel
-create_webhook: Create Webhook
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -330,6 +329,7 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
+subtitle: Subtitle
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
@@ -491,8 +491,6 @@ file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
-webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
 activity_log: Activity Log
@@ -521,7 +519,6 @@ action: Action
 ip_address: IP Address
 user_agent: User Agent
 origin: Origin
-webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
 min_value: Min Value
@@ -596,7 +593,6 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   VALUE_TOO_LONG: Value is too long
 security: Security
-value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
 edit_bookmark: Edit Bookmark
@@ -758,7 +754,6 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
-run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
 trigger: Trigger
 trigger_options: Trigger Options
 view_trigger: View Trigger
@@ -912,7 +907,6 @@ editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
 settings_project: Settings
-settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Bookmarks
 settings_translations: Translations
@@ -937,37 +931,6 @@ discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
 keep_editing: Keep Editing
-page_help_collections_overview: '**Collections Overview** — List of all collections you have access to.'
-page_help_collections_collection: >-
-  **Browse Items** — Lists all {collection} items you have access to. Customise layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.
-page_help_collections_item: >-
-  **Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions, and embedded comments.
-page_help_activity_collection: >-
-  **Browse Activity** — A comprehensive listing of all your user's system and content activity.
-page_help_docs_global: >-
-  **Documentation Overview** — Docs tailored specifically to this project's version and schema.
-page_help_files_collection: >-
-  **File Library** — Lists all file assets uploaded to this project. Customise layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.
-page_help_files_item: >-
-  **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_datamodel_collections: >-
-  **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
-page_help_settings_datamodel_fields: >-
-  **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
-page_help_settings_presets_collection: >-
-  **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default views.
-page_help_settings_presets_item: >-
-  **Preset Detail** — A form for managing bookmarks and default collection presets.
-page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
-page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
-page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
-page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
-page_help_users_collection: '**User Directory** — Lists all system users within this project.'
-page_help_users_item: >-
-  **User Detail** — Manage your account information, or view the details of other users.
-page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
-page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -990,7 +953,6 @@ directus_collection:
   directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
-  directus_flows: Automation flows
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
   directus_notifications: Notifications sent to users
@@ -1004,7 +966,6 @@ directus_collection:
   directus_settings: Project configuration options
   directus_shares: Tracks externally shared items
   directus_users: System users for the platform
-  directus_webhooks: Configuration for event-based HTTP requests
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1148,18 +1109,6 @@ fields:
     users: Users in Role
   directus_policies:
     description: Description
-  directus_webhooks:
-    name: Name
-    method: Method
-    status: Status
-    data: Data
-    header: Header
-    value: Value
-    headers: Request Headers
-    data_label: Send Event Data
-    triggers: Triggers
-    actions: Actions
-    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
@@ -1248,19 +1197,6 @@ field_options:
     status_dropdown_suspended: Suspended
     status_dropdown_archived: Archived
     token: Enter a secure access token...
-  directus_webhooks:
-    status_options_active: Active
-    status_options_inactive: Inactive
-    data_label: Send Event Data
-    triggers_divider: Triggers
-    actions_create: Create
-    actions_update: Update
-    actions_delete: Delete
-    actions_login: Login
-    headers:
-      header: Header
-      value: Value
-      add: Add Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
@@ -1280,6 +1216,19 @@ shares: Shares
 unlimited_usage: Unlimited usage
 no_shares: No shares to show
 new_share: New Share
+ai:
+  input: Input
+  settings: Settings
+  tool_approval:
+    disabled: Disabled
+ai_tools:
+  items: Items
+  files: Files
+  flows: Flows
+  trigger-flow: Trigger Flow
+  schema: Schema
+  collections: Collections
+  fields: Fields
 mcp_prompts_collection_schema:
   messages_role_user: User
 expired: Expired
@@ -1312,7 +1261,6 @@ continue_label: Continue
 continue_as: >-
   {name} is currently authenticated. If you recognise this account, press continue.
 editing_role: '{role} Role'
-creating_webhook: Creating Webhook
 default_label: Default
 delete_label: Delete
 delete_are_you_sure: >-
@@ -1428,9 +1376,7 @@ interfaces:
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
   presentation-links:
-    presentation-links: Button Links
-    links: Links
-    description: Configurable link buttons for launching dynamic URLs
+    presentation-links: Buttons
     style: Style
     primary: Primary
     link: Links
@@ -1720,6 +1666,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values
+  header:
+    header: Header
+    links: Links
 displays:
   translations:
     translations: Translations
@@ -2018,11 +1967,9 @@ triggers:
 a_flow_uuid: Select a Flow to trigger...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
-operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Route a flow based on If / Else logic
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
@@ -2094,7 +2041,6 @@ operations:
     description: Alter the Flow's JSON payload
   trigger:
     name: Trigger Flow
-    description: Pass this data to another flow
     flows: Flows
     flow: Flow
     data: Data

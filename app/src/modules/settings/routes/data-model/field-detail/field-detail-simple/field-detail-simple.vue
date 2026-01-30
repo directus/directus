@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { computed, toRefs, watch } from 'vue';
 import { Collection } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 import { orderBy } from 'lodash';
+import { computed, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import FieldConfiguration from './field-configuration.vue';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useExtensions } from '@/extensions';
 
 const props = withDefaults(
 	defineProps<{
 		collection: Collection;
-		search: string | null;
+		search?: string | null;
 	}>(),
 	{
 		search: null,
@@ -153,20 +156,20 @@ function toggleInterface(id: string) {
 						</template>
 
 						<span v-else class="fallback">
-							<v-icon large :name="inter.icon" />
+							<VIcon large :name="inter.icon" />
 						</span>
 					</div>
-					<v-text-overflow :text="inter.name" class="name" />
+					<VTextOverflow :text="inter.name" class="name" />
 				</button>
 
-				<transition-expand>
-					<field-configuration
+				<TransitionExpand>
+					<FieldConfiguration
 						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
 						:row="configRow"
 						@save="$emit('save')"
 						@toggle-advanced="$emit('toggleAdvanced')"
 					/>
-				</transition-expand>
+				</TransitionExpand>
 			</div>
 		</div>
 	</div>
@@ -175,7 +178,7 @@ function toggleInterface(id: string) {
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .group h2 {
@@ -200,7 +203,7 @@ function toggleInterface(id: string) {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 

@@ -1,16 +1,16 @@
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion, Filter, Query, Item } from '@directus/types';
+import { ContentVersion, Filter, Item, Query } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
-import { Ref, computed, ref, unref, watch } from 'vue';
+import { computed, ref, Ref, unref, watch } from 'vue';
 import { useCollectionPermissions, usePermissions } from './use-permissions';
-import { mergeWith } from 'lodash';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
-import { validateItem } from '@/utils/validate-item';
+import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
-import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { APIError } from '@/types/error';
 import { VALIDATION_TYPES } from '@/constants';
+import { APIError } from '@/types/error';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { mergeItemData } from '@/utils/merge-item-data';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { validateItem } from '@/utils/validate-item';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
 	const currentVersion = ref<ContentVersion | null>(null);
@@ -191,17 +191,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		saveVersionLoading.value = true;
 		validationErrors.value = [];
 
-		const payloadToValidate = mergeWith(
-			{},
-			defaultValues.value,
-			item.value,
-			edits.value,
-			function (_from: any, to: any) {
-				if (typeof to !== 'undefined') {
-					return to;
-				}
-			},
-		);
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value, edits.value);
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 

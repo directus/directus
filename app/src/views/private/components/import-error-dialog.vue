@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, toRef } from 'vue';
+import { ValidationError } from '@directus/types';
 import type { ImportRowLines, ImportRowRange } from '@directus/validation';
-import type { APIError } from '@/types/error';
-import { useFieldsStore } from '@/stores/fields';
+import { computed, toRef } from 'vue';
+import { useI18n } from 'vue-i18n';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
 import { VALIDATION_TYPES } from '@/constants';
-import { ValidationError } from '@directus/types';
+import { useFieldsStore } from '@/stores/fields';
+import type { APIError } from '@/types/error';
 
 interface Props {
 	errors: APIError[];
@@ -74,11 +82,11 @@ function closeDialog() {
 </script>
 
 <template>
-	<v-dialog v-model="modelValue" persistent>
-		<v-card>
-			<v-card-title>{{ t('import_data_errors') }}</v-card-title>
-			<v-card-text class="validation-errors-wrapper">
-				<v-notice type="danger" multiline>
+	<VDialog v-model="modelValue" persistent>
+		<VCard>
+			<VCardTitle>{{ $t('import_data_errors') }}</VCardTitle>
+			<VCardText class="validation-errors-wrapper">
+				<VNotice type="danger" multiline>
 					<p>{{ $t('import_data_validation_errors_notice') }}</p>
 					<ul class="validation-errors-list">
 						<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
@@ -93,20 +101,20 @@ function closeDialog() {
 
 							<template v-if="error.customValidationMessage">
 								{{ error.customValidationMessage }}
-								<v-icon v-tooltip="error.message" small right name="help" />
+								<VIcon v-tooltip="error.message" small right name="help" />
 							</template>
 							<template v-else>
 								<span>{{ error.message }}</span>
 							</template>
 						</li>
 					</ul>
-				</v-notice>
-			</v-card-text>
-			<v-card-actions>
-				<v-button @click="closeDialog">{{ $t('dismiss') }}</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VNotice>
+			</VCardText>
+			<VCardActions>
+				<VButton @click="closeDialog">{{ $t('dismiss') }}</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>

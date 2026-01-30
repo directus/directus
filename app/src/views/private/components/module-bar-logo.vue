@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useRequestsStore } from '@/stores/requests';
-import { useSettingsStore } from '@/stores/settings';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import { useRequestsStore } from '@/stores/requests';
+import { useSettingsStore } from '@/stores/settings';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
 const { t } = useI18n();
@@ -49,9 +50,9 @@ function stopSpinnerIfQueueIsEmpty() {
 		:class="{ loading: showLoader }"
 	>
 		<template v-if="customLogoPath">
-			<transition name="fade">
-				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
-			</transition>
+			<Transition name="fade">
+				<VProgressLinear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
+			</Transition>
 			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>
 		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopSpinnerIfQueueIsEmpty" />

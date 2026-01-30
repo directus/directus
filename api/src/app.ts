@@ -1,3 +1,7 @@
+import type { ServerResponse } from 'http';
+import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import path from 'path';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
@@ -5,12 +9,9 @@ import { toBoolean } from '@directus/utils';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
-import type { ServerResponse } from 'http';
 import { merge } from 'lodash-es';
-import { readFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
-import path from 'path';
 import qs from 'qs';
+import { aiChatRouter } from './ai/chat/router.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
@@ -47,7 +48,6 @@ import tusRouter from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
-import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
 	validateDatabaseConnection,
@@ -68,10 +68,10 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 import metricsSchedule from './schedules/metrics.js';
+import projectSchedule from './schedules/project.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
 import tusSchedule from './schedules/tus.js';
-import projectSchedule from './schedules/project.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
@@ -97,6 +97,12 @@ export default async function createApp(): Promise<express.Application> {
 	if (!env['SECRET']) {
 		logger.warn(
 			`"SECRET" env variable is missing. Using a random value instead. Tokens will not persist between restarts. This is not appropriate for production usage.`,
+		);
+	}
+
+	if (typeof env['SECRET'] === 'string' && Buffer.byteLength(env['SECRET']) < 32) {
+		logger.warn(
+			'"SECRET" env variable is shorter than 32 bytes which is insecure. This is not appropriate for production usage.',
 		);
 	}
 
@@ -304,6 +310,10 @@ export default async function createApp(): Promise<express.Application> {
 		app.use('/mcp', mcpRouter);
 	}
 
+	if (toBoolean(env['AI_ENABLED']) === true) {
+		app.use('/ai/chat', aiChatRouter);
+	}
+
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);
 	}
@@ -325,7 +335,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/versions', versionsRouter);
-	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
