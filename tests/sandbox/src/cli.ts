@@ -17,6 +17,7 @@ program
 	.option('--docker.suffix <suffix>', 'Adds a suffix to the docker project. Can be used to ensure uniqueness')
 	.option('-e, --extras <extras>', 'Enable redis,maildev,saml or other extras')
 	.option('--silent', 'Silence all logs except for errors')
+	.option('-f --flamegraph', 'Starts the api with a flamegraph profiler attached')
 	.option('-i, --instances <instances>', 'Horizontally scale directus to a given number of instances', '1');
 
 program.parse();

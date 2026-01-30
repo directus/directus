@@ -1,10 +1,11 @@
-import { spawn } from 'child_process';
+import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { join } from 'path';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import { apiFolder, type Options } from '../sandbox.js';
 import chalk from 'chalk';
 import { detect } from 'detect-port';
+import zeroEks from '@nitwel/0x';
 
 export async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
 	const start = performance.now();
@@ -106,7 +107,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	const start = performance.now();
 	logger.info('Starting Directus');
 	const debuggerPort = Number(env.PORT) + 1;
-	let api;
+	let api: ChildProcessWithoutNullStreams;
 	let timeout: NodeJS.Timeout;
 	const inspect = opts.inspect ? [`--inspect=${debuggerPort}`] : [];
 
@@ -119,9 +120,21 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 			stdio: 'overlapped', // Has to be here, only god knows why.
 		});
 	} else {
-		api = spawn('node', [...inspect, join(apiFolder, 'dist', 'cli', 'run.js'), 'start'], {
-			env,
-		});
+		if (opts.flamegraph) {
+			api = await new Promise((resolve) => {
+				zeroEks({
+					argv: [...inspect, join(apiFolder, 'dist', 'cli', 'run.js'), 'start'],
+					env,
+					onProcessStart(process) {
+						resolve(process as ChildProcessWithoutNullStreams);
+					},
+				});
+			});
+		} else {
+			api = spawn('node', [...inspect, join(apiFolder, 'dist', 'cli', 'run.js'), 'start'], {
+				env,
+			});
+		}
 	}
 
 	api.on('error', (err) => {
@@ -137,7 +150,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 		throw error;
 	});
 
-	api.stderr.on('data', (data) => {
+	api.stderr?.on('data', (data) => {
 		const msg = String(data);
 
 		if (msg.startsWith('Debugger listening on ws://')) return;
@@ -151,7 +164,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	});
 
 	await new Promise((resolve, reject) => {
-		api.stdout.on('data', (data) => {
+		api.stdout?.on('data', (data) => {
 			const msg = String(data);
 
 			if (msg.includes(`Server started at http://${env.HOST}:${env.PORT}`)) {

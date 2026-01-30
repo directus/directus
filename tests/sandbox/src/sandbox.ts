@@ -58,6 +58,8 @@ export type Options = {
 	schema: string | undefined;
 	/** Start the api with debugger */
 	inspect: boolean;
+	/** Starts the api with a flamegraph profiler attached */
+	flamegraph: boolean;
 	/** Enable redis,maildev,saml or other extras */
 	extras: {
 		/** Used for caching, forced to true if instances > 1 */
@@ -114,6 +116,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 			schema: undefined,
 			silent: false,
 			export: false,
+			flamegraph: false,
 			extras: {
 				redis: false,
 				maildev: false,

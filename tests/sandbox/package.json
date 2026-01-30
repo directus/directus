@@ -33,6 +33,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "catalog:",
+		"@nitwel/0x": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"chalk": "catalog:",
