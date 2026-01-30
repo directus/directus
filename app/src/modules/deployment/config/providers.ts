@@ -6,6 +6,7 @@ export interface ProviderConfig {
 	credentialsFields: DeepPartial<Field>[];
 	optionsFields: DeepPartial<Field>[];
 	tokenUrl?: string;
+	settingsWarning?: string;
 }
 
 export const availableProviders = ['vercel'];
@@ -26,6 +27,7 @@ export function useProviderConfigs(
 		return {
 			vercel: {
 				tokenUrl: vercelTokenUrl,
+				settingsWarning: t('deployment.provider.vercel.settings_warning'),
 				credentialsFields: [
 					{
 						field: 'access_token',

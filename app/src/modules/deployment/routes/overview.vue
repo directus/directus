@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 import DeploymentNavigation from '../components/navigation.vue';
 import ProviderSetupDrawer from '../components/provider-setup-drawer.vue';
 import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
-import { availableProviders } from '../config/provider-fields';
+import { availableProviders } from '../config/providers';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';

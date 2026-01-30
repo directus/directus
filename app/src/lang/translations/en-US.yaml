@@ -1103,6 +1103,9 @@ deployment:
         cannot be undone. Are you sure you want to proceed?
     vercel:
       name: Vercel
+      settings_warning:
+        Changing credentials or team ID may affect your selected projects if they are no longer accessible with the new
+        configuration.
       team_id:
         label: Team ID
         hint: Required for team accounts, leave empty for personal accounts.

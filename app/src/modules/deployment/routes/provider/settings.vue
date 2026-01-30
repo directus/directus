@@ -13,7 +13,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import { useProviderConfigs } from '../../config/provider-fields';
+import { useProviderConfigs } from '../../config/providers';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -24,6 +24,7 @@ import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
@@ -86,6 +87,7 @@ const { providerConfigs } = useProviderConfigs(hasExistingCredentials, true);
 
 const credentialsFields = computed(() => providerConfigs.value[props.provider]?.credentialsFields || []);
 const optionsFields = computed(() => providerConfigs.value[props.provider]?.optionsFields || []);
+const settingsWarning = computed(() => providerConfigs.value[props.provider]?.settingsWarning);
 
 async function loadConfig() {
 	loading.value = true;
@@ -264,6 +266,10 @@ onMounted(() => {
 			<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
 			<template v-else>
+				<VNotice v-if="settingsWarning && initialProjectIds.length > 0" type="warning" class="settings-warning">
+					{{ settingsWarning }}
+				</VNotice>
+
 				<InterfacePresentationDivider
 					:title="
 						$t('deployment.provider.settings.edit_credentials', {
@@ -383,6 +389,10 @@ onMounted(() => {
 
 .credentials-saved :deep(.v-input) {
 	--v-input-placeholder-color: var(--theme--primary);
+}
+
+.settings-warning {
+	margin-block-end: var(--theme--form--row-gap);
 }
 
 .type-label {
