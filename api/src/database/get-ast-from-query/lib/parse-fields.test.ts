@@ -513,3 +513,159 @@ test('parse fields with links.*.* and backlinks disabled', async () => {
 		},
 	]);
 });
+
+const schemaWithJson = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+		c.field('date').dateTime();
+		c.field('metadata').json();
+	})
+	.build();
+
+test('parse fields with year function', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{ accountability, fields: ['id', 'year(date)'], parentCollection: 'articles', query: {} },
+		{ knex: db, schema },
+	);
+
+	expect(result).toEqual([
+		{
+			alias: false,
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'year(date)',
+			name: 'year(date)',
+			type: 'field',
+			whenCase: [],
+		},
+	]);
+});
+
+test('parse fields with json function containing dotted path', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{ accountability, fields: ['id', 'json(metadata.color)'], parentCollection: 'articles', query: {} },
+		{ knex: db, schema: schemaWithJson },
+	);
+
+	expect(result).toEqual([
+		{
+			alias: false,
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			type: 'functionField',
+			fieldKey: 'json(metadata.color)',
+			name: 'json(metadata.color)',
+			query: {},
+			relatedCollection: 'articles',
+			whenCase: [],
+			cases: [],
+		},
+	]);
+});
+
+test('parse fields with json function containing nested path', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{
+			accountability,
+			fields: ['id', 'json(metadata.user.name)', 'title'],
+			parentCollection: 'articles',
+			query: {},
+		},
+		{ knex: db, schema: schemaWithJson },
+	);
+
+	expect(result).toEqual([
+		{
+			alias: false,
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			type: 'functionField',
+			fieldKey: 'json(metadata.user.name)',
+			name: 'json(metadata.user.name)',
+			query: {},
+			relatedCollection: 'articles',
+			whenCase: [],
+			cases: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'title',
+			name: 'title',
+			type: 'field',
+			whenCase: [],
+		},
+	]);
+});
+
+test('parse fields distinguishes json function from relational fields', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	// Create schema with both relational fields and json field
+	const schemaWithBoth = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+			c.field('author').m2o('users');
+			c.field('metadata').json();
+		})
+		.collection('users', (c) => {
+			c.field('id').id();
+			c.field('name').string();
+		})
+		.build();
+
+	const result = await parseFields(
+		{
+			accountability,
+			fields: ['id', 'author.name', 'json(metadata.color)'],
+			parentCollection: 'articles',
+			query: {},
+		},
+		{ knex: db, schema: schemaWithBoth },
+	);
+
+	// author.name should be a relational field (m2o node)
+	// json(metadata.color) should be a functionField node
+	expect(result).toHaveLength(3);
+
+	expect(result[0]).toEqual({
+		alias: false,
+		fieldKey: 'id',
+		name: 'id',
+		type: 'field',
+		whenCase: [],
+	});
+
+	// json function is processed first since it's detected before relational fields
+	expect(result[1]).toEqual({
+		type: 'functionField',
+		fieldKey: 'json(metadata.color)',
+		name: 'json(metadata.color)',
+		query: {},
+		relatedCollection: 'articles',
+		whenCase: [],
+		cases: [],
+	});
+
+	expect(result[2]?.type).toBe('m2o');
+});
