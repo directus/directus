@@ -208,3 +208,50 @@ When creating a new pull request, always use the PR template located at `.github
 - **Checklist**: Confirm tests, documentation, and OpenAPI updates
 
 Replace the placeholder "Lorem ipsum" content with actual details about your changes. Always reference the related issue at the bottom using `Fixes #<num>` format.
+
+### Handling Change Requests
+
+**IMPORTANT**: When you receive change requests or feedback on a pull request, you must create a **sub-PR** (a new pull request) to address those changes. Do not directly push commits to the existing PR branch.
+
+#### Why Sub-PRs?
+
+- Maintains a clean review history
+- Allows reviewers to evaluate changes in isolation
+- Prevents mixing original work with requested changes
+- Enables parallel work on multiple change requests
+
+#### How to Create a Sub-PR
+
+1. Create a new branch from the current PR branch:
+   ```bash
+   git checkout -b <original-branch>-fixes-1
+   ```
+
+2. Make the requested changes on the new branch
+
+3. Create a new pull request that:
+   - Targets the original PR branch (not `main`)
+   - References the original PR in the description: "Addresses feedback from #<original-pr-num>"
+   - Includes a clear description of what changed
+
+4. Once the sub-PR is reviewed and merged into the original PR branch, the original PR will be updated automatically
+
+#### Example Workflow
+
+```bash
+# Original PR branch: claude/feature-xyz
+# Reviewer requests changes
+
+# Create sub-PR branch
+git checkout claude/feature-xyz
+git checkout -b claude/feature-xyz-fixes-1
+
+# Make changes, commit, and push
+git add .
+git commit -m "Address reviewer feedback on validation logic"
+git push origin claude/feature-xyz-fixes-1
+
+# Create PR: claude/feature-xyz-fixes-1 → claude/feature-xyz
+```
+
+**Note**: This sub-PR workflow applies when explicitly instructed to fix change requests. For minor fixes (typos, formatting) or when working on your own PRs before initial review, direct commits to the PR branch are acceptable.
