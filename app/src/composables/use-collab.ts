@@ -3,7 +3,7 @@ import { readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } fr
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
-import { capitalize, debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
+import { debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -22,6 +22,16 @@ type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE 
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
 type DiscardMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.DISCARD }>;
+
+type NonInitServerAction = Exclude<ServerMessage['action'], typeof ACTION.SERVER.INIT>;
+
+type ServerMessageHandler<A extends ServerMessage['action']> = (
+	message: Extract<ServerMessage, { action: A }>,
+) => void | Promise<void>;
+
+type MessageHandlerMap = {
+	[A in NonInitServerAction]: ServerMessageHandler<A>;
+};
 
 const SESSION_COLOR_KEY = 'collab-color';
 
@@ -112,16 +122,21 @@ export function useCollab(
 		};
 	});
 
-	const messageReceivers = {
-		receiveJoin,
-		receiveFocus,
-		receiveInit,
-		receiveLeave,
-		receiveSave,
-		receiveUpdate,
-		receiveDelete,
-		receiveDiscard,
-	};
+	const messageHandlers = {
+		[ACTION.SERVER.JOIN]: receiveJoin,
+		[ACTION.SERVER.FOCUS]: receiveFocus,
+		[ACTION.SERVER.LEAVE]: receiveLeave,
+		[ACTION.SERVER.SAVE]: receiveSave,
+		[ACTION.SERVER.UPDATE]: receiveUpdate,
+		[ACTION.SERVER.DELETE]: receiveDelete,
+		[ACTION.SERVER.DISCARD]: receiveDiscard,
+	} satisfies MessageHandlerMap;
+
+	function dispatchMessage<A extends NonInitServerAction>(action: A, message: Extract<ServerMessage, { action: A }>) {
+		// Type-safe dispatch: satisfies ensures handlers match their action types at definition,
+		// cast is needed because TS can't correlate dynamic key lookups with discriminated unions
+		(messageHandlers[action] as ServerMessageHandler<A>)(message);
+	}
 
 	onMounted(async () => {
 		if (
@@ -238,7 +253,12 @@ export function useCollab(
 
 			if (message) if (!roomId.value || roomId.value !== message.room) return;
 
-			messageReceivers[`receive${capitalize(message.action)}`](message as any);
+			if (message.action in messageHandlers) {
+				dispatchMessage(
+					message.action as NonInitServerAction,
+					message as Extract<ServerMessage, { action: NonInitServerAction }>,
+				);
+			}
 		}),
 	);
 
