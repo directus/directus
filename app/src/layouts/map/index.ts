@@ -11,7 +11,7 @@ import MapLayout from './map.vue';
 import MapOptions from './options.vue';
 import { getMapStyle } from './style';
 import { LayoutOptions, LayoutQuery } from './types';
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { getItemRoute } from '@/utils/get-route';
@@ -31,9 +31,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
-		const aiStore = useAiStore();
+		const toolsStore = useAiToolsStore();
 
-		aiStore.onSystemToolResult((tool, input) => {
+		toolsStore.onSystemToolResult((tool, input) => {
 			if (tool === 'items' && input.collection === collection.value) {
 				refresh();
 			}

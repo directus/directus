@@ -19,7 +19,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
 	}
 
-	const { provider, model, messages: rawMessages, tools: requestedTools, toolApprovals } = parseResult.data;
+	const { provider, model, messages: rawMessages, tools: requestedTools, toolApprovals, context } = parseResult.data;
 
 	const aiSettings = res.locals['ai'].settings;
 
@@ -68,9 +68,10 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 	const stream = await createUiStream(validationResult.data, {
 		provider,
 		model,
-		tools: tools,
+		tools,
 		aiSettings,
 		systemPrompt: res.locals['ai'].systemPrompt,
+		...(context && { context }),
 		onUsage: (usage) => {
 			res.write(`data: ${JSON.stringify({ type: 'data-usage', data: usage })}\n\n`);
 		},

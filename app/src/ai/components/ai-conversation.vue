@@ -75,6 +75,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 <template>
 	<div class="ai-conversation">
 		<AiHeader v-if="hasProviders" />
+
 		<div ref="messages-container" class="messages-container">
 			<AiMessageList :messages="aiStore.messages" :status="aiStore.status" />
 
@@ -131,10 +132,12 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	flex: 1;
 	min-block-size: 0;
 	block-size: 100%;
+	position: relative;
 }
 
 .messages-container {
 	position: relative;
+	padding-inline: 8px;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -152,6 +155,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .input-container {
 	flex-shrink: 0;
 	position: relative;
+	padding-inline-end: 12px;
 }
 
 .error-message {
@@ -159,7 +163,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	font-size: 0.875rem;
 	inline-size: 100%;
 	max-inline-size: 100%;
-	overflow-wrap: anywhere;
+	overflow-wrap: break-word;
 }
 
 .error-buttons-container {

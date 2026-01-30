@@ -3,12 +3,14 @@ import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import VButton from '@/components/v-button.vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 
 const aiStore = useAiStore();
+const toolsStore = useAiToolsStore();
 const { t } = useI18n();
 
 const props = defineProps<{
@@ -53,7 +55,7 @@ const handleDeny = () => {
 };
 
 const handleAlwaysAllow = () => {
-	aiStore.setToolApprovalMode(props.toolName, 'always');
+	toolsStore.setToolApprovalMode(props.toolName, 'always');
 
 	if (props.approval?.id) {
 		aiStore.approveToolCall(props.approval.id);

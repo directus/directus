@@ -8,7 +8,7 @@ import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import { HeaderRaw, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
@@ -35,9 +35,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
 
-		const aiStore = useAiStore();
+		const toolsStore = useAiToolsStore();
 
-		aiStore.onSystemToolResult((tool, input) => {
+		toolsStore.onSystemToolResult((tool, input) => {
 			if (tool === 'items' && input.collection === collection.value) {
 				refresh();
 			}

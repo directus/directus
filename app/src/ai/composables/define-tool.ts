@@ -1,7 +1,7 @@
 import formatTitle from '@directus/format-title';
 import { type MaybeRefOrGetter, onMounted, onUnmounted, toValue, unref, watch } from 'vue';
 import { z, ZodObject } from 'zod';
-import { useAiStore } from '../stores/use-ai';
+import { useAiToolsStore } from '../stores/use-ai-tools';
 
 export interface StaticToolDefinition<T = ZodObject> {
 	name: string;
@@ -51,21 +51,21 @@ export const toStatic = <T>(toolGetter: MaybeRefOrGetter<ToolDefinition<T>>): St
 };
 
 export const defineTool = <T extends ZodObject>(tool: MaybeRefOrGetter<ToolDefinition<T>>) => {
-	const aiStore = useAiStore();
+	const toolsStore = useAiToolsStore();
 
 	watch(
 		() => toValue(tool),
 		(newDef, oldDef) => {
-			aiStore.replaceLocalTool(toValue(toValue(oldDef).name), toStatic(newDef));
+			toolsStore.replaceLocalTool(toValue(oldDef.name), toStatic(newDef));
 		},
 		{ deep: true },
 	);
 
 	onMounted(() => {
-		aiStore.registerLocalTool(toStatic(tool));
+		toolsStore.registerLocalTool(toStatic(tool));
 	});
 
 	onUnmounted(() => {
-		aiStore.deregisterLocalTool(toStatic(tool).name);
+		toolsStore.deregisterLocalTool(toStatic(tool).name);
 	});
 };

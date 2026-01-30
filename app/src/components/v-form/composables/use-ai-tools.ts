@@ -23,7 +23,8 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 	defineTool({
 		name: `read-form-values-${componentUid}`,
 		displayName: t('ai_tools.read_form_values'),
-		description: 'Read values of the form on the current page',
+		description:
+			'Read values from the form currently open in the UI. Returns only field values visible in the current form view. Does NOT query the database — use the items tool for that.',
 		inputSchema: computed(() => {
 			return z.object({
 				fields: options.fieldNames.value.length > 0 ? z.array(z.enum(options.fieldNames.value)) : z.array(z.string()),
@@ -43,7 +44,8 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 	defineTool({
 		name: `set-form-values-${componentUid}`,
 		displayName: t('ai_tools.update_form_values'),
-		description: `Set values of form on the current page`,
+		description:
+			"Update field values in the form currently open in the UI. Changes are local until the user saves. Does NOT update the database — use the items tool with action: 'update' for that.",
 		inputSchema: writeInputSchema,
 		execute: (args) => {
 			const output: string[] = [];
