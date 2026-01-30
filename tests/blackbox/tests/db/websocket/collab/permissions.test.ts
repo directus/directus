@@ -46,7 +46,10 @@ describe('Collaborative Editing: Permissions', () => {
 			});
 
 			// Assert
-			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
+			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws,
+				(msg) => msg.type === 'collab' && msg.action === 'error',
+			);
 
 			expect(errorMsg).toMatchObject({
 				action: 'error',
@@ -236,8 +239,8 @@ describe('Collaborative Editing: Permissions', () => {
 
 			// Restricted user should receive the update and focus (order not guaranteed)
 			const [updateMessage, focusMessage] = await waitForMatchingMessage<WebSocketCollabResponse>(wsRestricted, [
-				(msg) => msg.action === 'update' && msg.field === 'title' && msg.changes === null,
-				(msg) => msg.action === 'focus' && msg.field === 'title',
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'title' && msg.changes === null,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'title',
 			]);
 
 			expect(updateMessage).toBeDefined();
@@ -300,7 +303,10 @@ describe('Collaborative Editing: Permissions', () => {
 			});
 
 			// Assert
-			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
+			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws,
+				(msg) => msg.type === 'collab' && msg.action === 'error',
+			);
 
 			expect(errorMsg).toMatchObject({
 				action: 'error',
@@ -364,7 +370,10 @@ describe('Collaborative Editing: Permissions', () => {
 			});
 
 			// Assert
-			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
+			const errorMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws,
+				(msg) => msg.type === 'collab' && msg.action === 'error',
+			);
 
 			expect(errorMsg).toMatchObject({
 				action: 'error',
@@ -412,7 +421,10 @@ describe('Collaborative Editing: Permissions', () => {
 				initialChanges: { non_existent: 'Invalid' },
 			});
 
-			const errorJoin = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
+			const errorJoin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws,
+				(msg) => msg.type === 'collab' && msg.action === 'error',
+			);
 
 			const ws2 = createWebSocketConn(TEST_URL, { auth: { access_token: userToken } });
 
@@ -439,7 +451,10 @@ describe('Collaborative Editing: Permissions', () => {
 				changes: 'Value',
 			});
 
-			const errorUpdate = await waitForMatchingMessage<WebSocketCollabResponse>(ws2, (msg) => msg.action === 'error');
+			const errorUpdate = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'error',
+			);
 
 			// Assert
 			expect(errorJoin).toMatchObject({
@@ -497,7 +512,7 @@ describe('Collaborative Editing: Permissions', () => {
 
 			const initRestricted = await waitForMatchingMessage<WebSocketCollabResponse>(
 				wsRestricted,
-				(msg) => msg.action === 'init',
+				(msg) => msg.type === 'collab' && msg.action === 'init',
 			);
 
 			const room = initRestricted.room!;
@@ -510,8 +525,8 @@ describe('Collaborative Editing: Permissions', () => {
 				version: null,
 			});
 
-			await waitForMatchingMessage(wsAdmin, (msg) => msg.action === 'init');
-			await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'join');
+			await waitForMatchingMessage(wsAdmin, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -529,8 +544,15 @@ describe('Collaborative Editing: Permissions', () => {
 				changes: 'Admin Content',
 			});
 
-			await waitForMatchingMessage(wsAdmin, (msg) => msg.action === 'update' && msg.field === 'title');
-			await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'update' && msg.field === 'content');
+			await waitForMatchingMessage(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'title',
+			);
+
+			await waitForMatchingMessage(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'content',
+			);
 
 			await wsRestricted.sendMessage({
 				type: 'collab',
@@ -540,12 +562,12 @@ describe('Collaborative Editing: Permissions', () => {
 
 			const discardMsgRestricted = await waitForMatchingMessage<WebSocketCollabResponse>(
 				wsRestricted,
-				(msg) => msg.action === 'discard',
+				(msg) => msg.type === 'collab' && msg.action === 'discard',
 			);
 
 			const discardMsgAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
 				wsAdmin,
-				(msg) => msg.action === 'discard',
+				(msg) => msg.type === 'collab' && msg.action === 'discard',
 			);
 
 			// Assert
@@ -598,7 +620,11 @@ describe('Extended Security Tests', () => {
 				version: null,
 			});
 
-			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(wsAdmin, (msg) => msg.action === 'init');
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
 			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
@@ -609,7 +635,7 @@ describe('Extended Security Tests', () => {
 				version: null,
 			});
 
-			await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'init');
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
 
 			// Action
 			await wsAdmin.sendMessage({
@@ -627,7 +653,7 @@ describe('Extended Security Tests', () => {
 			// Assert
 			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
 				wsRestricted,
-				(msg) => msg.action === 'update' && msg.field === 'm2o_related',
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'm2o_related',
 			);
 
 			expect(updateMsg['changes']).toBeDefined();
@@ -669,7 +695,11 @@ describe('Extended Security Tests', () => {
 				version: null,
 			});
 
-			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(wsAdmin, (msg) => msg.action === 'init');
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
 			const room = initAdmin.room!;
 
 			// Action
@@ -694,7 +724,7 @@ describe('Extended Security Tests', () => {
 			// Assert
 			const initRestricted = await waitForMatchingMessage<WebSocketCollabResponse>(
 				wsRestricted,
-				(msg) => msg.action === 'init',
+				(msg) => msg.type === 'collab' && msg.action === 'init',
 			);
 
 			expect(initRestricted['changes']).toBeDefined();
@@ -742,7 +772,11 @@ describe('Extended Security Tests', () => {
 				version: null,
 			});
 
-			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(wsAdmin, (msg) => msg.action === 'init');
+			const initAdmin = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsAdmin,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
 			const room = initAdmin.room!;
 
 			await wsRestricted.sendMessage({
@@ -753,7 +787,7 @@ describe('Extended Security Tests', () => {
 				version: null,
 			});
 
-			await waitForMatchingMessage(wsRestricted, (msg) => msg.action === 'init');
+			await waitForMatchingMessage(wsRestricted, (msg) => msg.type === 'collab' && msg.action === 'init');
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'o2m_related' });
 
@@ -783,7 +817,7 @@ describe('Extended Security Tests', () => {
 
 			const updateO2M = await waitForMatchingMessage<WebSocketCollabResponse>(
 				wsRestricted,
-				(msg) => msg.action === 'update' && msg.field === 'o2m_related',
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'o2m_related',
 			);
 
 			await wsAdmin.sendMessage({ type: 'collab', action: 'focus', room, field: 'm2o_related' });
@@ -802,7 +836,7 @@ describe('Extended Security Tests', () => {
 
 			const updateM2O = await waitForMatchingMessage<WebSocketCollabResponse>(
 				wsRestricted,
-				(msg) => msg.action === 'update' && msg.field === 'm2o_related',
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'm2o_related',
 			);
 
 			// Assert
@@ -864,7 +898,10 @@ describe('Version Permissions', () => {
 			version: versionId,
 		});
 
-		const msg = await waitForMatchingMessage<WebSocketCollabResponse>(ws, (msg) => msg.action === 'error');
+		const msg = await waitForMatchingMessage<WebSocketCollabResponse>(
+			ws,
+			(msg) => msg.type === 'collab' && msg.action === 'error',
+		);
 
 		// Assert
 		expect(msg).toMatchObject({

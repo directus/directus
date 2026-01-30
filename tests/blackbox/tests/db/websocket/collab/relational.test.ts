@@ -195,7 +195,8 @@ describe('Collaborative Editing: Relational', () => {
 
 			// Assert
 			await sleep(500);
-			expect(wsRestricted.getUnreadMessageCount()).toBe(0);
+			const msgs = (await wsRestricted.getMessages(wsRestricted.getUnreadMessageCount())) || [];
+			expect(msgs.find((msg) => msg.action === 'update')).toBeUndefined();
 
 			wsAdmin.conn.close();
 			wsRestricted.conn.close();
@@ -475,15 +476,11 @@ describe('Collaborative Editing: Relational', () => {
 
 			// Assert
 			await sleep(500);
-			const unreadCount = wsRestricted.getUnreadMessageCount();
+			const msgs = (await wsRestricted.getMessages(wsRestricted.getUnreadMessageCount())) || [];
+			const updateMsg = msgs.find((msg) => msg.action === 'update') as WebSocketCollabResponse;
 
-			if (unreadCount > 0) {
-				const updateMsg = (await wsRestricted.getMessages(1)) as any;
-				const changes = updateMsg[0]?.['changes'];
-
-				if (changes) {
-					expect(changes.create || []).toHaveLength(0);
-				}
+			if (updateMsg) {
+				expect(updateMsg.changes?.create || []).toHaveLength(0);
 			}
 
 			wsAdmin.conn.close();
@@ -720,10 +717,9 @@ describe('Collaborative Editing: Relational', () => {
 			const changes = updateMsg['changes'];
 			const nestedItem = changes?.create?.[0]?.[`${collectionCollabRelationalM2M}_id`];
 
-			if (nestedItem) {
-				expect(nestedItem).toHaveProperty('field_a', 'Value A');
-				expect(nestedItem).not.toHaveProperty('field_b');
-			}
+			expect(nestedItem).toBeDefined();
+			expect(nestedItem).toHaveProperty('field_a', 'Value A');
+			expect(nestedItem).not.toHaveProperty('field_b');
 
 			wsAdmin.conn.close();
 			wsRestricted.conn.close();
@@ -821,18 +817,19 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			await sleep(500);
-			const unreadCount = wsRestricted.getUnreadMessageCount();
+			await sleep(1000);
+			const msgs = (await wsRestricted.getMessages(wsRestricted.getUnreadMessageCount())) || [];
 
-			if (unreadCount > 0) {
-				const updateMsg = (await wsRestricted.getMessages(1))![0] as WebSocketCollabResponse;
+			const updateMsg = msgs.find(
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'm2m_related',
+			) as WebSocketCollabResponse;
+
+			if (updateMsg) {
 				const changes = updateMsg.changes;
 
 				// Nested M2M data should be filtered out
-				if (changes?.create?.[0]) {
-					const nestedItem = changes.create[0][`${collectionCollabRelationalM2M}_id`];
-					expect(nestedItem).toBeUndefined();
-				}
+				const nestedItem = changes?.create?.[0]?.[`${collectionCollabRelationalM2M}_id`];
+				expect(nestedItem).toBeUndefined();
 			}
 
 			wsAdmin.conn.close();
@@ -941,10 +938,9 @@ describe('Collaborative Editing: Relational', () => {
 			const changes = updateMsg['changes'];
 			const nestedItem = changes?.create?.[0]?.item;
 
-			if (nestedItem) {
-				expect(nestedItem).toHaveProperty('field_a', 'Value A');
-				expect(nestedItem).not.toHaveProperty('field_b');
-			}
+			expect(nestedItem).toBeDefined();
+			expect(nestedItem).toHaveProperty('field_a', 'Value A');
+			expect(nestedItem).not.toHaveProperty('field_b');
 
 			wsAdmin.conn.close();
 			wsRestricted.conn.close();
@@ -1038,19 +1034,17 @@ describe('Collaborative Editing: Relational', () => {
 			});
 
 			// Assert
-			await sleep(500);
-			const unreadCount = wsRestricted.getUnreadMessageCount();
+			const updateMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				wsRestricted,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.field === 'a2o_items',
+				5000,
+			);
 
-			if (unreadCount > 0) {
-				const updateMsg = (await wsRestricted.getMessages(1)) as any;
-				const changes = updateMsg[0]?.['changes'];
+			const changes = updateMsg.changes;
 
-				// Nested A2O data should be filtered out
-				if (changes?.create?.[0]) {
-					const nestedItem = changes.create[0].item;
-					expect(nestedItem).toBeUndefined();
-				}
-			}
+			// Nested A2O data should be filtered out
+			const nestedItem = changes?.create?.[0]?.item;
+			expect(nestedItem).toBeUndefined();
 
 			wsAdmin.conn.close();
 			wsRestricted.conn.close();

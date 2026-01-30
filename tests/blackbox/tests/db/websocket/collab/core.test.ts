@@ -87,7 +87,7 @@ describe('Collaborative Editing: Core', () => {
 			});
 
 			// Assert
-			const errorMsg = await waitForMatchingMessage(ws, (msg) => msg.action === 'error');
+			const errorMsg = await waitForMatchingMessage(ws, (msg) => msg.type === 'collab' && msg.action === 'error');
 
 			expect(errorMsg).toMatchObject({
 				action: 'error',
@@ -116,7 +116,7 @@ describe('Collaborative Editing: Core', () => {
 				});
 
 				// Assert
-				const errorMsg = await waitForMatchingMessage(ws, (msg) => msg['action'] === 'error');
+				const errorMsg = await waitForMatchingMessage(ws, (msg) => msg.type === 'collab' && msg.action === 'error');
 
 				expect(errorMsg).toMatchObject({
 					action: 'error',
@@ -659,8 +659,7 @@ describe('Collaborative Editing: Core', () => {
 				version: null,
 			});
 
-			const init1 = await ws1.getMessages(1);
-			expect(init1![0]).toMatchObject({ type: 'collab', action: 'init' });
+			await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'init');
 
 			// Action
 			await request(TEST_URL)
@@ -669,9 +668,12 @@ describe('Collaborative Editing: Core', () => {
 				.expect(204);
 
 			// Assert
-			const deleteMsg = await ws1.getMessages(1);
+			const deleteMsg = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws1,
+				(msg) => msg.type === 'collab' && msg.action === 'delete',
+			);
 
-			expect(deleteMsg![0]).toMatchObject({
+			expect(deleteMsg).toMatchObject({
 				type: 'collab',
 				action: 'delete',
 			});
@@ -702,8 +704,12 @@ describe('Collaborative Editing: Core', () => {
 				version: null,
 			});
 
-			const init1 = await ws1.getMessages(1);
-			const room = init1![0]!.room;
+			const init1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws1,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const room = init1.room;
 
 			await ws2.sendMessage({
 				type: 'collab',
@@ -713,15 +719,15 @@ describe('Collaborative Editing: Core', () => {
 				version: null,
 			});
 
-			await ws2.getMessages(1); // Drain INIT
-			await ws1.getMessages(1); // Drain JOIN
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'init');
+			await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'notes' });
 
 			// Drain Focuses
-			await ws1.getMessages(1); // ws2 focus
-			await ws2.getMessages(1); // ws1 focus
+			await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'focus');
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'focus');
 
 			// Action
 			await Promise.all([
@@ -753,8 +759,12 @@ describe('Collaborative Editing: Core', () => {
 				version: null,
 			});
 
-			const init3 = await ws3.getMessages(1);
-			const roomState = init3![0];
+			const init3 = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws3,
+				(msg) => msg.type === 'collab' && msg.action === 'init',
+			);
+
+			const roomState = init3;
 
 			expect(roomState).toMatchObject({
 				type: 'collab',
@@ -851,8 +861,14 @@ describe('Collaborative Editing: Core', () => {
 			]);
 
 			await Promise.all([
-				waitForMatchingMessage(ws1Recorder, (msg) => msg.action === 'update' && msg.changes === 'Update 1'),
-				waitForMatchingMessage(ws2Recorder, (msg) => msg.action === 'update' && msg.changes === 'Update 2'),
+				waitForMatchingMessage(
+					ws1Recorder,
+					(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'Update 1',
+				),
+				waitForMatchingMessage(
+					ws2Recorder,
+					(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'Update 2',
+				),
 			]);
 
 			// Assert
@@ -932,17 +948,30 @@ describe('Collaborative Editing: Core', () => {
 			await waitForMatchingMessage(ws1, (msg) => msg.type === 'collab' && msg.action === 'join');
 
 			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
-			await waitForMatchingMessage(ws2, (msg) => msg.action === 'focus' && msg.field === 'title');
+
+			await waitForMatchingMessage(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === 'title',
+			);
 
 			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Val A' });
-			await waitForMatchingMessage(ws2, (msg) => msg.action === 'update' && msg.changes === 'Val A');
+
+			await waitForMatchingMessage(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'Val A',
+			);
 
 			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: null }); // Release
-			await waitForMatchingMessage(ws2, (msg) => msg.action === 'focus' && msg.field === null);
+
+			await waitForMatchingMessage(ws2, (msg) => msg.type === 'collab' && msg.action === 'focus' && msg.field === null);
 
 			await ws2.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 			await ws2.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Val B' });
-			await waitForMatchingMessage(ws1, (msg) => msg.action === 'update' && msg.changes === 'Val B');
+
+			await waitForMatchingMessage(
+				ws1,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'Val B',
+			);
 
 			// Assert
 			const ws3 = createWebSocketConn(TEST_URL, { auth: { access_token: USER.ADMIN.TOKEN } });
@@ -1023,7 +1052,10 @@ describe('Collaborative Editing: Core', () => {
 			await ws1.sendMessage({ type: 'collab', action: 'focus', room, field: 'title' });
 			await ws1.sendMessage({ type: 'collab', action: 'update', room, field: 'title', changes: 'Version Update' });
 
-			await waitForMatchingMessage(ws2, (msg) => msg.action === 'update' && msg.changes === 'Version Update');
+			await waitForMatchingMessage(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'update' && msg.changes === 'Version Update',
+			);
 
 			await request(TEST_URL)
 				.post(`/versions/${versionPk}/save`)
@@ -1032,8 +1064,15 @@ describe('Collaborative Editing: Core', () => {
 				.expect(200);
 
 			// Assert
-			const saveMsg1 = await waitForMatchingMessage<WebSocketCollabResponse>(ws1, (msg) => msg.action === 'save');
-			const saveMsg2 = await waitForMatchingMessage<WebSocketCollabResponse>(ws2, (msg) => msg.action === 'save');
+			const saveMsg1 = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws1,
+				(msg) => msg.type === 'collab' && msg.action === 'save',
+			);
+
+			const saveMsg2 = await waitForMatchingMessage<WebSocketCollabResponse>(
+				ws2,
+				(msg) => msg.type === 'collab' && msg.action === 'save',
+			);
 
 			expect(saveMsg1).toBeDefined();
 			expect(saveMsg2).toBeDefined();
