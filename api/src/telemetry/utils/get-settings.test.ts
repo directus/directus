@@ -1,7 +1,14 @@
+import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { describe, expect, it, vi } from 'vitest';
 import { SettingsService } from '../../services/settings.js';
 import { type DatabaseSettings, getSettings, type TelemetrySettings } from './get-settings.js';
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		EMAIL_TEMPLATES_PATH: './templates',
+	}),
+}));
 
 vi.mock('../../utils/get-schema.js');
 vi.mock('../../services/settings.js');
@@ -57,5 +64,33 @@ describe('getSettings', () => {
 			ai_system_prompt: false,
 			collaborative_editing_enabled: true,
 		} satisfies TelemetrySettings);
+	});
+
+	it('should return false if WEBSOCKETS_COLLAB_ENABLED is false', async () => {
+		vi.mocked(useEnv).mockReturnValue({
+			WEBSOCKETS_COLLAB_ENABLED: 'false',
+		});
+
+		vi.mocked(SettingsService.prototype.readSingleton).mockResolvedValue({
+			project_id: 'test-project-id',
+			collaborative_editing_enabled: true,
+		} as any);
+
+		const result = await getSettings(mockDb);
+		expect(result.collaborative_editing_enabled).toBe(false);
+	});
+
+	it('should return false if database setting is false even if env is true', async () => {
+		vi.mocked(useEnv).mockReturnValue({
+			WEBSOCKETS_COLLAB_ENABLED: 'true',
+		});
+
+		vi.mocked(SettingsService.prototype.readSingleton).mockResolvedValue({
+			project_id: 'test-project-id',
+			collaborative_editing_enabled: false,
+		} as any);
+
+		const result = await getSettings(mockDb);
+		expect(result.collaborative_editing_enabled).toBe(false);
 	});
 });
