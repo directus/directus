@@ -66,7 +66,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
-const { collectionRoute } = useCollectionRoute();
+const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
@@ -585,7 +585,7 @@ const shouldShowVersioning = computed(
 		!versionsLoading.value,
 );
 
-function useCollectionRoute() {
+function useItemNavigation() {
 	const route = useRoute();
 
 	const collectionRoute = computed(() => {
@@ -594,7 +594,17 @@ function useCollectionRoute() {
 		return collectionPath;
 	});
 
-	return { collectionRoute };
+	// If there's in-app navigation history, use browser back
+	// Otherwise fall back to collection route
+	const backRoute = computed(() => {
+		if (history.state?.back) {
+			return undefined;
+		}
+
+		return collectionRoute.value;
+	});
+
+	return { collectionRoute, backRoute };
 }
 </script>
 
@@ -608,7 +618,7 @@ function useCollectionRoute() {
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
-		:back-to="collectionRoute"
+		:back-to="backRoute"
 		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
