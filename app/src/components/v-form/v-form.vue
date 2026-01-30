@@ -65,7 +65,7 @@ const props = withDefaults(
 const emit = defineEmits(['update:modelValue']);
 
 const values = computed(() => {
-	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
+	return Object.assign({}, props.initialValues, props.modelValue);
 });
 
 const el = ref<Element>();
@@ -267,9 +267,7 @@ function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 
 	if (opts?.force !== true && (!field || isDisabled(field))) return;
 
-	const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
-	edits[fieldKey] = value;
-	emit('update:modelValue', edits);
+	emit('update:modelValue', { ...props.modelValue, [fieldKey]: value });
 }
 
 function apply(updates: { [field: string]: any }) {
