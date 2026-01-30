@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-fcc8e337="" class="boolean" style="color: var(--theme--primary); --v-icon-color: var(--theme--primary);">
+  <v-icon-stub data-v-fcc8e337="" name="check" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="false" large="false" xlarge="false"></v-icon-stub>
+  <!--v-if-->
+</div>"
+`;
