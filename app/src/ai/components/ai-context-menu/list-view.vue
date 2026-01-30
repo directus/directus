@@ -1,14 +1,25 @@
 <script setup lang="ts" generic="T">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import AiEmptyState from './empty-state.vue';
 import VList from '@/components/v-list.vue';
 
-defineProps<{
-	items: T[];
-	itemKey: keyof T & string;
-	emptyMessage: string;
-}>();
+const props = withDefaults(
+	defineProps<{
+		items: T[];
+		itemKey: keyof T & string;
+		emptyMessage?: string;
+	}>(),
+	{
+		emptyMessage: undefined,
+	},
+);
 
 defineSlots<{ item(props: { item: T }): unknown }>();
+
+const { t } = useI18n();
+
+const displayMessage = computed(() => props.emptyMessage ?? t('no_results'));
 </script>
 
 <template>
@@ -19,6 +30,6 @@ defineSlots<{ item(props: { item: T }): unknown }>();
 			</template>
 		</template>
 
-		<AiEmptyState v-else :message="emptyMessage" />
+		<AiEmptyState v-else :message="displayMessage" />
 	</VList>
 </template>

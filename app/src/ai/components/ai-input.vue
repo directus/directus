@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, onUnmounted, useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
+import { useAiContextStore } from '../stores/use-ai-context';
 import AiContextMenu from './ai-context-menu.vue';
 import AiInputSubmit from './ai-input-submit.vue';
 import AiPendingContext from './ai-pending-context.vue';
 import AiTextarea from './ai-textarea.vue';
 
 const aiStore = useAiStore();
+const contextStore = useAiContextStore();
 
 const textareaComponent = useTemplateRef<InstanceType<typeof AiTextarea>>('textarea-component');
 
@@ -47,7 +49,7 @@ function handleSubmit() {
 <template>
 	<div class="ai-input-container">
 		<div class="input-wrapper" @click="textareaComponent?.focus()">
-			<div v-if="aiStore.pendingContext.length > 0" class="context-container">
+			<div v-if="contextStore.pendingContext.length > 0" class="context-container">
 				<AiPendingContext />
 			</div>
 			<AiTextarea

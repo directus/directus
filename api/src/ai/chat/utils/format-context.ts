@@ -1,6 +1,6 @@
 import type { ChatContext } from '../models/chat-request.js';
 
-function sanitizeForXml(text: string): string {
+function escapeAngleBrackets(text: string): string {
 	return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
@@ -47,9 +47,9 @@ function groupAttachments(attachments: Attachment[]): GroupedAttachments {
 function formatVisualElement(att: Attachment): string {
 	const data = att.data as VisualElementData;
 	const fields = data.fields?.length ? data.fields.join(', ') : 'all';
-	const collection = sanitizeForXml(String(data.collection ?? ''));
-	const item = sanitizeForXml(String(data.item ?? ''));
-	const display = sanitizeForXml(att.display);
+	const collection = escapeAngleBrackets(String(data.collection ?? ''));
+	const item = escapeAngleBrackets(String(data.item ?? ''));
+	const display = escapeAngleBrackets(att.display);
 
 	return `### ${collection}/${item} — "${display}"
 Editable fields: ${fields}
@@ -61,18 +61,18 @@ ${JSON.stringify(att.snapshot, null, 2)}
 function formatPrompt(att: Attachment): string {
 	const snapshot = att.snapshot as PromptSnapshot;
 	const lines: string[] = [];
-	const display = sanitizeForXml(att.display);
+	const display = escapeAngleBrackets(att.display);
 
 	if (snapshot.text) {
-		lines.push(sanitizeForXml(snapshot.text));
+		lines.push(escapeAngleBrackets(snapshot.text));
 	}
 
 	if (snapshot.messages?.length) {
 		lines.push('\n### Example Exchange');
 
 		for (const msg of snapshot.messages) {
-			const role = sanitizeForXml(msg.role);
-			const text = sanitizeForXml(msg.text);
+			const role = escapeAngleBrackets(msg.role);
+			const text = escapeAngleBrackets(msg.text);
 			lines.push(`**${role}**: ${text}`);
 		}
 	}
@@ -82,8 +82,8 @@ function formatPrompt(att: Attachment): string {
 
 function formatItem(att: Attachment): string {
 	const data = att.data as { collection?: string };
-	const display = sanitizeForXml(att.display);
-	const collectionLabel = data.collection ? ` (${sanitizeForXml(data.collection)})` : '';
+	const display = escapeAngleBrackets(att.display);
+	const collectionLabel = data.collection ? ` (${escapeAngleBrackets(data.collection)})` : '';
 	return `[Item: ${display}${collectionLabel}]\n${JSON.stringify(att.snapshot, null, 2)}`;
 }
 

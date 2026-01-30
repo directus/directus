@@ -86,7 +86,7 @@ export const PageContext = z.object({
 export type PageContext = z.infer<typeof PageContext>;
 
 export const ChatContext = z.object({
-	attachments: z.array(ContextAttachment).optional(),
+	attachments: z.array(ContextAttachment).max(10).optional(),
 	page: PageContext.optional(),
 });
 
