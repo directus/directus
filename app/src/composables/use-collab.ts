@@ -23,6 +23,17 @@ type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDAT
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
 type DiscardMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.DISCARD }>;
 
+/**
+ * User info returned from SDK queries.
+ * TODO: Remove once https://linear.app/directus/issue/CMS-1702 is done
+ */
+type CollabUserInfo = {
+	id: string;
+	first_name?: string | null;
+	last_name?: string | null;
+	avatar?: { id: string; modified_on: string } | null;
+};
+
 type NonInitServerAction = Exclude<ServerMessage['action'], typeof ACTION.SERVER.INIT>;
 
 type ServerMessageHandler<A extends ServerMessage['action']> = (
@@ -314,7 +325,7 @@ export function useCollab(
 
 			users.value = message.users
 				.map(({ user, color, connection }) => {
-					const info = usersInfo.find((u) => u.id === user) as any;
+					const info = usersInfo.find((u) => u.id === user) as CollabUserInfo | undefined;
 
 					if (message.connection === connection) {
 						sessionStorage.setItem(SESSION_COLOR_KEY, color);
@@ -330,7 +341,7 @@ export function useCollab(
 					if (a.connection === message.connection) return -1;
 					if (b.connection === message.connection) return 1;
 					return 0;
-				});
+				}) as CollabUser[];
 		}
 
 		focused.value = message.focuses;
