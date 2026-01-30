@@ -4,4 +4,4 @@
 '@directus/app': minor
 ---
 
-Attach prompts, content items, and visual editor elements to AI Assistant Context
+Attached prompts, content items, and visual editor elements to AI Assistant Context
