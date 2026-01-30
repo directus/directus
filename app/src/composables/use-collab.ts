@@ -242,9 +242,11 @@ export function useCollab(
 		}),
 	);
 
-	const collabContext = {
+	const collabContext: CollabContext = {
 		update,
-		focusedFields: Object.values(focused.value),
+		get focusedFields() {
+			return Object.values(focused.value);
+		},
 		registerField(field: string) {
 			const focusedBy = computed(() => {
 				const focusedBy = Object.entries(focused.value).find(([cid, f]) => cid !== connectionId.value && f === field);
