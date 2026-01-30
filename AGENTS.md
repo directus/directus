@@ -112,3 +112,63 @@ CockroachDB.
 - Use `workspace:*` for internal package dependencies
 - Use `catalog:` for external dependencies (versions defined in `pnpm-workspace.yaml`)
 - Add new shared dependencies to the catalog first
+
+## Changesets
+
+All code changes require a changeset to document what changed for the release notes.
+
+### Creating a Changeset
+
+```bash
+pnpm changeset
+```
+
+This interactive command will:
+1. Ask which packages are affected
+2. Ask whether the change is a major, minor, or patch (see versioning guidance below)
+3. Prompt for a description of the change
+
+### Changeset Description Format
+
+**IMPORTANT**: All changeset descriptions must be written in **past tense**, as they document changes that have already been made.
+
+Examples:
+- ✅ "Added support for multi-provider AI"
+- ✅ "Fixed race condition in WebSocket connections"
+- ✅ "Replaced deprecated `ldapjs` with `ldapts`"
+- ❌ "Add support for multi-provider AI" (present tense - incorrect)
+- ❌ "Adding support for multi-provider AI" (present continuous - incorrect)
+
+### Versioning Guidelines
+
+Follow semantic versioning:
+
+- **Patch** (`0.0.x`) - Bug fixes, dependency updates, internal improvements that don't affect the public API
+  - Example: "Fixed validation error in date field"
+
+- **Minor** (`0.x.0`) - New features, enhancements to existing features, non-breaking changes
+  - Example: "Added visual editing support to live preview"
+
+- **Major** (`x.0.0`) - Breaking changes that require user action or code updates
+  - Example: "Removed deprecated `GET /items` endpoint"
+
+### Breaking Changes
+
+When introducing a breaking change:
+
+1. Use **major** version bump
+2. In the changeset description, clearly document:
+   - What changed (past tense)
+   - Why it changed (if not obvious)
+   - Migration steps or what users need to update
+
+Example breaking change changeset:
+```markdown
+---
+'@directus/api': major
+---
+
+Removed support for Node.js 18. Directus now requires Node.js 20 or higher.
+
+**Migration**: Update your Node.js installation to version 20 or higher before upgrading.
+```
