@@ -18,19 +18,7 @@ export function applyAggregate(
 			}
 
 			if (operation === 'count' && field === '*') {
-				if (hasJoins) {
-					// Use COUNT(DISTINCT primary_key) to avoid counting duplicated rows from JOINs
-					const primaryKey = schema.collections[collection]?.primary;
-
-					if (primaryKey) {
-						dbQuery.countDistinct(`${collection}.${primaryKey}`, { as: 'count' });
-					} else {
-						dbQuery.count('*', { as: 'count' });
-					}
-				} else {
-					dbQuery.count('*', { as: 'count' });
-				}
-
+				dbQuery.count('*', { as: 'count' });
 				continue;
 			}
 

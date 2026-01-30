@@ -14,8 +14,9 @@ import { getColumn } from '../utils/get-column.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
+import { applyAggregate } from './apply-query/aggregate.js';
 import applyQuery from './apply-query/index.js';
-import { applyLimit } from './apply-query/pagination.js';
+import { applyLimit, applyOffset } from './apply-query/pagination.js';
 import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 
 export type DBQueryOptions = {
@@ -46,7 +47,7 @@ export function getDBQuery(
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
-		const flatQuery = knex.from(table);
+		const primaryKey = schema.collections[table]!.primary;
 
 		const fieldNodeMap = Object.fromEntries(
 			fieldNodes.map((node, index): [string, [FieldNode | FunctionFieldNode, number]] => [
@@ -70,11 +71,55 @@ export function getDBQuery(
 		// The positions need to be offset by the number of aggregate terms, since the aggregate terms are selected first
 		const groupColumnPositions = queryCopy.group?.map((field) => fieldNodeMap[field]![1] + 1 + aggregateCount) ?? [];
 
-		const dbQuery = applyQuery(knex, table, flatQuery, queryCopy, schema, cases, permissions, {
+		// Build a filter-only query to check for relational filters and use as inner query if needed
+		// This query will NOT have aggregation applied - we add that later on the appropriate query
+		const filterOnlyQuery = { ...queryCopy, aggregate: null };
+		const innerQuery = knex.from(table);
+
+		const { hasMultiRelationalFilter } = applyQuery(knex, table, innerQuery, filterOnlyQuery, schema, cases, permissions, {
+			aliasMap,
+		});
+
+		// When relational filters create JOINs, use wrapper query with deduplication
+		if (hasMultiRelationalFilter) {
+			// innerQuery already has filters applied - just add distinct PK selection
+			innerQuery.select(`${table}.${primaryKey}`).distinct();
+
+			// Wrapper query: join back to deduplicated set
+			const wrapperQuery = knex
+				.from(table)
+				.innerJoin(knex.raw('??', innerQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
+
+			// Apply aggregation on wrapper (no JOINs here since we've deduplicated)
+			if (queryCopy.aggregate) {
+				applyAggregate(schema, wrapperQuery, queryCopy.aggregate, table, false);
+			}
+
+			// Only select group fields if there's a groupBy - pure aggregates don't need field selection
+			if (queryCopy.group) {
+				wrapperQuery.select(fieldNodes.map((node) => preProcess(node)));
+				const rawColumns = queryCopy.group.map((column) => getColumn(knex, table, column, false, schema));
+				wrapperQuery.groupBy(rawColumns);
+			}
+
+			// Apply limit/offset on wrapper
+			applyLimit(knex, wrapperQuery, queryCopy.limit);
+
+			if (queryCopy.offset) {
+				applyOffset(knex, wrapperQuery, queryCopy.offset);
+			}
+
+			return wrapperQuery;
+		}
+
+		// No relational filters - use standard flat query with full aggregation
+		const flatQuery = knex.from(table);
+
+		applyQuery(knex, table, flatQuery, queryCopy, schema, cases, permissions, {
 			aliasMap,
 			groupWhenCases,
 			groupColumnPositions,
-		}).query;
+		});
 
 		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
 
@@ -82,10 +127,10 @@ export function getDBQuery(
 			helpers.capabilities.supportsDeduplicationOfParameters() &&
 			!helpers.capabilities.supportsColumnPositionInGroupBy()
 		) {
-			withPreprocessBindings(knex, dbQuery);
+			withPreprocessBindings(knex, flatQuery);
 		}
 
-		return dbQuery;
+		return flatQuery;
 	}
 
 	const primaryKey = schema.collections[table]!.primary;

@@ -66,7 +66,7 @@ test('aggregate counting * without joins', async () => {
 	expect(rawQuery.bindings).toEqual([]);
 });
 
-test('aggregate counting * with joins uses distinct', async () => {
+test('aggregate counting * with joins uses regular count (deduplication handled upstream)', async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -82,8 +82,8 @@ test('aggregate counting * with joins uses distinct', async () => {
 
 	const rawQuery = queryBuilder.toSQL();
 
-	// When joins are present, use COUNT(DISTINCT primary_key) to avoid counting duplicated rows
-	expect(rawQuery.sql).toEqual(`select count(distinct "articles"."id") as "count"`);
+	// applyAggregate now always uses regular count(*) - deduplication is handled in getDBQuery
+	expect(rawQuery.sql).toEqual(`select count(*) as "count"`);
 	expect(rawQuery.bindings).toEqual([]);
 });
 
