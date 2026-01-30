@@ -206,7 +206,8 @@ describe('Messenger', () => {
 			expect(mockBus.publish).toHaveBeenCalledWith(COLLAB_BUS, {
 				type: 'room',
 				room: 'room-1',
-				message,
+				action: 'test',
+				message: undefined,
 			});
 		});
 

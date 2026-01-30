@@ -242,7 +242,7 @@ export class Messenger {
 	}
 
 	sendRoom(room: string, message: Omit<RoomMessage, 'type' | 'room'>) {
-		this.messenger.publish(COLLAB_BUS, { type: 'room', room, message });
+		this.messenger.publish(COLLAB_BUS, { type: 'room', room, ...message });
 	}
 
 	sendClient(client: ClientID, message: Omit<ServerMessage, 'order'>) {
