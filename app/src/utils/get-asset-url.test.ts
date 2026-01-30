@@ -48,6 +48,7 @@ test('Get asset url with cache buster as true', () => {
 	vi.mocked(getPublicURL).mockReturnValueOnce('https://directus.io/');
 	const output = getAssetUrl('test.jpg', { cacheBuster: true });
 	expect(output).toBe(`https://directus.io/assets/test.jpg?v=1704067200000`);
+	vi.useRealTimers();
 });
 
 test('Get asset url with custom params', () => {
