@@ -227,7 +227,7 @@ fields:
     display: datetime
     readonly: true
     display_options:
-      relative: true
+      relative: false
 
   - field: provider
     width: half

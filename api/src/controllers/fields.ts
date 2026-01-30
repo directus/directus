@@ -138,7 +138,7 @@ router.patch(
 			if (isSystemField(req.params['collection']!, fieldData['field']!)) {
 				const { error } = systemFieldUpdateSchema.safeParse(fieldData);
 
-				if (error) throw error.issues.map((details) => new InvalidPayloadError({ reason: details.message }));
+				if (error) throw new InvalidPayloadError({ reason: `You can't modify system fields. Only "schema.is_indexed" can be updated` });
 			}
 		}
 
@@ -194,7 +194,7 @@ router.patch(
 		if (isSystemField(req.params['collection']!, req.params['field']!)) {
 			const { error } = systemFieldUpdateSchema.safeParse(req.body);
 
-			if (error) throw error.issues.map((details) => new InvalidPayloadError({ reason: details.message }));
+			if (error) throw new InvalidPayloadError({ reason: `You can't modify system fields. Only "schema.is_indexed" can be updated` });
 		} else {
 			const { error } = updateSchema.validate(req.body);
 
