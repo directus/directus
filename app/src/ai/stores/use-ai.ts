@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router';
 import { z } from 'zod';
 import type { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
+import { isVisualElement } from '../types/context';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
@@ -331,26 +332,32 @@ export const useAiStore = defineStore('ai-store', () => {
 		if (chat.status === 'streaming' || chat.status === 'submitted') return;
 
 		try {
-			// Fetch fresh context data for sending with request (will be included in body via transport)
 			pendingContextSnapshot.value = await contextStore.fetchContextData();
+		} catch {
+			return;
+		}
 
-			// Include attachments in message metadata for UI display
-			chat.sendMessage({
+		const previousInput = input.value;
+		const previousContext = [...contextStore.pendingContext.filter((item) => !isVisualElement(item))];
+
+		chat
+			.sendMessage({
 				text: input.value,
 				metadata: {
 					attachments: pendingContextSnapshot.value.length > 0 ? pendingContextSnapshot.value : undefined,
 				},
+			})
+			.catch(() => {
+				input.value = previousInput;
+
+				for (const item of previousContext) {
+					contextStore.addPendingContext(item);
+				}
 			});
 
-			submitHook.trigger(input.value);
-			input.value = '';
-
-			// Clear non-visual context after submit (visual elements persist for tool calls)
-			contextStore.clearNonVisualContext();
-		} catch (error) {
-			// On error, input and context are preserved so user can retry
-			throw error;
-		}
+		submitHook.trigger(input.value);
+		input.value = '';
+		contextStore.clearNonVisualContext();
 	};
 
 	const retry = () => {
