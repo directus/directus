@@ -1474,8 +1474,8 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
-    collab_divider: Collaborative Editing
-    collab: Activate Collaborate Editing
+    collaborative_editing: Collaborative Editing
+    collaborative_editing_note: WebSockets are required for collaborative editing to work.
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
       toolbar to ask questions, generate content, and get help working with your project. <a
