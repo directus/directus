@@ -1,6 +1,10 @@
 import { mount } from '@vue/test-utils';
-import { expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 import VHover from './v-hover.vue';
+
+afterEach(() => {
+	vi.useRealTimers();
+});
 
 test('Mount component', () => {
 	expect(VHover).toBeTruthy();
