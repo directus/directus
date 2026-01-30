@@ -307,7 +307,7 @@ export class Room {
 	 * Ensures that foundational room state (metadata) exists in shared memory even after restarts
 	 */
 	async ensureInitialized() {
-		this.store(async (store) => {
+		await this.store(async (store) => {
 			if (await store.has('uid')) return;
 
 			await store.set('uid', this.uid);
