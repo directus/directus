@@ -114,17 +114,17 @@ export async function verifyPermissions(
 			allowedFields = await fetchAllowedFields({ accountability, action, collection }, { knex, schema });
 		}
 
-		// Determine TTL and relational dependencies for cache invalidation
-		const { ttlMs, dependencies } = calculateCacheMetadata(
-			collection,
-			itemData,
-			rawPermissions,
-			schema,
-			accountability,
-		);
-
 		// Only cache if the state hasn't been invalidated by another operation in the meantime
 		if (permissionCache.getInvalidationCount() === startInvalidationCount) {
+			// Determine TTL and relational dependencies for cache invalidation
+			const { ttlMs, dependencies } = calculateCacheMetadata(
+				collection,
+				itemData,
+				rawPermissions,
+				schema,
+				accountability,
+			);
+
 			permissionCache.set(accountability, collection, String(item), action, allowedFields, dependencies, ttlMs);
 		}
 
