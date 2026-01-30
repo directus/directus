@@ -175,6 +175,30 @@ Removed support for Node.js 18. Directus now requires Node.js 20 or higher.
 
 ## Pull Requests
 
+### Code Quality Requirements
+
+**IMPORTANT**: Before creating a pull request, ensure all linters and formatters pass successfully. This is a
+mandatory requirement for all PRs.
+
+Run these commands to verify code quality:
+
+```bash
+pnpm lint         # ESLint - checks JavaScript/TypeScript code
+pnpm lint:style   # Stylelint - checks CSS/SCSS/Vue styles
+pnpm format       # Prettier - checks code formatting
+```
+
+All three commands must pass with no errors before raising a PR. If any issues are found:
+
+1. Many issues can be auto-fixed:
+   - `pnpm lint --fix` - Auto-fix ESLint issues
+   - `pnpm lint:style --fix` - Auto-fix Stylelint issues
+   - `prettier --cache --write .` - Auto-format with Prettier
+
+2. Review and manually fix any remaining issues that cannot be auto-fixed
+
+### PR Template
+
 When creating a new pull request, always use the PR template located at `.github/pull_request_template.md`. The template includes:
 
 - **Scope**: List what changed in the PR
