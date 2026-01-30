@@ -442,6 +442,37 @@ describe('Room.verifyPermissions', () => {
 		expect(fetchPermissions).toHaveBeenCalledTimes(1);
 	});
 
+	test('Cache hit for non-existent item (null) skips fetch', async () => {
+		const client = getAccountability({ uid: 'client-2' });
+
+		vi.mocked(fetchPermissions).mockResolvedValue([
+			{
+				fields: ['*'],
+				permissions: { id: { _eq: 1 } },
+				validation: {},
+			},
+		] as any);
+
+		vi.mocked(getService).mockReturnValue({
+			readOne: vi.fn().mockRejectedValue(new Error('Not Found')),
+		} as any);
+
+		await verifyPermissions(client, collection, '999', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
+		const result = await verifyPermissions(client, collection, '999', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
+		expect(result).toBeNull();
+		const service = vi.mocked(getService).mock.results.at(-1)?.value;
+		expect(service.readOne).toHaveBeenCalledTimes(1);
+		expect(fetchPermissions).toHaveBeenCalledTimes(1);
+	});
+
 	test('Validation error returns empty fields', async () => {
 		const client = getAccountability({ uid: 'client-fail' });
 
@@ -699,5 +730,39 @@ describe('PermissionCache Invalidation', () => {
 		expect(smallCache.get(accountability, 'coll', 'item2', 'read')).toBeUndefined();
 		expect(smallCache.get(accountability, 'coll', 'item3', 'read')).toEqual(['field3']);
 		expect(smallCache.get(accountability, 'coll', 'item4', 'read')).toEqual(['field4']);
+	});
+
+	test('Item creation invalidates non-existent item cache', async () => {
+		const client = getAccountability({ uid: 'client-3' });
+		const collection = 'articles';
+
+		vi.mocked(fetchPermissions).mockResolvedValue([
+			{
+				fields: ['*'],
+				permissions: { id: { _eq: 1 } },
+				validation: {},
+			},
+		] as any);
+
+		vi.mocked(getService).mockReturnValue({
+			readOne: vi.fn().mockRejectedValue(new Error('Not Found')),
+		} as any);
+
+		await verifyPermissions(client, collection, '999', 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
+		expect(permissionCache.get(client, collection, '999', 'read')).toBeNull();
+
+		const bus = useBus();
+
+		await bus.publish('websocket.event', {
+			collection,
+			action: 'create',
+			key: '999',
+		});
+
+		expect(permissionCache.get(client, collection, '999', 'read')).toBeUndefined();
 	});
 });

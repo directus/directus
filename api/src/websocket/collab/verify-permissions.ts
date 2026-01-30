@@ -34,7 +34,7 @@ export async function verifyPermissions(
 	if (accountability.admin) return ['*'];
 
 	const cached = permissionCache.get(accountability, collection, String(item), action);
-	if (cached) return cached;
+	if (cached !== undefined) return cached;
 
 	// Prevent caching stale permissions if invalidation occurs during async steps
 	const startInvalidationCount = permissionCache.getInvalidationCount();
