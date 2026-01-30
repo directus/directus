@@ -104,7 +104,8 @@ describe('function name', () => {
 
 ## Database Support
 
-Directus works with multiple SQL databases via Knex.js: PostgreSQL, MySQL, MariaDB, SQLite, MS SQL Server, OracleDB, CockroachDB.
+Directus works with multiple SQL databases via Knex.js: PostgreSQL, MySQL, MariaDB, SQLite, MS SQL Server, OracleDB,
+CockroachDB.
 
 ## Dependency Management
 
