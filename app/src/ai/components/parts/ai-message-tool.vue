@@ -3,11 +3,11 @@ import formatTitle from '@directus/format-title';
 import type { DynamicToolUIPart } from 'ai';
 import { computed } from 'vue';
 import AiToolCallCard from './ai-tool-call-card.vue';
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import VNotice from '@/components/v-notice.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 
-const aiStore = useAiStore();
+const toolsStore = useAiToolsStore();
 
 const props = defineProps<{
 	part: DynamicToolUIPart;
@@ -18,7 +18,7 @@ const toolName = computed(() => {
 });
 
 const toolDisplayName = computed(() => {
-	const localTool = aiStore.localTools.find((t) => t.name === toolName.value);
+	const localTool = toolsStore.localTools.find((t) => t.name === toolName.value);
 
 	if (localTool) {
 		return localTool.displayName;

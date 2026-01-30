@@ -2,6 +2,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useAiStore } from '../stores/use-ai';
+import { useAiContextStore } from '../stores/use-ai-context';
 import { useContextStaging } from './use-context-staging';
 import api from '@/api';
 import { notify } from '@/utils/notify';
@@ -87,8 +88,8 @@ beforeEach(() => {
 describe('useContextStaging', () => {
 	describe('stagePrompt', () => {
 		test('adds prompt context to pending', () => {
-			const aiStore = useAiStore();
-			const addSpy = vi.spyOn(aiStore, 'addPendingContext');
+			const contextStore = useAiContextStore();
+			const addSpy = vi.spyOn(contextStore, 'addPendingContext');
 			const { stagePrompt } = useContextStaging();
 
 			const prompt = { id: '1', name: 'Test Prompt', status: 'published' as const };
@@ -113,9 +114,9 @@ describe('useContextStaging', () => {
 		});
 
 		test('handles errors', () => {
-			const aiStore = useAiStore();
+			const contextStore = useAiContextStore();
 
-			vi.spyOn(aiStore, 'addPendingContext').mockImplementation(() => {
+			vi.spyOn(contextStore, 'addPendingContext').mockImplementation(() => {
 				throw new Error('Test error');
 			});
 
@@ -154,8 +155,8 @@ describe('useContextStaging', () => {
 		});
 
 		test('fetches items and adds to context', async () => {
-			const aiStore = useAiStore();
-			const addSpy = vi.spyOn(aiStore, 'addPendingContext');
+			const contextStore = useAiContextStore();
+			const addSpy = vi.spyOn(contextStore, 'addPendingContext');
 
 			vi.mocked(api.get).mockResolvedValue({
 				data: {
@@ -243,10 +244,10 @@ describe('useContextStaging', () => {
 		});
 
 		test('updates existing element when duplicate is staged', () => {
-			const aiStore = useAiStore();
+			const contextStore = useAiContextStore();
 
 			// Add existing element
-			aiStore.pendingContext.push({
+			contextStore.pendingContext.push({
 				id: 'existing',
 				type: 'visual-element',
 				data: { collection: 'posts', item: '1', key: 'key-1', fields: ['status', 'title'] },
@@ -262,13 +263,13 @@ describe('useContextStaging', () => {
 
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_already_staged', type: 'warning' });
 			expect(result).toBe(false);
-			expect(aiStore.pendingContext[0]?.display).toBe('Display');
-			expect(aiStore.pendingContext[0]?.data.key).toBe('key-2');
+			expect(contextStore.pendingContext[0]?.display).toBe('Display');
+			expect(contextStore.pendingContext[0]?.data.key).toBe('key-2');
 		});
 
 		test('returns false when max limit reached', () => {
-			const aiStore = useAiStore();
-			vi.spyOn(aiStore, 'addPendingContext').mockReturnValue(false);
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(false);
 
 			const { stageVisualElement } = useContextStaging();
 
@@ -280,7 +281,8 @@ describe('useContextStaging', () => {
 
 		test('adds element and opens chat on success', () => {
 			const aiStore = useAiStore();
-			const addSpy = vi.spyOn(aiStore, 'addPendingContext').mockReturnValue(true);
+			const contextStore = useAiContextStore();
+			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
 			const focusSpy = vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
 
 			const { stageVisualElement } = useContextStaging();
@@ -296,7 +298,8 @@ describe('useContextStaging', () => {
 
 		test('uses fallback display value if not provided', () => {
 			const aiStore = useAiStore();
-			const addSpy = vi.spyOn(aiStore, 'addPendingContext').mockReturnValue(true);
+			const contextStore = useAiContextStore();
+			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
 			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
 
 			const { stageVisualElement } = useContextStaging();

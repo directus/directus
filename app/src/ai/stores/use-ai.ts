@@ -330,22 +330,27 @@ export const useAiStore = defineStore('ai-store', () => {
 	const submit = async () => {
 		if (chat.status === 'streaming' || chat.status === 'submitted') return;
 
-		// Fetch fresh context data for sending with request (will be included in body via transport)
-		pendingContextSnapshot.value = await contextStore.fetchContextData();
+		try {
+			// Fetch fresh context data for sending with request (will be included in body via transport)
+			pendingContextSnapshot.value = await contextStore.fetchContextData();
 
-		// Include attachments in message metadata for UI display
-		chat.sendMessage({
-			text: input.value,
-			metadata: {
-				attachments: pendingContextSnapshot.value.length > 0 ? pendingContextSnapshot.value : undefined,
-			},
-		});
+			// Include attachments in message metadata for UI display
+			chat.sendMessage({
+				text: input.value,
+				metadata: {
+					attachments: pendingContextSnapshot.value.length > 0 ? pendingContextSnapshot.value : undefined,
+				},
+			});
 
-		submitHook.trigger(input.value);
-		input.value = '';
+			submitHook.trigger(input.value);
+			input.value = '';
 
-		// Clear non-visual context after submit (visual elements persist for tool calls)
-		contextStore.clearNonVisualContext();
+			// Clear non-visual context after submit (visual elements persist for tool calls)
+			contextStore.clearNonVisualContext();
+		} catch (error) {
+			// On error, input and context are preserved so user can retry
+			throw error;
+		}
 	};
 
 	const retry = () => {
@@ -437,26 +442,5 @@ export const useAiStore = defineStore('ai-store', () => {
 		onVisualElementHighlight: visualElementHighlightHook.on,
 		focusInput,
 		onFocusInput: focusInputHook.on,
-
-		pendingContext: computed(() => contextStore.pendingContext),
-		addPendingContext: contextStore.addPendingContext,
-		removePendingContext: contextStore.removePendingContext,
-		updateVisualElementContext: contextStore.updateVisualElementContext,
-		clearPendingContext: contextStore.clearPendingContext,
-		clearVisualElementContext: contextStore.clearVisualElementContext,
-		setVisualElementContextUrl: contextStore.setVisualElementContextUrl,
-		visualElementContextUrl: computed(() => contextStore.visualElementContextUrl),
-		hasVisualElementContext: computed(() => contextStore.hasVisualElementContext),
-
-		systemTools: computed(() => toolsStore.systemTools),
-		localTools: computed(() => toolsStore.localTools),
-		toolApprovals: computed(() => toolsStore.toolApprovals),
-		getToolApprovalMode: toolsStore.getToolApprovalMode,
-		setToolApprovalMode: toolsStore.setToolApprovalMode,
-		registerLocalTool: toolsStore.registerLocalTool,
-		replaceLocalTool: toolsStore.replaceLocalTool,
-		deregisterLocalTool: toolsStore.deregisterLocalTool,
-		onSystemToolResult: toolsStore.onSystemToolResult,
-		triggerSystemToolResult: toolsStore.triggerSystemToolResult,
 	};
 });

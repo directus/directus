@@ -11,7 +11,7 @@ import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -118,9 +118,9 @@ const {
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
-const aiStore = useAiStore();
+const toolsStore = useAiToolsStore();
 
-aiStore.onSystemToolResult((tool, input) => {
+toolsStore.onSystemToolResult((tool, input) => {
 	if (tool === 'items' && input.collection === collection.value && input.action !== 'read') {
 		refresh();
 		refreshLivePreview();
