@@ -278,38 +278,38 @@ export function useCollab(
 			edits.value = message.changes;
 		}
 
-		if (message.users.length === 0) return;
-
-		const usersInfo = await sdk.request(
-			readUsers({
-				filter: {
-					id: {
-						_in: Array.from(new Set(message.users.map((user) => user.user))),
+		if (message.users.length > 0) {
+			const usersInfo = await sdk.request(
+				readUsers({
+					filter: {
+						id: {
+							_in: Array.from(new Set(message.users.map((user) => user.user))),
+						},
 					},
-				},
-				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as any,
-			}),
-		);
+					fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as any,
+				}),
+			);
 
-		users.value = message.users
-			.map(({ user, color, connection }) => {
-				const info = usersInfo.find((u) => u.id === user) as any;
+			users.value = message.users
+				.map(({ user, color, connection }) => {
+					const info = usersInfo.find((u) => u.id === user) as any;
 
-				if (message.connection === connection) {
-					sessionStorage.setItem(SESSION_COLOR_KEY, color);
-				}
+					if (message.connection === connection) {
+						sessionStorage.setItem(SESSION_COLOR_KEY, color);
+					}
 
-				return {
-					...info,
-					color,
-					connection,
-				};
-			})
-			.sort((a, b) => {
-				if (a.connection === message.connection) return -1;
-				if (b.connection === message.connection) return 1;
-				return 0;
-			});
+					return {
+						...info,
+						color,
+						connection,
+					};
+				})
+				.sort((a, b) => {
+					if (a.connection === message.connection) return -1;
+					if (b.connection === message.connection) return 1;
+					return 0;
+				});
+		}
 
 		focused.value = message.focuses;
 	}
