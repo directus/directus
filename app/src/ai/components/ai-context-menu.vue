@@ -160,15 +160,16 @@ onMounted(() => {
 	loadPrompts();
 });
 
+function focusSearchInput() {
+	searchInputRef.value?.$el?.querySelector('input')?.focus();
+}
+
 async function handleMenuToggle(isOpen: boolean) {
 	mainMenuOpen.value = isOpen;
 
 	if (isOpen) {
 		await nextTick();
-
-		requestAnimationFrame(() => {
-			searchInputRef.value?.$el?.querySelector('input')?.focus();
-		});
+		focusSearchInput();
 	}
 }
 
@@ -176,12 +177,7 @@ async function openList(type: 'prompts' | 'items') {
 	openListType.value = type;
 	searchQuery.value = '';
 	await nextTick();
-
-	const inputElement = searchInputRef.value?.$el?.querySelector('input');
-
-	if (inputElement) {
-		inputElement.focus();
-	}
+	focusSearchInput();
 }
 
 function closeList() {
@@ -207,7 +203,7 @@ function closeList() {
 
 			<div class="menu-container">
 				<div class="menu-header">
-					<VInput ref="searchInputRef" v-model="searchQuery" class="search-input" :placeholder="t('search')" autofocus>
+					<VInput ref="searchInputRef" v-model="searchQuery" class="search-input" :placeholder="t('search')">
 						<template #prepend>
 							<VIcon name="search" small />
 						</template>
