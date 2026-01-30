@@ -39,7 +39,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
 	add: [version: ContentVersion];
 	update: [updates: { key: string; name?: string | null }];
-	delete: [];
+	delete: [deleteOnPromote: boolean];
 	switch: [version: ContentVersionMaybeNew | null];
 }>();
 
@@ -244,7 +244,7 @@ function useDelete() {
 		deleteVersion,
 	};
 
-	async function deleteVersion() {
+	async function deleteVersion(deleteOnPromote = false) {
 		if (!currentVersion.value) return;
 
 		deleting.value = true;
@@ -252,7 +252,7 @@ function useDelete() {
 		try {
 			await api.delete(`/versions/${currentVersion.value.id}`);
 
-			emit('delete');
+			emit('delete', deleteOnPromote);
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -295,12 +295,12 @@ function useComparisonDialog() {
 	async function onPromoteComplete(deleteOnPromote: boolean) {
 		comparisonModalActive.value = false;
 
-		// Must be called before await deleteVersion
-		emit('switch', null);
-
 		if (deleteOnPromote) {
-			await deleteVersion();
+			await deleteVersion(true);
+			return;
 		}
+
+		emit('switch', null);
 	}
 }
 

@@ -187,7 +187,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function deleteVersion() {
+	function deleteVersion(deleteOnPromote = true) {
 		if (!currentVersion.value || !rawVersions.value) return;
 
 		const isLocalVersion = currentVersion.value?.type === 'local';
@@ -196,7 +196,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		const index = rawVersions.value.findIndex((version) => version.id === currentVersionId);
 
 		if (index !== -1) {
-			if (isLocalVersion) currentVersion.value = null;
+			if (isLocalVersion || deleteOnPromote) currentVersion.value = null;
 			rawVersions.value.splice(index, 1);
 		}
 	}
