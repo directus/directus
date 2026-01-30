@@ -56,7 +56,6 @@ async function save() {
 			credentials: credentialsValues.value,
 		};
 
-		// Only include options if any are set
 		const hasOptions = Object.values(optionsValues.value).some((v) => v !== null && v !== undefined && v !== '');
 
 		if (hasOptions) {
