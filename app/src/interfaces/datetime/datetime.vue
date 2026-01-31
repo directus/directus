@@ -28,7 +28,7 @@ const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
 
-const dateTimeMenu = ref();
+const menuActive = ref(false);
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
@@ -40,7 +40,16 @@ function unsetValue(e: any) {
 </script>
 
 <template>
-	<VMenu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled full-height seamless>
+	<VMenu
+		ref="dateTimeMenu"
+		v-model="menuActive"
+		v-prevent-focusout="menuActive"
+		:close-on-content-click="false"
+		attached
+		:disabled
+		full-height
+		seamless
+	>
 		<template #activator="{ toggle, active }">
 			<VListItem block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">

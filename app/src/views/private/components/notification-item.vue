@@ -11,6 +11,7 @@ const props = withDefaults(
 		icon?: string | null;
 		type?: 'info' | 'success' | 'warning' | 'error';
 		showClose?: boolean;
+		showReload?: boolean;
 		loading?: boolean;
 		progress?: number;
 		alwaysShowText?: boolean;
@@ -34,6 +35,10 @@ const done = async () => {
 		notificationsStore.remove(props.id);
 	}
 };
+
+function reload() {
+	window.location.reload();
+}
 </script>
 
 <template>
@@ -47,6 +52,10 @@ const done = async () => {
 		<div class="content">
 			<p class="title">{{ title }}</p>
 			<p v-if="text" class="text">{{ text }}</p>
+			<button v-if="showReload" class="reload" @click="reload">
+				{{ $t('reload_page') }}
+				<VIcon name="restore_page" clickable />
+			</button>
 		</div>
 
 		<VIcon
@@ -153,6 +162,11 @@ const done = async () => {
 
 .close {
 	margin-inline-start: 12px;
+}
+
+.reload {
+	display: block;
+	margin-inline-start: auto;
 }
 
 .v-progress-circular {

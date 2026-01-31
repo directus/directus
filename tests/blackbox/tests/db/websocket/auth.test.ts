@@ -305,16 +305,14 @@ describe('WebSocket Auth Tests', () => {
 						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
 							respondToPing: false,
+							waitTimeout: 5000,
 						});
 
 						let wsMessages: WebSocketResponse[] | undefined;
-						let error;
 
-						try {
+						if (authMethod !== 'strict') {
 							await ws.sendMessage({ type: 'ping' });
 							wsMessages = await ws.getMessages(1);
-						} catch (err) {
-							error = err;
 						}
 
 						ws.conn.close();
@@ -332,8 +330,20 @@ describe('WebSocket Auth Tests', () => {
 
 								break;
 							case 'handshake':
+								expect(wsMessages?.length).toBe(1);
+
+								expect(wsMessages![0]).toEqual(
+									expect.objectContaining({
+										type: 'auth',
+										status: 'error',
+									}),
+								);
+
+								await ws.waitForState(ws.conn.CLOSED);
+								break;
 							case 'strict':
-								expect(error).toBeDefined();
+								expect(wsMessages).toBeUndefined();
+								await ws.waitForState(ws.conn.CLOSED);
 								break;
 						}
 					});
@@ -350,16 +360,14 @@ describe('WebSocket Auth Tests', () => {
 							path: pathREST,
 							auth: { access_token: USER[userKey].TOKEN },
 							respondToPing: false,
+							waitTimeout: 5000,
 						});
 
 						let wsMessages: WebSocketResponse[] | undefined;
-						let error;
 
-						try {
+						if (authMethod !== 'strict') {
 							await ws.sendMessage({ type: 'ping' });
 							wsMessages = await ws.getMessages(1);
-						} catch (err) {
-							error = err;
 						}
 
 						ws.conn.close();
@@ -378,7 +386,8 @@ describe('WebSocket Auth Tests', () => {
 
 								break;
 							case 'strict':
-								expect(error).toBeDefined();
+								expect(wsMessages).toBeUndefined();
+								await ws.waitForState(ws.conn.CLOSED);
 								break;
 						}
 					});

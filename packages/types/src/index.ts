@@ -34,4 +34,4 @@ export * from './storage.js';
 export * from './users.js';
 export * from './versions.js';
 export * from './vue.js';
-export * from './websockets.js';
+export * from './websockets/index.js';
