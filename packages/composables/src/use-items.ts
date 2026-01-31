@@ -70,6 +70,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		filter: null,
 	};
 
+	let totalPromise: Promise<void> | null = null;
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
@@ -246,42 +247,75 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
-		try {
-			if (existingRequests.total) existingRequests.total.abort();
-			existingRequests.total = new AbortController();
-
-			const aggregate = primaryKeyField.value
-				? {
-						countDistinct: primaryKeyField.value.field,
-					}
-				: {
-						count: '*',
-					};
-
-			const response = await api.get<any>(endpoint.value, {
-				params: {
-					aggregate,
-					filter: unref(filterSystem),
-				},
-				signal: existingRequests.total.signal,
-			});
-
-			const count = primaryKeyField.value
-				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
-				: Number(response.data.data[0].count);
-
-			existingRequests.total = null;
-
-			totalCount.value = count;
-		} catch (err: any) {
-			if (!axios.isCancel(err)) {
-				throw err;
-			}
+		if (totalPromise) {
+			return totalPromise;
 		}
+
+		const currentEndpoint = endpoint.value;
+
+		totalPromise = (async () => {
+			try {
+				if (existingRequests.total) {
+					existingRequests.total.abort();
+				}
+
+				existingRequests.total = new AbortController();
+
+				const aggregate = primaryKeyField.value
+					? {
+							countDistinct: primaryKeyField.value.field,
+						}
+					: {
+							count: '*',
+						};
+
+				const response = await api.get<any>(currentEndpoint, {
+					params: {
+						aggregate,
+						filter: unref(filterSystem),
+					},
+					signal: existingRequests.total.signal,
+				});
+
+				const count = primaryKeyField.value
+					? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
+					: Number(response.data.data[0].count);
+
+				existingRequests.total = null;
+
+				totalCount.value = count;
+			} catch (err: any) {
+				if (!axios.isCancel(err)) {
+					throw err;
+				}
+			} finally {
+				totalPromise = null;
+			}
+		})();
 	}
 
 	async function getItemCount() {
 		if (!endpoint.value) return;
+
+		const filterVal = unref(filter);
+		const searchVal = unref(search);
+		const filterSystemVal = unref(filterSystem);
+
+		const isFilterEmpty = !filterVal || Object.keys(filterVal).length === 0;
+		const isSearchEmpty = !searchVal || searchVal.length === 0;
+
+		const filterMatchesSystem = isSearchEmpty && isEqual(filterVal, filterSystemVal);
+
+		if ((isFilterEmpty && isSearchEmpty) || filterMatchesSystem) {
+			if (totalCount.value !== null) {
+				itemCount.value = totalCount.value;
+			} else {
+				await getTotalCount();
+				itemCount.value = totalCount.value;
+			}
+
+			return;
+		}
 
 		loadingItemCount.value = true;
 
@@ -299,8 +333,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
-					filter: unref(filter),
-					search: unref(search),
+					filter: filterVal,
+					search: searchVal,
 					aggregate,
 				},
 				signal: existingRequests.filter.signal,
