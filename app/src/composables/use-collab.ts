@@ -25,7 +25,16 @@ type DiscardMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.DISC
 
 const SESSION_COLOR_KEY = 'collab-color';
 
-const sdk: SdkClient & WebSocketClient<unknown> = baseSDK.with(realtime({ authMode: 'strict', connect: false }));
+const sdk: SdkClient & WebSocketClient<unknown> = baseSDK.with(
+	realtime({
+		authMode: 'strict',
+		connect: false,
+		reconnect: {
+			delay: 10000 + Math.floor(Math.random() * 5000),
+			retries: Infinity,
+		},
+	}),
+);
 
 export type CollabUser = {
 	id: string;
