@@ -3,7 +3,6 @@ import { isSystemField } from '@directus/system-data';
 import type { GraphQLParams } from '@directus/types';
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { SchemaComposer, toInputObjectType } from 'graphql-compose';
-import { fromZodError } from 'zod-validation-error';
 import { CollectionsService } from '../../collections.js';
 import { ExtensionsService } from '../../extensions.js';
 import { FieldsService, systemFieldUpdateSchema } from '../../fields.js';
@@ -130,7 +129,7 @@ export function resolveSystemAdmin(
 					const validationResult = systemFieldUpdateSchema.safeParse(args['data']);
 
 					if (!validationResult.success) {
-						throw new InvalidPayloadError({ reason: fromZodError(validationResult.error).message });
+						throw new InvalidPayloadError({ reason: 'Only "schema.is_indexed" may be modified for system fields' });
 					}
 				}
 
@@ -166,7 +165,7 @@ export function resolveSystemAdmin(
 						const validationResult = systemFieldUpdateSchema.safeParse(fieldData);
 
 						if (!validationResult.success) {
-							throw new InvalidPayloadError({ reason: fromZodError(validationResult.error).message });
+							throw new InvalidPayloadError({ reason: 'Only "schema.is_indexed" may be modified for system fields' });
 						}
 					}
 				}

@@ -1,8 +1,9 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed } from 'vue';
 import VUpload from './v-upload.vue';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
@@ -12,7 +13,22 @@ vi.mock('@/stores/files', () => ({
 	}),
 }));
 
+beforeEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		if (!document.getElementById(id)) {
+			const el = document.createElement('div');
+			el.id = id;
+			document.body.appendChild(el);
+		}
+	}
+});
+
 afterEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		const el = document.getElementById(id);
+		if (el) el.remove();
+	}
+
 	vi.clearAllMocks();
 });
 
@@ -28,6 +44,9 @@ const global: GlobalMountOptions = {
 			createSpy: vi.fn,
 		}),
 	],
+	directives: {
+		tooltip: Tooltip,
+	},
 };
 
 describe('Component', () => {
