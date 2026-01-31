@@ -1,5 +1,5 @@
 ---
-'@directus/composables': major
+'@directus/composables': minor
 ---
 
-Eliminate redundant aggregate count requests when filters are empty
+Eliminated redundant count requests in `useItems` and updated unit tests to reflect performance improvements.
