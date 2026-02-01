@@ -32,6 +32,7 @@ owner_email: Почта владельца
 email_address: Адрес электронной почты
 organization_name: Название организации
 how_do_you_use_directus: Для чего вы используете Directus?
+usage_personal: Личный/Обучение
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -64,6 +65,7 @@ maps: Карты
 switch_user: Сменить пользователя
 item_creation: Создание элемента
 item_revision: Редакция элемента
+comparing_to: Сравнивая с
 enter_a_name: Введите название...
 duplicate_field: Дублировать поле
 half_width: Полширины
@@ -251,6 +253,7 @@ validationError:
   iends_with: Значение должно заканчиваться на "{substring}"
   nends_with: Значение не может заканчиваться на "{substring}"
   niends_with: Значение не может заканчиваться на "{substring}"
+  confirm_password: Пароли не совпадают
 all_access: Полный доступ
 no_access: Без доступа
 use_custom: Настраиваемый
@@ -497,6 +500,7 @@ import_data_input_placeholder: CSV или JSON...
 import_data_button: Начать импорт
 import_data_indeterminate: Импорт данных...
 import_data_success: Данные успешно импортированы из {filename}
+import_data_errors: Ошибка импорта
 import_data_error: Структура данных этого файла не соответствует коллекции.
 label_import: Импорт
 label_export: Экспорт
@@ -1135,6 +1139,7 @@ appearance_dark: Темный
 other: Другой...
 adding_user: Добавление пользователя
 unknown_user: Неизвестный пользователь
+unknown_version: Неизвестная версия
 creating_in: 'Создание элемента в {collection}'
 editing_in: 'Редактирование элемента в {collection}'
 viewing_in: 'Просмотр элемента в {collection}'
@@ -1149,6 +1154,7 @@ settings_project: Настройки
 settings_appearance: Внешний вид
 settings_ai: ИИ
 model_context_protocol: Model Context Protocol
+ai_assistant: ИИ помощник
 settings_flows: Процессы
 settings_system_logs: Системные логи
 settings_presets: Закладки
