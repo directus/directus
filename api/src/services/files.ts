@@ -319,12 +319,7 @@ export class FilesService extends ItemsService<File> {
 
 			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
-			const sudoFilesItemsService = new FilesService({
-				knex: this.knex,
-				schema: this.schema,
-			});
-
-			updatedFiles = await sudoFilesItemsService.readMany(keys, {
+			updatedFiles = await this.readMany(keys, {
 				fields: ['id', 'storage', 'filename_disk'],
 				limit: -1,
 			});
@@ -337,7 +332,7 @@ export class FilesService extends ItemsService<File> {
 				accountability: this.accountability,
 			});
 
-			const result = await filesItemService.updateMany(keys, data, opts);
+			const updatedKeys = await filesItemService.updateMany(keys, data, opts);
 
 			// if filename is present and was updated rename files it was changed
 			if (data.filename_disk) {
@@ -380,7 +375,7 @@ export class FilesService extends ItemsService<File> {
 				}
 			}
 
-			return result;
+			return updatedKeys;
 		});
 
 		return primaryKeys;
