@@ -28,6 +28,7 @@ import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { ItemsService } from './items.js';
+import { transaction } from '../utils/transaction.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -329,49 +330,60 @@ export class FilesService extends ItemsService<File> {
 			});
 		}
 
-		const result = await super.updateMany(keys, data, opts);
+		const primaryKeys = await transaction(this.knex, async (trx) => {
+			const filesItemService = new ItemsService(this.collection, {
+				knex: trx,
+				schema: this.schema,
+				accountability: this.accountability,
+			});
 
-		// if filename is present and was updated rename files it was changed
-		if (data.filename_disk) {
-			const storage = await getStorage();
+			const result = await filesItemService.updateMany(keys, data, opts);
 
-			for (const file of updatedFiles) {
-				if (!file.filename_disk) continue;
+			// if filename is present and was updated rename files it was changed
+			if (data.filename_disk) {
+				const storage = await getStorage();
 
-				// For backwards compatibility it must be resolved first to ensure consistent path
-				const filePath = this.generateFilenamePath(file.filename_disk);
+				for (const file of updatedFiles) {
+					if (!file.filename_disk) continue;
 
-				if (filePath === data.filename_disk) continue;
+					// For backwards compatibility it must be resolved first to ensure consistent path
+					const filePath = this.generateFilenamePath(file.filename_disk);
 
-				const disk = storage.location(file['storage']);
-				const { name: filePrefix } = path.parse(file.filename_disk);
-				const updatedFilePath = this.generateFilenamePath(data.filename_disk);
+					if (filePath === data.filename_disk) continue;
 
-				const remoteFileExists = await disk.exists(data.filename_disk);
+					const disk = storage.location(file['storage']);
+					const { name: filePrefix } = path.parse(file.filename_disk);
+					const updatedFilePath = this.generateFilenamePath(data.filename_disk);
 
-				for await (const filepath of disk.list(filePrefix)) {
-					/**
-					 * If the remote file exists, repoint the primary asset to it.
-					 *  - The original asset may also be deleted, depending on the `FILES_SKIP_PRIMARY_ASSET` flag.
-					 *  If the remote file does not exist, move the primary asset to location.
-					 *
-					 * Any generated assets associated are deleted.
-					 */
-					if (filepath === filePath) {
-						if (!remoteFileExists) {
-							await disk.move(filepath, updatedFilePath);
-						} else if (env['FILES_SKIP_PRIMARY_ASSET'] === true) {
-							continue;
+					const remoteFileExists = await disk.exists(data.filename_disk);
+
+					for await (const filepath of disk.list(filePrefix)) {
+						/**
+						 * If the remote file exists, repoint the primary asset to it.
+						 * If the remote file does not exist, move the primary asset to location.
+						 *
+						 * NOTE
+						 * - The original asset may also be deleted, depending on the `FILES_SKIP_PRIMARY_ASSET` flag.
+						 * - Any associated generated assets are deleted.
+						 */
+						if (filepath === filePath) {
+							if (!remoteFileExists) {
+								await disk.move(filepath, updatedFilePath);
+							} else if (env['FILES_SKIP_PRIMARY_ASSET'] === true) {
+								continue;
+							}
 						}
-					}
 
-					// always delete generated assets
-					await disk.delete(filepath);
+						// always delete generated assets
+						await disk.delete(filepath);
+					}
 				}
 			}
-		}
 
-		return result;
+			return result;
+		});
+
+		return primaryKeys;
 	}
 
 	/**
