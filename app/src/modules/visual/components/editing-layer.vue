@@ -143,21 +143,17 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	}
 
 	function receiveAddToContext(data: unknown) {
-		const { key, editConfig, displayValue, rect } = data as AddToContextData;
+		const { key, editConfig, rect } = data as AddToContextData;
 
 		if (!key || !editConfig?.collection || !editConfig.item) return;
 
-		// Stage the visual element
-		stageVisualElement(
-			{
-				key,
-				collection: editConfig.collection,
-				item: editConfig.item,
-				fields: editConfig.fields,
-				rect,
-			},
-			displayValue,
-		);
+		stageVisualElement({
+			key,
+			collection: editConfig.collection,
+			item: editConfig.item,
+			fields: editConfig.fields,
+			rect,
+		});
 	}
 
 	function send(action: SendAction, data: unknown) {

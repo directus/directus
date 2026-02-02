@@ -122,24 +122,23 @@ export function useContextStaging() {
 		}
 	}
 
-	function stageVisualElement(element: VisualElementContextData, displayValue: string) {
+	async function stageVisualElement(element: VisualElementContextData) {
 		// If in popup, forward to parent window
 		if (window.opener) {
-			window.opener.postMessage(
-				{ action: 'stage-visual-element', data: { element, displayValue } },
-				window.location.origin,
-			);
+			window.opener.postMessage({ action: 'stage-visual-element', data: { element } }, window.location.origin);
 
 			notify({ title: t('ai.element_staged'), type: 'success' });
 			return true;
 		}
 
-		if (!collectionsStore.getCollection(element.collection)) {
+		const collectionInfo = collectionsStore.getCollection(element.collection);
+
+		if (!collectionInfo) {
 			notify({ title: t('ai.invalid_collection'), type: 'error' });
 			return false;
 		}
 
-		const display = displayValue || `${formatTitle(element.collection)} #${element.item}`;
+		const display = await fetchDisplayValue(element, collectionInfo);
 
 		const existingContext = contextStore.pendingContext.find(
 			(item) => item.type === 'visual-element' && isSameVisualElement(item.data, element),
@@ -167,6 +166,49 @@ export function useContextStaging() {
 		aiStore.chatOpen = true;
 		aiStore.focusInput();
 		return true;
+	}
+
+	async function fetchDisplayValue(
+		element: VisualElementContextData,
+		collectionInfo: ReturnType<typeof collectionsStore.getCollection>,
+	): Promise<string> {
+		const fallback = formatTitle(element.collection);
+
+		if (!element.item || element.item === '+') return fallback;
+
+		try {
+			if (element.fields?.length === 1) {
+				const field = element.fields[0]!;
+
+				const response = await api.get(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
+					params: { fields: [field] },
+				});
+
+				const item = response.data.data;
+				if (item?.[field]) return String(item[field]);
+				return fallback;
+			}
+
+			if (!collectionInfo?.meta?.display_template) {
+				return formatTitle(element.collection);
+			}
+
+			const primaryKey = fieldsStore.getPrimaryKeyFieldForCollection(element.collection)?.field ?? 'id';
+			const displayTemplate = collectionInfo.meta.display_template;
+			const displayFields = getFieldsFromTemplate(displayTemplate);
+
+			const response = await api.get(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
+				params: { fields: [primaryKey, ...displayFields] },
+			});
+
+			const item = response.data.data;
+
+			if (!item) return fallback;
+
+			return renderDisplayStringTemplate(element.collection, displayTemplate, item) || fallback;
+		} catch {
+			return fallback;
+		}
 	}
 
 	return {

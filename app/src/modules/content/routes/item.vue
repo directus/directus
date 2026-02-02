@@ -416,8 +416,7 @@ useEventListener('message', (event) => {
 	if (event.data === 'refresh') refresh();
 
 	if (event.data?.action === 'stage-visual-element') {
-		const { element, displayValue } = event.data.data;
-		stageVisualElement(element, displayValue);
+		stageVisualElement(event.data.data.element);
 	}
 });
 

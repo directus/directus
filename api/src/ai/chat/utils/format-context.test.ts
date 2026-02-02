@@ -219,6 +219,72 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('Editable fields: all');
 	});
 
+	it('handles quotes in display values', () => {
+		const result = formatContextForSystemPrompt({
+			attachments: [
+				{
+					type: 'item',
+					display: 'She said "hello"',
+					data: { collection: 'posts', id: '1' },
+					snapshot: { title: 'test' },
+				},
+			],
+		});
+
+		expect(result).toContain('[Item: She said "hello" (posts)]');
+	});
+
+	it('orders sections: custom_instructions before user_context before visual_editing', () => {
+		const result = formatContextForSystemPrompt({
+			attachments: [
+				{
+					type: 'prompt',
+					display: 'My Prompt',
+					data: { text: 'Do stuff', prompt: {}, values: {} },
+					snapshot: { text: 'Do stuff', messages: [] },
+				},
+				{
+					type: 'item',
+					display: 'My Item',
+					data: { collection: 'posts', id: '1' },
+					snapshot: { title: 'test' },
+				},
+				{
+					type: 'visual-element',
+					display: 'My Element',
+					data: { key: 'el-1', collection: 'blocks', item: '1', fields: ['title'] },
+					snapshot: { title: 'test' },
+				},
+			],
+		});
+
+		const customIdx = result.indexOf('<custom_instructions>');
+		const userIdx = result.indexOf('<user_context>');
+		const visualIdx = result.indexOf('<visual_editing>');
+
+		expect(customIdx).toBeGreaterThan(-1);
+		expect(userIdx).toBeGreaterThan(-1);
+		expect(visualIdx).toBeGreaterThan(-1);
+		expect(customIdx).toBeLessThan(userIdx);
+		expect(userIdx).toBeLessThan(visualIdx);
+	});
+
+	it('handles empty display string', () => {
+		const result = formatContextForSystemPrompt({
+			attachments: [
+				{
+					type: 'item',
+					display: '',
+					data: { collection: 'posts', id: '1' },
+					snapshot: { title: 'test' },
+				},
+			],
+		});
+
+		expect(result).toContain('[Item: ');
+		expect(result).toBeDefined();
+	});
+
 	it('formats item without collection label when collection is missing', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [

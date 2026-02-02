@@ -207,7 +207,7 @@ describe('useContextStaging', () => {
 	});
 
 	describe('stageVisualElement', () => {
-		test('forwards to parent window if opener exists', () => {
+		test('forwards to parent window if opener exists', async () => {
 			const postMessageMock = vi.fn();
 
 			Object.defineProperty(window, 'opener', {
@@ -223,10 +223,10 @@ describe('useContextStaging', () => {
 			const { stageVisualElement } = useContextStaging();
 			const element = { collection: 'posts', item: '1', key: 'key-1' };
 
-			const result = stageVisualElement(element, 'Display Value');
+			const result = await stageVisualElement(element);
 
 			expect(postMessageMock).toHaveBeenCalledWith(
-				{ action: 'stage-visual-element', data: { element, displayValue: 'Display Value' } },
+				{ action: 'stage-visual-element', data: { element } },
 				'http://localhost:3000',
 			);
 
@@ -234,17 +234,21 @@ describe('useContextStaging', () => {
 			expect(result).toBe(true);
 		});
 
-		test('returns false for invalid collection', () => {
+		test('returns false for invalid collection', async () => {
 			const { stageVisualElement } = useContextStaging();
 
-			const result = stageVisualElement({ collection: 'invalid', item: '1', key: 'key-1' }, 'Display');
+			const result = await stageVisualElement({ collection: 'invalid', item: '1', key: 'key-1' });
 
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.invalid_collection', type: 'error' });
 			expect(result).toBe(false);
 		});
 
-		test('updates existing element when duplicate is staged', () => {
+		test('updates existing element when duplicate is staged', async () => {
 			const contextStore = useAiContextStore();
+
+			vi.mocked(api.get).mockResolvedValue({
+				data: { data: { id: '1', title: 'Post 1' } },
+			});
 
 			// Add existing element
 			contextStore.pendingContext.push({
@@ -256,38 +260,47 @@ describe('useContextStaging', () => {
 
 			const { stageVisualElement } = useContextStaging();
 
-			const result = stageVisualElement(
-				{ collection: 'posts', item: '1', key: 'key-2', fields: ['title', 'status'] },
-				'Display',
-			);
+			const result = await stageVisualElement({
+				collection: 'posts',
+				item: '1',
+				key: 'key-2',
+				fields: ['title', 'status'],
+			});
 
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_already_staged', type: 'warning' });
 			expect(result).toBe(false);
-			expect(contextStore.pendingContext[0]?.display).toBe('Display');
 			expect(contextStore.pendingContext[0]?.data.key).toBe('key-2');
 		});
 
-		test('returns false when max limit reached', () => {
+		test('returns false when max limit reached', async () => {
 			const contextStore = useAiContextStore();
 			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(false);
 
+			vi.mocked(api.get).mockResolvedValue({
+				data: { data: { id: '1', title: 'Post 1' } },
+			});
+
 			const { stageVisualElement } = useContextStaging();
 
-			const result = stageVisualElement({ collection: 'posts', item: '1', key: 'key-1' }, 'Display');
+			const result = await stageVisualElement({ collection: 'posts', item: '1', key: 'key-1' });
 
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.max_elements_reached', type: 'warning' });
 			expect(result).toBe(false);
 		});
 
-		test('adds element and opens chat on success', () => {
+		test('adds element and opens chat on success', async () => {
 			const aiStore = useAiStore();
 			const contextStore = useAiContextStore();
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
 			const focusSpy = vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
 
+			vi.mocked(api.get).mockResolvedValue({
+				data: { data: { id: '1', title: 'My Post' } },
+			});
+
 			const { stageVisualElement } = useContextStaging();
 
-			const result = stageVisualElement({ collection: 'posts', item: '1', key: 'key-1' }, 'My Post');
+			const result = await stageVisualElement({ collection: 'posts', item: '1', key: 'key-1' });
 
 			expect(addSpy).toHaveBeenCalled();
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_staged', type: 'success' });
@@ -296,15 +309,60 @@ describe('useContextStaging', () => {
 			expect(result).toBe(true);
 		});
 
-		test('uses fallback display value if not provided', () => {
+		test('uses single field value as display when element has exactly one field', async () => {
 			const aiStore = useAiStore();
 			const contextStore = useAiContextStore();
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
 			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
 
+			vi.mocked(api.get).mockResolvedValue({
+				data: { data: { headline: 'Breaking News' } },
+			});
+
 			const { stageVisualElement } = useContextStaging();
 
-			stageVisualElement({ collection: 'posts', item: '42', key: 'key-1' }, '');
+			await stageVisualElement({ collection: 'posts', item: '1', key: 'key-1', fields: ['headline'] });
+
+			const call = addSpy.mock.calls[0]![0];
+			expect(call.display).toBe('Breaking News');
+			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['headline'] } });
+		});
+
+		test('uses formatted collection name when no display_template', async () => {
+			const aiStore = useAiStore();
+			const contextStore = useAiContextStore();
+			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
+			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
+
+			const { useCollectionsStore } = await import('@/stores/collections');
+
+			vi.mocked(useCollectionsStore).mockReturnValueOnce({
+				getCollection: vi.fn((collection) => ({
+					collection,
+					meta: { display_template: null },
+				})),
+			} as any);
+
+			const { stageVisualElement } = useContextStaging();
+
+			await stageVisualElement({ collection: 'blog_posts', item: '1', key: 'key-1' });
+
+			const call = addSpy.mock.calls[0]![0];
+			expect(call.display).toBe('Blog Posts');
+			expect(api.get).not.toHaveBeenCalled();
+		});
+
+		test('uses fallback display value when fetch fails', async () => {
+			const aiStore = useAiStore();
+			const contextStore = useAiContextStore();
+			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
+			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
+
+			vi.mocked(api.get).mockRejectedValue(new Error('API Error'));
+
+			const { stageVisualElement } = useContextStaging();
+
+			await stageVisualElement({ collection: 'posts', item: '42', key: 'key-1' });
 
 			const call = addSpy.mock.calls[0]![0];
 			expect(call.display).toBe('Posts #42');

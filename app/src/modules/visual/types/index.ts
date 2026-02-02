@@ -20,8 +20,7 @@ export type SavedData = {
 export type AddToContextData = {
 	key: string;
 	editConfig: EditConfig;
-	displayValue: string;
-	rect?: { top: number; left: number; width: number; height: number };
+	rect?: DOMRect;
 };
 
 export type HighlightElementData = {
