@@ -2,6 +2,7 @@
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
+import { selectiveClone } from './utils/selective-clone';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import VDivider from '../v-divider.vue';
 import VInfo from '../v-info.vue';
@@ -64,8 +65,30 @@ const props = withDefaults(
 
 const emit = defineEmits(['update:modelValue']);
 
+const fieldsStore = useFieldsStore();
+
+const rawFields = computed<Field[]>(() => {
+	if (props.collection) {
+		return fieldsStore.getFieldsForCollection(props.collection);
+	}
+
+	if (props.fields) {
+		return props.fields;
+	}
+
+	return [];
+});
+
+const rawFieldsMap = computed<Record<string, Field | undefined>>(() => {
+	return Object.fromEntries(rawFields.value.map((field) => [field.field, field]));
+});
+
 const values = computed(() => {
-	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
+	return Object.assign(
+		{},
+		selectiveClone(props.initialValues, rawFieldsMap.value),
+		selectiveClone(props.modelValue, rawFieldsMap.value),
+	);
 });
 
 const el = ref<Element>();
@@ -267,7 +290,7 @@ function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 
 	if (opts?.force !== true && (!field || isDisabled(field))) return;
 
-	const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
+	const edits = props.modelValue ? selectiveClone(props.modelValue, rawFieldsMap.value) : {};
 	edits[fieldKey] = value;
 	emit('update:modelValue', edits);
 }
