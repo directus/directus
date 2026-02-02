@@ -409,7 +409,7 @@ router.post(
 
 		const result = await driver.triggerDeployment(project.external_id, {
 			preview: value.preview,
-			clearCache: value.clean_cache,
+			clearCache: value.clear_cache,
 		});
 
 		// Store run in DB
