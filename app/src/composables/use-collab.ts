@@ -1,9 +1,9 @@
 import { ErrorCode } from '@directus/errors';
-import { readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
+import { DirectusUser, readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
-import { capitalize, debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
+import { debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -22,6 +22,27 @@ type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE 
 type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
 type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOCUS }>;
 type DiscardMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.DISCARD }>;
+
+/**
+ * User info returned from SDK queries.
+ * TODO: Remove once https://linear.app/directus/issue/CMS-1702 is done
+ */
+type CollabUserInfo = {
+	id: string;
+	first_name?: string | null;
+	last_name?: string | null;
+	avatar?: { id: string; modified_on: string } | null;
+};
+
+type NonInitServerAction = Exclude<ServerMessage['action'], typeof ACTION.SERVER.INIT>;
+
+type ServerMessageHandler<A extends ServerMessage['action']> = (
+	message: Extract<ServerMessage, { action: A }>,
+) => void | Promise<void>;
+
+type MessageHandlerMap = {
+	[A in NonInitServerAction]: ServerMessageHandler<A>;
+};
 
 const SESSION_COLOR_KEY = 'collab-color';
 
@@ -122,16 +143,21 @@ export function useCollab(
 		};
 	});
 
-	const messageReceivers = {
-		receiveJoin,
-		receiveFocus,
-		receiveInit,
-		receiveLeave,
-		receiveSave,
-		receiveUpdate,
-		receiveDelete,
-		receiveDiscard,
-	};
+	const messageHandlers = {
+		[ACTION.SERVER.JOIN]: receiveJoin,
+		[ACTION.SERVER.FOCUS]: receiveFocus,
+		[ACTION.SERVER.LEAVE]: receiveLeave,
+		[ACTION.SERVER.SAVE]: receiveSave,
+		[ACTION.SERVER.UPDATE]: receiveUpdate,
+		[ACTION.SERVER.DELETE]: receiveDelete,
+		[ACTION.SERVER.DISCARD]: receiveDiscard,
+	} satisfies MessageHandlerMap;
+
+	function dispatchMessage<A extends NonInitServerAction>(action: A, message: Extract<ServerMessage, { action: A }>) {
+		// Type-safe dispatch: satisfies ensures handlers match their action types at definition,
+		// cast is needed because TS can't correlate dynamic key lookups with discriminated unions
+		(messageHandlers[action] as ServerMessageHandler<A>)(message);
+	}
 
 	onMounted(async () => {
 		if (
@@ -248,7 +274,12 @@ export function useCollab(
 
 			if (message) if (!roomId.value || roomId.value !== message.room) return;
 
-			messageReceivers[`receive${capitalize(message.action)}`](message as any);
+			if (message.action in messageHandlers) {
+				dispatchMessage(
+					message.action as NonInitServerAction,
+					message as Extract<ServerMessage, { action: NonInitServerAction }>,
+				);
+			}
 		}),
 	);
 
@@ -296,13 +327,15 @@ export function useCollab(
 							_in: Array.from(new Set(message.users.map((user) => user.user))),
 						},
 					},
-					fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as any,
+					//  Object syntax for nested fields - SDK types require schema definition for full support
+					// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
+					fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as (keyof DirectusUser)[],
 				}),
 			);
 
 			users.value = message.users
 				.map(({ user, color, connection }) => {
-					const info = usersInfo.find((u) => u.id === user) as any;
+					const info = usersInfo.find((u) => u.id === user) as CollabUserInfo | undefined;
 
 					if (message.connection === connection) {
 						sessionStorage.setItem(SESSION_COLOR_KEY, color);
@@ -318,7 +351,7 @@ export function useCollab(
 					if (a.connection === message.connection) return -1;
 					if (b.connection === message.connection) return 1;
 					return 0;
-				});
+				}) as CollabUser[];
 		}
 
 		focused.value = message.focuses;
@@ -378,6 +411,11 @@ export function useCollab(
 			persist: true,
 		});
 
+		roomId.value = null;
+		connectionId.value = null;
+		users.value = [];
+		focused.value = {};
+
 		router.push(`/content/${item.value ? collection.value : ''}`);
 	}
 
@@ -387,9 +425,10 @@ export function useCollab(
 		const user = existingInfo
 			? existingInfo
 			: await sdk
-					.request<CollabUser>(
+					.request(
 						readUser(message.user, {
-							fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as any,
+							// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
+							fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as (keyof DirectusUser)[],
 						}),
 					)
 					.catch(() => ({}));
