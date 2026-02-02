@@ -31,7 +31,6 @@ const { dynamicUrl, invalidUrl } = defineProps<{
 const { t } = useI18n();
 const router = useRouter();
 const serverStore = useServerStore();
-const aiStore = useAiStore();
 const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
 
@@ -39,38 +38,9 @@ useHead({ title: t('visual_editor') });
 
 const moduleBarOpen = ref(true);
 const showEditableElements = ref(false);
-const sidebarSize = ref(370);
 
-const sidebarCollapsed = useLocalStorage('visual-editor-ai-sidebar-collapsed', false);
-
-const mobileDrawerOpen = ref(false);
-
-const splitterCollapsed = computed({
-	get() {
-		return isMobile.value ? true : sidebarCollapsed.value;
-	},
-	set(val: boolean) {
-		if (isMobile.value) return;
-		sidebarCollapsed.value = val;
-	},
-});
-
-watch(isMobile, (mobile) => {
-	if (mobile) {
-		mobileDrawerOpen.value = false;
-	}
-});
-
-aiStore.onFocusInput(() => {
-	if (isMobile.value) {
-		mobileDrawerOpen.value = true;
-	} else {
-		sidebarCollapsed.value = false;
-	}
-});
-
-const aiButtonRef = useTemplateRef<HTMLButtonElement>('ai-button');
-const aiButtonHovering = useElementHover(aiButtonRef);
+const { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering } =
+	useVisualEditorAi(isMobile);
 
 const { dynamicDisplay, onNavigation } = usePageInfo();
 
@@ -97,6 +67,42 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 	} else {
 		router.replace(getUrlRoute(newUrl));
 	}
+}
+
+function useVisualEditorAi(isMobile: ReturnType<typeof breakpoints.smallerOrEqual>) {
+	const aiStore = useAiStore();
+	const sidebarSize = ref(370);
+	const sidebarCollapsed = useLocalStorage('visual-editor-ai-sidebar-collapsed', false);
+	const mobileDrawerOpen = ref(false);
+
+	const splitterCollapsed = computed({
+		get() {
+			return isMobile.value ? true : sidebarCollapsed.value;
+		},
+		set(val: boolean) {
+			if (isMobile.value) return;
+			sidebarCollapsed.value = val;
+		},
+	});
+
+	watch(isMobile, (mobile) => {
+		if (mobile) {
+			mobileDrawerOpen.value = false;
+		}
+	});
+
+	aiStore.onFocusInput(() => {
+		if (isMobile.value) {
+			mobileDrawerOpen.value = true;
+		} else {
+			sidebarCollapsed.value = false;
+		}
+	});
+
+	const aiButtonRef = useTemplateRef<HTMLButtonElement>('ai-button');
+	const aiButtonHovering = useElementHover(aiButtonRef);
+
+	return { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering };
 }
 </script>
 

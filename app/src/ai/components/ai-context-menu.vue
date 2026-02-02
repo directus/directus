@@ -16,6 +16,7 @@ import VMenu from '@/components/v-menu.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import type { Collection } from '@/types/collections';
 import { notify } from '@/utils/notify';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 
@@ -25,8 +26,6 @@ const settingsStore = useSettingsStore();
 const collectionsStore = useCollectionsStore();
 const { fetchPrompts, extractVariables } = usePrompts();
 const { stagePrompt, stageItems } = useContextStaging();
-
-type CollectionItem = { collection: string; name?: string | null; icon?: string | null };
 
 const prompts = ref<MCPPrompt[]>([]);
 const loading = ref(false);
@@ -38,7 +37,7 @@ const mainMenuOpen = ref(false);
 
 const showItemDrawer = ref(false);
 const selectedCollection = ref<string | null>(null);
-const searchInputRef = ref<InstanceType<typeof VInput> | null>(null); 
+const searchInputRef = ref<InstanceType<typeof VInput> | null>(null);
 
 const openListType = ref<'prompts' | 'items' | null>(null);
 
@@ -99,14 +98,13 @@ async function loadPrompts() {
 	} catch {
 		notify({
 			title: t('ai.failed_to_load_prompts'),
-			type: 'error',
 		});
 	} finally {
 		loading.value = false;
 	}
 }
 
-function handleCollectionFromItemsList(collection: CollectionItem) {
+function handleCollectionFromItemsList(collection: Collection) {
 	// Close menus
 	mainMenuOpen.value = false;
 	closeList();
@@ -140,7 +138,7 @@ function handleVariablesSubmit(values: Record<string, string>) {
 	showVariablesModal.value = false;
 }
 
-function handleCollectionSelect(collection: CollectionItem) {
+function handleCollectionSelect(collection: Collection) {
 	selectedCollection.value = collection.collection;
 	mainMenuOpen.value = false;
 	showItemDrawer.value = true;
@@ -282,7 +280,7 @@ function closeList() {
 					item-key="collection"
 					:empty-message="t('no_results')"
 				>
-					<template #item="{ item: collection }: { item: CollectionItem }">
+					<template #item="{ item: collection }: { item: Collection }">
 						<AiContextMenuItem
 							:icon="collection.icon || 'dataset'"
 							:title="collection.name || formatTitle(collection.collection)"

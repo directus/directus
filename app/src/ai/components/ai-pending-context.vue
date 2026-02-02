@@ -44,14 +44,6 @@ onUnmounted(() => {
 	resizeObserver?.disconnect();
 });
 
-function handleMouseEnter(item: PendingContextItem) {
-	highlight(item);
-}
-
-function handleMouseLeave() {
-	clearHighlight();
-}
-
 function handleRemove(item: PendingContextItem) {
 	clearHighlight();
 	contextStore.removePendingContext(item.id);
@@ -74,8 +66,8 @@ function handleRemove(item: PendingContextItem) {
 				:item="item"
 				removable
 				@remove="handleRemove(item)"
-				@mouseenter="handleMouseEnter(item)"
-				@mouseleave="handleMouseLeave(item)"
+				@mouseenter="highlight(item)"
+				@mouseleave="clearHighlight()"
 			/>
 		</div>
 	</div>

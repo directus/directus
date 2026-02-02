@@ -46,14 +46,6 @@ withDefaults(defineProps<Props>(), {
 const { highlight, clearHighlight } = useVisualElementHighlight();
 
 const isToolPart = (part: AiMessagePart): part is DynamicToolUIPart => part.type.startsWith('tool-');
-
-function handleMouseEnter(attachment: ContextAttachment) {
-	highlight(attachment);
-}
-
-function handleMouseLeave() {
-	clearHighlight();
-}
 </script>
 
 <template>
@@ -83,8 +75,8 @@ function handleMouseLeave() {
 					v-for="(attachment, index) in metadata.attachments"
 					:key="`${attachment.type}-${index}`"
 					:item="attachment"
-					@mouseenter="handleMouseEnter(attachment)"
-					@mouseleave="handleMouseLeave(attachment)"
+					@mouseenter="highlight(attachment)"
+					@mouseleave="clearHighlight()"
 				/>
 			</div>
 

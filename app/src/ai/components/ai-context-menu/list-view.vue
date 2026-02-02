@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AiEmptyState from './empty-state.vue';
+import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 
 const props = withDefaults(
@@ -25,9 +26,9 @@ const displayMessage = computed(() => props.emptyMessage ?? t('no_results'));
 <template>
 	<VList>
 		<template v-if="items.length > 0">
-			<template v-for="(item, index) in items" :key="item[itemKey] ?? index">
+			<VListItem v-for="item in items" :key="item[itemKey]">
 				<slot name="item" :item="item" />
-			</template>
+			</VListItem>
 		</template>
 
 		<AiEmptyState v-else :message="displayMessage" />

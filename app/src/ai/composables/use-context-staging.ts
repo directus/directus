@@ -54,7 +54,7 @@ export function useContextStaging() {
 			});
 
 			if (!added) {
-				notify({ title: t('ai.max_elements_reached'), type: 'warning' });
+				notify({ title: t('ai.max_elements_reached') });
 				return;
 			}
 
@@ -73,7 +73,7 @@ export function useContextStaging() {
 		const collectionInfo = collectionsStore.getCollection(collection);
 
 		if (!collectionInfo) {
-			notify({ title: t('ai.invalid_collection'), type: 'error' });
+			notify({ title: t('ai.invalid_collection') });
 			return;
 		}
 
@@ -111,11 +111,11 @@ export function useContextStaging() {
 			}
 
 			if (stagedCount === 0) {
-				notify({ title: t('ai.max_elements_reached'), type: 'warning' });
+				notify({ title: t('ai.max_elements_reached') });
 			} else if (stagedCount < items.length) {
-				notify({ title: t('ai.some_items_staged', { count: stagedCount }), type: 'warning' });
+				notify({ title: t('ai.some_items_staged', { count: stagedCount }) });
 			} else {
-				notify({ title: t('ai.items_staged'), type: 'success' });
+				notify({ title: t('ai.items_staged') });
 			}
 		} catch (error) {
 			unexpectedError(error);
@@ -127,14 +127,14 @@ export function useContextStaging() {
 		if (window.opener) {
 			window.opener.postMessage({ action: 'stage-visual-element', data: { element } }, window.location.origin);
 
-			notify({ title: t('ai.element_staged'), type: 'success' });
+			notify({ title: t('ai.element_staged') });
 			return true;
 		}
 
 		const collectionInfo = collectionsStore.getCollection(element.collection);
 
 		if (!collectionInfo) {
-			notify({ title: t('ai.invalid_collection'), type: 'error' });
+			notify({ title: t('ai.invalid_collection') });
 			return false;
 		}
 
@@ -146,7 +146,7 @@ export function useContextStaging() {
 
 		if (existingContext) {
 			contextStore.updateVisualElementContext(existingContext.id, element, display);
-			notify({ title: t('ai.element_already_staged'), type: 'warning' });
+			notify({ title: t('ai.element_already_staged') });
 			return false;
 		}
 
@@ -158,11 +158,11 @@ export function useContextStaging() {
 		});
 
 		if (!added) {
-			notify({ title: t('ai.max_elements_reached'), type: 'warning' });
+			notify({ title: t('ai.max_elements_reached') });
 			return false;
 		}
 
-		notify({ title: t('ai.element_staged'), type: 'success' });
+		notify({ title: t('ai.element_staged') });
 		aiStore.chatOpen = true;
 		aiStore.focusInput();
 		return true;

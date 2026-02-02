@@ -151,7 +151,7 @@ describe('useContextStaging', () => {
 
 			await stageItems('invalid', ['1']);
 
-			expect(notify).toHaveBeenCalledWith({ title: 'ai.invalid_collection', type: 'error' });
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.invalid_collection' });
 		});
 
 		test('fetches items and adds to context', async () => {
@@ -191,7 +191,7 @@ describe('useContextStaging', () => {
 
 			await stageItems('posts', [1]);
 
-			expect(notify).toHaveBeenCalledWith({ title: 'ai.items_staged', type: 'success' });
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.items_staged' });
 		});
 
 		test('handles API errors', async () => {
@@ -230,7 +230,7 @@ describe('useContextStaging', () => {
 				'http://localhost:3000',
 			);
 
-			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_staged', type: 'success' });
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_staged' });
 			expect(result).toBe(true);
 		});
 
@@ -239,7 +239,7 @@ describe('useContextStaging', () => {
 
 			const result = await stageVisualElement({ collection: 'invalid', item: '1', key: 'key-1' });
 
-			expect(notify).toHaveBeenCalledWith({ title: 'ai.invalid_collection', type: 'error' });
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.invalid_collection' });
 			expect(result).toBe(false);
 		});
 
@@ -267,7 +267,7 @@ describe('useContextStaging', () => {
 				fields: ['title', 'status'],
 			});
 
-			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_already_staged', type: 'warning' });
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_already_staged' });
 			expect(result).toBe(false);
 			expect(contextStore.pendingContext[0]?.data.key).toBe('key-2');
 		});
@@ -284,7 +284,7 @@ describe('useContextStaging', () => {
 
 			const result = await stageVisualElement({ collection: 'posts', item: '1', key: 'key-1' });
 
-			expect(notify).toHaveBeenCalledWith({ title: 'ai.max_elements_reached', type: 'warning' });
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.max_elements_reached' });
 			expect(result).toBe(false);
 		});
 
@@ -303,7 +303,7 @@ describe('useContextStaging', () => {
 			const result = await stageVisualElement({ collection: 'posts', item: '1', key: 'key-1' });
 
 			expect(addSpy).toHaveBeenCalled();
-			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_staged', type: 'success' });
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_staged' });
 			expect(aiStore.chatOpen).toBe(true);
 			expect(focusSpy).toHaveBeenCalled();
 			expect(result).toBe(true);

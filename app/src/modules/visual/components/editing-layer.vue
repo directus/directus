@@ -50,6 +50,8 @@ const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : nu
 
 const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
 
+useVisualEditingAi({ sendSaved, sendHighlightElement });
+
 const { popoverWidth } = usePopoverWidth();
 
 // Clear highlight when edit overlay closes
@@ -60,12 +62,8 @@ watch(editOverlayActive, (isActive) => {
 });
 
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
-	const aiStore = useAiStore();
-	const contextStore = useAiContextStore();
-	const toolsStore = useAiToolsStore();
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
-	const { stageVisualElement } = useContextStaging();
 
 	useEventListener('message', (event) => {
 		if (!sameOrigin(event.origin, frameSrc)) {
@@ -77,15 +75,11 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		if (action === 'connect') {
 			sendConfirm();
 			if (showEditableElements) sendShowEditableElements(true);
-			// Set URL for context tracking
-			contextStore.syncVisualElementContextUrl(frameSrc);
 		}
 
 		if (action === 'navigation') receiveNavigation(data);
 
 		if (action === 'edit') onClickEdit(data);
-
-		if (action === 'addToContext') receiveAddToContext(data);
 	});
 
 	watch(
@@ -95,8 +89,62 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		},
 	);
 
-	// Listen for items tool results to send saved messages to iframe
-	// Any non-read mutation should trigger a preview refresh, including nested/related item edits
+	return { sendSaved, sendHighlightElement };
+
+	function receiveNavigation(data: unknown) {
+		const { url, title } = data as NavigationData;
+		if (url === undefined || title === undefined) return;
+
+		emit('navigation', { url, title });
+	}
+
+	function send(action: SendAction, data: unknown) {
+		frameEl?.contentWindow?.postMessage({ action, data }, frameSrc);
+	}
+
+	function sendConfirm() {
+		const aiEnabled = serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0;
+		send('confirm', { aiEnabled });
+	}
+
+	function sendShowEditableElements(show: boolean) {
+		send('showEditableElements', show);
+	}
+
+	function sendSaved(data: SavedData) {
+		send('saved', data);
+	}
+
+	function sendHighlightElement(data: HighlightElementData) {
+		send('highlightElement', data);
+	}
+}
+
+function useVisualEditingAi({
+	sendSaved,
+	sendHighlightElement,
+}: {
+	sendSaved: (data: SavedData) => void;
+	sendHighlightElement: (data: HighlightElementData) => void;
+}) {
+	const aiStore = useAiStore();
+	const contextStore = useAiContextStore();
+	const toolsStore = useAiToolsStore();
+	const { stageVisualElement } = useContextStaging();
+
+	useEventListener('message', (event) => {
+		if (!sameOrigin(event.origin, frameSrc)) return;
+
+		const { action = null, data = null }: ReceiveData = event.data;
+
+		if (action === 'connect') {
+			contextStore.syncVisualElementContextUrl(frameSrc);
+		}
+
+		if (action === 'addToContext') receiveAddToContext(data);
+	});
+
+	// Any non-read mutation should trigger a preview refresh
 	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input) => {
 		if (tool !== 'items') return;
 		if (input.action === 'read') return;
@@ -104,7 +152,6 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		sendSaved({ key: '', collection: input.collection as string, item: null, payload: {} });
 	});
 
-	// Listen for visual element highlight requests from the AI store
 	const unsubscribeHighlight = aiStore.onVisualElementHighlight((data) => {
 		if (data === null) {
 			sendHighlightElement({ key: null });
@@ -129,23 +176,13 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	onUnmounted(() => {
 		unsubscribeItemsResult.off();
 		unsubscribeHighlight.off();
-		// Clear visual element context when component unmounts
 		contextStore.clearVisualElementContext();
 	});
-
-	return { sendSaved, sendHighlightElement };
-
-	function receiveNavigation(data: unknown) {
-		const { url, title } = data as NavigationData;
-		if (url === undefined || title === undefined) return;
-
-		emit('navigation', { url, title });
-	}
 
 	function receiveAddToContext(data: unknown) {
 		const { key, editConfig, rect } = data as AddToContextData;
 
-		if (!key || !editConfig?.collection || !editConfig.item) return;
+		if (!key || !editConfig?.collection || editConfig.item == null) return;
 
 		stageVisualElement({
 			key,
@@ -154,27 +191,6 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 			fields: editConfig.fields,
 			rect,
 		});
-	}
-
-	function send(action: SendAction, data: unknown) {
-		frameEl?.contentWindow?.postMessage({ action, data }, frameSrc);
-	}
-
-	function sendConfirm() {
-		const aiEnabled = serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0;
-		send('confirm', { aiEnabled });
-	}
-
-	function sendShowEditableElements(show: boolean) {
-		send('showEditableElements', show);
-	}
-
-	function sendSaved(data: SavedData) {
-		send('saved', data);
-	}
-
-	function sendHighlightElement(data: HighlightElementData) {
-		send('highlightElement', data);
 	}
 }
 
