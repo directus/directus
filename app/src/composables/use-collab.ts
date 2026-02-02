@@ -328,7 +328,7 @@ export function useCollab(
 					},
 					//  Object syntax for nested fields - SDK types require schema definition for full support
 					// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
-					fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on']}] as (keyof DirectusUser)[],
+					fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as (keyof DirectusUser)[],
 				}),
 			);
 
@@ -406,6 +406,11 @@ export function useCollab(
 			persist: true,
 		});
 
+		roomId.value = null;
+		connectionId.value = null;
+		users.value = [];
+		focused.value = {};
+
 		router.push(`/content/${item.value ? collection.value : ''}`);
 	}
 
@@ -418,7 +423,7 @@ export function useCollab(
 					.request(
 						readUser(message.user, {
 							// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
-							fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on']}] as (keyof DirectusUser)[],
+							fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as (keyof DirectusUser)[],
 						}),
 					)
 					.catch(() => ({}));
