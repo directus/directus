@@ -1,5 +1,5 @@
 import { ErrorCode } from '@directus/errors';
-import { readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
+import { DirectusUser, readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
 import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
@@ -319,7 +319,7 @@ export function useCollab(
 					},
 					//  Object syntax for nested fields - SDK types require schema definition for full support
 					// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
-					fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as ('id' | 'first_name' | 'last_name' | 'avatar')[],
+					fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as (keyof DirectusUser)[],
 				}),
 			);
 
@@ -409,7 +409,7 @@ export function useCollab(
 					.request<CollabUser>(
 						readUser(message.user, {
 							// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
-							fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as ('id' | 'first_name' | 'last_name' | 'avatar')[],
+							fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as (keyof DirectusUser)[],
 						}),
 					)
 					.catch(() => ({}));
