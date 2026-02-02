@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useWindowSize } from '@/composables/use-window-size';
-import { getStringifiedValue } from '@/utils/get-stringified-value';
 import { isValidJSON, parseJSON } from '@directus/utils';
 import { EditorState, StateEffect, StateField } from '@codemirror/state';
 import { EditorView, keymap, placeholder as placeholderExtension, drawSelection } from '@codemirror/view';
@@ -11,6 +9,8 @@ import { javascript } from '@codemirror/lang-javascript';
 import { computed, onMounted, onUnmounted, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheLanguage } from './mustacheMode';
+import { useWindowSize } from '@/composables/use-window-size';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
 
 const props = withDefaults(
 	defineProps<{

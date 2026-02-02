@@ -141,7 +141,6 @@ create_policy: Vytvořit oprávnění
 create_user: Vytvořit uživatele
 message: Zpráva
 delete_panel: Odstranit panel
-create_webhook: Vytvořit webhook
 create_custom_translation: Vytvořit Vlastní Překlad
 edit_custom_translation: Upravit Vlastní Překlad
 no_custom_translations: Žádné Vlastní Překlady
@@ -446,6 +445,7 @@ confirm_revert_body: Toto vrátí položku do vybraného stavu.
 display: Zobrazení
 settings_update_success: Nastavení aktualizováno
 title: Název
+subtitle: Podnadpis
 revision_delta_created: Vytvořena
 revision_delta_created_externally: Vytvořena externě
 revision_delta_updated: 'Aktualizováno 1 pole | Aktualizováno {count} polí'
@@ -635,12 +635,6 @@ file_count: 'Žádné soubory | Jeden soubor | {count} souborů'
 no_files_copy: Nejsou zde žádné soubory.
 user_count: 'Žádní uživatelé | Jeden uživatel | {count} uživatelů'
 no_users_copy: V této roli zatím nejsou žádní uživatelé.
-webhooks_count: 'Žádné webhooky | 1 webhook | {count} webhooků'
-webhooks_deprecation_notice: |
-  Webové háčky jsou zastaralé, další použití nedoporučujeme.
-
-  Prosím, použijte **toky** s [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: Zatím nebyly nakonfigurovány žádné webhooky. Začněte vytvořením jednoho níže.
 no_notifications: Žádná oznámení
 no_notifications_copy: Jste v obraze!
 activity_log: Záznam aktivit
@@ -671,7 +665,6 @@ action: Akce
 ip_address: IP adresa
 user_agent: Uživatelský agent
 origin: Původ
-webhooks: Webhooky
 decimals: Desetinná místa
 value_decimals: Desetinná hodnota
 min_value: Minimální hodnota
@@ -755,7 +748,6 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota je mimo rozsah
   VALUE_TOO_LONG: Hodnota je příliš dlouhá
 security: Zabezpečení
-value_hashed: Hodnota bezpečně hashována
 bookmark_name: Název záložky...
 create_bookmark: Vytvořit záložku
 edit_bookmark: Upravit záložku
@@ -931,10 +923,8 @@ label: Popisek
 flows: Toky
 flow: Tok
 select_a_flow: Vybrat tok
-run_flow_confirm: Jste si jisti, že chcete spustit tento tok?
 run_flow_on_current_collection: Spustit tok nad aktuální kolekcí
 run_flow_on_current: Spustit tok nad aktuální položkou
-run_flow_on_current_edited_confirm: Tato položka může být tímto tokem aktualizována, jste si jisti, že tok chcete spustit?
 run_flow_on_selected: Nejprve vyberte jednu nebo více položek | Spustit tok na 1 vybrané položce | Spustit tok na {n} vybraných položkách
 run_flow: Spustit tok
 field_name_placeholder: Zadejte název pole...
@@ -1120,7 +1110,6 @@ settings_roles: Uživatelské role
 settings_permissions: Přístupová práva
 settings_project: Nastavení
 settings_appearance: Vzhled
-settings_webhooks: Webhooky
 settings_flows: Toky
 settings_system_logs: Systémové protokoly
 settings_presets: Záložky
@@ -1148,48 +1137,6 @@ discard_changes_copy: Opravdu chcete zahodit všechny provedené změny?
 show_x_axis: Zobrazit osu X
 show_y_axis: Zobrazit osu Y
 keep_editing: Ne, vrátit se k úpravám
-page_help_collections_overview: '**Přehled kolekcí** — Seznam všech kolekcí, ke kterým máte přístup.'
-page_help_collections_collection: >-
-  **Procházet položky** — Zobrazuje všechny položky kolekce {collection}, ke kterým máte přístup. Přizpůsobte si rozvržení, filtry a třídění, abyste mohli přizpůsobit zobrazení a dokonce uložit záložky z těchto různých konfigurací pro rychlý přístup.
-page_help_collections_item: >-
-  **Detail položky** — Formulář pro zobrazení a správu této položky. Tento postranní panel také obsahuje celou historii revizí a vložené komentáře.
-page_help_activity_collection: >-
-  **Procházet aktivitu** — Komplexní seznam systému a aktivity vašeho uživatele.
-page_help_docs_global: >-
-  **Přehled dokumentace** – dokumentace přizpůsobená speciálně verzi a schématu tohoto projektu.
-page_help_files_collection: >-
-  **Knihovna souborů** — Zobrazí všechny soubory nahrané do tohoto projektu. Přizpůsobte si rozvržení, filtry a třídění, abyste mohli přizpůsobit zobrazení a dokonce uložit záložky z těchto různých konfigurací pro rychlý přístup.
-page_help_files_item: >-
-  **Detail souboru** – Formulář pro správu metadat souboru, úpravu původního aktiva a aktualizaci nastavení přístupu.
-page_help_settings_project: "**Nastavení** – Globální konfigurace vašeho projektu."
-page_help_settings_appearance: "**Vzhled** – Nastavení vzhledu a motivů vašeho projektu."
-page_help_settings_extensions: '**Rozšíření** – Rozšíření nainstalovaná ve vašem projektu.'
-page_help_settings_datamodel_collections: >-
-  **Datový model: Kolekce** – Zobrazí všechny dostupné kolekce. To zahrnuje viditelné, skryté a systémové kolekce, stejně jako nespravované databázové tabulky, které lze přidat.
-page_help_settings_datamodel_fields: >-
-  **Model dat: Kolekce** – Formulář pro správu této kolekce a jejích polí.
-page_help_settings_system_logs: '**Systémové logy** – Přístup k živému toku systémových logů.'
-page_help_settings_policies_collection: '**Procházet oprávnění** — Zobrazuje všechna oprávnění v rámci projektu.'
-page_help_settings_roles_collection: '**Procházet role** — Zobrazuje všechny role v rámci projektu.'
-page_help_settings_roles_item: "**Detail role** — Správa oprávnění role a dalších nastavení."
-page_help_settings_presets_collection: >-
-  **Procházet předvolby** – Zobrazuje všechny předvolby v projektu, včetně: uživatelů, rolí a globálních záložek, stejně jako výchozích pohledů.
-page_help_settings_presets_item: >-
-  **Detail předvoleb** – Formulář pro správu záložek a předvoleb pro výchozí kolekci.
-page_help_settings_webhooks_collection: '**Procházet webhooky** — Zobrazuje všechny webhooky v rámci projektu.'
-page_help_settings_webhooks_item: '**Detail webhooku** — Formulář pro tvorbu a správu webhooků projektu.'
-page_help_settings_flows_collection: '**Procházet toky** — Zobrazuje všechny toky v rámci projektu.'
-page_help_settings_flows_item: '**Detail toku** – Pracovní prostor pro správu jedné nebo více operací.'
-page_help_settings_translations_collection: '**Procházet vlastní překlady** – Seznam všech vlastních překladů v rámci projektu.'
-page_help_settings_translations_item: '**Detail vlastních překladů** — Formulář pro zobrazení a správu této položky.'
-page_help_users_collection: '**Uživatelé** — Zobrazuje všechny systémové uživatele v rámci tohoto projektu.'
-page_help_users_item: >-
-  **Detaily uživatele** — Správa informací o Vašem účtu nebo zobrazení detailů ostatních uživatelů.
-page_help_insights_overview: '**Přehledy** — Seznam nástěnek, ke kterým máte přístup.'
-page_help_insights_dashboard: '**Nástěnka** – Pracovní prostor pro správu jednoho nebo více panelů'
-page_help_marketplace_account: '**Účet** – Vydavatel nebo správce publikovaného rozšíření.'
-page_help_marketplace_registry: '**Registr** — Rozšíření k dispozici na tržišti Directusu.'
-page_help_marketplace_extension: '**Rozšíření** — Dostupná rozšíření na tržišti Directusu.'
 activity_feed: Kanál aktivit
 add_new: Přidat nový
 create_new: Vytvořit
@@ -1224,7 +1171,6 @@ directus_collection:
   directus_dashboards: Nástěnky v modulu přehledů
   directus_fields: Další konfigurace polí a metadata
   directus_files: Metadata pro všechny spravované soubory
-  directus_flows: Automatické toky
   directus_folders: Poskytuje virtuální adresáře souborů
   directus_migrations: Jakou verzi databáze používáte
   directus_notifications: Oznámení zaslaná uživatelům
@@ -1240,7 +1186,6 @@ directus_collection:
   directus_settings: Možnosti konfigurace projektu
   directus_shares: Sleduje externě sdílené položky
   directus_users: Systémoví uživatelé pro platformu
-  directus_webhooks: Konfigurace HTTP požadavků založených na událostech
   directus_translations: Vlastní překlady
   directus_versions: Verze obsahu pro položky
   directus_extensions: Nastavení rozšíření
@@ -1418,18 +1363,6 @@ fields:
     admin_access: Přístup správce
     ip_access: Přístup z IP adresy
     enforce_tfa: Vyžadovat 2FA
-  directus_webhooks:
-    name: Jméno
-    method: Metoda
-    status: Stav
-    data: Údaje
-    header: Hlavička
-    value: Hodnota
-    headers: Hlavičky požadavku
-    data_label: Odeslat data události
-    triggers: Spouštěče
-    actions: Akce
-    collections: Kategorie
 field_options:
   directus_settings:
     project_name_placeholder: Můj projekt...
@@ -1531,19 +1464,6 @@ field_options:
     status_dropdown_suspended: Pozastaveno
     status_dropdown_archived: Archivováno
     token: Zadejte bezpečný přístupový token...
-  directus_webhooks:
-    status_options_active: Aktivní
-    status_options_inactive: Neaktivní
-    data_label: Odeslat data události
-    triggers_divider: Spouštěče
-    actions_create: Vytořit
-    actions_update: Úpravy
-    actions_delete: Smazat
-    actions_login: Přihlášení
-    headers:
-      header: Hlavička
-      value: Hodnota
-      add: Přidat hlavičku
 no_fields_in_collection: 'V "{collection}" zatím nejsou žádná pole'
 no_value: Žádná hodnota
 do_nothing: Nedělat nic
@@ -1570,6 +1490,22 @@ unlimited_usage: Neomezené použití
 uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
 no_shares: Nic sdíleného k zobrazení
 new_share: Nové sdílení
+ai:
+  input: Vstup
+  unknown: Neznámý
+  settings: Nastavení
+  tool_approval:
+    disabled: Zakázáno
+ai_tools:
+  items: Položky
+  files: Soubory
+  folders: Složky
+  flows: Toky
+  trigger-flow: Spouštěč toku
+  operations: Operace
+  schema: Schéma
+  collections: Kategorie
+  fields: Pole
 mcp_prompts_collection_schema:
   messages_role_user: Uživatel
 expired: Vypršela platnost
@@ -1606,7 +1542,6 @@ editing_role: '{role} role'
 editing_policy: 'Přístupová práva k {policy}'
 no_permissions: Bez oprávnění
 permission_add_collection: Přidat kolekci
-creating_webhook: Vytvoření webhooku
 default_label: Výchozí
 delete_label: Odstranit
 delete_are_you_sure: >-
@@ -1738,9 +1673,7 @@ interfaces:
     accordion_mode: Režim harmoniky
     max_one_section_open: Max. 1 otevřená sekce
   presentation-links:
-    presentation-links: Tlačítkové odkazy
-    links: Odkazy
-    description: Konfigurovatelná tlačítka odkazů pro spouštění dynamických URL
+    presentation-links: Tlačítka
     style: Styl
     primary: Primární
     link: Odkazy
@@ -2060,6 +1993,9 @@ interfaces:
   input-password:
     input-password: Zadejte heslo
     description: Zadání hesla pomocí přepínače pro skrytí hodnoty
+  header:
+    header: Hlavička
+    links: Odkazy
 displays:
   translations:
     translations: Překlady
@@ -2363,11 +2299,9 @@ triggers:
 a_flow_uuid: Vyberte tok pro spuštění...
 any_string_or_json: Jakýkoliv řetězec nebo JSON...
 item_payload_placeholder: Toto je JSON používaný k aktualizaci hodnot polí položky...
-operation_variables_note: Můžete přistupovat k datům toku s proměnnými jako **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** a **{'{'}{'{'}$accountability{'}'}{'}'}**, nebo odkázovat na předchozí operace s **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Podmínka
-    description: Trasovat tok založený na If / Else logice
   exec:
     name: Spustit skript
     description: Spusťte libovolný kód pro změnu datového balíku
@@ -2451,7 +2385,6 @@ operations:
     description: Upravit JSON toku
   trigger:
     name: Spouštěč toku
-    description: Předat tato data jinému toku
     flows: Toky
     flow: Tok
     data: Údaje

@@ -2,6 +2,8 @@
 import { ref, toRef } from 'vue';
 import SystemMcpPromptsCollectionGenerateDialog from './system-mcp-prompts-collection-generate-dialog.vue';
 import { useCollectionValidation } from './use-collection-validation';
+import VButton from '@/components/v-button.vue';
+import VNotice from '@/components/v-notice.vue';
 
 const props = defineProps<{
 	promptsCollection: string;
@@ -17,25 +19,25 @@ const generateCollectionDialogActive = ref(false);
 </script>
 
 <template>
-	<v-notice v-if="validationIssues.collectionNotFound" multiline indent-content type="danger">
+	<VNotice v-if="validationIssues.collectionNotFound" multiline indent-content type="danger">
 		<template #title>
 			{{ $t('mcp_prompts_collection.collection_not_found') }}
 		</template>
 
 		<div class="notice-content">
 			<p>{{ $t('mcp_prompts_collection.collection_not_found_description', { collection: promptsCollection }) }}</p>
-			<v-button small outlined danger @click="generateCollectionDialogActive = true">
+			<VButton small outlined danger @click="generateCollectionDialogActive = true">
 				{{ $t('mcp_prompts_collection.generate') }}
-			</v-button>
+			</VButton>
 
 			<SystemMcpPromptsCollectionGenerateDialog
 				v-model:active="generateCollectionDialogActive"
 				@save="$emit('save', $event)"
 			/>
 		</div>
-	</v-notice>
+	</VNotice>
 
-	<v-notice v-else-if="validationIssues.invalidFields.length > 0" multiline indent-content type="danger">
+	<VNotice v-else-if="validationIssues.invalidFields.length > 0" multiline indent-content type="danger">
 		<template #title>
 			{{ $t('mcp_prompts_collection.validation_error_invalid') }}
 		</template>
@@ -46,9 +48,9 @@ const generateCollectionDialogActive = ref(false);
 				<li v-for="{ field } of validationIssues.invalidFields" :key="field" class="mono">{{ field }}</li>
 			</ul>
 		</div>
-	</v-notice>
+	</VNotice>
 
-	<v-notice v-else-if="validationIssues.missingFields.length > 0" multiline indent-content type="danger">
+	<VNotice v-else-if="validationIssues.missingFields.length > 0" multiline indent-content type="danger">
 		<template #title>
 			{{ $t('mcp_prompts_collection.validation_error_missing') }}
 		</template>
@@ -58,9 +60,9 @@ const generateCollectionDialogActive = ref(false);
 			<ul>
 				<li v-for="{ field } of validationIssues.missingFields" :key="field" class="mono">{{ field }}</li>
 			</ul>
-			<v-button small outlined danger @click="generateCollectionDialogActive = true">
+			<VButton small outlined danger @click="generateCollectionDialogActive = true">
 				{{ $t('mcp_prompts_collection.generate_missing') }}
-			</v-button>
+			</VButton>
 
 			<SystemMcpPromptsCollectionGenerateDialog
 				v-model:active="generateCollectionDialogActive"
@@ -68,13 +70,13 @@ const generateCollectionDialogActive = ref(false);
 				:collection="promptsCollection"
 			/>
 		</div>
-	</v-notice>
+	</VNotice>
 
-	<v-notice v-else type="success">
+	<VNotice v-else type="success">
 		<template #title>
 			{{ $t('mcp_prompts_collection.validation_success') }}
 		</template>
-	</v-notice>
+	</VNotice>
 </template>
 
 <style scoped>

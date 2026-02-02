@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { useExtensions } from '@/extensions';
+import { FlowRaw } from '@directus/types';
 import { computed, toRefs, unref } from 'vue';
 import { getTriggers } from '../triggers';
-import { FlowRaw } from '@directus/types';
 import VDetail from '@/components/v-detail.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import { useExtensions } from '@/extensions';
 import { Revision } from '@/types/revisions';
 
 const props = defineProps<{
@@ -68,7 +69,7 @@ const steps = computed(() => {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:model-value="!!revision"
 		:title="revision ? revision.timestampFormatted : $t('logs')"
 		icon="fact_check"
@@ -86,17 +87,17 @@ const steps = computed(() => {
 					</div>
 
 					<div class="inset">
-						<v-detail v-if="triggerData.options" :label="$t('options')">
+						<VDetail v-if="triggerData.options" :label="$t('options')">
 							<pre class="json">{{ triggerData.options }}</pre>
-						</v-detail>
+						</VDetail>
 
-						<v-detail v-if="triggerData.trigger" :label="$t('payload')">
+						<VDetail v-if="triggerData.trigger" :label="$t('payload')">
 							<pre class="json">{{ triggerData.trigger }}</pre>
-						</v-detail>
+						</VDetail>
 
-						<v-detail v-if="triggerData.accountability" :label="$t('accountability')">
+						<VDetail v-if="triggerData.accountability" :label="$t('accountability')">
 							<pre class="json">{{ triggerData.accountability }}</pre>
-						</v-detail>
+						</VDetail>
 					</div>
 				</div>
 
@@ -110,18 +111,18 @@ const steps = computed(() => {
 					</div>
 
 					<div class="inset">
-						<v-detail v-if="step.options" :label="$t('options')">
+						<VDetail v-if="step.options" :label="$t('options')">
 							<pre class="json">{{ step.options }}</pre>
-						</v-detail>
+						</VDetail>
 
-						<v-detail v-if="step.data !== null" :label="$t('payload')">
+						<VDetail v-if="step.data !== null" :label="$t('payload')">
 							<pre class="json">{{ step.data }}</pre>
-						</v-detail>
+						</VDetail>
 					</div>
 				</div>
 			</div>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

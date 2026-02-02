@@ -132,7 +132,6 @@ create_policy: Opprett vilkår
 create_user: Opprett bruker
 message: Melding
 delete_panel: Slett panel
-create_webhook: Lag Webhook
 create_custom_translation: Opprett egendefinert oversettelse
 edit_custom_translation: Rediger egendefinert oversettelse
 no_custom_translations: Ingen egendefinerte oversettelser
@@ -367,6 +366,7 @@ confirm_revert_body: Dette vil reversere elementet til valgte tilstand.
 display: Visning
 settings_update_success: Innstillingene er oppdatert
 title: Tittel
+subtitle: Undertittel
 revision_delta_created: Opprettet
 revision_delta_created_externally: Opprettet eksternt
 revision_delta_updated: 'Oppdatert 1 felt | Oppdatert {count} felter'
@@ -509,8 +509,6 @@ file_count: 'Ingen filer ″One File ε {count} Filer'
 no_files_copy: Det er ingen filer her.
 user_count: 'Ingen brukere | En bruker | {count} brukere'
 no_users_copy: Det er ingen brukere i denne rollen enda.
-webhooks_count: 'Ingen Webhooks | En Webhook | {count} Webhooks'
-no_webhooks_copy: Ingen webhooks er konfigurert ennå. Kom i gang ved å opprette en nedenfor.
 no_notifications: Ingen varslinger
 no_notifications_copy: Ingen varslinger!
 activity_log: Aktivitetslogg
@@ -539,7 +537,6 @@ action: Handling
 ip_address: IP-addresse
 user_agent: Brukeragent
 origin: Opprinnelse
-webhooks: Webhooks
 decimals: Desimaler
 value_decimals: Verdi desimaler
 min_value: Min. verdi
@@ -611,7 +608,6 @@ errors:
   VALUE_OUT_OF_RANGE: Verdien er utenfor gyldig område
   VALUE_TOO_LONG: Verdien er for lang
 security: Sikkerhet
-value_hashed: Sikker verdi Hastet
 bookmark_name: Bokmerkenavn...
 create_bookmark: Lag bokmerke
 edit_bookmark: Rediger bokmerke
@@ -693,7 +689,6 @@ deselect: Velg bort
 creating_in: 'Oppretter element i {collection}'
 editing_in_batch: 'Batch Editing {count} elementer'
 settings_project: Innstillinger
-settings_webhooks: Webhooks
 settings_presets: Bokmerke
 settings_translations: Oversettelser
 discard_changes: Forkast endringer
@@ -766,11 +761,6 @@ fields:
   directus_policies:
     name: Navn på rettighet
     description: Beskrivelse
-  directus_webhooks:
-    name: Navn
-    status: Status
-    value: Verdi
-    collections: Kolleksjoner
 field_options:
   directus_settings:
     security_divider_title: Sikkerhet
@@ -789,16 +779,21 @@ field_options:
   directus_users:
     preferences_divider: Brukerinnstillinger
     status_dropdown_active: Aktiv
-  directus_webhooks:
-    status_options_active: Aktiv
-    status_options_inactive: Inaktiv
-    actions_create: Opprett
-    actions_update: Oppdater
-    headers:
-      value: Verdi
 comment: Kommenter
 live_preview:
   new_window: Åpne i nytt vindu
+ai:
+  unknown: Ukjent
+  settings: Innstillinger
+  tool_approval:
+    disabled: Deaktivert
+ai_tools:
+  items: Elementer
+  files: Filer
+  folders: Mapper
+  operations: Operasjoner
+  schema: Skjema
+  collections: Kolleksjoner
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
 description: Beskrivelse
@@ -930,6 +925,9 @@ layouts:
     compact: Kompakt
     cozy: Cozy
 both: Begge
+triggers:
+  webhook:
+    method: Metode
 operations:
   json-web-token:
     options: Alternativer
@@ -940,5 +938,6 @@ operations:
     subject: Emne
   request:
     url: URL
+    method: Metode
 standard: Standard
 compact: Kompakt

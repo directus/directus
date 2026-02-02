@@ -1,7 +1,7 @@
-import request, { type Response } from 'supertest';
-import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { WebSocket } from 'ws';
 import { createClient } from 'graphql-ws';
+import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query';
+import request, { type Response } from 'supertest';
+import { WebSocket } from 'ws';
 import type {
 	WebSocketOptions,
 	WebSocketOptionsGql,

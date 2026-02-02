@@ -1,8 +1,8 @@
-import { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/extensions';
+import { DeepPartial, Field } from '@directus/types';
+import { modeMap } from './import-codemirror-mode';
 import InterfaceCode from './input-code.vue';
 import PreviewSVG from './preview.svg?raw';
-import { modeMap } from './import-codemirror-mode';
 
 const choices = Object.entries(modeMap)
 	.concat([

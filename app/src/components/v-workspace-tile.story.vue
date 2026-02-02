@@ -16,7 +16,7 @@ function initState() {
 <template>
 	<Story title="VWorkspaceTile" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-workspace-tile v-bind="state">Contents of the tile</v-workspace-tile>
+			<VWorkspaceTile v-bind="state">Contents of the tile</VWorkspaceTile>
 		</template>
 	</Story>
 </template>

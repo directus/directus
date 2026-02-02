@@ -20,8 +20,31 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Over
+directus_bsl: Directus BSL 1.1
+privacy_policy: Privacybeleid
+contact_our_team: Contacteer ons Team
+setup_welcome: Welkom bij Directus
+setup_info: Laten we je beheerdersaccount aanmaken en je project opstarten
+setup_license_notice: >
+  Directus is gratis te gebruiken voor entiteiten met een jaarlijkse omzet, financiering of operationeel budget onder de $ 5 miljoen.
+setup_license_follow_up: >
+  Voor entiteiten die deze grens overschrijden is een betaalde licentie vereist. Je kunt Directus blijven proberen en {contactOurTeam} wanneer je klaar bent om het productiegebruik te bespreken.
+setup_save_accept_license: >
+  Door op te slaan accepteer je de algemene voorwaarden van de {directusBsl} en {privacyPolicy}.
+setup_accept_license: Ik accepteer de voorwaarden van de {directusBsl} en {privacyPolicy}
+setup_marketing_emails: Stuur mij productupdates en release-info
+setup_launch: Start Directus
+setup_project: Project Setup
 first_name: Voornaam
 last_name: Achternaam
+admin_email: E-mailadres Beheerder
+owner_email: E-mailadres Eigenaar
+email_address: E-mailadres
+organization_name: Naam Organisatie
+how_do_you_use_directus: Waar gebruik je Directus voor?
+usage_personal: Persoonlijk / Leren
+usage_commercial: Zakelijk / Commercieel
+usage_community: Open Source / Community
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -50,6 +73,8 @@ condition_rules: Voorwaarde Regels
 input: Invoer
 invalid_input: Ongeldige invoer
 not_a_number: Geen getal
+invalid_range_min: Waarde is lager dan minimum van {value}
+invalid_range_max: Waarde overschrijdt maximum van {value}
 maps: Kaarten
 switch_user: Verander gebruiker
 item_creation: Item Aanmaken
@@ -61,6 +86,8 @@ full_width: Volledige breedte
 group: Groep
 popular: Populair
 recent: Recent
+latest: Meest Recent
+updated: Bijgewerkt
 export_items: Exporteer items
 and: En
 or: Of
@@ -105,7 +132,7 @@ report_an_issue: Meld een probleem
 website: Website
 github: GitHub
 beta: Beta
-n_downloads: '{n} downloads'
+n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Compatibiliteit niet gegarandeerd
 compatibility_not_guaranteed_copy: De ontwikkelaar heeft de compatibiliteit van deze extensie aangegeven als {hostVersion}, wat niet overeenkomt met jouw projectversie ({currentVersion})
@@ -116,6 +143,12 @@ hook: Hook
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
 enter_password_to_enable_tfa: Voer je wachtwoord in om tweefactorauthenticatie in te schakelen
+sso_tfa_setup_notice: Je wordt uitgelogd uit je account en moet opnieuw inloggen. Eventuele niet opgeslagen wijzigingen blijven niet behouden.
+enable_tfa: 2FA Inschakelen
+cancel_tfa_setup: 2FA Setup Annuleren
+cancel_tfa_setup_notice: Weet je zeker dat je de 2FA Setup wil annuleren?
+keep_setup: Behoud Setup
+cancel_setup: Annuleer Setup
 add_field: Veld toevoegen
 role_name: Rol Naam
 policy_name: Policy Naam
@@ -140,7 +173,6 @@ create_policy: Policy Aanmaken
 create_user: Gebruiker Aanmaken
 message: Bericht
 delete_panel: Paneel verwijderen
-create_webhook: Webhook Aanmaken
 create_custom_translation: Aangepaste vertaling aanmaken
 edit_custom_translation: Aangepaste vertaling bewerken
 no_custom_translations: Geen aangepaste vertalingen
@@ -156,6 +188,7 @@ connection_good: Goede Verbinding
 connection_fair: Matige Verbinding
 connection_poor: Slechte Verbinding
 primary: Primair
+download_folder: Download Map
 rename_folder: Mapnaam wijzigen
 delete_folder: Verwijder Map
 prefix: Voorvoegsel
@@ -172,9 +205,14 @@ rename_version: Versie hernoemen
 compare_version: Versies vergelijken
 save_version: Versie opslaan
 promote_version: Versie promoveren
+apply: Toepassen
+select_all_differences: Selecteer Alle Verschillen
+main_updated_notice: Het hoofditem is bijgewerkt sinds deze versie is aangemaakt.
 delete_version: Versie verwijderen
 delete_version_copy: >-
   Weet je zeker dat je de versie "{version}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+delete_on_apply_copy: >-
+  Je staat op het punt "{version}" te promoten naar Main. Wat moet er gebeuren met "{version}" na promotie?
 reset_bookmark: Reset Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
@@ -235,6 +273,8 @@ validationError:
   iends_with: Waarde moet eindigen met {substring}
   nends_with: Waarde mag niet eindigen met {substring}
   niends_with: Waarde mag niet eindigen met {substring}
+  confirm_password: Wachtwoorden komen niet overeen
+  org_name: Voeg een organisatienaam toe
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
@@ -397,7 +437,7 @@ invalid_item: Ongeldig item
 require_confirmation: Bevestiging Vragen
 dialog: Dialoog
 modal: Modal
-confirmation_dialog: Bevestigings dialoog
+confirmation_dialog: Bevestigingsdialoog
 confirmation_description: Bevestig beschrijving
 confirmation_input_fields: Bevestiging invoervelden
 next: Volgende
@@ -415,6 +455,8 @@ precision_scale: Precisie & schaal
 readonly: Alleen lezen
 unique: Uniek
 index: Index
+searchable: Doorzoekbaar
+field_searchable: Veld opnemen in zoekopdrachten
 updated_on: Bijgewerkt op
 updated_by: Bijgewerkt door
 primary_key: Primary Key
@@ -450,6 +492,7 @@ confirm_revert_body: Dit zal het item terugzetten naar de geselecteerde revisie.
 display: Toon
 settings_update_success: Instellingen bijgewerkt
 title: Titel
+subtitle: Ondertitel
 revision_delta_created: Aangemaakt
 revision_delta_created_externally: Extern aangemaakt
 revision_delta_updated: '1 veld bijgewerkt | {count} velden bijgewerkt'
@@ -458,6 +501,7 @@ revision_delta_reverted: Teruggedraaid
 revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
 revision_delta_by: '{date} door {user}'
+differences_count: 'Geen Verschillen | 1 Verschil | {count} Verschillen'
 presentation_text_values_cannot_be_reimported: 'Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd.'
 download_page_as_csv: 'Download Pagina als CSV'
 download_page_as_csv_unsupported: Deze layout ondersteunt het downloaden van de huidige pagina niet.
@@ -480,7 +524,14 @@ import_data_input_placeholder: CSV of JSON...
 import_data_button: Importeren starten
 import_data_indeterminate: Gegevens importeren...
 import_data_success: Gegevens succesvol geïmporteerd uit {filename}
+import_data_errors: Fout bij importeren
 import_data_error: De gegevensstructuur van dit bestand komt niet overeen met de collectie.
+import_data_validation_errors_notice: 'De volgende rijen bevatten ongeldige waarden:'
+import_data_error_row: 'Rij {rows}{field}:'
+snapshot:
+  export: Exporteer Schema
+  download: Download Snapshot (JSON)
+  info: Schema-export voor delen of debuggen
 label_import: Importeren
 label_export: Exporteren
 import_export: Importeren / Exporteren
@@ -644,19 +695,13 @@ file_count: 'Geen bestanden | Één Bestand | {count} bestanden'
 no_files_copy: Er zijn geen bestanden hier.
 user_count: 'Geen gebruikers | Één gebruiker | {count} gebruikers'
 no_users_copy: Er zijn nog geen gebruikers in deze rol.
-webhooks_count: 'Geen webhooks | 1 Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Webhooks zijn verouderd en verder gebruik wordt afgeraden.
-
-  Gebruik in plaats daarvan **Flows** met de [Webhook / Request URL operatie](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-
-no_webhooks_copy: Er zijn nog geen webhooks geconfigureerd. Ga aan de slag door er hieronder een aan te maken.
 no_notifications: Geen meldingen
 no_notifications_copy: Je bent helemaal mee!
 activity_log: Activiteitenlogboek
 all_items: Alle items
 any: Eender
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: Geen collecties
 create_collection: Maak collectie
 no_collections_copy_admin: Je hebt nog geen Collecties. Klik op de knop hieronder om te beginnen.
@@ -681,7 +726,6 @@ action: Actie
 ip_address: IP Adres
 user_agent: User Agent
 origin: Herkomst
-webhooks: Webhooks
 decimals: Decimalen
 value_decimals: Waarde Decimaal
 min_value: Minimumwaarde
@@ -721,6 +765,7 @@ enabled_dev_tooltip: App-extensies zijn altijd ingeschakeld in dev-modus
 disable_tfa: 2FA uitzetten
 admin_disable_tfa_text: Weet je zeker dat je 2FA voor deze gebruiker wilt uitschakelen?
 tfa_setup: 2FA instellen
+tfa_setup_description: Stel tweestapsverificatie in om je account te beschermen
 tfa_scan_code: Scan de code in je authenticatie-app om het instellen van 2FA te voltooien
 enter_otp_to_disable_tfa: Voer de OTP in om 2FA uit te schakelen
 create_account: Account aanmaken
@@ -766,7 +811,7 @@ errors:
   VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
   VALUE_TOO_LONG: Waarde is te lang
 security: Beveiliging
-value_hashed: Waarde veilig opgeslagen
+value_securely_stored: Waarde Veilig Opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
 edit_bookmark: Bladwijzer bewerken
@@ -942,10 +987,11 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Selecteer een Flow
-run_flow_confirm: Ben je zeker dat u deze flow wilt uitvoeren?
+run_flow_confirm: Weet je zeker dat je deze Flow wil uitvoeren?
+run_flow_anyway: Voer Flow Toch Uit
 run_flow_on_current_collection: Voer flow uit op Huidige Collectie
 run_flow_on_current: Flow Uitvoeren op Huidig Item
-run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
+run_flow_on_current_edited_confirm: Dit item wordt wellicht bijgewerkt door deze Flow, weet je zeker dat je deze wil uitvoeren?
 run_flow_on_selected: Selecteer Eerst Één of Meer Items | Flow Uitvoeren op 1 Geselecteerd Item | Flow Uitvoeren op {n} Geselecteerde Items
 run_flow: Flow Uitvoeren
 trigger_flow_success: Flow "{flow}" succesvol getriggerd
@@ -987,6 +1033,7 @@ operation_handle_resolve: 'Los op: Klik om toe te voegen, of sleep om te omleide
 operation_handle_reject: 'Weiger: Klik om toe te voegen, of sleep om te omleiden'
 visual_editor: Visuele editor
 toggle_navigation: Navigatie Omschakelen
+toggle_sidebar: Zijbalk Aan/Uit
 toggle_editable_elements: Bewerkbare Elementen Omschakelen
 no_url: Geen URL opgegeven
 no_url_copy: Gelieve een URL toe te voegen in de instellingen.
@@ -1128,6 +1175,8 @@ appearance_dark: Donker
 other: Anders...
 adding_user: Gebruiker toevoegen
 unknown_user: Onbekende gebruiker
+unknown_version: Onbekende Versie
+unknown_revision: Onbekende Revisie
 creating_in: 'Item maken in {collection}'
 editing_in: 'Item bewerken in {collection}'
 viewing_in: 'Bekijken van item uit {collection}'
@@ -1140,7 +1189,8 @@ settings_roles: Gebruikersrollen
 settings_permissions: Toegangsbeleid
 settings_project: Instellingen
 settings_appearance: Uiterlijk
-settings_webhooks: Webhooks
+settings_ai: AI
+model_context_protocol: Model Context Protocol
 settings_flows: Flows
 settings_system_logs: Systeemlogs
 settings_presets: Bladwijzers
@@ -1168,48 +1218,6 @@ discard_changes_copy: Weet je zeker dat je alle wijzigingen wilt verwerpen?
 show_x_axis: Toon X-as
 show_y_axis: Toon Y-as
 keep_editing: Blijf wijzigen
-page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
-page_help_collections_collection: >-
-  **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
-page_help_collections_item: >-
-  **Item detail** - Een formulier voor het bekijken en beheren van dit item. Deze zijbalk bevat ook een volledige geschiedenis van herzieningen en ingesloten reacties.
-page_help_activity_collection: >-
-  **Blader door activiteit** - Een uitgebreide lijst van alles wat er zich afgespeeld heeft.
-page_help_docs_global: >-
-  **Documentatie overzicht** — Docs die specifiek zijn afgestemd op de versie en schema van dit project.
-page_help_files_collection: >-
-  **Bestandsbibliotheek** - Toont alle bestanden die naar dit project zijn geüpload. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
-page_help_files_item: >-
-  **Bestandsdetail** - Een formulier voor het beheren van metagegevens van bestanden, het bewerken van het originele bestand en het bijwerken van toegangsinstellingen.
-page_help_settings_project: "**Instellingen** - De algemene configuratieopties van je project."
-page_help_settings_appearance: "**Uiterlijk** — Het uiterlijk en de thema-opties van je project."
-page_help_settings_extensions: '**Extensies** — De extensies die in je project zijn geïnstalleerd.'
-page_help_settings_datamodel_collections: >-
-  **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
-page_help_settings_datamodel_fields: >-
-  **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
-page_help_settings_system_logs: '**Systeemlogs** ­— Toegang tot een livestream van systeemlogs.'
-page_help_settings_policies_collection: '**Bladeren door Policies** — Toont alle policies binnen het project.'
-page_help_settings_roles_collection: '**Bladeren door Rollen** — Toont alle gebruikersrollen binnen het project.'
-page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
-page_help_settings_presets_collection: >-
-  **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en standaard views.
-page_help_settings_presets_item: >-
-  **Voorkeur Detail** — Formulier om voorkeuren en bladwijzers mee te beheren.
-page_help_settings_webhooks_collection: '**Browse Webhooks** — Toont alle webhooks in het project.'
-page_help_settings_webhooks_item: '**Webhook Detail** - Een formulier voor het maken en beheren van project webhooks.'
-page_help_settings_flows_collection: '**Blader door Flows** — Toon alle Flows in het project.'
-page_help_settings_flows_item: '**Flow details** — Werkruimte voor het beheren van één of meerdere operaties.'
-page_help_settings_translations_collection: '**Bladeren door Aangepaste Vertalingen** — Toont alle aangepaste vertalingen binnen het project.'
-page_help_settings_translations_item: '**Aangepaste Vertalingen Detail** — Een formulier voor het bekijken en beheren van dit item.'
-page_help_users_collection: '**User Directory** — Laat alle gebruikers in dit project zien.'
-page_help_users_item: >-
-  **Gebruikersdetail** — Beheer je accountgegevens, of bekijk de details van andere gebruikers.
-page_help_insights_overview: '**Inzichten** — Lijst van dashboards waar je toegang toe hebt.'
-page_help_insights_dashboard: '**Dashboard** — Werkruimte voor het beheren van één of meer panelen'
-page_help_marketplace_account: '**Account** — Uitgever of beheerder van een gepubliceerde extensie.'
-page_help_marketplace_registry: '**Register** — Extensies beschikbaar in de Directus Marktplaats.'
-page_help_marketplace_extension: '**Extensie** — Extensie in de Directus Marktplaats.'
 activity_feed: Activiteiten
 add_new: Nieuw Toevoegen
 create_new: Nieuwe aanmaken
@@ -1261,7 +1269,6 @@ directus_collection:
   directus_settings: Project configuratie opties
   directus_shares: Volgt extern gedeelde items
   directus_users: Systeemgebruikers voor het platform
-  directus_webhooks: Configuratie voor event-gebaseerde HTTP-verzoeken
   directus_translations: Aangepaste vertalingen
   directus_versions: Inhoud Versies voor items
   directus_extensions: Configuratie van extensies
@@ -1411,6 +1418,22 @@ fields:
     public_registration_verify_email: Bevestig e-mailadres
     public_registration_verify_email_note: Stuurt een e-mail naar de registrerende gebruiker waarin wordt gevraagd om op een verificatielink te klikken voordat ze kunnen inloggen.
     visual_editor_urls: Visual Editor URLs
+    ai_notice: 'AI Chat biedt een in-app zijbalk om te converteren met een LLM. Wanneer ingeschakeld, open je de AI-zijbalk uit de werkbalk om vragen te stellen, inhoud te genereren en hulp te krijgen bij je project. <a href="https://directus.io/docs/guides/ai/chat" target="_blank">Leer meer over het configureren en gebruiken van AI Chat.</a>'
+    mcp_enabled: MCP-server
+    mcp_enabled_note: 'Sluit AI/LM tools aan op uw Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Hierdoor kunnen AI-assistenten veilig lezen en communiceren met uw Directusgegevens.'
+    mcp_notice: 'Model Context Protocol is een standaard om LLMs te verbinden met toepassingen zoals Directus. Eenmaal ingeschakeld, zal de Directus MCP-server beschikbaar zijn op `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Meer informatie over MCP en hoe te verbinden.</a>'
+    mcp_allow_deletes: Verwijderen Toestaan
+    mcp_allow_deletes_note:
+      - Kan dataverlies veroorzaken.</strong> Standaard uitgeschakeld voor veiligheid.'
+    mcp_prompts_collection: AI Prompts collectie
+    mcp_prompts_collection_note: 'Selecteer collectie voor het opslaan van <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">herbruikbare prompt templates</a> voor AI-interacties.'
+    mcp_system_prompt_divider: Systeemprompt Configuratie
+    mcp_system_prompt_enabled: Gebruik Systeemprompt
+    mcp_system_prompt_enabled_note: "Gebruik het <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>standaard systeem prompt</a> om LLM-gedrag te begeleiden. Uitschakelen om dit te verwijderen of te overschrijven met uw eigen prompt hieronder."
+    mcp_system_prompt: Aangepast Systeemprompt
+    mcp_system_prompt_note: 'Aangepast systeemprompt om de standaard te vervangen. Laat leeg om standaard te gebruiken (indien ingeschakeld).'
+    ai_system_prompt: AI Systeemprompt
+    ai_system_prompt_note: 'Aangepast AI Systeemprompt voor het begeleiden van LLM-gedrag in AI Chat interacties. Laat leeg om de standaard te gebruiken.'
   directus_shares:
     name: Naam
     role: Rol
@@ -1441,18 +1464,6 @@ fields:
     admin_access: Admintoegang
     ip_access: IP Toegang
     enforce_tfa: Verplicht 2FA
-  directus_webhooks:
-    name: Naam
-    method: Methode
-    status: Status
-    data: Data
-    header: Header
-    value: Waarde
-    headers: Verzoekheaders
-    data_label: Stuur Event Data
-    triggers: Triggers
-    actions: Acties
-    collections: Collecties
 field_options:
   directus_settings:
     project_name_placeholder: Mijn project...
@@ -1554,19 +1565,6 @@ field_options:
     status_dropdown_suspended: Geschorst
     status_dropdown_archived: Gearchiveerd
     token: Voer een veilig toegangstoken in...
-  directus_webhooks:
-    status_options_active: Actief
-    status_options_inactive: Inactief
-    data_label: Stuur Event Data
-    triggers_divider: Triggers
-    actions_create: Maak
-    actions_update: Updaten
-    actions_delete: Verwijderen
-    actions_login: Inloggen
-    headers:
-      header: Header
-      value: Waarde
-      add: Header toevoegen
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
 no_value: Geen waarde
 do_nothing: Niets doen
@@ -1594,14 +1592,91 @@ unlimited_usage: Onbeperkt gebruik
 uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
 no_shares: Geen delingen om weer te geven
 new_share: Delen
+show_more: Toon Meer
+show_less: Toon Minder
+ai:
+  thinking: Denken...
+  input: Invoer
+  output: Output
+  streaming: Streamen...
+  ready: Gereed
+  complete: Voltooid
+  error: Foutmelding
+  error_message: Er is een fout opgetreden
+  unknown_error: Onbekende fout
+  unknown: Onbekend
+  approval_requested: Goedkeuring Gevraagd
+  approve: Goedkeuren
+  always_allow: Altijd Toestaan
+  deny: Weigeren
+  approve_tool_execution: Uitvoering Tool goedkeuren?
+  retry: Probeer Opnieuw
+  prompt_input_placeholder: Typ je bericht hier...
+  clear_conversation: Gesprek Wissen
+  responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
+  go_to_settings: Ga naar Instellingen
+  settings: Instellingen
+  tool_approval:
+    always: Altijd Toegestaan
+    ask: Heeft Goedkeuring Nodig
+    disabled: Uitgeschakeld
+  enabled_tools: Ingeschakelde Tools
+  disabled_tools: Uitgeschakelde Tools
+  tool_descriptions:
+    items: Maak, lees, update en verwijder content
+    files: Zoek en beheer bestanden
+    folders: Maak en orden mappen
+    flows: Maak en update flows
+    trigger-flow: Voer handmatig geactiveerde flows uit
+    operations: Beheer operaties binnen flows
+    schema: Haal database schema informatie op
+    collections: Maak en beheer collecties
+    fields: Maak en configureer collectie-velden
+    relations: Relaties tussen collecties instellen
+ai_tools:
+  update_form_values: Werk Formulierwaarden Bij
+  read_form_values: Lees Formulierwaarden
+  items: Items
+  files: Bestanden
+  folders: Mappen
+  flows: Flows
+  trigger-flow: Activeer Flow
+  operations: Operaties
+  schema: Schema
+  collections: Collecties
+  fields: Velden
+  relations: Relaties
+mcp_prompts_collection:
+  no_collection_selected: Geen collectie geselecteerd
+  no_collection_selected_copy: Selecteer een collectie om herbruikbare promptsjablonen in te schakelen.
+  collection_not_found: Collectie Niet Gevonden
+  collection_not_found_description: De collectie {collection} bestaat niet in de database.
+  generate: Genereer AI Prompts collectie...
+  already_exists: Collectie AI Prompts bestaat al
+  generate_collection_dialog_title: Genereer AI Prompts collectie
+  generate_fields_dialog_title: Genereer AI Prompts velden
+  generate_collection_dialog_description: 'Dit maakt een nieuwe collectie "{collection}" met de benodigde velden en instellingen om herbruikbare promptsjablonen op te slaan.'
+  generate_fields_dialog_description: 'Dit maakt de verplichte velden aan op uw "{collection}" collectie.'
+  validation_success: 'Verzameling is klaar om te worden gebruikt als de "AI Prompts" collectie.'
+  validation_error_invalid: Collectie kan niet worden gebruikt
+  validation_error_missing: Collectie kan nog niet worden gebruikt
+  invalid_fields: 'De volgende velden bestaan, maar zijn van een incompatibel type:'
+  missing_fields: 'De volgende velden zijn vereist, maar ontbreken:'
+  generate_missing: Genereer ontbrekende velden...
 mcp_prompts_collection_schema:
+  system_prompt_note: Instructies die vormgeven hoe het LLM reageert.
+  messages_note: 'Optioneel: Definieer de gespreksstructuur tussen gebruikers en LLMs. Voor het toevoegen van context en verbeteren van de uitvoer.'
   messages_role_user: Gebruiker
+  messages_role_assistant: Assistent
+  messages_role_note: Wie spreekt in dit bericht.
+  meta_prompts_notice: 'Prompts zijn herbruikbare sjablonen die je kunt gebruiken met LLMs via de Directus MCP-server, Flows, of andere AI applicaties. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Leer meer over het maken van effectieve prompts.</a>'
 expired: Verlopen
 upcoming: Aankomend
 share: Delen
 share_item: Gedeeld item
 shared_with_you: Een item is met jou gedeeld
 shared_enter_passcode: Voer je toegangscode in om door te gaan...
+generate: Genereren
 shared_leave_blank_for_passwordless_access: Laat leeg voor toegang zonder wachtwoord
 shared_leave_blank_for_unlimited: Laat leeg voor geen limiet
 shared_times_remaining: Deze link kan slechts {n} keer worden gebruikt
@@ -1630,7 +1705,6 @@ editing_role: '{role} Rol'
 editing_policy: '{policy} Policy'
 no_permissions: Geen Rechten
 permission_add_collection: Collectie toevoegen
-creating_webhook: Webhook Aanmaken
 default_label: Standaard
 delete_label: Verwijderen
 delete_are_you_sure: >-
@@ -1764,14 +1838,15 @@ interfaces:
     accordion_mode: Accordeonmodus
     max_one_section_open: Max 1 sectie open
   presentation-links:
-    presentation-links: Knoplinks
-    links: Links
-    description: Configureerbare link knoppen voor het openen van dynamische URLs
+    presentation-links: Knoppen
+    description: Configureerbare linkknoppen om dynamische URLs te openen of Flows te activeren
     style: Stijl
     primary: Primair
     link: Links
     button: Knoppen
     error: Kan actie niet uitvoeren
+    action_type: Actie Type
+    select_manual_flow_note: Flow moet worden geconfigureerd met een handmatige trigger voor deze collectie
   select-multiple-checkbox:
     checkboxes: Selectievakjes
     description: Kies uit meerdere opties via selectievakjes
@@ -1795,6 +1870,11 @@ interfaces:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
     include_system_collections: Toon systeem collecties
+  system-owner:
+    update: Projecteigenaar Bijwerken
+    edit: Projecteigenaar Aanpassen
+    system-owner: Systeemeigenaar
+    description: Systeemeigenaar Interface
   system-collections:
     collections: Collecties
     description: Selecteer tussen bestaande collecties
@@ -1892,6 +1972,9 @@ interfaces:
   collection-item-dropdown:
     collection-item-dropdown: Collectie item dropdown
     description: Selecteer een item uit een collectie in JSON formaat
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: Collectie Item Dropdown (Meervoudig)
+    description: Selecteer meerdere items uit een collectie in JSON-formaat
   input-rich-text-md:
     markdown: Markdown
     description: Voer markdown in en bekijk voorvertoning
@@ -2089,6 +2172,15 @@ interfaces:
   input-password:
     input-password: Wachtwoord invoer
     description: Wachtwoord invoer met schakelaar om waarde te verbergen
+  flow-select:
+    flow-select: Selecteer Flow
+  header:
+    header: Header
+    description: Maak een koptekst met een titel, subtitel, hulpinformatie, en/of links om gebruikers te helpen Flows te navigeren of activeren.
+    links: Links
+    action_type: Actie Type
+    help:
+      title: Hulp
 displays:
   translations:
     translations: Vertalingen
@@ -2397,11 +2489,9 @@ triggers:
 a_flow_uuid: Selecteer een Flow om te triggeren...
 any_string_or_json: Elke string of JSON...
 item_payload_placeholder: Dit is de JSON die wordt gebruikt om de veldwaarden van het item bij te werken...
-operation_variables_note: Je kunt flow-data benaderen met variabelen zoals **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** en **{'{'}{'{'}$accountability{'}'}{'}'}**, of verwijs naar vorige bewerkingen met **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Conditie
-    description: Route een flow gebaseerd op If / Else logica
   exec:
     name: Script uitvoeren
     description: Voer willekeurige code uit om de payload te wijzigen
@@ -2498,7 +2588,6 @@ operations:
     description: Wijzig de JSON payload van de Flow
   trigger:
     name: Activeer Flow
-    description: Geef deze data door aan een andere flow
     flows: Flows
     flow: Flow
     data: Data

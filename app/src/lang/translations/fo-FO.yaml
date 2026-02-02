@@ -48,7 +48,6 @@ create_panel: Stovna Talvu
 create_role: Stovna Leiklut
 create_user: Stovna Brúkara
 delete_panel: Strika Talvu
-create_webhook: Stovna Webhook
 invite_users: Bjóða Brúkarum
 invite: Bjóða
 email_already_invited: Telduposturin "{email}" hevur longu fingið eina innbjóðing
@@ -87,11 +86,6 @@ creating_collection_system: Virkjan og nýnevnan av øllum hesum valfríðu Teig
 no_collections_copy: Tú hevur eingi Søvn enn. Set teg vinarliga í samband við kervisfyrisitarin.
 system_collections: Kervissøvnini
 interface_options: Takførisflatastillingar
-page_help_activity_collection: >-
-  **Kaga Virksemi** — Ein drúvur listi av øllum tínum kervisbrúkarum innan kervisvirksemi og innihaldsvirksemi.
-page_help_settings_datamodel_collections: >-
-  **Dátamynd: Søvn** — Vísir øll tøk søvn. Hettar fevnir um sjónlig, goymd, og kervissøvn, harumframt óviðgjørd dátugrunnstalvur, sum kunnu leggjast afturat.
-page_help_users_collection: '**Brúkara Directory** — Vísir ein lista yvir øllum kervisbrúkarum innan hesari verkætlan.'
 system_fields_locked: Kervisteigar eru læstir og kunnu ikki broytast
 directus_collection:
   directus_roles: Bólkar av loyvum fyri kervisbrúkarum

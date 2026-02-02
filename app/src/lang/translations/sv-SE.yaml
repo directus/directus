@@ -146,7 +146,6 @@ create_policy: Skapa policy
 create_user: Skapa användare
 message: Meddelande
 delete_panel: Ta bort panel
-create_webhook: Skapa webhook
 create_custom_translation: Skapa anpassad översättning
 edit_custom_translation: Redigera egen översättning
 no_custom_translations: Inga egna översättningar
@@ -440,6 +439,7 @@ confirm_revert_body: Det här objektet kommer återgå till vald position.
 display: Visa
 settings_update_success: Inställningar uppdaterade
 title: Rubrik
+subtitle: Underrubrik
 revision_delta_created: Skapad
 revision_delta_created_externally: Skapad externt
 revision_delta_updated: 'Uppdaterade 1 fält | Uppdaterade {count} fält'
@@ -613,8 +613,6 @@ file_count: 'Inga filer | En fil | {count} filer'
 no_files_copy: Det finns inga filer här.
 user_count: 'Inga användare | En användare | {count} användare'
 no_users_copy: Det finns inga användare i denna roll ännu.
-webhooks_count: 'Inga webhooks | En webhook | {count} webhooks'
-no_webhooks_copy: Inga webhooks har konfigurerats ännu. Kom igång genom att skapa en nedan.
 no_notifications: Inga notifikationer
 no_notifications_copy: Inget nytt!
 activity_log: Aktivitetslogg
@@ -644,7 +642,6 @@ action: Åtgärd
 ip_address: IP-adress
 user_agent: Användaragent
 origin: Ursprung
-webhooks: Webhooks
 decimals: Decimaler
 value_decimals: Värde decimaler
 min_value: Minsta värde
@@ -723,7 +720,6 @@ errors:
   VALUE_OUT_OF_RANGE: Värdet är utanför giltigt intervall
   VALUE_TOO_LONG: Värdet är för långt
 security: Säkerhet
-value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
 create_bookmark: Skapa bokmärke
 edit_bookmark: Redigera bokmärke
@@ -883,10 +879,8 @@ label: Etikett
 flows: Flöden
 flow: Flöde
 select_a_flow: Välj ett flöde
-run_flow_confirm: Är du säker på att du vill köra detta flöde?
 run_flow_on_current_collection: Kör flöde på nuvarande samling
 run_flow_on_current: Kör flöde på aktuellt objekt
-run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
 field_name_placeholder: Ange fältnamn...
 field_key_placeholder: Ange fältnyckel...
 trigger: Utlösare
@@ -1048,7 +1042,6 @@ settings_roles: Användarroller
 settings_permissions: Åtkomstpolicyer
 settings_project: Inställningar
 settings_appearance: Utseende
-settings_webhooks: Webhooks
 settings_flows: Flöden
 settings_system_logs: Systemloggar
 settings_presets: Bokmärken
@@ -1074,35 +1067,6 @@ discard_changes_copy: Är du säker på att du vill ignorera alla ändringar som
 show_x_axis: Visa X-axeln
 show_y_axis: Visa Y-axeln
 keep_editing: Fortsätt redigera
-page_help_collections_overview: '**Översikt kollektioner** — Lista över alla kollektioner du har tillgång till.'
-page_help_collections_collection: >-
-  **Bläddra bland objekt** — Listar alla {collection} objekt du har tillgång till. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
-page_help_collections_item: >-
-  **Detaljvy för objekt** — Ett formulär för att visa och hantera detta objekt. Sidopanelen innehåller också en fullständig historik över revisioner och inbäddade kommentarer.
-page_help_activity_collection: >-
-  **Bläddra i aktivitetshistoriken** — En omfattande lista över alla dina användares system- och innehållsaktiviteter.
-page_help_docs_global: >-
-  **Översikt dokumentation** — Dokument som är skräddarsydda specifikt för projektets version och schema.
-page_help_files_collection: >-
-  **Filbibliotek** — Visar alla filer uppladdade till detta projekt. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
-page_help_files_item: >-
-  **Detaljvy fil** — Ett formulär för att hantera filens metadata, redigera den ursprungliga filen och uppdatera åtkomstinställningar.
-page_help_settings_datamodel_collections: >-
-  **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
-page_help_settings_datamodel_fields: >-
-  **Datamodel: Kollektion** — Ett formulär för att hantera denna kollektion och dess fält.
-page_help_settings_roles_item: "**Detaljvy roll** — Hantera en rolls rättigheter och andra inställningar."
-page_help_settings_presets_collection: >-
-  **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
-page_help_settings_presets_item: >-
-  **Förinställda detaljer** — Ett formulär för att hantera bokmärken och förinställningar för standardinsamling.
-page_help_settings_webhooks_collection: '**Bläddra bland webhooks** — Listar alla webhooks i projektet.'
-page_help_settings_webhooks_item: '**Detaljvy webhook** — Ett formulär för att skapa och hantera projektets webhooks.'
-page_help_users_collection: '**Användarkatalog** — Listar alla systemanvändare i detta projekt.'
-page_help_users_item: >-
-  **Användarinformation** — Hantera din kontoinformation eller visa information om andra användare.
-page_help_insights_overview: '**Insights** — Lista över kontrollpaneler du har tillgång till.'
-page_help_insights_dashboard: '**Kontrollpanel** — Arbetsyta för att hantera en eller flera paneler'
 activity_feed: Aktivitetsflöde
 add_new: Lägg till ny
 create_new: Skapa ny
@@ -1131,7 +1095,6 @@ directus_collection:
   directus_activity: Ansvarsloggar för alla händelser
   directus_comments: Kommentarer för objekt
   directus_dashboards: Kontrollpaneler i insights modulen
-  directus_flows: Automationsflöden
   directus_migrations: Vilken version av databasen du använder
   directus_notifications: Meddelande skickat till användare
   directus_panels: Individuella paneler inom Insights kontrollpaneler
@@ -1140,7 +1103,6 @@ directus_collection:
   directus_sessions: Information om användarsessioner
   directus_settings: Projektets konfigurationsalternativ
   directus_users: Systemanvändare för plattformen
-  directus_webhooks: Konfiguration för eventbaserade HTTP-anrop
   directus_translations: Anpassade översättningar
   directus_extensions: Konfiguration av tillägg
 fields:
@@ -1296,17 +1258,6 @@ fields:
     admin_access: Adminåtkomst
     ip_access: IP-åtkomst
     enforce_tfa: Kräv 2FA
-  directus_webhooks:
-    name: Namn
-    method: Metod
-    status: Status
-    data: Data
-    value: Värde
-    headers: Headers för anrop
-    data_label: Skicka händelsedata
-    triggers: Utlösare
-    actions: Åtgärder
-    collections: Kollektioner
 field_options:
   directus_settings:
     project_name_placeholder: Mitt projekt...
@@ -1399,17 +1350,6 @@ field_options:
     status_dropdown_suspended: Avstängd
     status_dropdown_archived: Arkiverad
     token: Ange ett säkert åtkomsttoken...
-  directus_webhooks:
-    status_options_active: Aktiv
-    status_options_inactive: Inaktiv
-    data_label: Skicka händelsedata
-    triggers_divider: Utlösare
-    actions_create: Skapa
-    actions_update: Uppdatera
-    actions_delete: Radera
-    actions_login: Inloggning
-    headers:
-      value: Värde
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
 no_value: Inget värde
 do_nothing: Gör ingenting
@@ -1432,6 +1372,21 @@ live_preview:
   close_window: Öppna i delad vy
   toggle_3d: Växla 3D
 unlimited_usage: Obegränsad användning
+ai:
+  input: Inmatning
+  unknown: Okänd
+  settings: Inställningar
+  tool_approval:
+    disabled: Inaktiverad
+ai_tools:
+  items: Objekt
+  files: Filer
+  folders: Mappar
+  flows: Flöden
+  operations: Aktiviteter
+  schema: Schema
+  collections: Kollektioner
+  fields: Fält
 mcp_prompts_collection_schema:
   messages_role_user: Användare
 expired: Upphört
@@ -1460,7 +1415,6 @@ continue_as: >-
 editing_role: '{role} roll'
 no_permissions: Inga behörigheter
 permission_add_collection: Lägg till samling
-creating_webhook: Skapar Webhook
 default_label: Standard
 delete_label: Radera
 delete_are_you_sure: >-
@@ -1583,9 +1537,7 @@ interfaces:
     accordion_mode: Läge för dragspel
     max_one_section_open: Max 1 sektion öppen
   presentation-links:
-    presentation-links: Knappens länkar
-    links: Länkar
-    description: Konfigurerbara knappar med länk för att öppna dynamiska URL:er
+    presentation-links: Knappar
     style: Stil
     primary: Primär
     link: Länkar
@@ -1862,6 +1814,8 @@ interfaces:
     system-raw-editor: Råredigerare
   input-password:
     input-password: Ange lösenord
+  header:
+    links: Länkar
 displays:
   translations:
     translations: Översättningar

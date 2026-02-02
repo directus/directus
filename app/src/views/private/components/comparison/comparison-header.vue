@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { localizedFormat } from '@/utils/localized-format';
-import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { localizedFormat } from '@/utils/localized-format';
+import { userName } from '@/utils/user-name';
 
 interface Props {
 	title: string;
@@ -101,30 +106,30 @@ function getDeltaOptionUser(deltaOption: any) {
 <template>
 	<div class="comparison-header" :class="{ 'has-dropdown': showDeltaDropdown }">
 		<div class="title-container">
-			<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
+			<VSkeletonLoader v-if="loading" type="text" class="title-skeleton" />
 
 			<template v-else>
-				<v-text-overflow :text="title" class="title" />
-				<v-icon v-if="tooltipMessage" v-tooltip.bottom="tooltipMessage" name="error" class="icon" />
+				<VTextOverflow :text="title" class="title" />
+				<VIcon v-if="tooltipMessage" v-tooltip.bottom="tooltipMessage" name="error" class="icon" />
 			</template>
 		</div>
 		<div class="header-meta">
-			<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
+			<VSkeletonLoader v-if="loading" type="text" class="meta-skeleton" />
 
 			<template v-else>
 				<div class="meta-content">
-					<v-menu v-if="showDeltaDropdown" attached>
+					<VMenu v-if="showDeltaDropdown" attached>
 						<template #activator="{ toggle }">
 							<button class="meta-selection" @click="toggle">
 								<div class="meta-text">
 									<div class="meta-date-time">{{ selectOptionTime }}</div>
 									<div class="meta-user-info">{{ $t('edited_by') }} {{ selectOptionUser }}</div>
 								</div>
-								<v-icon name="expand_more" class="dropdown-icon" />
+								<VIcon name="expand_more" class="dropdown-icon" />
 							</button>
 						</template>
 
-						<v-list-item
+						<VListItem
 							v-for="option in deltaOptions"
 							:key="option.value"
 							:active="selectedDeltaId === option.value"
@@ -136,8 +141,8 @@ function getDeltaOptionUser(deltaOption: any) {
 								<div>{{ getDelataOptionTime(option) }}</div>
 								<div>{{ $t('edited_by') }} {{ getDeltaOptionUser(option) }}</div>
 							</div>
-						</v-list-item>
-					</v-menu>
+						</VListItem>
+					</VMenu>
 
 					<div v-else class="meta-text">
 						<div v-if="formattedDateUpdated" class="meta-date-time">

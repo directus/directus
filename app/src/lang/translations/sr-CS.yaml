@@ -66,7 +66,6 @@ create_role: Napravi ulogu
 create_user: Napravi korisnika
 message: Poruka
 delete_panel: Obriši Panel
-create_webhook: Napravi Webhook
 invite_users: Pozovi korisnike
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
@@ -249,6 +248,7 @@ confirm_revert_body: Ova akcija će vratiti stavku na odabrano stanje.
 display: Prikaz
 settings_update_success: Podešavanja ažurirana
 title: Naslov
+subtitle: Pod naslov
 revision_delta_created: Kreiran
 revision_delta_created_externally: Eksterno Napravljeno
 revision_delta_updated: 'Ažurirano 1 Polje | Ažuirano {count} Polja'
@@ -376,7 +376,6 @@ file_count: 'Nema Fajlova | Jedan Fajl | {count} Fajlova'
 no_files_copy: Ovdje nema fajlova.
 user_count: 'Nema Korisnika | Jedan Korisnik | {count} Korisnika'
 no_users_copy: Ne postoji nijedan korisnik u ovoj roli.
-webhooks_count: 'Ne postoje Webhooks | Jedan Webhook | {count} Webhooks'
 all_items: Sve Stavke
 csv: CSV
 no_collections: Nema Kolekcija
@@ -394,7 +393,6 @@ activity: Aktivnost
 action: Akcija
 ip_address: IP adresa
 user_agent: Korisnički Agent
-webhooks: Webhooks
 field_width: Širina Polja
 add_filter: Dodaj Filter
 upper_limit: Gornja granica...
@@ -444,7 +442,6 @@ errors:
   ROUTE_NOT_FOUND: Nije pronađeno
   UNKNOWN: Neočekivana greška
   USER_SUSPENDED: Suspendovan Korisnik
-value_hashed: Vrijednost je Sigurno Skladištena
 bookmark_name: Naziv oznake...
 create_bookmark: Napravi Oznaku
 edit_bookmark: Ažuriraj Oznaku
@@ -643,7 +640,6 @@ editing_in_batch: 'Grupna izmjena {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model Podataka
 settings_project: Podešavanja
-settings_webhooks: Webhooks
 settings_presets: Oznake
 settings_translations: Prevodi
 one_or_more_options_are_missing: Jedna ili više opcija nedostaje
@@ -661,32 +657,6 @@ unsaved_changes: Nesačuvane izmjene
 unsaved_changes_copy: Da li ste sigurni da želite da napustite ovu stranicu?
 discard_changes: Poništi Promjene
 keep_editing: Nastavi uređivanje
-page_help_collections_collection: >-
-  **Pretraga Stavki** — Lista svih {collection} stavki kojima imate pristup. Prilagodite izgled, filtere, i način sortiranja kako odgovara vašim potrebama, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
-page_help_collections_item: >-
-  **Detalji Stavke** - Forma za pregled i uređivanje ove stavke. Ova bočna traka takođe sadrži kompletnu istoriju svih revizija, i ubačenih komentara.
-page_help_activity_collection: >-
-  **Pregled Aktivnosti** - Sveobuhvatan popis svih korisničkih sistemskih aktivnosti i sadržaja.
-page_help_docs_global: >-
-  **Pregled Dokumentacije** — Dokumenta prilagođena isključivo ovoj verziji projekta i šemi.
-page_help_files_collection: >-
-  **Biblioteka Fajlova** — Lista svih stavki koje su skladištene unutar ovog projekta. Prilagodite izgled, filtere, i način sortiranja kako odgovara vašim potrebama, pa čak sačuvajte i oznake ovih različitih konfiguracija za brzi pristup.
-page_help_files_item: >-
-  **Detalji Fajla** — Forma za uređivanje metapodataka fajla, izmjena originalnog stanja, i ažuriranje podešavanja pristupa.
-page_help_settings_datamodel_collections: >-
-  **Model Podataka: Kolekcije** — Lista svih dostupnih kolekcija. Ovo uključuje vidljive, sakrivene, i sistemske kolekcije, kao i neuređene tabele baze podataka koje mogu biti dodane.
-page_help_settings_datamodel_fields: >-
-  **Model Podataka: Kolekcija** — Forma za uređivanje ove kolekcije i njenih odgovarajućih polja.
-page_help_settings_roles_item: "**Detalji Uloge** — Upravljanje dozvolama uloga i druga podešavanja."
-page_help_settings_presets_collection: >-
-  **Pregled Izgleda** — Lista svih kreiranih setova izgleda u sklopu projekta, uključujući: korisnik, uloga, i globalne oznake, kao i podrazumijevane preglede.
-page_help_settings_presets_item: >-
-  **Detalji Izgleda** — Forma za upravljanje oznakama i podrazumijevanim setovima izgleda kolekcije.
-page_help_settings_webhooks_collection: '**Pregled Webhooks** — Lista svih dostupnih "webhooks" u sklopu projekta.'
-page_help_settings_webhooks_item: '**Detalji Webhook" — Forma za pravljenje i uređivanje "webhooks" u sklopu projekta.'
-page_help_users_collection: '**Direktorijum Korisnika** — Lista svih sistemskih korisnika u sklopu projekta.'
-page_help_users_item: >-
-  **Detalji Korisnika** — Upravljajte informacijama vašeg korisničkog računa, ili pregledajte detalje ostalih korisnika.
 activity_feed: Pregled Aktivnosti
 add_new: Dodaj Novi
 create_new: Kreiraj Novi
@@ -799,11 +769,6 @@ fields:
     users: Svi korisnici ove Uloge
   directus_policies:
     description: Opis
-  directus_webhooks:
-    name: Ime
-    status: Status
-    value: Vrijednost
-    collections: Kolekcije
 field_options:
   directus_activity:
     create: Kreiraj
@@ -827,12 +792,6 @@ field_options:
     collections_name: Kolekcije
   directus_users:
     status_dropdown_active: Aktivan
-  directus_webhooks:
-    status_options_active: Aktivan
-    actions_create: Kreiraj
-    actions_update: Ažuriranje
-    headers:
-      value: Vrijednost
 no_fields_in_collection: 'Trenutno ne postoji nijedno polje u "{collection}" kolekciji'
 do_nothing: Ne radi ništa
 generate_and_save_uuid: Generiši i Sačuvaj UUID
@@ -844,6 +803,16 @@ inline: Linijski
 comment: Komentar
 live_preview:
   new_window: Otvori u Novom Prozoru
+ai:
+  input: Unos
+  settings: Podešavanja
+  tool_approval:
+    disabled: Isključeno
+ai_tools:
+  items: Stavke
+  files: Fajlovi
+  schema: Šema
+  collections: Kolekcije
 mcp_prompts_collection_schema:
   messages_role_user: Korisnik
 relational_triggers: Relacioni Okidači
@@ -855,7 +824,6 @@ referential_action_set_null: Poništi vrijednost {field} polja
 referential_action_set_default: Postavi {field} na njegovu podrazumijevanu vrijednost
 choose_action: Izaberi Radnju
 editing_role: '{role} Uloga'
-creating_webhook: Kreiranje Webhook-a
 delete_are_you_sure: >-
   Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
 delete_field_are_you_sure: >-
@@ -917,9 +885,7 @@ interfaces:
     add_filter: Dodaj Filter
     all: Svi
   presentation-links:
-    presentation-links: Linkovi dugmeta
-    links: Linkovi
-    description: Podesivi linkovi za otvaranje dinamičkih URL-ova
+    presentation-links: Dugmad
     style: Stil
     primary: Primarni
     link: Linkovi
@@ -1125,6 +1091,8 @@ interfaces:
     rate: Ocjena
   system-token:
     system-token: Token
+  header:
+    links: Linkovi
 displays:
   translations:
     translations: Prevodi
@@ -1252,6 +1220,9 @@ both: Oba
 panels:
   label:
     name: Oznaka
+triggers:
+  webhook:
+    method: Metoda
 operations:
   json-web-token:
     token: Token
@@ -1266,6 +1237,7 @@ operations:
     subject: Naslov
   request:
     url: URL adresa
+    method: Metoda
 standard: Uobičajeno
 compact: Kompaktno
 style: Stil

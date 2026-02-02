@@ -1,5 +1,5 @@
-import { getPublicURL } from '@/utils/get-root-path';
 import type { TransformationParams } from '@directus/types';
+import { getPublicURL } from '@/utils/get-root-path';
 
 type AssetUrlOptions = {
 	isDownload?: boolean;
@@ -25,6 +25,22 @@ export function getAssetUrl(
 	if (isDownload) assetUrl.searchParams.set('download', '');
 	if (imageKey) assetUrl.searchParams.set('key', imageKey);
 	if (cacheBuster) assetUrl.searchParams.set('v', cacheBuster === true ? Date.now().toString() : String(cacheBuster));
+
+	return assetUrl.href;
+}
+
+export function getFilesUrl() {
+	const assetUrl = new URL(`assets/files`, getPublicURL());
+
+	assetUrl.searchParams.set('download', '');
+
+	return assetUrl.href;
+}
+
+export function getFolderUrl(folder: string) {
+	const assetUrl = new URL(`assets/folder/${folder}`, getPublicURL());
+
+	assetUrl.searchParams.set('download', '');
 
 	return assetUrl.href;
 }

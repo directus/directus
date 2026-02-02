@@ -1,16 +1,23 @@
 <script setup lang="ts">
+import { Filter, PrimaryKey } from '@directus/types';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VNotice from '@/components/v-notice.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import { Filter, PrimaryKey } from '@directus/types';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 type ValueItem = {
 	key: PrimaryKey;
@@ -161,19 +168,19 @@ function onSort(sortedItems: Record<string, any>[]) {
 
 <template>
 	<div class="collection-item-multiple-dropdown">
-		<v-notice v-if="displayItems.length === 0">
+		<VNotice v-if="displayItems.length === 0">
 			{{ t('no_items') }}
-		</v-notice>
+		</VNotice>
 
 		<template v-else-if="loading">
-			<v-skeleton-loader
+			<VSkeletonLoader
 				v-for="num in displayItems.length"
 				:key="num"
 				:type="displayItems.length > 4 ? 'block-list-item-dense' : 'block-list-item'"
 			/>
 		</template>
 
-		<draggable
+		<Draggable
 			v-else
 			:model-value="displayItems"
 			tag="v-list"
@@ -185,10 +192,10 @@ function onSort(sortedItems: Record<string, any>[]) {
 			@update:model-value="onSort($event)"
 		>
 			<template #item="{ element }">
-				<v-list-item block :disabled :non-editable :dense="displayItems.length > 4">
-					<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+				<VListItem block :disabled :non-editable :dense="displayItems.length > 4">
+					<VIcon v-if="!nonEditable" name="drag_handle" class="drag-handle" left :disabled @click.stop="() => {}" />
 
-					<render-template
+					<RenderTemplate
 						:collection="selectedCollection"
 						:item="element"
 						:template="displayTemplate"
@@ -198,19 +205,19 @@ function onSort(sortedItems: Record<string, any>[]) {
 					<div class="spacer" />
 
 					<div v-if="!nonEditable" class="item-actions">
-						<v-remove v-if="!disabled" deselect @action="removeItem(element)" />
+						<VRemove deselect :disabled @action="removeItem(element)" />
 					</div>
-				</v-list-item>
+				</VListItem>
 			</template>
-		</draggable>
+		</Draggable>
 
 		<div v-if="!nonEditable" class="actions">
-			<v-button :disabled="disabled" @click="selectDrawerOpen = true">
+			<VButton :disabled="disabled" @click="selectDrawerOpen = true">
 				{{ t('select_item') }}
-			</v-button>
+			</VButton>
 		</div>
 
-		<drawer-collection
+		<DrawerCollection
 			v-model:active="selectDrawerOpen"
 			:collection="selectedCollection"
 			:selection="selectedKeys"
@@ -227,6 +234,10 @@ function onSort(sortedItems: Record<string, any>[]) {
 
 .v-list {
 	@include mixins.list-interface($deleteable: true);
+}
+
+.v-list-item.disabled:not(.non-editable) {
+	--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .item-actions {

@@ -1,7 +1,7 @@
+import type { StorageManager } from '@directus/storage';
 import { validateEnv } from '../utils/validate-env.js';
 import { registerDrivers } from './register-drivers.js';
 import { registerLocations } from './register-locations.js';
-import type { StorageManager } from '@directus/storage';
 
 export const _cache: { storage: any | null } = {
 	storage: null,

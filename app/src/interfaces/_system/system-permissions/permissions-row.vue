@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { Permission, PermissionsAction } from '@directus/types';
+import PermissionsToggle from './permissions-toggle.vue';
+import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { Collection } from '@/types/collections';
 import ValueNull from '@/views/private/components/value-null.vue';
-import { Permission, PermissionsAction } from '@directus/types';
-import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
-import PermissionsToggle from './permissions-toggle.vue';
 
 defineProps<{
 	collection: Collection;
@@ -36,7 +37,7 @@ const emit = defineEmits<{
 		</td>
 
 		<td v-for="action in editablePermissionActions" :key="action" class="action">
-			<permissions-toggle
+			<PermissionsToggle
 				v-if="!disabledActions?.includes(action)"
 				:action="action"
 				:collection="collection"
@@ -46,10 +47,10 @@ const emit = defineEmits<{
 				@set-full-access="emit('setFullAccess', action)"
 				@set-no-access="emit('setNoAccess', action)"
 			/>
-			<value-null v-else />
+			<ValueNull v-else />
 		</td>
 		<td class="remove">
-			<v-icon v-tooltip="$t('remove')" name="close" clickable @click="emit('removeRow')" />
+			<VIcon v-tooltip="$t('remove')" name="close" clickable @click="emit('removeRow')" />
 		</td>
 	</tr>
 </template>

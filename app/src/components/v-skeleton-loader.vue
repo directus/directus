@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+
 interface Props {
 	/** Name of another component to mirror */
 	type?:
@@ -23,7 +25,7 @@ withDefaults(defineProps<Props>(), {
 			<div class="text" />
 		</template>
 		<template v-if="type === 'pagination'">
-			<v-button v-for="page in 3" :key="page" class="page" small disabled></v-button>
+			<VButton v-for="page in 3" :key="page" class="page" small disabled></VButton>
 		</template>
 	</div>
 </template>
@@ -92,7 +94,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .input-tall {
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-default);
 }
 
 .block-list-item {
@@ -161,7 +163,7 @@ withDefaults(defineProps<Props>(), {
 		line-height: 2em;
 	}
 
-	@media (min-width: 600px) {
+	@media (min-width: 640px) {
 		.gap {
 			display: inline;
 		}

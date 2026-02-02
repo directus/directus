@@ -67,7 +67,6 @@ create_role: Luo rooli
 create_user: Luo käyttäjä
 message: Viesti
 delete_panel: Poista paneeli
-create_webhook: Luo webhook
 invite_users: Kutsu käyttäjiä
 invite: Kutsu
 email_already_invited: Sähköposti "{email}" on jo kutsuttu
@@ -306,6 +305,7 @@ confirm_revert_body: Tämä palauttaa kohteen valittuun tilaan.
 display: Näyttö
 settings_update_success: Asetukset päivitetty
 title: Otsikko
+subtitle: Alaotsikko
 revision_delta_created: Luotu
 revision_delta_created_externally: Luotu ulkoisesti
 revision_delta_updated: 'Päivitetty 1 kenttä | Päivitetty {count} kenttää'
@@ -467,8 +467,6 @@ file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'
 no_files_copy: Täällä ei ole tiedostoja.
 user_count: 'Ei käyttäjiä | Yksi käyttäjä | {count} käyttäjää'
 no_users_copy: Tässä roolissa ei ole vielä käyttäjiä.
-webhooks_count: 'Ei webhookkeja | Yksi webhookki | {count} webhookkia'
-no_webhooks_copy: Webhookeja ei ole vielä määritelty. Aloita luomalla sellainen alapuolella.
 no_notifications: Ei ilmoituksia
 no_notifications_copy: Olet perillä kaikesta!
 activity_log: Tapahtumaloki
@@ -497,7 +495,6 @@ action: Toiminto
 ip_address: IP-osoite
 user_agent: Asiakasohjelma
 origin: Alkuperä
-webhooks: Webhookit
 decimals: Desimaalit
 value_decimals: Arvon desimaalit
 min_value: Minimiarvo
@@ -571,7 +568,6 @@ errors:
   VALUE_OUT_OF_RANGE: Arvo on alueen ulkopuolella
   VALUE_TOO_LONG: Arvo on liian pitkä
 security: Turvallisuus
-value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
 create_bookmark: Luo kirjanmerkki
 edit_bookmark: Muokkaa kirjanmerkkiä
@@ -729,7 +725,6 @@ label: Tunniste
 flows: Toiminnot
 flow: Vuo
 select_a_flow: Valitse Vuo
-run_flow_on_current_edited_confirm: Tämä kohde voidaan päivittää tällä Vuolla, oletko varma, että haluat suorittaa Vuon?
 trigger: Laukaisija
 trigger_options: Liipaisun asetukset
 view_trigger: Näytä liipaisin
@@ -868,7 +863,6 @@ editing_in_batch: 'Muokataan {count} kohdetta erässä'
 no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
 settings_project: Asetukset
-settings_webhooks: Webhookit
 settings_flows: Toiminnot
 settings_presets: Kirjainmerkit
 settings_translations: Käännökset
@@ -893,35 +887,6 @@ discard_changes_copy: Oletko varma, että haluat hylätä kaikki tehdyt muutokse
 show_x_axis: Näytä X-akseli
 show_y_axis: Näytä Y-akseli
 keep_editing: Jatka muokkausta
-page_help_collections_overview: '**Kokoelmien yleiskatsaus** — Luettelo kaikista kokoelmista, joihin sinulla on pääsy.'
-page_help_collections_collection: >-
-  **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
-page_help_collections_item: >-
-  **Kohteen yksityiskohdat** — Lomake tämän kohteen katselua ja hallintaa varten. Tämä sivupalkki sisältää myös täyden historian uudistuksia ja upotettuja kommentteja.
-page_help_activity_collection: >-
-  **Selaa aktiviteettejä** — Kattava luettelo kaikesta käyttäjän järjestelmästä ja sisällöstä.
-page_help_docs_global: >-
-  **Dokumentaation yleiskatsaus** — Dokumentit on räätälöity erityisesti tämän projektin versioon ja kaavioon.
-page_help_files_collection: >-
-  **Tiedostokirjasto** — Listaa kaikki tiedostoassetit, jotka on ladattu tähän projektiin. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
-page_help_files_item: >-
-  **Tiedoston yksityiskohdat** — Lomake tiedostojen metatietojen hallintaan, alkuperäisen assettin muokkaamiseen ja käyttöoikeuksien päivittämiseen.
-page_help_settings_datamodel_collections: >-
-  **Tietomalli: kokoelmat** — Luettelee kaikki saatavilla olevat kokoelmat. Tämä sisältää näkyvät, piilotetut ja järjestelmäkokoelmat sekä hallitsemattomat tietokantataulut, jotka voidaan lisätä.
-page_help_settings_datamodel_fields: >-
-  **Tietomalli: kokoelma** — Lomake tämän kokoelman ja sen kenttien hallintaa varten.
-page_help_settings_roles_item: "**Roolin yksityiskohdat** — Hallitse roolin käyttöoikeuksia ja muita asetuksia."
-page_help_settings_presets_collection: >-
-  **Selaa esiasetuksia** — Listaa kaikki projektin esiasetukset, mukaan lukien käyttäjät, roolit ja maailmanlaajuiset kirjanmerkit sekä oletusnäkymät.
-page_help_settings_presets_item: >-
-  **Esiasetuksen yksityiskohdat** — Lomake kirjanmerkkien ja oletuskokoelmien esiasetusten hallintaan.
-page_help_settings_webhooks_collection: '**Selaa webhookkeja** — Listaa kaikki projektin webhookit.'
-page_help_settings_webhooks_item: '**Webhookkien yksityiskohdat** — Lomake projektin webhookkien luomiseen ja hallintaan.'
-page_help_users_collection: '**Käyttäjähakemisto** — Listaa kaikki järjestelmän käyttäjät tässä projektissa.'
-page_help_users_item: >-
-  **Käyttäjätieto** — Hallitse tilitietojasi tai tarkastele muiden käyttäjien tietoja.
-page_help_insights_overview: '**Yleiskatsaus** — Luettelo kojelaudoista, joihin sinulla on pääsy.'
-page_help_insights_dashboard: '**Kojelauta** — Työtila yhden tai useamman paneelin hallintaan'
 activity_feed: Aktiviteettisyöte
 add_new: Lisää uusi
 create_new: Luo uusi
@@ -949,7 +914,6 @@ directus_collection:
   directus_sessions: Käyttäjän istunnon tiedot
   directus_settings: Projektin konfiguraation asetukset
   directus_users: Alustan järjestelmäkäyttäjät
-  directus_webhooks: Konfiguraatio tapahtumapohjaisille HTTP-pyynnöille
 fields:
   directus_activity:
     item: Kohteen ensisijainen avain
@@ -1076,17 +1040,6 @@ fields:
     users: Käyttäjät roolissa
   directus_policies:
     description: Kuvaus
-  directus_webhooks:
-    name: Nimi
-    method: Metodi
-    status: Tila
-    data: Tiedot
-    header: Ylätunniste
-    value: Arvo
-    headers: Pyynnön otsikkotiedot
-    triggers: Laukaisijat
-    actions: Toiminnot
-    collections: Kokoelmat
 field_options:
   directus_settings:
     project_name_placeholder: Oma projekti...
@@ -1169,19 +1122,6 @@ field_options:
     status_dropdown_suspended: Keskeytetty
     status_dropdown_archived: Arkistoitu
     token: Syötä suojatun pääsyn tunniste...
-  directus_webhooks:
-    status_options_active: Aktiivinen
-    status_options_inactive: Ei käytössä
-    data_label: Lähetä tapahtuman tiedot
-    triggers_divider: Laukaisijat
-    actions_create: Luo
-    actions_update: Päivitä
-    actions_delete: Poista
-    actions_login: Kirjaudu
-    headers:
-      header: Otsikko
-      value: Arvo
-      add: Lisää otsikko
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 no_value: Ei arvoa
 do_nothing: Älä tee mitään
@@ -1197,6 +1137,17 @@ inline: Rivitetty
 comment: Kommentti
 live_preview:
   new_window: Avaa uudessa ikkunassa
+ai:
+  input: Syöte
+  settings: Asetukset
+  tool_approval:
+    disabled: Pois käytöstä
+ai_tools:
+  items: Kohteet
+  files: Tiedostot
+  flows: Toiminnot
+  schema: Rakenne
+  collections: Kokoelmat
 mcp_prompts_collection_schema:
   messages_role_user: Käyttäjänimi
 relational_triggers: Relatiiviset käynnistimet
@@ -1204,7 +1155,6 @@ referential_action_no_action: Estä poisto
 choose_action: Valitse toiminto
 continue_label: Jatka
 editing_role: '{role} rooli'
-creating_webhook: Luodaan webhook
 default_label: Oletus
 delete_label: Poista
 delete_are_you_sure: >-
@@ -1288,9 +1238,7 @@ interfaces:
     all_opened: Kaikki avattuna
     accordion_mode: Haitarin tila
   presentation-links:
-    presentation-links: Painikelinkit
-    links: Linkit
-    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien avaamiseen
+    presentation-links: Painikkeet
     style: Tyyli
     primary: Ensisijainen
     link: Linkit
@@ -1545,6 +1493,9 @@ interfaces:
     start_closed: Aloita suljettuna
   system-token:
     system-token: Token
+  header:
+    header: Ylätunniste
+    links: Linkit
 displays:
   translations:
     translations: Käännökset

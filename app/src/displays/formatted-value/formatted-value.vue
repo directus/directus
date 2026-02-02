@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { APP_NUMERIC_STRING_TYPES } from '@/constants';
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';
 import { isNil } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { APP_NUMERIC_STRING_TYPES } from '@/constants';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -165,7 +167,7 @@ function matchNumber(left: number, right: number, operator: string) {
 </script>
 
 <template>
-	<value-null v-if="displayValue === null || displayValue === undefined" />
+	<ValueNull v-if="displayValue === null || displayValue === undefined" />
 
 	<div
 		v-else
@@ -177,7 +179,7 @@ function matchNumber(left: number, right: number, operator: string) {
 		]"
 		:style="computedStyle"
 	>
-		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
+		<VIcon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
 
 		<span class="value">
 			{{ displayValue }}

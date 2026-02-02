@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import api from '@/api';
-import { useDialogRoute } from '@/composables/use-dialog-route';
-import { i18n } from '@/lang';
-import { getItemRoute } from '@/utils/get-route';
-import { userName } from '@/utils/user-name';
 import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import { i18n } from '@/lang';
+import { getItemRoute } from '@/utils/get-route';
+import { userName } from '@/utils/user-name';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import UserPopover from '@/views/private/components/user-popover.vue';
 
 type ActivityRecord = {
 	user: {
@@ -92,23 +97,23 @@ function close() {
 </script>
 
 <template>
-	<v-drawer :model-value="isOpen" :title="$t('activity_item')" @update:model-value="close" @cancel="close">
-		<v-progress-circular v-if="loading" indeterminate />
+	<VDrawer :model-value="isOpen" :title="$t('activity_item')" @update:model-value="close" @cancel="close">
+		<VProgressCircular v-if="loading" indeterminate />
 
 		<div v-else-if="error" class="content">
-			<v-notice type="danger">
+			<VNotice type="danger">
 				{{ error }}
-			</v-notice>
+			</VNotice>
 		</div>
 
 		<div v-else-if="item" class="content">
 			<!-- @TODO add final design -->
 			<p class="type-label">{{ $t('user') }}:</p>
-			<user-popover v-if="item.user" :user="item.user.id">
+			<UserPopover v-if="item.user" :user="item.user.id">
 				<span>
 					{{ userName(item.user) }}
 				</span>
-			</user-popover>
+			</UserPopover>
 
 			<p class="type-label">{{ $t('action') }}:</p>
 			<p>{{ item.action_translated }}</p>
@@ -133,11 +138,14 @@ function close() {
 		</div>
 
 		<template #actions>
-			<v-button v-if="openItemLink" v-tooltip.bottom="$t('open')" :to="openItemLink" icon rounded>
-				<v-icon name="launch" />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-if="openItemLink"
+				v-tooltip.bottom="$t('open')"
+				:to="openItemLink"
+				icon="launch"
+			/>
 		</template>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>
@@ -147,6 +155,6 @@ function close() {
 
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 </style>

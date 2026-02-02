@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
 import Color from 'color';
 import { computed } from 'vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
-const props = defineProps({
-	value: {
-		type: String,
-		default: null,
-	},
-	defaultColor: {
-		type: String,
-		default: '#B0BEC5',
-		validator: (value: string) => value === null || isHex(value) || value.startsWith('var(--'),
-	},
+interface ColorProps {
+	value?: string | null;
+	defaultColor?: string | null;
+}
+
+const props = withDefaults(defineProps<ColorProps>(), {
+	value: null,
+	defaultColor: '#B0BEC5',
 });
 
 const color = computed(() => props.value ?? props.defaultColor);
 
 const addBorder = computed(() => {
+	if (color.value === null) return false;
+
 	try {
 		const valueColor = Color(color.value);
 		const pageColor = Color(cssVar('--theme--background'));
@@ -33,7 +33,7 @@ const addBorder = computed(() => {
 
 <template>
 	<div class="color-dot">
-		<value-null v-if="value === null && defaultColor === null" />
+		<ValueNull v-if="value === null && defaultColor === null" />
 		<div class="dot" :class="{ 'with-border': addBorder }" />
 	</div>
 </template>

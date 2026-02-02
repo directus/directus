@@ -1,3 +1,6 @@
+import { useAppStore } from '@directus/stores';
+import { useLocalStorage } from '@vueuse/core';
+import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
@@ -6,15 +9,12 @@ import LogoutRoute from '@/routes/logout.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
 import RegisterRoute from '@/routes/register/register.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
+import Setup from '@/routes/setup/setup.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
-import { useAppStore } from '@directus/stores';
-import { useLocalStorage } from '@/composables/use-local-storage';
-import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
-import Setup from '@/routes/setup/setup.vue';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
@@ -120,11 +120,19 @@ export const router = createRouter({
 
 let firstLoad = true;
 
+/**
+ * Reset internal state for testing purposes only.
+ * @internal
+ */
+export function _resetState() {
+	firstLoad = true;
+}
+
 export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 	const userStore = useUserStore();
-	const { data: requireTfaSetup } = useLocalStorage<string>('require_tfa_setup');
+	const requireTfaSetup = useLocalStorage<string | null>('directus-require_tfa_setup', null);
 
 	// First load
 	if (firstLoad) {

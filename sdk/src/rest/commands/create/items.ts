@@ -1,6 +1,6 @@
-import { isSystemCollection } from '../../utils/is-system-collection.js';
 import type { ApplyQueryFields, CollectionType, NestedPartial, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
+import { isSystemCollection } from '../../utils/is-system-collection.js';
 
 export type CreateItemOutput<
 	Schema,

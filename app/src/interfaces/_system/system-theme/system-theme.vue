@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { useServerStore } from '@/stores/server';
-import { translate } from '@/utils/translate-literal';
 import { useThemeStore } from '@directus/themes';
 import { computed } from 'vue';
 import ThemePreview from './theme-preview.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useServerStore } from '@/stores/server';
+import { translate } from '@/utils/translate-literal';
 
 defineEmits<{
 	input: [string | null];
@@ -46,8 +48,8 @@ const valueWithDefault = computed(() => {
 				<ThemePreview :dark-mode="appearance === 'dark'" :theme="systemTheme" />
 
 				<div class="label">
-					<v-icon :name="value === null ? 'radio_button_checked' : 'radio_button_unchecked'" />
-					<v-text-overflow :text="$t('default_sync_with_project')" />
+					<VIcon :name="value === null ? 'radio_button_checked' : 'radio_button_unchecked'" />
+					<VTextOverflow :text="$t('default_sync_with_project')" />
 				</div>
 			</button>
 		</template>
@@ -62,8 +64,8 @@ const valueWithDefault = computed(() => {
 			<ThemePreview :dark-mode="appearance === 'dark'" :theme="theme.id" />
 
 			<div class="label">
-				<v-icon :name="theme.id === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
-				<v-text-overflow :text="translate(theme.name)" />
+				<VIcon :name="theme.id === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
+				<VTextOverflow :text="translate(theme.name)" />
 			</div>
 		</button>
 	</div>

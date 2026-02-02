@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import NestedDraggable from './NestedDraggable.vue';
+import VNotice from '@/components/v-notice.vue';
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
-import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import NestedDraggable from './nested-draggable.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -115,14 +116,14 @@ const fields = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
+	<VNotice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
 		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
-	</v-notice>
-	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+	</VNotice>
+	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}
-	</v-notice>
+	</VNotice>
 	<div v-else class="tree-view">
-		<nested-draggable
+		<NestedDraggable
 			v-model="_value"
 			:template="template"
 			:collection="collection"

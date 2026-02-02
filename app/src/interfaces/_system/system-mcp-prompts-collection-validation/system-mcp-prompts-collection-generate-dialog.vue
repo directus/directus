@@ -1,13 +1,23 @@
 <script lang="ts" setup>
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { generateFields } from './schema';
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { generateFields } from './schema';
 
 const { t } = useI18n();
 
@@ -121,15 +131,15 @@ async function generateCollection() {
 </script>
 
 <template>
-	<v-dialog v-model="active">
-		<v-card>
-			<v-card-title v-if="collection" class="title">
+	<VDialog v-model="active">
+		<VCard>
+			<VCardTitle v-if="collection" class="title">
 				{{ $t('mcp_prompts_collection.generate_fields_dialog_title') }}
-			</v-card-title>
-			<v-card-title v-else class="title">
+			</VCardTitle>
+			<VCardTitle v-else class="title">
 				{{ $t('mcp_prompts_collection.generate_collection_dialog_title') }}
-			</v-card-title>
-			<v-card-text>
+			</VCardTitle>
+			<VCardText>
 				<p v-if="collection">
 					{{ $t('mcp_prompts_collection.generate_fields_dialog_description', { collection }) }}
 				</p>
@@ -141,7 +151,7 @@ async function generateCollection() {
 				</p>
 
 				<template v-if="saving">
-					<v-skeleton-loader class="loader" />
+					<VSkeletonLoader class="loader" />
 				</template>
 
 				<template v-else>
@@ -149,9 +159,9 @@ async function generateCollection() {
 						<div class="field full">
 							<div class="field-label type-label">
 								{{ $t('name') }}
-								<v-icon v-tooltip="$t('required')" class="required" name="star" sup filled />
+								<VIcon v-tooltip="$t('required')" class="required" name="star" sup filled />
 							</div>
-							<v-input
+							<VInput
 								v-model="customCollectionName"
 								autofocus
 								class="monospace"
@@ -168,7 +178,7 @@ async function generateCollection() {
 						</div>
 					</div>
 					<!-- Show fields to be created -->
-					<v-notice v-if="fieldsToCreate?.length > 0" class="generated-data" type="warning" multiline>
+					<VNotice v-if="fieldsToCreate?.length > 0" class="generated-data" type="warning" multiline>
 						<template #title>
 							{{ $t('new_data_alert') }}
 						</template>
@@ -179,21 +189,21 @@ async function generateCollection() {
 								</li>
 							</ul>
 						</span>
-					</v-notice>
+					</VNotice>
 				</template>
-			</v-card-text>
-			<v-card-actions>
-				<v-button secondary @click="active = false">{{ $t('cancel') }}</v-button>
-				<v-button
+			</VCardText>
+			<VCardActions>
+				<VButton secondary @click="active = false">{{ $t('cancel') }}</VButton>
+				<VButton
 					:loading="saving"
 					:disabled="saving || (!collection && collectionAlreadyExists)"
 					@click="generateCollection"
 				>
 					{{ $t('generate') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>

@@ -1,24 +1,23 @@
 <script setup lang="ts">
+import { useElementSize } from '@directus/composables';
+import { ContentVersion, Field, ValidationError } from '@directus/types';
+import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
+import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import VDivider from '../v-divider.vue';
+import VInfo from '../v-info.vue';
+import type { MenuOptions } from './components/form-field-menu.vue';
+import FormField from './components/form-field.vue';
+import ValidationErrors from './components/validation-errors.vue';
+import { useAiTools } from './composables/use-ai-tools';
+import type { ComparisonContext, FieldValues, FormField as TFormField } from './types';
+import { getFormFields } from './utils/get-form-fields';
+import { updateFieldWidths } from './utils/update-field-widths';
+import { updateSystemDivider } from './utils/update-system-divider';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
-import { useElementSize } from '@directus/composables';
-import { ContentVersion, Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
-import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
-import type { MenuOptions } from './form-field-menu.vue';
-import FormField from './form-field.vue';
-import type { ComparisonContext, FormField as TFormField } from './types';
-import { getFormFields } from './utils/get-form-fields';
-import { updateFieldWidths } from './utils/update-field-widths';
-import { updateSystemDivider } from './utils/update-system-divider';
-import ValidationErrors from './validation-errors.vue';
-
-type FieldValues = {
-	[field: string]: any;
-};
 
 const props = withDefaults(
 	defineProps<{
@@ -76,7 +75,8 @@ const { width } = useElementSize(el);
 const gridClass = computed<string | null>(() => {
 	if (el.value === null) return null;
 
-	if (width.value > 792) {
+	// 856 (drawer width) - 2 * 24 (content-padding) = 808
+	if (width.value > 808) {
 		return 'grid with-fill';
 	} else {
 		return 'grid';
@@ -98,6 +98,8 @@ const {
 	getFieldsForGroup,
 	isFieldVisible,
 } = useForm();
+
+useAiTools({ finalFields, fieldNames, setValue, values });
 
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
@@ -388,13 +390,13 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 
 <template>
 	<div ref="el" :class="['v-form', gridClass, { inline }]">
-		<validation-errors
+		<ValidationErrors
 			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
 			:fields="finalFields"
 			@scroll-to-field="scrollToField"
 		/>
-		<v-info
+		<VInfo
 			v-if="noVisibleFields && showNoVisibleFields && !loading"
 			class="no-fields-info"
 			:title="$t('no_visible_fields')"
@@ -402,7 +404,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 			:center="!inline"
 		>
 			{{ $t('no_visible_fields_copy') }}
-		</v-info>
+		</VInfo>
 		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<template v-if="fieldsMap[fieldName]">
 				<component
@@ -438,7 +440,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					@apply="apply"
 				/>
 
-				<form-field
+				<FormField
 					v-else-if="isFieldVisible(fieldsMap[fieldName])"
 					:ref="
 						(el) => {
@@ -471,6 +473,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:disabled-menu-options="disabledMenuOptions"
 					:disabled-menu="disabledMenu"
 					:direction="direction"
+					:version
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"
@@ -479,7 +482,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 				/>
 			</template>
 		</template>
-		<v-divider v-if="showDivider && !noVisibleFields" />
+		<VDivider v-if="showDivider && !noVisibleFields" />
 	</div>
 </template>
 

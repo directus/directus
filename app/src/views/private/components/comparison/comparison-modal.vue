@@ -1,15 +1,24 @@
 <script setup lang="ts">
-import api from '@/api';
-import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import type { Revision } from '@/types/revisions';
-import { translateShortcut } from '@/utils/translate-shortcut';
-import { unexpectedError } from '@/utils/unexpected-error';
 import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
+import ComparisonToggle from './comparison-toggle.vue';
 import { useComparison } from './use-comparison';
+import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import type { Revision } from '@/types/revisions';
+import { translateShortcut } from '@/utils/translate-shortcut';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 interface Props {
 	deleteVersionsAllowed: boolean;
@@ -34,6 +43,8 @@ const { t } = useI18n();
 
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
 
+const compareToOption = ref<'Previous' | 'Latest'>('Previous');
+
 const {
 	comparisonData,
 	selectedComparisonFields,
@@ -54,6 +65,9 @@ const {
 	fetchComparisonData,
 	fetchUserUpdated,
 	fetchBaseItemUserUpdated,
+	persistedCompareToOption,
+	isFirstRevision,
+	isLatestRevision,
 } = useComparison({
 	collection,
 	primaryKey,
@@ -61,6 +75,7 @@ const {
 	currentVersion,
 	currentRevision,
 	revisions,
+	compareToOption,
 });
 
 const incomingTooltipMessage = computed(() => {
@@ -69,27 +84,78 @@ const incomingTooltipMessage = computed(() => {
 	return undefined;
 });
 
+const baseDateUpdated = computed(() => {
+	if (props.mode === 'revision' && compareToOption.value === 'Previous') {
+		return normalizedData.value?.base.date.dateObject || null;
+	}
+
+	return t('latest');
+});
+
+const applyButtonTooltip = computed(() => {
+	if (mode.value === 'revision' && compareToOption.value === 'Previous') {
+		return t('compare_to_latest_to_restore');
+	}
+
+	if (mode.value === 'revision' && compareToOption.value === 'Latest' && isLatestRevision.value) {
+		return t('select_earlier_revision_to_restore');
+	}
+
+	if (selectedComparisonFields.value.length === 0) {
+		return undefined;
+	}
+
+	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
+});
+
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const modalLoading = ref(false);
 
+async function loadComparisonData() {
+	modalLoading.value = true;
+
+	try {
+		await fetchComparisonData();
+		await fetchUserUpdated();
+		await fetchBaseItemUserUpdated();
+	} finally {
+		modalLoading.value = false;
+	}
+}
+
 watch(
-	[active, currentRevision],
-	async ([isActive]) => {
+	active,
+	async (isActive, wasActive) => {
 		if (!isActive) return;
 
-		modalLoading.value = true;
-
-		try {
-			await fetchComparisonData();
-			await fetchUserUpdated();
-			await fetchBaseItemUserUpdated();
-		} finally {
-			modalLoading.value = false;
+		if (wasActive === undefined || wasActive === false) {
+			compareToOption.value = isFirstRevision.value ? 'Latest' : 'Previous';
 		}
+
+		await loadComparisonData();
 	},
 	{ immediate: true },
 );
+
+watch(currentRevision, async () => {
+	if (!active.value || mode.value !== 'revision') return;
+
+	compareToOption.value = persistedCompareToOption.value;
+	await loadComparisonData();
+});
+
+watch([compareToOption], async () => {
+	if (props.mode !== 'revision' || !active.value) return;
+
+	await loadComparisonData();
+});
+
+watch([isFirstRevision], () => {
+	if (isFirstRevision.value && compareToOption.value === 'Previous') {
+		compareToOption.value = 'Latest';
+	}
+});
 
 function usePromoteDialog() {
 	const confirmDeleteOnPromoteDialogActive = ref(false);
@@ -163,7 +229,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 </script>
 
 <template>
-	<v-dialog
+	<VDialog
 		:model-value="active"
 		persistent
 		keep-behind
@@ -175,10 +241,10 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			<div class="scrollable-container">
 				<div class="columns">
 					<div class="col left">
-						<comparison-header
+						<ComparisonHeader
 							:loading="modalLoading"
 							:title="baseDisplayName"
-							:date-updated="$t('latest')"
+							:date-updated="baseDateUpdated"
 							:user-updated="baseUserUpdated"
 							:user-loading="baseUserLoading"
 						/>
@@ -186,14 +252,14 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						<div class="comparison-content">
 							<template v-if="modalLoading">
 								<div class="form-skeleton">
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
 								</div>
 							</template>
 							<template v-else>
-								<v-form
+								<VForm
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
@@ -202,7 +268,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										fields: comparisonFields,
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
-										onToggleField: () => {},
+										onToggleField: null,
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -212,7 +278,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					</div>
 
 					<div class="col right vertical-divider">
-						<comparison-header
+						<ComparisonHeader
 							:loading="modalLoading"
 							:title="deltaDisplayName"
 							:date-updated="normalizedData?.incoming.date.dateObject || null"
@@ -227,14 +293,14 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						<div class="comparison-content">
 							<template v-if="modalLoading">
 								<div class="form-skeleton">
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
-									<v-skeleton-loader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
+									<VSkeletonLoader type="input" />
 								</div>
 							</template>
 							<template v-else>
-								<v-form
+								<VForm
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"
@@ -243,7 +309,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										fields: comparisonFields,
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
-										onToggleField: toggleComparisonField,
+										onToggleField: mode !== 'revision' || compareToOption !== 'Previous' ? toggleComparisonField : null,
 									}"
 									non-editable
 									class="comparison-form--incoming"
@@ -256,46 +322,53 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			<div class="footer">
 				<div class="columns">
 					<div class="col left">
-						<div class="fields-changed">
+						<div v-if="mode !== 'revision'" class="fields-changed">
 							{{ $t('differences_count', { count: availableFieldsCount }) }}
+						</div>
+						<div v-else class="compare-to-container">
+							<span class="compare-to-label">{{ $t('comparing_to') }}</span>
+							<ComparisonToggle v-model="compareToOption" :disable-previous="isFirstRevision" />
 						</div>
 					</div>
 					<div class="col right">
+						<div v-if="mode === 'revision'" class="compare-to-container">
+							<span class="compare-to-label">{{ $t('comparing_to') }}</span>
+							<ComparisonToggle v-model="compareToOption" :disable-previous="isFirstRevision" />
+						</div>
 						<div class="footer-actions">
-							<div class="select-all-container">
-								<v-checkbox
+							<div v-if="mode !== 'revision' || compareToOption !== 'Previous'" class="select-all-container">
+								<VCheckbox
 									v-if="availableFieldsCount > 0"
 									:model-value="allFieldsSelected"
 									:indeterminate="someFieldsSelected && !allFieldsSelected"
 									@update:model-value="toggleSelectAll"
 								>
 									{{ $t('select_all_differences') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
-								</v-checkbox>
+								</VCheckbox>
 							</div>
 							<div class="buttons-container">
-								<v-button
+								<VButton
 									v-tooltip.top="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 									secondary
 									@click="$emit('cancel')"
 								>
-									<v-icon name="close" left />
+									<VIcon name="close" left />
 									<span class="button-text">{{ $t('cancel') }}</span>
-								</v-button>
-								<v-button
-									v-tooltip.top="
-										selectedComparisonFields.length === 0
-											? undefined
-											: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
+								</VButton>
+								<VButton
+									v-tooltip.top="applyButtonTooltip"
+									data-test="comparison-modal_apply-button"
+									:disabled="
+										selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')
 									"
-									:disabled="selectedComparisonFields.length === 0"
 									:loading="promoting"
 									@click="onPromoteClick"
 								>
-									<v-icon :name="'arrow_upload_progress'" left />
+									<VIcon :name="'arrow_upload_progress'" left />
 									<span class="button-text">
 										{{ $t('apply') }}
 									</span>
-								</v-button>
+								</VButton>
 							</div>
 						</div>
 					</div>
@@ -303,24 +376,24 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			</div>
 		</div>
 
-		<v-dialog
+		<VDialog
 			v-model="confirmDeleteOnPromoteDialogActive"
 			@esc="confirmDeleteOnPromoteDialogActive = false"
 			@apply="promote(true)"
 		>
-			<v-card>
-				<v-card-title>
+			<VCard>
+				<VCardTitle>
 					{{ $t('delete_on_apply_copy', { version: deltaDisplayName }) }}
-				</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="promote(false)">{{ $t('keep') }}</v-button>
-					<v-button :loading="promoting" kind="danger" @click="promote(true)">
+				</VCardTitle>
+				<VCardActions>
+					<VButton secondary @click="promote(false)">{{ $t('keep') }}</VButton>
+					<VButton :loading="promoting" kind="danger" @click="promote(true)">
 						{{ $t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>
@@ -437,6 +510,21 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			flex: 1 1 auto;
 			min-inline-size: 0;
 
+			.compare-to-container {
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+				gap: 6px;
+				font-weight: 600;
+			}
+
+			.compare-to-label {
+				font-size: 14px;
+				line-height: 20px;
+				color: var(--theme--foreground);
+				white-space: nowrap;
+			}
+
 			&.left {
 				display: none;
 
@@ -448,8 +536,8 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					.fields-changed {
 						font-size: 14px;
 						line-height: 20px;
-						color: var(--theme--foreground-subdued);
 						font-weight: 600;
+						color: var(--theme--foreground-subdued);
 					}
 				}
 			}
@@ -460,10 +548,18 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				flex-direction: column;
 				gap: 16px;
 
-				@media (min-width: 706px) {
-					flex: 1;
+				@media (min-width: 960px) {
+					flex-direction: row;
 					justify-content: flex-end;
-					align-items: end;
+				}
+
+				.compare-to-container {
+					margin-block-end: 0;
+					justify-content: start;
+
+					@media (min-width: 960px) {
+						display: none;
+					}
 				}
 
 				.select-all-container {
@@ -472,11 +568,16 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					flex: 1 1 100%;
 					text-align: center;
 					margin-block-end: 12px;
+					justify-content: start;
 
 					@media (min-width: 706px) {
 						flex: 1 1 auto;
 						flex-shrink: 0;
 						margin-block-end: 0;
+					}
+
+					@media (min-width: 960px) {
+						justify-content: flex-start;
 					}
 				}
 

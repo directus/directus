@@ -1,18 +1,32 @@
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, reactive, ref, watch } from 'vue';
-
-import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
-import { EditorState, Compartment, Annotation } from '@codemirror/state';
 import { markdown } from '@codemirror/lang-markdown';
-
-const setValueAnnotation = Annotation.define<boolean>();
-
+import { Annotation, Compartment, EditorState } from '@codemirror/state';
+import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { Alteration, applyEdit, CustomSyntax } from './edits';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VItemGroup from '@/components/v-item-group.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemHint from '@/components/v-list-item-hint.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import VUpload from '@/components/v-upload.vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useWindowSize } from '@/composables/use-window-size';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import { Alteration, CustomSyntax, applyEdit } from './edits';
+
+const setValueAnnotation = Annotation.define<boolean>();
 
 const props = withDefaults(
 	defineProps<{
@@ -290,22 +304,22 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		:class="[view, { disabled, 'non-editable': nonEditable }]"
 	>
 		<div class="toolbar">
-			<template v-if="view === 'editor'">
-				<v-menu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
+			<template v-if="!nonEditable && view === 'editor'">
+				<VMenu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="$t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
-							<v-icon name="format_size" />
-						</v-button>
+						<VButton v-tooltip="$t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
+							<VIcon name="format_size" />
+						</VButton>
 					</template>
-					<v-list>
-						<v-list-item v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
-							<v-list-item-content><v-text-overflow :text="$t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
-							<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
-						</v-list-item>
-					</v-list>
-				</v-menu>
+					<VList>
+						<VListItem v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
+							<VListItemContent><VTextOverflow :text="$t(`wysiwyg_options.h${n}`)" /></VListItemContent>
+							<VListItemHint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</VListItemHint>
+						</VListItem>
+					</VList>
+				</VMenu>
 
-				<v-button
+				<VButton
 					v-if="toolbar?.includes('bold')"
 					v-tooltip="$t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 					:disabled="disabled"
@@ -313,9 +327,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('bold')"
 				>
-					<v-icon name="format_bold" />
-				</v-button>
-				<v-button
+					<VIcon name="format_bold" />
+				</VButton>
+				<VButton
 					v-if="toolbar?.includes('italic')"
 					v-tooltip="$t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 					:disabled="disabled"
@@ -323,9 +337,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('italic')"
 				>
-					<v-icon name="format_italic" />
-				</v-button>
-				<v-button
+					<VIcon name="format_italic" />
+				</VButton>
+				<VButton
 					v-if="toolbar?.includes('strikethrough')"
 					v-tooltip="$t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 					:disabled="disabled"
@@ -333,9 +347,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('strikethrough')"
 				>
-					<v-icon name="format_strikethrough" />
-				</v-button>
-				<v-button
+					<VIcon name="format_strikethrough" />
+				</VButton>
+				<VButton
 					v-if="toolbar?.includes('bullist')"
 					v-tooltip="$t('wysiwyg_options.bullist')"
 					:disabled="disabled"
@@ -343,9 +357,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('listBulleted')"
 				>
-					<v-icon name="format_list_bulleted" />
-				</v-button>
-				<v-button
+					<VIcon name="format_list_bulleted" />
+				</VButton>
+				<VButton
 					v-if="toolbar?.includes('numlist')"
 					v-tooltip="$t('wysiwyg_options.numlist')"
 					:disabled="disabled"
@@ -353,9 +367,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('listNumbered')"
 				>
-					<v-icon name="format_list_numbered" />
-				</v-button>
-				<v-button
+					<VIcon name="format_list_numbered" />
+				</VButton>
+				<VButton
 					v-if="toolbar?.includes('blockquote')"
 					v-tooltip="$t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 					:disabled="disabled"
@@ -363,9 +377,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('blockquote')"
 				>
-					<v-icon name="format_quote" />
-				</v-button>
-				<v-button
+					<VIcon name="format_quote" />
+				</VButton>
+				<VButton
 					v-if="toolbar?.includes('code')"
 					v-tooltip="$t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 					:disabled="disabled"
@@ -373,9 +387,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('code')"
 				>
-					<v-icon name="code" />
-				</v-button>
-				<v-button
+					<VIcon name="code" />
+				</VButton>
+				<VButton
 					v-if="toolbar?.includes('link')"
 					v-tooltip="$t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 					:disabled="disabled"
@@ -383,28 +397,28 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('link')"
 				>
-					<v-icon name="insert_link" />
-				</v-button>
+					<VIcon name="insert_link" />
+				</VButton>
 
-				<v-menu v-if="toolbar?.includes('table')" show-arrow :close-on-content-click="false">
+				<VMenu v-if="toolbar?.includes('table')" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="$t('wysiwyg_options.table')" :disabled="disabled" small icon @click="toggle">
-							<v-icon name="table_chart" />
-						</v-button>
+						<VButton v-tooltip="$t('wysiwyg_options.table')" :disabled="disabled" small icon @click="toggle">
+							<VIcon name="table_chart" />
+						</VButton>
 					</template>
 
 					<template #default="{ deactivate }">
 						<div class="table-options">
 							<div class="field half">
 								<p class="type-label">{{ $t('rows') }}</p>
-								<v-input v-model="table.rows" :min="1" type="number" />
+								<VInput v-model="table.rows" :min="1" type="number" />
 							</div>
 							<div class="field half">
 								<p class="type-label">{{ $t('columns') }}</p>
-								<v-input v-model="table.columns" :min="1" type="number" />
+								<VInput v-model="table.columns" :min="1" type="number" />
 							</div>
 							<div class="field full">
-								<v-button
+								<VButton
 									full-width
 									@click="
 										() => {
@@ -414,13 +428,13 @@ function edit(type: Alteration, options?: Record<string, any>) {
 									"
 								>
 									Create
-								</v-button>
+								</VButton>
 							</div>
 						</div>
 					</template>
-				</v-menu>
+				</VMenu>
 
-				<v-button
+				<VButton
 					v-if="toolbar?.includes('image')"
 					v-tooltip="$t('wysiwyg_options.image')"
 					:disabled="disabled"
@@ -428,10 +442,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="imageDialogOpen = true"
 				>
-					<v-icon name="insert_photo" />
-				</v-button>
+					<VIcon name="insert_photo" />
+				</VButton>
 
-				<v-button
+				<VButton
 					v-for="custom in customSyntax"
 					:key="custom.name"
 					v-tooltip="custom.name"
@@ -440,26 +454,26 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					icon
 					@click="edit('custom', custom)"
 				>
-					<v-icon :name="custom.icon" />
-				</v-button>
+					<VIcon :name="custom.icon" />
+				</VButton>
 			</template>
 
 			<div class="spacer"></div>
 
-			<v-item-group
+			<VItemGroup
 				:model-value="[view]"
 				class="view"
 				mandatory
 				rounded
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
-				<v-button x-small value="editor" :class="[{ active: view !== 'preview' }]">
+				<VButton x-small value="editor" :disabled="disabled && !nonEditable" :class="[{ active: view !== 'preview' }]">
 					{{ $t('interfaces.input-rich-text-md.edit') }}
-				</v-button>
-				<v-button x-small value="preview" :class="[{ active: view === 'preview' }]">
+				</VButton>
+				<VButton x-small value="preview" :disabled="disabled && !nonEditable" :class="[{ active: view === 'preview' }]">
 					{{ $t('interfaces.input-rich-text-md.preview') }}
-				</v-button>
-			</v-item-group>
+				</VButton>
+			</VItemGroup>
 		</div>
 
 		<div ref="codemirrorEl" class="codemirror-container"></div>
@@ -480,22 +494,22 @@ function edit(type: Alteration, options?: Record<string, any>) {
 			:style="{ display: view === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
-		<v-dialog
+		<VDialog
 			:model-value="imageDialogOpen"
 			keep-behind
 			@esc="imageDialogOpen = false"
 			@update:model-value="imageDialogOpen = false"
 		>
-			<v-card>
-				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
-				<v-card-text>
-					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="imageDialogOpen = false">{{ $t('cancel') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+			<VCard>
+				<VCardTitle>{{ $t('upload_from_device') }}</VCardTitle>
+				<VCardText>
+					<VUpload from-url from-library :folder="folder" @input="onImageUpload" />
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="imageDialogOpen = false">{{ $t('cancel') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 
@@ -507,8 +521,11 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	--v-button-color: var(--theme--form--field--input--foreground);
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
+	--editor-min-height: var(--input-height-lg);
+	--editor-toolbar-height: 40px;
+	--editor-body-min-height: calc(var(--editor-min-height) - var(--editor-toolbar-height));
 
-	min-block-size: 300px;
+	min-block-size: var(--editor-min-height);
 	overflow: hidden;
 	font-family: var(--theme--fonts--sans--font-family);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -525,6 +542,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 .interface-input-rich-text-md.disabled:not(.non-editable) {
 	background-color: var(--theme--form--field--input--background-subdued);
+
+	* {
+		color: var(--theme--form--field--input--foreground-subdued) !important;
+	}
 }
 
 .interface-input-rich-text-md:not(.disabled):hover {
@@ -592,8 +613,8 @@ textarea {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	min-block-size: 40px;
-	padding: 0 4px;
+	min-block-size: var(--editor-toolbar-height);
+	padding: 4px;
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
@@ -622,7 +643,7 @@ textarea {
 .table-options {
 	--theme--form--row-gap: 12px;
 	--theme--form--column-gap: 12px;
-
+	min-inline-size: 280px;
 	padding: 12px;
 	@include mixins.form-grid;
 

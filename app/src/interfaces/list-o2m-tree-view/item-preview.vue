@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { RelationO2M } from '@/composables/use-relation-o2m';
 import { ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VRemove from '@/components/v-remove.vue';
+import { RelationO2M } from '@/composables/use-relation-o2m';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -28,23 +31,26 @@ const editActive = ref(false);
 </script>
 
 <template>
-	<div class="preview" :class="{ open, deleted }">
-		<v-icon
+	<div class="preview" :class="{ open, deleted, disabled }" @click="nonEditable ? (editActive = true) : undefined">
+		<VIcon
 			v-if="relationInfo.relatedPrimaryKeyField.field in item"
 			:name="props.open ? 'expand_more' : 'chevron_right'"
+			:disabled="disabled && !nonEditable"
+			:class="{ disabled: disabled && !nonEditable }"
+			class="chevron"
 			clickable
-			@click="emit('update:open', !props.open)"
+			@click.stop="emit('update:open', !props.open)"
 		/>
 
-		<render-template :collection="collection" :template="template" :item="item" />
+		<RenderTemplate :collection="collection" :template="template" :item="item" />
 
 		<div class="spacer" />
 
-		<div class="item-actions">
-			<v-icon v-tooltip="$t('edit_item')" name="edit" clickable @click="editActive = true" />
+		<div v-if="!nonEditable" class="item-actions">
+			<VIcon v-tooltip="!disabled && $t('edit_item')" name="edit" clickable :disabled @click="editActive = true" />
 
-			<v-remove
-				v-if="!disabled"
+			<VRemove
+				:disabled
 				:item-type="item.$type"
 				:item-info="relationInfo"
 				:item-is-local="isLocalItem"
@@ -53,7 +59,7 @@ const editActive = ref(false);
 			/>
 		</div>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="editActive"
 			:disabled
 			:non-editable
@@ -69,6 +75,11 @@ const editActive = ref(false);
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
+.chevron.disabled {
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+	--v-icon-color-hover: var(--v-icon-color);
+}
+
 .preview {
 	display: flex;
 	block-size: var(--theme--form--field--input--height);
@@ -78,7 +89,7 @@ const editActive = ref(false);
 		flex-grow: 1;
 	}
 
-	.row &.deleted {
+	.row &.deleted:not(.disabled) {
 		color: var(--theme--danger);
 		background-color: var(--danger-10);
 		border-color: var(--danger-25);

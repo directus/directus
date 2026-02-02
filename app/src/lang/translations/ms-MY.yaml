@@ -195,11 +195,6 @@ fields:
     description: Penerangan
   directus_policies:
     description: Penerangan
-  directus_webhooks:
-    name: Nama
-    status: Status
-    value: Nilai
-    collections: Koleksi-koleksi
 field_options:
   directus_activity:
     create: Cipta
@@ -208,12 +203,13 @@ field_options:
     fields:
       name_name: Nama
     collections_name: Koleksi-koleksi
-  directus_webhooks:
-    actions_create: Cipta
-    actions_update: Kemaskini
-    headers:
-      value: Nilai
 comment: Komen
+ai:
+  settings: Tetapan
+ai_tools:
+  files: Fail-fail
+  schema: Skema
+  collections: Koleksi-koleksi
 delete_field_are_you_sure: >-
   Adakah anda pasti ingin memadam medan "{field}"? Tindakan ini tidak dapat dibatalkan.
 description: Penerangan
@@ -282,6 +278,9 @@ layouts:
   tabular:
     compact: Padat
 both: Kedua-duanya
+triggers:
+  webhook:
+    method: Kaedah
 operations:
   json-web-token:
     options: Pilihan-pilihan
@@ -289,4 +288,6 @@ operations:
     message: Mesej
   notification:
     message: Mesej
+  request:
+    method: Kaedah
 compact: Padat

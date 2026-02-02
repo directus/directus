@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-registry",
-	"version": "3.0.13",
+	"version": "3.0.16",
 	"description": "Abstraction for exploring Directus extensions on a package registry",
 	"homepage": "https://directus.io",
 	"repository": {

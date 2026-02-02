@@ -1,4 +1,22 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { getFieldsFromTemplate } from '@directus/utils';
+import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { usePageSize } from '@/composables/use-page-size';
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
@@ -9,12 +27,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import type { ContentVersion, Filter } from '@directus/types';
-import { getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -331,17 +344,17 @@ const createCollections = computed(() => {
 	});
 });
 
-const canDrag = computed(() => relationInfo.value?.sortField !== undefined && !props.disabled && updateAllowed.value);
+const canDrag = computed(() => relationInfo.value?.sortField !== undefined && updateAllowed.value);
 const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitWritable.value);
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</v-notice>
-	<v-notice v-else-if="allowedCollections.length === 0" type="warning">{{ $t('no_singleton_relations') }}</v-notice>
+	<VNotice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
+	<VNotice v-else-if="allowedCollections.length === 0" type="warning">{{ $t('no_singleton_relations') }}</VNotice>
 	<div v-else class="m2a-builder">
-		<v-notice v-if="canDrag && !allowDrag">{{ $t('interfaces.list-m2a.sorting_disabled') }}</v-notice>
+		<VNotice v-if="!disabled && canDrag && !allowDrag">{{ $t('interfaces.list-m2a.sorting_disabled') }}</VNotice>
 		<template v-if="loading">
-			<v-skeleton-loader
+			<VSkeletonLoader
 				v-for="n in clamp(totalItemCount - (page - 1) * limitWritable, 1, limitWritable)"
 				:key="n"
 				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
@@ -349,32 +362,34 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		</template>
 
 		<template v-else>
-			<v-notice v-if="displayItems.length === 0">{{ $t('no_items') }}</v-notice>
+			<VNotice v-if="displayItems.length === 0">{{ $t('no_items') }}</VNotice>
 
-			<draggable
+			<Draggable
 				v-else
 				:model-value="displayItems"
 				tag="v-list"
 				item-key="$index"
 				:set-data="hideDragImage"
-				:disabled="!allowDrag"
+				:disabled="disabled || !allowDrag"
 				v-bind="{ 'force-fallback': true }"
 				handle=".drag-handle"
 				@update:model-value="sortItems"
 			>
 				<template #item="{ element }">
-					<v-list-item
+					<VListItem
 						v-if="hasAllowedCollection(element)"
 						block
+						:disabled="disabled && !nonEditable"
 						:dense="totalItemCount > 4"
 						:class="{ deleted: element.$type === 'deleted' }"
 						clickable
 						@click="editItem(element)"
 					>
-						<v-icon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
+						<VIcon v-if="allowDrag && !nonEditable" class="drag-handle" left name="drag_handle" :disabled @click.stop />
+
 						<span class="collection">{{ getPrefix(element) }}:</span>
 
-						<render-template
+						<RenderTemplate
 							:collection="element[relationInfo.collectionField.field]"
 							:template="templates[element[relationInfo.collectionField.field]]"
 							:item="element[relationInfo.junctionField.field]"
@@ -382,9 +397,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 
 						<div class="spacer" />
 
-						<div class="item-actions">
-							<v-remove
-								v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
+						<div v-if="!nonEditable" class="item-actions">
+							<VRemove
+								v-if="deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element)"
+								:disabled
 								:item-type="element.$type"
 								:item-info="relationInfo"
 								:item-is-local="isLocalItem(element)"
@@ -392,18 +408,23 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 								@action="deleteItem(element)"
 							/>
 						</div>
-					</v-list-item>
+					</VListItem>
 
-					<v-list-item v-else block :class="{ deleted: element.$type === 'deleted' }">
-						<v-icon class="invalid-icon" name="warning" left />
+					<VListItem
+						v-else
+						block
+						:disabled="disabled && !nonEditable"
+						:class="{ deleted: element.$type === 'deleted' }"
+					>
+						<VIcon class="invalid-icon" name="warning" left />
 
 						<span>{{ $t('invalid_item') }}</span>
 
 						<div class="spacer" />
 
-						<div class="item-actions">
-							<v-remove
-								v-if="!disabled"
+						<div v-if="!nonEditable" class="item-actions">
+							<VRemove
+								:disabled
 								:item-type="element.$type"
 								:item-info="relationInfo"
 								:item-is-local="isLocalItem(element)"
@@ -411,62 +432,62 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 								@action="deleteItem(element)"
 							/>
 						</div>
-					</v-list-item>
+					</VListItem>
 				</template>
-			</draggable>
+			</Draggable>
 		</template>
 
 		<div v-if="!nonEditable" class="actions">
-			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
+			<VMenu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button :disabled="disabled" @click="toggle">
+					<VButton :disabled="disabled" @click="toggle">
 						{{ $t('create_new') }}
-						<v-icon name="arrow_drop_down" right />
-					</v-button>
+						<VIcon name="arrow_drop_down" right />
+					</VButton>
 				</template>
 
-				<v-list>
-					<v-list-item
+				<VList>
+					<VListItem
 						v-for="availableCollection of allowedCollections"
 						:key="availableCollection.collection"
 						clickable
 						@click="createItem(availableCollection.collection)"
 					>
-						<v-list-item-icon>
-							<v-icon :name="availableCollection.icon" />
-						</v-list-item-icon>
-						<v-text-overflow :text="availableCollection.name" />
-					</v-list-item>
-				</v-list>
-			</v-menu>
+						<VListItemIcon>
+							<VIcon :name="availableCollection.icon" />
+						</VListItemIcon>
+						<VTextOverflow :text="availableCollection.name" />
+					</VListItem>
+				</VList>
+			</VMenu>
 
-			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
+			<VMenu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
-					<v-button :disabled="disabled" @click="toggle">
+					<VButton :disabled="disabled" @click="toggle">
 						{{ $t('add_existing') }}
-						<v-icon name="arrow_drop_down" right />
-					</v-button>
+						<VIcon name="arrow_drop_down" right />
+					</VButton>
 				</template>
 
-				<v-list>
-					<v-list-item
+				<VList>
+					<VListItem
 						v-for="availableCollection of allowedCollections"
 						:key="availableCollection.collection"
 						clickable
 						@click="selectingFrom = availableCollection.collection"
 					>
-						<v-list-item-icon>
-							<v-icon :name="availableCollection.icon" />
-						</v-list-item-icon>
-						<v-text-overflow :text="availableCollection.name" />
-					</v-list-item>
-				</v-list>
-			</v-menu>
+						<VListItemIcon>
+							<VIcon :name="availableCollection.icon" />
+						</VListItemIcon>
+						<VTextOverflow :text="availableCollection.name" />
+					</VListItem>
+				</VList>
+			</VMenu>
 
 			<div v-if="pageCount > 1 || limitWritable !== limit" class="pagination">
 				<div v-if="pageSizes.length > 1" class="per-page">
 					<span>{{ $t('per_page') }}</span>
-					<v-select
+					<VSelect
 						:model-value="`${limitWritable}`"
 						:items="pageSizes"
 						inline
@@ -474,11 +495,11 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 					/>
 				</div>
 
-				<v-pagination v-model="page" :length="pageCount" :total-visible="2" show-first-last />
+				<VPagination v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 			</div>
 		</div>
 
-		<drawer-collection
+		<DrawerCollection
 			v-if="!disabled && selectingFrom"
 			multiple
 			:active="!!selectingFrom"
@@ -488,7 +509,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			@update:active="selectingFrom = null"
 		/>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="editModalActive"
 			:disabled="disabled"
 			:non-editable="nonEditable"
@@ -516,13 +537,20 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 
 .v-list-item {
 	.collection {
-		color: var(--theme--primary);
 		white-space: nowrap;
 		margin-inline-end: 1ch;
 	}
 
-	&.deleted .collection {
+	&:not(.disabled) .collection {
+		color: var(--theme--primary);
+	}
+
+	&.deleted:not(.disabled) .collection {
 		color: var(--theme--danger);
+	}
+
+	&.disabled {
+		background-color: var(--theme--form--field--input--background-subdued);
 	}
 }
 

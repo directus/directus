@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { getStringifiedValue } from '@/utils/get-stringified-value';
-import { EditorState, Compartment, StateEffect, StateField, Annotation } from '@codemirror/state';
-import { EditorView, keymap, placeholder as placeholderExtension, lineNumbers, drawSelection } from '@codemirror/view';
+import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
-import { syntaxHighlighting, defaultHighlightStyle, bracketMatching, indentOnInput } from '@codemirror/language';
-import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap } from '@codemirror/autocomplete';
-import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import { json } from '@codemirror/lang-json';
-import { lintGutter, linter, Diagnostic } from '@codemirror/lint';
+import { bracketMatching, defaultHighlightStyle, indentOnInput, syntaxHighlighting } from '@codemirror/language';
+import { Diagnostic, linter, lintGutter } from '@codemirror/lint';
+import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
+import { Annotation, Compartment, EditorState, StateEffect, StateField } from '@codemirror/state';
+import { drawSelection, EditorView, keymap, lineNumbers, placeholder as placeholderExtension } from '@codemirror/view';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import importCodemirrorMode from './import-codemirror-mode';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
 
 const setValueAnnotation = Annotation.define<boolean>();
 
@@ -48,7 +50,7 @@ const readOnly = computed(() => {
 const stringValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
 
-	if (props.type === 'json' && isInterpolation(props.value)) return props.value;
+	if (props.type === 'json' && isInterpolation(props.value)) return props.value as string;
 
 	return getStringifiedValue(props.value, props.type === 'json');
 });
@@ -313,9 +315,17 @@ function isInterpolation(value: any) {
 	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
-		<v-button v-if="template" v-tooltip.left="$t('fill_template')" small icon secondary @click="fillTemplate">
-			<v-icon name="playlist_add" />
-		</v-button>
+		<VButton
+			v-if="!nonEditable && template"
+			v-tooltip.left="!disabled && $t('fill_template')"
+			:disabled
+			small
+			icon
+			secondary
+			@click="fillTemplate"
+		>
+			<VIcon name="playlist_add" />
+		</VButton>
 	</div>
 </template>
 
