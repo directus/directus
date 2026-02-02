@@ -25,6 +25,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	IMPORT_IP_DENY_LIST: 'array',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
+	FILES_SKIP_PRIMARY_ASSET: 'boolean',
 
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
