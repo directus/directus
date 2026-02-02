@@ -880,7 +880,7 @@ function useItemNavigation() {
 					<template #display-options>
 						<VListItem clickable @click="livePreviewFullWidth = true">
 							<VListItemIcon><VIcon name="width_full" /></VListItemIcon>
-							<VListItemContent>{{ $t('live_preview.full_width') }}</VListItemContent>
+							<VListItemContent>{{ $t('full_width') }}</VListItemContent>
 						</VListItem>
 					</template>
 				</LivePreview>
