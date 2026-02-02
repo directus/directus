@@ -38,7 +38,7 @@ const mainMenuOpen = ref(false);
 
 const showItemDrawer = ref(false);
 const selectedCollection = ref<string | null>(null);
-const searchInputRef = ref<InstanceType<typeof import('@/components/v-input.vue').default> | null>(null);
+const searchInputRef = ref<InstanceType<typeof VInput> | null>(null); 
 
 const openListType = ref<'prompts' | 'items' | null>(null);
 
