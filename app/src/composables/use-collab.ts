@@ -319,7 +319,7 @@ export function useCollab(
 					},
 					//  Object syntax for nested fields - SDK types require schema definition for full support
 					// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
-					fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as (keyof DirectusUser)[],
+					fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on']}] as (keyof DirectusUser)[],
 				}),
 			);
 
@@ -406,10 +406,10 @@ export function useCollab(
 		const user = existingInfo
 			? existingInfo
 			: await sdk
-					.request<CollabUser>(
+					.request(
 						readUser(message.user, {
 							// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
-							fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] as (keyof DirectusUser)[],
+							fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on']}] as (keyof DirectusUser)[],
 						}),
 					)
 					.catch(() => ({}));
