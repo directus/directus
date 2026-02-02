@@ -3,6 +3,7 @@ import type { ContextAttachment } from '@directus/ai';
 import { computed } from 'vue';
 import type { PendingContextItem } from '../types';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 
 type ContextItem = ContextAttachment | PendingContextItem;
@@ -51,7 +52,7 @@ const icon = computed(() => {
 		<div class="icon-wrapper">
 			<VIcon :name="icon" x-small class="item-icon" />
 		</div>
-		<p class="display-text">{{ item.display }}</p>
+		<VTextOverflow :text="String(item.display)" class="display-text" />
 		<button v-if="removable" type="button" class="close-button" :aria-label="$t('remove')" @click.stop="emit('remove')">
 			<VIcon name="close" small />
 		</button>
@@ -105,9 +106,6 @@ const icon = computed(() => {
 	font-weight: 500;
 	color: var(--theme--foreground);
 	line-height: 1.3;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	margin: 0;
 }
 
