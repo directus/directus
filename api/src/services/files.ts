@@ -368,7 +368,10 @@ export class FilesService extends ItemsService<File> {
 						if (filepath === filePath) {
 							if (!remoteFileExists) {
 								await disk.move(filepath, updatedFilePath);
-							} else if (env['FILES_SKIP_PRIMARY_ASSET'] === true) {
+								continue;
+							}
+
+							if (env['FILES_SKIP_PRIMARY_ASSET'] === true) {
 								continue;
 							}
 						}
