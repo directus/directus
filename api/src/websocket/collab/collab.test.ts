@@ -101,9 +101,9 @@ describe('CollabHandler', () => {
 			).rejects.toHaveProperty('extensions.reason', 'Collaborative editing is not supported for shares');
 		});
 
-		test('rejects access if validateItemAccess returns false', async () => {
+		test('rejects access if verifyPermissions returns empty array (no access)', async () => {
 			vi.mocked(getSchema).mockResolvedValue({ collections: { articles: {} }, relations: [] } as any);
-			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: false });
+			vi.mocked(verifyPermissions).mockResolvedValue([]);
 
 			await expect(
 				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
@@ -117,19 +117,21 @@ describe('CollabHandler', () => {
 				},
 			} as any);
 
+			vi.mocked(verifyPermissions).mockResolvedValue([]);
+
 			await expect(
 				handler.onJoin(mockClient, { action: 'join', collection: 'articles' } as any),
 			).rejects.toHaveProperty('extensions.reason', 'No permission to access item or it does not exist');
 		});
 
-		test('rejects if item does not exist or user has no access', async () => {
+		test('rejects if user has no read access', async () => {
 			vi.mocked(getSchema).mockResolvedValue({
 				collections: {
 					articles: { singleton: false },
 				},
 			} as any);
 
-			vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: false });
+			vi.mocked(verifyPermissions).mockResolvedValue([]);
 
 			await expect(
 				handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any),
@@ -150,9 +152,43 @@ describe('CollabHandler', () => {
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: 1 } as any);
 
-			expect(validateItemAccess).toHaveBeenCalled();
+			expect(verifyPermissions).toHaveBeenCalledWith(
+				mockClient.accountability,
+				'articles',
+				1,
+				'read',
+				expect.anything(),
+			);
+
 			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, undefined);
 			expect(handler.messenger.handleError).not.toHaveBeenCalled();
+		});
+
+		test('creates room and joins client on success (Virtual Room / Create)', async () => {
+			vi.mocked(getSchema).mockResolvedValue({
+				collections: {
+					articles: { singleton: false },
+				},
+			} as any);
+
+			vi.mocked(verifyPermissions).mockResolvedValue(['title']); // Read allowed on collection
+
+			const mockRoom = { join: vi.fn() };
+			vi.mocked(handler.roomManager.createRoom).mockResolvedValue(mockRoom as any);
+
+			const virtualId = '+articles-1-translations-fr-FR+';
+			await handler.onJoin(mockClient, { action: 'join', collection: 'articles', item: virtualId } as any);
+
+			expect(verifyPermissions).toHaveBeenCalledWith(
+				mockClient.accountability,
+				'articles',
+				null, // Null item for virtual room read check
+				'read',
+				expect.anything(),
+			);
+
+			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('articles', virtualId, null, undefined);
+			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, undefined);
 		});
 
 		test('creates room and joins client on success (singleton collection)', async () => {
@@ -175,7 +211,7 @@ describe('CollabHandler', () => {
 
 			await handler.onJoin(mockClient, { action: 'join', collection: 'settings' } as any);
 
-			expect(validateItemAccess).toHaveBeenCalled();
+			expect(verifyPermissions).toHaveBeenCalled();
 			expect(handler.roomManager.createRoom).toHaveBeenCalledWith('settings', undefined, null, undefined);
 			expect(mockRoom.join).toHaveBeenCalledWith(mockClient, undefined);
 		});

@@ -3,6 +3,7 @@ import { useBus } from '../../bus/index.js';
 import getDatabase from '../../database/index.js';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
+import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateItemAccess } from '../../permissions/modules/validate-access/lib/validate-item-access.js';
 import { extractRequiredDynamicVariableContextForPermissions } from '../../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../permissions/utils/fetch-dynamic-variable-data.js';
@@ -492,5 +493,42 @@ describe('Permissions Integration', () => {
 		await bus.publish('websocket.event', { collection: 'directus_permissions' });
 
 		expect(permissionCache.get(accountability as any, collection, item, action)).toBeUndefined();
+	});
+
+	test('Join Virtual Room (Create Permission Only)', async () => {
+		const accountability = defaultAccountability;
+		const collection = 'articles';
+		const item = '999'; // Non-existent
+
+		vi.mocked(fetchPermissions).mockResolvedValue([
+			{ action: 'read', fields: ['*'], permissions: { id: { _eq: 1 } } },
+			{ action: 'create', fields: ['title'], permissions: {} },
+		] as any);
+
+		vi.mocked(getService).mockReturnValue({
+			readOne: vi.fn().mockRejectedValue(new Error('Item not found')),
+		} as any);
+
+		vi.mocked(validateItemAccess).mockImplementation(async ({ action, primaryKeys }) => {
+			if (action === 'read' && primaryKeys?.includes('999')) return { accessAllowed: false, allowedRootFields: [] };
+			if (action === 'create') return { accessAllowed: true, allowedRootFields: ['title'] };
+			return { accessAllowed: false, allowedRootFields: [] };
+		});
+
+		vi.mocked(fetchAllowedFields).mockResolvedValue(['title']);
+
+		const readFields = await verifyPermissions(accountability as any, collection, item, 'read', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
+		expect(readFields).toBeNull();
+
+		const createFields = await verifyPermissions(accountability as any, collection, null, 'create', {
+			knex: getDatabase(),
+			schema: await getSchema(),
+		});
+
+		expect(createFields).toEqual(['title']);
 	});
 });

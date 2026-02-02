@@ -2,10 +2,11 @@
 import type { ContentVersion } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, inject, type Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TranslationForm from './translation-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { type CollabContext, useCollab } from '@/composables/use-collab';
 import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
@@ -115,33 +116,142 @@ const {
 
 useNestedValidation();
 
-function getItemWithLang<T extends Record<string, any>>(items: T[], lang: string | undefined) {
+function getItemWithLang<T extends Record<string, any>>(items: T[], lang: string | undefined): T | undefined {
 	const langField = relationInfo.value?.junctionField.field;
 	const relatedPKField = relationInfo.value?.relatedPrimaryKeyField.field;
-	if (!langField || !relatedPKField || !lang) return;
+	if (!langField || !relatedPKField || !lang) return undefined;
 
-	return items.find((item) => item?.[langField]?.[relatedPKField] === lang);
+	return items.find((item) => {
+		const value = item?.[langField];
+
+		const match = value && typeof value === 'object' ? value[relatedPKField] === lang : value === lang;
+
+		return match;
+	});
 }
+
+const injectedCollabContext = inject<CollabContext | undefined>('collabContext', undefined);
+
+function useRelationalCollab(lang: Ref<string | undefined>) {
+	const row = computed(() => {
+		const displayItem = getItemWithLang(displayItems.value, lang.value);
+		if (displayItem) return displayItem;
+
+		const val = value.value;
+
+		if (val && !Array.isArray(val)) {
+			const updateItem = getItemWithLang(val.update || [], lang.value);
+			if (updateItem) return { ...updateItem, $type: 'updated' } as DisplayItem;
+
+			const createItem = getItemWithLang(val.create || [], lang.value);
+			if (createItem) return { ...createItem, $type: 'created' } as DisplayItem;
+		}
+
+		return undefined;
+	});
+
+	const rowPk = computed(() => {
+		if (!lang.value || !relationInfo.value) return null;
+		const item = row.value;
+
+		if (item) {
+			const pkField = relationInfo.value.junctionPrimaryKeyField.field;
+			const pk = item[pkField];
+
+			// Use the real database PK if translation exists
+			if (pk !== undefined && pk !== null && (item.$type === 'updated' || !isLocalItem(item))) {
+				return pk;
+			}
+		}
+
+		// Virtual UID for new items
+		return `+${props.collection}-${props.primaryKey}-${props.field}-${lang.value}+`;
+	});
+
+	const initialValues = computed(() => {
+		if (!row.value) return null;
+		return isLocalItem(row.value) ? {} : row.value;
+	});
+
+	const edits = computed({
+		get: () => {
+			if (!row.value) return {};
+			return getItemEdits(row.value);
+		},
+		set: (val) => {
+			updateValue(val, lang.value);
+		},
+	});
+
+	const collab = useCollab(
+		computed(() => relationInfo.value?.junctionCollection.collection ?? ''),
+		rowPk,
+		version,
+		initialValues,
+		edits,
+		async () => {
+			// No-op: Changes synced via collaborative room
+		},
+		computed(() => !!lang.value),
+	);
+
+	const parentCollabField = injectedCollabContext?.registerField(props.field);
+
+	const registerField = (field: string) => {
+		const fieldCtx = collab.collabContext.registerField(field);
+
+		return {
+			...fieldCtx,
+			onFocus: () => {
+				fieldCtx.onFocus();
+				parentCollabField?.onFocus();
+			},
+			onBlur: () => {
+				fieldCtx.onBlur();
+				parentCollabField?.onBlur();
+			},
+		};
+	};
+
+	return {
+		...collab,
+		collabContext: {
+			...collab.collabContext,
+			registerField,
+		} as CollabContext,
+	};
+}
+
+const { collabContext: firstCollabContext } = useRelationalCollab(firstLang);
+const { collabContext: secondCollabContext } = useRelationalCollab(secondLang);
 
 function updateValue(item: DisplayItem | undefined, lang: string | undefined) {
 	const info = relationInfo.value;
 	if (!info) return;
 
-	const itemInfo = getItemWithLang(displayItems.value, lang);
+	const val = value.value;
 
-	if (itemInfo) {
+	const displayItem = getItemWithLang(displayItems.value, lang);
+	const updateItem = !Array.isArray(val) ? getItemWithLang(val?.update || [], lang) : undefined;
+	const createItem = !Array.isArray(val) ? getItemWithLang(val?.create || [], lang) : undefined;
+
+	const existingItem = displayItem || updateItem || createItem;
+
+	if (existingItem) {
 		const itemUpdates = {
 			...item,
 			[info.junctionField.field]: {
 				[info.relatedPrimaryKeyField.field]: lang,
 			},
-			$type: itemInfo?.$type,
-			$index: itemInfo?.$index,
-			$edits: itemInfo?.$edits,
+			$type: existingItem?.$type,
+			$index: existingItem?.$index,
+			$edits: existingItem?.$edits,
 		};
 
-		if (itemInfo[info.junctionPrimaryKeyField.field] !== undefined) {
-			itemUpdates[info.junctionPrimaryKeyField.field] = itemInfo[info.junctionPrimaryKeyField.field];
+		const pkField = info.junctionPrimaryKeyField.field;
+
+		if (existingItem[pkField] !== undefined) {
+			itemUpdates[pkField] = existingItem[pkField];
 		} else if (primaryKey.value !== '+') {
 			itemUpdates[info.reverseJunctionField.field] = primaryKey.value;
 		}
@@ -171,6 +281,16 @@ const translationProps = computed(() => ({
 	isLocalItem,
 	updateValue,
 	remove,
+}));
+
+const firstTranslationProps = computed(() => ({
+	...translationProps.value,
+	collabContext: firstCollabContext,
+}));
+
+const secondTranslationProps = computed(() => ({
+	...translationProps.value,
+	collabContext: secondCollabContext,
 }));
 
 function useLanguages() {
@@ -364,7 +484,11 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<TranslationForm v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+		<TranslationForm
+			v-model:lang="firstLang"
+			v-bind="firstTranslationProps"
+			:class="splitViewEnabled ? 'half' : 'full'"
+		>
 			<template #split-view="{ active, toggle }">
 				<VIcon
 					v-if="splitViewAvailable && !splitViewEnabled"
@@ -380,7 +504,13 @@ function useNestedValidation() {
 			</template>
 		</TranslationForm>
 
-		<TranslationForm v-if="splitViewEnabled" v-model:lang="secondLang" v-bind="translationProps" secondary class="half">
+		<TranslationForm
+			v-if="splitViewEnabled"
+			v-model:lang="secondLang"
+			v-bind="secondTranslationProps"
+			secondary
+			class="half"
+		>
 			<template #split-view>
 				<VIcon
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"

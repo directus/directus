@@ -111,6 +111,7 @@ export function useCollab(
 	const eventHandlers: RemoveEventHandler[] = [];
 	let largestUpdateOrder = 0;
 	const router = useRouter();
+	const lastLocalFocus = ref<string | null>(null);
 
 	const collabCollision = computed(() => {
 		if (!collidingLocalChanges.value) return undefined;
@@ -321,6 +322,10 @@ export function useCollab(
 		}
 
 		focused.value = message.focuses;
+
+		if (lastLocalFocus.value) {
+			sendFocus(lastLocalFocus.value);
+		}
 	}
 
 	function receiveUpdate(message: UpdateMessage) {
@@ -462,6 +467,8 @@ export function useCollab(
 	}
 
 	const onFieldUpdate = throttle((field: string, value: any) => {
+		if (connectionId.value && focused.value[connectionId.value] !== field) return;
+
 		sendMessage({
 			action: ACTION.CLIENT.UPDATE,
 			changes: value,
@@ -470,6 +477,8 @@ export function useCollab(
 	}, 100);
 
 	const onFieldUnset = throttle((field: string) => {
+		if (connectionId.value && focused.value[connectionId.value] !== field) return;
+
 		sendMessage({
 			action: ACTION.CLIENT.UPDATE,
 			field: field,
@@ -489,14 +498,28 @@ export function useCollab(
 		collidingLocalChanges.value = undefined;
 	}
 
-	const onFocus = debounce((field: string | null) => {
-		if (field && Object.values(focused.value).includes(field)) return;
-
+	const sendFocus = debounce((field: string | null) => {
 		sendMessage({
 			action: ACTION.CLIENT.FOCUS,
 			field: field,
 		});
 	}, 100);
+
+	const onFocus = (field: string | null) => {
+		if (field && Object.values(focused.value).includes(field)) return;
+
+		lastLocalFocus.value = field;
+
+		if (connectionId.value) {
+			if (field) {
+				focused.value[connectionId.value] = field;
+			} else {
+				delete focused.value[connectionId.value];
+			}
+		}
+
+		sendFocus(field);
+	};
 
 	function discard() {
 		const permission = permissionsStore.getPermission(collection.value, 'update');

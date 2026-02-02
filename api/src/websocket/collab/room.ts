@@ -16,6 +16,7 @@ import { useLogger } from '../../logger/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { getService } from '../../utils/get-service.js';
 import { isFieldAllowed } from '../../utils/is-field-allowed.js';
+import { isVirtualRoomItem } from './is-virtual-room-item.js';
 import { Messenger } from './messenger.js';
 import { sanitizePayload } from './payload-permissions.js';
 import { useStore } from './store.js';
@@ -41,6 +42,7 @@ export class RoomManager {
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
+			useLogger().debug(`[Collab] Creating new room for ${collection}/${item ?? 'singleton'}. UID: ${uid}`);
 			const room = new Room(uid, collection, item, version, initialChanges, this.messenger);
 			this.rooms[uid] = room;
 			await room.ensureInitialized();
@@ -215,6 +217,9 @@ export class Room {
 
 			const target = this.version ?? this.item;
 
+			// Virtual rooms don't map to real items
+			if (isVirtualRoomItem(this.item)) return;
+
 			// Skip updates for different items (singletons have item=null)
 			if (target !== null && !keys.some((key) => String(key) === String(target))) return;
 
@@ -285,6 +290,9 @@ export class Room {
 				// Skip deletions for different versions
 				const isVersionMatch =
 					this.version && eventCollection === 'directus_versions' && keys.some((key) => String(key) === this.version);
+
+				// Virtual rooms don't map to real items
+				if (isVirtualRoomItem(this.item)) return;
 
 				// Skip deletions for different items (singletons have item=null)
 				const isItemMatch =
@@ -417,10 +425,21 @@ export class Room {
 		const schema = await getSchema();
 		const knex = getDatabase();
 
-		const allowedFields = await verifyPermissions(client.accountability, this.collection, this.item, 'read', {
+		let allowedFields = await verifyPermissions(client.accountability, this.collection, this.item, 'read', {
 			schema,
 			knex,
 		});
+
+		if ((!allowedFields || allowedFields.length === 0) && isVirtualRoomItem(this.item)) {
+			const createFields = await verifyPermissions(client.accountability, this.collection, null, 'create', {
+				knex,
+				schema,
+			});
+
+			if (createFields && createFields.length > 0) {
+				allowedFields = createFields;
+			}
+		}
 
 		this.send(client.uid, {
 			action: ACTION.SERVER.INIT,

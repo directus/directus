@@ -2,6 +2,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
 import { deepMapWithSchema, isDetailedUpdateSyntax } from '@directus/utils';
 import type { Knex } from 'knex';
+import { isVirtualRoomItem } from './is-virtual-room-item.js';
 import { verifyPermissions } from './verify-permissions.js';
 
 type PermissionContext = {
@@ -129,7 +130,7 @@ async function processPermissions(
 			let allowedFields = await getPermissions(currentCollection, effectiveItemId, action);
 
 			// Fallbacks
-			if (!allowedFields) {
+			if (!allowedFields || (allowedFields.length === 0 && isVirtualRoomItem(effectiveItemId))) {
 				if (direction === 'inbound' && action === 'update') {
 					// Toggle to create if update fails due to non-existence
 					action = 'create';

@@ -14,6 +14,7 @@ import { isFieldAllowed } from '../../utils/is-field-allowed.js';
 import { type ScheduledJob, scheduleSynchronizedJob } from '../../utils/schedule.js';
 import { getMessageType } from '../utils/message.js';
 import { IRRELEVANT_COLLECTIONS } from './constants.js';
+import { isVirtualRoomItem } from './is-virtual-room-item.js';
 import { Messenger } from './messenger.js';
 import { validateChanges } from './payload-permissions.js';
 import { RoomManager } from './room.js';
@@ -147,6 +148,9 @@ export class CollabHandler {
 						event.keys = keys;
 
 						const roomsToUpdate = Object.values(this.roomManager.rooms).filter((room) => {
+							// Skip virtual rooms (eg: translations)
+							if (isVirtualRoomItem(room.item)) return false;
+
 							// Versioned Rooms
 							if (room.version) {
 								return event.collection === 'directus_versions' && keys.some((key) => String(key) === room.version);
@@ -330,36 +334,50 @@ export class CollabHandler {
 		const schema = await getSchema();
 		const db = getDatabase();
 
-		try {
-			const { accessAllowed } = await validateItemAccess(
+		const isVirtualItem = isVirtualRoomItem(message.item);
+
+		let readFields = await verifyPermissions(
+			client.accountability!,
+			message.collection,
+			isVirtualItem ? null : message.item,
+			'read',
+			{
+				knex: db,
+				schema,
+			},
+		);
+
+		// Item doesn't exist, check collection-level read permissions
+		if (readFields === null) {
+			readFields = await verifyPermissions(client.accountability!, message.collection, null, 'read', {
+				knex: db,
+				schema,
+			});
+		}
+
+		if (!readFields || readFields.length === 0) {
+			throw new ForbiddenError({
+				reason: `No permission to access item or it does not exist`,
+			});
+		}
+
+		// Item exists, user has read access, check version access
+		if (message.version) {
+			const { accessAllowed: versionAccessAllowed } = await validateItemAccess(
 				{
 					accountability: client.accountability!,
 					action: 'read',
-					collection: message.collection,
-					primaryKeys: schema.collections[message.collection]?.singleton ? [] : [message.item!],
+					collection: 'directus_versions',
+					primaryKeys: [message.version],
 				},
 				{ knex: db, schema },
 			);
 
-			if (!accessAllowed) throw new ForbiddenError();
-
-			if (message.version) {
-				const { accessAllowed: versionAccessAllowed } = await validateItemAccess(
-					{
-						accountability: client.accountability!,
-						action: 'read',
-						collection: 'directus_versions',
-						primaryKeys: [message.version],
-					},
-					{ knex: db, schema },
-				);
-
-				if (!versionAccessAllowed) throw new ForbiddenError();
+			if (!versionAccessAllowed) {
+				throw new ForbiddenError({
+					reason: `No permission to access item or it does not exist`,
+				});
 			}
-		} catch {
-			throw new ForbiddenError({
-				reason: `No permission to access item or it does not exist`,
-			});
 		}
 
 		if (message.initialChanges) {

@@ -6,6 +6,7 @@ import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VRemove from '@/components/v-remove.vue';
+import { type CollabContext } from '@/composables/use-collab';
 import { usePermissions } from '@/composables/use-permissions';
 import { type RelationM2M } from '@/composables/use-relation-m2m';
 import { type DisplayItem } from '@/composables/use-relation-multiple';
@@ -38,6 +39,7 @@ const {
 	remove: (...items: DisplayItem[]) => void;
 	updateValue: (item: DisplayItem | undefined, lang: string | undefined) => void;
 	secondary?: boolean;
+	collabContext?: CollabContext;
 }>();
 
 const lang = defineModel<string>('lang');
@@ -203,6 +205,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			:badge="selectedLanguage.text"
 			:direction="selectedLanguage.direction"
 			:autofocus="autofocus"
+			:collab-context="collabContext"
 			inline
 			@update:model-value="updateValue($event, lang)"
 		/>
