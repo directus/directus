@@ -318,7 +318,7 @@ export function useCollab(
 						},
 					},
 					//  Object syntax for nested fields - SDK types require schema definition for full support
-					// TODO: Update this once https://linear.app/directus/issue/CMS-1702/improve-sdk-type-safety-by-using-coreschema-instead-of-unknown is Done
+					// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
 					fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as ('id' | 'first_name' | 'last_name' | 'avatar')[],
 				}),
 			);
@@ -408,7 +408,7 @@ export function useCollab(
 			: await sdk
 					.request<CollabUser>(
 						readUser(message.user, {
-							// TODO: Update this once https://linear.app/directus/issue/CMS-1702/improve-sdk-type-safety-by-using-coreschema-instead-of-unknown is Done
+							// TODO: Update this once https://github.com/directus/directus/issues/26558 is Done
 							fields: ['id', 'first_name', 'last_name', { avatar: ['id', 'modified_on'] }] as ('id' | 'first_name' | 'last_name' | 'avatar')[],
 						}),
 					)
