@@ -50,7 +50,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<PrivateView :title="$t(`deployment.provider.${provider}.name`)" icon="cloud">
+	<PrivateView :title="$t(`deployment.provider.${provider}.name`)" :icon="provider">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployment' }]" />
 		</template>
@@ -167,7 +167,6 @@ onMounted(async () => {
 		color: var(--theme--primary);
 		text-decoration: none;
 		font-size: 14px;
-		margin-block-start: 4px;
 
 		&:hover {
 			text-decoration: underline;

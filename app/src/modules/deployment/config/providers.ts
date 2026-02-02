@@ -39,7 +39,7 @@ export function useProviderConfigs(
 							required: !hasExisting,
 							note: [
 								edit &&
-								`${t('deployment.provider.credentials.notice', { provider: vercelProvider })} [${t('deployment.provider.credentials.link', { provider: vercelProvider })}](${vercelTokenUrl}).`,
+									`${t('deployment.provider.credentials.notice', { provider: vercelProvider })} [${t('deployment.provider.credentials.link', { provider: vercelProvider })}](${vercelTokenUrl}).`,
 								t('deployment.provider.token.encrypted_notice'),
 							]
 								.filter(Boolean)

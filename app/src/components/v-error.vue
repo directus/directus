@@ -11,7 +11,12 @@ interface Props {
 const props = defineProps<Props>();
 
 const code = computed(() => {
-	return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
+	return (
+		props.error?.response?.data?.errors?.[0]?.extensions?.code ||
+		props.error?.errors?.[0]?.extensions?.code ||
+		props.error?.extensions?.code ||
+		'UNKNOWN'
+	);
 });
 
 const message = computed(() => {

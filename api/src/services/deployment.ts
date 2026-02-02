@@ -118,9 +118,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const existingCredentials = this.parseValue<Credentials>(deployment.credentials, {});
 		const existingOptions = this.parseValue<Options>(deployment.options, {});
 
-		const mergedCredentials = newCredentials
-			? { ...existingCredentials, ...newCredentials }
-			: existingCredentials;
+		const mergedCredentials = newCredentials ? { ...existingCredentials, ...newCredentials } : existingCredentials;
 
 		const mergedOptions = newOptions
 			? Object.fromEntries(Object.entries({ ...existingOptions, ...newOptions }).filter(([, v]) => v !== null))

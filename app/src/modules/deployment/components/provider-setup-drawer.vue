@@ -22,16 +22,20 @@ const emit = defineEmits<{
 	complete: [];
 }>();
 
-const credentialsValues = ref<Record<string, any>>({});
-const optionsValues = ref<Record<string, any>>({});
+const values = ref<Record<string, any>>({});
 const saving = ref(false);
+
+const allFields = computed(() => [
+	...(providerConfig.value?.credentialsFields || []),
+	...(providerConfig.value?.optionsFields || []),
+]);
 
 const isValid = computed(() => {
 	const fields = providerConfig.value?.credentialsFields || [];
 
 	return fields.every((field) => {
 		if (field.meta?.required && field.field) {
-			return Boolean(credentialsValues.value[field.field]);
+			return Boolean(values.value[field.field]);
 		}
 
 		return true;
@@ -40,8 +44,7 @@ const isValid = computed(() => {
 
 watch(active, (isActive) => {
 	if (!isActive) {
-		credentialsValues.value = {};
-		optionsValues.value = {};
+		values.value = {};
 	}
 });
 
@@ -53,13 +56,20 @@ async function save() {
 	try {
 		const payload: Record<string, any> = {
 			provider: props.provider,
-			credentials: credentialsValues.value,
+			credentials: {},
 		};
 
-		const hasOptions = Object.values(optionsValues.value).some((v) => v !== null && v !== undefined && v !== '');
+		for (const field of providerConfig.value?.credentialsFields || []) {
+			if (field.field && values.value[field.field] !== undefined) {
+				payload.credentials[field.field] = values.value[field.field];
+			}
+		}
 
-		if (hasOptions) {
-			payload.options = optionsValues.value;
+		for (const field of providerConfig.value?.optionsFields || []) {
+			if (field.field && values.value[field.field] !== undefined && values.value[field.field] !== '') {
+				payload.options ??= {};
+				payload.options[field.field] = values.value[field.field];
+			}
 		}
 
 		await sdk.request(createDeployment(payload));
@@ -101,13 +111,7 @@ function onCancel() {
 				</a>
 			</VNotice>
 
-			<VForm v-model="credentialsValues" :fields="(providerConfig?.credentialsFields as any) || []" autofocus />
-
-			<VForm
-				v-if="providerConfig?.optionsFields?.length"
-				v-model="optionsValues"
-				:fields="(providerConfig?.optionsFields as any) || []"
-			/>
+			<VForm v-model="values" :fields="allFields as any" autofocus />
 		</div>
 
 		<template #actions>

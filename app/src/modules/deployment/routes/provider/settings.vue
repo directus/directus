@@ -46,26 +46,39 @@ const confirmDelete = ref(false);
 const confirmRemoveProjects = ref(false);
 const projectsToRemove = ref<string[]>([]);
 const config = ref<DeploymentConfig | null>(null);
-const credentialsEdits = ref<Record<string, any>>({});
-const optionsEdits = ref<Record<string, any>>({});
+const configurationEdits = ref<Record<string, any>>({});
 const availableProjects = ref<DeploymentProjectListOutput[]>([]);
 const selectedProjectIds = ref<string[]>([]);
 const initialProjectIds = ref<string[]>([]);
 
-// Filter out empty values (null, undefined, "")
+const { providerConfigs } = useProviderConfigs(true, true);
+const providerConfig = computed(() => providerConfigs.value[props.provider]);
+
+const allFields = computed(() => [
+	...(providerConfig.value?.credentialsFields || []),
+	...(providerConfig.value?.optionsFields || []),
+]);
+
+const credentialsFieldNames = computed(
+	() => (providerConfig.value?.credentialsFields || []).map((f) => f.field).filter(Boolean) as string[],
+);
+
+const optionsFieldNames = computed(
+	() => (providerConfig.value?.optionsFields || []).map((f) => f.field).filter(Boolean) as string[],
+);
+
 const filterEmpty = (obj: Record<string, any>) => pickBy(obj, (v) => !isNil(v) && v !== '');
 
-// hasEdits computed - compare actual values using lodash
 const hasEdits = computed(() => {
-	// Credentials: check if there are any non-empty values
-	const hasCredentialsEdits = !isEmpty(filterEmpty(credentialsEdits.value));
+	const credentialsEdits = pickBy(configurationEdits.value, (_, key) => credentialsFieldNames.value.includes(key));
+	const optionsEdits = pickBy(configurationEdits.value, (_, key) => optionsFieldNames.value.includes(key));
 
-	// Options: compare normalized current values with initial
+	const hasCredentialsEdits = !isEmpty(filterEmpty(credentialsEdits));
+
 	const initialOptions = filterEmpty(config.value?.options || {});
-	const currentOptions = filterEmpty({ ...config.value?.options, ...optionsEdits.value });
+	const currentOptions = filterEmpty({ ...initialOptions, ...optionsEdits });
 	const hasOptionsEdits = !isEqual(initialOptions, currentOptions);
 
-	// Projects: compare sorted arrays
 	const projectsChanged = !isEqual([...selectedProjectIds.value].sort(), [...initialProjectIds.value].sort());
 
 	return hasCredentialsEdits || hasOptionsEdits || projectsChanged;
@@ -75,19 +88,11 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 function discardAndLeave() {
 	if (!leaveTo.value) return;
-	credentialsEdits.value = {};
-	optionsEdits.value = {};
+	configurationEdits.value = {};
 	selectedProjectIds.value = [...initialProjectIds.value];
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
-
-const hasExistingCredentials = computed(() => !!config.value?.credentials);
-const { providerConfigs } = useProviderConfigs(hasExistingCredentials, true);
-
-const credentialsFields = computed(() => providerConfigs.value[props.provider]?.credentialsFields || []);
-const optionsFields = computed(() => providerConfigs.value[props.provider]?.optionsFields || []);
-const settingsWarning = computed(() => providerConfigs.value[props.provider]?.settingsWarning);
 
 async function loadConfig() {
 	loading.value = true;
@@ -142,12 +147,24 @@ async function save() {
 	try {
 		const updatePayload: Record<string, any> = {};
 
-		if (Object.keys(credentialsEdits.value).length > 0) {
-			updatePayload.credentials = credentialsEdits.value;
+		// Extract credentials from edits
+		for (const field of providerConfig.value?.credentialsFields || []) {
+			if (
+				field.field &&
+				configurationEdits.value[field.field] !== undefined &&
+				configurationEdits.value[field.field] !== ''
+			) {
+				updatePayload.credentials ??= {};
+				updatePayload.credentials[field.field] = configurationEdits.value[field.field];
+			}
 		}
 
-		if (Object.keys(optionsEdits.value).length > 0) {
-			updatePayload.options = { ...config.value?.options, ...optionsEdits.value };
+		// Extract options from edits
+		for (const field of providerConfig.value?.optionsFields || []) {
+			if (field.field && configurationEdits.value[field.field] !== undefined) {
+				updatePayload.options ??= { ...config.value?.options };
+				updatePayload.options[field.field] = configurationEdits.value[field.field];
+			}
 		}
 
 		// Update deployment config if we have anything to save
@@ -187,8 +204,7 @@ async function save() {
 			config.value.options = updatePayload.options;
 		}
 
-		credentialsEdits.value = {};
-		optionsEdits.value = {};
+		configurationEdits.value = {};
 		initialProjectIds.value = [...selectedProjectIds.value];
 		projectsToRemove.value = [];
 
@@ -226,13 +242,14 @@ onMounted(() => {
 <template>
 	<PrivateView
 		:title="$t('deployment.provider.settings.settings', { provider: $t(`deployment.provider.${provider}.name`) })"
+		:icon="initialProjectIds.length > 0 ? 'settings' : undefined"
 	>
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployment' }]" />
 		</template>
 
-		<template v-if="initialProjectIds.length > 0" #title-outer:prepend>
-			<VButton class="back-button" rounded icon secondary exact small @click="router.push(`/deployment/${provider}`)">
+		<template v-if="initialProjectIds.length === 0" #title-outer:prepend>
+			<VButton class="back-button" rounded icon secondary exact small @click="router.push('/deployment')">
 				<VIcon name="arrow_back" small />
 			</VButton>
 		</template>
@@ -247,10 +264,11 @@ onMounted(() => {
 				rounded
 				icon
 				small
-				kind="danger"
+				secondary
+				class="action-delete"
 				@click="confirmDelete = true"
 			>
-				<VIcon name="delete" small />
+				<VIcon name="delete" outline small />
 			</VButton>
 
 			<PrivateViewHeaderBarActionButton
@@ -266,38 +284,24 @@ onMounted(() => {
 			<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
 			<template v-else>
-				<VNotice v-if="settingsWarning && initialProjectIds.length > 0" type="warning" class="settings-warning">
-					{{ settingsWarning }}
+				<VNotice
+					v-if="providerConfig?.settingsWarning && initialProjectIds.length > 0"
+					type="warning"
+					class="settings-warning"
+				>
+					{{ providerConfig.settingsWarning }}
 				</VNotice>
 
-				<InterfacePresentationDivider
-					:title="
-						$t('deployment.provider.settings.edit_credentials', {
-							provider: $t(`deployment.provider.${provider}.name`),
-						})
-					"
-					icon="key"
-				/>
+				<InterfacePresentationDivider :title="$t('deployment.provider.settings.edit_configuration')" icon="settings" />
 
-				<div :class="{ 'credentials-saved': hasExistingCredentials }">
-					<VForm v-model="credentialsEdits" :fields="credentialsFields as any" :initial-values="{}" primary-key="+" />
+				<div class="credentials-saved">
+					<VForm
+						v-model="configurationEdits"
+						:fields="allFields as any"
+						:initial-values="config?.options || {}"
+						primary-key="+"
+					/>
 				</div>
-
-				<InterfacePresentationDivider
-					v-if="optionsFields.length > 0"
-					:title="
-						$t('deployment.provider.settings.edit_options', { provider: $t(`deployment.provider.${provider}.name`) })
-					"
-					icon="settings"
-				/>
-
-				<VForm
-					v-if="optionsFields.length > 0"
-					v-model="optionsEdits"
-					:fields="optionsFields as any"
-					:initial-values="config?.options || {}"
-					primary-key="+"
-				/>
 
 				<InterfacePresentationDivider :title="$t('deployment.provider.projects')" icon="assignment" />
 
@@ -314,7 +318,7 @@ onMounted(() => {
 						@update:model-value="(value) => (selectedProjectIds = value)"
 					>
 						<template v-if="!project.deployable" #append>
-							<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" small />
+							<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" />
 						</template>
 					</VCheckbox>
 				</div>
@@ -364,6 +368,11 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+.action-delete {
+	--v-button-background-color-hover: var(--theme--danger) !important;
+	--v-button-color-hover: var(--white) !important;
+}
+
 .back-button {
 	--v-button-background-color: var(--theme--background-normal);
 	--v-button-color-active: var(--theme--foreground);
@@ -393,6 +402,12 @@ onMounted(() => {
 
 .settings-warning {
 	margin-block-end: var(--theme--form--row-gap);
+}
+
+.type-label,
+.type-note,
+.checkboxes {
+	max-inline-size: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
 }
 
 .type-label {

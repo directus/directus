@@ -90,7 +90,7 @@ const tableHeaders = ref<Header[]>([
 	{
 		text: t('deployment.provider.runs.started'),
 		value: 'date_created',
-		width: 150,
+		width: 180,
 		sortable: false,
 		align: 'left',
 		description: null,
@@ -202,9 +202,7 @@ watch(
 
 			<VMenu placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
-					<VButton rounded icon small secondary @click="toggle">
-						<VIcon name="more_vert" small />
-					</VButton>
+					<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
 				</template>
 
 				<VList>
@@ -256,7 +254,7 @@ watch(
 						</template>
 
 						<template #[`item.target`]="{ item }">
-							{{ item.target }}
+							{{ $t(`deployment.target_value.${item.target}`) }}
 						</template>
 
 						<template #[`item.date_created`]="{ item }">
@@ -313,5 +311,9 @@ watch(
 	display: flex;
 	justify-content: center;
 	margin-block-start: 24px;
+}
+
+.more-options {
+	align-self: center;
 }
 </style>

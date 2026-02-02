@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import { sdk } from '@/sdk';
-import { readDeploymentRun, cancelDeployment, type DeploymentLog, type DeploymentRunDetailOutput } from '@directus/sdk';
+import { cancelDeployment, type DeploymentRunsOutput, readDeploymentRun } from '@directus/sdk';
+import type { Log as DeploymentLog } from '@directus/types';
+import { format } from 'date-fns';
+import { saveAs } from 'file-saver';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import DeploymentStatus from '../../components/deployment-status.vue';
+import DeploymentNavigation from '../../components/navigation.vue';
+import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
-import VCard from '@/components/v-card.vue';
-import VCardTitle from '@/components/v-card-title.vue';
 import VCardActions from '@/components/v-card-actions.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
-import { PrivateView } from '@/views/private';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { format } from 'date-fns';
-import { saveAs } from 'file-saver';
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import DeploymentNavigation from '../../components/navigation.vue';
-import DeploymentStatus from '../../components/deployment-status.vue';
-import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
-import { formatDurationMs } from '@/utils/format-duration-ms';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import { sdk } from '@/sdk';
+import { formatDurationMs } from '@/utils/format-duration-ms';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateView } from '@/views/private';
 
 const props = defineProps<{
 	provider: string;
@@ -36,7 +37,7 @@ const { currentProject } = useDeploymentNavigation();
 const loading = ref(true);
 const canceling = ref(false);
 const confirmCancel = ref(false);
-const run = ref<DeploymentRunDetailOutput | null>(null);
+const run = ref<DeploymentRunsOutput | null>(null);
 const logs = ref<DeploymentLog[]>([]);
 const lastLogTimestamp = ref<string | null>(null);
 const logsContainer = ref<HTMLElement | null>(null);
@@ -88,10 +89,6 @@ const logItems = computed(() => {
 const duration = computed(() => {
 	if (!run.value) return '—';
 
-	if (run.value.duration) {
-		return formatDurationMs(run.value.duration);
-	}
-
 	const start = new Date(run.value.date_created).getTime();
 	const end = run.value.finished_at ? new Date(run.value.finished_at).getTime() : Date.now();
 
@@ -108,7 +105,7 @@ async function loadRun() {
 
 		const data = await sdk.request(readDeploymentRun(props.provider, props.runId, params));
 
-		run.value = data;
+		run.value = data as DeploymentRunsOutput;
 
 		// Append or replace logs
 		if (data.logs && data.logs.length > 0) {
@@ -259,11 +256,12 @@ onUnmounted(() => {
 					rounded
 					icon
 					small
-					kind="danger"
+					secondary
+					class="action-cancel"
 					:loading="canceling"
 					@click="confirmCancel = true"
 				>
-					<VIcon name="dangerous" small />
+					<VIcon name="dangerous" outline small />
 				</VButton>
 
 				<VButton
@@ -319,7 +317,7 @@ onUnmounted(() => {
 					<div class="stat-card">
 						<VIcon name="assignment" class="stat-icon" />
 						<span class="stat-label">{{ $t('deployment.target') }}</span>
-						<span class="stat-value">{{ run.target }}</span>
+						<span class="stat-value">{{ $t(`deployment.target_value.${run.target}`) }}</span>
 					</div>
 				</div>
 
@@ -368,6 +366,11 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
+.action-cancel {
+	--v-button-background-color-hover: var(--theme--danger) !important;
+	--v-button-color-hover: var(--white) !important;
+}
+
 .back-button {
 	--v-button-background-color: var(--theme--background-normal);
 	--v-button-color-active: var(--theme--foreground);
@@ -473,6 +476,8 @@ onUnmounted(() => {
 }
 
 .logs-container {
+	display: flex;
+	flex-direction: column;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	padding: 16px;
@@ -482,9 +487,11 @@ onUnmounted(() => {
 }
 
 .no-logs {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
 	color: var(--theme--foreground-subdued);
-	text-align: center;
-	padding: 48px;
 }
 
 .logs {

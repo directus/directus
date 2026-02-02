@@ -10,6 +10,7 @@ export function unexpectedError(error: unknown): void {
 
 	const code =
 		(error as RequestError).response?.data?.errors?.[0]?.extensions?.code ||
+		(error as any)?.errors?.[0]?.extensions?.code ||
 		(error as APIError)?.extensions?.code ||
 		'UNKNOWN';
 

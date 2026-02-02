@@ -1094,8 +1094,7 @@ deployment:
       encrypted_notice: This token will be encrypted and stored securely in your Directus configuration
     settings:
       settings: '{provider} Configuration'
-      edit_credentials: Edit Credentials
-      edit_options: Edit Options
+      edit_configuration: Edit Configuration
       delete: Delete Configuration
       delete_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
       remove_projects_confirm:
@@ -1147,6 +1146,9 @@ deployment:
   no_runs_copy: This project has no deployment history yet.
   deploy: Deploy
   target: Target
+  target_value:
+    production: Production
+    preview: Preview
   runs_status:
     ready: Ready
     building: Building

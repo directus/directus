@@ -457,11 +457,7 @@ router.patch(
 
 			if ('credentials' in req.body || 'options' in req.body) {
 				// Service handles permission check and connection test error wrapping
-				const result = await service.updateWithConnectionTest(
-					provider,
-					req.body.credentials,
-					req.body.options,
-				);
+				const result = await service.updateWithConnectionTest(provider, req.body.credentials, req.body.options);
 
 				primaryKey = result.primaryKey;
 			} else {

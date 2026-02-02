@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VItemGroup from '@/components/v-item-group.vue';
@@ -11,7 +12,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
 
 const route = useRoute();
 const { providers, loading, openProviders, fetch, currentProviderKey, currentProjectId } = useDeploymentNavigation();
@@ -114,6 +114,6 @@ onMounted(async () => {
 }
 
 .v-divider {
-	--v-divider-color: var(--theme--background-accent);
+	--v-divider-color: var(--theme--border-color-subdued);
 }
 </style>
