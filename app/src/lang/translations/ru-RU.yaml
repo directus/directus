@@ -33,6 +33,7 @@ email_address: Адрес электронной почты
 organization_name: Название организации
 how_do_you_use_directus: Для чего вы используете Directus?
 usage_personal: Личный/Обучение
+usage_commercial: Бизнес / Коммерческое
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -195,6 +196,7 @@ compare_version: Сравнить Версии
 save_version: Сохранить Версию
 promote_version: Повысить версию
 apply: Применить
+select_all_differences: Выбрать все различия
 delete_version: Удалить версию
 delete_version_copy: >-
   Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
