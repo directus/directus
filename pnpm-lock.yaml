@@ -5026,14 +5026,17 @@ packages:
   '@lezer/common@1.3.0':
     resolution: {integrity: sha512-L9X8uHCYU310o99L3/MpJKYxPzXPOS7S0NmBaM7UO/x2Kb2WbmMLSkfvdr1KxRIFYOpbY0Jhn7CfLSUDzL8arQ==}
 
+  '@lezer/common@1.5.0':
+    resolution: {integrity: sha512-PNGcolp9hr4PJdXR4ix7XtixDrClScvtSCYW3rQG106oVMOOI+jFb+0+J3mbeL/53g1Zd6s0kJzaw6Ri68GmAA==}
+
   '@lezer/css@1.3.0':
     resolution: {integrity: sha512-pBL7hup88KbI7hXnZV3PQsn43DHy6TWyzuyk2AO9UyoXcDltvIdqWKE1dLL/45JVZ+YZkHe1WVHqO6wugZZWcw==}
 
   '@lezer/highlight@1.2.2':
     resolution: {integrity: sha512-z8TQwaBXXQIvG6i2g3e9cgMwUUXu9Ib7jo2qRRggdhwKpM56Dw3PM3wmexn+EGaaOZ7az0K7sjc3/gcGW7sz7A==}
 
-  '@lezer/html@1.3.12':
-    resolution: {integrity: sha512-RJ7eRWdaJe3bsiiLLHjCFT1JMk8m1YP9kaUbvu2rMLEoOnke9mcTVDyfOslsln0LtujdWespjJ39w6zo+RsQYw==}
+  '@lezer/html@1.3.13':
+    resolution: {integrity: sha512-oI7n6NJml729m7pjm9lvLvmXbdoMoi2f+1pwSDJkl9d68zGr7a9Btz8NdHTGQZtW2DA25ybeuv/SyDb9D5tseg==}
 
   '@lezer/javascript@1.5.4':
     resolution: {integrity: sha512-vvYx3MhWqeZtGPwDStM2dwgljd5smolYD2lR2UyFcHfxbBQebqx8yjmFmxtJ/E6nN6u1D9srOiVWm3Rb4tmcUA==}
@@ -5044,14 +5047,14 @@ packages:
   '@lezer/lr@1.4.2':
     resolution: {integrity: sha512-pu0K1jCIdnQ12aWNaAVU5bzi7Bd1w54J3ECgANPmYLtQKP0HBj2cE/5coBD66MT10xbtIuUr7tg0Shbsvk0mDA==}
 
-  '@lezer/markdown@1.6.0':
-    resolution: {integrity: sha512-AXb98u3M6BEzTnreBnGtQaF7xFTiMA92Dsy5tqEjpacbjRxDSFdN4bKJo9uvU4cEEOS7D2B9MT7kvDgOEIzJSw==}
+  '@lezer/markdown@1.6.3':
+    resolution: {integrity: sha512-jpGm5Ps+XErS+xA4urw7ogEGkeZOahVQF21Z6oECF0sj+2liwZopd2+I8uH5I/vZsRuuze3OxBREIANLf6KKUw==}
 
   '@lezer/php@1.0.5':
     resolution: {integrity: sha512-W7asp9DhM6q0W6DYNwIkLSKOvxlXRrif+UXBMxzsJUuqmhE7oVU+gS3THO4S/Puh7Xzgm858UNaFi6dxTP8dJA==}
 
-  '@lezer/yaml@1.0.3':
-    resolution: {integrity: sha512-GuBLekbw9jDBDhGur82nuwkxKQ+a3W5H0GfaAthDXcAu+XdpS43VlnxA9E9hllkpSP5ellRDKjLLj7Lu9Wr6xA==}
+  '@lezer/yaml@1.0.4':
+    resolution: {integrity: sha512-2lrrHqxalACEbxIbsjhqGpSW8kWpUKuY6RHgnSAFZa6qK62wvnPxA8hGOwOoDbwHcOFs5M4o27mjGu+P7TvBmw==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -15797,7 +15800,7 @@ snapshots:
 
   '@codemirror/autocomplete@6.19.1':
     dependencies:
-      '@codemirror/language': 6.11.3
+      '@codemirror/language': 6.5.0
       '@codemirror/state': 6.5.0
       '@codemirror/view': 6.38.6
       '@lezer/common': 1.3.0
@@ -15827,7 +15830,7 @@ snapshots:
       '@codemirror/view': 6.38.6
       '@lezer/common': 1.3.0
       '@lezer/css': 1.3.0
-      '@lezer/html': 1.3.12
+      '@lezer/html': 1.3.13
 
   '@codemirror/lang-javascript@6.2.4':
     dependencies:
@@ -15852,12 +15855,12 @@ snapshots:
       '@codemirror/state': 6.5.0
       '@codemirror/view': 6.5.0
       '@lezer/common': 1.3.0
-      '@lezer/markdown': 1.6.0
+      '@lezer/markdown': 1.6.3
 
   '@codemirror/lang-php@6.0.2':
     dependencies:
       '@codemirror/lang-html': 6.4.11
-      '@codemirror/language': 6.11.3
+      '@codemirror/language': 6.5.0
       '@codemirror/state': 6.5.0
       '@lezer/common': 1.3.0
       '@lezer/php': 1.0.5
@@ -15865,12 +15868,12 @@ snapshots:
   '@codemirror/lang-yaml@6.1.2':
     dependencies:
       '@codemirror/autocomplete': 6.19.1
-      '@codemirror/language': 6.11.3
+      '@codemirror/language': 6.5.0
       '@codemirror/state': 6.5.0
       '@lezer/common': 1.3.0
       '@lezer/highlight': 1.2.2
       '@lezer/lr': 1.4.2
-      '@lezer/yaml': 1.0.3
+      '@lezer/yaml': 1.0.4
 
   '@codemirror/language@6.11.3':
     dependencies:
@@ -16980,6 +16983,8 @@ snapshots:
 
   '@lezer/common@1.3.0': {}
 
+  '@lezer/common@1.5.0': {}
+
   '@lezer/css@1.3.0':
     dependencies:
       '@lezer/common': 1.3.0
@@ -16990,7 +16995,7 @@ snapshots:
     dependencies:
       '@lezer/common': 1.3.0
 
-  '@lezer/html@1.3.12':
+  '@lezer/html@1.3.13':
     dependencies:
       '@lezer/common': 1.3.0
       '@lezer/highlight': 1.2.2
@@ -17012,9 +17017,9 @@ snapshots:
     dependencies:
       '@lezer/common': 1.3.0
 
-  '@lezer/markdown@1.6.0':
+  '@lezer/markdown@1.6.3':
     dependencies:
-      '@lezer/common': 1.3.0
+      '@lezer/common': 1.5.0
       '@lezer/highlight': 1.2.2
 
   '@lezer/php@1.0.5':
@@ -17023,7 +17028,7 @@ snapshots:
       '@lezer/highlight': 1.2.2
       '@lezer/lr': 1.4.2
 
-  '@lezer/yaml@1.0.3':
+  '@lezer/yaml@1.0.4':
     dependencies:
       '@lezer/common': 1.3.0
       '@lezer/highlight': 1.2.2
