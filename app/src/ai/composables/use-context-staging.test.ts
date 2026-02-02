@@ -365,7 +365,7 @@ describe('useContextStaging', () => {
 			await stageVisualElement({ collection: 'posts', item: '42', key: 'key-1' });
 
 			const call = addSpy.mock.calls[0]![0];
-			expect(call.display).toBe('Posts #42');
+			expect(call.display).toBe('Posts');
 		});
 	});
 });
