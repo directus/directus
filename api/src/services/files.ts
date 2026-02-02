@@ -319,9 +319,13 @@ export class FilesService extends ItemsService<File> {
 
 			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
-			updatedFiles = await this.readMany(keys, {
+			const sudoFilesItemsService = new FilesService({
+				knex: this.knex,
+				schema: this.schema,
+			});
+
+			updatedFiles = await sudoFilesItemsService.readMany(keys, {
 				fields: ['id', 'storage', 'filename_disk'],
-				limit: -1,
 			});
 		}
 
