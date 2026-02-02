@@ -2,7 +2,7 @@ import type { Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import {  nextTick } from 'vue';
+import { nextTick } from 'vue';
 import VForm from './v-form.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
 import { Md } from '@/__utils__/md';
@@ -22,7 +22,6 @@ const global = {
 		tooltip: Tooltip,
 	},
 };
-
 
 vi.mock('./composables/use-ai-tools', () => ({
 	useAiTools: vi.fn(() => ({})),
@@ -45,7 +44,7 @@ afterEach(() => {
 	}
 });
 
-function createField (overrides: Partial<Field> = {}): Field {
+function createField(overrides: Partial<Field> = {}): Field {
 	return {
 		field: 'test_field',
 		name: 'Test Field',
@@ -92,13 +91,12 @@ function createField (overrides: Partial<Field> = {}): Field {
 			validation_message: null,
 		},
 		...overrides,
-	}
+	};
 }
 
 describe('VForm', () => {
 	describe('apply function', () => {
 		test('should preserve field values from updates even when field is readonly', async () => {
-
 			const checkboxField = createField({
 				field: 'checkbox',
 				name: 'Checkbox',
@@ -126,7 +124,7 @@ describe('VForm', () => {
 					modelValue: { checkbox: false, input: 'preserved value' },
 					primaryKey: '+',
 				},
-				global
+				global,
 			});
 
 			// Simulate an apply event (as would come from a nested group)
@@ -158,7 +156,7 @@ describe('VForm', () => {
 					modelValue: { input: 'value' },
 					primaryKey: '+',
 				},
-				global
+				global,
 			});
 
 			const vm = wrapper.vm as unknown as {
@@ -186,7 +184,7 @@ describe('VForm', () => {
 					modelValue: { input: 'value' },
 					primaryKey: '+',
 				},
-				global
+				global,
 			});
 
 			const vm = wrapper.vm as unknown as {
