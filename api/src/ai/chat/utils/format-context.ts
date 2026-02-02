@@ -46,7 +46,7 @@ function groupAttachments(attachments: Attachment[]): GroupedAttachments {
 
 function formatVisualElement(att: Attachment): string {
 	const data = att.data as VisualElementData;
-	const fields = data.fields?.length ? data.fields.join(', ') : 'all';
+	const fields = data.fields?.length ? data.fields.map((f) => escapeAngleBrackets(f)).join(', ') : 'all';
 	const collection = escapeAngleBrackets(String(data.collection ?? ''));
 	const item = escapeAngleBrackets(String(data.item ?? ''));
 	const display = escapeAngleBrackets(att.display);
@@ -54,7 +54,7 @@ function formatVisualElement(att: Attachment): string {
 	return `### ${collection}/${item} — "${display}"
 Editable fields: ${fields}
 \`\`\`json
-${JSON.stringify(att.snapshot, null, 2)}
+${escapeAngleBrackets(JSON.stringify(att.snapshot, null, 2))}
 \`\`\``;
 }
 
@@ -84,7 +84,7 @@ function formatItem(att: Attachment): string {
 	const data = att.data as { collection?: string };
 	const display = escapeAngleBrackets(att.display);
 	const collectionLabel = data.collection ? ` (${escapeAngleBrackets(data.collection)})` : '';
-	return `[Item: ${display}${collectionLabel}]\n${JSON.stringify(att.snapshot, null, 2)}`;
+	return `[Item: ${display}${collectionLabel}]\n${escapeAngleBrackets(JSON.stringify(att.snapshot, null, 2))}`;
 }
 
 /**
@@ -114,11 +114,11 @@ ${promptBlocks}
 
 	if (context.page) {
 		const page = context.page;
-		const pageLines = [`Path: ${page.path}`];
+		const pageLines = [`Path: ${escapeAngleBrackets(String(page.path))}`];
 
-		if (page.collection) pageLines.push(`Collection: ${page.collection}`);
-		if (page.item !== undefined) pageLines.push(`Item: ${page.item}`);
-		if (page.module) pageLines.push(`Module: ${page.module}`);
+		if (page.collection) pageLines.push(`Collection: ${escapeAngleBrackets(String(page.collection))}`);
+		if (page.item !== undefined) pageLines.push(`Item: ${escapeAngleBrackets(String(page.item))}`);
+		if (page.module) pageLines.push(`Module: ${escapeAngleBrackets(String(page.module))}`);
 
 		sections.push(`## Current Page\n${pageLines.join('\n')}`);
 	}
