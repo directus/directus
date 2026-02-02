@@ -46,7 +46,6 @@ const mockMessenger = {
 	removeClient: vi.fn(),
 	registerRoom: vi.fn(),
 	unregisterRoom: vi.fn(),
-	getGlobalRooms: vi.fn().mockResolvedValue([]),
 	hasClient: vi.fn(),
 	terminateClient: vi.fn(),
 } as any;
@@ -207,8 +206,6 @@ describe('RoomManager', () => {
 
 		const room = await roomManager.createRoom('a', getTestItem(), null);
 		await room.join(client);
-
-		vi.mocked(mockMessenger.getGlobalRooms).mockResolvedValue([room.uid]);
 
 		const clientRooms = await roomManager.getClientRooms(client.uid);
 
