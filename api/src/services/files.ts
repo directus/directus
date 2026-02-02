@@ -358,11 +358,11 @@ export class FilesService extends ItemsService<File> {
 
 					for await (const filepath of disk.list(filePrefix)) {
 						/**
-						 * If the remote file exists, repoint the primary asset to it.
+						 * If the remote file exists, repoint the primary asset to it (i.e. db update only).
 						 * If the remote file does not exist, move the primary asset to location.
 						 *
 						 * NOTE
-						 * - The original asset may also be deleted, depending on the `FILES_SKIP_PRIMARY_ASSET` flag.
+						 * - On repoint the original asset will be deleted if `FILES_SKIP_PRIMARY_ASSET` is false.
 						 * - Any associated generated assets are deleted.
 						 */
 						if (filepath === filePath) {
