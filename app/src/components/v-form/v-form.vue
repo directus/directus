@@ -2,7 +2,6 @@
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
-import { selectiveClone } from './utils/selective-clone';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import VDivider from '../v-divider.vue';
 import VInfo from '../v-info.vue';
@@ -12,6 +11,7 @@ import ValidationErrors from './components/validation-errors.vue';
 import { useAiTools } from './composables/use-ai-tools';
 import type { ComparisonContext, FieldValues, FormField as TFormField } from './types';
 import { getFormFields } from './utils/get-form-fields';
+import { selectiveClone } from './utils/selective-clone';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import { useFieldsStore } from '@/stores/fields';

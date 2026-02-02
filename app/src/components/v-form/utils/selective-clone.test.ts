@@ -1,6 +1,6 @@
+import type { Field } from '@directus/types';
 import { describe, expect, it } from 'vitest';
 import { selectiveClone } from './selective-clone';
-import type { Field } from '@directus/types';
 
 /**
  * Helper to check if an object was marked as raw via markRaw().
@@ -26,6 +26,7 @@ function createField(field: string, type: string): Field {
 describe('selectiveClone', () => {
 	it('deep clones regular field values', () => {
 		const values = { title: 'Hello', nested: { a: 1 } };
+
 		const fieldsMap = {
 			title: createField('title', 'string'),
 			nested: createField('nested', 'json'),
@@ -45,7 +46,9 @@ describe('selectiveClone', () => {
 			type: 'Point',
 			coordinates: [0, 0],
 		};
+
 		const values = { title: 'Hello', location: geoValue };
+
 		const fieldsMap = {
 			title: createField('title', 'string'),
 			location: createField('location', 'geometry.Point'),
@@ -80,6 +83,7 @@ describe('selectiveClone', () => {
 
 	it('handles null and undefined values', () => {
 		const values = { title: null, location: undefined };
+
 		const fieldsMap = {
 			title: createField('title', 'string'),
 			location: createField('location', 'geometry.Point'),
@@ -93,6 +97,7 @@ describe('selectiveClone', () => {
 
 	it('handles values without corresponding field in fieldsMap', () => {
 		const values = { title: 'Hello', unknown: { nested: true } };
+
 		const fieldsMap = {
 			title: createField('title', 'string'),
 		};
@@ -106,6 +111,7 @@ describe('selectiveClone', () => {
 
 	it('preserves $-prefixed metadata keys without cloning', () => {
 		const values = { title: 'Hello', $type: 'created' };
+
 		const fieldsMap = {
 			title: createField('title', 'string'),
 		};
