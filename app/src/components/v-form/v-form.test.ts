@@ -96,7 +96,7 @@ function createField(overrides: Partial<Field> = {}): Field {
 
 describe('VForm', () => {
 	describe('apply function', () => {
-		test('should preserve field values from updates even when field is readonly', async () => {
+		test('preserves grouped readonly field values during nested form updates', async () => {
 			const checkboxField = createField({
 				field: 'checkbox',
 				name: 'Checkbox',
@@ -108,43 +108,40 @@ describe('VForm', () => {
 				},
 			});
 
-			const inputField = createField({
-				field: 'input',
-				name: 'Input',
+			const groupedInputField = createField({
+				field: 'grouped_input',
+				name: 'Grouped Input',
 				meta: {
 					...createField().meta!,
-					field: 'input',
+					field: 'grouped_input',
 					readonly: true,
+					group: 'my_group',
 				},
 			});
 
 			const wrapper = mount(VForm, {
 				props: {
-					fields: [checkboxField, inputField],
-					modelValue: { checkbox: false, input: 'preserved value' },
+					fields: [checkboxField, groupedInputField],
+					modelValue: { checkbox: false, grouped_input: 'preserved value' },
 					primaryKey: '+',
 				},
 				global,
 			});
 
-			// Simulate an apply event (as would come from a nested group)
-			// where the input field has a value but is currently readonly
 			const vm = wrapper.vm as unknown as {
 				apply: (updates: Record<string, unknown>) => void;
 			};
 
-			// Call apply with updates that include the readonly field's value
-			vm.apply({ checkbox: true, input: 'preserved value' });
+			vm.apply({ checkbox: true, grouped_input: 'preserved value' });
 
 			await nextTick();
 
-			// The emitted value should preserve the input value
 			const emitted = wrapper.emitted('update:modelValue');
 			expect(emitted).toBeTruthy();
-			expect(emitted?.[0]?.[0]).toEqual({ checkbox: true, input: 'preserved value' });
+			expect(emitted?.[0]?.[0]).toEqual({ checkbox: true, grouped_input: 'preserved value' });
 		});
 
-		test('should only accept keys that are actual form fields', async () => {
+		test('filters out keys that are not actual form fields', async () => {
 			const inputField = createField({
 				field: 'input',
 				name: 'Input',
@@ -172,7 +169,7 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ input: 'new value' });
 		});
 
-		test('should preserve meta keys starting with $', async () => {
+		test('preserves meta keys starting with $', async () => {
 			const inputField = createField({
 				field: 'input',
 				name: 'Input',
@@ -198,6 +195,218 @@ describe('VForm', () => {
 			const emitted = wrapper.emitted('update:modelValue');
 			expect(emitted).toBeTruthy();
 			expect(emitted?.[0]?.[0]).toEqual({ input: 'new value', $type: 'created' });
+		});
+
+		test('filters out top-level readonly field updates', async () => {
+			const editableField = createField({
+				field: 'editable',
+				name: 'Editable',
+			});
+
+			const readonlyField = createField({
+				field: 'readonly_field',
+				name: 'Readonly Field',
+				meta: {
+					...createField().meta!,
+					field: 'readonly_field',
+					readonly: true,
+				},
+			});
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [editableField, readonlyField],
+					modelValue: { editable: 'old', readonly_field: 'should not change' },
+					primaryKey: '+',
+				},
+				global,
+			});
+
+			const vm = wrapper.vm as unknown as {
+				apply: (updates: Record<string, unknown>) => void;
+			};
+
+			vm.apply({ editable: 'new', readonly_field: 'CHANGED' });
+
+			await nextTick();
+
+			const emitted = wrapper.emitted('update:modelValue');
+			expect(emitted).toBeTruthy();
+			expect(emitted?.[0]?.[0]).toEqual({ editable: 'new' });
+		});
+
+		test('allows hidden field updates (hidden is not readonly)', async () => {
+			const visibleField = createField({
+				field: 'visible',
+				name: 'Visible',
+			});
+
+			const hiddenField = createField({
+				field: 'hidden_field',
+				name: 'Hidden Field',
+				meta: {
+					...createField().meta!,
+					field: 'hidden_field',
+					hidden: true,
+				},
+			});
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [visibleField, hiddenField],
+					modelValue: { visible: 'old', hidden_field: 'secret' },
+					primaryKey: '+',
+				},
+				global,
+			});
+
+			const vm = wrapper.vm as unknown as {
+				apply: (updates: Record<string, unknown>) => void;
+			};
+
+			vm.apply({ visible: 'new', hidden_field: 'updated' });
+
+			await nextTick();
+
+			const emitted = wrapper.emitted('update:modelValue');
+			expect(emitted).toBeTruthy();
+			expect(emitted?.[0]?.[0]).toEqual({ visible: 'new', hidden_field: 'updated' });
+		});
+
+		test('filters out conditionally readonly field updates (not in a group)', async () => {
+			const toggleField = createField({
+				field: 'toggle',
+				name: 'Toggle',
+				type: 'boolean',
+				meta: {
+					...createField().meta!,
+					field: 'toggle',
+				},
+			});
+
+			const conditionalField = createField({
+				field: 'conditional',
+				name: 'Conditional',
+				meta: {
+					...createField().meta!,
+					field: 'conditional',
+					conditions: [
+						{
+							name: 'Make readonly',
+							rule: { toggle: { _eq: true } },
+							readonly: true,
+							hidden: false,
+							options: {},
+						},
+					],
+				},
+			});
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [toggleField, conditionalField],
+					modelValue: { toggle: true, conditional: 'original' },
+					primaryKey: '+',
+				},
+				global,
+			});
+
+			const vm = wrapper.vm as unknown as {
+				apply: (updates: Record<string, unknown>) => void;
+			};
+
+			vm.apply({ toggle: true, conditional: 'CHANGED' });
+
+			await nextTick();
+
+			const emitted = wrapper.emitted('update:modelValue');
+			expect(emitted).toBeTruthy();
+			expect(emitted?.[0]?.[0]).toEqual({ toggle: true });
+		});
+
+		test('preserves grouped field values even when conditionally readonly', async () => {
+			const toggleField = createField({
+				field: 'toggle',
+				name: 'Toggle',
+				type: 'boolean',
+				meta: {
+					...createField().meta!,
+					field: 'toggle',
+				},
+			});
+
+			const groupedConditionalField = createField({
+				field: 'grouped_conditional',
+				name: 'Grouped Conditional',
+				meta: {
+					...createField().meta!,
+					field: 'grouped_conditional',
+					group: 'my_group',
+					conditions: [
+						{
+							name: 'Make readonly',
+							rule: { toggle: { _eq: true } },
+							readonly: true,
+							hidden: false,
+							options: {},
+						},
+					],
+				},
+			});
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [toggleField, groupedConditionalField],
+					modelValue: { toggle: true, grouped_conditional: 'preserved value' },
+					primaryKey: '+',
+				},
+				global,
+			});
+
+			const vm = wrapper.vm as unknown as {
+				apply: (updates: Record<string, unknown>) => void;
+			};
+
+			vm.apply({ toggle: true, grouped_conditional: 'preserved value' });
+
+			await nextTick();
+
+			const emitted = wrapper.emitted('update:modelValue');
+			expect(emitted).toBeTruthy();
+			expect(emitted?.[0]?.[0]).toEqual({ toggle: true, grouped_conditional: 'preserved value' });
+		});
+
+		test('allows editable field updates', async () => {
+			const editableField = createField({
+				field: 'editable',
+				name: 'Editable',
+				meta: {
+					...createField().meta!,
+					field: 'editable',
+					readonly: false,
+				},
+			});
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [editableField],
+					modelValue: { editable: 'old' },
+					primaryKey: '+',
+				},
+				global,
+			});
+
+			const vm = wrapper.vm as unknown as {
+				apply: (updates: Record<string, unknown>) => void;
+			};
+
+			vm.apply({ editable: 'new' });
+
+			await nextTick();
+
+			const emitted = wrapper.emitted('update:modelValue');
+			expect(emitted).toBeTruthy();
+			expect(emitted?.[0]?.[0]).toEqual({ editable: 'new' });
 		});
 	});
 });

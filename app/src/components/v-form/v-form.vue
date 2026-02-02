@@ -290,9 +290,12 @@ function apply(updates: { [field: string]: any }) {
 
 		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pickKeepMeta(updates, updatableKeys)));
 	} else {
-		// Preserve values from child forms even if currently readonly (condition state may be stale)
-		const formFieldKeys = Object.keys(fieldsMap.value);
-		const updateKeys = Object.keys(updates).filter((key) => !key.startsWith('$') && formFieldKeys.includes(key));
+		// Only preserve existing values for fields that belong to groups (nested form updates may have stale readonly state)
+		const updateKeys = Object.keys(updates).filter((key) => {
+			if (key.startsWith('$')) return false;
+			const field = fieldsMap.value[key];
+			return !isNil(field?.meta?.group) && props.modelValue && key in props.modelValue;
+		});
 
 		emit('update:modelValue', pickKeepMeta(assign({}, props.modelValue, updates), [...updatableKeys, ...updateKeys]));
 	}
