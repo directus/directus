@@ -230,4 +230,3 @@ existing PR branch.
 - Maintains clear separation between original work and revisions
 - Enables easier rollback if AI-generated fixes introduce issues
 - Provides an additional review checkpoint for AI changes
-
