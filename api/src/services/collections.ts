@@ -75,10 +75,8 @@ export class CollectionsService {
 			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
 		}
 
-		
 		const fieldList = Array.isArray(payload.fields) ? [...payload.fields] : [];
-		
-		
+
 		if (!fieldList.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)) {
 			fieldList.push({ field: 'id' } as RawField);
 		}
@@ -89,14 +87,12 @@ export class CollectionsService {
 			const lowerName = field.field.toLowerCase();
 
 			if (seenFields.has(lowerName)) {
-				
 				throw new InvalidPayloadError({
 					reason: `Collection "${payload.collection}" cannot have multiple fields with the same name "${field.field}" (case-insensitive).`,
 				});
 			}
 			seenFields.add(lowerName);
 		}
-		
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -115,7 +111,6 @@ export class CollectionsService {
 
 			await transaction(this.knex, async (trx) => {
 				if (payload.schema) {
-					
 					if ('fields' in payload && !Array.isArray(payload.fields)) {
 						throw new InvalidPayloadError({ reason: `"fields" must be an array` });
 					}
