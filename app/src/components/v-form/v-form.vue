@@ -290,14 +290,17 @@ function apply(updates: { [field: string]: any }) {
 
 		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pickKeepMeta(updates, updatableKeys)));
 	} else {
-		// Only preserve existing values for fields that belong to groups (nested form updates may have stale readonly state)
-		const updateKeys = Object.keys(updates).filter((key) => {
+		// Preserve existing values for fields that belong to groups
+		const updatableGroupKeys = Object.keys(updates).filter((key) => {
 			if (key.startsWith('$')) return false;
 			const field = fieldsMap.value[key];
 			return !isNil(field?.meta?.group) && props.modelValue && key in props.modelValue;
 		});
 
-		emit('update:modelValue', pickKeepMeta(assign({}, props.modelValue, updates), [...updatableKeys, ...updateKeys]));
+		emit(
+			'update:modelValue',
+			pickKeepMeta(assign({}, props.modelValue, updates), [...updatableKeys, ...updatableGroupKeys]),
+		);
 	}
 }
 
