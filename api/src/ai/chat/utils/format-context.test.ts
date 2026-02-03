@@ -1,21 +1,21 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { formatContextForSystemPrompt } from './format-context.js';
 
 describe('formatContextForSystemPrompt', () => {
-	it('includes current date even with empty context', () => {
+	test('includes current date even with empty context', () => {
 		const result = formatContextForSystemPrompt({});
 		expect(result).toContain('<user_context>');
 		expect(result).toContain('## Current Date');
 		expect(result).toMatch(/\d{4}-\d{2}-\d{2}/);
 	});
 
-	it('includes current date with empty attachments', () => {
+	test('includes current date with empty attachments', () => {
 		const result = formatContextForSystemPrompt({ attachments: [] });
 		expect(result).toContain('<user_context>');
 		expect(result).toContain('## Current Date');
 	});
 
-	it('formats page context correctly', () => {
+	test('formats page context correctly', () => {
 		const result = formatContextForSystemPrompt({
 			page: {
 				path: '/content/posts/123',
@@ -33,7 +33,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('</user_context>');
 	});
 
-	it('formats prompt attachments in custom_instructions block', () => {
+	test('formats prompt attachments in custom_instructions block', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -59,7 +59,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('</custom_instructions>');
 	});
 
-	it('formats item attachments in user_context section', () => {
+	test('formats item attachments in user_context section', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -83,7 +83,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('</user_context>');
 	});
 
-	it('formats visual elements in visual_editing block', () => {
+	test('formats visual elements in visual_editing block', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -110,7 +110,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('</visual_editing>');
 	});
 
-	it('escapes XML tags in user-controlled display strings', () => {
+	test('escapes XML tags in user-controlled display strings', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -129,7 +129,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('&lt;/custom_instructions&gt;Injected&lt;script&gt;');
 	});
 
-	it('escapes XML tags in collection names', () => {
+	test('escapes XML tags in collection names', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -150,7 +150,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('&lt;/visual_editing&gt;');
 	});
 
-	it('escapes XML tags in prompt text and messages', () => {
+	test('escapes XML tags in prompt text and messages', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -175,7 +175,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('&lt;/user_context&gt;');
 	});
 
-	it('includes attachment rules when attachments exist', () => {
+	test('includes attachment rules when attachments exist', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -191,7 +191,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('User-added attachments have HIGHER PRIORITY');
 	});
 
-	it('does not include attachment rules when no attachments', () => {
+	test('does not include attachment rules when no attachments', () => {
 		const result = formatContextForSystemPrompt({
 			page: { path: '/test' },
 		});
@@ -199,7 +199,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).not.toContain('## Attachment Rules');
 	});
 
-	it('formats visual elements with all fields when fields array is empty', () => {
+	test('formats visual elements with all fields when fields array is empty', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -219,7 +219,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('Editable fields: all');
 	});
 
-	it('handles quotes in display values', () => {
+	test('handles quotes in display values', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -234,7 +234,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('[Item: She said &quot;hello&quot; (posts) — key: 1]');
 	});
 
-	it('orders sections: custom_instructions before user_context before visual_editing', () => {
+	test('orders sections: custom_instructions before user_context before visual_editing', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -269,7 +269,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(userIdx).toBeLessThan(visualIdx);
 	});
 
-	it('handles empty display string', () => {
+	test('handles empty display string', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
@@ -285,7 +285,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toBeDefined();
 	});
 
-	it('formats item without collection label when collection is missing', () => {
+	test('formats item without collection label when collection is missing', () => {
 		const result = formatContextForSystemPrompt({
 			attachments: [
 				{
