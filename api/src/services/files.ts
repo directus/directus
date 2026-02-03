@@ -319,6 +319,7 @@ export class FilesService extends ItemsService<File> {
 
 			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
+			// Fetch existing files to handle rename, dont require read permissions.
 			const sudoFilesItemsService = new FilesService({
 				knex: this.knex,
 				schema: this.schema,
@@ -348,6 +349,7 @@ export class FilesService extends ItemsService<File> {
 					// For backwards compatibility it must be resolved first to ensure consistent path
 					const filePath = this.generateFilenamePath(file.filename_disk);
 
+					// Skip if the filename didn't change
 					if (filePath === data.filename_disk) continue;
 
 					const disk = storage.location(file['storage']);
