@@ -1098,7 +1098,7 @@ deployment:
       delete: Delete Configuration
       delete_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
       remove_projects_confirm:
-        Removing the project ({projects}) will permanently delete all deployment history from Directus. This action
+        Removing the project(s) ({projects}) will permanently delete all their deployment history from Directus. This action
         cannot be undone. Are you sure you want to proceed?
     vercel:
       name: Vercel
