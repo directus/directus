@@ -372,7 +372,7 @@ export class FilesService extends ItemsService<File> {
 						 * If the remote file does not exist, move the primary asset to location.
 						 *
 						 * NOTE
-						 * - On repoint the original asset will be deleted if `FILES_SKIP_PRIMARY_ASSET` is false.
+						 * - On repoint the original asset will be deleted if `FILES_DELETE_ORIGINAL_ON_MOVE` is true.
 						 * - Any associated generated assets are deleted.
 						 */
 						if (filePath === existingFilePath) {
@@ -381,7 +381,7 @@ export class FilesService extends ItemsService<File> {
 								continue;
 							}
 
-							if (toBoolean(env['FILES_SKIP_PRIMARY_ASSET']) === true) {
+							if (toBoolean(env['FILES_DELETE_ORIGINAL_ON_MOVE']) === false) {
 								continue;
 							}
 						}
