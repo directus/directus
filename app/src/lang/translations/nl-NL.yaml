@@ -501,8 +501,6 @@ revision_delta_reverted: Teruggedraaid
 revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
 revision_delta_by: '{date} door {user}'
-updated_in_revision: Bijgewerkt in deze revisie
-updated_in_revision_matches_latest: Bijgewerkt in deze revisie, maar komt overeen met de laatste
 differences_count: 'Geen Verschillen | 1 Verschil | {count} Verschillen'
 presentation_text_values_cannot_be_reimported: 'Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd.'
 download_page_as_csv: 'Download Pagina als CSV'
@@ -1193,7 +1191,6 @@ settings_project: Instellingen
 settings_appearance: Uiterlijk
 settings_ai: AI
 model_context_protocol: Model Context Protocol
-ai_chat: AI-chat
 settings_flows: Flows
 settings_system_logs: Systeemlogs
 settings_presets: Bladwijzers
@@ -1616,12 +1613,8 @@ ai:
   retry: Probeer Opnieuw
   prompt_input_placeholder: Typ je bericht hier...
   clear_conversation: Gesprek Wissen
-  build_with_chat: Bouw met AI Chat
   responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
   go_to_settings: Ga naar Instellingen
-  setup_ai_chat: Setup AI-chat
-  setup_ai_chat_admin_description: Voeg de API-keys van je AI-provider toe in de instellingen om AI-chat in te schakelen.
-  setup_ai_chat_user_description: Neem contact op met je systeembeheerder om AI Chat in te schakelen.
   settings: Instellingen
   tool_approval:
     always: Altijd Toegestaan

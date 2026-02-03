@@ -2,7 +2,7 @@
 	--v-list-padding: 0;
 
 	@if $deleteable {
-		.v-list-item.deleted {
+		.v-list-item.deleted:not(.disabled) {
 			--v-list-item-border-color: var(--danger-25);
 			--v-list-item-border-color-hover: var(--danger-50);
 			--v-list-item-background-color: var(--danger-10);
@@ -36,11 +36,6 @@
 
 			&:hover .v-icon {
 				color: var(--theme--form--field--input--foreground);
-			}
-
-			&.disabled {
-				pointer-events: none;
-				visibility: hidden;
 			}
 		}
 	}

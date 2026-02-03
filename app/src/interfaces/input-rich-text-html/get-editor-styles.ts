@@ -4,7 +4,6 @@ import merriweatherRegular from '../../assets/fonts/merriweather-regular.woff2';
 
 export default function getEditorStyles(
 	font: 'sans-serif' | 'serif' | 'monospace',
-	nonEditable: boolean,
 	includeDiffStyles?: boolean,
 ): string {
 	const userFontFamily = cssVar(`--theme--fonts--${font}--font-family`);
@@ -34,13 +33,9 @@ body {
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
 }
-${
-	!nonEditable
-		? `body.mce-content-readonly {
-			color: ${cssVar('--foreground-subdued')};
-			background-color: ${cssVar('--background-subdued')};
-		}`
-		: ''
+body.mce-content-readonly:not(.non-editable) {
+	color: ${cssVar('--theme--form--field--input--foreground-subdued')};
+	background-color: ${cssVar('--theme--form--field--input--background-subdued')};
 }
 .mce-offscreen-selection {
 	display: none;

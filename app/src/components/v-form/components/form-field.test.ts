@@ -1,10 +1,30 @@
 import { Width } from '@directus/system-data';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ClickOutside } from '@/__utils__/click-outside';
+import { Md } from '@/__utils__/md';
+import { Tooltip } from '@/__utils__/tooltip';
 import FormField from '@/components/v-form/components/form-field.vue';
 import VMenu from '@/components/v-menu.vue';
 import { i18n } from '@/lang';
+
+beforeEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		if (!document.getElementById(id)) {
+			const el = document.createElement('div');
+			el.id = id;
+			document.body.appendChild(el);
+		}
+	}
+});
+
+afterEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		const el = document.getElementById(id);
+		if (el) el.remove();
+	}
+});
 
 const baseField = {
 	field: 'test',
@@ -32,6 +52,11 @@ const global = {
 			createSpy: vi.fn,
 		}),
 	],
+	directives: {
+		'click-outside': ClickOutside,
+		md: Md,
+		tooltip: Tooltip,
+	},
 };
 
 describe('FormField', () => {

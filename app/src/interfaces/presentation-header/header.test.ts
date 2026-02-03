@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
-import { computed } from 'vue';
+import { describe, expect, it, vi } from 'vitest';
+import { computed, ref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import Header from './header.vue';
 import { Tooltip } from '@/__utils__/tooltip';
@@ -16,7 +16,7 @@ const i18n = createI18n({
 });
 
 const mockIsActiveFlow = vi.fn(() => true);
-const mockRunningFlows = vi.fn(() => [] as string[]);
+const mockRunningFlows = vi.fn(() => ref<string[]>([]));
 
 vi.mock('@/composables/use-flows', () => ({
 	useInjectRunManualFlow: () => ({
@@ -74,14 +74,14 @@ const mountOptions = {
 const urlLink = { icon: 'launch', label: 'url', type: 'primary', actionType: 'url', url: 'https://example.com' };
 const flowLink = { icon: 'automation', label: 'flow', type: 'secondary', actionType: 'flow', flow: 'test-flow' };
 
-describe('basic rendering', () => {
-	test('interface mounts', () => {
+describe('Interface', () => {
+	it('should mount', () => {
 		const wrapper = mount(Header, mountOptions);
 
 		expect(wrapper.exists());
 	});
 
-	test('renders only help button when no links', () => {
+	it('renders only help button when no links', () => {
 		const wrapper = mount(Header, mountOptions);
 
 		const actionsContainer = wrapper.find('[class="actions-container"]');
@@ -89,7 +89,7 @@ describe('basic rendering', () => {
 		expect(actionButtons.length).toEqual(1);
 	});
 
-	test('renders primaryLink button for single link', () => {
+	it('renders primaryLink button for single link', () => {
 		const testMountOptions = { ...mountOptions, props: { ...mountOptions.props, links: [urlLink] } };
 
 		const wrapper = mount(Header, testMountOptions);
@@ -99,7 +99,7 @@ describe('basic rendering', () => {
 		expect(actionButtons.length).toEqual(2);
 	});
 
-	test('renders v-menu button for multiple links', () => {
+	it('renders v-menu button for multiple links', () => {
 		const testMountOptions = { ...mountOptions, props: { ...mountOptions.props, links: [urlLink, flowLink] } };
 
 		const wrapper = mount(Header, testMountOptions);
@@ -107,5 +107,53 @@ describe('basic rendering', () => {
 		const vMenu = wrapper.find('v-menu-stub');
 
 		expect(vMenu.exists());
+	});
+
+	it('should render action buttons disabled when disabled is true', async () => {
+		const wrapper = mount(Header, {
+			...mountOptions,
+			props: {
+				...mountOptions.props,
+				links: [flowLink],
+				primaryLink: true,
+				disabled: true,
+			},
+		});
+
+		expect(wrapper.find('.actions-container v-button-stub.action').attributes('disabled')).toBe('true');
+
+		wrapper.setProps({ links: [urlLink] });
+		await wrapper.vm.$nextTick();
+		expect(wrapper.find('.actions-container v-button-stub.action').attributes('disabled')).toBe('true');
+	});
+
+	it('should disable flow buttons when nonEditable is true', async () => {
+		const wrapper = mount(Header, {
+			...mountOptions,
+			props: {
+				...mountOptions.props,
+				links: [flowLink],
+				primaryLink: true,
+				nonEditable: true,
+				disabled: true,
+			},
+		});
+
+		expect(wrapper.find('.actions-container v-button-stub.action').attributes('disabled')).toBe('true');
+	});
+
+	it('should not disable link buttons when nonEditable is true', async () => {
+		const wrapper = mount(Header, {
+			...mountOptions,
+			props: {
+				...mountOptions.props,
+				links: [urlLink],
+				primaryLink: true,
+				nonEditable: true,
+				disabled: true,
+			},
+		});
+
+		expect(wrapper.find('.actions-container v-button-stub.action').attributes('disabled')).toBe('false');
 	});
 });
