@@ -135,16 +135,14 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 
 		switch (normalized) {
 			case 'ready':
-				return 'ready';
 			case 'error':
-				return 'error';
 			case 'canceled':
-				return 'canceled';
 			case 'queued':
 			case 'initializing':
 			case 'analyzing':
 			case 'building':
 			case 'deploying':
+				return normalized as Status;
 			default:
 				return 'building';
 		}
