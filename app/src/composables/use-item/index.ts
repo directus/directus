@@ -1,10 +1,10 @@
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
-import { getEndpoint, isObject } from '@directus/utils';
+import { getEndpoint, isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, mergeWith } from 'lodash';
+import { cloneDeep, isEqual, mergeWith } from 'lodash';
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
@@ -14,7 +14,10 @@ import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
+import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 import { APIError } from '@/types/error';
 import { applyConditions } from '@/utils/apply-conditions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -55,6 +58,25 @@ export function useItem<T extends Item>(
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
+	const serverStore = useServerStore();
+	const settingsStore = useSettingsStore();
+	const permissionsStore = usePermissionsStore();
+	const relationsStore = useRelationsStore();
+	const fieldsStore = useFieldsStore();
+
+	const collabEnabled = computed(() => {
+		const info = serverStore.info;
+		const settings = settingsStore.settings;
+
+		if (!info || !settings) return false;
+
+		return (
+			info.websocket !== false &&
+			info.websocket?.collaborativeEditing === true &&
+			settings.collaborative_editing_enabled === true
+		);
+	});
+
 	const validationErrors = ref<any[]>([]);
 	const loadingItem = ref(false);
 	const saving = ref(false);
@@ -138,6 +160,53 @@ export function useItem<T extends Item>(
 		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
 	}
 
+	function sanitizeEdits(edits: any, collection: string, action: 'create' | 'update'): any {
+		if (Array.isArray(edits)) {
+			return edits.map((item) => (isObject(item) ? sanitizeEdits(item, collection, action) : item));
+		}
+
+		if (!isObject(edits)) return edits;
+
+		const permission = permissionsStore.getPermission(collection, action);
+		if (!permission) return {};
+
+		const allowedFields = permission.fields;
+		const pkField = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
+
+		return Object.fromEntries(
+			Object.entries(edits)
+				.filter(([key]) => {
+					if (key.startsWith('$')) return true;
+					if (key === pkField) return true;
+					if (!allowedFields) return false;
+					if (allowedFields.includes('*')) return true;
+					return allowedFields.includes(key);
+				})
+				.map(([key, value]) => {
+					const relation = relationsStore.getRelationForField(collection, key);
+
+					if (relation && isObject(value)) {
+						if (isDetailedUpdateSyntax(value)) {
+							return [
+								key,
+								{
+									create: sanitizeEdits((value as any).create, relation.collection, 'create'),
+									update: sanitizeEdits((value as any).update, relation.collection, 'update'),
+									delete: (value as any).delete,
+								},
+							];
+						}
+
+						const pkField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection)?.field;
+						const nestedAction = pkField && (value as any)[pkField] ? 'update' : 'create';
+						return [key, sanitizeEdits(value, relation.collection, nestedAction)];
+					}
+
+					return [key, value];
+				}),
+		);
+	}
+
 	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
 		const currentValues = mergeItemData(defaultValues, item, edits);
 
@@ -185,7 +254,11 @@ export function useItem<T extends Item>(
 
 		const editsWithClearedValues = clearHiddenFieldsByCondition(edits.value, fields, defaultValues.value, item.value);
 
-		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, editsWithClearedValues);
+		const sanitizedEdits = collabEnabled.value
+			? sanitizeEdits(editsWithClearedValues, collection.value, isNew.value ? 'create' : 'update')
+			: editsWithClearedValues;
+
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, sanitizedEdits);
 
 		const errors = validateItem(payloadToValidate, fields, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
@@ -200,13 +273,13 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await api.post(getEndpoint(collection.value), editsWithClearedValues);
+				response = await api.post(getEndpoint(collection.value), sanitizedEdits);
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await api.patch(itemEndpoint.value, editsWithClearedValues);
+				response = await api.patch(itemEndpoint.value, sanitizedEdits);
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),
@@ -214,7 +287,22 @@ export function useItem<T extends Item>(
 			}
 
 			setItemValueToResponse(response);
-			edits.value = {};
+
+			if (!collabEnabled.value) {
+				edits.value = {};
+			} else {
+				// Keep edits that were filtered out by permissions
+				const newEdits = cloneDeep(edits.value);
+
+				for (const key of Object.keys(newEdits)) {
+					if (key in sanitizedEdits && isEqual(newEdits[key], sanitizedEdits[key])) {
+						delete newEdits[key];
+					}
+				}
+
+				edits.value = newEdits;
+			}
+
 			return response.data.data;
 		} catch (error) {
 			saveErrorHandler(error);
