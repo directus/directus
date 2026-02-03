@@ -1,9 +1,8 @@
-import { ErrorCode, InvalidPayloadError, InvalidProviderConfigError, isDirectusError } from '@directus/errors';
-import { DEPLOYMENT_PROVIDER_TYPES, type ProviderType } from '@directus/types';
+import { ErrorCode, InvalidPathParameterError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { DEPLOYMENT_PROVIDER_TYPES, type DeploymentConfig, type ProviderType } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
 import getDatabase from '../database/index.js';
-import { getDeploymentDriver } from '../deployment.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -53,20 +52,9 @@ router.post(
 
 			const key = await service.createOne({
 				provider: req.body.provider,
-				credentials: JSON.stringify(req.body.credentials),
-				options: req.body.options ? JSON.stringify(req.body.options) : null,
-			} as Record<string, unknown>);
-
-			const driver = getDeploymentDriver(req.body.provider, req.body.credentials, req.body.options);
-
-			try {
-				await driver.testConnection();
-			} catch {
-				throw new InvalidProviderConfigError({
-					provider: req.body.provider,
-					reason: 'Invalid API token',
-				});
-			}
+				credentials: req.body.credentials,
+				options: req.body.options,
+			} as Partial<DeploymentConfig>);
 
 			return service.readOne(key, req.sanitizedQuery);
 		});
@@ -107,7 +95,7 @@ router.get(
 		const provider = req.params['provider']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const service = new DeploymentService({
@@ -129,7 +117,7 @@ router.get(
 		const provider = req.params['provider']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const service = new DeploymentService({
@@ -202,7 +190,7 @@ router.get(
 		const projectId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const service = new DeploymentService({
@@ -257,7 +245,7 @@ router.patch(
 		const provider = req.params['provider']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const { error, value } = updateProjectsSchema.validate(req.body);
@@ -315,7 +303,7 @@ router.get(
 		const provider = req.params['provider']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const service = new DeploymentService({
@@ -377,7 +365,7 @@ router.post(
 		const projectId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const { error, value } = triggerDeploySchema.validate(req.body);
@@ -441,7 +429,7 @@ router.patch(
 		const provider = req.params['provider']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const db = getDatabase();
@@ -453,17 +441,12 @@ router.patch(
 				knex: trx,
 			});
 
-			let primaryKey;
+			const data: Partial<DeploymentConfig> = {};
 
-			if ('credentials' in req.body || 'options' in req.body) {
-				// Service handles permission check and connection test error wrapping
-				const result = await service.updateWithConnectionTest(provider, req.body.credentials, req.body.options);
+			if ('credentials' in req.body) data['credentials'] = req.body.credentials;
+			if ('options' in req.body) data['options'] = req.body.options;
 
-				primaryKey = result.primaryKey;
-			} else {
-				// No credentials/options change, just update other fields
-				primaryKey = await service.updateByProvider(provider, {});
-			}
+			const primaryKey = await service.updateByProvider(provider, data);
 
 			try {
 				return await service.readOne(primaryKey, req.sanitizedQuery);
@@ -490,7 +473,7 @@ router.delete(
 		const provider = req.params['provider']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const service = new DeploymentService({
@@ -516,7 +499,7 @@ router.get(
 		const projectId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const service = new DeploymentService({
@@ -591,7 +574,7 @@ router.get(
 		const runId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const { error, value } = runDetailsQuerySchema.validate(req.query);
@@ -646,7 +629,7 @@ router.post(
 		const runId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
-			throw new InvalidPayloadError({ reason: `Invalid provider: ${provider}` });
+			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
 		}
 
 		const runsService = new DeploymentRunsService({

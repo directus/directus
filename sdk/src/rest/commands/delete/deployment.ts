@@ -11,11 +11,11 @@ import { throwIfEmpty } from '../../utils/index.js';
  */
 export const deleteDeployment =
 	<Schema>(provider: string): RestCommand<void, Schema> =>
-		() => {
-			throwIfEmpty(provider, 'Provider cannot be empty');
+	() => {
+		throwIfEmpty(provider, 'Provider cannot be empty');
 
-			return {
-				path: `/deployments/${provider}`,
-				method: 'DELETE',
-			};
+		return {
+			path: `/deployments/${provider}`,
+			method: 'DELETE',
 		};
+	};

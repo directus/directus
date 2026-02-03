@@ -9,7 +9,7 @@ import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
 import type { ApiCollection, RawCollection } from './collection.js';
-import type { Credentials, DeploymentConfig, Options, Project, ProviderType, StoredProject } from './deployment.js';
+import type { DeploymentConfig, Project, ProviderType, StoredProject } from './deployment.js';
 import type { ActionHandler } from './events.js';
 import type { ApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
 import type { Field, RawField, Type } from './fields.js';
@@ -459,11 +459,6 @@ interface DeploymentService {
 	updateByProvider(provider: ProviderType, data: Partial<DeploymentConfig>): Promise<PrimaryKey>;
 	deleteByProvider(provider: ProviderType): Promise<PrimaryKey>;
 	getDriver(provider: ProviderType): Promise<unknown>;
-	updateWithConnectionTest(
-		provider: ProviderType,
-		newCredentials?: Credentials,
-		newOptions?: Options,
-	): Promise<{ primaryKey: PrimaryKey; credentials: Credentials; options: Options }>;
 	listProviderProjects(provider: ProviderType): Promise<CachedResult<Project[]>>;
 	getProviderProject(provider: ProviderType, projectId: string): Promise<CachedResult<Project>>;
 }

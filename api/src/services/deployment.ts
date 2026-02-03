@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { InvalidProviderConfigError } from '@directus/errors';
+import { InvalidPayloadError, InvalidProviderConfigError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	CachedResult,
@@ -12,6 +12,7 @@ import type {
 	Query,
 } from '@directus/types';
 import { parseJSON } from '@directus/utils';
+import { has, isEmpty, isString } from 'lodash-es';
 import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cache.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
 import { getDeploymentDriver } from '../deployment.js';
@@ -24,6 +25,111 @@ const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 500
 export class DeploymentService extends ItemsService<DeploymentConfig> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_deployments', options);
+	}
+
+	override async createOne(data: Partial<DeploymentConfig>, opts?: any): Promise<PrimaryKey> {
+		const provider = data.provider as ProviderType | undefined;
+
+		if (!provider) {
+			throw new InvalidPayloadError({ reason: 'Provider is required' });
+		}
+
+		if (isEmpty(data.credentials)) {
+			throw new InvalidPayloadError({ reason: 'Credentials are required' });
+		}
+
+		let credentials: Credentials;
+
+		try {
+			credentials = this.parseValue<Credentials>(data.credentials, {});
+		} catch {
+			throw new InvalidPayloadError({ reason: 'Credentials must be valid JSON' });
+		}
+
+		let options: Options | undefined = data.options as Options;
+
+		try {
+			options = this.parseValue<Options | undefined>(data.options, undefined);
+		} catch {
+			throw new InvalidPayloadError({ reason: 'Options must be valid JSON' });
+		}
+
+		// Test connection before persisting
+		const driver = getDeploymentDriver(provider, credentials, options);
+
+		try {
+			await driver.testConnection();
+		} catch {
+			throw new InvalidProviderConfigError({ provider, reason: 'Invalid config connection' });
+		}
+
+		const payload: Partial<DeploymentConfig> = {
+			...data,
+			// Persist as string so payload service encrypts the value
+			credentials: JSON.stringify(credentials) as unknown as Credentials,
+		};
+
+		if (!isEmpty(options)) {
+			payload.options = JSON.stringify(options) as unknown as Options;
+		}
+
+		return super.createOne(payload, opts);
+	}
+
+	override async updateOne(key: PrimaryKey, data: Partial<DeploymentConfig>, opts?: any): Promise<PrimaryKey> {
+		const hasCredentials = has(data, 'credentials');
+		const hasOptions = has(data, 'options');
+
+		if (!hasCredentials && !hasOptions) {
+			return super.updateOne(key, data, opts);
+		}
+
+		const existing = await this.readOne(key);
+		const provider = existing.provider as ProviderType;
+
+		const internal = await this.readConfig(provider);
+		let credentials: Credentials = this.parseValue<Credentials>(internal.credentials, {});
+
+		if (hasCredentials) {
+			try {
+				const parsed = this.parseValue<Credentials>(data.credentials, {});
+				credentials = { ...credentials, ...parsed };
+			} catch {
+				throw new InvalidPayloadError({ reason: 'Credentials must be valid JSON or object' });
+			}
+		}
+
+		let options: Options | undefined | null = existing.options ?? undefined;
+
+		if (hasOptions) {
+			try {
+				options = this.parseValue<Options | undefined>(data.options, undefined);
+			} catch {
+				throw new InvalidPayloadError({ reason: 'Options must be valid JSON' });
+			}
+
+			if (isEmpty(options)) {
+				throw new InvalidPayloadError({ reason: 'Options must not be empty' });
+			}
+		}
+
+		// Test connection before persisting
+		const driver = getDeploymentDriver(provider, credentials, options);
+
+		try {
+			await driver.testConnection();
+		} catch {
+			throw new InvalidProviderConfigError({ provider, reason: 'Invalid config connection' });
+		}
+
+		return super.updateOne(
+			key,
+			{
+				credentials: JSON.stringify(credentials) as unknown as Credentials,
+				...(!isEmpty(options) ? { options: JSON.stringify(options) as unknown as Options } : {}),
+			},
+			opts,
+		);
 	}
 
 	/**
@@ -99,53 +205,6 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const options = this.parseValue<Options>(deployment.options, {});
 
 		return getDeploymentDriver(deployment.provider, credentials, options);
-	}
-
-	/**
-	 * Update deployment config with connection test
-	 * @param provider Provider name
-	 * @param newCredentials Optional new credentials
-	 * @param newOptions Optional new options to merge (null values remove existing keys)
-	 * @returns Primary key and merged credentials/options
-	 */
-	async updateWithConnectionTest(
-		provider: ProviderType,
-		newCredentials?: Credentials,
-		newOptions?: Options,
-	): Promise<{ primaryKey: PrimaryKey; credentials: Credentials; options: Options }> {
-		// Read existing with decrypted credentials
-		const deployment = await this.readConfig(provider);
-		const existingCredentials = this.parseValue<Credentials>(deployment.credentials, {});
-		const existingOptions = this.parseValue<Options>(deployment.options, {});
-
-		const mergedCredentials = newCredentials ? { ...existingCredentials, ...newCredentials } : existingCredentials;
-
-		const mergedOptions = newOptions
-			? Object.fromEntries(Object.entries({ ...existingOptions, ...newOptions }).filter(([, v]) => v !== null))
-			: existingOptions;
-
-		const data: Partial<DeploymentConfig> = {};
-
-		if (newCredentials) {
-			data.credentials = JSON.stringify(mergedCredentials) as unknown as Credentials;
-		}
-
-		if (newOptions !== undefined) {
-			data.options = JSON.stringify(mergedOptions) as unknown as Options;
-		}
-
-		const primaryKey = await this.updateByProvider(provider, data);
-
-		// Test connection after permission check with merged values
-		const driver = getDeploymentDriver(provider, mergedCredentials, mergedOptions);
-
-		try {
-			await driver.testConnection();
-		} catch {
-			throw new InvalidProviderConfigError({ provider, reason: 'Invalid API token' });
-		}
-
-		return { primaryKey, credentials: mergedCredentials, options: mergedOptions };
 	}
 
 	/**
