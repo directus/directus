@@ -352,7 +352,8 @@ export class FilesService extends ItemsService<File> {
 					// Skip if the filename didn't change
 					if (filePath === data.filename_disk) continue;
 
-					const disk = storage.location(file['storage']);
+					const disk = storage.location(data.storage ?? file['storage']);
+
 					const { name: filePrefix } = path.parse(file.filename_disk);
 					const updatedFilePath = this.generateFilenamePath(data.filename_disk);
 
