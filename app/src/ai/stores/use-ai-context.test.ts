@@ -44,7 +44,7 @@ const createItemContext = (id: string, itemId: string = '1'): PendingContextItem
 	type: 'item',
 	data: {
 		collection: 'posts',
-		id: itemId,
+		key: itemId,
 	},
 	display: `Item ${id}`,
 });
