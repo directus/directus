@@ -82,6 +82,7 @@ export class CollectionsService {
 		}
 
 		const seenFields = new Set<string>();
+
 		for (const field of fieldList) {
 			if (!field.field) continue;
 			const lowerName = field.field.toLowerCase();
@@ -91,6 +92,7 @@ export class CollectionsService {
 					reason: `Collection "${payload.collection}" cannot have multiple fields with the same name "${field.field}" (case-insensitive).`,
 				});
 			}
+
 			seenFields.add(lowerName);
 		}
 
