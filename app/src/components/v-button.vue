@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { RouteLocationRaw, useRoute, useLink } from 'vue-router';
-import { useSizeClass, useGroupable } from '@directus/composables';
+import { useGroupable, useSizeClass } from '@directus/composables';
 import { isEqual, isNil } from 'lodash';
+import { computed } from 'vue';
+import { RouteLocationRaw, useLink, useRoute } from 'vue-router';
+import VProgressCircular from './v-progress-circular.vue';
+import vFocus from '@/directives/focus';
+import vTooltip from '@/directives/tooltip';
 
 interface Props {
 	/** Automatically focuses on the button */
@@ -168,7 +171,7 @@ async function onClick(event: MouseEvent) {
 			</span>
 			<div class="spinner">
 				<slot v-if="loading" name="loading">
-					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
+					<VProgressCircular :x-small="xSmall" :small="small" indeterminate />
 				</slot>
 			</div>
 		</component>

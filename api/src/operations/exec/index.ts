@@ -1,5 +1,6 @@
-import { defineOperationApi } from '@directus/extensions';
 import { createRequire } from 'node:module';
+import { defineOperationApi } from '@directus/extensions';
+// eslint-disable-next-line import/order
 import { sieveFunctions } from '@directus/utils';
 
 const require = createRequire(import.meta.url);

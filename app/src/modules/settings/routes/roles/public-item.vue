@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useFieldsStore } from '@/stores/fields';
-import { unexpectedError } from '@/utils/unexpected-error';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
-import SaveOptions from '@/views/private/components/save-options.vue';
 import { useApi } from '@directus/composables';
 import { Alterations, Item, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
@@ -13,6 +7,22 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useFieldsStore } from '@/stores/fields';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 
 type Access = {
 	id: string;
@@ -79,7 +89,7 @@ const edits = ref<{ policies?: Alterations<Access> | null }>({});
 
 const hasEdits = computed(() => !isEmpty(edits.value) && !isEqual(initialValue.value, edits.value));
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
@@ -155,7 +165,7 @@ async function save() {
 async function saveAndStay() {
 	try {
 		await save();
-		revisionsDrawerDetailRef.value?.refresh?.();
+		revisionsSidebarDetailRef.value?.refresh?.();
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -197,22 +207,21 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 </script>
 
 <template>
-	<private-view :title="t('public_label')">
+	<PrivateView :title="$t('public_label')" show-back back-to="/settings/roles">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
-		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
-				<v-icon name="arrow_back" />
-			</v-button>
+			<VBreadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
-				<v-icon name="check" />
-
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				:loading="saving"
+				:disabled="!hasEdits"
+				icon="check"
+				@click="saveAndQuit"
+			>
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -220,34 +229,34 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="content">
-			<v-form v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" :loading />
+			<VForm v-model="edits" :initial-values="initialValue" :fields="fields" :primary-key="null" :loading />
 		</div>
 
 		<template #sidebar>
-			<role-info-sidebar-detail :role="null" />
+			<RoleInfoSidebarDetail :role="null" />
 		</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

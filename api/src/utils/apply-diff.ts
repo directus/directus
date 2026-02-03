@@ -2,11 +2,13 @@ import type {
 	ActionEventParams,
 	Field,
 	MutationOptions,
+	RawField,
 	Relation,
 	SchemaOverview,
 	Snapshot,
 	SnapshotDiff,
 	SnapshotField,
+	SnapshotSystemField,
 } from '@directus/types';
 import { DiffKind } from '@directus/types';
 import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
@@ -270,6 +272,25 @@ export async function applyDiff(
 							relation.field === field &&
 							!relation.diff.some((diff) => diff.kind === DiffKind.NEW)) === false,
 				);
+			}
+		}
+
+		for (const { collection, field, diff } of snapshotDiff.systemFields) {
+			if (diff?.[0]?.kind === DiffKind.EDIT) {
+				try {
+					const newValues = diff.reduce(
+						(acc, currentDiff) => {
+							deepDiff.applyChange(acc, undefined, currentDiff);
+							return acc;
+						},
+						{ collection, field } as SnapshotSystemField,
+					);
+
+					await fieldsService.updateField(collection, newValues as unknown as RawField, mutationOptions);
+				} catch (err) {
+					logger.error(`Failed to update field "${collection}.${field}"`);
+					throw err;
+				}
 			}
 		}
 

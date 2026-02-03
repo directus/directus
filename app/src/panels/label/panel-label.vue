@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, onUpdated, ref, type CSSProperties, type Ref } from 'vue';
+import { type CSSProperties, onBeforeUnmount, onMounted, onUpdated, type Ref, ref } from 'vue';
 import { useAutoFontFit } from '@/composables/use-auto-fit-text';
 
 defineOptions({ inheritAttrs: false });

@@ -7,8 +7,8 @@ import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
 import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
-import { validatePathPermissions } from './utils/validate-path/validate-path-permissions.js';
 import { validatePathExistence } from './utils/validate-path/validate-path-existence.js';
+import { validatePathPermissions } from './utils/validate-path/validate-path-permissions.js';
 
 export interface ProcessAstOptions {
 	ast: AST;

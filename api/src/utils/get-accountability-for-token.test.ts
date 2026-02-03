@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
-import { getAccountabilityForToken } from './get-accountability-for-token.js';
-import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
+import { getAccountabilityForToken } from './get-accountability-for-token.js';
 
 vi.mock('@directus/env', () => {
 	return {
@@ -45,8 +45,8 @@ describe('getAccountabilityForToken', async () => {
 
 		const result = await getAccountabilityForToken(token);
 		expect(result).toStrictEqual(expectedAccountability);
-		expect(fetchRolesTree).toHaveBeenCalledWith('123-456-789', db);
-		expect(fetchGlobalAccess).toHaveBeenCalledWith(expectedAccountability, db);
+		expect(fetchRolesTree).toHaveBeenCalledWith('123-456-789', { knex: db });
+		expect(fetchGlobalAccess).toHaveBeenCalledWith(expectedAccountability, { knex: db });
 	});
 
 	test('full token payload', async () => {
@@ -114,8 +114,8 @@ describe('getAccountabilityForToken', async () => {
 
 		expect(result).toStrictEqual(expectedAccountability);
 
-		expect(fetchRolesTree).toHaveBeenCalledWith('role-id', db);
-		expect(fetchGlobalAccess).toHaveBeenCalledWith(expectedAccountability, db);
+		expect(fetchRolesTree).toHaveBeenCalledWith('role-id', { knex: db });
+		expect(fetchGlobalAccess).toHaveBeenCalledWith(expectedAccountability, { knex: db });
 	});
 
 	test('no user found', async () => {

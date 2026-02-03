@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { computed, inject, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useFieldsStore } from '@/stores/fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -25,8 +26,6 @@ const props = withDefaults(
 const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
-
-const { t } = useI18n();
 
 const fieldsStore = useFieldsStore();
 
@@ -64,19 +63,19 @@ const selectItems = computed(() =>
 </script>
 
 <template>
-	<v-notice v-if="!collectionField && !collectionName" type="warning">
-		{{ t('collection_field_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="selectItems.length === 0" type="warning">
-		{{ t('select_a_collection') }}
-	</v-notice>
-	<v-select
+	<VNotice v-if="!collectionField && !collectionName" type="warning">
+		{{ $t('collection_field_not_setup') }}
+	</VNotice>
+	<VNotice v-else-if="selectItems.length === 0" type="warning">
+		{{ $t('select_a_collection') }}
+	</VNotice>
+	<VSelect
 		v-else
 		:show-deselect="allowNone"
 		:model-value="value"
 		:disabled="disabled"
 		:items="selectItems"
-		:placeholder="placeholder || t('select_a_field')"
+		:placeholder="placeholder || $t('select_a_field')"
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>

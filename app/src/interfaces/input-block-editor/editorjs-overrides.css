@@ -256,8 +256,8 @@
 	line-height: inherit;
 }
 
-.codex-editor .ce-paragraph[data-placeholder]:empty::before {
-	color: var(--theme--form--field--input--foreground-subdued);
+.codex-editor .ce-paragraph[data-placeholder-active]:empty::before {
+	color: var(--theme--foreground-subdued);
 }
 
 /* Quote block */

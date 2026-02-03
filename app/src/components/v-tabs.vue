@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { toRefs, provide, ref } from 'vue';
 import { useGroupableParent } from '@directus/composables';
+import { provide, ref, toRefs } from 'vue';
+import VList from '@/components/v-list.vue';
 
 interface Props {
 	/** Display the tabs in a vertical format */
@@ -38,9 +39,9 @@ function update(newSelection: readonly (string | number)[]) {
 </script>
 
 <template>
-	<v-list v-if="vertical" class="v-tabs vertical alt-colors" nav>
+	<VList v-if="vertical" class="v-tabs vertical alt-colors" nav>
 		<slot />
-	</v-list>
+	</VList>
 	<div v-else class="v-tabs horizontal">
 		<slot />
 	</div>

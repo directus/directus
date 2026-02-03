@@ -1,5 +1,5 @@
+import type { FieldIndex, FieldMeta } from '../types.js';
 import defaults from './_defaults.yaml';
-
 import accessFields from './access.yaml';
 import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';
@@ -26,11 +26,19 @@ import shareFields from './shares.yaml';
 import translationFields from './translations.yaml';
 import userFields from './users.yaml';
 import versionFields from './versions.yaml';
-import webhookFields from './webhooks.yaml';
-
-import type { FieldMeta } from '../types.js';
 
 export const systemFieldRows: FieldMeta[] = [];
+export const systemIndexRows: FieldIndex[] = [];
+
+export function hasSystemIndex(collection: string, field: string): boolean {
+	return Boolean(systemIndexRows.find((row) => row.collection === collection && row.field === field));
+}
+
+export function isSystemField(collection: string, field: string): boolean {
+	if (!collection.startsWith('directus_')) return false;
+
+	return Boolean(systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field));
+}
 
 processFields(accessFields);
 processFields(activityFields);
@@ -58,18 +66,30 @@ processFields(shareFields);
 processFields(translationFields);
 processFields(userFields);
 processFields(versionFields);
-processFields(webhookFields);
 
 function processFields(systemFields: Record<string, any>) {
-	const { fields, table } = systemFields as { fields: FieldMeta[]; table: string };
+	const {
+		table: collection,
+		fields,
+		indexed,
+	} = systemFields as { table: string; fields: FieldMeta[]; indexed: Pick<FieldIndex, 'field'>[] | undefined };
 
 	fields.forEach((field, index) => {
 		systemFieldRows.push({
 			system: true,
 			...defaults,
 			...field,
-			collection: table,
+			collection,
 			sort: index + 1,
 		});
 	});
+
+	if (indexed) {
+		indexed.forEach(({ field }) => {
+			systemIndexRows.push({
+				collection,
+				field,
+			});
+		});
+	}
 }

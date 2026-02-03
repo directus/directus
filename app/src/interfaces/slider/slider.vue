@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VSlider from '@/components/v-slider.vue';
 
 interface BaseProps {
 	disabled?: boolean;
+	nonEditable?: boolean;
 	minValue?: number;
 	maxValue?: number;
 	stepInterval?: number;
@@ -33,9 +35,10 @@ defineEmits(['input']);
 </script>
 
 <template>
-	<v-slider
+	<VSlider
 		:model-value="value"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:min="minValue"
 		:max="maxValue"
 		:step="stepInterval"

@@ -1,7 +1,7 @@
 import type { ClientFilterOperator } from '@directus/types';
-import type { FilterEmptyValidator, FilterValidator } from '../../query/filter';
 import { getFilterOperatorsForType } from '@directus/utils';
 import type { GeneratedFilter } from '..';
+import type { FilterEmptyValidator, FilterValidator } from '../../query/filter';
 
 export const type = 'geometry';
 export const filterOperatorList = getFilterOperatorsForType(type);

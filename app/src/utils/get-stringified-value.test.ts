@@ -1,5 +1,4 @@
-import { test, expect } from 'vitest';
-
+import { expect, test } from 'vitest';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
 
 test(`Returns empty string when input is undefined`, () => {

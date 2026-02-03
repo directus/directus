@@ -1,3 +1,5 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
@@ -6,8 +8,6 @@ import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
 import type { SendMailOptions, Transporter } from 'nodemailer';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
@@ -32,6 +32,13 @@ export type EmailOptions = SendMailOptions & {
 	};
 };
 
+export type DefaultTemplateData = {
+	projectName: string;
+	projectColor: string;
+	projectLogo: string;
+	projectUrl: string;
+};
+
 export class MailService {
 	schema: SchemaOverview;
 	accountability: Accountability | null;
@@ -54,18 +61,19 @@ export class MailService {
 		}
 	}
 
-	async send<T>(options: EmailOptions): Promise<T | null> {
+	async send<T>(data: EmailOptions, options?: { defaultTemplateData: DefaultTemplateData }): Promise<T | null> {
 		await useEmailRateLimiterQueue();
 
-		const payload = await emitter.emitFilter(`email.send`, options, {});
+		const payload = await emitter.emitFilter(`email.send`, data, {});
 
 		if (!payload) return null;
 
 		const { template, ...emailOptions } = payload;
 
-		let { html } = options;
+		let { html } = data;
 
-		const defaultTemplateData = await this.getDefaultTemplateData();
+		// option for providing tempalate data was added to prevent transaction race conditions with preceding promises
+		const defaultTemplateData = options?.defaultTemplateData ?? (await this.getDefaultTemplateData());
 
 		if (isObject(emailOptions.from) && (!emailOptions.from.name || !emailOptions.from.address)) {
 			throw new InvalidPayloadError({ reason: 'A name and address property are required in the "from" object' });
@@ -117,7 +125,7 @@ export class MailService {
 		return html;
 	}
 
-	private async getDefaultTemplateData() {
+	async getDefaultTemplateData() {
 		const projectInfo = await this.knex
 			.select(['project_name', 'project_logo', 'project_color', 'project_url'])
 			.from('directus_settings')

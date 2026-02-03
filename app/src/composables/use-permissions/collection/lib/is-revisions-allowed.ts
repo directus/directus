@@ -1,5 +1,5 @@
-import { usePermissionsStore } from '@/stores/permissions';
 import { computed } from 'vue';
+import { usePermissionsStore } from '@/stores/permissions';
 
 export const isRevisionsAllowed = () => {
 	const { hasPermission } = usePermissionsStore();

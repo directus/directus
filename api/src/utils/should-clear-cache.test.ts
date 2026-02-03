@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
-import type Keyv from 'keyv';
 import type { MutationOptions } from '@directus/types';
+import type Keyv from 'keyv';
 import { afterEach, expect, test, vi } from 'vitest';
 import { shouldClearCache } from './should-clear-cache.js';
 

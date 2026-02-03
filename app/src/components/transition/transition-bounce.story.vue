@@ -7,9 +7,9 @@ const show = ref(true);
 
 <template>
 	<Story title="Transition/TransitionBounce">
-		<transition-bounce>
+		<TransitionBounce>
 			<div v-if="show" class="box">This is inside transition bounce.</div>
-		</transition-bounce>
+		</TransitionBounce>
 
 		<template #controls>
 			<HstCheckbox v-model="show" title="Toggle" />

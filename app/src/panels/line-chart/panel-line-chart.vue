@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { PanelFunction } from '@/types/panels';
 import type { Filter } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { cssVar } from '@directus/utils/browser';
@@ -9,6 +7,8 @@ import { isNil } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { monoThemeGenerator } from '../pie-chart/color-generator';
+import { useFieldsStore } from '@/stores/fields';
+import { PanelFunction } from '@/types/panels';
 
 const props = withDefaults(
 	defineProps<{

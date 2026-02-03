@@ -1,5 +1,5 @@
-import { useCollectionsStore } from '@/stores/collections';
 import { Ref, ref, watch } from 'vue';
+import { useCollectionsStore } from '@/stores/collections';
 
 let showHidden: Ref<boolean>;
 let activeGroups: Ref<string[]>;

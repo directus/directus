@@ -1,7 +1,14 @@
-import type { Field, Relation } from '@directus/types';
-import { expect, test, describe } from 'vitest';
+import type { Column } from '@directus/schema';
+import type { Field, Relation, SnapshotSystemField } from '@directus/types';
+import { describe, expect, test } from 'vitest';
 import type { Collection } from '../types/index.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
+import {
+	sanitizeCollection,
+	sanitizeColumn,
+	sanitizeField,
+	sanitizeRelation,
+	sanitizeSystemField,
+} from './sanitize-schema.js';
 
 describe('sanitizeCollection', () => {
 	test.each([
@@ -114,6 +121,54 @@ describe('sanitizeCollection', () => {
 				versioning: false,
 			},
 			schema: { name: 'test' },
+		});
+
+		describe('sanitizeColumn', () => {
+			test('should only contain certain properties from column', () => {
+				const testColumn: Column = {
+					name: 'id',
+					table: 'test',
+					data_type: 'integer',
+					default_value: "nextval('test_id_seq'::regclass)",
+					max_length: null,
+					numeric_precision: 32,
+					numeric_scale: 0,
+					is_nullable: false,
+					is_unique: true,
+					is_indexed: false,
+					is_primary_key: true,
+					is_generated: false,
+					generation_expression: null,
+					has_auto_increment: true,
+					foreign_key_table: null,
+					foreign_key_column: null,
+					// unknown properties that should be removed
+					comment: null,
+					schema: 'public',
+					foreign_key_schema: null,
+				} as Column;
+
+				const result = sanitizeColumn(testColumn);
+
+				expect(result).toEqual({
+					name: 'id',
+					table: 'test',
+					data_type: 'integer',
+					default_value: "nextval('test_id_seq'::regclass)",
+					max_length: null,
+					numeric_precision: 32,
+					numeric_scale: 0,
+					is_nullable: false,
+					is_unique: true,
+					is_indexed: false,
+					is_primary_key: true,
+					is_generated: false,
+					generation_expression: null,
+					has_auto_increment: true,
+					foreign_key_table: null,
+					foreign_key_column: null,
+				});
+			});
 		});
 	});
 });
@@ -297,6 +352,54 @@ describe('sanitizeField', () => {
 	});
 });
 
+describe('sanitizeColumn', () => {
+	test('should only contain certain properties from column', () => {
+		const testColumn: Column = {
+			name: 'id',
+			table: 'test',
+			data_type: 'integer',
+			default_value: "nextval('test_id_seq'::regclass)",
+			max_length: null,
+			numeric_precision: 32,
+			numeric_scale: 0,
+			is_nullable: false,
+			is_unique: true,
+			is_indexed: false,
+			is_primary_key: true,
+			is_generated: false,
+			generation_expression: null,
+			has_auto_increment: true,
+			foreign_key_table: null,
+			foreign_key_column: null,
+			// unknown properties that should be removed
+			comment: null,
+			schema: 'public',
+			foreign_key_schema: null,
+		} as Column;
+
+		const result = sanitizeColumn(testColumn);
+
+		expect(result).toEqual({
+			name: 'id',
+			table: 'test',
+			data_type: 'integer',
+			default_value: "nextval('test_id_seq'::regclass)",
+			max_length: null,
+			numeric_precision: 32,
+			numeric_scale: 0,
+			is_nullable: false,
+			is_unique: true,
+			is_indexed: false,
+			is_primary_key: true,
+			is_generated: false,
+			generation_expression: null,
+			has_auto_increment: true,
+			foreign_key_table: null,
+			foreign_key_column: null,
+		});
+	});
+});
+
 describe('sanitizeRelation', () => {
 	test.each([
 		// Postgres + MSSSQL
@@ -356,5 +459,80 @@ describe('sanitizeRelation', () => {
 				on_delete: 'SET NULL',
 			},
 		});
+	});
+});
+
+describe('sanitizeSystemField', () => {
+	test('should only contain collection, field, and is_indexed properties', () => {
+		const testSystemField: Field = {
+			collection: 'directus_users',
+			field: 'email',
+			name: 'email',
+			type: 'string',
+			meta: {
+				id: 1,
+				collection: 'directus_users',
+				conditions: null,
+				display: null,
+				display_options: null,
+				field: 'email',
+				group: null,
+				hidden: false,
+				interface: 'input',
+				note: null,
+				options: null,
+				readonly: false,
+				required: true,
+				sort: null,
+				special: null,
+				translations: null,
+				validation: null,
+				validation_message: null,
+				width: 'full',
+			},
+			schema: {
+				name: 'email',
+				table: 'directus_users',
+				data_type: 'varchar',
+				default_value: null,
+				max_length: 128,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_nullable: false,
+				is_unique: true,
+				is_indexed: true,
+				is_primary_key: false,
+				is_generated: false,
+				generation_expression: null,
+				has_auto_increment: false,
+				foreign_key_table: null,
+				foreign_key_column: null,
+				comment: null,
+			},
+		};
+
+		const result = sanitizeSystemField(testSystemField);
+
+		expect(result).toEqual({
+			collection: 'directus_users',
+			field: 'email',
+			schema: {
+				is_indexed: true,
+			},
+		});
+	});
+
+	test('should handle system fields with index', () => {
+		const testSystemField = {
+			collection: 'directus_activity',
+			field: 'timestamp',
+			schema: {
+				is_indexed: true,
+			},
+		} as SnapshotSystemField;
+
+		const result = sanitizeSystemField(testSystemField);
+
+		expect(result).toEqual(testSystemField);
 	});
 });

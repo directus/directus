@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { usePageSize } from '@/composables/use-page-size';
-import { Collection } from '@/types/collections';
 import { useElementSize, useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { Ref, inject, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { inject, ref, Ref, watch } from 'vue';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { usePageSize } from '@/composables/use-page-size';
+import { Collection } from '@/types/collections';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 defineOptions({ inheritAttrs: false });
 
@@ -32,6 +36,7 @@ const props = withDefaults(
 		resetPresetAndRefresh: () => Promise<void>;
 		sort: string[];
 		loading: boolean;
+		loadingItemCount: boolean;
 		showSelect?: ShowSelect;
 		error?: any;
 		itemCount: number | null;
@@ -50,8 +55,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
-
-const { t } = useI18n();
 
 const selectionWritable = useSync(props, 'selection', emit);
 const limitWritable = useSync(props, 'limit', emit);
@@ -86,8 +89,8 @@ watch(innerWidth, (value) => {
 
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || ((itemCount ?? 0) > 0 && !error)">
-			<cards-header
+		<template v-if="loading || (items.length > 0 && !error)">
+			<CardsHeader
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
 				v-model:sort="sortWritable"
@@ -96,8 +99,10 @@ watch(innerWidth, (value) => {
 				@select-all="selectAll"
 			/>
 
-			<div class="grid" :class="{ 'single-row': isSingleRow }">
-				<card
+			<VProgressCircular v-if="loading" indeterminate rounded />
+
+			<div v-else class="grid" :class="{ 'single-row': isSingleRow }">
+				<Card
 					v-for="item in items"
 					:key="item[primaryKeyField!.field]"
 					v-model="selectionWritable"
@@ -111,18 +116,19 @@ watch(innerWidth, (value) => {
 					:readonly="readonly"
 				>
 					<template v-if="title" #title>
-						<render-template :collection="collection" :item="item" :template="title" />
+						<RenderTemplate :collection="collection" :item="item" :template="title" />
 					</template>
 					<template v-if="subtitle" #subtitle>
-						<render-template :collection="collection" :item="item" :template="subtitle" />
+						<RenderTemplate :collection="collection" :item="item" :template="subtitle" />
 					</template>
-				</card>
+				</Card>
 			</div>
 
 			<div class="footer">
 				<div class="pagination">
-					<v-pagination
-						v-if="totalPages > 1"
+					<VSkeletonLoader v-if="!loading && loadingItemCount && items.length === limit" type="pagination" />
+					<VPagination
+						v-else-if="totalPages > 1"
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
@@ -132,8 +138,8 @@ watch(innerWidth, (value) => {
 				</div>
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
-					<span>{{ t('per_page') }}</span>
-					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
+					<span>{{ $t('per_page') }}</span>
+					<VSelect :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -166,7 +172,7 @@ watch(innerWidth, (value) => {
 	justify-content: space-between;
 	padding-block-start: 40px;
 
-	.pagination {
+	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
 	}
 

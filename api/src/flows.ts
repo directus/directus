@@ -8,9 +8,9 @@ import type {
 	FilterHandler,
 	Flow,
 	Operation,
+	OperationHandler,
 	PrimaryKey,
 	SchemaOverview,
-	OperationHandler,
 } from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';

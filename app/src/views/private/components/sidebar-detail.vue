@@ -1,185 +1,151 @@
 <script setup lang="ts">
-import { useGroupable } from '@directus/composables';
-import { useAppStore } from '@directus/stores';
-import { toRefs } from 'vue';
+import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
+import { watch } from 'vue';
+import { useSidebarStore } from '../private-view/stores/sidebar';
+import VBadge from '@/components/v-badge.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
-	icon: string;
+	id: string;
 	title: string;
+	icon: string;
 	badge?: boolean | string | number;
-	close?: boolean;
 }>();
+
+const sidebarStore = useSidebarStore();
 
 const emit = defineEmits<{
 	toggle: [open: boolean];
 }>();
 
-const { active, toggle } = useGroupable({
-	value: props.title,
-	group: 'sidebar-detail',
-});
-
-const appStore = useAppStore();
-const { sidebarOpen } = toRefs(appStore);
-
-function onClick() {
-	emit('toggle', !active.value);
-	toggle();
-}
+watch(
+	() => sidebarStore.activeAccordionItem,
+	(newActive, oldActive) => {
+		if (newActive === props.id && newActive !== oldActive) {
+			emit('toggle', true);
+		} else if (oldActive === props.id && newActive !== props.id) {
+			emit('toggle', false);
+		}
+	},
+);
 </script>
 
 <template>
-	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button v-if="close" v-show="sidebarOpen" class="close" @click="sidebarOpen = false">
-			<v-icon name="close" />
-		</button>
-		<button v-tooltip.left="!sidebarOpen && title" class="toggle" :class="{ open: active }" @click="onClick">
-			<div class="icon">
-				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
-					<v-icon :name="icon" />
-				</v-badge>
+	<AccordionItem class="accordion-item" :value="id">
+		<AccordionHeader>
+			<AccordionTrigger
+				v-tooltip.left="sidebarStore.collapsed && title"
+				class="accordion-trigger"
+				:class="{ collapsed: sidebarStore.collapsed }"
+			>
+				<VBadge :dot="badge === true" bordered :value="badge" :disabled="!badge">
+					<VIcon class="accordion-trigger-icon" :name="icon" />
+				</VBadge>
+				<span class="accordion-trigger-title">{{ title }}</span>
+				<VIcon class="accordion-trigger-chevron" name="chevron_left" />
+			</AccordionTrigger>
+		</AccordionHeader>
+		<AccordionContent class="accordion-content">
+			<div class="accordion-content-container">
+				<slot />
 			</div>
-			<div v-show="sidebarOpen" class="title">
-				{{ title }}
-			</div>
-			<div v-if="!close" class="icon">
-				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" />
-			</div>
-		</button>
-		<transition-expand class="scroll-container">
-			<div v-show="active">
-				<div class="content">
-					<slot />
-				</div>
-			</div>
-		</transition-expand>
-	</div>
+		</AccordionContent>
+	</AccordionItem>
 </template>
 
 <style lang="scss" scoped>
-.sidebar-detail {
-	--v-badge-offset-x: 3px;
-	--v-badge-offset-y: 4px;
-	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
-	--v-badge-background-color: var(--theme--primary);
-	--v-badge-color: var(--theme--background-normal);
-
+.accordion-item {
 	display: contents;
 
 	:deep(.type-label) {
 		margin-block-end: 4px;
 		font-size: 1rem;
 	}
+}
 
-	.toggle {
-		--focus-ring-offset: var(--focus-ring-offset-inset);
+.accordion-trigger {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
+	--v-badge-offset-x: 15px;
+	--v-badge-offset-y: 4px;
+	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
+	--v-badge-background-color: var(--theme--primary);
+	--v-badge-color: var(--theme--background-normal);
 
-		position: relative;
-		display: flex;
-		flex-shrink: 0;
-		justify-content: space-between;
-		inline-size: 100%;
-		block-size: calc(60px + var(--theme--sidebar--section--toggle--border-width));
-		color: var(--theme--sidebar--section--toggle--foreground);
-		background-color: var(--theme--sidebar--section--toggle--background);
-		border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
-			var(--theme--sidebar--section--toggle--border-color);
+	display: flex;
+	align-items: center;
+	block-size: 60px;
+	inline-size: 100%;
+	background-color: var(--theme--sidebar--section--toggle--background);
+	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
+		var(--theme--sidebar--section--toggle--border-color);
+	color: var(--theme--sidebar--section--toggle--foreground);
+	padding-inline: 18px 9px;
+}
 
-		.icon {
-			--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
+.accordion-trigger-icon {
+	margin-inline-end: 12px;
+}
 
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			inline-size: 60px;
-			block-size: 100%;
-		}
+.accordion-trigger-title {
+	flex-grow: 1;
+	text-align: start;
+	transition: opacity var(--fast) var(--transition);
 
-		&:hover {
-			color: var(--theme--sidebar--section--toggle--foreground-hover);
-			background-color: var(--theme--sidebar--section--toggle--background-hover);
-
-			.icon {
-				--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground-hover);
-			}
-		}
-
-		&.open {
-			color: var(--theme--sidebar--section--toggle--foreground-active);
-			background-color: var(--theme--sidebar--section--toggle--background-active);
-
-			.icon {
-				--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground-active);
-			}
-		}
+	.collapsed & {
+		opacity: 0;
 	}
+}
 
-	.close {
-		--focus-ring-offset: var(--focus-ring-offset-inset);
+.accordion-trigger-chevron {
+	color: var(--theme--foreground-subdued);
+	transform: rotate(0deg);
+	transition: var(--fast) var(--transition);
+	transition-property: transform, opacity;
 
-		position: absolute;
-		inset-block-start: 0;
-		inset-inline-end: 0;
-		z-index: 50;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		inline-size: 60px;
-		block-size: 60px;
-		color: var(--theme--foreground);
-		transition:
-			opacity var(--fast) var(--transition),
-			color var(--fast) var(--transition);
-
-		.v-icon {
-			pointer-events: none;
-		}
-
-		&:hover {
-			color: var(--sidebar-detail-color-active);
-		}
+	.collapsed & {
+		opacity: 0;
 	}
+}
 
-	&.open {
-		.toggle {
-			.close {
-				opacity: 1;
-				pointer-events: auto;
-			}
-		}
+.accordion-trigger[data-state='open'] {
+	.accordion-trigger-chevron {
+		transform: rotate(-90deg);
 	}
+}
 
-	.title {
-		position: absolute;
-		inset-block-start: 50%;
-		inset-inline-start: 52px;
-		overflow: hidden;
-		white-space: nowrap;
-		transform: translateY(-50%);
-		font-family: var(--theme--sidebar--section--toggle--font-family);
+.accordion-content {
+	overflow-y: auto;
+	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
+		var(--theme--sidebar--section--toggle--border-color);
+}
+
+.accordion-content[data-state='open'] {
+	animation: slide-down var(--medium) var(--transition);
+}
+
+.accordion-content[data-state='closed'] {
+	animation: slide-up var(--medium) var(--transition);
+}
+
+@keyframes slide-down {
+	from {
+		block-size: 0;
 	}
-
-	.scroll-container {
-		overflow: hidden auto;
+	to {
+		block-size: var(--reka-accordion-content-height);
 	}
+}
 
-	.content {
-		padding: 16px;
-		border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
-			var(--theme--sidebar--section--toggle--border-color);
-
-		:deep(.page-description) {
-			margin-block-end: 8px;
-			color: var(--theme--sidebar--foreground);
-		}
-
-		:deep(.page-description a) {
-			color: var(--theme--primary);
-		}
+@keyframes slide-up {
+	from {
+		block-size: var(--reka-accordion-content-height);
 	}
-
-	.expand-icon {
-		color: var(--theme--foreground-subdued);
+	to {
+		block-size: 0;
 	}
+}
+
+.accordion-content-container {
+	padding: 16px;
 }
 </style>

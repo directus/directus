@@ -1,5 +1,6 @@
-import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import { SettingsService } from '../../services/settings.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 export type TelemetrySettings = {
 	project_id: string;
@@ -7,19 +8,49 @@ export type TelemetrySettings = {
 	mcp_allow_deletes: boolean;
 	mcp_system_prompt_enabled: boolean;
 	visual_editor_urls: number;
+	ai_openai_api_key: boolean;
+	ai_anthropic_api_key: boolean;
+	ai_system_prompt: boolean;
+};
+
+export type DatabaseSettings = {
+	project_id: string;
+	mcp_enabled?: boolean;
+	mcp_allow_deletes?: boolean;
+	mcp_system_prompt_enabled?: boolean;
+	visual_editor_urls?: { url: string }[];
+	ai_openai_api_key?: string;
+	ai_anthropic_api_key?: string;
+	ai_system_prompt?: string;
 };
 
 export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
-	const settings = await db
-		.select('project_id', 'mcp_enabled', 'mcp_allow_deletes', 'mcp_system_prompt_enabled', 'visual_editor_urls')
-		.from('directus_settings')
-		.first();
+	const settingsService = new SettingsService({
+		knex: db,
+		schema: await getSchema({ database: db }),
+	});
+
+	const settings = (await settingsService.readSingleton({
+		fields: [
+			'project_id',
+			'mcp_enabled',
+			'mcp_allow_deletes',
+			'mcp_system_prompt_enabled',
+			'visual_editor_urls',
+			'ai_openai_api_key',
+			'ai_anthropic_api_key',
+			'ai_system_prompt',
+		],
+	})) as DatabaseSettings;
 
 	return {
 		project_id: settings.project_id,
-		mcp_enabled: toBoolean(settings?.mcp_enabled),
-		mcp_allow_deletes: toBoolean(settings?.mcp_allow_deletes),
-		mcp_system_prompt_enabled: toBoolean(settings?.mcp_system_prompt_enabled),
-		visual_editor_urls: settings.visual_editor_urls ? JSON.parse(settings.visual_editor_urls).length : 0,
+		mcp_enabled: settings?.mcp_enabled || false,
+		mcp_allow_deletes: settings?.mcp_allow_deletes || false,
+		mcp_system_prompt_enabled: settings?.mcp_system_prompt_enabled || false,
+		visual_editor_urls: settings.visual_editor_urls?.length || 0,
+		ai_openai_api_key: Boolean(settings?.ai_openai_api_key),
+		ai_anthropic_api_key: Boolean(settings?.ai_anthropic_api_key),
+		ai_system_prompt: Boolean(settings?.ai_system_prompt),
 	};
 };

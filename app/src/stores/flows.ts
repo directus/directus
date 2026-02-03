@@ -1,10 +1,19 @@
-import { usePermissionsStore } from '@/stores/permissions';
-import { fetchAll } from '@/utils/fetch-all';
 import type { FlowRaw } from '@directus/types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { useAiStore } from '@/ai/stores/use-ai';
+import { usePermissionsStore } from '@/stores/permissions';
+import { fetchAll } from '@/utils/fetch-all';
 
 export const useFlowsStore = defineStore('flowsStore', () => {
+	const aiStore = useAiStore();
+
+	aiStore.onSystemToolResult(async (toolName) => {
+		if (toolName === 'flows') {
+			await hydrate();
+		}
+	});
+
 	const flows = ref<FlowRaw[]>([]);
 
 	return {

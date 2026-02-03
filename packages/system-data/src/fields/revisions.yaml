@@ -28,3 +28,7 @@ fields:
 
   - field: version
     width: half
+
+indexed:
+  - field: parent
+  - field: activity

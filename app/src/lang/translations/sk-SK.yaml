@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O programe
+first_name: Meno
+last_name: Priezvisko
 identifier: Identifikátor
 avatar: Avatar
 application: Aplikácia
@@ -132,7 +134,6 @@ create_policy: Vytvoriť politiku
 create_user: Vytvoriť používateľa
 message: Správa
 delete_panel: Odstrániť panel
-create_webhook: Vytvoriť Webhook
 create_custom_translation: Vytvoriť vlastný preklad
 edit_custom_translation: Upraviť vlastný preklad
 no_custom_translations: Žiadne vlastné preklady
@@ -164,19 +165,9 @@ rename_version: Premenovať verziu
 compare_version: Porovnať verzie
 save_version: Uložiť verziu
 promote_version: Povýšiť verziu
-promote_version_disabled: Žiadne zmeny
-promote_version_drawer_title: Povýšiť {version} ako hlavnú
-promote_version_changes: Zmeny
-promote_version_preview: Náhľad
-outdated_notice: >-
-  Od vytvorenia tejto verzie bola hlavná položka upravená. Prosím prezrite všetky nasledujúce polia a potvrďte, ktorá verzia sa má použiť pri povýšení tejto verzie do hlavnej.
-promote_notice: >-
-  Prosím prezrite všetky nasledujúce hodnoty polí a potvrďte ktorá verzia sa má použiť pri povýšení tejto verzie do hlavnej.
 delete_version: Odstrániť verziu
 delete_version_copy: >-
   Naozaj chcete odstrániť verziu "{version}"? Táto akcia sa nedá vrátiť.
-delete_on_promote_copy: >-
-  Prajete si odstrániť alebo ponechať verziu "{version}" po jej povýšení?
 reset_bookmark: Obnoviť záložku
 update_bookmark: Aktualizovať záložku
 delete_bookmark: Odstrániť záložku
@@ -445,11 +436,11 @@ confirm_revert_body: Toto vráti položku do zvoleného stavu.
 display: Zobrazenie
 settings_update_success: Nastavenia aktualizované
 title: Názov
+subtitle: Podnadpis
 revision_delta_created: Vytvorené
 revision_delta_created_externally: Vytvorené externe
 revision_delta_updated: 'Zmenené 1 pole | Zmenené {count} polia'
 revision_delta_deleted: Odstránené
-revision_delta_version_saved: 'Uložiť verziu (1 upravené pole) | Uložiť verziu ({count} upravených polí)'
 revision_delta_reverted: Vrátené
 revision_delta_update_message: Toto pole je zmenené, ale jeho hodnota je utajená z bezpečnostných dôvodov.
 revision_delta_other: Revízia
@@ -635,12 +626,6 @@ file_count: 'Žiadne súbory | Jeden súbor | {count} súborov'
 no_files_copy: Nie sú tu žiadne súbory.
 user_count: 'Žiadni používatelia | Jeden používateľ | {count} používateľov'
 no_users_copy: Pod touto rolou zatiaľ nie sú žiadni používatelia.
-webhooks_count: 'Žiadne webhooky | Jeden webhook | {count} webhookov'
-webhooks_deprecation_notice: |
-  Webhooky sú zastaral a ich použitie sa neodporúča.
-
-  Namiesto nich použite **Toky** s [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: Zatiaľ neboli nastavené žiadne webhooky. Začnite vytvorením niektorého nižšie.
 no_notifications: Žiadne oznámenie
 no_notifications_copy: Všetko ste dohnali!
 activity_log: Log aktivity
@@ -671,7 +656,6 @@ action: Akcia
 ip_address: IP adresa
 user_agent: Užívateľský agent
 origin: Pôvod
-webhooks: Webhooky
 decimals: Desatinné miesta
 value_decimals: Desatinná hodnota
 min_value: Minimálna hodnota
@@ -755,7 +739,6 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
   VALUE_TOO_LONG: Hodnota je príliš dlhá
 security: Zabezpečenie
-value_hashed: Hodnota bezpečne zahashovaná
 bookmark_name: Názov záložky...
 create_bookmark: Vytvoriť záložku
 edit_bookmark: Upraviť záložku
@@ -931,10 +914,8 @@ label: Popis
 flows: Toky
 flow: Tok
 select_a_flow: Vyberte tok
-run_flow_confirm: Naozaj chcete spustiť tento tok?
 run_flow_on_current_collection: Spustiť tok nad aktuálnou zbierkou
 run_flow_on_current: Spustiť tok na aktuálnej položke
-run_flow_on_current_edited_confirm: Táto položka sa môže vykonaním tohoto toku zmeniť, naozaj to chcete vykonať?
 run_flow_on_selected: Najprv zvoľte jednu alebo viac položiek | Spustiť tok na 1 zvolenej položke | Spustiť tok na {n} zvolených položkách
 run_flow: Spustiť tok
 field_name_placeholder: Zadajte názov poľa...
@@ -1120,7 +1101,6 @@ settings_roles: Role používateľa
 settings_permissions: Prístupové politiky
 settings_project: Nastavenia
 settings_appearance: Vzhľad
-settings_webhooks: Webhooky
 settings_flows: Toky
 settings_system_logs: Systémové logy
 settings_presets: Záložky
@@ -1148,48 +1128,6 @@ discard_changes_copy: Naozaj chcete zahodiť všetky vykonané zmeny?
 show_x_axis: Zobraziť os X
 show_y_axis: Zobraziť os Y
 keep_editing: Pokračovať v úprave
-page_help_collections_overview: '**Prehľad zbierok** — Zoznam všetkých zbierok, ku ktorým máte prístup.'
-page_help_collections_collection: >-
-  **Prehľad položiek** — Zoznam všetkých položiek {collection}, ku ktorým máte prístup. Prispôsobte rozloženie, filtre a zoradenie podľa potreby alebo dokonca uložke záložky týchto rôznych konfigurácií na rýchlejší prístup.
-page_help_collections_item: >-
-  **Podrobnosti položky** — Formulár na pozeranie a správu tejto položky. Tento bočný panel obsahuje celú históriu revízií a súvisiace komentáre.
-page_help_activity_collection: >-
-  **Prehliadať aktivitu** — Zoznam všetkej aktivity vašich systémových používateľov a aktivity nad obsahom.
-page_help_docs_global: >-
-  **Prehľad dokumentácie** — Dokumenty vytvorené špecificky pre verziu tohoto projektu a túto schému.
-page_help_files_collection: >-
-  **Knižnica súborov** — Zoznamy všetkých súborov nahratých do tohoto projektu. Prispôsobte rozloženie, filtery a zoraďovanie, alebo si aj uložte záložky týchto rôznych konfigurácií na rýchly prístup.
-page_help_files_item: >-
-  **Podrobnosti súboru** — Formulár na spravovanie metedát súboru, úpravu pôvodného súboru a akualizáciu prístupových nastavení.
-page_help_settings_project: "**Nastavenia** — Globálne nastavenia vášho projektu."
-page_help_settings_appearance: "**Vzhľad** — Vzhľad vášho projektu a možnosti tém."
-page_help_settings_extensions: '**Rozšírenia** - Rozšírenia nainštalované vo vašom projekte.'
-page_help_settings_datamodel_collections: >-
-  **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
-page_help_settings_datamodel_fields: >-
-  **Data Model: Zbierka** — Formulár na správu tejto zbierky a jej polí.
-page_help_settings_system_logs: '**Systémové logy** — Prístup k streamu systémových logov.'
-page_help_settings_policies_collection: '**Prehliadať politiky** - Zoznam všetkých politík v projekte.'
-page_help_settings_roles_collection: '**Prehliadať role** - Zoznam všetkých rolí v projekte.'
-page_help_settings_roles_item: "**Podrobnosti role** — Spravuje oprávnenia rolí a iné nastavenia."
-page_help_settings_presets_collection: >-
-  **Prehliadanie presetov** — Vypíše všetky presety v projekte vrátane: používateľských, rolových a globálnych záložiek, a taktiež predvolené pohľady.
-page_help_settings_presets_item: >-
-  **Podrobnosti presetu** — Formulár spravujúci záložky a predvolené presety zbierky.
-page_help_settings_webhooks_collection: '**Prehliadanie Webhookov** — Zoznam všetkých webhookov v projekte.'
-page_help_settings_webhooks_item: '**Podrobnosti webhooku** — Formulár na vytváranie a správu webhookov v projekte.'
-page_help_settings_flows_collection: '**Prehliadanie tokov** — Zoznam všetkých tokov v projekte.'
-page_help_settings_flows_item: '**Podrobnosti toku** — Pracovný priestor na správu jedného alebo viac operácií.'
-page_help_settings_translations_collection: '**Prehliadať vlastné preklady** — Vypíše zoznam všetkých vlastných prekladov v rámci projektu.'
-page_help_settings_translations_item: '**Podrobnosti vlastného prekladu** — Formulár na pozeranie a úpravu tejto položky.'
-page_help_users_collection: '**Priečinok používateľov** — Zoznam všetkých používateľov v projekte.'
-page_help_users_item: >-
-  **Podrobnosti používateľa** — Spravuje informácie o vašom účte, alebo zobrazuje podrobnosti iných používateľov.
-page_help_insights_overview: '**Prehľady** — Zoznam tabúľ, ku ktorým máte prístup.'
-page_help_insights_dashboard: '**Tabuľa** — Pracovný priestor na spravovanie jedného alebo viac panelov'
-page_help_marketplace_account: '**Účet** — Vydavateľ alebo správca zverejneného rozšírenia.'
-page_help_marketplace_registry: '**Register** — Rozšírenie dostupné v Directus trhovisku.'
-page_help_marketplace_extension: '**Rozšírenie** — Rozšírenie v Directus trhovisku.'
 activity_feed: Záznam aktivít
 add_new: Pridať nový
 create_new: Vytvoriť nové
@@ -1225,7 +1163,6 @@ directus_collection:
   directus_dashboards: Tabule v module prehľadov
   directus_fields: Dodatočné nastavenia polí a metadát
   directus_files: Metadáta pre všetky spravované súbory
-  directus_flows: Automatizácia tokov
   directus_folders: Poskytuje virtuálne priečinky na súboru
   directus_migrations: Akú verziu databázy používate
   directus_notifications: Notifikácie poslané používateľom
@@ -1241,7 +1178,6 @@ directus_collection:
   directus_settings: Možnosti konfigurácie projektu
   directus_shares: Sleduje externe zdieľané položky
   directus_users: Systémoví používatelia na platforme
-  directus_webhooks: Konfigurácia HTTP požiadavkov z udalostí
   directus_translations: Vlastné preklady
   directus_versions: Verzie obsahu položiek
   directus_extensions: Nastavenia rozšírení
@@ -1418,18 +1354,6 @@ fields:
     admin_access: Admin prístup
     ip_access: IP prístup
     enforce_tfa: Vyžaduje 2FA
-  directus_webhooks:
-    name: Názov
-    method: Metóda
-    status: Stav
-    data: Údaje
-    header: Hlavička
-    value: Hodnota
-    headers: Hlavičky požiadavky
-    data_label: Poslať údaje udalosti
-    triggers: Spúšťače
-    actions: Akcie
-    collections: Zbierky
 field_options:
   directus_settings:
     project_name_placeholder: Môj projekt...
@@ -1530,19 +1454,6 @@ field_options:
     status_dropdown_suspended: Pozastavený
     status_dropdown_archived: Archivovaný
     token: Zadajte bezpečnostný prístupový token...
-  directus_webhooks:
-    status_options_active: Aktívne
-    status_options_inactive: Neaktívne
-    data_label: Poslať údaje udalosti
-    triggers_divider: Spúšťače
-    actions_create: Vytvoriť
-    actions_update: Aktualizovať
-    actions_delete: Odstrániť
-    actions_login: Prihlásiť
-    headers:
-      header: Hlavička
-      value: Hodnota
-      add: Pridať hlavičku
 no_fields_in_collection: 'V "{collection}" zatiaľ nie sú žiadne polia'
 no_value: Žiadna hodnota
 do_nothing: Nerobiť nič
@@ -1569,6 +1480,22 @@ unlimited_usage: Neobmedzené používanie
 uses_left: Žiadne zostávajúce použitia | Jedno zostávajúce použitie | {n} zostávajúcich použití
 no_shares: Žiadne zdieľania
 new_share: Nové zdieľanie
+ai:
+  input: Vstup
+  unknown: Neznáme
+  settings: Nastavenia
+  tool_approval:
+    disabled: Vypnuté
+ai_tools:
+  items: Položky
+  files: Súbory
+  folders: Priečinky
+  flows: Toky
+  trigger-flow: Spúšťač toku
+  operations: Operácie
+  schema: Schéma
+  collections: Zbierky
+  fields: Polia
 mcp_prompts_collection_schema:
   messages_role_user: Používateľ
 expired: Vypršalo
@@ -1605,7 +1532,6 @@ editing_role: 'Rola {role}'
 editing_policy: 'Politika {policy}'
 no_permissions: Žiadne práva
 permission_add_collection: Pridať zbierku
-creating_webhook: Tvorba webhooku
 default_label: Predvolené
 delete_label: Odstrániť
 delete_are_you_sure: >-
@@ -1737,9 +1663,7 @@ interfaces:
     accordion_mode: Režim akordeónu
     max_one_section_open: Max 1 sekcia otvorená
   presentation-links:
-    presentation-links: Tlačidlá s odkazom
-    links: Odkazy
-    description: Konfigurovateľné tlačidlá na otváranie dynamických URL adries
+    presentation-links: Tlačidlá
     style: Štýl
     primary: Primárne
     link: Odkazy
@@ -2061,6 +1985,9 @@ interfaces:
   input-password:
     input-password: Vložte heslo
     description: Pole na heslo so skrývaním hodnoty
+  header:
+    header: Hlavička
+    links: Odkazy
 displays:
   translations:
     translations: Preklady
@@ -2364,11 +2291,9 @@ triggers:
 a_flow_uuid: Vyberte tok na spustenie...
 any_string_or_json: Akýkoľvek text alebo JSON...
 item_payload_placeholder: Toto je JSON použitý na aktualizáciu hodnôt polí v položke...
-operation_variables_note: K dátam toku sa viete dostať použitím premenných **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** a **{'{'}{'{'}$accountability{'}'}{'}'}**, alebo odkazovať na predošlé operácie použitím **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Podmienka
-    description: Presmeruje tok podľa logiky If / Else
   exec:
     name: Spustiť skript
     description: Vykoná ľubovoľný kód, ktorý upraví payload
@@ -2452,7 +2377,6 @@ operations:
     description: Zmení JSON payload toku
   trigger:
     name: Spúšťač toku
-    description: Presunie tieto dáta do iného toku
     flows: Toky
     flow: Tok
     data: Údaje

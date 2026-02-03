@@ -5,6 +5,8 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 
 const fieldDetailStore = useFieldDetailStore();
 
@@ -57,9 +59,9 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 </script>
 
 <template>
-	<v-notice v-if="!field.field">{{ t('configure_field_key_to_continue') }}</v-notice>
+	<VNotice v-if="!field.field">{{ $t('configure_field_key_to_continue') }}</VNotice>
 
-	<v-form v-else v-model="validationSync" :initial-values="validationInitial" :fields="fields" :loading="loading" />
+	<VForm v-else v-model="validationSync" :initial-values="validationInitial" :fields="fields" :loading="loading" />
 </template>
 
 <style lang="scss" scoped>

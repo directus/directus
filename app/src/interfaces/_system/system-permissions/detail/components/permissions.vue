@@ -3,6 +3,8 @@ import type { DeepPartial, Field, Permission, Policy } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AppMinimal from './app-minimal.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 
 const props = defineProps<{
 	permission: Permission;
@@ -49,18 +51,18 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 
 <template>
 	<div>
-		<v-notice>
+		<VNotice>
 			{{
-				t('permissions_for_policy', {
-					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
-					policy: policy ? policy.name : t('public_label'),
+				$t('permissions_for_policy', {
+					action: $t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
+					policy: policy ? policy.name : $t('public_label'),
 				})
 			}}
-		</v-notice>
+		</VNotice>
 
-		<v-form v-model="permissionSync" :initial-values="permissionInitial" :fields="fields" />
+		<VForm v-model="permissionSync" :initial-values="permissionInitial" :fields="fields" />
 
-		<app-minimal :value="appMinimal" />
+		<AppMinimal :value="appMinimal" />
 	</div>
 </template>
 

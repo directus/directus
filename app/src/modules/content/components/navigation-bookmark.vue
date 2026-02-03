@@ -1,21 +1,34 @@
 <script setup lang="ts">
+import { Preset } from '@directus/types';
+import { computed, reactive, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import InterfaceSystemInputTranslatedString from '@/interfaces/_system/system-input-translated-string/input-translated-string.vue';
+import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute } from '@/utils/get-route';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Preset } from '@directus/types';
-import { computed, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
 
 interface Props {
 	bookmark: Preset;
 }
 
 const props = defineProps<Props>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 const route = useRoute();
@@ -116,22 +129,22 @@ function useDeleteBookmark() {
 </script>
 
 <template>
-	<v-list-item
+	<VListItem
 		:to="`${getCollectionRoute(bookmark.collection)}?bookmark=${bookmark.id}`"
 		query
 		class="bookmark"
 		clickable
 		@contextmenu.stop=""
 	>
-		<v-list-item-icon><v-icon :name="bookmark.icon" :color="bookmark.color" /></v-list-item-icon>
-		<v-list-item-content>
-			<v-text-overflow :text="name" />
-		</v-list-item-content>
+		<VListItemIcon><VIcon :name="bookmark.icon" :color="bookmark.color" /></VListItemIcon>
+		<VListItemContent>
+			<VTextOverflow :text="name" />
+		</VListItemContent>
 
-		<v-menu placement="bottom-start" show-arrow>
+		<VMenu placement="bottom-start" show-arrow>
 			<template #activator="{ toggle, active }">
-				<v-icon
-					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
+				<VIcon
+					v-tooltip.bottom="!hasPermission && $t(`cannot_edit_${scope}_bookmarks`)"
 					:name="hasPermission ? 'more_vert' : 'lock'"
 					:clickable="hasPermission"
 					small
@@ -140,66 +153,66 @@ function useDeleteBookmark() {
 					@click.prevent="hasPermission ? toggle() : null"
 				/>
 			</template>
-			<v-list>
-				<v-list-item
+			<VList>
+				<VListItem
 					clickable
 					:to="scope !== 'personal' ? `/settings/presets/${bookmark.id}` : undefined"
 					@click="scope === 'personal' ? (editActive = true) : undefined"
 				>
-					<v-list-item-icon>
-						<v-icon name="edit" outline />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="t(`edit_${scope}_bookmark`)" />
-					</v-list-item-content>
-				</v-list-item>
-				<v-list-item clickable class="danger" @click="deleteActive = true">
-					<v-list-item-icon>
-						<v-icon name="delete" outline />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="t(`delete_${scope}_bookmark`)" />
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					<VListItemIcon>
+						<VIcon name="edit" outline />
+					</VListItemIcon>
+					<VListItemContent>
+						<VTextOverflow :text="$t(`edit_${scope}_bookmark`)" />
+					</VListItemContent>
+				</VListItem>
+				<VListItem clickable class="danger" @click="deleteActive = true">
+					<VListItemIcon>
+						<VIcon name="delete" outline />
+					</VListItemIcon>
+					<VListItemContent>
+						<VTextOverflow :text="$t(`delete_${scope}_bookmark`)" />
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 
-		<v-dialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
-			<v-card>
-				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
-				<v-card-text>
+		<VDialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
+			<VCard>
+				<VCardTitle>{{ $t('edit_personal_bookmark') }}</VCardTitle>
+				<VCardText>
 					<div class="fields">
-						<interface-system-input-translated-string
+						<InterfaceSystemInputTranslatedString
 							:value="editValue.name"
 							class="full"
 							autofocus
 							@input="editValue.name = $event"
 						/>
-						<interface-select-icon width="half" :value="editValue.icon" @input="editValue.icon = $event" />
-						<interface-select-color width="half" :value="editValue.color" @input="editValue.color = $event" />
+						<InterfaceSelectIcon width="half" :value="editValue.icon" @input="editValue.icon = $event" />
+						<InterfaceSelectColor width="half" :value="editValue.color" @input="editValue.color = $event" />
 					</div>
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="editCancel">{{ t('cancel') }}</v-button>
-					<v-button :disabled="isEditDisabled" :loading="editSaving" @click="editSave">
-						{{ t('save') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="editCancel">{{ $t('cancel') }}</VButton>
+					<VButton :disabled="isEditDisabled" :loading="editSaving" @click="editSave">
+						{{ $t('save') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
-			<v-card>
-				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleteSaving" kind="danger" @click="deleteSave">
-						{{ t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</v-list-item>
+		<VDialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
+			<VCard>
+				<VCardTitle>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</VCardTitle>
+				<VCardActions>
+					<VButton secondary @click="deleteActive = false">{{ $t('cancel') }}</VButton>
+					<VButton :loading="deleteSaving" kind="danger" @click="deleteSave">
+						{{ $t('delete_label') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</VListItem>
 </template>
 
 <style lang="scss" scoped>

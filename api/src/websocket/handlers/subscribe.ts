@@ -4,7 +4,7 @@ import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { WebSocketError, handleWebSocketError } from '../errors.js';
+import { handleWebSocketError, WebSocketError } from '../errors.js';
 import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';

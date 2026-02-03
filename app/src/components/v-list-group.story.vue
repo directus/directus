@@ -1,24 +1,26 @@
 <script setup lang="ts">
 import VListGroup from './v-list-group.vue';
+import VListItem from './v-list-item.vue';
+import VList from './v-list.vue';
 </script>
 
 <template>
 	<Story title="VList/VListGroup">
-		<v-list>
-			<v-list-item>Item 1</v-list-item>
-			<v-list-item>Item 2</v-list-item>
+		<VList>
+			<VListItem>Item 1</VListItem>
+			<VListItem>Item 2</VListItem>
 
-			<v-list-group>
+			<VListGroup>
 				<template #activator>
-					<v-list-item>Group Item 3</v-list-item>
+					<VListItem>Group Item 3</VListItem>
 				</template>
 
-				<v-list-item>Item 3-1</v-list-item>
-				<v-list-item>Item 3-2</v-list-item>
-				<v-list-item>Item 3-2</v-list-item>
-			</v-list-group>
+				<VListItem>Item 3-1</VListItem>
+				<VListItem>Item 3-2</VListItem>
+				<VListItem>Item 3-2</VListItem>
+			</VListGroup>
 
-			<v-list-item>Item 4</v-list-item>
-		</v-list>
+			<VListItem>Item 4</VListItem>
+		</VList>
 	</Story>
 </template>

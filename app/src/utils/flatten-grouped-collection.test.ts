@@ -1,6 +1,6 @@
-import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
-import { Collection } from '@/types/collections';
 import { describe, expect, it } from 'vitest';
+import { Collection } from '@/types/collections';
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 
 describe('flattenGroupedCollection', () => {
 	it('should return a list by meta.sort and collection name if no groups are present', () => {

@@ -27,7 +27,7 @@ const value = ref('item2');
 <template>
 	<Story title="VSelect" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-select v-model="value" v-bind="state" />
+			<VSelect v-model="value" v-bind="state" />
 		</template>
 
 		<template #controls>

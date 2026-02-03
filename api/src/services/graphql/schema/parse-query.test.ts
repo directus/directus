@@ -1,10 +1,7 @@
 import type { FieldNode, SelectionNode } from 'graphql';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
-import { parseArgs } from './parse-args.js';
 import { getQuery } from './parse-query.js';
-
-vi.mock('/parse-args.js');
 
 vi.mock('../../../utils/sanitize-query.js', () => ({
 	sanitizeQuery: vi.fn(async (q) => q),
@@ -22,8 +19,6 @@ vi.mock('../utils/filter-replace-m2a.js', () => ({
 vi.mock('../utils/replace-funcs.js', () => ({
 	replaceFuncs: vi.fn((v) => v),
 }));
-
-vi.mock('./parse-args.js');
 
 const mockSchema = {} as any;
 const mockAccountability = null;
@@ -103,7 +98,6 @@ describe('parseFields', () => {
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['posts']);
-		expect(parseArgs).toHaveBeenCalledWith(selections[0]!.arguments, mockVariableValues);
 	});
 
 	test('should parse InlineFragment with arguments', async () => {

@@ -1,7 +1,7 @@
-import { useFieldsStore } from '@/stores/fields';
 import { definePanel } from '@directus/extensions';
 import PanelMeter from './panel-meter.vue';
 import PreviewSVG from './preview.svg?raw';
+import { useFieldsStore } from '@/stores/fields';
 
 export default definePanel({
 	id: 'meter',

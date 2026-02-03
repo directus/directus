@@ -7,7 +7,7 @@ interface Props {
 	/** What icon to render above the title */
 	icon?: string | false;
 	/** Styling of the info */
-	type?: 'info' | 'success' | 'warning' | 'danger';
+	type?: 'info' | 'success' | 'warning' | 'danger' | 'primary';
 	/** Displays the info centered */
 	center?: boolean;
 }
@@ -22,7 +22,7 @@ withDefaults(defineProps<Props>(), {
 <template>
 	<div class="v-info" :class="[type, { center }]">
 		<div v-if="icon !== false" class="icon">
-			<v-icon large :name="icon" />
+			<VIcon large :name="icon" />
 		</div>
 		<h2 class="title type-title">{{ title }}</h2>
 		<p class="content"><slot /></p>
@@ -66,6 +66,11 @@ withDefaults(defineProps<Props>(), {
 .danger .icon {
 	color: var(--theme--danger);
 	background-color: var(--danger-alt);
+}
+
+.primary .icon {
+	color: var(--theme--primary);
+	background-color: var(--primary-alt);
 }
 
 .title {

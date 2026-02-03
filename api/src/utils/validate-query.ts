@@ -24,7 +24,7 @@ const querySchema = Joi.object({
 	page: Joi.number().integer().min(0),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
-	export: Joi.string().valid('csv', 'json', 'xml', 'yaml'),
+	export: Joi.string().valid('csv', 'csv_utf8', 'json', 'xml', 'yaml'),
 	version: Joi.string(),
 	versionRaw: Joi.boolean(),
 	aggregate: Joi.object(),

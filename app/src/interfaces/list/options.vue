@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { FIELD_TYPES_SELECT } from '@/constants';
-import { translate } from '@/utils/translate-object-values';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Repeater from './list.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { FIELD_TYPES_SELECT } from '@/constants';
+import InterfaceSystemInputTranslatedString from '@/interfaces/_system/system-input-translated-string/input-translated-string.vue';
+import { translate } from '@/utils/translate-object-values';
 
 const props = defineProps<{
 	value: Record<string, any> | null;
@@ -252,33 +255,33 @@ const sortFields = computed(() => {
 <template>
 	<div class="grid">
 		<div class="grid-element half">
-			<p class="type-label">{{ t('template') }}</p>
-			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
+			<p class="type-label">{{ $t('template') }}</p>
+			<VInput v-model="template" class="input" :placeholder="`{{ field }}`" />
 		</div>
 
 		<div class="grid-element half">
-			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
-			<interface-system-input-translated-string
+			<p class="type-label">{{ $t('interfaces.list.add_label') }}</p>
+			<InterfaceSystemInputTranslatedString
 				:value="addLabel"
 				class="input"
-				:placeholder="t('create_new')"
+				:placeholder="$t('create_new')"
 				@input="addLabel = $event"
 			/>
 		</div>
 		<div class="grid-element half-left">
-			<p class="type-label">{{ t('interfaces.list.sort') }}</p>
-			<v-select
+			<p class="type-label">{{ $t('interfaces.list.sort') }}</p>
+			<VSelect
 				v-model="sort"
 				class="input"
 				:items="sortFields"
 				show-deselect
-				:placeholder="t('interfaces.list.sort_placeholder')"
+				:placeholder="$t('interfaces.list.sort_placeholder')"
 			/>
 		</div>
 
 		<div class="grid-element full">
-			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
-			<repeater
+			<p class="type-label">{{ $t('interfaces.list.edit_fields') }}</p>
+			<Repeater
 				:value="repeaterValue"
 				template="{{ field }} — {{ interface }}"
 				:fields="repeaterFields"

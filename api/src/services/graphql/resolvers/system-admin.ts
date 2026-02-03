@@ -1,15 +1,17 @@
+import { InvalidPayloadError } from '@directus/errors';
+import { isSystemField } from '@directus/system-data';
 import type { GraphQLParams } from '@directus/types';
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { SchemaComposer, toInputObjectType } from 'graphql-compose';
 import { CollectionsService } from '../../collections.js';
 import { ExtensionsService } from '../../extensions.js';
-import { FieldsService } from '../../fields.js';
+import { FieldsService, systemFieldUpdateSchema } from '../../fields.js';
 import { RelationsService } from '../../relations.js';
 import { GraphQLService } from '../index.js';
 import type { Schema } from '../schema/index.js';
+import { getCollectionType } from './get-collection-type.js';
 import { getFieldType } from './get-field-type.js';
 import { getRelationType } from './get-relation-type.js';
-import { getCollectionType } from './get-collection-type.js';
 
 export function resolveSystemAdmin(
 	gql: GraphQLService,
@@ -33,6 +35,7 @@ export function resolveSystemAdmin(
 				}).addFields({
 					fields: [toInputObjectType(Field, { postfix: '_input' }).NonNull],
 				}).NonNull,
+				concurrentIndexCreation: { type: GraphQLBoolean, defaultValue: false },
 			},
 			resolve: async (_, args) => {
 				const collectionsService = new CollectionsService({
@@ -40,7 +43,10 @@ export function resolveSystemAdmin(
 					schema: gql.schema,
 				});
 
-				const collectionKey = await collectionsService.createOne(args['data']);
+				const collectionKey = await collectionsService.createOne(args['data'], {
+					attemptConcurrentIndex: Boolean(args['concurrentIndexCreation']),
+				});
+
 				return await collectionsService.readOne(collectionKey);
 			},
 		},
@@ -90,6 +96,7 @@ export function resolveSystemAdmin(
 			args: {
 				collection: new GraphQLNonNull(GraphQLString),
 				data: toInputObjectType(Field, { postfix: '_input' }).NonNull,
+				concurrentIndexCreation: { type: GraphQLBoolean, defaultValue: false },
 			},
 			resolve: async (_, args) => {
 				const service = new FieldsService({
@@ -97,7 +104,10 @@ export function resolveSystemAdmin(
 					schema: gql.schema,
 				});
 
-				await service.createField(args['collection'], args['data']);
+				await service.createField(args['collection'], args['data'], undefined, {
+					attemptConcurrentIndex: Boolean(args['concurrentIndexCreation']),
+				});
+
 				return await service.readOne(args['collection'], args['data'].field);
 			},
 		},
@@ -107,6 +117,7 @@ export function resolveSystemAdmin(
 				collection: new GraphQLNonNull(GraphQLString),
 				field: new GraphQLNonNull(GraphQLString),
 				data: toInputObjectType(Field, { postfix: '_input' }).NonNull,
+				concurrentIndexCreation: { type: GraphQLBoolean, defaultValue: false },
 			},
 			resolve: async (_, args) => {
 				const service = new FieldsService({
@@ -114,12 +125,56 @@ export function resolveSystemAdmin(
 					schema: gql.schema,
 				});
 
-				await service.updateField(args['collection'], {
-					...args['data'],
-					field: args['field'],
+				if (isSystemField(args['collection'], args['field'])) {
+					const validationResult = systemFieldUpdateSchema.safeParse(args['data']);
+
+					if (!validationResult.success) {
+						throw new InvalidPayloadError({ reason: 'Only "schema.is_indexed" may be modified for system fields' });
+					}
+				}
+
+				await service.updateField(
+					args['collection'],
+					{
+						...args['data'],
+						field: args['field'],
+					},
+					{
+						attemptConcurrentIndex: Boolean(args['concurrentIndexCreation']),
+					},
+				);
+
+				return await service.readOne(args['collection'], args['field']);
+			},
+		},
+		update_fields_items: {
+			type: Field,
+			args: {
+				collection: new GraphQLNonNull(GraphQLString),
+				data: [toInputObjectType(Field, { postfix: '_input' }).NonNull],
+				concurrentIndexCreation: { type: GraphQLBoolean, defaultValue: false },
+			},
+			resolve: async (_, args) => {
+				const service = new FieldsService({
+					accountability: gql.accountability,
+					schema: gql.schema,
 				});
 
-				return await service.readOne(args['collection'], args['data'].field);
+				for (const fieldData of args['data']) {
+					if (isSystemField(args['collection'], fieldData['field']!)) {
+						const validationResult = systemFieldUpdateSchema.safeParse(fieldData);
+
+						if (!validationResult.success) {
+							throw new InvalidPayloadError({ reason: 'Only "schema.is_indexed" may be modified for system fields' });
+						}
+					}
+				}
+
+				await service.updateFields(args['collection'], args['data'], {
+					attemptConcurrentIndex: Boolean(args['concurrentIndexCreation']),
+				});
+
+				return await service.readOne(args['collection'], args['field']);
 			},
 		},
 		delete_fields_item: {

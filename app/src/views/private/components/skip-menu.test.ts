@@ -1,12 +1,13 @@
-import { beforeEach, expect, test } from 'vitest';
-import { h } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
+import { beforeEach, expect, test, vi } from 'vitest';
+import { h } from 'vue';
+import SkipMenu from './skip-menu.vue';
 import { generateRouter } from '@/__utils__/router';
 import type { GlobalMountOptions } from '@/__utils__/types';
-import VList from '@/components/v-list.vue';
 import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { i18n } from '@/lang';
-import SkipMenu from './skip-menu.vue';
 
 let global: GlobalMountOptions;
 
@@ -20,7 +21,13 @@ beforeEach(async () => {
 			VListItem,
 			VList,
 		},
-		plugins: [router, i18n],
+		plugins: [
+			router,
+			i18n,
+			createTestingPinia({
+				createSpy: vi.fn,
+			}),
+		],
 	};
 });
 
@@ -28,7 +35,7 @@ test('Mount component', () => {
 	expect(SkipMenu).toBeTruthy();
 
 	const wrapper = mount(SkipMenu, {
-		props: { section: 'main' },
+		props: { section: 'main-content' },
 		global,
 	});
 

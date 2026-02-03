@@ -11,7 +11,7 @@ function initState() {
 <template>
 	<Story title="VIconFile" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-icon-file v-bind="state">My Button</v-icon-file>
+			<VIconFile v-bind="state">My Button</VIconFile>
 		</template>
 	</Story>
 </template>

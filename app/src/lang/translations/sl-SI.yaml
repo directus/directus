@@ -1,4 +1,6 @@
 ---
+first_name: Ime
+last_name: Priimek
 identifier: Identifikator
 avatar: Avatar
 application: Aplikacija
@@ -80,7 +82,6 @@ create_role: Ustvari vlogo
 create_user: Ustvari uporabnika
 message: Sporočilo
 delete_panel: Izbriži ploščo
-create_webhook: Ustvari Webhook
 invite_users: Povabite uporabnike
 invite: Povabi
 email_already_invited: Elektronski naslov {email} je že bil povabljen
@@ -101,9 +102,6 @@ create_version: Ustvari različico
 rename_version: Preimenuj različico
 compare_version: Primerjaj različico
 save_version: Shrani različico
-promote_version_disabled: Ni sprememb
-promote_version_changes: Spremembe
-promote_version_preview: Predogled
 delete_version: Izbriši različico
 reset_bookmark: Ponastavi zaznamek
 update_bookmark: Posodobi zaznamek
@@ -288,6 +286,7 @@ confirm_revert_body: To bo vrnilo zapis na izbrano stanje.
 display: Prikaz
 settings_update_success: Nastavitve posodobljene
 title: Naslov
+subtitle: Podnaslov
 revision_delta_created: Ustvarjeno
 revision_delta_created_externally: Ustvarjeno eksterno
 revision_delta_updated: 'Eno polje urejeno | {count} polj urejenih'
@@ -417,7 +416,6 @@ file_count: 'Ni datotek | Ena datoteka | Dve datoteki | Tri datoteke | Štiri da
 no_files_copy: Ni datotek.
 user_count: 'Ni uporabnikov | En uporabnik | Dva uporabnika | Trije uporabniki | Štirje uporabniki | {count} uporabnikov'
 no_users_copy: Ta vloga še nima uporabnikov.
-webhooks_count: 'Ni prožilnikov | En prožilnik | Dva prožilnika | Trije prožilniki | Štirje prožilniki | {count} prožilnikov'
 all_items: Vsi zapisi
 any: Katerokoli
 csv: CSV
@@ -437,7 +435,6 @@ activity: Aktivnost
 action: Dejanje
 ip_address: IP naslov
 user_agent: Brskalnik
-webhooks: Prožilci
 field_width: Širina polja
 add_filter: Dodaj filter
 upper_limit: Zgornja meja ...
@@ -489,7 +486,6 @@ errors:
   UNKNOWN: Nepričakovana napaka
   USER_SUSPENDED: Uporabnik suspendiran
 security: Varnost
-value_hashed: Vrednost varno zgoščena
 bookmark_name: Ime zaznamka ...
 create_bookmark: Ustvari zaznamek
 edit_bookmark: Uredi zaznamek
@@ -702,7 +698,6 @@ editing_in_batch: 'Masovno urejanje {count} zapisov'
 no_options_available: Ni opcij
 settings_data_model: Podatkovni model
 settings_project: Nastavitve
-settings_webhooks: Prožilci
 settings_presets: Zaznamki
 settings_translations: Prevodi
 one_or_more_options_are_missing: Manjka ena ali več opcij
@@ -722,32 +717,6 @@ unsaved_changes: Neshranjene spremembe
 unsaved_changes_copy: Ste prepričani, da želite zapustiti to stran?
 discard_changes: Zavrzi spremembe
 keep_editing: Nadaljuj urejanje
-page_help_collections_collection: >-
-  **Brskaj zapise** - Pokaže vse {collection} zapise, do katerih imate dostop. Uredite postavitev, filter in razvrščanje za prilagojen pogled in shranite te nastavitve kot zaznamek za hiter dostop.
-page_help_collections_item: >-
-  **Podrobnosti zapisa** - Obrazec ta pregled in urejanje tega zapisa. Ta izbor tudi vsebuje zgodovino revizij in komentarje.
-page_help_activity_collection: >-
-  **Brskanje po aktivnostih* - Spisek dejavnosti vseh uporabnikov.
-page_help_docs_global: >-
-  **Pregled dokumentacije** - Dokumentacija, prilagojena temu projektu glede na trenutno verzijo.
-page_help_files_collection: >-
-  **Knjižnjica datotek**  - Prikaz vseh naloženih datotek . Uredite postavitev, filtre in razvrščanje za prilagojen pogled in shranite kot zaznamek za hiter dostop.
-page_help_files_item: >-
-  **Podrobnosti datoteke** - Obrazec za urejanje datoteke in njenih meta podatkov ter dostopa.
-page_help_settings_datamodel_collections: >-
-  **Podatkovni model: zbirke** - Spisek vse zbitk. Vključuje vidne, skrite in sistemske zbirke kot tudi neurejene tabele iz baze.
-page_help_settings_datamodel_fields: >-
-  **Podatkovni model: zbirka** - Obrazec za urejanje te zbirke in njenih polj.
-page_help_settings_roles_item: "**Podrobnosti vloge** - Urejanje pravic vlog in drugih nastavitev."
-page_help_settings_presets_collection: >-
-  **Brskanje prednastavitev** - Prikaz vseh prednastavitev projekta, vključno z zaznamki uporabnika, vloge in globalno ter privzetih pogledov.
-page_help_settings_presets_item: >-
-  **Podrobnosti prednastavitev** - Obrazec za urejanje zaznamkov in prednastavitev zbirk.
-page_help_settings_webhooks_collection: '**Brskanje prožilcev** - Prikaz vseh prožilcev (webhooks) projekta.'
-page_help_settings_webhooks_item: '**Podrobnosti prožilca** - Obrazec za ustvarjanje in urejanje projektnih prožilcev.'
-page_help_users_collection: '**Uporabniški imenik** - Spisek vseh uporabnikov projekta.'
-page_help_users_item: >-
-  ** Podrobnosti uporabnika ** - Urejanje podatkov o uporabnikih
 activity_feed: Dnevnik dejavnosti
 add_new: Dodaj novo
 create_new: Ustvari novo
@@ -870,16 +839,6 @@ fields:
     users: Uporabniki v vlogi
   directus_policies:
     description: Opis
-  directus_webhooks:
-    name: Ime
-    method: Metoda
-    status: Stanje
-    data: Podatki
-    value: Vrednost
-    data_label: Pošlji podatke dogodka
-    triggers: Sprožilci
-    actions: Dejanja
-    collections: Zbirke
 field_options:
   directus_settings:
     project_name_placeholder: Moj projekt ...
@@ -953,17 +912,6 @@ field_options:
     status_dropdown_suspended: Zaustavljeno
     status_dropdown_archived: Arhivirano
     token: Vnesite žeton ...
-  directus_webhooks:
-    status_options_active: Aktivno
-    status_options_inactive: Neaktivno
-    data_label: Pošlji podatke dogodka
-    triggers_divider: Sprožilci
-    actions_create: Ustvari
-    actions_update: Posodobi
-    actions_delete: Izbriši
-    actions_login: Prijava
-    headers:
-      value: Vrednost
 no_fields_in_collection: 'Zbirka {collection} še nima polj'
 do_nothing: Ne stori ničesar
 generate_and_save_uuid: Ustvari in shrani UUID
@@ -978,6 +926,17 @@ inline: V vrstici
 comment: Komentar
 live_preview:
   new_window: Odpri v novem oknu
+ai:
+  input: Vnos
+  settings: Nastavitve
+  tool_approval:
+    disabled: Onemogočeno
+ai_tools:
+  items: Zapisi
+  files: Datoteke
+  operations: Postopki
+  schema: Shema
+  collections: Zbirke
 mcp_prompts_collection_schema:
   messages_role_user: Uporabnik
 relational_triggers: Povezani prožilci
@@ -992,7 +951,6 @@ continue_label: Nadaljuj
 continue_as: >-
   {name} je trenutno prijavljen. Če prepoznate ta račun, pritisnite nadaljuj.
 editing_role: 'Vloga {role}'
-creating_webhook: Ustvarjanje sprožilca
 default_label: Privzeto
 delete_label: Izbriši
 delete_are_you_sure: >-
@@ -1067,9 +1025,7 @@ interfaces:
     accordion_mode: Način harmonike
     max_one_section_open: Največ ena odprta sekcija
   presentation-links:
-    presentation-links: Povezave
-    links: Povezave
-    description: Konfigurabilni navigacijski gumbi za dinamične povezave
+    presentation-links: Gumbi
     style: Slog
     primary: Glavni
     link: Povezave
@@ -1308,6 +1264,8 @@ interfaces:
     start_closed: Začni zaprto
   system-token:
     system-token: Žeton
+  header:
+    links: Povezave
 displays:
   translations:
     translations: Prevodi

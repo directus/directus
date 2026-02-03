@@ -1,15 +1,15 @@
-import { useExtension } from '@/composables/use-extension';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getRelatedCollection } from '@/utils/get-related-collection';
-import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { RELATIONAL_TYPES } from '@directus/constants';
 import { defineDisplay } from '@directus/extensions';
 import type { Field } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
 import DisplayRelatedValues from './related-values.vue';
+import { useExtension } from '@/composables/use-extension';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getRelatedCollection } from '@/utils/get-related-collection';
+import { renderPlainStringTemplate } from '@/utils/render-string-template';
 
 type Options = {
 	template: string;

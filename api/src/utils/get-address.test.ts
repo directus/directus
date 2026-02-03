@@ -1,9 +1,9 @@
 import * as http from 'http';
-import { useEnv } from '@directus/env';
-import { describe, expect, test, vi } from 'vitest';
-import { getAddress } from './get-address.js';
 import type { ListenOptions } from 'net';
+import { useEnv } from '@directus/env';
 import getPort from 'get-port';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { getAddress } from './get-address.js';
 
 vi.mock('@directus/env');
 
@@ -27,19 +27,25 @@ describe('getAddress', async () => {
 	const serverSocket = '/tmp/server-test.sock';
 	const serverPort = await getPort();
 
+	let server: http.Server | undefined;
+
+	afterEach(async () => {
+		server?.close();
+		server = undefined;
+	});
+
 	test('Should return unix socket before server is listening when path is provided', async () => {
-		const server = await createServer();
+		server = await createServer();
 
 		vi.mocked(useEnv).mockReturnValue({
 			UNIX_SOCKET_PATH: serverSocket,
 		});
 
 		expect(getAddress(server)).toBe(serverSocket);
-		server.close();
 	});
 
 	test('Should return host + port before server is listening when path is undefined', async () => {
-		const server = await createServer();
+		server = await createServer();
 
 		vi.mocked(useEnv).mockReturnValue({
 			PORT: serverPort,
@@ -50,13 +56,13 @@ describe('getAddress', async () => {
 	});
 
 	test('Should return unix socket when path is provided', async () => {
-		const server = await createServer({ path: serverSocket });
+		server = await createServer({ path: serverSocket });
 
 		expect(getAddress(server)).toBe(serverSocket);
 	});
 
 	test('Should return host + port when path is undefined', async () => {
-		const server = await createServer({ host: serverHost, port: serverPort });
+		server = await createServer({ host: serverHost, port: serverPort });
 
 		expect(getAddress(server)).toBe(`${serverHost}:${serverPort}`);
 	});

@@ -1,6 +1,5 @@
-import { test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-
+import { expect, test } from 'vitest';
 import VProgressCircular from './v-progress-circular.vue';
 
 test('Mount component', () => {

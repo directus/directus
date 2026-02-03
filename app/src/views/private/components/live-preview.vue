@@ -1,7 +1,22 @@
 <script setup lang="ts">
-import { CSSProperties, computed, onMounted, ref, watch, nextTick } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useElementSize } from '@directus/composables';
+import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
+import { sameOrigin } from '@/modules/visual/utils/same-origin';
 
 declare global {
 	interface Window {
@@ -15,6 +30,11 @@ const {
 	dynamicUrl,
 	dynamicDisplay,
 	singleUrlSubdued = true,
+	canEnableVisualEditing = false,
+	visualEditorUrls = [],
+	showOpenInVisualEditor = true,
+	defaultShowEditableElements = false,
+	isFullWidth = false,
 } = defineProps<{
 	url: string | string[];
 	invalidUrl?: boolean;
@@ -26,14 +46,23 @@ const {
 	hidePopupButton?: boolean;
 	inPopup?: boolean;
 	centered?: boolean;
+	canEnableVisualEditing?: boolean;
+	visualEditorUrls?: string[];
+	showOpenInVisualEditor?: boolean;
+	defaultShowEditableElements?: boolean;
+	isFullWidth?: boolean;
 }>();
 
 const emit = defineEmits<{
 	'new-window': [];
 	selectUrl: [newUrl: string, oldUrl: string];
+	saved: [];
+	'exit-full-width': [];
 }>();
 
 const { t } = useI18n();
+const router = useRouter();
+const slots = useSlots();
 
 useResizeObserver();
 
@@ -45,6 +74,9 @@ const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
+const showEditableElements = ref(defaultShowEditableElements);
+const overlayProvided = computed(() => !!slots.overlay);
+const hasDisplayOptions = computed(() => !!slots['display-options']);
 
 const livePreviewEl = ref<HTMLElement>();
 const resizeHandle = ref<HTMLDivElement>();
@@ -86,6 +118,16 @@ const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
 });
 
+const visualEditingEnabled = computed(() => {
+	if (!canEnableVisualEditing) return false;
+	if (invalidUrl) return false;
+
+	const currentUrl = frameSrc.value;
+	if (!currentUrl || !visualEditorUrls.length) return false;
+
+	return visualEditorUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
+});
+
 function toggleFullscreen() {
 	if (fullscreen.value) {
 		width.value = 400;
@@ -111,7 +153,22 @@ function onIframeLoad() {
 	isRefreshing.value = false;
 }
 
+function openInVisualEditor() {
+	if (frameSrc.value) router.push(getUrlRoute(frameSrc.value));
+}
+
 window.refreshLivePreview = refresh;
+
+watch(
+	() => frameSrc.value,
+	() => {
+		showEditableElements.value = false;
+	},
+);
+
+watch(visualEditingEnabled, (enabled) => {
+	if (!enabled) showEditableElements.value = false;
+});
 
 function useResizeObserver() {
 	let observerInitialized = false;
@@ -196,22 +253,65 @@ function useUrls() {
 		<div class="header">
 			<div class="group">
 				<slot name="prepend-header" />
+				<VButton
+					v-if="isFullWidth"
+					v-tooltip.bottom.end="t('live_preview.exit_full_width')"
+					x-small
+					rounded
+					icon
+					@click="emit('exit-full-width')"
+				>
+					<VIcon small name="width_full" />
+				</VButton>
 
-				<v-button
-					v-if="!hidePopupButton"
-					v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
+				<VButton
+					v-else-if="inPopup"
+					v-tooltip.bottom.end="$t('live_preview.close_window')"
 					x-small
 					rounded
 					icon
 					secondary
 					@click="emit('new-window')"
 				>
-					<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
-				</v-button>
+					<VIcon small name="exit_to_app" outline />
+				</VButton>
 
-				<v-button
+				<VMenu v-else-if="hasDisplayOptions" show-arrow placement="bottom-start">
+					<template #activator="{ toggle }">
+						<VButton v-tooltip.bottom.end="t('display_options')" x-small rounded icon secondary @click="toggle">
+							<VIcon small name="display_settings" />
+						</VButton>
+					</template>
+
+					<VList>
+						<slot name="display-options" />
+						<VListItem v-if="!hidePopupButton" clickable @click="emit('new-window')">
+							<VListItemIcon><VIcon name="open_in_new" /></VListItemIcon>
+							<VListItemContent>{{ t('live_preview.new_window') }}</VListItemContent>
+						</VListItem>
+						<VListItem v-if="visualEditingEnabled && showOpenInVisualEditor" clickable @click="openInVisualEditor">
+							<VListItemIcon><VIcon name="edit_square" /></VListItemIcon>
+							<VListItemContent>{{ t('live_preview.open_in_visual_editor') }}</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
+
+				<VButton
+					v-if="visualEditingEnabled"
+					v-tooltip.bottom.end="$t('toggle_editable_elements')"
+					x-small
+					rounded
+					icon
+					:active="showEditableElements"
+					secondary
+					@click="showEditableElements = !showEditableElements"
+				>
+					<VIcon small name="edit" outline />
+				</VButton>
+
+				<VButton
 					v-if="!hideRefreshButton"
-					v-tooltip.bottom.end="t('live_preview.refresh')"
+					v-tooltip.bottom.end="$t('live_preview.refresh')"
 					x-small
 					icon
 					rounded
@@ -219,13 +319,13 @@ function useUrls() {
 					:disabled="isRefreshing || !frameSrc || invalidUrl"
 					@click="refresh(null)"
 				>
-					<v-progress-circular v-if="isRefreshing" indeterminate x-small />
-					<v-icon v-else small name="refresh" />
-				</v-button>
+					<VProgressCircular v-if="isRefreshing" indeterminate x-small />
+					<VIcon v-else small name="refresh" />
+				</VButton>
 
 				<div v-if="centered" class="spacer" />
 
-				<v-menu
+				<VMenu
 					v-if="urls.length"
 					class="url"
 					:class="{ disabled: singleUrlSubdued, clickable: multipleUrls }"
@@ -240,25 +340,25 @@ function useUrls() {
 							class="activator"
 							@click="toggle"
 						>
-							<v-text-overflow :text="urlDisplay" placement="bottom" />
-							<v-icon v-if="multipleUrls" name="expand_more" />
+							<VTextOverflow :text="urlDisplay" placement="bottom" />
+							<VIcon v-if="multipleUrls" name="expand_more" />
 						</component>
 					</template>
 
-					<v-list v-if="multipleUrls">
-						<v-list-item
+					<VList v-if="multipleUrls">
+						<VListItem
 							v-for="(urlItem, index) in urls"
 							:key="index"
 							:active="urlItem === dynamicUrl"
 							clickable
 							@click="selectUrl(urlItem)"
 						>
-							<v-list-item-content :class="{ dynamic: !dynamicUrlIncluded && urlItem === dynamicUrl }">
+							<VListItemContent :class="{ dynamic: !dynamicUrlIncluded && urlItem === dynamicUrl }">
 								{{ urlItem }}
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
+							</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
 			</div>
 
 			<div class="spacer" />
@@ -270,14 +370,14 @@ function useUrls() {
 					:disabled="fullscreen"
 					@input="width = Number(($event as any).target.value)"
 				/>
-				<v-icon x-small name="close" />
+				<VIcon x-small name="close" />
 				<input
 					:value="displayHeight"
 					class="height"
 					:disabled="fullscreen"
 					@input="height = Number(($event as any).target.value)"
 				/>
-				<v-select
+				<VSelect
 					v-model="zoom"
 					inline
 					:items="[
@@ -291,8 +391,8 @@ function useUrls() {
 					:disabled="fullscreen"
 				/>
 			</div>
-			<v-button
-				v-tooltip.bottom.start="t('live_preview.change_size')"
+			<VButton
+				v-tooltip.bottom.start="$t('live_preview.change_size')"
 				x-small
 				icon
 				rounded
@@ -301,17 +401,17 @@ function useUrls() {
 				:disabled="!frameSrc || invalidUrl"
 				@click="toggleFullscreen"
 			>
-				<v-icon small name="devices" />
-			</v-button>
+				<VIcon small name="devices" />
+			</VButton>
 		</div>
 
-		<v-info v-if="!frameSrc" :title="t('no_url')" icon="edit_square" center>
-			{{ t('no_url_copy') }}
-		</v-info>
+		<VInfo v-if="!frameSrc" :title="$t('no_url')" icon="edit_square" center>
+			{{ $t('no_url_copy') }}
+		</VInfo>
 
-		<v-info v-else-if="invalidUrl" :title="t('invalid_url')" type="danger" icon="edit_square" center>
-			{{ t('invalid_url_copy') }}
-		</v-info>
+		<VInfo v-else-if="invalidUrl" :title="$t('invalid_url')" type="danger" icon="edit_square" center>
+			{{ $t('invalid_url_copy') }}
+		</VInfo>
 
 		<div v-else class="container">
 			<div class="iframe-view" :style="iframeViewStyle">
@@ -334,6 +434,13 @@ function useUrls() {
 						@load="onIframeLoad"
 					/>
 					<slot name="overlay" :frame-el :frame-src />
+					<EditingLayer
+						v-if="visualEditingEnabled && !overlayProvided"
+						:frame-el="frameEl"
+						:frame-src="frameSrc"
+						:show-editable-elements="showEditableElements"
+						@saved="emit('saved')"
+					/>
 				</div>
 			</div>
 		</div>

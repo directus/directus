@@ -1,3 +1,15 @@
+import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
+import { Field, PermissionsAction, User } from '@directus/types';
+import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
+import { uniq } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import KanbanActions from './actions.vue';
+import KanbanLayout from './kanban.vue';
+import KanbanOptions from './options.vue';
+import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
+import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { usePermissionsStore } from '@/stores/permissions';
@@ -8,17 +20,6 @@ import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
-import { defineLayout } from '@directus/extensions';
-import { Field, User, PermissionsAction } from '@directus/types';
-import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
-import { uniq } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import KanbanActions from './actions.vue';
-import KanbanLayout from './kanban.vue';
-import KanbanOptions from './options.vue';
-import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'kanban',
@@ -26,13 +27,21 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	icon: 'view_week',
 	component: KanbanLayout,
 	headerShadow: false,
-	sidebarShadow: true,
+	sidebarShadow: false,
 	slots: {
 		options: KanbanOptions,
 		sidebar: () => undefined,
 		actions: KanbanActions,
 	},
 	setup(props, { emit }) {
+		const aiStore = useAiStore();
+
+		aiStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const { t, n } = useI18n();
 		const permissionsStore = usePermissionsStore();
 		const relationsStore = useRelationsStore();

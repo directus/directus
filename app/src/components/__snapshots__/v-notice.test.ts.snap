@@ -3,7 +3,7 @@
 exports[`Mount component 1`] = `
 "<div data-v-f0538e61="" class="v-notice info">
   <div data-v-f0538e61="" class="v-notice-title">
-    <v-icon-stub data-v-f0538e61="" name="info" left=""></v-icon-stub>
+    <v-icon-stub data-v-f0538e61="" name="info" filled="false" sup="false" left="true" right="false" disabled="false" clickable="false" xsmall="false" small="false" large="false" xlarge="false"></v-icon-stub>
   </div>
   <!--v-if-->
 </div>"

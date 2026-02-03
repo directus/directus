@@ -1,5 +1,5 @@
-import { parse } from 'dotenv';
 import { readFileSync } from 'node:fs';
+import { parse } from 'dotenv';
 import { afterEach, expect, test, vi } from 'vitest';
 import { readConfigurationFromDotEnv } from './read-configuration-from-dotenv.js';
 

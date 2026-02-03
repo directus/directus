@@ -25,8 +25,8 @@ import { GraphQLDate } from '../types/date.js';
 import { GraphQLGeoJSON } from '../types/geojson.js';
 import { GraphQLHash } from '../types/hash.js';
 import { GraphQLStringOrFloat } from '../types/string-or-float.js';
-import { SYSTEM_DENY_LIST, type InconsistentFields, type Schema } from './index.js';
 import { getTypes } from './get-types.js';
+import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
 
 /**
  * Create readable types and attach resolvers for each. Also prepares full filter argument structures

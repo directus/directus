@@ -1,6 +1,6 @@
 import { expectTypeOf, test } from 'vitest';
-import type { DirectusError } from './create-error.js';
 import { ErrorCode } from './codes.js';
+import type { DirectusError } from './create-error.js';
 import { ContainsNullValuesError, type ContainsNullValuesErrorExtensions } from './errors/contains-null-values.js';
 import { ContentTooLargeError } from './errors/content-too-large.js';
 import { isDirectusError } from './is-directus-error.js';

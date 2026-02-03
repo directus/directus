@@ -1,9 +1,9 @@
-import { mockedStore } from '@/__utils__/store';
-import { usePermissionsStore } from '@/stores/permissions';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { isRevisionsAllowed } from './is-revisions-allowed';
+import { mockedStore } from '@/__utils__/store';
+import { usePermissionsStore } from '@/stores/permissions';
 
 beforeEach(() => {
 	setActivePinia(

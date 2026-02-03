@@ -1,3 +1,4 @@
+import { performance } from 'perf_hooks';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import {
@@ -11,14 +12,13 @@ import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
 import type { StringValue } from 'ms';
-import { performance } from 'perf_hooks';
 import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
-import { RateLimiterRes, createRateLimiter } from '../rate-limiter.js';
+import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
 import type { DirectusTokenPayload, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
@@ -198,11 +198,11 @@ export class AuthenticationService {
 			}
 		}
 
-		const roles = await fetchRolesTree(user.role, this.knex);
+		const roles = await fetchRolesTree(user.role, { knex: this.knex });
 
 		const globalAccess = await fetchGlobalAccess(
 			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
-			this.knex,
+			{ knex: this.knex },
 		);
 
 		const tokenPayload: DirectusTokenPayload = {
@@ -357,11 +357,11 @@ export class AuthenticationService {
 			}
 		}
 
-		const roles = await fetchRolesTree(record.user_role, this.knex);
+		const roles = await fetchRolesTree(record.user_role, { knex: this.knex });
 
 		const globalAccess = await fetchGlobalAccess(
 			{ user: record.user_id, roles, ip: this.accountability?.ip ?? null },
-			this.knex,
+			{ knex: this.knex },
 		);
 
 		if (record.user_id) {

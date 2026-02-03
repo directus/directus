@@ -2,15 +2,15 @@ import { useEnv } from '@directus/env';
 import type {
 	AbstractServiceOptions,
 	Accountability,
-	GraphQLParams,
 	GQLScope,
+	GraphQLParams,
 	Item,
+	PrimaryKey,
 	Query,
 	SchemaOverview,
-	PrimaryKey,
 } from '@directus/types';
 import type { ExecutionResult, FormattedExecutionResult, GraphQLSchema } from 'graphql';
-import { NoSchemaIntrospectionCustomRule, execute, specifiedRules, validate } from 'graphql';
+import { execute, NoSchemaIntrospectionCustomRule, specifiedRules, validate } from 'graphql';
 import type { Knex } from 'knex';
 import getDatabase from '../../database/index.js';
 import { getService } from '../../utils/get-service.js';

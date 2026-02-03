@@ -1,7 +1,7 @@
 import type { DirectusField } from '../../../schema/field.js';
 import type { ApplyQueryFields } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type ReadFieldOutput<Schema, Item extends object = DirectusField<Schema>> = ApplyQueryFields<Schema, Item, '*'>;
 

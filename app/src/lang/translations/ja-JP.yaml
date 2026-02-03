@@ -1,4 +1,6 @@
 ---
+first_name: 名
+last_name: 姓
 identifier: 識別子
 avatar: プロフィール画像
 application: アプリケーション
@@ -80,7 +82,6 @@ create_role: 権限作成
 create_user: ユーザーの作成
 message: メッセージ
 delete_panel: パネルを削除
-create_webhook: Webhookの作成
 create_custom_translation: カスタム翻訳を作成
 edit_custom_translation: カスタム翻訳を編集
 no_custom_translations: カスタム翻訳はありません
@@ -110,10 +111,6 @@ create_version: バージョンを作成
 compare_version: バージョンを比較
 save_version: バージョンを保存
 promote_version: バージョンを反映
-promote_version_disabled: 変更なし
-promote_version_drawer_title: '{version} をメインに反映'
-promote_version_changes: 差分
-promote_version_preview: プレビュー
 delete_version: バージョンを削除
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
@@ -352,6 +349,7 @@ confirm_revert_body: 選択した状態へ戻す
 display: ディスプレイ
 settings_update_success: 設定が更新されました
 title: タイトル
+subtitle: サブタイトル
 revision_delta_created: 作成
 revision_delta_created_externally: 外部で作成
 revision_delta_updated: '1フィールド更新 |  {count} フィールド更新'
@@ -513,8 +511,6 @@ file_count: 'ファイルがありません | 1個のファイル | {count} 個�
 no_files_copy: まだファイルがありません。
 user_count: 'ユーザーなし | 1ユーザー | {count} ユーザー'
 no_users_copy: このロールのユーザーがいません
-webhooks_count: 'Webhook 無し | 1つのWebhook | {count} つのWebhook'
-no_webhooks_copy: Webhookがまだ設定されていません。作成して始めましょう。
 no_notifications: 通知なし
 no_notifications_copy: すべて確認済み
 activity_log: 操作ログ
@@ -542,7 +538,6 @@ activity_item: アクティビティアイテム
 action: アクション
 ip_address: IPアドレス
 user_agent: ユーザーエージェント
-webhooks: Webhook
 min_value: 最小値
 max_value: 最大値
 automatic: 自動
@@ -609,7 +604,6 @@ errors:
   VALUE_OUT_OF_RANGE: 値が範囲外です
   VALUE_TOO_LONG: 値が長すぎます
 security: セキュリティ
-value_hashed: 値が安全にハッシュされました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
@@ -763,10 +757,8 @@ label: ラベル
 flows: フロー
 flow: フロー
 select_a_flow: フローを選択
-run_flow_confirm: このフローを実行しますか？
 run_flow_on_current_collection: 現在のコレクションでフローを実行
 run_flow_on_current: 現在のアイテムでフローを実行
-run_flow_on_current_edited_confirm: フローを実行するとこのアイテムは更新される可能性があります。実行しますか？
 run_flow_on_selected: 項目を1つ以上選択してください | 選択項目の実行フロー | {n}つの選択項目の実行フロー
 run_flow: フローを実行
 field_name_placeholder: フィールド名を入力
@@ -903,7 +895,6 @@ editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 no_options_available: 利用できるオプションなし
 settings_data_model: データモデル
 settings_project: 設定
-settings_webhooks: Webhook
 settings_flows: フロー
 settings_presets: ブックマーク
 settings_translations: 翻訳
@@ -928,30 +919,6 @@ discard_changes_copy: 全ての変更を破棄しますか？
 show_x_axis: X軸を表示
 show_y_axis: Y軸を表示
 keep_editing: 編集を続ける
-page_help_collections_overview: '**コレクションの概要** — アクセスできるすべてのコレクション一覧です'
-page_help_collections_collection: >-
-  **アイテムを参照** — アクセスできるすべての {collection} アイテム一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
-page_help_collections_item: >-
-  **アイテムの詳細** — アイテムを表示および管理するためのフォーム。このサイドバーには、リビジョンと埋め込みコメントの全履歴も含まれます。
-page_help_activity_collection: >-
-  **アクティビティをブラウズ** — ユーザーのシステムとコンテンツアクティビティの包括的なリスト。
-page_help_docs_global: >-
-  **ドキュメントの概要** — このプロジェクトのバージョンとスキーマに特化したドキュメント。
-page_help_files_collection: >-
-  **ファイルのライブラリー** — このプロジェクトにアップロードされたすべてのファイルアセットを一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
-page_help_files_item: >-
-  **ファイルの詳細** — ファイルメタデータの管理、元のアセットの編集、アクセス設定の更新のためのフォーム。
-page_help_settings_datamodel_collections: >-
-  **データモデル: コレクション** — 利用可能なすべてのコレクション一覧です。表示、非表示、システムコレクション、および追加可能な管理されていないデータベーステーブルを含みます。
-page_help_settings_datamodel_fields: >-
-  **データモデル: コレクション** — このコレクションとそのフィールドを管理するためのフォーム。
-page_help_settings_roles_item: "**ロールの詳細** : ロールの権限とその他の設定を管理します。"
-page_help_settings_presets_collection: >-
-  **プリセットの検索** — プリセットの一覧です。ユーザー、ロール、ブックマーク、デフォルトのビューなどを含みます。
-page_help_settings_presets_item: >-
-  *プリセットの詳細** — ブックマーク、デフォルトコレクションのプリセットを管理するフォームです。
-page_help_settings_webhooks_collection: '**Webhooksを検索** — プロジェクト内にあるWebhookの一覧です。'
-page_help_settings_webhooks_item: '**Webhookの詳細** — プロジェクトのWebhookを作成と管理するためのフォーム。'
 add_new: 新規追加
 create_new: 新規作成
 all: すべて
@@ -971,7 +938,6 @@ directus_collection:
   directus_settings: プロジェクト設定オプション
   directus_shares: 外部共有されたアイテムをトラッキング
   directus_users: プラットフォームのシステムユーザー
-  directus_webhooks: イベントベースの HTTP リクエスト設定
 fields:
   directus_activity:
     item: プライマリキーを作成
@@ -1077,11 +1043,6 @@ fields:
     description: 説明
   directus_policies:
     description: 説明
-  directus_webhooks:
-    name: 名前
-    status: ステータス
-    value: 値
-    collections: コレクション
 field_options:
   directus_settings:
     public_note_placeholder: マークダウンに対応する公開メッセージ
@@ -1162,14 +1123,6 @@ field_options:
     status_dropdown_active: 有効
     status_dropdown_suspended: 停止済み
     status_dropdown_archived: アーカイブ済み
-  directus_webhooks:
-    status_options_active: 有効
-    status_options_inactive: 無効
-    actions_create: 作成
-    actions_update: 更新
-    actions_delete: 削除
-    headers:
-      value: 値
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
 save_current_user_role: 現在のユーザーロールを保存
@@ -1178,10 +1131,19 @@ inline: インライン
 comment: コメント
 live_preview:
   new_window: 新しいウィンドウで開く
+ai:
+  settings: 設定
+  tool_approval:
+    disabled: 無効
+ai_tools:
+  items: アイテム
+  files: ファイル
+  flows: フロー
+  schema: スキーマ
+  collections: コレクション
 mcp_prompts_collection_schema:
   messages_role_user: ユーザー
 referential_action_set_null: '{field} フィールドを Null にする'
-creating_webhook: Webhookの作成
 default_label: デフォルト
 delete_label: 削除
 delete_are_you_sure: >-
@@ -1478,12 +1440,17 @@ start: 開始
 panels:
   label:
     name: ラベル
+triggers:
+  webhook:
+    method: 方法
 operations:
   json-web-token:
     token: トークン
     options: オプション
   log:
     message: メッセージ
+  mail:
+    data: データ
   notification:
     recipient: ユーザー
     message: メッセージ
@@ -1491,10 +1458,13 @@ operations:
   request:
     url: URL
     url_placeholder: https://example.com/example
+    method: 方法
+    data: データ
     value_placeholder: Bearer eyJhbGciOi...
   trigger:
     flows: フロー
     flow: フロー
+    data: データ
 standard: 標準
 compact: コンパクト
 fonts:

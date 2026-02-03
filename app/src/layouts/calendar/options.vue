@@ -5,11 +5,12 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/types';
 import { useSync } from '@directus/composables';
-import { localizedFormat } from '@/utils/localized-format';
+import { Field } from '@directus/types';
 import { add, startOfWeek } from 'date-fns';
+import VCollectionFieldTemplate from '@/components/v-collection-field-template.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { localizedFormat } from '@/utils/localized-format';
 
 const props = withDefaults(
 	defineProps<{
@@ -26,7 +27,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:template', 'update:startDateField', 'update:endDateField', 'update:firstDay']);
-const { t } = useI18n();
 
 const templateWritable = useSync(props, 'template', emit);
 const startDateFieldWritable = useSync(props, 'startDateField', emit);
@@ -43,21 +43,21 @@ const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].
 
 <template>
 	<div class="field">
-		<div class="type-label">{{ t('display_template') }}</div>
-		<v-collection-field-template v-model="templateWritable" :collection="collection" />
+		<div class="type-label">{{ $t('display_template') }}</div>
+		<VCollectionFieldTemplate v-model="templateWritable" :collection="collection" />
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ t('layouts.calendar.start_date_field') }}</div>
-		<v-select v-model="startDateFieldWritable" show-deselect :items="dateFields" item-text="name" item-value="field" />
+		<div class="type-label">{{ $t('layouts.calendar.start_date_field') }}</div>
+		<VSelect v-model="startDateFieldWritable" show-deselect :items="dateFields" item-text="name" item-value="field" />
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ t('layouts.calendar.end_date_field') }}</div>
-		<v-select
+		<div class="type-label">{{ $t('layouts.calendar.end_date_field') }}</div>
+		<VSelect
 			v-model="endDateFieldWritable"
 			show-deselect
-			:placeholder="t('layouts.calendar.optional')"
+			:placeholder="$t('layouts.calendar.optional')"
 			:items="dateFields"
 			item-text="name"
 			item-value="field"
@@ -65,7 +65,7 @@ const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ t('layouts.calendar.first_day') }}</div>
-		<v-select v-model="firstDayWritable" :items="firstDayOptions" />
+		<div class="type-label">{{ $t('layouts.calendar.first_day') }}</div>
+		<VSelect v-model="firstDayWritable" :items="firstDayOptions" />
 	</div>
 </template>

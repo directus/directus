@@ -2,8 +2,8 @@ import type { Aggregate, Relation, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../utils/get-column-path.js';
-import { getColumn } from '../../utils/get-column.js';
 import { getRelationInfo } from '../../../../utils/get-relation-info.js';
+import { getColumn } from '../../utils/get-column.js';
 import { addJoin } from './add-join.js';
 
 export type ColumnSortRecord = { order: 'asc' | 'desc'; column: string };

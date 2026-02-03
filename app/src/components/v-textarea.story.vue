@@ -8,7 +8,7 @@ This is a new line.`);
 
 <template>
 	<Story title="VTextarea">
-		<v-textarea v-model="value" />
+		<VTextarea v-model="value" />
 
 		<template #controls>
 			<HstTextarea v-model="value" title="Value" />

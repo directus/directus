@@ -1,10 +1,11 @@
 // @ts-check
 
+import process from 'node:process';
 import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintImportPlugin from 'eslint-plugin-import';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
-import process from 'node:process';
 import typescriptEslint from 'typescript-eslint';
 
 export default typescriptEslint.config(
@@ -74,6 +75,33 @@ export default typescriptEslint.config(
 			curly: ['error', 'multi-line'],
 			// Disallow expressions where the operation doesn't affect the value
 			'no-constant-binary-expression': 'error',
+			// Sort members
+			'sort-imports': [
+				'error',
+				{
+					ignoreCase: true,
+					ignoreDeclarationSort: true,
+					allowSeparatedGroups: true,
+				},
+			],
+		},
+	},
+
+	// Enable import plugin and custom rules for import sorting
+	{
+		plugins: { import: eslintImportPlugin },
+		rules: {
+			'import/order': [
+				'error',
+				{
+					'newlines-between': 'never',
+					alphabetize: {
+						order: 'asc',
+						orderImportKind: 'asc',
+						caseInsensitive: true,
+					},
+				},
+			],
 		},
 	},
 
@@ -124,6 +152,23 @@ export default typescriptEslint.config(
 			'vue/prefer-true-attribute-shorthand': 'error',
 			// Allow unused variables when they begin with an underscore
 			'vue/no-unused-vars': ['error', { ignorePattern: '^_' }],
+			// Require components to be imported in the script block
+			'vue/no-undef-components': [
+				'error',
+				{
+					// Histoire components in *.story.vue files
+					ignorePatterns: ['Story', 'Variant', 'Hst*'],
+				},
+			],
+			// Require <PascalCase /> components in templates
+			'vue/component-name-in-template-casing': [
+				'error',
+				'PascalCase',
+				{
+					// Check global component uses as well
+					registeredComponentsOnly: false,
+				},
+			],
 		},
 	},
 

@@ -1,8 +1,8 @@
 import { defineOperationApi } from '@directus/extensions';
+import { useLogger } from '../../logger/index.js';
 import type { EmailOptions } from '../../services/mail/index.js';
 import { MailService } from '../../services/mail/index.js';
 import { md } from '../../utils/md.js';
-import { useLogger } from '../../logger/index.js';
 import { useFlowsEmailRateLimiter } from './rate-limiter.js';
 
 export type Options = {

@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import api from '@/api';
-import { getAssetUrl } from '@/utils/get-asset-url';
-import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import api from '@/api';
+import VAvatar from '@/components/v-avatar.vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import { userName } from '@/utils/user-name';
 
 const props = defineProps<{
 	user: string;
 }>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -71,15 +74,15 @@ function navigateToUser() {
 </script>
 
 <template>
-	<v-menu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
+	<VMenu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
 		<template #activator><slot /></template>
 
 		<div v-if="loading" class="loading">
-			<v-skeleton-loader class="avatar" />
+			<VSkeletonLoader class="avatar" />
 			<div>
-				<v-skeleton-loader type="text" />
-				<v-skeleton-loader type="text" />
-				<v-skeleton-loader type="text" />
+				<VSkeletonLoader type="text" />
+				<VSkeletonLoader type="text" />
+				<VSkeletonLoader type="text" />
 			</div>
 		</div>
 
@@ -88,20 +91,20 @@ function navigateToUser() {
 		</div>
 
 		<div v-else-if="data" class="user-box" @click.stop="navigateToUser">
-			<v-avatar x-large class="avatar">
-				<v-image v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
-				<v-icon v-else name="person" />
-			</v-avatar>
+			<VAvatar x-large class="avatar">
+				<VImage v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
+				<VIcon v-else name="person" />
+			</VAvatar>
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>
-				<v-chip class="status" :class="data.status" small>
-					{{ t(`fields.directus_users.status_${data.status}`) }}
-				</v-chip>
-				<v-chip v-if="data.role?.name" small>{{ data.role.name }}</v-chip>
+				<VChip class="status" :class="data.status" small>
+					{{ $t(`fields.directus_users.status_${data.status}`) }}
+				</VChip>
+				<VChip v-if="data.role?.name" small>{{ data.role.name }}</VChip>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>

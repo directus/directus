@@ -1,6 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { randomUUID } from 'node:crypto';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_flows', (table) => {

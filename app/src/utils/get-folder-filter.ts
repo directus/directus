@@ -1,6 +1,6 @@
-import { SpecialFolder } from '@/types/folders';
 import { Filter } from '@directus/types';
 import { subDays } from 'date-fns';
+import { SpecialFolder } from '@/types/folders';
 
 export function getFolderFilter(folder?: string, special?: SpecialFolder, currentUserId?: string): Filter {
 	const filterParsed: Filter = {

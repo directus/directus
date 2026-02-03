@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Permission, PrimaryKey } from '@directus/types';
-import { useI18n } from 'vue-i18n';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 defineProps<{
 	permission: Permission;
@@ -10,15 +10,11 @@ defineProps<{
 const emit = defineEmits<{
 	save: [];
 }>();
-
-const { t } = useI18n();
 </script>
 
 <template>
 	<div class="actions">
-		<v-button v-tooltip.bottom="t('save')" icon rounded @click="emit('save')">
-			<v-icon name="check" />
-		</v-button>
+		<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" icon="check" @click="emit('save')" />
 	</div>
 </template>
 

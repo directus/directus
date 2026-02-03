@@ -1,9 +1,9 @@
-import { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/extensions';
+import { DeepPartial, Field } from '@directus/types';
 import CodeMirror from 'codemirror';
-import 'codemirror/mode/meta';
 import InterfaceCode from './input-code.vue';
 import PreviewSVG from './preview.svg?raw';
+import 'codemirror/mode/meta';
 
 const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {
 	if (['JSON', 'JSON-LD'].includes(choice.name)) {

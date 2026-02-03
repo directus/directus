@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
 	defineProps<{
-		value: boolean;
-		labelOn: string | null;
-		labelOff: string | null;
-		iconOn: string | null;
-		iconOff: string | null;
-		colorOn: string;
-		colorOff: string;
+		value?: boolean | null;
+		labelOn?: string | null;
+		labelOff?: string | null;
+		iconOn?: string | null;
+		iconOff?: string | null;
+		colorOn?: string;
+		colorOff?: string;
 	}>(),
 	{
-		value: false,
+		value: null,
 		labelOn: null,
 		labelOff: null,
 		iconOn: 'check',
@@ -36,9 +38,9 @@ const styles = computed(() => {
 
 <template>
 	<div class="boolean" :style="styles">
-		<value-null v-if="value === null" />
+		<ValueNull v-if="value === null" />
 		<template v-else>
-			<v-icon v-if="iconOn !== null && iconOff !== null" :name="value ? iconOn : iconOff"></v-icon>
+			<VIcon v-if="iconOn !== null && iconOff !== null" :name="value ? iconOn : iconOff"></VIcon>
 			<span v-if="labelOn !== null && labelOff !== null">{{ value ? labelOn : labelOff }}</span>
 		</template>
 	</div>

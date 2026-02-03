@@ -1,5 +1,5 @@
-import { DateHelper } from '../types.js';
 import { parseISO } from 'date-fns';
+import { DateHelper } from '../types.js';
 
 export class DateHelperMySQL extends DateHelper {
 	override readTimestampString(date: string): string {

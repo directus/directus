@@ -1,8 +1,9 @@
 import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelBarChart from './panel-bar-chart.vue';
-import { useFieldsStore } from '@/stores/fields';
 import PreviewSVG from './preview.svg?raw';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 export default definePanel({
 	id: 'bar-chart',
@@ -17,7 +18,7 @@ export default definePanel({
 
 		options['function'] = options['function'] ?? 'max';
 
-		return {
+		const primaryQuery = {
 			collection: options['collection'],
 			query: {
 				group: [options['xAxis']],
@@ -26,9 +27,34 @@ export default definePanel({
 				limit: -1,
 			},
 		};
+
+		const xAxisHasDisplayField = options['xAxisDisplayField'];
+
+		if (xAxisHasDisplayField) {
+			const relationsStore = useRelationsStore();
+			const fieldsStore = useFieldsStore();
+			const relation = relationsStore.getRelationForField(options['collection'], options['xAxis']);
+
+			if (relation?.related_collection) {
+				const relatedPrimaryKey = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
+
+				const displayQuery = {
+					collection: relation.related_collection,
+					query: {
+						fields: [relatedPrimaryKey?.field ?? 'id', options['xAxisDisplayField']],
+						limit: -1,
+					},
+				};
+
+				return [primaryQuery, displayQuery];
+			}
+		}
+
+		return primaryQuery;
 	},
 	options: ({ options }) => {
 		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 
 		const needsANumber = computed(() => {
 			if (!options?.['function'] || !['count', 'last', 'first'].includes(options['function'])) return true;
@@ -63,6 +89,31 @@ export default definePanel({
 			}
 
 			return false;
+		});
+
+		const xAxisRelation = computed(() => {
+			if (!options?.['collection'] || !options?.['xAxis']) return null;
+			const relation = relationsStore.getRelationForField(options['collection'], options['xAxis']);
+			if (!relation?.related_collection) return null;
+
+			const relatedPrimaryKey = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
+
+			return {
+				relatedCollection: relation.related_collection,
+				relatedPrimaryKey: relatedPrimaryKey?.field ?? 'id',
+			};
+		});
+
+		const xAxisDisplayFieldChoices = computed(() => {
+			if (!xAxisRelation.value) return [];
+			const fields = fieldsStore.getFieldsForCollection(xAxisRelation.value.relatedCollection);
+
+			return fields
+				.filter((field) => !field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
+				.map((field) => ({
+					text: field.name,
+					value: field.field,
+				}));
 		});
 
 		return [
@@ -104,6 +155,21 @@ export default definePanel({
 						allowPrimaryKey: true,
 						placeholder: '$t:primary_key',
 					},
+				},
+			},
+			{
+				field: 'xAxisDisplayField',
+				name: '$t:x_axis_display_field',
+				type: 'string',
+				meta: {
+					interface: 'select-dropdown',
+					width: 'half',
+					options: {
+						choices: xAxisDisplayFieldChoices.value,
+						allowNone: true,
+						placeholder: '$t:select_a_field',
+					},
+					hidden: !xAxisRelation.value,
 				},
 			},
 			{

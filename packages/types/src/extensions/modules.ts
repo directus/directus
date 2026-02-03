@@ -1,6 +1,6 @@
+import type { RouteRecordRaw } from 'vue-router';
 import type { CollectionAccess } from '../permissions.js';
 import type { User } from '../users.js';
-import type { RouteRecordRaw } from 'vue-router';
 
 type AppUser = User & { app_access: boolean; admin_access: boolean };
 

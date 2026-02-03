@@ -1,10 +1,29 @@
 <script setup lang="ts">
-import { getAssetUrl } from '@/utils/get-asset-url';
 import type { Field, PrimaryKey } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
+import VAvatar from '@/components/v-avatar.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
+import DisplayDatetime from '@/displays/datetime/datetime.vue';
+import DisplayLabels from '@/displays/labels/labels.vue';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import RenderDisplay from '@/views/private/components/render-display.vue';
 
 defineOptions({ inheritAttrs: false });
 
@@ -58,7 +77,7 @@ const props = withDefaults(
 
 defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
 
-const { t, n } = useI18n();
+const { n } = useI18n();
 
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
@@ -133,12 +152,12 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 		<slot v-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 
 		<template v-else>
-			<v-notice v-if="atLimit" type="warning" class="limit">
-				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
-			</v-notice>
+			<VNotice v-if="atLimit" type="warning" class="limit">
+				{{ $t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
+			</VNotice>
 
 			<div class="kanban">
-				<draggable
+				<Draggable
 					:model-value="groupedItems"
 					group="groups"
 					item-key="id"
@@ -154,39 +173,35 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							<div class="header">
 								<div class="title">
 									<div class="title-content">
-										{{ group.id === null ? t('layouts.kanban.no_group') : group.title }}
+										{{ group.id === null ? $t('layouts.kanban.no_group') : group.title }}
 									</div>
 									<span class="badge">{{ group.items.length }}</span>
 								</div>
 								<div v-if="isRelational && group.id !== null && !selectMode" class="actions">
-									<v-menu show-arrow placement="bottom-end">
+									<VMenu show-arrow placement="bottom-end">
 										<template #activator="{ toggle }">
-											<v-icon name="more_horiz" clickable @click="toggle" />
+											<VIcon name="more_horiz" clickable @click="toggle" />
 										</template>
 
-										<v-list>
-											<v-list-item
-												:disabled="!canUpdateGroupTitle || selectMode"
-												clickable
-												@click="openEditGroup(group)"
-											>
-												<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
-											</v-list-item>
-											<v-list-item
+										<VList>
+											<VListItem :disabled="!canUpdateGroupTitle || selectMode" clickable @click="openEditGroup(group)">
+												<VListItemIcon><VIcon name="edit" /></VListItemIcon>
+												<VListItemContent>{{ $t('layouts.kanban.edit_group') }}</VListItemContent>
+											</VListItem>
+											<VListItem
 												:disabled="!canDeleteGroups || selectMode"
 												class="danger"
 												clickable
 												@click="deleteGroup(group.id)"
 											>
-												<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-												<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
-											</v-list-item>
-										</v-list>
-									</v-menu>
+												<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+												<VListItemContent>{{ $t('layouts.kanban.delete_group') }}</VListItemContent>
+											</VListItem>
+										</VList>
+									</VMenu>
 								</div>
 							</div>
-							<draggable
+							<Draggable
 								:model-value="group.items"
 								group="items"
 								draggable=".item"
@@ -204,7 +219,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 										@click="onClick({ item: element, event: $event })"
 									>
 										<div v-if="element.title" class="title">
-											<render-display
+											<RenderDisplay
 												v-if="fieldDisplay.titleField"
 												v-bind="fieldDisplay.titleField"
 												:value="element.title"
@@ -212,19 +227,19 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 										</div>
 										<img v-if="element.image" class="image" :src="element.image" draggable="false" />
 										<div v-if="element.text" class="text">
-											<render-display
+											<RenderDisplay
 												v-if="fieldDisplay.textField"
 												v-bind="fieldDisplay.textField"
 												:value="element.text"
 											/>
 										</div>
-										<display-labels
+										<DisplayLabels
 											v-if="element.tags"
 											:value="element.tags"
 											:type="Array.isArray(element.tags) ? 'csv' : 'json'"
 										/>
 										<div class="bottom">
-											<display-datetime
+											<DisplayDatetime
 												v-if="element.date"
 												v-bind="
 													fieldDisplay.dateField?.display === 'datetime'
@@ -238,38 +253,38 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 												<span v-if="element.users.length > 3" class="avatar-overflow">
 													+{{ element.users.length - 3 }}
 												</span>
-												<v-avatar
+												<VAvatar
 													v-for="user in element.users.slice(0, 3)"
 													:key="user.id"
 													v-tooltip.bottom="`${user.first_name} ${user.last_name}`"
 													class="avatar"
 												>
-													<v-image v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
-													<v-icon v-else name="person" />
-												</v-avatar>
+													<VImage v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
+													<VIcon v-else name="person" />
+												</VAvatar>
 											</div>
 										</div>
 									</div>
 								</template>
-							</draggable>
+							</Draggable>
 						</div>
 					</template>
-				</draggable>
+				</Draggable>
 
-				<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()" @apply="saveChanges">
-					<v-card>
-						<v-card-title>
-							{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}
-						</v-card-title>
-						<v-card-text>
-							<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" />
-						</v-card-text>
-						<v-card-actions>
-							<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
-							<v-button @click="saveChanges">{{ editDialogOpen === '+' ? t('create') : t('save') }}</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+				<VDialog :model-value="editDialogOpen !== null" @esc="cancelChanges()" @apply="saveChanges">
+					<VCard>
+						<VCardTitle>
+							{{ editDialogOpen === '+' ? $t('layouts.kanban.add_group') : $t('layouts.kanban.edit_group') }}
+						</VCardTitle>
+						<VCardText>
+							<VInput v-model="editTitle" :placeholder="$t('layouts.kanban.add_group_placeholder')" />
+						</VCardText>
+						<VCardActions>
+							<VButton secondary @click="cancelChanges()">{{ $t('cancel') }}</VButton>
+							<VButton @click="saveChanges">{{ editDialogOpen === '+' ? $t('create') : $t('save') }}</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 			</div>
 		</template>
 	</div>
@@ -281,9 +296,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	--limit-notice-margin-bottom: 24px;
 	--header-bar-margin: 24px;
 
-	block-size: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
+	block-size: 100%;
 	padding: var(--content-padding);
-	padding-block-start: 0;
 
 	&:has(> .limit) {
 		--limit-notice-height: calc(60px + var(--limit-notice-margin-bottom));

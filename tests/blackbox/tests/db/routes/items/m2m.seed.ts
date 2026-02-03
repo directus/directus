@@ -1,17 +1,17 @@
+import { CreateCollection, CreateField, CreateFieldM2M, CreateItem, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
-import {
-	seedAllFieldTypesStructure,
-	seedAllFieldTypesValues,
-	getTestsAllTypesSchema,
-	seedM2MAliasAllFieldTypesValues,
-} from './seed-all-field-types';
-import { set } from 'lodash-es';
-import { expect, it } from 'vitest';
-import { DeleteCollection, CreateCollection, CreateField, CreateFieldM2M, CreateItem } from '@common/functions';
 import { SeedFunctions } from '@common/seed-functions';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
+import { set } from 'lodash-es';
+import { expect, it } from 'vitest';
+import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
+import {
+	getTestsAllTypesSchema,
+	seedAllFieldTypesStructure,
+	seedAllFieldTypesValues,
+	seedM2MAliasAllFieldTypesValues,
+} from './seed-all-field-types';
 
 export const collectionFoods = 'test_items_m2m_foods';
 export const collectionIngredients = 'test_items_m2m_ingredients';

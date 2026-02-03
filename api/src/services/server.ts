@@ -1,13 +1,13 @@
+import { Readable } from 'node:stream';
+import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
-import { Readable } from 'node:stream';
-import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
-import { RESUMABLE_UPLOADS } from '../constants.js';
+import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
@@ -34,8 +34,13 @@ export class ServerService {
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
+	async isSetupCompleted(): Promise<boolean> {
+		return Boolean(await this.knex('directus_users').first());
+	}
+
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
+		const setupComplete = await this.isSetupCompleted();
 
 		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
@@ -62,9 +67,12 @@ export class ServerService {
 
 		info['project'] = projectInfo;
 
-		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+		info['setupCompleted'] = setupComplete;
 
 		if (this.accountability?.user) {
+			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
+
 			if (env['RATE_LIMITER_ENABLED']) {
 				info['rateLimit'] = {
 					points: env['RATE_LIMITER_POINTS'],
@@ -123,14 +131,22 @@ export class ServerService {
 				info['websocket'] = false;
 			}
 
-			if (RESUMABLE_UPLOADS.ENABLED) {
+			if (FILE_UPLOADS.MAX_CONCURRENCY && FILE_UPLOADS.MAX_CONCURRENCY !== Infinity) {
 				info['uploads'] = {
-					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
+					maxConcurrency: FILE_UPLOADS.MAX_CONCURRENCY,
 				};
 			}
 
-			info['version'] = version;
+			if (RESUMABLE_UPLOADS.ENABLED) {
+				info['uploads'] = {
+					...info['uploads'],
+					tus: true,
+					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
+				};
+			}
 		}
+
+		if (this.accountability?.user || !setupComplete) info['version'] = version;
 
 		return info;
 	}

@@ -23,7 +23,7 @@ import { ServerService } from '../../server.js';
 import { SpecificationService } from '../../specifications.js';
 import { UsersService } from '../../users.js';
 import { GraphQLService } from '../index.js';
-import { generateSchema, type CollectionTypes, type Schema } from '../schema/index.js';
+import { type CollectionTypes, generateSchema, type Schema } from '../schema/index.js';
 import { getQuery } from '../schema/parse-query.js';
 import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 import { getCollectionType } from './get-collection-type.js';

@@ -1,8 +1,8 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
 import { uniq } from 'lodash-es';
+import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import { fetchPermissions } from '../../lib/fetch-permissions.js';
 
 export interface FetchAllowedCollectionsOptions {
 	action: PermissionsAction;

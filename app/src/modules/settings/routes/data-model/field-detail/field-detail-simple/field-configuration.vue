@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
-import { useExtensions } from '@/extensions';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
 import { computed, watch } from 'vue';
@@ -8,6 +6,14 @@ import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '../shared/extension-options.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import RelationshipConfiguration from './relationship-configuration.vue';
+import VButton from '@/components/v-button.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useExtension } from '@/composables/use-extension';
+import { useExtensions } from '@/extensions';
 
 defineProps<{
 	row?: number;
@@ -90,57 +96,57 @@ const options = computed({
 				<div class="schema">
 					<div class="field half-left">
 						<div class="label type-label">
-							{{ t('key') }}
-							<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+							{{ $t('key') }}
+							<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 						</div>
 
-						<v-input v-model="key" autofocus class="monospace" db-safe :placeholder="t('a_unique_column_name')" />
+						<VInput v-model="key" autofocus class="monospace" db-safe :placeholder="$t('a_unique_column_name')" />
 					</div>
 
 					<div class="field half-right">
 						<div class="label type-label">
-							{{ t('type') }}
+							{{ $t('type') }}
 						</div>
 
-						<v-select v-model="type" :items="typeOptions" :disabled="typeDisabled" />
+						<VSelect v-model="type" :items="typeOptions" :disabled="typeDisabled" />
 					</div>
 
 					<div class="field half-left">
 						<div class="label type-label">
-							{{ t('default_value') }}
+							{{ $t('default_value') }}
 						</div>
 
-						<v-checkbox v-if="type === 'boolean'" v-model="defaultValue" block :label="t('enabled')" />
-						<v-input v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
+						<VCheckbox v-if="type === 'boolean'" v-model="defaultValue" block :label="$t('enabled')" />
+						<VInput v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
 					</div>
 
 					<div class="field half-right">
 						<div class="label type-label">
-							{{ t('required') }}
+							{{ $t('required') }}
 						</div>
 
-						<v-checkbox v-model="required" block :label="t('require_value_to_be_set')" />
+						<VCheckbox v-model="required" block :label="$t('require_value_to_be_set')" />
 					</div>
 				</div>
 
-				<relationship-configuration :local-type="localType" />
+				<RelationshipConfiguration :local-type="localType" />
 
-				<v-divider inline />
+				<VDivider inline />
 			</template>
 
-			<extension-options
+			<ExtensionOptions
 				v-model="options"
 				type="interface"
 				:extension="chosenInterface"
 				:options="customOptionsFields"
 			/>
 
-			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
-				{{ t('save') }}
-			</v-button>
+			<VButton class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
+				{{ $t('save') }}
+			</VButton>
 
 			<button class="toggle-advanced" @click="$emit('toggleAdvanced')">
-				{{ t('continue_in_advanced_field_creation_mode') }}
+				{{ $t('continue_in_advanced_field_creation_mode') }}
 			</button>
 		</div>
 	</div>
@@ -162,7 +168,7 @@ const options = computed({
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 

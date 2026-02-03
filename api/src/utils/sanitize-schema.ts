@@ -1,5 +1,12 @@
 import type { Column } from '@directus/schema';
-import type { Field, Relation } from '@directus/types';
+import type {
+	Field,
+	Relation,
+	SnapshotCollection,
+	SnapshotField,
+	SnapshotRelation,
+	SnapshotSystemField,
+} from '@directus/types';
 import { pick } from 'lodash-es';
 import type { Collection } from '../types/index.js';
 
@@ -10,10 +17,8 @@ import type { Collection } from '../types/index.js';
  * @returns sanitized collection
  */
 
-export function sanitizeCollection(collection: Collection | undefined) {
-	if (!collection) return collection;
-
-	return pick(collection, ['collection', 'fields', 'meta', 'schema.name']);
+export function sanitizeCollection(collection: Collection) {
+	return pick(collection, ['collection', 'fields', 'meta', 'schema.name']) as SnapshotCollection;
 }
 
 /**
@@ -23,9 +28,7 @@ export function sanitizeCollection(collection: Collection | undefined) {
  * @param sanitizeAllSchema Whether or not the whole field schema should be sanitized. Mainly used to prevent modifying autoincrement fields
  * @returns sanitized field
  */
-export function sanitizeField(field: Field | undefined, sanitizeAllSchema = false) {
-	if (!field) return field;
-
+export function sanitizeField(field: Field, sanitizeAllSchema = false) {
 	const defaultPaths = ['collection', 'field', 'type', 'meta', 'name', 'children'];
 
 	const pickedPaths = sanitizeAllSchema
@@ -50,7 +53,7 @@ export function sanitizeField(field: Field | undefined, sanitizeAllSchema = fals
 				'schema.foreign_key_column',
 			];
 
-	return pick(field, pickedPaths);
+	return pick(field, pickedPaths) as SnapshotField;
 }
 
 export function sanitizeColumn(column: Column) {
@@ -80,9 +83,7 @@ export function sanitizeColumn(column: Column) {
  * @param relation relation to sanitize
  * @returns sanitized relation
  */
-export function sanitizeRelation(relation: Relation | undefined) {
-	if (!relation) return relation;
-
+export function sanitizeRelation(relation: Relation) {
 	return pick(relation, [
 		'collection',
 		'field',
@@ -95,5 +96,15 @@ export function sanitizeRelation(relation: Relation | undefined) {
 		'schema.constraint_name',
 		'schema.on_update',
 		'schema.on_delete',
-	]);
+	]) as SnapshotRelation;
+}
+
+/**
+ * Pick certain specific system field properties that should be compared when performing diff
+ *
+ * @param field field to sanitize
+ * @returns sanitized system field
+ */
+export function sanitizeSystemField(field: Field | SnapshotSystemField) {
+	return pick(field, ['collection', 'field', 'schema.is_indexed']) as SnapshotSystemField;
 }

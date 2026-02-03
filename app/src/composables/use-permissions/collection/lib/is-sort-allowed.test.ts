@@ -1,7 +1,3 @@
-import { mockedStore } from '@/__utils__/store';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { ActionPermission } from '@/types/permissions';
 import { useCollection } from '@directus/composables';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
@@ -9,6 +5,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 import { isFieldAllowed } from '../../utils/is-field-allowed';
 import { isSortAllowed } from './is-sort-allowed';
+import { mockedStore } from '@/__utils__/store';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { ActionPermission } from '@/types/permissions';
 
 vi.mock('@directus/composables');
 vi.mock('../../utils/is-field-allowed');

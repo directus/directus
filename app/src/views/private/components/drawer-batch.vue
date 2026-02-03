@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { getEndpoint } from '@directus/utils';
+import { computed, ref, toRefs } from 'vue';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VForm from '@/components/v-form/v-form.vue';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getEndpoint } from '@directus/utils';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: string;
@@ -20,8 +22,6 @@ const emit = defineEmits<{
 	(e: 'refresh'): void;
 	(e: 'input', value: Record<string, any>): void;
 }>();
-
-const { t } = useI18n();
 
 const { internalEdits } = useEdits();
 const { internalActive } = useActiveState();
@@ -120,21 +120,19 @@ function useActions() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		v-model="internalActive"
-		:title="t('editing_in_batch', { count: primaryKeys.length })"
+		:title="$t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
 		@cancel="cancel"
 		@apply="save"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :loading="saving" @click="save">
-				<v-icon name="check" />
-			</v-button>
+			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" :loading="saving" icon="check" @click="save" />
 		</template>
 
 		<div class="drawer-batch-content">
-			<v-form
+			<VForm
 				v-model="internalEdits"
 				:collection="collection"
 				batch-mode
@@ -142,7 +140,7 @@ function useActions() {
 				:validation-errors="validationErrors"
 			/>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

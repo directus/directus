@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useServerStore } from '@/stores/server';
 import { satisfies } from 'semver';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MetadataItem from '../../../components/metadata-item.vue';
+import { useServerStore } from '@/stores/server';
 
 const props = defineProps<{
 	hostVersion: string;
@@ -24,11 +24,11 @@ const label = computed(() =>
 	<MetadataItem
 		v-tooltip="
 			isCompatible
-				? t('compatible_with_your_project_copy', {
+				? $t('compatible_with_your_project_copy', {
 						currentVersion: serverStore.info.version!,
 						hostVersion: hostVersion,
 					})
-				: t('compatibility_not_guaranteed_copy', {
+				: $t('compatibility_not_guaranteed_copy', {
 						currentVersion: serverStore.info.version!,
 						hostVersion: hostVersion,
 					})

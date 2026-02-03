@@ -1,9 +1,9 @@
-import { Item } from '@/components/v-table/types';
-import { getItemRoute } from '@/utils/get-route';
 import { LayoutProps } from '@directus/extensions';
 import { Field, PrimaryKey } from '@directus/types';
 import { Ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { Item } from '@/components/v-table/types';
+import { getItemRoute } from '@/utils/get-route';
 
 export type UseLayoutClickHandlerOptions = {
 	props: Pick<LayoutProps, 'selectMode' | 'readonly' | 'collection'>;

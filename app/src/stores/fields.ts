@@ -1,3 +1,10 @@
+import formatTitle from '@directus/format-title';
+import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
+import { isEmpty, isEqual, isNil, merge, omit, orderBy } from 'lodash';
+import { nanoid } from 'nanoid';
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
@@ -6,12 +13,6 @@ import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpola
 import { translate as translateLiteral } from '@/utils/translate-literal';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
-import formatTitle from '@directus/format-title';
-import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
-import { isEmpty, isEqual, isNil, merge, omit, orderBy } from 'lodash';
-import { nanoid } from 'nanoid';
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 type HydrateOptions = {
 	/**
@@ -67,6 +68,15 @@ const fakeFilesField: Field = {
 let currentUpdate: string;
 
 export const useFieldsStore = defineStore('fieldsStore', () => {
+	const aiStore = useAiStore();
+
+	aiStore.onSystemToolResult(async (toolName) => {
+		// Fields can be modified as a nested object within collections as well
+		if (toolName === 'collections' || toolName === 'fields') {
+			await hydrate();
+		}
+	});
+
 	const fields = ref<Field[]>([]);
 
 	return {

@@ -1,16 +1,15 @@
+import { randomUUID } from 'node:crypto';
+import type { Accountability, Permission } from '@directus/types';
 import { processChunk, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
 import { useLogger } from '../../logger/index.js';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
-import { getSchema } from '../../utils/get-schema.js';
-
-import type { Accountability, Permission } from '@directus/types';
-import { getSchemaInspector } from '../index.js';
 import { mergePermissions } from '../../permissions/utils/merge-permissions.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { getSchemaInspector } from '../index.js';
 
 type RoleAccess = {
 	app_access: boolean;
@@ -245,7 +244,7 @@ export async function down(knex: Knex) {
 	const rolePermissions: Array<Omit<Permission, 'id' | 'system' | 'policy'> | { role: string | null }> = [];
 
 	for (const role of roles) {
-		const roleTree = await fetchRolesTree(role.id, knex);
+		const roleTree = await fetchRolesTree(role.id, { knex });
 
 		let roleAccess = null;
 

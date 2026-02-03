@@ -1,4 +1,4 @@
-import { expect, test, describe } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { Url } from './url.js';
 
 describe('relative URL handling', () => {

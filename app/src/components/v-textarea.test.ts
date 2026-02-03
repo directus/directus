@@ -1,6 +1,5 @@
-import { test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-
+import { expect, test } from 'vitest';
 import VTextarea from './v-textarea.vue';
 import { Focus } from '@/__utils__/focus';
 import { GlobalMountOptions } from '@/__utils__/types';

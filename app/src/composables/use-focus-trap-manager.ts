@@ -1,5 +1,5 @@
 import type { UseFocusTrapReturn as FocusTrap } from '@vueuse/integrations/useFocusTrap';
-import { ref, provide, inject } from 'vue';
+import { inject, provide, ref } from 'vue';
 
 const nestedValidationSymbol = 'focusTrapManager';
 

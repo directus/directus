@@ -1,4 +1,50 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Rólunk
+directus_bsl: Directus BSL 1.1
+privacy_policy: Adatvédelmi irányelvek
+contact_our_team: Lépjen kapcsolatba velünk
+setup_welcome: Üdvözöljük a Directusnál
+setup_info: Hozza létre rendszergazda fiókját, és indítsa el projektjét
+setup_license_notice: >
+  A Directus ingyenes az 5 millió dollár alatti forgalmú cégeknek, valamint alapítványoknak és költségvetési szervezetnek.
+setup_license_follow_up: >
+  A küszöbértéket meghaladó cégek kötelesek licencet vásárolni. Folytassa bátran a Directus tesztelését; és amint készen áll a bevezetésre, lépjen kapcsolatba {contactOurTeam}-mel.
+setup_save_accept_license: >
+  A mentés gombra kattintva elfogadja a {directusBsl} és a {privacyPolicy} feltételeit.
+setup_accept_license: Elfogadom a {directusBsl} és a {privacyPolicy} feltételeit.
+setup_marketing_emails: Küldjenek részemre információkat a termék frissítéséről és az új verziók módosításairól
+setup_launch: Directus indítása
+setup_project: Projekt beállítása
+first_name: Keresztnév
+last_name: Vezetéknév
+admin_email: Adminisztrátor e-mail címe
+owner_email: Tulajdonos e-mail címe
+email_address: E-mail cím
+organization_name: Szervezet neve
+how_do_you_use_directus: Mire használja a Directust?
+usage_personal: Egyéni használat / Tanulás
+usage_commercial: Üzleti / Kereskedelmi
+usage_community: Nyílt forráskódú / Közösségi
 identifier: Azonosító
 avatar: Profilkép
 application: Alkalmazás
@@ -7,16 +53,28 @@ method: Metódus
 published: Közzétett
 draft: Vázlat
 archived: Archiválva
+marketplace: Piactér
+extensions: Bővítmények
+skip_link_nav: Ugrás a navigációhoz
+skip_link_module_nav: Ugrás a Modul navigációhoz
+skip_link_main: Ugrás a Fő tartalomra
+skip_link_sidebar: Ugrás az oldalsávra
 modules: Modulok
 module_bar: Modulsáv
 logs: Naplók
+unknown: Ismeretlen
 reset_width: Széllesség visszaállítása
 tile_size: Csempeméret
 edit_field: Mező szerkesztése
 conditions: Feltételek
 location: Pozíció
+collection_names_are_case_sensitive: A gyűjtemények neveinél a kis- és nagybetűk különböznek
 condition_rules: Feltételes szabályok
 input: Bevitel
+invalid_input: Érvénytelen adat
+not_a_number: Nem egy szám
+invalid_range_min: Az érték a minimum {value} alatt van
+invalid_range_max: Az érték túllépte a {value} maximumot
 maps: Térképek
 switch_user: Felhasználó váltása
 item_creation: Elem létrehozása
@@ -26,6 +84,10 @@ duplicate_field: Mező másolása
 half_width: Fél szélesség
 full_width: Teljes szélesség
 group: Csoport
+popular: Népszerű
+recent: Legutóbbi
+latest: Legutolsó
+updated: Módosított
 export_items: Elemek exportálása
 and: És
 or: Vagy
@@ -35,17 +97,61 @@ modifier: Módosító
 extension_interface: Kezelőfelület
 extension_display: Megjelenés
 extension_layout: Elrendezés
+extension_module: Modul
 extension_panel: Panel
+extension_theme: Téma
 extension_hook: Beavatkozási rutin
+extension_endpoint: Végpont
+extension_operation: Művelet
+extension_bundle: Csomag
+extension_interfaces: Interfészek
+extension_displays: Kijelzők
+extension_layouts: Elrendezések
 extension_modules: Modulok
+extension_panels: Panelok
+extension_themes: Témák
+extension_hooks: Bővítési pont
+extension_endpoints: Végpont
+extension_operations: Műveletek
+extension_bundles: Csomagok
+extension_missing: Hiányzó
+extension_reload_required: Az oldal újratöltése szükséges
+extension_reload_required_copy: Az alkalmazásbővítmények engedélyezése vagy letiltása utáni változások megtekintéséhez újra kell tölteni az oldalt.
+extension_reload_now: Újratöltés most
+published_relative: A {relativeTime} közzétéve
+compatible_with_your_project: Kompatibilis a projektjével
+compatible_with_your_project_copy: A szerző ennek a kiterjesztésnek a kompatibilitását {hostVersion}-ként jelölte meg, amely megegyezik az Ön projektjének a verziójával ({currentVersion}).
+last_updated_relative: 'Utolsó frissítés: {relativeTime}'
+n_files: 'Fájlok'
+verified: Ellenőrizve
+homepage: Főoldal
+repository: Adattár
+reload_page: Oldal újratöltése
+reload_required: Újratöltés szükséges
+report_an_issue: Probléma jelentése
+website: Weboldal
+github: GitHub
+beta: Béta
+n_downloads: '{n} letöltés'
+downloads: Letöltések
+compatibility_not_guaranteed: Kompatibilitás nem garantált
+compatibility_not_guaranteed_copy: A szerző ennek a kiterjesztésnek a kompatibilitását {hostVersion}-ként jelölte meg, amely nem egyezik meg az Ön projektjének a verziójával ({currentVersion}).
 enable: Engedélyez
+disable: Letiltás
 custom: Egyedi
 hook: Beavatkozási rutin
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
 enter_password_to_enable_tfa: Írja be jelszavát a kétfaktoros ellenőrzés bekapcsolásához
+sso_tfa_setup_notice: Kijelentkeztetjük a fiókjából, és újra be kell jelentkeznie. A nem mentett módosítások elvesznek.
+enable_tfa: Kétfaktoros azonosítás engedélyezése
+cancel_tfa_setup: Kétfaktoros azonosítás beállításának megszakítása
+cancel_tfa_setup_notice: Biztos, hogy meg akarja szakítani a kétfaktoros azonosítás beállítását?
+keep_setup: Beállítás megtartása
+cancel_setup: Beállítás megszakítása
 add_field: Mező Hozzáadása
 role_name: Szerepkör neve
+policy_name: Szabályzat neve
 branch: Ág
 leaf: Leaf
 indeterminate: Meghatározatlan
@@ -63,10 +169,14 @@ requires_value: Kötelező érték
 create_preset: Alapértelmezés létrehozása
 create_panel: Panel létrehozása
 create_role: Szerepkör létrehozása
+create_policy: Szabályzat készítése
 create_user: Felhasználó létrehozása
 message: Üzenet
 delete_panel: Panel törlése
-create_webhook: Webhook létrehozása
+create_custom_translation: Egyéni fordítás létrehozása
+edit_custom_translation: Egyéni fordítás szerkesztése
+no_custom_translations: Nincs egyéni fordítás
+no_custom_translations_copy: Még nem készült egyéni fordítás
 invite_users: Felhasználók meghívása
 invite: Meghívás
 email_already_invited: Az "{email}" e-mail címet már meghívták
@@ -78,11 +188,31 @@ connection_good: Jó kapcsolat
 connection_fair: Megfelelő kapcsolat
 connection_poor: Gyenge kapcsolat
 primary: Elsődleges
+download_folder: Letöltés mappa
 rename_folder: Mappa átnevezése
 delete_folder: Mappa törlése
 prefix: Előtag
 suffix: Utótag
-promote_version_preview: Előnézet
+keep: Megtart
+version: Verzió
+version_key: Verzió kulcs
+version_name: Verzió név
+main_version: Fő
+switch_version: Verzióváltás
+switch_version_copy: Biztosan át szeretne váltani a(z) „{version}” verzióra? A nem mentett módosítások elvesznek.
+create_version: Verzió készítés
+rename_version: Verzió átnevezés
+compare_version: Verzió összehasonlítás
+save_version: Verzió mentés
+promote_version: Verzió előléptetés
+apply: Alkalmaz
+select_all_differences: Összes különbség kijelölése
+main_updated_notice: A fő elem megváltozott a jelenlegi verzió létrehozása óta.
+delete_version: Verzió törlése
+delete_version_copy: >-
+  Biztosan törölni szeretné a(z) „{version}” verziót? Ez a művelet nem vonható vissza.
+delete_on_apply_copy: >-
+  A(z) „{version}” verziót készül előléptetni a fő verzióra. Mi történjen a(z) „{version}” verzióval az előléptetés után?
 reset_bookmark: Könyvjelző visszaállítása
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
@@ -97,6 +227,9 @@ logoutReason:
 public_label: Nyilvános
 public_description: API adatok hozzáférése bejelentkezés nélkül.
 admin_description: Alapértelmezett adminisztrátori szerepkör korlátlan alkalmazás és API hozzáféréssel.
+admin_policy_description: Kezdeti adminisztrációs szabályzat korlátlan alkalmazás/API hozzáféréssel.
+no_description: Nincs leírás...
+reached_maximum_number_of_extensions: Elérte a projekthez tartozó maximális bővítmények számát ({n}). További információért forduljon a rendszergazdához.
 not_allowed: Nem engedélyezett
 archive: Archiválás
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
@@ -104,6 +237,7 @@ archive_confirm_count: >-
   Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
 reset_system_permissions_to: 'Rendszerjogosultságok visszaállítása a következőkre:'
 reset_system_permissions_copy: Ez a művelet felülírja a rendszergyűjteményekre alkalmazott egyéni engedélyeid. Biztos vagy benne?
+the_following_are_minimum_permissions: A következő minimális engedélyek automatikusan érvényesek, ha az „Alkalmazás hozzáférés” engedélyezve van. Szükség esetén további engedélyeket adhat, de az engedélyek nem csökkenthetők ezen szint alá.
 app_access_minimum: App hozzáférés minimuma
 recommended_defaults: Ajánlott alapértelmezések
 unarchive: Archiválás visszavonása
@@ -127,7 +261,18 @@ validationError:
   nnull: Az érték nem lehet null
   required: Érték szükséges
   unique: Egyedi érték szükséges
+  email: Az értéknek érvényes e-mail címnek kell lennie.
   regex: Az érték nem megfelelő formátumú
+  starts_with: Az értéknek {substring} karakterlánccal kell kezdődnie
+  istarts_with: Az értéknek {substring} karakterlánccal kell kezdődnie
+  nstarts_with: Az érték nem kezdődhet {substring} karakterlánccal
+  nistarts_with: Az érték nem kezdődhet {substring} karakterlánccal
+  ends_with: Az értéknek {substring} karakterlánccal kell végződnie
+  iends_with: Az értéknek {substring} karakterlánccal kell végződnie
+  nends_with: Az érték nem végződhet {substring} karakterlánccal
+  niends_with: Az érték nem végződhet {substring} karakterlánccal
+  confirm_password: A jelszavak nem egyeznek meg
+  org_name: Kérjük, adja meg a szervezet nevét
 all_access: Teljes hozzáférés
 no_access: Nincs hozzáférés
 use_custom: Egyéni használata
@@ -151,9 +296,14 @@ field_permissions: Mező engedélyek
 field_validation: Mező érvényesítés
 field_presets: Mező alapérték
 permissions_for_role: 'A {role} szerepkör elemei a következő funkciót hajthatják végre: {action}.'
+permissions_for_policy: 'Az elemek amelyeken a(z) {policy} irányelv alapján a(z) {action} végrehajtható.'
 fields_for_role: 'A {role} szerepkör mezői a következő funkciót hajthatják végre: {action}.'
+fields_for_policy: 'A mezők amelyeken a(z) {policy} irányelv alapján a(z) {action} végrehajtható.'
 validation_for_role: 'A {action} mező szabályozza a {role} szerepek által követendő viselkedést.'
+validation_for_policy: 'A mező {action} szabályai, amelyeket a {policy} szabályzatnak be kell tartania.'
 presets_for_role: 'A {role} szerepkör mezőértékeinek alapértelmezései.'
+presets_for_policy: 'A mező alapértékei a {policy} szabályzathoz.'
+presets_field_warning: 'A(z) „{field}” mező relációs előbeállításait a „részletes” szintaxissal kell konfigurálni.'
 presentation_and_aliases: Prezentációk és Aliasok
 revision_post_create: Ez az elem így nézett ki létrehozásakor.
 revision_post_update: Ez az elem így nézett ki a frissítés után.
@@ -202,12 +352,17 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Oldalbeállítások visszaállítása
 hidden_field: Rejtett mező
 hidden_on_detail: Elrejtés a részleteknél
+clear_hidden_field: Érték(ek) törlése
+clear_value_on_save_when_hidden: Érték(ek) törlése mentéskor, ha rejtett
+readonly_field_label: A mező letiltása az alkalmazásban
+required_readonly_field_warning: Ha egy mezőben egyszerre engedélyezi az írásvédett és a kötelező mezőket, akkor az elem nem kerül mentésre, ha az érték üres.
 key: Kulcs
 alias: Álnév
 bigInteger: Nagy egész számok
 boolean: Logikai
 date: Dátum
 date_range: Dátum intervallum
+translation_key_placeholder: Adja meg a kulcsot...
 datetime: Dátum és idő
 dateTime: Dátum és idő
 precision: Pontosság
@@ -223,6 +378,20 @@ time: Idő
 timestamp: Időbélyeg
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (Összes)
+  Point: Pont
+  LineString: Sorkarakterlánc
+  Polygon: Sokszög
+  MultiPoint: Többpontos
+  MultiLineString: Többsoros karakterlánc
+  MultiPolygon: Több sokszög
+theme_auto: Automatikus (rendszertől függően)
+theme_light: Világos mód
+theme_dark: Sötét mód
+theme_directus_default: Directus alapértelmezett
+theme_directus_minimal: Directus minimális
+theme_directus_colormatch: Directus színegyezés
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
 auto_refresh: Automatikus frissítés
@@ -234,12 +403,15 @@ auto_generate: Automatikusan generált
 this_will_auto_setup_fields_relations: Ez automatikusan létrehozza az összes szükséges mezőt és kapcsolatokat.
 click_here: Kattints ide
 to_manually_setup_translations: a fordítások kézi elkészítéséhez.
+manage: Kezelés
 click_to_manage_translated_fields: >-
   Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
 fields_group: Mező csoport
 no_collections_found: Nem található gyűjtemény.
 new_data_alert: 'A következők jönnek létre az Adatmodelledben:'
 search_collection: Keresés a Gyűjteményben...
+search_role: Szerepkör keresése...
+search_policy: Szabályzat keresése
 search_field: Keresőmező...
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
@@ -260,7 +432,12 @@ o2m_relationship: Egy a Többhöz kapcsolat
 m2m_relationship: Több a Többhöz kapcsolat
 m2a_relationship: M2A kapcsolat (polimorf asszociációs leképezéshez több táblából)
 invalid_item: Érvénytelen elem
+require_confirmation: Megerősítés szükséges
+dialog: Párbeszédpanel
 modal: Ablak
+confirmation_dialog: Megerősítő párbeszédpanel
+confirmation_description: Megerősítés leírása
+confirmation_input_fields: Beviteli mezők megerősítése
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
@@ -282,6 +459,7 @@ foreign_key: Idegen Kulcs
 finish_setup: Beállítás befejezése
 dismiss: Elutasít
 toggle_raw_editor: Nyers szerkesztő ki/bekapcsolása
+toggle_variable_input: Változó bevitel kapcsolása
 raw_editor_placeholder: "Nyers szerkesztő helykitöltő"
 raw_value: Nyers érték
 copy_raw_value: Másolás vágólapra
@@ -307,6 +485,7 @@ confirm_revert_body: Ez visszaállítja az elemet a kiválasztott állapotba.
 display: Megjelenés
 settings_update_success: Beállítások frissítve
 title: Cím
+subtitle: Alcím
 revision_delta_created: Létrehozva
 revision_delta_created_externally: Külsőleg létrehozva
 revision_delta_updated: 'Egy mező frissítve | {count} mező frissítve'
@@ -468,8 +647,6 @@ file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
 no_files_copy: Nincsenek fileok.
 user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
-webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
-no_webhooks_copy: Még nincsenek webhookok konfigurálva. Hozzon létre egyet alább!
 no_notifications: Nincsenek értesítések
 no_notifications_copy: Felzárkózott!
 activity_log: Tevékenységnapló
@@ -498,7 +675,6 @@ action: Művelet
 ip_address: IP cím
 user_agent: Felhasználói ügynök
 origin: Eredeti
-webhooks: Webhookok
 decimals: Decimálisok
 value_decimals: Tizedes érték
 min_value: Min. érték
@@ -573,7 +749,6 @@ errors:
   VALUE_OUT_OF_RANGE: Érték a megengedett tartományon kívül esik
   VALUE_TOO_LONG: Az érték túl hosszú
 security: Biztonság
-value_hashed: Biztonságosan hashelt érték
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
@@ -737,7 +912,6 @@ flow: Folyamat
 select_a_flow: Válasszon egy folyamatot
 run_flow_on_current_collection: Folyamat futtatása az aktuális gyűjteményen
 run_flow_on_current: Folyamat futtatása a jelenlegi elemen
-run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
 run_flow_on_selected: Futtatás a kiválasztott elemeken
 run_flow: Folyamat futtatása
 trigger: Eseményindító
@@ -893,7 +1067,6 @@ editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adatmodell
 settings_project: Beállítások
-settings_webhooks: Webhookok
 settings_flows: Folyamatok
 settings_presets: Könyvjelzők
 settings_translations: Fordítások
@@ -918,37 +1091,6 @@ discard_changes_copy: Biztos benne, hogy elveti az összes eddig végrehajtott v
 show_x_axis: X tengely megjelenítése
 show_y_axis: Y tengely megjelenítése
 keep_editing: Szerkesztés folytatása
-page_help_collections_overview: '**Gyűjtemények áttekintése** - Az összes ön által hozzáférhető Gyűjtemény listája.'
-page_help_collections_collection: >-
-  **Elemek böngészése** - Az összes {collection} elemet listázza, amelyhez hozzáférhet. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
-page_help_collections_item: >-
-  **Elem részletei** - Ezen elem megtekintésére és kezelésére szolgáló űrlap. Ez az oldalsáv tartalmazza a revíziók teljes előzményeit és a beágyazott megjegyzéseket is.
-page_help_activity_collection: >-
-  **Böngészési tevékenység** - A felhasználók összes rendszer- és tartalomtevékenységének átfogó listája.
-page_help_docs_global: >-
-  **Dokumentációs áttekintés** - Kifejezetten ezen projekt verziójára és sémájára szabott dokumentumok.
-page_help_files_collection: >-
-  **Fájlok könyvtára** - A projektbe feltöltött összes fájleszköz listája. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
-page_help_files_item: >-
-  **File Részletek** - A fájl metaadatainak kezelésére, az eredeti eszköz szerkesztésére és a hozzáférési beállítások frissítésére szolgáló űrlap.
-page_help_settings_datamodel_collections: >-
-  **Adatmodell: Gyűjtemények** - Az összes elérhető gyűjtemény listája. Ide tartoznak a látható, rejtett és rendszergyűjtemények, valamint a hozzáadható nem kezelt adatbázis táblák.
-page_help_settings_datamodel_fields: >-
-  **Adatmodell: Gyűjtemény** - Egy űrlap, ezen gyűjtemény és mezőinek kezelésére.
-page_help_settings_roles_item: "**Szerepkör Részletei** - A szerepkörök jogosultságainak és egyéb beállításainak kezelése."
-page_help_settings_presets_collection: >-
-  **Alapbeállítások Böngészése** - A projektben lévő összes alapbeállítás listázása, beleértve: a felhasználói, szerepköri és globális könyvjelzőket, valamint az alapértelmezett nézeteket.
-page_help_settings_presets_item: >-
-  **Alapbeállítások Részletei** - Könyvjelzők és alapértelmezett gyűjteménybeállítások kezelésére szolgáló űrlap.
-page_help_settings_webhooks_collection: '**Webhookok Böngészése** — A projektben található összes webhook listája.'
-page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookjainak létrehozására és kezelésére szolgáló űrlap.'
-page_help_settings_flows_collection: '**Folyamatok tallózása** — A projekten belüli összes folyamat felsorolása.'
-page_help_settings_flows_item: '**A folyamat részletei** — Munkaterület egy vagy több művelet kezeléséhez.'
-page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
-page_help_users_item: >-
-  **Felhasználó részletei** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
-page_help_insights_overview: '**Betekintés** - A műszerfalak listája, amelyekhez hozzáférhet.'
-page_help_insights_dashboard: '**Irányítópult** — Munkaterület egy vagy több panel kezeléséhez'
 activity_feed: Tevékenységi Hírfolyam
 add_new: Új hozzáadása
 create_new: Új létrehozása
@@ -959,6 +1101,7 @@ batch_delete_confirm: >-
   Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
 cancel: Mégse
 no_upscale: Ne méretezze fel a képeket
+source_registry: Piactér
 collection: Gyűjtemény
 collections: Gyűjtemények
 content: Ügyvitel
@@ -971,7 +1114,6 @@ directus_collection:
   directus_dashboards: Irányítópultok az Insights modulon belül
   directus_fields: Mező további konfigurációja és metaadatok
   directus_files: Metaadatok az összes kezelt fájleszközhöz
-  directus_flows: Automatizáció
   directus_folders: Virtuális könyvtárakat biztosít a fájlok számára
   directus_migrations: Az adatbázis melyik verzióját használja
   directus_notifications: A felhasználóknak küldött értesítések
@@ -985,7 +1127,6 @@ directus_collection:
   directus_settings: Projekt konfigurációs lehetőségek
   directus_shares: Követi a külsőleg megosztott elemeket
   directus_users: A platform rendszerhasználói
-  directus_webhooks: Konfiguráció eseményalapú HTTP-kérésekhez
 fields:
   directus_activity:
     item: Elem elsődleges kulcsa
@@ -1126,19 +1267,8 @@ fields:
     description: Leírás
     users: Felhasználók a szerepkörben
   directus_policies:
+    name: Szabályzat neve
     description: Leírás
-  directus_webhooks:
-    name: Név
-    method: Metódus
-    status: Állapot
-    data: Adat
-    header: Fejléc
-    value: Érték
-    headers: Fejlécek kérése
-    data_label: Eseményadatok küldése
-    triggers: Triggerek
-    actions: Műveletek
-    collections: Gyűjtemények
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
@@ -1227,19 +1357,6 @@ field_options:
     status_dropdown_suspended: Felfüggesztve
     status_dropdown_archived: Archiválva
     token: Írja be a biztonságos hozzáférés tokenjét...
-  directus_webhooks:
-    status_options_active: Aktív
-    status_options_inactive: Inaktív
-    data_label: Eseményadatok küldése
-    triggers_divider: Triggerek
-    actions_create: Létrehozás
-    actions_update: Frissítés
-    actions_delete: Törlés
-    actions_login: Bejelentkezés
-    headers:
-      header: Fejléc
-      value: Érték
-      add: Fejléc hozzáadása
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 no_value: Hiányzó érték
 do_nothing: Ne tegyen semmit
@@ -1259,6 +1376,22 @@ shares: Megosztások
 unlimited_usage: Korlátlan használat
 no_shares: Nincs megjeleníthető megosztás
 new_share: Új megosztás
+ai:
+  input: Bevitel
+  unknown: Ismeretlen
+  prompt_input_placeholder: Írja be az üzenetét ide...
+  settings: Beállítások
+  tool_approval:
+    disabled: Letiltva
+ai_tools:
+  items: Elemek
+  files: Fájlok
+  flows: Folyamatok
+  trigger-flow: Folyamat beindítása
+  operations: Műveletek
+  schema: Séma
+  collections: Gyűjtemények
+  fields: Mezők
 mcp_prompts_collection_schema:
   messages_role_user: Felhasználó
 expired: Lejárt
@@ -1291,7 +1424,6 @@ continue_label: Folytatás
 continue_as: >-
   {name} jelenleg hitelesített. Ha felismeri ezt a fiókot, nyomja meg a folytatás gombot.
 editing_role: '{role} szerepkör'
-creating_webhook: Webhook létrehozása
 default_label: Alapértelmezett
 delete_label: Törlés
 delete_are_you_sure: >-
@@ -1407,9 +1539,7 @@ interfaces:
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
   presentation-links:
-    presentation-links: Gomb hivatkozások
-    links: Linkek
-    description: Konfigurálható linkgombok dinamikus URL-ek indításához
+    presentation-links: Gombok
     style: Stílus
     primary: Elsődleges
     link: Linkek
@@ -1533,6 +1663,7 @@ interfaces:
     editorFont: Szerkesztő betűtípus
     previewFont: Betűtípus előnézete
     default_view: Alapértelmezett nézet
+    default_view_editor: Szerkesztő
     default_view_preview: Előnézet
     customSyntax: Egyedi blokkok
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
@@ -1612,7 +1743,7 @@ interfaces:
     minimum_value: Minimumérték
     maximum_value: Maximumérték
     step_interval: Lépésköz
-    slug: Slugify
+    slug: Keresőbarát
     slug_label: A beírt érték URL-kompatibilissá tétel
   input-multiline:
     textarea: Szövegmező
@@ -1621,6 +1752,7 @@ interfaces:
     input-translated-string: Lefordított szavak
     description: Válassza ki vagy adja hozzá a fordítási karakterláncot
     search_placeholder: Keresés...
+    new_custom_translation: Új egyéni fordítás
   boolean:
     toggle: Váltás
     description: Be- és kikapcsolás közti váltás
@@ -1653,20 +1785,34 @@ interfaces:
     description: Rich-text editor HTML tartalom írásához
     toolbar: Eszköztár
     custom_formats: Egyéni formátumok
+    custom_formats_note: TinyMCE tartalomformátumok listája. További információkért lásd a TinyMCE dokumentációját a [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
     options_override: Beállítások felülírása
+    options_override_note: A TinyMCE felhasználói formázási kulcsai és értékeik. További információkért lásd a TinyMCE dokumentációját a [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Mappa a feltöltött fájlok számára. Nem érinti a meglévő fájlokat.
     imageToken: Statikus hozzáférési token
     imageToken_label: A statikus hozzáférési token hozzá van rendelve az eszközök URL-jéhez
+    media_preview_iframe_title: Média előnézet
   input-block-editor:
+    input-block-editor: Blokkos szerkesztő
+    description: Blokk stílusú szerkesztő multimédiás történetekhez, tiszta JSON formátumú adatokat ad az Editor.js használatával
     tools: Eszköztár
     tools_options:
       header: Fejléc
       nestedlist: Lista
       embed: Beágyazás
+      paragraph: Bekezdés
       code: Kód
       image: Kép
+      attaches: Csatolások
       table: Táblázat
+      quote: Idézet
       underline: Aláhúzott
+      inlinecode: Beágyazott kód
+      delimiter: Elválasztó
+      checklist: Ellenőrzőlista
+      toggle: Blokk váltása
+      alignment: Igazítás
+      raw: Nyers HTML
   input-autocomplete-api:
     input-autocomplete-api: Automatikus kiegészítés (API)
     description: Külső API-értékek keresési típusvezetője (automatikus kiegészítés).
@@ -1698,6 +1844,12 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Nyers szerkesztő
     description: Lehetővé teszi a nyers vagy kapcsos zárójeles sablonértékek megadását
+  input-password:
+    input-password: Jelszó megadása
+    description: Jelszó megadása érték elrejtés kapcsolóval
+  header:
+    header: Fejléc
+    links: Linkek
 displays:
   translations:
     translations: Fordítások
@@ -1996,11 +2148,9 @@ triggers:
 a_flow_uuid: Válasszon ki egy folyamatot az aktiváláshoz...
 any_string_or_json: Bármilyen karakterlánc vagy JSON...
 item_payload_placeholder: Ez a JSON az elem mezőértékeinek frissítésére...
-operation_variables_note: A folyamat adatait olyan változókkal érheti el, mint a **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** és **{'{'}{'{'}$accountability{'}'}{'}'}**, vagy hivatkozzon korábbi műveletekre a **{'{ használatával '}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Feltétel
-    description: Hozzon létre folyamatot a Ha / Különben logika alapján
   exec:
     name: Szkript futtatása
     description: Tetszőleges kód futtatása az adattartalom módosításához
@@ -2071,7 +2221,6 @@ operations:
     description: Módosítsa a Folyamat JSON-adattartalmát
   trigger:
     name: Folyamat beindítása
-    description: Adja át ezeket az adatokat egy másik folyamatnak
     flows: Folyamatok
     flow: Folyamat
     data: Adat

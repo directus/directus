@@ -1,10 +1,8 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 
 const loading = ref(false);
 const bookmarksCount = ref<number | null>(null);
@@ -35,22 +33,18 @@ async function fetchCounts() {
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
+	<SidebarDetail id="presets" icon="info" :title="$t('information')">
 		<dl>
 			<div>
-				<dt>{{ t('bookmarks') }}</dt>
+				<dt>{{ $t('bookmarks') }}</dt>
 				<dd>{{ bookmarksCount }}</dd>
 			</div>
 			<div>
-				<dt>{{ t('presets') }}</dt>
+				<dt>{{ $t('presets') }}</dt>
 				<dd>{{ presetsCount }}</dd>
 			</div>
 		</dl>
-
-		<v-divider />
-
-		<div v-md="t('page_help_settings_presets_collection')" class="page-description" />
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

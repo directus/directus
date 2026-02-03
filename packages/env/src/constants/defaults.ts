@@ -1,6 +1,6 @@
-import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
+import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 
 export const DEFAULTS = {
 	CONFIG_PATH: resolve(cwd(), '.env'),
@@ -13,6 +13,7 @@ export const DEFAULTS = {
 	QUERYSTRING_MAX_PARSE_DEPTH: 10,
 	QUERY_LIMIT_DEFAULT: 100,
 	MAX_BATCH_MUTATION: Infinity,
+	MAX_IMPORT_ERRORS: 1000,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
 	TEMP_PATH: './node_modules/.directus',
@@ -113,6 +114,7 @@ export const DEFAULTS = {
 
 	TELEMETRY: true,
 	TELEMETRY_URL: 'https://telemetry.directus.io',
+	COMPLIANCE_URL: 'https://telemetry.directus.io',
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,
@@ -186,9 +188,13 @@ export const DEFAULTS = {
 	METRICS_NAME_PREFIX: 'directus_',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+  
 	FILES_DELETE_ORIGINAL_ON_MOVE: false,
+	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
 
 	ACCEPT_TERMS: false,
 
 	MCP_ENABLED: true,
+
+	AI_ENABLED: true,
 } as const;

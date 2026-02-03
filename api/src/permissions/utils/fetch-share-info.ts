@@ -11,7 +11,7 @@ export interface ShareInfo {
 	};
 }
 
-export const fetchShareInfo = withCache('share-info', _fetchShareInfo);
+export const fetchShareInfo = withCache('share-info', _fetchShareInfo, (shareId) => ({ shareId }));
 
 export async function _fetchShareInfo(shareId: string, context: AbstractServiceOptions): Promise<ShareInfo> {
 	const { SharesService } = await import('../../services/shares.js');

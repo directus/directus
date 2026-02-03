@@ -1,8 +1,8 @@
-import { Vector2 } from '@/utils/vector2';
 import { describe, expect, it } from 'vitest';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
 import { findBestPosition } from './find-best-position';
+import { Vector2 } from '@/utils/vector2';
 
 describe('findBestPosition', () => {
 	// Helper function to create test panels

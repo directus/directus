@@ -1,7 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { defineComponent, h, nextTick } from 'vue';
-
 import VErrorBoundary from './v-error-boundary.vue';
 
 beforeAll(() => {

@@ -3,6 +3,8 @@ export function sieveFunctions(data: unknown): unknown {
 		return undefined;
 	} else if (Array.isArray(data)) {
 		return data.map(sieveFunctions);
+	} else if (data instanceof Error) {
+		return data;
 	} else if (typeof data === 'object' && data !== null) {
 		return Object.fromEntries(Object.entries(data).map(([key, value]) => [key, sieveFunctions(value)]));
 	}

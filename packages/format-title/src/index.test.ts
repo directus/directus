@@ -1,5 +1,5 @@
-import formatTitle from './index.js';
 import { expect, test } from 'vitest';
+import formatTitle from './index.js';
 
 const tests: [string, string][] = [
 	['snowWhiteAndTheSevenDwarfs', 'Snow White and the Seven Dwarfs'],

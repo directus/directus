@@ -1,12 +1,22 @@
 <script setup lang="ts">
-import { useCustomSelection, useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
+import { type OtherValue, useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
 import { Placement } from '@popperjs/core';
 import { debounce, get, isArray } from 'lodash';
 import { computed, Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SelectListItemGroup from './select-list-item-group.vue';
 import SelectListItem from './select-list-item.vue';
+import SelectListItemGroup from './SelectListItemGroup.vue';
 import { Option } from './types';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import DisplayColor from '@/displays/color/color.vue';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string | number | null;
@@ -45,6 +55,8 @@ const props = withDefaults(
 		fullWidth?: boolean;
 		/** Disables any interaction */
 		disabled?: boolean;
+		/** Set the non-editable state for the select */
+		nonEditable?: boolean;
 		/** Allow to deselect all currently selected items */
 		showDeselect?: boolean;
 		/** Allow to enter custom values */
@@ -97,6 +109,11 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	internalItems,
 	(value) => emit('update:modelValue', value),
 );
+
+const isDisabled = computed(() => {
+	const hasSelection = Array.isArray(modelValue.value) && modelValue.value.length > 0;
+	return props.disabled && !(props.nonEditable && props.multiple && hasSelection);
+});
 
 const search = ref<string | null>(null);
 
@@ -250,9 +267,9 @@ function useDisplayValue() {
 </script>
 
 <template>
-	<v-menu
+	<VMenu
 		class="v-select"
-		:disabled="disabled"
+		:disabled="isDisabled"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
@@ -270,7 +287,7 @@ function useDisplayValue() {
 				@click="toggle"
 			>
 				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
-				<v-icon name="expand_more" :class="{ active }" />
+				<VIcon name="expand_more" :class="{ active }" />
 			</button>
 			<slot
 				v-else
@@ -280,13 +297,14 @@ function useDisplayValue() {
 					active: active,
 				}"
 			>
-				<v-input
+				<VInput
 					:full-width="fullWidth"
 					readonly
 					:model-value="displayValue.text"
 					clickable
 					:placeholder="placeholder"
-					:disabled="disabled"
+					:disabled="isDisabled"
+					:non-editable="nonEditable"
 					:active="active"
 					@click="toggle"
 					@keydown:enter="toggle"
@@ -294,55 +312,55 @@ function useDisplayValue() {
 				>
 					<template v-if="$slots.prepend || displayValue.icon || displayValue.color" #prepend>
 						<slot v-if="$slots.prepend" name="prepend" />
-						<v-icon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
-						<display-color v-else-if="displayValue.color" :value="displayValue.color" />
+						<VIcon v-else-if="displayValue.icon" :name="displayValue.icon" :color="displayValue.color" />
+						<DisplayColor v-else-if="displayValue.color" :value="displayValue.color" />
 					</template>
 					<template #append>
-						<v-icon name="expand_more" :class="{ active }" />
+						<VIcon name="expand_more" :class="{ active }" />
 						<slot name="append" />
 					</template>
-				</v-input>
+				</VInput>
 			</slot>
 		</template>
 
-		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
-			<template v-if="showDeselect">
-				<v-list-item
+		<VList class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
+			<template v-if="showDeselect && !nonEditable">
+				<VListItem
 					clickable
 					:disabled="modelValue === null || (Array.isArray(modelValue) && !modelValue.length)"
 					@click="$emit('update:modelValue', null)"
 				>
-					<v-list-item-icon v-if="multiple === true">
-						<v-icon name="close" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ multiple ? t('deselect_all') : t('deselect') }}
-					</v-list-item-content>
-					<v-list-item-icon v-if="multiple === false">
-						<v-icon name="close" />
-					</v-list-item-icon>
-				</v-list-item>
-				<v-divider />
+					<VListItemIcon v-if="multiple === true">
+						<VIcon name="close" />
+					</VListItemIcon>
+					<VListItemContent>
+						{{ multiple ? $t('deselect_all') : $t('deselect') }}
+					</VListItemContent>
+					<VListItemIcon v-if="multiple === false">
+						<VIcon name="close" />
+					</VListItemIcon>
+				</VListItem>
+				<VDivider />
 			</template>
 
-			<v-list-item v-if="internalItemsCount === 0 && !allowOther">
-				<v-list-item-content>
-					{{ t('no_options_available') }}
-				</v-list-item-content>
-			</v-list-item>
+			<VListItem v-if="internalItemsCount === 0 && !allowOther">
+				<VListItemContent>
+					{{ $t('no_options_available') }}
+				</VListItemContent>
+			</VListItem>
 
-			<v-list-item v-if="internalItemsCount > 10 || search">
-				<v-list-item-content>
-					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
+			<VListItem v-if="internalItemsCount > 10 || search">
+				<VListItemContent>
+					<VInput v-model="search" autofocus small :placeholder="$t('search')" @click.stop.prevent>
 						<template #append>
-							<v-icon small name="search" />
+							<VIcon small name="search" />
 						</template>
-					</v-input>
-				</v-list-item-content>
-			</v-list-item>
+					</VInput>
+				</VListItemContent>
+			</VListItem>
 
 			<template v-for="(item, index) in internalItems" :key="index">
-				<select-list-item-group
+				<SelectListItemGroup
 					v-if="item.children"
 					:item="item"
 					:item-label-font-family="itemLabelFontFamily"
@@ -350,32 +368,34 @@ function useDisplayValue() {
 					:multiple="multiple"
 					:allow-other="allowOther"
 					:group-selectable="groupSelectable"
+					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event)"
 				/>
-				<select-list-item
+				<SelectListItem
 					v-else
 					:model-value="modelValue"
 					:item="item"
 					:item-label-font-family="itemLabelFontFamily"
 					:multiple="multiple"
 					:allow-other="allowOther"
+					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event)"
 				/>
 			</template>
 
-			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
-				<v-list-item-content>
+			<VListItem v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
+				<VListItemContent>
 					<input
 						v-model="otherValue"
 						class="other-input"
-						:placeholder="t('other')"
+						:placeholder="$t('other')"
 						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 					/>
-				</v-list-item-content>
-			</v-list-item>
+				</VListItemContent>
+			</VListItem>
 
 			<template v-if="allowOther && multiple === true">
-				<v-list-item
+				<VListItem
 					v-for="otherVal in otherValues"
 					:key="otherVal.key"
 					:active="
@@ -384,29 +404,31 @@ function useDisplayValue() {
 						)
 					"
 				>
-					<v-list-item-content>
-						<v-checkbox
+					<VListItemContent>
+						<VCheckbox
 							:model-value="modelValue || []"
 							:value="otherVal.value"
 							custom-value
 							:autofocus-custom-input="otherVal.focus"
+							:disabled="disabled"
+							:non-editable="nonEditable"
 							@update:model-value="$emit('update:modelValue', $event)"
 							@update:value="setOtherValue(otherVal.key, $event)"
 							@blur:custom-input="onBlurCustomInput(otherVal)"
 						/>
-					</v-list-item-content>
-					<v-list-item-icon>
-						<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherVal.key, null)" />
-					</v-list-item-icon>
-				</v-list-item>
+					</VListItemContent>
+					<VListItemIcon v-if="!nonEditable">
+						<VIcon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherVal.key, null)" />
+					</VListItemIcon>
+				</VListItem>
 
-				<v-list-item clickable @click.stop="addOtherValue('', true)">
-					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
-					<v-list-item-content>{{ t('other') }}</v-list-item-content>
-				</v-list-item>
+				<VListItem v-if="!nonEditable" clickable @click.stop="addOtherValue('', true)">
+					<VListItemIcon><VIcon name="add" /></VListItemIcon>
+					<VListItemContent>{{ $t('other') }}</VListItemContent>
+				</VListItem>
 			</template>
-		</v-list>
-	</v-menu>
+		</VList>
+	</VMenu>
 </template>
 
 <style scoped lang="scss">
@@ -455,8 +477,8 @@ function useDisplayValue() {
 	inline-size: max-content;
 	padding-inline-end: 18px;
 
-	&:not(.disabled) {
-		cursor: pointer;
+	&.disabled {
+		cursor: not-allowed;
 	}
 }
 

@@ -2,7 +2,11 @@
 import { useSync } from '@directus/composables';
 import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -19,8 +23,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);
-
-const { t } = useI18n();
 
 const sizeSync = useSync(props, 'size', emit);
 const sortSync = useSync(props, 'sort', emit);
@@ -71,33 +73,33 @@ function onClickSelect() {
 		<div class="start">
 			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
 				<template v-if="selectionSync.length">
-					<v-icon name="cancel" outline />
-					<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
+					<VIcon name="cancel" outline />
+					<span class="label">{{ $t('n_items_selected', selectionSync.length) }}</span>
 				</template>
 				<template v-else>
-					<v-icon name="check_circle" outline />
-					<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
+					<VIcon name="check_circle" outline />
+					<span class="label">{{ $t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
 				</template>
 			</button>
 		</div>
 		<div class="end">
-			<v-icon
-				v-tooltip.top="t('card_size')"
+			<VIcon
+				v-tooltip.top="$t('card_size')"
 				class="size-selector"
 				:name="`grid_${7 - size}`"
 				clickable
 				@click="toggleSize"
 			/>
 
-			<v-menu show-arrow placement="bottom">
+			<VMenu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<button v-tooltip.top="t('sort_field')" type="button" class="sort-selector" @click="toggle">
+					<button v-tooltip.top="$t('sort_field')" type="button" class="sort-selector" @click="toggle">
 						{{ sortField && sortField.name }}
 					</button>
 				</template>
 
-				<v-list>
-					<v-list-item
+				<VList>
+					<VListItem
 						v-for="field in fieldsWithoutFake"
 						:key="field.field"
 						:disabled="field.disabled"
@@ -105,12 +107,12 @@ function onClickSelect() {
 						clickable
 						@click="sortSync = [field.field]"
 					>
-						<v-list-item-content>{{ field.name }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-			<v-icon
-				v-tooltip.top="t('sort_direction')"
+						<VListItemContent>{{ field.name }}</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
+			<VIcon
+				v-tooltip.top="$t('sort_direction')"
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"

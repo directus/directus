@@ -1,3 +1,5 @@
+import type { OpenAICompatibleHeader, OpenAICompatibleModel } from '@directus/ai';
+
 export type SettingsModuleBarModule = {
 	type: 'module';
 	id: string;
@@ -62,6 +64,37 @@ export type Settings = {
 	default_theme_dark: string | null;
 	theme_light_overrides: Record<string, unknown> | null;
 	theme_dark_overrides: Record<string, unknown> | null;
-	accepted_terms: boolean;
 	project_id: string | null;
+	ai_openai_api_key: '**********' | null;
+	ai_anthropic_api_key: '**********' | null;
+	ai_google_api_key: '**********' | null;
+	ai_openai_compatible_api_key: '**********' | null;
+	ai_openai_compatible_base_url: string | null;
+	ai_openai_compatible_name: string | null;
+	ai_openai_compatible_models: OpenAICompatibleModel[] | null;
+	ai_openai_compatible_headers: OpenAICompatibleHeader[] | null;
+	ai_openai_allowed_models: string[] | null;
+	ai_anthropic_allowed_models: string[] | null;
+	ai_google_allowed_models: string[] | null;
+	ai_system_prompt: string | null;
+	mcp_enabled: boolean;
+	mcp_allow_deletes: boolean;
+	mcp_prompts_collection: string | null;
+	mcp_system_prompt_enabled: boolean;
+	mcp_system_prompt: string | null;
+} & OwnerInformation;
+
+export type OwnerInformation = {
+	project_owner: string | null;
+	project_usage: 'personal' | 'commercial' | 'community' | null;
+	org_name: string | null;
+	product_updates: boolean;
 };
+
+export type SetupForm = {
+	first_name: string | null;
+	last_name: string | null;
+	password: string | null;
+	password_confirm: string | null;
+	license: boolean;
+} & OwnerInformation;

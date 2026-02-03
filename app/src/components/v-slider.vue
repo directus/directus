@@ -4,6 +4,8 @@ import { computed } from 'vue';
 interface Props {
 	/** Disables the slider */
 	disabled?: boolean;
+	/** Set the non-editable state for the radio */
+	nonEditable?: boolean;
 	/** Show the thumb label on drag of the thumb */
 	showThumbLabel?: boolean;
 	/** Maximum allowed value */
@@ -17,11 +19,12 @@ interface Props {
 	/** Always the current selected value */
 	alwaysShowValue?: boolean;
 	/** Model the current selected value */
-	modelValue?: number;
+	modelValue?: number | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
+	nonEditable: false,
 	showThumbLabel: false,
 	max: 100,
 	min: 0,
@@ -34,9 +37,22 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['change', 'update:modelValue']);
 
 const styles = computed(() => {
-	if (props.modelValue === null) return { '--_v-slider-percentage': 50 };
+	const min = props.min;
+	const max = props.max;
+	const step = props.step;
 
-	let percentage = ((props.modelValue - props.min) / (props.max - props.min)) * 100;
+	let value = props.modelValue;
+
+	if (value === null || value === undefined) {
+		const mid = min + (max - min) / 2;
+		value = Math.round((mid - min) / step) * step + min;
+	}
+
+	if (max === min) {
+		return { '--_v-slider-percentage': 0 };
+	}
+
+	let percentage = ((value - min) / (max - min)) * 100;
 	if (isNaN(percentage)) percentage = 0;
 	return { '--_v-slider-percentage': percentage };
 });
@@ -57,7 +73,10 @@ function onInput(event: Event) {
 		<div v-if="$slots.prepend" class="prepend">
 			<slot name="prepend" :value="modelValue" />
 		</div>
-		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
+		<div
+			class="slider"
+			:class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue, 'non-editable': nonEditable }"
+		>
 			<input
 				:disabled="disabled"
 				type="range"
@@ -73,7 +92,7 @@ function onInput(event: Event) {
 				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
-				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
+				<div class="thumb-label" :class="{ visible: alwaysShowValue || nonEditable }">
 					<slot name="thumb-label type-text" :value="modelValue">
 						{{ modelValue }}
 					</slot>
@@ -110,8 +129,14 @@ function onInput(event: Event) {
 		flex-grow: 1;
 
 		&.disabled {
-			--v-slider-thumb-color: var(--theme--foreground-subdued);
-			--v-slider-fill-color: var(--theme--foreground-subdued);
+			input {
+				cursor: not-allowed;
+			}
+
+			&:not(.non-editable) {
+				--v-slider-thumb-color: var(--theme--foreground-subdued);
+				--v-slider-fill-color: var(--theme--foreground-subdued);
+			}
 		}
 
 		&.thumb-label-visible {
@@ -235,7 +260,7 @@ function onInput(event: Event) {
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
-			background-color: var(--theme--primary);
+			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: var(--theme--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;

@@ -1,6 +1,6 @@
-import { Vector2 } from '@/utils/vector2';
 import { GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from '../../../constants';
 import type { Panel } from '../types';
+import { Vector2 } from '@/utils/vector2';
 
 /**
  * Determines whether a given point intersects with any panel in a collection.

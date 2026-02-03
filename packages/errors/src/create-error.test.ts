@@ -1,4 +1,4 @@
-import { beforeEach, test, expect, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { createError } from './create-error.js';
 
 let sample: {

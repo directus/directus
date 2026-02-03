@@ -1,7 +1,7 @@
 import type { Component, ComponentOptions } from 'vue';
-import type { ExtensionOptionsContext } from './options.js';
 import type { AppField, LocalType, Type } from '../fields.js';
 import type { DeepPartial } from '../misc.js';
+import type { ExtensionOptionsContext } from './options.js';
 
 export interface InterfaceConfig {
 	id: string;
@@ -24,6 +24,7 @@ export interface InterfaceConfig {
 	relational?: boolean;
 	hideLabel?: boolean;
 	hideLoader?: boolean;
+	indicatorStyle?: 'active' | 'hidden' | 'muted';
 	autoKey?: boolean;
 	system?: boolean;
 	recommendedDisplays?: string[];

@@ -1,23 +1,28 @@
-import api from '@/api';
-import { computed, ref, Ref, provide, inject } from 'vue';
+import { useCollection } from '@directus/composables';
+import formatTitle from '@directus/format-title';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
+import { computed, inject, provide, type Ref, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import { useFlowsStore } from '@/stores/flows';
+import { useNotificationsStore } from '@/stores/notifications';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollection } from '@directus/composables';
-import { useFlowsStore } from '@/stores/flows';
-import { useI18n } from 'vue-i18n';
-import { useNotificationsStore } from '@/stores/notifications';
-import formatTitle from '@directus/format-title';
 
 interface UseFlowsOptions {
-	collection: string;
-	primaryKey?: PrimaryKey | null;
+	collection: Ref<string>;
+	primaryKey?: Ref<PrimaryKey | null>;
 	selection?: Ref<Item[]>;
 	location: 'collection' | 'item';
 	hasEdits?: Ref<boolean>;
 	onRefreshCallback: () => void;
 }
+
+export type ManualFlow = FlowRaw & {
+	tooltip: string;
+	isFlowDisabled: boolean;
+};
 
 const runManualFlowSymbol = 'runManualFlow';
 
@@ -120,9 +125,9 @@ export function useFlows(options: UseFlowsOptions) {
 		return false;
 	});
 
-	const manualFlows = computed(() => {
+	const manualFlows = computed<ManualFlow[]>(() => {
 		const manualFlows = flowsStore
-			.getManualFlowsForCollection(collection)
+			.getManualFlowsForCollection(collection.value)
 			.filter(
 				(flow) => !flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location,
 			)
@@ -131,7 +136,6 @@ export function useFlows(options: UseFlowsOptions) {
 				options: flow.options ? translate(flow.options) : null,
 				tooltip: getFlowTooltip(flow),
 				isFlowDisabled: checkFlowDisabled(flow),
-				isFlowRunning: checkFlowRunning(flow),
 			}));
 
 		function getFlowTooltip(manualFlow: FlowRaw) {
@@ -146,16 +150,17 @@ export function useFlows(options: UseFlowsOptions) {
 
 		function checkFlowDisabled(manualFlow: FlowRaw) {
 			if (location === 'item' || manualFlow.options?.requireSelection === false) return false;
-			return !primaryKey && selection.value.length === 0;
-		}
-
-		function checkFlowRunning(manualFlow: FlowRaw) {
-			if (!manualFlow) return false;
-			return runningFlows.value.includes(manualFlow.id);
+			return !unref(primaryKey) && selection.value.length === 0;
 		}
 
 		return manualFlows;
 	});
+
+	function isActiveFlow(flowId: string) {
+		const flow = manualFlows.value.find((flow) => flow.id === flowId);
+
+		return flow && flow.status === 'active';
+	}
 
 	function resetConfirm() {
 		currentFlowId.value = null;
@@ -183,6 +188,8 @@ export function useFlows(options: UseFlowsOptions) {
 	function provideRunManualFlow() {
 		provide(runManualFlowSymbol, {
 			runManualFlow,
+			runningFlows,
+			isActiveFlow,
 		});
 	}
 
@@ -221,14 +228,15 @@ export function useFlows(options: UseFlowsOptions) {
 			) {
 				await api.post(`/flows/trigger/${flowId}`, {
 					...(confirmValues.value ?? {}),
-					collection: collection,
+					collection: collection.value,
 				});
 			} else {
-				const keys = primaryKey ? [primaryKey] : selection.value || [];
+				const pk = unref(primaryKey);
+				const keys = pk ? [pk] : selection.value || [];
 
 				await api.post(`/flows/trigger/${flowId}`, {
 					...confirmValues.value,
-					collection: collection,
+					collection: collection.value,
 					keys,
 				});
 			}
@@ -258,12 +266,14 @@ export function useFlows(options: UseFlowsOptions) {
 }
 
 /**
- * In order to invoke injectRunManualFlow within a component, a parent component must first invoke `provideRunManualFlow()`.
+ * In order to invoke useInjectRunManualFlow within a component, a parent component must first invoke `provideRunManualFlow()`.
  *
  * This parent component must also render the <flow-dialogs> component or the confirmation dialogs will not be reachable.
  */
-export function injectRunManualFlow() {
-	return inject(runManualFlowSymbol) as {
-		runManualFlow: (flowId: string) => void;
-	};
+export function useInjectRunManualFlow() {
+	return inject(runManualFlowSymbol, {
+		runManualFlow: (_flowId: string) => {},
+		runningFlows: ref<string[]>([]),
+		isActiveFlow: (_flowId: string) => false,
+	});
 }

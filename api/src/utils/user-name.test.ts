@@ -1,24 +1,77 @@
-import { expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { userName } from './user-name.js';
 
-const unknownUser = 'Unknown User';
+describe('userName', () => {
+	it('returns full name when first_name and last_name are provided', () => {
+		expect(userName({ first_name: 'John', last_name: 'Doe' })).toBe('John Doe');
+	});
 
-test('should return "Unknown User" when user is undefined', () => {
-	expect(userName(undefined as any)).toBe(unknownUser);
-});
+	it('returns first_name when only first_name is provided', () => {
+		expect(userName({ first_name: 'John' })).toBe('John');
+	});
 
-test('should return "Test User" when user first name is "Test" and last name is "User"', () => {
-	expect(userName({ first_name: 'Test', last_name: 'User' })).toBe('Test User');
-});
+	it('returns email when only email is provided', () => {
+		expect(userName({ email: 'john@example.com' })).toBe('john@example.com');
+	});
 
-test('should return "Test" when user first name is "Test" but does not have last name', () => {
-	expect(userName({ first_name: 'Test' })).toBe('Test');
-});
+	it('returns "Unknown User" when no identifying info is provided', () => {
+		expect(userName({})).toBe('Unknown User');
+	});
 
-test('should return user email when user only has email without first name and last name', () => {
-	expect(userName({ email: 'test@example.com' })).toBe('test@example.com');
-});
+	it('returns "Unknown User" for null-ish user', () => {
+		expect(userName(null as any)).toBe('Unknown User');
+	});
 
-test('should return "Unknown User" when user is empty', () => {
-	expect(userName({})).toBe(unknownUser);
+	it('returns "Unknown User" for undefined user', () => {
+		expect(userName(undefined as any)).toBe('Unknown User');
+	});
+
+	it('prefers full name over email', () => {
+		expect(
+			userName({
+				first_name: 'John',
+				last_name: 'Doe',
+				email: 'john@example.com',
+			}),
+		).toBe('John Doe');
+	});
+
+	it('prefers first_name over email when last_name is missing', () => {
+		expect(
+			userName({
+				first_name: 'John',
+				email: 'john@example.com',
+			}),
+		).toBe('John');
+	});
+
+	it('returns email when first_name is empty string', () => {
+		expect(
+			userName({
+				first_name: '',
+				email: 'john@example.com',
+			}),
+		).toBe('john@example.com');
+	});
+
+	it('returns first_name only when last_name is empty string', () => {
+		expect(
+			userName({
+				first_name: 'John',
+				last_name: '',
+			}),
+		).toBe('John');
+	});
+
+	it('handles user with only last_name', () => {
+		expect(userName({ last_name: 'Doe' })).toBe('Unknown User');
+	});
+
+	it('handles whitespace in names', () => {
+		expect(userName({ first_name: '  John  ', last_name: '  Doe  ' })).toBe('  John     Doe  ');
+	});
+
+	it('returns "Unknown User" when email is empty string', () => {
+		expect(userName({ email: '' })).toBe('Unknown User');
+	});
 });

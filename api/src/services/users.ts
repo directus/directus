@@ -1,3 +1,4 @@
+import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
@@ -15,7 +16,6 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
 import type { StringValue } from 'ms';
-import { performance } from 'perf_hooks';
 import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -558,15 +558,15 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
+		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST'] as string) === false) {
+			throw new InvalidPayloadError({ reason: `URL "${url}" can't be used to reset passwords` });
+		}
+
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenError();
-		}
-
-		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST'] as string) === false) {
-			throw new InvalidPayloadError({ reason: `URL "${url}" can't be used to reset passwords` });
 		}
 
 		const mailService = new MailService({

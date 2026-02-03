@@ -260,16 +260,19 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		}
 	}
 
+	let targetPosition = caretPos;
+
+	if (isDirectInput || !window.getSelection()?.rangeCount) {
+		targetPosition += input.value.innerText.length - previousInnerTextLength;
+	}
+
 	if (input.value.innerHTML !== newHTML.replaceAll(String.fromCharCode(160), '&nbsp;')) {
 		input.value.innerHTML = newHTML;
 
-		const delta = input.value.innerText.length - previousInnerTextLength;
-		const newPosition = caretPos + delta;
-
-		if (newPosition > input.value.innerText.length || newPosition < 0) {
+		if (targetPosition > input.value.innerText.length || targetPosition < 0) {
 			position(input.value, input.value.innerText.length);
 		} else {
-			position(input.value, newPosition);
+			position(input.value, targetPosition);
 		}
 	}
 
@@ -282,7 +285,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	previousInnerTextLength = input.value.innerText.length;
-	previousCaretPos = caretPos;
+	previousCaretPos = targetPosition;
 }
 </script>
 
@@ -320,7 +323,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&.multiline {
-		block-size: var(--input-height-tall);
+		block-size: var(--input-height-md);
 		overflow-y: auto;
 		white-space: pre-wrap;
 	}

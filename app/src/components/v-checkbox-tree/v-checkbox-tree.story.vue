@@ -37,7 +37,7 @@ const value = ref([]);
 <template>
 	<Story title="VCheckboxTree" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-checkbox-tree v-model="value" v-bind="state" />
+			<VCheckboxTree v-model="value" v-bind="state" />
 		</template>
 
 		<template #controls>

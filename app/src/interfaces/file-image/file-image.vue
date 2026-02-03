@@ -1,5 +1,18 @@
 <script setup lang="ts">
+import type { File, Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VIconFile from '@/components/v-icon-file.vue';
+import VImage from '@/components/v-image.vue';
+import VNotice from '@/components/v-notice.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VUpload from '@/components/v-upload.vue';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -7,19 +20,16 @@ import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import type { File, Filter } from '@directus/types';
-import { deepMap } from '@directus/utils';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
 		value: string | Record<string, any> | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		loading?: boolean;
 		folder?: string;
 		filter?: Filter;
@@ -35,6 +45,7 @@ const props = withDefaults(
 		crop: true,
 		enableCreate: true,
 		enableSelect: true,
+		nonEditable: false,
 	},
 );
 
@@ -68,7 +79,7 @@ const {
 
 const isImage = ref(true);
 
-const { t, n, te } = useI18n();
+const { n, te } = useI18n();
 
 const lightboxActive = ref(false);
 const editDrawerActive = ref(false);
@@ -130,8 +141,15 @@ async function imageErrorHandler() {
 
 const values = inject('values', ref<Record<string, unknown>>({}));
 
+// Image-only filter for file library
+const imageFilter = {
+	type: {
+		_starts_with: 'image/',
+	},
+};
+
 const customFilter = computed(() => {
-	return parseFilter(
+	const filter = parseFilter(
 		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
@@ -140,6 +158,12 @@ const customFilter = computed(() => {
 			return val;
 		}),
 	);
+
+	if (!filter) return imageFilter;
+
+	return {
+		_and: [filter, imageFilter],
+	};
 });
 
 function onUpload(image: any) {
@@ -167,22 +191,29 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 <template>
 	<div class="image" :class="[width, { crop }]">
-		<v-skeleton-loader v-if="loading" type="input-tall" />
+		<VSkeletonLoader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
-			{{ t('no_image_selected') }}
-		</v-notice>
+		<VNotice v-else-if="nonEditable && !image" icon="hide_image" center class="non-editable-notice">
+			{{ $t('no_image_selected') }}
+		</VNotice>
 
-		<div v-else-if="image" class="image-preview">
+		<component
+			:is="nonEditable ? 'button' : 'div'"
+			v-else-if="image"
+			class="image-preview"
+			:class="{ disabled, 'non-editable': nonEditable }"
+			:type="nonEditable ? 'button' : undefined"
+			@click="nonEditable ? (editImageDetails = true) : undefined"
+		>
 			<div v-if="imageError || !src" class="image-error">
-				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
+				<VIcon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
-					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+					{{ src ? $t(`errors.${imageError}`) : $t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 
-			<v-image
+			<VImage
 				v-else-if="image.type?.startsWith('image') && isImage"
 				:src="src"
 				:class="{ 'is-letterbox': letterbox }"
@@ -194,37 +225,35 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			/>
 
 			<div v-else class="fallback">
-				<v-icon-file :ext="ext" />
+				<VIconFile :ext="ext" />
 			</div>
 
 			<div class="shadow" />
 
-			<div class="actions">
-				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
-					<v-icon name="zoom_in" />
-				</v-button>
+			<div v-if="!internalDisabled" class="actions">
+				<VButton v-tooltip="$t('zoom')" icon rounded @click="lightboxActive = true">
+					<VIcon name="zoom_in" />
+				</VButton>
 
-				<v-button
-					v-tooltip="t('download')"
+				<VButton
+					v-tooltip="$t('download')"
 					icon
 					rounded
 					:href="getAssetUrl(image.id, { isDownload: true })"
 					:download="image.filename_download"
 				>
-					<v-icon name="download" />
-				</v-button>
+					<VIcon name="download" />
+				</VButton>
 
-				<template v-if="!internalDisabled">
-					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
-						<v-icon name="edit" />
-					</v-button>
+				<VButton v-tooltip="$t('edit_item')" icon rounded @click="editImageDetails = true">
+					<VIcon name="edit" />
+				</VButton>
 
-					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
-						<v-icon name="tune" />
-					</v-button>
+				<VButton v-if="updateAllowed" v-tooltip="$t('edit_image')" icon rounded @click="editImageEditor = true">
+					<VIcon name="tune" />
+				</VButton>
 
-					<v-remove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
-				</template>
+				<VRemove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
 			</div>
 
 			<div class="info">
@@ -232,39 +261,40 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<div class="meta">{{ meta }}</div>
 			</div>
 
-			<drawer-item
+			<DrawerItem
 				v-if="image"
 				v-model:active="editImageDetails"
 				:disabled="internalDisabled"
+				:non-editable="nonEditable"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
 				@input="update"
 			>
 				<template #actions>
-					<v-button
+					<PrivateViewHeaderBarActionButton
+						icon="download"
 						secondary
-						rounded
-						icon
 						:download="image.filename_download"
 						:href="getAssetUrl(image.id, { isDownload: true })"
-					>
-						<v-icon name="download" />
-					</v-button>
+					/>
 				</template>
-			</drawer-item>
+			</DrawerItem>
 
-			<image-editor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<ImageEditor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
-			<file-lightbox v-model="lightboxActive" :file="image" />
-		</div>
-		<v-upload
+			<FileLightbox v-model="lightboxActive" :file="image" />
+		</component>
+
+		<VUpload
 			v-else
 			from-url
 			:from-user="createAllowed && enableCreate"
 			:from-library="enableSelect"
 			:folder="folder"
 			:filter="customFilter"
+			:disabled="internalDisabled"
+			accept="image/*"
 			@input="onUpload"
 		/>
 	</div>
@@ -307,10 +337,11 @@ img {
 .image-preview {
 	position: relative;
 	inline-size: 100%;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
+	text-align: start;
 
 	.shadow {
 		position: absolute;
@@ -377,22 +408,29 @@ img {
 		color: rgb(255 255 255 / 0.75);
 		transition: max-block-size var(--fast) var(--transition);
 	}
-}
 
-.image-preview:focus-within,
-.image-preview:hover {
-	.shadow {
-		block-size: 100%;
-		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
+	&:not(.disabled),
+	&.non-editable {
+		&:focus-within,
+		&:hover {
+			.shadow {
+				block-size: 100%;
+				background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
+			}
+
+			.actions ::v-deep(.v-button) {
+				transform: translateY(0);
+				opacity: 1;
+			}
+
+			.meta {
+				max-block-size: 17px;
+			}
+		}
 	}
 
-	.actions ::v-deep(.v-button) {
-		transform: translateY(0);
-		opacity: 1;
-	}
-
-	.meta {
-		max-block-size: 17px;
+	&.disabled:not(.non-editable) img {
+		mix-blend-mode: luminosity;
 	}
 }
 
@@ -414,8 +452,8 @@ img {
 	}
 }
 
-.disabled-placeholder {
-	block-size: var(--input-height-tall);
+.non-editable-notice {
+	block-size: var(--input-height-md);
 }
 
 .fallback {
@@ -423,7 +461,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	border-radius: var(--theme--border-radius);
 }
 </style>

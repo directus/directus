@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { useServerStore } from '@/stores/server';
 import { useAppStore } from '@directus/stores';
 import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
 import RegisterForm from './register-form.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useServerStore } from '@/stores/server';
+import PublicView from '@/views/public/public-view.vue';
 
 withDefaults(
 	defineProps<{
@@ -28,43 +32,45 @@ useHead({
 </script>
 
 <template>
-	<public-view>
+	<PublicView>
 		<div class="header">
-			<h1 class="type-title">{{ wasSuccessful ? t('registration_successful_headline') : t('register') }}</h1>
+			<h1 class="type-title">{{ wasSuccessful ? $t('registration_successful_headline') : $t('register') }}</h1>
 		</div>
 
 		<div v-if="wasSuccessful" class="after-success">
 			<div
 				v-md="
-					requiresEmailVerification ? t('registration_successful_check_email_note') : t('registration_successful_note')
+					requiresEmailVerification
+						? $t('registration_successful_check_email_note')
+						: $t('registration_successful_note')
 				"
 			></div>
-			<v-button large to="/login">{{ t('sign_in') }}</v-button>
+			<VButton large to="/login">{{ $t('sign_in') }}</VButton>
 		</div>
 
-		<register-form v-else @was-successful="wasSuccessful = $event" />
+		<RegisterForm v-else @was-successful="wasSuccessful = $event" />
 
 		<div v-if="wasSuccessful == false" class="login-wrapper">
-			{{ t('already_have_an_account') }}
-			<router-link to="/login" class="login-link">
-				{{ t('sign_in') }}
-			</router-link>
+			{{ $t('already_have_an_account') }}
+			<RouterLink to="/login" class="login-link">
+				{{ $t('sign_in') }}
+			</RouterLink>
 		</div>
 
 		<template #notice>
 			<template v-if="authenticated">
-				<v-icon name="lock_open" left />
-				{{ t('authenticated') }}
+				<VIcon name="lock_open" left />
+				{{ $t('authenticated') }}
 			</template>
 			<template v-else-if="logoutReason && te(`logoutReason.${logoutReason}`)">
-				{{ t(`logoutReason.${logoutReason}`) }}
+				{{ $t(`logoutReason.${logoutReason}`) }}
 			</template>
 			<template v-else>
-				<v-icon name="lock" left />
-				{{ t('not_authenticated') }}
+				<VIcon name="lock" left />
+				{{ $t('not_authenticated') }}
 			</template>
 		</template>
-	</public-view>
+	</PublicView>
 </template>
 
 <style lang="scss" scoped>

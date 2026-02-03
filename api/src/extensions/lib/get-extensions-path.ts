@@ -1,5 +1,5 @@
-import { useEnv } from '@directus/env';
 import { join } from 'path';
+import { useEnv } from '@directus/env';
 
 export const getExtensionsPath = () => {
 	const env = useEnv();

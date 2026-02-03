@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'vitest';
-import { compress, decompress, mapToSortedArray, encode, decode, to36, to10, getValueForToken } from './compress.js';
+import { describe, expect, test } from 'vitest';
+import { compress, decode, decompress, encode, getValueForToken, mapToSortedArray, to10, to36 } from './compress.js';
 
 const plain = {
 	string: 'directus',

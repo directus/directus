@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { getAssetUrl } from '@/utils/get-asset-url';
-import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VIconFile from '@/components/v-icon-file.vue';
+import VImage from '@/components/v-image.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import { readableMimeType } from '@/utils/readable-mime-type';
 
 type File = {
 	[key: string]: any;
@@ -104,14 +108,14 @@ function handleClick() {
 		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
 		@click="handleClick"
 	>
-		<v-icon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
+		<VIcon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
 		<div class="header">
 			<div class="selection-fade"></div>
-			<v-skeleton-loader v-if="loading" />
+			<VSkeletonLoader v-if="loading" />
 			<template v-else>
-				<v-icon-file v-if="type || imgError" :ext="type ?? ''" />
+				<VIconFile v-if="type || imgError" :ext="type ?? ''" />
 				<template v-else>
-					<v-image
+					<VImage
 						v-if="showThumbnail"
 						:class="imageInfo?.fileType"
 						:src="imageInfo?.source"
@@ -119,11 +123,11 @@ function handleClick() {
 						role="presentation"
 						@error="imgError = true"
 					/>
-					<v-icon v-else large :name="icon" />
+					<VIcon v-else large :name="icon" />
 				</template>
 			</template>
 		</div>
-		<v-skeleton-loader v-if="loading" type="text" />
+		<VSkeletonLoader v-if="loading" type="text" />
 		<template v-else>
 			<div v-if="$slots.title" class="title"><slot name="title" /></div>
 			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>

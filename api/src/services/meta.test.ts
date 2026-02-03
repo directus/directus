@@ -3,7 +3,7 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { Permission, Query } from '@directus/types';
 import { knex } from 'knex';
 import { MockClient } from 'knex-mock-client';
-import { beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import applyQuery from '../database/run-ast/lib/apply-query/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';

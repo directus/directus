@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { formatDate, type FormatDateOptions } from '@/utils/format-date';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { formatDate, type FormatDateOptions } from '@/utils/format-date';
 
 export interface Props extends FormatDateOptions {
 	value: string;

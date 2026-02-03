@@ -3,7 +3,7 @@
 exports[`Mount component 1`] = `
 "<button data-v-61c33115="" class="v-checkbox" type="button" role="checkbox" aria-pressed="false">
   <!--v-if-->
-  <v-icon-stub data-v-61c33115="" class="checkbox" name="indeterminate_check_box" disabled="false" clickable="false"></v-icon-stub><span data-v-61c33115="" class="label type-text"><div>Hi</div></span>
+  <v-icon-stub data-v-61c33115="" name="indeterminate_check_box" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="false" large="false" xlarge="false" class="checkbox"></v-icon-stub><span data-v-61c33115="" class="label type-text"><div>Hi</div></span>
   <!--v-if-->
 </button>"
 `;

@@ -1,3 +1,4 @@
+import type { AggregationTypes, GroupByFields } from './aggregate.js';
 import type { QueryDeep } from './deep.js';
 import type { HasNestedFields, QueryFields } from './fields.js';
 import type { QueryFilter } from './filters.js';
@@ -26,6 +27,23 @@ export interface Query<Schema, Item> {
 export interface QueryItem<Schema, Item> extends Query<Schema, Item> {
 	readonly version?: string | undefined;
 	readonly versionRaw?: boolean | undefined;
+}
+
+/**
+ * All query options with additional aggregate, version, and custom property options
+ */
+export type ExtendedQuery<Schema, Item> = Query<Schema, Item> & {
+	aggregate?: Partial<Record<keyof AggregationTypes, string>>;
+	groupBy?: (string | GroupByFields<Schema, Item>)[];
+	version?: string | undefined;
+	versionRaw?: boolean | undefined;
+} & Record<string, unknown>;
+
+/**
+ * All query options with an additional concurrentIndexCreation query option for updating fields with indexes
+ */
+export interface FieldQuery<Schema, Item> extends Query<Schema, Item> {
+	readonly concurrentIndexCreation?: boolean;
 }
 
 /**

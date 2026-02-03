@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O aplikacji
+first_name: Imię
+last_name: Nazwisko
 identifier: Identyfikator
 avatar: Awatar
 application: Aplikacja
@@ -132,7 +134,6 @@ create_policy: Utwórz Politykę
 create_user: Utwórz użytkownika
 message: Wiadomość
 delete_panel: Usuń panel
-create_webhook: Stwórz webhook
 create_custom_translation: Utwórz własne tłumaczenie
 edit_custom_translation: Edytuj własne tłumaczenie
 no_custom_translations: Brak niestandardowych tłumaczeń
@@ -164,19 +165,9 @@ rename_version: Zmień nazwę wersji
 compare_version: Porównaj wersję
 save_version: Zapisz wersję
 promote_version: Promuj wersję
-promote_version_disabled: Brak zmian
-promote_version_drawer_title: Promuj {version} do Głównej
-promote_version_changes: Zmiany
-promote_version_preview: Podgląd
-outdated_notice: >-
-  Główny element został zaktualizowany od czasu utworzenia tej wersji. Przejrzyj wszystkie wartości pól poniżej i potwierdź, która wersja powinna być użyta podczas promowania tej wersji w głównym elemencie.
-promote_notice: >-
-  Przejrzyj wszystkie wartości pól poniżej i potwierdź, która wersja powinna być użyta podczas promowania tej wersji w głównym elemencie.
 delete_version: Usuń wersję
 delete_version_copy: >-
   Czy na pewno chcesz usunąć wersję "{version}"? Tej akcji nie można cofnąć.
-delete_on_promote_copy: >-
-  Czy chcesz usunąć lub zachować wersję "{version}" po promowaniu?
 reset_bookmark: Zresetuj zakładkę
 update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
@@ -447,11 +438,11 @@ confirm_revert_body: Spowoduje to przywrócenie elementu do wybranego stanu.
 display: Pokaż
 settings_update_success: Ustawienia zaktualizowane
 title: Tytuł
+subtitle: Subtytuł
 revision_delta_created: Utworzony
 revision_delta_created_externally: Utworzono zewnętrznie
 revision_delta_updated: 'Zaktualizowano 1 pole | Zaktualizowano {count} pól'
 revision_delta_deleted: Usunięty
-revision_delta_version_saved: 'Zapisywanie wersji (zaktualizowane 1 pola) | Zapisywanie wersji (zaktualizowane pola {count})'
 revision_delta_reverted: Odwrócony
 revision_delta_update_message: To pole zostało zaktualizowane, ale jego wartość jest ukrywana ze względów bezpieczeństwa.
 revision_delta_other: Rewizja
@@ -636,12 +627,6 @@ file_count: 'Brak plików | Jeden plik | {count} plików'
 no_files_copy: Brak plików.
 user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
-webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
-webhooks_deprecation_notice: |
-  Webhooki są przestarzałe i ich dalsze używanie jest odradzane.
-
-  Zamiast tego użyj **Flows** z operacją [Webhook / Request URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
 no_notifications: Brak powiadomień
 no_notifications_copy: Jesteś na bieżąco z wiadomościami!
 activity_log: Dziennik aktywności
@@ -672,7 +657,6 @@ action: Czynność
 ip_address: Adres IP
 user_agent: User agent
 origin: Pochodzenie
-webhooks: Webhooki
 decimals: Dziesiętne
 value_decimals: Wartość dziesiętna
 min_value: Minimalna wartość
@@ -756,7 +740,6 @@ errors:
   VALUE_OUT_OF_RANGE: Wartość jest poza zakresem
   VALUE_TOO_LONG: Wartość jest zbyt długa
 security: Bezpieczeństwo
-value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
 edit_bookmark: Edytuj zakładkę
@@ -930,10 +913,8 @@ label: Etykieta
 flows: Przepływy
 flow: Przepływ
 select_a_flow: Wybierz przepływ
-run_flow_confirm: Czy na pewno chcesz wykonać ten przepływ?
 run_flow_on_current_collection: Uruchom Przepływ na Aktualnej Kolekcji
 run_flow_on_current: Uruchom Przepływ na Bieżącym Przedmiocie
-run_flow_on_current_edited_confirm: Ten przedmiot może być aktualizowany przez ten przepływ, czy na pewno chcesz go wykonać?
 run_flow_on_selected: Najpierw wybierz jeden lub więcej elementów | Uruchom przepływ na 1 wybranym elemencie | Uruchom przepływ na {n} wybranych elementach
 run_flow: Uruchom Przepływ
 field_name_placeholder: Wprowadź nazwę pola...
@@ -1111,7 +1092,6 @@ settings_roles: Role użytkownika
 settings_permissions: Polityki dostępu
 settings_project: Ustawienia
 settings_appearance: Wygląd
-settings_webhooks: Webhooki
 settings_flows: Przepływy
 settings_system_logs: Dzienniki systemowe
 settings_presets: Zakładki
@@ -1139,45 +1119,6 @@ discard_changes_copy: Czy na pewno chcesz odrzucić wszystkie wprowadzone zmiany
 show_x_axis: Pokaż oś X
 show_y_axis: Pokaż oś Y
 keep_editing: Kontynuuj edycję
-page_help_collections_overview: '**Przegląd kolekcji** — Lista wszystkich kolekcji, do których masz dostęp.'
-page_help_collections_collection: >-
-  **Przeglądaj przedmioty** — Lista wszystkich {collection} elementów, do których masz dostęp. Dostosuj układ, filtry i sortowanie w celu dostosowania widoku, a nawet zapisz zakładki z tych różnych konfiguracji, aby uzyskać szybki dostęp.
-page_help_collections_item: >-
-  **Szczegóły pozycji** — Formularz do przeglądania i zarządzania tą pozycją. Ten pasek boczny zawiera również pełną historię zmian i osadzonych komentarzy.
-page_help_activity_collection: >-
-  **Przeglądaj Aktywność** — Kompleksowa lista wszystkich działań Twojego użytkownika systemowego i jego treści.
-page_help_docs_global: >-
-  **Przegląd dokumentacji** — Dokumenty dostosowane do wersji i schematu tego projektu.
-page_help_files_collection: >-
-  **Biblioteka plików** — Lista wszystkich zasobów plików przesłanych do tego projektu. Dostosuj układ, filtry i sortowanie w celu dostosowania widoku, a nawet zapisz zakładki z tych różnych konfiguracji, aby uzyskać szybki dostęp.
-page_help_files_item: >-
-  **Szczegóły pliku** — Formularz do zarządzania metadanymi plików, edycji oryginalnego zasobu i aktualizacji ustawień dostępu.
-page_help_settings_project: "**Ustawienia** — Ogólne opcje konfiguracji Twojego projektu."
-page_help_settings_appearance: "**Wygląd** — wygląd Twojego projektu i opcje motywów."
-page_help_settings_extensions: '**Rozszerzenia** — Rozszerzenia zainstalowane w Twoim projekcie.'
-page_help_settings_datamodel_collections: >-
-  **Model danych: Kolekcje** — Lista wszystkich dostępnych kolekcji. Obejmuje to widoczne, ukryte i systemowe kolekcje, jak również niezarządzane tabele bazy danych, które mogą być dodane.
-page_help_settings_datamodel_fields: >-
-  **Model danych: Zbieranie** — Formularz do zarządzania tą kolekcją i jej polami.
-page_help_settings_roles_item: "**Szczegóły roli** - Zarządzaj uprawnieniami ról i innymi ustawieniami."
-page_help_settings_presets_collection: >-
-  **Przeglądaj ustawienia** — wyświetla wszystkie ustawienia predefiniowane w projekcie, w tym: użytkownik, role, globalne zakładki, a także widoki domyślne.
-page_help_settings_presets_item: >-
-  **Ustawienia szczegółów** — Formularz do zarządzania zakładkami i domyślnymi ustawieniami kolekcji.
-page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera listę wszystkich webhooków w ramach projektu.'
-page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
-page_help_settings_flows_collection: '**Przeglądaj Przepływy ** — Listy wszystkich Przepływów w ramach projektu.'
-page_help_settings_flows_item: '**Szczegóły przepływu** — Obszar roboczy do zarządzania jedną lub większą liczbą operacji.'
-page_help_settings_translations_collection: '**Przeglądaj niestandardowe tłumaczenia** — wyświetla wszystkie niestandardowe tłumaczenia w ramach projektu.'
-page_help_settings_translations_item: '**Niestandardowe Tłumaczenia** — Formularz do przeglądania i zarządzania tym elementem.'
-page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
-page_help_users_item: >-
-  **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
-page_help_insights_overview: '**Insights** - Lista pulpitów, do których masz dostęp.'
-page_help_insights_dashboard: '**Pulpit** - Obszar roboczy do zarządzania jednym lub kilkoma panelami'
-page_help_marketplace_account: '**Konto** — Wydawca lub zarządzający opublikowanym rozszerzeniem.'
-page_help_marketplace_registry: '**Rejestr** — Rozszerzenia dostępne w Directus Marketplace.'
-page_help_marketplace_extension: '**Rozszerzenie** — Rozszerzenie w Directus Marketplace.'
 activity_feed: Kanał aktywności
 add_new: Dodaj nowy
 create_new: Utwórz nowy
@@ -1211,7 +1152,6 @@ directus_collection:
   directus_dashboards: Panel główny w module Insights
   directus_fields: Dodatkowa konfiguracja pola i metadane
   directus_files: Metadane dla wszystkich zarządzanych zasobów plików
-  directus_flows: Automatyzacja przepływów
   directus_folders: Dostarcza wirtualne katalogi dla plików
   directus_migrations: Jaką wersję bazy danych używasz
   directus_notifications: Powiadomienia wysłane do użytkowników
@@ -1225,7 +1165,6 @@ directus_collection:
   directus_settings: Opcje konfiguracji projektu
   directus_shares: Śledzenie elementów współdzielonych na zewnątrz
   directus_users: Użytkownicy systemu dla platformy
-  directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
   directus_translations: Własne tłumaczenia
   directus_versions: Wersje zawartości dla elementów
   directus_extensions: Konfiguracja rozszerzeń
@@ -1395,18 +1334,6 @@ fields:
   directus_policies:
     name: Nazwa polityki
     description: Opis
-  directus_webhooks:
-    name: Nazwa
-    method: Metoda
-    status: Status
-    data: Dane
-    header: Nagłówek
-    value: Wartość
-    headers: Nagłówki żądania
-    data_label: Wyślij dane wydarzenia
-    triggers: Wyzwalacze
-    actions: Akcje
-    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
@@ -1505,19 +1432,6 @@ field_options:
     status_dropdown_suspended: Zawieszony
     status_dropdown_archived: Zarchiwizowane
     token: Wprowadź bezpieczny token dostępu...
-  directus_webhooks:
-    status_options_active: Aktywne
-    status_options_inactive: Nieaktywny
-    data_label: Wyślij dane wydarzenia
-    triggers_divider: Wyzwalacze
-    actions_create: Stwórz
-    actions_update: Zaktualizuj
-    actions_delete: Usuń
-    actions_login: Logowanie
-    headers:
-      header: Nagłówek
-      value: Wartość
-      add: Dodaj nagłówek
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
 no_value: Brak wartości
 do_nothing: Nic nie rób
@@ -1544,6 +1458,22 @@ unlimited_usage: Nieograniczone użycie
 uses_left: Brak pozostałych zastosowań | Pozostało jedno użycie | {n} pozostało do użycia
 no_shares: Brak udostępnień do wyświetlenia
 new_share: Nowe udostępnianie
+ai:
+  input: Wprowadź
+  unknown: Nieznane
+  settings: Ustawienia
+  tool_approval:
+    disabled: Wyłączony
+ai_tools:
+  items: Elementy
+  files: Pliki
+  folders: Foldery
+  flows: Przepływy
+  trigger-flow: Przepływ Wyzwalaczy
+  operations: Operacje
+  schema: Schemat
+  collections: Kolekcje
+  fields: Pola
 mcp_prompts_collection_schema:
   messages_role_user: Użytkownik
 expired: Wygasły
@@ -1580,7 +1510,6 @@ editing_role: 'Rola {role}'
 editing_policy: 'Polityka {policy}'
 no_permissions: Brak uprawnień
 permission_add_collection: Dodaj kolekcję
-creating_webhook: Tworzenie Webhooka
 default_label: Domyślny
 delete_label: Usuń
 delete_are_you_sure: >-
@@ -1712,9 +1641,7 @@ interfaces:
     accordion_mode: Tryb Accordion
     max_one_section_open: Otwórz maksymalnie 1 sekcję
   presentation-links:
-    presentation-links: Linki przycisków
-    links: Linki
-    description: Konfigurowalne przyciski linków do uruchamiania dynamicznych adresów URL
+    presentation-links: Przyciski
     style: Style
     primary: Podstawowy
     link: Linki
@@ -2035,6 +1962,9 @@ interfaces:
   input-password:
     input-password: Wprowadź hasło
     description: Wprowadzanie hasła z przełącznikiem, aby ukryć wartość
+  header:
+    header: Nagłówek
+    links: Linki
 displays:
   translations:
     translations: Tłumaczenia
@@ -2338,11 +2268,9 @@ triggers:
 a_flow_uuid: Wybierz przepływ do wyzwalacza...
 any_string_or_json: Dowolny ciąg znaków lub JSON...
 item_payload_placeholder: To jest JSON używany do aktualizacji wartości pola elementu...
-operation_variables_note: Możesz uzyskać dostęp do danych przepływu zmiennymi takimi jak **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, lub odniesienie do poprzednich operacji używając **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Warunek
-    description: Trasa przepływu na podstawie logiki If / Else
   exec:
     name: Uruchom skrypt
     description: Wykonaj arbitralny kod, aby zmodyfikować ładunek
@@ -2426,7 +2354,6 @@ operations:
     description: Zmień obciążenie JSON przepływów
   trigger:
     name: Przepływ Wyzwalaczy
-    description: Przenieś te dane do innego przepływu
     flows: Przepływy
     flow: Przepływ
     data: Dane

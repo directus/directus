@@ -1,5 +1,5 @@
-import { findIndex } from 'lodash-es';
 import fs from 'node:fs/promises';
+import { findIndex } from 'lodash-es';
 import { BaseSequencer, type WorkspaceSpec } from 'vitest/node';
 import { sequentialTestsList } from './sequential-tests';
 

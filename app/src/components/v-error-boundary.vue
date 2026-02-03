@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getVueComponentName } from '@/utils/get-vue-component-name';
 import { kebabCase } from 'lodash';
 import { computed, onErrorCaptured, ref } from 'vue';
+import { getVueComponentName } from '@/utils/get-vue-component-name';
 
 interface Props {
 	/** Unique name to identify component wrapped by this error boundary */

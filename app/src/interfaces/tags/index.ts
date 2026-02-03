@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/extensions';
-import InterfaceTags from './tags.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceTags from './tags.vue';
 
 export default defineInterface({
 	id: 'tags',

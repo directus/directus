@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import api, { RequestError } from '@/api';
-import { translateAPIError } from '@/lang';
-import { jwtPayload } from '@/utils/jwt-payload';
 import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import api, { RequestError } from '@/api';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import { translateAPIError } from '@/lang';
+import { jwtPayload } from '@/utils/jwt-payload';
 
 const props = defineProps<{
 	token: string;
@@ -55,21 +58,21 @@ useHead({
 
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input :model-value="email" disabled />
-		<v-input
+		<VInput :model-value="email" disabled />
+		<VInput
 			v-model="password"
-			:placeholder="t('password')"
+			:placeholder="$t('password')"
 			autofocus
 			autocomplete="username"
 			type="password"
 			:disabled="done"
 		/>
-		<v-notice v-if="done" type="success">{{ t('password_reset_successful') }}</v-notice>
-		<v-notice v-if="error" type="danger">
+		<VNotice v-if="done" type="success">{{ $t('password_reset_successful') }}</VNotice>
+		<VNotice v-if="error" type="danger">
 			{{ errorFormatted }}
-		</v-notice>
-		<v-button v-if="!done" type="submit" :loading="resetting" large>{{ t('reset') }}</v-button>
-		<v-button v-else large :to="signInLink">{{ t('sign_in') }}</v-button>
+		</VNotice>
+		<VButton v-if="!done" type="submit" :loading="resetting" large>{{ $t('reset') }}</VButton>
+		<VButton v-else large :to="signInLink">{{ $t('sign_in') }}</VButton>
 	</form>
 </template>
 

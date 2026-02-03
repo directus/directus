@@ -1,5 +1,5 @@
 import { processId } from '@directus/utils/node';
-import { createBus, type Bus } from '../../bus/index.js';
+import { type Bus, createBus } from '../../bus/index.js';
 import type { Cache } from '../types/class.js';
 import type { CacheConfigMulti } from '../types/config.js';
 import { CacheLocal } from './local.js';

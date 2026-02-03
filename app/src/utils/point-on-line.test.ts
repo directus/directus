@@ -1,6 +1,5 @@
-import { test, expect } from 'vitest';
-
-import { pointOnLine, Point } from '@/utils/point-on-line';
+import { expect, test } from 'vitest';
+import { Point, pointOnLine } from '@/utils/point-on-line';
 
 const cases: [boolean, Point, Point, Point][] = [
 	[false, [0, 0], [1, 10], [10, 1]],

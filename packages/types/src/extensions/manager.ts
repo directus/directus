@@ -1,5 +1,5 @@
-import type { Router } from 'express';
 import type { ReadStream } from 'node:fs';
+import type { Router } from 'express';
 import type { Extension } from './app-extension-config.js';
 
 export interface ExtensionManagerOptions {
@@ -24,6 +24,10 @@ export type ExtensionManager = {
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
 	reload: (options?: { forceSync: boolean }) => Promise<unknown>;
+	/**
+	 * Returns a promise we can await while extensions are being reloaded
+	 */
+	isReloading: () => Promise<void>;
 	/**
 	 * Return the previously generated app extension bundle chunk by name
 	 */

@@ -3,6 +3,12 @@ import { Field, ValidationError } from '@directus/types';
 import { merge } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VChip from '@/components/v-chip.vue';
+import type { ComparisonContext } from '@/components/v-form/types';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VItem from '@/components/v-item.vue';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 
 const props = withDefaults(
@@ -12,8 +18,10 @@ const props = withDefaults(
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparison?: ComparisonContext;
 		primaryKey: number | string;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
@@ -34,6 +42,8 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+
+const { isFieldWithDifference, isRevisionUpdateOnly } = useComparisonIndicator();
 
 const fieldsInSection = computed(() => {
 	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
@@ -75,54 +85,88 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 		toggle();
 	}
 }
+
+function useComparisonIndicator() {
+	const isFieldWithDifference = computed(() => props.comparison?.fields.has(props.field.field));
+
+	const isRevisionUpdateOnly = computed(() => {
+		return !isFieldWithDifference.value && props.comparison?.revisionFields?.has(props.field.field);
+	});
+
+	return { isFieldWithDifference, isRevisionUpdateOnly };
+}
 </script>
 
 <template>
-	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
+	<VItem v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
-			<button
-				type="button"
-				class="label type-title"
-				:class="{ active, edited }"
-				@click="handleModifier($event, toggle)"
+			<div
+				:class="{
+					'indicator-active': !active && isFieldWithDifference,
+					'indicator-muted': (active && isFieldWithDifference) || isRevisionUpdateOnly,
+				}"
 			>
-				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-				<v-icon class="icon" :class="{ active }" name="expand_more" />
-				<span class="field-name">{{ field.name }}</span>
-				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
-				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
-			</button>
+				<button
+					type="button"
+					class="label type-title"
+					:class="{ active, edited }"
+					@click="handleModifier($event, toggle)"
+				>
+					<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot"></span>
+					<VIcon class="icon" :class="{ active }" name="expand_more" />
+					<span class="field-name">{{ field.name }}</span>
+					<VIcon v-if="field.meta?.required === true" class="required" sup name="star" filled />
+					<VChip v-if="badge" x-small>{{ badge }}</VChip>
+					<VIcon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
+				</button>
 
-			<transition-expand>
-				<div v-if="active" class="fields">
-					<v-form
-						:initial-values="initialValues"
-						:fields="fieldsInSection"
-						:model-value="values"
-						:primary-key="primaryKey"
-						:group="group"
-						:validation-errors="validationErrors"
-						:loading="loading"
-						:batch-mode="batchMode"
-						:disabled="disabled"
-						:direction="direction"
-						:show-no-visible-fields="false"
-						:show-validation-errors="false"
-						@update:model-value="$emit('apply', $event)"
-					/>
-				</div>
-			</transition-expand>
+				<TransitionExpand>
+					<div v-if="active">
+						<VForm
+							class="fields"
+							:initial-values="initialValues"
+							:fields="fieldsInSection"
+							:model-value="values"
+							:primary-key="primaryKey"
+							:group="group"
+							:validation-errors="validationErrors"
+							:loading="loading"
+							:batch-mode="batchMode"
+							:disabled="disabled"
+							:non-editable="nonEditable"
+							:comparison="comparison"
+							:direction="direction"
+							:show-no-visible-fields="false"
+							:show-validation-errors="false"
+							@update:model-value="$emit('apply', $event)"
+						/>
+					</div>
+				</TransitionExpand>
+			</div>
 		</template>
-	</v-item>
+	</VItem>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .accordion-section {
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+}
 
-	&:last-child {
-		border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+.indicator-active {
+	@include mixins.field-indicator;
+
+	&::before {
+		transition: background-color var(--slow) var(--transition);
+	}
+}
+
+.indicator-muted {
+	@include mixins.field-indicator('muted');
+
+	&::before {
+		transition: background-color var(--slow) var(--transition) var(--fast);
 	}
 }
 
@@ -131,8 +175,7 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	margin: 8px 0;
-
+	padding: 8px 0;
 	cursor: pointer;
 
 	&:hover,
@@ -180,7 +223,7 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 	transition: transform var(--fast) var(--transition);
 
 	&.active {
-		transform: rotate(0);
+		transform: rotate(0deg);
 	}
 }
 
@@ -190,6 +233,6 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 }
 
 .fields {
-	margin: var(--theme--form--row-gap) 0;
+	padding: var(--theme--form--row-gap) 0;
 }
 </style>

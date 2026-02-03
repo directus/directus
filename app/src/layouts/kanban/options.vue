@@ -6,7 +6,9 @@ export default {
 
 <script setup lang="ts">
 import { useSync } from '@directus/extensions-sdk';
-import { useI18n } from 'vue-i18n';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDetail from '@/components/v-detail.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -23,7 +25,7 @@ const props = withDefaults(
 		dateField?: string | null;
 		tagsField?: string | null;
 		userField?: string | null;
-		showUngrouped: boolean;
+		showUngrouped?: boolean;
 		ungroupedDisabled: boolean;
 	}>(),
 	{
@@ -54,8 +56,6 @@ const emit = defineEmits([
 	'update:showUngrouped',
 ]);
 
-const { t } = useI18n();
-
 const imageSourceSync = useSync(props, 'imageSource', emit);
 const titleFieldSync = useSync(props, 'titleField', emit);
 const cropSync = useSync(props, 'crop', emit);
@@ -70,114 +70,114 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 <template>
 	<div class="field">
-		<div class="type-label">{{ t('layouts.kanban.group_field') }}</div>
-		<v-select
+		<div class="type-label">{{ $t('layouts.kanban.group_field') }}</div>
+		<VSelect
 			v-model="groupFieldSync"
 			item-value="field"
 			item-text="name"
 			:items="fieldGroups.group"
-			:placeholder="t('layouts.kanban.group_field_placeholder')"
+			:placeholder="$t('layouts.kanban.group_field_placeholder')"
 		/>
 	</div>
 
 	<div v-if="groupFieldSync && isRelational" class="field">
-		<div class="type-label">{{ t('layouts.kanban.group_title') }}</div>
-		<v-select
+		<div class="type-label">{{ $t('layouts.kanban.group_title') }}</div>
+		<VSelect
 			v-model="groupTitleSync"
 			item-value="field"
 			item-text="name"
 			:items="groupTitleFields"
-			:placeholder="t('layouts.kanban.group_title_placeholder')"
+			:placeholder="$t('layouts.kanban.group_title_placeholder')"
 		/>
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ t('layouts.kanban.title') }}</div>
-		<v-select
+		<div class="type-label">{{ $t('layouts.kanban.title') }}</div>
+		<VSelect
 			v-model="titleFieldSync"
 			:items="fieldGroups.title"
 			item-value="field"
 			item-text="name"
-			:placeholder="t('layouts.kanban.title_placeholder')"
+			:placeholder="$t('layouts.kanban.title_placeholder')"
 			show-deselect
 		/>
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ t('layouts.kanban.text') }}</div>
-		<v-select
+		<div class="type-label">{{ $t('layouts.kanban.text') }}</div>
+		<VSelect
 			v-model="textFieldSync"
 			:items="fieldGroups.text"
 			item-value="field"
 			item-text="name"
-			:placeholder="t('layouts.kanban.text_placeholder')"
+			:placeholder="$t('layouts.kanban.text_placeholder')"
 			show-deselect
 		/>
 	</div>
 
-	<v-detail class="field">
-		<template #title>{{ t('layouts.kanban.advanced') }}</template>
+	<VDetail class="field">
+		<template #title>{{ $t('layouts.kanban.advanced') }}</template>
 
 		<div class="nested-options">
 			<div class="field">
-				<div class="type-label">{{ t('layouts.kanban.tags') }}</div>
-				<v-select
+				<div class="type-label">{{ $t('layouts.kanban.tags') }}</div>
+				<VSelect
 					v-model="tagsFieldSync"
 					:items="fieldGroups.tags"
 					item-value="field"
 					item-text="name"
-					:placeholder="t('layouts.kanban.tags_placeholder')"
+					:placeholder="$t('layouts.kanban.tags_placeholder')"
 					show-deselect
 				/>
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('layouts.kanban.date') }}</div>
-				<v-select
+				<div class="type-label">{{ $t('layouts.kanban.date') }}</div>
+				<VSelect
 					v-model="dateFieldSync"
 					:items="fieldGroups.date"
 					item-value="field"
 					item-text="name"
-					:placeholder="t('layouts.kanban.date_placeholder')"
+					:placeholder="$t('layouts.kanban.date_placeholder')"
 					show-deselect
 				/>
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('layouts.kanban.image') }}</div>
-				<v-select
+				<div class="type-label">{{ $t('layouts.kanban.image') }}</div>
+				<VSelect
 					v-model="imageSourceSync"
 					show-deselect
 					item-value="field"
 					item-text="name"
 					:items="fieldGroups.file"
-					:placeholder="t('layouts.kanban.image_placeholder')"
+					:placeholder="$t('layouts.kanban.image_placeholder')"
 				/>
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('layouts.kanban.image_fit') }}</div>
-				<v-checkbox v-model="cropSync" block :label="t('layouts.kanban.crop')" />
+				<div class="type-label">{{ $t('layouts.kanban.image_fit') }}</div>
+				<VCheckbox v-model="cropSync" block :label="$t('layouts.kanban.crop')" />
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('layouts.kanban.user') }}</div>
-				<v-select
+				<div class="type-label">{{ $t('layouts.kanban.user') }}</div>
+				<VSelect
 					v-model="userFieldSync"
 					:items="fieldGroups.user"
 					item-value="field"
 					item-text="name"
-					:placeholder="t('layouts.kanban.user_placeholder')"
+					:placeholder="$t('layouts.kanban.user_placeholder')"
 					show-deselect
 				/>
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('layouts.kanban.show_ungrouped') }}</div>
-				<v-checkbox v-model="showUngroupedSync" block :disabled="ungroupedDisabled" :label="t('layouts.kanban.show')" />
+				<div class="type-label">{{ $t('layouts.kanban.show_ungrouped') }}</div>
+				<VCheckbox v-model="showUngroupedSync" block :disabled="ungroupedDisabled" :label="$t('layouts.kanban.show')" />
 			</div>
 		</div>
-	</v-detail>
+	</VDetail>
 </template>
 
 <style lang="scss" scoped>

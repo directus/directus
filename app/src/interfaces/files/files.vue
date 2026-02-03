@@ -1,19 +1,37 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import Draggable from 'vuedraggable';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VUpload from '@/components/v-upload.vue';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -22,6 +40,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 		template?: string | null;
 		enableCreate?: boolean;
@@ -32,6 +51,7 @@ const props = withDefaults(
 		limit?: number;
 	}>(),
 	{
+		nonEditable: false,
 		template: null,
 		enableCreate: true,
 		enableSelect: true,
@@ -43,7 +63,6 @@ const emit = defineEmits<{
 	input: [value: (number | string | Record<string, any>)[] | Record<string, any> | null];
 }>();
 
-const { t } = useI18n();
 const { collection, field, primaryKey, limit, version } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 
@@ -302,10 +321,10 @@ const allowDrag = computed(
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo" type="warning">{{ t('relationship_not_setup') }}</v-notice>
+	<VNotice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
 	<div v-else class="many-to-many">
 		<template v-if="loading">
-			<v-skeleton-loader
+			<VSkeletonLoader
 				v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
 				:key="n"
 				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
@@ -313,9 +332,9 @@ const allowDrag = computed(
 		</template>
 
 		<template v-else>
-			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
+			<VNotice v-if="displayItems.length === 0">{{ $t('no_items') }}</VNotice>
 
-			<draggable
+			<Draggable
 				v-else
 				:model-value="displayItems"
 				tag="v-list"
@@ -326,17 +345,17 @@ const allowDrag = computed(
 				@update:model-value="sortItems($event)"
 			>
 				<template #item="{ element }">
-					<v-list-item
+					<VListItem
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
-						:disabled="disabled"
+						:disabled="disabled && !nonEditable"
 						block
 						clickable
 						@click="editItem(element)"
 					>
-						<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+						<VIcon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
-						<render-template
+						<RenderTemplate
 							:collection="relationInfo.junctionCollection.collection"
 							:item="element"
 							:template="templateWithDefaults"
@@ -344,9 +363,10 @@ const allowDrag = computed(
 
 						<div class="spacer" />
 
-						<div class="item-actions">
-							<v-remove
-								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
+						<div v-if="!nonEditable" class="item-actions">
+							<VRemove
+								v-if="deleteAllowed || isLocalItem(element)"
+								:disabled
 								:item-type="element.$type"
 								:item-info="relationInfo"
 								:item-is-local="isLocalItem(element)"
@@ -354,45 +374,52 @@ const allowDrag = computed(
 								@action="deleteItem(element)"
 							/>
 
-							<v-menu show-arrow placement="bottom-end">
-								<template #activator="{ toggle }">
-									<v-icon name="more_vert" clickable @click.stop="toggle" />
+							<VMenu show-arrow placement="bottom-end" :disabled>
+								<template #activator="{ toggle, active }">
+									<VIcon name="more_vert" clickable class="menu" :class="{ active }" :disabled @click.stop="toggle" />
 								</template>
 
-								<v-list>
-									<v-list-item clickable :href="getAssetUrl(getFilename(element))">
-										<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
-										<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
-									</v-list-item>
-									<v-list-item
+								<VList>
+									<VListItem clickable :href="getAssetUrl(getFilename(element))">
+										<VListItemIcon><VIcon name="launch" /></VListItemIcon>
+										<VListItemContent>{{ $t('open_file_in_tab') }}</VListItemContent>
+									</VListItem>
+									<VListItem
 										clickable
 										:download="getDownloadName(element)"
 										:href="getAssetUrl(getFilename(element), { isDownload: true })"
 									>
-										<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
-										<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
-									</v-list-item>
-								</v-list>
-							</v-menu>
+										<VListItemIcon><VIcon name="download" /></VListItemIcon>
+										<VListItemContent>{{ $t('download_file') }}</VListItemContent>
+									</VListItem>
+								</VList>
+							</VMenu>
 						</div>
-					</v-list-item>
+					</VListItem>
 				</template>
-			</draggable>
+			</Draggable>
 		</template>
 
-		<div class="actions">
-			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
-				{{ t('upload_file') }}
-			</v-button>
-			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
-				{{ t('add_existing') }}
-			</v-button>
-			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
+		<div v-if="!nonEditable || pageCount > 1" class="actions">
+			<template v-if="!nonEditable">
+				<VButton v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
+					{{ $t('upload_file') }}
+				</VButton>
+
+				<VButton v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
+					{{ $t('add_existing') }}
+				</VButton>
+			</template>
+
+			<div class="spacer" />
+
+			<VPagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 		</div>
 
-		<drawer-item
+		<DrawerItem
 			v-model:active="editModalActive"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -402,20 +429,17 @@ const allowDrag = computed(
 			@input="stageEdits"
 		>
 			<template #actions>
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="currentlyEditing !== '+' && relationInfo.relatedCollection.collection === 'directus_files'"
+					icon="download"
 					secondary
-					rounded
-					icon
 					:download="downloadName"
 					:href="downloadUrl"
-				>
-					<v-icon name="download" />
-				</v-button>
+				/>
 			</template>
-		</drawer-item>
+		</DrawerItem>
 
-		<drawer-files
+		<DrawerFiles
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
@@ -425,17 +449,17 @@ const allowDrag = computed(
 			@input="onSelect"
 		/>
 
-		<v-dialog v-if="!disabled" v-model="showUpload">
-			<v-card>
-				<v-card-title>{{ t('upload_file') }}</v-card-title>
-				<v-card-text>
-					<v-upload multiple from-url :folder="folder" @input="onUpload" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button @click="showUpload = false">{{ t('done') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<VDialog v-if="!disabled" v-model="showUpload">
+			<VCard>
+				<VCardTitle>{{ $t('upload_file') }}</VCardTitle>
+				<VCardText>
+					<VUpload multiple from-url :folder="folder" @input="onUpload" />
+				</VCardText>
+				<VCardActions>
+					<VButton @click="showUpload = false">{{ $t('done') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 
@@ -446,11 +470,23 @@ const allowDrag = computed(
 	@include mixins.list-interface($deleteable: true);
 }
 
+.v-list-item.disabled:not(.non-editable) {
+	--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+}
+
 .item-actions {
 	@include mixins.list-interface-item-actions;
 }
 
 .actions {
 	@include mixins.list-interface-actions($pagination: true);
+}
+
+.menu {
+	--v-icon-color-hover: var(--theme--form--field--input--foreground);
+
+	&.active {
+		--v-icon-color: var(--theme--form--field--input--foreground);
+	}
 }
 </style>
