@@ -7,7 +7,6 @@ export * from './fields.js';
 export * from './filters.js';
 export * from './functions.js';
 export * from './globals.js';
-export * from './meta.js';
 export * from './output.js';
 export * from './query.js';
 export * from './request.js';
