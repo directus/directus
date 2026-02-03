@@ -169,6 +169,7 @@
 		"p-limit": "catalog:",
 		"p-queue": "catalog:",
 		"papaparse": "catalog:",
+		"pdf-parse": "catalog:",
 		"pino": "catalog:",
 		"pino-http": "catalog:",
 		"pino-http-print": "catalog:",

@@ -16,6 +16,7 @@ export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
 export type SystemTool =
 	| 'items'
 	| 'files'
+	| 'file-content'
 	| 'folders'
 	| 'assets'
 	| 'flows'
