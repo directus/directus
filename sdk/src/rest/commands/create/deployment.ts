@@ -22,7 +22,7 @@ export const createDeployment =
 		query?: TQuery,
 	): RestCommand<CreateDeploymentOutput<Schema, TQuery>, Schema> =>
 	() => ({
-		path: `/deployment`,
+		path: `/deployments`,
 		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',

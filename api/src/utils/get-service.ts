@@ -73,7 +73,7 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new UsersService(opts);
 		case 'directus_versions':
 			return new VersionsService(opts);
-		case 'directus_deployment':
+		case 'directus_deployments':
 			return new DeploymentService(opts);
 		case 'directus_deployment_projects':
 			return new DeploymentProjectsService(opts);

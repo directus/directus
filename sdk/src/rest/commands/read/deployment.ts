@@ -71,7 +71,7 @@ export const readDeployments =
 		query?: TQuery,
 	): RestCommand<ReadDeploymentOutput<Schema, TQuery>[], Schema> =>
 		() => ({
-			path: `/deployment`,
+			path: `/deployments`,
 			params: query ?? {},
 			method: 'GET',
 		});
@@ -92,7 +92,7 @@ export const readDeployment =
 			throwIfEmpty(provider, 'Provider cannot be empty');
 
 			return {
-				path: `/deployment/${provider}`,
+				path: `/deployments/${provider}`,
 				params: query ?? {},
 				method: 'GET',
 			};
@@ -111,7 +111,7 @@ export const readDeploymentDashboard =
 			throwIfEmpty(provider, 'Provider cannot be empty');
 
 			return {
-				path: `/deployment/${provider}/dashboard`,
+				path: `/deployments/${provider}/dashboard`,
 				method: 'GET',
 			};
 		};
@@ -129,7 +129,7 @@ export const readDeploymentProjects =
 			throwIfEmpty(provider, 'Provider cannot be empty');
 
 			return {
-				path: `/deployment/${provider}/projects`,
+				path: `/deployments/${provider}/projects`,
 				method: 'GET',
 			};
 		};
@@ -153,7 +153,7 @@ export const readDeploymentProject =
 			throwIfEmpty(projectId, 'Project ID cannot be empty');
 
 			return {
-				path: `/deployment/${provider}/projects/${projectId}`,
+				path: `/deployments/${provider}/projects/${projectId}`,
 				params: query ?? {},
 				method: 'GET',
 			};
@@ -178,7 +178,7 @@ export const readDeploymentRuns =
 			throwIfEmpty(projectId, 'Project ID cannot be empty');
 
 			return {
-				path: `/deployment/${provider}/projects/${projectId}/runs`,
+				path: `/deployments/${provider}/projects/${projectId}/runs`,
 				params: query ?? {},
 				method: 'GET',
 			};
@@ -203,7 +203,7 @@ export const readDeploymentRun =
 			throwIfEmpty(runId, 'Run ID cannot be empty');
 
 			return {
-				path: `/deployment/${provider}/runs/${runId}`,
+				path: `/deployments/${provider}/runs/${runId}`,
 				params: query ?? {},
 				method: 'GET',
 			};

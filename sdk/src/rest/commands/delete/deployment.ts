@@ -1,5 +1,5 @@
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Delete a deployment provider.
@@ -11,11 +11,11 @@ import type { RestCommand } from '../../types.js';
  */
 export const deleteDeployment =
 	<Schema>(provider: string): RestCommand<void, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
 
-		return {
-			path: `/deployment/${provider}`,
-			method: 'DELETE',
+			return {
+				path: `/deployments/${provider}`,
+				method: 'DELETE',
+			};
 		};
-	};

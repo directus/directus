@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
-	await knex.schema.createTable('directus_deployment', (table) => {
+	await knex.schema.createTable('directus_deployments', (table) => {
 		table.uuid('id').primary().notNullable();
 		table.string('provider').notNullable().unique();
 		table.text('credentials');
@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.createTable('directus_deployment_projects', (table) => {
 		table.uuid('id').primary().notNullable();
-		table.uuid('deployment').notNullable().references('id').inTable('directus_deployment').onDelete('CASCADE');
+		table.uuid('deployment').notNullable().references('id').inTable('directus_deployments').onDelete('CASCADE');
 		table.string('external_id').notNullable();
 		table.string('name').notNullable();
 		table.timestamp('date_created').defaultTo(knex.fn.now());
@@ -33,5 +33,5 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.dropTable('directus_deployment_runs');
 	await knex.schema.dropTable('directus_deployment_projects');
-	await knex.schema.dropTable('directus_deployment');
+	await knex.schema.dropTable('directus_deployments');
 }

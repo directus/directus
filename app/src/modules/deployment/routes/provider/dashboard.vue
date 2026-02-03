@@ -30,7 +30,7 @@ const projects = ref<Project[]>([]);
 const projectItems = computed(() =>
 	projects.value.map((project) => ({
 		...project,
-		to: `/deployment/${props.provider}/${project.id}/runs`,
+		to: `/deployments/${props.provider}/${project.id}/runs`,
 		formattedDeployTime: project.latest_deployment?.created_at
 			? formatDistanceToNow(new Date(project.latest_deployment.created_at), { addSuffix: true })
 			: '',
@@ -52,7 +52,7 @@ onMounted(async () => {
 <template>
 	<PrivateView :title="$t(`deployment.provider.${provider}.name`)" :icon="provider">
 		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployment' }]" />
+			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
 		</template>
 
 		<template #navigation>

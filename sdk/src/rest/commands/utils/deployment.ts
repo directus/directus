@@ -32,16 +32,16 @@ export const triggerDeployment =
 		projectId: string,
 		options?: TriggerDeploymentOptions,
 	): RestCommand<TriggerDeploymentResult, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
-		throwIfEmpty(projectId, 'Project ID cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
+			throwIfEmpty(projectId, 'Project ID cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/projects/${projectId}/deploy`,
-			method: 'POST',
-			...(options && { body: JSON.stringify(options) }),
+			return {
+				path: `/deployments/${provider}/projects/${projectId}/deploy`,
+				method: 'POST',
+				...(options && { body: JSON.stringify(options) }),
+			};
 		};
-	};
 
 /**
  * Cancel a deployment run.
@@ -54,12 +54,12 @@ export const triggerDeployment =
  */
 export const cancelDeployment =
 	<Schema>(provider: string, runId: string): RestCommand<TriggerDeploymentResult, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
-		throwIfEmpty(runId, 'Run ID cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
+			throwIfEmpty(runId, 'Run ID cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/runs/${runId}/cancel`,
-			method: 'POST',
+			return {
+				path: `/deployments/${provider}/runs/${runId}/cancel`,
+				method: 'POST',
+			};
 		};
-	};

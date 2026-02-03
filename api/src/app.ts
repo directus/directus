@@ -13,7 +13,6 @@ import { merge } from 'lodash-es';
 import qs from 'qs';
 import { aiChatRouter } from './ai/chat/router.js';
 import { registerAuthProviders } from './auth.js';
-import { registerDeploymentDrivers } from './deployment.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';
@@ -56,6 +55,7 @@ import {
 	validateDatabaseExtensions,
 	validateMigrations,
 } from './database/index.js';
+import { registerDeploymentDrivers } from './deployment.js';
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
@@ -297,7 +297,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/collections', collectionsRouter);
 	app.use('/comments', commentsRouter);
 	app.use('/dashboards', dashboardsRouter);
-	app.use('/deployment', deploymentRouter);
+	app.use('/deployments', deploymentRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 

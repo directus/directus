@@ -1,40 +1,40 @@
 import { defineModule } from '@directus/extensions';
 import DeploymentOverview from './routes/overview.vue';
 import DeploymentProviderDashboard from './routes/provider/dashboard.vue';
-import DeploymentProviderSettings from './routes/provider/settings.vue';
-import DeploymentProviderRuns from './routes/provider/runs.vue';
 import DeploymentProviderRun from './routes/provider/run.vue';
+import DeploymentProviderRuns from './routes/provider/runs.vue';
+import DeploymentProviderSettings from './routes/provider/settings.vue';
 
 export default defineModule({
-	id: 'deployment',
+	id: 'deployments',
 	name: '$t:deployment.deployment',
 	icon: 'rocket_launch',
 	routes: [
 		{
-			name: 'deployment-overview',
+			name: 'deployments-overview',
 			path: '',
 			component: DeploymentOverview,
 		},
 		{
-			name: 'deployment-provider-dashboard',
+			name: 'deployments-provider-dashboard',
 			path: ':provider',
 			component: DeploymentProviderDashboard,
 			props: true,
 		},
 		{
-			name: 'deployment-provider-settings',
+			name: 'deployments-provider-settings',
 			path: ':provider/settings',
 			component: DeploymentProviderSettings,
 			props: true,
 		},
 		{
-			name: 'deployment-provider-runs',
+			name: 'deployments-provider-runs',
 			path: ':provider/:projectId/runs',
 			component: DeploymentProviderRuns,
 			props: true,
 		},
 		{
-			name: 'deployment-provider-run',
+			name: 'deployments-provider-run',
 			path: ':provider/:projectId/runs/:runId',
 			component: DeploymentProviderRun,
 			props: true,

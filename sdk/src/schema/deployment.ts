@@ -6,7 +6,7 @@ import type { DirectusUser } from './user.js';
  */
 export type DirectusDeployment<Schema = any> = MergeCoreCollection<
 	Schema,
-	'directus_deployment',
+	'directus_deployments',
 	{
 		id: string;
 		provider: string;

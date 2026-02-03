@@ -119,7 +119,7 @@ async function loadRuns() {
 	try {
 		const offset = (page.value - 1) * limit;
 
-		const response = await api.get(`/deployment/${props.provider}/projects/${props.projectId}/runs`, {
+		const response = await api.get(`/deployments/${props.provider}/projects/${props.projectId}/runs`, {
 			params: {
 				search: search.value || undefined,
 				offset,
@@ -150,7 +150,7 @@ async function deploy(preview = false) {
 			triggerDeployment(props.provider, props.projectId, preview ? { preview: true } : undefined),
 		);
 
-		router.push(`/deployment/${props.provider}/${props.projectId}/runs/${result.id}`);
+		router.push(`/deployments/${props.provider}/${props.projectId}/runs/${result.id}`);
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -180,11 +180,11 @@ watch(
 <template>
 	<PrivateView :title="pageTitle">
 		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployment/${provider}` }]" />
+			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
 		</template>
 
 		<template #title-outer:prepend>
-			<VButton class="back-button" rounded icon secondary exact small @click="router.push(`/deployment/${provider}`)">
+			<VButton class="back-button" rounded icon secondary exact small @click="router.push(`/deployments/${provider}`)">
 				<VIcon name="arrow_back" small />
 			</VButton>
 		</template>
@@ -243,7 +243,7 @@ watch(
 						show-resize
 						fixed-header
 						item-key="id"
-						@click:row="({ item }) => $router.push(`/deployment/${provider}/${projectId}/runs/${item.id}`)"
+						@click:row="({ item }) => $router.push(`/deployments/${provider}/${projectId}/runs/${item.id}`)"
 					>
 						<template #[`item.name`]="{ item }">
 							<span class="run-name">{{ item.name || item.external_id }}</span>

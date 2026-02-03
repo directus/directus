@@ -210,7 +210,7 @@ async function save() {
 
 		// Navigate to dashboard if we have projects
 		if (selectedProjectIds.value.length > 0) {
-			router.push(`/deployment/${props.provider}`);
+			router.push(`/deployments/${props.provider}`);
 		}
 	} catch (error) {
 		unexpectedError(error);
@@ -226,7 +226,7 @@ async function deleteConfig() {
 		await sdk.request(deleteDeployment(props.provider));
 		await refreshNavigation();
 		confirmDelete.value = false;
-		router.push('/deployment');
+		router.push('/deployments');
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -245,11 +245,11 @@ onMounted(() => {
 		:icon="initialProjectIds.length > 0 ? 'settings' : undefined"
 	>
 		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployment' }]" />
+			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
 		</template>
 
 		<template v-if="initialProjectIds.length === 0" #title-outer:prepend>
-			<VButton class="back-button" rounded icon secondary exact small @click="router.push('/deployment')">
+			<VButton class="back-button" rounded icon secondary exact small @click="router.push('/deployments')">
 				<VIcon name="arrow_back" small />
 			</VButton>
 		</template>

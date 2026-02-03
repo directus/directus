@@ -16,7 +16,7 @@ import { transaction } from '../utils/transaction.js';
 
 const router = express.Router();
 
-router.use(useCollection('directus_deployment'));
+router.use(useCollection('directus_deployments'));
 
 // Validate provider parameter
 const validateProvider = (provider: string): provider is ProviderType => {

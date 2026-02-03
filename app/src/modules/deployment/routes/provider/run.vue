@@ -231,7 +231,7 @@ onUnmounted(() => {
 <template>
 	<PrivateView :title="pageTitle">
 		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployment/${provider}` }]" />
+			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
 		</template>
 
 		<template #title-outer:prepend>

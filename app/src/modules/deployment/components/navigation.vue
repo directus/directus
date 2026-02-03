@@ -16,7 +16,7 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 const route = useRoute();
 const { providers, loading, openProviders, fetch, currentProviderKey, currentProjectId } = useDeploymentNavigation();
 
-const isSettingsPage = computed(() => route.name === 'deployment-provider-settings');
+const isSettingsPage = computed(() => route.name === 'deployments-provider-settings');
 
 const providerItems = computed(() => {
 	return providers.value.map((provider) => {
@@ -26,7 +26,7 @@ const providerItems = computed(() => {
 			...provider,
 			hasProjects,
 			// Redirect to settings if no projects has been selected
-			link: hasProjects ? `/deployment/${provider.provider}` : `/deployment/${provider.provider}/settings`,
+			link: hasProjects ? `/deployments/${provider.provider}` : `/deployments/${provider.provider}/settings`,
 		};
 	});
 });
@@ -43,7 +43,7 @@ onMounted(async () => {
 
 <template>
 	<VList nav>
-		<VListItem to="/deployment" exact>
+		<VListItem to="/deployments" exact>
 			<VListItemIcon>
 				<VIcon name="rocket_launch" />
 			</VListItemIcon>
@@ -84,7 +84,7 @@ onMounted(async () => {
 					<VListItem
 						v-for="project in provider.projects"
 						:key="project.id"
-						:to="`/deployment/${provider.provider}/${project.id}/runs`"
+						:to="`/deployments/${provider.provider}/${project.id}/runs`"
 						:active="currentProjectId === project.id"
 					>
 						<VListItemIcon><VIcon :name="provider.provider" /></VListItemIcon>
@@ -94,7 +94,7 @@ onMounted(async () => {
 					</VListItem>
 
 					<VListItem
-						:to="`/deployment/${provider.provider}/settings`"
+						:to="`/deployments/${provider.provider}/settings`"
 						:active="isSettingsPage && currentProviderKey === provider.provider"
 					>
 						<VListItemIcon><VIcon name="settings" /></VListItemIcon>

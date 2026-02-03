@@ -23,7 +23,7 @@ const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 500
 
 export class DeploymentService extends ItemsService<DeploymentConfig> {
 	constructor(options: AbstractServiceOptions) {
-		super('directus_deployment', options);
+		super('directus_deployments', options);
 	}
 
 	/**
@@ -63,7 +63,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 * Read deployment config with decrypted credentials (internal use)
 	 */
 	private async readConfig(provider: ProviderType): Promise<DeploymentConfig> {
-		const internalService = new ItemsService<DeploymentConfig>('directus_deployment', {
+		const internalService = new ItemsService<DeploymentConfig>('directus_deployments', {
 			knex: this.knex,
 			schema: this.schema,
 			accountability: null,

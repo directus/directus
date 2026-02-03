@@ -1,4 +1,4 @@
-table: directus_deployment
+table: directus_deployments
 
 fields:
   - field: id

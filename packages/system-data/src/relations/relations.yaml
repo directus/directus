@@ -255,11 +255,11 @@ data:
   ### Deployment
   - many_collection: directus_deployment_projects
     many_field: deployment
-    one_collection: directus_deployment
+    one_collection: directus_deployments
     one_field: projects
     one_deselect_action: delete
 
-  - many_collection: directus_deployment
+  - many_collection: directus_deployments
     many_field: user_created
     one_collection: directus_users
 

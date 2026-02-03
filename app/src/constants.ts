@@ -67,7 +67,7 @@ export const MODULE_BAR_DEFAULT = [
 	},
 	{
 		type: 'module',
-		id: 'deployment',
+		id: 'deployments',
 		enabled: false,
 	},
 	{
