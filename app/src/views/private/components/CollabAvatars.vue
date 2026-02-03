@@ -75,7 +75,7 @@ function focusIntoView(cid: ClientID) {
 			@click="type === 'header' && focusIntoView(user.connection)"
 		>
 			<img v-if="user.avatar_url" :src="user.avatar_url" />
-			<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
+			<template v-else-if="user.name">{{ user.name?.substring(0, 1) }}</template>
 			<VIcon v-else name="person" small />
 		</VAvatar>
 
