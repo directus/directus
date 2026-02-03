@@ -258,8 +258,11 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		const body: Record<string, unknown> = {
 			name: project.name,
 			project: projectId,
-			target: options?.preview ? 'preview' : 'production',
 		};
+
+		if (!options?.preview) {
+			body['target'] = 'production';
+		}
 
 		// Add required gitSource
 		if (project.link?.type) {
