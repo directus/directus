@@ -95,6 +95,7 @@ const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
 const comparisonEditorRef = ref<any | null>(null);
+const comparisonEditorInitialized = ref(false);
 const editorKey = ref(0);
 const comparisonEditorKey = ref(0);
 
@@ -187,7 +188,7 @@ watch(
 watch(
 	() => [props.value, props.font, props.direction, props.comparisonSide],
 	() => {
-		if (comparisonEditorRef.value) {
+		if (comparisonEditorRef.value && comparisonEditorInitialized.value) {
 			comparisonEditorRef.value.setContent(props.value || '');
 		}
 	},
@@ -196,6 +197,7 @@ watch(
 watch(
 	() => props.comparisonSide,
 	() => {
+		comparisonEditorInitialized.value = false;
 		comparisonEditorKey.value++;
 	},
 );
@@ -281,6 +283,7 @@ const comparisonEditorOptions = computed(() => {
 			comparisonEditorRef.value = editor;
 
 			editor.on('init', () => {
+				comparisonEditorInitialized.value = true;
 				editor.setContent(props.value || '');
 			});
 		},

@@ -4,6 +4,7 @@ import { PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useSidebarStore } from '../private-view/stores/sidebar';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -33,9 +34,11 @@ const { active: open } = useGroupable({
 
 const { collection, primaryKey, version } = toRefs(props);
 
+const sidebarStore = useSidebarStore();
+
+const comparisonModalActive = ref(false);
 const currentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
-const comparisonModalActive = ref(false);
 
 const comparableVersion = computed(() => {
 	if (version.value === undefined || version.value === null) return version.value;
@@ -58,7 +61,10 @@ const {
 
 onMounted(() => {
 	getRevisionsCount();
-	if (open.value) getRevisions();
+
+	if (open.value || sidebarStore.activeAccordionItem === 'revisions') {
+		getRevisions();
+	}
 });
 
 watch(
