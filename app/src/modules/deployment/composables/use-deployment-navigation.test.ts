@@ -1,5 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
 import { useDeploymentNavigation } from './use-deployment-navigation';
 
@@ -114,6 +114,7 @@ describe('useDeploymentNavigation', () => {
 
 		it('should set loading state during fetch', async () => {
 			let resolvePromise: (value: unknown) => void;
+
 			const pendingPromise = new Promise((resolve) => {
 				resolvePromise = resolve;
 			});
