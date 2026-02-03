@@ -336,7 +336,7 @@ export class CollabHandler {
 
 		const isVirtualItem = isVirtualRoomItem(message.item);
 
-		let readFields = await verifyPermissions(
+		const readFields = await verifyPermissions(
 			client.accountability!,
 			message.collection,
 			isVirtualItem ? null : message.item,
@@ -347,13 +347,6 @@ export class CollabHandler {
 			},
 		);
 
-		// Item doesn't exist, check collection-level read permissions
-		if (readFields === null) {
-			readFields = await verifyPermissions(client.accountability!, message.collection, null, 'read', {
-				knex: db,
-				schema,
-			});
-		}
 
 		if (!readFields || readFields.length === 0) {
 			throw new ForbiddenError({

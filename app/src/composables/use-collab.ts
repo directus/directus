@@ -357,7 +357,7 @@ export function useCollab(
 		focused.value = message.focuses;
 
 		if (lastLocalFocus.value) {
-			sendFocus(lastLocalFocus.value);
+			onFocus(lastLocalFocus.value);
 		}
 	}
 
@@ -555,9 +555,9 @@ export function useCollab(
 			} else {
 				delete focused.value[connectionId.value];
 			}
-		}
 
-		sendFocus(field);
+			sendFocus(field);
+		}
 	};
 
 	function discard() {
