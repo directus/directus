@@ -166,6 +166,72 @@ describe('isLoginRedirectAllowed', () => {
 	});
 
 	describe('edge cases', () => {
+		test('rejects backslash-escaped forward slash bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '/\\google.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects single backslash bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '\\google.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects tab character bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '/\tgoogle.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects newline character bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '/\ngoogle.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects carriage return bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '/\rgoogle.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects space after slash bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '/ google.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects leading whitespace bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', ' /google.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects leading tab bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '\t/google.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects mixed backslash-forward slash bypass', () => {
+			const result = isLoginRedirectAllowed('github', '\\/\\/google.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects double backslash bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '\\\\google.com');
+
+			expect(result).toBe(false);
+		});
+
+		test('rejects backslash with path bypass attempt', () => {
+			const result = isLoginRedirectAllowed('github', '\\google.com/callback');
+
+			expect(result).toBe(false);
+		});
+
 		test('handles URL with query parameters', () => {
 			const result = isLoginRedirectAllowed('github', `${PUBLIC_URL}/admin?tab=users`);
 

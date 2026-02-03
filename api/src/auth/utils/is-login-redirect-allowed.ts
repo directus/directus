@@ -15,21 +15,33 @@ export function isLoginRedirectAllowed(provider: string, redirect: unknown): boo
 
 	const env = useEnv();
 	const publicUrl = env['PUBLIC_URL'] as string;
-
-	if (!URL.canParse(redirect)) {
-		if (!redirect.startsWith('//')) {
-			// should be a relative path like `/admin/test`
-			return true;
+	
+    if (!URL.canParse(redirect)) {
+		// Reject protocol-relative URLs (current behavior)
+		if (redirect.startsWith('//')) {
+			return false;
 		}
 
-		// domain without protocol `//example.com/test`
-		return false;
+		try {
+			const parsedUrl = new URL(redirect, 'http://dummy.local');
+
+			// If the redirect and parsed pathname match then it is a safe relative path
+			return parsedUrl.pathname === redirect;
+		} catch {
+			// Unparsable URL
+			return false;
+		}
 	}
 
 	const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
 	if (envKey in env) {
-		if (isUrlAllowed(redirect, [...toArray(env[envKey] as string), publicUrl])) return true;
+		const allowedList = toArray(String(env[envKey]));
+		allowedList.push(publicUrl);
+
+		if (isUrlAllowed(redirect, allowedList)) {
+			return true;
+		}
 	}
 
 	if (URL.canParse(publicUrl) === false) {
