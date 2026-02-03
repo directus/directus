@@ -297,9 +297,20 @@ function apply(updates: { [field: string]: any }) {
 			return !isNil(field?.meta?.group) && props.modelValue && key in props.modelValue;
 		});
 
+		// Preserve readonly field values when unchanged
+		const preservedReadonlyKeys = Object.keys(updates).filter((key) => {
+			if (key.startsWith('$') || updatableKeys.includes(key)) return false;
+			const field = fieldsMap.value[key];
+			return field && isDisabled(field) && props.modelValue?.[key] === updates[key];
+		});
+
 		emit(
 			'update:modelValue',
-			pickKeepMeta(assign({}, props.modelValue, updates), [...updatableKeys, ...updatableGroupKeys]),
+			pickKeepMeta(assign({}, props.modelValue, updates), [
+				...updatableKeys,
+				...updatableGroupKeys,
+				...preservedReadonlyKeys,
+			]),
 		);
 	}
 }
