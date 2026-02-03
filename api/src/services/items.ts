@@ -1664,6 +1664,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				  )
 				: payload;
 
+		// TODO add null to payloadAfterHooks possible types
+		const payloadKeys = Object.keys(payloadAfterHooks ?? {})
+
+		if ( payloadKeys.length === 0 // payloadAfterHooks == {} || null
+			|| (
+				payloadKeys.length === 1
+				&& payloadKeys[0] === primaryKeyField
+			) // payloadAfterHooks == {id: xxx}
+		) {
+			return []
+		}
+
 		// Sort keys to ensure that the order is maintained
 		keys.sort();
 
