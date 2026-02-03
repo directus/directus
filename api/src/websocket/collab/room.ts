@@ -17,6 +17,7 @@ import { getSchema } from '../../utils/get-schema.js';
 import { getService } from '../../utils/get-service.js';
 import { isFieldAllowed } from '../../utils/is-field-allowed.js';
 import { isVirtualRoomItem } from './is-virtual-room-item.js';
+import { mergeDetailedUpdateSyntax } from './merge-detailed-update-syntax.js';
 import { Messenger } from './messenger.js';
 import { sanitizePayload } from './payload-permissions.js';
 import { useStore } from './store.js';
@@ -497,7 +498,17 @@ export class Room {
 	async update(sender: WebSocketClient, changes: Record<string, unknown>) {
 		const { clients } = await this.store(async (store) => {
 			const existing_changes = await store.get('changes');
-			Object.assign(existing_changes, changes);
+
+			for (const [field, value] of Object.entries(changes)) {
+				if (isDetailedUpdateSyntax(value) && isDetailedUpdateSyntax(existing_changes[field])) {
+					useLogger().debug(`[Collab] Room ${this.getDisplayName()}: Merging relational syntax for field ${field}`);
+
+					existing_changes[field] = mergeDetailedUpdateSyntax(existing_changes[field], value);
+				} else {
+					existing_changes[field] = value;
+				}
+			}
+
 			await store.set('changes', existing_changes);
 
 			return {

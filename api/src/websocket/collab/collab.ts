@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import { ClientMessage } from '@directus/types/collab';
-import { toArray } from '@directus/utils';
+import { isDetailedUpdateSyntax, toArray } from '@directus/utils';
 import { difference, intersection, isEmpty, upperFirst } from 'lodash-es';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
@@ -347,7 +347,6 @@ export class CollabHandler {
 			},
 		);
 
-
 		if (!readFields || readFields.length === 0) {
 			throw new ForbiddenError({
 				reason: `No permission to access item or it does not exist`,
@@ -431,30 +430,34 @@ export class CollabHandler {
 
 		await this.checkFieldsAccess(client, room, message.field, 'update', { knex, schema });
 
-		// Focus field before update to prevent concurrent overwrite conflicts
-		let focus = await room.getFocusByUser(client.uid);
+		const isRelationalField = isDetailedUpdateSyntax(message.changes);
 
-		// Unset should not acquire focus
-		if (message.changes === undefined) {
-			const currentFocuser = await room.getFocusByField(message.field);
-
-			if (currentFocuser && currentFocuser !== client.uid) {
-				throw new ForbiddenError({
-					reason: `Field ${message.field} is already focused by another user`,
-				});
-			}
-		} else {
-			if (focus !== message.field) {
-				await room.focus(client, message.field);
-
-				focus = await room.getFocusByUser(client.uid);
-			}
-
+		if (!isRelationalField) {
 			// Focus field before update to prevent concurrent overwrite conflicts
-			if (!focus || focus !== message.field) {
-				throw new ForbiddenError({
-					reason: `Cannot update field ${message.field} without focusing on it first`,
-				});
+			let focus = await room.getFocusByUser(client.uid);
+
+			// Unset should not acquire focus
+			if (message.changes === undefined) {
+				const currentFocuser = await room.getFocusByField(message.field);
+
+				if (currentFocuser && currentFocuser !== client.uid) {
+					throw new ForbiddenError({
+						reason: `Field ${message.field} is already focused by another user`,
+					});
+				}
+			} else {
+				if (focus !== message.field) {
+					await room.focus(client, message.field);
+
+					focus = await room.getFocusByUser(client.uid);
+				}
+
+				// Focus field before update to prevent concurrent overwrite conflicts
+				if (!focus || focus !== message.field) {
+					throw new ForbiddenError({
+						reason: `Cannot update field ${message.field} without focusing on it first`,
+					});
+				}
 			}
 		}
 
