@@ -31,7 +31,7 @@ const { t } = useI18n();
 const users = computed(() => {
 	return toArray(props.modelValue)
 		.map((user) => ({
-			name: [user.first_name, user.last_name].filter(Boolean).join(' ') || t('unknown_user'),
+			name: [user.first_name, user.last_name].filter(Boolean).join(' ') || undefined,
 			avatar_url: user.avatar?.id
 				? getAssetUrl(user.avatar.id, {
 						imageKey: 'system-medium-cover',
@@ -75,7 +75,7 @@ function focusIntoView(cid: ClientID) {
 			@click="type === 'header' && focusIntoView(user.connection)"
 		>
 			<img v-if="user.avatar_url" :src="user.avatar_url" />
-			<template v-else-if="user.name">{{ user.name?.substring(0, 1) }}</template>
+			<template v-else-if="user.name">{{ user.name.substring(0, 1) }}</template>
 			<VIcon v-else name="person" small />
 		</VAvatar>
 
