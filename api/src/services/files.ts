@@ -312,45 +312,50 @@ export class FilesService extends ItemsService<File> {
 	 * Update many files
 	 */
 	override async updateMany(keys: PrimaryKey[], data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		let updatedFiles: File[] = [];
+		const updatedFiles: Map<PrimaryKey, File> = new Map();
 
 		if (data.filename_disk) {
 			await this.checkUniqueFilename(data.filename_disk);
 
 			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
-			// Fetch existing files to handle rename, dont require read permissions.
+			// Fetch existing records to have data prior to change, dont require read permissions.
 			const sudoFilesItemsService = new FilesService({
 				knex: this.knex,
 				schema: this.schema,
 			});
 
-			updatedFiles = await sudoFilesItemsService.readMany(keys, {
+			const changedFiles = await sudoFilesItemsService.readMany(keys, {
 				fields: ['id', 'storage', 'filename_disk'],
 			});
+
+			for (const file of changedFiles) {
+				updatedFiles.set(file.id, file);
+			}
 		}
 
-		const primaryKeys = await transaction(this.knex, async (trx) => {
-			const filesItemService = new ItemsService(this.collection, {
-				knex: trx,
-				schema: this.schema,
-				accountability: this.accountability,
-			});
+		for (const key of keys) {
+			// Transaction per file to ensure we only rollback changes related to that file on error
+			await transaction(this.knex, async (trx) => {
+				const filesItemService = new ItemsService(this.collection, {
+					knex: trx,
+					schema: this.schema,
+					accountability: this.accountability,
+				});
 
-			const updatedKeys = await filesItemService.updateMany(keys, data, opts);
+				await filesItemService.updateMany([key], data, opts);
 
-			// if filename is present and was updated rename files it was changed
-			if (data.filename_disk) {
-				const storage = await getStorage();
+				// if filename is present and was updated rename files it was changed
+				if (data.filename_disk) {
+					const storage = await getStorage();
+					const file = updatedFiles.get(key);
 
-				for (const file of updatedFiles) {
-					if (!file.filename_disk) continue;
+					if (!file || !file.filename_disk) return;
 
 					// For backwards compatibility it must be resolved first to ensure consistent path
 					const filePath = this.generateFilenamePath(file.filename_disk);
 
-					// Skip if the filename didn't change
-					if (filePath === data.filename_disk) continue;
+					if (filePath === data.filename_disk) return;
 
 					const disk = storage.location(data.storage ?? file['storage']);
 
@@ -383,12 +388,10 @@ export class FilesService extends ItemsService<File> {
 						await disk.delete(filepath);
 					}
 				}
-			}
+			});
+		}
 
-			return updatedKeys;
-		});
-
-		return primaryKeys;
+		return keys;
 	}
 
 	/**
