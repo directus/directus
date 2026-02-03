@@ -24,7 +24,6 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		action: 'update',
 		permissions: { uploaded_by: { _eq: '$CURRENT_USER' } },
 		fields: [
-			'id',
 			'title',
 			'description',
 			'tags',
