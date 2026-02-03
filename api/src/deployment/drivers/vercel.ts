@@ -1,6 +1,7 @@
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
 import pLimit from 'p-limit';
+import { getAxios } from '../../request/index.js';
 import { DeploymentDriver } from '../deployment.js';
 
 export interface VercelCredentials extends Credentials {
@@ -87,19 +88,25 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 				}
 			}
 
-			const response = await fetch(url, {
-				...fetchOptions,
+			const axios = await getAxios();
+
+			const response = await axios.request({
+				url: url.toString(),
+				method: fetchOptions.method ?? 'GET',
+				data: fetchOptions.body,
+				signal: fetchOptions.signal,
+				validateStatus: () => true,
 				headers: {
 					Authorization: `Bearer ${this.credentials.access_token}`,
 					'Content-Type': 'application/json',
-					...fetchOptions.headers,
+					...(fetchOptions.headers as Record<string, string> | undefined),
 				},
 			});
 
 			// Handle rate limiting with retry (max 3 retries)
 			if (response.status === 429) {
-				const resetAt = parseInt(response.headers.get('X-RateLimit-Reset') || '0');
-				const limit = parseInt(response.headers.get('X-RateLimit-Limit') || '0');
+				const resetAt = parseInt(response.headers['x-ratelimit-reset'] || '0');
+				const limit = parseInt(response.headers['x-ratelimit-limit'] || '0');
 
 				if (retryCount < 3) {
 					const waitTime = resetAt > 0 ? Math.max(resetAt * 1000 - Date.now(), 1000) : 1000 * (retryCount + 1);
@@ -114,10 +121,13 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 				});
 			}
 
-			const body = await response.json();
+			const body = response.data ?? {};
 
-			if (!response.ok) {
-				const message = body.error?.message || `Vercel API error: ${response.status}`;
+			if (response.status >= 400) {
+				const message =
+					typeof body === 'object' && body !== null && 'error' in body
+						? (body as { error?: { message?: string } }).error?.message || `Vercel API error: ${response.status}`
+						: `Vercel API error: ${response.status}`;
 
 				if (response.status === 401 || response.status === 403) {
 					throw new InvalidCredentialsError();
@@ -134,15 +144,15 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		const normalized = vercelStatus?.toLowerCase();
 
 		switch (normalized) {
-			case 'ready':
+			case 'building':
 			case 'error':
 			case 'canceled':
+			case 'ready':
+				return normalized as Status;
 			case 'queued':
 			case 'initializing':
 			case 'analyzing':
-			case 'building':
 			case 'deploying':
-				return normalized as Status;
 			default:
 				return 'building';
 		}
