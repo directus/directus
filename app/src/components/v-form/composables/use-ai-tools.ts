@@ -24,7 +24,7 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 		name: `read-form-values-${componentUid}`,
 		displayName: t('ai_tools.read_form_values'),
 		description:
-			'Read values from the form currently open in the UI. Returns only field values visible in the current form view. Does NOT query the database — use the items tool for that.',
+			'Read values from the form currently open in the UI. Returns only field values visible in the current form view. Does NOT query the database — use the items tool for that. IMPORTANT: This tool ONLY reads from the page currently open in the editor, NOT from user-attached context items.',
 		inputSchema: computed(() => {
 			return z.object({
 				fields: options.fieldNames.value.length > 0 ? z.array(z.enum(options.fieldNames.value)) : z.array(z.string()),
@@ -45,7 +45,7 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 		name: `set-form-values-${componentUid}`,
 		displayName: t('ai_tools.update_form_values'),
 		description:
-			"Update field values in the form currently open in the UI. Changes are local until the user saves. Does NOT update the database — use the items tool with action: 'update' for that.",
+			"Update field values in the form currently open in the UI. Changes are local until the user saves. Does NOT update the database — use the items tool with action: 'update' for that. IMPORTANT: This tool ONLY affects the page currently open in the editor. To modify user-attached context items, use the items tool instead.",
 		inputSchema: writeInputSchema,
 		execute: (args) => {
 			const output: string[] = [];

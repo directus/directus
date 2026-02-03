@@ -29,7 +29,7 @@ export type ToolApprovalMode = z.infer<typeof ToolApprovalMode>;
 
 const ItemContextData = z.object({
 	collection: z.string(),
-	id: z.union([z.string(), z.number()]),
+	key: z.union([z.string(), z.number()]),
 });
 
 const VisualElementContextData = z.object({

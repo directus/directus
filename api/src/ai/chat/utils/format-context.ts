@@ -1,13 +1,7 @@
-import type { ChatContext } from '../models/chat-request.js';
+import type { ChatContext, ContextAttachment } from '../models/chat-request.js';
 
 function escapeAngleBrackets(text: string): string {
 	return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-interface VisualElementData {
-	collection?: string;
-	item?: unknown;
-	fields?: string[];
 }
 
 interface PromptSnapshot {
@@ -15,40 +9,36 @@ interface PromptSnapshot {
 	messages?: { role: string; text: string }[];
 }
 
-interface Attachment {
-	type: string;
-	display: string;
-	data?: unknown;
-	snapshot?: unknown;
-}
-
 interface GroupedAttachments {
-	visualElements: Attachment[];
-	prompts: Attachment[];
-	items: Attachment[];
+	visualElements: Extract<ContextAttachment, { type: 'visual-element' }>[];
+	prompts: Extract<ContextAttachment, { type: 'prompt' }>[];
+	items: Extract<ContextAttachment, { type: 'item' }>[];
 }
 
-function groupAttachments(attachments: Attachment[]): GroupedAttachments {
+function groupAttachments(attachments: ContextAttachment[]): GroupedAttachments {
 	const groups: GroupedAttachments = { visualElements: [], prompts: [], items: [] };
 
 	for (const att of attachments) {
-		if (att.type === 'visual-element') {
-			groups.visualElements.push(att);
-		} else if (att.type === 'prompt') {
-			groups.prompts.push(att);
-		} else if (att.type === 'item') {
-			groups.items.push(att);
+		switch (att.type) {
+			case 'visual-element':
+				groups.visualElements.push(att);
+				break;
+			case 'prompt':
+				groups.prompts.push(att);
+				break;
+			case 'item':
+				groups.items.push(att);
+				break;
 		}
 	}
 
 	return groups;
 }
 
-function formatVisualElement(att: Attachment): string {
-	const data = att.data as VisualElementData;
-	const fields = data.fields?.length ? data.fields.map((f) => escapeAngleBrackets(f)).join(', ') : 'all';
-	const collection = escapeAngleBrackets(String(data.collection ?? ''));
-	const item = escapeAngleBrackets(String(data.item ?? ''));
+function formatVisualElement(att: ContextAttachment & { type: 'visual-element' }): string {
+	const fields = att.data.fields?.length ? att.data.fields.map((f) => escapeAngleBrackets(f)).join(', ') : 'all';
+	const collection = escapeAngleBrackets(String(att.data.collection));
+	const item = escapeAngleBrackets(String(att.data.item));
 	const display = escapeAngleBrackets(att.display);
 
 	return `### ${collection}/${item} — "${display}"
@@ -58,7 +48,7 @@ ${escapeAngleBrackets(JSON.stringify(att.snapshot, null, 2))}
 \`\`\``;
 }
 
-function formatPrompt(att: Attachment): string {
+function formatPrompt(att: ContextAttachment & { type: 'prompt' }): string {
 	const snapshot = att.snapshot as PromptSnapshot;
 	const lines: string[] = [];
 	const display = escapeAngleBrackets(att.display);
@@ -80,18 +70,24 @@ function formatPrompt(att: Attachment): string {
 	return `### ${display}\n${lines.join('\n')}`;
 }
 
-function formatItem(att: Attachment): string {
-	const data = att.data as { collection?: string };
+function formatItem(att: ContextAttachment & { type: 'item' }): string {
 	const display = escapeAngleBrackets(att.display);
-	const collectionLabel = data.collection ? ` (${escapeAngleBrackets(data.collection)})` : '';
-	return `[Item: ${display}${collectionLabel}]\n${escapeAngleBrackets(JSON.stringify(att.snapshot, null, 2))}`;
+	const collectionLabel = att.data.collection ? ` (${escapeAngleBrackets(att.data.collection)})` : '';
+	const keyLabel = ` — key: ${escapeAngleBrackets(String(att.data.key))}`;
+	const collection = att.data.collection ? escapeAngleBrackets(att.data.collection) : '';
+
+	const updateHint = att.data.collection
+		? `\nTo update this item, use the items tool with: collection="${collection}", keys=["${escapeAngleBrackets(String(att.data.key))}"], action="update"`
+		: '\nUse the items tool to update this item.';
+
+	return `[Item: ${display}${collectionLabel}${keyLabel}]${updateHint}\n${escapeAngleBrackets(JSON.stringify(att.snapshot, null, 2))}`;
 }
 
 /**
  * Format context for appending to system prompt
  */
 export function formatContextForSystemPrompt(context: ChatContext): string {
-	const attachments = (context.attachments ?? []) as Attachment[];
+	const attachments = context.attachments ?? [];
 	const groups = groupAttachments(attachments);
 	const parts: string[] = [];
 
@@ -128,7 +124,8 @@ ${promptBlocks}
 
 		sections.push(`## User-Added Context
 The user has attached these items as reference for their request.
-All root-level fields are included. Use the items tool to fetch additional fields or update items when asked.
+All root-level fields the user has access to are shown below — use these exact field names when updating.
+Use the items tool to fetch additional fields or update items when asked.
 
 ${itemLines}`);
 	}
@@ -152,8 +149,9 @@ ${elementLines}
 	// 4. Attachment rules (only if any attachments exist)
 	if (attachments.length > 0) {
 		parts.push(`## Attachment Rules
-User-added attachments should have higher priority than page context.
-Do NOT use form-values tools for attachments — those only modify the current page form.`);
+- User-added attachments have HIGHER PRIORITY than page context.
+- To modify attached items, ALWAYS use the items tool with action: 'update'. NEVER use form-values tools for attached items.
+- form-values tools ONLY affect the currently open page form, which may be a DIFFERENT item than what the user attached.`);
 	}
 
 	if (parts.length === 0) return '';

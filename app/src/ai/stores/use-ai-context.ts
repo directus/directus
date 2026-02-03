@@ -91,7 +91,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 			}
 
 			if (isItemContext(item)) {
-				const snapshot = await fetchItem(item.data.collection, item.data.id, ['*']);
+				const snapshot = await fetchItem(item.data.collection, item.data.key, ['*']);
 				if (!snapshot) return null;
 				return { type: 'item', data: item.data, display: item.display, snapshot };
 			}

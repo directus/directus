@@ -102,7 +102,7 @@ export function useContextStaging() {
 				const added = contextStore.addPendingContext({
 					id: nanoid(),
 					type: 'item',
-					data: { collection, id: itemId },
+					data: { collection, key: itemId },
 					display: displayValue,
 				});
 
