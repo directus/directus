@@ -136,9 +136,12 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 * Read deployment config by provider
 	 */
 	async readByProvider(provider: ProviderType, query?: Query): Promise<DeploymentConfig> {
+		const providerFilter = { provider: { _eq: provider } };
+		const filter = query?.filter ? { _and: [query.filter, providerFilter] } : providerFilter;
+
 		const results = await this.readByQuery({
 			...query,
-			filter: { provider: { _eq: provider } },
+			filter,
 			limit: 1,
 		});
 
