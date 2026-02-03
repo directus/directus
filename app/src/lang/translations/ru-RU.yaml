@@ -24,7 +24,10 @@ privacy_policy: Политика конфиденциальности
 contact_our_team: Связаться с нашей командой
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
+setup_license_notice: >
+  Directus бесплатный для организаций с годовым доходом, финансированием или бюджетом менее 5 миллионов долларов.
 setup_launch: Запустить Directus
+setup_project: Организовать проект
 first_name: Имя
 last_name: Фамилия
 admin_email: Почта админа
@@ -34,6 +37,7 @@ organization_name: Название организации
 how_do_you_use_directus: Для чего вы используете Directus?
 usage_personal: Личный/Обучение
 usage_commercial: Бизнес / Коммерческое
+usage_community: Исходный код / Сообщество
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
