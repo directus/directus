@@ -11,7 +11,7 @@ import type {
 	ProviderType,
 	Query,
 } from '@directus/types';
-import { parseJSON } from '@directus/utils';
+import { mergeFilters, parseJSON } from '@directus/utils';
 import { has, isEmpty } from 'lodash-es';
 import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cache.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
@@ -46,7 +46,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			throw new InvalidPayloadError({ reason: 'Credentials must be valid JSON' });
 		}
 
-		let options: Options | undefined;
+		let options: Options | undefined = data.options as Options;
 
 		try {
 			options = this.parseValue<Options | undefined>(data.options, undefined);
@@ -136,12 +136,9 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 * Read deployment config by provider
 	 */
 	async readByProvider(provider: ProviderType, query?: Query): Promise<DeploymentConfig> {
-		const providerFilter = { provider: { _eq: provider } };
-		const filter = query?.filter ? { _and: [query.filter, providerFilter] } : providerFilter;
-
 		const results = await this.readByQuery({
 			...query,
-			filter,
+			filter: mergeFilters({ provider: { _eq: provider } }, query?.filter ?? null),
 			limit: 1,
 		});
 
