@@ -7,17 +7,17 @@ import { getStorage } from '../storage/index.js';
 
 import { FilesService, ItemsService } from './index.js';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
+import { resetEnvMock } from '../test-utils/env.js';
 
 vi.mock('./items.js', async () => {
 	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: 'templates',
-	}),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	return mockEnv();
+});
 
 vi.mock('../storage/index.js');
 vi.mock('@directus/storage');
@@ -28,9 +28,7 @@ describe('Service / Files', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-
-		// required for env to work with changing on a per test basis
-		vi.resetModules();
+		resetEnvMock();
 	});
 
 	afterEach(() => {
@@ -340,7 +338,7 @@ describe('Service / Files', () => {
 			it('should not delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is false', async () => {
 				vi.mocked(useEnv).mockReturnValue({
 					FILES_DELETE_ORIGINAL_ON_MOVE: 'false',
-				} as any);
+				});
 
 				const { FilesService } = await import('./files.js');
 

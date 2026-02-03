@@ -12,6 +12,7 @@ This directory contains mock implementations for commonly used modules in servic
 - **[cache.ts](#cachets)** - Cache system mocks
 - **[schema.ts](#schemats)** - Schema inspector mocks
 - **[emitter.ts](#emitterts)** - Event emitter mocks
+- **[env.ts](#envts)** - env mocks
 - **[items-service.ts](#items-servicets)** - ItemsService mocks
 - **[fields-service.ts](#fields-servicets)** - FieldsService mocks
 - **[files-service.ts](#files-servicets)** - FilesService mocks
@@ -363,6 +364,81 @@ expect(emitter.emitAction).toHaveBeenCalledWith(
 
 ---
 
+### env.ts
+
+Provides environment variable mocking utilities for the `@directus/env` package.
+
+#### `mockEnv(overrides?)`
+
+Creates a standard environment mock with sensible test defaults for commonly used environment variables.
+
+**Parameters:**
+
+- `overrides` (optional): Object containing environment variable overrides to merge with defaults
+
+**Returns:** Mock module object with `useEnv` function
+
+**Default environment variables:**
+
+```
+EXTENSIONS_PATH: './extensions',
+STORAGE_LOCATIONS: 'local',
+EMAIL_TEMPLATES_PATH: './templates'
+```
+
+**Example:**
+
+```typescript
+// Dynamically changing env values during tests
+import { useEnv } from '@directus/env';
+const { resetEnvMock } = await import('../test-utils/env.js');
+
+// Standard usage with defaults
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	return mockEnv();
+});
+
+// With custom default values
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	return mockEnv({
+		STORAGE_LOCATIONS: 'custom-storage',
+		FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
+	});
+});
+
+beforeEach(() => {
+	resetEnvMock();
+});
+
+it('should use custom env value', async () => {
+	// Override the mock return value
+	vi.mocked(useEnv).mockReturnValue({
+		FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
+	});
+
+	// Re-import the module to pick up the new mock
+	// Required if useEnv is called top level
+	const { FilesService } = await import('./files.js');
+
+	// Create new service instance
+	const service = new FilesService({
+		knex: db,
+		schema: { collections: {}, relations: [] },
+	});
+
+	// ... rest of test
+});
+```
+
+**Important Notes:**
+
+- `vi.resetModules()` in `beforeEach` is essential for per-test overrides to work
+- Must re-import modules after changing mock values using dynamic `import()`
+
+---
+
 ### items-service.ts
 
 Provides ItemsService mocking utilities for testing services that depend on ItemsService.
@@ -700,7 +776,17 @@ describe('Service Tests', () => {
 ### Mocking Additional Dependencies
 
 ```typescript
-// Mock environment variables
+// Mock environment variables (using utility)
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	return mockEnv({
+		CACHE_SCHEMA: true,
+		DB_CLIENT: 'postgres',
+		STORAGE_LOCATIONS: 'local',
+	});
+});
+
+// Or inline (for quick tests)
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		CACHE_SCHEMA: true,
