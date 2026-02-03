@@ -99,7 +99,7 @@ export class RoomManager {
 	}
 
 	/**
-	 * Get all rooms a client is currently in
+	 * Get all rooms a client is currently in from local memory
 	 */
 	async getClientRooms(uid: ClientID) {
 		const rooms = [];
