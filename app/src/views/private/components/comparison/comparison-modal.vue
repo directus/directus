@@ -17,6 +17,7 @@ import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { Revision } from '@/types/revisions';
+import type { ContentVersionWithType } from '@/types/versions';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -25,7 +26,7 @@ interface Props {
 	collection: string;
 	primaryKey: PrimaryKey;
 	mode: 'version' | 'revision';
-	currentVersion: ContentVersion | null | undefined;
+	currentVersion: ContentVersionWithType | null | undefined;
 	revisions?: Revision[] | null;
 }
 
@@ -388,7 +389,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				<VCardActions>
 					<VButton secondary @click="promote(false)">{{ $t('keep') }}</VButton>
 					<VButton :loading="promoting" kind="danger" @click="promote(true)">
-						{{ $t('delete_label') }}
+						{{ $t(currentVersion!.type === 'global' ? 'discard_changes' : 'delete_label') }}
 					</VButton>
 				</VCardActions>
 			</VCard>
