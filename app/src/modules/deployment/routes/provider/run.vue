@@ -330,6 +330,7 @@ onUnmounted(() => {
 						<input
 							v-model="searchQuery"
 							:placeholder="$t('deployment.provider.run.search_logs')"
+							:aria-label="$t('deployment.provider.run.search_logs')"
 							class="search-input"
 						/>
 					</div>
