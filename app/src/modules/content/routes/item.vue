@@ -137,6 +137,8 @@ const {
 	collabCollision,
 	update: updateCollab,
 	discard: discardCollab,
+	focused,
+	connectionId,
 } = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
@@ -680,7 +682,7 @@ function useCollectionRoute() {
 		</template>
 
 		<template #actions>
-			<CollabAvatars :model-value="collabUsers" :connected="connected" />
+			<CollabAvatars :model-value="collabUsers" :connected="connected" :focuses="focused" :current-connection="connectionId" />
 
 			<VButton
 				v-if="previewUrl"
