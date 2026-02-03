@@ -1,7 +1,7 @@
 import type { Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
 import VForm from './v-form.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
@@ -96,7 +96,7 @@ function createField(overrides: Partial<Field> = {}): Field {
 
 describe('VForm', () => {
 	describe('apply function', () => {
-		test('preserves grouped readonly field values during nested form updates', async () => {
+		it('preserves grouped readonly field values during nested form updates', async () => {
 			const checkboxField = createField({
 				field: 'checkbox',
 				name: 'Checkbox',
@@ -141,7 +141,7 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ checkbox: true, grouped_input: 'preserved value' });
 		});
 
-		test('filters out keys that are not actual form fields', async () => {
+		it('filters out keys that are not actual form fields', async () => {
 			const inputField = createField({
 				field: 'input',
 				name: 'Input',
@@ -169,7 +169,7 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ input: 'new value' });
 		});
 
-		test('preserves meta keys starting with $', async () => {
+		it('preserves meta keys starting with $', async () => {
 			const inputField = createField({
 				field: 'input',
 				name: 'Input',
@@ -197,7 +197,7 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ input: 'new value', $type: 'created' });
 		});
 
-		test('filters out top-level readonly field updates', async () => {
+		it('filters out top-level readonly field updates', async () => {
 			const editableField = createField({
 				field: 'editable',
 				name: 'Editable',
@@ -235,7 +235,7 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ editable: 'new' });
 		});
 
-		test('allows hidden field updates (hidden is not readonly)', async () => {
+		it('allows hidden field updates (hidden is not readonly)', async () => {
 			const visibleField = createField({
 				field: 'visible',
 				name: 'Visible',
@@ -273,7 +273,7 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ visible: 'new', hidden_field: 'updated' });
 		});
 
-		test('filters out conditionally readonly field updates (not in a group)', async () => {
+		it('filters out conditionally readonly field updates (not in a group)', async () => {
 			const toggleField = createField({
 				field: 'toggle',
 				name: 'Toggle',
@@ -324,7 +324,7 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ toggle: true });
 		});
 
-		test('preserves grouped field values even when conditionally readonly', async () => {
+		it('preserves grouped field values even when conditionally readonly', async () => {
 			const toggleField = createField({
 				field: 'toggle',
 				name: 'Toggle',
@@ -376,7 +376,7 @@ describe('VForm', () => {
 			expect(emitted?.[0]?.[0]).toEqual({ toggle: true, grouped_conditional: 'preserved value' });
 		});
 
-		test('allows editable field updates', async () => {
+		it('allows editable field updates', async () => {
 			const editableField = createField({
 				field: 'editable',
 				name: 'Editable',
