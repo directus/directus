@@ -826,7 +826,9 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 			role: roleId,
 			adminAccessEnabled: false,
 			appAccessEnabled: false,
-			name: options.policyName ? `${options.role}-${options.policyName}` : `${options.role}-${randomUUID()}`,
+			name: options.policyName
+				? `${(options.role as any).name || (options.role as any).id || options.role}-${options.policyName}`
+				: `${(options.role as any).name || (options.role as any).id || options.role}-${randomUUID()}`,
 		});
 
 		policyId = policy.id;
