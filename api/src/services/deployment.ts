@@ -12,7 +12,7 @@ import type {
 	Query,
 } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import { has, isEmpty, isString } from 'lodash-es';
+import { has, isEmpty } from 'lodash-es';
 import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cache.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
 import { getDeploymentDriver } from '../deployment.js';
