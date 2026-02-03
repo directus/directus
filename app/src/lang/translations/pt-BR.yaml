@@ -155,7 +155,7 @@ keep_setup: Manter Configuração
 cancel_setup: Cancelar Configuração
 add_field: Adicionar Campo
 role_name: Nome do Cargo
-policy_name: Nome da política 
+policy_name: Nome da política
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
@@ -506,8 +506,6 @@ revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi actualizado, mas o seu valor está a ser ocultado por razões de segurança.
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
-updated_in_revision: Atualizar esta Revisão
-updated_in_revision_matches_latest: Atualizado nesta Revisão, mas corresponde à Última Revisão
 differences_count: 'Sem Diferenças | 1 Diferença | {count} Diferenças'
 presentation_text_values_cannot_be_reimported: 'Usa texto de apresentação, valores não podem ser importados novamente.'
 download_page_as_csv: 'Baixar página como CSV'
@@ -1195,8 +1193,6 @@ settings_permissions: Políticas de acesso
 settings_project: Configurações
 settings_appearance: Aparência
 settings_ai: IA
-ai_chat: Chat IA
-ai_disabled_by_env: Os recursos de Chat IA foram desabilitados via ambiente variável.
 mcp_disabled_by_env: Os recursos de MCP foram desabilitados via ambiente variável.
 settings_flows: Fluxos
 settings_system_logs: Registro de Sistema
