@@ -158,7 +158,7 @@ function useVisualEditorAi(isMobile: ReturnType<typeof breakpoints.smallerOrEqua
 				<VButton
 					v-if="serverStore.info.ai_enabled"
 					ref="ai-button"
-					v-tooltip.bottom.start="$t('ai_chat')"
+					v-tooltip.bottom.start="$t('ai_assistant')"
 					x-small
 					rounded
 					icon
