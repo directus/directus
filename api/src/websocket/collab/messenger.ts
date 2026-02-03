@@ -166,7 +166,6 @@ export class Messenger {
 			.flat();
 	}
 
-
 	async pruneDeadInstances(): Promise<RegistrySnapshot> {
 		const instances = await this.store(async (store) => await store.get('instances'));
 
