@@ -1,3 +1,4 @@
+import type { DirectusError } from '@directus/sdk';
 import type { RequestError } from '@/api';
 import { i18n } from '@/lang';
 import { useNotificationsStore } from '@/stores/notifications';
@@ -10,7 +11,7 @@ export function unexpectedError(error: unknown): void {
 
 	const code =
 		(error as RequestError).response?.data?.errors?.[0]?.extensions?.code ||
-		(error as any)?.errors?.[0]?.extensions?.code ||
+		(error as DirectusError)?.errors?.[0]?.extensions?.code ||
 		(error as APIError)?.extensions?.code ||
 		'UNKNOWN';
 
