@@ -19,7 +19,10 @@ router.use(useCollection('directus_deployments'));
 
 // Validate provider parameter
 const validateProvider = (provider: string): provider is ProviderType => {
-	return DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType);
+	if (!DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType))
+		throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+
+	return true;
 };
 
 // Validation schema for creating/updating deployment
@@ -92,11 +95,9 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/:provider',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -114,11 +115,9 @@ router.get(
 router.get(
 	'/:provider/projects',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -186,12 +185,10 @@ router.get(
 router.get(
 	'/:provider/projects/:id',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
-		const projectId = req.params['id']!;
+		const provider = req.params['provider'] as ProviderType;
+		const projectId = req.params['id'] as string;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -242,11 +239,9 @@ const updateProjectsSchema = Joi.object({
 router.patch(
 	'/:provider/projects',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const { error, value } = updateProjectsSchema.validate(req.body);
 
@@ -300,11 +295,9 @@ router.patch(
 router.get(
 	'/:provider/dashboard',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -361,12 +354,10 @@ const triggerDeploySchema = Joi.object({
 router.post(
 	'/:provider/projects/:id/deploy',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const { error, value } = triggerDeploySchema.validate(req.body);
 
@@ -426,11 +417,9 @@ router.post(
 router.patch(
 	'/:provider',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const db = getDatabase();
 
@@ -470,11 +459,9 @@ router.patch(
 router.delete(
 	'/:provider',
 	asyncHandler(async (req, _res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -495,12 +482,10 @@ router.get(
 		// Disable cache - runs status needs to be fresh from provider
 		res.locals['cache'] = false;
 
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -570,12 +555,10 @@ const runDetailsQuerySchema = Joi.object({
 router.get(
 	'/:provider/runs/:id',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 		const runId = req.params['id']!;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const { error, value } = runDetailsQuerySchema.validate(req.query);
 
@@ -625,12 +608,10 @@ router.get(
 router.post(
 	'/:provider/runs/:id/cancel',
 	asyncHandler(async (req, res, next) => {
-		const provider = req.params['provider']!;
+		const provider = req.params['provider'] as ProviderType;
 		const runId = req.params['id']!;
 
-		if (!validateProvider(provider)) {
-			throw new InvalidPathParameterError({ reason: `Invalid provider: ${provider}` });
-		}
+		validateProvider(provider);
 
 		const runsService = new DeploymentRunsService({
 			accountability: req.accountability,

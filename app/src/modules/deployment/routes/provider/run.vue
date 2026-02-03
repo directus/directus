@@ -19,6 +19,8 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import LogsDisplay from '@/modules/settings/routes/system-logs/components/logs-display.vue';
+import type { Log as SystemLog } from '@/modules/settings/routes/system-logs/types';
 import { sdk } from '@/sdk';
 import { formatDurationMs } from '@/utils/format-duration-ms';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -40,7 +42,7 @@ const confirmCancel = ref(false);
 const run = ref<DeploymentRunsOutput | null>(null);
 const logs = ref<DeploymentLog[]>([]);
 const lastLogTimestamp = ref<string | null>(null);
-const logsContainer = ref<HTMLElement | null>(null);
+const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
 const shouldAutoScroll = ref(true);
 
 // Polling
@@ -48,15 +50,31 @@ const POLL_INTERVAL = 3000;
 let pollTimer: ReturnType<typeof setInterval> | null = null;
 
 // Filters
-const logLevelFilter = ref<string>('all');
+const logLevels = [
+	{ type: 'stdout', level: 1, label: 'Stdout' },
+	{ type: 'stderr', level: 2, label: 'Stderr' },
+	{ type: 'info', level: 3, label: 'Info' },
+] as const;
+
+type DeploymentLogLevel = (typeof logLevels)[number]['level'];
+
+const deploymentLogLevels = logLevels.reduce(
+	(acc, { type, level }) => {
+		acc[type] = level;
+		return acc;
+	},
+	{} as Record<DeploymentLog['type'], number>,
+);
+
+const logLevelFilter = ref<'all' | DeploymentLogLevel>('all');
 const searchQuery = ref('');
 
 const logLevelOptions = [
 	{ text: t('deployment.provider.run.log_all'), value: 'all' },
-	{ text: 'Info', value: 'info' },
-	{ text: 'Stdout', value: 'stdout' },
-	{ text: 'Stderr', value: 'stderr' },
+	...logLevels.map((level) => ({ text: level.label, value: level.level })),
 ];
+
+const logInstances = ['deployment'];
 
 const pageTitle = computed(() =>
 	currentProject.value?.name
@@ -64,14 +82,15 @@ const pageTitle = computed(() =>
 		: t('loading'),
 );
 
-const isBuilding = computed(() => run.value?.status === 'building');
+const terminalStatuses = new Set(['ready', 'error', 'canceled']);
+const isBuilding = computed(() => (run.value ? !terminalStatuses.has(run.value.status) : false));
 
-const logItems = computed(() => {
+const filteredLogs = computed(() => {
 	let result = logs.value;
 
 	// Filter by log level
 	if (logLevelFilter.value !== 'all') {
-		result = result.filter((log) => log.type === logLevelFilter.value);
+		result = result.filter((log) => deploymentLogLevels[log.type] === logLevelFilter.value);
 	}
 
 	// Filter by search query
@@ -80,11 +99,25 @@ const logItems = computed(() => {
 		result = result.filter((log) => log.message.toLowerCase().includes(query));
 	}
 
-	return result.map((log) => ({
-		...log,
-		formattedTime: format(new Date(log.timestamp), 'HH:mm:ss'),
-	}));
+	return result;
 });
+
+const displayLogs = computed<SystemLog[]>(() =>
+	filteredLogs.value.map((log, index) => {
+		const level = deploymentLogLevels[log.type] ?? deploymentLogLevels.info;
+
+		return {
+			index,
+			instance: 'deployment',
+			data: {
+				level,
+				time: new Date(log.timestamp).getTime(),
+				msg: log.message,
+			},
+			notice: false,
+		};
+	}),
+);
 
 const duration = computed(() => {
 	if (!run.value) return '—';
@@ -125,8 +158,8 @@ async function loadRun() {
 
 			// Auto-scroll to bottom only if user hasn't scrolled up
 			nextTick(() => {
-				if (logsContainer.value && shouldAutoScroll.value) {
-					logsContainer.value.scrollTop = logsContainer.value.scrollHeight;
+				if (logsDisplay.value && shouldAutoScroll.value) {
+					logsDisplay.value.scrollToBottom();
 				}
 			});
 		}
@@ -171,15 +204,6 @@ function downloadLogs() {
 
 function openDeployment() {
 	window.open(run.value!.url, '_blank');
-}
-
-function handleLogsScroll() {
-	if (!logsContainer.value) return;
-
-	const { scrollTop, scrollHeight, clientHeight } = logsContainer.value;
-	// Consider "at bottom" if within 50px of the bottom
-	const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
-	shouldAutoScroll.value = isAtBottom;
 }
 
 function startPolling() {
@@ -336,18 +360,23 @@ onUnmounted(() => {
 					</div>
 				</div>
 
-				<div ref="logsContainer" class="logs-container" @scroll="handleLogsScroll">
-					<div v-if="logItems.length === 0" class="no-logs">
+				<div class="logs-container">
+					<div v-if="displayLogs.length === 0" class="no-logs">
 						{{ $t('deployment.provider.run.no_logs') }}
 					</div>
 
-					<div v-else class="logs">
-						<div v-for="(log, index) in logItems" :key="index" :class="['log-entry', log.type]">
-							<span class="log-time">[{{ log.formattedTime }}]</span>
-							<span class="log-type">[{{ log.type.toUpperCase() }}]</span>
-							<span class="log-message">{{ log.message }}</span>
-						</div>
-					</div>
+						<LogsDisplay
+							v-else
+							ref="logsDisplay"
+							class="logs-display"
+							:logs="displayLogs"
+							:log-levels="deploymentLogLevels"
+							:instances="logInstances"
+							:stream-connected="false"
+							:show-instance="false"
+							@scroll="shouldAutoScroll = false"
+							@scrolled-to-bottom="shouldAutoScroll = true"
+						/>
 				</div>
 			</template>
 		</div>
@@ -484,7 +513,7 @@ onUnmounted(() => {
 	padding: 16px;
 	min-height: 400px;
 	max-height: calc(100vh - 400px);
-	overflow-y: auto;
+	overflow: hidden;
 }
 
 .no-logs {
@@ -493,45 +522,6 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: center;
 	color: var(--theme--foreground-subdued);
-}
-
-.logs {
-	font-family: var(--theme--fonts--monospace--font-family);
-	font-size: 13px;
-	line-height: 1.6;
-}
-
-.log-entry {
-	display: flex;
-	gap: 8px;
-	padding: 2px 0;
-
-	&.stderr {
-		color: var(--theme--danger);
-	}
-
-	&.info {
-		color: var(--theme--primary);
-	}
-
-	&.stdout {
-		color: var(--theme--foreground);
-	}
-}
-
-.log-time {
-	color: var(--theme--foreground-subdued);
-	flex-shrink: 0;
-}
-
-.log-type {
-	flex-shrink: 0;
-	min-width: 70px;
-}
-
-.log-message {
-	white-space: pre-wrap;
-	word-break: break-word;
 }
 
 .actions-wrapper {

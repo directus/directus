@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import VChip from '@/components/v-chip.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
 	status: string;
@@ -63,7 +63,7 @@ const statusLabel = computed(() => {
 			'--v-chip-color': statusStyle.color,
 			'--v-chip-background-color': statusStyle.background,
 		}"
-		:class="['deployment-status', status]"
+		:class="['deployment-status', status, 'has-icon']"
 	>
 		<VIcon :name="statusIcon" small left />
 		{{ statusLabel }}
@@ -72,6 +72,10 @@ const statusLabel = computed(() => {
 
 <style scoped lang="scss">
 .deployment-status {
+	&.has-icon {
+		--v-chip-padding: 0 8px 0 4px;
+	}
+
 	&.building {
 		:deep(.v-icon) {
 			animation: spin 1s linear infinite;

@@ -112,8 +112,4 @@ onMounted(async () => {
 .v-skeleton-loader {
 	--v-skeleton-loader-background-color: var(--theme--background-accent);
 }
-
-.v-divider {
-	--v-divider-color: var(--theme--border-color-subdued);
-}
 </style>
