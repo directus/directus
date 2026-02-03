@@ -1,7 +1,7 @@
 import type { ChatContext, ContextAttachment } from '../models/chat-request.js';
 
 function escapeAngleBrackets(text: string): string {
-	return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 interface PromptSnapshot {

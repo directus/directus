@@ -79,7 +79,7 @@ describe('formatContextForSystemPrompt', () => {
 
 		expect(result).toContain('<user_context>');
 		expect(result).toContain('[Item: My Post (posts) — key: 123]');
-		expect(result).toContain('"title": "Hello World"');
+		expect(result).toContain('&quot;title&quot;: &quot;Hello World&quot;');
 		expect(result).toContain('</user_context>');
 	});
 
@@ -106,7 +106,7 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('<visual_editing>');
 		expect(result).toContain('### sections/456 — "Hero Section"');
 		expect(result).toContain('Editable fields: title, subtitle');
-		expect(result).toContain('"title": "Welcome"');
+		expect(result).toContain('&quot;title&quot;: &quot;Welcome&quot;');
 		expect(result).toContain('</visual_editing>');
 	});
 
@@ -231,7 +231,7 @@ describe('formatContextForSystemPrompt', () => {
 			],
 		});
 
-		expect(result).toContain('[Item: She said "hello" (posts) — key: 1]');
+		expect(result).toContain('[Item: She said &quot;hello&quot; (posts) — key: 1]');
 	});
 
 	it('orders sections: custom_instructions before user_context before visual_editing', () => {
