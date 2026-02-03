@@ -3,7 +3,7 @@ import type {
 	DirectusDeploymentProject,
 	DirectusDeploymentRun,
 } from '../../../schema/deployment.js';
-import type { ApplyQueryFields, DirectusMeta, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -61,11 +61,6 @@ export interface DeploymentRunsOutput {
 	author?: string;
 }
 
-export interface DeploymentRunsResponse {
-	data: DeploymentRunsOutput[];
-	meta?: DirectusMeta;
-}
-
 /**
  * List all configured deployment providers.
  * @param query The query parameters
@@ -75,11 +70,11 @@ export const readDeployments =
 	<Schema, const TQuery extends Query<Schema, DirectusDeployment<Schema>>>(
 		query?: TQuery,
 	): RestCommand<ReadDeploymentOutput<Schema, TQuery>[], Schema> =>
-	() => ({
-		path: `/deployment`,
-		params: query ?? {},
-		method: 'GET',
-	});
+		() => ({
+			path: `/deployment`,
+			params: query ?? {},
+			method: 'GET',
+		});
 
 /**
  * Get a deployment provider by type.
@@ -93,15 +88,15 @@ export const readDeployment =
 		provider: string,
 		query?: TQuery,
 	): RestCommand<ReadDeploymentOutput<Schema, TQuery>, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
 
-		return {
-			path: `/deployment/${provider}`,
-			params: query ?? {},
-			method: 'GET',
+			return {
+				path: `/deployment/${provider}`,
+				params: query ?? {},
+				method: 'GET',
+			};
 		};
-	};
 
 /**
  * Get deployment dashboard for a provider.
@@ -112,14 +107,14 @@ export const readDeployment =
  */
 export const readDeploymentDashboard =
 	<Schema>(provider: string): RestCommand<DeploymentDashboardOutput, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/dashboard`,
-			method: 'GET',
+			return {
+				path: `/deployment/${provider}/dashboard`,
+				method: 'GET',
+			};
 		};
-	};
 
 /**
  * List projects for a deployment provider.
@@ -130,14 +125,14 @@ export const readDeploymentDashboard =
  */
 export const readDeploymentProjects =
 	<Schema>(provider: string): RestCommand<DeploymentProjectListOutput[], Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/projects`,
-			method: 'GET',
+			return {
+				path: `/deployment/${provider}/projects`,
+				method: 'GET',
+			};
 		};
-	};
 
 /**
  * Get a specific project from a deployment provider.
@@ -153,16 +148,16 @@ export const readDeploymentProject =
 		projectId: string,
 		query?: TQuery,
 	): RestCommand<ReadDeploymentProjectOutput<Schema, TQuery>, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
-		throwIfEmpty(projectId, 'Project ID cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
+			throwIfEmpty(projectId, 'Project ID cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/projects/${projectId}`,
-			params: query ?? {},
-			method: 'GET',
+			return {
+				path: `/deployment/${provider}/projects/${projectId}`,
+				params: query ?? {},
+				method: 'GET',
+			};
 		};
-	};
 
 /**
  * List deployment runs for a project.
@@ -177,17 +172,17 @@ export const readDeploymentRuns =
 		provider: string,
 		projectId: string,
 		query?: { search?: string; limit?: number; offset?: number; meta?: string },
-	): RestCommand<DeploymentRunsResponse, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
-		throwIfEmpty(projectId, 'Project ID cannot be empty');
+	): RestCommand<DeploymentRunsOutput[], Schema> =>
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
+			throwIfEmpty(projectId, 'Project ID cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/projects/${projectId}/runs`,
-			params: query ?? {},
-			method: 'GET',
+			return {
+				path: `/deployment/${provider}/projects/${projectId}/runs`,
+				params: query ?? {},
+				method: 'GET',
+			};
 		};
-	};
 
 /**
  * Get a specific deployment run with logs.
@@ -203,13 +198,13 @@ export const readDeploymentRun =
 		runId: string,
 		query?: TQuery,
 	): RestCommand<ReadDeploymentRunOutput<Schema, TQuery>, Schema> =>
-	() => {
-		throwIfEmpty(provider, 'Provider cannot be empty');
-		throwIfEmpty(runId, 'Run ID cannot be empty');
+		() => {
+			throwIfEmpty(provider, 'Provider cannot be empty');
+			throwIfEmpty(runId, 'Run ID cannot be empty');
 
-		return {
-			path: `/deployment/${provider}/runs/${runId}`,
-			params: query ?? {},
-			method: 'GET',
+			return {
+				path: `/deployment/${provider}/runs/${runId}`,
+				params: query ?? {},
+				method: 'GET',
+			};
 		};
-	};
