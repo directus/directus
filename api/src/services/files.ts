@@ -353,18 +353,20 @@ export class FilesService extends ItemsService<File> {
 					if (!file || !file.filename_disk) return;
 
 					// For backwards compatibility it must be resolved first to ensure consistent path
-					const filePath = this.generateFilenamePath(file.filename_disk);
+					const existingFilePath = this.generateFilenamePath(file.filename_disk);
 
-					if (filePath === data.filename_disk) return;
+					if (existingFilePath === data.filename_disk) return;
 
 					const disk = storage.location(data.storage ?? file['storage']);
 
-					const { name: filePrefix } = path.parse(file.filename_disk);
+					const { name: filePrefix, dir: fileDir } = path.parse(existingFilePath);
 					const updatedFilePath = this.generateFilenamePath(data.filename_disk);
 
 					const remoteFileExists = await disk.exists(data.filename_disk);
 
-					for await (const filepath of disk.list(filePrefix)) {
+					const filePrefixPath = fileDir ? normalizePath(path.join(fileDir, filePrefix)) : filePrefix;
+
+					for await (const filePath of disk.list(filePrefixPath)) {
 						/**
 						 * If the remote file exists, repoint the primary asset to it (i.e. db update only).
 						 * If the remote file does not exist, move the primary asset to location.
@@ -373,9 +375,9 @@ export class FilesService extends ItemsService<File> {
 						 * - On repoint the original asset will be deleted if `FILES_SKIP_PRIMARY_ASSET` is false.
 						 * - Any associated generated assets are deleted.
 						 */
-						if (filepath === filePath) {
+						if (filePath === existingFilePath) {
 							if (!remoteFileExists) {
-								await disk.move(filepath, updatedFilePath);
+								await disk.move(filePath, updatedFilePath);
 								continue;
 							}
 
@@ -385,7 +387,7 @@ export class FilesService extends ItemsService<File> {
 						}
 
 						// always delete generated assets
-						await disk.delete(filepath);
+						await disk.delete(filePath);
 					}
 				}
 			});
