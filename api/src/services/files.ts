@@ -26,9 +26,9 @@ import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
+import { transaction } from '../utils/transaction.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { ItemsService } from './items.js';
-import { transaction } from '../utils/transaction.js';
 
 const env = useEnv();
 const logger = useLogger();
