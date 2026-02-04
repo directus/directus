@@ -1494,6 +1494,7 @@ live_preview:
   new_window: Apri in una Nuova Finestra
   close_window: Apri in Split View
   toggle_3d: Attiva/disattiva 3D
+  display_options: Opzioni di visualizzazione
 shares: Condivisioni
 unlimited_usage: Utilizzo illimitato
 uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
@@ -1502,6 +1503,8 @@ new_share: Nuova condivisione
 ai:
   input: Input
   unknown: Sconosciuto
+  items: Elementi
+  content: Contenuti
   settings: impostazioni
   tool_approval:
     disabled: Disabilitato
