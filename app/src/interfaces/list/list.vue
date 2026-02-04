@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { DeepPartial, Field, FieldMeta } from '@directus/types';
+import { isEqual, sortBy } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import Draggable from 'vuedraggable';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -12,13 +17,8 @@ import VListItem from '@/components/v-list-item.vue';
 import VNotice from '@/components/v-notice.vue';
 import VRemove from '@/components/v-remove.vue';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import RenderTemplate from '@/views/private/components/render-template.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-import formatTitle from '@directus/format-title';
-import { DeepPartial, Field, FieldMeta } from '@directus/types';
-import { isEqual, sortBy } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
-import Draggable from 'vuedraggable';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -236,8 +236,22 @@ function closeDrawer() {
 			@update:model-value="$emit('input', $event)"
 		>
 			<template #item="{ element, index }">
-				<VListItem :dense="internalValue.length > 4" :non-editable block clickable @click="openItem(index)">
-					<VIcon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+				<VListItem
+					:dense="internalValue.length > 4"
+					:non-editable
+					:disabled="disabled && !nonEditable"
+					block
+					clickable
+					@click="openItem(index)"
+				>
+					<VIcon
+						v-if="!nonEditable && !sort"
+						name="drag_handle"
+						class="drag-handle"
+						left
+						:disabled
+						@click.stop="() => {}"
+					/>
 
 					<RenderTemplate
 						:fields="fields"
@@ -248,8 +262,8 @@ function closeDrawer() {
 
 					<div class="spacer" />
 
-					<div class="item-actions">
-						<VRemove v-if="!disabled" confirm @action="removeItem(element)" />
+					<div v-if="!nonEditable" class="item-actions">
+						<VRemove confirm :disabled @action="removeItem(element)" />
 					</div>
 				</VListItem>
 			</template>
@@ -318,6 +332,10 @@ function closeDrawer() {
 
 .v-list {
 	@include mixins.list-interface;
+}
+
+.v-list-item.disabled {
+	background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .item-actions {

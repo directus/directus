@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { computed, inject, ref } from 'vue';
 import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useFieldTree } from '@/composables/use-field-tree';
-import { computed, inject, ref } from 'vue';
 
 const props = defineProps<{
 	collectionField?: string;

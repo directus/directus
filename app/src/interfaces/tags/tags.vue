@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { computed, ref, watch } from 'vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
-import formatTitle from '@directus/format-title';
-import { computed, ref, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -138,8 +138,8 @@ function emitValue() {
 				<VChip
 					v-for="preset in presetVals"
 					:key="preset"
-					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
-					:disabled="disabled"
+					:class="['tag', { inactive: !selectedVals.includes(preset), 'non-editable': nonEditable }]"
+					:disabled
 					:dir="direction"
 					small
 					label
@@ -150,12 +150,18 @@ function emitValue() {
 				</VChip>
 			</span>
 			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<VIcon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
+				<VIcon
+					v-if="presetVals.length > 0"
+					:class="{ disabled: disabled && !nonEditable }"
+					class="custom-tags-delimiter"
+					name="chevron_right"
+				/>
 				<VChip
 					v-for="val in customVals"
 					:key="val"
-					:disabled="disabled"
 					:dir="direction"
+					:disabled
+					:class="{ 'non-editable': nonEditable }"
 					class="tag"
 					small
 					label
@@ -187,11 +193,16 @@ function emitValue() {
 		margin-inline-end: 8px;
 	}
 
+	.custom-tags-delimiter.disabled {
+		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+	}
+
 	.presets {
 		.v-chip {
 			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--theme--danger);
+			--v-chip-border-color-hover: var(--v-chip-background-color-hover);
 			--v-chip-color-hover: var(--foreground-inverted);
 
 			&.inactive {
@@ -208,6 +219,7 @@ function emitValue() {
 			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--theme--danger);
+			--v-chip-border-color-hover: var(--v-chip-background-color-hover);
 			--v-chip-close-color: var(--v-chip-background-color, var(--theme--background-normal));
 			--v-chip-close-color-hover: var(--white);
 
@@ -218,6 +230,20 @@ function emitValue() {
 
 				:deep(.chip-content .close-outline .close:hover) {
 					--v-icon-color: var(--theme--danger);
+				}
+			}
+		}
+	}
+	.presets,
+	.custom {
+		.v-chip {
+			&.disabled:not(.inactive):not(.non-editable) {
+				--v-chip-background-color: var(--theme--form--field--input--background-subdued);
+				--v-chip-color: var(--theme--form--field--input--foreground-subdued);
+				--v-chip-border-color: var(--theme--form--field--input--border-color);
+
+				&:hover {
+					border-color: var(--v-chip-border-color);
 				}
 			}
 		}

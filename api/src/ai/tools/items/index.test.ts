@@ -1,6 +1,6 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { ItemsService } from '../../../services/items.js';
 import { items } from './index.js';
 

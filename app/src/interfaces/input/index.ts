@@ -1,8 +1,8 @@
-import { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/extensions';
-import { APP_NUMERIC_TYPES } from '@/constants';
+import { DeepPartial, Field } from '@directus/types';
 import InterfaceInput from './input.vue';
 import PreviewSVG from './preview.svg?raw';
+import { APP_NUMERIC_TYPES } from '@/constants';
 
 export default defineInterface({
 	id: 'input',

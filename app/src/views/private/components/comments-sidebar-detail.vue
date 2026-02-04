@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import api from '@/api';
-import VDivider from '@/components/v-divider.vue';
-import VProgressLinear from '@/components/v-progress-linear.vue';
-import { localizedFormat } from '@/utils/localized-format';
-import { userName } from '@/utils/user-name';
 import { useGroupable } from '@directus/composables';
 import type { Comment, PrimaryKey, User } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
 import dompurify from 'dompurify';
 import { flatten, groupBy, orderBy } from 'lodash';
-import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useSidebarStore } from '../private-view/stores/sidebar';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
 import SidebarDetail from './sidebar-detail.vue';
+import api from '@/api';
+import VDivider from '@/components/v-divider.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import { localizedFormat } from '@/utils/localized-format';
+import { userName } from '@/utils/user-name';
 
 type CommentsByDateDisplay = {
 	date: Date;
@@ -41,12 +42,17 @@ const { active: open } = useGroupable({
 
 const { collection, primaryKey } = toRefs(props);
 
+const sidebarStore = useSidebarStore();
+
 const { comments, getComments, loading, refresh, commentsCount, getCommentsCount, loadingCount, userPreviews } =
 	useComments(collection, primaryKey);
 
 onMounted(() => {
 	getCommentsCount();
-	if (open.value) getComments();
+
+	if (open.value || sidebarStore.activeAccordionItem === 'comments') {
+		getComments();
+	}
 });
 
 function onToggle(open: boolean) {
@@ -232,7 +238,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 		id="comments"
 		:title
 		icon="chat_bubble_outline"
-		:badge="!loadingCount && commentsCount > 0 ? abbreviateNumber(commentsCount) : null"
+		:badge="!loadingCount && commentsCount > 0 ? abbreviateNumber(commentsCount) : undefined"
 		@toggle="onToggle"
 	>
 		<CommentInput :refresh="refresh" :collection="collection" :primary-key="primaryKey" />

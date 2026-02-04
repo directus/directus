@@ -1,10 +1,10 @@
+import { ChildProcess, spawn } from 'child_process';
 import config, { getUrl, paths } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { TestLogger } from '@common/test-logger';
 import { requestGraphQL } from '@common/transport';
 import { TEST_USERS, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
-import { ChildProcess, spawn } from 'child_process';
 import getPort from 'get-port';
 import { EnumType } from 'json-to-graphql-query';
 import type { Knex } from 'knex';

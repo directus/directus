@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { Field, File } from '@directus/types';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
+import FilesNotFound from './not-found.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -22,12 +28,6 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import type { Field, File } from '@directus/types';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FilesNotFound from './not-found.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -333,7 +333,13 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<div class="file-item">
-			<FilePreviewReplace v-if="item" class="preview" :file="item" @replace="refresh" />
+			<FilePreviewReplace
+				v-if="item"
+				class="preview"
+				:disabled="updateAllowed === false"
+				:file="item"
+				@replace="refresh"
+			/>
 
 			<ImageEditor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
 

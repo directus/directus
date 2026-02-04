@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import VCheckbox from '@/components/v-checkbox.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VMenu from '@/components/v-menu.vue';
-import { useEventListener } from '@/composables/use-event-listener';
-import { useUserStore } from '@/stores/user';
-import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/types';
 import { clone, throttle } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
+import { useEventListener } from '@/composables/use-event-listener';
+import { useUserStore } from '@/stores/user';
+import { hideDragImage } from '@/utils/hide-drag-image';
 
 const props = withDefaults(
 	defineProps<{
@@ -18,6 +18,7 @@ const props = withDefaults(
 		sort: Sort;
 		reordering: boolean;
 		allowHeaderReorder: boolean;
+		allowColumnSort: boolean;
 		showSelect?: ShowSelect;
 		showResize?: boolean;
 		showManualSort?: boolean;
@@ -238,10 +239,11 @@ function toggleManualSort() {
 
 					<div v-else class="content reorder-handle">
 						<button
-							class="header-btn"
 							type="button"
-							:disabled="!header.sortable"
-							:aria-label="header.sortable ? $t(getTooltipForSortIcon(header)) : undefined"
+							class="header-btn"
+							:class="{ disabled: !allowColumnSort }"
+							:disabled="!allowColumnSort || !header.sortable"
+							:aria-label="allowColumnSort && header.sortable ? $t(getTooltipForSortIcon(header)) : undefined"
 							@click="changeSort(header)"
 						>
 							<span class="name">
@@ -253,9 +255,10 @@ function toggleManualSort() {
 
 							<VIcon
 								v-if="header.sortable"
-								v-tooltip.top="$t(getTooltipForSortIcon(header))"
+								v-tooltip.top="allowColumnSort && $t(getTooltipForSortIcon(header))"
 								name="sort"
 								class="action-icon"
+								:class="{ disabled: !allowColumnSort }"
 								small
 							/>
 						</button>
@@ -323,6 +326,11 @@ function toggleManualSort() {
 					text-overflow: ellipsis;
 				}
 
+				&.disabled {
+					cursor: not-allowed;
+					color: var(--theme--foreground-subdued);
+				}
+
 				&:focus-visible .action-icon {
 					opacity: 1;
 				}
@@ -365,7 +373,7 @@ function toggleManualSort() {
 			transform: scaleY(-1);
 		}
 
-		&:hover .action-icon {
+		&:hover .action-icon:not(.disabled) {
 			opacity: 1;
 		}
 

@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VMenu from '@/components/v-menu.vue';
-import { useClipboard } from '@/composables/use-clipboard';
-import { formatFieldFunction } from '@/utils/format-field-function';
 import { ValidationError } from '@directus/types';
+import { ContentVersion } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -13,6 +10,10 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
+import { useClipboard } from '@/composables/use-clipboard';
+import { formatFieldFunction } from '@/utils/format-field-function';
 
 const props = withDefaults(
 	defineProps<{
@@ -35,6 +36,7 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		disabledMenu?: boolean;
 		direction?: string;
+		version?: ContentVersion | null;
 	}>(),
 	{
 		modelValue: undefined,
@@ -54,6 +56,12 @@ const isDisabled = computed(() => {
 	if (props.disabled) return true;
 	if (props.field?.meta?.readonly === true) return true;
 	if (props.batchMode && props.batchActive === false) return true;
+	return false;
+});
+
+const isNonEditable = computed(() => {
+	if (props.nonEditable) return true;
+	if (props.field?.meta?.non_editable === true) return true;
 	return false;
 });
 
@@ -224,13 +232,14 @@ function useComputedValues() {
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
-			:non-editable="nonEditable"
+			:non-editable="isNonEditable"
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
+			:version
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>

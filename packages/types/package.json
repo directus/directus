@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "13.5.0",
+	"version": "14.0.0",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -25,6 +25,7 @@
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
+		"@directus/ai": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
 		"@sinclair/typebox": "catalog:",

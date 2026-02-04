@@ -1,10 +1,10 @@
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { isObject } from 'graphql-compose';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
 import { requireText } from '../../../utils/require-text.js';
@@ -53,7 +53,10 @@ const ItemsInputSchema = z.object({
 	collection: z.string().describe('The name of the collection'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.array(ItemInputSchema).optional().describe('Always an array of objects'),
+	data: z
+		.union([z.array(ItemInputSchema), ItemInputSchema])
+		.optional()
+		.describe('Object when using keys, array with PKs for batch updates'),
 });
 
 export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({

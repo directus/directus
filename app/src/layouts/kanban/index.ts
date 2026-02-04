@@ -1,14 +1,3 @@
-import { useAiStore } from '@/ai/stores/use-ai';
-import api from '@/api';
-import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useRelationsStore } from '@/stores/relations';
-import { useServerStore } from '@/stores/server';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountRelative } from '@/utils/format-items-count';
-import { getRootPath } from '@/utils/get-root-path';
-import { translate } from '@/utils/translate-literal';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field, PermissionsAction, User } from '@directus/types';
@@ -20,6 +9,17 @@ import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
 import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import api from '@/api';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationsStore } from '@/stores/relations';
+import { useServerStore } from '@/stores/server';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatItemsCountRelative } from '@/utils/format-items-count';
+import { getRootPath } from '@/utils/get-root-path';
+import { translate } from '@/utils/translate-literal';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'kanban',
@@ -34,9 +34,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: KanbanActions,
 	},
 	setup(props, { emit }) {
-		const aiStore = useAiStore();
+		const toolsStore = useAiToolsStore();
 
-		aiStore.onSystemToolResult((tool, input) => {
+		toolsStore.onSystemToolResult((tool, input) => {
 			if (tool === 'items' && input.collection === collection.value) {
 				refresh();
 			}

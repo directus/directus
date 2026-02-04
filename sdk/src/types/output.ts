@@ -1,7 +1,7 @@
 import type { FieldsWildcard, HasManyToAnyRelation, PickRelationalFields } from './fields.js';
 import type { MappedFunctionFields } from './functions.js';
 import type { ItemType, RemoveRelationships } from './schema.js';
-import type { IfAny, IsNullable, Merge, Mutable, UnpackList, Prettify } from './utils.js';
+import type { IfAny, IsNullable, Merge, Mutable, Prettify, UnpackList } from './utils.js';
 
 /**
  * Apply the configured fields query parameter on a given Item type

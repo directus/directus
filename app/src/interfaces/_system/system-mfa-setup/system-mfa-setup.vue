@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { User } from '@directus/types';
+import { computed, inject, nextTick, ref, watch } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -13,8 +15,6 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useTFASetup } from '@/composables/use-tfa-setup';
 import { DEFAULT_AUTH_DRIVER } from '@/constants';
 import { useUserStore } from '@/stores/user';
-import { User } from '@directus/types';
-import { computed, inject, nextTick, ref, watch } from 'vue';
 
 const props = defineProps<{
 	value: string | null;

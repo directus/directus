@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { cssVar } from '@directus/utils/browser';
+import Color, { ColorInstance } from 'color';
+import { ComponentPublicInstance, computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -8,10 +12,6 @@ import VSelect from '@/components/v-select/v-select.vue';
 import VSlider from '@/components/v-slider.vue';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { isHex } from '@/utils/is-hex';
-import { cssVar } from '@directus/utils/browser';
-import Color, { ColorInstance } from 'color';
-import { ComponentPublicInstance, computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
@@ -336,6 +336,7 @@ function useColor() {
 					/>
 					<VButton
 						class="swatch"
+						:class="{ 'non-editable': nonEditable }"
 						icon
 						:style="{
 							'--swatch-color': showSwatch ? value : 'transparent',
@@ -345,6 +346,7 @@ function useColor() {
 									? 'none'
 									: 'var(--theme--border-width) solid var(--theme--form--field--input--border-color)',
 						}"
+						:disabled
 						@click="activateColorPicker"
 					>
 						<VIcon v-if="!isValidColor" name="colorize" />
@@ -353,9 +355,9 @@ function useColor() {
 				</template>
 				<template #append>
 					<div v-if="!nonEditable" class="item-actions">
-						<VRemove v-if="isValidColor" deselect @action="unsetColor" />
+						<VRemove v-if="isValidColor" deselect :disabled @action="unsetColor" />
 
-						<VIcon v-else name="palette" clickable @click="toggle" />
+						<VIcon v-else name="palette" clickable :disabled @click="toggle" />
 					</div>
 				</template>
 			</VInput>
@@ -490,9 +492,7 @@ function useColor() {
 
 .swatch {
 	--v-button-padding: 6px;
-	--v-button-background-color: transparent;
-	background-color: var(--swatch-color, transparent);
-
+	--v-button-background-color: var(--swatch-color, transparent);
 	--v-button-background-color-hover: var(--v-button-background-color);
 	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);
 	--v-button-width: calc(var(--theme--form--field--input--height) - 20px);
@@ -508,6 +508,10 @@ function useColor() {
 	border-radius: var(--swatch-radius);
 	overflow: hidden;
 	cursor: pointer;
+
+	&.non-editable {
+		--v-button-background-color-disabled: var(--v-button-background-color);
+	}
 }
 
 .presets {

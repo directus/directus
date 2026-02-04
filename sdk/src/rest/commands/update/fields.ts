@@ -1,7 +1,7 @@
 import type { DirectusField } from '../../../schema/field.js';
-import type { ApplyQueryFields, NestedPartial, Query, FieldQuery } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
+import type { ApplyQueryFields, FieldQuery, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateFieldOutput<
 	Schema,

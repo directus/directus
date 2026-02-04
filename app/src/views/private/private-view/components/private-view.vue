@@ -24,8 +24,6 @@ export interface PrivateViewProps {
 </script>
 
 <script setup lang="ts">
-import { useSettingsStore } from '@/stores/settings';
-import { useUserStore } from '@/stores/user';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed } from 'vue';
 import LicenseBanner from '../../components/license-banner.vue';
@@ -33,6 +31,8 @@ import NotificationDialogs from '../../components/notification-dialogs.vue';
 import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 
 defineProps<PrivateViewProps>();
 defineOptions({ inheritAttrs: false });
@@ -54,7 +54,7 @@ const showLicenseBanner = computed(
 
 <template>
 	<PrivateViewNoAppAccess v-if="appAccess === false" />
-	<PrivateViewRoot v-else v-bind="$props">
+	<PrivateViewRoot v-else v-bind="$props" :class="$attrs.class">
 		<template #navigation><slot name="navigation" /></template>
 		<template #actions:append><slot name="actions:append" /></template>
 		<template #actions:prepend><slot name="actions:prepend" /></template>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef, watch, nextTick } from 'vue';
-import { useFocusTrapManager } from '@/composables/use-focus-trap-manager';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useDialogRouteLeave } from '@/composables/use-dialog-route';
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
 import TransitionDialog from '@/components/transition/dialog.vue';
 import VOverlay from '@/components/v-overlay.vue';
-import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
+import { useDialogRouteLeave } from '@/composables/use-dialog-route';
+import { useFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { useShortcut } from '@/composables/use-shortcut';
 
 export type ApplyShortcut = 'meta+enter' | 'meta+s';
 

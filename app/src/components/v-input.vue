@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { isNil, omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VIcon from './v-icon/v-icon.vue';
+import { keyMap, systemKeys } from '@/composables/use-shortcut';
 
 defineOptions({ inheritAttrs: false });
 
@@ -356,7 +356,7 @@ function useInlineWarning() {
 					@keydown.enter="$emit('keydown:enter', $event)"
 				/>
 			</slot>
-			<VIcon v-if="inlineWarning" v-tooltip="inlineWarning" name="warning" class="inline-warning" />
+			<VIcon v-if="!nonEditable && inlineWarning" v-tooltip="inlineWarning" name="warning" class="inline-warning" />
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows && !nonEditable">
 				<VIcon
@@ -459,9 +459,9 @@ function useInlineWarning() {
 			}
 
 			&.disabled {
-				--arrow-color: var(--v-input-border-color);
+				--arrow-color: var(--theme--foreground-subdued);
 
-				cursor: auto;
+				cursor: not-allowed;
 			}
 		}
 
@@ -555,7 +555,7 @@ function useInlineWarning() {
 		cursor: pointer;
 
 		&.disabled {
-			cursor: auto;
+			cursor: not-allowed;
 		}
 
 		input {
@@ -587,6 +587,14 @@ function useInlineWarning() {
 		--v-icon-color: var(--theme--warning);
 
 		margin-inline-end: 8px;
+	}
+
+	&.disabled .inline-warning {
+		--v-icon-color: var(--theme--foreground-subdued);
+
+		&:hover {
+			--v-icon-color: var(--theme--warning);
+		}
 	}
 }
 </style>

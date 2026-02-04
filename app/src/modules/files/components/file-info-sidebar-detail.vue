@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { File } from '@directus/types';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -11,10 +15,6 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import { userName } from '@/utils/user-name';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import UserPopover from '@/views/private/components/user-popover.vue';
-import type { File } from '@directus/types';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterLink } from 'vue-router';
 
 const props = defineProps<{
 	file: File | null;

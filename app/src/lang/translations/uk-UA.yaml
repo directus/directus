@@ -173,7 +173,6 @@ create_policy: Створити політику
 create_user: Новий користувач
 message: Повідомлення
 delete_panel: Видалити панель
-create_webhook: Створити вебхук
 create_custom_translation: Створити спеціальний переклад
 edit_custom_translation: Редагувати спеціальний переклад
 no_custom_translations: Немає спеціальних перекладів
@@ -501,8 +500,6 @@ revision_delta_reverted: Відновлено
 revision_delta_update_message: Це поле оновлено, але його значення приховується з міркувань безпеки.
 revision_delta_other: Редакція
 revision_delta_by: '{date} {user}'
-updated_in_revision: Оновлено в цій ревізії
-updated_in_revision_matches_latest: Оновлено в цій ревізії, але відповідає останній
 differences_count: 'Без відмінностей | 1 відмінність | {count} відмінностей'
 presentation_text_values_cannot_be_reimported: 'Використовує текст презентації, значення не можуть бути повторно імпортовані.'
 download_page_as_csv: 'Завантажити сторінку у CSV'
@@ -697,12 +694,6 @@ file_count: 'Файлів немає | Один файл | {count} файлів'
 no_files_copy: Файлів не знайдено.
 user_count: 'Користувачів немає | Один користувач | {count} користувачів'
 no_users_copy: Ще немає користувачів в цій ролі.
-webhooks_count: 'Немає веб-хуків | Один веб-хук | {count} вебхуків'
-webhooks_deprecation_notice: |
-  Webhooks застаріли і їх подальше використання не рекомендується
-
-  Будь ласка, використовуйте **Процеси** з командою [Webhook / Запит URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) замість цього.
-no_webhooks_copy: Ще не налаштовано жодного веб-хука. Розпочніть зі створення одного нижче.
 no_notifications: Немає сповіщень
 no_notifications_copy: У вас все налаштовано!
 activity_log: Журнал активності
@@ -734,7 +725,6 @@ action: Дія
 ip_address: IP адреса
 user_agent: Ідентифікатор браузера
 origin: Джерело
-webhooks: Вебхуки
 decimals: Десяткові знаки
 value_decimals: Оцінити десяткові знаки
 min_value: Мінімальне значення
@@ -1198,7 +1188,6 @@ settings_project: Налаштування
 settings_appearance: Вигляд
 settings_ai: ШІ
 model_context_protocol: Протокол контексту моделі
-settings_webhooks: Вебхуки
 settings_flows: Автоматизація
 settings_system_logs: Системні журнали
 settings_presets: Закладки
@@ -1277,7 +1266,6 @@ directus_collection:
   directus_settings: Параметри конфігурації проекту
   directus_shares: Відстежує зовнішні елементи
   directus_users: Користувачі системи для платформи
-  directus_webhooks: Конфігурація HTTP-запитів на основі подій
   directus_translations: Індивідуальні переклади
   directus_versions: Версії вмісту для позицій
   directus_extensions: Налаштування розширень
@@ -1470,18 +1458,6 @@ fields:
     admin_access: Доступ адміністратора
     ip_access: IP доступ
     enforce_tfa: Вимагати 2FA
-  directus_webhooks:
-    name: Назва
-    method: Метод
-    status: Статус
-    data: Дані
-    header: Заголовок
-    value: Значення
-    headers: Заголовки запиту
-    data_label: Надіслати дані про подію
-    triggers: Тріггери
-    actions: Дії
-    collections: Колекції
 field_options:
   directus_settings:
     project_name_placeholder: Мій проект...
@@ -1583,19 +1559,6 @@ field_options:
     status_dropdown_suspended: Призупинені
     status_dropdown_archived: Архівовані
     token: Введіть надійний ключ доступу...
-  directus_webhooks:
-    status_options_active: Активний
-    status_options_inactive: Неактивний
-    data_label: Надіслати дані про подію
-    triggers_divider: Тріггери
-    actions_create: Створити
-    actions_update: Оновити
-    actions_delete: Видалити
-    actions_login: Логін
-    headers:
-      header: Заголовок
-      value: Значення
-      add: Додати заголовок
 no_fields_in_collection: 'Ще немає полей в колекції "{collection}"'
 no_value: Значення відсутнє
 do_nothing: Нічого не робити
@@ -1698,7 +1661,6 @@ editing_role: 'Роль {role}'
 editing_policy: 'Політика {policy}'
 no_permissions: Немає дозволів
 permission_add_collection: Додати колекцію
-creating_webhook: Створити вебхук
 default_label: За замовчуванням
 delete_label: Видалити
 delete_are_you_sure: >-

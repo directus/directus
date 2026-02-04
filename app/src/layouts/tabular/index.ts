@@ -1,14 +1,3 @@
-import { useAiStore } from '@/ai/stores/use-ai';
-import { HeaderRaw, Sort } from '@/components/v-table/types';
-import { useAliasFields } from '@/composables/use-alias-fields';
-import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
-import { useFieldsStore } from '@/stores/fields';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
-import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import { saveAsCSV } from '@/utils/save-as-csv';
-import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
@@ -19,6 +8,17 @@ import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { HeaderRaw, Sort } from '@/components/v-table/types';
+import { useAliasFields } from '@/composables/use-alias-fields';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useFieldsStore } from '@/stores/fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
+import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { hideDragImage } from '@/utils/hide-drag-image';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -35,9 +35,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
 
-		const aiStore = useAiStore();
+		const toolsStore = useAiToolsStore();
 
-		aiStore.onSystemToolResult((tool, input) => {
+		toolsStore.onSystemToolResult((tool, input) => {
 			if (tool === 'items' && input.collection === collection.value) {
 				refresh();
 			}

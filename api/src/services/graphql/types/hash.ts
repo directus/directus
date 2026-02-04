@@ -1,4 +1,4 @@
-import { GraphQLString, GraphQLScalarType } from 'graphql';
+import { GraphQLScalarType, GraphQLString } from 'graphql';
 
 export const GraphQLHash = new GraphQLScalarType({
 	...GraphQLString,

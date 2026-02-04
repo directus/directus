@@ -4,7 +4,7 @@ exports[`Mount component 1`] = `
 "<div data-v-f0538e61="" data-v-da9f8f0a="" class="v-notice danger full">
   <div data-v-f0538e61="" class="v-notice-title"><span data-v-f0538e61="" class="v-icon" name="error" left=""></span></div>
   <div data-v-f0538e61="" class="v-notice-content">
-    <div data-v-da9f8f0a="" data-v-f0538e61-s="">
+    <div data-v-da9f8f0a="" data-v-f0538e61-s="" class="validation-errors">
       <p data-v-da9f8f0a="" data-v-f0538e61-s="">The following fields have invalid values:</p>
       <ul data-v-da9f8f0a="" data-v-f0538e61-s="" class="validation-errors-list"></ul>
     </div>

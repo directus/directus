@@ -1,6 +1,9 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { safeValidateUIMessages } from 'ai';
 import type { NextFunction, Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createUiStream } from '../lib/create-ui-stream.js';
+import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 import { aiChatPostHandler } from './chat.post.js';
 
 // Mock dependencies
@@ -15,10 +18,6 @@ vi.mock('../lib/create-ui-stream.js', () => ({
 vi.mock('../utils/chat-request-tool-to-ai-sdk-tool.js', () => ({
 	chatRequestToolToAiSdkTool: vi.fn(),
 }));
-
-import { safeValidateUIMessages } from 'ai';
-import { createUiStream } from '../lib/create-ui-stream.js';
-import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 
 describe('aiChatPostHandler', () => {
 	let mockReq: Partial<Request>;
@@ -42,10 +41,21 @@ describe('aiChatPostHandler', () => {
 		mockRes = {
 			locals: {
 				ai: {
-					apiKeys: {
-						openai: 'test-openai-key',
-						anthropic: 'test-anthropic-key',
+					settings: {
+						openaiApiKey: 'test-openai-key',
+						anthropicApiKey: 'test-anthropic-key',
+						googleApiKey: null,
+						openaiCompatibleApiKey: null,
+						openaiCompatibleBaseUrl: null,
+						openaiCompatibleName: null,
+						openaiCompatibleModels: null,
+						openaiCompatibleHeaders: null,
+						openaiAllowedModels: ['gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'any-model-name'],
+						anthropicAllowedModels: ['claude-sonnet-4-5', 'any-model-name'],
+						googleAllowedModels: ['gemini-2.5-pro', 'gemini-2.5-flash'],
+						systemPrompt: null,
 					},
+					systemPrompt: undefined,
 				},
 			},
 		} as any;
@@ -132,30 +142,30 @@ describe('aiChatPostHandler', () => {
 			);
 		});
 
-		it('should throw InvalidPayloadError when openai model is invalid', async () => {
+		it('should accept any model string for openai provider', async () => {
 			mockReq.body = {
 				provider: 'openai',
-				model: 'invalid-model',
+				model: 'any-model-name',
 				messages: [{ role: 'user', content: 'Hello' }],
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
-				InvalidPayloadError,
-			);
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(createUiStream)).toHaveBeenCalled();
 		});
 
-		it('should throw InvalidPayloadError when anthropic model is invalid', async () => {
+		it('should accept any model string for anthropic provider', async () => {
 			mockReq.body = {
 				provider: 'anthropic',
-				model: 'invalid-model',
+				model: 'any-model-name',
 				messages: [{ role: 'user', content: 'Hello' }],
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
-				InvalidPayloadError,
-			);
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(createUiStream)).toHaveBeenCalled();
 		});
 
 		it('should throw InvalidPayloadError when messages is not an array', async () => {
@@ -231,16 +241,27 @@ describe('aiChatPostHandler', () => {
 		});
 	});
 
-	describe('api keys handling', () => {
-		it('should pass api keys from res.locals to createUiStream', async () => {
-			const customApiKeys = {
-				openai: 'custom-openai-key',
-				anthropic: 'custom-anthropic-key',
+	describe('ai settings handling', () => {
+		it('should pass aiSettings from res.locals to createUiStream', async () => {
+			const customSettings = {
+				openaiApiKey: 'custom-openai-key',
+				anthropicApiKey: 'custom-anthropic-key',
+				googleApiKey: null,
+				openaiCompatibleApiKey: null,
+				openaiCompatibleBaseUrl: null,
+				openaiCompatibleName: null,
+				openaiCompatibleModels: null,
+				openaiCompatibleHeaders: null,
+				openaiAllowedModels: ['gpt-5'],
+				anthropicAllowedModels: ['claude-sonnet-4-5'],
+				googleAllowedModels: ['gemini-2.5-pro'],
+				systemPrompt: null,
 			};
 
 			mockRes.locals = {
 				ai: {
-					apiKeys: customApiKeys,
+					settings: customSettings,
+					systemPrompt: undefined,
 				},
 			};
 
@@ -257,7 +278,7 @@ describe('aiChatPostHandler', () => {
 				provider: 'openai',
 				model: 'gpt-5',
 				tools: {},
-				apiKeys: customApiKeys,
+				aiSettings: customSettings,
 				systemPrompt: undefined,
 				onUsage: expect.any(Function),
 			});
@@ -304,10 +325,115 @@ describe('aiChatPostHandler', () => {
 				provider: 'openai',
 				model: 'gpt-5',
 				tools: expectedTools,
-				apiKeys: mockRes.locals!['ai'].apiKeys,
+				aiSettings: mockRes.locals!['ai'].settings,
 				systemPrompt: undefined,
 				onUsage: expect.any(Function),
 			});
+		});
+	});
+
+	describe('model validation', () => {
+		it('should throw ForbiddenError when allowedModels is null', async () => {
+			mockRes.locals!['ai'].settings.openaiAllowedModels = null;
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'any-model',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
+		});
+
+		it('should throw ForbiddenError when allowedModels is empty array', async () => {
+			mockRes.locals!['ai'].settings.openaiAllowedModels = [];
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'any-model',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
+		});
+
+		it('should allow model when model is in allowedModels list', async () => {
+			mockRes.locals!['ai'].settings.openaiAllowedModels = ['gpt-5', 'gpt-5-mini'];
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(createUiStream)).toHaveBeenCalled();
+		});
+
+		it('should throw ForbiddenError when model is not in allowedModels list', async () => {
+			mockRes.locals!['ai'].settings.openaiAllowedModels = ['gpt-5', 'gpt-5-mini'];
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5-nano',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
+		});
+
+		it('should validate anthropic models against anthropicAllowedModels', async () => {
+			mockRes.locals!['ai'].settings.anthropicAllowedModels = ['claude-sonnet-4-5'];
+
+			mockReq.body = {
+				provider: 'anthropic',
+				model: 'claude-haiku-4-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
+		});
+
+		it('should validate google models against googleAllowedModels', async () => {
+			mockRes.locals!['ai'].settings.googleAllowedModels = ['gemini-2.5-pro'];
+
+			mockReq.body = {
+				provider: 'google',
+				model: 'gemini-2.5-flash',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
+		});
+
+		it('should not validate openai-compatible models (no restrictions)', async () => {
+			mockReq.body = {
+				provider: 'openai-compatible',
+				model: 'any-custom-model',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(createUiStream)).toHaveBeenCalled();
 		});
 	});
 });

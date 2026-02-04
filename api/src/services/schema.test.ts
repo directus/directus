@@ -1,10 +1,10 @@
+import { ForbiddenError } from '@directus/errors';
+import type { Accountability, Snapshot, SnapshotDiffWithHash } from '@directus/types';
 import type { Diff } from 'deep-diff';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
-import { ForbiddenError } from '@directus/errors';
-import type { Accountability, Snapshot, SnapshotDiffWithHash } from '@directus/types';
 import type { Collection } from '../types/collection.js';
 import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
