@@ -1481,6 +1481,7 @@ live_preview:
   new_window: Hap në Dritare të Re
   close_window: Hap në Pamje të Ndara
   toggle_3d: Ndëro 3D
+  display_options: Opsionet e Shfaqjes
 shares: Ndaj
 unlimited_usage: Përdorim i Pakufizuar
 uses_left: Asnjë përdorim i mbetur | Një përdorim i mbetur | {n} përdorime të mbetura
@@ -1489,6 +1490,8 @@ new_share: Ndarje e Re
 ai:
   input: Input
   unknown: Panjohur
+  items: Artikuj
+  content: Përmbajtje
   settings: Parametra
   tool_approval:
     disabled: I Çaktivizuar
