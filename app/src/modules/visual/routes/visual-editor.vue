@@ -39,8 +39,7 @@ useHead({ title: t('visual_editor') });
 const moduleBarOpen = ref(true);
 const showEditableElements = ref(false);
 
-const { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering } =
-	useVisualEditorAi(isMobile);
+const { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering } = useAiSidebar(isMobile);
 
 const { dynamicDisplay, onNavigation } = usePageInfo();
 
@@ -69,7 +68,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 	}
 }
 
-function useVisualEditorAi(isMobile: ReturnType<typeof breakpoints.smallerOrEqual>) {
+function useAiSidebar(isMobile: ReturnType<typeof breakpoints.smallerOrEqual>) {
 	const aiStore = useAiStore();
 	const sidebarSize = ref(370);
 	const sidebarCollapsed = useLocalStorage('visual-editor-ai-sidebar-collapsed', false);
