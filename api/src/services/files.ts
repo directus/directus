@@ -379,9 +379,7 @@ export class FilesService extends ItemsService<File> {
 							if (!remoteFileExists) {
 								await disk.move(filePath, updatedFilePath);
 								continue;
-							}
-
-							if (toBoolean(env['FILES_DELETE_ORIGINAL_ON_MOVE']) === false) {
+							} else if (toBoolean(env['FILES_DELETE_ORIGINAL_ON_MOVE']) === false) {
 								continue;
 							}
 						}
