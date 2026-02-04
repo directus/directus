@@ -61,17 +61,6 @@ const users = computed(() => {
 .collab-field {
 	display: flex;
 	align-items: center;
-
-	.v-avatar + .v-avatar,
-	.more-users {
-		margin-inline-start: -4px;
-	}
-
-	/* Field avatars are not clickable */
-	&,
-	& button:not(.more-users) {
-		cursor: default;
-	}
 }
 
 .v-avatar {
