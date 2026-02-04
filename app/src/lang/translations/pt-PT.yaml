@@ -1052,8 +1052,11 @@ inline: Em linha
 comment: Comentário
 live_preview:
   new_window: Abrir numa Nova Janela
+  display_options: Opções de Exibição
 ai:
   unknown: Desconhecido
+  items: Items
+  content: Conteúdo
   settings: Configurações
   tool_approval:
     disabled: Desativado
