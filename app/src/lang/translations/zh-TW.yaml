@@ -1293,6 +1293,8 @@ new_share: 新增分享
 ai:
   input: 輸入
   unknown: 未知
+  items: 項目
+  content: 內容管理
   settings: 設定
   tool_approval:
     disabled: 已停用
