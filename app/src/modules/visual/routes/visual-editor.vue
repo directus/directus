@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
-import { computed, ref, useTemplateRef, watch } from 'vue';
+import { computed, type ComputedRef, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import AiConversation from '@/ai/components/ai-conversation.vue';
@@ -68,7 +68,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 	}
 }
 
-function useAiSidebar(isMobile: ReturnType<typeof breakpoints.smallerOrEqual>) {
+function useAiSidebar(isMobile: ComputedRef<boolean>) {
 	const aiStore = useAiStore();
 	const sidebarSize = ref(370);
 	const sidebarCollapsed = useLocalStorage('visual-editor-ai-sidebar-collapsed', false);
