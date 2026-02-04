@@ -1163,6 +1163,8 @@ live_preview:
 ai:
   input: Entrada
   unknown: Desconegut
+  items: Elements
+  content: Contingut
   settings: Configuració
   tool_approval:
     disabled: Deshabilitat
