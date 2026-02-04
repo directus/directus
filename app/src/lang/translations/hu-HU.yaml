@@ -1381,6 +1381,8 @@ ai:
   input: Bevitel
   unknown: Ismeretlen
   prompt_input_placeholder: Írja be az üzenetét ide...
+  items: Elemek
+  content: Ügyvitel
   settings: Beállítások
   tool_approval:
     disabled: Letiltva
