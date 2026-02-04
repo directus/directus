@@ -162,8 +162,6 @@ function focusIntoView(cid: ClientID) {
 }
 
 .v-list-item {
-	display: flex-column;
-	align-items: center;
 	gap: 8px;
 	min-width: 50px;
 }
