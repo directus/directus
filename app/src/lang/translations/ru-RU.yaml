@@ -1553,6 +1553,7 @@ live_preview:
   new_window: Открыть в новом окне
   close_window: Открыть в режиме разделённого экрана
   toggle_3d: Переключить 3D
+  display_options: Параметры отображения
 shares: Элементы Общего доступа
 unlimited_usage: Неограниченное использование
 uses_left: Не осталось использования | 1 использование осталось | осталось {n} использований
@@ -1561,6 +1562,8 @@ new_share: Новая публикация
 ai:
   input: Ввод
   unknown: Неизвестно
+  items: Элементы
+  content: Контент
   settings: Настройки
   tool_approval:
     disabled: Отключено
