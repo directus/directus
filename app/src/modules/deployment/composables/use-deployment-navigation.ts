@@ -1,9 +1,9 @@
-import { ref, computed } from 'vue';
+import { readDeployments } from '@directus/sdk';
+import type { DeploymentConfig } from '@directus/types';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { sdk } from '@/sdk';
-import { readDeployments } from '@directus/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { DeploymentConfig } from '@directus/types';
 
 const cache = ref<DeploymentConfig[]>([]);
 const loading = ref(false);
