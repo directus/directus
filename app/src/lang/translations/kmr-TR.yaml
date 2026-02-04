@@ -1489,6 +1489,7 @@ live_preview:
   new_window: Di Pencereyeke Nû de Veke
   close_window: Di Dîtina Parvekirî de Veke
   toggle_3d: 3D Veke/Bigire
+  display_options: Vebijêrkên Nîşandanê
 shares: Parvekirî
 unlimited_usage: Bikaranîna bêsînor
 uses_left: Ti bikaranînên mayî tune ne | Yek bikaranîna mayî | {n} bikaranînên mayî
@@ -1497,6 +1498,8 @@ new_share: Parvekirina Nû
 ai:
   input: Têketin
   unknown: Nenas
+  items: Hêman
+  content: Naverok
   settings: Mîhengkarî
   tool_approval:
     disabled: Neçalak
