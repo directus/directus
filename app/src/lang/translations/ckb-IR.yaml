@@ -1490,6 +1490,7 @@ live_preview:
   new_window: کردنەوە لە پەنجەرەی نوێدا
   close_window: کردنەوە لە دیمەنی دابەشکراودا
   toggle_3d: گۆڕینی ڕەوشی سێ دووری
+  display_options: بژاردەکانی نیشاندان
 shares: هاوبەشیکردنەکان
 unlimited_usage: بەکارهێنانی بێسنور
 uses_left: هیچ بەکارهێنانی نەماوە | یەک بەکارهێنان ماوە | {n} بەکارهێنان ماوە
@@ -1498,6 +1499,8 @@ new_share: هاوبەشی نوێ
 ai:
   input: تێچون
   unknown: نەناسراو
+  items: ماددەکان
+  content: ناوەڕۆک
   settings: ڕێکخستنەکان
   tool_approval:
     disabled: ناکاراکراو
