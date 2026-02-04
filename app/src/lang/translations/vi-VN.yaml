@@ -977,6 +977,7 @@ live_preview:
   new_window: Mở trong Cửa Sổ Mới
 ai:
   unknown: Không xác định
+  content: Nội dung
   settings: Cài đặt
   tool_approval:
     disabled: Đã tắt
