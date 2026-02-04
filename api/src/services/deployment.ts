@@ -46,7 +46,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			throw new InvalidPayloadError({ reason: 'Credentials must be valid JSON' });
 		}
 
-		let options: Options | undefined = data.options as Options;
+		let options: Options | undefined;
 
 		try {
 			options = this.parseValue<Options | undefined>(data.options, undefined);
