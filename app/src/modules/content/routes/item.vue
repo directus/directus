@@ -3,7 +3,7 @@ import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
+import { syncRef, useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
 import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -100,6 +100,8 @@ const {
 	validationErrors: versionValidationErrors,
 } = useVersions(collection, isSingleton, primaryKey);
 
+const collabEnabledSynced = ref(false);
+
 const {
 	isNew,
 	edits,
@@ -119,7 +121,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, query);
+} = useItem(collection, primaryKey, query, collabEnabledSynced);
 
 const aiStore = useAiStore();
 
@@ -137,7 +139,10 @@ const {
 	collabCollision,
 	update: updateCollab,
 	discard: discardCollab,
+	collabEnabled,
 } = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
+
+syncRef(collabEnabled, collabEnabledSynced, { direction: 'rtl' });
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;

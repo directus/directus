@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import type { User } from '@directus/types';
+import { syncRef } from '@vueuse/core';
 import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -59,6 +60,8 @@ const { info: collectionInfo } = useCollection('directus_users');
 
 const revisionsSidebarDetail = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
+const collabEnabledSynced = ref(false);
+
 const {
 	isNew,
 	edits,
@@ -85,6 +88,7 @@ const {
 				fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
 			}
 		: undefined,
+	collabEnabledSynced,
 );
 
 const {
@@ -95,7 +99,10 @@ const {
 	update: updateCollab,
 	clearCollidingChanges,
 	discard: discardCollab,
+	collabEnabled,
 } = useCollab(ref('directus_users'), primaryKey, ref(null), item, edits, getItem);
+
+syncRef(collabEnabled, collabEnabledSynced, { direction: 'rtl' });
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },

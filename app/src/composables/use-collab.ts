@@ -4,7 +4,7 @@ import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/typ
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
-import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
+import { computed, ComputedRef, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { sdk as baseSDK, SdkClient } from '@/sdk';
@@ -113,6 +113,7 @@ export function useCollab(
 	connected: Ref<boolean | undefined>;
 	collabCollision: Ref<{ from: Item; to: Item } | undefined>;
 	discard: () => void;
+	collabEnabled: ComputedRef<boolean>;
 } {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
@@ -132,6 +133,19 @@ export function useCollab(
 	const eventHandlers: RemoveEventHandler[] = [];
 	let largestUpdateOrder = 0;
 	const router = useRouter();
+
+	const collabEnabled = computed(() => {
+		const info = serverStore.info;
+		const settings = settingsStore.settings;
+
+		if (!info || !settings) return false;
+
+		return (
+			info.websocket !== false &&
+			info.websocket?.collaborativeEditing === true &&
+			settings.collaborative_editing_enabled === true
+		);
+	});
 
 	const collabCollision = computed(() => {
 		if (!collidingLocalChanges.value) return undefined;
@@ -159,16 +173,12 @@ export function useCollab(
 	}
 
 	onMounted(async () => {
-		if (
-			serverStore.info?.websocket &&
-			serverStore.info.websocket.collaborativeEditing &&
-			settingsStore.settings?.collaborative_editing_enabled
-		) {
-			if (!(await sdk.isConnected())) {
-				await sdk.connect();
-			} else {
-				connected.value = true;
-			}
+		if (!collabEnabled.value) return;
+
+		if (!(await sdk.isConnected())) {
+			await sdk.connect();
+		} else {
+			connected.value = true;
 		}
 	});
 
@@ -559,5 +569,5 @@ export function useCollab(
 		});
 	}
 
-	return { update, users, collabContext, connected, collabCollision, clearCollidingChanges, discard };
+	return { update, users, collabContext, connected, collabCollision, clearCollidingChanges, discard, collabEnabled };
 }

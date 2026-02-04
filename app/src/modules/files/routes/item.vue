@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Field, File } from '@directus/types';
+import { syncRef } from '@vueuse/core';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -46,6 +47,8 @@ const { breadcrumb } = useBreadcrumb();
 
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
+const collabEnabledSynced = ref(false);
+
 const {
 	isNew,
 	edits,
@@ -61,7 +64,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors,
-} = useItem<File>(ref('directus_files'), primaryKey);
+} = useItem<File>(ref('directus_files'), primaryKey, {}, collabEnabledSynced);
 
 const {
 	users: collabUsers,
@@ -71,7 +74,10 @@ const {
 	update: updateCollab,
 	clearCollidingChanges,
 	discard: discardCollab,
+	collabEnabled,
 } = useCollab(ref('directus_files'), primaryKey, ref(null), item, edits, getItem);
+
+syncRef(collabEnabled, collabEnabledSynced, { direction: 'rtl' });
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },

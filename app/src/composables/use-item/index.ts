@@ -1,29 +1,25 @@
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
-import { Alterations, Field, Item, PermissionsAction, PrimaryKey, Query, Relation } from '@directus/types';
-import { deepMapWithSchema, getEndpoint, isDetailedUpdateSyntax, isObject } from '@directus/utils';
+import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
+import { getEndpoint, isObject } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, difference, isEqual, keyBy, mergeWith, set } from 'lodash';
+import { cloneDeep, mergeWith } from 'lodash';
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
+import { sanitizeEdits } from './lib/sanitize-edits';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
-import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
-import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
-import { useUserStore } from '@/stores/user';
 import { APIError } from '@/types/error';
 import { applyConditions } from '@/utils/apply-conditions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
-import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { notify } from '@/utils/notify';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -56,28 +52,12 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	query: MaybeRef<Query> = {},
+	/** Modify the payload before saving to only save changes the user has write permissions to. All other changes are kept in the edits. */
+	saveAllowedOnly?: Ref<boolean>,
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
-	const serverStore = useServerStore();
-	const userStore = useUserStore();
-	const settingsStore = useSettingsStore();
-	const permissionsStore = usePermissionsStore();
-
-	const collabEnabled = computed(() => {
-		const info = serverStore.info;
-		const settings = settingsStore.settings;
-
-		if (!info || !settings) return false;
-
-		return (
-			info.websocket !== false &&
-			info.websocket?.collaborativeEditing === true &&
-			settings.collaborative_editing_enabled === true
-		);
-	});
-
 	const validationErrors = ref<any[]>([]);
 	const loadingItem = ref(false);
 	const saving = ref(false);
@@ -161,34 +141,6 @@ export function useItem<T extends Item>(
 		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
 	}
 
-	function sanitizeEdits(edits: any, collection: string, action: 'create' | 'update') {
-		const unsavedEdits = {};
-
-		if (!collabEnabled.value || userStore.isAdmin) return { edits, unsavedEdits };
-
-		const schema = getSchemaOverview();
-
-		const allowedEdits = deepMapWithSchema(
-			edits,
-			([key, value], context) => {
-				const permission = permissionsStore.getPermission(context.collection.collection, context.action ?? action);
-
-				if (!permission?.fields?.includes('*') && permission?.fields?.includes(String(key))) {
-					set(unsavedEdits, [...context.path, key], value);
-					return;
-				}
-
-				return [key, value];
-			},
-			{ collection, schema },
-			{
-				detailedUpdateSyntax: true,
-			},
-		);
-
-		return { allowedEdits, unsavedEdits };
-	}
-
 	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
 		const currentValues = mergeItemData(defaultValues, item, edits);
 
@@ -234,17 +186,14 @@ export function useItem<T extends Item>(
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		let sanitizedEdits = edits.value;
+		let sanitizedEdits = clearHiddenFieldsByCondition(edits.value, fields, defaultValues.value, item.value);
+		let resetTo = {};
 
-		sanitizedEdits = clearHiddenFieldsByCondition(sanitizedEdits, fields, defaultValues.value, item.value);
-
-		const { allowedEdits, unsavedEdits } = sanitizeEdits(
-			sanitizedEdits,
-			collection.value,
-			isNew.value ? 'create' : 'update',
-		);
-
-		sanitizedEdits = allowedEdits;
+		if (saveAllowedOnly?.value) {
+			const { allowedEdits, unsavedEdits } = sanitizeEdits(sanitizedEdits, collection.value);
+			sanitizedEdits = allowedEdits;
+			resetTo = unsavedEdits;
+		}
 
 		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, sanitizedEdits);
 
@@ -276,11 +225,7 @@ export function useItem<T extends Item>(
 
 			setItemValueToResponse(response);
 
-			if (!collabEnabled.value) {
-				edits.value = {};
-			} else {
-				edits.value = unsavedEdits;
-			}
+			edits.value = resetTo;
 
 			return response.data.data;
 		} catch (error) {
@@ -325,7 +270,7 @@ export function useItem<T extends Item>(
 		// Transform aliased M2A fields back to their original names
 		const itemData = transformM2AAliases(response.data.data.item, m2aAliasMap);
 
-		const newItem: Item = {
+		let newItem: Item = {
 			...(itemData || {}),
 			...cloneDeep(edits.value),
 		};
@@ -409,6 +354,14 @@ export function useItem<T extends Item>(
 			}
 		}
 
+		let resetTo = {};
+
+		if (saveAllowedOnly?.value) {
+			const { allowedEdits, unsavedEdits } = sanitizeEdits(newItem, collection.value);
+			newItem = allowedEdits;
+			resetTo = unsavedEdits;
+		}
+
 		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
@@ -426,7 +379,7 @@ export function useItem<T extends Item>(
 			});
 
 			// Reset edits to the current item
-			edits.value = {};
+			edits.value = resetTo;
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (error) {
