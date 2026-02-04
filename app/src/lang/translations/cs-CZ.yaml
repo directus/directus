@@ -1486,6 +1486,7 @@ live_preview:
   new_window: Otevřít v novém okně
   close_window: Otevřít ve rozděleném zobrazení
   toggle_3d: Přepnout 3D
+  display_options: Volby zobrazení
 shares: Sdílení
 unlimited_usage: Neomezené použití
 uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
@@ -1494,6 +1495,8 @@ new_share: Nové sdílení
 ai:
   input: Vstup
   unknown: Neznámý
+  items: Položky
+  content: Obsah
   settings: Nastavení
   tool_approval:
     disabled: Zakázáno
