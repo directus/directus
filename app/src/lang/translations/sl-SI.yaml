@@ -928,6 +928,7 @@ live_preview:
   new_window: Odpri v novem oknu
 ai:
   input: Vnos
+  items: Zapisi
   settings: Nastavitve
   tool_approval:
     disabled: Onemogočeno
