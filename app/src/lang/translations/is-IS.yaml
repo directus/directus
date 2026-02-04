@@ -394,6 +394,7 @@ comment: Athugasemd
 live_preview:
   new_window: Opna í Nýjum Glugga
 ai:
+  content: Efni
   settings: Stillingar
   tool_approval:
     disabled: Óvirkt
