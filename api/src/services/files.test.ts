@@ -1,11 +1,12 @@
 import { PassThrough } from 'node:stream';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { Driver, StorageManager } from '@directus/storage';
+import type { Driver, StorageManager } from '@directus/storage';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { getStorage } from '../storage/index.js';
 import { resetEnvMock } from '../test-utils/env.js';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
+import { createMockDriver, createMockStorage } from '../test-utils/storage.js';
 import { FilesService, ItemsService } from './index.js';
 
 vi.mock('./items.js', async () => {
@@ -19,7 +20,6 @@ vi.mock('@directus/env', async () => {
 });
 
 vi.mock('../storage/index.js');
-vi.mock('@directus/storage');
 vi.mock('./files/lib/extract-metadata.js');
 
 describe('Service / Files', () => {
@@ -94,17 +94,11 @@ describe('Service / Files', () => {
 				filesize: 500,
 			};
 
-			const mockDriver: Partial<Driver> = {
-				read: vi.fn().mockResolvedValue(new PassThrough()),
-				write: vi.fn(),
-				stat: vi.fn().mockReturnValue({ size: sample.filesize }),
-			};
+			const mockDriver = createMockDriver();
 
-			const mockStorage: Partial<StorageManager> = {
-				location: vi.fn(() => mockDriver as Driver),
-			};
+			const mockStorage = createMockStorage(mockDriver);
 
-			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
+			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 
 			tracker.on.select('select "storage_default_folder" from "directus_settings"').response([]);
 
@@ -196,8 +190,8 @@ describe('Service / Files', () => {
 
 	describe('updateMany', () => {
 		let service: FilesService;
-		let mockDriver: Partial<Driver>;
-		let mockStorage: Partial<StorageManager>;
+		let mockDriver: Driver;
+		let mockStorage: StorageManager;
 
 		beforeEach(() => {
 			service = new FilesService({
@@ -205,20 +199,11 @@ describe('Service / Files', () => {
 				schema: { collections: {}, relations: [] },
 			});
 
-			mockDriver = {
-				exists: vi.fn().mockResolvedValue(false),
-				move: vi.fn().mockResolvedValue(undefined),
-				delete: vi.fn().mockResolvedValue(undefined),
-				list: vi.fn().mockImplementation(async function* () {
-					// Default: no files
-				}),
-			};
+			mockDriver = createMockDriver();
 
-			mockStorage = {
-				location: vi.fn(() => mockDriver as Driver),
-			};
+			mockStorage = createMockStorage(mockDriver);
 
-			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
+			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 		});
 
 		it('should throw ForbiddenError when filename_disk is not unique', async () => {
@@ -242,7 +227,7 @@ describe('Service / Files', () => {
 
 			const superUpdateMany = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
-			mockDriver.list = vi.fn().mockImplementation(async function* () {
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'old-file.jpg';
 			});
 
@@ -266,7 +251,7 @@ describe('Service / Files', () => {
 
 			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
-			mockDriver.list = vi.fn().mockImplementation(async function* () {
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'old-file.jpg';
 			});
 
@@ -286,7 +271,7 @@ describe('Service / Files', () => {
 
 			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
-			mockDriver.list = vi.fn().mockImplementation(async function* () {
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'same-file.jpg';
 			});
 
@@ -318,9 +303,9 @@ describe('Service / Files', () => {
 			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
 			// Simulate remote file already exists
-			mockDriver.exists = vi.fn().mockResolvedValue(true);
+			vi.mocked(mockDriver.exists).mockResolvedValue(true);
 
-			mockDriver.list = vi.fn().mockImplementation(async function* () {
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'old-file.jpg';
 			});
 
@@ -354,9 +339,9 @@ describe('Service / Files', () => {
 			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
 			// Simulate remote file already exists
-			mockDriver.exists = vi.fn().mockResolvedValue(true);
+			vi.mocked(mockDriver.exists).mockResolvedValue(true);
 
-			mockDriver.list = vi.fn().mockImplementation(async function* () {
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'old-file.jpg';
 			});
 
@@ -378,7 +363,7 @@ describe('Service / Files', () => {
 
 			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
-			mockDriver.list = vi.fn().mockImplementation(async function* () {
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'old-file.jpg';
 				yield 'old-file-thumbnail-small.jpg';
 				yield 'old-file-thumbnail-large.jpg';
@@ -405,7 +390,7 @@ describe('Service / Files', () => {
 
 			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
-			mockDriver.list = vi.fn().mockImplementation(async function* () {
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'folder/old-file.jpg';
 				yield 'folder/old-file-thumbnail.jpg';
 			});
@@ -430,7 +415,7 @@ describe('Service / Files', () => {
 
 			let callCount = 0;
 
-			mockDriver.list = vi.fn().mockImplementation(async function* () {
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				if (callCount === 0) {
 					callCount++;
 					yield 'file1.jpg';
