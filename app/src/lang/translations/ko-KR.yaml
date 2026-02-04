@@ -1536,6 +1536,7 @@ live_preview:
   close_window: 분할 화면에서 열기
   toggle_3d: 토글 3D
   iframe_title: 라이브 웹사이트 미리보기
+  display_options: 디스플레이 옵션
 shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 사용 남음 | {n} 왼쪽 사용
@@ -1544,6 +1545,8 @@ new_share: 새 공유
 ai:
   input: 입력
   unknown: 알 수 없음
+  items: 항목
+  content: 데이터 및 컨텐츠 관리
   settings: 설정
   tool_approval:
     disabled: 비활성화 됨
