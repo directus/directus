@@ -1616,6 +1616,7 @@ live_preview:
   close_window: 分割ビューで開く
   toggle_3d: 3D 表示を切り替え
   iframe_title: サイトのライブプレビュー
+  display_options: 表示オプション
   exit_full_width: 全幅表示を終了
   open_in_visual_editor: ビジュアルエディターで開く
 shares: 共有
@@ -1646,6 +1647,8 @@ ai:
   clear_conversation: 会話をクリア
   build_with_assistant: AI アシスタントで構築
   responses_may_be_inaccurate: AI の回答は不正確な場合があります
+  items: アイテム
+  content: コンテンツ
   go_to_settings: 設定へ移動
   setup_ai_assistant: AI アシスタントをセットアップ
   setup_ai_assistant_admin_description: AI アシスタントを有効にするには、設定で AI プロバイダーの API キーを追加してください。
