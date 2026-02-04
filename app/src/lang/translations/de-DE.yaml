@@ -1491,6 +1491,7 @@ live_preview:
   new_window: In neuem Fenster öffnen
   close_window: In geteilter Ansicht öffnen
   toggle_3d: 3D umschalten
+  display_options: Anzeige-Optionen
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | Eine Verwendung übrig | {n} Verwendungen übrig
@@ -1499,6 +1500,8 @@ new_share: Neue Freigabe
 ai:
   input: Eingabe
   unknown: Unbekannt
+  items: Elemente
+  content: Inhalt
   settings: Einstellungen
   tool_approval:
     disabled: Deaktiviert
