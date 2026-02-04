@@ -1195,6 +1195,8 @@ new_share: Distribuire nouă
 ai:
   input: Input
   unknown: Necunoscut
+  items: Elemente
+  content: Conținut
   settings: Setări
   tool_approval:
     disabled: Dezactivat
