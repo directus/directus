@@ -64,6 +64,8 @@ watch(editOverlayActive, (isActive) => {
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
+	const contextStore = useAiContextStore();
+	const { stageVisualElement } = useContextStaging();
 
 	useEventListener('message', (event) => {
 		if (!sameOrigin(event.origin, frameSrc)) {
@@ -75,11 +77,14 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		if (action === 'connect') {
 			sendConfirm();
 			if (showEditableElements) sendShowEditableElements(true);
+			contextStore.syncVisualElementContextUrl(frameSrc);
 		}
 
 		if (action === 'navigation') receiveNavigation(data);
 
 		if (action === 'edit') onClickEdit(data);
+
+		if (action === 'addToContext') receiveAddToContext(data);
 	});
 
 	watch(
@@ -118,6 +123,20 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	function sendHighlightElement(data: HighlightElementData) {
 		send('highlightElement', data);
 	}
+
+	function receiveAddToContext(data: unknown) {
+		const { key, editConfig, rect } = data as AddToContextData;
+
+		if (!key || !editConfig?.collection || editConfig.item == null) return;
+
+		stageVisualElement({
+			key,
+			collection: editConfig.collection,
+			item: editConfig.item,
+			fields: editConfig.fields,
+			rect,
+		});
+	}
 }
 
 function useVisualEditingAi({
@@ -130,19 +149,6 @@ function useVisualEditingAi({
 	const aiStore = useAiStore();
 	const contextStore = useAiContextStore();
 	const toolsStore = useAiToolsStore();
-	const { stageVisualElement } = useContextStaging();
-
-	useEventListener('message', (event) => {
-		if (!sameOrigin(event.origin, frameSrc)) return;
-
-		const { action = null, data = null }: ReceiveData = event.data;
-
-		if (action === 'connect') {
-			contextStore.syncVisualElementContextUrl(frameSrc);
-		}
-
-		if (action === 'addToContext') receiveAddToContext(data);
-	});
 
 	// Any non-read mutation should trigger a preview refresh
 	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input) => {
@@ -178,20 +184,6 @@ function useVisualEditingAi({
 		unsubscribeHighlight.off();
 		contextStore.clearVisualElementContext();
 	});
-
-	function receiveAddToContext(data: unknown) {
-		const { key, editConfig, rect } = data as AddToContextData;
-
-		if (!key || !editConfig?.collection || editConfig.item == null) return;
-
-		stageVisualElement({
-			key,
-			collection: editConfig.collection,
-			item: editConfig.item,
-			fields: editConfig.fields,
-			rect,
-		});
-	}
 }
 
 function useItemWithEdits() {
