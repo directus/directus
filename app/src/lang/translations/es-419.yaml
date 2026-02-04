@@ -1582,6 +1582,7 @@ live_preview:
   close_window: Abrir en Vista Dividida
   toggle_3d: Alternar 3D
   iframe_title: Vista previa del sitio web en vivo
+  display_options: Opciones de visualización
 shares: Compartido
 unlimited_usage: Uso ilimitado
 uses_left: Sin usos restantes | Un uso restante | {n} usos restantes
@@ -1590,6 +1591,8 @@ new_share: Nueva parte
 ai:
   input: Entrada
   unknown: Desconocido
+  items: Ítems
+  content: Contenido
   settings: Ajustes
   tool_approval:
     disabled: Deshabilitado
