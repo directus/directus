@@ -753,6 +753,7 @@ live_preview:
   new_window: Digeriñ e-barzh ur prenestr nevez
 ai:
   input: Enkas
+  items: Elfennoù
   settings: Arventennoù
   tool_approval:
     disabled: Diaktivet
