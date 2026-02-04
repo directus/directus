@@ -1422,6 +1422,7 @@ live_preview:
   new_window: فتح في نافذة جديدة
   close_window: فتح في وضع العرض المقسم
   toggle_3d: تفعيل وضع ثلاثي الأبعاد
+  display_options: خيارات العرض
 shares: مشاركات
 unlimited_usage: استخدام غير محدود
 no_shares: لا توجد مشاركات لإظهارها
@@ -1429,6 +1430,8 @@ new_share: مشاركة جديدة
 ai:
   input: إدخال
   unknown: غير معروف
+  items: العناصر
+  content: المحتوى
   settings: إعدادات
   tool_approval:
     disabled: مُعطل
