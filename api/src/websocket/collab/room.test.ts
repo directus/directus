@@ -46,7 +46,6 @@ const mockMessenger = {
 	removeClient: vi.fn(),
 	registerRoom: vi.fn(),
 	unregisterRoom: vi.fn(),
-	getGlobalRooms: vi.fn().mockResolvedValue([]),
 	hasClient: vi.fn(),
 	terminateClient: vi.fn(),
 } as any;
@@ -208,11 +207,16 @@ describe('RoomManager', () => {
 		const room = await roomManager.createRoom('a', getTestItem(), null);
 		await room.join(client);
 
-		vi.mocked(mockMessenger.getGlobalRooms).mockResolvedValue([room.uid]);
+		const externalRoomUid = getRoomHash('b', '2', null);
+		mockData.set(`${externalRoomUid}:uid`, externalRoomUid);
+		mockData.set(`${externalRoomUid}:collection`, 'b');
+		mockData.set(`${externalRoomUid}:item`, '2');
 
 		const clientRooms = await roomManager.getClientRooms(client.uid);
 
 		expect(clientRooms).toEqual([room]);
+		expect(Object.keys(roomManager.rooms)).toHaveLength(1);
+		expect(roomManager.rooms[room.uid]).toBe(room);
 	});
 
 	test('cleanupRooms', async () => {

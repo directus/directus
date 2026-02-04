@@ -37,7 +37,7 @@ const { t } = useI18n();
 const users = computed(() => {
 	return toArray(props.modelValue)
 		.map((user) => ({
-			name: [user.first_name, user.last_name].filter(Boolean).join(' ') || t('unknown_user'),
+			name: [user.first_name, user.last_name].filter(Boolean).join(' ') || undefined,
 			avatar_url: user.avatar?.id
 				? getAssetUrl(user.avatar.id, {
 						imageKey: 'system-medium-cover',

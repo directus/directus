@@ -266,7 +266,7 @@ export function useCollab(
 
 			if (message.action === ACTION.SERVER.ERROR) {
 				if (message.code === ErrorCode.ServiceUnavailable) {
-					Promise.all([serverStore.hydrate(), settingsStore.hydrate()]);
+					await Promise.all([serverStore.hydrate(), settingsStore.hydrate()]);
 					sdk.disconnect();
 				}
 

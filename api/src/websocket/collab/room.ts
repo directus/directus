@@ -99,16 +99,13 @@ export class RoomManager {
 	}
 
 	/**
-	 * Get all rooms a client is currently in from global memory
+	 * Get all rooms a client is currently in from local memory
 	 */
 	async getClientRooms(uid: ClientID) {
 		const rooms = [];
-		const globalRooms = await this.messenger.getGlobalRooms();
 
-		for (const roomId of Object.values(globalRooms)) {
-			const room = await this.getRoom(roomId);
-
-			if (room && (await room.hasClient(uid))) {
+		for (const room of Object.values(this.rooms)) {
+			if (await room.hasClient(uid)) {
 				rooms.push(room);
 			}
 		}

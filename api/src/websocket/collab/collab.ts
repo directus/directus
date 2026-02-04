@@ -321,7 +321,13 @@ export class CollabHandler {
 	 * Join a collaborative editing room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
-		if (client.accountability?.share) {
+		if (!client.accountability) {
+			throw new ForbiddenError({
+				reason: 'Collaborative editing is not supported for unauthenticated clients',
+			});
+		}
+
+		if (client.accountability.share) {
 			throw new ForbiddenError({
 				reason: 'Collaborative editing is not supported for shares',
 			});
@@ -333,7 +339,7 @@ export class CollabHandler {
 		try {
 			const { accessAllowed } = await validateItemAccess(
 				{
-					accountability: client.accountability!,
+					accountability: client.accountability,
 					action: 'read',
 					collection: message.collection,
 					primaryKeys: schema.collections[message.collection]?.singleton ? [] : [message.item!],
@@ -346,7 +352,7 @@ export class CollabHandler {
 			if (message.version) {
 				const { accessAllowed: versionAccessAllowed } = await validateItemAccess(
 					{
-						accountability: client.accountability!,
+						accountability: client.accountability,
 						action: 'read',
 						collection: 'directus_versions',
 						primaryKeys: [message.version],
@@ -423,16 +429,7 @@ export class CollabHandler {
 		// Focus field before update to prevent concurrent overwrite conflicts
 		let focus = await room.getFocusByUser(client.uid);
 
-		// Unset should not acquire focus
-		if (message.changes === undefined) {
-			const currentFocuser = await room.getFocusByField(message.field);
-
-			if (currentFocuser && currentFocuser !== client.uid) {
-				throw new ForbiddenError({
-					reason: `Field ${message.field} is already focused by another user`,
-				});
-			}
-		} else {
+		if (message.changes !== undefined) {
 			if (focus !== message.field) {
 				await room.focus(client, message.field);
 
@@ -445,9 +442,7 @@ export class CollabHandler {
 					reason: `Cannot update field ${message.field} without focusing on it first`,
 				});
 			}
-		}
 
-		if (message.changes !== undefined) {
 			await validateChanges({ [message.field]: message.changes }, room.collection, room.item, {
 				knex,
 				schema,
@@ -456,6 +451,14 @@ export class CollabHandler {
 
 			await room.update(client, { [message.field]: message.changes });
 		} else {
+			const currentFocuser = await room.getFocusByField(message.field);
+
+			if (currentFocuser && currentFocuser !== client.uid) {
+				throw new ForbiddenError({
+					reason: `Field ${message.field} is already focused by another user`,
+				});
+			}
+
 			await room.unset(client, message.field);
 		}
 	}
