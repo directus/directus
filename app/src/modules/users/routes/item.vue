@@ -95,6 +95,8 @@ const {
 	update: updateCollab,
 	clearCollidingChanges,
 	discard: discardCollab,
+	focused,
+	connectionId,
 } = useCollab(ref('directus_users'), primaryKey, ref(null), item, edits, getItem);
 
 const {
@@ -312,7 +314,7 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #actions>
-			<CollabHeader :model-value="collabUsers" :connected="connected" />
+			<CollabHeader :model-value="collabUsers" :connected="connected" :focuses="focused" :current-connection="connectionId" />
 
 			<VDialog
 				v-model="confirmDelete"
