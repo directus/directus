@@ -1667,6 +1667,7 @@ live_preview:
   close_window: Open in Split View
   toggle_3d: Toggle 3D
   iframe_title: Live Website Preview
+  display_options: Display Options
   exit_full_width: Exit Full Width
   open_in_visual_editor: Open in Visual Editor
 shares: Shares
@@ -1697,6 +1698,29 @@ ai:
   clear_conversation: Clear Conversation
   build_with_assistant: Build with AI Assistant
   responses_may_be_inaccurate: AI responses may be inaccurate
+  add_content: Add Content
+  prompt: Prompt
+  prompts: Prompts
+  items: Items
+  content: Content
+  insert_prompt: Insert Prompt
+  insert_reusable_prompt: Insert a reusable prompt template
+  insert_item_context: Insert item context
+  coming_soon: Coming soon
+  failed_to_load_prompts: Failed to load prompts
+  failed_to_load_items: Failed to load items
+  some_context_failed: '{count} context item(s) could not be loaded'
+  prompt_inserted: Prompt inserted
+  prompt_staged: Prompt staged
+  items_staged: Items staged
+  some_items_staged: '{count} item(s) staged (limit reached)'
+  image_preview: Image preview
+  item_staged: Item staged
+  invalid_collection: Invalid collection
+  element_already_staged: Element already staged
+  max_elements_reached: Maximum elements reached
+  element_staged: Element staged
+  failed_to_insert_prompt: Failed to insert prompt
   go_to_settings: Go to Settings
   setup_ai_assistant: Setup AI Assistant
   setup_ai_assistant_admin_description: Add your AI provider API keys in settings to enable AI Assistant.
