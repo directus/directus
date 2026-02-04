@@ -1576,6 +1576,7 @@ live_preview:
   close_window: حالت توو در توو
   toggle_3d: حالت سه بعدی
   iframe_title: پیش نمایش زنده وب‌سایت
+  display_options: تنظیمات نحوه نمایش
 shares: اشتراک‌گذاری
 unlimited_usage: Unlimited usage
 uses_left: هیچ استفاده‌ای نمانده | یک استفاده مانده | {n} استفاده مانده
@@ -1584,6 +1585,8 @@ new_share: اشتراک گذاری جدید
 ai:
   input: ورودی
   unknown: نامشخص
+  items: آیتمها
+  content: محتوا
   settings: تنظیمات
   tool_approval:
     disabled: غیرفعال شده
