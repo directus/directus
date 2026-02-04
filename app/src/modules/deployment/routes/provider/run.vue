@@ -365,18 +365,18 @@ onUnmounted(() => {
 						{{ $t('deployment.provider.run.no_logs') }}
 					</div>
 
-						<LogsDisplay
-							v-else
-							ref="logsDisplay"
-							class="logs-display"
-							:logs="displayLogs"
-							:log-levels="deploymentLogLevels"
-							:instances="logInstances"
-							:stream-connected="false"
-							:show-instance="false"
-							@scroll="shouldAutoScroll = false"
-							@scrolled-to-bottom="shouldAutoScroll = true"
-						/>
+					<LogsDisplay
+						v-else
+						ref="logsDisplay"
+						class="logs-display"
+						:logs="displayLogs"
+						:log-levels="deploymentLogLevels"
+						:instances="logInstances"
+						:stream-connected="false"
+						:show-instance="false"
+						@scroll="shouldAutoScroll = false"
+						@scrolled-to-bottom="shouldAutoScroll = true"
+					/>
 				</div>
 			</template>
 		</div>

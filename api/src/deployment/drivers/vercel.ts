@@ -66,11 +66,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	/**
 	 * Make authenticated request with retry on rate limit and concurrency control
 	 */
-	private async request<T>(
-		endpoint: string,
-		options: DeploymentRequestOptions = {},
-		retryCount = 0,
-	): Promise<T> {
+	private async request<T>(endpoint: string, options: DeploymentRequestOptions = {}, retryCount = 0): Promise<T> {
 		return this.requestLimit(async () => {
 			const response = await this.axiosRequest<T>(VercelDriver.API_URL, endpoint, {
 				...options,

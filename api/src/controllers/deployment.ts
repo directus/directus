@@ -19,7 +19,7 @@ router.use(useCollection('directus_deployments'));
 
 // Validate provider parameter
 const validateProvider = (provider: string): provider is ProviderType => {
-	return DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType)
+	return DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType);
 };
 
 // Validation schema for creating/updating deployment
