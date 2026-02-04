@@ -1480,6 +1480,7 @@ live_preview:
   new_window: Шинэ цонхонд нээх
   close_window: Дэлгэц хуваах горимд нээх
   toggle_3d: 3D солих
+  display_options: Харагдах байдлын тохиргоо
 shares: Хуваалцсан
 unlimited_usage: Хязгааргүй хэрэглээ
 uses_left: Ашиглалт үлдсэнгүй | Нэг ашиглалт үлдсэн | {n} ашиглалт үлдсэн
@@ -1488,6 +1489,8 @@ new_share: Шинэ хуваалцал
 ai:
   input: Оролт
   unknown: Үл мэдэгдэх
+  items: Оруулгууд
+  content: Контент
   settings: Тохиргоо
   tool_approval:
     disabled: Идэвхгүй
