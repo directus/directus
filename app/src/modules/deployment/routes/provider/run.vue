@@ -440,7 +440,7 @@ onUnmounted(() => {
 	padding: 12px 16px;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
-	min-width: 0;
+	min-inline-size: 0;
 	overflow: hidden;
 }
 
@@ -462,7 +462,7 @@ onUnmounted(() => {
 .stat-value {
 	color: var(--theme--foreground);
 	flex: 1;
-	min-width: 0;
+	min-inline-size: 0;
 
 	&.monospace {
 		font-family: var(--theme--fonts--monospace--font-family);
@@ -511,8 +511,8 @@ onUnmounted(() => {
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	padding: 16px;
-	min-height: 400px;
-	max-height: calc(100vh - 400px);
+	min-block-size: 400px;
+	max-block-size: calc(100vh - 400px);
 	overflow: hidden;
 }
 

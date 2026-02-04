@@ -388,8 +388,7 @@ onMounted(() => {
 }
 
 :deep(.presentation-divider) {
-	margin-block-start: 0;
-	margin-block-end: var(--theme--form--row-gap);
+	margin-block: 0 var(--theme--form--row-gap);
 
 	&:not(:first-child) {
 		margin-block-start: var(--theme--form--row-gap);

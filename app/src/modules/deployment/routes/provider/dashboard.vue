@@ -118,8 +118,7 @@ onMounted(async () => {
 }
 
 :deep(.presentation-divider) {
-	margin-block-start: 0;
-	margin-block-end: var(--theme--form--row-gap);
+	margin-block: 0 var(--theme--form--row-gap);
 }
 
 .projects-list {
