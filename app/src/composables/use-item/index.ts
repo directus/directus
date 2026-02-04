@@ -1,10 +1,10 @@
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
-import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
-import { getEndpoint, isDetailedUpdateSyntax, isObject } from '@directus/utils';
+import { Alterations, Field, Item, PermissionsAction, PrimaryKey, Query, Relation } from '@directus/types';
+import { deepMapWithSchema, getEndpoint, isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, isEqual, mergeWith } from 'lodash';
+import { cloneDeep, difference, isEqual, keyBy, mergeWith, set } from 'lodash';
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
@@ -18,10 +18,12 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 import { APIError } from '@/types/error';
 import { applyConditions } from '@/utils/apply-conditions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
+import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { notify } from '@/utils/notify';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -59,10 +61,9 @@ export function useItem<T extends Item>(
 	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const serverStore = useServerStore();
+	const userStore = useUserStore();
 	const settingsStore = useSettingsStore();
 	const permissionsStore = usePermissionsStore();
-	const relationsStore = useRelationsStore();
-	const fieldsStore = useFieldsStore();
 
 	const collabEnabled = computed(() => {
 		const info = serverStore.info;
@@ -160,51 +161,32 @@ export function useItem<T extends Item>(
 		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
 	}
 
-	function sanitizeEdits(edits: any, collection: string, action: 'create' | 'update'): any {
-		if (Array.isArray(edits)) {
-			return edits.map((item) => (isObject(item) ? sanitizeEdits(item, collection, action) : item));
-		}
+	function sanitizeEdits(edits: any, collection: string, action: 'create' | 'update') {
+		const unsavedEdits = {};
 
-		if (!isObject(edits)) return edits;
+		if (!collabEnabled.value || userStore.isAdmin) return { edits, unsavedEdits };
 
-		const permission = permissionsStore.getPermission(collection, action);
-		if (!permission) return {};
+		const schema = getSchemaOverview();
 
-		const allowedFields = permission.fields;
-		const pkField = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
+		const allowedEdits = deepMapWithSchema(
+			edits,
+			([key, value], context) => {
+				const permission = permissionsStore.getPermission(context.collection.collection, context.action ?? action);
 
-		return Object.fromEntries(
-			Object.entries(edits)
-				.filter(([key]) => {
-					if (key.startsWith('$')) return true;
-					if (key === pkField) return true;
-					if (!allowedFields) return false;
-					if (allowedFields.includes('*')) return true;
-					return allowedFields.includes(key);
-				})
-				.map(([key, value]) => {
-					const relation = relationsStore.getRelationForField(collection, key);
+				if (!permission?.fields?.includes('*') && permission?.fields?.includes(String(key))) {
+					set(unsavedEdits, [...context.path, key], value);
+					return;
+				}
 
-					if (relation && isObject(value)) {
-						if (isDetailedUpdateSyntax(value)) {
-							return [
-								key,
-								{
-									create: sanitizeEdits((value as any).create, relation.collection, 'create'),
-									update: sanitizeEdits((value as any).update, relation.collection, 'update'),
-									delete: (value as any).delete,
-								},
-							];
-						}
-
-						const pkField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection)?.field;
-						const nestedAction = pkField && (value as any)[pkField] ? 'update' : 'create';
-						return [key, sanitizeEdits(value, relation.collection, nestedAction)];
-					}
-
-					return [key, value];
-				}),
+				return [key, value];
+			},
+			{ collection, schema },
+			{
+				detailedUpdateSyntax: true,
+			},
 		);
+
+		return { allowedEdits, unsavedEdits };
 	}
 
 	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
@@ -252,11 +234,17 @@ export function useItem<T extends Item>(
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		const editsWithClearedValues = clearHiddenFieldsByCondition(edits.value, fields, defaultValues.value, item.value);
+		let sanitizedEdits = edits.value;
 
-		const sanitizedEdits = collabEnabled.value
-			? sanitizeEdits(editsWithClearedValues, collection.value, isNew.value ? 'create' : 'update')
-			: editsWithClearedValues;
+		sanitizedEdits = clearHiddenFieldsByCondition(sanitizedEdits, fields, defaultValues.value, item.value);
+
+		const { allowedEdits, unsavedEdits } = sanitizeEdits(
+			sanitizedEdits,
+			collection.value,
+			isNew.value ? 'create' : 'update',
+		);
+
+		sanitizedEdits = allowedEdits;
 
 		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, sanitizedEdits);
 
@@ -291,16 +279,7 @@ export function useItem<T extends Item>(
 			if (!collabEnabled.value) {
 				edits.value = {};
 			} else {
-				// Keep edits that were filtered out by permissions
-				const newEdits = cloneDeep(edits.value);
-
-				for (const key of Object.keys(newEdits)) {
-					if (key in sanitizedEdits && isEqual(newEdits[key], sanitizedEdits[key])) {
-						delete newEdits[key];
-					}
-				}
-
-				edits.value = newEdits;
+				edits.value = unsavedEdits;
 			}
 
 			return response.data.data;

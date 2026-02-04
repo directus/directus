@@ -13,12 +13,14 @@ type DeepMapCallbackContext = {
 	relationType: RelationInfo['relationType'] | null;
 	object: Record<string, unknown>;
 	action?: 'create' | 'update' | 'delete' | undefined;
+	path: string[];
 };
 
 type DeepMapContext = {
 	schema: SchemaOverview;
 	collection: string;
 	relationInfo?: RelationInfo & { action?: 'create' | 'update' | 'delete' | undefined };
+	path?: string[];
 };
 
 type DeepMapOptions = {
@@ -70,6 +72,7 @@ export function deepMapWithSchema(
 ): any | Promise<any> {
 	const collection = context.schema.collections[context.collection]!;
 	const action = context.relationInfo?.action;
+	const path = context.path ?? [];
 
 	let primaryKeyMapped = false;
 
@@ -120,6 +123,7 @@ export function deepMapWithSchema(
 							schema: context.schema,
 							collection: relationInfo.relation.related_collection!,
 							relationInfo: { ...relationInfo, action: undefined },
+							path: [...path, key],
 						};
 
 						processedValue = deepMapWithSchema(processedValue, callback as any, subContext, options as any);
@@ -129,7 +133,7 @@ export function deepMapWithSchema(
 
 					case 'o2m': {
 						// Detailed syntax: explicit actions. Simple arrays: inherited ambiguous upsert behavior
-						const map = (childValue: any, childAction?: 'create' | 'update' | 'delete') => {
+						const map = (childValue: any, path: string[], childAction?: 'create' | 'update' | 'delete') => {
 							if (!isObject(childValue) && !options?.mapPrimaryKeys) return childValue;
 							leaf = false;
 							return deepMapWithSchema(
@@ -139,6 +143,7 @@ export function deepMapWithSchema(
 									schema: context.schema,
 									collection: relationInfo!.relation!.collection,
 									relationInfo: { ...relationInfo, action: childAction },
+									path,
 								},
 								options as any,
 							);
@@ -146,15 +151,15 @@ export function deepMapWithSchema(
 
 						if (Array.isArray(processedValue)) {
 							// Simple array results in ambiguous upsert behavior (action is undefined)
-							processedValue = processArray(processedValue, (v) => map(v, undefined));
+							processedValue = processArray(processedValue, (v, i) => map(v, [...path, key, String(i)], undefined));
 						} else if (options?.detailedUpdateSyntax && isDetailedUpdateSyntax(processedValue)) {
 							const val = value as any;
 
 							processedValue = {
 								// Scoped action context per bucket
-								create: processArray(val.create, (v) => map(v, 'create')),
-								update: processArray(val.update, (v) => map(v, 'update')),
-								delete: processArray(val.delete, (v) => map(v, 'delete')),
+								create: processArray(val.create, (v, i) => map(v, [...path, key, 'create', String(i)], 'create')),
+								update: processArray(val.update, (v, i) => map(v, [...path, key, 'update', String(i)], 'update')),
+								delete: processArray(val.delete, (v, i) => map(v, [...path, key, 'delete', String(i)], 'delete')),
 							};
 
 							const extras: any[] = [];
@@ -204,7 +209,7 @@ export function deepMapWithSchema(
 							}
 						} else if (isObject(processedValue)) {
 							// For non-standard objects, we still traverse it to ensure deep validation
-							processedValue = map(processedValue, undefined);
+							processedValue = map(processedValue, [...path, key], undefined);
 						}
 
 						break;
@@ -228,6 +233,7 @@ export function deepMapWithSchema(
 							schema: context.schema,
 							collection: related_collection,
 							relationInfo: { ...relationInfo, action: undefined },
+							path: [...path, key],
 						};
 
 						processedValue = deepMapWithSchema(processedValue, callback as any, subContext, options as any);
@@ -240,7 +246,7 @@ export function deepMapWithSchema(
 
 			// After processing recursion, run callback
 			return maybeAwait(processedValue, (finalValue) => {
-				return callback([key, finalValue], { collection, field, ...relationInfo, leaf, object, action });
+				return callback([key, finalValue], { collection, field, ...relationInfo, leaf, object, action, path });
 			});
 		});
 
@@ -261,7 +267,7 @@ function maybeAwait(value: any, fn: (val: any) => any) {
 	return fn(value);
 }
 
-function processArray(arr: any[], fn: (item: any) => any) {
+function processArray<T, R>(arr: T[], fn: (item: T, index: number) => R) {
 	if (!arr) return arr;
 	const results = arr.map(fn);
 	if (results.some(isPromise)) return Promise.all(results);
