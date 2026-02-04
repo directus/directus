@@ -1141,6 +1141,8 @@ no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
 ai:
   input: Unos
+  items: Stavke
+  content: Sadržaj
   settings: Postavke
   tool_approval:
     disabled: Onemogućeno
