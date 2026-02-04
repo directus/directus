@@ -105,7 +105,7 @@ function focusIntoView(cid: ClientID) {
 		<VMenu v-if="users.length > DISPLAY_LIMIT" show-arrow>
 			<template #activator="{ toggle }">
 				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round clickable @click="toggle">
-					+{{ users.length - 3 }}
+					+{{ users.length - DISPLAY_LIMIT }}
 				</VAvatar>
 			</template>
 
