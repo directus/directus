@@ -1,4 +1,11 @@
 import type { Credentials, Deployment, Details, Log, Options, Project, TriggerResult } from '@directus/types';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { getAxios } from '../request/index.js';
+
+export type DeploymentRequestOptions = Pick<AxiosRequestConfig<string>, 'method' | 'headers'> & {
+	body?: string | null;
+	params?: Record<string, string>;
+};
 
 export abstract class DeploymentDriver<
 	TCredentials extends Credentials = Credentials,
@@ -10,6 +17,36 @@ export abstract class DeploymentDriver<
 	constructor(credentials: TCredentials, options: TOptions = {} as TOptions) {
 		this.credentials = credentials;
 		this.options = options;
+	}
+
+	protected async axiosRequest<T>(
+		apiUrl: string,
+		endpoint: string,
+		options: DeploymentRequestOptions = {},
+	): Promise<AxiosResponse<T>> {
+		const { params, ...requestOptions } = options;
+		const url = new URL(endpoint, apiUrl);
+
+		if (params) {
+			for (const [key, value] of Object.entries(params)) {
+				url.searchParams.set(key, value);
+			}
+		}
+
+		const axios = await getAxios();
+
+		const requestConfig: AxiosRequestConfig<string | null> = {
+			url: url.toString(),
+			method: requestOptions.method ?? 'GET',
+			validateStatus: () => true,
+			headers: requestOptions.headers ?? {},
+		};
+
+		if (requestOptions.body) {
+			requestConfig.data = requestOptions.body;
+		}
+
+		return await axios.request<T>(requestConfig);
 	}
 
 	/**

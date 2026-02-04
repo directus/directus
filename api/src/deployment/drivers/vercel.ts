@@ -1,8 +1,7 @@
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
 import pLimit from 'p-limit';
-import { getAxios } from '../../request/index.js';
-import { DeploymentDriver } from '../deployment.js';
+import { DeploymentDriver, type DeploymentRequestOptions } from '../deployment.js';
 
 export interface VercelCredentials extends Credentials {
 	access_token: string;
@@ -69,37 +68,20 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	 */
 	private async request<T>(
 		endpoint: string,
-		options: RequestInit & { params?: Record<string, string> } = {},
+		options: DeploymentRequestOptions = {},
 		retryCount = 0,
 	): Promise<T> {
 		return this.requestLimit(async () => {
-			const { params, ...fetchOptions } = options;
-			const url = new URL(endpoint, VercelDriver.API_URL);
-
-			// Add team_id if configured
-			if (this.options.team_id) {
-				url.searchParams.set('teamId', this.options.team_id);
-			}
-
-			// Add custom params
-			if (params) {
-				for (const [key, value] of Object.entries(params)) {
-					url.searchParams.set(key, value);
-				}
-			}
-
-			const axios = await getAxios();
-
-			const response = await axios.request({
-				url: url.toString(),
-				method: fetchOptions.method ?? 'GET',
-				data: fetchOptions.body,
-				signal: fetchOptions.signal,
-				validateStatus: () => true,
+			const response = await this.axiosRequest<T>(VercelDriver.API_URL, endpoint, {
+				...options,
 				headers: {
 					Authorization: `Bearer ${this.credentials.access_token}`,
 					'Content-Type': 'application/json',
-					...(fetchOptions.headers as Record<string, string> | undefined),
+					...(options.headers ?? {}),
+				},
+				params: {
+					...(this.options.team_id ? { teamId: this.options.team_id } : {}),
+					...(options.params ?? {}),
 				},
 			});
 
@@ -121,7 +103,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 				});
 			}
 
-			const body = response.data ?? {};
+			const body = response.data;
 
 			if (response.status >= 400) {
 				const message =
