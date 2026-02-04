@@ -166,10 +166,6 @@ function focusIntoView(cid: ClientID) {
 	min-width: 50px;
 }
 
-.user-status {
-	white-space: nowrap;
-}
-
 .more-users-list {
 	--v-list-min-width: auto;
 
