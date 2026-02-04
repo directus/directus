@@ -59,7 +59,7 @@ const isDisabled = computed(() => {
 	return false;
 });
 
-const computedNonEditable = computed(() => {
+const isNonEditable = computed(() => {
 	if (props.nonEditable) return true;
 	if (props.field?.meta?.non_editable === true) return true;
 	return false;
