@@ -1186,6 +1186,8 @@ live_preview:
   refresh: Segarkan pratinjau
   new_window: Buka di Jendela Baru
 ai:
+  items: Barang-barang
+  content: Konten
   settings: Pengaturan
   tool_approval:
     disabled: Dinonaktifkan
