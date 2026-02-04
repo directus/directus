@@ -5,6 +5,7 @@
 '@directus/sdk': minor
 '@directus/app': minor
 '@directus/errors': minor
+'@directus/env': minor
 ---
 
 Added deployment module for triggering deployments from Directus with Vercel as first supported provider
