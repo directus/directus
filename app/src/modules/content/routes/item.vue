@@ -142,7 +142,7 @@ const {
 	collabEnabled,
 } = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
-syncRef(collabEnabled, collabEnabledSynced, { direction: 'rtl' });
+syncRef(collabEnabled, collabEnabledSynced, { direction: 'ltr' });
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;

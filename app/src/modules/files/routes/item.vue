@@ -77,7 +77,7 @@ const {
 	collabEnabled,
 } = useCollab(ref('directus_files'), primaryKey, ref(null), item, edits, getItem);
 
-syncRef(collabEnabled, collabEnabledSynced, { direction: 'rtl' });
+syncRef(collabEnabled, collabEnabledSynced, { direction: 'ltr' });
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },

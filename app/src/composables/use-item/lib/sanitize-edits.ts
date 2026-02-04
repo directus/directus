@@ -19,7 +19,7 @@ export function sanitizeEdits(edits: any, collection: string) {
 		([key, value], context) => {
 			const permission = permissionsStore.getPermission(context.collection.collection, context.action ?? 'update');
 
-			if (!permission?.fields?.includes('*') && permission?.fields?.includes(String(key))) {
+			if (!permission?.fields?.includes('*') && !permission?.fields?.includes(String(key))) {
 				set(unsavedEdits, [...context.path, key], value);
 				return;
 			}
