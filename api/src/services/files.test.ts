@@ -44,7 +44,7 @@ describe('Service / Files', () => {
 				schema: { collections: {}, relations: [] },
 			});
 
-			superCreateOne = vi.spyOn(ItemsService.prototype, 'createOne').mockReturnValue(Promise.resolve(1));
+			superCreateOne = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(1);
 		});
 
 		it('throws InvalidPayloadError when "type" is not provided', async () => {
@@ -62,6 +62,19 @@ describe('Service / Files', () => {
 			expect(superCreateOne).not.toHaveBeenCalled();
 		});
 
+		it('should throw ForbiddenError when filename_disk is not unique', async () => {
+			tracker.on
+				.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
+				.response([{ filename_disk: 'existing-file.jpg' }]);
+
+			await expect(
+				service.createOne({
+					type: 'application/octet-stream',
+					filename_disk: 'existing-file.jpg',
+				}),
+			).rejects.toThrow(ForbiddenError);
+		});
+
 		it('creates a file entry when "type" is provided', async () => {
 			await service.createOne({
 				title: 'Test File',
@@ -71,6 +84,20 @@ describe('Service / Files', () => {
 			});
 
 			expect(superCreateOne).toHaveBeenCalled();
+		});
+
+		it('should normalize filename_disk path', async () => {
+			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
+
+			await service.createOne({
+				type: 'application/octet-stream',
+				filename_disk: '/folder/../new-file.jpg',
+			});
+
+			expect(superCreateOne).toHaveBeenCalledWith(
+				{ filename_disk: 'new-file.jpg', type: 'application/octet-stream' },
+				undefined,
+			);
 		});
 	});
 
@@ -95,9 +122,7 @@ describe('Service / Files', () => {
 			};
 
 			const mockDriver = createMockDriver();
-
 			const mockStorage = createMockStorage(mockDriver);
-
 			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 
 			tracker.on.select('select "storage_default_folder" from "directus_settings"').response([]);
@@ -200,9 +225,7 @@ describe('Service / Files', () => {
 			});
 
 			mockDriver = createMockDriver();
-
 			mockStorage = createMockStorage(mockDriver);
-
 			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 		});
 
@@ -221,9 +244,9 @@ describe('Service / Files', () => {
 		it('should normalize filename_disk path', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
-			tracker.on
-				.select('select "id", "storage", "filename_disk" from "directus_files"')
-				.response([{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' }]);
+			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+				{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
+			]);
 
 			const superUpdateMany = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
@@ -260,6 +283,8 @@ describe('Service / Files', () => {
 			});
 
 			expect(mockDriver.move).toHaveBeenCalledWith('old-file.jpg', 'new-file.jpg');
+			// delete should not be called since its a move
+			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});
 
 		it('should not move file when filename_disk has not changed', async () => {
@@ -269,7 +294,7 @@ describe('Service / Files', () => {
 				{ id: 1, storage: 'local', filename_disk: 'same-file.jpg' },
 			]);
 
-			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
+			const superUpdateMany = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
 			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'same-file.jpg';
@@ -279,7 +304,9 @@ describe('Service / Files', () => {
 				filename_disk: 'same-file.jpg',
 			});
 
+			expect(superUpdateMany).toHaveBeenCalledWith([1], { filename_disk: 'same-file.jpg' }, undefined);
 			expect(mockDriver.move).not.toHaveBeenCalled();
+			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});
 
 		it('should delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is true', async () => {
@@ -302,7 +329,6 @@ describe('Service / Files', () => {
 
 			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
-			// Simulate remote file already exists
 			vi.mocked(mockDriver.exists).mockResolvedValue(true);
 
 			vi.mocked(mockDriver.list).mockImplementation(async function* () {
@@ -313,7 +339,6 @@ describe('Service / Files', () => {
 				filename_disk: 'new-file.jpg',
 			});
 
-			// Should not move (remote exists), but should delete original
 			expect(mockDriver.move).not.toHaveBeenCalled();
 			expect(mockDriver.delete).toHaveBeenCalledWith('old-file.jpg');
 		});
@@ -338,7 +363,6 @@ describe('Service / Files', () => {
 
 			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
 
-			// Simulate remote file already exists
 			vi.mocked(mockDriver.exists).mockResolvedValue(true);
 
 			vi.mocked(mockDriver.list).mockImplementation(async function* () {
@@ -349,7 +373,6 @@ describe('Service / Files', () => {
 				filename_disk: 'new-file.jpg',
 			});
 
-			// Should not move (remote exists), and should not delete original
 			expect(mockDriver.move).not.toHaveBeenCalled();
 			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});
@@ -373,10 +396,7 @@ describe('Service / Files', () => {
 				filename_disk: 'new-file.jpg',
 			});
 
-			// Should move the primary asset
 			expect(mockDriver.move).toHaveBeenCalledWith('old-file.jpg', 'new-file.jpg');
-
-			// Should delete the thumbnails
 			expect(mockDriver.delete).toHaveBeenCalledWith('old-file-thumbnail-small.jpg');
 			expect(mockDriver.delete).toHaveBeenCalledWith('old-file-thumbnail-large.jpg');
 		});
@@ -392,7 +412,7 @@ describe('Service / Files', () => {
 
 			vi.mocked(mockDriver.list).mockImplementation(async function* () {
 				yield 'folder/old-file.jpg';
-				yield 'folder/old-file-thumbnail.jpg';
+				yield 'old-file-thumbnail.jpg';
 			});
 
 			await service.updateMany([1], {
@@ -400,7 +420,7 @@ describe('Service / Files', () => {
 			});
 
 			expect(mockDriver.move).toHaveBeenCalledWith('folder/old-file.jpg', 'folder/new-file.jpg');
-			expect(mockDriver.delete).toHaveBeenCalledWith('folder/old-file-thumbnail.jpg');
+			expect(mockDriver.delete).toHaveBeenCalledWith('old-file-thumbnail.jpg');
 		});
 
 		it('should process multiple files independently in separate transactions', async () => {
@@ -428,7 +448,6 @@ describe('Service / Files', () => {
 				filename_disk: 'new-file.jpg',
 			});
 
-			// Should move both files
 			expect(mockDriver.move).toHaveBeenCalledTimes(2);
 			expect(mockDriver.move).toHaveBeenCalledWith('file1.jpg', 'new-file.jpg');
 			expect(mockDriver.move).toHaveBeenCalledWith('file2.jpg', 'new-file.jpg');
