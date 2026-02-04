@@ -62,17 +62,23 @@ describe('Service / Files', () => {
 			expect(superCreateOne).not.toHaveBeenCalled();
 		});
 
-		it('should throw ForbiddenError when filename_disk is not unique', async () => {
+		it('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
 			tracker.on
 				.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
 				.response([{ filename_disk: 'existing-file.jpg' }]);
 
-			await expect(
-				service.createOne({
+			await service.createOne({
+				type: 'application/octet-stream',
+				filename_disk: 'existing-file.jpg',
+			});
+
+			expect(superCreateOne).toHaveBeenCalledWith(
+				{
 					type: 'application/octet-stream',
 					filename_disk: 'existing-file.jpg',
-				}),
-			).rejects.toThrow(ForbiddenError);
+				},
+				expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+			);
 		});
 
 		it('creates a file entry when "type" is provided', async () => {
@@ -96,7 +102,7 @@ describe('Service / Files', () => {
 
 			expect(superCreateOne).toHaveBeenCalledWith(
 				{ filename_disk: 'new-file.jpg', type: 'application/octet-stream' },
-				undefined,
+				{},
 			);
 		});
 	});
@@ -229,16 +235,26 @@ describe('Service / Files', () => {
 			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 		});
 
-		it('should throw ForbiddenError when filename_disk is not unique', async () => {
+		it('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
 			tracker.on
 				.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
 				.response([{ filename_disk: 'existing-file.jpg' }]);
 
-			await expect(
-				service.updateMany([1], {
-					filename_disk: 'existing-file.jpg',
-				}),
-			).rejects.toThrow(ForbiddenError);
+			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+				{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
+			]);
+
+			const superUpdateMany = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
+
+			await service.updateMany([1], {
+				filename_disk: 'existing-file.jpg',
+			});
+
+			expect(superUpdateMany).toHaveBeenCalledWith(
+				[1],
+				{ filename_disk: 'existing-file.jpg' },
+				expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+			);
 		});
 
 		it('should normalize filename_disk path', async () => {
@@ -258,7 +274,7 @@ describe('Service / Files', () => {
 				filename_disk: '/folder/../new-file.jpg',
 			});
 
-			expect(superUpdateMany).toHaveBeenCalledWith([1], { filename_disk: 'new-file.jpg' }, undefined);
+			expect(superUpdateMany).toHaveBeenCalledWith([1], { filename_disk: 'new-file.jpg' }, {});
 		});
 
 		it('should move file when filename_disk changes', async () => {
@@ -304,7 +320,7 @@ describe('Service / Files', () => {
 				filename_disk: 'same-file.jpg',
 			});
 
-			expect(superUpdateMany).toHaveBeenCalledWith([1], { filename_disk: 'same-file.jpg' }, undefined);
+			expect(superUpdateMany).toHaveBeenCalledWith([1], { filename_disk: 'same-file.jpg' }, {});
 			expect(mockDriver.move).not.toHaveBeenCalled();
 			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});

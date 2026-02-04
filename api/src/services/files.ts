@@ -293,13 +293,18 @@ export class FilesService extends ItemsService<File> {
 	/**
 	 * Create a file
 	 */
-	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<File>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		if (!data.type) {
 			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
 		if (data.filename_disk) {
-			await this.checkUniqueFilename(data.filename_disk);
+			try {
+				await this.checkUniqueFilename(data.filename_disk);
+			} catch (err: any) {
+				// Defer the error to be thrown until after permission checks
+				opts.preMutationError = err;
+			}
 
 			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 		}
@@ -311,11 +316,20 @@ export class FilesService extends ItemsService<File> {
 	/**
 	 * Update many files
 	 */
-	override async updateMany(keys: PrimaryKey[], data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<File>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
 		const updatedFiles: Map<PrimaryKey, File> = new Map();
 
 		if (data.filename_disk) {
-			await this.checkUniqueFilename(data.filename_disk);
+			try {
+				await this.checkUniqueFilename(data.filename_disk);
+			} catch (err: any) {
+				// Defer the error to be thrown until after permission checks
+				opts.preMutationError = err;
+			}
 
 			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
