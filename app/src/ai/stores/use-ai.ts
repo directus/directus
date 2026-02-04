@@ -1,5 +1,5 @@
 import { Chat } from '@ai-sdk/vue';
-import { type StandardProviderType, type SystemTool, type ToolApprovalMode } from '@directus/ai';
+import { type ContextAttachment, type PrimaryKey, type StandardProviderType, type SystemTool } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
 	DefaultChatTransport,
@@ -8,42 +8,45 @@ import {
 	type UIMessage,
 } from 'ai';
 import { defineStore } from 'pinia';
-import { computed, reactive, ref, shallowRef, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { z } from 'zod';
-import { StaticToolDefinition } from '../composables/define-tool';
+import type { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
+import { isVisualElement } from '../types/context';
+import { useAiContextStore } from './use-ai-context';
+import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
 	const sidebarStore = useSidebarStore();
+	const contextStore = useAiContextStore();
+	const toolsStore = useAiToolsStore();
+	const route = useRoute();
+
 	const storedMessages = useSessionStorage<UIMessage[]>('directus-ai-chat-messages', []);
 
-	// Tool approval settings
-	const toolApprovals = useLocalStorage<Record<string, ToolApprovalMode>>('ai-tool-approvals', {});
-
-	const getToolApprovalMode = (toolName: string): ToolApprovalMode => {
-		return toolApprovals.value[toolName] ?? 'ask';
-	};
-
-	const setToolApprovalMode = (toolName: string, mode: ToolApprovalMode) => {
-		toolApprovals.value = { ...toolApprovals.value, [toolName]: mode };
-	};
-
-	const setAllToolsMode = (mode: ToolApprovalMode) => {
-		const newApprovals: Record<string, ToolApprovalMode> = {};
-
-		for (const tool of systemTools.value) {
-			newApprovals[tool] = mode;
-		}
-
-		toolApprovals.value = newApprovals;
-	};
-
+	// UI State
 	const chatOpen = useLocalStorage<boolean>('ai-chat-open', false);
 	const input = ref<string>('');
 
+	// UI event hooks
+	type VisualElementIdentifier = { collection: string; item: PrimaryKey; fields?: string[] } | null;
+	const visualElementHighlightHook = createEventHook<[VisualElementIdentifier]>();
+	const focusInputHook = createEventHook();
+
+	const highlightVisualElement = (data: VisualElementIdentifier) => {
+		visualElementHighlightHook.trigger(data);
+	};
+
+	const focusInput = () => {
+		focusInputHook.trigger(null);
+	};
+
+	// Sidebar integration
 	watch(chatOpen, (newOpen) => {
 		if (newOpen === true) sidebarStore.expand();
 	});
@@ -52,6 +55,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		chatOpen.value = false;
 	});
 
+	// Model selection
 	const models = computed(() => {
 		const customModels = buildCustomModels(settingsStore.settings?.ai_openai_compatible_models ?? null);
 		const allModels = [...AI_MODELS, ...customModels];
@@ -107,7 +111,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null,
 	);
 
-	// Ensure selectedModelId is set to the default model when models become available
 	watch(
 		() => defaultModel.value,
 		(newDefaultModel) => {
@@ -144,52 +147,62 @@ export const useAiStore = defineStore('ai-store', () => {
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
 
-	const systemTools = shallowRef<SystemTool[]>([
-		'items',
-		'files',
-		'folders',
-		// Omit 'assets' because we don't support image or audio uploads yet
-		// 'assets',
-		'flows',
-		'trigger-flow',
-		'operations',
-		'schema',
-		'collections',
-		'fields',
-		'relations',
-	]);
-
-	// Filter system tools based on approval mode (exclude 'disabled')
-	const enabledSystemTools = computed(() => {
-		return systemTools.value.filter((tool) => getToolApprovalMode(tool) !== 'disabled');
-	});
-
-	const localTools = shallowRef<StaticToolDefinition[]>([]);
-
-	const systemToolResultHook =
-		createEventHook<[tool: SystemTool, input: Record<string, unknown>, output: Record<string, unknown>]>();
-
+	// Helper to convert local tool to API format
 	const toApiTool = (tool: StaticToolDefinition) => ({
 		name: tool.name,
 		description: tool.description,
 		inputSchema: z.toJSONSchema(tool.inputSchema, { target: 'draft-7' }),
 	});
 
+	// Current page context from route
+	const currentPageContext = computed(() => {
+		const path = route.path;
+		const collection = route.params.collection as string | undefined;
+		const item = route.params.primaryKey as string | number | undefined;
+
+		// Extract module from path (first segment after /)
+		const pathParts = path.split('/').filter(Boolean);
+		const module = pathParts[0];
+
+		return {
+			path,
+			...(collection && { collection }),
+			...(item !== undefined && { item }),
+			...(module && { module }),
+		};
+	});
+
+	// Store snapshotted context attachments for sending with request
+	const pendingContextSnapshot = ref<ContextAttachment[]>([]);
+
+	// Chat instance
 	const chat = new Chat<UIMessage>({
 		messages: storedMessages.value,
 		transport: new DefaultChatTransport({
 			api: '/ai/chat',
 			credentials: 'include',
 			body: () => {
-				const tools = [...enabledSystemTools.value, ...localTools.value.map(toApiTool)];
+				const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
 
 				// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
 				const approvals: Record<string, 'always' | 'ask'> = {};
 
-				for (const [toolName, mode] of Object.entries(toolApprovals.value)) {
+				for (const [toolName, mode] of Object.entries(toolsStore.toolApprovals)) {
 					if (mode === 'always' || mode === 'ask') {
 						approvals[toolName] = mode;
 					}
+				}
+
+				// Build context for system prompt
+				const context: {
+					attachments?: ContextAttachment[];
+					page?: { path: string; collection?: string; item?: string | number; module?: string };
+				} = {
+					page: currentPageContext.value,
+				};
+
+				if (pendingContextSnapshot.value.length > 0) {
+					context.attachments = pendingContextSnapshot.value;
 				}
 
 				return {
@@ -197,6 +210,7 @@ export const useAiStore = defineStore('ai-store', () => {
 					model: selectedModel.value?.model,
 					tools,
 					toolApprovals: approvals,
+					context,
 				};
 			},
 			prepareSendMessagesRequest: (req) => {
@@ -230,13 +244,13 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
-			const isServerTool = toolCall.dynamic || systemTools.value.includes(toolCall.toolName as SystemTool);
+			const isServerTool = toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName);
 
 			if (isServerTool) {
 				return;
 			}
 
-			const tool = localTools.value.find((tool) => tool.name === toolCall.toolName);
+			const tool = toolsStore.localTools.find((tool) => tool.name === toolCall.toolName);
 
 			if (!tool) {
 				throw new Error(`Tool by name "${toolCall.toolName}" does not exist`);
@@ -246,19 +260,18 @@ export const useAiStore = defineStore('ai-store', () => {
 				const output = await tool.execute(toolCall.input as Record<string, unknown>);
 				chat.addToolResult({ tool: toolCall.toolName, output, toolCallId: toolCall.toolCallId });
 			} catch (e: unknown) {
-				if (e instanceof Error) {
-					chat.addToolResult({
-						tool: toolCall.toolName,
-						state: 'output-error',
-						errorText: e.message,
-						toolCallId: toolCall.toolCallId,
-					});
-				}
+				const errorText = e instanceof Error ? e.message : String(e);
+
+				chat.addToolResult({
+					tool: toolCall.toolName,
+					state: 'output-error',
+					errorText,
+					toolCallId: toolCall.toolCallId,
+				});
 			}
 		},
 		onFinish: ({ isAbort, message }) => {
 			if (isAbort) {
-				// Update the state to done and delete the providerMetadata from the aborted message.parts where part.type === 'reasoning' to prevent OpenAI reasoning issues
 				message.parts.forEach((part) => {
 					if (part.type === 'reasoning') {
 						part.state = 'done';
@@ -274,10 +287,6 @@ export const useAiStore = defineStore('ai-store', () => {
 	const error = computed(() => chat.error);
 
 	const messages = computed(() =>
-		// Ensure Vue notices changes within msg.parts when the Chat SDK mutates the array in place.
-		// By spreading msg.parts we create a fresh array reference which is fully reactive for consumers.
-		// This keeps "parts" immutable from the perspective of the UI layer and guarantees rerenders
-		// on content changes (push/replace) performed internally by the chat instance.
 		chat.messages.map((msg) => ({
 			...msg,
 			parts: [...(msg.parts ?? [])],
@@ -293,6 +302,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		return lastMessage.parts.some((part) => 'state' in part && part.state === 'approval-requested');
 	});
 
+	// Watch for tool results to trigger hooks
 	const processedToolCallIds = new Set<string>();
 
 	watch(latestMessage, (message) => {
@@ -304,10 +314,12 @@ export const useAiStore = defineStore('ai-store', () => {
 
 				const tool = part.type.substring('tool-'.length) as SystemTool;
 
-				const isSystemTool = systemTools.value.includes(tool);
-
-				if (isSystemTool) {
-					systemToolResultHook.trigger(tool as SystemTool, part.input, part.output);
+				if (toolsStore.isSystemTool(tool)) {
+					toolsStore.triggerSystemToolResult(
+						tool,
+						part.input as Record<string, unknown>,
+						part.output as Record<string, unknown>,
+					);
 				}
 			}
 		}
@@ -317,23 +329,39 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const submitHook = createEventHook();
 
-	const submit = () => {
+	const submit = async () => {
 		if (chat.status === 'streaming' || chat.status === 'submitted') return;
-		chat.sendMessage({ text: input.value });
+
+		try {
+			pendingContextSnapshot.value = await contextStore.fetchContextData();
+		} catch (error) {
+			unexpectedError(error);
+			return;
+		}
+
+		const previousInput = input.value;
+		const previousContext = [...contextStore.pendingContext.filter((item) => !isVisualElement(item))];
+
+		chat
+			.sendMessage({
+				text: input.value,
+				metadata: {
+					attachments: pendingContextSnapshot.value.length > 0 ? pendingContextSnapshot.value : undefined,
+				},
+			})
+			.catch((error) => {
+				input.value = previousInput;
+
+				for (const item of previousContext) {
+					contextStore.addPendingContext(item);
+				}
+
+				unexpectedError(error);
+			});
+
 		submitHook.trigger(input.value);
 		input.value = '';
-	};
-
-	const registerLocalTool = (tool: StaticToolDefinition) => {
-		localTools.value = [...localTools.value, tool];
-	};
-
-	const replaceLocalTool = (name: string, tool: StaticToolDefinition) => {
-		localTools.value = localTools.value.map((t) => (t.name === name ? tool : t));
-	};
-
-	const deregisterLocalTool = (name: string) => {
-		localTools.value = localTools.value.filter((t) => t.name !== name);
+		contextStore.clearNonVisualContext();
 	};
 
 	const retry = () => {
@@ -360,19 +388,14 @@ export const useAiStore = defineStore('ai-store', () => {
 	const dehydrate = async () => {
 		reset();
 		input.value = '';
-		toolApprovals.value = {};
 		selectedModelId.value = defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null;
 		chatOpen.value = false;
+
+		// Dehydrate sub-stores
+		contextStore.dehydrate();
+		toolsStore.dehydrate();
 	};
 
-	/**
-	 * Guesstimate of what the messages limit is based on the current average token size per message.
-	 * This is updated whenever the actual token usage is returned from the server. We default to
-	 * infinity as we can't know a theoretical limit until the server responds with actual token
-	 * usage. Input context also includes tool definitions (of which we don't know the size), so this
-	 * estimate is never fully accurate.
-	 * @default Infinity
-	 */
 	const estimatedMaxMessages = ref(Infinity);
 
 	const tokenUsage = reactive({ inputTokens: 0, outputTokens: 0, totalTokens: 0 });
@@ -396,36 +419,39 @@ export const useAiStore = defineStore('ai-store', () => {
 	};
 
 	return {
+		// UI State
 		input,
+		chatOpen,
+
+		// Chat
 		chat,
 		messages,
 		status,
-		selectedModel,
-		models,
-		registerLocalTool,
-		replaceLocalTool,
-		deregisterLocalTool,
-		systemTools,
-		localTools,
 		error,
+		submit,
 		retry,
 		stop,
 		reset,
-		chatOpen,
-		selectModel,
-		tokenUsage,
-		contextUsagePercentage,
-		submit,
+		dehydrate,
 		onSubmit: submitHook.on,
-		estimatedMaxMessages,
-		onSystemToolResult: systemToolResultHook.on,
-		toolApprovals,
-		getToolApprovalMode,
-		setToolApprovalMode,
-		setAllToolsMode,
+		hasPendingToolCall,
 		approveToolCall,
 		denyToolCall,
-		hasPendingToolCall,
-		dehydrate,
+
+		// Model selection
+		selectedModel,
+		models,
+		selectModel,
+
+		// Token usage
+		tokenUsage,
+		contextUsagePercentage,
+		estimatedMaxMessages,
+
+		// UI hooks
+		highlightVisualElement,
+		onVisualElementHighlight: visualElementHighlightHook.on,
+		focusInput,
+		onFocusInput: focusInputHook.on,
 	};
 });

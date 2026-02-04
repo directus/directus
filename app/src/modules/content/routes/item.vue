@@ -10,7 +10,8 @@ import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useContextStaging } from '@/ai/composables/use-context-staging';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -117,11 +118,12 @@ const {
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
-const aiStore = useAiStore();
+const toolsStore = useAiToolsStore();
 
-aiStore.onSystemToolResult((tool, input) => {
-	if (tool === 'items' && input.collection === collection.value) {
+toolsStore.onSystemToolResult((tool, input) => {
+	if (tool === 'items' && input.collection === collection.value && input.action !== 'read') {
 		refresh();
+		refreshLivePreview();
 	}
 });
 
@@ -405,11 +407,17 @@ const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 
 provideRunManualFlow();
 
+const { stageVisualElement } = useContextStaging();
+
 useEventListener('message', (event) => {
 	if (!sameOrigin(event.origin, window.location.href)) return;
 	if (event.source !== popupWindow) return;
 
 	if (event.data === 'refresh') refresh();
+
+	if (event.data?.action === 'stage-visual-element') {
+		stageVisualElement(event.data.data.element);
+	}
 });
 
 async function refreshLivePreview() {

@@ -59,6 +59,12 @@ const isDisabled = computed(() => {
 	return false;
 });
 
+const isNonEditable = computed(() => {
+	if (props.nonEditable) return true;
+	if (props.field?.meta?.non_editable === true) return true;
+	return false;
+});
+
 const isLabelHidden = computed(() => {
 	if ((props.batchMode || !!props.comparison) && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
@@ -226,7 +232,7 @@ function useComputedValues() {
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
-			:non-editable="nonEditable"
+			:non-editable="isNonEditable"
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
