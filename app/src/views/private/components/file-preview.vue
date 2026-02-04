@@ -12,6 +12,7 @@ export interface Props {
 	inModal?: boolean;
 	disabled?: boolean;
 	nonEditable?: boolean;
+	/** Direct source URL, bypasses asset URL computation from file.id */
 	src?: string;
 }
 

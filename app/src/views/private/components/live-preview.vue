@@ -264,7 +264,7 @@ function useUrls() {
 		<div class="header">
 			<div class="group">
 				<slot name="prepend-header" />
-				<!-- In full-width: show exit button -->
+
 				<VButton
 					v-if="isFullWidth"
 					v-tooltip.bottom.end="t('live_preview.exit_full_width')"
@@ -276,7 +276,6 @@ function useUrls() {
 					<VIcon small name="width_full" />
 				</VButton>
 
-				<!-- In popup: show split view button -->
 				<VButton
 					v-else-if="inPopup"
 					v-tooltip.bottom.end="$t('live_preview.close_window')"
@@ -289,7 +288,6 @@ function useUrls() {
 					<VIcon small name="exit_to_app" outline />
 				</VButton>
 
-				<!-- Normal view: show display options menu -->
 				<VMenu v-else-if="hasDisplayOptions" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
 						<VButton
@@ -452,10 +450,10 @@ function useUrls() {
 			:transition-duration="125"
 			divider-hit-area="24px"
 			class="content-split"
-			@update:size="(s) => emit('update:sidebarSize', s)"
+			@update:size="(size: number) => emit('update:sidebarSize', size)"
 			@update:collapsed="
-				(c) => {
-					emit('update:sidebarCollapsed', c);
+				(collapsed: boolean) => {
+					emit('update:sidebarCollapsed', collapsed);
 				}
 			"
 		>
