@@ -452,10 +452,10 @@ function useUrls() {
 			:transition-duration="125"
 			divider-hit-area="24px"
 			class="content-split"
-			@update:size="(s) => emit('update:sidebarSize', s)"
+			@update:size="(size: number) => emit('update:sidebarSize', size)"
 			@update:collapsed="
-				(c) => {
-					emit('update:sidebarCollapsed', c);
+				(collapsed: boolean) => {
+					emit('update:sidebarCollapsed', collapsed);
 				}
 			"
 		>
