@@ -935,6 +935,8 @@ live_preview:
   new_window: เปิดในหน้าต่างใหม่
 ai:
   input: Input
+  items: รายการ
+  content: เนื้อหา
   settings: การตั้งค่า
   tool_approval:
     disabled: ปิดใช้งาน
