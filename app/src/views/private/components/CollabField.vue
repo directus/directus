@@ -53,7 +53,7 @@ const users = computed(() => {
 			</VAvatar>
 		</template>
 
-		<VIcon v-if="users.length > 0" name="lock" class="lock-icon" :style="{ color: `var(--${users[0]!.color})` }" />
+		<VIcon v-if="users.length > 0" name="lock" class="collab-field-lock" :style="{ color: `var(--${users[0]!.color})` }" />
 	</div>
 </template>
 
@@ -61,25 +61,15 @@ const users = computed(() => {
 .collab-field {
 	display: flex;
 	align-items: center;
+
+	&-lock {
+		align-self: center;
+		font-size: 14px;
+		color: var(--text-50);
+	}
 }
 
 .v-avatar {
 	font-size: 12px;
-}
-
-.v-list-item {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.user-status {
-	white-space: nowrap;
-}
-
-.lock-icon {
-	align-self: center;
-	font-size: 14px;
-	color: var(--text-50);
 }
 </style>
