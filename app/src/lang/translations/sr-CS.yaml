@@ -805,6 +805,7 @@ live_preview:
   new_window: Otvori u Novom Prozoru
 ai:
   input: Unos
+  items: Stavke
   settings: Podešavanja
   tool_approval:
     disabled: Isključeno
