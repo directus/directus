@@ -1140,6 +1140,8 @@ live_preview:
   new_window: Avaa uudessa ikkunassa
 ai:
   input: Syöte
+  items: Kohteet
+  content: Sisältö
   settings: Asetukset
   tool_approval:
     disabled: Pois käytöstä
