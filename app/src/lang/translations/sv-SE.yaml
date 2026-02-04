@@ -1371,10 +1371,13 @@ live_preview:
   new_window: Öppna i nytt fönster
   close_window: Öppna i delad vy
   toggle_3d: Växla 3D
+  display_options: Visningsalternativ
 unlimited_usage: Obegränsad användning
 ai:
   input: Inmatning
   unknown: Okänd
+  items: Objekt
+  content: Innehåll
   settings: Inställningar
   tool_approval:
     disabled: Inaktiverad
