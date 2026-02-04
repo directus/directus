@@ -1480,6 +1480,7 @@ live_preview:
   new_window: नवीन विंडोमध्ये उघडा
   close_window: स्प्लिट व्ह्यूमध्ये उघडा
   toggle_3d: 3D टॉगल करा
+  display_options: प्रदर्शन पर्याय
 shares: शेअर्स
 unlimited_usage: अमर्याद वापर
 uses_left: "उपयोग नाही | एक वापर बाकी | {n} डावीकडे वापरते\n"
@@ -1488,6 +1489,8 @@ new_share: नवीन शेअर
 ai:
   input: इनपुट
   unknown: अज्ञात
+  items: आयटम्स
+  content: कन्टेन्ट
   settings: सेटिंग्स
   tool_approval:
     disabled: बंद करा
