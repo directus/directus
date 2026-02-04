@@ -19,10 +19,7 @@ router.use(useCollection('directus_deployments'));
 
 // Validate provider parameter
 const validateProvider = (provider: string): provider is ProviderType => {
-	if (!DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType))
-		throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
-
-	return true;
+	return DEPLOYMENT_PROVIDER_TYPES.includes(provider as ProviderType)
 };
 
 // Validation schema for creating/updating deployment
@@ -97,7 +94,9 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -117,7 +116,9 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -188,7 +189,9 @@ router.get(
 		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id'] as string;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -241,7 +244,9 @@ router.patch(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const { error, value } = updateProjectsSchema.validate(req.body);
 
@@ -297,7 +302,9 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -357,7 +364,9 @@ router.post(
 		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const { error, value } = triggerDeploySchema.validate(req.body);
 
@@ -419,7 +428,9 @@ router.patch(
 	asyncHandler(async (req, res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const db = getDatabase();
 
@@ -461,7 +472,9 @@ router.delete(
 	asyncHandler(async (req, _res, next) => {
 		const provider = req.params['provider'] as ProviderType;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -485,7 +498,9 @@ router.get(
 		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const service = new DeploymentService({
 			accountability: req.accountability,
@@ -558,7 +573,9 @@ router.get(
 		const provider = req.params['provider'] as ProviderType;
 		const runId = req.params['id']!;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const { error, value } = runDetailsQuerySchema.validate(req.query);
 
@@ -611,7 +628,9 @@ router.post(
 		const provider = req.params['provider'] as ProviderType;
 		const runId = req.params['id']!;
 
-		validateProvider(provider);
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
 
 		const runsService = new DeploymentRunsService({
 			accountability: req.accountability,
