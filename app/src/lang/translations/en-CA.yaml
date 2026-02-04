@@ -1041,6 +1041,8 @@ no_shares: No shares to show
 new_share: New Share
 ai:
   input: Input
+  items: Items
+  content: Content
   settings: Settings
   tool_approval:
     disabled: Disabled
