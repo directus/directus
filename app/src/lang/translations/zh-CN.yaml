@@ -1576,6 +1576,7 @@ live_preview:
   close_window: 在分割视图中打开
   toggle_3d: 切换 3D
   iframe_title: 实时网站预览
+  display_options: 显示选项
 shares: 共享
 unlimited_usage: 无限使用
 uses_left: 无剩余使用次数 | 剩余一次使用次数 | 剩余 {n} 次使用次数
@@ -1584,6 +1585,8 @@ new_share: 新建分享
 ai:
   input: Input
   unknown: 未知
+  items: 条目
+  content: 内容
   settings: 设置
   tool_approval:
     disabled: 禁用
