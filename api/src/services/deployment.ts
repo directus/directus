@@ -20,7 +20,7 @@ import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
-const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 5000; // Default 5s
+const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
 
 export class DeploymentService extends ItemsService<DeploymentConfig> {
 	constructor(options: AbstractServiceOptions) {

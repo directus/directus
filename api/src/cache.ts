@@ -70,7 +70,7 @@ export function getCache(): {
 	}
 
 	if (deploymentCache === null) {
-		const ttl = getMilliseconds(env['DEPLOYMENT_CACHE_TTL']) || 5000; // Default 5s
+		const ttl = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
 		deploymentCache = getKeyvInstance(env['CACHE_STORE'] as Store, ttl, '_deployment');
 		deploymentCache.on('error', (err) => logger.warn(err, `[deployment-cache] ${err}`));
 	}
