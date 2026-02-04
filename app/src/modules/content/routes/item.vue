@@ -682,7 +682,12 @@ function useCollectionRoute() {
 		</template>
 
 		<template #actions>
-			<CollabHeader :model-value="collabUsers" :connected="connected" :focuses="focused" :current-connection="connectionId" />
+			<CollabHeader
+				:model-value="collabUsers"
+				:connected="connected"
+				:focuses="focused"
+				:current-connection="connectionId"
+			/>
 
 			<VButton
 				v-if="previewUrl"

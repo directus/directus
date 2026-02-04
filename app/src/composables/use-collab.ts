@@ -561,5 +561,15 @@ export function useCollab(
 		});
 	}
 
-	return { update, users, collabContext, connected, collabCollision, clearCollidingChanges, discard, focused, connectionId };
+	return {
+		update,
+		users,
+		collabContext,
+		connected,
+		collabCollision,
+		clearCollidingChanges,
+		discard,
+		focused,
+		connectionId,
+	};
 }

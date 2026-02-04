@@ -95,13 +95,7 @@ function focusIntoView(cid: ClientID) {
 				</VList>
 			</VMenu>
 
-			<VAvatar
-				v-else
-				:border="`var(--${user.color})`"
-				:style="{ zIndex: DISPLAY_LIMIT - index }"
-				x-small
-				round
-			>
+			<VAvatar v-else :border="`var(--${user.color})`" :style="{ zIndex: DISPLAY_LIMIT - index }" x-small round>
 				<img v-if="user.avatar_url" :src="user.avatar_url" />
 				<template v-else-if="user.name">{{ user.name?.substring(0, 1) }}</template>
 				<VIcon v-else name="person" small />
@@ -109,7 +103,7 @@ function focusIntoView(cid: ClientID) {
 		</template>
 
 		<VMenu v-if="users.length > DISPLAY_LIMIT" show-arrow>
-			<template #activator="{ toggle }" >
+			<template #activator="{ toggle }">
 				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round clickable @click="toggle">
 					+{{ users.length - 3 }}
 				</VAvatar>
@@ -133,7 +127,9 @@ function focusIntoView(cid: ClientID) {
 					<VListItemContent>
 						<div class="more-users-list-item-content">
 							<span class="more-users-list-item-content-name">{{ user.name }}</span>
-							<span class="more-users-list-item-content-status">{{ user.focusedField ? `Editing "${formatTitle(user.focusedField)}" field` : 'Currently viewing' }}</span>
+							<span class="more-users-list-item-content-status">
+								{{ user.focusedField ? `Editing "${formatTitle(user.focusedField)}" field` : 'Currently viewing' }}
+							</span>
 						</div>
 					</VListItemContent>
 				</VListItem>
