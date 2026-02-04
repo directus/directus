@@ -1503,6 +1503,7 @@ live_preview:
   new_window: ახალ ფანჯარაში გახსნა
   close_window: გაყოფილ ხედში გახსნა
   toggle_3d: 3D-ს გადართვა
+  display_options: ჩვენების ოფციები
 shares: გაზიარებები
 unlimited_usage: შეუზღუდავი გამოყენება
 uses_left: გამოყენება არ დარჩა | ერთი გამოყენება დარჩა | {n} გამოყენება დარჩა
@@ -1511,6 +1512,8 @@ new_share: ახალი გაზიარება
 ai:
   input: შეყვანა
   unknown: უცნობი
+  items: ჩანაწერები
+  content: კონტენტი
   settings: პარამეტრები
   tool_approval:
     disabled: გამორთულია
