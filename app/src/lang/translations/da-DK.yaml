@@ -1258,6 +1258,8 @@ new_share: Ny Del
 ai:
   input: Input
   unknown: Ukendt
+  items: elementer
+  content: Indhold
   settings: Indstillinger
   tool_approval:
     disabled: Deaktiveret
