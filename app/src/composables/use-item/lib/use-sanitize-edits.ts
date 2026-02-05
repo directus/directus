@@ -21,6 +21,14 @@ export function useSanitizeEdits(edits: any, collection: string) {
 
 			if (!permission?.fields?.includes('*') && !permission?.fields?.includes(String(key))) {
 				set(unsavedEdits, [...context.path, key], value);
+
+				const primaryKey = context.collection.primary;
+
+				// Make sure we do not loose the primary key on relational changes
+				if (primaryKey !== key && context.object[primaryKey]) {
+					set(unsavedEdits, [...context.path, primaryKey], context.object[primaryKey]);
+				}
+
 				return;
 			}
 
