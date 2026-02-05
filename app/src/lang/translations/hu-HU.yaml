@@ -949,6 +949,14 @@ operation_key_unique_error: A műveleti kulcsoknak egyedinek kell lenniük a fol
 operation_handle_resolve: 'Megoldás: Kattintson a Hozzáadáshoz vagy húzza az átirányításhoz'
 operation_handle_reject: 'Elutasítás: Kattintson a Hozzáadáshoz vagy húzza az átirányításhoz'
 insights: Kimutatások
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ez a művelet végleges és visszavonhatatlan. Biztos, hogy folytatni szeretné?
+    run:
+      cancel_confirm: Ez a művelet végleges és visszavonhatatlan. Biztos, hogy folytatni szeretné?
+  target_value:
+    preview: Előnézet
 dashboard: Irányítópult
 panel: Panel
 panel_options: Panel beállításai
