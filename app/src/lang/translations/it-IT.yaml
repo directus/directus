@@ -970,6 +970,15 @@ no_url_copy: Aggiungere un URL nelle impostazioni.
 invalid_url: URL non valido
 invalid_url_copy: L'URL specificato non corrisponde a nessun URL specificato nelle impostazioni.
 insights: Approfondimenti
+deployment:
+  provider:
+    settings:
+      delete_confirm: Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
+    run:
+      cancel_confirm: Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
+      log_all: Tutti i livelli di log
+  target_value:
+    preview: Anteprima
 dashboard: Bacheca
 panel: Pannello
 panel_options: Opzioni del pannello
