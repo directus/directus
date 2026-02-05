@@ -631,6 +631,14 @@ flow_tracking_activity: Only Track Activity
 flow_tracking_null: Do Not Track Anything
 code: Code
 insights: Insights
+deployment:
+  provider:
+    settings:
+      delete_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+    run:
+      cancel_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+  target_value:
+    preview: Preview
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
