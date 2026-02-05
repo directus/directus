@@ -789,6 +789,14 @@ operation_key_unique_error: Operation keys must be unique in a Flow
 operation_handle_resolve: 'Resolve: Click to Add or Drag to Reroute'
 operation_handle_reject: 'Reject: Click to Add or Drag to Reroute'
 insights: Insights
+deployment:
+  provider:
+    settings:
+      delete_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+    run:
+      cancel_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+  target_value:
+    preview: Preview
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
