@@ -994,6 +994,15 @@ no_url_copy: 설정에서 URL을 추가해 주세요.
 invalid_url: 잘못된 URL 주소
 invalid_url_copy: 지정된 URL이 설정에 지정된 URL과 일치하지 않습니다.
 insights: 현황판
+deployment:
+  provider:
+    settings:
+      delete_confirm: 이 작업은 영구적이며 취소할 수 없습니다. 계속하시겠습니까?
+    run:
+      cancel_confirm: 이 작업은 영구적이며 취소할 수 없습니다. 계속하시겠습니까?
+      log_all: 모든 로그 수준
+  target_value:
+    preview: 미리보기
 dashboard: 대쉬보드
 panel: 패널
 panel_options: 패널 옵션
