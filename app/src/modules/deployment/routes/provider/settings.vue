@@ -244,7 +244,7 @@ onMounted(() => {
 		:title="$t('deployment.provider.settings.settings', { provider: $t(`deployment.provider.${provider}.name`) })"
 		:icon="initialProjectIds.length > 0 ? 'settings' : undefined"
 		show-back
-		:back-to="initialProjectIds.length > 0 ? '/deployments/vercel' : '/deployments'"
+		:back-to="initialProjectIds.length > 0 ? `/deployments/${provider}` : '/deployments'"
 	>
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
