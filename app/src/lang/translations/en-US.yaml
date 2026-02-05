@@ -83,7 +83,6 @@ invalid_range_min: Value is below minimum of {value}
 invalid_range_max: Value exceeds maximum of {value}
 maps: Maps
 switch_user: Switch User
-item_deleted: The item you were editing has been deleted.
 item_creation: Item Creation
 item_revision: Item Revision
 previous_revision: Previous Revision
@@ -147,8 +146,6 @@ report_an_issue: Report an Issue
 website: Website
 github: GitHub
 beta: Beta
-collab_collision: The item was changed while you were editing. Select which changes to keep.
-collab_disconnected: Collaborative Editing Disconnected
 n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Compatibility not guaranteed
@@ -218,7 +215,6 @@ version: Version
 version_key: Version Key
 version_name: Version Name
 main_version: Main
-your_version: Your Version
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
@@ -227,7 +223,6 @@ compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
 apply: Apply
-discard: Discard
 select_all_differences: Select All Differences
 main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
@@ -824,7 +819,6 @@ errors:
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
-  INVALID_PROVIDER_CONFIG: Invalid provider configuration
   INVALID_QUERY: Invalid query
   INVALID_TOKEN: Invalid token
   INVALID_USER: Failed to authenticate user
@@ -1080,88 +1074,6 @@ no_url_copy: Please add a URL in the settings.
 invalid_url: Invalid URL
 invalid_url_copy: The specified URL does not match any URL specified in the settings.
 insights: Insights
-deployment:
-  deployment: Deployment
-  overview:
-    overview: Overview
-    providers: Providers
-    configure: Configure
-    provider_description: Trigger {provider} deployments from within Directus
-    projects: '{count} Project|{count} Projects'
-  provider:
-    setup_title: '{provider} Setup'
-    credentials:
-      notice: You can find this information in your {provider} account settings.
-      link: Open {provider} Settings
-    token:
-      label: Personal Access Token
-      placeholder: Enter your access token...
-      encrypted_notice: This token will be encrypted and stored securely in your Directus configuration
-    settings:
-      settings: '{provider} Configuration'
-      edit_configuration: Edit Configuration
-      delete: Delete Configuration
-      delete_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
-      remove_projects_confirm:
-        Removing the project(s) ({projects}) will permanently delete all their deployment history from Directus. This
-        action cannot be undone. Are you sure you want to proceed?
-    vercel:
-      name: Vercel
-      settings_warning:
-        Changing credentials or team ID may affect your selected projects if they are no longer accessible with the new
-        configuration.
-      team_id:
-        label: Team ID
-        hint: Required for team accounts, leave empty for personal accounts.
-        placeholder: team_xxxxxxxxxxxxx
-    projects: Projects
-    select_projects: Select Projects
-    select_projects_hint: Choose which projects you want to manage from Directus
-    project:
-      not_deployable: Project not deployable by Directus. Please see documentation for more info.
-    runs:
-      runs: Deployment Runs
-      id: Deployment ID
-      started: Started
-      author: Author
-      notice:
-        Only deployments triggered from Directus are shown here. Deployments made directly in Vercel will not appear.
-      refresh: Refresh
-      deploy_preview: Deploy Preview
-      empty: No Deployment Runs
-      empty_copy: This project has no deployment history yet.
-    run:
-      title: '{project}: Deployment Details'
-      id: Deployment ID
-      currently_deploying: Currently Deploying...
-      stop: Stop Deployment
-      cancel_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
-      log_all: All Log Levels
-      search_logs: Search logs...
-      no_logs: No logs available
-      download_logs: Download logs
-      open_deployment: Visit
-  no_providers: No Deployment Providers
-  no_providers_copy: Configure a deployment provider in the settings to get started.
-  select_provider: Select a Provider
-  select_provider_copy: Choose a deployment provider from the sidebar to view your projects.
-  no_projects: No Projects
-  no_projects_copy: No projects have been selected for this provider.
-  no_runs: No Deployment Runs
-  no_runs_copy: This project has no deployment history yet.
-  deploy: Deploy
-  target: Target
-  target_value:
-    production: Production
-    preview: Preview
-  runs_status:
-    ready: Ready
-    building: Building
-    error: Failed
-    canceled: Canceled
-  dashboard:
-    projects: Projects ({count})
-    deployed: Deployed
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -1296,7 +1208,6 @@ appearance_light: Light
 appearance_dark: Dark
 other: Other...
 adding_user: Adding User
-more_users: Click to view more
 unknown_user: Unknown User
 unknown_version: Unknown Version
 unknown_revision: Unknown Revision
@@ -1338,18 +1249,9 @@ data: Data
 theme-overrides: Theme Overrides
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
-unsaved_changes_collab: Unsaved Collaborative Changes
-unsaved_changes_copy_collab:
-  You’re editing this item with others. Your changes will remain in the collaborative session for now, but may be lost
-  if no one saves them.
-leave_page: Leave Page
-close_drawer: Close Drawer
 discard_changes: Discard Changes
 discard_all_changes: Discard All Changes
 discard_changes_copy: Are you sure you want to discard all the changes made?
-discard_changes_copy_collab:
-  You're editing this item with others. Discarding changes will clear all unsaved edits for everyone in this
-  collaborative session.
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
 keep_editing: Keep Editing
@@ -1557,8 +1459,6 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
-    collaborative_editing: Collaborative Editing
-    collaborative_editing_note: WebSockets are required for collaborative editing to work.
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
       toolbar to ask questions, generate content, and get help working with your project. <a
