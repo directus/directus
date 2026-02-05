@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 import { saveAs } from 'file-saver';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
@@ -32,7 +31,6 @@ const props = defineProps<{
 	runId: string;
 }>();
 
-const router = useRouter();
 const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
 
@@ -253,15 +251,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<PrivateView :title="pageTitle">
+	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}/${projectId}/runs`">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<VButton class="back-button" rounded icon secondary exact small @click="router.back()">
-				<VIcon name="arrow_back" small />
-			</VButton>
 		</template>
 
 		<template #navigation>
@@ -399,11 +391,6 @@ onUnmounted(() => {
 .action-cancel {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
-}
-
-.back-button {
-	--v-button-background-color: var(--theme--background-normal);
-	--v-button-color-active: var(--theme--foreground);
 }
 
 .spinner {
