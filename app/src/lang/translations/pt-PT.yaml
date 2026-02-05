@@ -881,6 +881,12 @@ flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada
 operation_key_unique_error: Chaves de operação devem ser únicas em um fluxo
+deployment:
+  provider:
+    settings:
+      delete_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
+    run:
+      cancel_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 visible: Visível
 full_screen: Ecrã completo
 save_image: Guardar imagem
