@@ -1,4 +1,10 @@
-import { ErrorCode, InvalidPathParameterError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import {
+	ErrorCode,
+	ForbiddenError,
+	InvalidPathParameterError,
+	InvalidPayloadError,
+	isDirectusError,
+} from '@directus/errors';
 import { DEPLOYMENT_PROVIDER_TYPES, type DeploymentConfig, type ProviderType } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
@@ -16,6 +22,15 @@ import { transaction } from '../utils/transaction.js';
 const router = express.Router();
 
 router.use(useCollection('directus_deployments'));
+
+// Require admin access for all deployment routes
+router.use((_req, _res, next) => {
+	if (_req.accountability && _req.accountability.admin !== true) {
+		throw new ForbiddenError();
+	}
+
+	return next();
+});
 
 // Validate provider parameter
 const validateProvider = (provider: string): provider is ProviderType => {
