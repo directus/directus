@@ -5,20 +5,27 @@ import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import { DeploymentService } from './deployment.js';
 import { ItemsService } from './items.js';
 
-const mockTestConnection = vi.fn();
-const mockListProjects = vi.fn();
+const { mockTestConnection, mockListProjects, mockGetProject, mockGetCacheValueWithTTL, mockSetCacheValueWithExpiry } =
+	vi.hoisted(() => ({
+		mockTestConnection: vi.fn(),
+		mockListProjects: vi.fn(),
+		mockGetProject: vi.fn(),
+		mockGetCacheValueWithTTL: vi.fn(),
+		mockSetCacheValueWithExpiry: vi.fn(),
+	}));
 
 vi.mock('../deployment.js', () => ({
 	getDeploymentDriver: vi.fn(() => ({
 		testConnection: mockTestConnection,
 		listProjects: mockListProjects,
+		getProject: mockGetProject,
 	})),
 }));
 
 vi.mock('../cache.js', () => ({
-	getCache: vi.fn(() => ({ deploymentCache: null })),
-	getCacheValueWithTTL: vi.fn(() => null),
-	setCacheValueWithExpiry: vi.fn(),
+	getCache: vi.fn(() => ({ deploymentCache: {} })),
+	getCacheValueWithTTL: mockGetCacheValueWithTTL,
+	setCacheValueWithExpiry: mockSetCacheValueWithExpiry,
 }));
 
 vi.mock('@directus/env', () => ({
@@ -294,6 +301,91 @@ describe('DeploymentService', () => {
 			await service.deleteByProvider('vercel');
 
 			expect(superDeleteOne).toHaveBeenCalledWith(1);
+		});
+	});
+
+	describe('listProviderProjects', () => {
+		let service: DeploymentService;
+
+		beforeEach(() => {
+			service = new DeploymentService({
+				knex: db,
+				schema,
+			});
+
+			tracker.on
+				.select('directus_deployments')
+				.response([{ id: 1, provider: 'vercel', credentials: JSON.stringify({ access_token: 'token' }) }]);
+		});
+
+		it('should return cached data when available', async () => {
+			const cachedProjects = [{ id: 'proj-1', name: 'Cached Project' }];
+
+			mockGetCacheValueWithTTL.mockResolvedValueOnce({ data: cachedProjects, remainingTTL: 3000 });
+
+			const result = await service.listProviderProjects('vercel');
+
+			expect(result).toEqual({ data: cachedProjects, remainingTTL: 3000 });
+			expect(mockListProjects).not.toHaveBeenCalled();
+		});
+
+		it('should fetch from driver and cache when cache miss', async () => {
+			const projects = [{ id: 'proj-1', name: 'Fresh Project' }];
+
+			mockGetCacheValueWithTTL.mockResolvedValueOnce(null);
+			mockListProjects.mockResolvedValueOnce(projects);
+
+			const result = await service.listProviderProjects('vercel');
+
+			expect(mockListProjects).toHaveBeenCalled();
+			expect(mockSetCacheValueWithExpiry).toHaveBeenCalledWith({}, 'vercel:projects', projects, expect.any(Number));
+			expect(result.data).toEqual(projects);
+		});
+	});
+
+	describe('getProviderProject', () => {
+		let service: DeploymentService;
+
+		beforeEach(() => {
+			service = new DeploymentService({
+				knex: db,
+				schema,
+			});
+
+			tracker.on
+				.select('directus_deployments')
+				.response([{ id: 1, provider: 'vercel', credentials: JSON.stringify({ access_token: 'token' }) }]);
+		});
+
+		it('should return cached data when available', async () => {
+			const cachedProject = { id: 'proj-1', name: 'Cached Project' };
+
+			mockGetCacheValueWithTTL.mockResolvedValueOnce({ data: cachedProject, remainingTTL: 2000 });
+
+			const result = await service.getProviderProject('vercel', 'proj-1');
+
+			expect(result).toEqual({ data: cachedProject, remainingTTL: 2000 });
+			expect(mockGetProject).not.toHaveBeenCalled();
+		});
+
+		it('should fetch from driver and cache when cache miss', async () => {
+			const project = { id: 'proj-1', name: 'Fresh Project' };
+
+			mockGetCacheValueWithTTL.mockResolvedValueOnce(null);
+			mockGetProject.mockResolvedValueOnce(project);
+
+			const result = await service.getProviderProject('vercel', 'proj-1');
+
+			expect(mockGetProject).toHaveBeenCalledWith('proj-1');
+
+			expect(mockSetCacheValueWithExpiry).toHaveBeenCalledWith(
+				{},
+				'vercel:project:proj-1',
+				project,
+				expect.any(Number),
+			);
+
+			expect(result.data).toEqual(project);
 		});
 	});
 });
