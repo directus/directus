@@ -30,15 +30,14 @@ import VTabs from '@/components/v-tabs.vue';
 import VTextarea from '@/components/v-textarea.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { useFocusin } from '@/composables/use-focusin';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
-
 import 'tinymce/tinymce';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
@@ -408,11 +407,15 @@ function setFocus(val: boolean) {
 	if (editorElement.value == null) return;
 	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
+	const { focus, blur } = useFocusin(body);
+
 	if (body == null) return;
 
 	if (val) {
+		focus();
 		body.classList.add('focus');
 	} else {
+		blur();
 		body.classList.remove('focus');
 	}
 }
@@ -461,10 +464,14 @@ onMounted(() => {
 		'Right to left': t('right_to_left'),
 	});
 });
+
+const menuActive = computed(
+	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
+);
 </script>
 
 <template>
-	<div class="wysiwyg" :class="{ disabled }">
+	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
 		<Editor
 			v-if="nonEditable"
 			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"

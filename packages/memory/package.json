@@ -29,6 +29,7 @@
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"@sesamecare-oss/redlock": "catalog:",
 		"ioredis": "catalog:",
 		"lru-cache": "catalog:",
 		"rate-limiter-flexible": "catalog:"

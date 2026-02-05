@@ -28,6 +28,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
@@ -43,7 +44,9 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
@@ -115,6 +118,7 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
+	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
@@ -126,6 +130,16 @@ toolsStore.onSystemToolResult((tool, input) => {
 		refreshLivePreview();
 	}
 });
+
+const {
+	clearCollidingChanges,
+	users: collabUsers,
+	connected,
+	collabContext,
+	collabCollision,
+	update: updateCollab,
+	discard: discardCollab,
+} = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -142,6 +156,7 @@ const { templateData } = useTemplateData(collectionInfo, primaryKey);
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
+const confirmDiscard = ref(false);
 
 const title = computed(() => {
 	if (te(`collection_names_singular.${props.collection}`)) {
@@ -573,8 +588,17 @@ function discardAndLeave() {
 }
 
 function discardAndStay() {
-	edits.value = {};
+	if (collabUsers.value.length > 1) {
+		confirmDiscard.value = true;
+	} else {
+		discardAndStayConfirmed();
+	}
+}
+
+function discardAndStayConfirmed() {
+	discardCollab();
 	confirmLeave.value = false;
+	confirmDiscard.value = false;
 }
 
 function revert(values: Record<string, any>) {
@@ -673,9 +697,9 @@ function useItemNavigation() {
 			</div>
 		</template>
 
-		<template #title-outer:append></template>
-
 		<template #actions>
+			<CollabAvatars :model-value="collabUsers" :connected="connected" />
+
 			<VButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
@@ -855,6 +879,7 @@ function useItemNavigation() {
 					:initial-values="item"
 					:fields="fields"
 					:primary-key="internalPrimaryKey"
+					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
 					:direction="userStore.textDirection"
@@ -887,8 +912,19 @@ function useItemNavigation() {
 			</template>
 		</SplitPanel>
 
+		<ComparisonModal
+			:model-value="collabCollision !== undefined"
+			:collection="collection"
+			:primary-key="internalPrimaryKey"
+			:current-collab="collabCollision"
+			:collab-context="collabContext"
+			mode="collab"
+			@confirm="updateCollab"
+			@cancel="clearCollidingChanges"
+		/>
+
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<VCard>
+			<VCard v-if="!connected || collabUsers.length <= 1">
 				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 				<VCardActions>
@@ -896,6 +932,29 @@ function useItemNavigation() {
 						{{ $t('discard_changes') }}
 					</VButton>
 					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+			<VCard v-else>
+				<VCardTitle>{{ $t('unsaved_changes_collab') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('leave_page') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+			<VCard>
+				<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
+				<VCardText>{{ $t('discard_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndStayConfirmed">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmDiscard = false">{{ $t('keep_editing') }}</VButton>
 				</VCardActions>
 			</VCard>
 		</VDialog>
@@ -950,6 +1009,8 @@ function useItemNavigation() {
 }
 
 :deep(.type-title) {
+	min-inline-size: 0;
+
 	.render-template {
 		img {
 			block-size: 20px;

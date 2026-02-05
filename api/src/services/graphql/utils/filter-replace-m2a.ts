@@ -1,6 +1,5 @@
 import type { DeepQuery, Filter, NestedDeepQuery, Query, SchemaOverview } from '@directus/types';
-import { getRelation } from '@directus/utils';
-import { getRelationType } from '../../../utils/get-relation-type.js';
+import { getRelation, getRelationType } from '@directus/utils';
 
 export function filterReplaceM2A(
 	filter_arg: Filter,
@@ -20,7 +19,7 @@ export function filterReplaceM2A(
 		field = options?.aliasMap?.[field] ?? field;
 
 		const relation = getRelation(schema.relations, collection, field);
-		const type = relation ? getRelationType({ relation, collection, field }) : null;
+		const type = relation ? getRelationType({ relation, collection, field, useA2O: true }) : null;
 
 		if (type === 'o2m' && relation) {
 			filter[key] = filterReplaceM2A(filter[key], relation.collection, schema, options);
@@ -66,7 +65,7 @@ export function filterReplaceM2ADeep(
 
 			if (!relation) continue;
 
-			const type = getRelationType({ relation, collection, field });
+			const type = getRelationType({ relation, collection, field, useA2O: true });
 
 			if (type === 'o2m') {
 				deep[key] = filterReplaceM2ADeep(deep[key], relation.collection, schema);

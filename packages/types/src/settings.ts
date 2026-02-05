@@ -82,6 +82,7 @@ export type Settings = {
 	mcp_prompts_collection: string | null;
 	mcp_system_prompt_enabled: boolean;
 	mcp_system_prompt: string | null;
+	collaborative_editing_enabled: boolean;
 } & OwnerInformation;
 
 export type OwnerInformation = {
