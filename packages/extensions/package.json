@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions",
-	"version": "3.0.16",
+	"version": "3.0.17",
 	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.io",
 	"repository": {
