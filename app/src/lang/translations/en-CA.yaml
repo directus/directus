@@ -631,6 +631,14 @@ flow_tracking_activity: Only Track Activity
 flow_tracking_null: Do Not Track Anything
 code: Code
 insights: Insights
+deployment:
+  provider:
+    settings:
+      delete_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+    run:
+      cancel_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+  target_value:
+    preview: Preview
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -908,6 +916,7 @@ fields:
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
+    ai_header_name: Header
   directus_shares:
     name: Name
     role: Role
@@ -1040,6 +1049,8 @@ no_shares: No shares to show
 new_share: New Share
 ai:
   input: Input
+  items: Items
+  content: Content
   settings: Settings
   tool_approval:
     disabled: Disabled
