@@ -244,6 +244,9 @@ start_flow: Byrja Flæði
 stop_flow: Stoppa Flæði
 code: Kóði
 insights: Innsýnir
+deployment:
+  target_value:
+    preview: Forskoða
 visible: Sýnilegt
 no_data: Engin G0gn
 center_align: Miðju Jöfnun
