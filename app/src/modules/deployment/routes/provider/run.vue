@@ -294,72 +294,70 @@ onUnmounted(() => {
 			</div>
 		</template>
 
-		<div class="content">
-			<VProgressCircular v-if="loading" class="spinner" indeterminate />
+		<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
-			<template v-else-if="run">
-				<div class="stats-bar">
-					<div class="stat-card deployment-id">
-						<VIcon name="assignment" class="stat-icon" />
-						<span class="stat-label">{{ $t('deployment.provider.run.id') }}</span>
-						<div class="stat-value monospace">
-							<VTextOverflow :text="run.external_id" placement="bottom" />
-						</div>
-					</div>
-
-					<div class="stat-card">
-						<VIcon name="schedule" class="stat-icon" />
-						<span class="stat-label">{{ $t('duration') }}</span>
-						<span class="stat-value">{{ duration }}</span>
-					</div>
-
-					<div class="stat-card">
-						<VIcon name="planner_review" class="stat-icon" />
-						<span class="stat-label">{{ $t('status') }}</span>
-						<DeploymentStatus :status="run.status" />
-					</div>
-
-					<div class="stat-card">
-						<VIcon name="assignment" class="stat-icon" />
-						<span class="stat-label">{{ $t('deployment.target') }}</span>
-						<span class="stat-value">{{ $t(`deployment.target_value.${run.target}`) }}</span>
+		<div v-else-if="run" class="content">
+			<div class="stats-bar">
+				<div class="stat-card deployment-id">
+					<VIcon name="assignment" class="stat-icon" />
+					<span class="stat-label">{{ $t('deployment.provider.run.id') }}</span>
+					<div class="stat-value monospace">
+						<VTextOverflow :text="run.external_id" placement="bottom" />
 					</div>
 				</div>
 
-				<div class="log-filters">
-					<div class="filter-field">
-						<VSelect v-model="logLevelFilter" :items="logLevelOptions" inline />
-					</div>
-					<div class="filter-field">
-						<VIcon class="filter-icon" small name="search" />
-						<input
-							v-model="searchQuery"
-							:placeholder="$t('deployment.provider.run.search_logs')"
-							:aria-label="$t('deployment.provider.run.search_logs')"
-							class="search-input"
-						/>
-					</div>
+				<div class="stat-card">
+					<VIcon name="schedule" class="stat-icon" />
+					<span class="stat-label">{{ $t('duration') }}</span>
+					<span class="stat-value">{{ duration }}</span>
 				</div>
 
-				<div class="logs-container">
-					<div v-if="displayLogs.length === 0" class="no-logs">
-						{{ $t('deployment.provider.run.no_logs') }}
-					</div>
+				<div class="stat-card">
+					<VIcon name="planner_review" class="stat-icon" />
+					<span class="stat-label">{{ $t('status') }}</span>
+					<DeploymentStatus :status="run.status" />
+				</div>
 
-					<LogsDisplay
-						v-else
-						ref="logsDisplay"
-						class="logs-display"
-						:logs="displayLogs"
-						:log-levels="deploymentLogLevels"
-						:instances="logInstances"
-						:stream-connected="false"
-						:show-instance="false"
-						@scroll="shouldAutoScroll = false"
-						@scrolled-to-bottom="shouldAutoScroll = true"
+				<div class="stat-card">
+					<VIcon name="assignment" class="stat-icon" />
+					<span class="stat-label">{{ $t('deployment.target') }}</span>
+					<span class="stat-value">{{ $t(`deployment.target_value.${run.target}`) }}</span>
+				</div>
+			</div>
+
+			<div class="log-filters">
+				<div class="filter-field">
+					<VSelect v-model="logLevelFilter" :items="logLevelOptions" inline />
+				</div>
+				<div class="filter-field">
+					<VIcon class="filter-icon" small name="search" />
+					<input
+						v-model="searchQuery"
+						:placeholder="$t('deployment.provider.run.search_logs')"
+						:aria-label="$t('deployment.provider.run.search_logs')"
+						class="search-input"
 					/>
 				</div>
-			</template>
+			</div>
+
+			<div class="logs-container">
+				<div v-if="displayLogs.length === 0" class="no-logs">
+					{{ $t('deployment.provider.run.no_logs') }}
+				</div>
+
+				<LogsDisplay
+					v-else
+					ref="logsDisplay"
+					class="logs-display"
+					:logs="displayLogs"
+					:log-levels="deploymentLogLevels"
+					:instances="logInstances"
+					:stream-connected="false"
+					:show-instance="false"
+					@scroll="shouldAutoScroll = false"
+					@scrolled-to-bottom="shouldAutoScroll = true"
+				/>
+			</div>
 		</div>
 
 		<VDialog v-model="confirmCancel" @esc="confirmCancel = false">
@@ -383,8 +381,7 @@ onUnmounted(() => {
 }
 
 .spinner {
-	display: block;
-	margin: 100px auto;
+	margin: 120px auto;
 }
 
 .content {

@@ -272,59 +272,49 @@ onMounted(() => {
 			/>
 		</template>
 
-		<div class="container with-fill">
-			<VProgressCircular v-if="loading" class="spinner" indeterminate />
+		<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
-			<template v-else>
-				<VNotice
-					v-if="providerConfig?.settingsWarning && initialProjectIds.length > 0"
-					type="warning"
-					class="field full"
-				>
-					{{ providerConfig.settingsWarning }}
-				</VNotice>
+		<div v-else class="container with-fill">
+			<VNotice v-if="providerConfig?.settingsWarning && initialProjectIds.length > 0" type="warning" class="field full">
+				{{ providerConfig.settingsWarning }}
+			</VNotice>
 
-				<InterfacePresentationDivider
-					:title="$t('deployment.provider.settings.edit_configuration')"
-					icon="settings"
-					class="field full"
-				/>
+			<InterfacePresentationDivider
+				:title="$t('deployment.provider.settings.edit_configuration')"
+				icon="settings"
+				class="field full"
+			/>
 
-				<VForm
-					v-model="configurationEdits"
-					:fields="allFields as any"
-					:initial-values="config?.options || {}"
-					primary-key="+"
-					class="credentials-saved field full"
-				/>
+			<VForm
+				v-model="configurationEdits"
+				:fields="allFields as any"
+				:initial-values="config?.options || {}"
+				primary-key="+"
+				class="credentials-saved field full"
+			/>
 
-				<InterfacePresentationDivider
-					:title="$t('deployment.provider.projects')"
-					icon="assignment"
-					class="field full"
-				/>
+			<InterfacePresentationDivider :title="$t('deployment.provider.projects')" icon="assignment" class="field full" />
 
-				<div class="field full">
-					<div class="type-label">{{ $t('deployment.provider.select_projects') }}</div>
-					<div class="checkboxes">
-						<VCheckbox
-							v-for="project in availableProjects"
-							:key="project.external_id"
-							block
-							:value="project.external_id"
-							:label="project.name"
-							:disabled="!project.deployable"
-							:model-value="selectedProjectIds"
-							@update:model-value="(value) => (selectedProjectIds = value)"
-						>
-							<template v-if="!project.deployable" #append>
-								<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" />
-							</template>
-						</VCheckbox>
-					</div>
-					<small class="type-note">{{ $t('deployment.provider.select_projects_hint') }}</small>
+			<div class="field full">
+				<div class="type-label">{{ $t('deployment.provider.select_projects') }}</div>
+				<div class="checkboxes">
+					<VCheckbox
+						v-for="project in availableProjects"
+						:key="project.external_id"
+						block
+						:value="project.external_id"
+						:label="project.name"
+						:disabled="!project.deployable"
+						:model-value="selectedProjectIds"
+						@update:model-value="(value) => (selectedProjectIds = value)"
+					>
+						<template v-if="!project.deployable" #append>
+							<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" />
+						</template>
+					</VCheckbox>
 				</div>
-			</template>
+				<small class="type-note">{{ $t('deployment.provider.select_projects_hint') }}</small>
+			</div>
 		</div>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">

@@ -214,62 +214,59 @@ watch(
 			</VButton>
 		</template>
 
-		<div class="container">
-			<VNotice class="notice">{{ $t('deployment.provider.runs.notice') }}</VNotice>
+		<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
-			<VProgressCircular v-if="loading" class="spinner" indeterminate />
+		<div v-else class="container">
+			<VNotice class="notice">{{ $t('deployment.provider.runs.notice') }}</VNotice>
+			<VInfo v-if="runs.length === 0 && !search" icon="history" :title="$t('deployment.provider.runs.empty')" center>
+				{{ $t('deployment.provider.runs.empty_copy') }}
+			</VInfo>
+
+			<VInfo v-else-if="runs.length === 0 && search" :title="$t('no_results')" icon="search" center>
+				{{ $t('no_results_copy') }}
+
+				<template #append>
+					<VButton @click="search = null">{{ $t('clear_filters') }}</VButton>
+				</template>
+			</VInfo>
 
 			<template v-else>
-				<VInfo v-if="runs.length === 0 && !search" icon="history" :title="$t('deployment.provider.runs.empty')" center>
-					{{ $t('deployment.provider.runs.empty_copy') }}
-				</VInfo>
-
-				<VInfo v-else-if="runs.length === 0 && search" :title="$t('no_results')" icon="search" center>
-					{{ $t('no_results_copy') }}
-
-					<template #append>
-						<VButton @click="search = null">{{ $t('clear_filters') }}</VButton>
+				<VTable
+					v-model:headers="tableHeaders"
+					:items="runItems"
+					show-resize
+					fixed-header
+					item-key="id"
+					@click:row="({ item }) => $router.push(`/deployments/${provider}/${projectId}/runs/${item.id}`)"
+				>
+					<template #[`item.name`]="{ item }">
+						<span class="run-name">{{ item.name || item.external_id }}</span>
 					</template>
-				</VInfo>
 
-				<template v-else>
-					<VTable
-						v-model:headers="tableHeaders"
-						:items="runItems"
-						show-resize
-						fixed-header
-						item-key="id"
-						@click:row="({ item }) => $router.push(`/deployments/${provider}/${projectId}/runs/${item.id}`)"
-					>
-						<template #[`item.name`]="{ item }">
-							<span class="run-name">{{ item.name || item.external_id }}</span>
-						</template>
+					<template #[`item.status`]="{ item }">
+						<DeploymentStatus :status="item.status" />
+					</template>
 
-						<template #[`item.status`]="{ item }">
-							<DeploymentStatus :status="item.status" />
-						</template>
+					<template #[`item.target`]="{ item }">
+						{{ $t(`deployment.target_value.${item.target}`) }}
+					</template>
 
-						<template #[`item.target`]="{ item }">
-							{{ $t(`deployment.target_value.${item.target}`) }}
-						</template>
+					<template #[`item.date_created`]="{ item }">
+						{{ item.formattedDate }}
+					</template>
 
-						<template #[`item.date_created`]="{ item }">
-							{{ item.formattedDate }}
-						</template>
+					<template #[`item.duration`]="{ item }">
+						{{ item.formattedDuration }}
+					</template>
 
-						<template #[`item.duration`]="{ item }">
-							{{ item.formattedDuration }}
-						</template>
+					<template #[`item.user_created`]="{ item }">
+						{{ item.user_created ? userName(item.user_created) : '—' }}
+					</template>
+				</VTable>
 
-						<template #[`item.user_created`]="{ item }">
-							{{ item.user_created ? userName(item.user_created) : '—' }}
-						</template>
-					</VTable>
-
-					<div v-if="totalPages > 1" class="pagination">
-						<VPagination v-model="page" :length="totalPages" :total-visible="5" show-first-last />
-					</div>
-				</template>
+				<div v-if="totalPages > 1" class="pagination">
+					<VPagination v-model="page" :length="totalPages" :total-visible="5" show-first-last />
+				</div>
 			</template>
 		</div>
 	</PrivateView>

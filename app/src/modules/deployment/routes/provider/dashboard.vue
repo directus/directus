@@ -59,10 +59,10 @@ onMounted(async () => {
 			<DeploymentNavigation />
 		</template>
 
-		<div class="container">
-			<VProgressCircular v-if="loading" class="spinner" indeterminate />
+		<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
-			<VInfo v-else-if="projects.length === 0" icon="folder_off" :title="$t('deployment.no_projects')" center>
+		<div v-else class="container">
+			<VInfo v-if="projects.length === 0" icon="folder_off" :title="$t('deployment.no_projects')" center>
 				{{ $t('deployment.no_projects_copy') }}
 			</VInfo>
 

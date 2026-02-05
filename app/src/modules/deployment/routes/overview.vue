@@ -69,47 +69,45 @@ function onSetupComplete() {
 			<DeploymentNavigation />
 		</template>
 
-		<div class="container">
-			<VProgressCircular v-if="loading && providers.length === 0" class="spinner" indeterminate />
+		<VProgressCircular v-if="loading && providers.length === 0" class="spinner" indeterminate />
 
-			<template v-else>
-				<InterfacePresentationDivider :title="$t('deployment.overview.providers')" icon="settings" />
+		<div v-else class="container">
+			<InterfacePresentationDivider :title="$t('deployment.overview.providers')" icon="settings" />
 
-				<VList class="providers-list">
-					<VListItem
-						v-for="provider in providersList"
-						:key="provider.type"
-						class="provider-list-item"
-						grow
-						block
-						clickable
-						@click="onProviderClick(provider)"
-					>
-						<div class="icon">
-							<VIcon :name="provider.type" />
+			<VList class="providers-list">
+				<VListItem
+					v-for="provider in providersList"
+					:key="provider.type"
+					class="provider-list-item"
+					grow
+					block
+					clickable
+					@click="onProviderClick(provider)"
+				>
+					<div class="icon">
+						<VIcon :name="provider.type" />
+					</div>
+					<VListItemContent>
+						<div class="name">
+							<span v-if="!provider.configured">{{ $t('deployment.overview.configure') }}</span>
+							{{ $t(`deployment.provider.${provider.type}.name`) }}
 						</div>
-						<VListItemContent>
-							<div class="name">
-								<span v-if="!provider.configured">{{ $t('deployment.overview.configure') }}</span>
-								{{ $t(`deployment.provider.${provider.type}.name`) }}
-							</div>
-							<div class="description">
-								{{
-									$t(`deployment.overview.provider_description`, {
-										provider: $t(`deployment.provider.${provider.type}.name`),
-									})
-								}}
-							</div>
-						</VListItemContent>
-						<div v-if="provider.configured" class="meta">
-							<div class="projects">
-								{{ $t('deployment.overview.projects', { count: provider.projectsCount }) }}
-								<VIcon small name="folder" />
-							</div>
+						<div class="description">
+							{{
+								$t(`deployment.overview.provider_description`, {
+									provider: $t(`deployment.provider.${provider.type}.name`),
+								})
+							}}
 						</div>
-					</VListItem>
-				</VList>
-			</template>
+					</VListItemContent>
+					<div v-if="provider.configured" class="meta">
+						<div class="projects">
+							{{ $t('deployment.overview.projects', { count: provider.projectsCount }) }}
+							<VIcon small name="folder" />
+						</div>
+					</div>
+				</VListItem>
+			</VList>
 		</div>
 
 		<ProviderSetupDrawer
