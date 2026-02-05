@@ -964,6 +964,15 @@ operation_key_unique_error: Klíče operace musí být v toku unikátní
 operation_handle_resolve: 'Vyřešit: Klepnutím přidat nebo táhnutím přesměrovat'
 operation_handle_reject: 'Odmítnout: Klepnutím přidat nebo táhnutím přesměrovat'
 insights: Přehledy
+deployment:
+  provider:
+    settings:
+      delete_confirm: Tato akce je trvalá a nelze ji vrátit zpět. Jste si jisti, že chcete pokračovat?
+    run:
+      cancel_confirm: Tato akce je trvalá a nelze ji vrátit zpět. Jste si jisti, že chcete pokračovat?
+      log_all: Všechny úrovně logů
+  target_value:
+    preview: Náhled
 dashboard: Nástěnka
 panel: Panel
 panel_options: Možnosti panelu
