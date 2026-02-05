@@ -54,7 +54,6 @@ catalog:
   '@mapbox/mapbox-gl-geocoder': 5.1.0
   '@modelcontextprotocol/sdk': 1.17.1
   '@ngneat/falso': 8.0.2
-  '@nitwel/0x': 6.0.0
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.2
   '@pnpm/logger': 1001.0.0
