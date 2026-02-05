@@ -132,7 +132,6 @@ create_role: Rol yarat
 create_user: İstifadəçi yarat
 message: Mesaj
 delete_panel: Panel sil
-create_webhook: Webhook yarat
 create_custom_translation: Tərcümə yarat
 edit_custom_translation: Tərcüməni tənzimlə
 no_custom_translations: Tərcümə olmasın
@@ -164,14 +163,6 @@ rename_version: Versiyanın adını dəyiş
 compare_version: Versiyaları müqayisə et
 save_version: Versiyanı yadda saxla
 promote_version: Versiyanı promote et
-promote_version_disabled: Dəyişiklik yoxdur
-promote_version_drawer_title: '{version} versiyasını Əsas et'
-promote_version_changes: Dəyişikliklər
-promote_version_preview: Ön baxış
-outdated_notice: >-
-  Bu versiya yaradılandan bəri əsas element yeniləndi. Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
-promote_notice: >-
-  Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
 delete_version: Versiyanı sil
 delete_version_copy: >-
   "{version}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
@@ -231,6 +222,11 @@ fields:
   directus_policies:
     name:
 shares: Paylaşımlar
+ai:
+  unknown: Naməlum
+ai_tools:
+  items: məlumat
+  operations: Əməliyyatlar
 revisions: Dəyişikliklər
 no_revisions: Daha öncə dəyişiklik edilməyib
 table: Cədvəl
@@ -249,10 +245,15 @@ displays:
 layouts:
   tabular:
     tabular: Cədvəl
+triggers:
+  webhook:
+    method: Metod
 operations:
   log:
     message: Mesaj
   notification:
     message: Mesaj
     subject: Mövzü
+  request:
+    method: Metod
 standard: Standart

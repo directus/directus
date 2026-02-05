@@ -1,6 +1,6 @@
+import path from 'path';
 import type { ExtensionType } from '@directus/types';
 import fse from 'fs-extra';
-import path from 'path';
 import type { Language } from '../../types.js';
 import getTemplatePath from '../../utils/get-template-path.js';
 
@@ -23,7 +23,7 @@ async function copyTemplateFile(templateFile: TemplateFile, extensionPath: strin
 async function getFilesInDir(templatePath: string): Promise<string[]> {
 	if (!(await fse.pathExists(templatePath))) return [];
 
-	const files = await fse.readdir(templatePath);
+	const files = (await fse.readdir(templatePath)) as string[];
 
 	return files.map((file) => path.join(templatePath, file));
 }

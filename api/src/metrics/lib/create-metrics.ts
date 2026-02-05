@@ -1,8 +1,8 @@
-import { useEnv } from '@directus/env';
-import { toArray } from '@directus/utils';
 import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { promisify } from 'node:util';
+import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import pm2 from 'pm2';
 import type { MetricObjectWithValues, MetricValue } from 'prom-client';
 import { AggregatorRegistry, Counter, Histogram, register } from 'prom-client';
@@ -17,7 +17,7 @@ const isPM2 = 'PM2_HOME' in process.env;
 const METRICS_SYNC_PACKET = 'directus:metrics---data-sync';
 
 const listApps = promisify(pm2.list.bind(pm2));
-const sendDataToProcessId = promisify(pm2.sendDataToProcessId.bind(pm2));
+const sendDataToProcessId = promisify<number, object>(pm2.sendDataToProcessId.bind(pm2));
 
 export function createMetrics() {
 	const env = useEnv();

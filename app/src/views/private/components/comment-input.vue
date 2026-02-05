@@ -1,16 +1,27 @@
 <script setup lang="ts">
+import { Comment, User } from '@directus/types';
+import axios, { CancelTokenSource } from 'axios';
+import { cloneDeep, throttle } from 'lodash';
+import { ComponentPublicInstance, computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
+import VAvatar from '@/components/v-avatar.vue';
+import VButton from '@/components/v-button.vue';
+import VEmojiPicker from '@/components/v-emoji-picker.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTemplateInput from '@/components/v-template-input.vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import { Comment, User } from '@directus/types';
-import axios, { CancelTokenSource } from 'axios';
-import { cloneDeep, throttle } from 'lodash';
-import { ComponentPublicInstance, computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -277,16 +288,16 @@ function pressedEnter() {
 
 <template>
 	<div class="input-container" :class="{ collapsed }">
-		<v-menu v-model="showMentionDropDown" attached>
+		<VMenu v-model="showMentionDropDown" attached>
 			<template #activator>
-				<v-template-input
+				<VTemplateInput
 					ref="commentElement"
 					v-model="newCommentContent"
 					capture-group="(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})"
 					multiline
 					trigger-character="@"
 					:items="userPreviews"
-					:placeholder="t('leave_comment')"
+					:placeholder="$t('leave_comment')"
 					@trigger="triggerSearch"
 					@deactivate="showMentionDropDown = false"
 					@up="pressedUp"
@@ -296,8 +307,8 @@ function pressedEnter() {
 				/>
 			</template>
 
-			<v-list>
-				<v-list-item
+			<VList>
+				<VListItem
 					v-for="(user, index) in searchResult"
 					id="suggestions"
 					:key="user.id"
@@ -305,39 +316,39 @@ function pressedEnter() {
 					:active="index === selectedKeyboardIndex"
 					@click="insertUser(user)"
 				>
-					<v-list-item-icon>
-						<v-avatar x-small>
-							<v-image v-if="user.avatar" :src="avatarSource(user.avatar)" />
-							<v-icon v-else name="person_outline" />
-						</v-avatar>
-					</v-list-item-icon>
+					<VListItemIcon>
+						<VAvatar x-small>
+							<VImage v-if="user.avatar" :src="avatarSource(user.avatar)" />
+							<VIcon v-else name="person_outline" />
+						</VAvatar>
+					</VListItemIcon>
 
-					<v-list-item-content>{{ userName(user) }}</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					<VListItemContent>{{ userName(user) }}</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 
 		<div class="buttons">
-			<v-button x-small secondary icon class="mention" @click="insertAt">
-				<v-icon name="alternate_email" />
-			</v-button>
+			<VButton x-small secondary icon class="mention" @click="insertAt">
+				<VIcon name="alternate_email" />
+			</VButton>
 
-			<v-emoji-picker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
+			<VEmojiPicker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
 
 			<div class="spacer"></div>
 
-			<v-button class="cancel" x-small secondary @click="cancel">
-				{{ t('cancel') }}
-			</v-button>
-			<v-button
+			<VButton class="cancel" x-small secondary @click="cancel">
+				{{ $t('cancel') }}
+			</VButton>
+			<VButton
 				:disabled="!newCommentContent || newCommentContent.length === 0 || newCommentContent.trim() === ''"
 				:loading="saving"
 				class="post-comment"
 				x-small
 				@click="postComment"
 			>
-				{{ t('submit') }}
-			</v-button>
+				{{ $t('submit') }}
+			</VButton>
 		</div>
 	</div>
 </template>
@@ -355,7 +366,7 @@ function pressedEnter() {
 }
 
 .collapsed .v-template-input {
-	block-size: 48px;
+	block-size: var(--input-height-md);
 	padding-block-end: 0;
 }
 

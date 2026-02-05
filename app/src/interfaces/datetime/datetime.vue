@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { isValid } from 'date-fns';
 import { computed, ref } from 'vue';
-import { parseDate } from '@/utils/parse-date';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
+import VDatePicker from '@/components/v-date-picker.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
+import { parseDate } from '@/utils/parse-date';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
 	disabled?: boolean;
+	nonEditable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,29 +40,26 @@ function unsetValue(e: any) {
 </script>
 
 <template>
-	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+	<VMenu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled :active @click="toggle">
+			<VListItem block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
-					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
+					<UseDatetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
-					</use-datetime>
+					</UseDatetime>
 				</template>
 
 				<div class="spacer" />
 
-				<template v-if="!disabled">
-					<v-icon
-						:name="value ? 'clear' : 'today'"
-						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
-						clickable
-						@click="value ? unsetValue($event) : undefined"
-					/>
-				</template>
-			</v-list-item>
+				<div v-if="!nonEditable" class="item-actions">
+					<VRemove v-if="value" :disabled deselect class="clear-icon" @action="unsetValue($event)" />
+
+					<VIcon v-else name="today" class="today-icon" :class="{ active, disabled }" />
+				</div>
+			</VListItem>
 		</template>
 
-		<v-date-picker
+		<VDatePicker
 			:type
 			:disabled
 			:include-seconds
@@ -65,10 +68,12 @@ function unsetValue(e: any) {
 			@update:model-value="$emit('input', $event)"
 			@close="dateTimeMenu?.deactivate"
 		/>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-list-item {
 	--v-list-item-color-active: var(--v-list-item-color);
 	--v-list-item-background-color-active: var(
@@ -76,7 +81,11 @@ function unsetValue(e: any) {
 		var(--v-list-background-color, var(--theme--form--field--input--background))
 	);
 
-	&.active,
+	&.disabled:not(.non-editable) {
+		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+	}
+
+	&.active:not(.disabled),
 	&:focus-within,
 	&:focus-visible {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
@@ -87,19 +96,14 @@ function unsetValue(e: any) {
 	}
 }
 
-.v-icon {
-	&.today-icon {
-		&:hover,
-		&.active {
-			--v-icon-color: var(--theme--primary);
-		}
+.today-icon:not(.disabled) {
+	&:hover,
+	&.active {
+		--v-icon-color: var(--theme--primary);
 	}
+}
 
-	&.clear-icon {
-		&:hover,
-		&.active {
-			--v-icon-color: var(--theme--danger);
-		}
-	}
+.item-actions {
+	@include mixins.list-interface-item-actions;
 }
 </style>

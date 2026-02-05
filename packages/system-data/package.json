@@ -1,6 +1,6 @@
 {
 	"name": "@directus/system-data",
-	"version": "3.3.0",
+	"version": "4.0.0",
 	"description": "Definitions and types for Directus system collections",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -25,13 +25,17 @@
 	],
 	"scripts": {
 		"build": "NODE_ENV=production tsdown",
-		"dev": "NODE_ENV=development tsdown"
+		"dev": "NODE_ENV=development tsdown",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
 		"unplugin-yaml": "catalog:",
 		"esbuild": "catalog:",
 		"tsdown": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }

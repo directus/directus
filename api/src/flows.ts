@@ -8,9 +8,9 @@ import type {
 	FilterHandler,
 	Flow,
 	Operation,
+	OperationHandler,
 	PrimaryKey,
 	SchemaOverview,
-	OperationHandler,
 } from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -389,6 +389,8 @@ class FlowManager {
 			[ACCOUNTABILITY_KEY]: context?.['accountability'] ?? null,
 			[ENV_KEY]: this.envs,
 		};
+
+		context['flow'] ??= flow;
 
 		let nextOperation = flow.operation;
 		let lastOperationStatus: 'resolve' | 'reject' | 'unknown' = 'unknown';

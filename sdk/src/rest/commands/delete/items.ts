@@ -1,6 +1,6 @@
 import type { Query } from '../../../types/index.js';
-import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Delete multiple existing items.

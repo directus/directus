@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
-import type Keyv from 'keyv';
 import type { MutationOptions } from '@directus/types';
+import type Keyv from 'keyv';
 
 /**
  * Check whether cache should be cleared

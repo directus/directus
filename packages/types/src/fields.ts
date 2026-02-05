@@ -1,13 +1,13 @@
-import type { Column } from '@directus/schema';
 import type {
 	FUNCTIONS,
 	GEOMETRY_FORMATS,
 	GEOMETRY_TYPES,
-	RELATIONAL_TYPES,
 	LOCAL_TYPES,
-	TYPES,
 	NUMERIC_TYPES,
+	RELATIONAL_TYPES,
+	TYPES,
 } from '@directus/constants';
+import type { Column } from '@directus/schema';
 import type { Filter, FilterOperator } from './filter.js';
 import type { DeepPartial } from './misc.js';
 
@@ -53,6 +53,7 @@ export type FieldMeta = {
 	conditions: Condition[] | null;
 	validation: Filter | null;
 	validation_message: string | null;
+	searchable: boolean;
 	system?: true;
 	clear_hidden_value_on_save?: boolean;
 };

@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	Accountability,
@@ -8,7 +9,6 @@ import type {
 } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
-import { ForbiddenError } from '@directus/errors';
 import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
@@ -55,7 +55,12 @@ export class SchemaService {
 		const currentSnapshot = options?.currentSnapshot ?? (await getSnapshot({ database: this.knex }));
 		const diff = getSnapshotDiff(currentSnapshot, snapshot);
 
-		if (diff.collections.length === 0 && diff.fields.length === 0 && diff.relations.length === 0) {
+		if (
+			diff.collections.length === 0 &&
+			diff.fields.length === 0 &&
+			diff.relations.length === 0 &&
+			(!diff.systemFields || diff.systemFields.length === 0)
+		) {
 			return null;
 		}
 

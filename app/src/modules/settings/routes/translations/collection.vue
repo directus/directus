@@ -1,17 +1,25 @@
 <script setup lang="ts">
+import { useCollection, useLayout } from '@directus/composables';
+import { computed, ref } from 'vue';
+import SettingsNavigation from '../../components/navigation.vue';
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VError from '@/components/v-error.vue';
+import VInfo from '@/components/v-info.vue';
 import { usePreset } from '@/composables/use-preset';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
-import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { useCollection, useLayout } from '@directus/composables';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
 
 type Item = {
 	[field: string]: any;
@@ -21,8 +29,6 @@ const props = defineProps<{
 	bookmark?: string;
 	archive?: string;
 }>();
-
-const { t } = useI18n();
 
 const layoutRef = ref();
 
@@ -43,8 +49,6 @@ const { layout, layoutOptions, layoutQuery, filter, search, resetPreset, refresh
 const { layoutWrapper } = useLayout(layout);
 
 const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
-
-const currentLayout = useExtension('layout', layout);
 
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
@@ -114,20 +118,9 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<private-view
-			:title="t('settings_translations')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-			:sidebar-shadow="currentLayout?.sidebarShadow"
-		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="translate" />
-				</v-button>
-			</template>
-
+		<PrivateView :title="$t('settings_translations')" icon="translate">
 			<template #headline>
-				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+				<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 			</template>
 
 			<template #actions:prepend>
@@ -135,72 +128,75 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_translations" />
+				<SearchInput v-model="search" v-model:filter="filter" collection="directus_translations" small />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
+				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary @click="on">
-							<v-icon name="delete" outline />
-						</v-button>
+						<PrivateViewHeaderBarActionButton
+							v-tooltip.bottom="$t('delete_label')"
+							class="action-delete"
+							secondary
+							icon="delete"
+							@click="on"
+						/>
 					</template>
 
-					<v-card>
-						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<VCard>
+						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+						<VCardActions>
+							<VButton secondary @click="confirmDelete = false">
+								{{ $t('cancel') }}
+							</VButton>
+							<VButton kind="danger" :loading="deleting" @click="batchDelete">
+								{{ $t('delete_label') }}
+							</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
-					v-tooltip.bottom="t('edit')"
-					rounded
-					icon
+					v-tooltip.bottom="$t('edit')"
+					icon="edit"
 					secondary
 					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline />
-				</v-button>
+				/>
 
-				<v-button v-tooltip.bottom="t('create_custom_translation')" rounded icon :to="addNewLink">
-					<v-icon name="add" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('create_custom_translation')"
+					:to="addNewLink"
+					icon="add"
+				/>
 			</template>
 
 			<template #navigation>
-				<settings-navigation />
+				<SettingsNavigation />
 			</template>
 
 			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
+					<VInfo :title="$t('no_results')" icon="search" center>
+						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+							<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('no_custom_translations')" :icon="currentCollection!.icon" center>
-						{{ t('no_custom_translations_copy') }}
+					<VInfo :title="$t('no_custom_translations')" :icon="currentCollection!.icon" center>
+						{{ $t('no_custom_translations_copy') }}
 
 						<template #append>
-							<v-button :to="`/settings/translations/+`">{{ t('create_custom_translation') }}</v-button>
+							<VButton :to="`/settings/translations/+`">{{ $t('create_custom_translation') }}</VButton>
 						</template>
-					</v-info>
+					</VInfo>
 				</template>
 			</component>
 
-			<drawer-batch
+			<DrawerBatch
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				collection="directus_translations"
@@ -208,15 +204,12 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div v-md="t('page_help_settings_translations_collection')" class="page-description" />
-				</sidebar-detail>
-				<layout-sidebar-detail v-model="layout">
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
-				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
-				<export-sidebar-detail
+				<RefreshSidebarDetail v-model="refreshInterval" @refresh="refresh" />
+				<ExportSidebarDetail
 					collection="directus_translations"
 					:filter="filter"
 					:search="search"
@@ -224,26 +217,20 @@ function clearFilters() {
 					@download="download"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail
-					location="collection"
-					collection="directus_translations"
-					:selection="selection"
-					@refresh="batchRefresh"
-				/>
 			</template>
 
-			<v-dialog :model-value="deleteError !== null">
-				<v-card>
-					<v-card-title>{{ t('something_went_wrong') }}</v-card-title>
-					<v-card-text>
-						<v-error :error="deleteError" />
-					</v-card-text>
-					<v-card-actions>
-						<v-button @click="deleteError = null">{{ t('done') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</private-view>
+			<VDialog :model-value="deleteError !== null">
+				<VCard>
+					<VCardTitle>{{ $t('something_went_wrong') }}</VCardTitle>
+					<VCardText>
+						<VError :error="deleteError" />
+					</VCardText>
+					<VCardActions>
+						<VButton @click="deleteError = null">{{ $t('done') }}</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
+		</PrivateView>
 	</component>
 </template>
 

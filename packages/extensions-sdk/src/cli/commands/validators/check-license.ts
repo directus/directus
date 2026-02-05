@@ -1,7 +1,7 @@
+import path from 'path';
 import fse from 'fs-extra';
 import { type Ora } from 'ora';
 import type { Report } from '../../types.js';
-import path from 'path';
 
 const checkLicense = {
 	name: 'license',

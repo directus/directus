@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+
 withDefaults(
 	defineProps<{
 		/** The value that will be displayed inside the badge Only 2 characters allowed) */
@@ -26,7 +28,7 @@ withDefaults(
 <template>
 	<div class="v-badge" :class="{ dot, bordered }">
 		<span v-if="!disabled" class="badge" :class="{ dot, bordered, left, bottom }">
-			<v-icon v-if="icon" :name="icon" x-small />
+			<VIcon v-if="icon" :name="icon" x-small />
 			<span v-else>{{ value }}</span>
 		</span>
 

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Về chúng tôi
+first_name: Tên
+last_name: Họ
 identifier: Định danh
 avatar: Ảnh đại diện
 application: Ứng dụng
@@ -124,7 +126,6 @@ create_policy: Tạo chính sách
 create_user: Tạo Người dùng
 message: Tin nhắn
 delete_panel: Xóa bảng
-create_webhook: Tạo Webhook
 create_custom_translation: Bản dịch tùy chỉnh mới
 edit_custom_translation: Sửa bản dịch tùy chỉnh
 no_custom_translations: Không có bản dịch tùy chỉnh
@@ -146,8 +147,6 @@ prefix: Tiền tố
 suffix: Hậu tố
 version: Phiên bản
 switch_version_copy: .
-promote_version_disabled: Không có thay đổi
-promote_version_changes: Thay đổi
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
@@ -360,6 +359,7 @@ confirm_revert_body: Bản ghi sẽ được cập nhật về mốc thời gian
 display: Hiển thị
 settings_update_success: Cài đặt đã được cập nhật
 title: Tiêu đề
+subtitle: Tiêu đề phụ
 revision_delta_created: Đã tạo
 revision_delta_updated: 'Cập nhật 1 Trường | Cập nhật {count} Trường'
 revision_delta_deleted: Đã xóa
@@ -512,7 +512,6 @@ file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
 no_users_copy: Chưa có user nào thuộc quyền này.
-no_webhooks_copy: Chưa có webhook nào. Hãy tạo mới bằng nút dưới đây.
 no_notifications: Không có thông báo
 no_notifications_copy: Chưa có thông báo mới!
 activity_log: Nhật ký hoạt động
@@ -537,7 +536,6 @@ activity: Hoạt động
 action: Hành động
 ip_address: Địa chỉ IP
 user_agent: Tài khoản người dùng
-webhooks: Webhooks
 min_value: Giá trị nhỏ nhất
 max_value: Giá trị lớn nhất
 automatic: Tự động
@@ -605,7 +603,6 @@ errors:
   VALUE_OUT_OF_RANGE: Giá trị ngoài khoảng cho phép
   VALUE_TOO_LONG: Dữ liệu quá dài
 security: Bảo mật
-value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
 create_bookmark: Tạo Dấu trang
 edit_bookmark: Chỉnh sửa Dấu trang
@@ -735,7 +732,6 @@ bold: In đậm
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
-run_flow_confirm: Bạn có muốn thực thi luồng này không?
 run_flow_on_current_collection: Chạy luồng trên collection hiện tại
 run_flow: Chạy
 field_name_placeholder: Nhập tên trường...
@@ -824,7 +820,6 @@ no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
 settings_roles: Vai trò người dùng
 settings_project: Cài đặt
-settings_webhooks: Webhooks
 settings_presets: Đánh dấu
 settings_translations: Các Bản Dịch
 one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
@@ -840,8 +835,6 @@ unsaved_changes: Những thay đổi chưa được lưu
 unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
 discard_changes: Hủy thay đổi
 keep_editing: Tiếp tục chỉnh sửa
-page_help_collections_collection: >-
-  ** Duyệt các mục ** - Liệt kê tất cả các mục trong {collection} mà bạn có quyền truy cập. Tùy chỉnh bố cục, bộ lọc và sắp xếp để điều chỉnh chế độ xem của bạn và thậm chí lưu dấu trang của các cấu hình khác nhau này để truy cập nhanh.
 add_new: Thêm mới
 create_new: Tạo Mới
 all: Tất cả
@@ -945,13 +938,6 @@ fields:
   directus_policies:
     name: Tên chính sách
     description: Mô tả
-  directus_webhooks:
-    name: Tên
-    method: Phương thức
-    status: Trạng thái
-    data: Dữ liệu
-    value: Giá trị
-    collections: Danh mục
 field_options:
   directus_settings:
     security_divider_title: Bảo mật
@@ -985,18 +971,20 @@ field_options:
     status_dropdown_active: Kích hoạt
     status_dropdown_suspended: Tạm ngưng
     status_dropdown_archived: Đã lưu trữ
-  directus_webhooks:
-    status_options_active: Kích hoạt
-    status_options_inactive: Không hoạt động
-    actions_create: Tạo
-    actions_update: Cập nhật
-    actions_login: Đăng nhập
-    headers:
-      value: Giá trị
 no_value: Không có giá trị
 comment: Bình luận
 live_preview:
   new_window: Mở trong Cửa Sổ Mới
+ai:
+  unknown: Không xác định
+  settings: Cài đặt
+  tool_approval:
+    disabled: Đã tắt
+ai_tools:
+  files: Tệp
+  folders: Thư mục
+  schema: Cấu trúc dữ liệu
+  collections: Danh mục
 mcp_prompts_collection_schema:
   messages_role_user: Người dùng
 expired: Đã hết hạn

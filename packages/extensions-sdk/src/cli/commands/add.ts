@@ -1,11 +1,12 @@
+import path from 'path';
+import { EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type {
 	ExtensionOptions,
 	ExtensionOptionsBundleEntry,
 	ExtensionManifest as TExtensionManifest,
 } from '@directus/extensions';
-import type { NestedExtensionType } from '@directus/types';
 import { EXTENSION_LANGUAGES, EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
-import { EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
+import type { NestedExtensionType } from '@directus/types';
 import { isIn, isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';
@@ -13,7 +14,6 @@ import { execa } from 'execa';
 import fse from 'fs-extra';
 import inquirer from 'inquirer';
 import ora from 'ora';
-import path from 'path';
 import type { Language } from '../types.js';
 import detectJsonIndent from '../utils/detect-json-indent.js';
 import getPackageManager from '../utils/get-package-manager.js';
@@ -228,7 +228,7 @@ export default async function add(options: AddOptions): Promise<void> {
 		const convertSourcePath = path.resolve(source, convertName);
 		const entrySourcePath = path.resolve(source, name);
 
-		const convertFiles = await fse.readdir(source);
+		const convertFiles = (await fse.readdir(source, 'utf8')) as string[];
 
 		await Promise.all(
 			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file))),

@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import { computed, ref, toRefs, watch } from 'vue';
+import { RouterLink, useRouter } from 'vue-router';
+import z from 'zod';
 import { RequestError } from '@/api';
 import { login } from '@/auth';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import InterfaceSystemInputPassword from '@/interfaces/_system/system-input-password/input-password.vue';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores/user';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 type Credentials = {
 	email: string;
@@ -16,8 +22,6 @@ type Credentials = {
 const props = defineProps<{
 	provider: string;
 }>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -57,9 +61,8 @@ const errorFormatted = computed(() => {
 
 async function onSubmit() {
 	// Simple RegEx, not for validation, but to prevent unnecessary login requests when the value is clearly invalid
-	const emailRegex = /^\S+@\S+$/;
 
-	if (email.value === null || !emailRegex.test(email.value) || password.value === null) {
+	if (!z.email().safeParse(email.value).success || password.value === null) {
 		error.value = 'INVALID_PAYLOAD';
 		return;
 	}
@@ -68,7 +71,7 @@ async function onSubmit() {
 		loggingIn.value = true;
 
 		const credentials: Credentials = {
-			email: email.value,
+			email: email.value!,
 			password: password.value,
 		};
 
@@ -102,30 +105,30 @@ async function onSubmit() {
 
 <template>
 	<form novalidate @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
-		<interface-system-input-password :value="password" autocomplete="current-password" @input="password = $event" />
+		<VInput v-model="email" autofocus autocomplete="username" type="email" :placeholder="$t('email')" />
+		<InterfaceSystemInputPassword :value="password" autocomplete="current-password" @input="password = $event" />
 
-		<transition-expand>
-			<v-input
+		<TransitionExpand>
+			<VInput
 				v-if="requiresTFA"
 				v-model="otp"
 				type="text"
 				autocomplete="one-time-code"
-				:placeholder="t('otp')"
+				:placeholder="$t('otp')"
 				autofocus
 			/>
-		</transition-expand>
+		</TransitionExpand>
 
-		<v-notice v-if="error" type="warning">
+		<VNotice v-if="error" type="warning">
 			{{ errorFormatted }}
-		</v-notice>
+		</VNotice>
 		<div class="buttons">
-			<v-button class="sign-in" type="submit" :loading="loggingIn" large>
-				<v-text-overflow :text="t('sign_in')" />
-			</v-button>
-			<router-link to="/reset-password" class="forgot-password">
-				{{ t('forgot_password') }}
-			</router-link>
+			<VButton class="sign-in" type="submit" :loading="loggingIn" large>
+				<VTextOverflow :text="$t('sign_in')" />
+			</VButton>
+			<RouterLink to="/reset-password" class="forgot-password">
+				{{ $t('forgot_password') }}
+			</RouterLink>
 		</div>
 	</form>
 </template>

@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
 
 const props = withDefaults(
 	defineProps<{
 		modelValue?: string;
 		items?: Record<string, any>[];
+		disabled?: boolean;
+		nonEditable?: boolean;
 		secondary?: boolean;
 		danger?: boolean;
 	}>(),
@@ -22,38 +29,38 @@ const displayValue = computed(() => {
 </script>
 
 <template>
-	<v-menu attached class="language-select" :class="{ secondary, danger }">
+	<VMenu
+		attached
+		class="language-select"
+		:class="{ secondary, danger, disabled, 'non-editable': nonEditable }"
+		:disabled="disabled && !nonEditable"
+	>
 		<template #activator="{ toggle, active }">
 			<button class="toggle" type="button" @click="toggle">
 				<slot name="prepend" />
 				<span class="display-value">{{ displayValue }}</span>
 				<span class="controls"><slot name="controls" :active :toggle /></span>
-				<v-icon class="expand" name="expand_more" :class="{ active }" />
+				<VIcon class="expand" name="expand_more" :class="{ active }" />
 			</button>
 		</template>
 
-		<v-list v-if="items">
-			<v-list-item
-				v-for="(item, index) in items"
-				:key="index"
-				clickable
-				@click="$emit('update:modelValue', item.value)"
-			>
+		<VList v-if="items">
+			<VListItem v-for="(item, index) in items" :key="index" clickable @click="$emit('update:modelValue', item.value)">
 				<div class="start">
 					<div class="dot" :class="{ show: item.edited }"></div>
 					{{ item.text }}
 				</div>
 				<div class="end">
-					<v-progress-linear
+					<VProgressLinear
 						v-tooltip="`${Math.round((item.current / item.max) * 100)}%`"
 						:value="item.progress"
 						rounded
 						colorful
 					/>
 				</div>
-			</v-list-item>
-		</v-list>
-	</v-menu>
+			</VListItem>
+		</VList>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>
@@ -103,6 +110,23 @@ const displayValue = computed(() => {
 
 		color: var(--theme--danger);
 		background-color: var(--theme--danger-background);
+	}
+
+	.disabled:not(.non-editable) & {
+		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+		--v-icon-color-hover: var(--v-icon-color);
+
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		cursor: not-allowed;
+
+		.secondary & {
+			--v-icon-color: var(---theme--secondary-subdued);
+			--v-icon-color-hover: var(--v-icon-color);
+
+			color: var(--theme--secondary-subdued);
+			background-color: var(--theme--secondary-background);
+		}
 	}
 }
 

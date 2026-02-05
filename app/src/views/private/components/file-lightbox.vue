@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
 import { useSync } from '@directus/composables';
+import VButton from '@/components/v-button.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
 
 interface Props extends FilePreviewProps {
 	modelValue: boolean;
+	src?: string;
 }
 
 const props = defineProps<Props>();
@@ -16,17 +20,17 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 </script>
 
 <template>
-	<v-dialog v-model="internalModelValue" @esc="internalModelValue = false">
+	<VDialog v-model="internalModelValue" @esc="internalModelValue = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<file-preview :file="file" :preset="null" in-modal @click="internalModelValue = false" />
+		<FilePreview :file="file" :src="src" :preset="null" in-modal @click="internalModelValue = false" />
 
-		<v-button class="close" icon rounded @click="internalModelValue = false">
-			<v-icon name="close" />
-		</v-button>
-	</v-dialog>
+		<VButton class="close" icon rounded @click="internalModelValue = false">
+			<VIcon name="close" />
+		</VButton>
+	</VDialog>
 </template>
 
 <style scoped>

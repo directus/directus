@@ -1,249 +1,288 @@
-import type { Field, Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { flushPromises } from '@vue/test-utils';
-import type { AxiosRequestConfig } from 'axios';
-import { isEqual } from 'lodash-es';
-import { afterEach, expect, test, vi } from 'vitest';
-import { computed, ref, unref } from 'vue';
-import { useCollection } from './use-collection.js';
+import type { AxiosInstance } from 'axios';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { type Ref, ref, unref } from 'vue';
 import { useItems } from './use-items.js';
+import { useApi } from './use-system.js';
 
-const mockData = { id: 1 };
-const mockCountData = { count: 2 };
-const mockCountDistinctData = { countDistinct: { id: 3 } };
+vi.mock('./use-system.js');
 
-const mockPrimaryKeyField: Field = {
-	collection: 'test_collection',
-	field: 'id',
-	name: 'id',
-	type: 'integer',
-	schema: null,
-	meta: null,
-};
-
-const mockApiGet = vi.fn();
-const mockApiPost = vi.fn();
-
-function isGetItemsRequest(config: AxiosRequestConfig) {
-	if (!config.params) return false;
-	return Object.keys(config.params).includes('fields');
-}
-
-function isTotalCountRequest(config: AxiosRequestConfig) {
-	if (!config.params) return false;
-	return isEqual(Object.keys(config.params), ['aggregate', 'filter']);
-}
-
-function isFilterCountRequest(config: AxiosRequestConfig) {
-	if (!config.params) return false;
-	return isEqual(Object.keys(config.params), ['filter', 'search', 'aggregate']);
-}
-
-vi.mock('./use-system.js', () => ({
-	useApi: vi.fn().mockImplementation(() => ({
-		get: mockApiGet.mockImplementation((_path: string, config: AxiosRequestConfig) => {
-			if (isTotalCountRequest(config) || isFilterCountRequest(config)) {
-				if (config.params.aggregate?.countDistinct) return Promise.resolve({ data: { data: [mockCountDistinctData] } });
-				return Promise.resolve({ data: { data: [mockCountData] } });
-			}
-
-			return Promise.resolve({ data: { data: [mockData] } });
-		}),
-		post: mockApiPost,
+vi.mock('./use-collection.js', () => ({
+	useCollection: vi.fn(() => ({
+		primaryKeyField: ref({ field: 'id' }),
 	})),
 }));
 
-vi.mock('./use-collection.js');
+describe('useItems', () => {
+	let mockApiGet: AxiosInstance['get'];
 
-afterEach(() => {
-	vi.clearAllMocks();
-});
+	beforeEach(() => {
+		mockApiGet = vi.fn();
 
-test('should fetch filter count and total count only once', async () => {
-	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+		vi.mocked(useApi).mockImplementation(() => ({ get: mockApiGet }) as unknown as AxiosInstance);
 
-	const { totalCount, itemCount } = useItems(ref('test_collection'), {
-		fields: ref(['*']),
-		limit: ref(1),
-		sort: ref(null),
-		search: ref(null),
-		filter: ref(null),
-		page: ref(1),
+		vi.useFakeTimers();
 	});
 
-	// Wait until computed values are updated
-	await flushPromises();
-
-	expect(unref(totalCount)).toBe(mockCountData.count);
-	expect(unref(itemCount)).toBe(mockCountData.count);
-	expect(mockApiGet.mock.calls.filter((call) => isGetItemsRequest(call[1])).length).toBe(1);
-	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(1);
-	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
-});
-
-test('should fetch distinct filter count and total count only once', async () => {
-	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => mockPrimaryKeyField) } as any);
-
-	const { totalCount, itemCount } = useItems(ref('test_collection'), {
-		fields: ref(['*']),
-		limit: ref(1),
-		sort: ref(null),
-		search: ref(null),
-		filter: ref(null),
-		page: ref(1),
+	afterEach(() => {
+		vi.clearAllTimers();
+		vi.useRealTimers();
+		vi.clearAllMocks();
+		vi.resetAllMocks();
 	});
 
-	// Wait until computed values are updated
-	await flushPromises();
+	test('should call fetchItems immediately on first invocation', async () => {
+		const collection = ref('test_collection');
 
-	expect(unref(totalCount)).toBe(mockCountDistinctData.countDistinct.id);
-	expect(unref(itemCount)).toBe(mockCountDistinctData.countDistinct.id);
-	expect(mockApiGet.mock.calls.filter((call) => isGetItemsRequest(call[1])).length).toBe(1);
-	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(1);
-	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
-});
+		vi.mocked(mockApiGet).mockResolvedValue({
+			data: {
+				data: [
+					{
+						count: 1,
+						countDistinct: { id: 1 },
+					},
+				],
+			},
+		});
 
-test('should not re-fetch filter count when changing fields query', async () => {
-	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+		const query = {
+			fields: ref(['id', 'name']),
+			limit: ref(25),
+			sort: ref(['id']),
+			search: ref(''),
+			filter: ref({}),
+			page: ref(1),
+		};
 
-	const fields = ref(['*']);
+		await useItems(collection, query);
 
-	useItems(ref('test_collection'), {
-		fields,
-		limit: ref(1),
-		sort: ref(null),
-		search: ref(null),
-		filter: ref(null),
-		page: ref(1),
+		// Should only call once immediately (items, count, total)
+		expect(mockApiGet).toHaveBeenCalledTimes(3);
 	});
 
-	// update fields query
-	fields.value = ['id'];
+	test('should throttle multiple rapid changes to query parameters', async () => {
+		const collection = ref('test_collection');
 
-	// Wait until computed values are updated
-	await flushPromises();
+		vi.mocked(mockApiGet).mockResolvedValue({
+			data: {
+				data: [
+					{
+						count: 1,
+						countDistinct: { id: 1 },
+					},
+				],
+			},
+		});
 
-	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
-});
+		const query = {
+			fields: ref(['id', 'name']),
+			limit: ref(25),
+			sort: ref(['id']),
+			search: ref(''),
+			filter: ref({}),
+			page: ref(1),
+		};
 
-test('should re-fetch filter count when changing filters query', async () => {
-	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+		await useItems(collection, query);
 
-	const filter = ref<Filter | null>(null);
+		// Should only call once immediately (items, count, total)
+		expect(mockApiGet).toHaveBeenCalledTimes(3);
 
-	useItems(ref('test_collection'), {
-		fields: ref(['*']),
-		limit: ref(1),
-		sort: ref(null),
-		search: ref(null),
-		filter,
-		page: ref(1),
+		// Trigger multiple rapid changes
+		query.search.value = 'test1';
+		query.search.value = 'test2';
+		query.search.value = 'test3';
+
+		// Fast-forward past throttle delay (500ms)
+		await vi.advanceTimersByTimeAsync(500);
+
+		// Should have been called once due to throttle (items(2), count(2), total(1))
+		expect(mockApiGet).toHaveBeenCalledTimes(5);
 	});
 
-	// update filter query
-	filter.value = { id: { _eq: 1 } };
+	test('should allow subsequent calls after throttle period expires', async () => {
+		const collection = ref('test_collection');
 
-	// Wait until computed values are updated
-	await flushPromises();
+		vi.mocked(mockApiGet).mockResolvedValue({
+			data: {
+				data: [
+					{
+						count: 1,
+						countDistinct: { id: 1 },
+					},
+				],
+			},
+		});
 
-	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(1);
-	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(2);
-});
+		const query = {
+			fields: ref(['id', 'name']),
+			limit: ref(25),
+			sort: ref(['id']),
+			search: ref(''),
+			filter: ref({}),
+			page: ref(1),
+		};
 
-test('should re-fetch total count when changing system filter', async () => {
-	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+		await useItems(collection, query);
 
-	const filterSystem = ref<Filter | null>(null);
+		// Should only call once immediately (items, count, total)
+		expect(mockApiGet).toHaveBeenCalledTimes(3);
 
-	useItems(ref('test_collection'), {
-		fields: ref(['*']),
-		limit: ref(1),
-		sort: ref(null),
-		search: ref(null),
-		filter: ref(null),
-		filterSystem,
-		page: ref(1),
+		// First change
+		query.search.value = 'first';
+		await vi.advanceTimersByTimeAsync(500);
+		// Should have been called once due to throttle (items(2), count(2), total(1))
+		expect(mockApiGet).toHaveBeenCalledTimes(5);
+
+		// Wait for throttle to reset
+		await vi.advanceTimersByTimeAsync(100);
+
+		// Second change after throttle period
+		query.search.value = 'second';
+		await vi.advanceTimersByTimeAsync(500);
+		// Should have been called once due to throttle (items(3), count(3), total(1))
+		expect(mockApiGet).toHaveBeenCalledTimes(7);
 	});
 
-	// update filter query
-	filterSystem.value = { id: { _eq: 1 } };
+	test('should NOT call getItemCount if only limit changes', async () => {
+		const collection = ref('test_collection');
 
-	// Wait until computed values are updated
-	await flushPromises();
+		vi.mocked(mockApiGet).mockResolvedValue({
+			data: {
+				data: [
+					{
+						count: 1,
+						countDistinct: { id: 1 },
+					},
+				],
+			},
+		});
 
-	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
-	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(2);
-});
+		const limit = ref(1);
 
-test('should re-fetch filter count when changing search query', async () => {
-	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+		const query = {
+			fields: ref(['id', 'name']),
+			limit,
+			sort: ref(['id']),
+			search: ref(''),
+			filter: ref({}),
+			page: ref(1),
+		};
 
-	const search = ref<string | null>(null);
+		await useItems(collection, query);
 
-	useItems(ref('test_collection'), {
-		fields: ref(['*']),
-		limit: ref(1),
-		sort: ref(null),
-		search,
-		filter: ref(null),
-		page: ref(1),
+		// Should only call once immediately (items, count, total)
+		expect(mockApiGet).toHaveBeenCalledTimes(3);
+
+		limit.value = 5;
+
+		// Fast-forward past throttle delay (500ms)
+		await vi.advanceTimersByTimeAsync(500);
+
+		// Should have been called once due to throttle (items(2), count(1), total(1))
+		expect(mockApiGet).toHaveBeenCalledTimes(4);
 	});
 
-	// update search query
-	search.value = 'test';
+	test('should reset limit to 1 if filter changes', async () => {
+		const collection = ref('test_collection');
 
-	// Wait until computed values are updated
-	await flushPromises();
+		vi.mocked(mockApiGet).mockResolvedValue({
+			data: {
+				data: [
+					{
+						count: 1,
+						countDistinct: { id: 1 },
+					},
+				],
+			},
+		});
 
-	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(1);
-	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(2);
-});
+		const filter: Ref<null | Filter> = ref(null);
 
-test('should reset when collection changes', async () => {
-	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+		useItems(collection, {
+			fields: ref(['*']),
+			limit: ref(1),
+			sort: ref(null),
+			search: ref(null),
+			filter,
+			page: ref(5),
+		});
 
-	const collection = ref('old_collection');
+		filter.value = { id: { _eq: 1 } };
 
-	const { items } = useItems(collection, {
-		fields: ref(['*']),
-		limit: ref(1),
-		sort: ref(null),
-		search: ref(null),
-		filter: ref(null),
-		page: ref(1),
+		// advance throttle
+		await vi.advanceTimersByTimeAsync(500);
+
+		expect(mockApiGet).toHaveBeenCalledWith(
+			'/items/test_collection',
+			expect.objectContaining({
+				params: expect.objectContaining({
+					page: 1,
+				}),
+			}),
+		);
 	});
 
-	// Wait until computed values are updated
-	await flushPromises();
+	test('should reset when collection changes', async () => {
+		const collection = ref('old_collection');
 
-	expect(unref(items)).toEqual([mockData]);
+		vi.mocked(mockApiGet).mockResolvedValue({
+			data: {
+				data: [
+					{
+						count: 1,
+						countDistinct: { id: 1 },
+					},
+				],
+			},
+		});
 
-	// update collection ref
-	collection.value = 'new_collection';
+		useItems(collection, {
+			fields: ref(['*']),
+			limit: ref(1),
+			sort: ref(null),
+			search: ref(null),
+			filter: ref(null),
+			page: ref(1),
+		});
 
-	// Wait until computed values are updated again
-	await flushPromises();
+		expect(mockApiGet).toHaveBeenCalledWith('/items/old_collection', expect.any(Object));
 
-	expect(unref(items)).toEqual([]);
-	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(2);
-	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(2);
-});
+		// update collection ref
+		collection.value = 'new_collection';
 
-test('should append $thumbnail to fetched items when collection is directus_files', async () => {
-	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+		// advance throttle
+		await vi.advanceTimersByTimeAsync(500);
 
-	const collection = ref('directus_files');
-
-	const { items } = useItems(collection, {
-		fields: ref(['*']),
-		limit: ref(1),
-		sort: ref(null),
-		search: ref(null),
-		filter: ref(null),
-		page: ref(1),
+		expect(mockApiGet).toHaveBeenCalledWith('/items/new_collection', expect.any(Object));
 	});
 
-	// Wait until computed values are updated
-	await flushPromises();
+	test('should append $thumbnail to fetched items when collection is directus_files', async () => {
+		vi.mocked(mockApiGet).mockResolvedValue({
+			data: {
+				data: [
+					{
+						count: 1,
+						countDistinct: { id: 1 },
+					},
+				],
+			},
+		});
 
-	expect(unref(items)).toEqual([{ id: mockData.id, $thumbnail: mockData }]);
+		const collection = ref('directus_files');
+
+		const { items } = useItems(collection, {
+			fields: ref(['*']),
+			limit: ref(1),
+			sort: ref(null),
+			search: ref(null),
+			filter: ref(null),
+			page: ref(1),
+		});
+
+		await flushPromises();
+
+		expect(unref(items.value[0]?.['$thumbnail'])).toBeOneOf([expect.any(Object)]);
+	});
 });

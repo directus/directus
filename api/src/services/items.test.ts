@@ -1,10 +1,11 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import knex, { type Knex } from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
-import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
 import { getDatabaseClient } from '../database/index.js';
+import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { handleVersion } from '../utils/versioning/handle-version.js';
 import { ItemsService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
@@ -13,10 +14,17 @@ vi.mock('../../src/database/index', () => ({
 }));
 
 vi.mock('../utils/validate-user-count-integrity.js');
+vi.mock('../utils/versioning/handle-version.js', { spy: true });
 
 const schema = new SchemaBuilder()
 	.collection('test', (c) => {
 		c.field('id').id();
+	})
+	.collection('directus_versions', (c) => {
+		c.field('id').id();
+		c.field('item').string();
+		c.field('collection').string();
+		c.field('key').string();
 	})
 	.build();
 
@@ -49,6 +57,48 @@ describe('Integration Tests', () => {
 
 		afterEach(() => {
 			vi.clearAllMocks();
+		});
+
+		describe('read with version "test"', () => {
+			test('on readOne', async () => {
+				vi.mocked(handleVersion).mockReturnValueOnce(new Promise((resolve) => resolve([{ id: 1 }])));
+
+				await service.readOne(1, { version: 'test' });
+
+				expect(handleVersion).toHaveBeenCalled();
+			});
+
+			test('on readSingleton', async () => {
+				vi.mocked(handleVersion).mockReturnValueOnce(new Promise((resolve) => resolve([{ id: 1 }])));
+
+				vi.spyOn(db, 'select').mockReturnValueOnce({
+					from: () => ({
+						first: async () => ({ id: 1 }),
+					}),
+				} as any);
+
+				await service.readSingleton({ version: 'test' });
+
+				expect(handleVersion).toHaveBeenCalled();
+			});
+		});
+
+		describe('read with version "main"', () => {
+			test('on readOne', async () => {
+				service.readByQuery = vi.fn(async () => [{ id: 1 }]);
+
+				await service.readOne(1, { version: 'main' });
+
+				expect(handleVersion).not.toHaveBeenCalled();
+			});
+
+			test('on readSingleton', async () => {
+				service.readByQuery = vi.fn(async () => [{ id: 1 }]);
+
+				await service.readSingleton({ version: 'main' });
+
+				expect(handleVersion).not.toHaveBeenCalled();
+			});
 		});
 
 		describe('createOne', () => {

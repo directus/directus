@@ -20,6 +20,15 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: À propos
+privacy_policy: Politique de confidentialité
+contact_our_team: Contactez notre équipe
+setup_welcome: Bienvenue sur Directus
+setup_license_notice: >
+  Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
+setup_launch: Lancer Directus
+setup_project: Configurer un projet
+first_name: Prénom
+last_name: Nom
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -30,6 +39,10 @@ draft: Brouillon
 archived: Archivé
 marketplace: Marketplace
 extensions: Extensions
+skip_link_nav: Passer à la navigation
+skip_link_module_nav: Passer au module de navigation
+skip_link_main: Passer au contenu principal
+skip_link_sidebar: Passer à la barre latérale
 modules: Modules
 module_bar: Barre de modules
 logs: Journaux
@@ -42,6 +55,8 @@ location: Emplacement
 collection_names_are_case_sensitive: Le nom des collections est sensible à la casse
 condition_rules: Règles de conditions
 input: Texte simple
+invalid_input: Saisie invalide
+not_a_number: Pas un nombre
 maps: Cartes
 switch_user: Changer d'utilisateur
 item_creation: Création d'élément
@@ -108,6 +123,12 @@ hook: Crochet
 fill_width: Remplir l'espace
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
+sso_tfa_setup_notice: Vous allez être déconnecté de votre compte et devrez vous reconnecter. Toutes les modifications non enregistrées seront supprimées.
+enable_tfa: Activer la double authentification
+cancel_tfa_setup: Désactiver la configuration de la double authentification
+cancel_tfa_setup_notice: Êtes-vous sûr de vouloir désactiver la configuration de la double authentification ?
+keep_setup: Garder la configuration
+cancel_setup: Annuler la configuration
 add_field: Ajouter un champ
 role_name: Nom de rôle
 policy_name: Nom de la Règle
@@ -132,7 +153,6 @@ create_policy: Créer une Règle
 create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
-create_webhook: Créer un webhook
 create_custom_translation: Créer une traduction personnalisée
 edit_custom_translation: Modifier la traduction personnalisée
 no_custom_translations: Aucune traduction personnalisée
@@ -164,19 +184,9 @@ rename_version: Renommer la version
 compare_version: Comparer la version
 save_version: Enregistrer la version
 promote_version: Promouvoir la version
-promote_version_disabled: Aucun changement
-promote_version_drawer_title: Mettre {version} en Main
-promote_version_changes: Changements
-promote_version_preview: Prévisualiser
-outdated_notice: >-
-  L'élément principal a été mis à jour depuis la création de cette version. Veuillez vérifier toutes les valeurs de champ ci-dessous et confirmer quelle version doit être utilisée lors de la sélection de cette version dans l'élément principal.
-promote_notice: >-
-  Veuillez vérifier toutes les valeurs de champ ci-dessous, et confirmer quelle version doit être utilisée lors de la promotion de cette version dans l'élément principal.
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
-delete_on_promote_copy: >-
-  Voulez-vous supprimer ou conserver la version "{version}" après la promotion ?
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -448,11 +458,11 @@ confirm_revert_body: Cela restaurera l'élément à l'état sélectionné.
 display: Affichage
 settings_update_success: Paramètres enregistrés
 title: Titre
+subtitle: Sous-titre
 revision_delta_created: Créé
 revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
-revision_delta_version_saved: 'Sauvegarde de la version (1 champ mis à jour) | Sauvegarde de la version ({count} champs mis à jour)'
 revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
@@ -480,6 +490,8 @@ import_data_button: Commencer l'import
 import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
+snapshot:
+  export: Exporter le schéma
 label_import: Importer
 label_export: Export
 import_export: Importer/Exporter
@@ -553,6 +565,9 @@ original: Initial
 url: URL
 import_label: Importer
 file_details: Détails du fichier
+copy_id: Copier l'identifiant
+copy_id_success: Identifiant copié
+copy_id_fail: Identifiant non copié
 dimensions: Dimensions
 size: Taille
 created: Créé
@@ -640,12 +655,6 @@ file_count: 'Aucun fichier | Un fichier | {count} fichiers'
 no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
-webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Les Webhooks sont obsolètes et une utilisation ultérieure est déconseillée.
-
-  Veuillez utiliser **Flux** avec l'opération [Webhook / Requêtes URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) à la place.
-no_webhooks_copy: Aucun webhooks n'a encore été configuré. Commencez par en créer un ci-dessous.
 no_notifications: Aucune notification
 no_notifications_copy: Vous êtes à jour !
 activity_log: Journal d’activité
@@ -676,7 +685,6 @@ action: Action
 ip_address: Adresse IP
 user_agent: Agent utilisateur
 origin: Origine
-webhooks: Webhooks
 decimals: Décimales
 value_decimals: Valeur décimale
 min_value: Valeur minimale
@@ -716,6 +724,7 @@ enabled_dev_tooltip: Les extensions d'applications sont toujours activées en mo
 disable_tfa: Désactiver l'A2F
 admin_disable_tfa_text: Voulez-vous vraiment désactiver 2FA pour cet utilisateur ?
 tfa_setup: Configurer 2FA
+tfa_setup_description: Configurez l'authentification à deux facteurs pour protéger votre compte
 tfa_scan_code: Scannez le code dans votre application d'authentification pour terminer la configuration de l'A2F
 enter_otp_to_disable_tfa: Entrez l'OTP pour désactiver l'A2F
 create_account: Créer un Compte
@@ -726,6 +735,7 @@ errors:
   COLLECTION_NOT_FOUND: "La collection n'existe pas"
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
   CONTENT_TOO_LARGE: L'élément/fichier soumis est trop volumineux
+  FAILED_VALIDATION: Échec de la validation
   FIELD_NOT_FOUND: Champ introuvable
   FORBIDDEN: Non autorisé
   GRAPHQL_VALIDATION: Validation GraphQL
@@ -760,7 +770,6 @@ errors:
   VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
   VALUE_TOO_LONG: La valeur est trop longue
 security: Sécurité
-value_hashed: Valeur cryptée sécurisée
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori
 edit_bookmark: Modifier le favori
@@ -936,10 +945,8 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
-run_flow_confirm: Êtes-vous sûr(e) de vouloir exécuter ce flux ?
 run_flow_on_current_collection: Exécuter ce flux sur la collection actuelle
 run_flow_on_current: Exécuter le flux sur l'élément actuel
-run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
 run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur l'élément sélectionné | Exécuter le flux sur les {n} éléments sélectionnés
 run_flow: Exécuter le flux
 field_name_placeholder: Saisir un nom de champ...
@@ -1131,7 +1138,7 @@ settings_roles: Rôles Utilisateur
 settings_permissions: Règles d'accès
 settings_project: Réglages
 settings_appearance: Personnalisation du Thème
-settings_webhooks: Webhooks
+settings_ai: IA
 settings_flows: Flux
 settings_system_logs: Journaux système
 settings_presets: Favoris
@@ -1159,48 +1166,6 @@ discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
 show_x_axis: Afficher l'axe X
 show_y_axis: Afficher l'axe Y
 keep_editing: Continuer l’édition
-page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
-page_help_collections_collection: >-
-  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
-page_help_collections_item: >-
-  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également un historique complet des révisions et des commentaires intégrés.
-page_help_activity_collection: >-
-  **Parcourez l'activité** — Une liste complète de tous votre système et contenu de l'activité utilisateur.
-page_help_docs_global: >-
-  **Aperçu de la documentation** — Documents adaptés spécifiquement à la version et au schéma de ce projet.
-page_help_files_collection: >-
-  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
-page_help_files_item: >-
-  **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
-page_help_settings_project: "**Paramètres** — Les options de configuration globale de votre projet."
-page_help_settings_appearance: "**Apparence** — Les options d'apparence et de thème de votre projet."
-page_help_settings_extensions: '**Extensions** — Les extensions installées dans votre projet.'
-page_help_settings_datamodel_collections: >-
-  **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
-page_help_settings_datamodel_fields: >-
-  **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
-page_help_settings_system_logs: '**System Logs** — Accédez au flux en direct des journaux du système.'
-page_help_settings_policies_collection: '**Parcourir les polices** — Liste toutes les polices du projet.'
-page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste tous les rôles utilisateur du projet.'
-page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
-page_help_settings_presets_collection: >-
-  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
-page_help_settings_presets_item: >-
-  **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
-page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
-page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
-page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
-page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
-page_help_settings_translations_collection: '**Parcourir les traductions personnalisées** — Liste toutes les traductions personnalisées du projet.'
-page_help_settings_translations_item: '**Détail des traductions personnalisées** — Un formulaire pour visualiser et gérer cet élément.'
-page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
-page_help_users_item: >-
-  **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
-page_help_insights_overview: '**Aperçus** — Liste des tableaux de bord auxquels vous avez accès.'
-page_help_insights_dashboard: '**Tableau de bord** — Espace de travail pour gérer un ou plusieurs panneaux'
-page_help_marketplace_account: '**Compte** — Éditeur ou mainteneur d''une extension publiée.'
-page_help_marketplace_registry: '**Enregistrement** — Extensions disponibles sur le Marketplace Directus.'
-page_help_marketplace_extension: '**Extension** — Extension sur le Marketplace Directus.'
 activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Nouveau
@@ -1236,7 +1201,6 @@ directus_collection:
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
-  directus_flows: Flux d'automatisation
   directus_folders: Fournit des répertoires virtuels pour les fichiers
   directus_migrations: Quelle version de la base de données que vous utilisez
   directus_notifications: Notifications envoyées aux utilisateurs
@@ -1252,7 +1216,6 @@ directus_collection:
   directus_settings: Options de configuration du projet
   directus_shares: Trace les éléments externes partagés
   directus_users: Utilisateurs du système pour la plateforme
-  directus_webhooks: Configuration des requêtes HTTP basées sur des événements
   directus_translations: Traductions personnalisées
   directus_versions: Versions de contenu pour les éléments
   directus_extensions: Configuration des extensions
@@ -1430,18 +1393,6 @@ fields:
     admin_access: Accès Administrateur
     ip_access: Accès IP
     enforce_tfa: Nécessite une authentification à deux facteurs
-  directus_webhooks:
-    name: Nom
-    method: Méthode
-    status: État
-    data: Données
-    header: En-tête
-    value: Valeur
-    headers: En-têtes de requête
-    data_label: Envoyer les données de l'événement
-    triggers: Déclencheurs
-    actions: Actions
-    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
@@ -1543,19 +1494,6 @@ field_options:
     status_dropdown_suspended: Suspendu
     status_dropdown_archived: Archivé
     token: Entrez un jeton d'accès sécurisé...
-  directus_webhooks:
-    status_options_active: Actif
-    status_options_inactive: Inactif
-    data_label: Envoyer les données de l'événement
-    triggers_divider: Déclencheurs
-    actions_create: Créer
-    actions_update: Mettre à jour
-    actions_delete: Supprimer
-    actions_login: Identifiant
-    headers:
-      header: En-tête
-      value: Valeur
-      add: Ajouter l'en-tête
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 no_value: Aucune valeur
 do_nothing: Ne rien faire
@@ -1582,6 +1520,22 @@ unlimited_usage: Utilisation illimitée
 uses_left: Pas d'utilisation restante | Une utilisation restante | {n} utilisations restantes
 no_shares: Aucun partage pour l'instant
 new_share: Nouveau partage
+ai:
+  input: Texte simple
+  unknown: Inconnu
+  settings: Réglages
+  tool_approval:
+    disabled: Désactivé
+ai_tools:
+  items: Éléments
+  files: Fichiers
+  folders: Dossiers
+  flows: Flux
+  trigger-flow: Déclencher le Flux
+  operations: Opérations
+  schema: Schéma
+  collections: Collections
+  fields: Champs
 mcp_prompts_collection_schema:
   messages_role_user: Utilisateur
 expired: Expiré
@@ -1618,7 +1572,6 @@ editing_role: 'Rôle {role}'
 editing_policy: 'Police {policy}'
 no_permissions: Aucune Permission
 permission_add_collection: Ajouter une collection
-creating_webhook: Création du Webhook
 default_label: Défaut
 delete_label: Supprimer
 delete_are_you_sure: >-
@@ -1752,9 +1705,7 @@ interfaces:
     accordion_mode: Mode Accordion
     max_one_section_open: Max 1 section ouverte
   presentation-links:
-    presentation-links: Bouton avec lien
-    links: Liens
-    description: Bouton avec lien paramétrable pour appeler une URL
+    presentation-links: Boutons
     style: Style
     primary: Primaire
     link: Liens
@@ -2076,6 +2027,9 @@ interfaces:
   input-password:
     input-password: Saisissez le mot de passe
     description: Saisie de mot de passe avec affichage masqué/visible
+  header:
+    header: En-tête
+    links: Liens
 displays:
   translations:
     translations: Traductions
@@ -2291,6 +2245,7 @@ show_legend: Afficher la légende
 right: Droite
 left: Gauche
 start: Début
+end: Fin
 donut: Donut
 panels:
   metric:
@@ -2380,11 +2335,9 @@ triggers:
 a_flow_uuid: Choisir un flux à exécuter...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
-operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Acheminer un flux en fonction d'une condition de type Si / Sinon
   exec:
     name: Lancer le script
     description: Exécuter du code arbitraire pour modifier les données utiles
@@ -2472,7 +2425,6 @@ operations:
     description: Modifier les données utiles JSON du Flux
   trigger:
     name: Déclencher le Flux
-    description: Transmettre ces données à un autre Flux
     flows: Flux
     flow: Flux
     data: Données

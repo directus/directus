@@ -29,7 +29,7 @@ jobs:
       - name: Fetch Changesets
         if: ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') }}
         id: cs
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         with:
           files_yaml: |
             changeset:
@@ -55,7 +55,7 @@ jobs:
 
       - name: Checkout Repository
         if: steps.found_changeset.outputs.found == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 

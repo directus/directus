@@ -1,8 +1,9 @@
 import { defineOperationApi } from '@directus/extensions';
+import { useLogger } from '../../logger/index.js';
 import type { EmailOptions } from '../../services/mail/index.js';
 import { MailService } from '../../services/mail/index.js';
 import { md } from '../../utils/md.js';
-import { useLogger } from '../../logger/index.js';
+import { useFlowsEmailRateLimiter } from './rate-limiter.js';
 
 export type Options = {
 	to: string;
@@ -23,8 +24,10 @@ export default defineOperationApi<Options>({
 
 	handler: async (
 		{ body, template, data, to, type, subject, cc, bcc, replyTo },
-		{ accountability, database, getSchema },
+		{ accountability, database, getSchema, flow },
 	) => {
+		await useFlowsEmailRateLimiter(flow!.id);
+
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 		const mailObject: EmailOptions = { to, subject, cc, bcc, replyTo };
 		const safeBody = typeof body !== 'string' ? JSON.stringify(body) : body;

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import type { Comment, User } from '@directus/types';
 import { ref, watch } from 'vue';
 import CommentInput from './comment-input.vue';
 import CommentItemHeader from './comment-item-header.vue';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = withDefaults(
 	defineProps<{
@@ -15,7 +15,7 @@ const props = withDefaults(
 		refresh: () => Promise<void>;
 		collection: string;
 		primaryKey: string | number;
-		userPreviews: Record<string, any>;
+		userPreviews?: Record<string, any>;
 	}>(),
 	{
 		userPreviews: () => ({}),
@@ -62,9 +62,9 @@ function useEdits() {
 
 <template>
 	<div class="comment-item">
-		<comment-item-header :refresh="refresh" :comment="comment" @edit="editing = true" />
+		<CommentItemHeader :refresh="refresh" :comment="comment" @edit="editing = true" />
 
-		<comment-input
+		<CommentInput
 			v-if="editing"
 			:existing-comment="comment"
 			:primary-key="primaryKey"

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca
+first_name: Primeiro Nome
+last_name: Apelido
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -136,7 +138,6 @@ create_policy: Criar Política
 create_user: Criar utilizador
 message: Mensagem
 delete_panel: Apagar painel
-create_webhook: Criar webhook
 create_custom_translation: Criar tradução personalizada
 edit_custom_translation: Editar tradução personalizada
 no_custom_translations: Sem tradução personalizada
@@ -168,19 +169,9 @@ rename_version: Renomear versão
 compare_version: Comparar versão
 save_version: Guardar Versão
 promote_version: Promover versão
-promote_version_disabled: Sem alterações
-promote_version_drawer_title: Promover {version} para Principal
-promote_version_changes: Alterações
-promote_version_preview: Pré-visualização
-outdated_notice: >-
-  O item principal foi atualizado desde que esta versão foi criada. Por favor, reveja todos os valores do campo abaixo e confirme qual a versão que deve ser utilizada ao promover esta versão no item principal.
-promote_notice: >-
-  Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
 delete_version: Eliminar Versão
 delete_version_copy: >-
   Tem a certeza que deseja eliminar a versão "{version}"? Esta ação não pode ser revertida.
-delete_on_promote_copy: >-
-  Pretende eliminar ou manter a versão {version} após a promoção?
 reset_bookmark: Restaurar marcador
 update_bookmark: Atualizar o marcador
 delete_bookmark: Eliminar o marcador
@@ -454,11 +445,11 @@ confirm_revert_body: Isto irá reverter o documento para o estado selecionado.
 display: Visualização
 settings_update_success: Configurações atualizadas
 title: Título
+subtitle: Subtítulo
 revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo foi atualizado | {count} campos foram atualizados'
 revision_delta_deleted: Removido
-revision_delta_version_saved: 'Salvar Versão (Atualizado 1 Campo) Version Save (Atualizado em {count} Campos)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi atualizado, mas o seu valor foi oculto por razões de segurança.
 revision_delta_other: Revisão
@@ -637,7 +628,6 @@ file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
 no_files_copy: Não existem ficheiros aqui.
 user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
 no_users_copy: Ainda não existem utilizadores neste estatuto.
-webhooks_count: 'Nenhum webhook | Um webhook | {count} webhooks'
 no_notifications: Sem notificações
 no_notifications_copy: Tudo em dia!
 activity_log: Registo de Atividade
@@ -662,7 +652,6 @@ activity: Atividade
 action: Ação
 ip_address: Endereço IP
 user_agent: User Agent
-webhooks: Webhooks
 decimals: Decimais
 value_decimals: Valores decimais
 min_value: Valor mínimo
@@ -725,7 +714,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fora da gama
   VALUE_TOO_LONG: O valor é muito longo
 security: Segurança
-value_hashed: Valor Guardado em Segurança
 create_bookmark: Criar marcador
 edit_bookmark: Editar marcador
 edit_personal_bookmark: Editar marcador pessoal
@@ -931,7 +919,6 @@ editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
 settings_project: Configurações
-settings_webhooks: Webhooks
 settings_flows: Fluxos
 settings_presets: Favoritos
 settings_translations: Traduções
@@ -948,14 +935,6 @@ discard_changes: Cancelar alterações
 discard_all_changes: Descartar todas as Alterações
 discard_changes_copy: Tem a certeza de que pretende ignorar as alterações?
 keep_editing: Continuar a editar
-page_help_collections_collection: >-
-  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
-page_help_collections_item: >-
-  **Detalhes do Item** — Um formulário para visualizar e gerenciar este item. Esta barra lateral também contém um histórico completo de revisões e comentários incorporados.
-page_help_activity_collection: >-
-  **Atividade** — Uma listagem abrangente do sistema de todos os seus usuários e atividade de conteúdo.
-page_help_docs_global: >-
-  **Visão geral de documentação** — Documentação feita especificamente para versão e esquema deste projeto.
 add_new: Adicionar novo
 create_new: Criar Novo
 all: Todos
@@ -1037,9 +1016,6 @@ fields:
   directus_policies:
     name: Nome da política
     description: Descrição
-  directus_webhooks:
-    name: Nome
-    status: Estado
 field_options:
   directus_settings:
     project_name_placeholder: O meu projeto...
@@ -1065,11 +1041,6 @@ field_options:
     dropdown_light: Modo Claro
     dropdown_dark: Modo Escuro
     status_dropdown_active: Ativar
-  directus_webhooks:
-    status_options_active: Ativar
-    status_options_inactive: Inativo
-    actions_create: Criar
-    actions_update: Atualizar
 no_fields_in_collection: 'Ainda não há nenhum campo em "{collection}"'
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e guardar UUID
@@ -1081,6 +1052,17 @@ inline: Em linha
 comment: Comentário
 live_preview:
   new_window: Abrir numa Nova Janela
+ai:
+  unknown: Desconhecido
+  settings: Configurações
+  tool_approval:
+    disabled: Desativado
+ai_tools:
+  items: Items
+  files: Ficheiros
+  folders: Pastas
+  flows: Fluxos
+  operations: Operações
 mcp_prompts_collection_schema:
   messages_role_user: Utilizador
 share_copy_link_error: Não foi possível copiar a hiperligação
@@ -1094,7 +1076,6 @@ choose_action: Escolher ação
 continue_label: Continuar
 continue_as: >-
   {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
-creating_webhook: Criando Webhook
 delete_are_you_sure: >-
   Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 description: Descrição
@@ -1222,6 +1203,9 @@ both: Ambos
 panels:
   label:
     name: Rótulo
+triggers:
+  webhook:
+    method: Método
 operations:
   json-web-token:
     token: Token
@@ -1238,6 +1222,7 @@ operations:
   request:
     url: URL
     url_placeholder: https://exemplo.com/exemplo
+    method: Método
   sleep:
     milliseconds: Milisegundos
   trigger:

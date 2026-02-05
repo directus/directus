@@ -1,34 +1,43 @@
-import type { Filter, NestedDeepQuery, SchemaOverview } from '@directus/types';
+import type { DeepQuery, Filter, NestedDeepQuery, Query, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import { getRelationType } from '../../../utils/get-relation-type.js';
 
-export function filterReplaceM2A(filter_arg: Filter, collection: string, schema: SchemaOverview): any {
+export function filterReplaceM2A(
+	filter_arg: Filter,
+	collection: string,
+	schema: SchemaOverview,
+	options?: { aliasMap?: Query['alias'] },
+): any {
 	const filter: any = filter_arg;
 
 	for (const key in filter) {
-		const [field, any_collection] = key.split('__');
+		const parts = key.split('__');
+		let field = parts[0];
+		const any_collection = parts[1];
 
 		if (!field) continue;
+
+		field = options?.aliasMap?.[field] ?? field;
 
 		const relation = getRelation(schema.relations, collection, field);
 		const type = relation ? getRelationType({ relation, collection, field }) : null;
 
 		if (type === 'o2m' && relation) {
-			filter[key] = filterReplaceM2A(filter[key], relation.collection, schema);
+			filter[key] = filterReplaceM2A(filter[key], relation.collection, schema, options);
 		} else if (type === 'm2o' && relation) {
-			filter[key] = filterReplaceM2A(filter[key], relation.related_collection!, schema);
+			filter[key] = filterReplaceM2A(filter[key], relation.related_collection!, schema, options);
 		} else if (
 			type === 'a2o' &&
 			relation &&
 			any_collection &&
 			relation.meta?.one_allowed_collections?.includes(any_collection)
 		) {
-			filter[`${field}:${any_collection}`] = filterReplaceM2A(filter[key], any_collection, schema);
+			filter[`${field}:${any_collection}`] = filterReplaceM2A(filter[key], any_collection, schema, options);
 			delete filter[key];
 		} else if (Array.isArray(filter[key])) {
-			filter[key] = filter[key].map((item) => filterReplaceM2A(item, collection, schema));
+			filter[key] = filter[key].map((item) => filterReplaceM2A(item, collection, schema, options));
 		} else if (typeof filter[key] === 'object') {
-			filter[key] = filterReplaceM2A(filter[key], collection, schema);
+			filter[key] = filterReplaceM2A(filter[key], collection, schema, options);
 		}
 	}
 
@@ -39,14 +48,19 @@ export function filterReplaceM2ADeep(
 	deep_arg: NestedDeepQuery | null | undefined,
 	collection: string,
 	schema: SchemaOverview,
+	options?: { aliasMap?: Query['alias'] },
 ) {
 	const deep: any = deep_arg;
 
 	for (const key in deep) {
 		if (key.startsWith('_') === false) {
-			const [field, any_collection] = key.split('__');
+			const parts = key.split('__');
+			let field = parts[0];
+			const any_collection = parts[1];
 
 			if (!field) continue;
+
+			field = options?.aliasMap?.[field] || (deep as DeepQuery)._alias?.[field] || field;
 
 			const relation = getRelation(schema.relations, collection, field);
 
@@ -59,7 +73,8 @@ export function filterReplaceM2ADeep(
 			} else if (type === 'm2o') {
 				deep[key] = filterReplaceM2ADeep(deep[key], relation.related_collection!, schema);
 			} else if (type === 'a2o' && any_collection && relation.meta?.one_allowed_collections?.includes(any_collection)) {
-				deep[key] = filterReplaceM2ADeep(deep[key], any_collection, schema);
+				deep[`${field}:${any_collection}`] = filterReplaceM2ADeep(deep[key], any_collection, schema);
+				delete deep[key];
 			}
 		}
 

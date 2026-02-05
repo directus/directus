@@ -1,9 +1,13 @@
-import { useRelationsStore } from '@/stores/relations';
-import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
 import { validatePayload } from '@directus/utils';
+import {
+	FailedValidationError,
+	FailedValidationErrorExtensions,
+	joiValidationErrorItemToErrorExtensions,
+} from '@directus/validation';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
+import { useRelationsStore } from '@/stores/relations';
 
 export function validateItem(
 	item: Record<string, any>,
@@ -11,7 +15,7 @@ export function validateItem(
 	isNew: boolean,
 	includeCustomValidations = false,
 	currentVersion: ContentVersion | null = null,
-) {
+): FailedValidationErrorExtensions[] {
 	const relationsStore = useRelationsStore();
 	const validationRules: LogicalFilterAND = { _and: [] };
 	const updatedItem = cloneDeep(item);

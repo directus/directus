@@ -30,12 +30,14 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 
 	MAX_BATCH_MUTATION: 'number',
+	MAX_IMPORT_ERRORS: 'number',
 
 	SERVER_SHUTDOWN_TIMEOUT: 'number',
 
 	LOG_HTTP_IGNORE_PATHS: 'array',
 
 	REDIS_ENABLED: 'boolean',
+	REDIS_PASSWORD: 'string',
 
 	METRICS_TOKENS: 'array',
 	METRICS_SERVICES: 'array',
@@ -48,10 +50,15 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	SECRET: 'string',
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
+
 	EMAIL_SMTP_PASSWORD: 'string',
-	REDIS_PASSWORD: 'string',
-	'AUTH_.+_BIND_PASSWORD': 'string',
+
 	'STORAGE_.+_SECRET': 'string',
+
+	'AUTH_.+_BIND_DN': 'string',
+	'AUTH_.+_USER_DN': 'string',
+	'AUTH_.+_GROUP_DN': 'string',
+	'AUTH_.+_BIND_PASSWORD': 'string',
 } as const;
 
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [

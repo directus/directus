@@ -1,9 +1,3 @@
-import { useRelationsStore } from '@/stores/relations';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
-import { getItemRoute } from '@/utils/get-route';
-import { saveAsCSV } from '@/utils/save-as-csv';
-import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { getFieldsFromTemplate } from '@directus/utils';
@@ -14,6 +8,13 @@ import CardsActions from './actions.vue';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
 import { LayoutOptions, LayoutQuery } from './types';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { useRelationsStore } from '@/stores/relations';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
+import { getItemRoute } from '@/utils/get-route';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
@@ -27,6 +28,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {
+		const toolsStore = useAiToolsStore();
+
+		toolsStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const { t, n } = useI18n();
 		const relationsStore = useRelationsStore();
 
@@ -57,16 +66,26 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { size, icon, imageSource, title, subtitle, imageFit } = useLayoutOptions();
 		const { sort, limit, page, fields } = useLayoutQuery();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, getItems, getTotalCount, getItemCount } =
-			useItems(collection, {
-				sort,
-				limit,
-				page,
-				fields,
-				filter,
-				search,
-				filterSystem,
-			});
+		const {
+			items,
+			loading,
+			loadingItemCount,
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			getItems,
+			getTotalCount,
+			getItemCount,
+		} = useItems(collection, {
+			sort,
+			limit,
+			page,
+			fields,
+			filter,
+			search,
+			filterSystem,
+		});
 
 		const showingCount = computed(() => {
 			// Don't show count if there are no items
@@ -92,6 +111,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		return {
 			items,
 			loading,
+			loadingItemCount,
 			error,
 			totalPages,
 			page,

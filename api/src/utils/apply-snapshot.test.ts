@@ -1,3 +1,4 @@
+import type { Snapshot, SnapshotField } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
@@ -11,7 +12,6 @@ import {
 	snapshotCreateCollectionNotNested,
 } from '../__utils__/snapshots.js';
 import { CollectionsService, FieldsService } from '../services/index.js';
-import type { Snapshot, SnapshotField } from '@directus/types';
 import { applySnapshot } from './apply-snapshot.js';
 import * as getSchema from './get-schema.js';
 
@@ -344,6 +344,7 @@ describe('applySnapshot', () => {
 							type: 'uuid',
 						} as SnapshotField,
 					],
+					systemFields: [],
 					relations: [],
 				};
 
@@ -424,6 +425,7 @@ describe('applySnapshot', () => {
 						directus: '0.0.0',
 						collections: [],
 						fields: [],
+						systemFields: [],
 						relations: [],
 					},
 					schema: snapshotApplyTestSchema,
@@ -442,6 +444,7 @@ describe('applySnapshot', () => {
 				directus: '0.0.0',
 				collections: [],
 				fields: [],
+				systemFields: [],
 				relations: [],
 			};
 

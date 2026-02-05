@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 
 export type Choice = {
 	text: string;
@@ -11,8 +14,9 @@ export type Choice = {
 
 const props = withDefaults(
 	defineProps<{
-		value: string[] | null;
+		value?: string[] | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Choice[];
 		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
 	}>(),
@@ -25,7 +29,6 @@ const props = withDefaults(
 
 defineEmits(['input']);
 
-const { t } = useI18n();
 const search = ref('');
 
 const { choices, value } = toRefs(props);
@@ -43,26 +46,27 @@ const searchDebounced = ref('');
 </script>
 
 <template>
-	<v-notice v-if="items.length === 0" type="info">
-		{{ t('no_options_available') }}
-	</v-notice>
-	<div v-else class="select-multiple-checkbox-tree">
+	<VNotice v-if="items.length === 0" type="info">
+		{{ $t('no_options_available') }}
+	</VNotice>
+	<div v-else class="select-multiple-checkbox-tree" :class="{ disabled, 'non-editable': nonEditable }">
 		<div v-if="items.length > 10" class="search">
-			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
+			<VInput v-model="search" class="input" type="text" :placeholder="$t('search')">
 				<template #prepend>
-					<v-icon name="search" />
+					<VIcon name="search" />
 				</template>
 
 				<template v-if="search" #append>
-					<v-icon name="clear" clickable @click="search = ''" />
+					<VIcon name="clear" clickable @click="search = ''" />
 				</template>
-			</v-input>
+			</VInput>
 		</div>
 
-		<v-checkbox-tree
+		<VCheckboxTree
 			:model-value="value"
 			:search="searchDebounced"
-			:disabled="disabled"
+			:disabled
+			:non-editable
 			:choices="items"
 			:value-combining="valueCombining"
 			:show-selection-only="showSelectionOnly"
@@ -70,28 +74,36 @@ const searchDebounced = ref('');
 		/>
 
 		<div class="footer">
-			<button :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
-				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
+			<button
+				:class="{ active: showSelectionOnly === false }"
+				:disabled="disabled && !nonEditable"
+				@click="showSelectionOnly = false"
+			>
+				{{ $t('interfaces.select-multiple-checkbox-tree.show_all') }}
 			</button>
 			/
 			<button
 				:class="{ active: showSelectionOnly === true }"
-				:disabled="value == null || value.length === 0"
+				:disabled="(disabled && !nonEditable) || value == null || value.length === 0"
 				@click="showSelectionOnly = true"
 			>
-				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
+				{{ $t('interfaces.select-multiple-checkbox-tree.show_selected') }}
 			</button>
 		</div>
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .select-multiple-checkbox-tree {
-	max-block-size: var(--input-height-max);
+	max-block-size: var(--input-height-xl);
 	overflow: auto;
-	background-color: var(--theme--background);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
+
+	&.disabled:not(.non-editable) {
+		background-color: var(--theme--form--field--input--background-subdued);
+	}
 }
 
 .search {
@@ -115,8 +127,13 @@ const searchDebounced = ref('');
 	inline-size: max-content;
 	padding: 4px 8px;
 	text-align: end;
-	background-color: var(--theme--background);
+	background-color: var(--theme--form--field--input--background);
 	border-start-start-radius: var(--theme--border-radius);
+
+	.disabled:not(.non-editable) & {
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+	}
 }
 
 .footer > button {

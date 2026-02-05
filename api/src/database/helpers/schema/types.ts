@@ -1,6 +1,8 @@
+import assert from 'node:assert';
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Column } from '@directus/schema';
 import type { DatabaseClient, Field, RawField, Relation, Type } from '@directus/types';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../utils/get-default-index-name.js';
 import { getDatabaseClient } from '../../index.js';
@@ -16,6 +18,11 @@ export type Sql = {
 export type SortRecord = {
 	alias: string;
 	column: Knex.Raw;
+};
+
+export type CreateIndexOptions = {
+	attemptConcurrentIndex?: boolean;
+	unique?: boolean;
 };
 
 export abstract class SchemaHelper extends DatabaseHelper {
@@ -59,6 +66,31 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			}
 
 			b.alter();
+		});
+	}
+
+	/**
+	 * Change a tables primary key
+	 *
+	 * @param table - The name of the table
+	 * @param to - The new primary key column name(s)
+	 *
+	 * * @example
+	 * // Changing a single primary key
+	 * await changePrimaryKey('users', 'uuid');
+	 * * // Creating a composite primary key
+	 * await changePrimaryKey('order_items', ['order_id', 'product_id']);
+	 */
+	async changePrimaryKey(table: string, to: string | string[]): Promise<void> {
+		const primaryColumns = toArray(to);
+
+		// validate input
+		assert(primaryColumns.length > 0, 'At least 1 "to" column is required');
+		assert(primaryColumns[0] && primaryColumns[0].length > 0, '"to" column cannot be empty');
+
+		await this.knex.schema.alterTable(table, (builder) => {
+			builder.dropPrimary();
+			builder.primary(primaryColumns);
 		});
 	}
 
@@ -178,5 +210,13 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 	getTableNameMaxLength() {
 		return 64;
+	}
+
+	async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+		// fall back to concurrent index creation
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }

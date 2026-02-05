@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Pri
+first_name: Pesona nomo
+last_name: Familia nomo
 identifier: Identigilo
 avatar: Profilbildo
 application: Aplikaĵo
@@ -93,7 +95,6 @@ create_role: Krei rolon
 create_user: Krei uzanton
 message: Mesaĝo
 delete_panel: Forigi la panelon
-create_webhook: Krei rethokon
 invite_users: Inviti uzantojn
 invite: Inviti
 email_already_invited: La retpoŝtadreso "{email}" jam estas invitita
@@ -110,7 +111,6 @@ prefix: Prefikso
 suffix: Sufikso
 version: Versio
 create_version: Krei version
-promote_version_changes: Ŝanĝoj
 delete_bookmark: Forigi la legosignon
 delete_bookmark_copy: >-
   Ĉu vi certas, ke vi volas forigi la legosignon "{bookmark}"? La ago ne estas malfarebla.
@@ -254,6 +254,7 @@ notifications: Sciigoj
 page_not_found: Paĝo ne trovita
 display: Montri
 title: Titolo
+subtitle: Subtitolo
 revision_delta_created: Kreita
 revision_delta_created_externally: Ekstere kreita
 revision_delta_deleted: Forigita
@@ -374,7 +375,6 @@ file_count: 'Neniu dosiero | 1 dosiero | {count} dosieroj'
 no_files_copy: Ne estas dosiero ĉi tie.
 user_count: 'Neniu uzanto | 1 uzanto | {count} uzantoj'
 no_users_copy: Ankoraŭ ne estas uzanto en la rolo.
-webhooks_count: 'Neniu rethoko | 1 rethoko | {count} rethokoj'
 no_notifications: Neniu sciigo
 all_items: Ĉiuj eroj
 any: Ajna
@@ -394,7 +394,6 @@ action: Ago
 ip_address: IP-adreso
 user_agent: Aplikaĵo de la uzanto
 origin: Origino
-webhooks: Rethokoj
 min_value: Minimuma valoro
 max_value: Maksimuma valoro
 automatic: Aŭtomata
@@ -612,7 +611,6 @@ unknown_user: Nekonata uzanto
 settings_data_model: Datummodelo
 settings_project: Agordoj
 settings_appearance: Aspekto
-settings_webhooks: Rethokoj
 settings_flows: Fluoj
 settings_presets: Legosignoj
 settings_translations: Tradukoj
@@ -627,8 +625,6 @@ discard_all_changes: Forĵeti ĉiujn ŝanĝojn
 discard_changes_copy: Ĉu vi certas, ke vi volas forĵeti ĉiujn viajn ŝanĝojn?
 show_x_axis: Montri la X-akson
 show_y_axis: Montri la Y-akson
-page_help_collections_overview: '**Superrigaro de kolektoj** — Listo de ĉiuj kolektoj, kiujn vi povas atingi.'
-page_help_insights_dashboard: '**Stirpanelo** — Laborspaco por administri unu aŭ pliajn panelojn'
 add_new: Aldoni novan
 create_new: Krei novan
 all: Ĉiuj
@@ -645,8 +641,6 @@ collection: Kolekto
 collections: Kolektoj
 content: Enhavo
 system_fields_locked: Sistemaj valoroj estas ŝlositaj kaj ne povas esti redaktitaj
-directus_collection:
-  directus_flows: Aŭtomatigaj fluoj
 fields:
   directus_activity:
     item: Ĉefa ŝlosilo de la ero
@@ -752,16 +746,6 @@ fields:
     description: Priskribo
   directus_policies:
     description: Priskribo
-  directus_webhooks:
-    name: Nomo
-    method: Metodo
-    status: Stato
-    data: Datumoj
-    value: Valoro
-    data_label: Sendi eventodatumojn
-    triggers: Ekagiloj
-    actions: Agoj
-    collections: Kolektoj
 field_options:
   directus_settings:
     project_name_placeholder: Mia projekto...
@@ -813,16 +797,6 @@ field_options:
     status_dropdown_invited: Invitita
     status_dropdown_active: Aktiva
     status_dropdown_archived: Arĥivita
-  directus_webhooks:
-    status_options_active: Aktiva
-    status_options_inactive: Neaktiva
-    data_label: Sendi eventodatumojn
-    triggers_divider: Ekagiloj
-    actions_create: Krei
-    actions_delete: Forigi
-    actions_login: Ensaluti
-    headers:
-      value: Valoro
 no_fields_in_collection: 'Ankoraŭ ne estas kampo en "{collection}"'
 no_value: Neniu valoro
 do_nothing: Fari nenion
@@ -833,6 +807,19 @@ live_preview:
 shares: Konigoj
 unlimited_usage: Senlima uzado
 new_share: Nova konigo
+ai:
+  unknown: Nekonata
+  settings: Agordoj
+  tool_approval:
+    disabled: Malŝaltita
+ai_tools:
+  items: Eroj
+  files: Dosieroj
+  flows: Fluoj
+  operations: Operacioj
+  schema: Skemo
+  collections: Kolektoj
+  fields: Kampoj
 mcp_prompts_collection_schema:
   messages_role_user: Uzanto
 expired: Eksvalidiĝinta
@@ -846,7 +833,6 @@ referential_action_set_null: Igi la kampon {field} NULL
 choose_action: Elekti agon
 continue_label: Daŭrigi
 editing_role: 'Rolo {role}'
-creating_webhook: Krei rethokon
 default_label: Defaŭlta
 delete_label: Forigi
 delete_field_are_you_sure: >-
@@ -928,7 +914,7 @@ interfaces:
     start: Komenci
     accordion_mode: Akordiona reĝimo
   presentation-links:
-    links: Ligiloj
+    presentation-links: Butonoj
     style: Stilo
     primary: Ĉefa
     link: Ligiloj
@@ -1062,6 +1048,8 @@ interfaces:
     remove_token: Forigi la ĵetonon
   system-raw-editor:
     system-raw-editor: Kruda redaktilo
+  header:
+    links: Ligiloj
 displays:
   translations:
     translations: Tradukoj
@@ -1234,7 +1222,6 @@ triggers:
     cron: Intervalo
   manual:
     name: Mana
-operation_variables_note: Vi povas atingi datumojn de la fluo per variabloj kiel **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** kaj **{'{'}{'{'}$accountability{'}'}{'}'}**, aŭ referenci antaŭajn operaciojn per **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Kondiĉo

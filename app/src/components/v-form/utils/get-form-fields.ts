@@ -1,10 +1,10 @@
+import { Field } from '@directus/types';
+import { cloneDeep, orderBy } from 'lodash';
+import { computed, ComputedRef, Ref } from 'vue';
 import { FormField } from '@/components/v-form/types';
 import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { translate } from '@/utils/translate-object-values';
-import { Field } from '@directus/types';
-import { cloneDeep, orderBy } from 'lodash';
-import { ComputedRef, Ref, computed } from 'vue';
 
 export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 	return computed(() => {
@@ -40,6 +40,9 @@ export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 			if (interfaceUsed?.hideLoader === true) {
 				(field as FormField).hideLoader = true;
 			}
+
+			const indicatorStyleDefaultValue = field.meta?.special?.includes('group') ? 'hidden' : 'active';
+			(field as FormField).indicatorStyle = interfaceUsed?.indicatorStyle ?? indicatorStyleDefaultValue;
 
 			(field.meta.system ? systemFields : userFields).push(field);
 		}

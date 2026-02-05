@@ -1,5 +1,5 @@
 import type { DirectusCollection } from '../../../schema/collection.js';
-import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, FieldQuery, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateCollectionOutput<
@@ -17,7 +17,7 @@ export type CreateCollectionOutput<
  * @returns The collection object for the collection created in this request.
  */
 export const createCollection =
-	<Schema, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
+	<Schema, const TQuery extends FieldQuery<Schema, DirectusCollection<Schema>>>(
 		item: NestedPartial<DirectusCollection<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateCollectionOutput<Schema, TQuery>, Schema> =>
