@@ -67,7 +67,6 @@ type CustomFormat = {
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
-		field?: string;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		customFormats?: CustomFormat[];
@@ -465,7 +464,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<div :id="field" class="wysiwyg" :class="{ disabled }">
+	<div class="wysiwyg" :class="{ disabled }">
 		<Editor
 			v-if="nonEditable"
 			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"
