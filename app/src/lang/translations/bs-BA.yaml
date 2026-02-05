@@ -742,6 +742,14 @@ operation_key_unique_error: Operacijski ključevi moraju biti jedinstveni u toku
 operation_handle_resolve: 'Rješavanje: kliknite za dodavanje ili povucite za preusmjeravanje'
 operation_handle_reject: 'Odbaci: kliknite za dodavanje ili povucite za preusmjeravanje'
 insights: Uvidi
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ova akcija je trajna i ne može se poništiti. Jeste li sigurni da želite nastaviti?
+    run:
+      cancel_confirm: Ova akcija je trajna i ne može se poništiti. Jeste li sigurni da želite nastaviti?
+  target_value:
+    preview: Pretpregled
 dashboard: Upravljački panel
 panel_options: Postavke panela
 panel_header: Zaglavlje panela
