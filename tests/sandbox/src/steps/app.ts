@@ -8,12 +8,14 @@ export async function startApp(opts: Options, env: Env, logger: Logger) {
 	logger.info('Starting App');
 	let timeout: NodeJS.Timeout;
 
-	const port = typeof opts.app !== 'boolean' ? [`--port ${opts.port}`] : [];
+	const port = typeof opts.app !== 'boolean' ? opts.app : 8080;
 
-	const app = spawn('pnpm', ['vite', '--host', '--clearScreen false', ...port], {
+	const app = spawn('pnpm', ['vite', '--host', '--clearScreen false', `--port ${port}`], {
 		cwd: appFolder,
 		shell: true,
 	});
+
+	logger.pipe(app.stdout, 'debug');
 
 	app.on('error', (err) => {
 		logger.error(err.toString());
