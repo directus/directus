@@ -4,7 +4,7 @@ import { useSchemaOverview } from '@/composables/use-schema-overview';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 
-export function useSanitizeEdits(edits: any, collection: string) {
+export function useSanitizeEdits(edits: Record<string, unknown>, collection: string) {
 	const permissionsStore = usePermissionsStore();
 
 	const userStore = useUserStore();
@@ -34,7 +34,7 @@ export function useSanitizeEdits(edits: any, collection: string) {
 
 			return [key, value];
 		},
-		{ collection, schema },
+		{ collection, schema: schema.value },
 		{
 			detailedUpdateSyntax: true,
 		},

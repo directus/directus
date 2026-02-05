@@ -1,14 +1,15 @@
 import { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
+import { computed, ComputedRef } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 
-export function useSchemaOverview(): SchemaOverview {
+export function useSchemaOverview(): ComputedRef<SchemaOverview> {
 	const relationsStore = useRelationsStore();
 	const fieldsStore = useFieldsStore();
 	const collectionsStore = useCollectionsStore();
 
-	return {
+	return computed(() => ({
 		collections: Object.fromEntries(
 			collectionsStore.collections.map((collection) => {
 				const fields = fieldsStore.getFieldsForCollection(collection.collection).map((field) => [
@@ -44,5 +45,5 @@ export function useSchemaOverview(): SchemaOverview {
 			}),
 		),
 		relations: relationsStore.relations,
-	};
+	}));
 }
