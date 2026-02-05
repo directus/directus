@@ -6,7 +6,7 @@ import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { CollabUser } from '@/composables/use-collab';
-import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
+import CollabField from '@/views/private/components/CollabField.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -112,7 +112,7 @@ const isPromotableField = computed(() => {
 
 			<span class="spacer" />
 
-			<CollabAvatars :model-value="focusedBy" type="field" class="avatars" />
+			<CollabField :model-value="focusedBy" class="avatars" />
 		</component>
 	</div>
 </template>
