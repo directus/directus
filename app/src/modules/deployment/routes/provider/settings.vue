@@ -255,17 +255,13 @@ onMounted(() => {
 		</template>
 
 		<template #actions>
-			<VButton
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('deployment.provider.settings.delete')"
-				rounded
-				icon
-				small
+				icon="delete"
 				secondary
 				class="action-delete"
 				@click="confirmDelete = true"
-			>
-				<VIcon name="delete" outline small />
-			</VButton>
+			/>
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
