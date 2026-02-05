@@ -749,6 +749,14 @@ create_operation: Luo toiminto
 edit_operation: Muokkaa toimintoa
 code: Koodi
 insights: Yleiskatsaus
+deployment:
+  provider:
+    settings:
+      delete_confirm: Tämä toiminto on pysyvä eikä sitä voi peruuttaa. Oletko varma, että haluat jatkaa?
+    run:
+      cancel_confirm: Tämä toiminto on pysyvä eikä sitä voi peruuttaa. Oletko varma, että haluat jatkaa?
+  target_value:
+    preview: Esikatselu
 dashboard: Kojelauta
 panel: Paneeli
 panel_options: Paneelin asetukset
