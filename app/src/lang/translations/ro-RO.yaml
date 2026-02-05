@@ -778,6 +778,14 @@ flow_tracking_activity: Urmărește doar activitatea
 flow_tracking_null: Nu urmări nimic
 code: Cod
 insights: Analize
+deployment:
+  provider:
+    settings:
+      delete_confirm: Această acţiune este permanentă şi nu poate fi anulată. Sunteţi sigur că doriţi să continuaţi?
+    run:
+      cancel_confirm: Această acţiune este permanentă şi nu poate fi anulată. Sunteţi sigur că doriţi să continuaţi?
+  target_value:
+    preview: Previzualizare
 dashboard: Panou
 panel: Panou
 panel_options: Opțiuni panou
