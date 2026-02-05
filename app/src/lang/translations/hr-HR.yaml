@@ -958,15 +958,6 @@ operation_key_unique_error: Operacijski ključevi moraju biti jedinstveni u toku
 operation_handle_resolve: 'Rješavanje: kliknite za dodavanje ili povucite za preusmjeravanje'
 operation_handle_reject: 'Odbaci: kliknite za dodavanje ili povucite za preusmjeravanje'
 insights: Uvidi
-deployment:
-  provider:
-    settings:
-      delete_confirm: Ova radnja je trajna i ne može se poništiti. Jeste li sigurni da želite nastaviti?
-    run:
-      cancel_confirm: Ova radnja je trajna i ne može se poništiti. Jeste li sigurni da želite nastaviti?
-      log_all: Sve razine zapisnika (logova)
-  target_value:
-    preview: Pretpregled
 dashboard: Upravljačka ploča
 panel: Panel
 panel_options: Postavke ploče
@@ -1321,7 +1312,6 @@ fields:
     theme_dark_overrides: Prilagodba Tamne Teme
     public_registration: Registracija korisnika
     public_registration_verify_email: Potvrdi adresu e-pošte
-    ai_header_name: Zaglavlje
   directus_shares:
     name: Ime
     role: Uloge
@@ -1460,7 +1450,6 @@ live_preview:
   new_window: Otvori u novom prozoru
   close_window: Otvori u Prikazu Podijeljenog ekrana
   toggle_3d: Preklopi 3D
-  display_options: Prikaži Opcije
 shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 no_shares: Nema dijeljenja za prikaz
@@ -1468,8 +1457,6 @@ new_share: Novo dijeljenje
 ai:
   input: Unos
   unknown: Nepoznato
-  items: Stavke
-  content: Sadržaj
   settings: Postavke
   tool_approval:
     disabled: Onemogućeno

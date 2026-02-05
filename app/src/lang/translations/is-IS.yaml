@@ -244,9 +244,6 @@ start_flow: Byrja Flæði
 stop_flow: Stoppa Flæði
 code: Kóði
 insights: Innsýnir
-deployment:
-  target_value:
-    preview: Forskoða
 visible: Sýnilegt
 no_data: Engin G0gn
 center_align: Miðju Jöfnun
@@ -354,7 +351,6 @@ fields:
   directus_settings:
     project_name: Verkefni Nafn
     custom_css: Sérsniðið CSS
-    ai_header_name: Haus
   directus_shares:
     name: Nafn
     role: Hlutverk
@@ -397,7 +393,6 @@ comment: Athugasemd
 live_preview:
   new_window: Opna í Nýjum Glugga
 ai:
-  content: Efni
   settings: Stillingar
   tool_approval:
     disabled: Óvirkt

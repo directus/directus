@@ -23,7 +23,8 @@ about: À propos
 privacy_policy: Politique de confidentialité
 contact_our_team: Contactez notre équipe
 setup_welcome: Bienvenue sur Directus
-setup_license_notice: Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
+setup_license_notice: >
+  Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
 setup_launch: Lancer Directus
 setup_project: Configurer un projet
 first_name: Prénom
@@ -991,15 +992,6 @@ no_url: Aucune URL fournie
 no_url_copy: Veuillez ajouter une URL dans les paramètres.
 invalid_url: URL invalide
 insights: Analyses
-deployment:
-  provider:
-    settings:
-      delete_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
-    run:
-      cancel_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
-      log_all: Tous les niveaux de log
-  target_value:
-    preview: Prévisualiser
 dashboard: Tableau de bord
 panel: Panneau
 panel_options: Options de panneau
@@ -1371,7 +1363,6 @@ fields:
     public_registration_email_filter_note: Seules les adresses e-mail correspondant à ce filtre peuvent s'inscrire.
     public_registration_verify_email: Vérifier l'adresse e-mail
     public_registration_verify_email_note: Envoie un e-mail à l'utilisateur qui vient de s'inscrire, lui demandant de cliquer sur un lien de vérification avant de pouvoir se connecter.
-    ai_header_name: En-tête
   directus_shares:
     name: Nom
     role: Rôle
@@ -1524,7 +1515,6 @@ live_preview:
   new_window: Ouvrir dans une nouvelle fenêtre
   close_window: Ouvrir en mode écran partagé
   toggle_3d: Alterner 3D
-  display_options: Options d’affichage
 shares: Partages
 unlimited_usage: Utilisation illimitée
 uses_left: Pas d'utilisation restante | Une utilisation restante | {n} utilisations restantes
@@ -1533,8 +1523,6 @@ new_share: Nouveau partage
 ai:
   input: Texte simple
   unknown: Inconnu
-  items: Éléments
-  content: Contenu
   settings: Réglages
   tool_approval:
     disabled: Désactivé

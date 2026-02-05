@@ -965,15 +965,6 @@ toggle_editable_elements: Elementên Guhêrbar Veke/Bigire
 no_url: Ti URL nehatiye dayîn
 no_url_copy: Ji kerema xwe di mîhengkariyan de URLek zêde bike.
 insights: Têgihiştin
-deployment:
-  provider:
-    settings:
-      delete_confirm: Ev çalakî daîmî ye û nayê vegerandin. Tu bi rastî dixwazî berdewam bikî?
-    run:
-      cancel_confirm: Ev çalakî daîmî ye û nayê vegerandin. Tu bi rastî dixwazî berdewam bikî?
-      log_all: Hemû Astên Têketinê
-  target_value:
-    preview: Pêşdîtin
 dashboard: Daşbord
 panel: Panel
 panel_options: Vebijêrkên Panelê
@@ -1345,7 +1336,6 @@ fields:
     public_registration_verify_email: E-peyamê Rast Bike
     public_registration_verify_email_note: E-peyamek ji bikarhênerê ku qeyd dibe re dişîne û jê dixwaze ku beriya têketinê li girêdana rastpêkirinê bitikîne.
     visual_editor_urls: URL yên Edîtora Dîtbarî
-    ai_header_name: Sernav
   directus_shares:
     name: Nav
     role: Rol
@@ -1498,7 +1488,6 @@ live_preview:
   new_window: Di Pencereyeke Nû de Veke
   close_window: Di Dîtina Parvekirî de Veke
   toggle_3d: 3D Veke/Bigire
-  display_options: Vebijêrkên Nîşandanê
 shares: Parvekirî
 unlimited_usage: Bikaranîna bêsînor
 uses_left: Ti bikaranînên mayî tune ne | Yek bikaranîna mayî | {n} bikaranînên mayî
@@ -1507,8 +1496,6 @@ new_share: Parvekirina Nû
 ai:
   input: Têketin
   unknown: Nenas
-  items: Hêman
-  content: Naverok
   settings: Mîhengkarî
   tool_approval:
     disabled: Neçalak

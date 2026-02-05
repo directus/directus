@@ -966,15 +966,6 @@ no_url: هیچ بەستەرێک نەدراوە
 no_url_copy: تکایە بەستەرێک زیاد بکە لە ڕێکخستنەکاندا
 invalid_url: URL نادروست
 insights: تێڕوانینەکان
-deployment:
-  provider:
-    settings:
-      delete_confirm: ئەم کردارە هەمیشەییە و گەڕاندنەوەی نییە. ئایا دڵنیای دەتەوێت جێبەجێ ببێت؟
-    run:
-      cancel_confirm: ئەم کردارە هەمیشەییە و گەڕاندنەوەی نییە. ئایا دڵنیای دەتەوێت جێبەجێ ببێت؟
-      log_all: هەموو ئاستەکانی تۆمار
-  target_value:
-    preview: بینین
 dashboard: داشبۆرد
 panel: پانێڵ
 panel_options: بژاردەکانی پانێڵ
@@ -1346,7 +1337,6 @@ fields:
     public_registration_verify_email: پشتڕاستکردنەوەی ئیمەیڵ
     public_registration_verify_email_note: ئیمەیڵێک دەنێردرێت بۆ بەکارهێنەری تۆمارکراو داوایان لێدەکات کرتە لە بەستەری پشتڕاستکردنەوە بکەن پێش ئەوەی بتوانن بچنە ژوورەوە.
     visual_editor_urls: بەستەرەکانی دەستکاریکەری بینراو
-    ai_header_name: سەرپەڕە
   directus_shares:
     name: ناو
     role: پلە
@@ -1499,7 +1489,6 @@ live_preview:
   new_window: کردنەوە لە پەنجەرەی نوێدا
   close_window: کردنەوە لە دیمەنی دابەشکراودا
   toggle_3d: گۆڕینی ڕەوشی سێ دووری
-  display_options: بژاردەکانی نیشاندان
 shares: هاوبەشیکردنەکان
 unlimited_usage: بەکارهێنانی بێسنور
 uses_left: هیچ بەکارهێنانی نەماوە | یەک بەکارهێنان ماوە | {n} بەکارهێنان ماوە
@@ -1508,8 +1497,6 @@ new_share: هاوبەشی نوێ
 ai:
   input: تێچون
   unknown: نەناسراو
-  items: ماددەکان
-  content: ناوەڕۆک
   settings: ڕێکخستنەکان
   tool_approval:
     disabled: ناکاراکراو

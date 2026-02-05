@@ -978,15 +978,6 @@ no_url_copy: გთხოვთ, დაამატეთ URL პარამე
 invalid_url: არასწორი URL
 invalid_url_copy: მითითებული URL არ ემთხვევა პარამეტრებში მითითებულ არცერთ URL-ს.
 insights: ანალიტიკა
-deployment:
-  provider:
-    settings:
-      delete_confirm: ეს მოქმედება მუდმივია და მისი გაუქმება შეუძლებელია. დარწმუნებული ხართ, რომ გსურთ გაგრძელება?
-    run:
-      cancel_confirm: ეს მოქმედება მუდმივია და მისი გაუქმება შეუძლებელია. დარწმუნებული ხართ, რომ გსურთ გაგრძელება?
-      log_all: ყველა ჟურნალის დონე
-  target_value:
-    preview: გადახედვა
 dashboard: დაფა
 panel: პანელი
 panel_options: პანელის ოფციები
@@ -1359,7 +1350,6 @@ fields:
     public_registration_verify_email: ელფოსტის დადასტურება
     public_registration_verify_email_note: აგზავნის ელფოსტას რეგისტრირებულ მომხმარებელთან და სთხოვს დააჭიროს დამადასტურებელ ბმულს, სანამ შეძლებს შესვლას.
     visual_editor_urls: ვიზუალური რედაქტორის URL-ები
-    ai_header_name: სათაური
   directus_shares:
     name: სახელი
     role: როლი
@@ -1512,7 +1502,6 @@ live_preview:
   new_window: ახალ ფანჯარაში გახსნა
   close_window: გაყოფილ ხედში გახსნა
   toggle_3d: 3D-ს გადართვა
-  display_options: ჩვენების ოფციები
 shares: გაზიარებები
 unlimited_usage: შეუზღუდავი გამოყენება
 uses_left: გამოყენება არ დარჩა | ერთი გამოყენება დარჩა | {n} გამოყენება დარჩა
@@ -1521,8 +1510,6 @@ new_share: ახალი გაზიარება
 ai:
   input: შეყვანა
   unknown: უცნობი
-  items: ჩანაწერები
-  content: კონტენტი
   settings: პარამეტრები
   tool_approval:
     disabled: გამორთულია

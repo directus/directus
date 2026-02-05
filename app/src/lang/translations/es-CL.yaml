@@ -980,15 +980,6 @@ no_url_copy: Por favor, añada una URL en la configuración.
 invalid_url: URL no válida
 invalid_url_copy: La URL especificada no coincide con ninguna URL especificada en la configuración.
 insights: Informes
-deployment:
-  provider:
-    settings:
-      delete_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
-    run:
-      cancel_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
-      log_all: Todos los niveles de registro
-  target_value:
-    preview: Vista previa
 dashboard: Panel de control
 panel: Panel
 panel_options: Opciones del Panel
@@ -1362,7 +1353,6 @@ fields:
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
     visual_editor_urls: URLs del editor visual
-    ai_header_name: Encabezado
   directus_shares:
     name: Nombre
     role: Rol
@@ -1516,7 +1506,6 @@ live_preview:
   close_window: Abrir en vista dividida
   toggle_3d: Alterna 3D
   iframe_title: Vista previa del sitio web en vivo
-  display_options: Opciones de Visualización
 shares: Compartido
 unlimited_usage: Uso ilimitado
 uses_left: No quedan usos | Queda un uso | {n} usos restantes
@@ -1525,8 +1514,6 @@ new_share: Nueva parte
 ai:
   input: Entrada
   unknown: Desconocido
-  items: Elementos
-  content: Contenido
   settings: Configuración
   tool_approval:
     disabled: Desactivado
