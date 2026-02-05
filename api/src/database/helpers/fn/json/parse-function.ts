@@ -1,8 +1,9 @@
 /**
- * Parses json(field.path.to.value) into components
- * @example json(metadata.color) → { field: 'metadata', path: '.color' }
- * @example json(data.items[0].name) → { field: 'data', path: '.items[0].name' }
- * @example json(data[0].name) → { field: 'data', path: '[0].name' }
+ * Parses json(field:path.to.value) into components
+ * Uses colon as delimiter between field and JSON path to avoid ambiguity with relational fields.
+ * @example json(metadata:color) → { field: 'metadata', path: '.color' }
+ * @example json(data:items[0].name) → { field: 'data', path: '.items[0].name' }
+ * @example json(author.profile:settings.theme) → { field: 'author.profile', path: '.settings.theme' }
  */
 export function parseJsonFunction(functionString: string): { field: string; path: string } {
 	if (!functionString.startsWith('json(') || !functionString.endsWith(')')) {
@@ -16,29 +17,29 @@ export function parseJsonFunction(functionString: string): { field: string; path
 		throw new Error('Invalid json() syntax');
 	}
 
-	// Split on first dot or bracket to separate field from path
-	const firstDotIndex = content.indexOf('.');
-	const firstBracketIndex = content.indexOf('[');
+	// Split on colon to separate field from path
+	const colonIndex = content.indexOf(':');
 
-	// Determine which delimiter comes first (or if only one exists)
-	let splitIndex: number;
-
-	if (firstDotIndex === -1 && firstBracketIndex === -1) {
-		throw new Error('Invalid json() syntax');
-	} else if (firstDotIndex === -1) {
-		splitIndex = firstBracketIndex;
-	} else if (firstBracketIndex === -1) {
-		splitIndex = firstDotIndex;
-	} else {
-		splitIndex = Math.min(firstDotIndex, firstBracketIndex);
+	if (colonIndex === -1) {
+		throw new Error('Invalid json() syntax: requires field:path format');
 	}
 
-	if (splitIndex === 0) {
-		throw new Error('Invalid json() syntax');
+	if (colonIndex === 0) {
+		throw new Error('Invalid json() syntax: missing field name');
 	}
+
+	const field = content.substring(0, colonIndex);
+	const pathContent = content.substring(colonIndex + 1);
+
+	if (!pathContent) {
+		throw new Error('Invalid json() syntax: missing path');
+	}
+
+	// Normalize path to always start with dot or bracket
+	const path = pathContent.startsWith('[') ? pathContent : '.' + pathContent;
 
 	return {
-		field: content.substring(0, splitIndex),
-		path: content.substring(splitIndex), // Keeps the leading dot or bracket
+		field,
+		path,
 	};
 }
