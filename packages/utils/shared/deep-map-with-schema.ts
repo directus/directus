@@ -46,7 +46,12 @@ type DeepMapCallback<T> = (entry: DeepMapEntry, context: DeepMapCallbackContext)
 
 /**
  * Allows to deep map the data like a response or delta changes with collection, field and relation context for each entry.
- * Bottom to Top depth first mapping of values.
+ * Reverse breadth first search. Order: [3, 5, 4, 2, 1]
+ *        [1]
+ *       /   \
+ *     [2]   [3]
+ *    /   \
+ *  [4]   [5]
  */
 export function deepMapWithSchema(
 	object: unknown,
