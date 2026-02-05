@@ -965,6 +965,15 @@ toggle_editable_elements: Elementên Guhêrbar Veke/Bigire
 no_url: Ti URL nehatiye dayîn
 no_url_copy: Ji kerema xwe di mîhengkariyan de URLek zêde bike.
 insights: Têgihiştin
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ev çalakî daîmî ye û nayê vegerandin. Tu bi rastî dixwazî berdewam bikî?
+    run:
+      cancel_confirm: Ev çalakî daîmî ye û nayê vegerandin. Tu bi rastî dixwazî berdewam bikî?
+      log_all: Hemû Astên Têketinê
+  target_value:
+    preview: Pêşdîtin
 dashboard: Daşbord
 panel: Panel
 panel_options: Vebijêrkên Panelê
