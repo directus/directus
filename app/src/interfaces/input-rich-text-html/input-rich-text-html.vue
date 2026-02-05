@@ -66,7 +66,6 @@ type CustomFormat = {
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
-		field?: string;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		customFormats?: CustomFormat[];
@@ -472,7 +471,7 @@ const menuActive = computed(
 </script>
 
 <template>
-	<div :id="field" v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
+	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
 		<Editor
 			v-if="nonEditable"
 			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"
