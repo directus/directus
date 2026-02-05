@@ -73,6 +73,7 @@ condition_rules: استایل شرطی
 input: ورودی
 invalid_input: ورودی نامعتبر
 not_a_number: نا عدد
+invalid_range_min:
 maps: نقشه‌ها
 switch_user: تغییر کاربر
 item_creation: ساخت آیتم
@@ -1035,6 +1036,15 @@ no_url_copy: لطفا یک URL در تنظیمات اضافه کنید.
 invalid_url: URL اشتباه
 invalid_url_copy: URL مشخص شده با هیچ یک از URL های مشخص شده در تنظیمات منطبق نیست.
 insights: بینش های داده ای
+deployment:
+  provider:
+    settings:
+      delete_confirm: این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
+    run:
+      cancel_confirm: این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
+      log_all: همه سطوح رخداد
+  target_value:
+    preview: پيش نمايش
 dashboard: پیشخوان
 panel: پنل
 panel_options: تنظیمات پنل
@@ -1589,6 +1599,8 @@ ai:
   settings: تنظیمات
   tool_approval:
     disabled: غیرفعال شده
+  tool_descriptions:
+    relations:
 ai_tools:
   items: آیتمها
   files: فایل ها
