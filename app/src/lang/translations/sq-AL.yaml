@@ -508,7 +508,6 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
-date-fns_time_short_seconds: ''
 date-fns_date_short_no_year: MMM d
 minutes: Minuta
 hours: Orë
@@ -2358,7 +2357,6 @@ operations:
     template: Template
     data: Të Dhënat
     bcc_placeholder: ...
-    reply_to:
   notification:
     name: Dërgo Njoftim
     description: Një njoftim në aplikacion për një ose më shumë përdorues
