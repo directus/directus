@@ -775,6 +775,14 @@ flow_name: Nom
 flow_tracking_activity: Només traça l'activitat
 flow_tracking_null: No tracis res
 code: Codi
+deployment:
+  provider:
+    settings:
+      delete_confirm: Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+    run:
+      cancel_confirm: Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+  target_value:
+    preview: Vista prèvia
 suffix_placeholder: Text després del valor...
 decimals_placeholder: Nombre de posicions decimals...
 no_dashboards: Sense taulers de control
