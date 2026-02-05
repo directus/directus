@@ -344,15 +344,21 @@ const createCollections = computed(() => {
 	});
 });
 
-const canDrag = computed(() => relationInfo.value?.sortField !== undefined && !props.disabled && updateAllowed.value);
+const canDrag = computed(() => relationInfo.value?.sortField !== undefined && updateAllowed.value);
 const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitWritable.value);
+const createOpen = ref(false);
+const selectOpen = ref(false);
+
+const menuActive = computed(
+	() => Boolean(selectingFrom.value) || editModalActive.value || createOpen.value || selectOpen.value,
+);
 </script>
 
 <template>
 	<VNotice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
 	<VNotice v-else-if="allowedCollections.length === 0" type="warning">{{ $t('no_singleton_relations') }}</VNotice>
-	<div v-else class="m2a-builder">
-		<VNotice v-if="canDrag && !allowDrag">{{ $t('interfaces.list-m2a.sorting_disabled') }}</VNotice>
+	<div v-else v-prevent-focusout="menuActive" class="m2a-builder">
+		<VNotice v-if="!disabled && canDrag && !allowDrag">{{ $t('interfaces.list-m2a.sorting_disabled') }}</VNotice>
 		<template v-if="loading">
 			<VSkeletonLoader
 				v-for="n in clamp(totalItemCount - (page - 1) * limitWritable, 1, limitWritable)"
@@ -370,7 +376,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 				tag="v-list"
 				item-key="$index"
 				:set-data="hideDragImage"
-				:disabled="!allowDrag"
+				:disabled="disabled || !allowDrag"
 				v-bind="{ 'force-fallback': true }"
 				handle=".drag-handle"
 				@update:model-value="sortItems"
@@ -379,12 +385,14 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 					<VListItem
 						v-if="hasAllowedCollection(element)"
 						block
+						:disabled="disabled && !nonEditable"
 						:dense="totalItemCount > 4"
 						:class="{ deleted: element.$type === 'deleted' }"
 						clickable
 						@click="editItem(element)"
 					>
-						<VIcon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
+						<VIcon v-if="allowDrag && !nonEditable" class="drag-handle" left name="drag_handle" :disabled @click.stop />
+
 						<span class="collection">{{ getPrefix(element) }}:</span>
 
 						<RenderTemplate
@@ -395,9 +403,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 
 						<div class="spacer" />
 
-						<div class="item-actions">
+						<div v-if="!nonEditable" class="item-actions">
 							<VRemove
-								v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
+								v-if="deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element)"
+								:disabled
 								:item-type="element.$type"
 								:item-info="relationInfo"
 								:item-is-local="isLocalItem(element)"
@@ -407,16 +416,21 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						</div>
 					</VListItem>
 
-					<VListItem v-else block :class="{ deleted: element.$type === 'deleted' }">
+					<VListItem
+						v-else
+						block
+						:disabled="disabled && !nonEditable"
+						:class="{ deleted: element.$type === 'deleted' }"
+					>
 						<VIcon class="invalid-icon" name="warning" left />
 
 						<span>{{ $t('invalid_item') }}</span>
 
 						<div class="spacer" />
 
-						<div class="item-actions">
+						<div v-if="!nonEditable" class="item-actions">
 							<VRemove
-								v-if="!disabled"
+								:disabled
 								:item-type="element.$type"
 								:item-info="relationInfo"
 								:item-is-local="isLocalItem(element)"
@@ -430,7 +444,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		</template>
 
 		<div v-if="!nonEditable" class="actions">
-			<VMenu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
+			<VMenu v-if="enableCreate && createCollections.length > 0" v-model="createOpen" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<VButton :disabled="disabled" @click="toggle">
 						{{ $t('create_new') }}
@@ -453,7 +467,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 				</VList>
 			</VMenu>
 
-			<VMenu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
+			<VMenu v-if="enableSelect && selectAllowed" v-model="selectOpen" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<VButton :disabled="disabled" @click="toggle">
 						{{ $t('add_existing') }}
@@ -529,13 +543,20 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 
 .v-list-item {
 	.collection {
-		color: var(--theme--primary);
 		white-space: nowrap;
 		margin-inline-end: 1ch;
 	}
 
-	&.deleted .collection {
+	&:not(.disabled) .collection {
+		color: var(--theme--primary);
+	}
+
+	&.deleted:not(.disabled) .collection {
 		color: var(--theme--danger);
+	}
+
+	&.disabled {
+		background-color: var(--theme--form--field--input--background-subdued);
 	}
 }
 

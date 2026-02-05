@@ -14,6 +14,7 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
+		"./collab": "./dist/websockets/collab.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
@@ -25,6 +26,7 @@
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
+		"@directus/ai": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
 		"@sinclair/typebox": "catalog:",
@@ -32,15 +34,15 @@
 		"@types/geojson": "catalog:",
 		"@types/nodemailer": "catalog:",
 		"@types/ws": "catalog:",
-		"@types/archiver": "catalog:"
+		"@types/archiver": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@types/deep-diff": "catalog:",
 		"knex": "catalog:",
 		"typescript": "catalog:",
-		"vue": "catalog:",
-		"zod": "catalog:"
+		"vue": "catalog:"
 	},
 	"peerDependencies": {
 		"deep-diff": "catalog:",

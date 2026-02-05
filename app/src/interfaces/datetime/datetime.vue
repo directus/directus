@@ -6,6 +6,7 @@ import VDatePicker from '@/components/v-date-picker.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
 import { parseDate } from '@/utils/parse-date';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
@@ -27,7 +28,7 @@ const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
 
-const dateTimeMenu = ref();
+const menuActive = ref(false);
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
@@ -39,7 +40,16 @@ function unsetValue(e: any) {
 </script>
 
 <template>
-	<VMenu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+	<VMenu
+		ref="dateTimeMenu"
+		v-model="menuActive"
+		v-prevent-focusout="menuActive"
+		:close-on-content-click="false"
+		attached
+		:disabled
+		full-height
+		seamless
+	>
 		<template #activator="{ toggle, active }">
 			<VListItem block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
@@ -50,14 +60,11 @@ function unsetValue(e: any) {
 
 				<div class="spacer" />
 
-				<template v-if="!disabled">
-					<VIcon
-						:name="value ? 'clear' : 'today'"
-						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
-						clickable
-						@click="value ? unsetValue($event) : undefined"
-					/>
-				</template>
+				<div v-if="!nonEditable" class="item-actions">
+					<VRemove v-if="value" :disabled deselect class="clear-icon" @action="unsetValue($event)" />
+
+					<VIcon v-else name="today" class="today-icon" :class="{ active, disabled }" />
+				</div>
 			</VListItem>
 		</template>
 
@@ -74,6 +81,8 @@ function unsetValue(e: any) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-list-item {
 	--v-list-item-color-active: var(--v-list-item-color);
 	--v-list-item-background-color-active: var(
@@ -85,7 +94,7 @@ function unsetValue(e: any) {
 		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
 	}
 
-	&.active,
+	&.active:not(.disabled),
 	&:focus-within,
 	&:focus-visible {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
@@ -96,19 +105,14 @@ function unsetValue(e: any) {
 	}
 }
 
-.v-icon {
-	&.today-icon {
-		&:hover,
-		&.active {
-			--v-icon-color: var(--theme--primary);
-		}
+.today-icon:not(.disabled) {
+	&:hover,
+	&.active {
+		--v-icon-color: var(--theme--primary);
 	}
+}
 
-	&.clear-icon {
-		&:hover,
-		&.active {
-			--v-icon-color: var(--theme--danger);
-		}
-	}
+.item-actions {
+	@include mixins.list-interface-item-actions;
 }
 </style>

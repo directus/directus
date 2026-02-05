@@ -455,6 +455,25 @@ fields:
               path: role.name
     width: full
 
+  - field: collaborative_editing_divider
+    interface: presentation-divider
+    options:
+      icon: podcasts
+      title: $t:fields.directus_settings.collaborative_editing
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: collaborative_editing_enabled
+    interface: boolean
+    width: half
+    note: $t:fields.directus_settings.collaborative_editing_note
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
+
   - field: map_divider
     interface: presentation-divider
     options:
@@ -715,7 +734,7 @@ fields:
     interface: presentation-divider
     options:
       icon: chat
-      title: $t:ai_chat
+      title: $t:ai_assistant
     special:
       - alias
       - no-data
@@ -744,6 +763,36 @@ fields:
     width: half
     group: ai_group
 
+  - field: ai_openai_allowed_models
+    interface: select-multiple-dropdown
+    special:
+      - cast-json
+    options:
+      allowOther: true
+      choices:
+        - text: GPT-4o Mini
+          value: gpt-4o-mini
+        - text: GPT-4.1 Nano
+          value: gpt-4.1-nano
+        - text: GPT-4.1 Mini
+          value: gpt-4.1-mini
+        - text: GPT-4.1
+          value: gpt-4.1
+        - text: GPT-5 Nano
+          value: gpt-5-nano
+        - text: GPT-5 Mini
+          value: gpt-5-mini
+        - text: GPT-5
+          value: gpt-5
+        - text: GPT-5.2
+          value: gpt-5.2
+        - text: GPT-5.2 Chat
+          value: gpt-5.2-chat-latest
+        - text: GPT-5.2 Pro
+          value: gpt-5.2-pro
+    width: half
+    group: ai_group
+
   - field: ai_anthropic_api_key
     special:
       - encrypt
@@ -755,6 +804,51 @@ fields:
     width: half
     group: ai_group
 
+  - field: ai_anthropic_allowed_models
+    interface: select-multiple-dropdown
+    special:
+      - cast-json
+    options:
+      allowOther: true
+      choices:
+        - text: Claude Haiku 4.5
+          value: claude-haiku-4-5
+        - text: Claude Sonnet 4.5
+          value: claude-sonnet-4-5
+        - text: Claude Opus 4.5
+          value: claude-opus-4-5
+    width: half
+    group: ai_group
+
+  - field: ai_google_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_google_allowed_models
+    interface: select-multiple-dropdown
+    special:
+      - cast-json
+    options:
+      allowOther: true
+      choices:
+        - text: Gemini 3 Pro Preview
+          value: gemini-3-pro-preview
+        - text: Gemini 3 Flash Preview
+          value: gemini-3-flash-preview
+        - text: Gemini 2.5 Pro
+          value: gemini-2.5-pro
+        - text: Gemini 2.5 Flash
+          value: gemini-2.5-flash
+    width: half
+    group: ai_group
+
   - field: ai_system_prompt
     interface: input-rich-text-md
     group: ai_group
@@ -762,6 +856,157 @@ fields:
     note: $t:fields.directus_settings.ai_system_prompt_note
     options:
       label: $t:fields.directus_settings.ai_system_prompt
+
+  - field: ai_openai_compatible_divider
+    interface: presentation-divider
+    options:
+      inlineTitle: true
+      color: 'var(--theme--foreground-subdued)'
+      title: $t:fields.directus_settings.ai_openai_compatible
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_openai_compatible_name
+    interface: input
+    options:
+      placeholder: 'LM Studio, Ollama, etc.'
+    width: half
+    group: ai_group
+
+  - field: ai_openai_compatible_base_url
+    interface: input
+    options:
+      placeholder: 'http://localhost:1234/v1'
+    width: half
+    group: ai_group
+
+  - field: ai_openai_compatible_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_openai_compatible_headers
+    interface: list
+    special:
+      - cast-json
+    options:
+      template: '{{header}}'
+      fields:
+        - field: header
+          name: $t:fields.directus_settings.ai_header_name
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: 'X-Custom-Header'
+        - field: value
+          name: $t:value
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: 'header-value'
+    width: half
+    group: ai_group
+
+  - field: ai_openai_compatible_models
+    interface: list
+    special:
+      - cast-json
+    options:
+      template: '{{name}}'
+      fields:
+        - field: id
+          name: $t:fields.directus_settings.ai_model_id
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: 'llama3.2'
+        - field: name
+          name: $t:name
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: 'Llama 3.2'
+        - field: context
+          name: $t:fields.directus_settings.ai_context_limit
+          type: integer
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: '128000'
+        - field: output
+          name: $t:fields.directus_settings.ai_output_limit
+          type: integer
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: '16000'
+        - field: attachment
+          name: $t:fields.directus_settings.ai_supports_attachments
+          type: boolean
+          schema:
+            is_nullable: true
+            default_value: false
+          meta:
+            interface: boolean
+            width: half
+        - field: reasoning
+          name: $t:fields.directus_settings.ai_supports_reasoning
+          type: boolean
+          schema:
+            is_nullable: true
+            default_value: false
+          meta:
+            interface: boolean
+            width: half
+        - field: providerOptions
+          name: $t:fields.directus_settings.ai_provider_options
+          type: json
+          schema:
+            is_nullable: true
+          meta:
+            interface: input-code
+            width: full
+            options:
+              language: json
+              placeholder: '{ "customOption": "value" }'
+            note: $t:fields.directus_settings.ai_provider_options_note
+    width: full
+    group: ai_group
 
   - field: mcp_group
     interface: group-raw

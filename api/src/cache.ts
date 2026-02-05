@@ -19,6 +19,7 @@ const require = createRequire(import.meta.url);
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
+let deploymentCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
 let messengerSubscribed = false;
 
@@ -53,6 +54,7 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 export function getCache(): {
 	cache: Keyv | null;
 	systemCache: Keyv;
+	deploymentCache: Keyv;
 	localSchemaCache: Keyv;
 	lockCache: Keyv;
 } {
@@ -67,6 +69,12 @@ export function getCache(): {
 		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
+	if (deploymentCache === null) {
+		const ttl = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
+		deploymentCache = getKeyvInstance(env['CACHE_STORE'] as Store, ttl, '_deployment');
+		deploymentCache.on('error', (err) => logger.warn(err, `[deployment-cache] ${err}`));
+	}
+
 	if (localSchemaCache === null) {
 		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema');
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
@@ -77,7 +85,7 @@ export function getCache(): {
 		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
-	return { cache, systemCache, localSchemaCache, lockCache };
+	return { cache, systemCache, deploymentCache, localSchemaCache, lockCache };
 }
 
 export async function flushCaches(forced?: boolean): Promise<void> {
@@ -155,6 +163,36 @@ export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 	if (!value) return undefined;
 	const decompressed = await decompress(value);
 	return decompressed;
+}
+
+/**
+ * Store a value in cache with its expiration timestamp for TTL tracking
+ */
+export async function setCacheValueWithExpiry(
+	cache: Keyv,
+	key: string,
+	value: Record<string, any> | Record<string, any>[],
+	ttl: number,
+) {
+	await setCacheValue(cache, key, value, ttl);
+	await setCacheValue(cache, `${key}__expires_at`, { exp: Date.now() + ttl }, ttl);
+}
+
+/**
+ * Get a cached value along with its remaining TTL
+ */
+export async function getCacheValueWithTTL(
+	cache: Keyv,
+	key: string,
+): Promise<{ data: any; remainingTTL: number } | undefined> {
+	const value = await getCacheValue(cache, key);
+
+	if (!value) return undefined;
+
+	const expiryData = await getCacheValue(cache, `${key}__expires_at`);
+	const remainingTTL = expiryData?.exp ? Math.max(0, expiryData.exp - Date.now()) : 0;
+
+	return { data: value, remainingTTL };
 }
 
 function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?: string): Keyv {

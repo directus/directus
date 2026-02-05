@@ -1,5 +1,4 @@
-import { type AnthropicProvider, createAnthropic } from '@ai-sdk/anthropic';
-import { createOpenAI, type OpenAIProvider } from '@ai-sdk/openai';
+import type { ProviderType } from '@directus/ai';
 import { ServiceUnavailableError } from '@directus/errors';
 import {
 	convertToModelMessages,
@@ -10,53 +9,65 @@ import {
 	type Tool,
 	type UIMessage,
 } from 'ai';
+import {
+	type AISettings,
+	buildProviderConfigs,
+	createAIProviderRegistry,
+	getProviderOptions,
+} from '../../providers/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
+import type { ChatContext } from '../models/chat-request.js';
+import { formatContextForSystemPrompt } from '../utils/format-context.js';
 
 export interface CreateUiStreamOptions {
-	provider: 'openai' | 'anthropic';
+	provider: ProviderType;
 	model: string;
 	tools: { [x: string]: Tool };
-	apiKeys: {
-		openai: string | null;
-		anthropic: string | null;
-	};
+	aiSettings: AISettings;
 	systemPrompt?: string;
+	context?: ChatContext;
 	onUsage?: (usage: Pick<LanguageModelUsage, 'inputTokens' | 'outputTokens' | 'totalTokens'>) => void | Promise<void>;
 }
 
-export const createUiStream = (
+export const createUiStream = async (
 	messages: UIMessage[],
-	{ provider, model, tools, apiKeys, systemPrompt, onUsage }: CreateUiStreamOptions,
-): StreamTextResult<Record<string, Tool<any, any>>, any> => {
-	if (apiKeys[provider] === null) {
+	{ provider, model, tools, aiSettings, systemPrompt, context, onUsage }: CreateUiStreamOptions,
+): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
+	const configs = buildProviderConfigs(aiSettings);
+	const providerConfig = configs.find((c) => c.type === provider);
+
+	if (!providerConfig) {
 		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
 	}
 
-	let modelProvider: OpenAIProvider | AnthropicProvider;
+	const registry = createAIProviderRegistry(configs, aiSettings);
 
-	if (provider === 'openai') {
-		modelProvider = createOpenAI({ apiKey: apiKeys.openai! });
-	} else if (provider === 'anthropic') {
-		modelProvider = createAnthropic({ apiKey: apiKeys.anthropic! });
-	} else {
-		throw new Error(`Unexpected provider given: "${provider}"`);
-	}
-
-	systemPrompt ||= SYSTEM_PROMPT;
+	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
+	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
+	const providerOptions = getProviderOptions(provider, model, aiSettings);
+	// Compute the full system prompt once to avoid re-computing on each step
+	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
 
 	const stream = streamText({
-		system: systemPrompt,
-		model: modelProvider(model),
-		messages: convertToModelMessages(messages),
+		system: baseSystemPrompt,
+		model: registry.languageModel(`${provider}:${model}`),
+		messages: await convertToModelMessages(messages),
 		stopWhen: [stepCountIs(10)],
-		providerOptions: {
-			openai: {
-				reasoningSummary: 'auto',
-				store: false,
-				include: ['reasoning.encrypted_content'],
-			},
-		},
+		providerOptions,
 		tools,
+		/**
+		 * prepareStep is called before each AI step to prepare the system prompt.
+		 * When context exists, we override the system prompt to include context attachments.
+		 * This allows the initial system prompt to be simple while ensuring all steps
+		 * (including tool continuation steps) receive the full context.
+		 */
+		prepareStep: () => {
+			if (contextBlock) {
+				return { system: fullSystemPrompt };
+			}
+
+			return {};
+		},
 		onFinish({ usage }) {
 			if (onUsage) {
 				const { inputTokens, outputTokens, totalTokens } = usage;

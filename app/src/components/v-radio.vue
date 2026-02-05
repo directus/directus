@@ -104,6 +104,10 @@ function emitValue(): void {
 			.v-icon {
 				--v-icon-color: var(--theme--foreground-subdued);
 			}
+
+			&.checked {
+				border-color: var(--theme--form--field--input--border-color);
+			}
 		}
 	}
 
@@ -137,7 +141,7 @@ function emitValue(): void {
 		}
 	}
 
-	&:not(:disabled).checked,
+	&.checked:not(:disabled),
 	&.checked.non-editable {
 		.v-icon {
 			--v-icon-color: var(--v-radio-color, var(--theme--primary));
