@@ -155,7 +155,7 @@ keep_setup: Manter Configuração
 cancel_setup: Cancelar Configuração
 add_field: Adicionar Campo
 role_name: Nome do Cargo
-policy_name: Nome da política
+policy_name: Nome da política 
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
@@ -1046,6 +1046,15 @@ no_url_copy: Por favor, adicione um URL nas configurações.
 invalid_url: URL Inválido
 invalid_url_copy: O URL específico não combina com nenhum URL das configurações.
 insights: Estatísticas
+deployment:
+  provider:
+    settings:
+      delete_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
+    run:
+      cancel_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
+      log_all: Todos os Níveis de Registro
+  target_value:
+    preview: Pré-visualizar
 dashboard: Painel
 panel: Painel
 panel_options: Opções do Painel
