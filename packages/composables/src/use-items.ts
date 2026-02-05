@@ -53,6 +53,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	const items = ref<Item[]>([]);
 	const loading = ref(false);
 	const loadingItemCount = ref(false);
+	const loadingTotalCount = ref(false);
 	const error = ref<any>(null);
 
 	const itemCount = ref<number | null>(null);
@@ -70,8 +71,9 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		filter: null,
 	};
 
-	let totalPromise: Promise<void> | null = null;
 	let loadingTimeout: NodeJS.Timeout | null = null;
+	let activeTotalCountPromise: Promise<void> | null = null;
+	let lastTotalCountParams: any = null;
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
 	const fetchItems = throttle((shouldUpdateCount: boolean) => {
@@ -247,27 +249,31 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
-		if (totalPromise) {
-			return totalPromise;
-		}
-
 		const currentEndpoint = endpoint.value;
 
-		totalPromise = (async () => {
+		const aggregate = primaryKeyField.value ? { countDistinct: primaryKeyField.value.field } : { count: '*' };
+
+		const currentParams = {
+			aggregate,
+			filter: unref(filterSystem),
+			collection: collection.value,
+		};
+
+		if (loadingTotalCount.value && activeTotalCountPromise && isEqual(currentParams, lastTotalCountParams)) {
+			await activeTotalCountPromise;
+			return;
+		}
+
+		lastTotalCountParams = currentParams;
+		loadingTotalCount.value = true;
+
+		const totalPromise = async () => {
 			try {
 				if (existingRequests.total) {
 					existingRequests.total.abort();
 				}
 
 				existingRequests.total = new AbortController();
-
-				const aggregate = primaryKeyField.value
-					? {
-							countDistinct: primaryKeyField.value.field,
-						}
-					: {
-							count: '*',
-						};
 
 				const response = await api.get<any>(currentEndpoint, {
 					params: {
@@ -289,9 +295,17 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					throw err;
 				}
 			} finally {
-				totalPromise = null;
+				if (activeTotalCountPromise === currentPromise) {
+					activeTotalCountPromise = null;
+					loadingTotalCount.value = false;
+				}
 			}
-		})();
+		};
+
+		const currentPromise = totalPromise();
+		activeTotalCountPromise = currentPromise;
+
+		await currentPromise;
 	}
 
 	async function getItemCount() {
@@ -304,16 +318,21 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		const isFilterEmpty = !filterVal || Object.keys(filterVal).length === 0;
 		const isSearchEmpty = !searchVal || searchVal.length === 0;
 
-		const filterMatchesSystem = isSearchEmpty && isEqual(filterVal, filterSystemVal);
-
-		if ((isFilterEmpty && isSearchEmpty) || filterMatchesSystem) {
-			if (totalCount.value !== null) {
+		if (isSearchEmpty && (isFilterEmpty || isEqual(filterVal, filterSystemVal))) {
+			if (totalCount.value !== null && !loadingTotalCount.value) {
 				itemCount.value = totalCount.value;
-			} else {
-				await getTotalCount();
-				itemCount.value = totalCount.value;
+				return;
 			}
 
+			try {
+				await getTotalCount();
+			} catch (e) {
+				if (axios.isCancel(e) && activeTotalCountPromise) {
+					await activeTotalCountPromise;
+				}
+			}
+
+			itemCount.value = totalCount.value;
 			return;
 		}
 
