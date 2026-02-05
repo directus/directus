@@ -3,7 +3,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 
-export function getSchemaOverview(): SchemaOverview {
+export function useSchemaOverview(): SchemaOverview {
 	const relationsStore = useRelationsStore();
 	const fieldsStore = useFieldsStore();
 	const collectionsStore = useCollectionsStore();

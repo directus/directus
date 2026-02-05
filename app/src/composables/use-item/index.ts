@@ -8,8 +8,8 @@ import { cloneDeep, mergeWith } from 'lodash';
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
-import { sanitizeEdits } from './lib/sanitize-edits';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
+import { useSanitizeEdits } from './lib/use-sanitize-edits';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
@@ -190,7 +190,7 @@ export function useItem<T extends Item>(
 		let resetTo = {};
 
 		if (saveAllowedOnly?.value) {
-			const { allowedEdits, unsavedEdits } = sanitizeEdits(sanitizedEdits, collection.value);
+			const { allowedEdits, unsavedEdits } = useSanitizeEdits(sanitizedEdits, collection.value);
 			sanitizedEdits = allowedEdits;
 			resetTo = unsavedEdits;
 		}
@@ -357,7 +357,7 @@ export function useItem<T extends Item>(
 		let resetTo = {};
 
 		if (saveAllowedOnly?.value) {
-			const { allowedEdits, unsavedEdits } = sanitizeEdits(newItem, collection.value);
+			const { allowedEdits, unsavedEdits } = useSanitizeEdits(newItem, collection.value);
 			newItem = allowedEdits;
 			resetTo = unsavedEdits;
 		}

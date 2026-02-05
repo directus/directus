@@ -1,10 +1,10 @@
 import { deepMapWithSchema } from '@directus/utils';
 import { set } from 'lodash';
+import { useSchemaOverview } from '@/composables/use-schema-overview';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { getSchemaOverview } from '@/utils/get-schema-overview';
 
-export function sanitizeEdits(edits: any, collection: string) {
+export function useSanitizeEdits(edits: any, collection: string) {
 	const permissionsStore = usePermissionsStore();
 
 	const userStore = useUserStore();
@@ -12,7 +12,7 @@ export function sanitizeEdits(edits: any, collection: string) {
 
 	if (userStore.isAdmin) return { allowedEdits: edits, unsavedEdits };
 
-	const schema = getSchemaOverview();
+	const schema = useSchemaOverview();
 
 	const allowedEdits = deepMapWithSchema(
 		edits,
