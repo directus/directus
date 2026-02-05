@@ -23,6 +23,7 @@ import type { Log as SystemLog } from '@/modules/settings/routes/system-logs/typ
 import { sdk } from '@/sdk';
 import { formatDurationMs } from '@/utils/format-duration-ms';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 
 const props = defineProps<{
@@ -266,42 +267,30 @@ onUnmounted(() => {
 					{{ $t('deployment.provider.run.currently_deploying') }}
 				</span>
 
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-if="isBuilding"
 					v-tooltip.bottom="$t('deployment.provider.run.stop')"
-					rounded
-					icon
-					small
+					icon="dangerous"
 					secondary
 					class="action-cancel"
 					:loading="canceling"
 					@click="confirmCancel = true"
-				>
-					<VIcon name="dangerous" outline small />
-				</VButton>
+				/>
 
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('deployment.provider.run.download_logs')"
-					rounded
-					icon
-					small
+					icon="download"
 					secondary
 					@click="downloadLogs"
-				>
-					<VIcon name="download" small />
-				</VButton>
+				/>
 
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-if="run?.url"
 					v-tooltip.bottom="$t('deployment.provider.run.open_deployment')"
-					rounded
-					icon
-					small
+					icon="open_in_new"
 					secondary
 					@click="openDeployment"
-				>
-					<VIcon name="open_in_new" small />
-				</VButton>
+				/>
 			</div>
 		</template>
 
