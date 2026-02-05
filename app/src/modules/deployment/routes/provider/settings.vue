@@ -280,49 +280,58 @@ onMounted(() => {
 			/>
 		</template>
 
-		<div class="container">
+		<div class="container with-fill">
 			<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
 			<template v-else>
 				<VNotice
 					v-if="providerConfig?.settingsWarning && initialProjectIds.length > 0"
 					type="warning"
-					class="settings-warning"
+					class="field full"
 				>
 					{{ providerConfig.settingsWarning }}
 				</VNotice>
 
-				<InterfacePresentationDivider :title="$t('deployment.provider.settings.edit_configuration')" icon="settings" />
+				<InterfacePresentationDivider
+					:title="$t('deployment.provider.settings.edit_configuration')"
+					icon="settings"
+					class="field full"
+				/>
 
-				<div class="credentials-saved">
-					<VForm
-						v-model="configurationEdits"
-						:fields="allFields as any"
-						:initial-values="config?.options || {}"
-						primary-key="+"
-					/>
+				<VForm
+					v-model="configurationEdits"
+					:fields="allFields as any"
+					:initial-values="config?.options || {}"
+					primary-key="+"
+					class="credentials-saved field full"
+				/>
+
+				<InterfacePresentationDivider
+					:title="$t('deployment.provider.projects')"
+					icon="assignment"
+					class="field full"
+				/>
+
+				<div class="field full">
+					<div class="type-label">{{ $t('deployment.provider.select_projects') }}</div>
+					<div class="checkboxes">
+						<VCheckbox
+							v-for="project in availableProjects"
+							:key="project.external_id"
+							block
+							:value="project.external_id"
+							:label="project.name"
+							:disabled="!project.deployable"
+							:model-value="selectedProjectIds"
+							@update:model-value="(value) => (selectedProjectIds = value)"
+						>
+							<template v-if="!project.deployable" #append>
+								<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" />
+							</template>
+						</VCheckbox>
+					</div>
+					<small class="type-note">{{ $t('deployment.provider.select_projects_hint') }}</small>
 				</div>
-
-				<InterfacePresentationDivider :title="$t('deployment.provider.projects')" icon="assignment" />
-
-				<div class="type-label">{{ $t('deployment.provider.select_projects') }}</div>
-				<div class="checkboxes">
-					<VCheckbox
-						v-for="project in availableProjects"
-						:key="project.external_id"
-						block
-						:value="project.external_id"
-						:label="project.name"
-						:disabled="!project.deployable"
-						:model-value="selectedProjectIds"
-						@update:model-value="(value) => (selectedProjectIds = value)"
-					>
-						<template v-if="!project.deployable" #append>
-							<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" />
-						</template>
-					</VCheckbox>
-				</div>
-				<small class="type-note">{{ $t('deployment.provider.select_projects_hint') }}</small>
 			</template>
 		</div>
 
@@ -368,6 +377,8 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
@@ -379,6 +390,8 @@ onMounted(() => {
 }
 
 .container {
+	@include mixins.form-grid;
+
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 }
@@ -387,39 +400,13 @@ onMounted(() => {
 	margin: 120px auto;
 }
 
-:deep(.presentation-divider) {
-	margin-block: 0 var(--theme--form--row-gap);
-
-	&:not(:first-child) {
-		margin-block-start: var(--theme--form--row-gap);
-	}
-}
-
-.credentials-saved :deep(.v-input) {
+.credentials-saved :deep([data-field='access_token']) {
 	--v-input-placeholder-color: var(--theme--primary);
-}
-
-.settings-warning {
-	margin-block-end: var(--theme--form--row-gap);
-}
-
-.type-label,
-.type-note,
-.checkboxes {
-	max-inline-size: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
-}
-
-.type-label {
-	margin-block-end: 8px;
-}
-
-.type-note {
-	display: block;
-	margin-block-start: 10px;
 }
 
 .checkboxes {
 	display: grid;
-	gap: 12px;
+	gap: 8px;
+	padding-block: 2px;
 }
 </style>
