@@ -42,7 +42,7 @@ const isActive = computed(() => {
 });
 
 const clickable = computed(() => {
-	return (props.groupSelectable || props.item.selectable) && !props.nonEditable;
+	return (props.groupSelectable || props.item.selectable) && props.item.selectable !== false && !props.nonEditable;
 });
 
 function onGroupClick(item: Option) {
