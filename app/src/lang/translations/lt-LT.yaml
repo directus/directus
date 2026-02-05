@@ -959,6 +959,15 @@ operation_key_unique_error: Operacijų pavadinimai turi būti unikalūs esamam p
 operation_handle_resolve: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 operation_handle_reject: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 insights: Įžvalgos
+deployment:
+  provider:
+    settings:
+      delete_confirm: Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+    run:
+      cancel_confirm: Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+      log_all: Visi įvykių lygiai
+  target_value:
+    preview: Peržiūra
 dashboard: Prietaisų skydelis
 panel: Skydelis
 panel_options: Skydelio nustatymai
