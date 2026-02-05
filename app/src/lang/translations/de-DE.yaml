@@ -968,6 +968,15 @@ operation_handle_reject: 'Ablehnen: Zum Hinzufügen klicken oder für Reroute zi
 visual_editor: Visueller Editor
 toggle_navigation: Navigation umschalten
 insights: Einblicke
+deployment:
+  provider:
+    settings:
+      delete_confirm: Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
+    run:
+      cancel_confirm: Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
+      log_all: Alle Log-Levels
+  target_value:
+    preview: Vorschau
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel-Optionen
