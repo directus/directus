@@ -70,7 +70,7 @@ export class CollabHandler {
 				}
 
 				const settings = await this.settingsService.readSingleton({ fields: ['collaborative_editing_enabled'] });
-				this.enabled = settings?.['collaborative_editing_enabled'] ?? true;
+				this.enabled = settings?.['collaborative_editing_enabled'] ?? false;
 			} catch (err) {
 				useLogger().error(err, '[Collab] Failed to initialize collaborative editing settings');
 			} finally {
