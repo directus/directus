@@ -1046,6 +1046,17 @@ no_url_copy: 設定で URL を追加してください。
 invalid_url: 無効な URL です
 invalid_url_copy: 指定された URL が設定済みの URL と一致しません。
 insights: インサイト
+deployment:
+  provider:
+    settings:
+      delete_confirm: この操作は元に戻すことはできません。続行しますか？
+    run:
+      cancel_confirm: この操作は元に戻すことはできません。続行しますか？
+      log_all: すべてのログレベル
+  target_value:
+    preview: プレビュー
+  runs_status:
+    ready: 準備完了
 dashboard: ダッシュボード
 panel: パネル
 panel_options: パネルオプション
