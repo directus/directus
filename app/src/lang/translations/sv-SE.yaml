@@ -915,6 +915,15 @@ toggle_editable_elements: Växla redigerbara element
 no_url: Ingen URL angiven
 invalid_url: Ogiltig URL
 insights: Insikter
+deployment:
+  provider:
+    settings:
+      delete_confirm: Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
+    run:
+      cancel_confirm: Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
+      log_all: Alla loggnivåer
+  target_value:
+    preview: Förhandsgranska
 dashboard: Kontrollpanel
 panel: Panel
 panel_options: Alternativ för panel
