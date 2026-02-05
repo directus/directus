@@ -192,24 +192,26 @@ watch(
 
 			<VButton v-tooltip.bottom="$t('deployment.deploy')" rounded icon small :loading="deploying" @click="deploy()">
 				<VIcon name="rocket_launch" small />
-			</VButton>
 
-			<VMenu placement="bottom-end" show-arrow>
-				<template #activator="{ toggle }">
-					<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
+				<template #append-outer>
+					<VMenu show-arrow>
+						<template #activator="{ toggle }">
+							<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
+						</template>
+
+						<VList>
+							<VListItem clickable :disabled="deploying" @click="deploy(true)">
+								<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
+								<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
+							</VListItem>
+							<VListItem clickable @click="refresh">
+								<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
+								<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
 				</template>
-
-				<VList>
-					<VListItem clickable :disabled="deploying" @click="deploy(true)">
-						<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
-						<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
-					</VListItem>
-					<VListItem clickable @click="refresh">
-						<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
-						<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
-					</VListItem>
-				</VList>
-			</VMenu>
+			</VButton>
 		</template>
 
 		<div class="container">
@@ -302,7 +304,13 @@ watch(
 	margin-block-start: 24px;
 }
 
-.more-options {
-	align-self: center;
+.more-options.v-icon {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
+
+	color: var(--theme--foreground-subdued);
+
+	&:hover {
+		color: var(--theme--foreground);
+	}
 }
 </style>
