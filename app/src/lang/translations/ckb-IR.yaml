@@ -966,6 +966,15 @@ no_url: هیچ بەستەرێک نەدراوە
 no_url_copy: تکایە بەستەرێک زیاد بکە لە ڕێکخستنەکاندا
 invalid_url: URL نادروست
 insights: تێڕوانینەکان
+deployment:
+  provider:
+    settings:
+      delete_confirm: ئەم کردارە هەمیشەییە و گەڕاندنەوەی نییە. ئایا دڵنیای دەتەوێت جێبەجێ ببێت؟
+    run:
+      cancel_confirm: ئەم کردارە هەمیشەییە و گەڕاندنەوەی نییە. ئایا دڵنیای دەتەوێت جێبەجێ ببێت؟
+      log_all: هەموو ئاستەکانی تۆمار
+  target_value:
+    preview: بینین
 dashboard: داشبۆرد
 panel: پانێڵ
 panel_options: بژاردەکانی پانێڵ
