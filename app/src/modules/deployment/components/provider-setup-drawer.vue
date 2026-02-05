@@ -129,12 +129,13 @@ function onCancel() {
 
 <style lang="scss" scoped>
 .content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--theme--form--row-gap);
 	padding: var(--content-padding);
 }
 
 .notice {
-	margin-block-end: 24px;
-
 	a {
 		color: var(--theme--primary);
 	}
