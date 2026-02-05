@@ -2,6 +2,7 @@
 import { createDeployment } from '@directus/sdk';
 import { computed, ref, watch } from 'vue';
 import { useProviderConfigs } from '../config/providers';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -98,7 +99,7 @@ function onCancel() {
 		@cancel="onCancel"
 	>
 		<template #subtitle>
-			{{ $t('deployment.deployment') }}
+			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), disabled: true, to: '' }]" />
 		</template>
 
 		<div class="content">
