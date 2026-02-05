@@ -1,10 +1,10 @@
 import { spawn } from 'child_process';
 import { join } from 'path';
+import chalk from 'chalk';
+import { detect } from 'detect-port';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import { apiFolder, type Options } from '../sandbox.js';
-import chalk from 'chalk';
-import { detect } from 'detect-port';
 
 export async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
 	const start = performance.now();

@@ -1,5 +1,5 @@
-import chalk, { type ChalkInstance } from 'chalk';
 import type Stream from 'stream';
+import chalk, { type ChalkInstance } from 'chalk';
 import type { Env } from './config.js';
 import type { Options } from './sandbox.js';
 

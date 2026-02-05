@@ -1,5 +1,5 @@
 import { Argument, program } from 'commander';
-import { databases, sandbox, type Database } from './sandbox.js';
+import { type Database, databases, sandbox } from './sandbox.js';
 
 program
 	.addArgument(new Argument('<database>', 'What database to start the api with').choices(databases))

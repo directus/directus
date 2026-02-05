@@ -1,13 +1,13 @@
-import type { Snapshot } from '@directus/types';
 import { spawn } from 'child_process';
 import { writeFile } from 'fs/promises';
-import { camelCase, upperFirst } from 'lodash-es';
 import { join, resolve } from 'path';
+import type { Snapshot } from '@directus/types';
+import chalk from 'chalk';
+import { camelCase, upperFirst } from 'lodash-es';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import { getRelationInfo } from '../relation.js';
 import { apiFolder } from '../sandbox.js';
-import chalk from 'chalk';
 
 export async function loadSchema(schema_file: string, env: Env, logger: Logger) {
 	const start = performance.now();

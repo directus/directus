@@ -1,10 +1,10 @@
 import { spawn } from 'child_process';
 import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import chalk from 'chalk';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import type { Database, Options } from '../sandbox.js';
-import chalk from 'chalk';
-import { fileURLToPath } from 'url';
 
 const fileName = fileURLToPath(import.meta.url);
 const folderName = dirname(fileName);

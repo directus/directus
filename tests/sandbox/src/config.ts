@@ -1,6 +1,6 @@
 import { join } from 'path';
-import type { Database, Options } from './sandbox.js';
 import { directusFolder } from './find-directus.js';
+import type { Database, Options } from './sandbox.js';
 
 const isWindows = ['win32', 'win64'].includes(process.platform);
 

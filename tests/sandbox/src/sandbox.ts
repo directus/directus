@@ -1,21 +1,21 @@
-import type { DatabaseClient, DeepPartial } from '@directus/types';
 import { type ChildProcessWithoutNullStreams } from 'child_process';
-import { merge } from 'lodash-es';
 import { join } from 'path';
-import { getEnv, type Env } from './config.js';
+import type { DatabaseClient, DeepPartial } from '@directus/types';
+import chalk from 'chalk';
+import getPort from 'get-port';
+import { merge } from 'lodash-es';
+import { type Env, getEnv } from './config.js';
+import { directusFolder } from './find-directus.js';
 import { createLogger, type Logger } from './logger.js';
 import {
-	buildDirectus,
 	bootstrap,
+	buildDirectus,
 	dockerDown,
 	dockerUp,
 	loadSchema,
 	saveSchema,
 	startDirectus,
 } from './steps/index.js';
-import chalk from 'chalk';
-import getPort from 'get-port';
-import { directusFolder } from './find-directus.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
