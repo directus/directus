@@ -978,6 +978,15 @@ no_url_copy: გთხოვთ, დაამატეთ URL პარამე
 invalid_url: არასწორი URL
 invalid_url_copy: მითითებული URL არ ემთხვევა პარამეტრებში მითითებულ არცერთ URL-ს.
 insights: ანალიტიკა
+deployment:
+  provider:
+    settings:
+      delete_confirm: ეს მოქმედება მუდმივია და მისი გაუქმება შეუძლებელია. დარწმუნებული ხართ, რომ გსურთ გაგრძელება?
+    run:
+      cancel_confirm: ეს მოქმედება მუდმივია და მისი გაუქმება შეუძლებელია. დარწმუნებული ხართ, რომ გსურთ გაგრძელება?
+      log_all: ყველა ჟურნალის დონე
+  target_value:
+    preview: გადახედვა
 dashboard: დაფა
 panel: პანელი
 panel_options: პანელის ოფციები
