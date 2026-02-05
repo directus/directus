@@ -863,6 +863,14 @@ operation_key_unique_error: 操作流程的名稱在同一個流程中不能重�
 operation_handle_resolve: '解決方式: 點此新增或拖到其他地方重新連結'
 operation_handle_reject: '退回: 點此新增或拖到其他地方重新連結'
 insights: 數據分析
+deployment:
+  provider:
+    settings:
+      delete_confirm: 此操作是永久性的，無法撤銷。是否確實要繼續？
+    run:
+      cancel_confirm: 此操作是永久性的，無法撤銷。是否確實要繼續？
+  target_value:
+    preview: 預覽
 dashboard: 儀表板
 panel: 面板
 panel_options: 面板選項
