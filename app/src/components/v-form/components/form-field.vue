@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ValidationError } from '@directus/types';
+import { ContentVersion } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -35,6 +36,7 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		disabledMenu?: boolean;
 		direction?: string;
+		version?: ContentVersion | null;
 	}>(),
 	{
 		modelValue: undefined,
@@ -54,6 +56,12 @@ const isDisabled = computed(() => {
 	if (props.disabled) return true;
 	if (props.field?.meta?.readonly === true) return true;
 	if (props.batchMode && props.batchActive === false) return true;
+	return false;
+});
+
+const isNonEditable = computed(() => {
+	if (props.nonEditable) return true;
+	if (props.field?.meta?.non_editable === true) return true;
 	return false;
 });
 
@@ -224,13 +232,14 @@ function useComputedValues() {
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
-			:non-editable="nonEditable"
+			:non-editable="isNonEditable"
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
+			:version
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>

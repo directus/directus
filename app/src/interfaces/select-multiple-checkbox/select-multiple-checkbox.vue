@@ -41,7 +41,7 @@ const showAll = ref(false);
 
 const items = computed(() => choices.value || []);
 
-const hideChoices = computed(() => items.value.length > props.itemsShown);
+const hideChoices = computed(() => !props.nonEditable && items.value.length > props.itemsShown);
 
 const choicesDisplayed = computed(() => {
 	if (showAll.value || hideChoices.value === false) {
@@ -89,6 +89,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
 			:label="$t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
+			:disabled
 			@update:model-value="showAll = true"
 		></VDetail>
 
@@ -114,7 +115,13 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
 				<template v-if="!nonEditable" #append>
-					<VIcon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
+					<VIcon
+						v-tooltip="!disabled && $t('remove_item')"
+						name="delete"
+						clickable
+						:disabled
+						@click="setOtherValue(otherValue.key, null)"
+					/>
 				</template>
 			</VCheckbox>
 
@@ -123,6 +130,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				type="button"
 				:disabled
 				class="add-new custom"
+				:class="{ disabled }"
 				@click="addOtherValue('', true)"
 			>
 				<VIcon name="add" />
@@ -182,6 +190,10 @@ function onBlurCustomInput(otherVal: OtherValue) {
 .add-new {
 	--v-button-min-width: none;
 	--focus-ring-offset: var(--focus-ring-offset-invert);
+
+	&.disabled {
+		color: var(--theme--form--field--input--foreground-subdued);
+	}
 }
 
 .custom {
@@ -234,8 +246,11 @@ function onBlurCustomInput(otherVal: OtherValue) {
 
 	&.disabled {
 		background-color: var(--theme--form--field--input--background-subdued);
-		border-color: transparent;
 		cursor: not-allowed;
+
+		&:not(.add-new) {
+			border-color: transparent;
+		}
 
 		input {
 			color: var(--theme--form--field--input--foreground-subdued);

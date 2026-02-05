@@ -3,14 +3,15 @@ import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
+import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
 import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useContextStaging } from '@/ai/composables/use-context-staging';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -34,7 +35,9 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
+import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -64,7 +67,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
-const { collectionRoute } = useCollectionRoute();
+const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
@@ -115,11 +118,12 @@ const {
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
-const aiStore = useAiStore();
+const toolsStore = useAiToolsStore();
 
-aiStore.onSystemToolResult((tool, input) => {
-	if (tool === 'items' && input.collection === collection.value) {
+toolsStore.onSystemToolResult((tool, input) => {
+	if (tool === 'items' && input.collection === collection.value && input.action !== 'read') {
 		refresh();
+		refreshLivePreview();
 	}
 });
 
@@ -270,8 +274,9 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-watch(currentVersion, () => {
+watch(currentVersion, async () => {
 	edits.value = {};
+	await refreshLivePreview();
 });
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
@@ -289,12 +294,15 @@ const previewUrl = computed(() => {
 	return displayValue.value.trim() || null;
 });
 
+const livePreviewFullWidth = useLocalStorage<boolean>('live-preview-full-width', false);
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
 const livePreviewSizeDefault = 50;
 const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', livePreviewSizeDefault);
+const livePreviewEnforceDefault = ref(false);
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
+const livePreviewSizeMinSize = computed(() => (isMobile.value ? 0 : 20));
 
 const livePreviewActive = computed(
 	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',
@@ -305,26 +313,56 @@ const livePreviewCollapsed = computed({
 		return !livePreviewActive.value;
 	},
 	set(value: boolean) {
+		if (!value) livePreviewEnforceDefault.value = true;
 		livePreviewMode.value = value ? null : 'split';
 	},
 });
 
 const livePreviewSize = computed({
 	get() {
-		if (isMobile.value) {
+		if (isMobile.value || livePreviewFullWidth.value) {
 			return livePreviewActive.value ? 100 : 0;
 		}
 
-		return livePreviewSizeStorage.value || livePreviewSizeDefault;
+		const storedValue = livePreviewSizeStorage.value || livePreviewSizeDefault;
+
+		// Enforce default size when the preview is below the minimum size
+		if (livePreviewEnforceDefault.value && storedValue <= livePreviewSizeMinSize.value) {
+			return livePreviewSizeDefault;
+		}
+
+		return storedValue;
 	},
 	set(value: number) {
 		if (isMobile.value) return;
+
+		// Remove default size enforcement once the preview is larger than the minimum size
+		if (livePreviewEnforceDefault.value && value > livePreviewSizeMinSize.value) {
+			livePreviewEnforceDefault.value = false;
+		}
+
+		// Auto-toggle full-width based on drag position
+		if (value >= 95 && !livePreviewFullWidth.value) {
+			livePreviewFullWidth.value = true;
+		} else if (value < 95 && livePreviewFullWidth.value) {
+			livePreviewFullWidth.value = false;
+		}
 
 		livePreviewSizeStorage.value = value;
 	},
 });
 
 provide('live-preview-active', livePreviewActive);
+
+const { visualEditingEnabled, visualEditorUrls, visualModuleEnabled } = useVisualEditing({
+	previewUrl,
+	isNew,
+	currentVersion,
+});
+
+watch(previewUrl, (url) => {
+	if (!url) livePreviewFullWidth.value = false;
+});
 
 let popupWindow: Window | null = null;
 
@@ -368,6 +406,19 @@ const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 });
 
 provideRunManualFlow();
+
+const { stageVisualElement } = useContextStaging();
+
+useEventListener('message', (event) => {
+	if (!sameOrigin(event.origin, window.location.href)) return;
+	if (event.source !== popupWindow) return;
+
+	if (event.data === 'refresh') refresh();
+
+	if (event.data?.action === 'stage-visual-element') {
+		stageVisualElement(event.data.data.element);
+	}
+});
 
 async function refreshLivePreview() {
 	try {
@@ -542,7 +593,7 @@ const shouldShowVersioning = computed(
 		!versionsLoading.value,
 );
 
-function useCollectionRoute() {
+function useItemNavigation() {
 	const route = useRoute();
 
 	const collectionRoute = computed(() => {
@@ -551,7 +602,17 @@ function useCollectionRoute() {
 		return collectionPath;
 	});
 
-	return { collectionRoute };
+	// If there's in-app navigation history, use browser back
+	// Otherwise fall back to collection route
+	const backRoute = computed(() => {
+		if (history.state?.back) {
+			return undefined;
+		}
+
+		return collectionRoute.value;
+	});
+
+	return { collectionRoute, backRoute };
 }
 </script>
 
@@ -565,7 +626,7 @@ function useCollectionRoute() {
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
-		:back-to="collectionRoute"
+		:back-to="backRoute"
 		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
@@ -777,11 +838,11 @@ function useCollectionRoute() {
 			collapsible
 			:collapsed-size="0"
 			:collapse-threshold="15"
-			:min-size="isMobile ? 0 : 20"
-			:max-size="isMobile ? 100 : 80"
+			:min-size="livePreviewSizeMinSize"
+			:max-size="isMobile || livePreviewFullWidth ? 100 : 80"
 			:snap-points="[livePreviewSizeDefault]"
 			:transition-duration="150"
-			class="content-split"
+			:class="['content-split', { 'full-width': livePreviewFullWidth }]"
 			:disabled="isMobile"
 		>
 			<template #start>
@@ -805,7 +866,24 @@ function useCollectionRoute() {
 			</template>
 
 			<template #end>
-				<LivePreview v-if="livePreviewActive && previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+				<LivePreview
+					v-if="livePreviewActive && previewUrl"
+					:url="previewUrl"
+					:can-enable-visual-editing="visualEditingEnabled"
+					:visual-editor-urls="visualEditorUrls"
+					:show-open-in-visual-editor="visualModuleEnabled"
+					:is-full-width="livePreviewFullWidth"
+					@new-window="livePreviewMode = 'popup'"
+					@exit-full-width="livePreviewFullWidth = false"
+					@saved="refresh"
+				>
+					<template #display-options>
+						<VListItem clickable @click="livePreviewFullWidth = true">
+							<VListItemIcon><VIcon name="width_full" /></VListItemIcon>
+							<VListItemContent>{{ $t('full_width') }}</VListItemContent>
+						</VListItem>
+					</template>
+				</LivePreview>
 			</template>
 		</SplitPanel>
 
@@ -950,9 +1028,7 @@ function useCollectionRoute() {
 	border-inline-start: none;
 }
 
-/* Disable pointer events on iframe during drag to prevent jank */
-.content-split.sp-dragging :deep(iframe),
-.content-split:active :deep(iframe) {
-	pointer-events: none !important;
+.content-split.full-width :deep(.sp-end) {
+	border-inline-start: none;
 }
 </style>

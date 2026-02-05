@@ -45,6 +45,7 @@ const defaultProps = {
 	} as Sort,
 	reordering: false,
 	allowHeaderReorder: true,
+	allowColumnSort: true,
 };
 
 beforeEach(async () => {

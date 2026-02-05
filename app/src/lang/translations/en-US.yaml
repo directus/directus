@@ -85,6 +85,11 @@ maps: Maps
 switch_user: Switch User
 item_creation: Item Creation
 item_revision: Item Revision
+previous_revision: Previous Revision
+latest_revision: Latest Revision
+comparing_to: Comparing to
+compare_to_latest_to_restore: Compare to latest to consider restoring this revision
+select_earlier_revision_to_restore: Select an earlier revision to consider restoring it
 enter_a_name: Enter a Name...
 duplicate_field: Duplicate Field
 half_width: Half Width
@@ -92,6 +97,7 @@ full_width: Full Width
 group: Group
 popular: Popular
 recent: Recent
+previous: Previous
 latest: Latest
 updated: Updated
 export_items: Export Items
@@ -523,8 +529,6 @@ revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-updated_in_revision: Updated in this Revision
-updated_in_revision_matches_latest: Updated in this Revision but matches Latest
 differences_count: 'No Differences | 1 Difference | {count} Differences'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
@@ -573,6 +577,7 @@ system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
 display_label: Display
+x_axis_display_field: X-Axis Display Field
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -1220,8 +1225,8 @@ settings_project: Settings
 settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
-ai_chat: AI Chat
-ai_disabled_by_env: AI Chat features have been disabled via environment variable.
+ai_assistant: AI Assistant
+ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
 mcp_disabled_by_env: MCP features have been disabled via environment variable.
 settings_flows: Flows
 settings_system_logs: System Logs
@@ -1455,9 +1460,10 @@ fields:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
     ai_notice:
-      'AI Chat provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the toolbar to
-      ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai/chat" target="_blank">Learn more about configuring and using AI Chat.</a>'
+      'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
+      toolbar to ask questions, generate content, and get help working with your project. <a
+      href="https://directus.io/docs/guides/ai/assistant" target="_blank">Learn more about configuring and using AI
+      Assistant.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
       'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
@@ -1485,7 +1491,27 @@ fields:
       'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
-      'Custom AI system prompt to guide LLM behavior in AI Chat interactions. Leave empty to use the default.'
+      'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
+    ai_openai_api_key: OpenAI API Key
+    ai_openai_allowed_models: OpenAI Allowed Models
+    ai_anthropic_api_key: Anthropic API Key
+    ai_anthropic_allowed_models: Anthropic Allowed Models
+    ai_google_api_key: Google API Key
+    ai_google_allowed_models: Google Allowed Models
+    ai_openai_compatible: OpenAI-Compatible Provider
+    ai_openai_compatible_name: Provider Name
+    ai_openai_compatible_base_url: Base URL
+    ai_openai_compatible_api_key: API Key
+    ai_openai_compatible_models: Models
+    ai_openai_compatible_headers: Custom Headers
+    ai_model_id: Model ID
+    ai_context_limit: Context Limit
+    ai_output_limit: Output Limit
+    ai_supports_attachments: Supports Attachments
+    ai_supports_reasoning: Supports Reasoning
+    ai_provider_options: Provider Options
+    ai_provider_options_note: Provider-specific options passed to AI endpoints.
+    ai_header_name: Header
 
   directus_shares:
     name: Name
@@ -1641,6 +1667,9 @@ live_preview:
   close_window: Open in Split View
   toggle_3d: Toggle 3D
   iframe_title: Live Website Preview
+  display_options: Display Options
+  exit_full_width: Exit Full Width
+  open_in_visual_editor: Open in Visual Editor
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
@@ -1667,12 +1696,35 @@ ai:
   retry: Retry
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
-  build_with_chat: Build with AI Chat
+  build_with_assistant: Build with AI Assistant
   responses_may_be_inaccurate: AI responses may be inaccurate
+  add_content: Add Content
+  prompt: Prompt
+  prompts: Prompts
+  items: Items
+  content: Content
+  insert_prompt: Insert Prompt
+  insert_reusable_prompt: Insert a reusable prompt template
+  insert_item_context: Insert item context
+  coming_soon: Coming soon
+  failed_to_load_prompts: Failed to load prompts
+  failed_to_load_items: Failed to load items
+  some_context_failed: '{count} context item(s) could not be loaded'
+  prompt_inserted: Prompt inserted
+  prompt_staged: Prompt staged
+  items_staged: Items staged
+  some_items_staged: '{count} item(s) staged (limit reached)'
+  image_preview: Image preview
+  item_staged: Item staged
+  invalid_collection: Invalid collection
+  element_already_staged: Element already staged
+  max_elements_reached: Maximum elements reached
+  element_staged: Element staged
+  failed_to_insert_prompt: Failed to insert prompt
   go_to_settings: Go to Settings
-  setup_ai_chat: Setup AI Chat
-  setup_ai_chat_admin_description: Add your AI provider API keys in settings to enable AI Chat.
-  setup_ai_chat_user_description: Contact your administrator to enable AI Chat.
+  setup_ai_assistant: Setup AI Assistant
+  setup_ai_assistant_admin_description: Add your AI provider API keys in settings to enable AI Assistant.
+  setup_ai_assistant_user_description: Contact your administrator to enable AI Assistant.
   settings: Settings
   tool_approval:
     always: Always Allowed
