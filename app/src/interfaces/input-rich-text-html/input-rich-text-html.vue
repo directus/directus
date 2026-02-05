@@ -67,7 +67,6 @@ type CustomFormat = {
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
-		field?: string;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		customFormats?: CustomFormat[];
