@@ -1,3 +1,4 @@
+import type { Relation } from '@directus/types';
 import type { Knex } from 'knex';
 import { parseJsonFunction, parseWildcardPath } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
@@ -85,6 +86,24 @@ export class FnHelperSQLite extends FnHelper {
 
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
 		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
+
+		// Check for relational JSON context (e.g., json(category.metadata:color))
+		if (options?.relationalJsonContext) {
+			const ctx = options.relationalJsonContext;
+			const fieldSchema = this.schema.collections?.[ctx.targetCollection]?.fields?.[ctx.jsonField];
+
+			if (!fieldSchema || fieldSchema.type !== 'json') {
+				throw new Error(`Field ${ctx.jsonField} is not a JSON field on ${ctx.targetCollection}`);
+			}
+
+			// Build JSON extraction for the subquery
+			const jsonPath = '$' + ctx.jsonPath;
+			const jsonExtraction = this.knex.raw(`json_extract(??, ?)`, [ctx.jsonField, jsonPath]);
+
+			return this._relationalJson(table, ctx, jsonExtraction, options);
+		}
+
+		// Direct JSON field access (non-relational)
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
@@ -109,5 +128,22 @@ export class FnHelperSQLite extends FnHelper {
 		const jsonPath = '$' + path;
 
 		return this.knex.raw(`json_extract(??.??, ?)`, [table, field, jsonPath]);
+	}
+
+	protected _relationalJsonO2M(
+		table: string,
+		alias: string,
+		relation: Relation,
+		_targetCollection: string,
+		jsonExtraction: Knex.Raw,
+		parentPrimary: string,
+	): Knex.Raw {
+		// SQLite O2M aggregation using json_group_array()
+		const subQuery = this.knex
+			.select(this.knex.raw('json_group_array(?)', [jsonExtraction]))
+			.from({ [alias]: relation.collection })
+			.where(this.knex.raw('??.??', [alias, relation.field]), '=', this.knex.raw('??.??', [table, parentPrimary]));
+
+		return this.knex.raw('(' + subQuery.toQuery() + ')');
 	}
 }

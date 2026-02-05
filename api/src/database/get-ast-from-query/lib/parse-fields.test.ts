@@ -553,7 +553,7 @@ test('parse fields with json function containing dotted path', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
 	const result = await parseFields(
-		{ accountability, fields: ['id', 'json(metadata.color)'], parentCollection: 'articles', query: {} },
+		{ accountability, fields: ['id', 'json(metadata:color)'], parentCollection: 'articles', query: {} },
 		{ knex: db, schema: schemaWithJson },
 	);
 
@@ -567,8 +567,8 @@ test('parse fields with json function containing dotted path', async () => {
 		},
 		{
 			type: 'functionField',
-			fieldKey: 'json(metadata.color)',
-			name: 'json(metadata.color)',
+			fieldKey: 'json(metadata:color)',
+			name: 'json(metadata:color)',
 			query: {},
 			relatedCollection: 'articles',
 			whenCase: [],
@@ -583,7 +583,7 @@ test('parse fields with json function containing nested path', async () => {
 	const result = await parseFields(
 		{
 			accountability,
-			fields: ['id', 'json(metadata.user.name)', 'title'],
+			fields: ['id', 'json(metadata:user.name)', 'title'],
 			parentCollection: 'articles',
 			query: {},
 		},
@@ -600,8 +600,8 @@ test('parse fields with json function containing nested path', async () => {
 		},
 		{
 			type: 'functionField',
-			fieldKey: 'json(metadata.user.name)',
-			name: 'json(metadata.user.name)',
+			fieldKey: 'json(metadata:user.name)',
+			name: 'json(metadata:user.name)',
 			query: {},
 			relatedCollection: 'articles',
 			whenCase: [],
@@ -637,7 +637,7 @@ test('parse fields distinguishes json function from relational fields', async ()
 	const result = await parseFields(
 		{
 			accountability,
-			fields: ['id', 'author.name', 'json(metadata.color)'],
+			fields: ['id', 'author.name', 'json(metadata:color)'],
 			parentCollection: 'articles',
 			query: {},
 		},
@@ -645,7 +645,7 @@ test('parse fields distinguishes json function from relational fields', async ()
 	);
 
 	// author.name should be a relational field (m2o node)
-	// json(metadata.color) should be a functionField node
+	// json(metadata:color) should be a functionField node
 	expect(result).toHaveLength(3);
 
 	expect(result[0]).toEqual({
@@ -659,8 +659,8 @@ test('parse fields distinguishes json function from relational fields', async ()
 	// json function is processed first since it's detected before relational fields
 	expect(result[1]).toEqual({
 		type: 'functionField',
-		fieldKey: 'json(metadata.color)',
-		name: 'json(metadata.color)',
+		fieldKey: 'json(metadata:color)',
+		name: 'json(metadata:color)',
 		query: {},
 		relatedCollection: 'articles',
 		whenCase: [],

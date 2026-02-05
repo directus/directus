@@ -3,6 +3,7 @@ import type { Accountability, Query, Relation, SchemaOverview } from '@directus/
 import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
+import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
@@ -10,6 +11,7 @@ import { getRelationType } from '../../../utils/get-relation-type.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
+import { validateRelationalJsonPath } from '../utils/validate-relational-json-path.js';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
@@ -108,17 +110,46 @@ export async function parseFields(
 			}
 
 			// Create a FunctionFieldNode for json functions to preserve the full function call
-			// This is needed because json() requires the full path (e.g., json(metadata.color))
+			// This is needed because json() requires the full path (e.g., json(metadata:color))
 			if (functionName === 'json') {
-				children.push({
-					type: 'functionField',
-					name,
-					fieldKey,
-					query: {},
-					relatedCollection: options.parentCollection,
-					whenCase: [],
-					cases: [],
-				});
+				const { field, path, hasWildcard } = parseJsonFunction(name);
+
+				// Check if the field portion contains a relational path (has dots)
+				// e.g., json(category.metadata:color) where category is a relation
+				if (field.includes('.')) {
+					// Relational JSON: validate the path and get target collection info
+					const validation = validateRelationalJsonPath(context.schema, options.parentCollection, field);
+
+					children.push({
+						type: 'functionField',
+						name,
+						fieldKey,
+						query: {},
+						relatedCollection: validation.targetCollection,
+						whenCase: [],
+						cases: [],
+						relationalJsonContext: {
+							relationalPath: validation.relationalPath,
+							jsonField: validation.jsonField,
+							jsonPath: path,
+							hasWildcard,
+							relationType: validation.relationType,
+							relation: validation.relation,
+							targetCollection: validation.targetCollection,
+						},
+					});
+				} else {
+					// Direct JSON field on current collection: json(metadata:color)
+					children.push({
+						type: 'functionField',
+						name,
+						fieldKey,
+						query: {},
+						relatedCollection: options.parentCollection,
+						whenCase: [],
+						cases: [],
+					});
+				}
 
 				continue;
 			}
