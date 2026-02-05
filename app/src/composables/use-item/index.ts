@@ -9,6 +9,7 @@ import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from '
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
+import { useSanitizeEdits } from './lib/use-sanitize-edits';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
@@ -51,6 +52,8 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	query: MaybeRef<Query> = {},
+	/** Modify the payload before saving to only save changes the user has write permissions to. All other changes are kept in the edits. */
+	saveAllowedOnly?: Ref<boolean>,
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -183,9 +186,16 @@ export function useItem<T extends Item>(
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		const editsWithClearedValues = clearHiddenFieldsByCondition(edits.value, fields, defaultValues.value, item.value);
+		let sanitizedEdits = clearHiddenFieldsByCondition(edits.value, fields, defaultValues.value, item.value);
+		let resetTo = {};
 
-		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, editsWithClearedValues);
+		if (saveAllowedOnly?.value) {
+			const { allowedEdits, unsavedEdits } = useSanitizeEdits(sanitizedEdits, collection.value);
+			sanitizedEdits = allowedEdits;
+			resetTo = unsavedEdits;
+		}
+
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, sanitizedEdits);
 
 		const errors = validateItem(payloadToValidate, fields, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
@@ -200,13 +210,13 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await api.post(getEndpoint(collection.value), editsWithClearedValues);
+				response = await api.post(getEndpoint(collection.value), sanitizedEdits);
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await api.patch(itemEndpoint.value, editsWithClearedValues);
+				response = await api.patch(itemEndpoint.value, sanitizedEdits);
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),
@@ -214,7 +224,9 @@ export function useItem<T extends Item>(
 			}
 
 			setItemValueToResponse(response);
-			edits.value = {};
+
+			edits.value = resetTo;
+
 			return response.data.data;
 		} catch (error) {
 			saveErrorHandler(error);
@@ -258,7 +270,7 @@ export function useItem<T extends Item>(
 		// Transform aliased M2A fields back to their original names
 		const itemData = transformM2AAliases(response.data.data.item, m2aAliasMap);
 
-		const newItem: Item = {
+		let newItem: Item = {
 			...(itemData || {}),
 			...cloneDeep(edits.value),
 		};
@@ -342,6 +354,14 @@ export function useItem<T extends Item>(
 			}
 		}
 
+		let resetTo = {};
+
+		if (saveAllowedOnly?.value) {
+			const { allowedEdits, unsavedEdits } = useSanitizeEdits(newItem, collection.value);
+			newItem = allowedEdits;
+			resetTo = unsavedEdits;
+		}
+
 		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
@@ -359,7 +379,7 @@ export function useItem<T extends Item>(
 			});
 
 			// Reset edits to the current item
-			edits.value = {};
+			edits.value = resetTo;
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (error) {

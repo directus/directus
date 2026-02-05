@@ -63,6 +63,7 @@ test('map flat object', () => {
 				relationType: null,
 				object,
 				action: undefined,
+				path: [],
 			},
 		},
 		title: {
@@ -75,6 +76,7 @@ test('map flat object', () => {
 				relationType: null,
 				object,
 				action: undefined,
+				path: [],
 			},
 		},
 		author: {
@@ -87,6 +89,7 @@ test('map flat object', () => {
 				relationType: 'm2o',
 				object,
 				action: undefined,
+				path: [],
 			},
 		},
 		tags: {
@@ -99,6 +102,7 @@ test('map flat object', () => {
 				relationType: 'o2m',
 				object,
 				action: undefined,
+				path: [],
 			},
 		},
 	});
@@ -133,6 +137,7 @@ test('map m2o object', () => {
 						object: object.author,
 						relationType: null,
 						action: undefined,
+						path: ['author'],
 					},
 				},
 				name: {
@@ -145,6 +150,7 @@ test('map m2o object', () => {
 						relationType: null,
 						object: object.author,
 						action: undefined,
+						path: ['author'],
 					},
 				},
 			},
@@ -156,6 +162,7 @@ test('map m2o object', () => {
 				object,
 				relationType: 'm2o',
 				action: undefined,
+				path: [],
 			},
 		},
 	});
@@ -195,6 +202,7 @@ test('map o2m object', () => {
 							relationType: null,
 							object: object.links[0],
 							action: undefined,
+							path: ['links', '0'],
 						},
 					},
 				},
@@ -209,6 +217,7 @@ test('map o2m object', () => {
 							relationType: null,
 							object: object.links[1],
 							action: undefined,
+							path: ['links', '1'],
 						},
 					},
 				},
@@ -221,6 +230,7 @@ test('map o2m object', () => {
 				object,
 				relationType: 'o2m',
 				action: undefined,
+				path: [],
 			},
 		},
 	});
@@ -255,6 +265,7 @@ test('map o2m object with detailed syntax', () => {
 								relationType: null,
 								object: object.links.create[0],
 								action: 'create',
+								path: ['links', 'create', '0'],
 							},
 						},
 					},
@@ -271,6 +282,7 @@ test('map o2m object with detailed syntax', () => {
 								relationType: null,
 								object: object.links.update[0],
 								action: 'update',
+								path: ['links', 'update', '0'],
 							},
 						},
 					},
@@ -285,6 +297,7 @@ test('map o2m object with detailed syntax', () => {
 				object,
 				relationType: 'o2m',
 				action: undefined,
+				path: [],
 			},
 		},
 	});
@@ -325,6 +338,7 @@ test('map m2m object', () => {
 							relationType: null,
 							object: object.tags[0],
 							action: undefined,
+							path: ['tags', '0'],
 						},
 					},
 					articles_id: {
@@ -337,6 +351,7 @@ test('map m2m object', () => {
 							relationType: 'm2o',
 							object: object.tags[0],
 							action: undefined,
+							path: ['tags', '0'],
 						},
 					},
 					tags_id: {
@@ -351,6 +366,7 @@ test('map m2m object', () => {
 									relationType: null,
 									object: object.tags[0]?.tags_id,
 									action: undefined,
+									path: ['tags', '0', 'tags_id'],
 								},
 							},
 						},
@@ -362,6 +378,7 @@ test('map m2m object', () => {
 							relationType: 'm2o',
 							object: object.tags[0],
 							action: undefined,
+							path: ['tags', '0'],
 						},
 					},
 				},
@@ -374,6 +391,7 @@ test('map m2m object', () => {
 				object,
 				relationType: 'o2m',
 				action: undefined,
+				path: [],
 			},
 		},
 	});
@@ -419,6 +437,7 @@ test('map m2a object', () => {
 							object: object.sections[0],
 							relationType: null,
 							action: undefined,
+							path: ['sections', '0'],
 						},
 					},
 					item: {
@@ -433,6 +452,7 @@ test('map m2a object', () => {
 									object: object.sections[0]?.item,
 									relationType: null,
 									action: undefined,
+									path: ['sections', '0', 'item'],
 								},
 							},
 						},
@@ -444,6 +464,7 @@ test('map m2a object', () => {
 							object: object.sections[0],
 							relationType: 'a2o',
 							action: undefined,
+							path: ['sections', '0'],
 						},
 					},
 				},
@@ -458,6 +479,7 @@ test('map m2a object', () => {
 							object: object.sections[1],
 							relationType: null,
 							action: undefined,
+							path: ['sections', '1'],
 						},
 					},
 					item: {
@@ -472,6 +494,7 @@ test('map m2a object', () => {
 									object: object.sections[1]?.item,
 									relationType: null,
 									action: undefined,
+									path: ['sections', '1', 'item'],
 								},
 							},
 						},
@@ -483,6 +506,8 @@ test('map m2a object', () => {
 							object: object.sections[1],
 							relationType: 'a2o',
 							action: undefined,
+
+							path: ['sections', '1'],
 						},
 					},
 				},
@@ -495,6 +520,7 @@ test('map m2a object', () => {
 				object,
 				relationType: 'o2m',
 				action: undefined,
+				path: [],
 			},
 		},
 	});
@@ -582,6 +608,7 @@ test('map flat invalid deep field with onUnknownField', () => {
 				leaf: false,
 				relationType: 'm2o',
 				action: undefined,
+				path: [],
 			},
 		},
 	});
@@ -651,6 +678,7 @@ test('map with non-existent fields', async () => {
 				relationType: null,
 				object,
 				action: undefined,
+				path: [],
 			},
 		},
 		title: {
@@ -663,6 +691,7 @@ test('map with non-existent fields', async () => {
 				relationType: null,
 				object,
 				action: undefined,
+				path: [],
 			},
 		},
 		author: {
@@ -677,6 +706,7 @@ test('map with non-existent fields', async () => {
 						relationType: null,
 						object: object.author,
 						action: undefined,
+						path: ['author'],
 					},
 				},
 				name: {
@@ -689,6 +719,7 @@ test('map with non-existent fields', async () => {
 						relationType: null,
 						object: object.author,
 						action: undefined,
+						path: ['author'],
 					},
 				},
 			},
@@ -700,6 +731,7 @@ test('map with non-existent fields', async () => {
 				relationType: 'm2o',
 				object,
 				action: undefined,
+				path: [],
 			},
 		},
 	});
