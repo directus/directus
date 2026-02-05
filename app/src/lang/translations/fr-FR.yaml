@@ -25,6 +25,8 @@ contact_our_team: Contactez notre équipe
 setup_welcome: Bienvenue sur Directus
 setup_license_notice: >
   Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
+setup_license_follow_up: >
+
 setup_launch: Lancer Directus
 setup_project: Configurer un projet
 first_name: Prénom
@@ -992,6 +994,15 @@ no_url: Aucune URL fournie
 no_url_copy: Veuillez ajouter une URL dans les paramètres.
 invalid_url: URL invalide
 insights: Tableaux de bord
+deployment:
+  provider:
+    settings:
+      delete_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
+    run:
+      cancel_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
+      log_all: Tous les niveaux de log
+  target_value:
+    preview: Prévisualiser
 dashboard: Tableau de bord
 panel: Panneau
 panel_options: Options de panneau
