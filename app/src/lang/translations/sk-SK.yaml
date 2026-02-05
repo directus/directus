@@ -955,6 +955,15 @@ operation_key_unique_error: Kľúče operácie musia byť v toku unikátne
 operation_handle_resolve: 'Úspech: kliknutím pridáte, potiahnutím presmerujete'
 operation_handle_reject: 'Chyba: kliknutím pridáte, potiahnutím presmerujete'
 insights: Prehľady
+deployment:
+  provider:
+    settings:
+      delete_confirm: Táto akcia je trvalá a nedá sa vrátiť. Naozaj chcete pokračovať?
+    run:
+      cancel_confirm: Táto akcia je trvalá a nedá sa vrátiť. Naozaj chcete pokračovať?
+      log_all: Všetky úrovne logov
+  target_value:
+    preview: Náhľad
 dashboard: Nástenka
 panel: Panel
 panel_options: Možnosti panela
