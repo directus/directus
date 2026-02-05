@@ -86,8 +86,8 @@ onMounted(async () => {
 							<VIcon name="deployed_code" />
 						</div>
 						<VListItemContent>
-							<div class="name">
-								{{ project.name }}
+							<div class="name-wrapper">
+								<span class="name">{{ project.name }}</span>
 								<DeploymentStatus v-if="project.latest_deployment?.status" :status="project.latest_deployment.status" />
 							</div>
 							<a v-if="project.url" :href="project.url" target="_blank" class="url" @click.stop>
@@ -154,10 +154,13 @@ onMounted(async () => {
 		--v-icon-color: var(--foreground-inverted);
 	}
 
-	.name {
+	.name-wrapper {
 		display: flex;
 		align-items: center;
 		gap: 8px;
+	}
+
+	.name {
 		font-weight: 600;
 	}
 
