@@ -7,15 +7,8 @@ import { merge } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
 import { createLogger, type Logger } from './logger.js';
-import {
-	bootstrap,
-	buildDirectus,
-	dockerDown,
-	dockerUp,
-	loadSchema,
-	saveSchema,
-	startDirectus,
-} from './steps/index.js';
+import { startApp } from './steps/app.js';
+import { bootstrap, buildApi, dockerDown, dockerUp, loadSchema, saveSchema, startApi } from './steps/index.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -31,6 +24,8 @@ export type Options = {
 	watch: boolean;
 	/** Port to start the api on */
 	port: Port;
+	/** Spin up the app in dev mode */
+	app: boolean | number;
 	/** Which version of the database to use */
 	version: string | undefined;
 	/** Configure the behavior of the spun up docker container */
@@ -100,6 +95,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 			dev: false,
 			watch: false,
 			port,
+			app: false,
 			version: undefined,
 			docker: {
 				keep: false,
@@ -127,6 +123,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 }
 
 export const apiFolder = join(directusFolder, 'api');
+export const appFolder = join(directusFolder, 'app');
 
 export const databases: Database[] = [
 	'maria',
@@ -167,7 +164,7 @@ export async function sandboxes(
 	try {
 		// Rebuild directus
 		if (opts.build && !opts.dev) {
-			build = await buildDirectus(opts, logger, restartApis);
+			build = await buildApi(opts, logger, restartApis);
 		}
 
 		await Promise.all(
@@ -183,7 +180,7 @@ export async function sandboxes(
 					await bootstrap(env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 
-					apis.push({ processes: await startDirectus(opts, env, logger), index, opts, env, logger });
+					apis.push({ processes: await startApi(opts, env, logger), index, opts, env, logger });
 				} catch (e) {
 					logger.error(String(e));
 					throw e;
@@ -199,7 +196,7 @@ export async function sandboxes(
 		apis.forEach((api) => api.processes.forEach((process) => process.kill()));
 
 		apis = await Promise.all(
-			apis.map(async (api) => ({ ...api, processes: await startDirectus(api.opts, api.env, api.logger) })),
+			apis.map(async (api) => ({ ...api, processes: await startApi(api.opts, api.env, api.logger) })),
 		);
 	}
 
@@ -220,6 +217,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	const env = await getEnv(database, opts);
 	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
 	let apis: ChildProcessWithoutNullStreams[] = [];
+	let app: ChildProcessWithoutNullStreams | undefined;
 	let project: string | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
 	let interval: NodeJS.Timeout;
@@ -227,13 +225,14 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	try {
 		// Rebuild directus
 		if (opts.build && !opts.dev) {
-			build = await buildDirectus(opts, logger, restartApi);
+			build = await buildApi(opts, logger, restartApi);
 		}
 
 		project = await dockerUp(database, opts, env, logger);
 		await bootstrap(env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
-		apis = await startDirectus(opts, env, logger);
+		apis = await startApi(opts, env, logger);
+		if (opts.app !== false) app = await startApp(opts, env, logger);
 
 		if (opts.export) interval = await saveSchema(env);
 	} catch (err: any) {
@@ -244,7 +243,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 	async function restartApi() {
 		apis.forEach((api) => api.kill());
-		apis = await startDirectus(opts, env, logger);
+		apis = await startApi(opts, env, logger);
 	}
 
 	async function stop() {
@@ -253,6 +252,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		clearInterval(interval);
 		build?.kill();
 		apis.forEach((api) => api.kill());
+		app?.kill();
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);

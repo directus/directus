@@ -2,10 +2,8 @@ import { join } from 'path';
 import { directusFolder } from './find-directus.js';
 import type { Database, Options } from './sandbox.js';
 
-const isWindows = ['win32', 'win64'].includes(process.platform);
-
 const directusConfig = {
-	TZ: isWindows ? '0' : 'UTC',
+	TZ: 'UTC',
 	ADMIN_EMAIL: 'admin@example.com',
 	PROJECT_OWNER: 'admin@example.com',
 	ADMIN_PASSWORD: 'pw',

@@ -6,6 +6,7 @@ program
 	.option('-b, --build', 'Rebuild directus from source')
 	.option('-d, --dev', 'Start directus in developer mode. Not compatible with build')
 	.option('-w, --watch', 'Restart the api when changes are made')
+	.option('-a, --app [port]', 'Spin up the app in dev mode')
 	.option('--inspect', 'Start the api with debugger', true)
 	.option('-p, --port <port>', 'Port to start the api on')
 	.option('-v, --version <version>', 'Which version of the database to use')

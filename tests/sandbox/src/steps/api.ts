@@ -6,7 +6,7 @@ import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import { apiFolder, type Options } from '../sandbox.js';
 
-export async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
+export async function buildApi(opts: Options, logger: Logger, onRebuild: () => void) {
 	const start = performance.now();
 	logger.info('Rebuilding Directus');
 
@@ -80,7 +80,7 @@ export async function bootstrap(env: Env, logger: Logger) {
 	logger.info(`Completed Bootstraping Database ${time}`);
 }
 
-export async function startDirectus(opts: Options, env: Env, logger: Logger) {
+export async function startApi(opts: Options, env: Env, logger: Logger) {
 	const apiCount = Math.max(1, Number(opts.instances));
 
 	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * (opts.inspect ? 2 : 1));
@@ -97,14 +97,14 @@ export async function startDirectus(opts: Options, env: Env, logger: Logger) {
 	return await Promise.all(
 		apiPorts.map((port) => {
 			const newLogger = apiCount > 1 ? logger.addGroup(`API ${port}`) : logger;
-			return startDirectusInstance(opts, { ...env, PORT: String(port) }, newLogger);
+			return startApiInstance(opts, { ...env, PORT: String(port) }, newLogger);
 		}),
 	);
 }
 
-async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
+async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 	const start = performance.now();
-	logger.info('Starting Directus');
+	logger.info('Starting Server');
 	const debuggerPort = Number(env.PORT) + 1;
 	let api;
 	let timeout: NodeJS.Timeout;
