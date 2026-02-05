@@ -954,6 +954,15 @@ operation_key_unique_error: Klucze operacji muszą być unikalne w przepływie
 operation_handle_resolve: 'Rozwiązanie: Kliknij, aby dodać lub przeciągnąć do przekierowania'
 operation_handle_reject: 'Odrzuć: Kliknij, aby dodać lub przeciągnąć do przekierowania'
 insights: Statystyki
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
+    run:
+      cancel_confirm: Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
+      log_all: Wszystkie poziomy logów
+  target_value:
+    preview: Podgląd
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
