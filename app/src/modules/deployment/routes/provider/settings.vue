@@ -243,15 +243,11 @@ onMounted(() => {
 	<PrivateView
 		:title="$t('deployment.provider.settings.settings', { provider: $t(`deployment.provider.${provider}.name`) })"
 		:icon="initialProjectIds.length > 0 ? 'settings' : undefined"
+		show-back
+		:back-to="initialProjectIds.length > 0 ? '/deployments/vercel' : '/deployments'"
 	>
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
-		</template>
-
-		<template v-if="initialProjectIds.length === 0" #title-outer:prepend>
-			<VButton class="back-button" rounded icon secondary exact small @click="router.push('/deployments')">
-				<VIcon name="arrow_back" small />
-			</VButton>
 		</template>
 
 		<template #navigation>
@@ -382,11 +378,6 @@ onMounted(() => {
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
-}
-
-.back-button {
-	--v-button-background-color: var(--theme--background-normal);
-	--v-button-color-active: var(--theme--foreground);
 }
 
 .container {
