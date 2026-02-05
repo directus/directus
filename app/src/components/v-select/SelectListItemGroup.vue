@@ -41,8 +41,12 @@ const isActive = computed(() => {
 	}
 });
 
+const clickable = computed(() => {
+	return (props.groupSelectable || props.item.selectable) && !props.nonEditable;
+});
+
 function onGroupClick(item: Option) {
-	if (!props.groupSelectable || props.nonEditable) return;
+	if (!clickable.value) return;
 
 	emit('update:modelValue', item.value);
 }
@@ -52,7 +56,7 @@ function onGroupClick(item: Option) {
 	<VListGroup
 		v-show="!item.hidden"
 		:active="isActive"
-		:clickable="(groupSelectable || item.selectable) && !nonEditable"
+		:clickable="clickable"
 		:value="item.value"
 		@click="onGroupClick(item)"
 	>
