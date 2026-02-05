@@ -836,6 +836,14 @@ operation_key_unique_error: Betjeningsnøgler skal være unikke i et flow
 operation_handle_resolve: 'Løs: Klik for at tilføje eller træk for at omdirigere'
 operation_handle_reject: 'Afvis: Klik for at tilføje eller træk for at omdirigere'
 insights: Indsigter
+deployment:
+  provider:
+    settings:
+      delete_confirm: Denne handling er permanent og kan ikke fortrydes. Er du sikker på, at du vil fortsætte?
+    run:
+      cancel_confirm: Denne handling er permanent og kan ikke fortrydes. Er du sikker på, at du vil fortsætte?
+  target_value:
+    preview: Eksempelvisning
 dashboard: Instrumentbræt
 panel: Stykke
 panel_options: Panel indstillinger
