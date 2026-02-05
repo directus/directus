@@ -980,6 +980,15 @@ no_url_copy: Por favor, añada una URL en la configuración.
 invalid_url: URL no válida
 invalid_url_copy: La URL especificada no coincide con ninguna URL especificada en la configuración.
 insights: Informes
+deployment:
+  provider:
+    settings:
+      delete_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
+    run:
+      cancel_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
+      log_all: Todos los niveles de registro
+  target_value:
+    preview: Vista previa
 dashboard: Panel de control
 panel: Panel
 panel_options: Opciones del Panel
