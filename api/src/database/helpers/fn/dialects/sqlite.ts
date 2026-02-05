@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { parseJsonFunction } from '../json/parse-function.js';
+import { parseJsonFunction, parseWildcardPath } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -84,12 +84,24 @@ export class FnHelperSQLite extends FnHelper {
 	}
 
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path } = parseJsonFunction(functionCall);
+		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
 		if (!fieldSchema || fieldSchema.type !== 'json') {
 			throw new Error(`Field ${field} is not a JSON field`);
+		}
+
+		// Handle array wildcards - SQLite requires json_each/json_group_array
+		if (hasWildcard) {
+			const { arrayPath, valuePath } = parseWildcardPath(path);
+
+			return this.knex.raw(`(SELECT json_group_array(json_extract(value, ?)) FROM json_each(??.??, ?))`, [
+				valuePath,
+				table,
+				field,
+				arrayPath,
+			]);
 		}
 
 		// SQLite uses json_extract with $ path notation

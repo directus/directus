@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { parseJsonFunction } from '../json/parse-function.js';
+import { parseJsonFunction, parseWildcardPath } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -60,12 +60,23 @@ export class FnHelperMSSQL extends FnHelper {
 	}
 
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path } = parseJsonFunction(functionCall);
+		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
 		if (!fieldSchema || fieldSchema.type !== 'json') {
 			throw new Error(`Field ${field} is not a JSON field`);
+		}
+
+		// Handle array wildcards using OPENJSON with STRING_AGG
+		if (hasWildcard) {
+			const { arrayPath, valuePath } = parseWildcardPath(path);
+
+			// Use OPENJSON to iterate and JSON_VALUE to extract, wrap in JSON array
+			return this.knex.raw(
+				`(SELECT '[' + STRING_AGG('"' + STRING_ESCAPE(JSON_VALUE(value, ?), 'json') + '"', ',') + ']' FROM OPENJSON(??.??, ?))`,
+				[valuePath, table, field, arrayPath],
+			);
 		}
 
 		// MSSQL uses JSON_VALUE for scalar values

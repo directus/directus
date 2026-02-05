@@ -65,7 +65,7 @@ export class FnHelperPostgres extends FnHelper {
 	}
 
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path } = parseJsonFunction(functionCall);
+		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
@@ -73,10 +73,18 @@ export class FnHelperPostgres extends FnHelper {
 			throw new Error(`Field ${field} is not a JSON field`);
 		}
 
+		const { dbType } = fieldSchema;
+
+		// Handle array wildcard syntax using jsonb_path_query_array
+		if (hasWildcard) {
+			const jsonPathExpr = convertToJsonPathExpr(path);
+
+			return this.knex.raw(`jsonb_path_query_array(??::jsonb, ?)`, [table + '.' + field, jsonPathExpr]);
+		}
+
 		// Convert dot notation to PostgreSQL JSON path
 		// "data.items[0].name" → "data"->'items'->0->>'name'
 		const jsonPath = convertToPostgresPath(path);
-		const { dbType } = fieldSchema;
 
 		// Use JSONB operators for JSONB fields, JSON functions for JSON fields
 		if (dbType === 'jsonb') {
@@ -87,15 +95,44 @@ export class FnHelperPostgres extends FnHelper {
 	}
 }
 
+/**
+ * Split a JSON path string on dots and brackets
+ * @example ".items[0].name" → ["items", "0", "name"]
+ */
+export function splitJsonPath(path: string): string[] {
+	const parts: string[] = [];
+	let current = '';
+
+	// Skip leading dot if present
+	const start = path.startsWith('.') ? 1 : 0;
+
+	for (let i = start; i < path.length; i++) {
+		const char = path[i];
+
+		if (char === '.' || char === '[' || char === ']') {
+			if (current) {
+				parts.push(current);
+				current = '';
+			}
+		} else {
+			current += char;
+		}
+	}
+
+	if (current) {
+		parts.push(current);
+	}
+
+	return parts;
+}
+
 export function convertToPostgresPath(path: string): string {
 	// ".color" → "->>'color'"
 	// ".items[0].name" → "->'items'->0->>'name'"
 	// Use ->> for final element (returns text), -> for intermediate (returns json)
 
-	const parts = path
-		.substring(1)
-		.split(/\.|\[|\]/g)
-		.filter(Boolean);
+	const parts = splitJsonPath(path);
+
 	let result = '';
 
 	for (let i = 0; i < parts.length; i++) {
@@ -109,5 +146,14 @@ export function convertToPostgresPath(path: string): string {
 		}
 	}
 
+	return result;
+}
+
+export function convertToJsonPathExpr(path: string): string {
+	// Convert ".items[].name" → "$.items[*].name"
+	// Convert "[].name" → "$[*].name"
+	// PostgreSQL jsonb_path_query_array uses SQL/JSON path syntax
+	let result = '$' + path; // ".items" → "$.items", "[0]" → "$[0]"
+	result = result.split('[]').join('[*]'); // Replace [] with [*]
 	return result;
 }

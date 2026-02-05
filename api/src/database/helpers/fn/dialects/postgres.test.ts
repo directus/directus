@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { convertToPostgresPath } from './postgres.js';
+import { convertToJsonPathExpr, convertToPostgresPath, splitJsonPath } from './postgres.js';
 
 // Mock dependencies to avoid loading the full FnHelper class
 vi.mock('../types.js', () => ({
@@ -73,8 +73,44 @@ const TEST_CASES = [
 	},
 ];
 
+const SPLIT_PATH_TEST_CASES = [
+	{ input: '.color', expected: ['color'], description: 'simple property path' },
+	{ input: '.user.name', expected: ['user', 'name'], description: 'nested property path' },
+	{ input: '.items[0]', expected: ['items', '0'], description: 'path with array index' },
+	{ input: '.items[0].name', expected: ['items', '0', 'name'], description: 'array index and property' },
+	{
+		input: '.data.items[0].nested[1].value',
+		expected: ['data', 'items', '0', 'nested', '1', 'value'],
+		description: 'complex nested path',
+	},
+	{ input: '[0].name', expected: ['0', 'name'], description: 'path starting with bracket' },
+	{ input: '.matrix[0][1]', expected: ['matrix', '0', '1'], description: 'consecutive brackets' },
+	{ input: '.user_data.first_name', expected: ['user_data', 'first_name'], description: 'properties with underscores' },
+];
+
+const JSON_PATH_EXPR_TEST_CASES = [
+	{ input: '.items[].name', expected: '$.items[*].name', description: 'simple wildcard path' },
+	{ input: '.items[]', expected: '$.items[*]', description: 'wildcard at end of path' },
+	{ input: '.data.items[].value', expected: '$.data.items[*].value', description: 'nested wildcard' },
+	{ input: '.items[].nested[].value', expected: '$.items[*].nested[*].value', description: 'multiple wildcards' },
+	{ input: '[].name', expected: '$[*].name', description: 'root array wildcard' },
+	{ input: '.items[0].name', expected: '$.items[0].name', description: 'path without wildcard' },
+];
+
 describe('convertToPostgresPath', () => {
 	test.each(TEST_CASES)('converts "$input" to "$expected" ($description)', ({ input, expected }) => {
 		expect(convertToPostgresPath(input)).toBe(expected);
+	});
+});
+
+describe('splitJsonPath', () => {
+	test.each(SPLIT_PATH_TEST_CASES)('$description: "$input"', ({ input, expected }) => {
+		expect(splitJsonPath(input)).toEqual(expected);
+	});
+});
+
+describe('convertToJsonPathExpr', () => {
+	test.each(JSON_PATH_EXPR_TEST_CASES)('$description: "$input" → "$expected"', ({ input, expected }) => {
+		expect(convertToJsonPathExpr(input)).toBe(expected);
 	});
 });

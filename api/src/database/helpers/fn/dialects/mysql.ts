@@ -52,7 +52,7 @@ export class FnHelperMySQL extends FnHelper {
 	}
 
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path } = parseJsonFunction(functionCall);
+		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
@@ -62,30 +62,75 @@ export class FnHelperMySQL extends FnHelper {
 
 		// Convert dot notation to MySQL JSON path
 		// "data.items[0].name" → "$['items'][0]['name']"
-		const jsonPath = convertToMySQLPath(path);
+		const jsonPath = convertToMySQLPath(path, hasWildcard);
+
+		// For wildcards, JSON_EXTRACT returns a JSON array directly (don't unquote)
+		if (hasWildcard) {
+			return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [table, field, jsonPath]);
+		}
 
 		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, field, jsonPath]);
 	}
 }
 
-export function convertToMySQLPath(path: string): string {
+/**
+ * Split a JSON path string on dots and brackets
+ * @example ".items[0].name" → ["items", "0", "name"]
+ */
+export function splitJsonPath(path: string): string[] {
+	const parts: string[] = [];
+	let current = '';
+
+	// Skip leading dot if present
+	const start = path.startsWith('.') ? 1 : 0;
+
+	for (let i = start; i < path.length; i++) {
+		const char = path[i];
+
+		if (char === '.' || char === '[' || char === ']') {
+			if (current) {
+				parts.push(current);
+				current = '';
+			}
+		} else {
+			current += char;
+		}
+	}
+
+	if (current) {
+		parts.push(current);
+	}
+
+	return parts;
+}
+
+export function convertToMySQLPath(path: string, hasWildcard: boolean = false): string {
 	// ".color" → "$['color']" (bracket notation for compatibility)
 	// ".items[0].name" → "$['items'][0]['name']"
+	// ".items[].name" → "$['items'][*]['name']" (wildcard)
 
-	const parts = path
-		.substring(1)
-		.split(/\.|\[|\]/g)
-		.filter(Boolean);
+	// For wildcards, convert [] to [*] first
+	let processedPath = path;
+
+	if (hasWildcard) {
+		processedPath = path.split('[]').join('[*]');
+	}
+
+	const parts = splitJsonPath(processedPath);
 
 	let result = '$';
 
 	for (const part of parts) {
-		const num = Number(part);
-
-		if (Number.isInteger(num) && num >= 0 && String(num) === part) {
-			result += `[${part}]`;
+		if (part === '*') {
+			result += '[*]';
 		} else {
-			result += `['${part}']`;
+			const num = Number(part);
+
+			if (Number.isInteger(num) && num >= 0 && String(num) === part) {
+				result += `[${part}]`;
+			} else {
+				result += `['${part}']`;
+			}
 		}
 	}
 
