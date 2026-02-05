@@ -959,15 +959,6 @@ operation_key_unique_error: Operacijų pavadinimai turi būti unikalūs esamam p
 operation_handle_resolve: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 operation_handle_reject: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 insights: Įžvalgos
-deployment:
-  provider:
-    settings:
-      delete_confirm: Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
-    run:
-      cancel_confirm: Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
-      log_all: Visi įvykių lygiai
-  target_value:
-    preview: Peržiūra
 dashboard: Prietaisų skydelis
 panel: Skydelis
 panel_options: Skydelio nustatymai
@@ -1338,7 +1329,6 @@ fields:
     public_registration_email_filter_note: Tik el. pašto adresai, kurie atitinka šį filtrą gali registruotis sistemoje.
     public_registration_verify_email: El. pašto patvirtinimas
     public_registration_verify_email_note: Naudotojui bus išsiųstas el. laiškas su patvirtinimo nuoroda.
-    ai_header_name: Header
   directus_shares:
     name: Pavadinimas
     role: Vaidmuo
@@ -1491,7 +1481,6 @@ live_preview:
   new_window: Atversti naujame lange
   close_window: Atidaryti padalinto vaizdo rėžimu
   toggle_3d: Perjungti į 3D
-  display_options: Atvaizdavimo nustatymai
 shares: Pasidalinimai
 unlimited_usage: Be naudojimo limitų
 uses_left: Išnaudotas naudojimo limitas | Vienas panaudojimas liko | {n} panaudojimų liko
@@ -1500,8 +1489,6 @@ new_share: Naujas pasidalinimas
 ai:
   input: Įvestis
   unknown: Nežinomas
-  items: Įrašai
-  content: Turinys
   settings: Nustatymai
   tool_approval:
     disabled: Išjungta

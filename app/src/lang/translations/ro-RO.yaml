@@ -778,14 +778,6 @@ flow_tracking_activity: Urmărește doar activitatea
 flow_tracking_null: Nu urmări nimic
 code: Cod
 insights: Analize
-deployment:
-  provider:
-    settings:
-      delete_confirm: Această acţiune este permanentă şi nu poate fi anulată. Sunteţi sigur că doriţi să continuaţi?
-    run:
-      cancel_confirm: Această acţiune este permanentă şi nu poate fi anulată. Sunteţi sigur că doriţi să continuaţi?
-  target_value:
-    preview: Previzualizare
 dashboard: Panou
 panel: Panou
 panel_options: Opțiuni panou
@@ -1069,7 +1061,6 @@ fields:
     transformations_all: Permite toate transformările
     transformations_none: Dezactivează transformările
     transformations_presets: Limitează transformările la presetările de mai jos
-    ai_header_name: Antet
   directus_shares:
     name: Nume
     role: Rol
@@ -1203,8 +1194,6 @@ new_share: Distribuire nouă
 ai:
   input: Input
   unknown: Necunoscut
-  items: Elemente
-  content: Conținut
   settings: Setări
   tool_approval:
     disabled: Dezactivat

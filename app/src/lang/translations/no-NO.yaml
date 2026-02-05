@@ -784,8 +784,6 @@ live_preview:
   new_window: Åpne i nytt vindu
 ai:
   unknown: Ukjent
-  items: Elementer
-  content: Innhold
   settings: Innstillinger
   tool_approval:
     disabled: Deaktivert

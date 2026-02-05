@@ -961,15 +961,6 @@ operation_key_unique_error: İşlem anahtarları bir Akışta benzersiz olmalıd
 operation_handle_resolve: 'Çözümle: Eklemek İçin Tıklayın veya Yeniden Yönlendirmek İçin Sürükleyin'
 operation_handle_reject: 'Reddet: Eklemek İçin Tıklayın veya Yeniden Yönlendirmek İçin Sürükleyin'
 insights: Kontrol Panelleri
-deployment:
-  provider:
-    settings:
-      delete_confirm: Bu işlem kalıcı ve geri alınamaz. Devam etmek istediğinize emin misiniz?
-    run:
-      cancel_confirm: Bu işlem kalıcı ve geri alınamaz. Devam etmek istediğinize emin misiniz?
-      log_all: Bütün Kayıt Seviyeleri
-  target_value:
-    preview: Önizleme
 dashboard: Pano
 panel: Panel
 panel_options: Panel Seçenekleri
@@ -1323,7 +1314,6 @@ fields:
     public_registration_email_filter: E-Mail Adresi Filtresi
     public_registration_email_filter_note: Sadece bu filtreyle uyuşan kullanıcılar giriş yapabilir.
     public_registration_verify_email: Doğrulanmış Email
-    ai_header_name: Header
   directus_shares:
     name: Ad
     role: Rol
@@ -1464,7 +1454,6 @@ live_preview:
   refresh: Önizlemeyi yenile
   new_window: Yeni Pencerede Aç
   toggle_3d: 3D'ye geçiş yap
-  display_options: Görüntüleme Seçenekleri
 shares: Paylaşımlar
 unlimited_usage: Limitsiz kullanım
 no_shares: Gösterilecek paylaşım yok
@@ -1472,8 +1461,6 @@ new_share: Yeni Paylaşım
 ai:
   input: Girdi
   unknown: Bilinmeyen
-  items: Öğeler
-  content: İçerik
   settings: Ayarlar
   tool_approval:
     disabled: Devre Dışı

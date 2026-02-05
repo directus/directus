@@ -1040,17 +1040,6 @@ no_url_copy: Gelieve een URL toe te voegen in de instellingen.
 invalid_url: Ongeldige URL
 invalid_url_copy: De opgegeven URL komt niet overeen met een URL die is opgegeven in de instellingen.
 insights: Inzichten
-deployment:
-  provider:
-    settings:
-      delete_confirm: Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
-    run:
-      cancel_confirm: Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
-      log_all: Alle Logboek Niveaus
-  target_value:
-    preview: Voorvertoning
-  runs_status:
-    ready: Gereed
 dashboard: Dashboard
 panel: Paneel
 panel_options: Paneelopties
@@ -1429,6 +1418,7 @@ fields:
     public_registration_verify_email: Bevestig e-mailadres
     public_registration_verify_email_note: Stuurt een e-mail naar de registrerende gebruiker waarin wordt gevraagd om op een verificatielink te klikken voordat ze kunnen inloggen.
     visual_editor_urls: Visual Editor URLs
+    ai_notice: 'AI Chat biedt een in-app zijbalk om te converteren met een LLM. Wanneer ingeschakeld, open je de AI-zijbalk uit de werkbalk om vragen te stellen, inhoud te genereren en hulp te krijgen bij je project. <a href="https://directus.io/docs/guides/ai/chat" target="_blank">Leer meer over het configureren en gebruiken van AI Chat.</a>'
     mcp_enabled: MCP-server
     mcp_enabled_note: 'Sluit AI/LM tools aan op uw Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Hierdoor kunnen AI-assistenten veilig lezen en communiceren met uw Directusgegevens.'
     mcp_notice: 'Model Context Protocol is een standaard om LLMs te verbinden met toepassingen zoals Directus. Eenmaal ingeschakeld, zal de Directus MCP-server beschikbaar zijn op `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Meer informatie over MCP en hoe te verbinden.</a>'
@@ -1443,7 +1433,7 @@ fields:
     mcp_system_prompt: Aangepast Systeemprompt
     mcp_system_prompt_note: 'Aangepast systeemprompt om de standaard te vervangen. Laat leeg om standaard te gebruiken (indien ingeschakeld).'
     ai_system_prompt: AI Systeemprompt
-    ai_header_name: Header
+    ai_system_prompt_note: 'Aangepast AI Systeemprompt voor het begeleiden van LLM-gedrag in AI Chat interacties. Laat leeg om de standaard te gebruiken.'
   directus_shares:
     name: Naam
     role: Rol
@@ -1597,7 +1587,6 @@ live_preview:
   close_window: Open in Split-weergave
   toggle_3d: 3D aan/uit
   iframe_title: Voorvertoning live website
-  display_options: Weergave Opties
 shares: Delen
 unlimited_usage: Onbeperkt gebruik
 uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
@@ -1625,8 +1614,6 @@ ai:
   prompt_input_placeholder: Typ je bericht hier...
   clear_conversation: Gesprek Wissen
   responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
-  items: Items
-  content: Inhoud
   go_to_settings: Ga naar Instellingen
   settings: Instellingen
   tool_approval:
