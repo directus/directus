@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 import { saveAs } from 'file-saver';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
@@ -24,6 +23,7 @@ import type { Log as SystemLog } from '@/modules/settings/routes/system-logs/typ
 import { sdk } from '@/sdk';
 import { formatDurationMs } from '@/utils/format-duration-ms';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 
 const props = defineProps<{
@@ -32,7 +32,6 @@ const props = defineProps<{
 	runId: string;
 }>();
 
-const router = useRouter();
 const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
 
@@ -253,15 +252,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<PrivateView :title="pageTitle">
+	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}/${projectId}/runs`">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<VButton class="back-button" rounded icon secondary exact small @click="router.back()">
-				<VIcon name="arrow_back" small />
-			</VButton>
 		</template>
 
 		<template #navigation>
@@ -274,42 +267,30 @@ onUnmounted(() => {
 					{{ $t('deployment.provider.run.currently_deploying') }}
 				</span>
 
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-if="isBuilding"
 					v-tooltip.bottom="$t('deployment.provider.run.stop')"
-					rounded
-					icon
-					small
+					icon="dangerous"
 					secondary
 					class="action-cancel"
 					:loading="canceling"
 					@click="confirmCancel = true"
-				>
-					<VIcon name="dangerous" outline small />
-				</VButton>
+				/>
 
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('deployment.provider.run.download_logs')"
-					rounded
-					icon
-					small
+					icon="download"
 					secondary
 					@click="downloadLogs"
-				>
-					<VIcon name="download" small />
-				</VButton>
+				/>
 
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-if="run?.url"
 					v-tooltip.bottom="$t('deployment.provider.run.open_deployment')"
-					rounded
-					icon
-					small
+					icon="open_in_new"
 					secondary
 					@click="openDeployment"
-				>
-					<VIcon name="open_in_new" small />
-				</VButton>
+				/>
 			</div>
 		</template>
 
@@ -399,11 +380,6 @@ onUnmounted(() => {
 .action-cancel {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
-}
-
-.back-button {
-	--v-button-background-color: var(--theme--background-normal);
-	--v-button-color-active: var(--theme--foreground);
 }
 
 .spinner {

@@ -178,15 +178,9 @@ watch(
 </script>
 
 <template>
-	<PrivateView :title="pageTitle">
+	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}`">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<VButton class="back-button" rounded icon secondary exact small @click="router.push(`/deployments/${provider}`)">
-				<VIcon name="arrow_back" small />
-			</VButton>
 		</template>
 
 		<template #navigation>
@@ -198,24 +192,26 @@ watch(
 
 			<VButton v-tooltip.bottom="$t('deployment.deploy')" rounded icon small :loading="deploying" @click="deploy()">
 				<VIcon name="rocket_launch" small />
-			</VButton>
 
-			<VMenu placement="bottom-end" show-arrow>
-				<template #activator="{ toggle }">
-					<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
+				<template #append-outer>
+					<VMenu show-arrow>
+						<template #activator="{ toggle }">
+							<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
+						</template>
+
+						<VList>
+							<VListItem clickable :disabled="deploying" @click="deploy(true)">
+								<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
+								<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
+							</VListItem>
+							<VListItem clickable @click="refresh">
+								<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
+								<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
 				</template>
-
-				<VList>
-					<VListItem clickable :disabled="deploying" @click="deploy(true)">
-						<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
-						<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
-					</VListItem>
-					<VListItem clickable @click="refresh">
-						<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
-						<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
-					</VListItem>
-				</VList>
-			</VMenu>
+			</VButton>
 		</template>
 
 		<div class="container">
@@ -280,11 +276,6 @@ watch(
 </template>
 
 <style scoped lang="scss">
-.back-button {
-	--v-button-background-color: var(--theme--background-normal);
-	--v-button-color-active: var(--theme--foreground);
-}
-
 .container {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
@@ -313,7 +304,13 @@ watch(
 	margin-block-start: 24px;
 }
 
-.more-options {
-	align-self: center;
+.more-options.v-icon {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
+
+	color: var(--theme--foreground-subdued);
+
+	&:hover {
+		color: var(--theme--foreground);
+	}
 }
 </style>
