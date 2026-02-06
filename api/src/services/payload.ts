@@ -886,50 +886,111 @@ export class PayloadService {
 
 				if (alterations.create) {
 					const sortField = relation.meta.sort_field;
+					const junctionField = relation.meta.junction_field;
 
-					let createPayload: Alterations['create'];
+					let itemsToCreate = alterations.create;
 
-					if (sortField !== null) {
-						const highestOrderNumber: Record<'max', number | null> | undefined = await this.knex
-							.from(relation.collection)
-							.where({ [relation.field]: parent })
-							.whereNotNull(sortField)
-							.max(sortField, { as: 'max' })
-							.first();
+					// For M2M relations, check if junction rows already exist for this parent + related key
+					// to convert creates into updates, preventing duplicate junction rows during batch operations
+					if (junctionField) {
+						const junctionRelation = this.schema.relations.find(
+							(r) => r.collection === relation.collection && r.field === junctionField,
+						);
 
-						createPayload = alterations.create.map((item, index) => {
-							const record = cloneDeep(item);
+						const relatedPK = junctionRelation?.related_collection
+							? this.schema.collections[junctionRelation.related_collection]?.primary
+							: null;
 
-							// add sort field value if it is not supplied in the item
-							if (parent !== null && record[sortField] === undefined) {
-								record[sortField] = highestOrderNumber?.max ? highestOrderNumber.max + index + 1 : index + 1;
+						if (relatedPK) {
+							const filtered: typeof itemsToCreate = [];
+
+							for (const item of itemsToCreate) {
+								const junctionValue = item[junctionField] as Record<string, any> | PrimaryKey | undefined;
+
+								const relatedId = isObject(junctionValue) ? junctionValue[relatedPK] : junctionValue;
+
+								if (relatedId !== undefined) {
+									const existing = await this.knex
+										.select(relatedPrimaryKeyField)
+										.from(relation.collection)
+										.where({ [relation.field]: parent, [junctionField]: relatedId })
+										.first();
+
+									if (existing) {
+										// Exclude junction field from update since it's the lookup key
+										const { [junctionField]: _, ...record } = cloneDeep(item);
+
+										await service.updateOne(existing[relatedPrimaryKeyField], record, {
+											onRevisionCreate: (pk) => revisions.push(pk),
+											onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+											bypassEmitAction: (params) =>
+												opts?.bypassEmitAction
+													? opts.bypassEmitAction(params)
+													: nestedActionEvents.push(params),
+											emitEvents: opts?.emitEvents,
+											autoPurgeCache: opts?.autoPurgeCache,
+											autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+											skipTracking: opts?.skipTracking,
+											onItemCreate: opts?.onItemCreate,
+											mutationTracker: opts?.mutationTracker,
+										});
+
+										continue;
+									}
+								}
+
+								filtered.push(item);
 							}
 
-							return {
-								...record,
-								[relation.field]: parent || payload[currentPrimaryKeyField],
-							};
-						});
-					} else {
-						createPayload = alterations.create.map((item) => ({
-							...item,
-							[relation.field]: parent || payload[currentPrimaryKeyField],
-						}));
+							itemsToCreate = filtered;
+						}
 					}
 
-					await service.createMany(createPayload, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						autoPurgeCache: opts?.autoPurgeCache,
-						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						skipTracking: opts?.skipTracking,
-						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['create'],
-						onItemCreate: opts?.onItemCreate,
-						mutationTracker: opts?.mutationTracker,
-					});
+					if (itemsToCreate.length > 0) {
+						let createPayload: Alterations['create'];
+
+						if (sortField !== null) {
+							const highestOrderNumber: Record<'max', number | null> | undefined = await this.knex
+								.from(relation.collection)
+								.where({ [relation.field]: parent })
+								.whereNotNull(sortField)
+								.max(sortField, { as: 'max' })
+								.first();
+
+							createPayload = itemsToCreate.map((item, index) => {
+								const record = cloneDeep(item);
+
+								// add sort field value if it is not supplied in the item
+								if (parent !== null && record[sortField] === undefined) {
+									record[sortField] = highestOrderNumber?.max ? highestOrderNumber.max + index + 1 : index + 1;
+								}
+
+								return {
+									...record,
+									[relation.field]: parent || payload[currentPrimaryKeyField],
+								};
+							});
+						} else {
+							createPayload = itemsToCreate.map((item) => ({
+								...item,
+								[relation.field]: parent || payload[currentPrimaryKeyField],
+							}));
+						}
+
+						await service.createMany(createPayload, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['create'],
+							onItemCreate: opts?.onItemCreate,
+							mutationTracker: opts?.mutationTracker,
+						});
+					}
 				}
 
 				if (alterations.update) {
