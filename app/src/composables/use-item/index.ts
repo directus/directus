@@ -121,8 +121,14 @@ export function useItem<T extends Item>(
 		loadingItem.value = true;
 		error.value = null;
 
+		const rawQuery: Record<string, unknown> = unref(query);
+
+		if ('fields' in rawQuery && Array.isArray(rawQuery.fields)) {
+			rawQuery.fields = rawQuery.fields.join(',');
+		}
+
 		try {
-			const response = await api.get(itemEndpoint.value, { params: unref(query) });
+			const response = await api.get(itemEndpoint.value, { params: unref(rawQuery) });
 			setItemValueToResponse(response);
 		} catch (err) {
 			error.value = err;
