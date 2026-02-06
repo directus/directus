@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
 	use24: true,
 });
 
-const emit = defineEmits<{ 'update:modelValue': [value: string | null]}>();
+const emit = defineEmits<{ 'update:modelValue': [value: string | null] }>();
 
 // Internal state using @internationalized/date types
 const calendarValue = ref<DateValue | undefined>();
@@ -117,7 +117,6 @@ const monthOptions = computed(() => {
 	});
 });
 
-
 watch(
 	() => props.modelValue,
 	(newValue) => {
@@ -125,9 +124,7 @@ watch(
 			calendarValue.value = undefined;
 
 			// Reset time to a sensible default when the picker supports time.
-			internalTimeValue.value = hasTime.value
-				? getDefaultTimeValue()
-				: undefined;
+			internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
 
 			return;
 		}
