@@ -24,11 +24,14 @@ jobs:
       id-token: write
 
     steps:
+      # CodeQL: Checkout is safe as no PR code is executed, only read for analysis.
+      # Re-evaluate if adding steps that run scripts from the checkout.
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
           ref: refs/pull/${{ github.event.issue.number }}/head
+
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
