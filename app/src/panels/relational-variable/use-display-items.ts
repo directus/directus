@@ -1,4 +1,5 @@
-import { useApi } from '@directus/composables';
+import { useSdk } from '@directus/composables';
+import { Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, Ref, ref, watch } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
@@ -9,10 +10,10 @@ import { unexpectedError } from '@/utils/unexpected-error';
 export default function useDisplayItems(collection: Ref<string>, template: Ref<string>, ids: Ref<(string | number)[]>) {
 	const collectionsStore = useCollectionsStore();
 	const fieldStore = useFieldsStore();
-	const api = useApi();
+	const sdk = useSdk();
 
 	const loading = ref(false);
-	const displayItems = ref([]);
+	const displayItems: Ref<Item[]> = ref([]);
 
 	const primaryKey = computed(() => fieldStore.getPrimaryKeyFieldForCollection(collection.value)?.field ?? '');
 
@@ -47,14 +48,15 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 		try {
 			loading.value = true;
 
-			const response = await api.get(getEndpoint(collection.value), {
-				params: {
+			const response = await sdk.request<Item[]>(() => ({
+				path: getEndpoint(collection.value),
+				query: {
 					fields: Array.from(fields),
 					filter: { [primaryKey.value]: { _in: ids.value } },
 				},
-			});
+			}));
 
-			displayItems.value = response.data.data;
+			displayItems.value = response;
 		} catch (error) {
 			unexpectedError(error);
 		} finally {

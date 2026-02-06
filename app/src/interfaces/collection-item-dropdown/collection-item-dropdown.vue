@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { Filter } from '@directus/types';
+import { Filter, Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import api from '@/api';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import sdk from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -88,14 +88,12 @@ async function getDisplayItem() {
 	try {
 		loading.value = true;
 
-		const response = await api.get(getEndpoint(unref(selectedCollection)), {
-			params: {
-				fields: Array.from(fields),
-				filter: { [primaryKey.value]: { _eq: value.value.key } },
-			},
-		});
+		const response = await sdk.request<Item[]>(() => ({
+			path: getEndpoint(unref(selectedCollection)),
+			query: { fields: Array.from(fields), filter: { [primaryKey.value]: { _eq: value.value?.key } } },
+		}));
 
-		displayItem.value = response.data.data?.[0] ?? null;
+		displayItem.value = response?.[0] ?? null;
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -118,7 +116,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 		<VSkeletonLoader v-if="loading" type="input" />
 
 		<VListItem v-else :disabled :non-editable block clickable @click="selectDrawerOpen = true">
-			<div v-if="displayItem" class="preview">
+			<div v-if="displayItem && displayTemplate" class="preview">
 				<RenderTemplate :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
 			</div>
 			<div v-else class="placeholder">{{ $t('select_an_item') }}</div>

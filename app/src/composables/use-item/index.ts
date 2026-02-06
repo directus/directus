@@ -2,7 +2,6 @@ import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint, isObject } from '@directus/utils';
-import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { cloneDeep, mergeWith } from 'lodash';
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
@@ -13,6 +12,7 @@ import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
+import sdk from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
@@ -121,15 +121,9 @@ export function useItem<T extends Item>(
 		loadingItem.value = true;
 		error.value = null;
 
-		const rawQuery: Record<string, unknown> = unref(query);
-
-		if ('fields' in rawQuery && Array.isArray(rawQuery.fields)) {
-			rawQuery.fields = rawQuery.fields.join(',');
-		}
-
 		try {
-			const response = await api.get(itemEndpoint.value, { params: rawQuery });
-			setItemValueToResponse(response);
+			const item = await sdk.request<T>(() => ({ path: itemEndpoint.value, query: unref(query) }));
+			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
 		} finally {
@@ -206,13 +200,21 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await api.post(getEndpoint(collection.value), editsWithClearedValues);
+				response = await sdk.request<T>(() => ({
+					path: getEndpoint(collection.value),
+					method: 'POST',
+					data: editsWithClearedValues,
+				}));
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await api.patch(itemEndpoint.value, editsWithClearedValues);
+				response = await sdk.request<T>(() => ({
+					path: itemEndpoint.value,
+					method: 'PATCH',
+					data: editsWithClearedValues,
+				}));
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),
@@ -254,7 +256,11 @@ export function useItem<T extends Item>(
 		let response;
 
 		try {
-			response = await api.post(graphqlEndpoint, { query });
+			response = await sdk.request<Item>(() => ({
+				path: graphqlEndpoint,
+				method: 'POST',
+				query,
+			}));
 		} catch (error) {
 			saving.value = false;
 			unexpectedError(error);
@@ -262,7 +268,7 @@ export function useItem<T extends Item>(
 		}
 
 		// Transform aliased M2A fields back to their original names
-		const itemData = transformM2AAliases(response.data.data.item, m2aAliasMap);
+		const itemData = transformM2AAliases(response.item, m2aAliasMap);
 
 		const newItem: Item = {
 			...(itemData || {}),
@@ -398,14 +404,15 @@ export function useItem<T extends Item>(
 
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
-			const response = await api.get(getEndpoint(relation.collection), {
-				params: {
+			const response = await sdk.request<Item[]>(() => ({
+				path: getEndpoint(relation.collection),
+				query: {
 					fields: Array.from(fieldsToFetch),
 					[`filter[${relation.field}][_eq]`]: primaryKey.value,
 				},
-			});
+			}));
 
-			return response.data.data;
+			return response;
 		}
 
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {
@@ -543,14 +550,14 @@ export function useItem<T extends Item>(
 		}
 	}
 
-	function setItemValueToResponse(response: AxiosResponse) {
+	function setItemValueToResponse(response: T) {
 		if (
 			(isSystemCollection(collection.value) && collection.value !== 'directus_collections') ||
-			(collection.value === 'directus_collections' && isSystemCollection(response.data.data.collection ?? ''))
+			(collection.value === 'directus_collections' && isSystemCollection(response.collection ?? ''))
 		) {
-			response.data.data = translate(response.data.data);
+			response = translate(response);
 		}
 
-		item.value = response.data.data;
+		item.value = response;
 	}
 }
