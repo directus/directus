@@ -20,6 +20,11 @@ export const serialize = (val: unknown) => {
  * @returns JavaScript value
  */
 export const deserialize = <T = unknown>(val: Uint8Array) => {
+	// Handle empty buffers to prevent errors during race conditions or disconnects such shutdowns
+	if (val.length === 0) {
+		return undefined as T;
+	}
+
 	const valueString = uint8ArrayToString(val);
 	return <T>parseJSON(valueString);
 };
