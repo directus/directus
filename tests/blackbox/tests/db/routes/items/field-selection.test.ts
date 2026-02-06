@@ -49,17 +49,8 @@ describe('Field Selection', () => {
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 			// Assert
-			expect(response.statusCode).toEqual(200);
-			expect(response.body.data.length).toBeGreaterThanOrEqual(2);
-
-			// The fields parameter was not parsed as an array, so field selection is not
-			// applied. The response should contain all fields instead of just id and field_a.
-			for (const item of response.body.data) {
-				expect(item).toHaveProperty('id');
-				expect(item).toHaveProperty('field_a');
-				expect(item).toHaveProperty('field_b');
-				expect(item).toHaveProperty('field_c');
-			}
+			expect(response.statusCode).toBe(400);
+			expect(response.body.errors[0].extensions.code).toBe('INVALID_QUERY');
 		});
 	});
 
