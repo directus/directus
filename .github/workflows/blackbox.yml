@@ -53,10 +53,10 @@ jobs:
         vendor:
           - sqlite3
           - postgres
-          # - mysql
-          # - maria
-          # - mssql
-          # - oracle
+          - mysql
+          - maria
+          - mssql
+          - oracle
           # - cockroachdb
     steps:
       - name: Checkout repository
