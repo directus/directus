@@ -1,5 +1,5 @@
 import type { Range } from '@directus/types';
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface RangeNotSatisfiableErrorExtensions {
 	range: Range;
@@ -10,8 +10,5 @@ export const messageConstructor = ({ range }: RangeNotSatisfiableErrorExtensions
 	return `Range ${rangeString} is invalid or the file's size doesn't match the requested range.`;
 };
 
-export const RangeNotSatisfiableError = createError<RangeNotSatisfiableErrorExtensions>(
-	ErrorCode.RangeNotSatisfiable,
-	messageConstructor,
-	416,
-);
+export const RangeNotSatisfiableError: DirectusErrorConstructor<RangeNotSatisfiableErrorExtensions> =
+	createError<RangeNotSatisfiableErrorExtensions>(ErrorCode.RangeNotSatisfiable, messageConstructor, 416);

@@ -6,7 +6,7 @@ import { matches } from 'ip-matching';
  * @throws Will throw if list contains invalid network definitions
  */
 
-export function ipInNetworks(ip: string, networks: string[]) {
+export function ipInNetworks(ip: string, networks: string[]): boolean {
 	for (const allowedIp of networks) {
 		if (matches(ip, allowedIp)) return true;
 	}

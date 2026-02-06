@@ -77,7 +77,7 @@ export class KvRedis implements Kv {
 		this.ttl = config.ttl;
 	}
 
-	async get<T = unknown>(key: string) {
+	async get<T = unknown>(key: string): Promise<T | undefined> {
 		const value = await this.redis.getBuffer(withNamespace(key, this.namespace));
 
 		if (value === null) {
@@ -93,7 +93,7 @@ export class KvRedis implements Kv {
 		return <T>deserialize(binaryArray);
 	}
 
-	async set<T = unknown>(key: string, value: T) {
+	async set<T = unknown>(key: string, value: T): Promise<void> {
 		if (typeof value === 'number') {
 			if (this.ttl) {
 				await this.redis.set(withNamespace(key, this.namespace), value, 'PX', this.ttl);
@@ -115,25 +115,28 @@ export class KvRedis implements Kv {
 		}
 	}
 
-	async delete(key: string) {
+	async delete(key: string): Promise<void> {
 		await this.redis.unlink(withNamespace(key, this.namespace));
 	}
 
-	async has(key: string) {
+	async has(key: string): Promise<boolean> {
 		const exists = await this.redis.exists(withNamespace(key, this.namespace));
 		return exists !== 0;
 	}
 
-	async increment(key: string, amount = 1) {
+	async increment(key: string, amount = 1): Promise<number> {
 		return await this.redis.incrby(withNamespace(key, this.namespace), amount);
 	}
 
-	async setMax(key: string, value: number) {
+	async setMax(key: string, value: number): Promise<boolean> {
 		const wasSet = await this.redis.setMax(withNamespace(key, this.namespace), value);
 		return wasSet !== 0;
 	}
 
-	async acquireLock(key: string) {
+	async acquireLock(key: string): Promise<{
+		release: () => Promise<void>;
+		extend: (duration: number) => Promise<void>;
+	}> {
 		const lock = await this.redlock.acquire([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout));
 
 		return {
@@ -150,7 +153,7 @@ export class KvRedis implements Kv {
 		return this.redlock.using([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout), callback);
 	}
 
-	async clear() {
+	async clear(): Promise<void> {
 		const keysStream = this.redis.scanStream({
 			match: withNamespace('*', this.namespace),
 		});

@@ -43,4 +43,4 @@ export default [
 	'UUID',
 	'XSS',
 	'YouTube',
-];
+] as string[];

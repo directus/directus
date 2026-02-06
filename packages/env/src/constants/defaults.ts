@@ -1,8 +1,9 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
+import type { Env } from '../types/env.js';
 
-export const DEFAULTS = {
+export const DEFAULTS: Env = {
 	CONFIG_PATH: resolve(cwd(), '.env'),
 
 	HOST: '0.0.0.0',

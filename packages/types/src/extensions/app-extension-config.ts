@@ -32,7 +32,7 @@ export const SplitEntrypoint = z.object({
 	api: z.string(),
 });
 
-export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
+// export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
 export const ExtensionSandboxRequestedScopes = z.object({
 	request: z.optional(

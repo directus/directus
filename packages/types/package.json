@@ -22,8 +22,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc",
-		"dev": "tsc --watch"
+		"build": "tsdown --dts",
+		"dev": "tsdown --watch"
 	},
 	"dependencies": {
 		"@directus/ai": "workspace:*",
@@ -42,7 +42,8 @@
 		"@types/deep-diff": "catalog:",
 		"knex": "catalog:",
 		"typescript": "catalog:",
-		"vue": "catalog:"
+		"vue": "catalog:",
+		"tsdown": "catalog:"
 	},
 	"peerDependencies": {
 		"deep-diff": "catalog:",

@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface UnsupportedMediaTypeErrorExtensions {
 	mediaType: string;
@@ -8,8 +8,5 @@ export interface UnsupportedMediaTypeErrorExtensions {
 export const messageConstructor = (extensions: UnsupportedMediaTypeErrorExtensions) =>
 	`Unsupported media type "${extensions.mediaType}" in ${extensions.where}.`;
 
-export const UnsupportedMediaTypeError = createError<UnsupportedMediaTypeErrorExtensions>(
-	ErrorCode.UnsupportedMediaType,
-	messageConstructor,
-	415,
-);
+export const UnsupportedMediaTypeError: DirectusErrorConstructor<UnsupportedMediaTypeErrorExtensions> =
+	createError<UnsupportedMediaTypeErrorExtensions>(ErrorCode.UnsupportedMediaType, messageConstructor, 415);

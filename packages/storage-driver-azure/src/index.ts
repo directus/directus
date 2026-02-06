@@ -46,7 +46,7 @@ export class DriverAzure implements TusDriver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async read(filepath: string, options?: ReadOptions) {
+	async read(filepath: string, options?: ReadOptions): Promise<Readable> {
 		const { range } = options || {};
 
 		const { readableStreamBody } = await this.containerClient
@@ -60,7 +60,7 @@ export class DriverAzure implements TusDriver {
 		return readableStreamBody as Readable;
 	}
 
-	async write(filepath: string, content: Readable, type = 'application/octet-stream') {
+	async write(filepath: string, content: Readable, type = 'application/octet-stream'): Promise<void> {
 		const blockBlobClient = this.containerClient.getBlockBlobClient(this.fullPath(filepath));
 
 		await blockBlobClient.uploadStream(content as Readable, undefined, undefined, {
@@ -68,11 +68,14 @@ export class DriverAzure implements TusDriver {
 		});
 	}
 
-	async delete(filepath: string) {
+	async delete(filepath: string): Promise<void> {
 		await this.containerClient.getBlockBlobClient(this.fullPath(filepath)).deleteIfExists();
 	}
 
-	async stat(filepath: string) {
+	async stat(filepath: string): Promise<{
+		size: number;
+		modified: Date;
+	}> {
 		const props = await this.containerClient.getBlobClient(this.fullPath(filepath)).getProperties();
 
 		return {
@@ -81,16 +84,16 @@ export class DriverAzure implements TusDriver {
 		};
 	}
 
-	async exists(filepath: string) {
+	async exists(filepath: string): Promise<boolean> {
 		return await this.containerClient.getBlockBlobClient(this.fullPath(filepath)).exists();
 	}
 
-	async move(src: string, dest: string) {
+	async move(src: string, dest: string): Promise<void> {
 		await this.copy(src, dest);
 		await this.containerClient.getBlockBlobClient(this.fullPath(src)).deleteIfExists();
 	}
 
-	async copy(src: string, dest: string) {
+	async copy(src: string, dest: string): Promise<void> {
 		const source = this.containerClient.getBlockBlobClient(this.fullPath(src));
 		const target = this.containerClient.getBlockBlobClient(this.fullPath(dest));
 
@@ -98,7 +101,7 @@ export class DriverAzure implements TusDriver {
 		await poller.pollUntilDone();
 	}
 
-	async *list(prefix = '') {
+	async *list(prefix = ''): AsyncGenerator<string, void, unknown> {
 		const blobs = this.containerClient.listBlobsFlat({
 			prefix: this.fullPath(prefix),
 		});
@@ -108,17 +111,22 @@ export class DriverAzure implements TusDriver {
 		}
 	}
 
-	get tusExtensions() {
+	get tusExtensions(): string[] {
 		return ['creation', 'termination', 'expiration'];
 	}
 
-	async createChunkedUpload(filepath: string, context: ChunkedUploadContext) {
+	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
 		await this.containerClient.getAppendBlobClient(this.fullPath(filepath)).createIfNotExists();
 
 		return context;
 	}
 
-	async writeChunk(filepath: string, content: Readable, offset: number, _context: ChunkedUploadContext) {
+	async writeChunk(
+		filepath: string,
+		content: Readable,
+		offset: number,
+		_context: ChunkedUploadContext,
+	): Promise<number> {
 		const client = this.containerClient.getAppendBlobClient(this.fullPath(filepath));
 
 		let bytesUploaded = offset || 0;
@@ -141,9 +149,9 @@ export class DriverAzure implements TusDriver {
 		return bytesUploaded;
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {}
 
-	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
 		await this.delete(filepath);
 	}
 }

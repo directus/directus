@@ -1,7 +1,8 @@
 {
 	"extends": "@directus/tsconfig/node22",
 	"compilerOptions": {
-		"types": []
+		"types": [],
+		"isolatedDeclarations": false
 	},
 	"include": ["."]
 }

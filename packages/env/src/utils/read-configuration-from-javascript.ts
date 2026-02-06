@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { isPlainObject } from 'lodash-es';
 
-export const readConfigurationFromJavaScript = (path: string) => {
+export const readConfigurationFromJavaScript = (path: string): Record<string, unknown> => {
 	const require = createRequire(import.meta.url);
 
 	const module = require(path);

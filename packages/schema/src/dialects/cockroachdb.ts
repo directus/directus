@@ -10,7 +10,7 @@ import { stripQuotes } from '../utils/strip-quotes.js';
  * Converts CockroachDB default value to JS
  * Eg `'example'::character varying` => `example`
  */
-export function parseDefaultValue(value: string | null) {
+export function parseDefaultValue(value: string | null): string | null {
 	if (value === null) return null;
 	if (value.startsWith('nextval(')) return value;
 
@@ -76,7 +76,7 @@ export default class CockroachDB implements SchemaInspector {
 	/**
 	 * Set the schema to be used in other methods
 	 */
-	withSchema(schema: string) {
+	withSchema(schema: string): this {
 		this.schema = schema;
 		this.explodedSchema = [this.schema];
 		return this;
@@ -475,7 +475,7 @@ export default class CockroachDB implements SchemaInspector {
 					crdb_sql_type: string;
 				}>;
 			}>(
-				`SELECT 
+				`SELECT
     c.column_name,
     c.data_type,
     BOOL_OR(c.is_nullable = 'YES') as is_nullable,
@@ -486,14 +486,14 @@ export default class CockroachDB implements SchemaInspector {
     BOOL_OR(s.index_name IS NOT NULL AND s.non_unique = 'YES') AS has_index,
     BOOL_OR(s.index_name IS NOT NULL AND s.non_unique = 'NO') AS has_unique
 FROM information_schema.columns c
-LEFT JOIN information_schema.statistics s 
+LEFT JOIN information_schema.statistics s
     ON c.table_schema = s.table_schema
-    AND c.table_name = s.table_name 
+    AND c.table_name = s.table_name
     AND c.column_name = s.column_name
     AND s.implicit = 'NO'
     AND s.storing = 'NO'
 WHERE c.table_name = ? AND c.table_schema = ?
-GROUP BY 
+GROUP BY
     c.column_name,
     c.data_type,
     c.is_nullable,

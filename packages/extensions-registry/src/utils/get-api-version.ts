@@ -8,7 +8,7 @@ export interface GetApiVersionOptions {
 
 export const _cache: Map<string, string> = new Map();
 
-export const getApiVersion = async (options?: GetApiVersionOptions) => {
+export const getApiVersion = async (options?: GetApiVersionOptions): Promise<string> => {
 	const registry = options?.registry ?? DEFAULT_REGISTRY;
 
 	if (_cache.has(registry)) {

@@ -532,7 +532,7 @@ function getRollupOptions({
 
 	return {
 		input: typeof input !== 'string' ? 'entry' : input,
-		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
+		external: [...(mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS)],
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
 			mode === 'browser' ? vue({ isProduction: true }) : null,

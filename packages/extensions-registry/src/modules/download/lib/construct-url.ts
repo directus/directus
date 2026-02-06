@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import { DEFAULT_REGISTRY } from '../../../constants.js';
 import type { DownloadOptions } from '../types/download-options.js';
 
@@ -38,7 +39,7 @@ import type { DownloadOptions } from '../types/download-options.js';
  * // 'https://custom-registry.example.com/download/extension-v1.0.0?sandbox=true'
  * ```
  */
-export const constructUrl = (versionId: string, requireSandbox = false, options?: DownloadOptions) => {
+export const constructUrl = (versionId: string, requireSandbox = false, options?: DownloadOptions): URL => {
 	const registry = options?.registry ?? DEFAULT_REGISTRY;
 	const url = new URL(`/download/${versionId}`, registry);
 

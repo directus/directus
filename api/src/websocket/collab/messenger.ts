@@ -2,14 +2,15 @@ import { randomUUID } from 'crypto';
 import { useEnv } from '@directus/env';
 import { isDirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
-import { type WebSocketClient, WS_TYPE } from '@directus/types';
 import {
 	type BroadcastMessage,
 	type ClientID,
 	COLLAB_BUS,
 	type ServerError,
 	type ServerMessage,
-} from '@directus/types/collab';
+	type WebSocketClient,
+	WS_TYPE,
+} from '@directus/types';
 import { useBus } from '../../bus/index.js';
 import { useLogger } from '../../logger/index.js';
 import { useStore } from './store.js';

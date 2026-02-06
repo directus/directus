@@ -54,7 +54,7 @@ export class DriverGCS implements TusDriver {
 		return this.bucket.file(filepath);
 	}
 
-	async read(filepath: string, options?: ReadOptions) {
+	async read(filepath: string, options?: ReadOptions): Promise<Readable> {
 		const { range } = options || {};
 
 		const stream_options: CreateReadStreamOptions = {};
@@ -65,34 +65,37 @@ export class DriverGCS implements TusDriver {
 		return this.file(this.fullPath(filepath)).createReadStream(stream_options);
 	}
 
-	async write(filepath: string, content: Readable) {
+	async write(filepath: string, content: Readable): Promise<void> {
 		const file = this.file(this.fullPath(filepath));
 		const stream = file.createWriteStream({ resumable: false });
 		await pipeline(content, stream);
 	}
 
-	async delete(filepath: string) {
+	async delete(filepath: string): Promise<void> {
 		await this.file(this.fullPath(filepath)).delete();
 	}
 
-	async stat(filepath: string) {
+	async stat(filepath: string): Promise<{
+		size: number;
+		modified: Date;
+	}> {
 		const [{ size, updated }] = await this.file(this.fullPath(filepath)).getMetadata();
 		return { size: size as number, modified: new Date(updated as string) };
 	}
 
-	async exists(filepath: string) {
+	async exists(filepath: string): Promise<boolean> {
 		return (await this.file(this.fullPath(filepath)).exists())[0];
 	}
 
-	async move(src: string, dest: string) {
+	async move(src: string, dest: string): Promise<void> {
 		await this.file(this.fullPath(src)).move(this.file(this.fullPath(dest)));
 	}
 
-	async copy(src: string, dest: string) {
+	async copy(src: string, dest: string): Promise<void> {
 		await this.file(this.fullPath(src)).copy(this.file(this.fullPath(dest)));
 	}
 
-	async *list(prefix = '') {
+	async *list(prefix = ''): AsyncGenerator<string, void, unknown> {
 		let query: GetFilesOptions = {
 			prefix: this.fullPath(prefix),
 			autoPaginate: false,
@@ -110,11 +113,11 @@ export class DriverGCS implements TusDriver {
 		}
 	}
 
-	get tusExtensions() {
+	get tusExtensions(): string[] {
 		return ['creation', 'termination', 'expiration'];
 	}
 
-	async createChunkedUpload(filepath: string, context: ChunkedUploadContext) {
+	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
 		const file = this.file(this.fullPath(filepath));
 
 		const [uri] = await file.createResumableUpload();
@@ -124,7 +127,12 @@ export class DriverGCS implements TusDriver {
 		return context;
 	}
 
-	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
+	async writeChunk(
+		filepath: string,
+		content: Readable,
+		offset: number,
+		context: ChunkedUploadContext,
+	): Promise<number> {
 		const file = this.file(this.fullPath(filepath));
 
 		const stream = file.createWriteStream({
@@ -153,9 +161,9 @@ export class DriverGCS implements TusDriver {
 		return bytesUploaded;
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {}
 
-	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
 		await this.delete(filepath);
 	}
 }

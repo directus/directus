@@ -1,5 +1,6 @@
 import type { Kv } from '../../kv/index.js';
 import { createKv } from '../../kv/index.js';
+import type { Lock } from '../../kv/types/lock.js';
 import type { CacheConfigRedis } from '../index.js';
 import type { Cache } from '../types/class.js';
 
@@ -10,19 +11,19 @@ export class CacheRedis implements Cache {
 		this.store = createKv({ type: 'redis', ...config });
 	}
 
-	async get<T = unknown>(key: string) {
+	async get<T = unknown>(key: string): Promise<T | undefined> {
 		return await this.store.get<T>(key);
 	}
 
-	async set<T = unknown>(key: string, value: T) {
+	async set<T = unknown>(key: string, value: T): Promise<void> {
 		return await this.store.set(key, value);
 	}
 
-	async delete(key: string) {
+	async delete(key: string): Promise<void> {
 		return await this.store.delete(key);
 	}
 
-	async has(key: string) {
+	async has(key: string): Promise<boolean> {
 		return await this.store.has(key);
 	}
 
@@ -30,7 +31,7 @@ export class CacheRedis implements Cache {
 		await this.store.clear();
 	}
 
-	async acquireLock(key: string) {
+	async acquireLock(key: string): Promise<Lock> {
 		return await this.store.acquireLock(key);
 	}
 

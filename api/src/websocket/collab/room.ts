@@ -1,14 +1,18 @@
 import { createHash } from 'crypto';
 import { ErrorCode } from '@directus/errors';
-import { type Accountability, type Item, type PrimaryKey, type WebSocketClient, WS_TYPE } from '@directus/types';
 import {
+	type Accountability,
 	ACTION,
 	type BaseServerMessage,
 	type ClientID,
 	type Color,
 	COLORS,
+	type Item,
+	type PrimaryKey,
 	type ServerError,
-} from '@directus/types/collab';
+	type WebSocketClient,
+	WS_TYPE,
+} from '@directus/types';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { isEqual, random, uniq } from 'lodash-es';
 import getDatabase from '../../database/index.js';

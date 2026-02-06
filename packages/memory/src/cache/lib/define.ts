@@ -2,7 +2,7 @@ import type { Cache } from '../types/class.js';
 import type { CacheConfig } from '../types/config.js';
 import { createCache } from './create.js';
 
-export const defineCache = (config: CacheConfig) => {
+export const defineCache = (config: CacheConfig): (() => Cache) => {
 	let cache: Cache;
 
 	const useCache = () => {

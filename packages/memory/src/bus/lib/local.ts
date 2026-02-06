@@ -8,7 +8,7 @@ export class BusLocal implements Bus {
 		this.handlers = {};
 	}
 
-	async publish<T = unknown>(channel: string, payload: T) {
+	async publish<T = unknown>(channel: string, payload: T): Promise<void> {
 		this.handlers[channel]?.forEach((callback) => {
 			try {
 				callback(payload);
@@ -21,7 +21,7 @@ export class BusLocal implements Bus {
 		});
 	}
 
-	async subscribe<T = unknown>(channel: string, callback: MessageHandler<T>) {
+	async subscribe<T = unknown>(channel: string, callback: MessageHandler<T>): Promise<void> {
 		const set = this.handlers[channel] ?? new Set();
 
 		set.add(callback);
@@ -29,7 +29,7 @@ export class BusLocal implements Bus {
 		this.handlers[channel] = set;
 	}
 
-	async unsubscribe<T = unknown>(channel: string, callback: MessageHandler<T>) {
+	async unsubscribe<T = unknown>(channel: string, callback: MessageHandler<T>): Promise<void> {
 		this.handlers[channel]?.delete(callback);
 	}
 }
