@@ -1,11 +1,7 @@
 {
 	"extends": "@directus/tsconfig/node22",
-	"include": [
-		"src"
-	],
+	"include": ["src"],
 	"typedocOptions": {
-		"entryPoints": [
-			"./src"
-		]
+		"entryPoints": ["./src"]
 	}
 }
