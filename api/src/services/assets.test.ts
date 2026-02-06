@@ -5,6 +5,7 @@ import type { Driver, StorageManager } from '@directus/storage';
 import type { Accountability } from '@directus/types';
 import type { File, SchemaOverview } from '@directus/types';
 import archiver, { type Archiver } from 'archiver';
+import contentDisposition from 'content-disposition';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
@@ -695,6 +696,40 @@ describe('AssetsService', () => {
 				},
 				limit: -1,
 			});
+		});
+
+		test('should produce metadata.name safe for Content-Disposition header', async () => {
+			const folderId = 'special-id';
+
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: folderId, filename_download: 'file1.txt' },
+			] as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockResolvedValue({
+				id: 'file1',
+				storage: 'local',
+				filename_disk: 'file1.txt',
+				filename_download: 'file1.txt',
+				modified_on: '2025-01-01T00:00:00.000Z',
+				type: 'text/plain',
+			} as File);
+
+			vi.spyOn(FoldersService.prototype, 'buildTree').mockResolvedValue(
+				new Map([['special-id', 'folder with "quotes" & ünïcödé']]),
+			);
+
+			const service = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await service.zipFolder(folderId);
+
+			const folderName = `folder-${result.metadata.name}-test.zip`;
+
+			// contentDisposition should handle special characters without throwing
+			const header = contentDisposition(folderName, { type: 'attachment' });
+			expect(header).toContain('attachment');
+			expect(header).toContain('filename');
 		});
 	});
 });
