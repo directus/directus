@@ -53,6 +53,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	const items = ref<Item[]>([]);
 	const loading = ref(false);
 	const loadingItemCount = ref(false);
+	const loadingTotalCount = ref(false);
 	const error = ref<any>(null);
 
 	const itemCount = ref<number | null>(null);
@@ -71,6 +72,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	};
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
+	let activeTotalCountPromise: Promise<void> | null = null;
+	let lastTotalCountParams: any = null;
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
 	const fetchItems = throttle((shouldUpdateCount: boolean) => {
@@ -246,42 +249,92 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
-		try {
-			if (existingRequests.total) existingRequests.total.abort();
-			existingRequests.total = new AbortController();
+		const currentEndpoint = endpoint.value;
 
-			const aggregate = primaryKeyField.value
-				? {
-						countDistinct: primaryKeyField.value.field,
-					}
-				: {
-						count: '*',
-					};
+		const aggregate = primaryKeyField.value ? { countDistinct: primaryKeyField.value.field } : { count: '*' };
 
-			const response = await api.get<any>(endpoint.value, {
-				params: {
-					aggregate,
-					filter: unref(filterSystem),
-				},
-				signal: existingRequests.total.signal,
-			});
+		const currentParams = {
+			aggregate,
+			filter: unref(filterSystem),
+			collection: collection.value,
+		};
 
-			const count = primaryKeyField.value
-				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
-				: Number(response.data.data[0].count);
-
-			existingRequests.total = null;
-
-			totalCount.value = count;
-		} catch (err: any) {
-			if (!axios.isCancel(err)) {
-				throw err;
-			}
+		if (loadingTotalCount.value && activeTotalCountPromise && isEqual(currentParams, lastTotalCountParams)) {
+			await activeTotalCountPromise;
+			return;
 		}
+
+		lastTotalCountParams = currentParams;
+		loadingTotalCount.value = true;
+
+		const totalPromise = async () => {
+			try {
+				if (existingRequests.total) {
+					existingRequests.total.abort();
+				}
+
+				existingRequests.total = new AbortController();
+
+				const response = await api.get<any>(currentEndpoint, {
+					params: {
+						aggregate,
+						filter: unref(filterSystem),
+					},
+					signal: existingRequests.total.signal,
+				});
+
+				const count = primaryKeyField.value
+					? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
+					: Number(response.data.data[0].count);
+
+				existingRequests.total = null;
+
+				totalCount.value = count;
+			} catch (err: any) {
+				if (!axios.isCancel(err)) {
+					throw err;
+				}
+			} finally {
+				if (activeTotalCountPromise === currentPromise) {
+					activeTotalCountPromise = null;
+					loadingTotalCount.value = false;
+				}
+			}
+		};
+
+		const currentPromise = totalPromise();
+		activeTotalCountPromise = currentPromise;
+
+		await currentPromise;
 	}
 
 	async function getItemCount() {
 		if (!endpoint.value) return;
+
+		const filterVal = unref(filter);
+		const searchVal = unref(search);
+		const filterSystemVal = unref(filterSystem);
+
+		const isFilterEmpty = !filterVal || Object.keys(filterVal).length === 0;
+		const isSearchEmpty = !searchVal || searchVal.length === 0;
+
+		if (isSearchEmpty && (isFilterEmpty || isEqual(filterVal, filterSystemVal))) {
+			if (totalCount.value !== null && !loadingTotalCount.value) {
+				itemCount.value = totalCount.value;
+				return;
+			}
+
+			try {
+				await getTotalCount();
+			} catch (e) {
+				if (axios.isCancel(e) && activeTotalCountPromise) {
+					await activeTotalCountPromise;
+				}
+			}
+
+			itemCount.value = totalCount.value;
+			return;
+		}
 
 		loadingItemCount.value = true;
 
@@ -299,8 +352,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
-					filter: unref(filter),
-					search: unref(search),
+					filter: filterVal,
+					search: searchVal,
 					aggregate,
 				},
 				signal: existingRequests.filter.signal,
