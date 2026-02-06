@@ -1,6 +1,10 @@
 # User preferences
 .DS_Store
 
+# Agentic
+.agent/
+.claude/
+CLAUDE.md
 # Dependencies
 node_modules/
 

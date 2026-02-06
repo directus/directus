@@ -13,7 +13,6 @@
 @use 'lib/fullcalendar';
 @use 'lib/frappe-charts';
 @use 'lib/emoji-picker';
-@use 'lib/flatpickr';
 
 body.light {
 	@include themes.light;
