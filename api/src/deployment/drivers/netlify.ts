@@ -69,10 +69,12 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	async listProjects(): Promise<Project[]> {
 		const params: Record<string, string> = { per_page: '100' };
 
-		const response = this.options.account_slug ? await this.api.listSitesForAccount({
-			account_slug: this.options.account_slug,
-			...params
-		}) : await this.api.listSites(params);
+		const response = this.options.account_slug
+			? await this.api.listSitesForAccount({
+					account_slug: this.options.account_slug,
+					...params,
+				})
+			: await this.api.listSites(params);
 
 		return response.map((site) => this.mapSiteBase(site));
 	}
@@ -205,7 +207,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 
 			ws.addEventListener('message', onMessage({ resolve, logs, lastMessageTime }));
 			ws.addEventListener('error', onError({ reject }));
-			ws.addEventListener('open', onOpen({ deploymentId,  accessToken }));
+			ws.addEventListener('open', onOpen({ deploymentId, accessToken }));
 
 			const interval = setInterval(() => {
 				if (ws.OPEN !== ws.readyState) return;

@@ -370,7 +370,7 @@ describe('NetlifyDriver', () => {
 
 	describe('getDeploymentLogs', () => {
 		it.todo('should connect to WebSocket and retrieve logs', async () => {
-			expect(true).toBe(true); 
+			expect(true).toBe(true);
 		});
 	});
 });
