@@ -16,6 +16,8 @@ import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
 import { FieldsService } from './fields.js';
 import { RelationsService } from './relations.js';
+import { getShadowName } from './shadows/get-shadow-name.js';
+import { isShadow } from './shadows/is-shadow.js';
 
 export class ShadowsService {
 	knex: Knex;
@@ -39,24 +41,24 @@ export class ShadowsService {
 	private buildField(field: Field, opts?: { shadow?: boolean }): Field;
 	private buildField(field: string | RawField | Field, opts?: { shadow?: boolean }): string | RawField | Field {
 		if (typeof field === 'string') {
-			if (field.startsWith('directus_')) return field;
+			if (isShadow(field, 'field')) return field;
 
-			return opts?.shadow ? `directus_${field}` : field;
+			return opts?.shadow ? getShadowName(field, 'field') : field;
 		}
 
 		const shadowField = Object.assign({}, field) as RawField | Field;
 
-		if (shadowField.field.startsWith('directus_')) return shadowField;
+		if (isShadow(shadowField.field, 'field')) return shadowField;
 
 		// rename if shadow
 		if (opts?.shadow) {
-			shadowField.field = `directus_${shadowField.field}`;
-			shadowField.name &&= `directus_${shadowField.name}`;
-			shadowField.collection &&= `directus_version_${shadowField.collection}`;
+			shadowField.field = getShadowName(shadowField.field, 'field');
+			shadowField.name &&= getShadowName(shadowField.name, 'field');
+			shadowField.collection &&= getShadowName(shadowField.collection, 'collection');
 
 			if (shadowField.schema) {
-				shadowField.schema.name = `directus_${shadowField.name}`;
-				shadowField.schema.table = `directus_version_${shadowField.schema.table}`;
+				shadowField.schema.name &&= getShadowName(shadowField.schema.name, 'field');
+				shadowField.schema.table &&= getShadowName(shadowField.schema.table, 'collection');
 			}
 		}
 
@@ -76,14 +78,14 @@ export class ShadowsService {
 	private buildRelation(relation: Partial<Relation>, opts?: { shadow?: boolean }): Partial<Relation> {
 		const shadowRelation = Object.assign({}, relation) as Partial<Relation>;
 
-		if (shadowRelation.collection?.startsWith('directus_version')) return shadowRelation;
+		if (isShadow(shadowRelation.collection, 'collection')) return shadowRelation;
 
 		if (opts?.shadow) {
-			shadowRelation.field = `directus_${shadowRelation.field}`;
-			shadowRelation.collection = `directus_version_${shadowRelation.collection}`;
-			shadowRelation.related_collection = `directus_version_${shadowRelation.related_collection}`;
+			shadowRelation.field &&= getShadowName(shadowRelation.field, 'field');
+			shadowRelation.collection &&= getShadowName(shadowRelation.collection, 'collection');
+			shadowRelation.related_collection &&= getShadowName(shadowRelation.related_collection, 'collection');
 		} else {
-			shadowRelation.collection = `directus_version_${relation.collection}`;
+			shadowRelation.collection &&= getShadowName(shadowRelation.collection, 'collection');
 		}
 
 		// Nullify meta
@@ -94,7 +96,7 @@ export class ShadowsService {
 	}
 
 	async createTable(collection: string, fields?: Array<RawField | Field>) {
-		const shadowCollection = `directus_version_${collection}`;
+		const shadowCollection = getShadowName(collection, 'collection');
 		const shadowFields = this.injectedFields();
 
 		for (const field of fields ?? []) {
@@ -121,7 +123,7 @@ export class ShadowsService {
 			// link any existing relation fields
 			for (const relation of this.schema.relations) {
 				// Skip processing existing shadow table relations
-				if (relation.collection.startsWith('directus_version_')) continue;
+				if (isShadow(relation.collection, 'collection')) continue;
 
 				if (relation.collection === collection) {
 					// M2O relation defined on the current collection
@@ -138,7 +140,7 @@ export class ShadowsService {
 	}
 
 	async dropTable(collection: string) {
-		const shadowCollection = `directus_version_${collection}`;
+		const shadowCollection = getShadowName(collection, 'collection');
 
 		await transaction(this.knex, async (trx) => {
 			const shadowsService = new ShadowsService({ knex: trx, schema: this.schema });
@@ -271,7 +273,7 @@ export class ShadowsService {
 	) {
 		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
 
-		const shadowCollection = collection.startsWith('directus_version') ? collection : `directus_version_${collection}`;
+		const shadowCollection = isShadow(collection, 'collection') ? collection : getShadowName(collection, 'collection');
 
 		const shadowField = this.buildField(field) as Field;
 
@@ -282,9 +284,9 @@ export class ShadowsService {
 		await transaction(this.knex, async (trx) => {
 			const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-			const shadowCollection = collection.startsWith('directus_version')
+			const shadowCollection = isShadow(collection, 'collection')
 				? collection
-				: `directus_version_${collection}`;
+				: getShadowName(collection, 'collection');
 
 			const shadowField = this.buildField(field) as RawField;
 
@@ -303,7 +305,7 @@ export class ShadowsService {
 	}
 
 	async deleteField(collection: string, field: string) {
-		const shadowCollection = collection.startsWith('directus_version') ? collection : `directus_version_${collection}`;
+		const shadowCollection = isShadow(collection, 'collection') ? collection : getShadowName(collection, 'collection');
 
 		const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
 
