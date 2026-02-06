@@ -31,7 +31,7 @@ export class BusRedis implements Bus {
 		this.handlers = {};
 	}
 
-	async publish<T = unknown>(channel: string, message: T) {
+	async publish<T = unknown>(channel: string, message: T): Promise<void> {
 		let binaryArray = serialize(message);
 
 		if (this.compression === true && binaryArray.byteLength >= this.compressionMinSize) {
@@ -41,7 +41,7 @@ export class BusRedis implements Bus {
 		await this.pub.publish(withNamespace(channel, this.namespace), uint8ArrayToBuffer(binaryArray));
 	}
 
-	async subscribe<T = unknown>(channel: string, callback: MessageHandler<T>) {
+	async subscribe<T = unknown>(channel: string, callback: MessageHandler<T>): Promise<void> {
 		const namespaced = withNamespace(channel, this.namespace);
 
 		const existingSet = this.handlers[namespaced];
@@ -57,7 +57,7 @@ export class BusRedis implements Bus {
 		}
 	}
 
-	async unsubscribe<T = unknown>(channel: string, callback: MessageHandler<T>) {
+	async unsubscribe<T = unknown>(channel: string, callback: MessageHandler<T>): Promise<void> {
 		const namespaced = withNamespace(channel, this.namespace);
 
 		const set = this.handlers[namespaced];

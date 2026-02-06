@@ -270,4 +270,4 @@ export const DIRECTUS_VARIABLES = [
 /**
  * Variables in the environment that Directus will read as configuration in RegExp format
  */
-export const DIRECTUS_VARIABLES_REGEX = DIRECTUS_VARIABLES.map((name) => new RegExp(`^${name}$`));
+export const DIRECTUS_VARIABLES_REGEX: RegExp[] = DIRECTUS_VARIABLES.map((name) => new RegExp(`^${name}$`));

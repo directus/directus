@@ -4,7 +4,7 @@ import { DEFAULTS } from '../constants/defaults.js';
 /**
  * Get the file location on the local filesystem of the config file
  */
-export const getConfigPath = () => {
-	const path = process.env['CONFIG_PATH'] || DEFAULTS.CONFIG_PATH;
-	return resolve(path);
+export const getConfigPath = (): string => {
+	const path = process.env['CONFIG_PATH'] || DEFAULTS['CONFIG_PATH'];
+	return resolve(String(path));
 };

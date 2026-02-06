@@ -11,7 +11,7 @@ const gunzip = promisify(gunzipCallback);
  * @param input Uint8Array to compress
  * @returns Compressed Uint8Array
  */
-export const compress = async (input: Uint8Array) => {
+export const compress = async (input: Uint8Array): Promise<Uint8Array<ArrayBufferLike>> => {
 	const buffer = await gzip(input);
 	return bufferToUint8Array(buffer);
 };
@@ -22,7 +22,7 @@ export const compress = async (input: Uint8Array) => {
  * @param input Uint8Array to decompress
  * @returns Decompressed Uint8Array
  */
-export const decompress = async (input: Uint8Array) => {
+export const decompress = async (input: Uint8Array): Promise<Uint8Array<ArrayBufferLike>> => {
 	const buffer = await gunzip(input);
 	return bufferToUint8Array(buffer);
 };
