@@ -43,7 +43,7 @@ export function formatDatePickerModelValue(
 	if (type === 'time') {
 		if (!timeValue) return null;
 		// Legacy emits `HH:mm:ss` even when seconds UI is hidden (seconds become "00").
-		const seconds = includeSeconds ? (timeValue.second ?? 0) : 0;
+		const seconds = includeSeconds ? timeValue.second : 0;
 		return `${pad2(timeValue.hour)}:${pad2(timeValue.minute)}:${pad2(seconds)}`;
 	}
 
