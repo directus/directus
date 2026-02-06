@@ -84,6 +84,7 @@ export function applySort(
 			rootQuery,
 			schema,
 			knex,
+			context: 'sort',
 		});
 
 		const { columnPath } = getColumnPath({
