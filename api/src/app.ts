@@ -128,7 +128,13 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', env['IP_TRUST_PROXY']);
-	app.set('query parser', (str: string) => qs.parse(str, { depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']) }));
+
+	app.set('query parser', (str: string) =>
+		qs.parse(str, {
+			depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']),
+			arrayLimit: Number(env['QUERYSTRING_ARRAY_LIMIT']),
+		}),
+	);
 
 	if (env['PRESSURE_LIMITER_ENABLED']) {
 		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
