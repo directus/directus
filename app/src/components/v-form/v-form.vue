@@ -303,7 +303,7 @@ function apply(updates: { [field: string]: any }) {
 		const preservedReadonlyKeys = Object.keys(updates).filter((key) => {
 			if (key.startsWith('$') || updatableKeys.includes(key)) return false;
 			const field = fieldsMap.value[key];
-			return field && isDisabled(field) && props.modelValue?.[key] === updates[key];
+			return field && isDisabled(field) && isEqual(props.modelValue?.[key], updates[key]);
 		});
 
 		emit(
