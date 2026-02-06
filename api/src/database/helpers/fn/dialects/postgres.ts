@@ -1,4 +1,6 @@
+import type { Relation } from '@directus/types';
 import type { Knex } from 'knex';
+import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -62,4 +64,139 @@ export class FnHelperPostgres extends FnHelper {
 
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
+
+	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
+		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
+
+		// Check for relational JSON context (e.g., json(category.metadata:color))
+		if (options?.relationalJsonContext) {
+			const ctx = options.relationalJsonContext;
+			const fieldSchema = this.schema.collections?.[ctx.targetCollection]?.fields?.[ctx.jsonField];
+
+			if (!fieldSchema || fieldSchema.type !== 'json') {
+				throw new Error(`Field ${ctx.jsonField} is not a JSON field on ${ctx.targetCollection}`);
+			}
+
+			const { dbType } = fieldSchema;
+
+			// Build JSON extraction for the aliased table in the subquery
+			// The alias will be applied by _relationalJson
+			const jsonPath = convertToPostgresPath(ctx.jsonPath);
+			const jsonExtraction =
+				dbType === 'jsonb'
+					? this.knex.raw(`??::jsonb${jsonPath}`, [ctx.jsonField])
+					: this.knex.raw(`??::json${jsonPath}`, [ctx.jsonField]);
+
+			return this._relationalJson(table, ctx, jsonExtraction, options);
+		}
+
+		// Direct JSON field access (non-relational)
+		const collectionName = options?.originalCollectionName || table;
+		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
+
+		if (!fieldSchema || fieldSchema.type !== 'json') {
+			throw new Error(`Field ${field} is not a JSON field`);
+		}
+
+		const { dbType } = fieldSchema;
+
+		// Handle array wildcard syntax using jsonb_path_query_array
+		if (hasWildcard) {
+			const jsonPathExpr = convertToJsonPathExpr(path);
+
+			return this.knex.raw(`jsonb_path_query_array(??::jsonb, ?)`, [table + '.' + field, jsonPathExpr]);
+		}
+
+		// Convert dot notation to PostgreSQL JSON path
+		// "data.items[0].name" → "data"->'items'->0->>'name'
+		const jsonPath = convertToPostgresPath(path);
+
+		// Use JSONB operators for JSONB fields, JSON functions for JSON fields
+		if (dbType === 'jsonb') {
+			return this.knex.raw(`??::jsonb${jsonPath}`, [table + '.' + field]);
+		} else {
+			return this.knex.raw(`??::json${jsonPath}`, [table + '.' + field]);
+		}
+	}
+
+	protected _relationalJsonO2M(
+		table: string,
+		alias: string,
+		relation: Relation,
+		_targetCollection: string,
+		jsonExtraction: Knex.Raw,
+		parentPrimary: string,
+	): Knex.Raw {
+		// PostgreSQL O2M aggregation using json_agg()
+		// Example: (SELECT json_agg(metadata->>'type') FROM comments AS abc WHERE abc.article_id = articles.id)
+		const subQuery = this.knex
+			.select(this.knex.raw('json_agg(?)', [jsonExtraction]))
+			.from({ [alias]: relation.collection })
+			.where(this.knex.raw('??.??', [alias, relation.field]), '=', this.knex.raw('??.??', [table, parentPrimary]));
+
+		return this.knex.raw('(' + subQuery.toQuery() + ')');
+	}
+}
+
+/**
+ * Split a JSON path string on dots and brackets
+ * @example ".items[0].name" → ["items", "0", "name"]
+ */
+export function splitJsonPath(path: string): string[] {
+	const parts: string[] = [];
+	let current = '';
+
+	// Skip leading dot if present
+	const start = path.startsWith('.') ? 1 : 0;
+
+	for (let i = start; i < path.length; i++) {
+		const char = path[i];
+
+		if (char === '.' || char === '[' || char === ']') {
+			if (current) {
+				parts.push(current);
+				current = '';
+			}
+		} else {
+			current += char;
+		}
+	}
+
+	if (current) {
+		parts.push(current);
+	}
+
+	return parts;
+}
+
+export function convertToPostgresPath(path: string): string {
+	// ".color" → "->>'color'"
+	// ".items[0].name" → "->'items'->0->>'name'"
+	// Use ->> for final element (returns text), -> for intermediate (returns json)
+
+	const parts = splitJsonPath(path);
+
+	let result = '';
+
+	for (let i = 0; i < parts.length; i++) {
+		const isLast = i === parts.length - 1;
+		const num = Number(parts[i]);
+
+		if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
+			result += (isLast ? '->>' : '->') + parts[i];
+		} else {
+			result += (isLast ? '->>' : '->') + `'${parts[i]}'`;
+		}
+	}
+
+	return result;
+}
+
+export function convertToJsonPathExpr(path: string): string {
+	// Convert ".items[].name" → "$.items[*].name"
+	// Convert "[].name" → "$[*].name"
+	// PostgreSQL jsonb_path_query_array uses SQL/JSON path syntax
+	let result = '$' + path; // ".items" → "$.items", "[0]" → "$[0]"
+	result = result.split('[]').join('[*]'); // Replace [] with [*]
+	return result;
 }

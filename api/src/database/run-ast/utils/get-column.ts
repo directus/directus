@@ -3,6 +3,7 @@ import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
+import type { RelationalJsonContext } from '../../../types/ast.js';
 import { getFunctions } from '../../helpers/index.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
@@ -10,6 +11,8 @@ type FunctionColumnOptions = {
 	query: Query;
 	cases: Filter[];
 	permissions: Permission[];
+	/** Context for relational JSON access, passed from FunctionFieldNode */
+	relationalJsonContext?: RelationalJsonContext;
 };
 
 type OriginalCollectionName = {
@@ -46,14 +49,32 @@ export function getColumn(
 
 		if (functionName in fn) {
 			const collectionName = options?.originalCollectionName || table;
-			const type = schema?.collections[collectionName]?.fields?.[columnName!]?.type ?? 'unknown';
+
+			// For json function, extract the base field name from the path
+			// json(metadata.color) -> metadata
+			const baseFieldName = functionName === 'json' ? columnName!.split('.')[0]! : columnName!;
+
+			const type = schema?.collections[collectionName]?.fields?.[baseFieldName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
-			if (allowedFunctions.includes(functionName) === false) {
+			// For relational JSON, skip the function type check since validation happens in parse-fields
+			const isRelationalJson =
+				functionName === 'json' && isFunctionColumnOptions(options) && options.relationalJsonContext;
+
+			if (!isRelationalJson && allowedFunctions.includes(functionName) === false) {
 				throw new InvalidQueryError({ reason: `Invalid function specified "${functionName}"` });
 			}
 
-			const result = fn[functionName as keyof typeof fn](table, columnName!, {
+			// For json function, pass the full function call to preserve the path
+			// For other functions, pass just the column name
+			const functionArg = functionName === 'json' ? column : columnName!;
+
+			const relationalJsonContext =
+				isFunctionColumnOptions(options) && options.relationalJsonContext
+					? { relationalJsonContext: options.relationalJsonContext }
+					: {};
+
+			const result = fn[functionName as keyof typeof fn](table, functionArg, {
 				type,
 				relationalCountOptions: isFunctionColumnOptions(options)
 					? {
@@ -63,6 +84,7 @@ export function getColumn(
 						}
 					: undefined,
 				originalCollectionName: options?.originalCollectionName,
+				...relationalJsonContext,
 			}) as Knex.Raw;
 
 			if (alias) {
