@@ -1,1 +1,1 @@
-export const pong = () => JSON.stringify({ type: 'pong' });
+export const pong = (): string => JSON.stringify({ type: 'pong' });

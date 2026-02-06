@@ -83,4 +83,4 @@ export default [
 	'WWF',
 	'WWW',
 	'WYSIWYG',
-];
+] as string[];

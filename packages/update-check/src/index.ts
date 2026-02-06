@@ -10,7 +10,7 @@ const cache = await getCache();
 const instance = Axios.create();
 const axios = cache ? setupCache(instance, { storage: cache }) : instance;
 
-export async function updateCheck(currentVersion: string) {
+export async function updateCheck(currentVersion: string): Promise<void> {
 	let packageManifest: Partial<Manifest> | null;
 
 	try {

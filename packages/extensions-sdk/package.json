@@ -26,8 +26,8 @@
 		"templates"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsdown --tsconfig tsconfig.prod.json",
+		"dev": "tsdown --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -66,6 +66,7 @@
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",
+		"tsdown": "catalog:",
 		"vitest": "catalog:"
 	},
 	"engines": {

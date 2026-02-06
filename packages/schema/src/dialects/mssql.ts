@@ -72,7 +72,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	}
 }
 
-export function parseDefaultValue(value: string | null) {
+export function parseDefaultValue(value: string | null): string | null {
 	if (value === null) return null;
 
 	while (value.startsWith('(') && value.endsWith(')')) {
@@ -98,7 +98,7 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * Set the schema to be used in other methods
 	 */
-	withSchema(schema: string) {
+	withSchema(schema: string): this {
 		this.schema = schema;
 		return this;
 	}
@@ -178,7 +178,7 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * List all existing tables in the current schema/database
 	 */
-	async tables() {
+	async tables(): Promise<string[]> {
 		const records = await this.knex
 			.select<{ TABLE_NAME: string }[]>('TABLE_NAME')
 			.from('INFORMATION_SCHEMA.TABLES')
@@ -251,7 +251,12 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * Get all the available columns in the current schema/database. Can be filtered to a specific table
 	 */
-	async columns(table?: string) {
+	async columns(table?: string): Promise<
+		{
+			table: string;
+			column: string;
+		}[]
+	> {
 		const query = this.knex
 			.select<{ TABLE_NAME: string; COLUMN_NAME: string }[]>('TABLE_NAME', 'COLUMN_NAME')
 			.from('INFORMATION_SCHEMA.COLUMNS')
@@ -339,7 +344,7 @@ export default class MSSQL implements SchemaInspector {
 				object_definition ([c].[default_object_id]) AS [default_value],
 				[i].[is_primary_key],
 				[i].[is_unique],
-				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN 
+				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN
 					[i].[index_name]
 				ELSE
 					NULL
@@ -416,7 +421,7 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string) {
+	async primary(table: string): Promise<string> {
 		const results = await this.knex.raw(
 			`SELECT
          Col.Column_Name
@@ -439,7 +444,7 @@ export default class MSSQL implements SchemaInspector {
 	// Foreign Keys
 	// ===============================================================================================
 
-	async foreignKeys(table?: string) {
+	async foreignKeys(table?: string): Promise<ForeignKey[]> {
 		const result = await this.knex.raw<ForeignKey[]>(
 			`
       SELECT
