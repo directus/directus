@@ -69,7 +69,7 @@ const emit = defineEmits(['update:modelValue']);
 
 const fieldsStore = useFieldsStore();
 
-const rawFields = computed<Field[]>(() => {
+const fieldDefinitions = computed<Field[]>(() => {
 	if (props.collection) {
 		return fieldsStore.getFieldsForCollection(props.collection);
 	}
@@ -81,15 +81,15 @@ const rawFields = computed<Field[]>(() => {
 	return [];
 });
 
-const rawFieldsMap = computed<Record<string, Field | undefined>>(() => {
-	return Object.fromEntries(rawFields.value.map((field) => [field.field, field]));
+const fieldDefinitionsMap = computed<Record<string, Field | undefined>>(() => {
+	return Object.fromEntries(fieldDefinitions.value.map((field) => [field.field, field]));
 });
 
 const values = computed(() => {
 	return Object.assign(
 		{},
-		selectiveClone(props.initialValues, rawFieldsMap.value),
-		selectiveClone(props.modelValue, rawFieldsMap.value),
+		selectiveClone(props.initialValues, fieldDefinitionsMap.value),
+		selectiveClone(props.modelValue, fieldDefinitionsMap.value),
 	);
 });
 
@@ -292,7 +292,7 @@ function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 
 	if (opts?.force !== true && (!field || isDisabled(field))) return;
 
-	const edits = props.modelValue ? selectiveClone(props.modelValue, rawFieldsMap.value) : {};
+	const edits = props.modelValue ? selectiveClone(props.modelValue, fieldDefinitionsMap.value) : {};
 	edits[fieldKey] = value;
 	emit('update:modelValue', edits);
 }
