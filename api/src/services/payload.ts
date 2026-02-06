@@ -924,9 +924,7 @@ export class PayloadService {
 											onRevisionCreate: (pk) => revisions.push(pk),
 											onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 											bypassEmitAction: (params) =>
-												opts?.bypassEmitAction
-													? opts.bypassEmitAction(params)
-													: nestedActionEvents.push(params),
+												opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 											emitEvents: opts?.emitEvents,
 											autoPurgeCache: opts?.autoPurgeCache,
 											autoPurgeSystemCache: opts?.autoPurgeSystemCache,
