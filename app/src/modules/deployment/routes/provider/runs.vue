@@ -217,7 +217,9 @@ watch(
 		<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
 		<div v-else class="container">
-			<VNotice class="notice">{{ $t('deployment.provider.runs.notice') }}</VNotice>
+			<VNotice class="notice">
+				{{ $t('deployment.provider.runs.notice', { provider: $t(`deployment.provider.${provider}.name`) }) }}
+			</VNotice>
 			<VInfo v-if="runs.length === 0 && !search" icon="history" :title="$t('deployment.provider.runs.empty')" center>
 				{{ $t('deployment.provider.runs.empty_copy') }}
 			</VInfo>

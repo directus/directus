@@ -98,6 +98,7 @@
 		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "catalog:",
 		"@modelcontextprotocol/sdk": "catalog:",
+		"@netlify/api": "catalog:",
 		"@rollup/plugin-alias": "catalog:",
 		"@rollup/plugin-node-resolve": "catalog:",
 		"@rollup/plugin-virtual": "catalog:",
