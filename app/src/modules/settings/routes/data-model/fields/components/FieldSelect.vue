@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Field, Width } from '@directus/types';
+import type { Field, Width, Filter } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { computed, ref, unref } from 'vue';
+import { computed, ref, unref, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink, useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
@@ -16,13 +16,17 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import { useExtension } from '@/composables/use-extension';
 import InterfaceSystemCollection from '@/interfaces/_system/system-collection/system-collection.vue';
-import { useFieldsStore } from '@/stores/fields';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getSpecialForType } from '@/utils/get-special-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { notify } from '@/utils/notify';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
+import { useCollectionsStore } from '@/stores/collections';
+import { deepMapFilter } from "@/../../packages/utils/shared/deep-map-filter"
 
 const props = withDefaults(
 	defineProps<{
@@ -50,6 +54,70 @@ const inter = useExtension(
 	'interface',
 	computed(() => props.field.meta?.interface ?? null),
 );
+const useSchemaOverview = (): ComputedRef<SchemaOverview> => {
+	const relationsStore = useRelationsStore();
+	const fieldsStore = useFieldsStore();
+	const collectionsStore = useCollectionsStore();
+
+	return computed(() => ({
+		collections: Object.fromEntries(
+			collectionsStore.collections.map((collection) => {
+				const fields = fieldsStore.getFieldsForCollection(collection.collection).map((field) => [
+					field.field,
+					{
+						field: field.field,
+						defaultValue: field.schema?.default_value,
+						nullable: field.schema?.is_nullable ?? false,
+						generated: false, // unimplemented
+						type: field.type,
+						dbType: field.schema?.data_type ?? null,
+						alias: false, // unimplemented
+						searchable: field.meta?.searchable ?? true,
+						note: field.meta?.note ?? null,
+						precision: field.schema?.numeric_precision ?? null,
+						scale: field.schema?.numeric_scale ?? null,
+						special: field.meta?.special ?? [],
+						validation: field.meta?.validation ?? null,
+					} satisfies FieldOverview,
+				]);
+
+				const collectionInfo: CollectionOverview = {
+					collection: collection.collection,
+					fields: Object.fromEntries(fields),
+					accountability: collection.meta?.accountability ?? null,
+					note: collection.meta?.note ?? null,
+					primary: fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field,
+					singleton: collection.meta?.singleton ?? false,
+					sortField: collection.meta?.sort_field ?? null,
+				};
+
+				return [collection.collection, collectionInfo];
+			}),
+		),
+		relations: relationsStore.relations,
+	}));
+}
+const schemaOverview = useSchemaOverview();
+function extractFieldsFromFilter(filter: Filter) {
+	const fields: Set<string> = new Set();
+
+	deepMapFilter(
+		filter,
+		([key, value], context) => {
+			if (context.leaf && context.field) {
+				fields.add([...context.path, key].join('.'));
+			}
+
+			return [key, value];
+		},
+		{
+			schema: schemaOverview.value,
+			collection: props.field.collection, // or whichever collection you're working with
+		}
+	);
+
+	return Array.from(fields);
+}
 
 const interfaceName = computed(() => inter.value?.name ?? null);
 
@@ -135,6 +203,22 @@ function useDuplicate() {
 			delete newField.meta.sort;
 			delete newField.meta.group;
 		}
+		if (newField.meta?.validation) {
+			newField.meta.validation = deepMapFilter(
+				newField.meta.validation,
+				([key, value], context) => {
+					if (key === props.field.field) {
+						return [duplicateName.value, value];
+					}
+
+					return [key, value];
+				},
+				{
+					schema: schemaOverview.value,
+					collection: props.field.collection,
+				}
+			);
+		}
 
 		if (newField.schema) {
 			delete newField.schema.comment;
@@ -197,10 +281,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 			</template>
 
 			<template #input>
-				<div
-					v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
-					class="label"
-				>
+				<div v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+					class="label">
 					<div class="label-inner">
 						<span class="name">{{ field.field }}</span>
 						<span v-if="interfaceName" class="interface">{{ interfaceName }}</span>
@@ -210,18 +292,10 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		</VInput>
 
 		<template v-else>
-			<Draggable
-				v-if="localType === 'group'"
-				class="field-grid group full nested"
-				:model-value="nestedFields"
-				handle=".drag-handle"
-				:group="{ name: 'fields' }"
-				:set-data="hideDragImage"
-				:animation="150"
-				item-key="field"
-				v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
-				@update:model-value="onGroupSortChange"
-			>
+			<Draggable v-if="localType === 'group'" class="field-grid group full nested" :model-value="nestedFields"
+				handle=".drag-handle" :group="{ name: 'fields' }" :set-data="hideDragImage" :animation="150"
+				item-key="field" v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
+				@update:model-value="onGroupSortChange">
 				<template #header>
 					<div class="header full">
 						<VIcon class="drag-handle" name="drag_indicator" @click.stop />
@@ -229,15 +303,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 							{{ field.field }}
 							<VIcon v-if="field.meta?.required === true" name="star" class="required" sup filled />
 						</span>
-						<VIcon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon" small />
-						<FieldSelectMenu
-							:field="field"
-							:no-delete="nestedFields.length > 0"
-							@toggle-visibility="toggleVisibility"
-							@set-width="setWidth($event)"
-							@duplicate="duplicateActive = true"
-							@delete="deleteActive = true"
-						/>
+						<VIcon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon"
+							small />
+						<FieldSelectMenu :field="field" :no-delete="nestedFields.length > 0"
+							@toggle-visibility="toggleVisibility" @set-width="setWidth($event)"
+							@duplicate="duplicateActive = true" @delete="deleteActive = true" />
 					</div>
 				</template>
 
@@ -252,11 +322,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				</template>
 
 				<template #input>
-					<div
-						v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
-						class="label"
-						@click="openFieldDetail"
-					>
+					<div v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+						class="label" @click="openFieldDetail">
 						<div class="label-inner">
 							<span class="name">
 								{{ field.field }}
@@ -270,35 +337,20 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 				<template #append>
 					<div class="icons">
-						<VIcon
-							v-if="field.schema && field.schema.is_primary_key"
-							v-tooltip="$t('primary_key')"
-							name="vpn_key"
-							small
-						/>
-						<VIcon
-							v-if="!field.meta"
-							v-tooltip="$t('db_only_click_to_configure')"
-							name="report_problem"
-							class="unmanaged"
-							small
-						/>
-						<VIcon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon" small />
+						<VIcon v-if="field.schema && field.schema.is_primary_key" v-tooltip="$t('primary_key')"
+							name="vpn_key" small />
+						<VIcon v-if="!field.meta" v-tooltip="$t('db_only_click_to_configure')" name="report_problem"
+							class="unmanaged" small />
+						<VIcon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon"
+							small />
 
-						<RouterLink
-							v-if="showRelatedCollectionLink"
-							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`"
-						>
+						<RouterLink v-if="showRelatedCollectionLink"
+							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`">
 							<VIcon name="open_in_new" class="link-icon" small />
 						</RouterLink>
 
-						<FieldSelectMenu
-							:field="field"
-							@toggle-visibility="toggleVisibility"
-							@set-width="setWidth($event)"
-							@duplicate="duplicateActive = true"
-							@delete="deleteActive = true"
-						/>
+						<FieldSelectMenu :field="field" @toggle-visibility="toggleVisibility" @set-width="setWidth($event)"
+							@duplicate="duplicateActive = true" @delete="deleteActive = true" />
 					</div>
 				</template>
 			</VInput>
@@ -310,7 +362,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 						<div class="form-grid">
 							<div class="field">
 								<span class="type-label">{{ $t('collection', 0) }}</span>
-								<InterfaceSystemCollection :value="duplicateTo" class="monospace" @input="duplicateTo = $event" />
+								<InterfaceSystemCollection :value="duplicateTo" class="monospace"
+									@input="duplicateTo = $event" />
 							</div>
 
 							<div class="field">
@@ -391,7 +444,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		margin-block-end: 4px;
 	}
 
-	.duplicate-field + .duplicate-field {
+	.duplicate-field+.duplicate-field {
 		margin-block-end: 32px;
 	}
 }
@@ -403,7 +456,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	padding-block: 40px 16px;
 	border-radius: var(--theme--border-radius);
 
-	> * {
+	>* {
 		position: relative;
 		z-index: 2;
 	}
@@ -462,7 +515,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	gap: 8px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
-	& + & {
+	&+& {
 		margin-block-start: 8px;
 	}
 
@@ -524,7 +577,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 }
 
 .icons {
-	* + *:not(:last-child) {
+	*+*:not(:last-child) {
 		margin-inline-start: 8px;
 	}
 }
@@ -547,7 +600,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	border-radius: var(--theme--border-radius);
 	outline: 2px dashed var(--theme--primary);
 
-	> * {
+	>* {
 		opacity: 0;
 	}
 }
