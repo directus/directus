@@ -77,6 +77,9 @@ const query = ref<RelationQuerySingle>({
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
 
+const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
+const menuOpen = ref(false);
+
 const {
 	displayItem: file,
 	loading,
@@ -87,8 +90,6 @@ const {
 });
 
 const { createAllowed } = useRelationPermissionsM2O(relationInfo);
-
-const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -141,6 +142,8 @@ const customFilter = computed(() => {
 const internalDisabled = computed(() => {
 	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
 });
+
+const interfaceOpen = computed(() => Boolean(activeDialog.value) || menuOpen.value || editDrawerActive.value);
 
 function setSelection(selection: (string | number)[] | null) {
 	if (selection![0]) {
@@ -197,8 +200,8 @@ function useURLImport() {
 </script>
 
 <template>
-	<div class="file">
-		<VMenu attached :disabled="loading || internalDisabled">
+	<div v-prevent-focusout="interfaceOpen" class="file">
+		<VMenu v-model="menuOpen" attached :disabled="loading || internalDisabled">
 			<template #activator="{ toggle, active, deactivate }">
 				<div>
 					<VSkeletonLoader v-if="loading" type="input" />
@@ -210,11 +213,11 @@ function useURLImport() {
 						readonly
 						block
 						:active
-						:disabled="internalDisabled"
+						:disabled="!(nonEditable && file) && internalDisabled"
 						:non-editable="nonEditable"
 						:placeholder="$t('no_file_selected')"
 						:model-value="file && file.title"
-						@click="toggle"
+						@click="!nonEditable ? toggle() : (editDrawerActive = true)"
 					>
 						<VListItemIcon>
 							<div
@@ -242,12 +245,13 @@ function useURLImport() {
 							<VTextOverflow v-else class="placeholder" :text="$t('no_file_selected')" />
 						</VListItemContent>
 
-						<div class="item-actions">
+						<div v-if="!nonEditable" class="item-actions">
 							<template v-if="file">
 								<VIcon
-									v-tooltip="$t('edit_item')"
+									v-tooltip="!internalDisabled && $t('edit_item')"
 									name="edit"
 									clickable
+									:disabled="internalDisabled"
 									@click.stop="
 										deactivate();
 										editDrawerActive = true;
@@ -255,10 +259,10 @@ function useURLImport() {
 								/>
 
 								<VRemove
-									v-if="!internalDisabled"
 									:item-info="relationInfo"
 									:item-edits="edits"
 									deselect
+									:disabled="internalDisabled"
 									@action="remove"
 								/>
 							</template>

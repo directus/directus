@@ -30,15 +30,14 @@ import VTabs from '@/components/v-tabs.vue';
 import VTextarea from '@/components/v-textarea.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { useFocusin } from '@/composables/use-focusin';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
-
 import 'tinymce/tinymce';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
@@ -67,7 +66,6 @@ type CustomFormat = {
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
-		field?: string;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		customFormats?: CustomFormat[];
@@ -95,6 +93,7 @@ const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
 const comparisonEditorRef = ref<any | null>(null);
+const comparisonEditorInitialized = ref(false);
 const editorKey = ref(0);
 const comparisonEditorKey = ref(0);
 
@@ -187,7 +186,7 @@ watch(
 watch(
 	() => [props.value, props.font, props.direction, props.comparisonSide],
 	() => {
-		if (comparisonEditorRef.value) {
+		if (comparisonEditorRef.value && comparisonEditorInitialized.value) {
 			comparisonEditorRef.value.setContent(props.value || '');
 		}
 	},
@@ -196,6 +195,7 @@ watch(
 watch(
 	() => props.comparisonSide,
 	() => {
+		comparisonEditorInitialized.value = false;
 		comparisonEditorKey.value++;
 	},
 );
@@ -203,6 +203,7 @@ watch(
 function getBaseEditorOptions() {
 	return {
 		skin: false,
+		body_class: props.nonEditable ? 'non-editable' : '',
 		content_css: false,
 		branding: false,
 		max_height: 1000,
@@ -240,7 +241,7 @@ const editorOptions = computed(() => {
 
 	return {
 		...getBaseEditorOptions(),
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', !!props.nonEditable),
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
 		plugins: [
 			'media',
 			'table',
@@ -272,7 +273,7 @@ const editorOptions = computed(() => {
 const comparisonEditorOptions = computed(() => {
 	return {
 		...getBaseEditorOptions(),
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true, true),
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true),
 		plugins: ['autoresize', 'directionality'],
 		toolbar: false,
 		readonly: true,
@@ -280,6 +281,7 @@ const comparisonEditorOptions = computed(() => {
 			comparisonEditorRef.value = editor;
 
 			editor.on('init', () => {
+				comparisonEditorInitialized.value = true;
 				editor.setContent(props.value || '');
 			});
 		},
@@ -405,11 +407,15 @@ function setFocus(val: boolean) {
 	if (editorElement.value == null) return;
 	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
+	const { focus, blur } = useFocusin(body);
+
 	if (body == null) return;
 
 	if (val) {
+		focus();
 		body.classList.add('focus');
 	} else {
+		blur();
 		body.classList.remove('focus');
 	}
 }
@@ -458,19 +464,21 @@ onMounted(() => {
 		'Right to left': t('right_to_left'),
 	});
 });
+
+const menuActive = computed(
+	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
+);
 </script>
 
 <template>
-	<div :id="field" class="wysiwyg" :class="{ disabled }">
-		<template v-if="comparisonMode && value">
-			<Editor
-				:key="`comparison-${comparisonSide}-${comparisonEditorKey}`"
-				ref="comparisonEditorElement"
-				:value="value"
-				:init="comparisonEditorOptions"
-				disabled
-			/>
-		</template>
+	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
+		<Editor
+			v-if="nonEditable"
+			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"
+			:value="value"
+			:init="comparisonEditorOptions"
+			disabled
+		/>
 		<Editor
 			v-else
 			:key="editorKey"

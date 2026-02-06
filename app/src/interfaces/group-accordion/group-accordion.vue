@@ -5,6 +5,7 @@ import { ref, watch } from 'vue';
 import AccordionSection from './accordion-section.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import VItemGroup from '@/components/v-item-group.vue';
+import { CollabContext } from '@/composables/use-collab';
 
 const props = withDefaults(
 	defineProps<{
@@ -16,6 +17,7 @@ const props = withDefaults(
 		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		collabContext?: CollabContext;
 		comparison?: ComparisonContext;
 		primaryKey: string | number;
 		loading?: boolean;
@@ -126,6 +128,7 @@ function useComputedGroup() {
 			:batch-mode="batchMode"
 			:batch-active-fields="batchActiveFields"
 			:comparison="comparison"
+			:collab-context="collabContext"
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-errors="validationErrors"

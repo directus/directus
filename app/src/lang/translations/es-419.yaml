@@ -173,7 +173,6 @@ create_policy: Crear Regla
 create_user: Crear Usuario
 message: Mensaje
 delete_panel: Borrar Panel
-create_webhook: Crear un Webhook
 create_custom_translation: Crear Traducción Personalizada
 edit_custom_translation: Editar Traducción Personalizada
 no_custom_translations: Sin Traducciones Personalizadas
@@ -501,8 +500,6 @@ revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
-updated_in_revision: Actualizado en esta revisión
-updated_in_revision_matches_latest: Actualizado en esta revisión, pero coincide con la versión más reciente
 differences_count: 'Sin diferencias | 1 diferencia | {count} diferencias'
 presentation_text_values_cannot_be_reimported: 'Utiliza texto de presentación, los valores no pueden ser reimportados.'
 download_page_as_csv: 'Descargar Página como CSV'
@@ -697,12 +694,6 @@ file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
 no_files_copy: Aquí no hay archivos.
 user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
-webhooks_count: 'No Webhooks | Un Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Los webhooks están obsoletos y no se recomienda su uso.
-
-  Por favor usa **Flows** con la [operación Webhook / Solicitud URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) en su lugar.
-no_webhooks_copy: Aún no se han configurado webhooks. Comience creando uno a continuación.
 no_notifications: Sin notificaciones
 no_notifications_copy: '¡Estás al día!'
 activity_log: Registro de actividad
@@ -734,7 +725,6 @@ action: Acción
 ip_address: Dirección IP
 user_agent: Navegador
 origin: Origen
-webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor de Decimales
 min_value: Valor Mínimo
@@ -1047,6 +1037,15 @@ no_url_copy: Por favor, agregue una URL en la configuración.
 invalid_url: URL no válida
 invalid_url_copy: La URL especificada no coincide con ninguna de las URL definidas en la configuración.
 insights: Informes
+deployment:
+  provider:
+    settings:
+      delete_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
+    run:
+      cancel_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
+      log_all: Todos los niveles de registro
+  target_value:
+    preview: Vista previa
 dashboard: Tablero
 panel: Tablero
 panel_options: Opciones del Panel
@@ -1198,7 +1197,6 @@ settings_project: Ajustes
 settings_appearance: Apariencia
 settings_ai: IA
 model_context_protocol: Model Context Protocol
-settings_webhooks: Webhooks
 settings_flows: Flujos
 settings_system_logs: Registros del Sistema
 settings_presets: Marcadores
@@ -1277,7 +1275,6 @@ directus_collection:
   directus_settings: Opciones de configuración del proyecto
   directus_shares: Rastrear elementos compartidos externamente
   directus_users: Usuarios del sistema para la plataforma
-  directus_webhooks: Configuración para solicitudes HTTP basadas en eventos
   directus_translations: Traducciones personalizadas
   directus_versions: Versiones de contenido para elementos
   directus_extensions: Configuración de extensiones
@@ -1440,6 +1437,7 @@ fields:
     mcp_system_prompt_enabled_note: "Usar el <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>prompt de sistema predeterminado</a> para guiar el comportamiento del LLM. Desactívalo para eliminarlo o reemplazarlo con tu propio prompt a continuación."
     mcp_system_prompt: Prompt de sistema personalizado
     mcp_system_prompt_note: 'Prompt de sistema personalizado para reemplazar el predeterminado. Déjalo vacío para usar el predeterminado (si está habilitado arriba).'
+    ai_header_name: Cabecera
   directus_shares:
     name: Nombre
     role: Rol
@@ -1470,18 +1468,6 @@ fields:
     admin_access: Acceso Admin
     ip_access: Acceso IP
     enforce_tfa: Requerir 2FA
-  directus_webhooks:
-    name: Nombre
-    method: Método
-    status: Estatus
-    data: Datos
-    header: Cabecera
-    value: Valor
-    headers: Solicitar Encabezados
-    data_label: Enviar datos del evento
-    triggers: Disparadores
-    actions: Acciones
-    collections: Colecciones
 field_options:
   directus_settings:
     project_name_placeholder: Mi proyecto...
@@ -1583,19 +1569,6 @@ field_options:
     status_dropdown_suspended: Suspendido
     status_dropdown_archived: Archivado
     token: Introduzca un token de acceso seguro...
-  directus_webhooks:
-    status_options_active: Activo
-    status_options_inactive: Inactivo
-    data_label: Enviar datos del evento
-    triggers_divider: Disparadores
-    actions_create: Crear
-    actions_update: Actualizar
-    actions_delete: Eliminar
-    actions_login: Iniciar sesión
-    headers:
-      header: Cabecera
-      value: Valor
-      add: Añadir cabecera
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
 no_value: Sin valor
 do_nothing: No hacer nada
@@ -1618,6 +1591,7 @@ live_preview:
   close_window: Abrir en Vista Dividida
   toggle_3d: Alternar 3D
   iframe_title: Vista previa del sitio web en vivo
+  display_options: Opciones de visualización
 shares: Compartido
 unlimited_usage: Uso ilimitado
 uses_left: Sin usos restantes | Un uso restante | {n} usos restantes
@@ -1626,6 +1600,8 @@ new_share: Nueva parte
 ai:
   input: Entrada
   unknown: Desconocido
+  items: Ítems
+  content: Contenido
   settings: Ajustes
   tool_approval:
     disabled: Deshabilitado
@@ -1698,7 +1674,6 @@ editing_role: 'Rol {role}'
 editing_policy: '{policy} Regla'
 no_permissions: Sin permisos
 permission_add_collection: Añadir Colección
-creating_webhook: Creando Webhook
 default_label: Por defecto
 delete_label: Eliminar
 delete_are_you_sure: >-

@@ -46,7 +46,7 @@ if (process.env['TEST_SAVE_LOGS']) {
 }
 
 const directusAuthConfig = {
-	AUTH_PROVIDERS: 'saml,github',
+	AUTH_PROVIDERS: 'saml,github,ldap',
 	AUTH_SAML_DRIVER: 'saml',
 	AUTH_SAML_ALLOW_PUBLIC_REGISTRATION: 'true',
 	AUTH_SAML_SP_metadata:
@@ -63,6 +63,19 @@ const directusAuthConfig = {
 	AUTH_GITHUB_AUTHORIZE_URL: 'https://github.com/login/oauth/authorize',
 	AUTH_GITHUB_ACCESS_URL: 'https://github.com/login/oauth/access_token',
 	AUTH_GITHUB_PROFILE_URL: 'https://api.github.com/user',
+
+	AUTH_LDAP_DRIVER: 'ldap',
+	AUTH_LDAP_CLIENT_URL: 'ldap://127.0.0.1:6109',
+	AUTH_LDAP_BIND_DN: 'cn=Manager,dc=my-domain,dc=com',
+	AUTH_LDAP_BIND_PASSWORD: 'secret',
+	AUTH_LDAP_USER_DN: 'ou=users,dc=my-domain,dc=com',
+	AUTH_LDAP_USER_ATTRIBUTE: 'uid',
+	AUTH_LDAP_USER_SCOPE: 'one',
+	AUTH_LDAP_MAIL_ATTRIBUTE: 'mail',
+	AUTH_LDAP_FIRST_NAME_ATTRIBUTE: 'givenName',
+	AUTH_LDAP_LAST_NAME_ATTRIBUTE: 'sn',
+	AUTH_LDAP_ALLOW_PUBLIC_REGISTRATION: 'true',
+	AUTH_LDAP_DEFAULT_ROLE_ID: 'd70c0943-5b55-4c5d-a613-f539a27a57f5',
 };
 
 const directusStorageConfig = {
@@ -98,6 +111,11 @@ const directusConfig = {
 	QUERY_LIMIT_DEFAULT: '90', // Must be less than MAX_BATCH_MUTATION by at least 3
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer
 	WEBSOCKETS_ENABLED: 'true',
+	WEBSOCKETS_REST_ENABLED: 'true',
+	REDIS_HOST: '127.0.0.1',
+	REDIS_PORT: '6108',
+	REDIS_ENABLED: 'true',
+	SYNCHRONIZATION_STORE: 'redis',
 	TUS_ENABLED: 'true',
 	EMAIL_TRANSPORT: 'smtp',
 	EMAIL_SMTP_HOST: '127.0.0.1',

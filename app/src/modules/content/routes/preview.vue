@@ -3,6 +3,7 @@ import { useCollection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { useVisualEditing } from '@/composables/use-visual-editing';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import LivePreview from '@/views/private/components/live-preview.vue';
 
@@ -29,11 +30,25 @@ const previewUrl = computed(() => {
 	return displayValue.value || null;
 });
 
+const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl, currentVersion });
+
 function closePopup() {
 	window.close();
+}
+
+function onSaved() {
+	window.opener?.postMessage('refresh', window.location.origin);
 }
 </script>
 
 <template>
-	<LivePreview v-if="previewUrl" :url="previewUrl" in-popup @new-window="closePopup" />
+	<LivePreview
+		v-if="previewUrl"
+		:url="previewUrl"
+		in-popup
+		:can-enable-visual-editing="visualEditingEnabled"
+		:visual-editor-urls="visualEditorUrls"
+		@new-window="closePopup"
+		@saved="onSaved"
+	/>
 </template>

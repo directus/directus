@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "14.4.0",
+	"version": "15.1.1",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -22,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "vite build",
-		"dev": "vite",
+		"dev": "vite --host",
 		"story:build": "histoire build && echo \"/*  /index.html  200\" >> .histoire/dist/_redirects",
 		"story:dev": "histoire dev",
 		"story:preview": "histoire preview",
@@ -33,6 +33,7 @@
 	},
 	"devDependencies": {
 		"@ai-sdk/vue": "catalog:",
+		"@directus/ai": "workspace:*",
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",

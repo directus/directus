@@ -146,7 +146,6 @@ create_policy: Skapa policy
 create_user: Skapa användare
 message: Meddelande
 delete_panel: Ta bort panel
-create_webhook: Skapa webhook
 create_custom_translation: Skapa anpassad översättning
 edit_custom_translation: Redigera egen översättning
 no_custom_translations: Inga egna översättningar
@@ -614,8 +613,6 @@ file_count: 'Inga filer | En fil | {count} filer'
 no_files_copy: Det finns inga filer här.
 user_count: 'Inga användare | En användare | {count} användare'
 no_users_copy: Det finns inga användare i denna roll ännu.
-webhooks_count: 'Inga webhooks | En webhook | {count} webhooks'
-no_webhooks_copy: Inga webhooks har konfigurerats ännu. Kom igång genom att skapa en nedan.
 no_notifications: Inga notifikationer
 no_notifications_copy: Inget nytt!
 activity_log: Aktivitetslogg
@@ -645,7 +642,6 @@ action: Åtgärd
 ip_address: IP-adress
 user_agent: Användaragent
 origin: Ursprung
-webhooks: Webhooks
 decimals: Decimaler
 value_decimals: Värde decimaler
 min_value: Minsta värde
@@ -919,6 +915,15 @@ toggle_editable_elements: Växla redigerbara element
 no_url: Ingen URL angiven
 invalid_url: Ogiltig URL
 insights: Insikter
+deployment:
+  provider:
+    settings:
+      delete_confirm: Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
+    run:
+      cancel_confirm: Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
+      log_all: Alla loggnivåer
+  target_value:
+    preview: Förhandsgranska
 dashboard: Kontrollpanel
 panel: Panel
 panel_options: Alternativ för panel
@@ -1046,7 +1051,6 @@ settings_roles: Användarroller
 settings_permissions: Åtkomstpolicyer
 settings_project: Inställningar
 settings_appearance: Utseende
-settings_webhooks: Webhooks
 settings_flows: Flöden
 settings_system_logs: Systemloggar
 settings_presets: Bokmärken
@@ -1108,7 +1112,6 @@ directus_collection:
   directus_sessions: Information om användarsessioner
   directus_settings: Projektets konfigurationsalternativ
   directus_users: Systemanvändare för plattformen
-  directus_webhooks: Konfiguration för eventbaserade HTTP-anrop
   directus_translations: Anpassade översättningar
   directus_extensions: Konfiguration av tillägg
 fields:
@@ -1264,17 +1267,6 @@ fields:
     admin_access: Adminåtkomst
     ip_access: IP-åtkomst
     enforce_tfa: Kräv 2FA
-  directus_webhooks:
-    name: Namn
-    method: Metod
-    status: Status
-    data: Data
-    value: Värde
-    headers: Headers för anrop
-    data_label: Skicka händelsedata
-    triggers: Utlösare
-    actions: Åtgärder
-    collections: Kollektioner
 field_options:
   directus_settings:
     project_name_placeholder: Mitt projekt...
@@ -1367,17 +1359,6 @@ field_options:
     status_dropdown_suspended: Avstängd
     status_dropdown_archived: Arkiverad
     token: Ange ett säkert åtkomsttoken...
-  directus_webhooks:
-    status_options_active: Aktiv
-    status_options_inactive: Inaktiv
-    data_label: Skicka händelsedata
-    triggers_divider: Utlösare
-    actions_create: Skapa
-    actions_update: Uppdatera
-    actions_delete: Radera
-    actions_login: Inloggning
-    headers:
-      value: Värde
 no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
 no_value: Inget värde
 do_nothing: Gör ingenting
@@ -1399,10 +1380,13 @@ live_preview:
   new_window: Öppna i nytt fönster
   close_window: Öppna i delad vy
   toggle_3d: Växla 3D
+  display_options: Visningsalternativ
 unlimited_usage: Obegränsad användning
 ai:
   input: Inmatning
   unknown: Okänd
+  items: Objekt
+  content: Innehåll
   settings: Inställningar
   tool_approval:
     disabled: Inaktiverad
@@ -1443,7 +1427,6 @@ continue_as: >-
 editing_role: '{role} roll'
 no_permissions: Inga behörigheter
 permission_add_collection: Lägg till samling
-creating_webhook: Skapar Webhook
 default_label: Standard
 delete_label: Radera
 delete_are_you_sure: >-

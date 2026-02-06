@@ -1,12 +1,20 @@
 import { createTestingPinia } from '@pinia/testing';
+import type { UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useAiStore } from './use-ai';
+import { useAiToolsStore } from './use-ai-tools';
 
 // Mock dependencies
 vi.mock('@/stores/settings', () => ({
 	useSettingsStore: vi.fn(() => ({
 		availableAiProviders: ['openai'],
+		settings: {
+			ai_openai_allowed_models: ['gpt-4o-mini', 'gpt-5-nano'],
+			ai_anthropic_allowed_models: null,
+			ai_google_allowed_models: null,
+			ai_openai_compatible_models: null,
+		},
 	})),
 }));
 
@@ -64,7 +72,7 @@ describe('useAiStore', () => {
 
 			// Simulate having messages by directly manipulating the chat.messages array
 			// In the real implementation, chat.messages would have data
-			const testMessages = [
+			const testMessages: UIMessage[] = [
 				{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] },
 				{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Hi there!' }] },
 			];
@@ -98,16 +106,17 @@ describe('useAiStore', () => {
 
 		test('should reset tool approvals to empty object', async () => {
 			const aiStore = useAiStore();
+			const toolsStore = useAiToolsStore();
 
 			// Set some tool approvals
-			aiStore.setToolApprovalMode('items', 'always');
-			aiStore.setToolApprovalMode('files', 'ask');
+			toolsStore.setToolApprovalMode('items', 'always');
+			toolsStore.setToolApprovalMode('files', 'ask');
 
-			expect(Object.keys(aiStore.toolApprovals).length).toBeGreaterThan(0);
+			expect(Object.keys(toolsStore.toolApprovals).length).toBeGreaterThan(0);
 
 			await aiStore.dehydrate();
 
-			expect(aiStore.toolApprovals).toEqual({});
+			expect(toolsStore.toolApprovals).toEqual({});
 		});
 
 		test('should reset selected model to default', async () => {
@@ -119,8 +128,12 @@ describe('useAiStore', () => {
 			if (defaultModel) {
 				// Select a different model (if there are multiple)
 				if (aiStore.models.length > 1) {
-					aiStore.selectModel(aiStore.models[1]);
-					expect(aiStore.selectedModel?.model).not.toBe(defaultModel.model);
+					const alternativeModel = aiStore.models[1];
+
+					if (alternativeModel) {
+						aiStore.selectModel(alternativeModel);
+						expect(aiStore.selectedModel?.model).not.toBe(defaultModel.model);
+					}
 				}
 
 				await aiStore.dehydrate();
@@ -154,9 +167,11 @@ describe('useAiStore', () => {
 			const aiStore = useAiStore();
 
 			// Set up some state
+			const toolsStore = useAiToolsStore();
+
 			aiStore.input = 'Test input';
 			aiStore.chatOpen = true;
-			aiStore.setToolApprovalMode('items', 'always');
+			toolsStore.setToolApprovalMode('items', 'always');
 			aiStore.chat.messages.push({ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] });
 
 			await aiStore.dehydrate();
@@ -164,7 +179,7 @@ describe('useAiStore', () => {
 			// Verify everything is reset
 			expect(aiStore.messages.length).toBe(0);
 			expect(aiStore.input).toBe('');
-			expect(aiStore.toolApprovals).toEqual({});
+			expect(toolsStore.toolApprovals).toEqual({});
 			expect(aiStore.chatOpen).toBe(false);
 		});
 	});

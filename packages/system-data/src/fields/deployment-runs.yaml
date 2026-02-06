@@ -1,0 +1,12 @@
+table: directus_deployment_runs
+
+fields:
+  - field: id
+    special: [uuid]
+  - field: project
+  - field: external_id
+  - field: target
+  - field: date_created
+    special: [date-created, cast-timestamp]
+  - field: user_created
+    special: [user-created]
