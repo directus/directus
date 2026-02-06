@@ -128,7 +128,7 @@ export function useItem<T extends Item>(
 		}
 
 		try {
-			const response = await api.get(itemEndpoint.value, { params: unref(rawQuery) });
+			const response = await api.get(itemEndpoint.value, { params: rawQuery });
 			setItemValueToResponse(response);
 		} catch (err) {
 			error.value = err;
