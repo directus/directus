@@ -1,8 +1,7 @@
 {
 	"extends": "@directus/tsconfig/node22",
 	"compilerOptions": {
-		"lib": ["ES2023", "DOM"],
-		"isolatedDeclarations": true
+		"lib": ["ES2023", "DOM"]
 	},
 	"include": ["src", "tests"],
 	"typedocOptions": {

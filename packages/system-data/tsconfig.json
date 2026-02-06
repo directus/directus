@@ -1,8 +1,7 @@
 {
 	"extends": "@directus/tsconfig/node22",
 	"compilerOptions": {
-		"types": ["unplugin-yaml/types"],
-		"isolatedDeclarations": true
+		"types": ["unplugin-yaml/types"]
 	},
 	"include": ["src"],
 	"typedocOptions": {
