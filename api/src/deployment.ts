@@ -1,6 +1,6 @@
 import type { Credentials, Options, ProviderType } from '@directus/types';
 import type { DeploymentDriver } from './deployment/deployment.js';
-import { VercelDriver } from './deployment/drivers/index.js';
+import { NetlifyDriver, VercelDriver } from './deployment/drivers/index.js';
 
 // Driver constructor type - uses any for credentials to allow provider-specific types
 type DriverConstructor = new (credentials: any, options?: Options) => DeploymentDriver;
@@ -15,6 +15,7 @@ const drivers: Map<ProviderType, DriverConstructor> = new Map();
  */
 export function registerDeploymentDrivers(): void {
 	drivers.set('vercel', VercelDriver);
+	drivers.set('netlify', NetlifyDriver);
 }
 
 /**

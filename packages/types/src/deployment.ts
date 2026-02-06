@@ -1,7 +1,7 @@
 /**
  * Supported deployment provider types
  */
-export const DEPLOYMENT_PROVIDER_TYPES = ['vercel'] as const;
+export const DEPLOYMENT_PROVIDER_TYPES = ['vercel', 'netlify'] as const;
 export type ProviderType = (typeof DEPLOYMENT_PROVIDER_TYPES)[number];
 
 /**
