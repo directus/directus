@@ -53,6 +53,6 @@ TODO
 /packages/extensions-sdk/temp-extension-*/
 
 # AI
-.claude/issues/
-.claude/reviews/
-.claude/plans/
+.claude/*
+!.claude/CLAUDE.md
+!.claude/skills/
