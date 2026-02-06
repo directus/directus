@@ -38,13 +38,26 @@ describe('NetlifyDriver', () => {
 
 		it('should include account_slug filter when account_slug option is set', async () => {
 			const driverWithAccount = new NetlifyDriver({ access_token: 'test-token' }, { account_slug: 'account-123' });
-			mockNetlifyAPI.listSites.mockResolvedValueOnce([]);
+			mockNetlifyAPI.listSitesForAccount.mockResolvedValueOnce([]);
 
 			await driverWithAccount.listProjects();
 
+			expect(mockNetlifyAPI.listSitesForAccount).toHaveBeenCalledWith(
+				expect.objectContaining({
+					account_slug: 'account-123',
+					per_page: '100',
+				}),
+			);
+		});
+
+		it('should include list all sites when no account_slug option is set', async () => {
+			const driverWithoutAccount = new NetlifyDriver({ access_token: 'test-token' });
+			mockNetlifyAPI.listSites.mockResolvedValueOnce([]);
+
+			await driverWithoutAccount.listProjects();
+
 			expect(mockNetlifyAPI.listSites).toHaveBeenCalledWith(
 				expect.objectContaining({
-					filter: 'owner',
 					per_page: '100',
 				}),
 			);
