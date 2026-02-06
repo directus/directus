@@ -1,7 +1,14 @@
 /**
  * Replace windows style backslashes with unix forwards slashes
  */
-export const normalizePath = (path: string, { removeLeading } = { removeLeading: false }) => {
+export const normalizePath = (
+	path: string,
+	{
+		removeLeading,
+	}: {
+		removeLeading: boolean;
+	} = { removeLeading: false },
+): string => {
 	if (path === '\\' || path === '/') return '/';
 
 	if (path.length <= 1) {
