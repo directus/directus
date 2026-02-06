@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
 	use24: true,
 });
 
-const emit = defineEmits<{ 'update:modelValue': [value: string | null]; close: [] }>();
+const emit = defineEmits<{ 'update:modelValue': [value: string | null]}>();
 
 // Internal state using @internationalized/date types
 const calendarValue = ref<DateValue | undefined>();
@@ -238,10 +238,10 @@ function setToNow() {
 </script>
 
 <template>
-	<div class="v-date-picker" tabindex="-1">
+	<div class="v-date-picker">
 		<CalendarRoot
 			v-slot="{ weekDays, grid, date }"
-			v-model="calendarValue"
+			:value="calendarValue"
 			:disabled="disabled"
 			class="calendar"
 			fixed-weeks
@@ -445,7 +445,7 @@ function setToNow() {
 	}
 
 	.calendar-cell-trigger[data-disabled] {
-		cursor: none;
+		cursor: not-allowed;
 		color: var(--theme--foreground-subdued);
 	}
 
