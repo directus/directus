@@ -64,7 +64,7 @@ const isRTL = computed(() => userStore.textDirection === 'rtl');
 const hourCycle = computed(() => (props.use24 ? 24 : undefined));
 const granularity = computed(() => (props.includeSeconds ? 'second' : 'minute'));
 const showCalendar = computed(() => props.type !== 'time');
-const showTime = computed(() => ['time', 'dateTime', 'timestamp'].includes(props.type));
+const hasTime = computed(() => ['time', 'dateTime', 'timestamp'].includes(props.type));
 
 /**
  * Default time (12:00) when the picker supports time.
@@ -117,6 +117,7 @@ const monthOptions = computed(() => {
 	});
 });
 
+
 watch(
 	() => props.modelValue,
 	(newValue) => {
@@ -124,7 +125,7 @@ watch(
 			calendarValue.value = undefined;
 
 			// Reset time to a sensible default when the picker supports time.
-			internalTimeValue.value = ['time', 'dateTime', 'timestamp'].includes(props.type)
+			internalTimeValue.value = hasTime.value
 				? getDefaultTimeValue()
 				: undefined;
 
@@ -229,7 +230,7 @@ function setToNow() {
 	calendarValue.value = new CalendarDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
 	// If the picker supports time, also set the current time
-	if (showTime.value) {
+	if (hasTime.value) {
 		internalTimeValue.value = new Time(now.getHours(), now.getMinutes(), now.getSeconds());
 	}
 
@@ -305,7 +306,7 @@ function setToNow() {
 						</CalendarGridBody>
 					</CalendarGrid>
 				</template>
-				<div v-if="showTime" class="time-picker">
+				<div v-if="hasTime" class="time-picker">
 					<TimeFieldRoot
 						id="time-field"
 						v-slot="{ segments }"
