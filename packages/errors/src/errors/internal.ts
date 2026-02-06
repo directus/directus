@@ -1,3 +1,6 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
-export const InternalServerError = createError(ErrorCode.Internal, `An unexpected error occurred.`);
+export const InternalServerError: DirectusErrorConstructor<void> = createError(
+	ErrorCode.Internal,
+	`An unexpected error occurred.`,
+);
