@@ -3,6 +3,7 @@ import { NetlifyDriver } from './netlify.js';
 
 const mockNetlifyAPI = vi.hoisted(() => ({
 	listSites: vi.fn(),
+	listSitesForAccount: vi.fn(),
 	getSite: vi.fn(),
 	listSiteDeploys: vi.fn(),
 	getDeploy: vi.fn(),
