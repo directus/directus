@@ -45,6 +45,9 @@ catalogs:
     '@changesets/types':
       specifier: 6.1.0
       version: 6.1.0
+    '@directus/tsconfig':
+      specifier: 3.0.0
+      version: 3.0.0
     '@directus/vue-split-panel':
       specifier: 0.8.4
       version: 0.8.4
@@ -927,7 +930,6 @@ overrides:
   minimatch>@isaacs/brace-expansion: 5.0.1
   '@yarnpkg/shell>cross-spawn': 7.0.6
   pm2-sysmonit>systeminformation: 5.27.14
-  '@directus/tsconfig': link:../tsconfig
   tar: 7.5.7
   qs: 6.14.1
 
@@ -1375,8 +1377,8 @@ importers:
         version: 4.0.2(zod@4.1.12)
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../tsconfig
-        version: link:../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../packages/types
@@ -1565,8 +1567,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/themes
       '@directus/tsconfig':
-        specifier: link:../../tsconfig
-        version: link:../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../packages/types
@@ -1931,8 +1933,8 @@ importers:
   packages/ai:
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -1965,8 +1967,8 @@ importers:
         specifier: workspace:*
         version: link:../../sdk
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -1995,8 +1997,8 @@ importers:
   packages/constants:
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2070,8 +2072,8 @@ importers:
         version: 4.17.21
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/lodash-es':
         specifier: 'catalog:'
         version: 4.17.12
@@ -2101,8 +2103,8 @@ importers:
         version: 2.1.3
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2147,8 +2149,8 @@ importers:
         version: 4.1.12
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/fs-extra':
         specifier: 'catalog:'
         version: 11.0.4
@@ -2202,8 +2204,8 @@ importers:
         version: 4.1.12
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2302,8 +2304,8 @@ importers:
         version: 3.5.24(typescript@5.9.3)
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/fs-extra':
         specifier: 'catalog:'
         version: 11.0.4
@@ -2329,8 +2331,8 @@ importers:
   packages/format-title:
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -2366,8 +2368,8 @@ importers:
         version: 7.2.0
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/node':
         specifier: 'catalog:'
         version: 22.13.14
@@ -2391,8 +2393,8 @@ importers:
         version: link:../utils
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/express':
         specifier: 'catalog:'
         version: 4.17.21
@@ -2431,8 +2433,8 @@ importers:
         specifier: 'catalog:'
         version: 6.1.0
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/node':
         specifier: 'catalog:'
         version: 22.13.14
@@ -2459,8 +2461,8 @@ importers:
         version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2478,8 +2480,8 @@ importers:
         version: 4.17.21
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/lodash-es':
         specifier: 'catalog:'
         version: 4.17.12
@@ -2515,8 +2517,8 @@ importers:
   packages/storage:
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2549,8 +2551,8 @@ importers:
         version: link:../utils
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2586,8 +2588,8 @@ importers:
         version: 7.16.0
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2623,8 +2625,8 @@ importers:
         version: 7.18.0(encoding@0.1.13)
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2651,8 +2653,8 @@ importers:
         version: link:../storage
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2703,8 +2705,8 @@ importers:
         version: 2.1.3
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2749,8 +2751,8 @@ importers:
         version: 7.16.0
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2777,8 +2779,8 @@ importers:
         version: 14.0.0(vue@3.5.24(typescript@5.9.3))
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       pinia:
         specifier: 'catalog:'
         version: 2.3.1(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))
@@ -2795,8 +2797,8 @@ importers:
   packages/system-data:
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -2832,8 +2834,8 @@ importers:
         version: 4.17.21
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2929,8 +2931,8 @@ importers:
         version: 4.1.12
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/deep-diff':
         specifier: 'catalog:'
         version: 1.0.5
@@ -2969,8 +2971,8 @@ importers:
         version: 7.7.3
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@npm/types':
         specifier: 'catalog:'
         version: 2.1.0
@@ -3036,8 +3038,8 @@ importers:
         specifier: workspace:*
         version: link:../schema-builder
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -3094,8 +3096,8 @@ importers:
         version: 18.0.1
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -3118,8 +3120,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/system-data
       '@directus/tsconfig':
-        specifier: link:../../tsconfig
-        version: link:../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -3139,8 +3141,8 @@ importers:
   tests/blackbox:
     devDependencies:
       '@directus/tsconfig':
-        specifier: link:../../../tsconfig
-        version: link:../../../tsconfig
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -3862,6 +3864,10 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       postcss-selector-parser: ^7.0.0
+
+  '@directus/tsconfig@3.0.0':
+    resolution: {integrity: sha512-b0BWboH2W++Zx/I/PsMWBeDmMgXZIEOVP2JUh6gWXh3L/TaLuFF/1LG8gv7ise4WDMnW69Vum5kSroNTQyqlUQ==}
+    engines: {pnpm: '9'}
 
   '@directus/vue-split-panel@0.8.4':
     resolution: {integrity: sha512-epfvBWFoX/jxAnUQWsKUXEDLUqvuaF6z8bCMjdQjf5fCKptr5gJRtu5ntVFLlLropBQsJcGuvN7L6i9I7Cvtcw==}
@@ -15788,6 +15794,8 @@ snapshots:
   '@csstools/selector-specificity@5.0.0(postcss-selector-parser@7.1.0)':
     dependencies:
       postcss-selector-parser: 7.1.0
+
+  '@directus/tsconfig@3.0.0': {}
 
   '@directus/vue-split-panel@0.8.4(vue@3.5.24(typescript@5.9.3))':
     dependencies:
