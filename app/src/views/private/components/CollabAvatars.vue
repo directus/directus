@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ClientID } from '@directus/types/collab';
+import type { ClientID } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
