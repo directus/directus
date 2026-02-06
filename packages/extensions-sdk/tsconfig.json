@@ -1,7 +1,8 @@
 {
 	"extends": "@directus/tsconfig/node22",
 	"compilerOptions": {
-		"outDir": "dist"
+		"outDir": "dist",
+		"isolatedDeclarations": true
 	},
 	"include": ["src", "directus-extension.test.ts"],
 	"typedocOptions": {
