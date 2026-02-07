@@ -40,7 +40,6 @@ export default abstract class SocketController {
 	constructor(httpServer: httpServer, configPrefix: string) {
 		this.server = new WebSocketServer({
 			noServer: true,
-			// @ts-ignore TODO Remove once @types/ws has been updated
 			autoPong: false,
 		});
 
