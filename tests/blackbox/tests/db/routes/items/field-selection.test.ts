@@ -39,13 +39,27 @@ describe('Field Selection', () => {
 	describe('Array syntax exceeding QUERYSTRING_ARRAY_LIMIT', () => {
 		it.each(vendors)('%s', async (vendor) => {
 			// Action
-			// Use array indices beyond the default QUERYSTRING_ARRAY_LIMIT (100)
-			// When qs encounters indices > arrayLimit, it parses them as an object instead
-			// of an array, which sanitizeFields does not handle — resulting in all fields
-			// being returned (the fields parameter is effectively ignored)
+			// Use array indices beyond the QUERYSTRING_ARRAY_LIMIT (100)
+			// When qs encounters array > arrayLimit, it parses it as an object
+			// It should result in invalid input
 			const response = await request(getUrl(vendor))
 				.get(`/items/${collectionName}`)
 				.query('fields[101]=id&fields[102]=field_a')
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			// Assert
+			expect(response.statusCode).toBe(400);
+			expect(response.body.errors[0].extensions.code).toBe('INVALID_QUERY');
+		});
+
+		it.each(vendors)('%s', async (vendor) => {
+			// Action
+			// A regular array beyond the QUERYSTRING_ARRAY_LIMIT (100)
+			// When qs encounters array > arrayLimit, it parses it as an object
+			// It should result in invalid input
+			const response = await request(getUrl(vendor))
+				.get(`/items/${collectionName}`)
+				.query(Array(102).fill('fields[]=field_a').join('&'))
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 			// Assert
@@ -57,11 +71,11 @@ describe('Field Selection', () => {
 	describe('Comma-separated syntax bypasses QUERYSTRING_ARRAY_LIMIT', () => {
 		it.each(vendors)('%s', async (vendor) => {
 			// Action
-			// Comma-separated fields are parsed as a single string by qs, then split by
-			// sanitizeFields — this should not subject to the arrayLimit at all
+			// Comma-separated fields are parsed as a single string by qs
+			// It should bypass the QUERYSTRING_ARRAY_LIMIT limit
 			const response = await request(getUrl(vendor))
 				.get(`/items/${collectionName}`)
-				.query('fields=id,' + Array(150).fill('field_a').join(','))
+				.query('fields=id,' + Array(102).fill('field_a').join(','))
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 			// Assert
