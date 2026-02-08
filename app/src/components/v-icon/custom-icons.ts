@@ -16,6 +16,7 @@ import CustomIconLogout from './custom-icons/logout.vue';
 import CustomIconSignalWifi1Bar from './custom-icons/signal_wifi_1_bar.vue';
 import CustomIconSignalWifi2Bar from './custom-icons/signal_wifi_2_bar.vue';
 import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
+import CustomIconVercel from './custom-icons/vercel.vue';
 
 export const components: Record<string, any> = {
 	CustomIconDirectus,
@@ -36,4 +37,5 @@ export const components: Record<string, any> = {
 	CustomIconFolderMove,
 	CustomIconFolderLock,
 	CustomIconLogout,
+	CustomIconVercel,
 };

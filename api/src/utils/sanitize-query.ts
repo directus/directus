@@ -111,8 +111,13 @@ function sanitizeFields(rawFields: any) {
 
 	let fields: string[] = [];
 
-	if (typeof rawFields === 'string') fields = rawFields.split(',');
-	else if (Array.isArray(rawFields)) fields = rawFields as string[];
+	if (typeof rawFields === 'string') {
+		fields = rawFields.split(',');
+	} else if (Array.isArray(rawFields)) {
+		fields = rawFields as string[];
+	} else {
+		throw new InvalidQueryError({ reason: '"fields" must be a string or array' });
+	}
 
 	// Case where array item includes CSV (fe fields[]=id,name):
 	fields = flatten(fields.map((field) => (field.includes(',') ? field.split(',') : field)));
