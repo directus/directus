@@ -1043,7 +1043,7 @@ deployment:
     settings:
       settings: '{provider} 配置'
       delete_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
-      remove_projects_confirm: 移除下列项目（{projects}）会从Directus永久删除其所有部署历史。此操作不可撤销。您仍确定要继续吗？
+      remove_projects_confirm: 移除下列项目（{projects}）会从Directus永久删除其所有部署历史。此操作不可撤销。您确定要继续吗？
     run:
       cancel_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
       log_all: 所有日志级别
