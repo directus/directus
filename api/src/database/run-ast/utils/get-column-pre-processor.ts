@@ -67,7 +67,7 @@ export function getColumnPreprocessor(
 				cases: fieldNode.cases,
 			});
 		} else {
-			column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema);
+			column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema, { coalesce: fieldNode.coalesce });
 		}
 
 		if (hasWhenCase) {

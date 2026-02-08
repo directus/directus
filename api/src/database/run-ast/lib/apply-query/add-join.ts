@@ -3,6 +3,8 @@ import type { SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone } from 'lodash-es';
+import { getShadowName } from '../../../../services/shadows/get-shadow-name.js';
+import { isShadow } from '../../../../services/shadows/is-shadow.js';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getHelpers } from '../../../helpers/index.js';
 import { generateJoinAlias } from '../../utils/generate-alias.js';

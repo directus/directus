@@ -1,6 +1,8 @@
 import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import { getShadowName } from '../../../services/shadows/get-shadow-name.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
+import { getHelpers } from '../../helpers/index.js';
 import { applyFilter } from '../lib/apply-query/filter/index.js';
 
 export interface ApplyCaseWhenOptions {
@@ -11,6 +13,7 @@ export interface ApplyCaseWhenOptions {
 	aliasMap: AliasMap;
 	alias?: string;
 	permissions: Permission[];
+	coalesce?: boolean | undefined;
 }
 
 export interface ApplyCaseWhenContext {
@@ -19,7 +22,7 @@ export interface ApplyCaseWhenContext {
 }
 
 export function applyCaseWhen(
-	{ columnCases, table, aliasMap, cases, column, alias, permissions }: ApplyCaseWhenOptions,
+	{ columnCases, table, aliasMap, cases, column, alias, permissions, coalesce }: ApplyCaseWhenOptions,
 	{ knex, schema }: ApplyCaseWhenContext,
 ): Knex.Raw {
 	const caseQuery = knex.queryBuilder();
@@ -48,7 +51,18 @@ export function applyCaseWhen(
 	const sql = sqlParts.length > 0 ? sqlParts.join(' ') : '1';
 	const bindings = [...caseQuery.toSQL().bindings, column];
 
-	let rawCase = `(CASE WHEN ${sql} THEN ?? END)`;
+	let rawCase = `(CASE WHEN ${sql} THEN`;
+
+	if (coalesce && alias) {
+		// coalase fields
+		rawCase += ' ' + getHelpers(knex).schema.coalesce();
+		bindings.push(getShadowName(alias, 'field'));
+		bindings.push(alias);
+	} else {
+		rawCase += ' ??';
+	}
+
+	rawCase += ` END)`;
 
 	if (alias) {
 		rawCase += ' AS ??';

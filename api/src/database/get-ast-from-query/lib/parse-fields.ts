@@ -5,6 +5,8 @@ import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
+import { getShadowName } from '../../../services/shadows/get-shadow-name.js';
+import { isShadow } from '../../../services/shadows/is-shadow.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
@@ -152,7 +154,23 @@ export async function parseFields(
 				continue;
 			}
 
-			children.push({ type: 'field', name, fieldKey, whenCase: [], alias });
+			// top level m2o (e.g. fields=* || fields=m2o) should be marked for coalesce
+			const isM2O = context.schema.relations.find(
+				(r) => r.collection === options.parentCollection && r.field === fieldKey,
+			);
+
+			let coalesce = false;
+
+			if (isM2O) {
+				coalesce = Boolean(
+					options.query.versionRaw &&
+						isShadow(fieldKey, 'field') === false &&
+						isShadow(options.parentCollection, 'collection') &&
+						context.schema.collections[getShadowName(isM2O.related_collection!, 'collection')],
+				);
+			}
+
+			children.push({ type: 'field', name, fieldKey, whenCase: [], alias, coalesce });
 		}
 	}
 
@@ -209,6 +227,12 @@ export async function parseFields(
 				relation: relation,
 				cases: {},
 				whenCase: [],
+				coalesce: Boolean(
+					options.query.versionRaw &&
+						isShadow(fieldKey, 'field') === false &&
+						isShadow(options.parentCollection, 'collection') &&
+						context.schema.collections[getShadowName(relation.related_collection!, 'collection')],
+				),
 			};
 
 			for (const relatedCollection of allowedCollections) {
@@ -275,6 +299,12 @@ export async function parseFields(
 				),
 				cases: [],
 				whenCase: [],
+				coalesce: Boolean(
+					options.query.versionRaw &&
+						isShadow(fieldKey, 'field') === false &&
+						isShadow(options.parentCollection, 'collection') &&
+						context.schema.collections[getShadowName(relatedCollection, 'collection')],
+				),
 			};
 
 			if (isO2MNode(child) && !child.query.sort) {

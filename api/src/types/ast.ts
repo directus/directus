@@ -19,6 +19,10 @@ export type M2ONode = {
 	 * Permissions rules for the item access of the children of this item.
 	 */
 	cases: Filter[];
+	/**
+	 * Wether to apply coalesce to this field when selecting it in the query.
+	 */
+	coalesce?: boolean | undefined;
 };
 
 export type A2MNode = {
@@ -49,6 +53,10 @@ export type A2MNode = {
 	cases: {
 		[collection: string]: Filter[];
 	};
+	/**
+	 * Wether to apply coalesce to this field when selecting it in the query.
+	 */
+	coalesce?: boolean | undefined;
 };
 
 export type O2MNode = {
@@ -70,6 +78,10 @@ export type O2MNode = {
 	 * Permissions rules for the item access of the children of this item.
 	 */
 	cases: Filter[];
+	/**
+	 * Wether to apply coalesce to this field when selecting it in the query.
+	 */
+	coalesce?: boolean | undefined;
 };
 
 export type NestedCollectionNode = M2ONode | O2MNode | A2MNode;
@@ -85,6 +97,10 @@ export type FieldNode = {
 	 * Which permission cases have to be met on the current item for this field to return a value
 	 */
 	whenCase: number[];
+	/**
+	 * Wether to apply coalesce to this field when selecting it in the query.
+	 */
+	coalesce?: boolean | undefined;
 };
 
 export type FunctionFieldNode = {

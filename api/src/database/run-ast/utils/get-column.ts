@@ -3,7 +3,8 @@ import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
-import { getFunctions } from '../../helpers/index.js';
+import { getShadowName } from '../../../services/shadows/get-shadow-name.js';
+import { getFunctions, getHelpers } from '../../helpers/index.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 type FunctionColumnOptions = {
@@ -14,6 +15,7 @@ type FunctionColumnOptions = {
 
 type OriginalCollectionName = {
 	originalCollectionName?: string | undefined;
+	coalesce?: boolean | undefined;
 };
 
 type GetColumnOptions = OriginalCollectionName | (FunctionColumnOptions & OriginalCollectionName);
@@ -76,7 +78,23 @@ export function getColumn(
 	}
 
 	if (alias && column !== alias) {
+		if (options?.coalesce) {
+			return knex.raw(getHelpers(knex).schema.coalesce(), [
+				`${table}.${column}`,
+				`${table}.${getShadowName(column, 'field')}`,
+				alias,
+			]);
+		}
+
 		return knex.ref(`${table}.${column}`).as(alias);
+	}
+
+	if (options?.coalesce) {
+		return knex.raw(getHelpers(knex).schema.coalesce(), [
+			`${table}.${column}`,
+			`${table}.${getShadowName(column, 'field')}`,
+			column,
+		]);
 	}
 
 	return knex.ref(`${table}.${column}`);
