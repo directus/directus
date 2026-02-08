@@ -98,8 +98,10 @@ export function getDBQuery(
 				.from(table)
 				.innerJoin(knex.raw('??', innerQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
-			// Apply aggregation and grouping on wrapper using applyQuery (without limit/offset)
-			const wrapperQueryCopy = { ...queryCopy, limit: null, offset: null };
+			// Apply aggregation and grouping on wrapper using applyQuery (without limit/offset/filter)
+			// Filter is excluded because filtering is already applied in the inner query for deduplication
+			const { filter: _excludedFilter, ...wrapperQueryBase } = queryCopy;
+			const wrapperQueryCopy: Query = { ...wrapperQueryBase, limit: null, offset: null };
 
 			applyQuery(knex, table, wrapperQuery, wrapperQueryCopy, schema, cases, permissions, {
 				aliasMap,
