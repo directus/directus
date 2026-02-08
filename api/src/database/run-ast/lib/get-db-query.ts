@@ -91,7 +91,7 @@ export function getDBQuery(
 			}
 
 			// Inner query: select distinct PKs with limit/offset applied
-			innerQuery.select(`${table}.${primaryKey}`).distinct();
+			innerQuery.select(knex.ref(`${table}.${primaryKey}`).as(primaryKey)).distinct();
 
 			// Wrapper query: join back to deduplicated set
 			const wrapperQuery = knex
