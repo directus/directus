@@ -91,13 +91,12 @@ export function getDBQuery(
 			}
 
 			// Inner query: select distinct PKs with limit/offset applied
-			// Use explicit alias to ensure consistent column name across all database types
-			innerQuery.select(knex.raw('?? as ??', [`${table}.${primaryKey}`, primaryKey])).distinct();
+			innerQuery.select(`${table}.${primaryKey}`).distinct();
 
 			// Wrapper query: join back to deduplicated set
 			const wrapperQuery = knex
 				.from(table)
-				.innerJoin(innerQuery.as('inner'), `${table}.${primaryKey}`, `inner.${primaryKey}`);
+				.innerJoin(knex.raw('??', innerQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
 			// Apply aggregation and grouping on wrapper using applyQuery (without limit/offset/filter)
 			// Filter is excluded because filtering is already applied in the inner query for deduplication
