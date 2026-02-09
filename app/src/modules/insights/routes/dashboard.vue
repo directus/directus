@@ -268,7 +268,7 @@ const refreshInterval = computed({
 	</DefineTemplate>
 	<InsightsNotFound v-if="!currentDashboard" />
 	<ReuseTemplate v-else-if="viewOnly" />
-	<PrivateView v-else :title="currentDashboard.name">
+	<PrivateView v-else :title="currentDashboard.name" :icon="currentDashboard.icon">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
 		</template>
