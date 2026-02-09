@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
+import { useComparison } from '@/views/private/components/comparison/use-comparison';
 
 // Mock API
 const mockApi = {
@@ -16,8 +17,6 @@ vi.mock('@/api', () => ({
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
-
-import { useComparison } from '@/views/private/components/comparison/use-comparison';
 
 // Mock Fields Store
 const mockFieldsStore = {
@@ -209,6 +208,457 @@ describe('useComparison', () => {
 		});
 	});
 
+	describe('revision mode with Previous compareTo option', () => {
+		it('should compare current revision with previous revision data', async () => {
+			const previousRevisionData = {
+				id: 1250,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'Old Title',
+					description: 'Old Description',
+				},
+				delta: {
+					title: 'Old Title',
+					description: 'Old Description',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-12T10:00:00.000Z',
+					user: {
+						id: 'user-123',
+						email: 'olduser@example.com',
+						first_name: 'Old',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'New Title',
+					description: 'New Description',
+				},
+				delta: {
+					title: 'New Title',
+					description: 'New Description',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'newuser@example.com',
+						first_name: 'New',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: currentRevisionData,
+				revisionsListOverwrites: [currentRevisionData, previousRevisionData],
+				previousRevisionOverwrites: previousRevisionData,
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, normalizedData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			// Base should be previous revision's data
+			expect(comparisonData.value?.base.title).toBe('Old Title');
+			expect(comparisonData.value?.base.description).toBe('Old Description');
+
+			// Incoming should be current revision's data
+			expect(comparisonData.value?.incoming.title).toBe('New Title');
+			expect(comparisonData.value?.incoming.description).toBe('New Description');
+
+			// Previous revision should be stored
+			expect(comparisonData.value?.previousRevision?.id).toBe(1250);
+
+			// Normalized data checks
+			expect(normalizedData.value?.base.displayName).toBe('Previous Revision');
+			expect(normalizedData.value?.base.id).toBe(1250);
+		});
+
+		it('should use previous revision user and timestamp for base metadata', async () => {
+			const previousRevisionData = {
+				id: 1250,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'Old Title',
+				},
+				delta: {
+					title: 'Old Title',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-12T10:00:00.000Z',
+					user: {
+						id: 'user-123',
+						email: 'olduser@example.com',
+						first_name: 'Old',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'New Title',
+				},
+				delta: {
+					title: 'New Title',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'newuser@example.com',
+						first_name: 'New',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: currentRevisionData,
+				revisionsListOverwrites: [currentRevisionData, previousRevisionData],
+				previousRevisionOverwrites: previousRevisionData,
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { normalizedData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			// Base should have previous revision's metadata
+			expect(normalizedData.value?.base.date?.raw).toBe('2026-01-12T10:00:00.000Z');
+			expect(normalizedData.value?.base.user).toEqual(previousRevisionData.activity.user);
+
+			// Incoming should have current revision's metadata
+			expect(normalizedData.value?.incoming.date?.raw).toBe('2026-01-13T20:27:50.000Z');
+			expect(normalizedData.value?.incoming.user).toEqual(currentRevisionData.activity.user);
+		});
+
+		it('should fall back to main item when no previous revision exists', async () => {
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'New Title',
+					description: 'New Description',
+				},
+				delta: {
+					title: 'New Title',
+					description: 'New Description',
+				},
+				activity: {
+					action: 'create',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'newuser@example.com',
+						first_name: 'New',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const mainItemData = {
+				id: 1,
+				title: 'Main Item Title',
+				description: 'Main Item Description',
+			};
+
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: currentRevisionData,
+				revisionsListOverwrites: [currentRevisionData], // Only current revision
+				mainItemOverwrites: mainItemData,
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			// Base should be main item
+			expect(comparisonData.value?.base.title).toBe('Main Item Title');
+			expect(comparisonData.value?.base.description).toBe('Main Item Description');
+
+			// Incoming should be current revision's data
+			expect(comparisonData.value?.incoming.title).toBe('New Title');
+			expect(comparisonData.value?.incoming.description).toBe('New Description');
+
+			// No previous revision
+			expect(comparisonData.value?.previousRevision).toBeNull();
+		});
+
+		it('should merge incoming data with default values when fields are missing', async () => {
+			const previousRevisionData = {
+				id: 1250,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'Old Title',
+					description: 'Old Description',
+					hide_description: false,
+				},
+				delta: {
+					title: 'Old Title',
+					description: 'Old Description',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-12T10:00:00.000Z',
+					user: {
+						id: 'user-123',
+						email: 'olduser@example.com',
+						first_name: 'Old',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'New Title',
+					// description is omitted
+				},
+				delta: {
+					title: 'New Title',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'newuser@example.com',
+						first_name: 'New',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: currentRevisionData,
+				revisionsListOverwrites: [currentRevisionData, previousRevisionData],
+				previousRevisionOverwrites: previousRevisionData,
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, comparisonFields, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			// Base should have old values
+			expect(comparisonData.value?.base.title).toBe('Old Title');
+			expect(comparisonData.value?.base.description).toBe('Old Description');
+
+			// Incoming should have new title and null description (from defaults)
+			expect(comparisonData.value?.incoming.title).toBe('New Title');
+			expect(comparisonData.value?.incoming.description).toBeNull();
+
+			// Both fields should be in comparison fields since they differ
+			const comparisonFieldsArray = Array.from(comparisonFields.value ?? []);
+			expect(comparisonFieldsArray).toEqual(expect.arrayContaining(['title', 'description']));
+		});
+	});
+
+	describe('revision mode with Latest compareTo option', () => {
+		it('should compare current revision with main item when compareToOption is Latest', async () => {
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'Revision Title',
+					description: 'Revision Desc',
+				},
+				delta: {
+					title: 'Revision Title',
+					description: 'Revision Desc',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'revisionuser@example.com',
+						first_name: 'Revision',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const mainItemData = {
+				id: 1,
+				title: 'Main Title',
+				description: 'Main Desc',
+				updated_by: null,
+				updated_at: null,
+			};
+
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: currentRevisionData,
+				mainItemOverwrites: mainItemData,
+				compareToOptionOverwrite: 'Latest',
+				revisionsListOverwrites: [currentRevisionData],
+				currentVersionOverwrites: null,
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			// Base should be main item
+			expect(comparisonData.value?.base.title).toBe('Main Title');
+			expect(comparisonData.value?.base.description).toBe('Main Desc');
+
+			// Incoming should be current revision's data
+			expect(comparisonData.value?.incoming.title).toBe('Revision Title');
+			expect(comparisonData.value?.incoming.description).toBe('Revision Desc');
+
+			// No previous revision in Latest mode
+			expect(comparisonData.value?.previousRevision).toBeNull();
+		});
+
+		it('should compare revision against version state when currentVersion exists', async () => {
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'Revision Title',
+					description: 'Revision Desc',
+				},
+				delta: {
+					title: 'Revision Title',
+					description: 'Revision Desc',
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'revisionuser@example.com',
+						first_name: 'Revision',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: currentRevisionData,
+				compareToOptionOverwrite: 'Latest',
+				revisionsListOverwrites: [currentRevisionData],
+				versionCompareOverwrites: {
+					main: {
+						id: 1,
+						title: 'Main Title',
+						description: 'Main Desc',
+					},
+					current: {
+						title: 'Version Title',
+						description: 'Version Desc',
+					},
+				},
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			// Base should be version state (main merged with version changes)
+			expect(comparisonData.value?.base.title).toBe('Version Title');
+			expect(comparisonData.value?.base.description).toBe('Version Desc');
+
+			// Incoming should be revision data merged with main
+			expect(comparisonData.value?.incoming.title).toBe('Revision Title');
+			expect(comparisonData.value?.incoming.description).toBe('Revision Desc');
+		});
+
+		it('should correctly identify fields with differences between revision and main item', async () => {
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: 1,
+				data: {
+					title: 'Revision Title',
+					description: 'Same Desc',
+					hide_description: true,
+				},
+				delta: {
+					title: 'Revision Title',
+					description: 'Same Desc',
+					hide_description: true,
+				},
+				activity: {
+					action: 'update',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'revisionuser@example.com',
+						first_name: 'Revision',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const mainItemData = {
+				id: 1,
+				title: 'Main Title',
+				description: 'Same Desc',
+				hide_description: true,
+				updated_by: null,
+				updated_at: null,
+			};
+
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: currentRevisionData,
+				mainItemOverwrites: mainItemData,
+				compareToOptionOverwrite: 'Latest',
+				revisionsListOverwrites: [currentRevisionData],
+				currentVersionOverwrites: null,
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonFields, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			const comparisonFieldsArray = Array.from(comparisonFields.value ?? []);
+
+			// Should include fields that differ
+			expect(comparisonFieldsArray).toEqual(expect.arrayContaining(['title']));
+
+			// Should NOT include fields that are the same
+			expect(comparisonFieldsArray).not.toEqual(expect.arrayContaining(['description']));
+		});
+	});
+
 	describe('user updated', () => {
 		const testCase = getTestData('version');
 		mockApi.get.mockImplementation(testCase.mockApiGet);
@@ -264,6 +714,129 @@ describe('useComparison', () => {
 		});
 	});
 
+	describe('isFirstRevision and isLatestRevision', () => {
+		const createRevision = (id: number) => ({
+			id,
+			collection: 'test_collection',
+			item: 1,
+			data: { title: `Revision ${id}` },
+			delta: { title: `Revision ${id}` },
+			activity: {
+				action: 'update',
+				timestamp: '2026-01-13T20:27:50.000Z',
+				ip: '127.0.0.1',
+				user_agent: 'test-agent',
+				origin: 'http://localhost',
+				user: { id: 'user-123', email: 'test@example.com', first_name: 'Test', last_name: 'User' },
+			},
+			timestampFormatted: 'Jan 13, 2026',
+			timeRelative: '1 day ago',
+			status: 'resolve' as const,
+		});
+
+		it('should return isFirstRevision true when current revision has lowest id', () => {
+			const revisions = [createRevision(1200), createRevision(1250), createRevision(1300)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[0]),
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(true);
+			expect(isLatestRevision.value).toBe(false);
+		});
+
+		it('should return isLatestRevision true when current revision has highest id', () => {
+			const revisions = [createRevision(1200), createRevision(1250), createRevision(1300)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[2]),
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(false);
+			expect(isLatestRevision.value).toBe(true);
+		});
+
+		it('should return both false when current revision is in the middle', () => {
+			const revisions = [createRevision(1200), createRevision(1250), createRevision(1300)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[1]),
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(false);
+			expect(isLatestRevision.value).toBe(false);
+		});
+
+		it('should return both false when mode is not revision', () => {
+			const revisions = [createRevision(1200), createRevision(1250), createRevision(1300)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('version'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[0]),
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(false);
+			expect(isLatestRevision.value).toBe(false);
+		});
+
+		it('should return both false when revisions list is empty', () => {
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(createRevision(1200)),
+				revisions: ref([]),
+				compareToOption: ref('Previous'),
+			});
+
+			expect(isFirstRevision.value).toBe(false);
+			expect(isLatestRevision.value).toBe(false);
+		});
+
+		it('should handle unsorted revisions correctly by sorting by id', () => {
+			// Revisions in non-sorted order
+			const revisions = [createRevision(1300), createRevision(1200), createRevision(1250)];
+
+			const { isFirstRevision, isLatestRevision } = useComparison({
+				collection: ref('test_collection'),
+				primaryKey: ref(1),
+				mode: ref('revision'),
+				currentVersion: ref(null),
+				currentRevision: ref(revisions[1]), // id 1200, which should be first after sorting
+				revisions: ref(revisions),
+				compareToOption: ref('Previous'),
+			});
+
+			// Even though 1200 is at index 1, it should be identified as first after sorting
+			expect(isFirstRevision.value).toBe(true);
+			expect(isLatestRevision.value).toBe(false);
+		});
+	});
+
 	describe('normalizeVersionItem date and user selection', () => {
 		it('should use date_updated and user_updated when user_updated exists', async () => {
 			const testCase = getTestData('version', {
@@ -314,6 +887,9 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 		mainItemOverwrites = {},
 		versionCompareOverwrites = {},
 		latestMainRevisionActivityOverwrites = null,
+		revisionsListOverwrites = null,
+		previousRevisionOverwrites = null,
+		compareToOptionOverwrite = 'Previous',
 	} = overwrites;
 
 	const collection = 'test_collection';
@@ -327,20 +903,23 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 		last_name: 'User',
 	};
 
-	const currentVersion = {
-		id: 'a1b8e4d2-ca52-4f54-b0d9-6895c34efdd4',
-		key: 'draft',
-		name: 'Draft',
-		collection,
-		item: primaryKey,
-		hash: versionCompareHash,
-		date_created: '2025-10-29T09:00:00.000Z',
-		date_updated: '2025-10-29T10:00:00.000Z',
-		user_created: adminUser.id,
-		user_updated: adminUser.id,
-		delta: null,
-		...currentVersionOverwrites,
-	};
+	const currentVersion =
+		currentVersionOverwrites === null
+			? null
+			: {
+					id: 'a1b8e4d2-ca52-4f54-b0d9-6895c34efdd4',
+					key: 'draft',
+					name: 'Draft',
+					collection,
+					item: primaryKey,
+					hash: versionCompareHash,
+					date_created: '2025-10-29T09:00:00.000Z',
+					date_updated: '2025-10-29T10:00:00.000Z',
+					user_created: adminUser.id,
+					user_updated: adminUser.id,
+					delta: null,
+					...currentVersionOverwrites,
+				};
 
 	const currentRevision = {
 		id: 1234,
@@ -386,7 +965,7 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 		...versionCompareOverwrites,
 	};
 
-	const revisions = [currentRevision];
+	const revisions = revisionsListOverwrites || [currentRevision];
 
 	const latestMainRevisionActivity = [
 		{
@@ -406,6 +985,7 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 			currentVersion: ref(currentVersion),
 			currentRevision: ref(currentRevision),
 			revisions: ref(revisions),
+			compareToOption: ref<'Previous' | 'Latest'>(compareToOptionOverwrite),
 		},
 	};
 
@@ -424,6 +1004,24 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 
 		if (path === `/items/${collection}/${primaryKey}`) {
 			return Promise.resolve({ data: { data: mainItem } });
+		}
+
+		// Handle fetching previous revision data
+		if (previousRevisionOverwrites && path.startsWith('/revisions/')) {
+			const pathParts = path.split('/');
+			const revisionIdStr = pathParts[2];
+
+			if (revisionIdStr) {
+				const revisionIdPart = revisionIdStr.split('?')[0];
+
+				if (revisionIdPart) {
+					const revisionId = parseInt(revisionIdPart);
+
+					if (revisionId === previousRevisionOverwrites.id) {
+						return Promise.resolve({ data: { data: previousRevisionOverwrites } });
+					}
+				}
+			}
 		}
 
 		return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));

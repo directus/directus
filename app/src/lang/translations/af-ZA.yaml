@@ -60,7 +60,6 @@ create_role: Skep Rol
 create_user: Skep Gebruiker
 message: Boodskap
 delete_panel: Skrap paneel
-create_webhook: Skep 'n Webhaak
 invite_users: Nooi Gebruikers
 invite: Nooi uit
 email_already_invited: E-pos "{email}" is reeds uit genooi
@@ -90,6 +89,7 @@ auto_generate: Auto-Genereer
 add_note: Voeg 'n nuttige nota vir gebruikers...
 default_value: Standaard Waarde
 title: Titel
+subtitle: Subtitels
 owner: Eienaar
 created_by: Geskep Deur
 created_on: Geskep Op
@@ -176,16 +176,14 @@ fields:
     description: Beskrywing
   directus_policies:
     description: Beskrywing
-  directus_webhooks:
-    status: Status
 field_options:
   directus_activity:
     create: Skep
   directus_collections:
     language: Taal
-  directus_webhooks:
-    actions_create: Skep
 comment: Kommentaar
+ai_tools:
+  files: Lêers
 description: Beskrywing
 email: E-pos
 password: Wagwoord
@@ -231,6 +229,9 @@ layouts:
     compact: Kompak
     cozy: Snoesig
 both: Beide
+triggers:
+  webhook:
+    method: Metode
 operations:
   log:
     message: Boodskap
@@ -239,4 +240,6 @@ operations:
   notification:
     message: Boodskap
     subject: Onderwerp
+  request:
+    method: Metode
 compact: Kompak

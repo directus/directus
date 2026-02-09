@@ -1,16 +1,28 @@
 <script setup lang="ts">
+import { DeepPartial, Field, Relation } from '@directus/types';
+import { cloneDeep } from 'lodash';
+import { reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import api from '@/api';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTabItem from '@/components/v-tab-item.vue';
+import VTab from '@/components/v-tab.vue';
+import VTabsItems from '@/components/v-tabs-items.vue';
+import VTabs from '@/components/v-tabs.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { DeepPartial, Field, Relation } from '@directus/types';
-import { cloneDeep } from 'lodash';
-import { reactive, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 const defaultSystemFields = {
 	status: {
@@ -383,7 +395,7 @@ function onApply() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:title="$t('creating_new_collection')"
 		:model-value="isOpen"
 		class="new-collection"
@@ -393,25 +405,25 @@ function onApply() {
 		@apply="onApply"
 	>
 		<template #sidebar>
-			<v-tabs v-model="currentTab" vertical>
-				<v-tab value="collection_setup">{{ $t('collection_setup') }}</v-tab>
-				<v-tab value="optional_system_fields" :disabled="!collectionName">
+			<VTabs v-model="currentTab" vertical>
+				<VTab value="collection_setup">{{ $t('collection_setup') }}</VTab>
+				<VTab value="optional_system_fields" :disabled="!collectionName">
 					{{ $t('optional_system_fields') }}
-				</v-tab>
-			</v-tabs>
+				</VTab>
+			</VTabs>
 		</template>
 
-		<v-tabs-items v-model="currentTab" class="content">
-			<v-tab-item value="collection_setup">
-				<v-notice>{{ $t('creating_collection_info') }}</v-notice>
+		<VTabsItems v-model="currentTab" class="content">
+			<VTabItem value="collection_setup">
+				<VNotice>{{ $t('creating_collection_info') }}</VNotice>
 
 				<div class="grid">
 					<div class="field half">
 						<div class="type-label">
 							{{ $t('name') }}
-							<v-icon v-tooltip="$t('required')" class="required" name="star" sup filled />
+							<VIcon v-tooltip="$t('required')" class="required" name="star" sup filled />
 						</div>
-						<v-input
+						<VInput
 							v-model="collectionName"
 							autofocus
 							class="monospace"
@@ -422,21 +434,16 @@ function onApply() {
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('singleton') }}</div>
-						<v-checkbox v-model="singleton" block :label="$t('singleton_label')" />
+						<VCheckbox v-model="singleton" block :label="$t('singleton_label')" />
 					</div>
-					<v-divider class="full" />
+					<VDivider class="full" />
 					<div class="field half">
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<v-input
-							v-model="primaryKeyFieldName"
-							class="monospace"
-							db-safe
-							:placeholder="$t('a_unique_column_name')"
-						/>
+						<VInput v-model="primaryKeyFieldName" class="monospace" db-safe :placeholder="$t('a_unique_column_name')" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('type') }}</div>
-						<v-select
+						<VSelect
 							v-model="primaryKeyFieldType"
 							:items="[
 								{
@@ -459,9 +466,9 @@ function onApply() {
 						/>
 					</div>
 				</div>
-			</v-tab-item>
-			<v-tab-item value="optional_system_fields">
-				<v-notice>{{ $t('creating_collection_system') }}</v-notice>
+			</VTabItem>
+			<VTabItem value="optional_system_fields">
+				<VNotice>{{ $t('creating_collection_system') }}</VNotice>
 
 				<div class="grid system">
 					<div
@@ -471,7 +478,7 @@ function onApply() {
 						:class="index % 2 === 0 ? 'half' : 'half-right'"
 					>
 						<div class="type-label">{{ $t(info.label) }}</div>
-						<v-input
+						<VInput
 							v-model="info.name"
 							db-safe
 							class="monospace"
@@ -480,41 +487,36 @@ function onApply() {
 							@focus="info.enabled = true"
 						>
 							<template #prepend>
-								<v-checkbox v-model="info.enabled" :disabled="info.inputDisabled" />
+								<VCheckbox v-model="info.enabled" :disabled="info.inputDisabled" />
 							</template>
 
 							<template #append>
-								<v-icon :name="info.icon" />
+								<VIcon :name="info.icon" />
 							</template>
-						</v-input>
+						</VInput>
 					</div>
 				</div>
-			</v-tab-item>
-		</v-tabs-items>
+			</VTabItem>
+		</VTabsItems>
 
 		<template #actions>
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'collection_setup'"
 				v-tooltip.bottom="$t('next')"
 				:disabled="!collectionName || collectionName.length === 0"
-				icon
-				rounded
+				icon="arrow_forward"
 				@click="currentTab = ['optional_system_fields']"
-			>
-				<v-icon name="arrow_forward" />
-			</v-button>
-			<v-button
+			/>
+
+			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'optional_system_fields'"
 				v-tooltip.bottom="$t('finish_setup')"
 				:loading="saving"
-				icon
-				rounded
+				icon="check"
 				@click="save"
-			>
-				<v-icon name="check" />
-			</v-button>
+			/>
 		</template>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>
@@ -554,7 +556,7 @@ function onApply() {
 
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 
 .v-notice {

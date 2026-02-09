@@ -22,6 +22,7 @@
 about: About
 first_name: Nome
 last_name: Cognome
+organization_name: Nome Organizzazione
 identifier: Identificatore
 avatar: Avatar
 application: Applicazione
@@ -134,7 +135,6 @@ create_policy: Crea Policy
 create_user: Crea utente
 message: Messaggio
 delete_panel: Elimina Pannello
-create_webhook: Crea webhook
 create_custom_translation: Crea traduzione personalizzata
 edit_custom_translation: Modifica traduzione personalizzata
 no_custom_translations: Nessuna traduzione personalizzata
@@ -441,6 +441,7 @@ confirm_revert_body: Questo ripristinerà l'elemento allo stato selezionato.
 display: Mostra
 settings_update_success: Impostazioni aggiornate
 title: Titolo
+subtitle: Sottotitolo
 revision_delta_created: Creato
 revision_delta_created_externally: Creato Esternamente
 revision_delta_updated: 'Aggiornato 1 Campo | Aggiornati {count} Campi'
@@ -632,12 +633,6 @@ file_count: 'Nessun File | Un File | {count} File'
 no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
-webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
-webhooks_deprecation_notice: |
-  I webhook sono deprecati e un ulteriore utilizzo è scoraggiato.
-
-  Utilizza invece **Flows** con l'[operazione Webhook/Richiedi URL](https://docs.directus.io/app/flows/operazioni.html#webhook-request-url).
-no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
 no_notifications: Nessuna notifica
 no_notifications_copy: È tutto!
 activity_log: Log delle attività
@@ -668,7 +663,6 @@ action: Azioni
 ip_address: Indirizzo IP
 user_agent: User agent
 origin: Origine
-webhooks: Webhooks
 decimals: Decimali
 value_decimals: Valore decimali
 min_value: Valore minimo
@@ -752,7 +746,6 @@ errors:
   VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
   VALUE_TOO_LONG: Il valore è troppo lungo
 security: Sicurezza
-value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
@@ -928,10 +921,8 @@ label: Etichetta
 flows: Flussi
 flow: Flusso
 select_a_flow: Seleziona un flusso
-run_flow_confirm: Sei sicuro di voler eseguire il flusso?
 run_flow_on_current_collection: Esegui il flusso sulla raccolta corrente
 run_flow_on_current: Esegui il flusso sull'elemento corrente
-run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
 run_flow_on_selected: Seleziona prima uno o più elementi | Esegui il flusso sull'elemento selezionato | Esegui il flusso sui {n} elementi selezionati
 run_flow: Esegui il flusso
 trigger_flow_success: Flusso "{flow}" eseguito con successo
@@ -979,6 +970,15 @@ no_url_copy: Aggiungere un URL nelle impostazioni.
 invalid_url: URL non valido
 invalid_url_copy: L'URL specificato non corrisponde a nessun URL specificato nelle impostazioni.
 insights: Approfondimenti
+deployment:
+  provider:
+    settings:
+      delete_confirm: Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
+    run:
+      cancel_confirm: Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
+      log_all: Tutti i livelli di log
+  target_value:
+    preview: Anteprima
 dashboard: Bacheca
 panel: Pannello
 panel_options: Opzioni del pannello
@@ -1125,7 +1125,6 @@ settings_roles: Ruoli utente
 settings_permissions: Policy di accesso
 settings_project: Impostazioni
 settings_appearance: Aspetto
-settings_webhooks: Webhooks
 settings_flows: Flussi
 settings_system_logs: Log di sistema
 settings_presets: Segnalibri
@@ -1153,48 +1152,6 @@ discard_changes_copy: Sei sicuro di voler annullare tutte le modifiche che hai f
 show_x_axis: Mostra asse X
 show_y_axis: Mostra asse Y
 keep_editing: Continua a modificare
-page_help_collections_overview: '**Panoramica delle raccolte** — Elenco di tutte le raccolte a cui hai accesso.'
-page_help_collections_collection: >-
-  **Sfoglia gli elementi** — Elenca tutti gli elementi di {collection} a cui hai accesso. Personalizza il layout, i filtri e l'ordinamento per personalizzare la tua vista e salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
-page_help_collections_item: >-
-  **Dettaglio Elemento** — Un form per la visualizzazione e la gestione di questo elemento. Questa barra laterale contiene anche una cronologia completa di revisioni e commenti incorporati.
-page_help_activity_collection: >-
-  **Consulta Attività** — Un elenco completo di tutte le attività di sistema e sui contenuti del tuo utente.
-page_help_docs_global: >-
-  **Panoramica della documentazione** — Documenti personalizzati specificamente per la versione e lo schema di questo progetto.
-page_help_files_collection: >-
-  **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
-page_help_files_item: >-
-  **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
-page_help_settings_project: "**Impostazioni** — Opzioni di configurazione globale del tuo progetto."
-page_help_settings_appearance: "**Aspetto** — Opzioni relative ad aspetto e temi del progetto."
-page_help_settings_extensions: '**Estensioni** — Le estensioni installate nel tuo progetto.'
-page_help_settings_datamodel_collections: >-
-  **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
-page_help_settings_datamodel_fields: >-
-  **Modello dei dati: Raccolta** — Un modulo per la gestione di questa raccolta e dei suoi campi.
-page_help_settings_system_logs: '**Log di sistema** — Accedi a un live stream dei log di sistema.'
-page_help_settings_policies_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
-page_help_settings_roles_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
-page_help_settings_roles_item: "**Dettagli del ruolo** — Gestisce i permessi di un ruolo e altre impostazioni."
-page_help_settings_presets_collection: >-
-  **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
-page_help_settings_presets_item: >-
-  **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
-page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti i webhooks nel progetto.'
-page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
-page_help_settings_flows_collection: '**Sfoglia i flussi** — Elenca tutti i flussi nel progetto.'
-page_help_settings_flows_item: '**Dettagli del flusso** — Spazio di lavoro per gestire una o più operazioni.'
-page_help_settings_translations_collection: '**Sfoglia traduzioni personalizzate** — Elenca tutte le traduzioni personalizzate all''interno del progetto.'
-page_help_settings_translations_item: '**Dettaglio traduzioni personalizzate** — Un modulo per la visualizzazione e la gestione di questo elemento.'
-page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
-page_help_users_item: >-
-  **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
-page_help_insights_overview: '**Approfondimenti** — Elenco delle bacheche a cui hai accesso.'
-page_help_insights_dashboard: '**Bacheca** — Spazio di lavoro per gestire uno o più pannelli'
-page_help_marketplace_account: '**Account** — Editore o responsabile di un''estensione pubblicata.'
-page_help_marketplace_registry: '**Registry** — Estensioni disponibili nel Marketplace di Directus.'
-page_help_marketplace_extension: '**Estensione** — Estensione nel Marketplace di Directus.'
 activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
@@ -1230,7 +1187,6 @@ directus_collection:
   directus_dashboards: Bacheche nel modulo approfondimenti
   directus_fields: Configurazione e metadati aggiuntivi del campo
   directus_files: Metadati per tutti i file degli asset gestiti
-  directus_flows: Flussi di automazione
   directus_folders: Fornisce directory virtuali per i file
   directus_migrations: Quale versione del database stai usando
   directus_notifications: Notifiche inviate agli utenti
@@ -1246,7 +1202,6 @@ directus_collection:
   directus_settings: Opzioni di configurazione del progetto
   directus_shares: Traccia gli elementi condivisi esternamente
   directus_users: Utenti di sistema per la piattaforma
-  directus_webhooks: Configurazione per le richieste HTTP basate su eventi
   directus_translations: Traduzioni personalizzate
   directus_versions: Versioni del contenuto per gli elementi
   directus_extensions: Configurazione delle estensioni
@@ -1395,6 +1350,7 @@ fields:
     public_registration_verify_email: Verifica email
     public_registration_verify_email_note: Invia un'email all'utente che effettua la registrazione chiedendogli di cliccare su un link di verifica prima di accedere.
     visual_editor_urls: URL per l'editor visuale
+    ai_header_name: Header
   directus_shares:
     name: Nome
     role: Ruolo
@@ -1425,18 +1381,6 @@ fields:
     admin_access: Accesso amministratore
     ip_access: Accesso IP
     enforce_tfa: Richiede 2FA
-  directus_webhooks:
-    name: Nome
-    method: Metodo
-    status: Stato
-    data: Dati
-    header: Header
-    value: Valore
-    headers: Request Headers
-    data_label: Invia dati evento
-    triggers: Trigger
-    actions: Azioni
-    collections: Raccolte
 field_options:
   directus_settings:
     project_name_placeholder: Il mio progetto...
@@ -1538,19 +1482,6 @@ field_options:
     status_dropdown_suspended: Sospeso
     status_dropdown_archived: Archiviato
     token: Inserisci un token di accesso sicuro...
-  directus_webhooks:
-    status_options_active: Attivo
-    status_options_inactive: Disattivato
-    data_label: Invia dati evento
-    triggers_divider: Trigger
-    actions_create: Creare
-    actions_update: Modifica
-    actions_delete: Elimina
-    actions_login: Accedi
-    headers:
-      header: Header
-      value: Valore
-      add: Aggiungi Header
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
 do_nothing: Non Fare Niente
@@ -1572,11 +1503,30 @@ live_preview:
   new_window: Apri in una Nuova Finestra
   close_window: Apri in Split View
   toggle_3d: Attiva/disattiva 3D
+  display_options: Opzioni di visualizzazione
 shares: Condivisioni
 unlimited_usage: Utilizzo illimitato
 uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
 no_shares: Nessuna condivisione da mostrare
 new_share: Nuova condivisione
+ai:
+  input: Input
+  unknown: Sconosciuto
+  items: Elementi
+  content: Contenuti
+  settings: impostazioni
+  tool_approval:
+    disabled: Disabilitato
+ai_tools:
+  items: Elementi
+  files: File
+  folders: Cartelle
+  flows: Flussi
+  trigger-flow: Attiva il flusso
+  operations: Operazioni
+  schema: Schema
+  collections: Raccolte
+  fields: Campi
 mcp_prompts_collection_schema:
   messages_role_user: Utente
 expired: Scaduto
@@ -1613,7 +1563,6 @@ editing_role: 'Ruolo {role}'
 editing_policy: 'Policy {policy}'
 no_permissions: Nessun permesso
 permission_add_collection: Aggiungi raccolta
-creating_webhook: Creazione Webhook
 default_label: Predefinito
 delete_label: Elimina
 delete_are_you_sure: >-
@@ -1747,7 +1696,7 @@ interfaces:
     accordion_mode: Modalità dell'accordion
     max_one_section_open: Massimo una sezione aperta
   presentation-links:
-    links: Collegamenti
+    presentation-links: Pulsanti
     style: Stile
     primary: Principale
     link: Collegamenti
@@ -2069,6 +2018,9 @@ interfaces:
   input-password:
     input-password: Inserisci password
     description: Campo password con controllo per mostrare o nascondere il valore
+  header:
+    header: Header
+    links: Collegamenti
 displays:
   translations:
     translations: Traduzioni
@@ -2376,11 +2328,9 @@ triggers:
 a_flow_uuid: Seleziona un flusso da attivare...
 any_string_or_json: Qualsiasi stringa o JSON...
 item_payload_placeholder: Questo è il JSON usato per aggiornare i valori dei campi dell'elemento...
-operation_variables_note: Puoi accedere ai dati di flusso con variabili come **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, o fare riferimento alle operazioni precedenti usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condizione
-    description: Stabilisce il percorso di un flusso con una logica Se / Altrimenti
   exec:
     name: Esegui lo script
     description: Esegui codice arbitrario per modificare il payload
@@ -2471,7 +2421,6 @@ operations:
     description: Modifica il payload JSON del flusso
   trigger:
     name: Attiva il flusso
-    description: Passa questi dati a un altro flusso
     flows: Flussi
     flow: Flusso
     data: Dati

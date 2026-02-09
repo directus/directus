@@ -1,9 +1,9 @@
-import { directive } from '@/directives/click-outside';
+import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, expect, test, vi } from 'vitest';
 import TransitionBounce from './transition/bounce.vue';
 import VMenu from './v-menu.vue';
-import { createTestingPinia } from '@pinia/testing';
+import { directive } from '@/directives/click-outside';
 
 vi.mock('lodash', async () => {
 	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from './v-icon/v-icon.vue';
 
 interface Props {
 	/** What value to represent when selected */
@@ -54,7 +55,7 @@ function emitValue(): void {
 		:class="{ checked: isChecked, block, 'non-editable': nonEditable }"
 		@click="emitValue"
 	>
-		<v-icon :name="icon" />
+		<VIcon :name="icon" />
 		<span class="label type-text">
 			<slot name="label">{{ label }}</slot>
 		</span>
@@ -103,6 +104,10 @@ function emitValue(): void {
 			.v-icon {
 				--v-icon-color: var(--theme--foreground-subdued);
 			}
+
+			&.checked {
+				border-color: var(--theme--form--field--input--border-color);
+			}
 		}
 	}
 
@@ -136,7 +141,7 @@ function emitValue(): void {
 		}
 	}
 
-	&:not(:disabled).checked,
+	&.checked:not(:disabled),
 	&.checked.non-editable {
 		.v-icon {
 			--v-icon-color: var(--v-radio-color, var(--theme--primary));

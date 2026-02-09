@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { createBus, type BusLocal } from '../../index.js';
+import { type BusLocal, createBus } from '../../index.js';
 import { CacheLocal } from './local.js';
 import { CacheMulti } from './multi.js';
 import { CacheRedis } from './redis.js';
@@ -33,7 +33,7 @@ const mockBus = {
 } as unknown as BusLocal;
 
 beforeEach(() => {
-	vi.mocked(createBus).mockReturnValue(mockBus);
+	vi.mocked(createBus).mockReturnValue(mockBus as any);
 
 	cache = new CacheMulti({
 		local: mockLocalConfig,
@@ -109,11 +109,66 @@ describe('has', () => {
 	});
 });
 
+describe('acquireLock', () => {
+	test('Delegates to redis cache', async () => {
+		const mockLock = { release: vi.fn(), extend: vi.fn() };
+		vi.mocked(cache['redis'].acquireLock).mockResolvedValue(mockLock as any);
+
+		const result = await cache.acquireLock(mockKey);
+		expect(cache['redis'].acquireLock).toHaveBeenCalledWith(mockKey);
+		expect(result).toBe(mockLock);
+	});
+});
+
+describe('usingLock', () => {
+	test('Delegates to redis cache', async () => {
+		const mockCallback = vi.fn().mockResolvedValue('result');
+		vi.mocked(cache['redis'].usingLock).mockResolvedValue('result');
+
+		const result = await cache.usingLock(mockKey, mockCallback);
+		expect(cache['redis'].usingLock).toHaveBeenCalledWith(mockKey, mockCallback);
+		expect(result).toBe('result');
+	});
+});
+
 describe('clear', () => {
 	test('Calls clear for both caches', async () => {
 		const result = await cache.clear();
 		expect(cache['local'].clear).toHaveBeenCalledOnce();
 		expect(cache['redis'].clear).toHaveBeenCalledOnce();
 		expect(result).toBeUndefined();
+	});
+});
+
+describe('onMessageClear', () => {
+	test('Ignores messages from self', async () => {
+		await cache['onMessageClear']({
+			type: 'clear',
+			origin: cache['processId'],
+		});
+
+		expect(cache['local'].delete).not.toHaveBeenCalled();
+		expect(cache['local'].clear).not.toHaveBeenCalled();
+	});
+
+	test('Clears specific key if provided in payload', async () => {
+		await cache['onMessageClear']({
+			type: 'clear',
+			origin: 'other-process',
+			key: mockKey,
+		});
+
+		expect(cache['local'].delete).toHaveBeenCalledWith(mockKey);
+		expect(cache['local'].clear).not.toHaveBeenCalled();
+	});
+
+	test('Clears all keys if key is undefined', async () => {
+		await cache['onMessageClear']({
+			type: 'clear',
+			origin: 'other-process',
+		});
+
+		expect(cache['local'].delete).not.toHaveBeenCalled();
+		expect(cache['local'].clear).toHaveBeenCalled();
 	});
 });

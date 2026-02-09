@@ -1,6 +1,6 @@
 {
 	"name": "@directus/memory",
-	"version": "3.0.12",
+	"version": "3.1.0",
 	"description": "Memory / Redis abstraction for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -29,6 +29,7 @@
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"@sesamecare-oss/redlock": "catalog:",
 		"ioredis": "catalog:",
 		"lru-cache": "catalog:",
 		"rate-limiter-flexible": "catalog:"

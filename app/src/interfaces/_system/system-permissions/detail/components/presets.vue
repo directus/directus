@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useRelationsStore } from '@/stores/relations';
 import { useSync } from '@directus/composables';
 import { Permission, Policy } from '@directus/types';
 import { computed } from 'vue';
+import VNotice from '@/components/v-notice.vue';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
+import { useRelationsStore } from '@/stores/relations';
 
 const props = defineProps<{
 	permission: Permission;
@@ -58,22 +60,22 @@ const fieldWarnings = computed(() => {
 
 <template>
 	<div>
-		<v-notice>
+		<VNotice>
 			{{
 				$t('presets_for_policy', {
 					action: $t(permission.action).toLowerCase(),
 					policy: policy ? policy.name : $t('public_label'),
 				})
 			}}
-		</v-notice>
-		<v-notice v-for="field in fieldWarnings" :key="field" type="warning">
+		</VNotice>
+		<VNotice v-for="field in fieldWarnings" :key="field" type="warning">
 			{{
 				$t('presets_field_warning', {
 					field,
 				})
 			}}
-		</v-notice>
-		<interface-input-code :value="presets" language="json" type="json" @input="presets = $event" />
+		</VNotice>
+		<InterfaceInputCode :value="presets" language="json" type="json" @input="presets = $event" />
 	</div>
 </template>
 

@@ -10,7 +10,6 @@ const accessibleSystemCollections = {
 	directus_roles: { route: '/settings/roles' },
 	directus_presets: { route: '/settings/presets' },
 	directus_translations: { route: '/settings/translations' },
-	directus_webhooks: { route: '/settings/webhooks' },
 	directus_flows: { route: '/settings/flows' },
 } as const;
 

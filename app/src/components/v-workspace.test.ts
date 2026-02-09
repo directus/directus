@@ -1,7 +1,7 @@
-import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
 import VWorkspace from './v-workspace.vue';
+import type { GlobalMountOptions } from '@/__utils__/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-workspace-tile'],
@@ -49,7 +49,7 @@ test('editMode prop', async () => {
 	});
 
 	expect(wrapper.classes()).toContain('editing');
-	expect(wrapper.getComponent({ name: 'v-workspace-tile' }).attributes()['edit-mode']).toBeTruthy();
+	expect(wrapper.getComponent({ name: 'v-workspace-tile' }).props('editMode')).toBe(true);
 });
 
 test('zoomToFit prop', async () => {

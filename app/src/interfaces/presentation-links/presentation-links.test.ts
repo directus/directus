@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
+import { afterEach, describe, expect, it, test, vi } from 'vitest';
 import PresentationLinks from './presentation-links.vue';
 
 vi.mock('@directus/composables');
@@ -169,5 +169,71 @@ describe('flow link', () => {
 
 			expect(buttonFlowLink.attributes('loading')).toBe('true');
 		});
+	});
+});
+
+describe('Interface', () => {
+	const urlLink = {
+		icon: 'launch',
+		label: 'url',
+		type: 'primary',
+		actionType: 'url' as const,
+		url: 'https://example.com',
+	};
+
+	const flowLink = {
+		icon: 'automation',
+		label: 'flow',
+		type: 'secondary',
+		actionType: 'flow' as const,
+		flow: 'test-flow',
+	};
+
+	it('should render action buttons disabled when disabled is true', async () => {
+		const wrapper = mount(PresentationLinks, {
+			...mountOptions,
+			props: {
+				...mountOptions.props,
+				links: [flowLink],
+				primaryLink: true,
+				disabled: true,
+			},
+		});
+
+		expect(wrapper.find('button.action').attributes('disabled')).toBe('');
+
+		wrapper.setProps({ links: [urlLink] });
+		await wrapper.vm.$nextTick();
+		expect(wrapper.find('button.action').attributes('disabled')).toBe('');
+	});
+
+	it('should disable flow buttons when nonEditable is true', async () => {
+		const wrapper = mount(PresentationLinks, {
+			...mountOptions,
+			props: {
+				...mountOptions.props,
+				links: [flowLink],
+				primaryLink: true,
+				nonEditable: true,
+				disabled: true,
+			},
+		});
+
+		expect(wrapper.find('button.action').attributes('disabled')).toBe('');
+	});
+
+	it('should not disable link buttons when nonEditable is true', async () => {
+		const wrapper = mount(PresentationLinks, {
+			...mountOptions,
+			props: {
+				...mountOptions.props,
+				links: [urlLink],
+				primaryLink: true,
+				nonEditable: true,
+				disabled: true,
+			},
+		});
+
+		expect(wrapper.find('button.action').attributes('disabled')).toBeUndefined();
 	});
 });

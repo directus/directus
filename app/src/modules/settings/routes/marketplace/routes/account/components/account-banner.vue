@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import VBanner from '@/components/v-banner.vue';
 import type { RegistryAccountResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
+import VBanner from '@/components/v-banner.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
 	account: RegistryAccountResponse['data'];
@@ -26,11 +27,11 @@ const hasMeta = computed(() => {
 		<template v-if="hasMeta" #subtitle>
 			<p class="meta">
 				<span v-if="account.github_location">
-					<v-icon class="icon" small name="location_on" />
+					<VIcon class="icon" small name="location_on" />
 					{{ account.github_location }}
 				</span>
 				<span v-if="account.github_company">
-					<v-icon class="icon" small name="work" />
+					<VIcon class="icon" small name="work" />
 					{{ account.github_company }}
 				</span>
 			</p>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { toRefs } from 'vue';
+import VForm from '@/components/v-form/v-form.vue';
 import { useItem } from '@/composables/use-item';
 import { useUserStore } from '@/stores/user';
-import { toRefs } from 'vue';
 
 const props = defineProps<{
 	collection: string;
@@ -16,7 +17,7 @@ const { edits, item, loading } = useItem(collection, primaryKey);
 </script>
 
 <template>
-	<v-form
+	<VForm
 		v-model="edits"
 		:collection="collection"
 		:initial-values="item"

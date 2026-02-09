@@ -1,14 +1,3 @@
-import InsightsDashboard from '@/modules/insights/routes/dashboard.vue';
-import DrawerBatch from '@/views/private/components/drawer-batch.vue';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import DrawerFiles from '@/views/private/components/drawer-files.vue';
-import DrawerItem from '@/views/private/components/drawer-item.vue';
-import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
-import RenderDisplay from '@/views/private/components/render-display.vue';
-import RenderTemplate from '@/views/private/components/render-template.vue';
-import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
-import UserPopover from '@/views/private/components/user-popover.vue';
-import ValueNull from '@/views/private/components/value-null.vue';
 import { App } from 'vue';
 import TransitionBounce from './transition/bounce.vue';
 import TransitionDialog from './transition/dialog.vue';
@@ -40,8 +29,8 @@ import VFieldTemplate from './v-field-template/v-field-template.vue';
 import VForm from './v-form/v-form.vue';
 import VHighlight from './v-highlight.vue';
 import VHover from './v-hover.vue';
-import VIconFile from './v-icon-file.vue';
 import VIcon from './v-icon/v-icon.vue';
+import VIconFile from './v-icon-file.vue';
 import VImage from './v-image.vue';
 import VInfo from './v-info.vue';
 import VInput from './v-input.vue';
@@ -77,6 +66,17 @@ import VTextarea from './v-textarea.vue';
 import VUpload from './v-upload.vue';
 import VWorkspaceTile from './v-workspace-tile.vue';
 import VWorkspace from './v-workspace.vue';
+import InsightsDashboard from '@/modules/insights/routes/dashboard.vue';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
+import RenderDisplay from '@/views/private/components/render-display.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import UserPopover from '@/views/private/components/user-popover.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -150,10 +150,13 @@ export function registerComponents(app: App): void {
 
 	app.component('RenderDisplay', RenderDisplay);
 	app.component('RenderTemplate', RenderTemplate);
+
 	app.component('ExportSidebarDetail', ExportSidebarDetail);
 	app.component('SidebarDetail', SidebarDetail);
+
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
+
 	app.component('DrawerCollection', DrawerCollection);
 	app.component('DrawerFiles', DrawerFiles);
 	app.component('DrawerItem', DrawerItem);

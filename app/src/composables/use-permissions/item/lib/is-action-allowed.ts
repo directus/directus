@@ -1,8 +1,8 @@
+import { ItemPermissions } from '@directus/types';
+import { computed, Ref, unref } from 'vue';
+import { Collection, IsNew } from '../../types';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { ItemPermissions } from '@directus/types';
-import { Ref, computed, unref } from 'vue';
-import { Collection, IsNew } from '../../types';
 
 export const isActionAllowed = (
 	collection: Collection,

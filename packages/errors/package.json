@@ -1,6 +1,6 @@
 {
 	"name": "@directus/errors",
-	"version": "2.0.5",
+	"version": "2.2.0",
 	"description": "Create consistent error objects around the codebase",
 	"repository": {
 		"type": "git",

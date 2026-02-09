@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "13.0.13",
+	"version": "13.2.0",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -37,7 +37,9 @@
 		"@directus/system-data": "workspace:*",
 		"date-fns": "catalog:",
 		"fs-extra": "catalog:",
+		"ip-matching": "catalog:",
 		"joi": "catalog:",
+		"zod": "catalog:",
 		"js-yaml": "catalog:",
 		"lodash-es": "catalog:",
 		"micromustache": "catalog:"
@@ -46,12 +48,15 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/types": "workspace:*",
+		"@directus/errors": "workspace:*",
+		"@ngneat/falso": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/js-yaml": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@types/tmp": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
+		"knex": "catalog:",
 		"tmp": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

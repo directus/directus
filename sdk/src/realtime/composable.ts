@@ -1,6 +1,7 @@
 import type { AuthenticationClient } from '../auth/types.js';
-import type { ConsoleInterface, WebSocketInterface } from '../index.js';
+import type { ConsoleInterface, ExtendedQuery, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
+import { queryToParams } from '../utils/query-to-params.js';
 import { auth } from './commands/auth.js';
 import { pong } from './commands/pong.js';
 import type {
@@ -226,6 +227,21 @@ export function realtime(config: WebSocketConfig = {}) {
 		};
 
 		return {
+			/**
+			 * Checks if a websocket connection has been established.
+			 * Does not check authentication status.
+			 */
+			async isConnected() {
+				if (state.code === 'connecting') {
+					try {
+						await state.connection;
+					} catch {
+						return false;
+					}
+				}
+
+				return state.code === 'open';
+			},
 			async connect() {
 				wasManuallyDisconnected = false;
 
@@ -237,87 +253,102 @@ export function realtime(config: WebSocketConfig = {}) {
 					throw new Error(`Cannot connect when state is "${state.code}"`);
 				}
 
-				// we need to use THIS here instead of client to access overridden functions
-				const self = this as AuthWSClient<Schema>;
-				const url = await getSocketUrl(self);
-				debug('info', `Connecting to ${url}...`);
+				// Eventually update to Promise.withResolvers()
+				let resolve!: (value: WebSocketInterface | PromiseLike<WebSocketInterface>) => void;
+				let reject!: (reason?: any) => void;
 
-				const connectPromise = new Promise<WebSocketInterface>((resolve, reject) => {
-					let resolved = false;
-					const ws = new client.globals.WebSocket(url);
-
-					let connectTimeout: ReturnType<typeof setTimeout> | undefined;
-
-					if (config.connect) {
-						connectTimeout = setTimeout(() => {
-							reject('Connection attempt timed out.');
-						}, config.connect.timeout ?? 10000);
-					}
-
-					ws.addEventListener('open', async (evt: Event) => {
-						debug('info', `Connection open.`);
-
-						state = { code: 'open', connection: ws, firstMessage: true };
-						reconnectState.attempts = 0;
-						reconnectState.active = false;
-						clearTimeout(connectTimeout);
-						handleMessages(self);
-
-						if (config.authMode === 'handshake' && hasAuth(self)) {
-							const access_token = await self.getToken();
-
-							if (!access_token) {
-								return reject(
-									'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
-								);
-							}
-
-							ws.send(auth({ access_token }));
-							const confirm = await messageCallback(ws);
-
-							if (
-								!(
-									confirm &&
-									'type' in confirm &&
-									'status' in confirm &&
-									confirm['type'] === 'auth' &&
-									confirm['status'] === 'ok'
-								)
-							) {
-								return reject('Authentication failed while opening websocket connection');
-							} else {
-								debug('info', 'Authentication successful!');
-							}
-						}
-
-						eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
-
-						resolved = true;
-						resolve(ws);
-					});
-
-					ws.addEventListener('error', (evt: Event) => {
-						debug('warn', `Connection errored.`);
-						eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
-						ws.close();
-						state = { code: 'error' };
-						if (!resolved) reject(evt);
-					});
-
-					ws.addEventListener('close', (evt: CloseEvent) => {
-						debug('info', `Connection closed.`);
-						eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
-						uid = generateUid();
-						state = { code: 'closed' };
-						reconnect(this);
-						if (!resolved) reject(evt);
-					});
+				const connectPromise = new Promise<WebSocketInterface>((res, rej) => {
+					resolve = res;
+					reject = rej;
 				});
 
 				state = {
 					code: 'connecting',
 					connection: connectPromise,
 				};
+
+				// we need to use THIS here instead of client to access overridden functions
+				const self = this as AuthWSClient<Schema>;
+				let ws: WebSocketInterface;
+
+				try {
+					const url = await getSocketUrl(self);
+					debug('info', `Connecting to ${url}...`);
+
+					ws = new client.globals.WebSocket(url);
+				} catch (e) {
+					state = { code: 'closed' };
+					reject(e);
+					throw e;
+				}
+
+				let resolved = false;
+				let connectTimeout: ReturnType<typeof setTimeout> | undefined;
+
+				if (config.connect) {
+					connectTimeout = setTimeout(() => {
+						reject('Connection attempt timed out.');
+					}, config.connect.timeout ?? 10000);
+				}
+
+				ws.addEventListener('open', async (evt: Event) => {
+					debug('info', `Connection open.`);
+
+					state = { code: 'open', connection: ws, firstMessage: true };
+					reconnectState.attempts = 0;
+					reconnectState.active = false;
+					clearTimeout(connectTimeout);
+					handleMessages(self);
+
+					if (config.authMode === 'handshake' && hasAuth(self)) {
+						const access_token = await self.getToken();
+
+						if (!access_token) {
+							return reject(
+								'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
+							);
+						}
+
+						ws.send(auth({ access_token }));
+						const confirm = await messageCallback(ws);
+
+						if (
+							!(
+								confirm &&
+								'type' in confirm &&
+								'status' in confirm &&
+								confirm['type'] === 'auth' &&
+								confirm['status'] === 'ok'
+							)
+						) {
+							return reject('Authentication failed while opening websocket connection');
+						} else {
+							debug('info', 'Authentication successful!');
+						}
+					}
+
+					eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
+
+					resolved = true;
+					resolve(ws);
+				});
+
+				ws.addEventListener('error', (evt: Event) => {
+					debug('warn', `Connection errored.`);
+					eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
+					ws.close();
+					state = { code: 'error' };
+					if (!resolved) reject(evt);
+				});
+
+				ws.addEventListener('close', (evt: CloseEvent) => {
+					debug('info', `Connection closed.`);
+					eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
+					uid = generateUid();
+					state = { code: 'closed' };
+					reconnect(this);
+					if (!resolved) reject(evt);
+				});
 
 				return connectPromise;
 			},
@@ -371,6 +402,11 @@ export function realtime(config: WebSocketConfig = {}) {
 				options = {} as Options,
 			) {
 				if ('uid' in options === false) options.uid = uid.next().value;
+
+				if (options.query) {
+					options.query = queryToParams(options.query as ExtendedQuery<Schema, Schema[Collection]>);
+				}
+
 				subscriptions.add({ ...options, collection, type: 'subscribe' });
 
 				if (state.code !== 'open') {

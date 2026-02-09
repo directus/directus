@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 type InterfaceOptions = {
 	minValue: number;
@@ -32,15 +33,15 @@ const ratingPercentage = computed(() => ({
 
 <template>
 	<span v-if="simple" class="rating simple">
-		<v-icon small name="star" filled />
+		<VIcon small name="star" filled />
 		{{ value }}
 	</span>
 	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
 		<div class="active" :style="ratingPercentage">
-			<v-icon v-for="index in starCount" :key="index" small name="star" filled />
+			<VIcon v-for="index in starCount" :key="index" small name="star" filled />
 		</div>
 		<div class="inactive">
-			<v-icon v-for="index in starCount" :key="index" small name="star" />
+			<VIcon v-for="index in starCount" :key="index" small name="star" />
 		</div>
 	</div>
 </template>

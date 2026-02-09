@@ -1,18 +1,34 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, useTemplateRef } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useEventListener } from '@vueuse/core';
 import { useCollection } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
+import { useEventListener } from '@vueuse/core';
+import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type {
+	AddToContextData,
+	EditConfig,
+	HighlightElementData,
+	NavigationData,
+	ReceiveData,
+	SavedData,
+	SendAction,
+} from '../types';
+import { sameOrigin } from '../utils/same-origin';
+import { useContextStaging } from '@/ai/composables/use-context-staging';
+import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiContextStore } from '@/ai/stores/use-ai-context';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useNotificationsStore } from '@/stores/notifications';
-import { getItemRoute, getCollectionRoute } from '@/utils/get-route';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
-import { sameOrigin } from '../utils/same-origin';
-import type { EditConfig, ReceiveData, NavigationData, SendAction, SavedData } from '../types';
 
 const { frameSrc, frameEl, showEditableElements } = defineProps<{
 	frameSrc: string;
@@ -20,7 +36,10 @@ const { frameSrc, frameEl, showEditableElements } = defineProps<{
 	showEditableElements?: boolean;
 }>();
 
-const emit = defineEmits(['navigation']);
+const emit = defineEmits<{
+	navigation: [data: NavigationData];
+	saved: [data: { collection: string; primaryKey: PrimaryKey }];
+}>();
 
 const { t } = useI18n();
 
@@ -29,24 +48,43 @@ const { collection, primaryKey, fields, mode, position, isNew, edits, editOverla
 
 const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : null));
 
-const { sendSaved } = useWebsiteFrame({ onClickEdit });
+const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
+
+useVisualEditingAi({ sendSaved, sendHighlightElement });
 
 const { popoverWidth } = usePopoverWidth();
 
+// Clear highlight when edit overlay closes
+watch(editOverlayActive, (isActive) => {
+	if (!isActive) {
+		sendHighlightElement({ key: null });
+	}
+});
+
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
+	const serverStore = useServerStore();
+	const settingsStore = useSettingsStore();
+	const contextStore = useAiContextStore();
+	const { stageVisualElement } = useContextStaging();
+
 	useEventListener('message', (event) => {
-		if (!sameOrigin(event.origin, frameSrc)) return;
+		if (!sameOrigin(event.origin, frameSrc)) {
+			return;
+		}
 
 		const { action = null, data = null }: ReceiveData = event.data;
 
 		if (action === 'connect') {
 			sendConfirm();
 			if (showEditableElements) sendShowEditableElements(true);
+			contextStore.syncVisualElementContextUrl(frameSrc);
 		}
 
 		if (action === 'navigation') receiveNavigation(data);
 
 		if (action === 'edit') onClickEdit(data);
+
+		if (action === 'addToContext') receiveAddToContext(data);
 	});
 
 	watch(
@@ -56,7 +94,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		},
 	);
 
-	return { sendSaved };
+	return { sendSaved, sendHighlightElement };
 
 	function receiveNavigation(data: unknown) {
 		const { url, title } = data as NavigationData;
@@ -70,7 +108,8 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	}
 
 	function sendConfirm() {
-		send('confirm', null);
+		const aiEnabled = serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0;
+		send('confirm', { aiEnabled });
 	}
 
 	function sendShowEditableElements(show: boolean) {
@@ -80,6 +119,71 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	function sendSaved(data: SavedData) {
 		send('saved', data);
 	}
+
+	function sendHighlightElement(data: HighlightElementData) {
+		send('highlightElement', data);
+	}
+
+	function receiveAddToContext(data: unknown) {
+		const { key, editConfig, rect } = data as AddToContextData;
+
+		if (!key || !editConfig?.collection || editConfig.item == null) return;
+
+		stageVisualElement({
+			key,
+			collection: editConfig.collection,
+			item: editConfig.item,
+			fields: editConfig.fields,
+			rect,
+		});
+	}
+}
+
+function useVisualEditingAi({
+	sendSaved,
+	sendHighlightElement,
+}: {
+	sendSaved: (data: SavedData) => void;
+	sendHighlightElement: (data: HighlightElementData) => void;
+}) {
+	const aiStore = useAiStore();
+	const contextStore = useAiContextStore();
+	const toolsStore = useAiToolsStore();
+
+	// Any non-read mutation should trigger a preview refresh
+	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input) => {
+		if (tool !== 'items') return;
+		if (input.action === 'read') return;
+
+		sendSaved({ key: '', collection: input.collection as string, item: null, payload: {} });
+	});
+
+	const unsubscribeHighlight = aiStore.onVisualElementHighlight((data) => {
+		if (data === null) {
+			sendHighlightElement({ key: null });
+		} else {
+			const payload: HighlightElementData = {
+				collection: data.collection,
+				item: data.item,
+			};
+
+			if (data.fields) {
+				const rawFields = Array.from(toRaw(data.fields)).filter((field) => typeof field === 'string');
+
+				if (rawFields.length > 0) {
+					payload.fields = rawFields;
+				}
+			}
+
+			sendHighlightElement(payload);
+		}
+	});
+
+	onUnmounted(() => {
+		unsubscribeItemsResult.off();
+		unsubscribeHighlight.off();
+		contextStore.clearVisualElementContext();
+	});
 }
 
 function useItemWithEdits() {
@@ -160,6 +264,8 @@ function useItemWithEdits() {
 				item: primaryKey.value,
 				payload: JSON.parse(JSON.stringify(edits.value)),
 			});
+
+			emit('saved', { collection: collection.value, primaryKey: primaryKey.value });
 
 			resetEdits();
 		} catch (error) {
@@ -247,7 +353,7 @@ function usePopoverWidth() {
 
 <template>
 	<div ref="editing-layer" class="editing-layer" :class="{ editing: editOverlayActive }">
-		<overlay-item
+		<OverlayItem
 			v-if="collection"
 			v-model:active="editOverlayActive"
 			:overlay="mode"
@@ -273,25 +379,26 @@ function usePopoverWidth() {
 
 			<template #actions>
 				<template v-if="primaryKey">
-					<v-button v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
+					<VButton v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
 						{{ t('navigate_to_item') }}
-					</v-button>
+					</VButton>
 
-					<v-button
+					<VButton
 						v-else
 						v-tooltip:[tooltipPlacement]="t('navigate_to_item')"
 						:to="itemRoute"
 						:disabled="isNew"
 						:x-small="mode === 'popover'"
+						:small="mode !== 'popover'"
 						secondary
 						icon
 						rounded
 					>
-						<v-icon name="launch" :small="mode === 'popover'" />
-					</v-button>
+						<VIcon name="launch" small />
+					</VButton>
 				</template>
 			</template>
-		</overlay-item>
+		</OverlayItem>
 	</div>
 </template>
 

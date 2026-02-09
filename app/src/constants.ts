@@ -66,6 +66,11 @@ export const MODULE_BAR_DEFAULT = [
 		enabled: true,
 	},
 	{
+		type: 'module',
+		id: 'deployments',
+		enabled: false,
+	},
+	{
 		type: 'link',
 		id: 'docs',
 		enabled: true,
@@ -80,6 +85,12 @@ export const MODULE_BAR_DEFAULT = [
 		locked: true,
 	},
 ];
+
+export const BREAKPOINTS = {
+	sm: 640,
+	lg: 1024,
+	xl: 1280,
+};
 
 export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider: true }> = [
 	{

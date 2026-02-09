@@ -104,7 +104,6 @@ create_role: Crea un rol
 create_user: Crear usuari
 message: Missatge
 delete_panel: Elimina el panell
-create_webhook: Crear Webhook
 invite_users: Convidar usuaris
 invite: Convida
 email_already_invited: El correu "{email}" ja s'ha convidat
@@ -347,6 +346,7 @@ confirm_revert_body: Això revertirà l'element a l'estat seleccionat.
 display: Mostra
 settings_update_success: Ajustaments actualitzats
 title: Títol
+subtitle: Subtítol
 revision_delta_created: Creat
 revision_delta_created_externally: Creat externament
 revision_delta_updated: 'Actualitzat 1 camp | Actualitzats {count} camps'
@@ -510,8 +510,6 @@ file_count: 'No hi ha fitxers | Un fitxer | {count} fitxers'
 no_files_copy: No hi ha fitxers aquí.
 user_count: 'No hi ha usuaris | Un usuari | {count} usuaris'
 no_users_copy: Encara no hi ha usuaris en aquest rol.
-webhooks_count: 'No hi ha webhooks | Un webhook | {count} webhooks'
-no_webhooks_copy: No s'han configurat webhooks encara. Comença creant-ne un.
 no_notifications: Cap notificació
 no_notifications_copy: Estàs al dia!
 activity_log: Registre d'activitat
@@ -540,7 +538,6 @@ action: Acció
 ip_address: Adreça IP
 user_agent: Agent de l'usuari
 origin: Origen
-webhooks: Webhooks
 decimals: Decimals
 value_decimals: Valor decimal
 min_value: Valor mínim
@@ -613,7 +610,6 @@ errors:
   VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
   VALUE_TOO_LONG: El valor és massa gran
 security: Seguretat
-value_hashed: Aplicat hash segur al valor
 bookmark_name: Nom del marcador...
 create_bookmark: Crea un marcador
 edit_bookmark: Edita el marcador
@@ -779,6 +775,14 @@ flow_name: Nom
 flow_tracking_activity: Només traça l'activitat
 flow_tracking_null: No tracis res
 code: Codi
+deployment:
+  provider:
+    settings:
+      delete_confirm: Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+    run:
+      cancel_confirm: Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+  target_value:
+    preview: Vista prèvia
 suffix_placeholder: Text després del valor...
 decimals_placeholder: Nombre de posicions decimals...
 no_dashboards: Sense taulers de control
@@ -883,7 +887,6 @@ editing_in_batch: 'Editant {count} elements'
 no_options_available: Sense opcions disponibles
 settings_data_model: Model de dades
 settings_project: Configuració
-settings_webhooks: Webhooks
 settings_flows: Fluxes
 settings_presets: Favorits
 settings_translations: Traduccions
@@ -908,36 +911,6 @@ discard_changes_copy: Estàs segur de descartar tots els canvis que has fet?
 show_x_axis: Mostra el eix X
 show_y_axis: Mostra l'eix Y
 keep_editing: Continua editant
-page_help_collections_overview: '** Resum de col·leccions **: Llista de totes les col·leccions a les quals tens accés.'
-page_help_collections_collection: >-
-  ** Cerca elements **: Llista de tots els elements de {collection} als quals tens accés. Personalitza el disseny, els filtres i l’ordenació per adaptar-la a la teva vista i, fins i tot, desa els marcadors d’aquestes diferents configuracions per accedir-hi ràpidament.
-page_help_collections_item: >-
-  ** Detall de l'element **: Un formulari per visualitzar i gestionar aquest element. Aquesta barra lateral també conté un historial complet de revisions i comentaris incrustats.
-page_help_activity_collection: >-
-  ** Activitat de navegació **: Llista completa de tota l'activitat de contingut i sistema del vostre usuari.
-page_help_docs_global: >-
-  ** Informació general de la documentació **: Documents adaptats específicament a la versió i l'esquema d'aquest projecte.
-page_help_files_collection: >-
-  ** Biblioteca de fitxers **: Llista de tots els recursos de fitxers carregats en aquest projecte. Personalitza el disseny, els filtres i l’ordenació per adaptar-la a la teva vista i, fins i tot, desa els marcadors d’aquestes configuracions per accedir-hi ràpidament.
-page_help_files_item: >-
-  ** Detall de fitxer **: Formulari per gestionar metadades de fitxers, editar el recurs original i actualitzar la configuració d'accés.
-page_help_settings_datamodel_collections: >-
-  ** Model de dades: Col·leccions **: Llista de totes les col·leccions disponibles. Això inclou col·leccions visibles, ocultes i del sistema, així com taules de bases de dades no gestionades que es poden afegir.
-page_help_settings_datamodel_fields: >-
-  ** Model de dades: col·lecció **: Un formulari per gestionar aquesta col·lecció i els seus camps.
-page_help_settings_roles_item: "** Detalls del rol **: Gestiona els permisos i altres paràmetres d'un rol."
-page_help_settings_presets_collection: >-
-  ** Examina predefinits **: Llista tots els predefinits del projecte, incloent marcadors d'usuari, rols, globals, així com la vista predeterminada.
-page_help_settings_presets_item: >-
-  ** Detall de predefinit **: Un formulari per gestionar adreces d'interès i predefinits de col·lecció predeterminats.
-page_help_settings_webhooks_collection: '** Examina Webhooks **: Llista tots els webhooks del projecte.'
-page_help_settings_webhooks_item: '** Detall de webhook **: Un formulari per crear i gestionar webhooks del projecte.'
-page_help_settings_flows_collection: '**Examina els fluxos** — Llista tots els fluxos del projecte.'
-page_help_users_collection: '**Directori de l''usuari**.'
-page_help_users_item: >-
-  ** Detall de l'usuari **: Gestiona la informació del compte o consulta la informació d'altres usuaris.
-page_help_insights_overview: '**Visió** - Llista de quadres de comandament als que tens accés.'
-page_help_insights_dashboard: '**Quadre de comandament** - Espai de treball per a gestionar un o més panells'
 activity_feed: Canal d'activitat
 add_new: Afegir nou
 create_new: Crea un nou
@@ -960,7 +933,6 @@ directus_collection:
   directus_dashboards: Quadres de comandament de tota la visió
   directus_fields: Configuració i metadades addicionals del camp
   directus_files: Metadades per a tots els actius de fitxers gestionats
-  directus_flows: Automatització de fluxes
   directus_folders: Proporciona directoris virtuals per a fitxers
   directus_migrations: Quina versió de base de dades estàs utilitzant
   directus_notifications: Notificacions enviades als usuaris
@@ -974,7 +946,6 @@ directus_collection:
   directus_settings: Opcions de configuració del projecte
   directus_shares: Rastreja els elements compartits externament
   directus_users: Usuaris del sistema per a la plataforma
-  directus_webhooks: Configuració per a les peticions HTTP basades en esdeveniments
 fields:
   directus_activity:
     item: Clau primaria de l'ítem
@@ -1093,6 +1064,7 @@ fields:
     transformations_presets: Limita les transformacions al predefinits de sota
     image_editor: Editor d'imatge
     custom_aspect_ratios: Relació d'aspecte personalitzat
+    ai_header_name: Capçalera
   directus_shares:
     name: Nom
     role: Rol
@@ -1116,18 +1088,6 @@ fields:
     users: Usuaris al rol
   directus_policies:
     description: Descripció
-  directus_webhooks:
-    name: Nom
-    method: Mètode
-    status: Estat
-    data: Dades
-    header: Capçalera
-    value: Valor
-    headers: Capçaleres de petició
-    data_label: Envia les dades de l'event
-    triggers: Disparadors
-    actions: Accions
-    collections: Col·leccions
 field_options:
   directus_settings:
     project_name_placeholder: El meu projecte...
@@ -1196,17 +1156,6 @@ field_options:
     status_dropdown_suspended: Suspès
     status_dropdown_archived: Arxivat
     token: Entra un testimoni d'accés (token) segur...
-  directus_webhooks:
-    status_options_active: Activa
-    status_options_inactive: Inactiva
-    data_label: Envia les dades de l'event
-    triggers_divider: Disparadors
-    actions_create: Crear
-    actions_update: Actualitzar
-    actions_delete: Elimina
-    headers:
-      header: Capçalera
-      value: Valor
 no_fields_in_collection: 'Encara no hi ha camps a "{collection}"'
 do_nothing: No facis res
 generate_and_save_uuid: Genera i Desa UUID
@@ -1219,6 +1168,21 @@ inline: Inline
 comment: Comentari
 live_preview:
   new_window: Obre en una nova finestra
+ai:
+  input: Entrada
+  unknown: Desconegut
+  items: Elements
+  content: Contingut
+  settings: Configuració
+  tool_approval:
+    disabled: Deshabilitat
+ai_tools:
+  items: Elements
+  files: Arxius
+  flows: Fluxes
+  schema: Esquema
+  collections: Col·leccions
+  fields: Camps
 mcp_prompts_collection_schema:
   messages_role_user: Usuari
 relational_triggers: Disparadors relacionals
@@ -1233,7 +1197,6 @@ continue_label: Continua
 continue_as: >-
   {name} està autenticat. Si no reconeixes aquest compte, polsa continua.
 editing_role: 'Rol {role}'
-creating_webhook: Creant el webhook
 default_label: Predeterminat
 delete_label: Elimina
 delete_are_you_sure: >-
@@ -1349,7 +1312,7 @@ interfaces:
     accordion_mode: Mode d'acordió
     max_one_section_open: Màxim 1 secció oberta
   presentation-links:
-    links: Enllaços
+    presentation-links: Botons
     style: Estil
     primary: Primari
     link: Enllaços
@@ -1603,6 +1566,9 @@ interfaces:
     start_closed: Comená tancat
   system-token:
     system-token: Token
+  header:
+    header: Capçalera
+    links: Enllaços
 displays:
   translations:
     translations: Traduccions

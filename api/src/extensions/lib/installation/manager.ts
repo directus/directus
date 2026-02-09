@@ -1,14 +1,14 @@
+import { mkdir, readFile, rm } from 'node:fs/promises';
+import { Readable } from 'node:stream';
+import { join } from 'path';
+import type { ReadableStream } from 'stream/web';
 import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError, ServiceUnavailableError } from '@directus/errors';
 import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
 import { download, type DownloadOptions } from '@directus/extensions-registry';
 import DriverLocal from '@directus/storage-driver-local';
 import { move, remove } from 'fs-extra';
-import { mkdir, readFile, rm } from 'node:fs/promises';
-import { Readable } from 'node:stream';
 import Queue from 'p-queue';
-import { join } from 'path';
-import type { ReadableStream } from 'stream/web';
 import { extract } from 'tar';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
@@ -93,11 +93,11 @@ export class InstallationManager {
 				}
 
 				await queue.onIdle();
-			} else {
-				// No custom location, so save to regular local extensions folder
-				const dest = join(this.extensionPath, '.registry', versionId);
-				await move(join(tempDir, extractedPath), dest, { overwrite: true });
 			}
+
+			// move to regular local extensions folder
+			const dest = join(this.extensionPath, '.registry', versionId);
+			await move(join(tempDir, extractedPath), dest, { overwrite: true });
 		} catch (err) {
 			logger.warn(err);
 
@@ -129,9 +129,9 @@ export class InstallationManager {
 			}
 
 			await queue.onIdle();
-		} else {
-			const path = join(this.extensionPath, '.registry', folder);
-			await remove(path);
 		}
+
+		const path = join(this.extensionPath, '.registry', folder);
+		await remove(path);
 	}
 }

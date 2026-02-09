@@ -1,5 +1,5 @@
 import type { Permission } from '@directus/types';
-import { test, expect } from 'vitest';
+import { expect, test } from 'vitest';
 import {
 	extractRequiredDynamicVariableContext,
 	extractRequiredDynamicVariableContextForPermissions,

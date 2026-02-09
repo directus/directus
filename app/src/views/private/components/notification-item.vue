@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 
 const props = withDefaults(
@@ -8,9 +10,8 @@ const props = withDefaults(
 		text?: string;
 		icon?: string | null;
 		type?: 'info' | 'success' | 'warning' | 'error';
-		tail?: boolean;
-		dense?: boolean;
 		showClose?: boolean;
+		showReload?: boolean;
 		loading?: boolean;
 		progress?: number;
 		alwaysShowText?: boolean;
@@ -34,22 +35,30 @@ const done = async () => {
 		notificationsStore.remove(props.id);
 	}
 };
+
+function reload() {
+	window.location.reload();
+}
 </script>
 
 <template>
-	<div class="notification-item" :class="[type, { tail, dense, 'show-text': alwaysShowText }]" @click="done">
+	<div class="notification-item" :class="[type, { 'show-text': alwaysShowText }]" @click="done">
 		<div v-if="loading || progress || icon" class="icon">
-			<v-progress-circular v-if="loading" indeterminate small />
-			<v-progress-circular v-else-if="progress" small :value="progress" />
-			<v-icon v-else :name="icon" />
+			<VProgressCircular v-if="loading" indeterminate small />
+			<VProgressCircular v-else-if="progress" small :value="progress" />
+			<VIcon v-else :name="icon" />
 		</div>
 
 		<div class="content">
 			<p class="title">{{ title }}</p>
 			<p v-if="text" class="text">{{ text }}</p>
+			<button v-if="showReload" class="reload" @click="reload">
+				{{ $t('reload_page') }}
+				<VIcon name="restore_page" clickable />
+			</button>
 		</div>
 
-		<v-icon
+		<VIcon
 			v-if="showClose"
 			v-tooltip="dismissText"
 			:name="dismissIcon ?? 'close'"
@@ -66,12 +75,13 @@ const done = async () => {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	inline-size: 100%;
-	min-block-size: 44px;
 	margin-block-start: 4px;
 	padding: 12px;
 	color: var(--white);
 	border-radius: var(--theme--border-radius);
+	inline-size: max-content;
+	max-inline-size: 100%;
+	min-block-size: 44px;
 
 	.icon {
 		display: block;
@@ -79,11 +89,11 @@ const done = async () => {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		inline-size: 44px;
-		block-size: 44px;
-		margin-inline-end: 12px;
-		background-color: rgb(255 255 255 / 0.25);
 		border-radius: 50%;
+		inline-size: auto;
+		block-size: auto;
+		margin-inline-end: 8px;
+		background-color: transparent;
 	}
 
 	.text {
@@ -113,33 +123,12 @@ const done = async () => {
 		pointer-events: none;
 	}
 
-	&.tail::after {
-		transform: rotate(45deg) translate(0, 0);
-	}
-
-	&.dense {
-		inline-size: max-content;
-		max-inline-size: 100%;
-		min-block-size: 44px;
-
-		.icon {
-			inline-size: auto;
-			block-size: auto;
-			margin-inline-end: 8px;
-			background-color: transparent;
-		}
-
-		&:not(.show-text) .text {
-			display: none;
-		}
+	&:not(.show-text) .text {
+		display: none;
 	}
 
 	&.info {
 		background-color: var(--theme--primary);
-
-		&.tail::after {
-			background-color: var(--theme--primary);
-		}
 
 		.text {
 			color: var(--theme--primary-background);
@@ -149,10 +138,6 @@ const done = async () => {
 	&.success {
 		background-color: var(--theme--success);
 
-		&.tail::after {
-			background-color: var(--theme--success);
-		}
-
 		.text {
 			color: var(--success-alt);
 		}
@@ -160,10 +145,6 @@ const done = async () => {
 
 	&.warning {
 		background-color: var(--theme--warning);
-
-		&.tail::after {
-			background-color: var(--theme--warning);
-		}
 
 		.text {
 			color: var(--warning-alt);
@@ -173,10 +154,6 @@ const done = async () => {
 	&.error {
 		background-color: var(--theme--danger);
 
-		&.tail::after {
-			background-color: var(--theme--danger);
-		}
-
 		.text {
 			color: var(--danger-alt);
 		}
@@ -185,6 +162,11 @@ const done = async () => {
 
 .close {
 	margin-inline-start: 12px;
+}
+
+.reload {
+	display: block;
+	margin-inline-start: auto;
 }
 
 .v-progress-circular {

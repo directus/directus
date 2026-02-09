@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import { isPlainObject } from 'lodash';
+import { computed, ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useClipboard } from '@/composables/use-clipboard';
+import { extractErrorCode } from '@/utils/extract-error-code';
 
 interface Props {
 	error: Record<string, any>;
@@ -9,9 +11,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const code = computed(() => {
-	return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
-});
+const code = computed(() => extractErrorCode(props.error));
 
 const message = computed(() => {
 	let message = props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
@@ -42,7 +42,7 @@ async function copyError() {
 <template>
 	<div class="v-error">
 		<output>[{{ code }}] {{ message }}</output>
-		<v-icon
+		<VIcon
 			v-if="isCopySupported"
 			v-tooltip="$t('copy_details')"
 			small

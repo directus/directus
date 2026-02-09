@@ -1,24 +1,36 @@
 <script setup lang="ts">
-import api from '@/api';
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
-import { getAssetUrl } from '@/utils/get-asset-url';
-import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
-import FilesNavigation from '@/views/private/components/files-navigation.vue';
-import FolderPicker from '@/views/private/components/folder-picker.vue';
-import ImageEditor from '@/views/private/components/image-editor.vue';
-import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
-import SaveOptions from '@/views/private/components/save-options.vue';
 import type { Field, File } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import FilesNotFound from './not-found.vue';
+import api from '@/api';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import { useCollab } from '@/composables/use-collab';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
+import { useShortcut } from '@/composables/use-shortcut';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import ImageEditor from '@/views/private/components/image-editor.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -47,8 +59,19 @@ const {
 	deleting,
 	saveAsCopy,
 	refresh,
+	getItem,
 	validationErrors,
 } = useItem<File>(ref('directus_files'), primaryKey);
+
+const {
+	users: collabUsers,
+	connected,
+	collabContext,
+	collabCollision,
+	update: updateCollab,
+	clearCollidingChanges,
+	discard: discardCollab,
+} = useCollab(ref('directus_files'), primaryKey, ref(null), item, edits, getItem);
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
@@ -61,6 +84,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const confirmDelete = ref(false);
 const editActive = ref(false);
+const confirmDiscard = ref(false);
 
 // These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
 const fieldsDenyList: string[] = [
@@ -91,21 +115,6 @@ useShortcut('meta+s', saveAndStay, form);
 const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 });
-
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	if (item?.value?.folder) {
-		router.push(`/files/folders/${item.value.folder}`);
-	} else {
-		router.push('/files');
-	}
-}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => {
@@ -174,8 +183,17 @@ function discardAndLeave() {
 }
 
 function discardAndStay() {
-	edits.value = {};
+	if (collabUsers.value.length > 1) {
+		confirmDiscard.value = true;
+	} else {
+		discardAndStayConfirmed();
+	}
+}
+
+function discardAndStayConfirmed() {
+	discardCollab();
 	confirmLeave.value = false;
+	confirmDiscard.value = false;
 }
 
 function useMovetoFolder() {
@@ -232,118 +250,100 @@ function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? $t('loading') : item.title">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
+	<FilesNotFound v-if="!loading && !item" />
+	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
 		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
+			<VBreadcrumb :items="breadcrumb" />
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
+			<CollabAvatars :model-value="collabUsers" :connected="connected" />
+
+			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						rounded
-						icon
 						class="action-delete"
-						secondary
 						:disabled="item === null || deleteAllowed === false"
+						icon="delete"
+						secondary
 						@click="on"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-dialog
+			<VDialog
 				v-if="isNew === false"
 				v-model="moveToDialogActive"
 				@esc="moveToDialogActive = false"
 				@apply="moveToFolder"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="item === null || !updateAllowed ? $t('not_allowed') : $t('move_to_folder')"
-						rounded
-						icon
 						secondary
 						:disabled="item === null || !updateAllowed"
+						icon="folder_move"
 						@click="on"
-					>
-						<v-icon name="folder_move" />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('move_to_folder') }}</VCardTitle>
 
-					<v-card-text>
-						<folder-picker v-model="selectedFolder" />
-					</v-card-text>
+					<VCardText>
+						<FolderPicker v-model="selectedFolder" />
+					</VCardText>
 
-					<v-card-actions>
-						<v-button secondary @click="moveToDialogActive = false">
+					<VCardActions>
+						<VButton secondary @click="moveToDialogActive = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button :loading="moving" @click="moveToFolder">
+						</VButton>
+						<VButton :loading="moving" @click="moveToFolder">
 							{{ $t('move') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-			<v-button
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
+
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('download')"
 				secondary
-				icon
-				rounded
 				:download="item?.filename_download"
 				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
-			>
-				<v-icon name="download" />
-			</v-button>
+				icon="download"
+			/>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="item?.type?.includes('image') && updateAllowed"
 				v-tooltip.bottom="$t('edit')"
-				rounded
-				icon
 				secondary
+				icon="tune"
 				@click="editActive = true"
-			>
-				<v-icon name="tune" />
-			</v-button>
+			/>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
-				rounded
-				icon
 				:loading="saving"
 				:disabled="!isSavable"
+				icon="check"
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
-
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="isSavable"
 						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -351,19 +351,25 @@ function revert(values: Record<string, any>) {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>
-			<files-navigation :current-folder="item?.folder ?? undefined" />
+			<FilesNavigation :current-folder="item?.folder ?? undefined" />
 		</template>
 
 		<div class="file-item">
-			<file-preview-replace v-if="item" class="preview" :file="item" @replace="refresh" />
+			<FilePreviewReplace
+				v-if="item"
+				class="preview"
+				:disabled="updateAllowed === false"
+				:file="item"
+				@replace="refresh"
+			/>
 
-			<image-editor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
+			<ImageEditor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
 
-			<v-form
+			<VForm
 				ref="form"
 				v-model="edits"
 				:fields="fieldsFiltered"
@@ -371,35 +377,72 @@ function revert(values: Record<string, any>) {
 				:initial-values="item"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
+				:collab-context="collabContext"
 				:validation-errors="validationErrors"
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard v-if="!connected">
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+			<VCard v-else>
+				<VCardTitle>{{ $t('unsaved_changes_collab') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('leave_page') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+			<VCard>
+				<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
+				<VCardText>{{ $t('discard_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndStayConfirmed">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmDiscard = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<ComparisonModal
+			:model-value="collabCollision !== undefined"
+			collection="directus_files"
+			:primary-key="primaryKey"
+			:current-collab="collabCollision"
+			:collab-context="collabContext"
+			mode="collab"
+			:delete-versions-allowed="false"
+			:current-version="null"
+			@confirm="updateCollab"
+			@cancel="clearCollidingChanges"
+		/>
 
 		<template #sidebar>
-			<file-info-sidebar-detail :file="item" :is-new="isNew" />
-			<revisions-sidebar-detail
+			<FileInfoSidebarDetail :file="item" :is-new="isNew" />
+			<RevisionsSidebarDetail
 				v-if="isNew === false && revisionsAllowed"
 				ref="revisionsSidebarDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
 				@revert="revert"
 			/>
-			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
+			<CommentsSidebarDetail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

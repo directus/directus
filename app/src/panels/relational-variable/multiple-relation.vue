@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import useDisplayItems from './use-display-items';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VNotice from '@/components/v-notice.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 interface Props {
 	value: (string | number)[];
 	collection: string;
 	template: string;
 	filter: Record<string, any>;
-	limit: number;
+	limit?: number;
 }
 const props = withDefaults(defineProps<Props>(), { limit: 5 });
 const emit = defineEmits(['input', 'select']);
@@ -30,24 +36,24 @@ function deleteItem(elem: Record<string, any>) {
 <template>
 	<div class="one-to-many">
 		<template v-if="loading">
-			<v-skeleton-loader v-for="n in limit" :key="n" type="block-list-item-dense" />
+			<VSkeletonLoader v-for="n in limit" :key="n" type="block-list-item-dense" />
 		</template>
 
-		<v-notice v-else-if="displayItems.length === 0">
+		<VNotice v-else-if="displayItems.length === 0">
 			{{ $t('no_items') }}
-		</v-notice>
+		</VNotice>
 
-		<v-list v-else>
-			<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
-				<render-template :collection="collection" :item="element" :template="displayTemplate" />
+		<VList v-else>
+			<VListItem v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
+				<RenderTemplate :collection="collection" :item="element" :template="displayTemplate" />
 
 				<div class="spacer" />
 
 				<div class="item-actions">
-					<v-remove deselect @action="deleteItem(element)" />
+					<VRemove deselect @action="deleteItem(element)" />
 				</div>
-			</v-list-item>
-		</v-list>
+			</VListItem>
+		</VList>
 
 		<div class="actions">
 			<button v-if="totalItemCount < limit" @click="$emit('select')">

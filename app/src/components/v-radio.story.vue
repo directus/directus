@@ -13,7 +13,7 @@ function initState() {
 <template>
 	<Story title="VRadio" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-radio v-bind="state" />
+			<VRadio v-bind="state" />
 		</template>
 	</Story>
 </template>
