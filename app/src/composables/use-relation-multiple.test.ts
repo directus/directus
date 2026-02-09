@@ -9,14 +9,14 @@ import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-re
 vi.mock('@/sdk', () => {
 	return {
 		default: {
-			request: (options: () => { path: string; query?: Record<string, any> }) => {
-				const { path, query } = options();
+			request: (options: () => { path: string; params?: Record<string, any> }) => {
+				const { path, params } = options();
 
-				if (path === '/items/worker' && query?.aggregate?.count === 'id') {
+				if (path === '/items/worker' && params?.aggregate?.count === 'id') {
 					return Promise.resolve([{ count: { id: workerData.length } }]);
 				} else if (path === '/items/worker') {
 					return Promise.resolve(workerData);
-				} else if (path === '/items/article_m2a' && query?.aggregate?.count === 'id') {
+				} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
 					return Promise.resolve([{ count: { id: m2aData.length } }]);
 				} else {
 					return Promise.resolve(m2aData);

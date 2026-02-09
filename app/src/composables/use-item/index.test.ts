@@ -46,7 +46,7 @@ vi.mock('@/utils/notify', () => ({
 vi.mock('@/sdk', () => {
 	return {
 		default: {
-			request: (options: () => { path: string; query?: Record<string, any> }) => {
+			request: (options: () => { path: string; params?: Record<string, any> }) => {
 				const { path } = options();
 
 				let payload: Record<string, unknown> = { id: 1 };
@@ -130,7 +130,7 @@ describe('Save As Copy', () => {
 
 		expect(sdkSpy.mock.calls[1]?.[0]()).toEqual({
 			path: '/graphql',
-			query: 'query { item: test_by_id (id: 1) }',
+			params: 'query { item: test_by_id (id: 1) }',
 			method: 'POST',
 		});
 	});
