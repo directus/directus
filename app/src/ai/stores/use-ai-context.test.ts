@@ -61,15 +61,6 @@ const createPromptContext = (id: string): PendingContextItem => ({
 });
 
 describe('useAiContextStore', () => {
-	let sdkSpy;
-
-	beforeEach(() => {
-		sdkSpy = vi.spyOn(sdk, 'request').mockImplementation((cb) => {
-			cb();
-			return Promise.resolve();
-		});
-	});
-
 	afterEach(() => {
 		vi.clearAllMocks();
 	});
