@@ -15,9 +15,9 @@ vi.mock('vue-i18n', () => ({
 	createI18n: () => undefined,
 }));
 
-vi.mock('@/api', () => ({
+vi.mock('@/sdk', () => ({
 	default: {
-		get: vi.fn(),
+		request: vi.fn(),
 	},
 }));
 

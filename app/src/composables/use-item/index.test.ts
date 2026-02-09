@@ -43,12 +43,10 @@ vi.mock('@/utils/notify', () => ({
 	notify: vi.fn(),
 }));
 
-vi.mock('@/api', () => {
+vi.mock('@/sdk', () => {
 	return {
 		default: {
-			get: vi.fn(),
-			post: vi.fn(),
-			patch: vi.fn(),
+			request: vi.fn(),
 		},
 	};
 });
