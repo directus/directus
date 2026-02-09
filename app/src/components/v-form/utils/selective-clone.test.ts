@@ -109,6 +109,15 @@ describe('selectiveClone', () => {
 		expect(result.unknown).toEqual(values.unknown);
 	});
 
+	it('returns empty object when values is null or undefined', () => {
+		const fieldsMap = {
+			title: createField('title', 'string'),
+		};
+
+		expect(selectiveClone(null, fieldsMap)).toEqual({});
+		expect(selectiveClone(undefined, fieldsMap)).toEqual({});
+	});
+
 	it('preserves $-prefixed metadata keys without cloning', () => {
 		const values = { title: 'Hello', $type: 'created' };
 
