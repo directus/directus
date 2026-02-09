@@ -14,9 +14,13 @@ interface Props {
 	logLevels: Record<string, number>;
 	instances: string[];
 	streamConnected: boolean;
+	showInstance?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+	showInstance: true,
+});
+
 const emit = defineEmits(['logSelected', 'scrolledToBottom', 'scrolledToTop', 'scroll']);
 
 defineExpose({ clearUnreadLogs, incrementUnreadLogs, scrollToBottom, scrollToTop, scrollDownByOne, scrollUpByOne });
@@ -215,7 +219,7 @@ function selectLog(index: number) {
 			<DynamicScrollerItem :item="item" :active="active" :data-index="index" :data-active="active">
 				<div :class="['log-entry', { selected: item.selected }]" @click="selectLog(item.index)">
 					<span class="timestamp">[{{ localizedFormat(item.data.time, `${$t('date-fns_time_24hour')}`) }}]</span>
-					<span v-if="!item.notice" :class="getMessageClasses(['instance'], item)">
+					<span v-if="props.showInstance && !item.notice" :class="getMessageClasses(['instance'], item)">
 						[#{{ instances.indexOf(item.instance) + 1 }}]
 					</span>
 					<span v-if="!item.notice" :class="getMessageClasses(['log-level', logLevelMap[item.data.level] || ''], item)">
