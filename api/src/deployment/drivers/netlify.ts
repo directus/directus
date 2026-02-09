@@ -14,9 +14,21 @@ export interface NetlifyOptions extends Options {
 
 type NetlifySite = Awaited<ReturnType<NetlifyAPI['getSite']>>;
 
+interface DeploymentConnection {
+	ws: WebSocket;
+	logs: Log[];
+	idleTimeout?: NodeJS.Timeout | undefined;
+	connectionTimeout?: NodeJS.Timeout | undefined;
+	deploymentId: string;
+	reject: (error: Error) => void;
+}
+
+const WS_CONNECTIONS = new Map<string, DeploymentConnection>();
+
 export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyOptions> {
 	private api: NetlifyAPI;
-	private ws?: WebSocket;
+	private readonly WS_IDLE_TIMEOUT = 60_000; // 60 seconds
+	private readonly WS_CONNECTION_TIMEOUT = 10_000; // 10 seconds
 
 	constructor(credentials: NetlifyCredentials, options: NetlifyOptions = {}) {
 		super(credentials, options);
@@ -210,91 +222,127 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 
 	async cancelDeployment(deploymentId: string): Promise<void> {
 		await this.handleApiError((api) => api.cancelSiteDeploy({ deployId: deploymentId }));
+		this.closeWsConnection(deploymentId);
 	}
 
-	private getWebSocket() {
-		return (this.ws ??= new WebSocket(`wss://socketeer.services.netlify.com/build/logs`));
+	private closeWsConnection(deploymentId: string, remove = true): void {
+		const connection = WS_CONNECTIONS.get(deploymentId);
+
+		if (!connection) return;
+
+		connection.ws.close();
+
+		if (remove) {
+			WS_CONNECTIONS.delete(deploymentId);
+		}
 	}
 
-	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
+	private setupWsIdleTimeout(connection: DeploymentConnection): void {
+		if (connection.idleTimeout) {
+			clearTimeout(connection.idleTimeout);
+		}
+
+		connection.idleTimeout = setTimeout(() => {
+			this.closeWsConnection(connection.deploymentId);
+		}, this.WS_IDLE_TIMEOUT);
+	}
+
+	private setupWsConnectionTimeout(connection: DeploymentConnection): void {
+		if (connection.connectionTimeout) {
+			clearTimeout(connection.connectionTimeout);
+		}
+
+		connection.connectionTimeout = setTimeout(() => {
+			this.closeWsConnection(connection.deploymentId);
+			connection.reject(new ServiceUnavailableError({ service: 'netlify', reason: 'WebSocket connection timeout' }));
+		}, this.WS_CONNECTION_TIMEOUT);
+	}
+
+	private getWsConnection(deploymentId: string): Promise<DeploymentConnection> {
 		return new Promise((resolve, reject) => {
-			const ws = this.getWebSocket();
+			const existingConnection = WS_CONNECTIONS.get(deploymentId);
 
-			const params = {
-				deploymentId: deploymentId,
-				accessToken: this.credentials.access_token,
-				logs: [] as Log[],
-				lastMessageTime: Date.now(),
-				resolve,
+			if (existingConnection) {
+				this.setupWsIdleTimeout(existingConnection);
+				return resolve(existingConnection);
+			}
+
+			const connection: DeploymentConnection = {
+				ws: new WebSocket(`wss://socketeer.services.netlify.com/build/logs`),
+				logs: [],
+				deploymentId,
 				reject,
 			};
 
-			const { onMessage, onError, onOpen, close } = this.createDeploymentLogsResolver(ws, options);
+			this.setupWsConnectionTimeout(connection);
 
-			ws.addEventListener('message', onMessage(params));
-			ws.addEventListener('error', onError(params));
-			ws.addEventListener('open', onOpen(params));
-
-			const interval = setInterval(() => {
-				if (ws.OPEN !== ws.readyState) return;
-
-				// If no new messages have been received in the last second, assume logs are complete and close the connection
-				if (Date.now() - params.lastMessageTime > 1_000) {
-					clearInterval(interval);
-					close(params);
+			connection.ws.addEventListener('open', () => {
+				if (connection.connectionTimeout) {
+					clearTimeout(connection.connectionTimeout);
+					connection.connectionTimeout = undefined;
 				}
-			}, 1000);
-		});
-	}
 
-	private createDeploymentLogsResolver(ws: WebSocket, options?: { since?: Date }) {
-		function close(params: { resolve: (logs: Log[]) => void; logs: Log[] }) {
-			ws.close();
-			params.resolve(params.logs);
-		}
+				this.setupWsIdleTimeout(connection);
 
-		function onMessage(params: { resolve: (logs: Log[]) => void; logs: Log[]; lastMessageTime: number }) {
-			// eslint-disable-next-line no-control-regex
-			const ansiRegex = /[\x1b]\[[0-9;]*m/g;
+				const payload = JSON.stringify({
+					deploy_id: deploymentId,
+					access_token: this.credentials.access_token,
+				});
 
-			return (event: MessageEvent) => {
+				connection.ws.send(payload);
+
+				resolve(connection);
+				WS_CONNECTIONS.set(deploymentId, connection);
+			});
+
+			connection.ws.addEventListener('message', (event) => {
 				const data = JSON.parse(event.data);
-				if (options?.since && new Date(data.ts) < options.since) return;
-
+				// eslint-disable-next-line no-control-regex
+				const ansiRegex = /[\x1b]\[[0-9;]*m/g;
 				const cleanMessage = data.message.replace(/\r/g, '').replace(ansiRegex, '');
+				let logType: 'info' | 'stdout' | 'stderr' = 'stdout';
 
-				params.logs.push({
+				if (data.type === 'report') {
+					logType = cleanMessage.includes('Failing build') ? 'stderr' : 'info';
+				}
+
+				connection.logs.push({
 					timestamp: new Date(data.ts),
-					type: data.type === 'report' ? 'info' : 'stdout',
+					type: logType,
 					message: cleanMessage,
 				});
 
+				// If we receive a "report" type message, the build is complete.
+				// Close the WebSocket connection but don't yet remove the logs, allowing the client to fetch them until the idle timeout expires.
 				if (data.type === 'report') {
-					close(params);
+					this.closeWsConnection(deploymentId, false);
 				}
-			};
+			});
+
+			connection.ws.addEventListener('error', () => {
+				this.closeWsConnection(deploymentId);
+				reject(new ServiceUnavailableError({ service: 'netlify', reason: 'WebSocket connection error' }));
+			});
+
+			connection.ws.addEventListener('close', () => {
+				if (connection.idleTimeout) {
+					clearTimeout(connection.idleTimeout);
+				}
+
+				if (connection.connectionTimeout) {
+					clearTimeout(connection.connectionTimeout);
+				}
+			});
+		});
+	}
+
+	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
+		const connection = await this.getWsConnection(deploymentId);
+
+		if (options?.since) {
+			return connection.logs.filter((log) => log.timestamp >= options.since!);
 		}
 
-		function onError(params: { reject: (reason: string) => void }) {
-			return (event: Event) => params.reject(`WebSocket error: ${event}`);
-		}
-
-		function onOpen(params: { deploymentId: string; accessToken: string }) {
-			return () => {
-				ws.send(
-					JSON.stringify({
-						deploy_id: params.deploymentId,
-						access_token: params.accessToken,
-					}),
-				);
-			};
-		}
-
-		return {
-			onMessage,
-			onError,
-			onOpen,
-			close,
-		};
+		return connection.logs;
 	}
 }

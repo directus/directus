@@ -382,8 +382,138 @@ describe('NetlifyDriver', () => {
 	});
 
 	describe('getDeploymentLogs', () => {
-		it.todo('should connect to WebSocket and retrieve logs', async () => {
-			expect(true).toBe(true);
+		let mockWebSocket: {
+			send: ReturnType<typeof vi.fn>;
+			close: ReturnType<typeof vi.fn>;
+			addEventListener: ReturnType<typeof vi.fn>;
+		};
+
+		beforeEach(() => {
+			mockWebSocket = {
+				send: vi.fn(),
+				close: vi.fn(),
+				addEventListener: vi.fn(),
+			};
+
+			vi.stubGlobal(
+				'WebSocket',
+				vi.fn(() => mockWebSocket),
+			);
+		});
+
+		afterEach(() => {
+			vi.unstubAllGlobals();
+		});
+
+		it('should return filtered and mapped logs', async () => {
+			const logsPromise = driver.getDeploymentLogs('deploy-1');
+
+			const openHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'open')?.[1];
+			expect(openHandler).toBeDefined();
+			openHandler();
+
+			expect(mockWebSocket.send).toHaveBeenCalledWith(
+				expect.stringContaining('{"deploy_id":"deploy-1","access_token":"test-token"}'),
+			);
+
+			const messageHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'message')?.[1];
+			expect(messageHandler).toBeDefined();
+
+			const messages = [
+				{
+					ts: '2024-01-01T00:00:00Z',
+					type: 'stdout',
+					message: '\x1b[32mBuilding project...\x1b[0m\r\n',
+				},
+				{
+					ts: '2024-01-01T00:00:05Z',
+					type: 'stdout',
+					message: 'Compiling files...',
+				},
+				{
+					ts: '2024-01-01T00:00:10Z',
+					type: 'report',
+					message: 'Deploy complete',
+				},
+			];
+
+			for (const message of messages) {
+				messageHandler({
+					data: JSON.stringify(message),
+				});
+			}
+
+			const logs = await logsPromise;
+
+			expect(logs).toHaveLength(3);
+
+			expect(logs[0]).toMatchObject({
+				timestamp: new Date('2024-01-01T00:00:00Z'),
+				type: 'stdout',
+				message: 'Building project...\n',
+			});
+
+			expect(logs[1]).toMatchObject({
+				timestamp: new Date('2024-01-01T00:00:05Z'),
+				type: 'stdout',
+				message: 'Compiling files...',
+			});
+
+			expect(logs[2]).toMatchObject({
+				timestamp: new Date('2024-01-01T00:00:10Z'),
+				type: 'info',
+				message: 'Deploy complete',
+			});
+
+			expect(mockWebSocket.close).toHaveBeenCalled();
+		});
+
+		it('should pass since parameter as milliseconds', async () => {
+			const sinceDate = new Date('2024-01-01T00:00:05Z');
+			const logsPromise = driver.getDeploymentLogs('deploy-2', { since: sinceDate });
+
+			const openHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'open')?.[1];
+			openHandler();
+
+			const messageHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'message')?.[1];
+
+			const messages = [
+				{
+					ts: '2024-01-01T00:00:00Z',
+					type: 'stdout',
+					message: 'Old log before since date',
+				},
+				{
+					ts: '2024-01-01T00:00:05Z',
+					type: 'stdout',
+					message: 'Log at exact since date',
+				},
+				{
+					ts: '2024-01-01T00:00:10Z',
+					type: 'stdout',
+					message: 'New log after since date',
+				},
+				{
+					ts: '2024-01-01T00:00:15Z',
+					type: 'report',
+					message: 'Done',
+				},
+			];
+
+			for (const message of messages) {
+				messageHandler({
+					data: JSON.stringify(message),
+				});
+			}
+
+			const logs = await logsPromise;
+
+			expect(logs).toHaveLength(3);
+			expect(logs[0]!.message).toBe('Log at exact since date');
+			expect(logs[1]!.message).toBe('New log after since date');
+			expect(logs[2]!.message).toBe('Done');
+
+			expect(logs.some((log) => log.message === 'Old log before since date')).toBe(false);
 		});
 	});
 });
