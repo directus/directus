@@ -321,17 +321,7 @@ export class CollabHandler {
 	 * Join a collaborative editing room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
-<<<<<<< HEAD
-		if (!client.accountability) {
-			throw new ForbiddenError({
-				reason: 'Collaborative editing is not supported for unauthenticated clients',
-			});
-		}
-
-		if (client.accountability.share) {
-=======
 		if (client.accountability?.share) {
->>>>>>> main
 			throw new ForbiddenError({
 				reason: 'Collaborative editing is not supported for shares',
 			});
@@ -343,11 +333,7 @@ export class CollabHandler {
 		try {
 			const { accessAllowed } = await validateItemAccess(
 				{
-<<<<<<< HEAD
-					accountability: client.accountability,
-=======
 					accountability: client.accountability!,
->>>>>>> main
 					action: 'read',
 					collection: message.collection,
 					primaryKeys: schema.collections[message.collection]?.singleton ? [] : [message.item!],
@@ -360,11 +346,7 @@ export class CollabHandler {
 			if (message.version) {
 				const { accessAllowed: versionAccessAllowed } = await validateItemAccess(
 					{
-<<<<<<< HEAD
-						accountability: client.accountability,
-=======
 						accountability: client.accountability!,
->>>>>>> main
 						action: 'read',
 						collection: 'directus_versions',
 						primaryKeys: [message.version],
