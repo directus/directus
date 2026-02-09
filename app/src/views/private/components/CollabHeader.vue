@@ -171,7 +171,7 @@ function focusIntoView(cid: ClientID) {
 
 .v-list-item {
 	gap: 8px;
-	min-width: 50px;
+	min-inline-size: 50px;
 }
 
 .more-users-list {
