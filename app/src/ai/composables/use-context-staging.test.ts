@@ -312,7 +312,7 @@ describe('useContextStaging', () => {
 
 			const call = addSpy.mock.calls[0]![0];
 			expect(call.display).toBe('Breaking News');
-			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', query: { fields: ['headline'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', params: { fields: ['headline'] } });
 		});
 
 		test('uses formatted collection name when no display_template', async () => {
