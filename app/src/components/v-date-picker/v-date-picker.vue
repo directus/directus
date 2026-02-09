@@ -50,7 +50,10 @@ const props = withDefaults(defineProps<Props>(), {
 	use24: true,
 });
 
-const emit = defineEmits<{ 'update:modelValue': [value: string | null] }>();
+const emit = defineEmits<{
+	'update:modelValue': [value: string | null],
+	'close': [],
+}>();
 
 // Internal state using @internationalized/date types
 const calendarValue = ref<DateValue | undefined>();
@@ -173,6 +176,10 @@ function emitValue(): void {
 function handleDateChange(value: DateValue | undefined) {
 	calendarValue.value = value;
 	emitValue();
+
+	if(props.type === 'date') {
+		emit('close');
+	}
 }
 
 /**
@@ -232,7 +239,9 @@ function setToNow() {
 	}
 
 	emitValue();
+	emit('close');
 }
+
 </script>
 
 <template>
