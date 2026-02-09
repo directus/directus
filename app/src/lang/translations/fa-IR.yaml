@@ -72,11 +72,22 @@ collection_names_are_case_sensitive: نام مجموعه ها حساس به حر
 condition_rules: استایل شرطی
 input: ورودی
 invalid_input: ورودی نامعتبر
+invalid_file_type: نوع فایل نامعتبر
+invalid_files_selected: 'هیچ فایل نامعتبر | فایل نامعتبر انتخاب شده | {count} فایل نامعتبر انتخاب شده'
+files_wrong_type: 'فایل‌های {files} که انتظار می‌رفت نوع {expected} داشته باشند، انواع نامعتبری دارند.'
+files_are_empty: 'فایل‌های مقابل خالی هستند و امکان بارگزاری ندارند: {files}'
 not_a_number: نا عدد
+invalid_range_min:
+invalid_range_max: مقدار از حداکثر {value} تجاوز کرده
 maps: نقشه‌ها
 switch_user: تغییر کاربر
+item_deleted: موردی که داشتید ویرایش می‌کردید حذف شده است.
 item_creation: ساخت آیتم
 item_revision: نگارش‌های آیتم
+previous_revision: بازنگری قبلی
+latest_revision: آخرین بازنگری
+comparing_to: در حال مقایسه با
+compare_to_latest_to_restore: برای بررسی بازگردانی این نسخه، آن را با آخرین نسخه مقایسه کنید
 enter_a_name: عنوانی را وارد نمایید...
 duplicate_field: فیلد تکراری
 half_width: نصف عرض
@@ -1598,6 +1609,8 @@ ai:
   settings: تنظیمات
   tool_approval:
     disabled: غیرفعال شده
+  tool_descriptions:
+    relations:
 ai_tools:
   items: آیتمها
   files: فایل ها
