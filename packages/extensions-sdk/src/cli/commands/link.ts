@@ -31,6 +31,7 @@ export default async function link(extensionsPath: string): Promise<void> {
 
 	const extensionManifest = ExtensionManifest.parse(manifestFile);
 
+  // Flatten scoped extension names so they can be detected
 	const extensionName = extensionManifest.name.replaceAll('/', '-');
 
 	if (!extensionName) {
