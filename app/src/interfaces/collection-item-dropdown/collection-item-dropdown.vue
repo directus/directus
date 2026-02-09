@@ -90,7 +90,7 @@ async function getDisplayItem() {
 
 		const response = await sdk.request<Item[]>(() => ({
 			path: getEndpoint(unref(selectedCollection)),
-			query: { fields: Array.from(fields), filter: { [primaryKey.value]: { _eq: value.value?.key } } },
+			params: { fields: Array.from(fields), filter: { [primaryKey.value]: { _eq: value.value?.key } } },
 		}));
 
 		displayItem.value = response?.[0] ?? null;
