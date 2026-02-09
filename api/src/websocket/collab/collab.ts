@@ -70,7 +70,7 @@ export class CollabHandler {
 				}
 
 				const settings = await this.settingsService.readSingleton({ fields: ['collaborative_editing_enabled'] });
-				this.enabled = settings?.['collaborative_editing_enabled'] ?? true;
+				this.enabled = settings?.['collaborative_editing_enabled'] ?? false;
 			} catch (err) {
 				useLogger().error(err, '[Collab] Failed to initialize collaborative editing settings');
 			} finally {
@@ -321,6 +321,7 @@ export class CollabHandler {
 	 * Join a collaborative editing room
 	 */
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
+<<<<<<< HEAD
 		if (!client.accountability) {
 			throw new ForbiddenError({
 				reason: 'Collaborative editing is not supported for unauthenticated clients',
@@ -328,6 +329,9 @@ export class CollabHandler {
 		}
 
 		if (client.accountability.share) {
+=======
+		if (client.accountability?.share) {
+>>>>>>> main
 			throw new ForbiddenError({
 				reason: 'Collaborative editing is not supported for shares',
 			});
@@ -339,7 +343,11 @@ export class CollabHandler {
 		try {
 			const { accessAllowed } = await validateItemAccess(
 				{
+<<<<<<< HEAD
 					accountability: client.accountability,
+=======
+					accountability: client.accountability!,
+>>>>>>> main
 					action: 'read',
 					collection: message.collection,
 					primaryKeys: schema.collections[message.collection]?.singleton ? [] : [message.item!],
@@ -352,7 +360,11 @@ export class CollabHandler {
 			if (message.version) {
 				const { accessAllowed: versionAccessAllowed } = await validateItemAccess(
 					{
+<<<<<<< HEAD
 						accountability: client.accountability,
+=======
+						accountability: client.accountability!,
+>>>>>>> main
 						action: 'read',
 						collection: 'directus_versions',
 						primaryKeys: [message.version],

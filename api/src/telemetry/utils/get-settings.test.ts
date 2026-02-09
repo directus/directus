@@ -62,7 +62,7 @@ describe('getSettings', () => {
 			ai_openai_api_key: false,
 			ai_anthropic_api_key: false,
 			ai_system_prompt: false,
-			collaborative_editing_enabled: true,
+			collaborative_editing_enabled: false,
 		} satisfies TelemetrySettings);
 	});
 

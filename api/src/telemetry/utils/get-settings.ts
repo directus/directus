@@ -60,6 +60,6 @@ export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 		ai_anthropic_api_key: Boolean(settings?.ai_anthropic_api_key),
 		ai_system_prompt: Boolean(settings?.ai_system_prompt),
 		collaborative_editing_enabled:
-			toBoolean(env['WEBSOCKETS_COLLAB_ENABLED'] ?? true) && (settings?.collaborative_editing_enabled ?? true),
+			toBoolean(env['WEBSOCKETS_COLLAB_ENABLED'] ?? true) && (settings?.collaborative_editing_enabled ?? false),
 	};
 };
