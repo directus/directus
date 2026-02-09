@@ -258,7 +258,7 @@ export function useItem<T extends Item>(
 			response = await sdk.request<Item>(() => ({
 				path: graphqlEndpoint,
 				method: 'POST',
-				query,
+				body: query,
 			}));
 		} catch (error) {
 			saving.value = false;
