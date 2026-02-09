@@ -171,7 +171,6 @@ create_policy: ساخت خط مشی
 create_user: ایجاد کاربر
 message: پیام
 delete_panel: حذف پنل
-create_webhook: ساخت وب هوک
 create_custom_translation: ایجاد ترجمه جدید
 edit_custom_translation: نگارش ترجمه سفارشی
 no_custom_translations: بدون ترجمه سفارشی
@@ -499,8 +498,6 @@ revision_delta_reverted: بازگردانده شد
 revision_delta_update_message: این فیلد به روز شده است اما ارزش آن به دلایل امنیتی پنهان شده است.
 revision_delta_other: نسخه
 revision_delta_by: 'در {date} توسط {user}'
-updated_in_revision: در این بازنگری به‌روز شده
-updated_in_revision_matches_latest: در این بازنگری به‌روز شده اما با نسخه آخر منطبق است
 differences_count: 'بدون تفاوت | ۱ تفاوت | {count} تفاوت'
 presentation_text_values_cannot_be_reimported: 'از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد.'
 download_page_as_csv: 'دانلود صفحه به‌صورت CSV'
@@ -695,12 +692,6 @@ file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
 user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
-webhooks_count: 'هیچ وب‌هوک | یک وب‌هوک | {count} وب‌هوک'
-webhooks_deprecation_notice: |
-  وب‌هوک‌ها منسوخ شده‌اند و استفاده بیشتر توصیه نمی‌شود.
-
-  لطفا به جای آن از **جریان‌ها** با [عملیات وب‌هوک / درخواست URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) استفاده کنید.
-no_webhooks_copy: تاکنون هیچ وب‌هوکی پیکربندی نشده | جهت شروع یکی به پایین اضافه کنید.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
@@ -732,7 +723,6 @@ action: فعالیت
 ip_address: نشانی IP
 user_agent: عامل کاربر
 origin: مبدأ
-webhooks: وب‌هوک‌ها
 decimals: اعشاری
 value_decimals: مقدار اعشاری
 min_value: حداقل مقدار
@@ -1045,6 +1035,15 @@ no_url_copy: لطفا یک URL در تنظیمات اضافه کنید.
 invalid_url: URL اشتباه
 invalid_url_copy: URL مشخص شده با هیچ یک از URL های مشخص شده در تنظیمات منطبق نیست.
 insights: بینش های داده ای
+deployment:
+  provider:
+    settings:
+      delete_confirm: این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
+    run:
+      cancel_confirm: این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
+      log_all: همه سطوح رخداد
+  target_value:
+    preview: پيش نمايش
 dashboard: پیشخوان
 panel: پنل
 panel_options: تنظیمات پنل
@@ -1193,7 +1192,6 @@ settings_project: تنظیمات
 settings_appearance: ظاهر
 settings_ai: هوش مصنوعی
 model_context_protocol: دستورالعمل زمینه مدل (MCP)
-settings_webhooks: هوک های تحت وب
 settings_flows: اتوماسیون
 settings_system_logs: لاگ‌های سیستم
 settings_presets: نشانک‌ها
@@ -1270,7 +1268,6 @@ directus_collection:
   directus_settings: گزینه های پیکربندی پروژه
   directus_shares: موارد به اشتراک گذاشته شده خارجی را ردیابی می کند
   directus_users: کاربران سیستمی برای پلتفرم
-  directus_webhooks: پیکربندی برای درخواست های HTTP مبتنی بر رویداد
   directus_translations: ترجمه های سفارشی
   directus_versions: نسخه‌های محتوا برای موارد
   directus_extensions: تنظیمات افزونه‌ها
@@ -1433,6 +1430,7 @@ fields:
     mcp_system_prompt_enabled_note: "از <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>پرامپت سیستمی پیش‌فرض</a> برای هدایت رفتار LLM استفاده کنید. برای حذف یا جایگزین کردن با پرامپت خودتان در پایین غیرفعال کنید."
     mcp_system_prompt: پرامپت سیستمی سفارشی
     mcp_system_prompt_note: 'پرامپت سیستمی سفارشی برای جایگزینی با پیش‌فرض. برای استفاده از مقدار پیش‌فرض خالی بگذارید (اگر بالا فعال شده).'
+    ai_header_name: سربرگ
   directus_shares:
     name: نام
     role: نقش
@@ -1463,18 +1461,6 @@ fields:
     admin_access: دسترسی مدیر
     ip_access: محدودیت IP
     enforce_tfa: اجبار به احراز هویت دو عاملی
-  directus_webhooks:
-    name: نام
-    method: شیوه یا متود
-    status: وضعیت
-    data: داده Data
-    header: سربرگ
-    value: مقدار
-    headers: درخواست Header
-    data_label: ارسال داده های رویداد
-    triggers: راه‌اندازها
-    actions: فعالیت ها
-    collections: کالکشن ها یا مجموعه ها
 field_options:
   directus_settings:
     project_name_placeholder: پروژه من...
@@ -1576,19 +1562,6 @@ field_options:
     status_dropdown_suspended: تعلیق شده
     status_dropdown_archived: بایگانی شده
     token: یک رمز دسترسی ایمن وارد کنید...
-  directus_webhooks:
-    status_options_active: فعال
-    status_options_inactive: غیر فعال
-    data_label: ارسال داده های رویداد
-    triggers_divider: محرک ها
-    actions_create: ایجاد
-    actions_update: بروزرسانی
-    actions_delete: حذف
-    actions_login: ورود به سیستم
-    headers:
-      header: سربرگ Header
-      value: مقدار
-      add: اضافه کردن Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: بدون مقدار
 do_nothing: کاری انجام نشود
@@ -1611,6 +1584,7 @@ live_preview:
   close_window: حالت توو در توو
   toggle_3d: حالت سه بعدی
   iframe_title: پیش نمایش زنده وب‌سایت
+  display_options: تنظیمات نحوه نمایش
 shares: اشتراک‌گذاری
 unlimited_usage: Unlimited usage
 uses_left: هیچ استفاده‌ای نمانده | یک استفاده مانده | {n} استفاده مانده
@@ -1619,6 +1593,8 @@ new_share: اشتراک گذاری جدید
 ai:
   input: ورودی
   unknown: نامشخص
+  items: آیتمها
+  content: محتوا
   settings: تنظیمات
   tool_approval:
     disabled: غیرفعال شده
@@ -1691,7 +1667,6 @@ editing_role: 'نقشِ {role}'
 editing_policy: 'سیاست {policy}'
 no_permissions: بدون مجوز
 permission_add_collection: ایجاد مجموعه
-creating_webhook: ساخت وب هوک
 default_label: پیش‌فرض
 delete_label: حذف
 delete_are_you_sure: >-

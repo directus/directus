@@ -1,5 +1,17 @@
 <script setup lang="ts">
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useCollection } from '@directus/composables';
+import type { PrimaryKey } from '@directus/types';
+import { SplitPanel } from '@directus/vue-split-panel';
+import { useHead } from '@unhead/vue';
+import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
+import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import ContentNavigation from '../components/navigation.vue';
+import VersionMenu from '../components/version-menu.vue';
+import ContentNotFound from './not-found.vue';
+import { useContextStaging } from '@/ai/composables/use-context-staging';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -16,6 +28,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
@@ -23,13 +36,17 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
+import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
@@ -38,17 +55,6 @@ import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
-import { useCollection } from '@directus/composables';
-import type { PrimaryKey } from '@directus/types';
-import { SplitPanel } from '@directus/vue-split-panel';
-import { useHead } from '@unhead/vue';
-import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
-import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch, type ComponentPublicInstance } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
-import ContentNavigation from '../components/navigation.vue';
-import VersionMenu from '../components/version-menu.vue';
-import ContentNotFound from './not-found.vue';
 
 interface Props {
 	collection: string;
@@ -64,7 +70,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
-const { collectionRoute } = useCollectionRoute();
+const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
@@ -112,16 +118,28 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
+	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
-const aiStore = useAiStore();
+const toolsStore = useAiToolsStore();
 
-aiStore.onSystemToolResult((tool, input) => {
-	if (tool === 'items' && input.collection === collection.value) {
+toolsStore.onSystemToolResult((tool, input) => {
+	if (tool === 'items' && input.collection === collection.value && input.action !== 'read') {
 		refresh();
+		refreshLivePreview();
 	}
 });
+
+const {
+	clearCollidingChanges,
+	users: collabUsers,
+	connected,
+	collabContext,
+	collabCollision,
+	update: updateCollab,
+	discard: discardCollab,
+} = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -138,6 +156,7 @@ const { templateData } = useTemplateData(collectionInfo, primaryKey);
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
+const confirmDiscard = ref(false);
 
 const title = computed(() => {
 	if (te(`collection_names_singular.${props.collection}`)) {
@@ -270,8 +289,9 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-watch(currentVersion, () => {
+watch(currentVersion, async () => {
 	edits.value = {};
+	await refreshLivePreview();
 });
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
@@ -289,12 +309,15 @@ const previewUrl = computed(() => {
 	return displayValue.value.trim() || null;
 });
 
+const livePreviewFullWidth = useLocalStorage<boolean>('live-preview-full-width', false);
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
 const livePreviewSizeDefault = 50;
 const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', livePreviewSizeDefault);
+const livePreviewEnforceDefault = ref(false);
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
+const livePreviewSizeMinSize = computed(() => (isMobile.value ? 0 : 20));
 
 const livePreviewActive = computed(
 	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',
@@ -305,26 +328,56 @@ const livePreviewCollapsed = computed({
 		return !livePreviewActive.value;
 	},
 	set(value: boolean) {
+		if (!value) livePreviewEnforceDefault.value = true;
 		livePreviewMode.value = value ? null : 'split';
 	},
 });
 
 const livePreviewSize = computed({
 	get() {
-		if (isMobile.value) {
+		if (isMobile.value || livePreviewFullWidth.value) {
 			return livePreviewActive.value ? 100 : 0;
 		}
 
-		return livePreviewSizeStorage.value || livePreviewSizeDefault;
+		const storedValue = livePreviewSizeStorage.value || livePreviewSizeDefault;
+
+		// Enforce default size when the preview is below the minimum size
+		if (livePreviewEnforceDefault.value && storedValue <= livePreviewSizeMinSize.value) {
+			return livePreviewSizeDefault;
+		}
+
+		return storedValue;
 	},
 	set(value: number) {
 		if (isMobile.value) return;
+
+		// Remove default size enforcement once the preview is larger than the minimum size
+		if (livePreviewEnforceDefault.value && value > livePreviewSizeMinSize.value) {
+			livePreviewEnforceDefault.value = false;
+		}
+
+		// Auto-toggle full-width based on drag position
+		if (value >= 95 && !livePreviewFullWidth.value) {
+			livePreviewFullWidth.value = true;
+		} else if (value < 95 && livePreviewFullWidth.value) {
+			livePreviewFullWidth.value = false;
+		}
 
 		livePreviewSizeStorage.value = value;
 	},
 });
 
 provide('live-preview-active', livePreviewActive);
+
+const { visualEditingEnabled, visualEditorUrls, visualModuleEnabled } = useVisualEditing({
+	previewUrl,
+	isNew,
+	currentVersion,
+});
+
+watch(previewUrl, (url) => {
+	if (!url) livePreviewFullWidth.value = false;
+});
 
 let popupWindow: Window | null = null;
 
@@ -368,6 +421,19 @@ const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 });
 
 provideRunManualFlow();
+
+const { stageVisualElement } = useContextStaging();
+
+useEventListener('message', (event) => {
+	if (!sameOrigin(event.origin, window.location.href)) return;
+	if (event.source !== popupWindow) return;
+
+	if (event.data === 'refresh') refresh();
+
+	if (event.data?.action === 'stage-visual-element') {
+		stageVisualElement(event.data.data.element);
+	}
+});
 
 async function refreshLivePreview() {
 	try {
@@ -522,8 +588,17 @@ function discardAndLeave() {
 }
 
 function discardAndStay() {
-	edits.value = {};
+	if (collabUsers.value.length > 1) {
+		confirmDiscard.value = true;
+	} else {
+		discardAndStayConfirmed();
+	}
+}
+
+function discardAndStayConfirmed() {
+	discardCollab();
 	confirmLeave.value = false;
+	confirmDiscard.value = false;
 }
 
 function revert(values: Record<string, any>) {
@@ -542,7 +617,7 @@ const shouldShowVersioning = computed(
 		!versionsLoading.value,
 );
 
-function useCollectionRoute() {
+function useItemNavigation() {
 	const route = useRoute();
 
 	const collectionRoute = computed(() => {
@@ -551,7 +626,17 @@ function useCollectionRoute() {
 		return collectionPath;
 	});
 
-	return { collectionRoute };
+	// If there's in-app navigation history, use browser back
+	// Otherwise fall back to collection route
+	const backRoute = computed(() => {
+		if (history.state?.back) {
+			return undefined;
+		}
+
+		return collectionRoute.value;
+	});
+
+	return { collectionRoute, backRoute };
 }
 </script>
 
@@ -565,6 +650,7 @@ function useCollectionRoute() {
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
+		:back-to="backRoute"
 		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
@@ -611,9 +697,9 @@ function useCollectionRoute() {
 			</div>
 		</template>
 
-		<template #title-outer:append></template>
-
 		<template #actions>
+			<CollabAvatars :model-value="collabUsers" :connected="connected" />
+
 			<VButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
@@ -776,11 +862,11 @@ function useCollectionRoute() {
 			collapsible
 			:collapsed-size="0"
 			:collapse-threshold="15"
-			:min-size="isMobile ? 0 : 20"
-			:max-size="isMobile ? 100 : 80"
+			:min-size="livePreviewSizeMinSize"
+			:max-size="isMobile || livePreviewFullWidth ? 100 : 80"
 			:snap-points="[livePreviewSizeDefault]"
 			:transition-duration="150"
-			class="content-split"
+			:class="['content-split', { 'full-width': livePreviewFullWidth }]"
 			:disabled="isMobile"
 		>
 			<template #start>
@@ -793,6 +879,7 @@ function useCollectionRoute() {
 					:initial-values="item"
 					:fields="fields"
 					:primary-key="internalPrimaryKey"
+					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
 					:direction="userStore.textDirection"
@@ -804,12 +891,40 @@ function useCollectionRoute() {
 			</template>
 
 			<template #end>
-				<LivePreview v-if="livePreviewActive && previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+				<LivePreview
+					v-if="livePreviewActive && previewUrl"
+					:url="previewUrl"
+					:can-enable-visual-editing="visualEditingEnabled"
+					:visual-editor-urls="visualEditorUrls"
+					:show-open-in-visual-editor="visualModuleEnabled"
+					:is-full-width="livePreviewFullWidth"
+					@new-window="livePreviewMode = 'popup'"
+					@exit-full-width="livePreviewFullWidth = false"
+					@saved="refresh"
+				>
+					<template #display-options>
+						<VListItem clickable @click="livePreviewFullWidth = true">
+							<VListItemIcon><VIcon name="width_full" /></VListItemIcon>
+							<VListItemContent>{{ $t('full_width') }}</VListItemContent>
+						</VListItem>
+					</template>
+				</LivePreview>
 			</template>
 		</SplitPanel>
 
+		<ComparisonModal
+			:model-value="collabCollision !== undefined"
+			:collection="collection"
+			:primary-key="internalPrimaryKey"
+			:current-collab="collabCollision"
+			:collab-context="collabContext"
+			mode="collab"
+			@confirm="updateCollab"
+			@cancel="clearCollidingChanges"
+		/>
+
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<VCard>
+			<VCard v-if="!connected || collabUsers.length <= 1">
 				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 				<VCardActions>
@@ -817,6 +932,29 @@ function useCollectionRoute() {
 						{{ $t('discard_changes') }}
 					</VButton>
 					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+			<VCard v-else>
+				<VCardTitle>{{ $t('unsaved_changes_collab') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('leave_page') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+			<VCard>
+				<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
+				<VCardText>{{ $t('discard_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndStayConfirmed">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmDiscard = false">{{ $t('keep_editing') }}</VButton>
 				</VCardActions>
 			</VCard>
 		</VDialog>
@@ -871,6 +1009,8 @@ function useCollectionRoute() {
 }
 
 :deep(.type-title) {
+	min-inline-size: 0;
+
 	.render-template {
 		img {
 			block-size: 20px;
@@ -949,9 +1089,7 @@ function useCollectionRoute() {
 	border-inline-start: none;
 }
 
-/* Disable pointer events on iframe during drag to prevent jank */
-.content-split.sp-dragging :deep(iframe),
-.content-split:active :deep(iframe) {
-	pointer-events: none !important;
+.content-split.full-width :deep(.sp-end) {
+	border-inline-start: none;
 }
 </style>

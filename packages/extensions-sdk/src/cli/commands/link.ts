@@ -1,6 +1,6 @@
+import path from 'path';
 import { ExtensionManifest } from '@directus/extensions';
 import fs from 'fs-extra';
-import path from 'path';
 import { log } from '../utils/logger.js';
 
 export default async function link(extensionsPath: string): Promise<void> {

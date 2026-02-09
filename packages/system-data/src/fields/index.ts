@@ -1,10 +1,13 @@
+import type { FieldIndex, FieldMeta } from '../types.js';
 import defaults from './_defaults.yaml';
-
 import accessFields from './access.yaml';
 import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';
 import commentsFields from './comments.yaml';
 import dashboardFields from './dashboards.yaml';
+import deploymentProjectsFields from './deployment-projects.yaml';
+import deploymentRunsFields from './deployment-runs.yaml';
+import deploymentFields from './deployment.yaml';
 import extensionFields from './extensions.yaml';
 import fieldFields from './fields.yaml';
 import fileFields from './files.yaml';
@@ -26,9 +29,6 @@ import shareFields from './shares.yaml';
 import translationFields from './translations.yaml';
 import userFields from './users.yaml';
 import versionFields from './versions.yaml';
-import webhookFields from './webhooks.yaml';
-
-import type { FieldIndex, FieldMeta } from '../types.js';
 
 export const systemFieldRows: FieldMeta[] = [];
 export const systemIndexRows: FieldIndex[] = [];
@@ -69,7 +69,9 @@ processFields(shareFields);
 processFields(translationFields);
 processFields(userFields);
 processFields(versionFields);
-processFields(webhookFields);
+processFields(deploymentFields);
+processFields(deploymentProjectsFields);
+processFields(deploymentRunsFields);
 
 function processFields(systemFields: Record<string, any>) {
 	const {

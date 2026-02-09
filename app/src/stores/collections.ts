@@ -1,12 +1,3 @@
-import { useAiStore } from '@/ai/stores/use-ai';
-import api from '@/api';
-import { COLLECTIONS_DENY_LIST } from '@/constants';
-import { i18n } from '@/lang';
-import { Collection } from '@/types/collections';
-import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
-import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
-import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { isSystemCollection } from '@directus/system-data';
 import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
@@ -15,11 +6,20 @@ import { isEqual, isNil, omit } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import api from '@/api';
+import { COLLECTIONS_DENY_LIST } from '@/constants';
+import { i18n } from '@/lang';
+import { Collection } from '@/types/collections';
+import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
+import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export const useCollectionsStore = defineStore('collectionsStore', () => {
-	const aiStore = useAiStore();
+	const toolsStore = useAiToolsStore();
 
-	aiStore.onSystemToolResult(async (toolName) => {
+	toolsStore.onSystemToolResult(async (toolName) => {
 		if (toolName === 'collections') {
 			await hydrate();
 		}

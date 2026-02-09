@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import NestedDraggable from './NestedDraggable.vue';
 import VNotice from '@/components/v-notice.vue';
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
-import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import NestedDraggable from './NestedDraggable.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -113,6 +113,12 @@ const fields = computed(() => {
 
 	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);
 });
+
+const addNewOpen = ref(false);
+const selectOpen = ref(false);
+const editOpen = ref(false);
+
+const menuActive = computed(() => addNewOpen.value || selectOpen.value || editOpen.value);
 </script>
 
 <template>
@@ -122,9 +128,12 @@ const fields = computed(() => {
 	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}
 	</VNotice>
-	<div v-else class="tree-view">
+	<div v-else v-prevent-focusout="menuActive" class="tree-view">
 		<NestedDraggable
 			v-model="_value"
+			v-model:add-new-open="addNewOpen"
+			v-model:select-open="selectOpen"
+			v-model:edit-open="editOpen"
 			:template="template"
 			:collection="collection"
 			:field="field"

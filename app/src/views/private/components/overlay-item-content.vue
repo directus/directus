@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
-import VForm from '@/components/v-form/v-form.vue';
-import VInfo from '@/components/v-info.vue';
-import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import type { Field, PrimaryKey } from '@directus/types';
 import { cloneDeep } from 'lodash';
 import { computed, useTemplateRef } from 'vue';
+import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VInfo from '@/components/v-info.vue';
+import type { CollabContext } from '@/composables/use-collab';
+import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 
 const {
 	collection,
@@ -32,6 +33,8 @@ const {
 	relatedPrimaryKey: PrimaryKey;
 	relatedPrimaryKeyField: string | null;
 	refresh: () => void;
+	collabContext?: CollabContext;
+	relatedCollabContext?: CollabContext;
 }>();
 
 const internalEdits = defineModel<Record<string, any>>('internal-edits');
@@ -110,7 +113,7 @@ function useValidationScrollToField() {
 
 <template>
 	<div class="overlay-item-content" :class="{ empty: emptyForm }">
-		<FilePreviewReplace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
+		<FilePreviewReplace v-if="file" class="preview" :disabled :non-editable :file in-modal @replace="refresh" />
 
 		<VInfo v-if="emptyForm" :title="$t('no_visible_fields')" icon="search" center>
 			{{ $t('no_visible_fields_copy') }}
@@ -138,6 +141,7 @@ function useValidationScrollToField() {
 				:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
 				:primary-key="relatedPrimaryKey"
 				:fields="relatedCollectionFields"
+				:collab-context="relatedCollabContext"
 				@update:model-value="setRelationEdits"
 			/>
 
@@ -153,6 +157,7 @@ function useValidationScrollToField() {
 				:show-divider="swapFormOrder && hasVisibleFieldsRelated"
 				:primary-key="primaryKey"
 				:fields="fields"
+				:collab-context="collabContext"
 			/>
 		</div>
 	</div>

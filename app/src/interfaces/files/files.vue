@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
+import Draggable from 'vuedraggable';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -22,15 +28,10 @@ import { useRelationPermissionsM2M } from '@/composables/use-relation-permission
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import Draggable from 'vuedraggable';
 
 const props = withDefaults(
 	defineProps<{
@@ -317,11 +318,13 @@ const allowDrag = computed(
 		!props.disabled &&
 		updateAllowed.value,
 );
+
+const menuActive = computed(() => editModalActive.value || selectModalActive.value || showUpload.value);
 </script>
 
 <template>
 	<VNotice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
-	<div v-else class="many-to-many">
+	<div v-else v-prevent-focusout="menuActive" class="many-to-many">
 		<template v-if="loading">
 			<VSkeletonLoader
 				v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
@@ -347,6 +350,7 @@ const allowDrag = computed(
 					<VListItem
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
+						:disabled="disabled && !nonEditable"
 						block
 						clickable
 						@click="editItem(element)"
@@ -361,9 +365,10 @@ const allowDrag = computed(
 
 						<div class="spacer" />
 
-						<div class="item-actions">
+						<div v-if="!nonEditable" class="item-actions">
 							<VRemove
-								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
+								v-if="deleteAllowed || isLocalItem(element)"
+								:disabled
 								:item-type="element.$type"
 								:item-info="relationInfo"
 								:item-is-local="isLocalItem(element)"
@@ -371,9 +376,9 @@ const allowDrag = computed(
 								@action="deleteItem(element)"
 							/>
 
-							<VMenu show-arrow placement="bottom-end">
-								<template #activator="{ toggle }">
-									<VIcon name="more_vert" clickable @click.stop="toggle" />
+							<VMenu show-arrow placement="bottom-end" :disabled>
+								<template #activator="{ toggle, active }">
+									<VIcon name="more_vert" clickable class="menu" :class="{ active }" :disabled @click.stop="toggle" />
 								</template>
 
 								<VList>
@@ -426,16 +431,13 @@ const allowDrag = computed(
 			@input="stageEdits"
 		>
 			<template #actions>
-				<VButton
+				<PrivateViewHeaderBarActionButton
 					v-if="currentlyEditing !== '+' && relationInfo.relatedCollection.collection === 'directus_files'"
+					icon="download"
 					secondary
-					rounded
-					icon
 					:download="downloadName"
 					:href="downloadUrl"
-				>
-					<VIcon name="download" />
-				</VButton>
+				/>
 			</template>
 		</DrawerItem>
 
@@ -470,11 +472,23 @@ const allowDrag = computed(
 	@include mixins.list-interface($deleteable: true);
 }
 
+.v-list-item.disabled:not(.non-editable) {
+	--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+}
+
 .item-actions {
 	@include mixins.list-interface-item-actions;
 }
 
 .actions {
 	@include mixins.list-interface-actions($pagination: true);
+}
+
+.menu {
+	--v-icon-color-hover: var(--theme--form--field--input--foreground);
+
+	&.active {
+		--v-icon-color: var(--theme--form--field--input--foreground);
+	}
 }
 </style>

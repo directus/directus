@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import type { RelationM2A } from '@/composables/use-relation-m2a';
-import type { RelationM2M } from '@/composables/use-relation-m2m';
-import type { RelationM2O } from '@/composables/use-relation-m2o';
-import type { DisplayItem } from '@/composables/use-relation-multiple';
-import type { RelationO2M } from '@/composables/use-relation-o2m';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VButton from './v-button.vue';
@@ -12,6 +7,11 @@ import VCardTitle from './v-card-title.vue';
 import VCard from './v-card.vue';
 import VDialog from './v-dialog.vue';
 import VIcon from './v-icon/v-icon.vue';
+import type { RelationM2A } from '@/composables/use-relation-m2a';
+import type { RelationM2M } from '@/composables/use-relation-m2m';
+import type { RelationM2O } from '@/composables/use-relation-m2o';
+import type { DisplayItem } from '@/composables/use-relation-multiple';
+import type { RelationO2M } from '@/composables/use-relation-o2m';
 
 const { itemType, itemInfo, itemIsLocal, itemEdits, deselect, disabled, confirm } = defineProps<{
 	itemType?: DisplayItem['$type'];
@@ -47,13 +47,13 @@ const tooltip = computed(() => {
 	return t('remove_item');
 });
 
-function onClick() {
+function onClick(event: Event) {
 	if (needsConfirmation.value) {
 		confirmDelete.value = true;
 		return;
 	}
 
-	emit('action');
+	emit('action', event);
 }
 
 function useConfirmation() {
@@ -133,11 +133,29 @@ function useConfirmation() {
 </script>
 
 <template>
-	<VButton v-if="button" v-tooltip="tooltip" v-bind="$attrs" icon rounded :disabled @click.stop="onClick">
+	<VButton
+		v-if="button"
+		v-prevent-focusout="confirmDelete"
+		v-tooltip="tooltip"
+		v-bind="$attrs"
+		icon
+		rounded
+		:disabled
+		@click.stop="onClick"
+	>
 		<VIcon :name="icon" :disabled />
 	</VButton>
 
-	<VIcon v-else v-tooltip="tooltip" v-bind="$attrs" :name="icon" :disabled clickable @click.stop="onClick" />
+	<VIcon
+		v-else
+		v-prevent-focusout="confirmDelete"
+		v-tooltip="tooltip"
+		v-bind="$attrs"
+		:name="icon"
+		:disabled
+		clickable
+		@click.stop="onClick"
+	/>
 
 	<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="onConfirmDelete">
 		<VCard>
@@ -168,9 +186,13 @@ function useConfirmation() {
 .v-icon {
 	--v-icon-color: var(--v-remove-color, var(--v-icon-color));
 
-	&.has-click:hover,
-	.v-button:hover & {
+	&.has-click:not([disabled]):hover,
+	.v-button:hover button:not([disabled]) & {
 		color: var(--v-remove-color-hover, var(--theme--danger));
+	}
+
+	&[disabled] {
+		cursor: not-allowed;
 	}
 }
 </style>

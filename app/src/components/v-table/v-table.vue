@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import VProgressLinear from '@/components/v-progress-linear.vue';
-import { hideDragImage } from '@/utils/hide-drag-image';
 import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
@@ -8,6 +6,8 @@ import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import { hideDragImage } from '@/utils/hide-drag-image';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -278,6 +278,7 @@ function updateSort(newSort: Sort) {
 				:has-item-append-slot="hasItemAppendSlot"
 				:manual-sort-key="manualSortKey"
 				:allow-header-reorder="allowHeaderReorder"
+				:allow-column-sort="!disabled"
 				@toggle-select-all="onToggleSelectAll"
 				@update:sort="updateSort"
 			>
@@ -464,7 +465,6 @@ table :deep(.sortable-ghost .cell) {
 .loading-text,
 .no-items-text {
 	text-align: center;
-	background-color: var(--theme--form--field--input--background);
 }
 
 .loading-text td,

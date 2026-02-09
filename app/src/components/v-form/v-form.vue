@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { applyConditions } from '@/utils/apply-conditions';
-import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
@@ -18,6 +13,12 @@ import type { ComparisonContext, FieldValues, FormField as TFormField } from './
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
+import { CollabContext } from '@/composables/use-collab';
+import { useFieldsStore } from '@/stores/fields';
+import { applyConditions } from '@/utils/apply-conditions';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 
 const props = withDefaults(
 	defineProps<{
@@ -45,6 +46,7 @@ const props = withDefaults(
 		inline?: boolean;
 		version?: ContentVersion | null;
 		comparison?: ComparisonContext;
+		collabContext?: CollabContext;
 	}>(),
 	{
 		collection: undefined,
@@ -99,7 +101,7 @@ const {
 	isFieldVisible,
 } = useForm();
 
-useAiTools({ finalFields, fieldNames, setValue, values });
+useAiTools({ finalFields, fieldNames, setValue, values, collabContext: props.collabContext });
 
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
@@ -436,6 +438,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:direction="direction"
 					:version
 					:comparison="comparison"
+					:collab-context="collabContext"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
@@ -458,6 +461,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
 					:comparison-active="comparison?.selectedFields.includes(fieldName)"
+					:collab-field-context="collabContext?.registerField(fieldName)"
 					:primary-key="primaryKey"
 					:loading="loading"
 					:validation-error="
@@ -473,6 +477,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:disabled-menu-options="disabledMenuOptions"
 					:disabled-menu="disabledMenu"
 					:direction="direction"
+					:version
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"

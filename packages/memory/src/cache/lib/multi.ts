@@ -1,5 +1,5 @@
 import { processId } from '@directus/utils/node';
-import { createBus, type Bus } from '../../bus/index.js';
+import { type Bus, createBus } from '../../bus/index.js';
 import type { Cache } from '../types/class.js';
 import type { CacheConfigMulti } from '../types/config.js';
 import { CacheLocal } from './local.js';
@@ -72,6 +72,14 @@ export class CacheMulti implements Cache {
 	async clear(): Promise<void> {
 		await Promise.all([this.local.clear(), this.redis.clear()]);
 		await this.clearOthers();
+	}
+
+	async acquireLock(key: string) {
+		return await this.redis.acquireLock(key);
+	}
+
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return await this.redis.usingLock(key, callback);
 	}
 
 	private async onMessageClear(payload: CacheMultiMessageClear) {

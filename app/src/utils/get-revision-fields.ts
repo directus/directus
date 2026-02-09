@@ -1,3 +1,4 @@
+import type { Field } from '@directus/types';
 import {
 	isDateCreated,
 	isDateUpdated,
@@ -6,7 +7,6 @@ import {
 	isUserCreated,
 	isUserUpdated,
 } from '@/utils/field-utils';
-import type { Field } from '@directus/types';
 
 export function getRevisionFields(revisionFields: string[], fields: Field[]) {
 	const filteredFields = revisionFields.filter((fieldKey) => {

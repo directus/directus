@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VSelect from '@/components/v-select/v-select.vue';
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { EXTENSION_TYPES } from '@directus/constants';
 import { watchDebounced } from '@vueuse/core';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 
 const type = defineModel<string | null>('type');
 const sort = defineModel<string | null>('sort');

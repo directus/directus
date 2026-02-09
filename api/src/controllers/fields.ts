@@ -1,16 +1,16 @@
 import { TYPES } from '@directus/constants';
+import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import { ForbiddenError, isDirectusError } from '@directus/errors';
+import { isSystemField } from '@directus/system-data';
 import type { Field, RawField, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
-import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { FieldsService, systemFieldUpdateSchema } from '../services/fields.js';
 import asyncHandler from '../utils/async-handler.js';
-import { isSystemField } from '@directus/system-data';
 
 const router = Router();
 
@@ -138,7 +138,9 @@ router.patch(
 			if (isSystemField(req.params['collection']!, fieldData['field']!)) {
 				const { error } = systemFieldUpdateSchema.safeParse(fieldData);
 
-				if (error) throw error.issues.map((details) => new InvalidPayloadError({ reason: details.message }));
+				if (error) {
+					throw new InvalidPayloadError({ reason: 'Only "schema.is_indexed" may be modified for system fields' });
+				}
 			}
 		}
 
@@ -194,7 +196,9 @@ router.patch(
 		if (isSystemField(req.params['collection']!, req.params['field']!)) {
 			const { error } = systemFieldUpdateSchema.safeParse(req.body);
 
-			if (error) throw error.issues.map((details) => new InvalidPayloadError({ reason: details.message }));
+			if (error) {
+				throw new InvalidPayloadError({ reason: 'Only "schema.is_indexed" may be modified for system fields' });
+			}
 		} else {
 			const { error } = updateSchema.validate(req.body);
 

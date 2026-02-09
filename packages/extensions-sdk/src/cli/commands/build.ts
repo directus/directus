@@ -1,3 +1,5 @@
+import path from 'path';
+import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import type { ExtensionOptionsBundleEntry, ExtensionManifest as TExtensionManifest } from '@directus/extensions';
 import {
 	API_SHARED_DEPS,
@@ -6,8 +8,7 @@ import {
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
 } from '@directus/extensions';
-import type { AppExtensionType, ApiExtensionType } from '@directus/types';
-import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
+import type { ApiExtensionType, AppExtensionType } from '@directus/types';
 import { isIn, isTypeIn } from '@directus/utils';
 import commonjsDefault from '@rollup/plugin-commonjs';
 import jsonDefault from '@rollup/plugin-json';
@@ -19,7 +20,6 @@ import vue from '@vitejs/plugin-vue';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
-import path from 'path';
 import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';

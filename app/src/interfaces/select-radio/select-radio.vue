@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { useCustomSelection } from '@directus/composables';
+import { computed, toRefs } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import VRadio from '@/components/v-radio.vue';
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
-import { useCustomSelection } from '@directus/composables';
-import { computed, toRefs } from 'vue';
 
 type Option = {
 	text: string;
@@ -80,7 +80,7 @@ const customIcon = computed(() => {
 			class="custom"
 			:class="{
 				active: (!disabled || nonEditable) && usesOtherValue,
-				'has-value': (!disabled || nonEditable) && otherValue,
+				'has-value': otherValue,
 				disabled,
 				'non-editable': nonEditable,
 			}"
@@ -195,7 +195,10 @@ const customIcon = computed(() => {
 
 	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
-		border-color: transparent;
+
+		&.has-value {
+			border-color: var(--theme--form--field--input--border-color);
+		}
 
 		input {
 			color: var(--theme--form--field--input--foreground-subdued);

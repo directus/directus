@@ -1,10 +1,11 @@
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { useCollection } from '@directus/composables';
 import { Field, ItemPermissions } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { Ref, computed, ref, unref } from 'vue';
+import { computed, ref, Ref, unref } from 'vue';
 import { Collection, IsNew } from '../../types';
+import type { FormField } from '@/components/v-form/types';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 
 export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermissions: Ref<ItemPermissions>) {
 	const userStore = useUserStore();
@@ -34,10 +35,11 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 		if (!permission?.fields?.includes('*')) {
 			for (const field of fields) {
 				if (!permission?.fields?.includes(field.field)) {
-					field.meta = {
+					(field as FormField).meta = {
 						...(field.meta || {}),
 						readonly: true,
-					} as Field['meta'];
+						non_editable: true,
+					};
 				}
 			}
 		}

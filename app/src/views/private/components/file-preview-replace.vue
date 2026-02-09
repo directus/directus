@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -7,7 +8,6 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VUpload from '@/components/v-upload.vue';
 import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
-import { ref } from 'vue';
 
 defineProps<FilePreviewProps>();
 
@@ -32,7 +32,7 @@ function close() {
 	<div class="file-preview-replace">
 		<FilePreview :file="file" />
 
-		<button class="replace-toggle" @click="dialogActive = true">
+		<button v-if="!nonEditable" class="replace-toggle" :disabled @click="dialogActive = true">
 			{{ $t('replace_file') }}
 		</button>
 
@@ -50,11 +50,16 @@ function close() {
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .replace-toggle {
 	color: var(--theme--primary);
 	cursor: pointer;
 	font-weight: 600;
 	margin-block-start: 12px;
+
+	&[disabled] {
+		cursor: not-allowed;
+		color: var(--theme--foreground-subdued);
+	}
 }
 </style>

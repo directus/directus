@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
 import { difference } from 'lodash';
+import { computed, toRefs } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VHighlight from '@/components/v-highlight.vue';
@@ -384,7 +384,13 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 </script>
 
 <template>
-	<VListGroup v-if="visibleChildrenValues.length > 0" v-show="groupShown" :value="value" arrow-placement="before">
+	<VListGroup
+		v-if="visibleChildrenValues.length > 0"
+		v-show="groupShown"
+		:value="value"
+		arrow-placement="before"
+		:disabled="disabled && !nonEditable"
+	>
 		<template #activator>
 			<VCheckbox
 				v-model="treeValue"

@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { type OtherValue, useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
+import { Placement } from '@popperjs/core';
+import { debounce, get, isArray } from 'lodash';
+import { computed, Ref, ref, toRefs, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SelectListItem from './select-list-item.vue';
+import SelectListItemGroup from './SelectListItemGroup.vue';
+import { Option } from './types';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -8,15 +16,8 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import { useFocusin } from '@/composables/use-focusin';
 import DisplayColor from '@/displays/color/color.vue';
-import { useCustomSelection, useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
-import { Placement } from '@popperjs/core';
-import { debounce, get, isArray } from 'lodash';
-import { computed, Ref, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import SelectListItemGroup from './SelectListItemGroup.vue';
-import SelectListItem from './select-list-item.vue';
-import { Option } from './types';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string | number | null;
@@ -95,6 +96,10 @@ const props = withDefaults(
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
 
 const { t } = useI18n();
+
+const menu = useTemplateRef('menu');
+
+const { active: menuActive } = useFocusin(menu);
 
 const { internalItems, internalItemsCount, internalSearch } = useItems();
 const { displayValue } = useDisplayValue();
@@ -268,6 +273,8 @@ function useDisplayValue() {
 
 <template>
 	<VMenu
+		ref="menu"
+		v-model="menuActive"
 		class="v-select"
 		:disabled="isDisabled"
 		:attached="inline === false"
@@ -477,8 +484,8 @@ function useDisplayValue() {
 	inline-size: max-content;
 	padding-inline-end: 18px;
 
-	&:not(.disabled) {
-		cursor: pointer;
+	&.disabled {
+		cursor: not-allowed;
 	}
 }
 

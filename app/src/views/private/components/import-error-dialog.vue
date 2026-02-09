@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { ValidationError } from '@directus/types';
+import type { ImportRowLines, ImportRowRange } from '@directus/validation';
+import { computed, toRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -11,10 +15,6 @@ import { useValidationErrorDetails } from '@/composables/use-validation-error-de
 import { VALIDATION_TYPES } from '@/constants';
 import { useFieldsStore } from '@/stores/fields';
 import type { APIError } from '@/types/error';
-import { ValidationError } from '@directus/types';
-import type { ImportRowLines, ImportRowRange } from '@directus/validation';
-import { computed, toRef } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
 	errors: APIError[];

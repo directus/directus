@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { isSystemCollection } from '@directus/system-data';
+import { computed, ref, toRefs } from 'vue';
+import { RouterView, useRouter } from 'vue-router';
+import SettingsNavigation from '../../../components/navigation.vue';
+import FieldsManagement from './components/fields-management.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -14,12 +20,6 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import formatTitle from '@directus/format-title';
-import { isSystemCollection } from '@directus/system-data';
-import { computed, ref, toRefs } from 'vue';
-import { RouterView, useRouter } from 'vue-router';
-import SettingsNavigation from '../../../components/navigation.vue';
-import FieldsManagement from './components/fields-management.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -78,7 +78,7 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<PrivateView :title="formatTitle(collection)" show-back>
+	<PrivateView :title="formatTitle(collection)" show-back back-to="/settings/data-model">
 		<template #headline>
 			<VBreadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
@@ -178,13 +178,6 @@ function discardAndLeave() {
 .fields {
 	max-inline-size: 800px;
 	margin-block-end: 48px;
-}
-
-.header-icon {
-	--v-button-background-color: var(--theme--primary-background);
-	--v-button-color: var(--theme--primary);
-	--v-button-background-color-hover: var(--theme--primary-subdued);
-	--v-button-color-hover: var(--theme--primary);
 }
 
 .action-delete {

@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { useSync } from '@directus/composables';
 import VButton from '@/components/v-button.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
-import { useSync } from '@directus/composables';
 
 interface Props extends FilePreviewProps {
 	modelValue: boolean;
+	src?: string;
 }
 
 const props = defineProps<Props>();
@@ -24,7 +25,7 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<FilePreview :file="file" :preset="null" in-modal @click="internalModelValue = false" />
+		<FilePreview :file="file" :src="src" :preset="null" in-modal @click="internalModelValue = false" />
 
 		<VButton class="close" icon rounded @click="internalModelValue = false">
 			<VIcon name="close" />

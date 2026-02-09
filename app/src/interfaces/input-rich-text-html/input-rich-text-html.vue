@@ -1,4 +1,18 @@
 <script setup lang="ts">
+import type { SettingsStorageAssetPreset } from '@directus/types';
+import Editor from '@tinymce/tinymce-vue';
+import { cloneDeep, isEqual } from 'lodash';
+import tinymce from 'tinymce/tinymce';
+import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import getEditorStyles from './get-editor-styles';
+import toolbarDefault from './toolbar-default';
+import useImage from './useImage';
+import useInlineCode from './useInlineCode';
+import useLink from './useLink';
+import useMedia from './useMedia';
+import usePre from './usePre';
+import useSourceCode from './useSourceCode';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -16,31 +30,15 @@ import VTabs from '@/components/v-tabs.vue';
 import VTextarea from '@/components/v-textarea.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { useFocusin } from '@/composables/use-focusin';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
-import { SettingsStorageAssetPreset } from '@directus/types';
-import Editor from '@tinymce/tinymce-vue';
-import { cloneDeep, isEqual } from 'lodash';
-import tinymce from 'tinymce/tinymce';
-import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import getEditorStyles from './get-editor-styles';
-import toolbarDefault from './toolbar-default';
-import useImage from './useImage';
-import useInlineCode from './useInlineCode';
-import useLink from './useLink';
-import useMedia from './useMedia';
-import usePre from './usePre';
-import useSourceCode from './useSourceCode';
-
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
-
 import 'tinymce/tinymce';
-
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/autoresize/plugin';
@@ -68,7 +66,6 @@ type CustomFormat = {
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
-		field?: string;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		customFormats?: CustomFormat[];
@@ -79,6 +76,9 @@ const props = withDefaults(
 		folder?: string;
 		softLength?: number;
 		direction?: string;
+		comparisonMode?: boolean;
+		comparisonSide?: 'base' | 'incoming';
+		fieldData?: any;
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
@@ -92,7 +92,10 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
+const comparisonEditorRef = ref<any | null>(null);
+const comparisonEditorInitialized = ref(false);
 const editorKey = ref(0);
+const comparisonEditorKey = ref(0);
 
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
@@ -180,30 +183,65 @@ watch(
 	},
 );
 
+watch(
+	() => [props.value, props.font, props.direction, props.comparisonSide],
+	() => {
+		if (comparisonEditorRef.value && comparisonEditorInitialized.value) {
+			comparisonEditorRef.value.setContent(props.value || '');
+		}
+	},
+);
+
+watch(
+	() => props.comparisonSide,
+	() => {
+		comparisonEditorInitialized.value = false;
+		comparisonEditorKey.value++;
+	},
+);
+
+function getBaseEditorOptions() {
+	return {
+		skin: false,
+		body_class: props.nonEditable ? 'non-editable' : '',
+		content_css: false,
+		branding: false,
+		max_height: 1000,
+		elementpath: false,
+		statusbar: false,
+		menubar: false,
+		convert_urls: false,
+		directionality: props.direction,
+		language: i18n.global.locale.value,
+	};
+}
+
+function mapToolbarButton(button: string): string {
+	const buttonMap: Record<string, string> = {
+		link: 'customLink',
+		media: 'customMedia',
+		code: 'customCode',
+		image: 'customImage',
+		pre: 'customPre',
+		inlinecode: 'customInlineCode',
+	};
+
+	return buttonMap[button] || button;
+}
+
 const editorOptions = computed(() => {
 	const styleFormats =
 		Array.isArray(props.customFormats) && props.customFormats.length > 0 ? cloneDeep(props.customFormats) : null;
 
-	let toolbarString = (props.toolbar ?? [])
-		.map((button) =>
-			button
-				.replace(/^link$/g, 'customLink')
-				.replace(/^media$/g, 'customMedia')
-				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage')
-				.replace(/^pre$/g, 'customPre')
-				.replace(/^inlinecode$/g, 'customInlineCode'),
-		)
-		.join(' ');
+	let toolbarString = (props.toolbar ?? []).map(mapToolbarButton).join(' ');
 
 	if (styleFormats) {
 		toolbarString += ' styles';
 	}
 
 	return {
-		skin: false,
-		content_css: false,
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', !!props.nonEditable),
+		...getBaseEditorOptions(),
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
 		plugins: [
 			'media',
 			'table',
@@ -218,12 +256,6 @@ const editorOptions = computed(() => {
 			'fullscreen',
 			'directionality',
 		],
-		branding: false,
-		max_height: 1000,
-		elementpath: false,
-		statusbar: false,
-		menubar: false,
-		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
 		toolbar: toolbarString ? toolbarString : false,
@@ -231,12 +263,28 @@ const editorOptions = computed(() => {
 		file_picker_types: 'customImage customMedia image media',
 		link_default_protocol: 'https',
 		browser_spellcheck: true,
-		directionality: props.direction,
 		paste_data_images: false,
 		setup,
-		language: i18n.global.locale.value,
 		ui_mode: 'split',
 		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
+	};
+});
+
+const comparisonEditorOptions = computed(() => {
+	return {
+		...getBaseEditorOptions(),
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true),
+		plugins: ['autoresize', 'directionality'],
+		toolbar: false,
+		readonly: true,
+		setup: (editor: any) => {
+			comparisonEditorRef.value = editor;
+
+			editor.on('init', () => {
+				comparisonEditorInitialized.value = true;
+				editor.setContent(props.value || '');
+			});
+		},
 	};
 });
 
@@ -255,7 +303,7 @@ function contentUpdated() {
 
 	if (!observer) return;
 
-	const newValue = editorRef.value.getContent() ? editorRef.value.getContent() : null;
+	const newValue = editorRef.value.getContent() || null;
 
 	if (newValue === emittedValue) return;
 
@@ -359,11 +407,15 @@ function setFocus(val: boolean) {
 	if (editorElement.value == null) return;
 	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
+	const { focus, blur } = useFocusin(body);
+
 	if (body == null) return;
 
 	if (val) {
+		focus();
 		body.classList.add('focus');
 	} else {
+		blur();
 		body.classList.remove('focus');
 	}
 }
@@ -412,11 +464,23 @@ onMounted(() => {
 		'Right to left': t('right_to_left'),
 	});
 });
+
+const menuActive = computed(
+	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
+);
 </script>
 
 <template>
-	<div :id="field" class="wysiwyg" :class="{ disabled }">
+	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
 		<Editor
+			v-if="nonEditable"
+			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"
+			:value="value"
+			:init="comparisonEditorOptions"
+			disabled
+		/>
+		<Editor
+			v-else
 			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"
@@ -636,7 +700,7 @@ onMounted(() => {
 .image-preview,
 .media-preview {
 	inline-size: 100%;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	margin-block-end: 24px;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
