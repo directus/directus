@@ -51,8 +51,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-	'update:modelValue': [value: string | null],
-	'close': [],
+	'update:modelValue': [value: string | null];
+	close: [];
 }>();
 
 // Internal state using @internationalized/date types
@@ -177,7 +177,7 @@ function handleDateChange(value: DateValue | undefined) {
 	calendarValue.value = value;
 	emitValue();
 
-	if(props.type === 'date') {
+	if (props.type === 'date') {
 		emit('close');
 	}
 }
@@ -241,14 +241,13 @@ function setToNow() {
 	emitValue();
 	emit('close');
 }
-
 </script>
 
 <template>
 	<div class="v-date-picker">
 		<CalendarRoot
 			v-slot="{ weekDays, grid, date }"
-			:value="calendarValue"
+			:model-value="calendarValue"
 			:disabled="disabled"
 			class="calendar"
 			fixed-weeks
@@ -316,7 +315,7 @@ function setToNow() {
 					<TimeFieldRoot
 						id="time-field"
 						v-slot="{ segments }"
-						v-model="timeValue"
+						:model-value="timeValue"
 						:granularity
 						:hour-cycle
 						:dir="isRTL ? 'rtl' : 'ltr'"
