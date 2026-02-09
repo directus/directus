@@ -251,6 +251,109 @@ describe('resolvePreset', () => {
 		]);
 	});
 
+	test('Add resize transformation: withoutEnlargement clamps dimensions larger than original #22391', () => {
+		// Test case from issue #22391:
+		// Image is 1920x1080, but we request 2000x1200 with withoutEnlargement=true and a focal point
+		// Without the fix, this would cause "bad extract area" error in Sharp
+		// because the extraction region is calculated based on target dimensions (2000x1200)
+		// but the resize step can't enlarge beyond the original (1920x1080)
+		const transformationParams: TransformationParams = {
+			key: 'test-larger-than-original',
+			width: 2000, // larger than original width (1920)
+			height: 1200, // larger than original height (1080)
+			fit: 'cover',
+			withoutEnlargement: true,
+		};
+
+		const output = resolvePreset(
+			{ transformationParams },
+			{ ...inputFile, focal_point_x: inputFile.width / 2, focal_point_y: inputFile.height / 2 },
+		);
+
+		// Dimensions should be clamped to original (1920x1080)
+		// Since we're requesting 1920x1080 with a centered focal point on a 1920x1080 image,
+		// the intermediate dimensions will be 1920x1080, and the extract will be the full image
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 1920,
+					height: 1080,
+					fit: 'cover',
+					withoutEnlargement: true,
+				},
+			],
+			['extract', { left: 0, top: 0, width: 1920, height: 1080 }],
+		]);
+	});
+
+	test('Add resize transformation: withoutEnlargement clamps only width when height is smaller #22391', () => {
+		// Width is larger, height is smaller - only width should be clamped
+		const transformationParams: TransformationParams = {
+			key: 'test-width-larger',
+			width: 2000, // larger than original width (1920)
+			height: 500, // smaller than original height (1080)
+			fit: 'cover',
+			withoutEnlargement: true,
+		};
+
+		const output = resolvePreset(
+			{ transformationParams },
+			{ ...inputFile, focal_point_x: inputFile.width / 2, focal_point_y: inputFile.height / 2 },
+		);
+
+		// Width should be clamped to 1920, height stays at 500
+		// With 1920x500 target and centered focal point on 1920x1080 image:
+		// hRatio = 1080/500 = 2.16, wRatio = 1920/1920 = 1
+		// wRatio < hRatio, so factor = 1, width = 1920, height = 1080/1 = 1080
+		// Extract region: left = 0, top = (1080/2 - 500/2) = 290
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 1920,
+					height: 1080,
+					fit: 'cover',
+					withoutEnlargement: true,
+				},
+			],
+			['extract', { left: 0, top: 290, width: 1920, height: 500 }],
+		]);
+	});
+
+	test('Add resize transformation: withoutEnlargement with smaller dimensions unchanged', () => {
+		// Both dimensions are smaller than original - should work normally
+		const transformationParams: TransformationParams = {
+			key: 'test-smaller',
+			width: 800,
+			height: 600,
+			fit: 'cover',
+			withoutEnlargement: true,
+		};
+
+		const output = resolvePreset(
+			{ transformationParams },
+			{ ...inputFile, focal_point_x: inputFile.width / 2, focal_point_y: inputFile.height / 2 },
+		);
+
+		// 1920x1080 -> 800x600
+		// hRatio = 1080/600 = 1.8, wRatio = 1920/800 = 2.4
+		// hRatio < wRatio, so factor = 1.8, height = 600, width = Math.round(1920/1.8) = 1067
+		// Extract region: newXCenter = 960/1.8 = 533.33, left = Math.round(533.33 - 400) = 133, top = 0
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 1067,
+					height: 600,
+					fit: 'cover',
+					withoutEnlargement: true,
+				},
+			],
+			['extract', { left: 133, top: 0, width: 800, height: 600 }],
+		]);
+	});
+
 	test('Resolve auto format (fallback)', () => {
 		const transformationParams: TransformationParams = {
 			format: 'auto',

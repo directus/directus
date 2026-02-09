@@ -16,8 +16,26 @@ export function resolvePreset({ transformationParams, acceptFormat }: Transforma
 	}
 
 	if ((transformationParams.width || transformationParams.height) && file.width && file.height) {
-		const toWidth = transformationParams.width ? Number(transformationParams.width) : undefined;
-		const toHeight = transformationParams.height ? Number(transformationParams.height) : undefined;
+		let toWidth = transformationParams.width ? Number(transformationParams.width) : undefined;
+		let toHeight = transformationParams.height ? Number(transformationParams.height) : undefined;
+
+		/*
+		 * When withoutEnlargement is true, clamp target dimensions to original dimensions.
+		 * This prevents "bad extract area" errors when using focal points with requested
+		 * dimensions larger than the original image. Without this, the extraction region
+		 * would be calculated based on the larger target dimensions, but the resize step
+		 * can't enlarge the image, resulting in an attempt to extract from non-existent area.
+		 * See: https://github.com/directus/directus/issues/22391
+		 */
+		if (transformationParams.withoutEnlargement) {
+			if (toWidth !== undefined) {
+				toWidth = Math.min(toWidth, file.width);
+			}
+
+			if (toHeight !== undefined) {
+				toHeight = Math.min(toHeight, file.height);
+			}
+		}
 
 		const toFocalPointX = transformationParams.focal_point_x
 			? Number(transformationParams.focal_point_x)
