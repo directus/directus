@@ -130,7 +130,7 @@ describe('Save As Copy', () => {
 
 		expect(sdkSpy.mock.calls[1]?.[0]()).toEqual({
 			path: '/graphql',
-			body: 'query { item: test_by_id (id: 1) }',
+			body: JSON.stringify({ query: 'query { item: test_by_id (id: 1) }' }),
 			method: 'POST',
 		});
 	});
