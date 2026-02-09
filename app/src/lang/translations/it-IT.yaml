@@ -970,6 +970,15 @@ no_url_copy: Aggiungere un URL nelle impostazioni.
 invalid_url: URL non valido
 invalid_url_copy: L'URL specificato non corrisponde a nessun URL specificato nelle impostazioni.
 insights: Approfondimenti
+deployment:
+  provider:
+    settings:
+      delete_confirm: Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
+    run:
+      cancel_confirm: Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
+      log_all: Tutti i livelli di log
+  target_value:
+    preview: Anteprima
 dashboard: Bacheca
 panel: Pannello
 panel_options: Opzioni del pannello
@@ -1341,6 +1350,7 @@ fields:
     public_registration_verify_email: Verifica email
     public_registration_verify_email_note: Invia un'email all'utente che effettua la registrazione chiedendogli di cliccare su un link di verifica prima di accedere.
     visual_editor_urls: URL per l'editor visuale
+    ai_header_name: Header
   directus_shares:
     name: Nome
     role: Ruolo
@@ -1493,6 +1503,7 @@ live_preview:
   new_window: Apri in una Nuova Finestra
   close_window: Apri in Split View
   toggle_3d: Attiva/disattiva 3D
+  display_options: Opzioni di visualizzazione
 shares: Condivisioni
 unlimited_usage: Utilizzo illimitato
 uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
@@ -1501,6 +1512,8 @@ new_share: Nuova condivisione
 ai:
   input: Input
   unknown: Sconosciuto
+  items: Elementi
+  content: Contenuti
   settings: impostazioni
   tool_approval:
     disabled: Disabilitato
