@@ -53,7 +53,12 @@ const users = computed(() => {
 			</VAvatar>
 		</template>
 
-		<VIcon v-if="users.length > 0" name="lock" class="collab-field-lock" :style="{ color: `var(--${users[0]!.color})` }" />
+		<VIcon
+			v-if="users.length > 0"
+			name="lock"
+			class="collab-field-lock"
+			:style="{ color: `var(--${users[0]!.color})` }"
+		/>
 	</div>
 </template>
 

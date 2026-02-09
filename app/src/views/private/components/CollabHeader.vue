@@ -87,7 +87,11 @@ function focusIntoView(cid: ClientID) {
 							<div class="more-users-list-item-content">
 								<span class="more-users-list-item-content-name">{{ user.name }}</span>
 								<span class="more-users-list-item-content-status">
-									{{ user.focusedField ? t('collab_editing_field', { field: formatTitle(user.focusedField) }) : t('collab_currently_viewing') }}
+									{{
+										user.focusedField
+											? t('collab_editing_field', { field: formatTitle(user.focusedField) })
+											: t('collab_currently_viewing')
+									}}
 								</span>
 							</div>
 						</VListItemContent>
@@ -128,7 +132,11 @@ function focusIntoView(cid: ClientID) {
 						<div class="more-users-list-item-content">
 							<span class="more-users-list-item-content-name">{{ user.name }}</span>
 							<span class="more-users-list-item-content-status">
-								{{ user.focusedField ? t('collab_editing_field', { field: formatTitle(user.focusedField) }) : t('collab_currently_viewing') }}
+								{{
+									user.focusedField
+										? t('collab_editing_field', { field: formatTitle(user.focusedField) })
+										: t('collab_currently_viewing')
+								}}
 							</span>
 						</div>
 					</VListItemContent>

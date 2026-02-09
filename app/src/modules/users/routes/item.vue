@@ -314,7 +314,12 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #actions>
-			<CollabHeader :model-value="collabUsers" :connected="connected" :focuses="focused" :current-connection="connectionId" />
+			<CollabHeader
+				:model-value="collabUsers"
+				:connected="connected"
+				:focuses="focused"
+				:current-connection="connectionId"
+			/>
 
 			<VDialog
 				v-model="confirmDelete"
