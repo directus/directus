@@ -1,5 +1,7 @@
+import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
 import { NetlifyAPI } from '@netlify/api';
+import { isNumber } from 'lodash-es';
 import { DeploymentDriver } from '../deployment.js';
 
 export interface NetlifyCredentials extends Credentials {
@@ -14,10 +16,27 @@ type NetlifySite = Awaited<ReturnType<NetlifyAPI['getSite']>>;
 
 export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyOptions> {
 	private api: NetlifyAPI;
+	private ws?: WebSocket;
 
 	constructor(credentials: NetlifyCredentials, options: NetlifyOptions = {}) {
 		super(credentials, options);
 		this.api = new NetlifyAPI(this.credentials.access_token);
+	}
+
+	private async handleApiError<T>(cb: (api: NetlifyAPI) => Promise<T>) {
+		try {
+			return await cb(this.api);
+		} catch (error) {
+			if (error instanceof Error && 'status' in error && isNumber(error.status) && error.status >= 400) {
+				if (error.status === 401 || error.status === 403) {
+					throw new InvalidCredentialsError();
+				}
+
+				throw new ServiceUnavailableError({ service: 'netlify', reason: 'Netlify API error: ' + error.message });
+			}
+
+			throw error;
+		}
 	}
 
 	private mapStatus(netlifyState: string | undefined): Status {
@@ -28,23 +47,15 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 				return 'ready';
 			case 'error':
 				return 'error';
-			case 'building':
-				return 'building';
 			case 'canceled':
-			case 'cancelled':
 				return 'canceled';
-			case 'processing':
-			case 'enqueued':
-			case 'preparing':
-			case 'new':
-			case 'uploaded':
 			default:
 				return 'building';
 		}
 	}
 
 	async testConnection(): Promise<void> {
-		await this.api.listSites({ per_page: 1 });
+		await this.handleApiError((api) => api.listSites({ per_page: 1 }));
 	}
 
 	private mapSiteBase(site: NetlifySite): Project {
@@ -69,18 +80,20 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	async listProjects(): Promise<Project[]> {
 		const params: Record<string, string> = { per_page: '100' };
 
-		const response = this.options.account_slug
-			? await this.api.listSitesForAccount({
-					account_slug: this.options.account_slug,
-					...params,
-				})
-			: await this.api.listSites(params);
+		const response = await this.handleApiError((api) => {
+			return this.options.account_slug
+				? api.listSitesForAccount({
+						account_slug: this.options.account_slug,
+						...params,
+					})
+				: api.listSites(params);
+		});
 
 		return response.map((site) => this.mapSiteBase(site));
 	}
 
 	async getProject(projectId: string): Promise<Project> {
-		const site = await this.api.getSite({ siteId: projectId });
+		const site = await this.handleApiError((api) => api.getSite({ siteId: projectId }));
 		const result = this.mapSiteBase(site);
 
 		// Add published deploy info if available
@@ -108,7 +121,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async listDeployments(projectId: string, limit = 20): Promise<Deployment[]> {
-		const response = await this.api.listSiteDeploys({ site_id: projectId, per_page: limit });
+		const response = await this.handleApiError((api) => api.listSiteDeploys({ site_id: projectId, per_page: limit }));
 
 		return response.map((deploy) => {
 			const result: Deployment = {
@@ -142,7 +155,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async getDeployment(deploymentId: string): Promise<Details> {
-		const deploy = await this.api.getDeploy({ deployId: deploymentId });
+		const deploy = await this.handleApiError((api) => api.getDeploy({ deployId: deploymentId }));
 
 		const result: Details = {
 			id: deploy.id!,
@@ -178,12 +191,14 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		options?: { preview?: boolean; clearCache?: boolean },
 	): Promise<TriggerResult> {
 		// Netlify builds endpoint returns a Build object with deploy_id and deploy_state
-		const buildResponse = await this.api.createSiteBuild({
-			site_id: projectId,
-			clear_cache: options?.clearCache || false,
-		});
+		const buildResponse = await this.handleApiError((api) =>
+			api.createSiteBuild({
+				site_id: projectId,
+				clear_cache: options?.clearCache || false,
+			}),
+		);
 
-		const deployState = await this.api.getDeploy({ deployId: buildResponse.deploy_id! });
+		const deployState = await this.handleApiError((api) => api.getDeploy({ deployId: buildResponse.deploy_id! }));
 
 		const triggerResult: TriggerResult = {
 			deployment_id: buildResponse.deploy_id!,
@@ -194,28 +209,39 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async cancelDeployment(deploymentId: string): Promise<void> {
-		await this.api.deleteDeploy({ deployId: deploymentId });
+		await this.handleApiError((api) => api.cancelSiteDeploy({ deployId: deploymentId }));
+	}
+
+	private getWebSocket() {
+		return (this.ws ??= new WebSocket(`wss://socketeer.services.netlify.com/build/logs`));
 	}
 
 	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
 		return new Promise((resolve, reject) => {
-			const ws = new WebSocket(`wss://socketeer.services.netlify.com/build/logs`);
-			const logs: Log[] = [];
-			const lastMessageTime = Date.now();
-			const accessToken = this.credentials.access_token;
+			const ws = this.getWebSocket();
+
+			const params = {
+				deploymentId: deploymentId,
+				accessToken: this.credentials.access_token,
+				logs: [] as Log[],
+				lastMessageTime: Date.now(),
+				resolve,
+				reject,
+			};
+
 			const { onMessage, onError, onOpen, close } = this.createDeploymentLogsResolver(ws, options);
 
-			ws.addEventListener('message', onMessage({ resolve, logs, lastMessageTime }));
-			ws.addEventListener('error', onError({ reject }));
-			ws.addEventListener('open', onOpen({ deploymentId, accessToken }));
+			ws.addEventListener('message', onMessage(params));
+			ws.addEventListener('error', onError(params));
+			ws.addEventListener('open', onOpen(params));
 
 			const interval = setInterval(() => {
 				if (ws.OPEN !== ws.readyState) return;
 
 				// If no new messages have been received in the last second, assume logs are complete and close the connection
-				if (Date.now() - lastMessageTime > 1000) {
+				if (Date.now() - params.lastMessageTime > 1_000) {
 					clearInterval(interval);
-					close({ resolve, logs });
+					close(params);
 				}
 			}, 1000);
 		});

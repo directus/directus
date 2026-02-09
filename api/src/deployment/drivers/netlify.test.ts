@@ -8,7 +8,7 @@ const mockNetlifyAPI = vi.hoisted(() => ({
 	listSiteDeploys: vi.fn(),
 	getDeploy: vi.fn(),
 	createSiteBuild: vi.fn(),
-	deleteDeploy: vi.fn(),
+	cancelSiteDeploy: vi.fn(),
 }));
 
 vi.mock('@netlify/api', () => ({
@@ -125,7 +125,7 @@ describe('NetlifyDriver', () => {
 			const mockDeploy = {
 				id: 'deploy-1',
 				site_id: 'site-1',
-				state: 'cancelled',
+				state: 'canceled',
 				created_at: '2024-01-01T00:00:00Z',
 			};
 
@@ -373,11 +373,11 @@ describe('NetlifyDriver', () => {
 
 	describe('cancelDeployment', () => {
 		it('should cancel a deployment', async () => {
-			mockNetlifyAPI.deleteDeploy.mockResolvedValueOnce(undefined);
+			mockNetlifyAPI.cancelSiteDeploy.mockResolvedValueOnce(undefined);
 
 			await expect(driver.cancelDeployment('deploy-1')).resolves.not.toThrow();
 
-			expect(mockNetlifyAPI.deleteDeploy).toHaveBeenCalledWith({ deployId: 'deploy-1' });
+			expect(mockNetlifyAPI.cancelSiteDeploy).toHaveBeenCalledWith({ deployId: 'deploy-1' });
 		});
 	});
 
