@@ -1,9 +1,9 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { PendingContextItem } from '../types';
 import { MAX_PENDING_CONTEXT, useAiContextStore } from './use-ai-context';
-import api from '@/api';
+import sdk from '@/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 vi.mock('@/sdk', () => ({
@@ -61,6 +61,19 @@ const createPromptContext = (id: string): PendingContextItem => ({
 });
 
 describe('useAiContextStore', () => {
+	let sdkSpy;
+
+	beforeEach(() => {
+		sdkSpy = vi.spyOn(sdk, 'request').mockImplementation((cb) => {
+			cb();
+			return Promise.resolve();
+		});
+	});
+
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
+
 	describe('addPendingContext', () => {
 		test('adds item to pendingContext', () => {
 			const store = useAiContextStore();
@@ -187,13 +200,18 @@ describe('useAiContextStore', () => {
 	describe('fetchContextData', () => {
 		test('fetches current values for visual elements', async () => {
 			const store = useAiContextStore();
-			vi.mocked(api.get).mockResolvedValue({ data: { data: { title: 'Fetched Title' } } });
+			vi.mocked(sdk.request).mockResolvedValue({ title: 'Fetched Title' });
+			const sdkSpy = vi.spyOn(sdk, 'request');
 
 			store.addPendingContext(createVisualElement('1'));
 
 			const attachments = await store.fetchContextData();
 
-			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['title'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({
+				path: '/items/posts/1',
+				query: { fields: ['title'] },
+			});
+
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.type).toBe('visual-element');
 			expect(attachments[0]!.snapshot).toEqual({ title: 'Fetched Title' });
@@ -201,7 +219,8 @@ describe('useAiContextStore', () => {
 
 		test('uses wildcard fields when none specified', async () => {
 			const store = useAiContextStore();
-			vi.mocked(api.get).mockResolvedValue({ data: { data: { id: 1 } } });
+			vi.mocked(sdk.request).mockResolvedValue({ id: 1 });
+			const sdkSpy = vi.spyOn(sdk, 'request');
 
 			const element: PendingContextItem = {
 				id: '1',
@@ -213,13 +232,13 @@ describe('useAiContextStore', () => {
 			store.addPendingContext(element);
 			await store.fetchContextData();
 
-			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['*'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', query: { fields: ['*'] } });
 		});
 
 		test('handles API errors gracefully', async () => {
 			const store = useAiContextStore();
 			const error = new Error('API Error');
-			vi.mocked(api.get).mockRejectedValue(error);
+			vi.mocked(sdk.request).mockRejectedValue(error);
 
 			store.addPendingContext(createVisualElement('1'));
 
@@ -231,13 +250,14 @@ describe('useAiContextStore', () => {
 
 		test('fetches item context from API', async () => {
 			const store = useAiContextStore();
-			vi.mocked(api.get).mockResolvedValue({ data: { data: { id: '1', title: 'Fetched' } } });
+			vi.mocked(sdk.request).mockResolvedValue({ id: '1', title: 'Fetched' });
+			const sdkSpy = vi.spyOn(sdk, 'request');
 
 			store.addPendingContext(createItemContext('1'));
 
 			const attachments = await store.fetchContextData();
 
-			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['*'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', query: { fields: ['*'] } });
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.type).toBe('item');
 			expect(attachments[0]!.snapshot).toEqual({ id: '1', title: 'Fetched' });
@@ -258,7 +278,7 @@ describe('useAiContextStore', () => {
 		test('handles item context fetch failure gracefully', async () => {
 			const store = useAiContextStore();
 			const error = new Error('Item not found');
-			vi.mocked(api.get).mockRejectedValue(error);
+			vi.mocked(sdk.request).mockRejectedValue(error);
 
 			store.addPendingContext(createItemContext('1'));
 
@@ -271,8 +291,8 @@ describe('useAiContextStore', () => {
 		test('returns partial results when one item fails', async () => {
 			const store = useAiContextStore();
 
-			vi.mocked(api.get)
-				.mockResolvedValueOnce({ data: { data: { id: '1', title: 'Success' } } })
+			vi.mocked(sdk.request)
+				.mockResolvedValueOnce({ id: '1', title: 'Success' })
 				.mockRejectedValueOnce(new Error('Failed'));
 
 			store.addPendingContext(createItemContext('ctx-1', '1'));
