@@ -8,7 +8,6 @@ import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from '
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
-import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
@@ -35,7 +34,7 @@ type UsableItem<T extends Item> = {
 	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
-	save: () => Promise<T>;
+	save: () => Promise<T | undefined>;
 	isNew: ComputedRef<boolean>;
 	remove: () => Promise<void>;
 	deleting: Ref<boolean>;
@@ -203,7 +202,7 @@ export function useItem<T extends Item>(
 				response = await sdk.request<T>(() => ({
 					path: getEndpoint(collection.value),
 					method: 'POST',
-					data: editsWithClearedValues,
+					body: JSON.stringify(editsWithClearedValues),
 				}));
 
 				notify({
@@ -213,7 +212,7 @@ export function useItem<T extends Item>(
 				response = await sdk.request<T>(() => ({
 					path: itemEndpoint.value,
 					method: 'PATCH',
-					data: editsWithClearedValues,
+					body: JSON.stringify(editsWithClearedValues),
 				}));
 
 				notify({
@@ -223,7 +222,7 @@ export function useItem<T extends Item>(
 
 			setItemValueToResponse(response);
 			edits.value = {};
-			return response.data.data;
+			return response;
 		} catch (error) {
 			saveErrorHandler(error);
 		} finally {
@@ -364,7 +363,11 @@ export function useItem<T extends Item>(
 		}
 
 		try {
-			const response = await api.post(getEndpoint(collection.value), newItem);
+			const response = await sdk.request<Item>(() => ({
+				path: getEndpoint(collection.value),
+				method: 'POST',
+				body: JSON.stringify(newItem),
+			}));
 
 			notify({
 				title: i18n.global.t('item_create_success', 1),
@@ -373,7 +376,7 @@ export function useItem<T extends Item>(
 			// Reset edits to the current item
 			edits.value = {};
 
-			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
+			return primaryKeyField.value ? response[primaryKeyField.value.field] : null;
 		} catch (error) {
 			saveErrorHandler(error);
 		} finally {
@@ -446,16 +449,14 @@ export function useItem<T extends Item>(
 	}
 
 	function saveErrorHandler(error: any) {
-		if (error?.response?.data?.errors) {
-			validationErrors.value = error.response.data.errors
+		if (error?.errors) {
+			validationErrors.value = error.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 				.map((err: APIError) => {
 					return err.extensions;
 				});
 
-			const otherErrors = error.response.data.errors.filter(
-				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
-			);
+			const otherErrors = error.errors.filter((err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code));
 
 			if (otherErrors.length > 0) {
 				otherErrors.forEach(unexpectedError);
@@ -488,9 +489,13 @@ export function useItem<T extends Item>(
 			if (value === 'true') value = true;
 			if (value === 'false') value = false;
 
-			await api.patch(itemEndpoint.value, {
-				[field]: value,
-			});
+			await sdk.request(() => ({
+				path: itemEndpoint.value,
+				method: 'PATCH',
+				body: JSON.stringify({
+					[field]: value,
+				}),
+			}));
 
 			item.value = {
 				...(item.value as T),
@@ -513,7 +518,7 @@ export function useItem<T extends Item>(
 		deleting.value = true;
 
 		try {
-			await api.delete(itemEndpoint.value);
+			await sdk.request(() => ({ path: itemEndpoint.value, method: 'DELETE' }));
 
 			item.value = null;
 
