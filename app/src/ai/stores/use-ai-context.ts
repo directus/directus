@@ -76,7 +76,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		try {
 			const response = await sdk.request<Item>(() => ({
 				path: `${getEndpoint(collection)}/${id}`,
-				query: { fields },
+				params: { fields },
 			}));
 
 			return response;

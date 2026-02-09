@@ -85,7 +85,7 @@ export function useRelationSingle<T extends Record<string, any>>(
 		try {
 			const item = await sdk.request<T>(() => ({
 				path: `${getEndpoint(relatedCollection)}/${encodeURIComponent(id)}`,
-				query: { fields: Array.from(fields) },
+				params: { fields: Array.from(fields) },
 			}));
 
 			if (typeof val === 'object') {

@@ -84,7 +84,7 @@ export function useTemplateData(
 		try {
 			const item = await sdk.request<Item>(() => ({
 				path: endpoint,
-				query: {
+				params: {
 					fields: fields.value,
 				},
 			}));

@@ -121,7 +121,7 @@ export function useItem<T extends Item>(
 		error.value = null;
 
 		try {
-			const item = await sdk.request<T>(() => ({ path: itemEndpoint.value, query: unref(query) }));
+			const item = await sdk.request<T>(() => ({ path: itemEndpoint.value, params: unref(query) }));
 			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
@@ -409,7 +409,7 @@ export function useItem<T extends Item>(
 
 			const response = await sdk.request<Item[]>(() => ({
 				path: getEndpoint(relation.collection),
-				query: {
+				params: {
 					fields: Array.from(fieldsToFetch),
 					[`filter[${relation.field}][_eq]`]: primaryKey.value,
 				},
