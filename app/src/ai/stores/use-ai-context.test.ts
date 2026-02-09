@@ -200,7 +200,7 @@ describe('useAiContextStore', () => {
 
 			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({
 				path: '/items/posts/1',
-				query: { fields: ['title'] },
+				params: { fields: ['title'] },
 			});
 
 			expect(attachments).toHaveLength(1);
@@ -223,7 +223,7 @@ describe('useAiContextStore', () => {
 			store.addPendingContext(element);
 			await store.fetchContextData();
 
-			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', query: { fields: ['*'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', params: { fields: ['*'] } });
 		});
 
 		test('handles API errors gracefully', async () => {
@@ -248,7 +248,7 @@ describe('useAiContextStore', () => {
 
 			const attachments = await store.fetchContextData();
 
-			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', query: { fields: ['*'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', params: { fields: ['*'] } });
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.type).toBe('item');
 			expect(attachments[0]!.snapshot).toEqual({ id: '1', title: 'Fetched' });
