@@ -1037,6 +1037,15 @@ no_url_copy: Por favor, agregue una URL en la configuración.
 invalid_url: URL no válida
 invalid_url_copy: La URL especificada no coincide con ninguna de las URL definidas en la configuración.
 insights: Informes
+deployment:
+  provider:
+    settings:
+      delete_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
+    run:
+      cancel_confirm: Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
+      log_all: Todos los niveles de registro
+  target_value:
+    preview: Vista previa
 dashboard: Tablero
 panel: Tablero
 panel_options: Opciones del Panel
@@ -1428,6 +1437,7 @@ fields:
     mcp_system_prompt_enabled_note: "Usar el <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>prompt de sistema predeterminado</a> para guiar el comportamiento del LLM. Desactívalo para eliminarlo o reemplazarlo con tu propio prompt a continuación."
     mcp_system_prompt: Prompt de sistema personalizado
     mcp_system_prompt_note: 'Prompt de sistema personalizado para reemplazar el predeterminado. Déjalo vacío para usar el predeterminado (si está habilitado arriba).'
+    ai_header_name: Cabecera
   directus_shares:
     name: Nombre
     role: Rol
@@ -1581,6 +1591,7 @@ live_preview:
   close_window: Abrir en Vista Dividida
   toggle_3d: Alternar 3D
   iframe_title: Vista previa del sitio web en vivo
+  display_options: Opciones de visualización
 shares: Compartido
 unlimited_usage: Uso ilimitado
 uses_left: Sin usos restantes | Un uso restante | {n} usos restantes
@@ -1589,6 +1600,8 @@ new_share: Nueva parte
 ai:
   input: Entrada
   unknown: Desconocido
+  items: Ítems
+  content: Contenido
   settings: Ajustes
   tool_approval:
     disabled: Deshabilitado

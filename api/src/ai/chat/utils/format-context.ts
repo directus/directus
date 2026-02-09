@@ -43,6 +43,7 @@ function formatVisualElement(att: ContextAttachment & { type: 'visual-element' }
 
 	return `### ${collection}/${item} — "${display}"
 Editable fields: ${fields}
+To update: items tool with collection="${collection}", keys=["${item}"], action="update"
 \`\`\`json
 ${escapeAngleBrackets(JSON.stringify(att.snapshot, null, 2))}
 \`\`\``;
@@ -141,6 +142,10 @@ ${itemLines}`);
 		parts.push(`<visual_editing>
 ## Selected Elements
 The user selected these elements for editing in the visual editor.
+
+IMPORTANT: For visual editor elements, ALWAYS use the items tool:
+- To UPDATE: items tool with action: 'update', collection, keys, and data
+- NEVER use form-values tools for visual editor elements
 
 ${elementLines}
 </visual_editing>`);
