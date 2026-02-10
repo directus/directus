@@ -25,6 +25,8 @@ contact_our_team: Contactez notre équipe
 setup_welcome: Bienvenue sur Directus
 setup_license_notice: >
   Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
+setup_license_follow_up: >
+
 setup_launch: Lancer Directus
 setup_project: Configurer un projet
 first_name: Prénom
@@ -2491,3 +2493,4 @@ search_flow: Rechercher le flux...
 percent: Pourcent
 show_password: Afficher le mot de passe
 hide_password: Masquer le mot de passe
+set_to_now: Configurer à maintenant
