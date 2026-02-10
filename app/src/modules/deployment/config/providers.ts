@@ -86,7 +86,7 @@ export function useProviderConfigs(
 							required: !hasExisting,
 							note: [
 								edit &&
-									`${t('deployment.provider.credentials.notice', { provider: netlifyProvider })} [${t('deployment.provider.credentials.link', { provider: netlifyProvider })}](${'https://app.netlify.com/user/applications'}).`,
+									`${t('deployment.provider.credentials.notice', { provider: netlifyProvider })} [${t('deployment.provider.credentials.link', { provider: netlifyProvider })}](${netlifyTokenUrl}).`,
 								t('deployment.provider.token.encrypted_notice'),
 							]
 								.filter(Boolean)
