@@ -49,7 +49,7 @@ beforeEach(() => {
 
 	vi.mocked(withNamespace).mockReturnValue(mockNamespacedKey);
 	vi.mocked(bufferToUint8Array).mockReturnValue(mockUint8Array);
-	vi.mocked(uint8ArrayToBuffer).mockReturnValue(mockBuffer);
+	vi.mocked(uint8ArrayToBuffer).mockReturnValue(mockBuffer as any);
 	vi.mocked(compress).mockResolvedValue(mockCompressedUint8Array);
 	vi.mocked(decompress).mockResolvedValue(mockDecompressedUint8Array);
 	vi.mocked(serialize).mockReturnValue(mockUint8Array);
@@ -82,10 +82,15 @@ describe('constructor', () => {
 			numberOfKeys: 1,
 			lua: SET_MAX_SCRIPT,
 		});
+
+		expect(kv['redis'].defineCommand).toHaveBeenCalledWith('release', {
+			numberOfKeys: 1,
+			lua: expect.any(String),
+		});
 	});
 
-	test('Skips defining command if setMax already exists on redis', () => {
-		const mockRedis = { defineCommand: vi.fn(), setMax: vi.fn() } as unknown as ExtendedRedis;
+	test('Skips defining commands if they already exist on redis', () => {
+		const mockRedis = { defineCommand: vi.fn(), setMax: vi.fn(), release: vi.fn() } as unknown as ExtendedRedis;
 
 		new KvRedis({ redis: mockRedis, namespace: mockNamespace, compression: false });
 
@@ -202,6 +207,16 @@ describe('set', () => {
 		await kv.set(mockKey, mockValue);
 		expect(kv['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockValue, 'PX', mockTTL);
 	});
+
+	test('Custom TTL with compression', async () => {
+		kv['compression'] = true;
+		kv['compressionMinSize'] = 0;
+		kv['ttl'] = 3600000;
+
+		await kv.set(mockKey, mockValue);
+
+		expect(kv['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockBuffer, 'PX', 3600000);
+	});
 });
 
 describe('delete', () => {
@@ -315,5 +330,44 @@ describe('clear', () => {
 		expect(withNamespace).toHaveBeenCalledWith('*', mockNamespace);
 		expect(unlinkFn).toHaveBeenCalledTimes(2); // See the mocked key chunks from `scanStream`
 		expect(execFn).toHaveBeenCalledOnce();
+	});
+});
+
+describe('acquireLock', () => {
+	test('Delegates to redlock acquire and awaits', async () => {
+		let innerReleased = false;
+		let innerExtended = false;
+
+		const mockLock = {
+			release: vi.fn().mockImplementation(async () => {
+				await new Promise((resolve) => setTimeout(resolve, 10));
+				innerReleased = true;
+			}),
+			extend: vi.fn().mockImplementation(async () => {
+				await new Promise((resolve) => setTimeout(resolve, 10));
+				innerExtended = true;
+			}),
+		};
+
+		kv['redlock'].acquire = vi.fn().mockResolvedValue(mockLock);
+
+		const lock = await kv.acquireLock(mockKey);
+		expect(kv['redlock'].acquire).toHaveBeenCalledWith([mockNamespacedKey], 5000);
+
+		await lock.release();
+		expect(innerReleased).toBe(true);
+
+		await lock.extend(100);
+		expect(innerExtended).toBe(true);
+	});
+});
+
+describe('usingLock', () => {
+	test('Delegates to redlock using', async () => {
+		const callback = vi.fn();
+		kv['redlock'].using = vi.fn();
+
+		await kv.usingLock(mockKey, callback);
+		expect(kv['redlock'].using).toHaveBeenCalledWith([mockNamespacedKey], 5000, callback);
 	});
 });

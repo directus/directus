@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user';
 import { computed, unref } from 'vue';
 import { GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from '../../constants';
 import { ParentInfo } from '../../flow.vue';
 import { ArrowInfo } from '../operation.vue';
 import { generateArrows } from './lib/generate-arrows';
+import { useUserStore } from '@/stores/user';
 
 const props = withDefaults(
 	defineProps<{

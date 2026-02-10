@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import { getHelpers } from '../../database/helpers/index.js';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
@@ -67,6 +68,8 @@ export const getReport = async (): Promise<TelemetryReport> => {
 
 		database_size: databaseSize ?? 0,
 		files_size_total: filesizes.total,
+
+		websockets_enabled: toBoolean(env['WEBSOCKETS_ENABLED'] ?? false),
 
 		...settings,
 	};

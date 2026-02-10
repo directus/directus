@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { ContentVersion, Filter } from '@directus/types';
+import { moveInArray } from '@directus/utils';
+import { cloneDeep } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import Draggable from 'vuedraggable';
+import ItemPreview from './item-preview.vue';
 import VButton from '@/components/v-button.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -13,12 +19,6 @@ import { RelationO2M } from '@/composables/use-relation-o2m';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import type { ContentVersion, Filter } from '@directus/types';
-import { moveInArray } from '@directus/utils';
-import { cloneDeep } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
-import Draggable from 'vuedraggable';
-import ItemPreview from './item-preview.vue';
 
 type ChangeEvent =
 	| {
@@ -83,6 +83,10 @@ const value = computed<ChangesItem | any[]>({
 
 const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter, version } = toRefs(props);
 
+const addNewActive = defineModel<boolean>('addNewOpen');
+const selectDrawer = defineModel<boolean>('selectOpen');
+const editOpen = defineModel<boolean>('editOpen');
+
 const drag = ref(false);
 const open = ref<Record<string, boolean>>({});
 
@@ -97,8 +101,6 @@ const query = computed<RelationQueryMultiple>(() => ({
 
 const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
 	useRelationMultiple(value, query, relationInfo, primaryKey, version);
-
-const selectDrawer = ref(false);
 
 const dragOptions = {
 	animation: 150,
@@ -173,8 +175,6 @@ function sort(from: number, to: number) {
 	update(...sortedItems);
 }
 
-const addNewActive = ref(false);
-
 function addNew(item: Record<string, any>) {
 	item[relationInfo.value.reverseJunctionField.field] = primaryKey.value;
 	create(item);
@@ -210,8 +210,14 @@ function stageEdits(item: Record<string, any>) {
 		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<VListItem :non-editable="nonEditable" class="row" :class="{ draggable: element.$type !== 'deleted' }">
+			<VListItem
+				:non-editable
+				:disabled="disabled && !nonEditable"
+				class="row"
+				:class="{ draggable: element.$type !== 'deleted' }"
+			>
 				<ItemPreview
+					v-model:edit-open="editOpen"
 					:item="element"
 					:edits="getItemEdits(element)"
 					:template="template"
@@ -228,6 +234,7 @@ function stageEdits(item: Record<string, any>) {
 				/>
 				<NestedDraggable
 					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
+					v-model:edit-open="editOpen"
 					:model-value="element[field]"
 					:template="template"
 					:collection="collection"
@@ -306,10 +313,25 @@ function stageEdits(item: Record<string, any>) {
 }
 
 .row {
+	&.v-list-item {
+		--v-list-item-padding: 0;
+		--v-list-item-margin: 0;
+
+		display: block;
+
+		+ .v-list-item {
+			margin-block-start: 8px;
+		}
+	}
+
+	&:not(.draggable) .preview {
+		cursor: not-allowed;
+	}
+
 	.preview {
 		padding: 12px;
 		cursor: grab;
-		background-color: var(--theme--background);
+		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--border-color);
 		border-radius: var(--theme--border-radius);
 
@@ -322,19 +344,13 @@ function stageEdits(item: Record<string, any>) {
 		}
 	}
 
-	&.v-list-item {
-		display: block;
-
-		--v-list-item-padding: 0;
-		--v-list-item-margin: 0;
-
-		+ .v-list-item {
-			margin-block-start: 8px;
-		}
+	&.v-list-item.disabled .preview {
+		background-color: var(--theme--form--field--input--background-subdued);
+		cursor: not-allowed;
 	}
 
-	&:not(.draggable) .preview {
-		cursor: not-allowed;
+	&.v-list-item.non-editable .preview {
+		cursor: pointer;
 	}
 }
 

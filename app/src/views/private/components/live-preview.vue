@@ -1,17 +1,24 @@
 <script setup lang="ts">
+import { useElementSize } from '@directus/composables';
+import { SplitPanel } from '@directus/vue-split-panel';
+import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { useElementSize } from '@directus/composables';
-import { CSSProperties, computed, nextTick, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
+import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 
 declare global {
 	interface Window {
@@ -25,6 +32,14 @@ const {
 	dynamicUrl,
 	dynamicDisplay,
 	singleUrlSubdued = true,
+	canEnableVisualEditing = false,
+	visualEditorUrls = [],
+	showOpenInVisualEditor = true,
+	defaultShowEditableElements = false,
+	isFullWidth = false,
+	sidebarSize,
+	sidebarCollapsed = true,
+	sidebarDisabled = false,
 } = defineProps<{
 	url: string | string[];
 	invalidUrl?: boolean;
@@ -36,14 +51,28 @@ const {
 	hidePopupButton?: boolean;
 	inPopup?: boolean;
 	centered?: boolean;
+	canEnableVisualEditing?: boolean;
+	visualEditorUrls?: string[];
+	showOpenInVisualEditor?: boolean;
+	defaultShowEditableElements?: boolean;
+	isFullWidth?: boolean;
+	sidebarSize?: number;
+	sidebarCollapsed?: boolean;
+	sidebarDisabled?: boolean;
 }>();
 
 const emit = defineEmits<{
 	'new-window': [];
 	selectUrl: [newUrl: string, oldUrl: string];
+	saved: [data: { collection: string; primaryKey: string | number }];
+	'exit-full-width': [];
+	'update:sidebarSize': [size: number];
+	'update:sidebarCollapsed': [collapsed: boolean];
 }>();
 
 const { t } = useI18n();
+const router = useRouter();
+const slots = useSlots();
 
 useResizeObserver();
 
@@ -55,6 +84,10 @@ const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
+const showEditableElements = ref(defaultShowEditableElements);
+const overlayProvided = computed(() => !!slots.overlay);
+const hasDisplayOptions = computed(() => !!slots['display-options']);
+const hasSidebar = computed(() => !!slots.sidebar);
 
 const livePreviewEl = ref<HTMLElement>();
 const resizeHandle = ref<HTMLDivElement>();
@@ -96,6 +129,16 @@ const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
 });
 
+const visualEditingEnabled = computed(() => {
+	if (!canEnableVisualEditing) return false;
+	if (invalidUrl) return false;
+
+	const currentUrl = frameSrc.value;
+	if (!currentUrl || !visualEditorUrls.length) return false;
+
+	return visualEditorUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
+});
+
 function toggleFullscreen() {
 	if (fullscreen.value) {
 		width.value = 400;
@@ -121,7 +164,22 @@ function onIframeLoad() {
 	isRefreshing.value = false;
 }
 
+function openInVisualEditor() {
+	if (frameSrc.value) router.push(getUrlRoute(frameSrc.value));
+}
+
 window.refreshLivePreview = refresh;
+
+watch(
+	() => frameSrc.value,
+	() => {
+		showEditableElements.value = false;
+	},
+);
+
+watch(visualEditingEnabled, (enabled) => {
+	if (!enabled) showEditableElements.value = false;
+});
 
 function useResizeObserver() {
 	let observerInitialized = false;
@@ -208,15 +266,66 @@ function useUrls() {
 				<slot name="prepend-header" />
 
 				<VButton
-					v-if="!hidePopupButton"
-					v-tooltip.bottom.end="$t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
+					v-if="isFullWidth"
+					v-tooltip.bottom.end="t('live_preview.exit_full_width')"
+					x-small
+					rounded
+					icon
+					@click="emit('exit-full-width')"
+				>
+					<VIcon small name="width_full" />
+				</VButton>
+
+				<VButton
+					v-else-if="inPopup"
+					v-tooltip.bottom.end="$t('live_preview.close_window')"
 					x-small
 					rounded
 					icon
 					secondary
 					@click="emit('new-window')"
 				>
-					<VIcon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
+					<VIcon small name="exit_to_app" outline />
+				</VButton>
+
+				<VMenu v-else-if="hasDisplayOptions" show-arrow placement="bottom-start">
+					<template #activator="{ toggle }">
+						<VButton
+							v-tooltip.bottom.end="t('live_preview.display_options')"
+							x-small
+							rounded
+							icon
+							secondary
+							@click="toggle"
+						>
+							<VIcon small name="display_settings" />
+						</VButton>
+					</template>
+
+					<VList>
+						<slot name="display-options" />
+						<VListItem v-if="!hidePopupButton" clickable @click="emit('new-window')">
+							<VListItemIcon><VIcon name="open_in_new" /></VListItemIcon>
+							<VListItemContent>{{ t('live_preview.new_window') }}</VListItemContent>
+						</VListItem>
+						<VListItem v-if="visualEditingEnabled && showOpenInVisualEditor" clickable @click="openInVisualEditor">
+							<VListItemIcon><VIcon name="edit_square" /></VListItemIcon>
+							<VListItemContent>{{ t('live_preview.open_in_visual_editor') }}</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
+
+				<VButton
+					v-if="visualEditingEnabled"
+					v-tooltip.bottom.end="$t('toggle_editable_elements')"
+					x-small
+					rounded
+					icon
+					:active="showEditableElements"
+					secondary
+					@click="showEditableElements = !showEditableElements"
+				>
+					<VIcon small name="edit" outline />
 				</VButton>
 
 				<VButton
@@ -313,6 +422,7 @@ function useUrls() {
 			>
 				<VIcon small name="devices" />
 			</VButton>
+			<slot name="append-header" />
 		</div>
 
 		<VInfo v-if="!frameSrc" :title="$t('no_url')" icon="edit_square" center>
@@ -322,6 +432,72 @@ function useUrls() {
 		<VInfo v-else-if="invalidUrl" :title="$t('invalid_url')" type="danger" icon="edit_square" center>
 			{{ $t('invalid_url_copy') }}
 		</VInfo>
+
+		<SplitPanel
+			v-else-if="hasSidebar"
+			:size="sidebarSize"
+			:collapsed="sidebarCollapsed"
+			:disabled="sidebarDisabled"
+			primary="end"
+			size-unit="px"
+			collapsible
+			:collapsed-size="0"
+			:collapse-threshold="70"
+			:min-size="280"
+			:max-size="600"
+			:snap-points="[370]"
+			:snap-threshold="6"
+			:transition-duration="125"
+			divider-hit-area="24px"
+			class="content-split"
+			@update:size="(size: number) => emit('update:sidebarSize', size)"
+			@update:collapsed="
+				(collapsed: boolean) => {
+					emit('update:sidebarCollapsed', collapsed);
+				}
+			"
+		>
+			<template #start>
+				<div class="container">
+					<div class="iframe-view" :style="iframeViewStyle">
+						<div
+							ref="resizeHandle"
+							class="resize-handle"
+							:style="{
+								inlineSize: width ? `${width}px` : '100%',
+								blockSize: height ? `${height}px` : '100%',
+								resize: fullscreen ? 'none' : 'both',
+								transform: `scale(${zoom})`,
+								transformOrigin: zoom >= 1 ? 'top left' : 'center center',
+							}"
+						>
+							<iframe
+								id="frame"
+								ref="frameEl"
+								:src="frameSrc"
+								:title="$t('live_preview.iframe_title')"
+								@load="onIframeLoad"
+							/>
+							<slot name="overlay" :frame-el :frame-src />
+							<EditingLayer
+								v-if="visualEditingEnabled && !overlayProvided"
+								:frame-el="frameEl"
+								:frame-src="frameSrc"
+								:show-editable-elements="showEditableElements"
+								@saved="(data) => emit('saved', data)"
+							/>
+						</div>
+					</div>
+					<slot name="notifications" />
+				</div>
+			</template>
+			<template #divider>
+				<PrivateViewResizeHandle />
+			</template>
+			<template #end>
+				<slot name="sidebar" />
+			</template>
+		</SplitPanel>
 
 		<div v-else class="container">
 			<div class="iframe-view" :style="iframeViewStyle">
@@ -344,8 +520,16 @@ function useUrls() {
 						@load="onIframeLoad"
 					/>
 					<slot name="overlay" :frame-el :frame-src />
+					<EditingLayer
+						v-if="visualEditingEnabled && !overlayProvided"
+						:frame-el="frameEl"
+						:frame-src="frameSrc"
+						:show-editable-elements="showEditableElements"
+						@saved="(data) => emit('saved', data)"
+					/>
 				</div>
 			</div>
+			<slot name="notifications" />
 		</div>
 	</div>
 </template>
@@ -487,9 +671,22 @@ function useUrls() {
 	}
 
 	.container {
+		position: relative;
 		inline-size: 100%;
 		block-size: calc(100% - var(--preview--header--height));
 		overflow: auto;
+	}
+
+	.content-split {
+		block-size: calc(100% - var(--preview--header--height));
+
+		.container {
+			block-size: 100%;
+		}
+
+		&:deep(.sp-divider) {
+			z-index: 8;
+		}
 	}
 
 	.iframe-view {

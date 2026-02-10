@@ -1,9 +1,14 @@
-import { expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { messageConstructor } from './hit-rate-limit.js';
 
-vi.useFakeTimers();
+beforeAll(() => {
+	vi.useFakeTimers();
+	vi.setSystemTime('2023-05-31T14:45:00Z');
+});
 
-vi.setSystemTime('2023-05-31T14:45:00Z');
+afterAll(() => {
+	vi.useRealTimers();
+});
 
 test('Constructs message', () => {
 	expect(

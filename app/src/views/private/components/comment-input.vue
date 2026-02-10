@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Comment, User } from '@directus/types';
+import axios, { CancelTokenSource } from 'axios';
+import { cloneDeep, throttle } from 'lodash';
+import { ComponentPublicInstance, computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import VAvatar from '@/components/v-avatar.vue';
 import VButton from '@/components/v-button.vue';
@@ -17,11 +22,6 @@ import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import { Comment, User } from '@directus/types';
-import axios, { CancelTokenSource } from 'axios';
-import { cloneDeep, throttle } from 'lodash';
-import { ComponentPublicInstance, computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -366,7 +366,7 @@ function pressedEnter() {
 }
 
 .collapsed .v-template-input {
-	block-size: 48px;
+	block-size: var(--input-height-md);
 	padding-block-end: 0;
 }
 

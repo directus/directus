@@ -1,0 +1,33 @@
+{
+	"name": "@directus/ai",
+	"version": "1.1.0",
+	"description": "Shared AI types and model definitions for Directus AI",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/ai"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown src/index.ts --dts",
+		"dev": "tsdown src/index.ts --dts --watch"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:"
+	}
+}

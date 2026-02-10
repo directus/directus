@@ -1,3 +1,14 @@
+import { useCollection } from '@directus/composables';
+import { isSystemCollection } from '@directus/system-data';
+import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
+import { getEndpoint, isObject } from '@directus/utils';
+import { AxiosResponse } from 'axios';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { cloneDeep, mergeWith } from 'lodash';
+import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
+import { UsablePermissions, usePermissions } from '../use-permissions';
+import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
+import { transformM2AAliases } from './lib/transform-m2a-aliases';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
@@ -14,16 +25,6 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollection } from '@directus/composables';
-import { isSystemCollection } from '@directus/system-data';
-import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
-import { getEndpoint, isObject } from '@directus/utils';
-import { AxiosResponse } from 'axios';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, mergeWith } from 'lodash';
-import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { UsablePermissions, usePermissions } from '../use-permissions';
-import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -120,8 +121,14 @@ export function useItem<T extends Item>(
 		loadingItem.value = true;
 		error.value = null;
 
+		const rawQuery: Record<string, unknown> = unref(query);
+
+		if ('fields' in rawQuery && Array.isArray(rawQuery.fields)) {
+			rawQuery.fields = rawQuery.fields.join(',');
+		}
+
 		try {
-			const response = await api.get(itemEndpoint.value, { params: unref(query) });
+			const response = await api.get(itemEndpoint.value, { params: rawQuery });
 			setItemValueToResponse(response);
 		} catch (err) {
 			error.value = err;
@@ -228,7 +235,7 @@ export function useItem<T extends Item>(
 
 		const fields = collectionInfo.value?.meta?.item_duplication_fields ?? [];
 
-		const queryFields = getGraphqlQueryFields(fields, collection.value);
+		const { queryFields, m2aAliasMap } = getGraphqlQueryFields(fields, collection.value);
 		const alias = isSystemCollection(collection.value) ? collection.value.substring(9) : collection.value;
 
 		const query = jsonToGraphQLQuery({
@@ -254,7 +261,8 @@ export function useItem<T extends Item>(
 			throw error;
 		}
 
-		const itemData = response.data.data.item;
+		// Transform aliased M2A fields back to their original names
+		const itemData = transformM2AAliases(response.data.data.item, m2aAliasMap);
 
 		const newItem: Item = {
 			...(itemData || {}),

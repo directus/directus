@@ -1,3 +1,5 @@
+import { API_INJECT, EXTENSIONS_INJECT, SDK_INJECT, STORES_INJECT } from '@directus/constants';
+import { useAppStore } from '@directus/stores';
 import api from '@/api';
 import { useExtensions } from '@/extensions';
 import sdk from '@/sdk';
@@ -14,8 +16,6 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useTranslationsStore } from '@/stores/translations';
 import { useUserStore } from '@/stores/user';
-import { API_INJECT, EXTENSIONS_INJECT, SDK_INJECT, STORES_INJECT } from '@directus/constants';
-import { useAppStore } from '@directus/stores';
 import { App } from 'vue';
 
 export function useSystem(app: App): void {

@@ -1,14 +1,21 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
+import type { Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
+import { fetchPermissions } from '../../../lib/fetch-permissions.js';
+import { fetchPolicies } from '../../../lib/fetch-policies.js';
 import type { Context } from '../../../types.js';
+import { injectCases } from '../../process-ast/lib/inject-cases.js';
 import { processAst } from '../../process-ast/process-ast.js';
 import { validateItemAccess } from './validate-item-access.js';
 
 vi.mock('../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js');
 vi.mock('../../../../database/run-ast/run-ast.js');
 vi.mock('../../process-ast/process-ast.js');
+vi.mock('../../../lib/fetch-policies.js');
+vi.mock('../../../lib/fetch-permissions.js');
+vi.mock('../../process-ast/lib/inject-cases.js');
 
 beforeEach(() => {
 	vi.clearAllMocks();
@@ -22,7 +29,79 @@ test('Throws error when primary key does not exist in given collection', async (
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
 			schema,
 		} as Context),
-	).rejects.toBeInstanceOf(Error);
+	).rejects.toThrowError('Cannot find primary key');
+});
+
+test('Throws error when primary keys are missing for non-singleton collection', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	await expect(
+		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a' }, {
+			schema,
+		} as Context),
+	).rejects.toThrowError('Primary keys are required');
+});
+
+test('Does not throw error when primary keys are missing for singleton collection', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-singleton', (c) => {
+			c.field('id').id();
+		})
+		.options({ singleton: true })
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ id: 1 }]);
+
+	await expect(
+		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-singleton' }, {
+			schema,
+		} as Context),
+	).resolves.toEqual({ accessAllowed: true });
+});
+
+test('Queries singleton with limit 1 and no PK filter when primary keys are missing', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-singleton', (c) => {
+			c.field('id').id();
+		})
+		.options({ singleton: true })
+		.build();
+
+	schema.collections['collection-singleton']!.singleton = true;
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ id: 1 }]);
+
+	await validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-singleton' }, {
+		schema,
+	} as Context);
+
+	expect(processAst).toHaveBeenCalledWith(
+		expect.objectContaining({
+			ast: expect.objectContaining({
+				query: expect.objectContaining({ limit: 1 }),
+			}),
+		}),
+		expect.anything(),
+	);
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			query: expect.not.objectContaining({
+				filter: expect.anything(),
+			}),
+		}),
+		expect.anything(),
+	);
 });
 
 test('Queries the database', async () => {
@@ -40,7 +119,7 @@ test('Queries the database', async () => {
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
 			schema,
 		} as Context),
-	).resolves.toBe(false);
+	).resolves.toEqual({ accessAllowed: false });
 
 	expect(processAst).toHaveBeenCalledWith(
 		{
@@ -98,7 +177,36 @@ test('Returns false if no items are returned', async () => {
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
 			schema,
 		} as Context),
-	).resolves.toBe(false);
+	).resolves.toEqual({ accessAllowed: false });
+});
+
+test('Returns false with empty allowedRootFields if no items are returned and returnAllowedRootFields is true', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['field-a'], permissions: null } as unknown as Permission]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{ schema } as Context,
+	);
+
+	expect(result).toEqual({ accessAllowed: false, allowedRootFields: [] });
 });
 
 test('Returns true if the number of returned items matches the number of requested primary keys', async () => {
@@ -116,7 +224,7 @@ test('Returns true if the number of returned items matches the number of request
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 2] }, {
 			schema,
 		} as Context),
-	).resolves.toBe(true);
+	).resolves.toEqual({ accessAllowed: true });
 });
 
 test('Returns true if the number of returned items matches the number of requested primary keys and the user has access to the fields', async () => {
@@ -137,7 +245,7 @@ test('Returns true if the number of returned items matches the number of request
 				schema,
 			} as Context,
 		),
-	).resolves.toBe(true);
+	).resolves.toEqual({ accessAllowed: true });
 });
 
 test('Returns false if the number of returned items matches the number of requested primary keys and the user does not have access to the fields', async () => {
@@ -158,5 +266,499 @@ test('Returns false if the number of returned items matches the number of reques
 				schema,
 			} as Context,
 		),
-	).resolves.toBe(false);
+	).resolves.toEqual({ accessAllowed: false });
+});
+
+test('Returns allowed root fields when returnAllowedRootFields is true', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+			c.field('field-d').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{
+			fields: ['field-a', 'field-b', 'field-d'],
+			permissions: { _and: [{ id: { _eq: 1 } }] },
+		} as unknown as Permission,
+		{
+			fields: ['field-c'],
+			permissions: { _and: [{ id: { _eq: 2 } }] },
+		} as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([
+		{ 'field-a': 1, 'field-b': 1, 'field-c': null, 'field-d': 1 },
+	]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(result).toEqual({
+		accessAllowed: true,
+		allowedRootFields: ['field-a', 'field-b', 'field-d'],
+	});
+});
+
+test('Injects all collection fields when returnAllowedRootFields is true', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{
+			fields: ['field-a', 'field-b'],
+			permissions: { _and: [{ id: { _eq: 1 } }] },
+		} as unknown as Permission,
+		{
+			fields: ['field-c'],
+			permissions: { _and: [{ id: { _eq: 2 } }] },
+		} as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1, 'field-b': 1, 'field-c': null }]);
+
+	await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(processAst).toHaveBeenCalled();
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: expect.arrayContaining([
+				expect.objectContaining({ fieldKey: 'field-a' }),
+				expect.objectContaining({ fieldKey: 'field-b' }),
+				expect.objectContaining({ fieldKey: 'field-c' }),
+			]),
+		}),
+		expect.anything(),
+	);
+});
+
+test('Injects all collection fields when both returnAllowedRootFields and fields are provided', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{
+			fields: ['field-a', 'field-b'],
+			permissions: { _and: [{ id: { _eq: 1 } }] },
+		} as unknown as Permission,
+		{
+			fields: ['field-c'],
+			permissions: { _and: [{ id: { _eq: 2 } }] },
+		} as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1, 'field-b': 1, 'field-c': null }]);
+
+	await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			fields: ['field-b', 'field-c'],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(processAst).toHaveBeenCalledWith(
+		expect.objectContaining({
+			ast: expect.objectContaining({
+				children: expect.arrayContaining([
+					expect.objectContaining({ fieldKey: 'field-b' }),
+					expect.objectContaining({ fieldKey: 'field-c' }),
+				]),
+			}),
+		}),
+		expect.anything(),
+	);
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: expect.arrayContaining([
+				expect.objectContaining({ fieldKey: 'field-a' }),
+				expect.objectContaining({ fieldKey: 'field-b' }),
+				expect.objectContaining({ fieldKey: 'field-c' }),
+			]),
+		}),
+		expect.anything(),
+	);
+});
+
+test('Returns intersection of allowed fields across multiple items', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+			c.field('field-d').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{
+			fields: ['field-a', 'field-b', 'field-d'],
+			permissions: { _and: [{ id: { _eq: 1 } }] },
+		} as unknown as Permission,
+		{
+			fields: ['field-a', 'field-c', 'field-d'],
+			permissions: { _and: [{ id: { _eq: 2 } }] },
+		} as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([
+		{ 'field-a': 1, 'field-b': 1, 'field-c': null, 'field-d': 1 },
+		{ 'field-a': 1, 'field-b': null, 'field-c': 1, 'field-d': 1 },
+	]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1, 2],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(result).toEqual({
+		accessAllowed: true,
+		allowedRootFields: ['field-a', 'field-d'],
+	});
+});
+
+test('Merges fields from multiple permissions when returnAllowedRootFields is true with item rules', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+			c.field('field-d').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a', 'field-b'], permissions: { status: { _eq: 'active' } } } as unknown as Permission,
+		{ fields: ['field-c', 'field-d'], permissions: { status: { _eq: 'active' } } } as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([
+		{ 'field-a': 1, 'field-b': 1, 'field-c': 1, 'field-d': 1 },
+	]);
+
+	await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: expect.arrayContaining([
+				expect.objectContaining({ fieldKey: 'field-a' }),
+				expect.objectContaining({ fieldKey: 'field-b' }),
+				expect.objectContaining({ fieldKey: 'field-c' }),
+				expect.objectContaining({ fieldKey: 'field-d' }),
+			]),
+		}),
+		expect.anything(),
+	);
+});
+
+test('Merges fields from multiple permissions and returns directly when no item rules', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+			c.field('field-d').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a', 'field-b'], permissions: null } as unknown as Permission,
+		{ fields: ['field-c', 'field-d'], permissions: null } as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{}]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(injectCases).not.toHaveBeenCalled();
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: [],
+		}),
+		expect.anything(),
+	);
+
+	expect(result).toEqual({
+		accessAllowed: true,
+		allowedRootFields: ['field-a', 'field-b', 'field-c', 'field-d'],
+	});
+});
+
+test('Includes all schema fields when permission has wildcard (*) with item rules', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['*'], permissions: { status: { _eq: 'published' } } } as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1, 'field-b': 1, 'field-c': 1 }]);
+
+	await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: expect.arrayContaining([
+				expect.objectContaining({ fieldKey: 'field-a' }),
+				expect.objectContaining({ fieldKey: 'field-b' }),
+				expect.objectContaining({ fieldKey: 'field-c' }),
+			]),
+		}),
+		expect.anything(),
+	);
+});
+
+test('Returns all schema fields directly when permission has wildcard (*) without item rules', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['*'], permissions: null } as unknown as Permission]);
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{}]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(injectCases).not.toHaveBeenCalled();
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: [],
+		}),
+		expect.anything(),
+	);
+
+	expect(result).toEqual({
+		accessAllowed: true,
+		allowedRootFields: ['field-a', 'field-b', 'field-c'],
+	});
+});
+
+test('Skips injectCases and returns permissionedFields directly when no item-level permission rules exist', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a', 'field-b'], permissions: null } as unknown as Permission,
+		{ fields: ['field-c'], permissions: {} } as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{}]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(injectCases).not.toHaveBeenCalled();
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: [],
+		}),
+		expect.anything(),
+	);
+
+	expect(result).toEqual({
+		accessAllowed: true,
+		allowedRootFields: ['field-a', 'field-b', 'field-c'],
+	});
+});
+
+test('Keeps original fields children and returns permissionedFields directly when no item rules with options.fields', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a', 'field-b', 'field-c'], permissions: null } as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-b': 1 }]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			fields: ['field-b'],
+			returnAllowedRootFields: true,
+		},
+		{ schema } as Context,
+	);
+
+	expect(injectCases).not.toHaveBeenCalled();
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: [expect.objectContaining({ fieldKey: 'field-b' })],
+		}),
+		expect.anything(),
+	);
+
+	expect(result).toEqual({
+		accessAllowed: true,
+		allowedRootFields: ['field-a', 'field-b', 'field-c'],
+	});
 });

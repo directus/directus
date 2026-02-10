@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { User } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -6,12 +9,11 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
-import { User } from '@directus/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
 	title: string;
+	subtitle?: string;
+	mode: 'version' | 'revision' | 'collab';
 	dateUpdated: Date | string | null;
 	userUpdated: User | null;
 	userLoading: boolean;
@@ -113,7 +115,8 @@ function getDeltaOptionUser(deltaOption: any) {
 				<VIcon v-if="tooltipMessage" v-tooltip.bottom="tooltipMessage" name="error" class="icon" />
 			</template>
 		</div>
-		<div class="header-meta">
+		<div v-if="subtitle" class="subtitle">{{ subtitle }}</div>
+		<div v-if="mode !== 'collab'" class="header-meta">
 			<VSkeletonLoader v-if="loading" type="text" class="meta-skeleton" />
 
 			<template v-else>
@@ -220,6 +223,14 @@ function getDeltaOptionUser(deltaOption: any) {
 				color: var(--theme--warning);
 			}
 		}
+	}
+
+	.subtitle {
+		max-inline-size: 80%;
+		font-size: 16px;
+		font-weight: 500;
+		color: var(--theme--foreground-subdued);
+		margin: 0;
 	}
 
 	.header-meta {

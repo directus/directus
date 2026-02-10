@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import vFocus from '@/directives/focus';
-import vTooltip from '@/directives/tooltip';
 import { useGroupable, useSizeClass } from '@directus/composables';
 import { isEqual, isNil } from 'lodash';
 import { computed } from 'vue';
 import { RouteLocationRaw, useLink, useRoute } from 'vue-router';
 import VProgressCircular from './v-progress-circular.vue';
+import vFocus from '@/directives/focus';
+import vTooltip from '@/directives/tooltip';
 
 interface Props {
 	/** Automatically focuses on the button */
@@ -348,7 +348,7 @@ async function onClick(event: MouseEvent) {
 	border-style: dashed;
 }
 
-.x-small {
+.button.x-small {
 	--v-button-height: 28px;
 	--v-button-font-size: 12px;
 	--v-button-min-width: 60px;
@@ -356,7 +356,7 @@ async function onClick(event: MouseEvent) {
 	padding: 0 12px;
 }
 
-.small {
+.button.small {
 	--v-button-height: 36px;
 	--v-button-font-size: 14px;
 	--v-button-min-width: 120px;
@@ -364,14 +364,14 @@ async function onClick(event: MouseEvent) {
 	padding: 0 12px;
 }
 
-.large {
+.button.large {
 	--v-button-height: 52px;
 	--v-button-min-width: 154px;
 
 	padding: 0 12px;
 }
 
-.x-large {
+.button.x-large {
 	--v-button-height: 60px;
 	--v-button-font-size: 18px;
 	--v-button-min-width: 180px;
@@ -379,7 +379,7 @@ async function onClick(event: MouseEvent) {
 	padding: 0 12px;
 }
 
-.icon {
+.button.icon {
 	inline-size: var(--v-button-height, 44px);
 	min-inline-size: 0;
 	padding: 0;

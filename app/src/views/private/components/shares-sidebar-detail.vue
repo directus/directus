@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { useGroupable } from '@directus/composables';
+import { PrimaryKey, Share } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
+import { computed, onMounted, ref, Ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useSidebarStore } from '../private-view/stores/sidebar';
+import ShareItem from './share-item.vue';
+import SidebarDetail from './sidebar-detail.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -14,13 +22,6 @@ import { useClipboard } from '@/composables/use-clipboard';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { useGroupable } from '@directus/composables';
-import { PrimaryKey, Share } from '@directus/types';
-import { abbreviateNumber } from '@directus/utils';
-import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import ShareItem from './share-item.vue';
-import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -38,6 +39,8 @@ const { active: open } = useGroupable({
 	value: title.value,
 	group: 'sidebar-detail',
 });
+
+const sidebarStore = useSidebarStore();
 
 const { copyToClipboard } = useClipboard();
 
@@ -65,7 +68,10 @@ const {
 
 onMounted(() => {
 	getSharesCount();
-	if (open.value) getShares();
+
+	if (open.value || sidebarStore.activeAccordionItem === 'shares') {
+		getShares();
+	}
 });
 
 function onToggle(open: boolean) {
@@ -88,7 +94,7 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	watch([collection, primaryKey], () => refresh());
 
 	const sendPublicLink = computed(() => {
-		if (!shareToSend.value) return null;
+		if (!shareToSend.value) return undefined;
 		return window.location.origin + getRootPath() + 'admin/shared/' + shareToSend.value.id;
 	});
 
@@ -270,7 +276,7 @@ async function copy(id: string) {
 		id="shares"
 		:title
 		icon="share"
-		:badge="!loadingCount && sharesCount > 0 ? abbreviateNumber(sharesCount) : null"
+		:badge="!loadingCount && sharesCount > 0 ? abbreviateNumber(sharesCount) : undefined"
 		@toggle="onToggle"
 	>
 		<VNotice v-if="error" type="danger">{{ $t('unexpected_error') }}</VNotice>

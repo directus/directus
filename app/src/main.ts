@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console  */
 
 // Note: the import order is important. Vue has to come first. (Unhead will break if that's first)
+// eslint-disable-next-line import/order
 import { createApp } from 'vue';
 
-import { getVueComponentName } from '@/utils/get-vue-component-name';
 import { createHead } from '@unhead/vue';
 import { createPinia } from 'pinia';
 import App from './app.vue';
@@ -17,6 +17,7 @@ import './styles/main.scss';
 import '@directus/vue-split-panel/index.css';
 import { registerViews } from './views/register';
 import { useSystem } from '@/composables/use-system';
+import { getVueComponentName } from '@/utils/get-vue-component-name';
 
 init();
 

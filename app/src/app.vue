@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import VButton from '@/components/v-button.vue';
-import VError from '@/components/v-error.vue';
-import VInfo from '@/components/v-info.vue';
-import VProgressCircular from '@/components/v-progress-circular.vue';
-import { useServerStore } from '@/stores/server';
-import { generateFavicon } from '@/utils/generate-favicon';
-import { getAssetUrl } from '@/utils/get-asset-url';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
@@ -14,6 +7,13 @@ import { RouterView } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import { useUserStore } from './stores/user';
+import VButton from '@/components/v-button.vue';
+import VError from '@/components/v-error.vue';
+import VInfo from '@/components/v-info.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useServerStore } from '@/stores/server';
+import { generateFavicon } from '@/utils/generate-favicon';
+import { getAssetUrl } from '@/utils/get-asset-url';
 
 const appStore = useAppStore();
 const serverStore = useServerStore();

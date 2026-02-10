@@ -1,16 +1,16 @@
-import { useAiStore } from '@/ai/stores/use-ai';
-import api from '@/api';
-import { useFieldsStore } from '@/stores/fields';
 import { DeepPartial, Relation } from '@directus/types';
 import { getRelations, getRelationType } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import api from '@/api';
+import { useFieldsStore } from '@/stores/fields';
 
 export const useRelationsStore = defineStore('relations', () => {
-	const aiStore = useAiStore();
+	const toolsStore = useAiToolsStore();
 
-	aiStore.onSystemToolResult(async (toolName) => {
+	toolsStore.onSystemToolResult(async (toolName) => {
 		if (toolName === 'relations') {
 			await hydrate();
 		}

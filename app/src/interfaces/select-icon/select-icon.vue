@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { computed, nextTick, onUnmounted, type Ref, ref, watch } from 'vue';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
+import icons from './icons.json';
 import VDivider from '@/components/v-divider.vue';
 import { socialIcons } from '@/components/v-icon/social-icons';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VMenu from '@/components/v-menu.vue';
 import VRemove from '@/components/v-remove.vue';
-import formatTitle from '@directus/format-title';
-import { computed, nextTick, onUnmounted, ref, watch, type Ref } from 'vue';
-import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
-import icons from './icons.json';
 
 withDefaults(
 	defineProps<{
@@ -185,20 +185,20 @@ function useIconsPerRow(
 </script>
 
 <template>
-	<VMenu v-model="menuActive" attached :disabled no-focus-return>
+	<VMenu v-model="menuActive" v-prevent-focusout="menuActive" attached :disabled no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<VInput
 				v-model="searchQuery"
 				:disabled
 				:non-editable
 				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
-				:class="{ 'has-value': value }"
+				:class="{ 'has-value': value, 'non-editable': nonEditable }"
 				:nullable="false"
 				@click="onClickInput($event, toggle)"
 				@keydown="onKeydownInput($event, activate)"
 			>
 				<template v-if="value" #prepend>
-					<VIcon clickable :name="value" :class="{ active: value }" @click="toggle" />
+					<VIcon class="selected-icon" clickable :disabled :name="value" @click="toggle" />
 				</template>
 
 				<template #append>
@@ -206,6 +206,7 @@ function useIconsPerRow(
 						<VRemove
 							v-if="value !== null && !nonEditable"
 							deselect
+							:disabled
 							@action="
 								() => {
 									setIcon(null);
@@ -219,6 +220,7 @@ function useIconsPerRow(
 							clickable
 							name="expand_more"
 							class="open-indicator"
+							:disabled
 							:class="{ open: active }"
 							@click="toggle"
 						/>
@@ -227,7 +229,7 @@ function useIconsPerRow(
 			</VInput>
 		</template>
 
-		<div ref="contentRef" class="content" :class="width">
+		<div ref="contentRef" class="select-icon-popover" :class="width">
 			<DynamicScroller
 				:min-item-size="MIN_ITEM_SIZE"
 				:items="virtualRows"
@@ -274,21 +276,27 @@ function useIconsPerRow(
 	@include mixins.list-interface-item-actions;
 }
 
-.v-input.has-value {
+.v-input.has-value.non-editable,
+.v-input.has-value:not(.disabled) {
 	--v-input-placeholder-color: var(--theme--primary);
+
+	.selected-icon {
+		--v-icon-color: var(--theme--primary);
+		--v-icon-color-hover: var(--v-icon-color);
+	}
 
 	&:focus-within {
 		--v-input-placeholder-color: var(--theme--form--field--input--foreground-subdued);
 	}
 }
 
-.content {
-	padding: 8px;
-
+.select-icon-popover {
 	--v-icon-color-hover: var(--theme--form--field--input--foreground);
 
+	padding: 8px;
+
 	.v-icon.active {
-		color: var(--theme--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	.v-divider {

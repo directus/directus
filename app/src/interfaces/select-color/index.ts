@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/extensions';
-import InterfaceColor from './select-color.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceColor from './select-color.vue';
 
 export default defineInterface({
 	id: 'select-color',

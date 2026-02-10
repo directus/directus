@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import { clone } from 'lodash';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -13,11 +18,6 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import { useCollection } from '@directus/composables';
-import { clone } from 'lodash';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
 
 const router = useRouter();
 
@@ -26,16 +26,33 @@ const serverStore = useServerStore();
 
 const { fields: allFields } = useCollection('directus_settings');
 
-const EXCLUDED_GROUPS: string[] = ['theming_group', 'ai_group'] as const;
+const EXCLUDED_GROUPS = ['theming_group', 'ai_group', 'mcp_group'] as const;
 
 const fields = computed(() => {
-	return allFields.value.filter((field) => {
-		if (field.meta?.group) {
-			return EXCLUDED_GROUPS.includes(field.meta?.group) === false;
-		}
+	return allFields.value
+		.map((field) => {
+			if (
+				field.field === 'collaborative_editing_enabled' &&
+				(serverStore.info.websocket === false || serverStore.info.websocket?.collaborativeEditing === false)
+			) {
+				return {
+					...field,
+					meta: {
+						...field.meta,
+						readonly: true,
+					},
+				} as any;
+			}
 
-		return EXCLUDED_GROUPS.includes(field.field) === false;
-	});
+			return field;
+		})
+		.filter((field) => {
+			if (field.meta?.group) {
+				return EXCLUDED_GROUPS.includes(field.meta?.group) === false;
+			}
+
+			return EXCLUDED_GROUPS.includes(field.field) === false;
+		});
 });
 
 const initialValues = ref(clone(settingsStore.settings));

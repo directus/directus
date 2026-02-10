@@ -22,6 +22,7 @@
 about: About
 first_name: Nome
 last_name: Cognome
+organization_name: Nome Organizzazione
 identifier: Identificatore
 avatar: Avatar
 application: Applicazione
@@ -134,7 +135,6 @@ create_policy: Crea Policy
 create_user: Crea utente
 message: Messaggio
 delete_panel: Elimina Pannello
-create_webhook: Crea webhook
 create_custom_translation: Crea traduzione personalizzata
 edit_custom_translation: Modifica traduzione personalizzata
 no_custom_translations: Nessuna traduzione personalizzata
@@ -633,12 +633,6 @@ file_count: 'Nessun File | Un File | {count} File'
 no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
-webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
-webhooks_deprecation_notice: |
-  I webhook sono deprecati e un ulteriore utilizzo è scoraggiato.
-
-  Utilizza invece **Flows** con l'[operazione Webhook/Richiedi URL](https://docs.directus.io/app/flows/operazioni.html#webhook-request-url).
-no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
 no_notifications: Nessuna notifica
 no_notifications_copy: È tutto!
 activity_log: Log delle attività
@@ -669,7 +663,6 @@ action: Azioni
 ip_address: Indirizzo IP
 user_agent: User agent
 origin: Origine
-webhooks: Webhooks
 decimals: Decimali
 value_decimals: Valore decimali
 min_value: Valore minimo
@@ -977,6 +970,15 @@ no_url_copy: Aggiungere un URL nelle impostazioni.
 invalid_url: URL non valido
 invalid_url_copy: L'URL specificato non corrisponde a nessun URL specificato nelle impostazioni.
 insights: Approfondimenti
+deployment:
+  provider:
+    settings:
+      delete_confirm: Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
+    run:
+      cancel_confirm: Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
+      log_all: Tutti i livelli di log
+  target_value:
+    preview: Anteprima
 dashboard: Bacheca
 panel: Pannello
 panel_options: Opzioni del pannello
@@ -1123,7 +1125,6 @@ settings_roles: Ruoli utente
 settings_permissions: Policy di accesso
 settings_project: Impostazioni
 settings_appearance: Aspetto
-settings_webhooks: Webhooks
 settings_flows: Flussi
 settings_system_logs: Log di sistema
 settings_presets: Segnalibri
@@ -1201,7 +1202,6 @@ directus_collection:
   directus_settings: Opzioni di configurazione del progetto
   directus_shares: Traccia gli elementi condivisi esternamente
   directus_users: Utenti di sistema per la piattaforma
-  directus_webhooks: Configurazione per le richieste HTTP basate su eventi
   directus_translations: Traduzioni personalizzate
   directus_versions: Versioni del contenuto per gli elementi
   directus_extensions: Configurazione delle estensioni
@@ -1350,6 +1350,7 @@ fields:
     public_registration_verify_email: Verifica email
     public_registration_verify_email_note: Invia un'email all'utente che effettua la registrazione chiedendogli di cliccare su un link di verifica prima di accedere.
     visual_editor_urls: URL per l'editor visuale
+    ai_header_name: Header
   directus_shares:
     name: Nome
     role: Ruolo
@@ -1380,18 +1381,6 @@ fields:
     admin_access: Accesso amministratore
     ip_access: Accesso IP
     enforce_tfa: Richiede 2FA
-  directus_webhooks:
-    name: Nome
-    method: Metodo
-    status: Stato
-    data: Dati
-    header: Header
-    value: Valore
-    headers: Request Headers
-    data_label: Invia dati evento
-    triggers: Trigger
-    actions: Azioni
-    collections: Raccolte
 field_options:
   directus_settings:
     project_name_placeholder: Il mio progetto...
@@ -1493,19 +1482,6 @@ field_options:
     status_dropdown_suspended: Sospeso
     status_dropdown_archived: Archiviato
     token: Inserisci un token di accesso sicuro...
-  directus_webhooks:
-    status_options_active: Attivo
-    status_options_inactive: Disattivato
-    data_label: Invia dati evento
-    triggers_divider: Trigger
-    actions_create: Creare
-    actions_update: Modifica
-    actions_delete: Elimina
-    actions_login: Accedi
-    headers:
-      header: Header
-      value: Valore
-      add: Aggiungi Header
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 no_value: Nessun valore
 do_nothing: Non Fare Niente
@@ -1527,6 +1503,7 @@ live_preview:
   new_window: Apri in una Nuova Finestra
   close_window: Apri in Split View
   toggle_3d: Attiva/disattiva 3D
+  display_options: Opzioni di visualizzazione
 shares: Condivisioni
 unlimited_usage: Utilizzo illimitato
 uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
@@ -1535,6 +1512,8 @@ new_share: Nuova condivisione
 ai:
   input: Input
   unknown: Sconosciuto
+  items: Elementi
+  content: Contenuti
   settings: impostazioni
   tool_approval:
     disabled: Disabilitato
@@ -1584,7 +1563,6 @@ editing_role: 'Ruolo {role}'
 editing_policy: 'Policy {policy}'
 no_permissions: Nessun permesso
 permission_add_collection: Aggiungi raccolta
-creating_webhook: Creazione Webhook
 default_label: Predefinito
 delete_label: Elimina
 delete_are_you_sure: >-

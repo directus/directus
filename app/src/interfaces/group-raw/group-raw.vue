@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { Field, ValidationError } from '@directus/types';
 import type { ComparisonContext } from '@/components/v-form/types';
 import VForm from '@/components/v-form/v-form.vue';
-import { Field, ValidationError } from '@directus/types';
+import { CollabContext } from '@/composables/use-collab';
 
 withDefaults(
 	defineProps<{
@@ -15,6 +16,7 @@ withDefaults(
 		batchMode?: boolean;
 		batchActiveFields?: string[];
 		comparison?: ComparisonContext;
+		collabContext?: CollabContext;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
@@ -44,6 +46,7 @@ defineEmits(['apply']);
 			:non-editable="nonEditable"
 			:disabled="disabled"
 			:comparison="comparison"
+			:collab-context="collabContext"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
 			:direction="direction"

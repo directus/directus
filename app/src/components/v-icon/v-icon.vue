@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user';
 import { useSizeClass } from '@directus/composables';
 import { isIn } from '@directus/utils';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
 import { computed } from 'vue';
 import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
-
 import { components } from './custom-icons';
-
 import SocialIcon from './social-icon.vue';
 import { socialIcons } from './social-icons';
+import { useUserStore } from '@/stores/user';
 
 const props = withDefaults(
 	defineProps<{
@@ -167,6 +165,10 @@ function emitClick(event: MouseEvent) {
 		&:hover {
 			color: var(--v-icon-color-hover, currentColor);
 		}
+	}
+
+	&[disabled] {
+		cursor: not-allowed;
 	}
 
 	&.sup {

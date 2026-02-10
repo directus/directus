@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue';
-
 import CodeMirror from 'codemirror';
-import 'codemirror/addon/display/placeholder.js';
-import 'codemirror/mode/markdown/markdown';
-
+import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { Alteration, applyEdit, CustomSyntax } from './edits';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -26,7 +23,9 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import { Alteration, CustomSyntax, applyEdit } from './edits';
+
+import 'codemirror/addon/display/placeholder.js';
+import 'codemirror/mode/markdown/markdown';
 
 const props = withDefaults(
 	defineProps<{
@@ -216,16 +215,19 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		applyEdit(codemirror, type, options);
 	}
 }
+
+const menuActive = computed(() => imageDialogOpen.value);
 </script>
 
 <template>
 	<div
 		ref="markdownInterface"
+		v-prevent-focusout="menuActive"
 		class="interface-input-rich-text-md"
 		:class="[view, { disabled, 'non-editable': nonEditable }]"
 	>
 		<div class="toolbar">
-			<template v-if="view === 'editor'">
+			<template v-if="!nonEditable && view === 'editor'">
 				<VMenu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
 						<VButton v-tooltip="$t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
@@ -388,10 +390,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				rounded
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
-				<VButton x-small value="editor" :class="[{ active: view !== 'preview' }]">
+				<VButton x-small value="editor" :disabled="disabled && !nonEditable" :class="[{ active: view !== 'preview' }]">
 					{{ $t('interfaces.input-rich-text-md.edit') }}
 				</VButton>
-				<VButton x-small value="preview" :class="[{ active: view === 'preview' }]">
+				<VButton x-small value="preview" :disabled="disabled && !nonEditable" :class="[{ active: view === 'preview' }]">
 					{{ $t('interfaces.input-rich-text-md.preview') }}
 				</VButton>
 			</VItemGroup>
@@ -442,8 +444,11 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	--v-button-color: var(--theme--form--field--input--foreground);
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
+	--editor-min-height: var(--input-height-lg);
+	--editor-toolbar-height: 40px;
+	--editor-body-min-height: calc(var(--editor-min-height) - var(--editor-toolbar-height));
 
-	min-block-size: 300px;
+	min-block-size: var(--editor-min-height);
 	overflow: hidden;
 	font-family: var(--theme--fonts--sans--font-family);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -455,11 +460,16 @@ function edit(type: Alteration, options?: Record<string, any>) {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
+	min-block-size: var(--editor-body-min-height);
 	max-block-size: min(1000px, 80vh);
 }
 
 .interface-input-rich-text-md.disabled:not(.non-editable) {
 	background-color: var(--theme--form--field--input--background-subdued);
+
+	* {
+		color: var(--theme--form--field--input--foreground-subdued) !important;
+	}
 }
 
 .interface-input-rich-text-md:not(.disabled):hover {
@@ -505,10 +515,6 @@ textarea {
 	color: var(--theme--danger);
 }
 
-.interface-input-rich-text-md.disabled:not(.non-editable) .preview-box {
-	color: var(--theme--form--field--input--foreground-subdued);
-}
-
 .interface-input-rich-text-md :deep(.CodeMirror) {
 	font-family: v-bind(editFamily), sans-serif;
 	border: none;
@@ -538,8 +544,8 @@ textarea {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	min-block-size: 40px;
-	padding: 0 4px;
+	min-block-size: var(--editor-toolbar-height);
+	padding: 4px;
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
@@ -568,7 +574,7 @@ textarea {
 .table-options {
 	--theme--form--row-gap: 12px;
 	--theme--form--column-gap: 12px;
-
+	min-inline-size: 280px;
 	padding: 12px;
 	@include mixins.form-grid;
 

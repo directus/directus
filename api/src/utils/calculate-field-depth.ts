@@ -1,4 +1,4 @@
-import { isPlainObject, isArray } from 'lodash-es';
+import { isArray, isPlainObject } from 'lodash-es';
 
 /**
  * Calculates the depth of a given JSON structure, not counting any _ prefixed properties

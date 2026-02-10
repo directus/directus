@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { ErrorCode } from '@directus/errors';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import z from 'zod';
 import api, { RequestError } from '@/api';
 import { login } from '@/auth';
 import VButton from '@/components/v-button.vue';
@@ -8,10 +12,6 @@ import InterfaceSystemInputPassword from '@/interfaces/_system/system-input-pass
 import { translateAPIError } from '@/lang';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
-import { ErrorCode } from '@directus/errors';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import z from 'zod';
 
 type Credentials = {
 	email: string;

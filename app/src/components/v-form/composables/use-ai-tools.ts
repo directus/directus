@@ -1,4 +1,3 @@
-import { defineTool } from '@/ai/composables/define-tool';
 import type { Field } from '@directus/types';
 import type { ComputedRef } from 'vue';
 import { computed, getCurrentInstance, Ref } from 'vue';
@@ -6,11 +5,14 @@ import { useI18n } from 'vue-i18n';
 import { z } from 'zod';
 import type { FieldValues } from '../types';
 import { useInputSchema } from './use-input-schema';
+import { defineTool } from '@/ai/composables/define-tool';
+import { CollabContext } from '@/composables/use-collab';
 
 interface UseAiToolsOptions {
 	finalFields: Ref<Field[]>;
 	fieldNames: Ref<string[]>;
 	setValue: (key: string, value: unknown) => void;
+	collabContext?: CollabContext;
 	values: ComputedRef<FieldValues>;
 }
 
@@ -23,7 +25,8 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 	defineTool({
 		name: `read-form-values-${componentUid}`,
 		displayName: t('ai_tools.read_form_values'),
-		description: 'Read values of the form on the current page',
+		description:
+			'Read values from the form currently open in the UI. Returns only field values visible in the current form view. Does NOT query the database — use the items tool for that. IMPORTANT: This tool ONLY reads from the page currently open in the editor, NOT from user-attached context items.',
 		inputSchema: computed(() => {
 			return z.object({
 				fields: options.fieldNames.value.length > 0 ? z.array(z.enum(options.fieldNames.value)) : z.array(z.string()),
@@ -43,15 +46,24 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 	defineTool({
 		name: `set-form-values-${componentUid}`,
 		displayName: t('ai_tools.update_form_values'),
-		description: `Set values of form on the current page`,
+		description:
+			"Update field values in the form currently open in the UI. Changes are local until the user saves. Does NOT update the database — use the items tool with action: 'update' for that. IMPORTANT: This tool ONLY affects the page currently open in the editor. To modify user-attached context items, use the items tool instead.",
 		inputSchema: writeInputSchema,
 		execute: (args) => {
 			const output: string[] = [];
 
 			for (const [key, value] of Object.entries(args)) {
+				if (options.collabContext?.focusedFields.includes(key)) {
+					delete args[key];
+					output.push(`Field ${key} could not be set to ${value} because it is focused by another user`);
+					continue;
+				}
+
 				options.setValue(key, value);
 				output.push(`Successfully set form field ${key} to value ${value}`);
 			}
+
+			options.collabContext?.update?.(args);
 
 			return output;
 		},

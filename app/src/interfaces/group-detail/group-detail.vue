@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import VDetail from '@/components/v-detail.vue';
-import VDivider from '@/components/v-divider.vue';
-import type { ComparisonContext } from '@/components/v-form/types';
-import VForm from '@/components/v-form/v-form.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import formatTitle from '@directus/format-title';
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VDetail from '@/components/v-detail.vue';
+import VDivider from '@/components/v-divider.vue';
+import type { ComparisonContext } from '@/components/v-form/types';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { CollabContext } from '@/composables/use-collab';
 
 const props = withDefaults(
 	defineProps<{
@@ -21,6 +22,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		collabContext?: CollabContext;
 		comparison?: ComparisonContext;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
@@ -166,6 +168,7 @@ function useComparisonIndicator() {
 			:show-no-visible-fields="false"
 			:show-validation-errors="false"
 			:comparison="comparison"
+			:collab-context="collabContext"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</VDetail>

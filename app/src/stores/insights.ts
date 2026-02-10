@@ -1,10 +1,3 @@
-import api from '@/api';
-import { useExtensions } from '@/extensions';
-import { usePermissionsStore } from '@/stores/permissions';
-import { Dashboard } from '@/types/insights';
-import { fetchAll } from '@/utils/fetch-all';
-import { queryToGqlString } from '@/utils/query-to-gql-string';
-import { unexpectedError } from '@/utils/unexpected-error';
 import type { Panel } from '@directus/extensions';
 import { isSystemCollection } from '@directus/system-data';
 import type { Item } from '@directus/types';
@@ -15,6 +8,13 @@ import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } fr
 import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
+import api from '@/api';
+import { useExtensions } from '@/extensions';
+import { usePermissionsStore } from '@/stores/permissions';
+import { Dashboard } from '@/types/insights';
+import { fetchAll } from '@/utils/fetch-all';
+import { queryToGqlString } from '@/utils/query-to-gql-string';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
