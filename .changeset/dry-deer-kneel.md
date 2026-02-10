@@ -4,4 +4,4 @@
 '@directus/app': minor
 ---
 
-Add Netlify as a deployment provider
+Added Netlify as a deployment provider
