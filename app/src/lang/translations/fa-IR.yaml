@@ -77,7 +77,6 @@ invalid_files_selected: 'هیچ فایل نامعتبر | فایل نامعتب�
 files_wrong_type: 'فایل‌های {files} که انتظار می‌رفت نوع {expected} داشته باشند، انواع نامعتبری دارند.'
 files_are_empty: 'فایل‌های مقابل خالی هستند و امکان بارگزاری ندارند: {files}'
 not_a_number: نا عدد
-invalid_range_min:
 invalid_range_max: مقدار از حداکثر {value} تجاوز کرده
 maps: نقشه‌ها
 switch_user: تغییر کاربر
@@ -550,7 +549,7 @@ snapshot:
   info: استخراج صرفا طرح‌واره برای اشتراک‌گذاری یا اشکال‌زدایی
 label_import: وارد کردن
 label_export: استخراج
-import_export: واردسازی / استحراج
+import_export: وارد کردن / صادر کردن
 format: فرمت
 last_page: صفحه آخر
 last_access: آخرین دسترسی
@@ -581,14 +580,14 @@ functions:
   second: ثانیه
   count: تعداد
 date-fns_date: فرمت PPP برای تاریخ
-date-fns_time: 'فرمت زمان h:mm:ss a'
-date-fns_time_no_seconds: 'فرمت زمان h:mm a'
-date-fns_time_24hour: 'فرمت زمان HH:mm:ss'
-date-fns_time_no_seconds_24hour: 'فرمت زمان HH:mm'
-date-fns_date_short: 'فرمت تاریخ MMM d, u'
-date-fns_time_short: 'فرمت زمان h:mma'
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
 date-fns_time_short_seconds: 'h:mm:ssa'
-date-fns_date_short_no_year: فرمت تاریخ MMM d
+date-fns_date_short_no_year: MMM d
 minutes: دقیقه
 hours: ساعت
 month: ماه
@@ -857,7 +856,7 @@ flip_horizontal: پشت و رو کردن بصورت افقی
 flip_vertical: پشت و رو کردن به صورت عمودی
 aspect_ratio: نسبت ابعاد
 rotate: چرخش
-all_users: همه کابران
+all_users: همه کاربران
 delete_collection: حذف مجموعه
 update_collection_success: مجموعه های بروزرسانی شده
 delete_collection_success: مجموعه‌های حذف شده
@@ -1787,7 +1786,6 @@ ai:
     schema: دریافت اطلاعات طرح‌واره پایگاه داده
     collections: ایجاد و مدیریت مجموعه‌ها
     fields: ایجاد و پیکربندی فیلدهای مجموعه
-    relations:
 ai_tools:
   update_form_values: به‌روزرسانی مقادیر فرم
   read_form_values: خواندن مقادیر فرم
