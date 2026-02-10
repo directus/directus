@@ -1,6 +1,6 @@
 import { API_INJECT, EXTENSIONS_INJECT, SDK_INJECT, STORES_INJECT } from '@directus/constants';
 import { useAppStore } from '@directus/stores';
-import { App } from 'vue';
+import type { App } from 'vue';
 import api from '@/api';
 import { useExtensions } from '@/extensions';
 import sdk from '@/sdk';
