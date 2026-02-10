@@ -14,7 +14,7 @@ import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { CollabFieldContext } from '@/composables/use-collab';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import CollabField from '@/views/private/components/CollabField.vue';
+import CollabField from '@/views/private/components/collab/CollabIndicatorField.vue';
 
 const props = withDefaults(
 	defineProps<{

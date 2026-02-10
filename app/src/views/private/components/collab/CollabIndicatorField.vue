@@ -2,16 +2,14 @@
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar } from './utils';
 import VAvatar from '@/components/v-avatar.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import type { CollabUser } from '@/composables/use-collab';
-import { getAssetUrl } from '@/utils/get-asset-url';
 
 interface Props {
 	modelValue?: CollabUser[] | CollabUser;
 }
-
-const DISPLAY_LIMIT = 3;
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: () => [],
@@ -20,30 +18,18 @@ const props = withDefaults(defineProps<Props>(), {
 const { t } = useI18n();
 
 const users = computed(() => {
-	return toArray(props.modelValue)
-		.map((user) => ({
-			name: [user.first_name, user.last_name].filter(Boolean).join(' ') || t('unknown_user'),
-			avatar_url: user.avatar?.id
-				? getAssetUrl(user.avatar.id, {
-						imageKey: 'system-medium-cover',
-						cacheBuster: user.avatar.modified_on,
-					})
-				: undefined,
-			color: user.color,
-			id: user.id,
-			connection: user.connection,
-		}))
-		.reverse();
+	return toArray(props.modelValue).map(formatUserAvatar).reverse();
 });
 </script>
 
 <template>
 	<div class="collab-field">
-		<template v-for="(user, index) in users.slice(0, DISPLAY_LIMIT)" :key="user.id">
+		<template v-for="(user, index) in users.slice(0, COLLAB_USERS_DISPLAY_LIMIT)" :key="user.id">
 			<VAvatar
 				:id="`collab-focus-${user.connection}`"
+				v-tooltip.bottom="user.name ?? t('unknown_user')"
 				:border="`var(--${user.color})`"
-				:style="{ zIndex: DISPLAY_LIMIT - index }"
+				:style="{ zIndex: COLLAB_USERS_DISPLAY_LIMIT - index }"
 				x-small
 				round
 			>

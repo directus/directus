@@ -6,7 +6,7 @@ import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { CollabUser } from '@/composables/use-collab';
-import CollabField from '@/views/private/components/CollabField.vue';
+import CollabField from '@/views/private/components/collab/CollabIndicatorField.vue';
 
 const props = withDefaults(
 	defineProps<{

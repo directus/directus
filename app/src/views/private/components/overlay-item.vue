@@ -37,7 +37,7 @@ import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import CollabHeader from '@/views/private/components/CollabHeader.vue';
+import CollabHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
