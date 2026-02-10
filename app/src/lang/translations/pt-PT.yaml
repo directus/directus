@@ -424,7 +424,7 @@ raw_value: Valor bruto
 copy_raw_value: Editar Valor Bruto
 copy_raw_value_success: Copiado
 copy_raw_value_fail: Falha ao copiar
-paste_raw_value: Editar Valor Bruto
+paste_raw_value: Cole O Valor Bruto
 paste_raw_value_success: Colado
 paste_raw_value_fail: Falha ao colar
 view_raw_value: Editar Valor Bruto
@@ -881,6 +881,12 @@ flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada
 operation_key_unique_error: Chaves de operação devem ser únicas em um fluxo
+deployment:
+  provider:
+    settings:
+      delete_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
+    run:
+      cancel_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 visible: Visível
 full_screen: Ecrã completo
 save_image: Guardar imagem
@@ -1052,8 +1058,11 @@ inline: Em linha
 comment: Comentário
 live_preview:
   new_window: Abrir numa Nova Janela
+  display_options: Opções de Exibição
 ai:
   unknown: Desconhecido
+  items: Items
+  content: Conteúdo
   settings: Configurações
   tool_approval:
     disabled: Desativado
