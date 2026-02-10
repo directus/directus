@@ -337,6 +337,8 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 	return m2oFields.length > 0 && totalItemCount.value > 0;
 });
+
+const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModalActive.value || batchEditActive.value);
 </script>
 
 <template>

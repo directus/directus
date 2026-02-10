@@ -2,6 +2,7 @@ import { Field, Relation, Type } from '@directus/types';
 import { getRelationType } from '@directus/utils';
 import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 
@@ -31,6 +32,7 @@ export function useFieldTree(
 	includeRelations = true,
 	includeAliasFields = false,
 ): FieldTreeContext {
+	const { t } = useI18n();
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
@@ -100,7 +102,7 @@ export function useFieldTree(
 				for (const child of children) {
 					if (child.relatedCollection) {
 						child.children = [
-							{ name: 'Loading...', field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
+							{ name: t('loading'), field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
 						];
 					}
 				}
