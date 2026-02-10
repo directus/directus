@@ -66,6 +66,7 @@ const users = computed(() => {
 .collab-field {
 	display: flex;
 	align-items: center;
+	cursor: default;
 
 	&-lock {
 		align-self: center;
