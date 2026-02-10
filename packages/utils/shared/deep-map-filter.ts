@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import { InvalidQueryError } from '@directus/errors';
 import type { CollectionOverview, FieldOverview, Filter, Relation, SchemaOverview } from '@directus/types';
 import { isPlainObject } from 'lodash-es';
@@ -33,7 +32,9 @@ export function deepMapFilter(
 	const collection = context.schema.collections[context.collection]!;
 	const path = context.path ?? [];
 
-	assert(isObject(filter), `DeepMapResponse only works on objects, received ${JSON.stringify(filter)}`);
+	if (!isObject(filter)) {
+		throw new Error(`deepMapFilter only works on objects, received ${JSON.stringify(filter)}`);
+	}
 
 	const result = Object.fromEntries(
 		Object.entries(filter)

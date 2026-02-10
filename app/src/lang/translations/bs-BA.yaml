@@ -742,6 +742,14 @@ operation_key_unique_error: Operacijski ključevi moraju biti jedinstveni u toku
 operation_handle_resolve: 'Rješavanje: kliknite za dodavanje ili povucite za preusmjeravanje'
 operation_handle_reject: 'Odbaci: kliknite za dodavanje ili povucite za preusmjeravanje'
 insights: Uvidi
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ova akcija je trajna i ne može se poništiti. Jeste li sigurni da želite nastaviti?
+    run:
+      cancel_confirm: Ova akcija je trajna i ne može se poništiti. Jeste li sigurni da želite nastaviti?
+  target_value:
+    preview: Pretpregled
 dashboard: Upravljački panel
 panel_options: Postavke panela
 panel_header: Zaglavlje panela
@@ -1016,6 +1024,7 @@ fields:
     transformations_presets: Ograničite transformacije na unaprijed postavljene postavke u nastavku
     image_editor: Uređivač slika
     custom_aspect_ratios: Prilagođeni odnosi
+    ai_header_name: Zaglavlje
   directus_shares:
     name: Ime
     password: Lozinka
@@ -1140,6 +1149,8 @@ no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
 ai:
   input: Unos
+  items: Stavke
+  content: Sadržaj
   settings: Postavke
   tool_approval:
     disabled: Onemogućeno
