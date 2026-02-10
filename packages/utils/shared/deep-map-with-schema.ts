@@ -1,4 +1,3 @@
-import assert from 'node:assert';
 import { InvalidQueryError } from '@directus/errors';
 import type { CollectionOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
 import { isPlainObject } from 'lodash-es';
@@ -87,7 +86,9 @@ export function deepMapWithSchema(
 		primaryKeyMapped = true;
 	}
 
-	assert(isObject(object), `DeepMapResponse only works on objects, received ${JSON.stringify(object)}`);
+	if (!isObject(object)) {
+		throw new Error(`deepMapWithSchema only works on objects, received ${JSON.stringify(object)}`);
+	}
 
 	let fields: [string, FieldOverview | undefined][];
 
