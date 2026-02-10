@@ -65,7 +65,7 @@ function focusIntoView(cid: ClientID) {
 <template>
 	<div class="collab-header">
 		<template v-for="(user, index) in users.slice(0, DISPLAY_LIMIT)" :key="user.id">
-			<VMenu v-if="!user.isCurrentUser" trigger="hover" show-arrow>
+			<VMenu trigger="hover" show-arrow>
 				<template #activator>
 					<VAvatar
 						:border="`var(--${user.color})`"
@@ -85,7 +85,7 @@ function focusIntoView(cid: ClientID) {
 					<VListItem>
 						<VListItemContent>
 							<div class="more-users-list-item-content">
-								<span class="more-users-list-item-content-name">{{ user.name }}</span>
+								<span class="more-users-list-item-content-name">{{ user.name }} <template v-if="user.isCurrentUser">(You)</template></span>
 								<span class="more-users-list-item-content-status">
 									{{
 										user.focusedField
@@ -99,11 +99,7 @@ function focusIntoView(cid: ClientID) {
 				</VList>
 			</VMenu>
 
-			<VAvatar v-else :border="`var(--${user.color})`" :style="{ zIndex: DISPLAY_LIMIT - index }" x-small round>
-				<img v-if="user.avatar_url" :src="user.avatar_url" />
-				<template v-else-if="user.name">{{ user.name?.substring(0, 1) }}</template>
-				<VIcon v-else name="person" small />
-			</VAvatar>
+
 		</template>
 
 		<VMenu v-if="users.length > DISPLAY_LIMIT" show-arrow>
