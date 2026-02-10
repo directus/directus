@@ -13,7 +13,7 @@ export interface ValidateItemAccessOptions {
 	accountability: Accountability;
 	action: PermissionsAction;
 	collection: string;
-	primaryKeys: PrimaryKey[];
+	primaryKeys?: PrimaryKey[]; // Optional for singletons
 	fields?: string[];
 	returnAllowedRootFields?: boolean;
 }
@@ -45,10 +45,19 @@ export async function validateItemAccess(
 	options: ValidateItemAccessOptions | ValidateItemAccessOptionsWithRootFields,
 	context: Context,
 ): Promise<ValidateItemAccessResult | ValidateItemAccessResultWithRootFields> {
-	const primaryKeyField = context.schema.collections[options.collection]?.primary;
+	const collectionInfo = context.schema.collections[options.collection];
+	const primaryKeyField = collectionInfo?.primary;
 
 	if (!primaryKeyField) {
 		throw new Error(`Cannot find primary key for collection "${options.collection}"`);
+	}
+
+	const isSingleton = collectionInfo?.singleton === true;
+	const hasPrimaryKeys = options.primaryKeys && options.primaryKeys.length > 0;
+
+	// For non-singletons, we must have PKs to validate against
+	if (!isSingleton && !hasPrimaryKeys) {
+		throw new Error(`Primary keys are required for non-singleton collection "${options.collection}"`);
 	}
 
 	// When we're looking up access to specific items, we have to read them from the database to
@@ -57,7 +66,7 @@ export async function validateItemAccess(
 	const ast: AST = {
 		type: 'root',
 		name: options.collection,
-		query: { limit: options.primaryKeys.length },
+		query: { limit: isSingleton && !hasPrimaryKeys ? 1 : options.primaryKeys!.length },
 		// Act as if every field was a "normal" field
 		children:
 			options.fields?.map((field) => ({ type: 'field', name: field, fieldKey: field, whenCase: [], alias: false })) ??
@@ -68,11 +77,14 @@ export async function validateItemAccess(
 	await processAst({ ast, ...options }, context);
 
 	// Inject the filter after the permissions have been processed, as to not require access to the primary key
-	ast.query.filter = {
-		[primaryKeyField]: {
-			_in: options.primaryKeys,
-		},
-	};
+	// Skip adding filter for singletons without explicit PKs
+	if (hasPrimaryKeys) {
+		ast.query.filter = {
+			[primaryKeyField]: {
+				_in: options.primaryKeys!,
+			},
+		};
+	}
 
 	let hasItemRules;
 	let permissionedFields;
@@ -119,7 +131,8 @@ export async function validateItemAccess(
 		action: options.action,
 	});
 
-	const hasAccess = items && items.length === options.primaryKeys.length;
+	const expectedCount = isSingleton && !hasPrimaryKeys ? 1 : options.primaryKeys!.length;
+	const hasAccess = items && items.length === expectedCount;
 
 	if (!hasAccess) {
 		if (options.returnAllowedRootFields) {

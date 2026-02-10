@@ -133,11 +133,29 @@ function useConfirmation() {
 </script>
 
 <template>
-	<VButton v-if="button" v-tooltip="tooltip" v-bind="$attrs" icon rounded :disabled @click.stop="onClick">
+	<VButton
+		v-if="button"
+		v-prevent-focusout="confirmDelete"
+		v-tooltip="tooltip"
+		v-bind="$attrs"
+		icon
+		rounded
+		:disabled
+		@click.stop="onClick"
+	>
 		<VIcon :name="icon" :disabled />
 	</VButton>
 
-	<VIcon v-else v-tooltip="tooltip" v-bind="$attrs" :name="icon" :disabled clickable @click.stop="onClick" />
+	<VIcon
+		v-else
+		v-prevent-focusout="confirmDelete"
+		v-tooltip="tooltip"
+		v-bind="$attrs"
+		:name="icon"
+		:disabled
+		clickable
+		@click.stop="onClick"
+	/>
 
 	<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="onConfirmDelete">
 		<VCard>

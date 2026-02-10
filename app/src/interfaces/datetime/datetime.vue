@@ -2,7 +2,7 @@
 import { isValid } from 'date-fns';
 import { computed, ref } from 'vue';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
-import VDatePicker from '@/components/v-date-picker.vue';
+import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -28,7 +28,7 @@ const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
 
-const dateTimeMenu = ref();
+const menuActive = ref(false);
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
@@ -40,7 +40,16 @@ function unsetValue(e: any) {
 </script>
 
 <template>
-	<VMenu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled full-height seamless>
+	<VMenu
+		ref="dateTimeMenu"
+		v-model="menuActive"
+		v-prevent-focusout="menuActive"
+		:close-on-content-click="false"
+		attached
+		:disabled
+		full-height
+		seamless
+	>
 		<template #activator="{ toggle, active }">
 			<VListItem block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
@@ -58,13 +67,12 @@ function unsetValue(e: any) {
 				</div>
 			</VListItem>
 		</template>
-
 		<VDatePicker
-			:type
-			:disabled
-			:include-seconds
-			:use-24
 			:model-value="value"
+			:type
+			:use-24
+			:include-seconds
+			:disabled
 			@update:model-value="$emit('input', $event)"
 			@close="dateTimeMenu?.deactivate"
 		/>

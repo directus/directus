@@ -1,6 +1,10 @@
 # User preferences
 .DS_Store
 
+# Agentic
+.agent/
+.claude/
+CLAUDE.md
 # Dependencies
 node_modules/
 
@@ -51,3 +55,8 @@ TODO
 /tests/blackbox/server-log-*
 /tests/blackbox/sequencer-data.json
 /packages/extensions-sdk/temp-extension-*/
+
+# AI
+.claude/*
+!.claude/CLAUDE.md
+!.claude/skills/
