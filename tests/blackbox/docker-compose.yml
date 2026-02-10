@@ -99,7 +99,7 @@ services:
       - 6107:26257
 
   redis:
-    image: redis:6-alpine
+    image: ${REDIS_IMAGE:-redis:6-alpine}
     ports:
       - 6108:6379
 
