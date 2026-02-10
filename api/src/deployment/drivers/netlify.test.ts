@@ -1,3 +1,4 @@
+import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NetlifyDriver } from './netlify.js';
 
@@ -64,76 +65,59 @@ describe('NetlifyDriver', () => {
 		});
 	});
 
+	describe('error handling', () => {
+		it('should throw InvalidCredentialsError on 401', async () => {
+			const error = Object.assign(new Error('Unauthorized'), { status: 401 });
+			mockNetlifyAPI.listSites.mockRejectedValueOnce(error);
+
+			await expect(driver.testConnection()).rejects.toThrow(InvalidCredentialsError);
+		});
+
+		it('should throw InvalidCredentialsError on 403', async () => {
+			const error = Object.assign(new Error('Forbidden'), { status: 403 });
+			mockNetlifyAPI.listSites.mockRejectedValueOnce(error);
+
+			await expect(driver.testConnection()).rejects.toThrow(InvalidCredentialsError);
+		});
+
+		it('should throw ServiceUnavailableError on other API errors', async () => {
+			const error = Object.assign(new Error('Internal Server Error'), { status: 500 });
+			mockNetlifyAPI.listSites.mockRejectedValueOnce(error);
+
+			await expect(driver.testConnection()).rejects.toThrow(ServiceUnavailableError);
+		});
+
+		it('should rethrow non-HTTP errors as-is', async () => {
+			const error = new Error('Network failure');
+			mockNetlifyAPI.listSites.mockRejectedValueOnce(error);
+
+			await expect(driver.testConnection()).rejects.toThrow('Network failure');
+		});
+	});
+
 	describe('status mapping', () => {
-		it('should map Netlify states to Status type', async () => {
-			const mockSites = [
-				{
-					id: 'site-1',
-					name: 'Site 1',
-					url: 'https://site1.netlify.app',
-					build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo' },
-					published_deploy: { state: 'ready', created_at: '2024-01-01T00:00:00Z' },
-					created_at: '2024-01-01T00:00:00Z',
-					updated_at: '2024-01-02T00:00:00Z',
-				},
-				{
-					id: 'site-2',
-					name: 'Site 2',
-					url: 'https://site2.netlify.app',
-					build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo2' },
-					published_deploy: { state: 'building', created_at: '2024-01-01T00:00:00Z' },
-					created_at: '2024-01-01T00:00:00Z',
-					updated_at: '2024-01-02T00:00:00Z',
-				},
-				{
-					id: 'site-3',
-					name: 'Site 3',
-					url: 'https://site3.netlify.app',
-					build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo3' },
-					published_deploy: { state: 'error', created_at: '2024-01-01T00:00:00Z' },
-					created_at: '2024-01-01T00:00:00Z',
-					updated_at: '2024-01-02T00:00:00Z',
-				},
-			];
-
-			mockNetlifyAPI.listSites.mockResolvedValueOnce(mockSites);
-
-			const projects = await driver.listProjects();
-
-			expect(projects).toHaveLength(3);
-			expect(projects[0]!.id).toBe('site-1');
-			expect(projects[1]!.id).toBe('site-2');
-			expect(projects[2]!.id).toBe('site-3');
-		});
-
-		it('should map enqueued and processing states to building', async () => {
-			const mockDeploy = {
+		it.each([
+			['ready', 'ready'],
+			['error', 'error'],
+			['canceled', 'canceled'],
+			['building', 'building'],
+			['enqueued', 'building'],
+			['processing', 'building'],
+			['preparing', 'building'],
+			['new', 'building'],
+			['uploaded', 'building'],
+			[undefined, 'building'],
+		])('should map Netlify state "%s" to "%s"', async (netlifyState, expected) => {
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({
 				id: 'deploy-1',
 				site_id: 'site-1',
-				state: 'enqueued',
+				state: netlifyState,
 				created_at: '2024-01-01T00:00:00Z',
-			};
-
-			mockNetlifyAPI.getDeploy.mockResolvedValueOnce(mockDeploy);
+			});
 
 			const deployment = await driver.getDeployment('deploy-1');
 
-			expect(deployment.status).toBe('building');
-		});
-
-		it('should map canceled and cancelled states to canceled', async () => {
-			const mockDeploy = {
-				id: 'deploy-1',
-				site_id: 'site-1',
-				state: 'canceled',
-				created_at: '2024-01-01T00:00:00Z',
-			};
-
-			mockNetlifyAPI.getDeploy.mockResolvedValueOnce(mockDeploy);
-
-			const deployment = await driver.getDeployment('deploy-1');
-
-			expect(deployment.status).toBe('canceled');
+			expect(deployment.status).toBe(expected);
 		});
 	});
 
@@ -466,6 +450,28 @@ describe('NetlifyDriver', () => {
 			});
 
 			expect(mockWebSocket.close).toHaveBeenCalled();
+		});
+
+		it('should throw ServiceUnavailableError on WebSocket error', async () => {
+			const logsPromise = driver.getDeploymentLogs('deploy-err');
+
+			const errorHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'error')?.[1];
+			expect(errorHandler).toBeDefined();
+			errorHandler();
+
+			await expect(logsPromise).rejects.toThrow(ServiceUnavailableError);
+		});
+
+		it('should throw ServiceUnavailableError on connection timeout', async () => {
+			vi.useFakeTimers();
+
+			const logsPromise = driver.getDeploymentLogs('deploy-timeout');
+
+			vi.advanceTimersByTime(10_000);
+
+			await expect(logsPromise).rejects.toThrow(ServiceUnavailableError);
+
+			vi.useRealTimers();
 		});
 
 		it('should pass since parameter as milliseconds', async () => {

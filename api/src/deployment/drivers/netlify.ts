@@ -20,15 +20,19 @@ interface DeploymentConnection {
 	idleTimeout?: NodeJS.Timeout | undefined;
 	connectionTimeout?: NodeJS.Timeout | undefined;
 	deploymentId: string;
-	reject: (error: Error) => void;
 }
 
 const WS_CONNECTIONS = new Map<string, DeploymentConnection>();
 
+const WS_IDLE_TIMEOUT = 60_000; // 60 seconds
+const WS_CONNECTION_TIMEOUT = 10_000; // 10 seconds
+
+// eslint-disable-next-line no-control-regex
+const ANSI_REGEX = /[\x1b]\[[0-9;]*m/g;
+const WS_URL = 'wss://socketeer.services.netlify.com/build/logs';
+
 export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyOptions> {
 	private api: NetlifyAPI;
-	private readonly WS_IDLE_TIMEOUT = 60_000; // 60 seconds
-	private readonly WS_CONNECTION_TIMEOUT = 10_000; // 10 seconds
 
 	constructor(credentials: NetlifyCredentials, options: NetlifyOptions = {}) {
 		super(credentials, options);
@@ -132,6 +136,10 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		return result;
 	}
 
+	private mapDeployUrl(deploy: Record<string, any>): string | undefined {
+		return deploy['ssl_url'] ?? deploy['deploy_ssl_url'] ?? deploy['deploy_url'] ?? deploy['url'];
+	}
+
 	async listDeployments(projectId: string, limit = 20): Promise<Deployment[]> {
 		const response = await this.handleApiError((api) => api.listSiteDeploys({ site_id: projectId, per_page: limit }));
 
@@ -143,16 +151,8 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 				created_at: new Date(deploy.created_at!),
 			};
 
-			// Prefer ssl_url, then deploy_ssl_url, then url
-			if (deploy.ssl_url) {
-				result.url = deploy.ssl_url;
-			} else if (deploy.deploy_ssl_url) {
-				result.url = deploy.deploy_ssl_url;
-			} else if (deploy.deploy_url) {
-				result.url = deploy.deploy_url;
-			} else if (deploy.url) {
-				result.url = deploy.url;
-			}
+			const url = this.mapDeployUrl(deploy);
+			if (url) result.url = url;
 
 			if (deploy.published_at) {
 				result.finished_at = new Date(deploy.published_at);
@@ -176,16 +176,8 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 			created_at: new Date(deploy.created_at!),
 		};
 
-		// Prefer ssl_url, then deploy_ssl_url, then url
-		if (deploy.ssl_url) {
-			result.url = deploy.ssl_url;
-		} else if (deploy.deploy_ssl_url) {
-			result.url = deploy.deploy_ssl_url;
-		} else if (deploy.deploy_url) {
-			result.url = deploy.deploy_url;
-		} else if (deploy.url) {
-			result.url = deploy.url;
-		}
+		const url = this.mapDeployUrl(deploy);
+		if (url) result.url = url;
 
 		if (deploy.published_at) {
 			result.finished_at = new Date(deploy.published_at);
@@ -244,18 +236,18 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 
 		connection.idleTimeout = setTimeout(() => {
 			this.closeWsConnection(connection.deploymentId);
-		}, this.WS_IDLE_TIMEOUT);
+		}, WS_IDLE_TIMEOUT);
 	}
 
-	private setupWsConnectionTimeout(connection: DeploymentConnection): void {
+	private setupWsConnectionTimeout(connection: DeploymentConnection, reject: (error: Error) => void): void {
 		if (connection.connectionTimeout) {
 			clearTimeout(connection.connectionTimeout);
 		}
 
 		connection.connectionTimeout = setTimeout(() => {
 			this.closeWsConnection(connection.deploymentId);
-			connection.reject(new ServiceUnavailableError({ service: 'netlify', reason: 'WebSocket connection timeout' }));
-		}, this.WS_CONNECTION_TIMEOUT);
+			reject(new ServiceUnavailableError({ service: 'netlify', reason: 'WebSocket connection timeout' }));
+		}, WS_CONNECTION_TIMEOUT);
 	}
 
 	private getWsConnection(deploymentId: string): Promise<DeploymentConnection> {
@@ -268,13 +260,12 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 			}
 
 			const connection: DeploymentConnection = {
-				ws: new WebSocket(`wss://socketeer.services.netlify.com/build/logs`),
+				ws: new WebSocket(WS_URL),
 				logs: [],
 				deploymentId,
-				reject,
 			};
 
-			this.setupWsConnectionTimeout(connection);
+			this.setupWsConnectionTimeout(connection, reject);
 
 			connection.ws.addEventListener('open', () => {
 				if (connection.connectionTimeout) {
@@ -297,9 +288,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 
 			connection.ws.addEventListener('message', (event) => {
 				const data = JSON.parse(event.data);
-				// eslint-disable-next-line no-control-regex
-				const ansiRegex = /[\x1b]\[[0-9;]*m/g;
-				const cleanMessage = data.message.replace(/\r/g, '').replace(ansiRegex, '');
+				const cleanMessage = data.message.replace(/\r/g, '').replace(ANSI_REGEX, '');
 				let logType: 'info' | 'stdout' | 'stderr' = 'stdout';
 
 				if (data.type === 'report') {
@@ -325,10 +314,6 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 			});
 
 			connection.ws.addEventListener('close', () => {
-				if (connection.idleTimeout) {
-					clearTimeout(connection.idleTimeout);
-				}
-
 				if (connection.connectionTimeout) {
 					clearTimeout(connection.connectionTimeout);
 				}
