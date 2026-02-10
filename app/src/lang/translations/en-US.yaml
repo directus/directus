@@ -2904,4 +2904,4 @@ accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)
 text_direction_rtl: Right to Left (RTL)
-datetime_picker_now_btn_label: Set To Now
+set_to_now: Set to Now
