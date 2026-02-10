@@ -190,7 +190,7 @@ watch(
 		<template #actions>
 			<SearchInput v-if="totalCount > 0 || search" v-model="search" :show-filter="false" small />
 
-			<VButton v-tooltip.bottom="$t('deployment.deploy')" rounded icon small :loading="deploying" @click="deploy()">
+			<VButton :tooltip="$t('deployment.deploy')" rounded icon small :loading="deploying" @click="deploy()">
 				<VIcon name="rocket_launch" small />
 
 				<template #append-outer>
