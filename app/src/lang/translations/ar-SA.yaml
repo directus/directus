@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: حول
+directus_bsl:
 first_name: الاسم الأول
 last_name: الاسم الأخير
 identifier: المعرِّف
@@ -252,6 +253,7 @@ field_permissions: أذونات العنصر
 field_validation: مجال المصادقة
 field_presets: الإعداد المسبق للحقل
 permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+permissions_for_policy: ''
 fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 fields_for_policy: '.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
@@ -305,6 +307,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: إعادة ضبط الإعدادات المفضّلة للتطبيقات
 hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
+clear_hidden_field:
 key: مفتاح
 alias: اسم مستعار
 bigInteger: عدد صحيح كبير
@@ -2109,3 +2112,4 @@ export_dashboard: تصدير لوحة التحكم
 duplicate_dashboard: تكرار لوحة التحكم
 search_flow: ابحث في التدفق...
 percent: النسبة المئوية
+set_to_now: اضبط على الآن
