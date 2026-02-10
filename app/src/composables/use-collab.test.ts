@@ -46,7 +46,7 @@ const {
 	const mockNotificationsStore = { add: vi.fn(), queue: [] };
 	const mockPermissionsStore = { getPermission: vi.fn().mockReturnValue({ access: 'all' }) };
 	const mockRelationsStore = { getRelationForField: vi.fn() };
-	const mockFieldsStore = { getPrimaryKeyFieldForCollection: vi.fn() };
+	const mockFieldsStore = { getPrimaryKeyFieldForCollection: vi.fn(), getField: vi.fn() };
 	const mockRouter = { push: vi.fn() };
 
 	return {
