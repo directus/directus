@@ -6,10 +6,6 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VAvatar from '@/components/v-avatar.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import VListItemContent from '@/components/v-list-item-content.vue';
-import VListItemIcon from '@/components/v-list-item-icon.vue';
-import VListItem from '@/components/v-list-item.vue';
-import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import type { CollabUser } from '@/composables/use-collab';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -65,7 +61,7 @@ function focusIntoView(cid: ClientID) {
 <template>
 	<div class="collab-header">
 		<template v-for="(user, index) in users.slice(0, DISPLAY_LIMIT)" :key="user.id">
-			<VMenu trigger="hover" show-arrow>
+			<VMenu trigger="hover" show-arrow invert>
 				<template #activator>
 					<VAvatar
 						:border="`var(--${user.color})`"
@@ -81,12 +77,42 @@ function focusIntoView(cid: ClientID) {
 					</VAvatar>
 				</template>
 
-				<VList class="more-users-list">
-					<VListItem>
-						<VListItemContent>
-							<div class="more-users-list-item-content">
-								<span class="more-users-list-item-content-name">{{ user.name }} <template v-if="user.isCurrentUser">(You)</template></span>
-								<span class="more-users-list-item-content-status">
+				<div class="collab-header-popover">
+					<p class="collab-header-popover-title">
+						{{ user.name }}
+						<template v-if="user.isCurrentUser">(You)</template>
+					</p>
+					<p class="collab-header-popover-subtitle">
+						{{
+							user.focusedField
+								? t('collab_editing_field', { field: formatTitle(user.focusedField) })
+								: t('collab_currently_viewing')
+						}}
+					</p>
+				</div>
+			</VMenu>
+		</template>
+
+		<VMenu v-if="users.length > DISPLAY_LIMIT" show-arrow invert>
+			<template #activator="{ toggle }">
+				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round clickable @click="toggle">
+					+{{ users.length - DISPLAY_LIMIT }}
+				</VAvatar>
+			</template>
+
+			<div class="collab-header-more-popover">
+				<ul>
+					<li v-for="user in users.slice(DISPLAY_LIMIT)" :key="user.connection">
+						<button class="collab-header-more-popover-item" @click="focusIntoView(user.connection)">
+							<VAvatar :border="`var(--${user.color})`" x-small round>
+								<img v-if="user.avatar_url" :src="user.avatar_url" />
+								<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
+								<VIcon v-else name="person" small />
+							</VAvatar>
+
+							<div class="collab-header-more-popover-item-content">
+								<span class="collab-header-more-popover-item-content-name">{{ user.name ?? t('unknown_user') }}</span>
+								<span class="collab-header-more-popover-item-content-status">
 									{{
 										user.focusedField
 											? t('collab_editing_field', { field: formatTitle(user.focusedField) })
@@ -94,22 +120,11 @@ function focusIntoView(cid: ClientID) {
 									}}
 								</span>
 							</div>
-						</VListItemContent>
-					</VListItem>
-				</VList>
-			</VMenu>
-
-
-		</template>
-
-		<VMenu v-if="users.length > DISPLAY_LIMIT" show-arrow>
-			<template #activator="{ toggle }">
-				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round clickable @click="toggle">
-					+{{ users.length - DISPLAY_LIMIT }}
-				</VAvatar>
-			</template>
-
-			<VList class="more-users-list">
+						</button>
+					</li>
+				</ul>
+			</div>
+			<!-- <VList class="more-users-list">
 				<VListItem
 					v-for="user in users.slice(DISPLAY_LIMIT)"
 					:key="user.connection"
@@ -137,7 +152,7 @@ function focusIntoView(cid: ClientID) {
 						</div>
 					</VListItemContent>
 				</VListItem>
-			</VList>
+			</VList> -->
 		</VMenu>
 
 		<VIcon
@@ -163,31 +178,58 @@ function focusIntoView(cid: ClientID) {
 	:deep(.v-avatar) {
 		font-size: 12px;
 	}
-}
 
-.v-list-item {
-	gap: 4px;
-	min-inline-size: 50px;
-}
-
-.more-users-list {
-	--v-list-min-width: auto;
-
-	&-item-content {
+	&-popover {
+		padding: 8px 4px;
 		display: flex;
 		flex-direction: column;
-		gap: 4px;
+	}
+
+	&-popover-title {
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	&-popover-subtitle {
+		font-size: 0.857em;
+		line-height: 1.167em;
+		color: var(--theme--foreground-subdued);
+	}
+}
+
+.collab-header-more-popover {
+	padding: 4px 0;
+	min-inline-size: 200px;
+
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	&-item {
+		padding: 4px;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		inline-size: 100%;
+	}
+
+	&-item-content {
+		padding: 2px 4px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
 	}
 
 	&-item-content-name {
-		font-weight: 500;
-		font-size: 12px;
-		line-height: 1.2;
+		font-size: 14px;
+		line-height: 20px;
 	}
 
 	&-item-content-status {
-		font-size: 10px;
-		line-height: 1;
+		font-size: 0.857em;
+		line-height: 1.167em;
 		color: var(--theme--foreground-subdued);
 	}
 }
