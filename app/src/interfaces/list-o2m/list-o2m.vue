@@ -1,37 +1,25 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil } from 'lodash';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { RouterLink } from 'vue-router';
-import Draggable from 'vuedraggable';
-import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
-import VListItem from '@/components/v-list-item.vue';
+import { getFieldsFromTemplate } from '@directus/utils';
+import { get, isNil } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
 import VNotice from '@/components/v-notice.vue';
-import VPagination from '@/components/v-pagination.vue';
-import VRemove from '@/components/v-remove.vue';
-import VSelect from '@/components/v-select/v-select.vue';
-import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { Sort } from '@/components/v-table/types';
-import VTable from '@/components/v-table/v-table.vue';
-import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import type { DisplayItem } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
+import { useListRelation } from '@/composables/use-list-relation';
 import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
-import { parseFilter } from '@/utils/parse-filter';
+import ListRelationLayout from '@/interfaces/shared/list-relation-layout.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import RenderTemplate from '@/views/private/components/render-template.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
+import { useListHandlers } from '@/composables/use-list-handlers';
+
 
 const props = withDefaults(
 	defineProps<{
@@ -74,16 +62,13 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-const { t, n } = useI18n();
 const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
 
 const value = computed({
 	get: () => props.value,
-	set: (val) => {
-		emit('input', val);
-	},
+	set: (val) => emit('input', val),
 });
 
 const templateWithDefaults = computed(() => {
@@ -111,50 +96,30 @@ const fields = computed(() => {
 	return addRelatedPrimaryKeyToFields(relationInfo.value.relatedCollection.collection, displayFields);
 });
 
-const limit = ref(props.limit);
-const page = ref(1);
-const search = ref('');
-const searchFilter = ref<Filter>();
-
+const displayCollection = computed(() => relationInfo.value?.relatedCollection.collection);
 const manualSort = ref<Sort | null>(
 	props.sort && !relationInfo.value?.sortField ? { by: props.sort, desc: props.sortDirection === '-' } : null,
 );
 
-const query = computed<RelationQueryMultiple>(() => {
-	const q: RelationQueryMultiple = {
-		limit: limit.value,
-		page: page.value,
-		fields: fields.value || ['id'],
-	};
-
-	if (!relationInfo.value) {
-		return q;
-	}
-
-	if (searchFilter.value) {
-		q.filter = searchFilter.value;
-	}
-
-	if (search.value) {
-		q.search = search.value;
-	}
-
-	if (manualSort.value) {
-		q.sort = [`${manualSort.value.desc ? '-' : ''}${manualSort.value.by}`];
-	}
-
-	return q;
-});
-
-watch([search, searchFilter, limit], () => {
-	page.value = 1;
+const listRelation = useListRelation({
+	value,
+	relationInfo,
+	primaryKey,
+	version,
+	displayCollection,
+	fieldKeys: computed(() => props.fields ?? []),
+	fields,
+	initialLimit: props.limit ?? 15,
+	tableSpacing: computed(() => props.tableSpacing ?? 'cozy'),
+	filter: computed(() => props.filter ?? null),
+	sortRef: manualSort,
 });
 
 const {
-	create,
-	update,
-	remove,
-	select,
+	limit,
+	page,
+	search,
+	searchFilter,
 	displayItems,
 	totalItemCount,
 	loading,
@@ -162,76 +127,19 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey, version);
+	pageCount,
+	showingCount,
+	headers,
+	tableRowHeight,
+	allowDrag,
+	deleteItem,
+	parsedFilter,
+	create,
+	update,
+	select,
+} = listRelation;
 
 const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo);
-
-const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
-
-const showingCount = computed(() =>
-	formatItemsCountPaginated({
-		currentItems: totalItemCount.value,
-		currentPage: page.value,
-		perPage: limit.value,
-		isFiltered: !!(search.value || searchFilter.value),
-		i18n: { t, n },
-	}),
-);
-
-const headers = ref<Array<any>>([]);
-
-watch(
-	[props, relationInfo, displayItems],
-	() => {
-		if (!relationInfo.value) {
-			headers.value = [];
-			return;
-		}
-
-		const relatedCollection = relationInfo.value.relatedCollection.collection;
-
-		const contentWidth: Record<string, number> = {};
-
-		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
-			props.fields.forEach((key) => {
-				if (!contentWidth[key]) {
-					contentWidth[key] = 5;
-				}
-
-				if (String(item[key]).length > contentWidth[key]) {
-					contentWidth[key] = String(item[key]).length;
-				}
-			});
-		});
-
-		headers.value = props.fields
-			.map((key) => {
-				const field = fieldsStore.getField(relatedCollection, key);
-
-				// when user has no permission to this field or junction collection
-				if (!field) return null;
-
-				return {
-					text: field.name,
-					value: key,
-					width: contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
-					sortable: !['json'].includes(field.type),
-				};
-			})
-			.filter((key) => key !== null);
-	},
-	{ immediate: true },
-);
-
-const spacings = {
-	compact: 32,
-	cozy: 48,
-	comfortable: 64,
-};
-
-const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
-
-const allowDrag = computed(() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined);
 
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
@@ -309,17 +217,6 @@ function cancelEdit() {
 	currentlyEditing.value = null;
 }
 
-function deleteItem(item: DisplayItem) {
-	if (
-		page.value === Math.ceil(totalItemCount.value / limit.value) &&
-		page.value !== Math.ceil((totalItemCount.value - 1) / limit.value)
-	) {
-		page.value = Math.max(1, page.value - 1);
-	}
-
-	remove(item);
-}
-
 const batchEditActive = ref(false);
 const selection = ref<DisplayItem[]>([]);
 
@@ -360,24 +257,12 @@ function stageBatchEdits(edits: Record<string, any>) {
 	selection.value = [];
 }
 
-const values = inject('values', ref<Record<string, any>>({}));
-
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
 	};
 
-	const customFilter = parseFilter(
-		deepMap(props.filter, (val: any) => {
-			if (val && typeof val === 'string') {
-				return render(val, values.value);
-			}
-
-			return val;
-		}),
-	);
-
-	if (!isEmpty(customFilter)) filter._and.push(customFilter);
+	if (parsedFilter.value) filter._and.push(parsedFilter.value);
 
 	if (!relationInfo.value) return filter;
 
@@ -419,6 +304,24 @@ function getLinkForItem(item: DisplayItem) {
 	return null;
 }
 
+const {
+    onUpdateSearch,
+    onUpdateSearchFilter,
+    onUpdateSort,
+    onUpdateHeaders,
+    onUpdateSelection,
+    onUpdatePage,
+    onUpdateLimit,
+} = useListHandlers({
+    search,
+    searchFilter,
+    sort: manualSort,
+    headers,
+    selection,
+    page,
+    limit,
+});
+
 const hasSatisfiedUniqueConstraint = computed(() => {
 	if (!relationInfo.value) return false;
 
@@ -443,255 +346,58 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 		{{ $t('no_singleton_relations') }}
 	</VNotice>
 	<div v-else class="one-to-many">
-		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE, disabled, 'non-editable': nonEditable }]">
-			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
-				<div class="spacer" />
-
-				<div v-if="totalItemCount" class="item-count">
-					{{ showingCount }}
-				</div>
-
-				<template v-if="!nonEditable">
-					<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
-						<SearchInput
-							v-model="search"
-							v-model:filter="searchFilter"
-							:collection="relationInfo.relatedCollection.collection"
-							:disabled
-						/>
-					</div>
-
-					<VButton
-						v-if="updateAllowed && selectedKeys.length"
-						v-tooltip.bottom="$t('edit')"
-						rounded
-						icon
-						secondary
-						:disabled
-						@click="batchEditActive = true"
-					>
-						<VIcon name="edit" outline />
-					</VButton>
-
-					<VButton
-						v-if="enableSelect && updateAllowed"
-						v-tooltip.bottom="$t('add_existing')"
-						rounded
-						icon
-						:secondary="enableCreate"
-						:disabled
-						@click="selectModalActive = true"
-					>
-						<VIcon name="playlist_add" />
-					</VButton>
-
-					<VButton
-						v-if="enableCreate && createAllowed"
-						v-tooltip.bottom="$t('create_item')"
-						rounded
-						icon
-						:disabled
-						@click="createItem"
-					>
-						<VIcon name="add" />
-					</VButton>
-				</template>
-			</div>
-
-			<VTable
-				v-if="layout === LAYOUTS.TABLE"
-				v-model:sort="manualSort"
-				v-model:headers="headers"
-				v-model="selection"
-				:class="{ 'no-last-border': totalItemCount <= 10 }"
-				:disabled="disabled && !nonEditable"
-				:loading="loading"
-				:items="displayItems"
-				:item-key="relationInfo.relatedPrimaryKeyField.field"
-				:row-height="tableRowHeight"
-				:show-manual-sort="allowDrag && !disabled"
-				:manual-sort-key="relationInfo?.sortField"
-				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
-				show-resize
-				@click:row="editRow"
-				@update:items="sortItems"
-			>
-				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
-					<RenderTemplate
-						:title="header.value"
-						:collection="relationInfo.relatedCollection.collection"
-						:item="item"
-						:template="`{{${header.value}}}`"
-					/>
-				</template>
-
-				<template v-if="!nonEditable" #item-append="{ item }">
-					<div class="item-actions">
-						<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem(item)!" custom>
-							<VIcon v-if="disabled || item.$type === 'created'" name="launch" />
-
-							<a
-								v-else
-								v-tooltip="$t('navigate_to_item')"
-								:href="href"
-								class="item-link"
-								@click.stop="navigate"
-								@keydown.stop
-							>
-								<VIcon name="launch" />
-							</a>
-						</RouterLink>
-
-						<VRemove
-							v-if="deleteAllowed || isLocalItem(item)"
-							:disabled
-							:class="{ deleted: item.$type === 'deleted' }"
-							:item-type="item.$type"
-							:item-info="relationInfo"
-							:item-is-local="isLocalItem(item)"
-							:item-edits="getItemEdits(item)"
-							@action="deleteItem(item)"
-							@keydown.stop
-						/>
-					</div>
-				</template>
-			</VTable>
-
-			<template v-else-if="loading">
-				<VSkeletonLoader
-					v-for="num in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
-					:key="num"
-					:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
-				/>
-			</template>
-
-			<template v-else>
-				<VNotice v-if="displayItems.length === 0">
-					{{ $t('no_items') }}
-				</VNotice>
-
-				<Draggable
-					:model-value="displayItems"
-					tag="v-list"
-					item-key="id"
-					handle=".drag-handle"
-					:disabled="disabled || !allowDrag"
-					v-bind="{ 'force-fallback': true }"
-					@update:model-value="sortItems($event)"
-				>
-					<template #item="{ element }">
-						<VListItem
-							block
-							clickable
-							:disabled="disabled && !nonEditable"
-							:dense="totalItemCount > 4"
-							:class="{ deleted: element.$type === 'deleted' }"
-							@click="editItem(element)"
-						>
-							<VIcon
-								v-if="allowDrag && !nonEditable"
-								name="drag_handle"
-								class="drag-handle"
-								left
-								:disabled
-								@click.stop="() => {}"
-							/>
-
-							<RenderTemplate
-								:collection="relationInfo.relatedCollection.collection"
-								:item="element"
-								:template="templateWithDefaults"
-							/>
-
-							<div class="spacer" />
-
-							<div v-if="!nonEditable" class="item-actions">
-								<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem(element)!" custom>
-									<VIcon v-if="disabled || element.$type === 'created'" name="launch" />
-
-									<a
-										v-else
-										v-tooltip="$t('navigate_to_item')"
-										:href="href"
-										class="item-link"
-										@click.stop="navigate"
-										@keydown.stop
-									>
-										<VIcon name="launch" />
-									</a>
-								</RouterLink>
-
-								<VRemove
-									v-if="deleteAllowed || isLocalItem(element)"
-									:disabled
-									:item-type="element.$type"
-									:item-info="relationInfo"
-									:item-is-local="isLocalItem(element)"
-									:item-edits="getItemEdits(element)"
-									@action="deleteItem(element)"
-								/>
-							</div>
-						</VListItem>
-					</template>
-				</Draggable>
-			</template>
-
-			<template v-if="layout === LAYOUTS.TABLE">
-				<div v-if="pageCount > 1" class="actions">
-					<VPagination
-						v-model="page"
-						:disabled="disabled && !nonEditable"
-						:length="pageCount"
-						:total-visible="width.includes('half') ? 1 : 2"
-						show-first-last
-					/>
-
-					<div class="spacer" />
-
-					<div v-if="loading === false" class="per-page">
-						<span>{{ $t('per_page') }}</span>
-						<VSelect
-							v-model="limit"
-							:disabled="disabled && !nonEditable"
-							:items="['10', '20', '30', '50', '100']"
-							inline
-						/>
-					</div>
-				</div>
-			</template>
-			<template v-else>
-				<div v-if="!nonEditable || pageCount > 1" class="actions">
-					<template v-if="!nonEditable">
-						<VButton
-							v-if="enableCreate && createAllowed && !hasSatisfiedUniqueConstraint"
-							:disabled="disabled"
-							@click="createItem"
-						>
-							{{ $t('create_new') }}
-						</VButton>
-
-						<VButton
-							v-if="enableSelect && updateAllowed && !hasSatisfiedUniqueConstraint"
-							:disabled="disabled"
-							@click="selectModalActive = true"
-						>
-							{{ $t('add_existing') }}
-						</VButton>
-					</template>
-
-					<div class="spacer" />
-
-					<VPagination
-						v-if="pageCount > 1"
-						v-model="page"
-						:disabled="disabled && !nonEditable"
-						:length="pageCount"
-						:total-visible="2"
-						show-first-last
-					/>
-				</div>
-			</template>
-		</div>
+		<ListRelationLayout
+			:layout="layout"
+			:width="width"
+			:disabled="disabled"
+			:non-editable="nonEditable"
+			:total-item-count="totalItemCount"
+			:showing-count="showingCount"
+			:page-count="pageCount"
+			:loading="loading"
+			:display-items="displayItems"
+			:headers="headers"
+			:table-row-height="tableRowHeight"
+			:limit="limit"
+			:page="page"
+			:allow-drag="allowDrag"
+			:enable-search-filter="enableSearchFilter"
+			:enable-link="enableLink"
+			:display-collection="relationInfo.relatedCollection.collection"
+			:item-key="relationInfo.relatedPrimaryKeyField.field"
+			:sort-field="relationInfo?.sortField"
+			:sort="manualSort"
+			:template-for-list="templateWithDefaults"
+			:show-batch-edit="updateAllowed && selectedKeys.length > 0"
+			:show-select-button="enableSelect && updateAllowed"
+			:show-create-button="enableCreate && createAllowed"
+			:show-create-in-list="enableCreate && createAllowed && !hasSatisfiedUniqueConstraint"
+			:show-select-in-list="enableSelect && updateAllowed && !hasSatisfiedUniqueConstraint"
+			:show-manual-sort="allowDrag && !disabled"
+			:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
+			:delete-allowed="deleteAllowed"
+			:relation-info="relationInfo"
+			:search="search"
+			:search-filter="searchFilter"
+			:enable-create="enableCreate"
+			:selection="selection"
+			:get-link-for-item="getLinkForItem"
+			:get-item-edits="getItemEdits"
+			:is-local-item="isLocalItem"
+			:delete-item="deleteItem"
+			@update:search="onUpdateSearch"
+			@update:search-filter="onUpdateSearchFilter"
+			@update:sort="onUpdateSort"
+			@update:headers="onUpdateHeaders"
+			@update:selection="onUpdateSelection"
+			@update:page="onUpdatePage"
+			@update:limit="onUpdateLimit"
+			@click:row="editRow"
+			@update:items="sortItems"
+			@batch-edit="batchEditActive = true"
+			@open-select="selectModalActive = true"
+			@create="createItem"
+		/>
 
 		<DrawerItem
 			:disabled="disabled"
@@ -753,105 +459,3 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 }
 </style>
 
-<style lang="scss" scoped>
-@use '@/styles/mixins';
-
-.layout-table.disabled:not(.non-editable) {
-	background-color: var(--theme--background-subdued);
-}
-
-.bordered {
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: var(--theme--border-radius);
-	padding: var(--v-card-padding, 16px);
-}
-
-.v-table .deleted {
-	color: var(--danger-75);
-}
-
-.v-list {
-	@include mixins.list-interface($deleteable: true);
-}
-
-.v-list-item.disabled {
-	--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
-}
-
-.item-actions {
-	@include mixins.list-interface-item-actions($item-link: true);
-}
-
-.actions {
-	@include mixins.list-interface-actions($pagination: true);
-
-	position: relative;
-	z-index: 1;
-
-	&.top {
-		margin-block-start: 0;
-	}
-
-	.spacer {
-		flex-grow: 1;
-	}
-
-	.search {
-		position: relative;
-		z-index: 1;
-		align-self: stretch;
-
-		:deep(.search-input) {
-			block-size: 100%;
-			box-sizing: border-box;
-		}
-
-		:deep(.search-badge) {
-			block-size: 100%;
-		}
-	}
-
-	.item-count {
-		color: var(--theme--form--field--input--foreground-subdued);
-		white-space: nowrap;
-	}
-
-	&.half,
-	&.half-right {
-		flex-wrap: wrap;
-
-		.search {
-			inline-size: 100%;
-			order: -1;
-
-			:deep(.search-input),
-			:deep(.search-badge) {
-				inline-size: 100% !important;
-			}
-		}
-	}
-}
-
-.per-page {
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	inline-size: 120px;
-	padding: 10px 0;
-	margin-inline-end: 2px;
-	color: var(--theme--form--field--input--foreground-subdued);
-
-	span {
-		inline-size: auto;
-		margin-inline-end: 8px;
-	}
-
-	.v-select {
-		color: var(--theme--form--field--input--foreground);
-
-		:deep(.disabled) {
-			color: var(--theme--foreground-subdued);
-		}
-	}
-}
-</style>
