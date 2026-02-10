@@ -55,7 +55,7 @@ async function init() {
 	// Add router after loading of extensions to ensure all routes are registered
 	app.use(router);
 
-	// #26411 'inject' occured in pinia store should need vue instance level 'provide'
+	// #26411 'inject' occurred in pinia store should need vue instance level 'provide'
 	useSystem(app);
 	app.mount('#app');
 
