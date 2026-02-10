@@ -130,7 +130,7 @@ function focusIntoView(cid: ClientID) {
 
 					<VListItemContent>
 						<div class="more-users-list-item-content">
-							<span class="more-users-list-item-content-name">{{ user.name }}</span>
+							<span class="more-users-list-item-content-name">{{ user.name ?? t('unknown_user') }}</span>
 							<span class="more-users-list-item-content-status">
 								{{
 									user.focusedField
@@ -170,7 +170,7 @@ function focusIntoView(cid: ClientID) {
 }
 
 .v-list-item {
-	gap: 8px;
+	gap: 4px;
 	min-inline-size: 50px;
 }
 
