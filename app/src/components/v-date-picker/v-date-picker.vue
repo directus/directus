@@ -334,7 +334,7 @@ function setToNow() {
 				</div>
 				<!-- Today Button -->
 				<div class="calendar-footer">
-					<button class="calendar-today-button" @click="setToNow">{{ $t('datetime_picker_now_btn_label') }}</button>
+					<button class="calendar-today-button" @click="setToNow">{{ $t('set_to_now') }}</button>
 				</div>
 			</div>
 		</CalendarRoot>
