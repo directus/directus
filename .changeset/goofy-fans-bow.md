@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-use vue instance level 'provide/inject' for pinia store
+Fixed useStores, useApi, and useSdk not working inside Pinia stores in extensions
