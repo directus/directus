@@ -65,3 +65,11 @@ const queue = toRefs(notificationsStore).queue;
 	transition-duration: 200ms;
 }
 </style>
+
+<style lang="scss">
+// relocate to fixed position when dialog is open to prevent it from being covered by the dialog
+body:has(#dialog-outlet > .container.right) .notifications-group {
+	position: fixed;
+	z-index: 700;
+}
+</style>

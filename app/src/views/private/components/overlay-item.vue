@@ -38,6 +38,7 @@ import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -292,7 +293,7 @@ const overlayItemContentProps = computed(() => {
 	};
 });
 
-const { provideRunManualFlow } = useFlows({
+const { flowDialogsContext, provideRunManualFlow } = useFlows({
 	collection,
 	primaryKey: primaryKey,
 	location: 'item',
@@ -619,6 +620,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions>
+			<FlowDialogs v-bind="flowDialogsContext" />
+
 			<CollabAvatars
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
