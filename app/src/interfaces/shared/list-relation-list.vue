@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router';
+import Draggable from 'vuedraggable';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VNotice from '@/components/v-notice.vue';
 import VRemove from '@/components/v-remove.vue';
 import type { DisplayItem } from '@/composables/use-relation-multiple';
-import Draggable from 'vuedraggable';
-import { RouterLink } from 'vue-router';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 
 defineProps<{

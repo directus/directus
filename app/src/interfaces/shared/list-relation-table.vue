@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { Sort } from '@/components/v-table/types';
+import { ShowSelect } from '@directus/types';
+import { RouterLink } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VRemove from '@/components/v-remove.vue';
+import type { Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
-import type { DisplayItem } from '@/composables/use-relation-multiple';
 import type { ListRelationHeader } from '@/composables/use-list-relation';
-import { RouterLink } from 'vue-router';
+import type { DisplayItem } from '@/composables/use-relation-multiple';
 import RenderTemplate from '@/views/private/components/render-template.vue';
-import { ShowSelect } from '@directus/types';
 
 defineProps<{
 	sort: Sort | null | undefined;

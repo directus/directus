@@ -5,19 +5,19 @@ import { get, isEmpty, isNil, merge, set } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import VNotice from '@/components/v-notice.vue';
 import { Sort } from '@/components/v-table/types';
+import { useListHandlers } from '@/composables/use-list-handlers';
+import { useListRelation } from '@/composables/use-list-relation';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import type { DisplayItem } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
-import { useListRelation } from '@/composables/use-list-relation';
+import ListRelationLayout from '@/interfaces/shared/list-relation-layout.vue';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getItemRoute } from '@/utils/get-route';
-import ListRelationLayout from '@/interfaces/shared/list-relation-layout.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { useListHandlers } from '@/composables/use-list-handlers';
 
 
 const props = withDefaults(
@@ -137,7 +137,7 @@ const listRelation = useListRelation({
 });
 
 const {
-	limit,
+	limit: limitFromRelation,
 	page,
 	search,
 	searchFilter,
@@ -363,7 +363,7 @@ const {
     headers,
     selection,
     page,
-    limit,
+    limit: limitFromRelation,
 });
 
 </script>

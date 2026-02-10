@@ -5,9 +5,9 @@ import { render } from 'micromustache';
 import { computed, inject, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Sort } from '@/components/v-table/types';
+import type { RelationM2M } from '@/composables/use-relation-m2m';
 import type { DisplayItem, RelationQueryMultiple } from '@/composables/use-relation-multiple';
 import { useRelationMultiple } from '@/composables/use-relation-multiple';
-import type { RelationM2M } from '@/composables/use-relation-m2m';
 import type { RelationO2M } from '@/composables/use-relation-o2m';
 import { useFieldsStore } from '@/stores/fields';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
@@ -172,6 +172,7 @@ export function useListRelation(options: UseListRelationOptions) {
 
 	const spacings = { compact: 32, cozy: 48, comfortable: 64 };
 	const tableRowHeight = computed(() => spacings[tableSpacing.value] ?? spacings.cozy);
+
 	const allowDrag = computed(
 		() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined,
 	);

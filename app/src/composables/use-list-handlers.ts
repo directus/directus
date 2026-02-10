@@ -1,6 +1,6 @@
+import { Filter } from '@directus/types';
 import { Ref } from 'vue';
 import { Sort } from '@/components/v-table/types';
-import { Filter } from '@directus/types';
 
 export interface UseListHandlersOptions {
     search: Ref<string>;

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { Sort } from '@/components/v-table/types';
-import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import type { DisplayItem } from '@/composables/use-relation-multiple';
-import type { ListRelationHeader } from '@/composables/use-list-relation';
+import { ShowSelect } from '@directus/types';
 import { clamp } from 'lodash';
-import { LAYOUTS } from '@/types/interfaces';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import type { Sort } from '@/components/v-table/types';
+import type { ListRelationHeader } from '@/composables/use-list-relation';
+import type { DisplayItem } from '@/composables/use-relation-multiple';
 import ListRelationList from '@/interfaces/shared/list-relation-list.vue';
 import ListRelationPagination from '@/interfaces/shared/list-relation-pagination.vue';
 import ListRelationTable from '@/interfaces/shared/list-relation-table.vue';
 import ListRelationToolbar from '@/interfaces/shared/list-relation-toolbar.vue';
-import { ShowSelect } from '@directus/types';
+import { LAYOUTS } from '@/types/interfaces';
 
-const props = defineProps<{
+const _props = defineProps<{
 	layout: string;
 	width: string;
 	disabled: boolean;
