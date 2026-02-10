@@ -1,4 +1,4 @@
-import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
+import type { ContentVersion, Field, Item, PrimaryKey, User } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { has, isEqual, mergeWith, orderBy } from 'lodash';
 import { computed, type Ref, ref, watch } from 'vue';
@@ -33,15 +33,17 @@ import { unexpectedError } from '@/utils/unexpected-error';
 interface UseComparisonOptions {
 	collection: Ref<string>;
 	primaryKey: Ref<PrimaryKey>;
-	mode: Ref<'version' | 'revision'>;
+	mode: Ref<'version' | 'revision' | 'collab'>;
 	currentVersion: Ref<ContentVersion | null | undefined>;
+	currentCollab: Ref<{ from: Item; to: Item } | undefined>;
 	currentRevision: Ref<Revision | null | undefined>;
 	revisions: Ref<Revision[] | null | undefined>;
 	compareToOption: Ref<'Previous' | 'Latest'>;
 }
 
 export function useComparison(options: UseComparisonOptions) {
-	const { collection, primaryKey, mode, currentVersion, currentRevision, revisions, compareToOption } = options;
+	const { collection, primaryKey, mode, currentVersion, currentRevision, revisions, compareToOption, currentCollab } =
+		options;
 
 	const selectedComparisonFields = ref<string[]>([]);
 	const userUpdated = ref<User | null>(null);
@@ -109,6 +111,7 @@ export function useComparison(options: UseComparisonOptions) {
 	});
 
 	const deltaDisplayName = computed(() => {
+		if (mode.value === 'collab') return i18n.global.t('your_version');
 		return normalizedData.value?.incoming?.displayName || '';
 	});
 
@@ -194,6 +197,12 @@ export function useComparison(options: UseComparisonOptions) {
 					revisions.value,
 					compareToOption.value,
 				);
+			} else if (mode.value === 'collab' && currentCollab.value) {
+				comparisonData.value = {
+					base: currentCollab.value.from,
+					incoming: currentCollab.value.to,
+					comparisonType: 'version',
+				};
 			}
 		} catch (error) {
 			unexpectedError(error);

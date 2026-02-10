@@ -455,6 +455,25 @@ fields:
               path: role.name
     width: full
 
+  - field: collaborative_editing_divider
+    interface: presentation-divider
+    options:
+      icon: podcasts
+      title: $t:fields.directus_settings.collaborative_editing
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: collaborative_editing_enabled
+    interface: boolean
+    width: half
+    note: $t:fields.directus_settings.collaborative_editing_note
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
+
   - field: map_divider
     interface: presentation-divider
     options:

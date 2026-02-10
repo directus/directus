@@ -114,7 +114,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 </script>
 
 <template>
-	<div class="collection-item-dropdown">
+	<div v-prevent-focusout="selectDrawerOpen" class="collection-item-dropdown">
 		<VSkeletonLoader v-if="loading" type="input" />
 
 		<VListItem v-else :disabled :non-editable block clickable @click="selectDrawerOpen = true">
