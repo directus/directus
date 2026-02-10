@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import type { Column } from '../types/column.js';
+import type { Column, TableColumn } from '../types/column.js';
 import type { ForeignKey } from '../types/foreign-key.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema-inspector.js';
@@ -226,7 +226,7 @@ export default class oracleDB implements SchemaInspector {
 	/**
 	 * Get all the available columns in the current schema/database. Can be filtered to a specific table
 	 */
-	async columns(table?: string) {
+	async columns(table?: string): Promise<TableColumn[]> {
 		const query = this.knex
 			.select<{ table: string; column: string }[]>(
 				this.knex.raw(`

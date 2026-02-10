@@ -1,6 +1,6 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
-export const UnexpectedResponseError = createError(
+export const UnexpectedResponseError: DirectusErrorConstructor<void> = createError(
 	ErrorCode.UnexpectedResponse,
 	'Received an unexpected response.',
 	503,

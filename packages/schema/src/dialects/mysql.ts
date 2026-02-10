@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import type { Column } from '../types/column.js';
+import type { Column, TableColumn } from '../types/column.js';
 import type { ForeignKey } from '../types/foreign-key.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema-inspector.js';
@@ -64,7 +64,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	};
 }
 
-export function parseDefaultValue(value: string | null) {
+export function parseDefaultValue(value: string | null): string | null {
 	if (value === null || value.trim().toLowerCase() === 'null') return null;
 
 	return stripQuotes(value);
@@ -142,7 +142,7 @@ export default class MySQL implements SchemaInspector {
 	/**
 	 * List all existing tables in the current schema/database
 	 */
-	async tables() {
+	async tables(): Promise<string[]> {
 		const records = await this.knex
 			.select<{ TABLE_NAME: string }[]>('TABLE_NAME')
 			.from('INFORMATION_SCHEMA.TABLES')
@@ -216,7 +216,7 @@ export default class MySQL implements SchemaInspector {
 	/**
 	 * Get all the available columns in the current schema/database. Can be filtered to a specific table
 	 */
-	async columns(table?: string) {
+	async columns(table?: string): Promise<TableColumn[]> {
 		const query = this.knex
 			.select<{ TABLE_NAME: string; COLUMN_NAME: string }[]>('TABLE_NAME', 'COLUMN_NAME')
 			.from('INFORMATION_SCHEMA.COLUMNS')
@@ -330,7 +330,7 @@ export default class MySQL implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string) {
+	async primary(table: string): Promise<string | null> {
 		const results = await this.knex.raw(`SHOW KEYS FROM ?? WHERE Key_name = 'PRIMARY'`, table);
 
 		if (results && results.length && results[0].length) {
@@ -343,7 +343,7 @@ export default class MySQL implements SchemaInspector {
 	// Foreign Keys
 	// ===============================================================================================
 
-	async foreignKeys(table?: string) {
+	async foreignKeys(table?: string): Promise<ForeignKey[]> {
 		const result = await this.knex.raw<[ForeignKey[]]>(
 			`
 		 SELECT DISTINCT

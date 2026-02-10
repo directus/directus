@@ -6,7 +6,7 @@ export interface ValidateApiVersionOptions {
 	registry?: string;
 }
 
-export const assertVersionCompatibility = async (options?: ValidateApiVersionOptions) => {
+export const assertVersionCompatibility = async (options?: ValidateApiVersionOptions): Promise<void> => {
 	const version = await getApiVersion(options);
 
 	/**

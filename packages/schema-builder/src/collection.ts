@@ -20,7 +20,7 @@ export class CollectionBuilder {
 		this._data = {
 			collection: name,
 			...COLLECTION_DEFAULTS,
-		};
+		} satisfies InitialCollectionOverview;
 
 		this._schemaBuilder = schema;
 	}
@@ -37,7 +37,7 @@ export class CollectionBuilder {
 		return field;
 	}
 
-	get_name() {
+	get_name(): string {
 		return this._data.collection;
 	}
 

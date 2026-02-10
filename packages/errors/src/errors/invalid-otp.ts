@@ -1,3 +1,7 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
-export const InvalidOtpError = createError(ErrorCode.InvalidOtp, 'Invalid user OTP.', 401);
+export const InvalidOtpError: DirectusErrorConstructor<void> = createError(
+	ErrorCode.InvalidOtp,
+	'Invalid user OTP.',
+	401,
+);
