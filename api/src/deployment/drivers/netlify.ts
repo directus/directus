@@ -20,6 +20,8 @@ interface DeploymentConnection {
 	idleTimeout?: NodeJS.Timeout | undefined;
 	connectionTimeout?: NodeJS.Timeout | undefined;
 	deploymentId: string;
+	completed: Promise<void>;
+	resolveCompleted: () => void;
 }
 
 const WS_CONNECTIONS = new Map<string, DeploymentConnection>();
@@ -259,10 +261,18 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 				return resolve(existingConnection);
 			}
 
+			let resolveCompleted: () => void;
+
+			const completed = new Promise<void>((res) => {
+				resolveCompleted = res;
+			});
+
 			const connection: DeploymentConnection = {
 				ws: new WebSocket(WS_URL),
 				logs: [],
 				deploymentId,
+				completed,
+				resolveCompleted: resolveCompleted!,
 			};
 
 			this.setupWsConnectionTimeout(connection, reject);
@@ -304,6 +314,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 				// If we receive a "report" type message, the build is complete.
 				// Close the WebSocket connection but don't yet remove the logs, allowing the client to fetch them until the idle timeout expires.
 				if (data.type === 'report') {
+					connection.resolveCompleted();
 					this.closeWsConnection(deploymentId, false);
 				}
 			});
@@ -322,7 +333,13 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
+		const deploy = await this.handleApiError((api) => api.getDeploy({ deployId: deploymentId }));
 		const connection = await this.getWsConnection(deploymentId);
+
+		// Build already finished — WS is replaying logs, wait for all of them
+		if (this.mapStatus(deploy.state) !== 'building') {
+			await connection.completed;
+		}
 
 		if (options?.since) {
 			return connection.logs.filter((log) => log.timestamp >= options.since!);

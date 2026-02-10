@@ -372,6 +372,8 @@ describe('NetlifyDriver', () => {
 			addEventListener: ReturnType<typeof vi.fn>;
 		};
 
+		const flushMicrotasks = () => new Promise<void>((resolve) => process.nextTick(resolve));
+
 		beforeEach(() => {
 			mockWebSocket = {
 				send: vi.fn(),
@@ -389,8 +391,11 @@ describe('NetlifyDriver', () => {
 			vi.unstubAllGlobals();
 		});
 
-		it('should return filtered and mapped logs', async () => {
+		it('should return all logs for a completed build', async () => {
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'ready' });
 			const logsPromise = driver.getDeploymentLogs('deploy-1');
+
+			await flushMicrotasks();
 
 			const openHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'open')?.[1];
 			expect(openHandler).toBeDefined();
@@ -452,8 +457,31 @@ describe('NetlifyDriver', () => {
 			expect(mockWebSocket.close).toHaveBeenCalled();
 		});
 
+		it('should return current logs for an in-progress build', async () => {
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'building' });
+			const logsPromise = driver.getDeploymentLogs('deploy-building');
+
+			await flushMicrotasks();
+
+			const openHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'open')?.[1];
+			openHandler();
+
+			const messageHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'message')?.[1];
+
+			messageHandler({ data: JSON.stringify({ ts: '2024-01-01T00:00:00Z', type: 'stdout', message: 'Building...' }) });
+
+			// No report message — build still in progress
+			const logs = await logsPromise;
+
+			expect(logs).toHaveLength(1);
+			expect(logs[0]!.message).toBe('Building...');
+		});
+
 		it('should throw ServiceUnavailableError on WebSocket error', async () => {
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'building' });
 			const logsPromise = driver.getDeploymentLogs('deploy-err');
+
+			await flushMicrotasks();
 
 			const errorHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'error')?.[1];
 			expect(errorHandler).toBeDefined();
@@ -465,18 +493,25 @@ describe('NetlifyDriver', () => {
 		it('should throw ServiceUnavailableError on connection timeout', async () => {
 			vi.useFakeTimers();
 
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'building' });
 			const logsPromise = driver.getDeploymentLogs('deploy-timeout');
 
-			vi.advanceTimersByTime(10_000);
+			// Attach rejection handler before advancing timers to prevent unhandled rejection
+			const expectation = expect(logsPromise).rejects.toThrow(ServiceUnavailableError);
 
-			await expect(logsPromise).rejects.toThrow(ServiceUnavailableError);
+			await vi.advanceTimersByTimeAsync(10_000);
+			await expectation;
 
 			vi.useRealTimers();
 		});
 
-		it('should pass since parameter as milliseconds', async () => {
+		it('should filter logs with since parameter for a completed build', async () => {
 			const sinceDate = new Date('2024-01-01T00:00:05Z');
+
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({ state: 'ready' });
 			const logsPromise = driver.getDeploymentLogs('deploy-2', { since: sinceDate });
+
+			await flushMicrotasks();
 
 			const openHandler = mockWebSocket.addEventListener.mock.calls.find((call) => call[0] === 'open')?.[1];
 			openHandler();
