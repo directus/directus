@@ -10,13 +10,30 @@ import {
 import { generators, errors as openidErrors } from 'openid-client';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { getAuthProvider } from '../../auth.js';
 import { useLogger } from '../../logger/index.js';
-import { OAuth2AuthDriver } from './oauth2.js';
+import { createOAuth2AuthRouter, OAuth2AuthDriver } from './oauth2.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
 		EMAIL_TEMPLATES_PATH: './templates',
 	})),
+}));
+
+vi.mock('../../auth.js', () => ({
+	getAuthProvider: vi.fn(),
+}));
+
+vi.mock('../../utils/get-secret.js', () => ({
+	getSecret: vi.fn(() => 'test-secret'),
+}));
+
+vi.mock('../utils/generate-callback-url.js', () => ({
+	generateCallbackUrl: vi.fn(() => 'http://localhost:8055/auth/login/test/callback'),
+}));
+
+vi.mock('../utils/is-login-redirect-allowed.js', () => ({
+	isLoginRedirectAllowed: vi.fn(() => true),
 }));
 
 vi.mock('../../logger');
@@ -38,6 +55,10 @@ vi.mock('../../middleware/respond', () => ({
 
 vi.mock('../../utils/get-schema', () => ({
 	getSchema: vi.fn(),
+}));
+
+vi.mock('../../utils/async-handler', () => ({
+	default: (fn: any) => fn,
 }));
 
 const mockIssuerConstructor = vi.fn();
@@ -1269,5 +1290,89 @@ describe('OAuth2AuthDriver', () => {
 			await expect(driver.refresh(user)).rejects.toThrow(unknownError);
 			expect(mockLogger.warn).toHaveBeenCalledWith(unknownError, '[OAuth2] Unknown error');
 		});
+	});
+});
+
+describe('createOAuth2AuthRouter', () => {
+	function getRouteHandler(router: any, method: string, path: string) {
+		for (const layer of router.stack) {
+			if (layer.route?.path === path && layer.route?.methods?.[method]) {
+				return layer.route.stack[0].handle;
+			}
+		}
+
+		return undefined;
+	}
+
+	function createMockReqRes() {
+		const req: any = {
+			query: {},
+			protocol: 'http',
+			get: vi.fn((header: string) => {
+				if (header === 'host') return 'localhost:8055';
+				return undefined;
+			}),
+		};
+
+		const res: any = {
+			cookie: vi.fn(),
+			redirect: vi.fn(),
+		};
+
+		return { req, res };
+	}
+
+	test('sets secure cookie option to true when AUTH_COOKIE_SECURE is true', () => {
+		vi.mocked(useEnv).mockReturnValue({
+			EMAIL_TEMPLATES_PATH: './templates',
+			AUTH_COOKIE_SECURE: true,
+		});
+
+		const mockDriver = {
+			generateCodeVerifier: vi.fn(() => 'test-verifier'),
+			generateAuthUrl: vi.fn(() => 'https://provider.com/auth'),
+		};
+
+		vi.mocked(getAuthProvider).mockReturnValue(mockDriver as any);
+
+		const router = createOAuth2AuthRouter('test');
+		const handler = getRouteHandler(router, 'get', '/');
+
+		const { req, res } = createMockReqRes();
+
+		handler(req, res);
+
+		expect(res.cookie).toHaveBeenCalledWith(
+			'oauth2.test',
+			expect.any(String),
+			expect.objectContaining({ secure: true }),
+		);
+	});
+
+	test('sets secure cookie option to false when AUTH_COOKIE_SECURE is false', () => {
+		vi.mocked(useEnv).mockReturnValue({
+			EMAIL_TEMPLATES_PATH: './templates',
+			AUTH_COOKIE_SECURE: false,
+		});
+
+		const mockDriver = {
+			generateCodeVerifier: vi.fn(() => 'test-verifier'),
+			generateAuthUrl: vi.fn(() => 'https://provider.com/auth'),
+		};
+
+		vi.mocked(getAuthProvider).mockReturnValue(mockDriver as any);
+
+		const router = createOAuth2AuthRouter('test');
+		const handler = getRouteHandler(router, 'get', '/');
+
+		const { req, res } = createMockReqRes();
+
+		handler(req, res);
+
+		expect(res.cookie).toHaveBeenCalledWith(
+			'oauth2.test',
+			expect.any(String),
+			expect.objectContaining({ secure: false }),
+		);
 	});
 });
