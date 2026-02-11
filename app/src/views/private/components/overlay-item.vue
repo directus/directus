@@ -625,8 +625,6 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions>
-			<FlowDialogs v-bind="flowDialogsContext" />
-
 			<CollabAvatars
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
@@ -725,6 +723,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 			/>
 		</div>
 	</VMenu>
+
+	<FlowDialogs v-bind="flowDialogsContext" />
 
 	<ComparisonModal
 		v-if="collab"
