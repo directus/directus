@@ -468,6 +468,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			res.cookie(`openid.${providerName}`, token, {
 				httpOnly: true,
 				sameSite: 'lax',
+				secure: Boolean(env['AUTH_COOKIE_SECURE']),
 			});
 
 			try {
