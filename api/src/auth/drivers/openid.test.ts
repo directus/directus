@@ -12,7 +12,7 @@ import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getAuthProvider } from '../../auth.js';
 import { useLogger } from '../../logger/index.js';
-import { OpenIDAuthDriver, createOpenIDAuthRouter } from './openid.js';
+import { createOpenIDAuthRouter, OpenIDAuthDriver } from './openid.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
