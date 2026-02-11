@@ -1,3 +1,4 @@
+import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, SchemaOverview } from '@directus/types';
 import { getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -72,7 +73,16 @@ export function applyOperator(
 		const type = getOutputTypeForFunction(functionName);
 
 		if (['integer', 'float', 'decimal'].includes(type)) {
-			compareValue = Array.isArray(compareValue) ? compareValue.map(Number) : Number(compareValue);
+			if (Array.isArray(compareValue)) {
+				compareValue = compareValue.map((val) => {
+					const num = Number(val);
+					if (Number.isNaN(num)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
+					return num;
+				});
+			} else {
+				compareValue = Number(compareValue);
+				if (Number.isNaN(compareValue)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
+			}
 		}
 	}
 
@@ -93,9 +103,14 @@ export function applyOperator(
 
 		if (['integer', 'float', 'decimal'].includes(type)) {
 			if (Array.isArray(compareValue)) {
-				compareValue = compareValue.map((val) => Number(val));
+				compareValue = compareValue.map((val) => {
+					const num = Number(val);
+					if (Number.isNaN(num)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
+					return num;
+				});
 			} else {
 				compareValue = Number(compareValue);
+				if (Number.isNaN(compareValue)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
 			}
 		}
 	}
