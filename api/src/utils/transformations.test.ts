@@ -251,12 +251,7 @@ describe('resolvePreset', () => {
 		]);
 	});
 
-	test('Add resize transformation: withoutEnlargement clamps dimensions larger than original #22391', () => {
-		// Test case from issue #22391:
-		// Image is 1920x1080, but we request 2000x1200 with withoutEnlargement=true and a focal point
-		// Without the fix, this would cause "bad extract area" error in Sharp
-		// because the extraction region is calculated based on target dimensions (2000x1200)
-		// but the resize step can't enlarge beyond the original (1920x1080)
+	test('Resize transformation with withoutEnlargement clamps dimensions larger than original', () => {
 		const transformationParams: TransformationParams = {
 			key: 'test-larger-than-original',
 			width: 2000, // larger than original width (1920)
