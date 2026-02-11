@@ -173,9 +173,7 @@ describe('batch save with translations', () => {
 			},
 			{
 				id: 2,
-				translations: [
-					{ id: 20, languages_code: 'en', title: 'New EN' },
-				],
+				translations: [{ id: 20, languages_code: 'en', title: 'New EN' }],
 			},
 		]);
 	});
