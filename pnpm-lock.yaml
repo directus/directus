@@ -129,6 +129,9 @@ catalogs:
     '@histoire/plugin-vue':
       specifier: 0.17.17
       version: 0.17.17
+    '@internationalized/date':
+      specifier: 3.10.1
+      version: 3.10.1
     '@joeattardi/emoji-button':
       specifier: 4.6.4
       version: 4.6.4
@@ -375,6 +378,9 @@ catalogs:
     '@vitest/coverage-v8':
       specifier: 3.2.4
       version: 3.2.4
+    '@vitest/ui':
+      specifier: 3.2.4
+      version: 3.2.4
     '@vue/compiler-dom':
       specifier: 3.5.25
       version: 3.5.25
@@ -543,9 +549,6 @@ catalogs:
     flat:
       specifier: 6.0.1
       version: 6.0.1
-    flatpickr:
-      specifier: 4.6.13
-      version: 4.6.13
     focus-trap:
       specifier: 7.6.6
       version: 7.6.6
@@ -772,8 +775,8 @@ catalogs:
       specifier: 7.2.0
       version: 7.2.0
     reka-ui:
-      specifier: 2.6.0
-      version: 2.6.0
+      specifier: 2.8.0
+      version: 2.8.0
     rimraf:
       specifier: 6.1.0
       version: 6.1.0
@@ -1486,7 +1489,7 @@ importers:
         version: 8.18.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       copyfiles:
         specifier: 'catalog:'
         version: 2.4.1
@@ -1504,7 +1507,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     optionalDependencies:
       '@keyv/redis':
         specifier: 'catalog:'
@@ -1653,6 +1656,9 @@ importers:
       '@histoire/plugin-vue':
         specifier: 'catalog:'
         version: 0.17.17(histoire@0.17.17(@types/node@24.9.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue@3.5.24(typescript@5.9.3))
+      '@internationalized/date':
+        specifier: 'catalog:'
+        version: 3.10.1
       '@joeattardi/emoji-button':
         specifier: 'catalog:'
         version: 4.6.4
@@ -1742,7 +1748,10 @@ importers:
         version: 6.0.1(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue@3.5.24(typescript@5.9.3))
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
+      '@vitest/ui':
+        specifier: 'catalog:'
+        version: 3.2.4(vitest@3.2.4)
       '@vue/compiler-dom':
         specifier: 'catalog:'
         version: 3.5.25
@@ -1806,9 +1815,6 @@ importers:
       file-saver:
         specifier: 'catalog:'
         version: 2.0.5
-      flatpickr:
-        specifier: 'catalog:'
-        version: 4.6.13
       focus-trap:
         specifier: 'catalog:'
         version: 7.6.6
@@ -1868,7 +1874,7 @@ importers:
         version: 1.5.4
       reka-ui:
         specifier: 'catalog:'
-        version: 2.6.0(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))
+        version: 2.8.0(vue@3.5.24(typescript@5.9.3))
       sass-embedded:
         specifier: 'catalog:'
         version: 1.93.3
@@ -1898,7 +1904,7 @@ importers:
         version: 7.7.2(rollup@4.52.5)(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vue@3.5.24(typescript@5.9.3))
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vue:
         specifier: 'catalog:'
         version: 3.5.24(typescript@5.9.3)
@@ -1980,7 +1986,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
@@ -1992,7 +1998,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vue:
         specifier: 'catalog:'
         version: 3.5.24(typescript@5.9.3)
@@ -2023,10 +2029,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/create-directus-project:
     dependencies:
@@ -2054,10 +2060,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/env:
     dependencies:
@@ -2085,7 +2091,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2094,7 +2100,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/errors:
     dependencies:
@@ -2116,7 +2122,7 @@ importers:
         version: 2.1.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2125,7 +2131,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/extensions:
     dependencies:
@@ -2165,7 +2171,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       knex:
         specifier: 'catalog:'
         version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
@@ -2180,7 +2186,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vue:
         specifier: 'catalog:'
         version: 3.5.24(typescript@5.9.3)
@@ -2214,7 +2220,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2223,7 +2229,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/extensions-sdk:
     dependencies:
@@ -2320,13 +2326,13 @@ importers:
         version: 7.7.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/format-title:
     devDependencies:
@@ -2335,7 +2341,7 @@ importers:
         version: 3.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2344,7 +2350,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/memory:
     dependencies:
@@ -2375,7 +2381,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2384,7 +2390,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/pressure:
     dependencies:
@@ -2400,7 +2406,7 @@ importers:
         version: 4.17.21
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2409,7 +2415,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/release-notes-generator:
     dependencies:
@@ -2443,13 +2449,13 @@ importers:
         version: 7.7.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/schema:
     dependencies:
@@ -2484,7 +2490,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2493,7 +2499,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/specs:
     dependencies:
@@ -2524,7 +2530,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2533,7 +2539,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/storage-driver-azure:
     dependencies:
@@ -2558,7 +2564,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2567,7 +2573,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -2595,7 +2601,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2604,7 +2610,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -2632,7 +2638,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2641,7 +2647,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/storage-driver-local:
     dependencies:
@@ -2663,7 +2669,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2672,7 +2678,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/storage-driver-s3:
     dependencies:
@@ -2715,7 +2721,7 @@ importers:
         version: 2.1.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2724,7 +2730,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -2758,7 +2764,7 @@ importers:
         version: 8.0.2
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -2767,7 +2773,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/stores:
     dependencies:
@@ -2798,7 +2804,7 @@ importers:
         version: 3.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       esbuild:
         specifier: 'catalog:'
         version: 0.26.0
@@ -2813,7 +2819,7 @@ importers:
         version: 3.0.7(esbuild@0.26.0)(rollup@4.52.5)(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/themes:
     dependencies:
@@ -2862,7 +2868,7 @@ importers:
         version: 4.5.4(@types/node@24.9.1)(rollup@4.52.5)(typescript@5.9.3)(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vue:
         specifier: 'catalog:'
         version: 3.5.24(typescript@5.9.3)
@@ -2978,7 +2984,7 @@ importers:
         version: 7.7.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       strip-ansi:
         specifier: 'catalog:'
         version: 7.1.2
@@ -2990,7 +2996,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/utils:
     dependencies:
@@ -3057,7 +3063,7 @@ importers:
         version: 0.2.6
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       knex:
         specifier: 'catalog:'
         version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
@@ -3072,7 +3078,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vue:
         specifier: 'catalog:'
         version: 3.5.24(typescript@5.9.3)
@@ -3097,7 +3103,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -3106,7 +3112,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   sdk:
     devDependencies:
@@ -3118,7 +3124,7 @@ importers:
         version: 3.0.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4)
       esbuild-plugin-replace:
         specifier: 'catalog:'
         version: 1.4.0
@@ -3130,7 +3136,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   tests/blackbox:
     devDependencies:
@@ -4854,8 +4860,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@internationalized/date@3.10.0':
-    resolution: {integrity: sha512-oxDR/NTEJ1k+UFVQElaNIk65E/Z83HK1z1WI3lQyhTtnNg4R5oVXaPzK3jcpKG8UHKDVuDQHzn+wsxSz8RP3aw==}
+  '@internationalized/date@3.10.1':
+    resolution: {integrity: sha512-oJrXtQiAXLvT9clCf1K4kxp3eKsQhIaZqxEyowkBcsvZDdZkbWrVmnGknxs5flTD0VGsxrxKgBCZty1EzoiMzA==}
 
   '@internationalized/number@3.6.5':
     resolution: {integrity: sha512-6hY4Kl4HPBvtfS62asS/R22JzNNy8vi/Ssev7x6EobfCp+9QIB2hKvI2EtbdJ0VSQacxVNtqhE/NmF/NZ0gm6g==}
@@ -5175,8 +5181,8 @@ packages:
     resolution: {integrity: sha512-/YwcFbI0RsKXof+e+f48pVqmELzkGWOrhqZuL5xCUNdHYhvUd9El0jQDv7fBjdhxHSrflnZfXFUW56xaI69k4A==}
     engines: {node: '>=18.14.0'}
 
-  '@netlify/open-api@2.47.0':
-    resolution: {integrity: sha512-jU2zBJVoVaFxyTVgSvDI6lbqv26ODz78yfCLSEdbtCTe5so+nsYep6Y0bNvazryhVrPjuLOutr+vyt78WQWm2A==}
+  '@netlify/open-api@2.48.0':
+    resolution: {integrity: sha512-nO2wJmzF32OETFtIqX76c9vNqKRBniEuktDNuVQ78HsxZDkEihel+O12gOaWf065ubtmeDM9/50BCX0safM9gA==}
     engines: {node: '>=14.8.0'}
 
   '@ngneat/falso@8.0.2':
@@ -7156,6 +7162,11 @@ packages:
   '@vitest/spy@3.2.4':
     resolution: {integrity: sha512-vAfasCOe6AIK70iP5UD11Ac4siNUNJ9i/9PZ3NKx07sG6sUxeag1LWdNrMWeKKYBLlzuK+Gn65Yd5nyL6ds+nw==}
 
+  '@vitest/ui@3.2.4':
+    resolution: {integrity: sha512-hGISOaP18plkzbWEcP/QvtRW1xDXF2+96HbEX6byqQhAUbiS5oH6/9JwW+QsQCIYON2bI6QZBF+2PvOmrRZ9wA==}
+    peerDependencies:
+      vitest: 3.2.4
+
   '@vitest/utils@1.6.1':
     resolution: {integrity: sha512-jOrrUvXM4Av9ZWiG1EajNto0u96kWAhJ1LmPmJhXXQx/32MecEKd10pOLYgS2BQx1TgkGhloPU1ArDW2vvaY6g==}
 
@@ -7261,9 +7272,6 @@ packages:
   '@vue/test-utils@2.4.6':
     resolution: {integrity: sha512-FMxEjOpYNYiFe0GkaHsnJPXFHxQ6m4t8vI/ElPGpMWxZKpmRvQ33OIrvRXemy6yha03RxhOlQuy+gZMC3CQSow==}
 
-  '@vueuse/core@12.8.2':
-    resolution: {integrity: sha512-HbvCmZdzAu3VGi/pWYm5Ut+Kd9mn1ZHnn4L5G8kOQTPs/IwIAmJoBrmYk2ckLArgMXZj0AW3n5CAejLUO+PhdQ==}
-
   '@vueuse/core@13.9.0':
     resolution: {integrity: sha512-ts3regBQyURfCE2BcytLqzm8+MmLlo5Ln/KLoxDVcsZ2gzIwVNnQpQOL/UKV8alUqjSZOlpFZcRNsLRqj+OzyA==}
     peerDependencies:
@@ -7271,6 +7279,11 @@ packages:
 
   '@vueuse/core@14.0.0':
     resolution: {integrity: sha512-d6tKRWkZE8IQElX2aHBxXOMD478fHIYV+Dzm2y9Ag122ICBpNKtGICiXKOhWU3L1kKdttDD9dCMS4bGP3jhCTQ==}
+    peerDependencies:
+      vue: ^3.5.0
+
+  '@vueuse/core@14.2.0':
+    resolution: {integrity: sha512-tpjzVl7KCQNVd/qcaCE9XbejL38V6KJAEq/tVXj7mDPtl6JtzmUdnXelSS+ULRkkrDgzYVK7EerQJvd2jR794Q==}
     peerDependencies:
       vue: ^3.5.0
 
@@ -7316,23 +7329,20 @@ packages:
       universal-cookie:
         optional: true
 
-  '@vueuse/metadata@12.8.2':
-    resolution: {integrity: sha512-rAyLGEuoBJ/Il5AmFHiziCPdQzRt88VxR+Y/A/QhJ1EWtWqPBBAxTAFaSkviwEuOEZNtW8pvkPgoCZQ+HxqW1A==}
-
   '@vueuse/metadata@13.9.0':
     resolution: {integrity: sha512-1AFRvuiGphfF7yWixZa0KwjYH8ulyjDCC0aFgrGRz8+P4kvDFSdXLVfTk5xAN9wEuD1J6z4/myMoYbnHoX07zg==}
 
   '@vueuse/metadata@14.0.0':
     resolution: {integrity: sha512-6yoGqbJcMldVCevkFiHDBTB1V5Hq+G/haPlGIuaFZHpXC0HADB0EN1ryQAAceiW+ryS3niUwvdFbGiqHqBrfVA==}
 
+  '@vueuse/metadata@14.2.0':
+    resolution: {integrity: sha512-i3axTGjU8b13FtyR4Keeama+43iD+BwX9C2TmzBVKqjSHArF03hjkp2SBZ1m72Jk2UtrX0aYCugBq2R1fhkuAQ==}
+
   '@vueuse/router@14.0.0':
     resolution: {integrity: sha512-8HSq6Q2uJum8NUSP900s1NcfUnNQeTO0FqgEbMgO+xse/B/6A7Zn6chX+6ZA1r1p5P5LfaSOKqjQmf09BiakzQ==}
     peerDependencies:
       vue: ^3.5.0
       vue-router: ^4.0.0
-
-  '@vueuse/shared@12.8.2':
-    resolution: {integrity: sha512-dznP38YzxZoNloI0qpEfpkms8knDtaoQ6Y/sfS0L7Yki4zh40LFHEhur0odJC6xTHG5dxWVPiUWBXn+wCG2s5w==}
 
   '@vueuse/shared@13.9.0':
     resolution: {integrity: sha512-e89uuTLMh0U5cZ9iDpEI2senqPGfbPRTHM/0AaQkcxnpqjkZqDYP8rpfm7edOz8s+pOCOROEy1PIveSW8+fL5g==}
@@ -7341,6 +7351,11 @@ packages:
 
   '@vueuse/shared@14.0.0':
     resolution: {integrity: sha512-mTCA0uczBgurRlwVaQHfG0Ja7UdGe4g9mwffiJmvLiTtp1G4AQyIjej6si/k8c8pUwTfVpNufck+23gXptPAkw==}
+    peerDependencies:
+      vue: ^3.5.0
+
+  '@vueuse/shared@14.2.0':
+    resolution: {integrity: sha512-Z0bmluZTlAXgUcJ4uAFaML16JcD8V0QG00Db3quR642I99JXIDRa2MI2LGxiLVhcBjVnL1jOzIvT5TT2lqJlkA==}
     peerDependencies:
       vue: ^3.5.0
 
@@ -9349,6 +9364,9 @@ packages:
     resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
     engines: {node: ^12.20 || >= 14.13}
 
+  fflate@0.8.2:
+    resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
+
   figures@6.1.0:
     resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
     engines: {node: '>=18'}
@@ -9416,9 +9434,6 @@ packages:
     resolution: {integrity: sha512-/3FfIa8mbrg3xE7+wAhWeV+bd7L2Mof+xtZb5dRDKZ+wDvYJK4WDYeIOuOhre5Yv5aQObZrlbRmk3RTSiuQBtw==}
     engines: {node: '>=18'}
     hasBin: true
-
-  flatpickr@4.6.13:
-    resolution: {integrity: sha512-97PMG/aywoYpB4IvbvUJi0RQi8vearvU0oov1WW3k0WZPBMrTQVqekSX5CjSG/M4Q3i6A/0FKXC7RyAoAUUSPw==}
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
@@ -9669,23 +9684,21 @@ packages:
 
   glob@10.5.0:
     resolution: {integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@11.1.0:
     resolution: {integrity: sha512-vuNwKSaKiqm7g0THUBu2x7ckSs3XJLXE+2ssL7/MfTGPLLcrJQ/4Uq1CjPTtO5cCIiRxqvN6Twy1qOwhL0Xjcw==}
     engines: {node: 20 || >=22}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+    deprecated: Glob versions prior to v9 are no longer supported
 
   global-modules@2.0.0:
     resolution: {integrity: sha512-NGbfmJBp9x8IxyJSd1P+otYK8vonoJactOogrVfFRIAEY1ukil8RSKDz2Yo7wh1oihl51l/r6W4epkeKJHqL8A==}
@@ -12444,8 +12457,8 @@ packages:
   reinterval@1.1.0:
     resolution: {integrity: sha512-QIRet3SYrGp0HUHO88jVskiG6seqUGC5iAG7AwI/BV4ypGcuqk9Du6YQBUOUqm9c8pw1eyLoIaONifRua1lsEQ==}
 
-  reka-ui@2.6.0:
-    resolution: {integrity: sha512-NrGMKrABD97l890mFS3TNUzB0BLUfbL3hh0NjcJRIUSUljb288bx3Mzo31nOyUcdiiW0HqFGXJwyCBh9cWgb0w==}
+  reka-ui@2.8.0:
+    resolution: {integrity: sha512-N4JOyIrmDE7w2i06WytqcV2QICubtS2PsK5Uo8FIMAgmO13KhUAgAByP26cXjjm2oF/w7rTyRs8YaqtvaBT+SA==}
     peerDependencies:
       vue: '>= 3.2.0'
 
@@ -16737,7 +16750,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.9.1
 
-  '@internationalized/date@3.10.0':
+  '@internationalized/date@3.10.1':
     dependencies:
       '@swc/helpers': 0.5.17
 
@@ -17085,12 +17098,12 @@ snapshots:
 
   '@netlify/api@14.0.14':
     dependencies:
-      '@netlify/open-api': 2.47.0
+      '@netlify/open-api': 2.48.0
       node-fetch: 3.3.2
       p-wait-for: 5.0.2
       picoquery: 2.5.0
 
-  '@netlify/open-api@2.47.0': {}
+  '@netlify/open-api@2.48.0': {}
 
   '@ngneat/falso@8.0.2':
     dependencies:
@@ -19603,7 +19616,7 @@ snapshots:
       vite: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vue: 3.5.24(typescript@5.9.3)
 
-  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
+  '@vitest/coverage-v8@3.2.4(vitest@3.2.4)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -19618,26 +19631,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@bcoe/v8-coverage': 1.0.2
-      ast-v8-to-istanbul: 0.3.7
-      debug: 4.4.3(supports-color@5.5.0)
-      istanbul-lib-coverage: 3.2.2
-      istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 5.0.6
-      istanbul-reports: 3.2.0
-      magic-string: 0.30.21
-      magicast: 0.3.5
-      std-env: 3.10.0
-      test-exclude: 7.0.1
-      tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -19706,6 +19700,17 @@ snapshots:
   '@vitest/spy@3.2.4':
     dependencies:
       tinyspy: 4.0.4
+
+  '@vitest/ui@3.2.4(vitest@3.2.4)':
+    dependencies:
+      '@vitest/utils': 3.2.4
+      fflate: 0.8.2
+      flatted: 3.3.3
+      pathe: 2.0.3
+      sirv: 3.0.2
+      tinyglobby: 0.2.15
+      tinyrainbow: 2.0.0
+      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/utils@1.6.1':
     dependencies:
@@ -19893,15 +19898,6 @@ snapshots:
       js-beautify: 1.15.4
       vue-component-type-helpers: 2.2.12
 
-  '@vueuse/core@12.8.2(typescript@5.9.3)':
-    dependencies:
-      '@types/web-bluetooth': 0.0.21
-      '@vueuse/metadata': 12.8.2
-      '@vueuse/shared': 12.8.2(typescript@5.9.3)
-      vue: 3.5.24(typescript@5.9.3)
-    transitivePeerDependencies:
-      - typescript
-
   '@vueuse/core@13.9.0(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@types/web-bluetooth': 0.0.21
@@ -19916,6 +19912,13 @@ snapshots:
       '@vueuse/shared': 14.0.0(vue@3.5.24(typescript@5.9.3))
       vue: 3.5.24(typescript@5.9.3)
 
+  '@vueuse/core@14.2.0(vue@3.5.24(typescript@5.9.3))':
+    dependencies:
+      '@types/web-bluetooth': 0.0.21
+      '@vueuse/metadata': 14.2.0
+      '@vueuse/shared': 14.2.0(vue@3.5.24(typescript@5.9.3))
+      vue: 3.5.24(typescript@5.9.3)
+
   '@vueuse/integrations@14.0.0(axios@1.12.2)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 14.0.0(vue@3.5.24(typescript@5.9.3))
@@ -19928,11 +19931,11 @@ snapshots:
       sortablejs: 1.14.0
       universal-cookie: 8.0.1
 
-  '@vueuse/metadata@12.8.2': {}
-
   '@vueuse/metadata@13.9.0': {}
 
   '@vueuse/metadata@14.0.0': {}
+
+  '@vueuse/metadata@14.2.0': {}
 
   '@vueuse/router@14.0.0(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))':
     dependencies:
@@ -19940,17 +19943,15 @@ snapshots:
       vue: 3.5.24(typescript@5.9.3)
       vue-router: 4.6.3(vue@3.5.24(typescript@5.9.3))
 
-  '@vueuse/shared@12.8.2(typescript@5.9.3)':
-    dependencies:
-      vue: 3.5.24(typescript@5.9.3)
-    transitivePeerDependencies:
-      - typescript
-
   '@vueuse/shared@13.9.0(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       vue: 3.5.24(typescript@5.9.3)
 
   '@vueuse/shared@14.0.0(vue@3.5.24(typescript@5.9.3))':
+    dependencies:
+      vue: 3.5.24(typescript@5.9.3)
+
+  '@vueuse/shared@14.2.0(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       vue: 3.5.24(typescript@5.9.3)
 
@@ -22113,6 +22114,8 @@ snapshots:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.3.3
 
+  fflate@0.8.2: {}
+
   figures@6.1.0:
     dependencies:
       is-unicode-supported: 2.1.0
@@ -22205,8 +22208,6 @@ snapshots:
       hookified: 1.12.2
 
   flat@6.0.1: {}
-
-  flatpickr@4.6.13: {}
 
   flatted@3.3.3: {}
 
@@ -25557,22 +25558,21 @@ snapshots:
 
   reinterval@1.1.0: {}
 
-  reka-ui@2.6.0(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3)):
+  reka-ui@2.8.0(vue@3.5.24(typescript@5.9.3)):
     dependencies:
       '@floating-ui/dom': 1.7.4
       '@floating-ui/vue': 1.1.9(vue@3.5.24(typescript@5.9.3))
-      '@internationalized/date': 3.10.0
+      '@internationalized/date': 3.10.1
       '@internationalized/number': 3.6.5
       '@tanstack/vue-virtual': 3.13.12(vue@3.5.24(typescript@5.9.3))
-      '@vueuse/core': 12.8.2(typescript@5.9.3)
-      '@vueuse/shared': 12.8.2(typescript@5.9.3)
+      '@vueuse/core': 14.2.0(vue@3.5.24(typescript@5.9.3))
+      '@vueuse/shared': 14.2.0(vue@3.5.24(typescript@5.9.3))
       aria-hidden: 1.2.6
       defu: 6.1.4
       ohash: 2.0.11
       vue: 3.5.24(typescript@5.9.3)
     transitivePeerDependencies:
       - '@vue/composition-api'
-      - typescript
 
   rename-overwrite@6.0.3:
     dependencies:
@@ -27653,7 +27653,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
+  vitest@3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.4
@@ -27680,6 +27680,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.13.14
+      '@vitest/ui': 3.2.4(vitest@3.2.4)
       happy-dom: 20.0.10
       jsdom: 20.0.3
     transitivePeerDependencies:
@@ -27696,7 +27697,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
+  vitest@3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.4
@@ -27723,6 +27724,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.9.1
+      '@vitest/ui': 3.2.4(vitest@3.2.4)
       happy-dom: 20.0.10
       jsdom: 20.0.3
     transitivePeerDependencies:
