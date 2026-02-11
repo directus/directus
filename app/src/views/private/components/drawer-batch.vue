@@ -153,6 +153,7 @@ function useTranslationsFields() {
 		const results: TranslationsFieldInfo[] = [];
 
 		for (const [key, value] of Object.entries(edits)) {
+			// Batch mode form (primary-key="+") only produces `create` operations for relational fields.
 			if (!isObject(value) || !('create' in value)) continue;
 
 			const fieldInfo = fieldsStore.getField(collection.value, key);
@@ -189,7 +190,11 @@ function useTranslationsFields() {
 			translationsFields.map((t) => t.field),
 		);
 
-		const pkField = primaryKeyField.value!.field;
+		if (!primaryKeyField.value) {
+			throw new Error(`No primary key field found for collection ${collection.value}`);
+		}
+
+		const pkField = primaryKeyField.value.field;
 		const endpoint = getEndpoint(collection.value);
 
 		const existingItems = await fetchAll<Record<string, any>>(endpoint, {
@@ -200,7 +205,7 @@ function useTranslationsFields() {
 		});
 
 		const itemMap = new Map(existingItems.map((item) => [item[pkField], item]));
-		const resolveId = (val: unknown, pkField: string) => (isObject(val) ? (val as Record<string, any>)[pkField] : val);
+		const resolveId = (val: unknown, field: string) => (isObject(val) ? (val as Record<string, any>)[field] : val);
 
 		const payload = props.primaryKeys
 			.filter((pk) => itemMap.has(pk))

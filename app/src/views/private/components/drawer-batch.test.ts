@@ -41,8 +41,10 @@ vi.mock('@directus/composables', () => ({
 	}),
 }));
 
+const mockUnexpectedError = vi.hoisted(() => vi.fn());
+
 vi.mock('@/utils/unexpected-error', () => ({
-	unexpectedError: vi.fn(),
+	unexpectedError: mockUnexpectedError,
 }));
 
 const i18n = createI18n({
@@ -308,5 +310,194 @@ describe('batch save with translations', () => {
 		const payload = mockApi.patch.mock.calls[0]![1] as any[];
 		expect(payload).toHaveLength(1);
 		expect(payload[0]!.id).toBe(1);
+	});
+
+	it('handles multiple translation fields on the same collection', async () => {
+		mockFieldsStore.getField.mockImplementation((_collection: string, field: string) => {
+			if (field === 'translations' || field === 'content_translations') {
+				return { meta: { special: ['translations'] } };
+			}
+
+			return { meta: { special: [] } };
+		});
+
+		mockFieldsStore.getPrimaryKeyFieldForCollection.mockImplementation((col: string) => {
+			if (col === 'languages') return { field: 'code' };
+			if (col === 'content_languages') return { field: 'code' };
+			return { field: 'id' };
+		});
+
+		mockRelationsStore.getRelationsForField.mockImplementation((_collection: string, field: string) => {
+			if (field === 'translations') {
+				return [
+					{ meta: { one_field: 'translations', junction_field: 'languages_code' } },
+					{ field: 'languages_code', related_collection: 'languages' },
+				];
+			}
+
+			if (field === 'content_translations') {
+				return [
+					{ meta: { one_field: 'content_translations', junction_field: 'languages_code' } },
+					{ field: 'languages_code', related_collection: 'content_languages' },
+				];
+			}
+
+			return [];
+		});
+
+		mockFetchAll.mockResolvedValue([
+			{
+				id: 1,
+				translations: [{ id: 10, languages_code: 'en', title: 'Old' }],
+				content_translations: [{ id: 30, languages_code: 'en', body: 'Old body' }],
+			},
+		]);
+
+		const wrapper = mountDrawerBatch({
+			primaryKeys: [1],
+			edits: {
+				translations: { create: [{ languages_code: 'en', title: 'New' }] },
+				content_translations: { create: [{ languages_code: 'en', body: 'New body' }] },
+			},
+		});
+
+		await (wrapper.vm as any).save();
+
+		expect(mockApi.patch).toHaveBeenCalledWith('/items/articles', [
+			{
+				id: 1,
+				translations: [{ id: 10, languages_code: 'en', title: 'New' }],
+				content_translations: [{ id: 30, languages_code: 'en', body: 'New body' }],
+			},
+		]);
+	});
+
+	it('handles rows where junction field is missing', async () => {
+		setupTranslationsRelation();
+
+		mockFetchAll.mockResolvedValue([
+			{
+				id: 1,
+				translations: [
+					{ id: 10, title: 'No lang key' },
+					{ id: 11, languages_code: 'en', title: 'EN' },
+				],
+			},
+		]);
+
+		const wrapper = mountDrawerBatch({
+			primaryKeys: [1],
+			edits: {
+				translations: { create: [{ languages_code: 'en', title: 'Updated EN' }] },
+			},
+		});
+
+		await (wrapper.vm as any).save();
+
+		const payload = mockApi.patch.mock.calls[0]![1] as any[];
+
+		expect(payload[0]!.translations).toEqual([
+			{ id: 10, title: 'No lang key' },
+			{ id: 11, languages_code: 'en', title: 'Updated EN' },
+		]);
+	});
+});
+
+describe('batch save error handling', () => {
+	it('calls unexpectedError when fetchAll rejects', async () => {
+		setupTranslationsRelation();
+
+		const error = new Error('Network error');
+		mockFetchAll.mockRejectedValue(error);
+
+		const wrapper = mountDrawerBatch({
+			primaryKeys: [1],
+			edits: {
+				translations: { create: [{ languages_code: 'en', title: 'New' }] },
+			},
+		});
+
+		await (wrapper.vm as any).save();
+
+		expect(mockUnexpectedError).toHaveBeenCalledWith(error);
+		expect(mockApi.patch).not.toHaveBeenCalled();
+	});
+
+	it('calls unexpectedError when api.patch rejects without response errors', async () => {
+		setupTranslationsRelation();
+
+		mockFetchAll.mockResolvedValue([{ id: 1, translations: [] }]);
+
+		const error = new Error('Network error');
+		mockApi.patch.mockRejectedValue(error);
+
+		const wrapper = mountDrawerBatch({
+			primaryKeys: [1],
+			edits: {
+				translations: { create: [{ languages_code: 'en', title: 'New' }] },
+			},
+		});
+
+		await (wrapper.vm as any).save();
+
+		expect(mockUnexpectedError).toHaveBeenCalledWith(error);
+	});
+
+	it('surfaces validation errors from translations-aware save', async () => {
+		setupTranslationsRelation();
+
+		mockFetchAll.mockResolvedValue([{ id: 1, translations: [] }]);
+
+		mockApi.patch.mockRejectedValue({
+			response: {
+				data: {
+					errors: [
+						{ extensions: { code: 'FAILED_VALIDATION', field: 'title' } },
+						{ extensions: { code: 'INTERNAL_SERVER_ERROR' } },
+					],
+				},
+			},
+		});
+
+		const wrapper = mountDrawerBatch({
+			primaryKeys: [1],
+			edits: {
+				translations: { create: [{ languages_code: 'en', title: '' }] },
+			},
+		});
+
+		await (wrapper.vm as any).save();
+
+		expect(mockUnexpectedError).toHaveBeenCalledWith(
+			{ extensions: { code: 'INTERNAL_SERVER_ERROR' } },
+			0,
+			expect.any(Array),
+		);
+	});
+});
+
+describe('stageOnSave with translations', () => {
+	it('emits raw edits without translations merging when stageOnSave is true', async () => {
+		setupTranslationsRelation();
+
+		const wrapper = mountDrawerBatch({
+			primaryKeys: [1],
+			stageOnSave: true,
+			edits: {
+				translations: { create: [{ languages_code: 'en', title: 'New' }] },
+			},
+		});
+
+		await (wrapper.vm as any).save();
+
+		expect(mockFetchAll).not.toHaveBeenCalled();
+		expect(mockApi.patch).not.toHaveBeenCalled();
+
+		const emitted = wrapper.emitted('input');
+		expect(emitted).toBeTruthy();
+
+		expect(emitted![0]![0]).toEqual({
+			translations: { create: [{ languages_code: 'en', title: 'New' }] },
+		});
 	});
 });
