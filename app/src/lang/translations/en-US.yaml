@@ -2904,3 +2904,4 @@ accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)
 text_direction_rtl: Right to Left (RTL)
+set_to_now: Set to Now
