@@ -299,6 +299,52 @@ describe('Integration Tests', () => {
 			});
 		});
 
+		describe('requestPasswordReset', () => {
+			it('should silently return for external provider users', async () => {
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id-ext',
+					role: 'role-id',
+					status: 'active',
+					password: 'hashed',
+					email: 'ext@example.com',
+					provider: 'google',
+				});
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.requestPasswordReset('ext@example.com', null);
+
+				expect(mailService.send).not.toHaveBeenCalled();
+			});
+
+			it('should send reset email for default provider users', async () => {
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id-def',
+					role: 'role-id',
+					status: 'active',
+					password: 'hashed',
+					email: 'def@example.com',
+					provider: 'default',
+				});
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.requestPasswordReset('def@example.com', null);
+
+				expect(mailService.send).toHaveBeenCalledTimes(1);
+			});
+		});
+
 		describe('invite', () => {
 			const mailService = new MailService({
 				schema,
