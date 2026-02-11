@@ -968,6 +968,15 @@ operation_handle_reject: 'Ablehnen: Zum Hinzufügen klicken oder für Reroute zi
 visual_editor: Visueller Editor
 toggle_navigation: Navigation umschalten
 insights: Einblicke
+deployment:
+  provider:
+    settings:
+      delete_confirm: Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
+    run:
+      cancel_confirm: Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
+      log_all: Alle Log-Levels
+  target_value:
+    preview: Vorschau
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel-Optionen
@@ -1338,6 +1347,7 @@ fields:
     public_registration_email_filter_note: Nur E-Mail-Adressen, welche diesem Filter entsprechen, können sich registrieren.
     public_registration_verify_email: E-Mail-Adresse bestätigen
     public_registration_verify_email_note: Sendet eine E-Mail an den registrierenden Benutzer mit einem Bestätigungslink, welcher zuerst angeklickt werden muss, bevor man sich anmelden kann.
+    ai_header_name: Header
   directus_shares:
     name: Name
     role: Rolle
@@ -1490,6 +1500,7 @@ live_preview:
   new_window: In neuem Fenster öffnen
   close_window: In geteilter Ansicht öffnen
   toggle_3d: 3D umschalten
+  display_options: Anzeige-Optionen
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | Eine Verwendung übrig | {n} Verwendungen übrig
@@ -1498,6 +1509,8 @@ new_share: Neue Freigabe
 ai:
   input: Eingabe
   unknown: Unbekannt
+  items: Elemente
+  content: Inhalt
   settings: Einstellungen
   tool_approval:
     disabled: Deaktiviert
