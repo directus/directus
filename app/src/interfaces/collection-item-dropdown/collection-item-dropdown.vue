@@ -6,7 +6,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import sdk from '@/sdk';
+import sdk, { requestEndpoint } from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -88,10 +88,12 @@ async function getDisplayItem() {
 	try {
 		loading.value = true;
 
-		const response = await sdk.request<Item[]>(() => ({
-			path: getEndpoint(unref(selectedCollection)),
-			params: { fields: Array.from(fields), filter: { [primaryKey.value]: { _eq: value.value?.key } } },
-		}));
+		const response = await sdk.request<Item[]>(
+			requestEndpoint({
+				path: getEndpoint(unref(selectedCollection)),
+				params: { fields: Array.from(fields), filter: { [primaryKey.value]: { _eq: value.value?.key } } },
+			}),
+		);
 
 		displayItem.value = response?.[0] ?? null;
 	} catch (error) {

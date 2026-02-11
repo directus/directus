@@ -11,7 +11,7 @@ import { transformM2AAliases } from './lib/transform-m2a-aliases';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
-import sdk from '@/sdk';
+import sdk, { requestEndpoint } from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
@@ -121,7 +121,7 @@ export function useItem<T extends Item>(
 		error.value = null;
 
 		try {
-			const item = await sdk.request<T>(() => ({ path: itemEndpoint.value, params: unref(query) }));
+			const item = await sdk.request<T>(requestEndpoint({ path: itemEndpoint.value, params: unref(query) }));
 			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
@@ -199,21 +199,25 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await sdk.request<T>(() => ({
-					path: getEndpoint(collection.value),
-					method: 'POST',
-					body: JSON.stringify(editsWithClearedValues),
-				}));
+				response = await sdk.request<T>(
+					requestEndpoint({
+						path: getEndpoint(collection.value),
+						method: 'POST',
+						body: JSON.stringify(editsWithClearedValues),
+					}),
+				);
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await sdk.request<T>(() => ({
-					path: itemEndpoint.value,
-					method: 'PATCH',
-					body: JSON.stringify(editsWithClearedValues),
-				}));
+				response = await sdk.request<T>(
+					requestEndpoint({
+						path: itemEndpoint.value,
+						method: 'PATCH',
+						body: JSON.stringify(editsWithClearedValues),
+					}),
+				);
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),
@@ -255,11 +259,13 @@ export function useItem<T extends Item>(
 		let response;
 
 		try {
-			response = await sdk.request<Item>(() => ({
-				path: graphqlEndpoint,
-				method: 'POST',
-				body: JSON.stringify({ query }),
-			}));
+			response = await sdk.request<Item>(
+				requestEndpoint({
+					path: graphqlEndpoint,
+					method: 'POST',
+					body: JSON.stringify({ query }),
+				}),
+			);
 		} catch (error) {
 			saving.value = false;
 			unexpectedError(error);
@@ -363,11 +369,13 @@ export function useItem<T extends Item>(
 		}
 
 		try {
-			const response = await sdk.request<Item>(() => ({
-				path: getEndpoint(collection.value),
-				method: 'POST',
-				body: JSON.stringify(newItem),
-			}));
+			const response = await sdk.request<Item>(
+				requestEndpoint({
+					path: getEndpoint(collection.value),
+					method: 'POST',
+					body: JSON.stringify(newItem),
+				}),
+			);
 
 			notify({
 				title: i18n.global.t('item_create_success', 1),
@@ -407,13 +415,15 @@ export function useItem<T extends Item>(
 
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
-			const response = await sdk.request<Item[]>(() => ({
-				path: getEndpoint(relation.collection),
-				params: {
-					fields: Array.from(fieldsToFetch),
-					[`filter[${relation.field}][_eq]`]: primaryKey.value,
-				},
-			}));
+			const response = await sdk.request<Item[]>(
+				requestEndpoint({
+					path: getEndpoint(relation.collection),
+					params: {
+						fields: Array.from(fieldsToFetch),
+						[`filter[${relation.field}][_eq]`]: primaryKey.value,
+					},
+				}),
+			);
 
 			return response;
 		}
@@ -489,13 +499,15 @@ export function useItem<T extends Item>(
 			if (value === 'true') value = true;
 			if (value === 'false') value = false;
 
-			await sdk.request(() => ({
-				path: itemEndpoint.value,
-				method: 'PATCH',
-				body: JSON.stringify({
-					[field]: value,
+			await sdk.request(
+				requestEndpoint({
+					path: itemEndpoint.value,
+					method: 'PATCH',
+					body: JSON.stringify({
+						[field]: value,
+					}),
 				}),
-			}));
+			);
 
 			item.value = {
 				...(item.value as T),
@@ -518,7 +530,7 @@ export function useItem<T extends Item>(
 		deleting.value = true;
 
 		try {
-			await sdk.request(() => ({ path: itemEndpoint.value, method: 'DELETE' }));
+			await sdk.request(requestEndpoint({ path: itemEndpoint.value, method: 'DELETE' }));
 
 			item.value = null;
 

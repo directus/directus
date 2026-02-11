@@ -2,7 +2,7 @@ import { Collection, Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { has, merge, pick } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
-import sdk from '@/sdk';
+import sdk, { requestEndpoint } from '@/sdk';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 type UsableTemplateData = {
@@ -82,12 +82,14 @@ export function useTemplateData(
 		const endpoint = primaryKey.value ? `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}` : baseEndpoint;
 
 		try {
-			const item = await sdk.request<Item>(() => ({
-				path: endpoint,
-				params: {
-					fields: fields.value,
-				},
-			}));
+			const item = await sdk.request<Item>(
+				requestEndpoint({
+					path: endpoint,
+					params: {
+						fields: fields.value,
+					},
+				}),
+			);
 
 			itemData.value = item;
 		} catch (err) {

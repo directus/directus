@@ -5,7 +5,7 @@ import { computed, ref, Ref, watch } from 'vue';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
-import sdk from '@/sdk';
+import sdk, { requestEndpoint } from '@/sdk';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -391,17 +391,19 @@ export function useRelationMultiple(
 					filter._and.push(previewQuery.value.filter);
 				}
 
-				const response = await sdk.request<Item[]>(() => ({
-					path: getEndpoint(targetCollection),
-					params: {
-						search: previewQuery.value.search,
-						fields: Array.from(fields),
-						filter,
-						page: previewQuery.value.page,
-						limit: previewQuery.value.limit,
-						sort: previewQuery.value.sort,
-					},
-				}));
+				const response = await sdk.request<Item[]>(
+					requestEndpoint({
+						path: getEndpoint(targetCollection),
+						params: {
+							search: previewQuery.value.search,
+							fields: Array.from(fields),
+							filter,
+							page: previewQuery.value.page,
+							limit: previewQuery.value.limit,
+							sort: previewQuery.value.sort,
+						},
+					}),
+				);
 
 				// if itemId changed during the request, we wan't to avoid updating items with incorrect data.
 				// This can happen if the user navigates to a different item while the request is in progress.
@@ -469,16 +471,18 @@ export function useRelationMultiple(
 			filter._and.push(previewQuery.value.filter);
 		}
 
-		const response = await sdk.request<{ count: Record<string, unknown> }[]>(() => ({
-			path: getEndpoint(targetCollection),
-			params: {
-				search: previewQuery.value.search,
-				aggregate: {
-					count: targetPKField.value,
+		const response = await sdk.request<{ count: Record<string, unknown> }[]>(
+			requestEndpoint({
+				path: getEndpoint(targetCollection),
+				params: {
+					search: previewQuery.value.search,
+					aggregate: {
+						count: targetPKField.value,
+					},
+					filter,
 				},
-				filter,
-			},
-		}));
+			}),
+		);
 
 		existingItemCount.value = Number(response[0]?.count[targetPKField.value]);
 	}

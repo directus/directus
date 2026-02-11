@@ -1,4 +1,4 @@
-import type { AuthenticationClient, DirectusClient, RestClient } from '@directus/sdk';
+import type { AuthenticationClient, DirectusClient, RequestOptions, RestClient, RestCommand } from '@directus/sdk';
 import { authentication, createDirectus, rest } from '@directus/sdk';
 import { type FetchContext, ofetch } from 'ofetch';
 import { requestQueue } from './api';
@@ -63,4 +63,8 @@ function getUrlPath(request: FetchContext['request']): string | null {
 	} catch {
 		return null;
 	}
+}
+
+export function requestEndpoint<Output = unknown>(options: RequestOptions): RestCommand<Output, never> {
+	return () => options;
 }

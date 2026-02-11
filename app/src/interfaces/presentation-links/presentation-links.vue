@@ -8,6 +8,7 @@ import { computed, inject, ref, toRefs, watch } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectRunManualFlow } from '@/composables/use-flows';
+import { requestEndpoint } from '@/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 type Link = {
@@ -52,12 +53,14 @@ watch(
 		if (relatedFieldsFromTemplates.length === 0) return;
 
 		try {
-			const item = await sdk.request<Item>(() => ({
-				path: `${getEndpoint(props.collection)}/${value}`,
-				params: {
-					fields: relatedFieldsFromTemplates,
-				},
-			}));
+			const item = await sdk.request<Item>(
+				requestEndpoint({
+					path: `${getEndpoint(props.collection)}/${value}`,
+					params: {
+						fields: relatedFieldsFromTemplates,
+					},
+				}),
+			);
 
 			/*
 			 * Pick only non-arrays because we can't render those types of relations.

@@ -5,7 +5,7 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { isItemContext, isPromptContext, isVisualElement, type PendingContextItem } from '../types';
 import { i18n } from '@/lang';
-import sdk from '@/sdk';
+import sdk, { requestEndpoint } from '@/sdk';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -74,10 +74,12 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*']) => {
 		try {
-			const response = await sdk.request<Item>(() => ({
-				path: `${getEndpoint(collection)}/${id}`,
-				params: { fields },
-			}));
+			const response = await sdk.request<Item>(
+				requestEndpoint({
+					path: `${getEndpoint(collection)}/${id}`,
+					params: { fields },
+				}),
+			);
 
 			return response;
 		} catch (error) {

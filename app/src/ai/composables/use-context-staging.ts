@@ -8,7 +8,7 @@ import { useAiStore } from '../stores/use-ai';
 import { useAiContextStore } from '../stores/use-ai-context';
 import type { MCPPrompt } from '../types';
 import { usePrompts } from './use-prompts';
-import sdk from '@/sdk';
+import sdk, { requestEndpoint } from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { notify } from '@/utils/notify';
@@ -83,13 +83,15 @@ export function useContextStaging() {
 		const displayFields = getFieldsFromTemplate(displayTemplate);
 
 		try {
-			const response = await sdk.request<Item[]>(() => ({
-				path: getEndpoint(collection),
-				params: {
-					fields: [primaryKey, ...displayFields],
-					filter: { [primaryKey]: { _in: ids } },
-				},
-			}));
+			const response = await sdk.request<Item[]>(
+				requestEndpoint({
+					path: getEndpoint(collection),
+					params: {
+						fields: [primaryKey, ...displayFields],
+						filter: { [primaryKey]: { _in: ids } },
+					},
+				}),
+			);
 
 			const items = response ?? [];
 
@@ -182,10 +184,12 @@ export function useContextStaging() {
 			if (element.fields?.length === 1) {
 				const field = element.fields[0]!;
 
-				const item = await sdk.request<Item>(() => ({
-					path: `${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`,
-					params: { fields: [field] },
-				}));
+				const item = await sdk.request<Item>(
+					requestEndpoint({
+						path: `${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`,
+						params: { fields: [field] },
+					}),
+				);
 
 				if (item?.[field]) return String(item[field]);
 				return fallback;
@@ -199,10 +203,12 @@ export function useContextStaging() {
 			const displayTemplate = collectionInfo.meta.display_template;
 			const displayFields = getFieldsFromTemplate(displayTemplate);
 
-			const item = await sdk.request<Item>(() => ({
-				path: `${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`,
-				params: { fields: [primaryKey, ...displayFields] },
-			}));
+			const item = await sdk.request<Item>(
+				requestEndpoint({
+					path: `${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`,
+					params: { fields: [primaryKey, ...displayFields] },
+				}),
+			);
 
 			if (!item) return fallback;
 

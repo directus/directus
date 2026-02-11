@@ -2,6 +2,7 @@ import { useSdk } from '@directus/composables';
 import { Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, Ref, ref, watch } from 'vue';
+import { requestEndpoint } from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -48,13 +49,15 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 		try {
 			loading.value = true;
 
-			const response = await sdk.request<Item[]>(() => ({
-				path: getEndpoint(collection.value),
-				params: {
-					fields: Array.from(fields),
-					filter: { [primaryKey.value]: { _in: ids.value } },
-				},
-			}));
+			const response = await sdk.request<Item[]>(
+				requestEndpoint({
+					path: getEndpoint(collection.value),
+					params: {
+						fields: Array.from(fields),
+						filter: { [primaryKey.value]: { _in: ids.value } },
+					},
+				}),
+			);
 
 			displayItems.value = response;
 		} catch (error) {

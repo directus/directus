@@ -2,7 +2,7 @@ import { getEndpoint } from '@directus/utils';
 import { merge } from 'lodash';
 import { computed, MaybeRefOrGetter, ref, Ref, toValue, watch } from 'vue';
 import { RelationM2O } from '@/composables/use-relation-m2o';
-import sdk from '@/sdk';
+import sdk, { requestEndpoint } from '@/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export type RelationQuerySingle = {
@@ -83,10 +83,12 @@ export function useRelationSingle<T extends Record<string, any>>(
 		loading.value = true;
 
 		try {
-			const item = await sdk.request<T>(() => ({
-				path: `${getEndpoint(relatedCollection)}/${encodeURIComponent(id)}`,
-				params: { fields: Array.from(fields) },
-			}));
+			const item = await sdk.request<T>(
+				requestEndpoint({
+					path: `${getEndpoint(relatedCollection)}/${encodeURIComponent(id)}`,
+					params: { fields: Array.from(fields) },
+				}),
+			);
 
 			if (typeof val === 'object') {
 				displayItem.value = merge({}, item, val);
