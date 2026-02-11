@@ -190,7 +190,7 @@ watch(
 		<template #actions>
 			<SearchInput v-if="totalCount > 0 || search" v-model="search" :show-filter="false" small />
 
-			<VButton v-tooltip.bottom="$t('deployment.deploy')" rounded icon small :loading="deploying" @click="deploy()">
+			<VButton :tooltip="$t('deployment.deploy')" rounded icon small :loading="deploying" @click="deploy()">
 				<VIcon name="rocket_launch" small />
 
 				<template #append-outer>
@@ -217,7 +217,9 @@ watch(
 		<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
 		<div v-else class="container">
-			<VNotice class="notice">{{ $t('deployment.provider.runs.notice') }}</VNotice>
+			<VNotice class="notice">
+				{{ $t('deployment.provider.runs.notice', { provider: $t(`deployment.provider.${provider}.name`) }) }}
+			</VNotice>
 			<VInfo v-if="runs.length === 0 && !search" icon="history" :title="$t('deployment.provider.runs.empty')" center>
 				{{ $t('deployment.provider.runs.empty_copy') }}
 			</VInfo>

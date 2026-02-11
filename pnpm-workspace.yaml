@@ -58,6 +58,7 @@ catalog:
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
   '@modelcontextprotocol/sdk': 1.26.0
+  '@netlify/api': 14.0.14
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.3
@@ -268,8 +269,8 @@ catalog:
   qrcode: 1.5.4
   qs: 6.14.1
   rate-limiter-flexible: 7.2.0
-  reka-ui: 2.8.0
   redlock: 5.0.0-beta.2
+  reka-ui: 2.8.0
   rimraf: 6.1.0
   rolldown: 1.0.0-beta.31
   rollup: 4.52.5
