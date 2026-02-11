@@ -115,7 +115,7 @@ function getColor(input?: number) {
 		}
 	}
 
-	return matchingFormat?.color || cssVar('--theme--primary');
+	return matchingFormat?.color || cssVar('--theme--primary-subdued');
 
 	function matchesOperator(format: Record<string, any>) {
 		if (typeof input === 'string') {
@@ -158,39 +158,34 @@ function getColor(input?: number) {
 		<div>
 			<VList class="metric-list">
 				<VListItem v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
-					<div
-						v-if="row[aggregateFunction]?.[aggregateField]"
-						class="metric-bar-visual"
-						:style="{
-							inlineSize: widthOfRow(row),
-							'background-color': `${getColor(row[aggregateFunction]?.[aggregateField])}50`,
-						}"
-					/>
+					<div class="metric-row">
+						<div class="metric-labels" :style="{ minInlineSize: widthOfRow(row) }">
+							<div class="metric-bar-text">
+								<RenderTemplate
+									:item="{ [groupByField]: row['group'][groupByField] }"
+									:collection="collection"
+									:template="`{{${groupByField}}}`"
+								/>
+							</div>
 
-					<div
-						class="metric-bar-content"
-						:style="{
-							inlineSize: widthOfRow(row),
-						}"
-					>
-						<div class="metric-bar-text">
-							<RenderTemplate
-								:item="{ [groupByField]: row['group'][groupByField] }"
-								:collection="collection"
-								:template="`{{${groupByField}}}`"
-							/>
+							<div
+								class="metric-bar-number"
+								:style="{
+									color: getColor(row[aggregateFunction]?.[aggregateField]),
+								}"
+							>
+								{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
+							</div>
 						</div>
 
 						<div
-							class="metric-bar-number"
+							v-if="row[aggregateFunction]?.[aggregateField]"
+							class="metric-bar-visual"
 							:style="{
-								color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField]))
-									.darken(darkMode ? -2 : 2)
-									.hex()}`,
+								inlineSize: widthOfRow(row),
+								'background-color': getColor(row[aggregateFunction]?.[aggregateField]),
 							}"
-						>
-							{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
-						</div>
+						/>
 					</div>
 				</VListItem>
 			</VList>
@@ -211,8 +206,6 @@ function getColor(input?: number) {
 }
 
 .metric-list-item {
-	position: relative;
-	block-size: 36px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
@@ -220,37 +213,39 @@ function getColor(input?: number) {
 	border-block-end: 0;
 }
 
-.metric-bar-visual {
-	position: absolute;
-	inset-block: 2px;
-	inset-inline-start: 2px;
-	border-radius: 4px;
-	pointer-events: none;
+.metric-row {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	inline-size: 100%;
+	padding-block: 4px;
 }
 
-.metric-bar-content {
-	position: relative;
-	block-size: 100%;
+.metric-labels {
 	display: flex;
-	align-items: center;
+	align-items: baseline;
 	justify-content: space-between;
-	gap: 10px;
-	padding: 0 4px;
+	gap: 8px;
 	min-inline-size: max-content;
 }
 
+.metric-bar-visual {
+	block-size: 20px;
+	border-radius: 6px;
+}
+
 .metric-bar-text {
-	padding: 0 4px;
 	white-space: pre;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	font-size: 14px;
 }
 
 .metric-bar-number {
-	padding: 0 4px;
 	font-weight: 600;
 	white-space: pre;
-	font-size: 13px;
+	font-size: 14px;
 	flex-shrink: 0;
 }
 </style>
