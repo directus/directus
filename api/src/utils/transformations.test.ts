@@ -295,10 +295,7 @@ describe('resolvePreset', () => {
 		);
 
 		// Width should be clamped to 1920, height stays at 500
-		// With 1920x500 target and centered focal point on 1920x1080 image:
-		// hRatio = 1080/500 = 2.16, wRatio = 1920/1920 = 1
-		// wRatio < hRatio, so factor = 1, width = 1920, height = 1080/1 = 1080
-		// Extract region: left = 0, top = (1080/2 - 500/2) = 290
+		// With 1920x500 target and centered focal point on 1920x1080 image
 		expect(output).toStrictEqual([
 			[
 				'resize',
