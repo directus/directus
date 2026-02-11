@@ -1,4 +1,5 @@
-import { NUMERIC_TYPES } from '@directus/constants';
+import { NUMERIC_TYPES, RELATIONAL_TYPES } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import type { FieldOverview, NumericType, Permission, SchemaOverview } from '@directus/types';
 import { isIn } from '@directus/utils';
 import { getRelationInfo } from '@directus/utils';
@@ -19,14 +20,11 @@ export function applySearch(
 	aliasMap: AliasMap,
 	permissions: Permission[],
 ) {
+	const env = useEnv()
+	const maxRelationDepth = parseInt(env['SEARCH_RELATION_MAX_DEPTH']?.toString() ?? '3');
+
 	dbQuery.andWhere(function (queryBuilder) {
-		addWhereConditions(knex, schema, queryBuilder, searchQuery, collection, aliasMap, permissions);
-
-		const searchableRelationPaths = discoverSearchableRelationPaths(schema, collection, permissions);
-
-		for (const relationPath of searchableRelationPaths) {
-			addSearchConditionsForRelationPath(knex, schema, queryBuilder, searchQuery, collection, relationPath, permissions, aliasMap);
-		}
+		addWhereConditions(knex, schema, queryBuilder, searchQuery, collection, aliasMap, permissions, maxRelationDepth);
 	});
 }
 
@@ -41,14 +39,33 @@ function addWhereConditions(
 	collection: string,
 	aliasMap: AliasMap,
 	permissions: Permission[],
+	maxRelationDepth: number,
+	currentDepth = 1,
 ) {
 	const { number: numberHelper } = getHelpers(knex);
 	const searchLower = searchQuery.toLowerCase();
 	const { fields, cases, caseMap, allowedFields } = getSearchableFields(schema, collection, permissions);
-
+	const primaryKey = schema.collections[collection]?.primary;
 	let needsFallbackCondition = true;
 
 	fields.forEach(([name, field]) => {
+		if (isFieldRelational(field) && primaryKey && currentDepth <= maxRelationDepth) {
+			 queryBuilder.orWhereExists(function (subQuery) {
+				const { relation } = getRelationInfo(schema.relations, collection, name);
+				
+				if (!relation) return;
+
+				subQuery
+				.from(relation.collection)
+				.whereRaw(`?? = ??`, [`${relation.collection}.${relation.field}`, `${collection}.${primaryKey}`])
+				.andWhere(function (subSubQuery) {
+					addWhereConditions(knex, schema, subSubQuery, searchQuery, relation.collection, aliasMap, permissions, maxRelationDepth, currentDepth + 1);
+				})
+			})
+
+			return;
+		}
+
 		// only account for when cases when full access is not given
 		const whenCases = allowedFields.has('*') ? [] : (caseMap[name] ?? []).map((caseIndex) => cases[caseIndex]!);
 
@@ -73,6 +90,13 @@ function addWhereConditions(
 	if (needsFallbackCondition) {
 		queryBuilder.orWhereRaw('1 = 0');
 	}
+}
+
+/**
+ * Check if a field is a relational field.
+ */
+function isFieldRelational(field: FieldOverview): boolean {
+	return RELATIONAL_TYPES.some(value => field.special.includes(value));
 }
 
 /**
@@ -114,7 +138,7 @@ function getSearchableFields(schema: SchemaOverview, collection: string, permiss
 	if (cases.length !== 0 && !allowedFields.has('*')) {
 		fields = fields.filter((field) => allowedFields.has(field[0]));
 	}
-
+	
 	return {
 		fields,
 		cases,
@@ -170,103 +194,4 @@ function addSearchCondition(
 	} else if (fieldType === 'uuid') {
 		queryBuilder[logical].where({ [`${collection}.${fieldName}`]: searchQuery });
 	}
-}
-
-/**
- * Discover all searchable relation paths as arrays with permission checks
- * Returns paths like [['translations'], ['related'], ['related', 'subrelated']]
- */
-function discoverSearchableRelationPaths(
-	schema: SchemaOverview,
-	collection: string,
-	permissions: Permission[],
-	visited = new Set<string>(),
-): string[][] {
-	const paths: string[][] = [];
-	visited.add(collection);
-
-	const fields = Object.entries(schema.collections[collection]?.fields || {});
-
-	for (const [fieldName, _field] of fields) {
-		const { relation, relationType } = getRelationInfo(schema.relations, collection, fieldName);
-
-		if (!relation || relationType !== 'o2m') {
-			continue;
-		}
-
-		const relatedCollection = relation.collection;
-
-		// Check if related collection has searchable string fields (with permission filtering)
-		const hasSearchableFields = getSearchableFields(schema, relatedCollection, permissions).fields.length > 0;
-
-		if (hasSearchableFields) {
-			// Add the direct relation path
-			paths.push([fieldName]);
-		}
-
-		// Check for nested relations (avoid cycles)
-		if (!visited.has(relatedCollection)) {
-			const nestedPaths = discoverSearchableRelationPaths(schema, relatedCollection, permissions, visited);
-
-			for (const nestedPath of nestedPaths) {
-				// Prepend current field to nested path
-				paths.push([fieldName, ...nestedPath]);
-			}
-		}
-	}
-
-	return paths;
-}
-
-/**
- * Add whereExists subquery conditions for a relation path search with permission checks
- */
-function addSearchConditionsForRelationPath(
-	knex: Knex,
-	schema: SchemaOverview,
-	queryBuilder: Knex.QueryBuilder,
-	searchLower: string,
-	collection: string,
-	relationPath: string[],
-	permissions: Permission[],
-	aliasMap: AliasMap,
-) {
-	queryBuilder.orWhereExists(function (subquery) {
-		const { relation: firstRelation, relationType: firstRelationType } = getRelationInfo(
-			schema.relations,
-			collection,
-			relationPath[0]!,
-		);
-
-		if (!firstRelation || firstRelationType !== 'o2m') {
-			return;
-		}
-
-		subquery.from(firstRelation.collection);
-		let currentCollection = firstRelation.collection;
-		const primaryKey = schema.collections[collection]!.primary;
-
-		// Join back to the parent collection by comparing the field
-		subquery.whereRaw(`??.?? = ??.??`, [currentCollection, firstRelation.field, collection, primaryKey]);
-
-		// Handle nested relations
-		for (let i = 1; i < relationPath.length; i++) {
-			const fieldName = relationPath[i]!;
-			const { relation, relationType } = getRelationInfo(schema.relations, currentCollection, fieldName);
-
-			if (relation && relationType === 'o2m') {
-				subquery.leftJoin(
-					relation.collection,
-					`${currentCollection}.${schema.collections[currentCollection]!.primary}`,
-					`${relation.collection}.${relation.field}`,
-				);
-
-				currentCollection = relation.collection;
-			}
-		}
-
-		subquery.andWhere(function (conditionQuery) {
-			addWhereConditions(knex, schema, conditionQuery, searchLower, currentCollection, aliasMap, permissions);
-		});
-	});
 }
