@@ -113,9 +113,9 @@ test('applyOperator throws InvalidQueryError for non-numeric value on integer fi
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-	expect(() =>
-		applyOperator(db, queryBuilder, schema, 'articles.likes', '_eq', 'not-a-number'),
-	).toThrow(InvalidQueryError);
+	expect(() => applyOperator(db, queryBuilder, schema, 'articles.likes', '_eq', 'not-a-number')).toThrow(
+		InvalidQueryError,
+	);
 });
 
 test('applyOperator throws InvalidQueryError for non-numeric array value on integer field', async () => {
@@ -131,7 +131,7 @@ test('applyOperator throws InvalidQueryError for non-numeric array value on inte
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-	expect(() =>
-		applyOperator(db, queryBuilder, schema, 'articles.likes', '_eq', ['abc', '123']),
-	).toThrow(InvalidQueryError);
+	expect(() => applyOperator(db, queryBuilder, schema, 'articles.likes', '_eq', ['abc', '123'])).toThrow(
+		InvalidQueryError,
+	);
 });
