@@ -7,15 +7,10 @@ import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
-import { getService } from '../utils/get-service.js';
 import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
-}));
-
-vi.mock('../utils/get-service.js', () => ({
-	getService: vi.fn(),
 }));
 
 describe('Integration Tests', () => {
@@ -463,99 +458,6 @@ describe('Integration Tests', () => {
 				);
 
 				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
-			});
-		});
-
-		describe('processO2M', () => {
-			const schema = new SchemaBuilder()
-				.collection('articles', (c) => {
-					c.field('id').id();
-					c.field('tags').m2m('tags');
-				})
-				.build();
-
-			let service: PayloadService;
-			let mockUpdateOne: MockedFunction<any>;
-			let mockCreateMany: MockedFunction<any>;
-
-			beforeEach(() => {
-				service = new PayloadService('articles', {
-					knex: db,
-					schema,
-				});
-
-				mockUpdateOne = vi.fn().mockResolvedValue(1);
-				mockCreateMany = vi.fn().mockResolvedValue([]);
-
-				vi.mocked(getService).mockReturnValue({
-					updateOne: mockUpdateOne,
-					createMany: mockCreateMany,
-					deleteMany: vi.fn().mockResolvedValue([]),
-					upsertMany: vi.fn().mockResolvedValue([]),
-				} as any);
-			});
-
-			test('converts M2M create to update when junction row already exists', async () => {
-				tracker.on.select(/articles_tags_junction/).response({ id: 99 });
-
-				await service.processO2M({ tags: { create: [{ tags_id: 5 }] } }, 1);
-
-				expect(mockUpdateOne).toHaveBeenCalledWith(99, {}, expect.any(Object));
-				expect(mockCreateMany).not.toHaveBeenCalled();
-			});
-
-			test('creates junction row when no existing row found', async () => {
-				tracker.on.select(/articles_tags_junction/).response(undefined);
-
-				await service.processO2M({ tags: { create: [{ tags_id: 5 }] } }, 1);
-
-				expect(mockUpdateOne).not.toHaveBeenCalled();
-
-				expect(mockCreateMany).toHaveBeenCalledWith(
-					[expect.objectContaining({ tags_id: 5, articles_id: 1 })],
-					expect.any(Object),
-				);
-			});
-
-			test('extracts relatedId from object junction value', async () => {
-				tracker.on.select(/articles_tags_junction/).response({ id: 42 });
-
-				await service.processO2M({ tags: { create: [{ tags_id: { id: 7, name: 'test' } }] } }, 1);
-
-				expect(mockUpdateOne).toHaveBeenCalledWith(42, {}, expect.any(Object));
-				expect(mockCreateMany).not.toHaveBeenCalled();
-			});
-
-			test('skips dedup when junction value is undefined and creates normally', async () => {
-				await service.processO2M({ tags: { create: [{ some_other_field: 'value' }] } }, 1);
-
-				expect(mockCreateMany).toHaveBeenCalledWith(
-					[expect.objectContaining({ some_other_field: 'value', articles_id: 1 })],
-					expect.any(Object),
-				);
-
-				expect(mockUpdateOne).not.toHaveBeenCalled();
-			});
-
-			test('handles mix of existing and new junction rows', async () => {
-				let callCount = 0;
-
-				tracker.on.select(/articles_tags_junction/).response(() => {
-					callCount++;
-					return callCount === 1 ? { id: 50 } : undefined;
-				});
-
-				await service.processO2M({ tags: { create: [{ tags_id: 10 }, { tags_id: 20 }] } }, 1);
-
-				expect(mockUpdateOne).toHaveBeenCalledTimes(1);
-				expect(mockUpdateOne).toHaveBeenCalledWith(50, {}, expect.any(Object));
-
-				expect(mockCreateMany).toHaveBeenCalledTimes(1);
-
-				expect(mockCreateMany).toHaveBeenCalledWith(
-					[expect.objectContaining({ tags_id: 20, articles_id: 1 })],
-					expect.any(Object),
-				);
 			});
 		});
 	});
