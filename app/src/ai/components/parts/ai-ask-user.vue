@@ -2,7 +2,7 @@
 import formatTitle from '@directus/format-title';
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { type AskUserQuestion, pendingAskUser, submitAnswers } from '../../composables/use-ask-user-tool';
+import { type AskUserQuestion, cancelPending, pendingAskUser, submitAnswers } from '../../composables/use-ask-user-tool';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
@@ -19,7 +19,9 @@ const textInputActive = ref<Record<string, boolean>>({});
 const currentQuestion = computed<AskUserQuestion | undefined>(() => questions.value[activeQuestionIndex.value]);
 
 function isAnswered(id: string): boolean {
-	return answers.value[id] !== undefined || !!textInputValues.value[id];
+	const answer = answers.value[id];
+	const hasAnswer = Array.isArray(answer) ? answer.length > 0 : answer !== undefined;
+	return hasAnswer || !!textInputValues.value[id];
 }
 
 const currentQuestionAnswered = computed(() => {
@@ -113,10 +115,6 @@ function gatherAnswers(): Record<string, unknown> {
 
 function handleSubmit() {
 	submitAnswers(gatherAnswers());
-}
-
-function handleChatAboutThis() {
-	submitAnswers({ _chat: true, ...gatherAnswers() });
 }
 
 function isOptionSelected(questionId: string, label: string): boolean {
@@ -213,6 +211,7 @@ onMounted(() => {
 
 onUnmounted(() => {
 	resizeObserver?.disconnect();
+	cancelPending();
 });
 </script>
 
@@ -295,7 +294,7 @@ onUnmounted(() => {
 					</div>
 
 					<div class="actions">
-						<button class="chat-about-this" @click="handleChatAboutThis">
+						<button class="chat-about-this" @click="handleSubmit">
 							{{ t('ai.ask_user_chat_about_this') }}
 						</button>
 

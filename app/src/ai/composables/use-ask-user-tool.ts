@@ -4,8 +4,8 @@ import { useAiStore } from '../stores/use-ai';
 import { defineTool } from './define-tool';
 
 const questionSchema = z.object({
-	id: z.string().describe('Unique key for this question, e.g. "auth_method"'),
-	question: z.string().describe('The question text to display'),
+	id: z.string().min(1).describe('Unique key for this question, e.g. "auth_method"'),
+	question: z.string().min(1).describe('The question text to display'),
 	options: z
 		.array(
 			z.object({
@@ -40,7 +40,7 @@ function resolvePending(value: Record<string, unknown>): void {
 }
 
 export function cancelPending(): void {
-	resolvePending({ _cancelled: true });
+	resolvePending({});
 }
 
 export function submitAnswers(answers: Record<string, unknown>): void {
@@ -50,7 +50,7 @@ export function submitAnswers(answers: Record<string, unknown>): void {
 export function useAskUserTool() {
 	const aiStore = useAiStore();
 
-	// Cancel any pending ask_user when the conversation is reset
+	// Cancel pending when conversation is reset
 	watch(
 		() => aiStore.messages.length,
 		(length) => {
@@ -58,11 +58,26 @@ export function useAskUserTool() {
 		},
 	);
 
+	// Cancel pending when chat is stopped mid-stream
+	watch(
+		() => aiStore.status,
+		(newStatus, oldStatus) => {
+			if (
+				pendingAskUser.value &&
+				(oldStatus === 'streaming' || oldStatus === 'submitted') &&
+				newStatus !== 'streaming' &&
+				newStatus !== 'submitted'
+			) {
+				cancelPending();
+			}
+		},
+	);
+
 	defineTool({
 		name: 'ask_user',
 		displayName: 'Ask User',
 		description:
-			'Ask the user one or more questions and wait for their answers. Use to confirm choices, get preferences, or clarify requirements. Each question can have up to 4 predefined options, but prefer fewer when possible — only include options that are meaningfully different. Do not overuse — only ask when the answer meaningfully affects your next steps.',
+			'Ask the user one or more questions and wait for their answers. Use to confirm choices, get preferences, or clarify requirements. Each question can have up to 4 predefined options, but prefer fewer when possible — only include options that are meaningfully different. Do not overuse — only ask when the answer meaningfully affects your next steps. Output is keyed by question ID; missing keys mean skipped.',
 		inputSchema,
 		execute: (args) => {
 			cancelPending();
