@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-fix(app): ensure metric list labels are fully visible
+Fixed metric list labels to no longer be cut off by bar value labels
