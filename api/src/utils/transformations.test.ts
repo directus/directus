@@ -266,8 +266,6 @@ describe('resolvePreset', () => {
 		);
 
 		// Dimensions should be clamped to original (1920x1080)
-		// Since we're requesting 1920x1080 with a centered focal point on a 1920x1080 image,
-		// the intermediate dimensions will be 1920x1080, and the extract will be the full image
 		expect(output).toStrictEqual([
 			[
 				'resize',
