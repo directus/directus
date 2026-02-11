@@ -125,7 +125,7 @@ describe('Save As Copy', () => {
 
 		expect(sdkSpy.mock.calls[1]?.[0]()).toEqual({
 			path: '/graphql',
-			body: JSON.stringify({ query: 'query { item: test_by_id (id: 1) }' }),
+			body: { query: 'query { item: test_by_id (id: 1) }' },
 			method: 'POST',
 		});
 	});
@@ -152,9 +152,7 @@ describe('Save As Copy', () => {
 
 		await saveAsCopy();
 
-		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(
-			expect.objectContaining({ body: JSON.stringify({ [mockPrimaryKeyFieldName]: 1 }) }),
-		);
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: { [mockPrimaryKeyFieldName]: 1 } }));
 	});
 
 	test('should omit auto incremented primary key', async () => {
@@ -181,7 +179,7 @@ describe('Save As Copy', () => {
 
 		await saveAsCopy();
 
-		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: JSON.stringify({}) }));
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: {} }));
 	});
 
 	test('should omit special uuid primary key', async () => {
@@ -207,7 +205,7 @@ describe('Save As Copy', () => {
 
 		await saveAsCopy();
 
-		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: JSON.stringify({}) }));
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: {} }));
 	});
 });
 
@@ -280,7 +278,7 @@ describe('Clear Hidden Fields Condition', () => {
 		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
 			path: '/items/test/1',
 			method: 'PATCH',
-			body: JSON.stringify({ status: 'published' }),
+			body: { status: 'published' },
 		});
 	});
 
@@ -335,7 +333,7 @@ describe('Clear Hidden Fields Condition', () => {
 		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
 			path: '/items/test/1',
 			method: 'PATCH',
-			body: JSON.stringify({ status: 'draft' }),
+			body: { status: 'draft' },
 		});
 	});
 
@@ -373,7 +371,7 @@ describe('Clear Hidden Fields Condition', () => {
 		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
 			path: '/items/test/1',
 			method: 'PATCH',
-			body: JSON.stringify({ status: 'draft' }),
+			body: { status: 'draft' },
 		});
 	});
 
@@ -433,7 +431,7 @@ describe('Clear Hidden Fields Condition', () => {
 		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
 			path: '/items/test/1',
 			method: 'PATCH',
-			body: JSON.stringify({ status: null }),
+			body: { status: null },
 		});
 	});
 
@@ -522,7 +520,7 @@ describe('Clear Hidden Fields Condition', () => {
 		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
 			path: '/items/test/1',
 			method: 'PATCH',
-			body: JSON.stringify({ status: 'published', description: 'Default description' }),
+			body: { status: 'published', description: 'Default description' },
 		});
 	});
 
@@ -584,7 +582,7 @@ describe('Clear Hidden Fields Condition', () => {
 		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
 			path: '/items/test/1',
 			method: 'PATCH',
-			body: JSON.stringify({ status: 'draft' }),
+			body: { status: 'draft' },
 		});
 	});
 });

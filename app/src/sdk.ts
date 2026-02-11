@@ -86,6 +86,17 @@ function getUrlPath(request: FetchContext['request']): string | null {
  * );
  * ```
  */
-export function requestEndpoint<Output = unknown>(options: RequestOptions): RestCommand<Output, never> {
-	return () => options;
+export function requestEndpoint<Output = unknown>(
+	options: Omit<RequestOptions, 'body'> & { body?: Record<string, unknown> },
+): RestCommand<Output, never> {
+	let body: undefined | string;
+
+	if (options.body) {
+		body = JSON.stringify(options.body);
+	}
+
+	return () => ({
+		...options,
+		body,
+	});
 }

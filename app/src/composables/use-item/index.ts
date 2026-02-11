@@ -203,7 +203,7 @@ export function useItem<T extends Item>(
 					requestEndpoint({
 						path: getEndpoint(collection.value),
 						method: 'POST',
-						body: JSON.stringify(editsWithClearedValues),
+						body: editsWithClearedValues,
 					}),
 				);
 
@@ -215,7 +215,7 @@ export function useItem<T extends Item>(
 					requestEndpoint({
 						path: itemEndpoint.value,
 						method: 'PATCH',
-						body: JSON.stringify(editsWithClearedValues),
+						body: editsWithClearedValues,
 					}),
 				);
 
@@ -263,7 +263,7 @@ export function useItem<T extends Item>(
 				requestEndpoint({
 					path: graphqlEndpoint,
 					method: 'POST',
-					body: JSON.stringify({ query }),
+					body: { query },
 				}),
 			);
 		} catch (error) {
@@ -373,7 +373,7 @@ export function useItem<T extends Item>(
 				requestEndpoint({
 					path: getEndpoint(collection.value),
 					method: 'POST',
-					body: JSON.stringify(newItem),
+					body: newItem,
 				}),
 			);
 
@@ -503,9 +503,9 @@ export function useItem<T extends Item>(
 				requestEndpoint({
 					path: itemEndpoint.value,
 					method: 'PATCH',
-					body: JSON.stringify({
+					body: {
 						[field]: value,
-					}),
+					},
 				}),
 			);
 
