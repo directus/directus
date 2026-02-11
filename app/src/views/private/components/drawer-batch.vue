@@ -18,6 +18,7 @@ type TranslationsFieldInfo = {
 	field: string;
 	creates: Record<string, any>[];
 	junctionField: string;
+	relatedPkField: string;
 };
 
 const props = defineProps<{
@@ -40,8 +41,7 @@ const { save, cancel, saving, validationErrors } = useActions();
 
 const { collection } = toRefs(props);
 const { primaryKeyField } = useCollection(collection);
-const fieldsStore = useFieldsStore();
-const relationsStore = useRelationsStore();
+const { getTranslationsFields, saveBatchWithTranslations } = useTranslationsFields();
 
 function useEdits() {
 	const localEdits = ref<Record<string, any>>({});
@@ -143,67 +143,91 @@ function useActions() {
 	}
 }
 
-function getTranslationsFields(edits: Record<string, any>): TranslationsFieldInfo[] {
-	const results: TranslationsFieldInfo[] = [];
+function useTranslationsFields() {
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
 
-	for (const [key, value] of Object.entries(edits)) {
-		if (!isObject(value) || !('create' in value)) continue;
+	return { getTranslationsFields, saveBatchWithTranslations };
 
-		const fieldInfo = fieldsStore.getField(collection.value, key);
-		if (!fieldInfo?.meta?.special?.includes('translations')) continue;
+	function getTranslationsFields(edits: Record<string, any>): TranslationsFieldInfo[] {
+		const results: TranslationsFieldInfo[] = [];
 
-		const relations = relationsStore.getRelationsForField(collection.value, key);
-		const junctionField = relations.find((r) => r.meta?.one_field === key)?.meta?.junction_field;
+		for (const [key, value] of Object.entries(edits)) {
+			if (!isObject(value) || !('create' in value)) continue;
 
-		if (!junctionField) continue;
+			const fieldInfo = fieldsStore.getField(collection.value, key);
+			if (!fieldInfo?.meta?.special?.includes('translations')) continue;
 
-		results.push({ field: key, creates: (value as any).create as Record<string, any>[], junctionField });
+			const relations = relationsStore.getRelationsForField(collection.value, key);
+			const junctionRelation = relations.find((r) => r.meta?.one_field === key);
+			const junctionField = junctionRelation?.meta?.junction_field;
+
+			if (!junctionField) continue;
+
+			const relatedCollection = relations.find((r) => r.field === junctionField)?.related_collection;
+
+			const relatedPkField = relatedCollection
+				? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.field
+				: null;
+
+			if (!relatedPkField) continue;
+
+			results.push({
+				field: key,
+				creates: (value as any).create as Record<string, any>[],
+				junctionField,
+				relatedPkField,
+			});
+		}
+
+		return results;
 	}
 
-	return results;
-}
+	async function saveBatchWithTranslations(translationsFields: TranslationsFieldInfo[]) {
+		const otherEdits = omit(
+			internalEdits.value,
+			translationsFields.map((t) => t.field),
+		);
 
-async function saveBatchWithTranslations(translationsFields: TranslationsFieldInfo[]) {
-	const otherEdits = omit(
-		internalEdits.value,
-		translationsFields.map((t) => t.field),
-	);
+		const pkField = primaryKeyField.value!.field;
+		const endpoint = getEndpoint(collection.value);
 
-	const pkField = primaryKeyField.value!.field;
-	const endpoint = getEndpoint(collection.value);
-
-	const existingItems = await fetchAll<Record<string, any>>(endpoint, {
-		params: {
-			filter: { [pkField]: { _in: props.primaryKeys } },
-			fields: [pkField, ...translationsFields.map((t) => `${t.field}.*`)],
-		},
-	});
-
-	const itemMap = new Map(existingItems.map((item) => [item[pkField], item]));
-	const resolveId = (val: unknown) => (isObject(val) ? Object.values(val)[0] : val);
-
-	const payload = props.primaryKeys
-		.filter((pk) => itemMap.has(pk))
-		.map((pk) => {
-			const item: Record<string, any> = { [pkField]: pk, ...otherEdits };
-
-			for (const { field, creates, junctionField } of translationsFields) {
-				const merged = new Map(
-					(itemMap.get(pk)![field] || []).map((row: Record<string, any>) => [resolveId(row[junctionField]), row]),
-				);
-
-				for (const create of creates) {
-					const id = resolveId(create[junctionField]);
-					merged.set(id, { ...(merged.get(id) ?? {}), ...create });
-				}
-
-				item[field] = [...merged.values()];
-			}
-
-			return item;
+		const existingItems = await fetchAll<Record<string, any>>(endpoint, {
+			params: {
+				filter: { [pkField]: { _in: props.primaryKeys } },
+				fields: [pkField, ...translationsFields.map((t) => `${t.field}.*`)],
+			},
 		});
 
-	await api.patch(endpoint, payload);
+		const itemMap = new Map(existingItems.map((item) => [item[pkField], item]));
+		const resolveId = (val: unknown, pkField: string) => (isObject(val) ? (val as Record<string, any>)[pkField] : val);
+
+		const payload = props.primaryKeys
+			.filter((pk) => itemMap.has(pk))
+			.map((pk) => {
+				const item: Record<string, any> = { [pkField]: pk, ...otherEdits };
+
+				for (const { field, creates, junctionField, relatedPkField } of translationsFields) {
+					const merged = new Map(
+						(itemMap.get(pk)![field] || []).map((row: Record<string, any>) => [
+							resolveId(row[junctionField], relatedPkField),
+							row,
+						]),
+					);
+
+					for (const create of creates) {
+						const id = resolveId(create[junctionField], relatedPkField);
+						merged.set(id, { ...(merged.get(id) ?? {}), ...create });
+					}
+
+					item[field] = [...merged.values()];
+				}
+
+				return item;
+			});
+
+		await api.patch(endpoint, payload);
+	}
 }
 </script>
 
