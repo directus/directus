@@ -280,8 +280,7 @@ describe('resolvePreset', () => {
 		]);
 	});
 
-	test('Add resize transformation: withoutEnlargement clamps only width when height is smaller #22391', () => {
-		// Width is larger, height is smaller - only width should be clamped
+	test('Resize transformation with withoutEnlargement clamps only width when height is smaller', () => {
 		const transformationParams: TransformationParams = {
 			key: 'test-width-larger',
 			width: 2000, // larger than original width (1920)
