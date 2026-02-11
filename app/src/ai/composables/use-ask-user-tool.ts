@@ -1,5 +1,6 @@
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { z } from 'zod';
+import { useAiStore } from '../stores/use-ai';
 import { defineTool } from './define-tool';
 
 const questionSchema = z.object({
@@ -14,12 +15,12 @@ const questionSchema = z.object({
 		)
 		.max(4)
 		.optional(),
-	multi_select: z.boolean().optional().describe('Allow multiple selections (default false)'),
-	allow_text: z.boolean().optional().describe('Allow free-text input (default true)'),
+	multi_select: z.boolean().default(false).describe('Allow multiple selections (default false)'),
+	allow_text: z.boolean().default(true).describe('Allow free-text input (default true)'),
 });
 
 const inputSchema = z.object({
-	questions: z.array(questionSchema),
+	questions: z.array(questionSchema).min(1),
 });
 
 export type AskUserInput = z.infer<typeof inputSchema>;
@@ -33,6 +34,14 @@ interface PendingAskUser {
 /** Current pending ask_user tool call waiting for user response */
 export const pendingAskUser = ref<PendingAskUser | null>(null);
 
+/** Resolves any existing pending promise with a cancellation marker and clears the ref */
+export function cancelPending() {
+	if (pendingAskUser.value) {
+		pendingAskUser.value.resolve({ _cancelled: true });
+		pendingAskUser.value = null;
+	}
+}
+
 export function submitAnswers(answers: Record<string, unknown>) {
 	if (pendingAskUser.value) {
 		pendingAskUser.value.resolve(answers);
@@ -41,6 +50,16 @@ export function submitAnswers(answers: Record<string, unknown>) {
 }
 
 export function useAskUserTool() {
+	const aiStore = useAiStore();
+
+	// Cancel any pending ask_user when the conversation is reset
+	watch(
+		() => aiStore.messages.length,
+		(length) => {
+			if (length === 0) cancelPending();
+		},
+	);
+
 	defineTool({
 		name: 'ask_user',
 		displayName: 'Ask User',
@@ -48,6 +67,8 @@ export function useAskUserTool() {
 			'Ask the user one or more questions and wait for their answers. Use to confirm choices, get preferences, or clarify requirements. Each question can have up to 4 predefined options, but prefer fewer when possible — only include options that are meaningfully different. Do not overuse — only ask when the answer meaningfully affects your next steps.',
 		inputSchema,
 		execute: (args) => {
+			cancelPending();
+
 			return new Promise<Record<string, unknown>>((resolve) => {
 				pendingAskUser.value = { input: args, resolve };
 			});

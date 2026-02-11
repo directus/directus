@@ -18,10 +18,13 @@ const textInputActive = ref<Record<string, boolean>>({});
 
 const currentQuestion = computed<AskUserQuestion | undefined>(() => questions.value[activeQuestionIndex.value]);
 
+function isAnswered(id: string): boolean {
+	return answers.value[id] !== undefined || !!textInputValues.value[id];
+}
+
 const currentQuestionAnswered = computed(() => {
 	if (!currentQuestion.value) return false;
-	const id = currentQuestion.value.id;
-	return answers.value[id] !== undefined || !!textInputValues.value[id];
+	return isAnswered(currentQuestion.value.id);
 });
 
 const isLastQuestion = computed(() => activeQuestionIndex.value === questions.value.length - 1);
@@ -44,6 +47,7 @@ function onEnter() {
 
 	const newHeight = wrapper.offsetHeight;
 	wrapper.style.height = `${savedHeight}px`;
+
 	requestAnimationFrame(() => {
 		wrapper.style.height = `${newHeight}px`;
 	});
@@ -72,10 +76,6 @@ function selectOption(questionId: string, label: string, multiSelect: boolean) {
 	}
 }
 
-function setTextAnswer(questionId: string, value: string) {
-	answers.value[questionId] = value;
-}
-
 function activateTextInput(questionId: string) {
 	textInputActive.value[questionId] = true;
 
@@ -87,8 +87,8 @@ function activateTextInput(questionId: string) {
 
 function autoAdvance() {
 	setTimeout(() => {
-		if (activeQuestionIndex.value < questions.value.length - 1) {
-			activeQuestionIndex.value++;
+		if (!isLastQuestion.value) {
+			goToQuestion(activeQuestionIndex.value + 1);
 		}
 	}, 200);
 }
@@ -99,7 +99,7 @@ function goToQuestion(index: number) {
 	}
 }
 
-function handleSubmit() {
+function gatherAnswers(): Record<string, unknown> {
 	const result: Record<string, unknown> = {};
 
 	for (const q of questions.value) {
@@ -110,21 +110,15 @@ function handleSubmit() {
 		}
 	}
 
-	submitAnswers(result);
+	return result;
+}
+
+function handleSubmit() {
+	submitAnswers(gatherAnswers());
 }
 
 function handleChatAboutThis() {
-	const result: Record<string, unknown> = { _chat: true };
-
-	for (const q of questions.value) {
-		if (answers.value[q.id] !== undefined) {
-			result[q.id] = answers.value[q.id];
-		} else if (textInputValues.value[q.id]) {
-			result[q.id] = textInputValues.value[q.id];
-		}
-	}
-
-	submitAnswers(result);
+	submitAnswers({ _chat: true, ...gatherAnswers() });
 }
 
 function isOptionSelected(questionId: string, label: string): boolean {
@@ -146,7 +140,7 @@ function handleKeydown(event: KeyboardEvent) {
 
 	if (num >= 1 && num <= optionCount && q.options) {
 		event.preventDefault();
-		selectOption(q.id, q.options[num - 1]!.label, q.multi_select ?? false);
+		selectOption(q.id, q.options[num - 1]!.label, q.multi_select);
 		return;
 	}
 
@@ -170,8 +164,8 @@ function handleKeydown(event: KeyboardEvent) {
 
 		event.preventDefault();
 
-		if (activeQuestionIndex.value < questions.value.length - 1) {
-			activeQuestionIndex.value++;
+		if (!isLastQuestion.value) {
+			goToQuestion(activeQuestionIndex.value + 1);
 		} else {
 			handleSubmit();
 		}
@@ -183,8 +177,8 @@ function handleKeydown(event: KeyboardEvent) {
 	if (event.key === 'Escape') {
 		event.preventDefault();
 
-		if (activeQuestionIndex.value < questions.value.length - 1) {
-			activeQuestionIndex.value++;
+		if (!isLastQuestion.value) {
+			goToQuestion(activeQuestionIndex.value + 1);
 		}
 	}
 }
@@ -200,15 +194,8 @@ function updateFades() {
 
 	if (!el) return;
 
-	const hasOverflow = el.scrollWidth > el.clientWidth;
-
-	if (hasOverflow) {
-		showLeftFade.value = el.scrollLeft > 0;
-		showRightFade.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
-	} else {
-		showLeftFade.value = false;
-		showRightFade.value = false;
-	}
+	showLeftFade.value = el.scrollLeft > 0;
+	showRightFade.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
 }
 
 // Track slide direction and auto-scroll active tab into view
@@ -244,12 +231,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div
-		ref="rootEl"
-		class="ai-ask-user"
-		tabindex="0"
-		@keydown="handleKeydown"
-	>
+	<div ref="rootEl" class="ai-ask-user" tabindex="0" @keydown="handleKeydown">
 		<!-- Question tabs (hidden if single question) -->
 		<div
 			v-if="questions.length > 1"
@@ -266,99 +248,96 @@ onUnmounted(() => {
 					class="question-tab"
 					:class="{
 						active: index === activeQuestionIndex,
-						answered: answers[q.id] !== undefined || textInputValues[q.id],
+						answered: isAnswered(q.id),
 					}"
 					@click="goToQuestion(index)"
 				>
 					{{ formatTitle(q.id) }}
-					<VIcon v-if="answers[q.id] !== undefined || textInputValues[q.id]" name="check" x-small />
+					<VIcon v-if="isAnswered(q.id)" name="check" x-small />
 				</button>
 			</div>
 		</div>
 
 		<div ref="question-wrapper" class="question-wrapper">
-		<Transition
-			:name="slideDirection === 'forward' ? 'slide-forward' : 'slide-backward'"
-			mode="out-in"
-			@before-leave="onBeforeLeave"
-			@enter="onEnter"
-			@after-enter="onAfterEnter"
-		>
-			<div v-if="currentQuestion" :key="currentQuestion.id" class="question-body">
-				<p class="question-text">{{ currentQuestion.question }}</p>
+			<Transition
+				:name="slideDirection === 'forward' ? 'slide-forward' : 'slide-backward'"
+				mode="out-in"
+				@before-leave="onBeforeLeave"
+				@enter="onEnter"
+				@after-enter="onAfterEnter"
+			>
+				<div v-if="currentQuestion" :key="currentQuestion.id" class="question-body">
+					<p class="question-text">{{ currentQuestion.question }}</p>
 
-				<div class="options">
-					<button
-						v-for="(option, index) in currentQuestion.options"
-						:key="option.label"
-						class="option-card"
-						:class="{ selected: isOptionSelected(currentQuestion.id, option.label) }"
-						@click="selectOption(currentQuestion.id, option.label, currentQuestion.multi_select ?? false)"
-					>
-						<span class="option-number">
-							<VIcon v-if="isOptionSelected(currentQuestion.id, option.label)" name="check" x-small />
-							<template v-else>{{ index + 1 }}</template>
-						</span>
-						<div class="option-content">
-							<span class="option-label">{{ option.label }}</span>
-							<span v-if="option.description" class="option-description">{{ option.description }}</span>
+					<div class="options">
+						<button
+							v-for="(option, index) in currentQuestion.options"
+							:key="option.label"
+							class="option-card"
+							:class="{ selected: isOptionSelected(currentQuestion.id, option.label) }"
+							@click="selectOption(currentQuestion.id, option.label, currentQuestion.multi_select)"
+						>
+							<span class="option-number">
+								<VIcon v-if="isOptionSelected(currentQuestion.id, option.label)" name="check" x-small />
+								<template v-else>{{ index + 1 }}</template>
+							</span>
+							<div class="option-content">
+								<span class="option-label">{{ option.label }}</span>
+								<span v-if="option.description" class="option-description">{{ option.description }}</span>
+							</div>
+						</button>
+
+						<!-- Free text option -->
+						<div
+							v-if="currentQuestion.allow_text"
+							class="option-card text-option"
+							:class="{ active: textInputActive[currentQuestion.id] }"
+						>
+							<template v-if="!textInputActive[currentQuestion.id]">
+								<span class="option-number">{{ (currentQuestion.options?.length ?? 0) + 1 }}</span>
+								<button class="option-content text-trigger" @click="activateTextInput(currentQuestion.id)">
+									<span class="option-label placeholder">{{ t('ai.ask_user_type_answer') }}</span>
+								</button>
+							</template>
+							<template v-else>
+								<VInput
+									v-model="textInputValues[currentQuestion.id]"
+									autofocus
+									:placeholder="t('ai.ask_user_type_answer')"
+									@keydown.enter.stop="!isLastQuestion ? goToQuestion(activeQuestionIndex + 1) : handleSubmit()"
+								/>
+							</template>
 						</div>
-					</button>
+					</div>
 
-					<!-- Free text option -->
-					<div
-						v-if="currentQuestion.allow_text !== false"
-						class="option-card text-option"
-						:class="{ active: textInputActive[currentQuestion.id] }"
-					>
-						<template v-if="!textInputActive[currentQuestion.id]">
-							<span class="option-number">{{ (currentQuestion.options?.length ?? 0) + 1 }}</span>
-							<button class="option-content text-trigger" @click="activateTextInput(currentQuestion.id)">
-								<span class="option-label placeholder">{{ t('ai.ask_user_type_answer') }}</span>
-							</button>
-						</template>
-						<template v-else>
-							<VInput
-								v-model="textInputValues[currentQuestion.id]"
-								autofocus
-								:placeholder="t('ai.ask_user_type_answer')"
-								@update:model-value="setTextAnswer(currentQuestion.id, $event as string ?? '')"
-								@keydown.enter.stop="
-									activeQuestionIndex < questions.length - 1 ? activeQuestionIndex++ : handleSubmit()
-								"
-							/>
-						</template>
+					<div class="actions">
+						<button class="chat-about-this" @click="handleChatAboutThis">
+							{{ t('ai.ask_user_chat_about_this') }}
+						</button>
+
+						<div class="action-buttons">
+							<VButton
+								v-if="!isLastQuestion && !currentQuestionAnswered"
+								x-small
+								secondary
+								@click="goToQuestion(activeQuestionIndex + 1)"
+							>
+								{{ t('ai.ask_user_skip') }}
+							</VButton>
+							<VButton
+								v-if="!isLastQuestion && currentQuestionAnswered"
+								x-small
+								@click="goToQuestion(activeQuestionIndex + 1)"
+							>
+								{{ t('ai.ask_user_next') }}
+							</VButton>
+							<VButton v-if="isLastQuestion" x-small @click="handleSubmit">
+								{{ t('ai.ask_user_submit') }}
+							</VButton>
+						</div>
 					</div>
 				</div>
-
-				<div class="actions">
-					<button class="chat-about-this" @click="handleChatAboutThis">
-						{{ t('ai.ask_user_chat_about_this') }}
-					</button>
-
-					<div class="action-buttons">
-						<VButton
-							v-if="!isLastQuestion && !currentQuestionAnswered"
-							x-small
-							secondary
-							@click="activeQuestionIndex++"
-						>
-							{{ t('ai.ask_user_skip') }}
-						</VButton>
-						<VButton
-							v-if="!isLastQuestion && currentQuestionAnswered"
-							x-small
-							@click="activeQuestionIndex++"
-						>
-							{{ t('ai.ask_user_next') }}
-						</VButton>
-						<VButton v-if="isLastQuestion" x-small @click="handleSubmit">
-							{{ t('ai.ask_user_submit') }}
-						</VButton>
-					</div>
-				</div>
-			</div>
-		</Transition>
+			</Transition>
 		</div>
 	</div>
 </template>
@@ -510,11 +489,7 @@ onUnmounted(() => {
 	text-align: start;
 	inline-size: 100%;
 
-	&:hover {
-		border-color: var(--theme--primary);
-		background-color: var(--theme--primary-background);
-	}
-
+	&:hover,
 	&.selected {
 		border-color: var(--theme--primary);
 		background-color: var(--theme--primary-background);

@@ -53,7 +53,7 @@ const isAskUser = computed(() => toolName.value === 'ask_user' && 'input' in pro
 			<AiAskUserSummary :part="part" />
 		</template>
 	</AiToolCallCard>
-	<template v-else-if="isAskUser" />
+	<template v-else-if="isAskUser && state !== 'output-error'" />
 
 	<AiToolCallCard
 		v-else
