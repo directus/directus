@@ -16,6 +16,7 @@ beforeEach(() => {
 		set: vi.fn(),
 		delete: vi.fn(),
 		has: vi.fn(),
+		clear: vi.fn(),
 	} as unknown as LRUCache<string, Uint8Array, unknown>;
 });
 
@@ -210,5 +211,31 @@ describe('has', () => {
 
 		expect(kv['store'].has).toHaveBeenCalledWith(mockKey);
 		expect(res2).toBe(true);
+	});
+});
+
+describe('acquireLock', () => {
+	test('Returns no-op lock', async () => {
+		const lock = await kv.acquireLock('key');
+		expect(lock).toHaveProperty('release');
+		expect(lock).toHaveProperty('extend');
+		await expect(lock.release()).resolves.toBeUndefined();
+		await expect(lock.extend(100)).resolves.toBeUndefined();
+	});
+});
+
+describe('usingLock', () => {
+	test('Executes callback directly', async () => {
+		const callback = vi.fn().mockResolvedValue('result');
+		const result = await kv.usingLock('key', callback);
+		expect(callback).toHaveBeenCalled();
+		expect(result).toBe('result');
+	});
+});
+
+describe('clear', () => {
+	test('Clears the store', async () => {
+		await kv.clear();
+		expect(kv['store'].clear).toHaveBeenCalled();
 	});
 });

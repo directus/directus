@@ -498,8 +498,6 @@ revision_delta_reverted: Reverted
 revision_delta_update_message: 此字段已更新，但由于安全原因，其值被隐藏。
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
-updated_in_revision: 在本修订版中更新
-updated_in_revision_matches_latest: 在此修订版中已更新但，与最新版本匹配
 differences_count: '无差异 | 1 处差异 | {count} 处差异'
 presentation_text_values_cannot_be_reimported: '仅包含当前页面中展示的字段和数据，且无法被重新导入'
 download_page_as_csv: '导出当前页面数据为CSV格式'
@@ -1034,6 +1032,15 @@ no_url_copy: 请在设置中添加一个URL。
 invalid_url: 无效的URL
 invalid_url_copy: 指定的 URL 与设置中指定的任何 URL 都不匹配。
 insights: 洞察分析
+deployment:
+  provider:
+    settings:
+      delete_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
+    run:
+      cancel_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
+      log_all: 所有日志级别
+  target_value:
+    preview: 预览
 dashboard: 控制面板
 panel: 面板
 panel_options: 选项
@@ -1424,6 +1431,7 @@ fields:
     mcp_system_prompt_enabled_note: "使用<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型（LLM）的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
     mcp_system_prompt: 自定义系统提示
     mcp_system_prompt_note: '自定义系统提示替换默认值。留空则使用默认值(如果已启用)。'
+    ai_header_name: 报头
   directus_shares:
     name: 名称
     role: 角色
@@ -1577,6 +1585,7 @@ live_preview:
   close_window: 在分割视图中打开
   toggle_3d: 切换 3D
   iframe_title: 实时网站预览
+  display_options: 显示选项
 shares: 共享
 unlimited_usage: 无限使用
 uses_left: 无剩余使用次数 | 剩余一次使用次数 | 剩余 {n} 次使用次数
@@ -1585,6 +1594,8 @@ new_share: 新建分享
 ai:
   input: Input
   unknown: 未知
+  items: 条目
+  content: 内容
   settings: 设置
   tool_approval:
     disabled: 禁用

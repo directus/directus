@@ -506,8 +506,6 @@ revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi actualizado, mas o seu valor está a ser ocultado por razões de segurança.
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
-updated_in_revision: Atualizar esta Revisão
-updated_in_revision_matches_latest: Atualizado nesta Revisão, mas corresponde à Última Revisão
 differences_count: 'Sem Diferenças | 1 Diferença | {count} Diferenças'
 presentation_text_values_cannot_be_reimported: 'Usa texto de apresentação, valores não podem ser importados novamente.'
 download_page_as_csv: 'Baixar página como CSV'
@@ -556,6 +554,7 @@ system: Sistema
 add_field_related: Adicionar Campo à Coleção Relacionada
 interface_label: Interface
 display_label: Exibir
+x_axis_display_field: Campo de Exibição do Eixo X
 today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
@@ -998,6 +997,7 @@ run_flow_confirm: Você tem certeza que quer executar este fluxo?
 run_flow_anyway: Executar Fluxo Mesmo Assim
 run_flow_on_current_collection: Executar fluxo na coleção atual
 run_flow_on_current: Executar fluxo no Item atual
+run_flow_on_current_edited_confirm: Este item pode ser atualizado por este Fluxo, tem certeza que deseja executá-lo?
 run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow: Executar Fluxo
 trigger_flow_success: Fluxo "{flow}" ativado com sucesso
@@ -1039,12 +1039,22 @@ operation_handle_resolve: 'Resolver: Clique para Adicionar ou Arraste para Redir
 operation_handle_reject: 'Rejeitar: Clique para adicionar ou Arraste para Redirecionar'
 visual_editor: Editor Visual
 toggle_navigation: Alternar Navegação
+toggle_sidebar: Alternar barra lateral
 toggle_editable_elements: Alternar Elementos Editáveis
 no_url: Nenhum URL foi fornecido
 no_url_copy: Por favor, adicione um URL nas configurações.
 invalid_url: URL Inválido
 invalid_url_copy: O URL específico não combina com nenhum URL das configurações.
 insights: Estatísticas
+deployment:
+  provider:
+    settings:
+      delete_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
+    run:
+      cancel_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
+      log_all: Todos os Níveis de Registro
+  target_value:
+    preview: Pré-visualizar
 dashboard: Painel
 panel: Painel
 panel_options: Opções do Painel
@@ -1195,6 +1205,7 @@ settings_permissions: Políticas de acesso
 settings_project: Configurações
 settings_appearance: Aparência
 settings_ai: IA
+model_context_protocol: Protocolo de Contexto de Modelo (MCP)
 mcp_disabled_by_env: Os recursos de MCP foram desabilitados via ambiente variável.
 settings_flows: Fluxos
 settings_system_logs: Registro de Sistema
@@ -1423,7 +1434,15 @@ fields:
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envia um e-mail para o usuário que se registrou pedindo que clique em um link de verificação antes de fazer o login.
     visual_editor_urls: URL dos Editores Visuais
-    ai_notice: 'Chat IA providencia uma barra lateral "in-app" para conversar com uma LLM. Uma vez ativado, abra a barra lateral da IA na barra de ferramenta para fazer perguntas, gerar conteúdo e receber ajuda com seu projeto. <a href="https://directus.io/docs/guides/ai/chat" target="_blank">Saiba mais sobre configuração e uso de Chat IA.</a>'
+    mcp_enabled: Servidor MCP (Protocolo de Contexto de Modelo)
+    mcp_allow_deletes: Permitir Apagar
+    mcp_allow_deletes_note:
+      - Pode causar perda de dados. </strong> Desativado por padrão para segurança
+    mcp_prompts_collection: Coleção de Prompts da IA
+    mcp_system_prompt_divider: Configuração do Prompt do Sistema
+    mcp_system_prompt_enabled: Usar Prompt do Sistema
+    ai_openai_compatible_name: Nome do Provedor
+    ai_header_name: Cabeçalho
   directus_shares:
     name: Nome
     role: Função
@@ -1576,6 +1595,7 @@ live_preview:
   new_window: Abrir em nova janela
   close_window: Abrir na visualização dividida
   toggle_3d: Alternar 3D
+  display_options: Opções de exibição
 shares: Compartilhar
 unlimited_usage: Uso Ilimitado
 uses_left: Nenhum uso restante | Um uso restante |  {n} usos restantes
@@ -1584,6 +1604,8 @@ new_share: Novo Compartilhamento
 ai:
   input: Entrada
   unknown: Desconhecido
+  items: Itens
+  content: Conteúdo
   settings: Configurações
   tool_approval:
     disabled: Desabilitado

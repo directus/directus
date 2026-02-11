@@ -5,6 +5,7 @@ import { createI18n } from 'vue-i18n';
 import VList from '../v-list.vue';
 import VSelect from './v-select.vue';
 import { Focus } from '@/__utils__/focus';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 
 vi.mock('lodash', async () => {
@@ -69,6 +70,7 @@ const global: GlobalMountOptions = {
 	plugins: [i18n],
 	directives: {
 		Focus,
+		Tooltip,
 	},
 };
 
