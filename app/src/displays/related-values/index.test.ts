@@ -1,8 +1,8 @@
+import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import relatedValuesDisplay from './index';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createPinia, setActivePinia } from 'pinia';
-import relatedValuesDisplay from './index';
 
 vi.mock('@/utils/adjust-fields-for-displays', () => ({
 	adjustFieldsForDisplays: vi.fn((fields: string[]) => fields),

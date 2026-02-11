@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { transformTemplateVariablesWithPath } from '@/utils/transform-template-variables-with-path';
 import { useCollection } from '@directus/composables';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
 import { get } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,9 +10,12 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getItemRoute } from '@/utils/get-route';
+import { transformTemplateVariablesWithPath } from '@/utils/transform-template-variables-with-path';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
 
