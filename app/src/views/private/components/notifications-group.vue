@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 
 const notificationsStore = useNotificationsStore();
 const queue = toRefs(notificationsStore).queue;
+
+const overlayIsActive = computed(() => notificationsStore.overlayIsActive);
 </script>
 
 <template>
-	<TransitionGroup class="notifications-group" name="slide-fade" tag="div">
+	<TransitionGroup class="notifications-group" :class="{ overlay: overlayIsActive }" name="slide-fade" tag="div">
 		<slot />
 		<NotificationItem
 			v-for="notification in queue"
@@ -40,6 +42,11 @@ const queue = toRefs(notificationsStore).queue;
 	flex-direction: column;
 	align-items: end;
 	inline-size: 256px;
+
+	&.overlay {
+		z-index: 700;
+		position: fixed;
+	}
 }
 
 .notification-item {
@@ -63,13 +70,5 @@ const queue = toRefs(notificationsStore).queue;
 	opacity: 0;
 	transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 	transition-duration: 200ms;
-}
-</style>
-
-<style lang="scss">
-// relocate to fixed position when dialog is open to prevent it from being covered by the dialog
-body:has(#dialog-outlet > .container.right) .notifications-group {
-	position: fixed;
-	z-index: 700;
 }
 </style>

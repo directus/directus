@@ -31,6 +31,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
@@ -324,9 +325,13 @@ function useItem() {
 	const loading = ref(false);
 	const initialValues = ref<Record<string, any> | null>(null);
 
+	const notificationsStore = useNotificationsStore();
+
 	watch(
 		() => props.active,
 		(isActive) => {
+			notificationsStore.setOverlayIsActive(!!isActive);
+
 			if (isActive) {
 				if (props.primaryKey !== '+') fetchItem();
 				if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
