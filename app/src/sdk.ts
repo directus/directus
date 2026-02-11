@@ -65,6 +65,27 @@ function getUrlPath(request: FetchContext['request']): string | null {
 	}
 }
 
+/**
+ * Creates a RestCommand for the SDK
+ *
+ * This helper function allows sending a RestCommand when the endpoint path is dynamic
+ *
+ * @example
+ * Basic usage with sdk.request
+ * ```typescript
+ * import sdk, { requestEndpoint } from '@/sdk';
+ * import { Item } from '@directus/types';
+ * import { getEndpoint } from '@directus/utils';
+ *
+ * const posts = await sdk.request(
+ *  requestEndpoint<Item>({
+ *    path: getEndpoint(collection),
+ *    method: "GET",
+ *    params: { fields: ["id", "title", "content"] },
+ *  }),
+ * );
+ * ```
+ */
 export function requestEndpoint<Output = unknown>(options: RequestOptions): RestCommand<Output, never> {
 	return () => options;
 }
