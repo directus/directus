@@ -1,5 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
 import type { Snapshot } from '@directus/types';
+import { describe, expect, test, vi } from 'vitest';
 import { validateSnapshot } from './validate-snapshot.js';
 
 vi.mock('directus/version', () => ({

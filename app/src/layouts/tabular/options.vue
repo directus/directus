@@ -7,6 +7,7 @@ export default {
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { Field } from '@directus/types';
+import VSelect from '@/components/v-select/v-select.vue';
 
 export interface Props {
 	fields: string[];
@@ -24,7 +25,7 @@ const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
 <template>
 	<div class="field">
 		<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
-		<v-select
+		<VSelect
 			v-model="tableSpacingWritable"
 			:items="[
 				{

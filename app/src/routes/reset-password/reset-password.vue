@@ -5,6 +5,8 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import RequestForm from './request.vue';
 import ResetForm from './reset.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import PublicView from '@/views/public';
 
 const { t } = useI18n();
 
@@ -18,17 +20,17 @@ useHead({
 </script>
 
 <template>
-	<public-view>
+	<PublicView>
 		<h1 class="type-title">{{ $t('reset_password') }}</h1>
 
-		<request-form v-if="!resetToken" />
-		<reset-form v-else :token="resetToken" />
+		<RequestForm v-if="!resetToken" />
+		<ResetForm v-else :token="resetToken" />
 
 		<template #notice>
-			<v-icon name="lock" left />
+			<VIcon name="lock" left />
 			{{ $t('not_authenticated') }}
 		</template>
-	</public-view>
+	</PublicView>
 </template>
 
 <style lang="scss" scoped>

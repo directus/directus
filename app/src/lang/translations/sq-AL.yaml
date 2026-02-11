@@ -134,7 +134,6 @@ create_policy: Krijo drejtim
 create_user: Krijo Përdorues
 message: Mesazh
 delete_panel: Fshi Panelin
-create_webhook: Krijo Webhook
 create_custom_translation: Krijo Përkthim të Personalizuar
 edit_custom_translation: Redakto Përkthim të Personalizuar
 no_custom_translations: Pa Përkthime të Personalizuara
@@ -439,6 +438,7 @@ confirm_revert_body: Kjo do të rikthejë artikullin në gjendjen e zgjedhur.
 display: Shfaq
 settings_update_success: Cilësimet u përditësuan
 title: Titulli
+subtitle: Nëntitull
 revision_delta_created: U krijua
 revision_delta_created_externally: U krijua Jashtë
 revision_delta_updated: '''Përditësoi 1 Fushë | Përditësoi {count} Fusha'''
@@ -628,10 +628,6 @@ file_count: 'Asnjë Skedar | Një Skedar | {count} Skedarë'
 no_files_copy: Këtu nuk ka skedarë.
 user_count: 'Asnjë Përdorues | Një Përdorues | {count} Përdorues'
 no_users_copy: Ende nuk ka përdorues në këtë rol.
-webhooks_count: 'Asnjë Webhook | Një Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Webhooks janë të vjetruara dhe përdorimi i mëtejmë nuk rekomandohet. Ju lutemi përdorni **Flows** me [Webhook / Request URL operation] (https://docs.directus.io/app/flows/operations.html#webhook-request-url) në vend të kësaj.
-no_webhooks_copy: Ende nuk është konfiguruar asnjë webhook. Filloni duke krijuar një më poshtë.
 no_notifications: Asnjë Njoftim
 no_notifications_copy: Ju jeni përditësuar plotësisht!
 activity_log: Regjistri i Aktivitetit
@@ -662,7 +658,6 @@ action: Veprim
 ip_address: Adresa IP
 user_agent: Agjenti i Përdoruesit
 origin: Origjina
-webhooks: Webhooks
 decimals: Decimale
 value_decimals: Vlera Decimale
 min_value: Vlera Minimale
@@ -746,7 +741,6 @@ errors:
   VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
   VALUE_TOO_LONG: Vlera është shumë e gjatë
 security: Siguria
-value_hashed: Vlera është Hashuar Sigurisht
 bookmark_name: Emri i Faqerojtësit...
 create_bookmark: Krijo Faqerojtës
 edit_bookmark: Modifiko Faqerojtësin
@@ -922,10 +916,8 @@ label: Etiketë
 flows: Rrjedha
 flow: Rrjedh
 select_a_flow: Zgjidh një Rrjedhë
-run_flow_confirm: A je i sigurtë që dëshiron të ekzekutosh këtë rrjedhë?
 run_flow_on_current_collection: Zbato Rrjedhën në Koleksionin Aktual
 run_flow_on_current: Zbato Rrjedhën në Artikullin Aktual
-run_flow_on_current_edited_confirm: Ky artikull mund të përditësohet nga kjo rrjedhë, a je i sigurtë që dëshiron të ekzekutosh atë?
 run_flow_on_selected: Zgjidh Një ose më Shumë Artikuj Së Pari | Zbato Rrjedhën në 1 Artikull të Zgjedhur | Zbato Rrjedhën në {n} Artikuj të Zgjedhur
 run_flow: Zbato Rrjedhën
 field_name_placeholder: Shkruaj emrin e fushës...
@@ -965,6 +957,15 @@ operation_key_unique_error: Çelësat e operacionit duhet të jenë unikë në n
 operation_handle_resolve: 'Zgjidh: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
 operation_handle_reject: 'Refuzo: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
 insights: Insight-e
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ky veprim është përfundimtar dhe nuk mund të zhbëhet. A jeni i sigurt se doni të vazhdoni?
+    run:
+      cancel_confirm: Ky veprim është përfundimtar dhe nuk mund të zhbëhet. A jeni i sigurt se doni të vazhdoni?
+      log_all: Të Gjitha Nivelet e Regjistrave
+  target_value:
+    preview: Parashiko
 dashboard: Dashboard
 panel: Paneli
 panel_options: Opsionet e Panelit
@@ -1111,7 +1112,6 @@ settings_roles: Rolet e Përdoruesve
 settings_permissions: Drejtimet e Aksesit
 settings_project: Parametra
 settings_appearance: Pamja
-settings_webhooks: Webhooks
 settings_flows: Rrjedha
 settings_system_logs: Regjistrat e Sistemit
 settings_presets: Faqerojtësit
@@ -1139,48 +1139,6 @@ discard_changes_copy: Je i sigurt që dëshiron të anulosh të gjitha ndryshime
 show_x_axis: Shfaq Aksin X
 show_y_axis: Shfaq Aksin Y
 keep_editing: Vazhdo të Modifikosh
-page_help_collections_overview: '**Përmbledhje e Koleksioneve** — Lista e të gjitha koleksioneve të cilave ke qasje.'
-page_help_collections_collection: >-
-  **Shfleto Artikujt** — Liston të gjitha artikujt {collection} të cilave ke qasje. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
-page_help_collections_item: >-
-  **Detajet e Artikullit** — Një formë për shikimin dhe menaxhimin e këtij artikulli. Kjo anësore gjithashtu përmban një histori të plotë të rishikimeve, dhe komente të përmbysura.
-page_help_activity_collection: >-
-  **Shfleto Aktivitetin** — Një listë e plotë e të gjitha aktiviteteve të sistemit dhe të përmbajtjes së përdoruesit tënd.
-page_help_docs_global: >-
-  **Përmbledhje e Dokumentacionit** — Dokumente të përshtatura specifikisht për versionin dhe skemën e këtij projekti.
-page_help_files_collection: >-
-  **Biblioteka e Skedarëve** — Liston të gjitha aktet e skedarëve të ngarkuara në këtë projekt. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
-page_help_files_item: >-
-  **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
-page_help_settings_project: "**Cilësimet** — Opsionet e konfigurimit global të projektit tuaj."
-page_help_settings_appearance: "**Pamja** — Opsionet e pamjes dhe temave të projektit tuaj."
-page_help_settings_extensions: '**Zgjerime** — Zgjerimet e instaluara në projektin tuaj.'
-page_help_settings_datamodel_collections: >-
-  **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
-page_help_settings_datamodel_fields: >-
-  **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
-page_help_settings_system_logs: '**Regjistrat e Sistemit** — Aksesoni një transmetim të drejtpërdrejtë të regjistrave të sistemit.'
-page_help_settings_policies_collection: '**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit.'
-page_help_settings_roles_collection: '**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit.'
-page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
-page_help_settings_presets_collection: >-
-  **Shfleto Cilësimet e Paracaktuara** — Liston të gjitha cilësimet e paracaktuara në projekt, duke përfshirë: faqerojtësit e përdoruesit, rolit dhe globalë, si dhe pamjet e paracaktuara.
-page_help_settings_presets_item: >-
-  **Detajet e Cilësimeve të Paracaktuara** — Një formë për menaxhimin e faqerojtësve dhe cilësimeve të paracaktuara të koleksionit.
-page_help_settings_webhooks_collection: '**Shfleto Webhooks** — Liston të gjitha webhooks brenda projektit.'
-page_help_settings_webhooks_item: '**Detajet e Webhook** — Një formë për krijimin dhe menaxhimin e webhooks të projektit.'
-page_help_settings_flows_collection: '**Shfleto Flujot** — Liston të gjitha flujot brenda projektit.'
-page_help_settings_flows_item: '**Detajet e Flujos** — Hapësira për menaxhimin e një ose më shumë operacionesh.'
-page_help_settings_translations_collection: '**Shfleto Përkthimet e Personalizuara** — Liston të gjitha përkthimet e personalizuara brenda projektit.'
-page_help_settings_translations_item: '**Detajet e Përkthimit të Personalizuar** — Një formë për shikimin dhe menaxhimin e këtij artikulli.'
-page_help_users_collection: '**Drejtoria e Përdoruesve** — Liston të gjithë përdoruesit e sistemit brenda këtij projekti.'
-page_help_users_item: >-
-  **Detajet e Përdoruesit** — Menaxho informacionin e llogarisë sënde, ose shiko detajet e përdoruesve të tjerë.
-page_help_insights_overview: '**Insights** — Lista e kokpitëve të cilave ke qasje.'
-page_help_insights_dashboard: '**Dashboard** — Hapësira për menaxhimin e një ose më shumë paneleve'
-page_help_marketplace_account: '**Llogari** — Botues ose mirëmbajtës i një zgjerimi të publikuar.'
-page_help_marketplace_registry: '**Regjistri** — Zgjerime të disponueshme në Tregun e Directus.'
-page_help_marketplace_extension: '**Zgjerim** — Zgjerim në Tregun e Directus.'
 activity_feed: Feed Aktiviteti
 add_new: Shto të Ri
 create_new: Krijo të Ri
@@ -1216,7 +1174,6 @@ directus_collection:
   directus_dashboards: Dashboards brenda modulit të Insights
   directus_fields: Konfigurimi shtesë i fushave dhe metadata
   directus_files: Metadata për të gjitha asetet e menaxhuara të skedarëve
-  directus_flows: Flujot e automatizimit
   directus_folders: Ofron drejtoritë virtuale për skedarë
   directus_migrations: Cila version i bazës së të dhënave që po përdorni
   directus_notifications: Njoftimet e dërguara për përdoruesit
@@ -1232,7 +1189,6 @@ directus_collection:
   directus_settings: Opsionet e konfigurimit të projektit
   directus_shares: Gjurmët e artikujve të ndarë jashtë
   directus_users: Përdoruesit e sistemit për platformën
-  directus_webhooks: Konfigurimi për kërkesat e bazuar në evente të HTTP
   directus_translations: Përkthimet e personalizuara
   directus_versions: Versionet e Përmbajtjes për artikujt
   directus_extensions: Konfigurimi i zgjerimeve
@@ -1380,6 +1336,7 @@ fields:
     public_registration_email_filter_note: Vetëm adresat e email-it që përputhen me këtë filtër mund të regjistrohen.
     public_registration_verify_email: Verifiko Email-in
     public_registration_verify_email_note: Dërgon një email përdoruesit që po regjistrohet duke kërkuar që të klikojnë në një lidhje verifikimi përpara se të mund të identifikohen.
+    ai_header_name: Header
   directus_shares:
     name: Emri
     role: Roli
@@ -1410,18 +1367,6 @@ fields:
     admin_access: Aksesi Administrativ
     ip_access: Aksesi me IP
     enforce_tfa: Kërko 2FA
-  directus_webhooks:
-    name: Emri
-    method: Metoda
-    status: Statusi
-    data: Të Dhënat
-    header: Header
-    value: Vlera
-    headers: Header të Kërkesës
-    data_label: Dërgo Të Dhënat e Ngjarjes
-    triggers: Shkaktuesit
-    actions: Veprimet
-    collections: Koleksione
 field_options:
   directus_settings:
     project_name_placeholder: Projekti im...
@@ -1523,19 +1468,6 @@ field_options:
     status_dropdown_suspended: I pezulluar
     status_dropdown_archived: I arkivuar
     token: Shkruaj një token aksesues të sigurt...
-  directus_webhooks:
-    status_options_active: Aktiv
-    status_options_inactive: Joaktiv
-    data_label: Dërgo Të Dhënat e Ngjarjes
-    triggers_divider: Shkaktuesit
-    actions_create: Krijo
-    actions_update: Përditëso
-    actions_delete: Fshij
-    actions_login: Hyrje
-    headers:
-      header: Header
-      value: Vlera
-      add: Shto Header
 no_fields_in_collection: 'Nuk ka fusha në "{collection}" akoma'
 no_value: Pa vlerë
 do_nothing: Mos bëj asgjë
@@ -1557,11 +1489,30 @@ live_preview:
   new_window: Hap në Dritare të Re
   close_window: Hap në Pamje të Ndara
   toggle_3d: Ndëro 3D
+  display_options: Opsionet e Shfaqjes
 shares: Ndaj
 unlimited_usage: Përdorim i Pakufizuar
 uses_left: Asnjë përdorim i mbetur | Një përdorim i mbetur | {n} përdorime të mbetura
 no_shares: Asnjë ndarje për t'u shfaqur
 new_share: Ndarje e Re
+ai:
+  input: Input
+  unknown: Panjohur
+  items: Artikuj
+  content: Përmbajtje
+  settings: Parametra
+  tool_approval:
+    disabled: I Çaktivizuar
+ai_tools:
+  items: Artikuj
+  files: Skedarë
+  folders: Dosjet
+  flows: Rrjedha
+  trigger-flow: Shkakto Rrjedhën
+  operations: Operacione
+  schema: Skemë
+  collections: Koleksione
+  fields: Fusha
 mcp_prompts_collection_schema:
   messages_role_user: Përdorues
 expired: Skaduar
@@ -1598,7 +1549,6 @@ editing_role: 'Roli {role}'
 editing_policy: 'Drejtimi {policy}'
 no_permissions: Pa Leje
 permission_add_collection: Shto Koleksion
-creating_webhook: Po krijohet Webhook
 default_label: Parazgjedhur
 delete_label: Fshi
 delete_are_you_sure: >-
@@ -1730,7 +1680,7 @@ interfaces:
     accordion_mode: Modaliteti i Akordionit
     max_one_section_open: Maksimum 1 Seksion i Hapur
   presentation-links:
-    links: Lidhje
+    presentation-links: Butonat
     style: Stil
     primary: Primar
     link: Lidhje
@@ -2052,6 +2002,9 @@ interfaces:
   input-password:
     input-password: Fut Fjalëkalimin
     description: Hyrja e fjalëkalimit me mundësi për të fshehur vlerën
+  header:
+    header: Header
+    links: Lidhje
 displays:
   translations:
     translations: Përkthimet
@@ -2355,11 +2308,9 @@ triggers:
 a_flow_uuid: Zgjidh një rrjedhë për të shkaktuar...
 any_string_or_json: Çdo varg ose JSON...
 item_payload_placeholder: Kjo është JSON që përdoret për të përditësuar vlerat e fushës së artikullit...
-operation_variables_note: Mund të aksesosh të dhënat e rrjedhës me variabla si {'{'}{'{'}$last{'}'}{'}'}, {'{'}{'{'}$trigger{'}'}{'}'} dhe {'{'}{'{'}$accountability{'}'}{'}'}, ose referohu në operacionet e mëparshme duke përdorur {'{'}{'{'}operation_key{'}'}{'}'}.'
 operations:
   condition:
     name: Kusht
-    description: Drejto një rrjedhë bazuar në logjikën Nëse / Përndryshe
   exec:
     name: Ekzekuto Skript
     description: Ekzekuto kod të papërcaktuar për të ndryshuar ngarkesën
@@ -2444,7 +2395,6 @@ operations:
     description: Ndrysho ngarkesën JSON të rrjedhës
   trigger:
     name: Shkakto Rrjedhën
-    description: Kaloni këtë të dhënë në një rrjedhë tjetër
     flows: Rrjedha
     flow: Rrjedh
     data: Të Dhënat

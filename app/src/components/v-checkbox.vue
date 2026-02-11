@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, useTemplateRef } from 'vue';
 import { useSync } from '@directus/composables';
+import { computed, onMounted, useTemplateRef } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	/** If the `modelValue` is an array of strings, activates the checkbox if the value is inside it */
@@ -120,7 +121,7 @@ function onClickIcon(e: MouseEvent): void {
 		@click.stop="toggleInput"
 	>
 		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" :disabled :clickable="customValue" @click="onClickIcon" />
+		<VIcon class="checkbox" :name="icon" :disabled :clickable="customValue" @click="onClickIcon" />
 		<span class="label type-text">
 			<slot v-if="!customValue">{{ label }}</slot>
 			<input

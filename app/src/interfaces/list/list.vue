@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import { renderStringTemplate } from '@/utils/render-string-template';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import Draggable from 'vuedraggable';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VNotice from '@/components/v-notice.vue';
+import VRemove from '@/components/v-remove.vue';
+import { renderStringTemplate } from '@/utils/render-string-template';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -200,18 +214,20 @@ function closeDrawer() {
 	edits.value = {};
 	active.value = null;
 }
+
+const menuActive = computed(() => drawerOpen.value || confirmDiscard.value);
 </script>
 
 <template>
-	<div class="repeater">
-		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
+	<div v-prevent-focusout="menuActive" class="repeater">
+		<VNotice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
 			{{ placeholder || $t('no_items') }}
-		</v-notice>
-		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
+		</VNotice>
+		<VNotice v-else-if="!Array.isArray(internalValue)" type="warning">
 			<p>{{ $t('interfaces.list.incompatible_data') }}</p>
-		</v-notice>
+		</VNotice>
 
-		<draggable
+		<Draggable
 			v-if="Array.isArray(internalValue) && internalValue.length > 0"
 			tag="v-list"
 			:disabled="disabled"
@@ -222,10 +238,24 @@ function closeDrawer() {
 			@update:model-value="$emit('input', $event)"
 		>
 			<template #item="{ element, index }">
-				<v-list-item :dense="internalValue.length > 4" :non-editable block clickable @click="openItem(index)">
-					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+				<VListItem
+					:dense="internalValue.length > 4"
+					:non-editable
+					:disabled="disabled && !nonEditable"
+					block
+					clickable
+					@click="openItem(index)"
+				>
+					<VIcon
+						v-if="!nonEditable && !sort"
+						name="drag_handle"
+						class="drag-handle"
+						left
+						:disabled
+						@click.stop="() => {}"
+					/>
 
-					<render-template
+					<RenderTemplate
 						:fields="fields"
 						:item="{ ...defaults, ...element }"
 						:direction="direction"
@@ -234,20 +264,20 @@ function closeDrawer() {
 
 					<div class="spacer" />
 
-					<div class="item-actions">
-						<v-remove v-if="!disabled" confirm @action="removeItem(element)" />
+					<div v-if="!nonEditable" class="item-actions">
+						<VRemove confirm :disabled @action="removeItem(element)" />
 					</div>
-				</v-list-item>
+				</VListItem>
 			</template>
-		</draggable>
+		</Draggable>
 
 		<div v-if="!nonEditable" class="actions">
-			<v-button v-if="showAddNew" :disabled @click="addNew">
+			<VButton v-if="showAddNew" :disabled @click="addNew">
 				{{ addLabel || $t('create_new') }}
-			</v-button>
+			</VButton>
 		</div>
 
-		<v-drawer
+		<VDrawer
 			:model-value="drawerOpen"
 			:title="displayValue || headerPlaceholder || $t('empty_item')"
 			persistent
@@ -257,18 +287,21 @@ function closeDrawer() {
 		>
 			<template #title>
 				<h1 class="type-title">
-					<render-template :fields="fields" :item="activeItem" :template="templateWithDefaults" />
+					<RenderTemplate :fields="fields" :item="activeItem" :template="templateWithDefaults" />
 				</h1>
 			</template>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
-					<v-icon name="check" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('save')"
+					icon="check"
+					:disabled="isSaveDisabled"
+					@click="saveItem(active!)"
+				/>
 			</template>
 
 			<div class="drawer-item-content">
-				<v-form
+				<VForm
 					:disabled
 					:non-editable
 					:fields="fieldsWithNames"
@@ -279,20 +312,20 @@ function closeDrawer() {
 					@update:model-value="trackEdits($event)"
 				/>
 			</div>
-		</v-drawer>
+		</VDrawer>
 
-		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave()">
+		<VDialog v-model="confirmDiscard" @esc="confirmDiscard = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave()">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmDiscard = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="confirmDiscard = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 
@@ -301,6 +334,10 @@ function closeDrawer() {
 
 .v-list {
 	@include mixins.list-interface;
+}
+
+.v-list-item.disabled {
+	background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .item-actions {

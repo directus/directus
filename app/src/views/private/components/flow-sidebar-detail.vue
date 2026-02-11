@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { useInjectRunManualFlow, type ManualFlow } from '@/composables/use-flows';
+import SidebarDetail from './sidebar-detail.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { type ManualFlow, useInjectRunManualFlow } from '@/composables/use-flows';
 
 defineProps<{
 	manualFlows: ManualFlow[];
@@ -9,10 +12,10 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
-	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="$t('flows')">
+	<SidebarDetail v-if="manualFlows.length > 0" id="flows" icon="bolt" :title="$t('flows')">
 		<div class="fields">
 			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
-				<v-button
+				<VButton
 					v-tooltip="manualFlow.tooltip"
 					small
 					full-width
@@ -21,12 +24,12 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 					:disabled="manualFlow.isFlowDisabled"
 					@click="runManualFlow(manualFlow.id)"
 				>
-					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
+					<VIcon :name="manualFlow.icon ?? 'bolt'" small left />
 					{{ manualFlow.name }}
-				</v-button>
+				</VButton>
 			</div>
 		</div>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>

@@ -121,7 +121,6 @@ create_policy: Loo poliitika
 create_user: Loo Kasutaja
 message: Sõnum
 delete_panel: Kustutamise Paneel
-create_webhook: Loo Veebikonks
 create_custom_translation: Loo Uus Tõlge
 edit_custom_translation: Muuda Tõlget
 no_custom_translations: Tõlked Puuduvad
@@ -360,6 +359,7 @@ confirm_revert_body: See taastab kirje valitud väärtuse.
 display: Vaade
 settings_update_success: Seaded on salvestatud
 title: Pealkiri
+subtitle: Alampealkiri
 revision_delta_created: Loodud
 revision_delta_created_externally: Loodud Väliselt
 revision_delta_updated: 'Uuendati 1 väli | Uuendatid {count} välja'
@@ -517,7 +517,6 @@ file_count: 'Faile pole | Leiti 1 fail | {count} faili'
 no_files_copy: Faile pole.
 user_count: 'Kasutajaid pole | Üks kasutaja | {count} kasutajat'
 no_users_copy: Selles rollis pole ühtegi kasutajat.
-webhooks_count: 'Webhooke ei leitud | Üks webhook | {count} webhooki'
 no_notifications: Teavitusi ei ole
 no_notifications_copy: Kõik on ajakohane!
 activity_log: Tegevuste logi
@@ -545,7 +544,6 @@ action: Tegevus
 ip_address: IP aadress
 user_agent: Kasutaja agent
 origin: Päritolu
-webhooks: Webhooks
 decimals: Komakohad
 min_value: Min väärtus
 max_value: Maksimaalne väärtus
@@ -607,7 +605,6 @@ errors:
   USER_SUSPENDED: Kasutajakonto on suletud
   VALUE_OUT_OF_RANGE: Väärtus lubatud vahemikust väljas
 security: Turvalisus
-value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
 edit_bookmark: Muuda järjehoidjat
@@ -751,6 +748,14 @@ flow_name: Nimi
 flow_tracking_activity: Jälgi ainult aktiivsust
 flow_tracking_null: Ära jälgi midagi
 code: Kood
+deployment:
+  provider:
+    settings:
+      delete_confirm: See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
+    run:
+      cancel_confirm: See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
+  target_value:
+    preview: Eelvaade
 dashboard: Töölaud
 panel: Paneel
 details: Üksikasjad
@@ -831,7 +836,6 @@ editing_in_batch: '{count} kirje hulgi muutmine'
 no_options_available: Valikud puuduvad
 settings_data_model: Andmemudel
 settings_project: Seaded
-settings_webhooks: Webhooks
 settings_presets: Järjehoidjad
 settings_translations: Tõlked
 one_or_more_options_are_missing: Üks või mitu valikut puuduvad
@@ -849,32 +853,6 @@ unsaved_changes: Salvestamata muudatused
 unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
-page_help_collections_collection: >-
-  **Vaata kirjeid* - näitab kõiki {collection} andmekogu kirjeid, millele sul on ligipääs. Kiiremaks ligipääsuks saad seadistada vaateid, filtreid, sorteerimist ning lisada järjehoidjaid.
-page_help_collections_item: >-
-  **Kirje detailid** - Selle kirje vaatamise ja muutmise vorm. Külgribal on ühtlasi kirje muudatuste ajalugu ning lisatud kommentaarid.
-page_help_activity_collection: >-
-  **Vaata aktiivsust* - Põhjalik nimekiri kõigist toimingutest, mis süsteemis on tehtud.
-page_help_docs_global: >-
-  **Dokumentatsioon** — Selle projekti ülesehitust kirjeldav teave.
-page_help_files_collection: >-
-  **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
-page_help_files_item: >-
-  **Faili detailid* — Vorm, milles saab muuta faili metaandmeid, ligipääse jm.
-page_help_settings_datamodel_collections: >-
-  **Andmekogud** — Näitab olemasolevaid andmekogusid. Samuti ka nähtavaid, peidetud, ja süsteemi kogusid, lisaks ka haldamata andmebaaside tabeleid, mida saab lisada.
-page_help_settings_datamodel_fields: >-
-  **Andmekogu** — Ükskiku andmekogu ja tema väljade muutmise vorm.
-page_help_settings_roles_item: "**Rolli detailid** - Muuda rolli ligipääse ja muid seadistusti."
-page_help_settings_presets_collection: >-
-  **Näita eelseadistusi** — Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated.
-page_help_settings_presets_item: >-
-  **Eelseadistuse detailid" - Vorm järjehoidjate ja andmekogude eelseadistuste muutmiseks.
-page_help_settings_webhooks_collection: '**Vaata veebikonkse** - Näitab veebikonkse.'
-page_help_settings_webhooks_item: '**Veebikonksu detailid** - Vorm veebikonksude lisamiseks ja muutmiseks.'
-page_help_users_collection: '**Kasutajad** - Näitab kõiki kasutajaid.'
-page_help_users_item: >-
-  **Kasutaja detailid** - Näitab konto infot.
 activity_feed: Tegevusvoog
 add_new: Lisa uus
 create_new: Loo Uus
@@ -991,11 +969,6 @@ fields:
     users: Kasutajad selles rollis
   directus_policies:
     description: Kirjeldus
-  directus_webhooks:
-    name: Nimi
-    status: Staatus
-    value: Väärtus
-    collections: Kogud
 field_options:
   directus_settings:
     security_divider_title: Turvalisus
@@ -1026,14 +999,6 @@ field_options:
     dropdown_dark: Tume režiim
     status_dropdown_active: aktiivne
     status_dropdown_archived: Arhiveeritud
-  directus_webhooks:
-    status_options_active: aktiivne
-    status_options_inactive: Mitteaktiivne
-    actions_create: Loo
-    actions_update: Uuenda
-    actions_delete: Kustuta
-    headers:
-      value: Väärtus
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
 do_nothing: Ära tee midagi
 generate_and_save_uuid: Genereeri ja salvesta UUID
@@ -1045,6 +1010,21 @@ inline: Tekstisisene
 comment: Kommentaar
 live_preview:
   new_window: Ava Uues Aknas
+ai:
+  input: Sisend
+  unknown: Tundmatu
+  items: kirjet
+  content: Sisu
+  settings: Seaded
+  tool_approval:
+    disabled: keelatud
+ai_tools:
+  items: kirjet
+  files: Failid
+  folders: Kaustad
+  operations: Operatsioonid
+  schema: Skeem
+  collections: Kogud
 mcp_prompts_collection_schema:
   messages_role_user: Kasutaja
 relational_triggers: Suhtelised lülitid
@@ -1057,7 +1037,6 @@ referential_action_set_default: Seadista {field} väljale vaikeväärtus
 choose_action: Vali tegevus
 continue_label: Jätka
 editing_role: '{role} roll'
-creating_webhook: Loo veebikonks
 delete_are_you_sure: >-
   See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
 delete_field_are_you_sure: >-
@@ -1131,7 +1110,7 @@ interfaces:
     all: Kõik
     any: Ükskõik milline
   presentation-links:
-    links: Lingid
+    presentation-links: Nupud
     style: Stiil
     primary: Peamine
     link: Lingid
@@ -1351,6 +1330,8 @@ interfaces:
     rate: Hinnang
   system-token:
     system-token: Kontrollkood
+  header:
+    links: Lingid
 displays:
   translations:
     translations: Tõlked
@@ -1482,6 +1463,9 @@ both: Mõlemad
 panels:
   label:
     name: Silt
+triggers:
+  webhook:
+    method: Meetod
 operations:
   json-web-token:
     token: Kontrollkood
@@ -1496,6 +1480,7 @@ operations:
     subject: Teema
   request:
     url: URL
+    method: Meetod
 standard: Standard
 compact: Kompaktne
 style: Stiil

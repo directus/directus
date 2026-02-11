@@ -98,7 +98,7 @@ function trimIfEnabled() {
 	display: flex;
 	flex-direction: column;
 	inline-size: max-content;
-	block-size: var(--input-height-tall);
+	block-size: var(--input-height-md);
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -168,9 +168,12 @@ function trimIfEnabled() {
 		}
 	}
 
-	&.disabled:not(.non-editable) textarea {
-		color: var(--theme--foreground-subdued);
+	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
+
+		textarea {
+			color: var(--theme--foreground-subdued);
+		}
 	}
 }
 </style>

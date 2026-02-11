@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useCustomSelection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
+import VRadio from '@/components/v-radio.vue';
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 
 type Option = {
@@ -45,9 +48,9 @@ const customIcon = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!items" type="warning">
+	<VNotice v-if="!items" type="warning">
 		{{ $t('choices_option_configured_incorrectly') }}
-	</v-notice>
+	</VNotice>
 	<div
 		v-else
 		class="radio-buttons"
@@ -56,7 +59,7 @@ const customIcon = computed(() => {
 			'--v-radio-color': color,
 		}"
 	>
-		<v-radio
+		<VRadio
 			v-for="item in items"
 			:key="item.value"
 			block
@@ -69,20 +72,20 @@ const customIcon = computed(() => {
 			:model-value="value"
 			@update:model-value="$emit('input', $event)"
 		/>
-		<v-notice v-if="items.length === 0 && !allowOther" type="info">
+		<VNotice v-if="items.length === 0 && !allowOther" type="info">
 			{{ $t('no_options_available') }}
-		</v-notice>
+		</VNotice>
 		<div
 			v-if="allowOther && !(nonEditable && !usesOtherValue && !otherValue)"
 			class="custom"
 			:class="{
 				active: (!disabled || nonEditable) && usesOtherValue,
-				'has-value': (!disabled || nonEditable) && otherValue,
+				'has-value': otherValue,
 				disabled,
 				'non-editable': nonEditable,
 			}"
 		>
-			<v-icon
+			<VIcon
 				:name="customIcon"
 				class="radio-icon"
 				:disabled="disabled"
@@ -110,19 +113,19 @@ const customIcon = computed(() => {
 }
 
 .grid-2 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 4;
 	}
 }
@@ -192,7 +195,10 @@ const customIcon = computed(() => {
 
 	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
-		border-color: transparent;
+
+		&.has-value {
+			border-color: var(--theme--form--field--input--border-color);
+		}
 
 		input {
 			color: var(--theme--form--field--input--foreground-subdued);

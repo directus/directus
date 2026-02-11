@@ -1,16 +1,18 @@
 <script setup lang="ts">
+import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { defaultValues, FormValidator, useFormFields, validate, ValidationError } from './form';
 import SetupForm from './form.vue';
-
 import api from '@/api';
 import { login } from '@/auth';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
 import { translateAPIError } from '@/lang';
-import { SetupForm as Form } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { FormValidator, defaultValues, useFormFields, validate, ValidationError } from './form';
-import { watch } from 'vue';
+import PublicView from '@/views/public';
 
 const { t } = useI18n();
 
@@ -64,22 +66,22 @@ watch(form, () => {
 </script>
 
 <template>
-	<public-view wide>
-		<setup-form v-model="form" :errors="errors" utm-location="onboarding"></setup-form>
-		<v-button full-width :disabled="!formComplete" :loading="isSaving" @click="launch()">
-			<v-icon name="rocket_launch" />
+	<PublicView wide>
+		<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
+		<VButton full-width :disabled="!formComplete" :loading="isSaving" @click="launch()">
+			<VIcon name="rocket_launch" />
 			{{ $t('setup_launch') }}
-		</v-button>
+		</VButton>
 
-		<v-notice v-if="error" type="danger">
+		<VNotice v-if="error" type="danger">
 			<p class="error-code">
 				{{ translateAPIError(error) }}
 			</p>
 			<p>
 				{{ errorMessage }}
 			</p>
-		</v-notice>
-	</public-view>
+		</VNotice>
+	</PublicView>
 </template>
 
 <style scoped>

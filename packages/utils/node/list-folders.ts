@@ -1,5 +1,5 @@
-import fse from 'fs-extra';
 import path from 'path';
+import fse from 'fs-extra';
 
 interface ListFoldersOptions {
 	/**

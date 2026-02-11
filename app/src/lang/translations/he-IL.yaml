@@ -129,7 +129,6 @@ create_role: צור תפקיד
 create_user: צור משתמש
 message: הודעה
 delete_panel: מחיקת לוח
-create_webhook: צור Webhook
 create_custom_translation: יצירת תרגומים
 edit_custom_translation: עריכת תרגומים
 no_custom_translations: חסרים תרגומים
@@ -268,6 +267,7 @@ paste_raw_value_fail: ההדבקה נכשלה
 clear_value: נקה שדות
 notifications: התראות
 title: כותרת
+subtitle: כותרת משנית
 revision_delta_deleted: נמחק
 leave_comment: השאר תגובה...
 post_comment_success: תגובה פורסמה
@@ -425,8 +425,6 @@ fields:
     description: תיאור
   directus_policies:
     description: תיאור
-  directus_webhooks:
-    status: סטטוס
 field_options:
   directus_activity:
     create: צור
@@ -435,13 +433,17 @@ field_options:
     archive_divider: ארכיון
   directus_users:
     status_dropdown_active: פעיל
-  directus_webhooks:
-    status_options_active: פעיל
-    status_options_inactive: לא פעיל
-    actions_create: צור
 comment: הערה
 live_preview:
   new_window: פתח בחלון חדש
+ai:
+  unknown: לא ידוע
+  tool_approval:
+    disabled: מושבת
+ai_tools:
+  files: קבצים
+  folders: תיקיות
+  operations: תהליכים
 description: תיאור
 email: דוא"ל
 password: סיסמה
@@ -494,10 +496,15 @@ layouts:
   calendar:
     calendar: לוח שנה
 both: שניהם
+triggers:
+  webhook:
+    method: פונקציה
 operations:
   log:
     message: הודעה
   notification:
     message: הודעה
     subject: נושא
+  request:
+    method: פונקציה
 standard: סטנדרטי

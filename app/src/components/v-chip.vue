@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSizeClass } from '@directus/composables';
 import { computed, ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props {
 	/** Model the active state */
@@ -82,7 +83,7 @@ function onCloseClick(event: MouseEvent) {
 		<span class="chip-content">
 			<slot />
 			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
-				<v-icon class="close" :name="closeIcon" x-small />
+				<VIcon class="close" :name="closeIcon" x-small />
 			</span>
 		</span>
 	</component>

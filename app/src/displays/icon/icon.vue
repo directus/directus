@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { isHex } from '@/utils/is-hex';
 import { computed } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { isHex } from '@/utils/is-hex';
 
 const props = defineProps<{
 	value: string | null;
@@ -15,5 +16,5 @@ const style = computed(() => {
 </script>
 
 <template>
-	<v-icon small :name="value" :style="style" :filled="filled" />
+	<VIcon small :name="value" :style="style" :filled="filled" />
 </template>

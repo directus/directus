@@ -1,3 +1,7 @@
+import type { ServerResponse } from 'http';
+import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import path from 'path';
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
@@ -5,12 +9,9 @@ import { toBoolean } from '@directus/utils';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
-import type { ServerResponse } from 'http';
 import { merge } from 'lodash-es';
-import { readFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
-import path from 'path';
 import qs from 'qs';
+import { aiChatRouter } from './ai/chat/router.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
@@ -19,6 +20,7 @@ import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
 import commentsRouter from './controllers/comments.js';
 import dashboardsRouter from './controllers/dashboards.js';
+import deploymentRouter from './controllers/deployment.js';
 import extensionsRouter from './controllers/extensions.js';
 import fieldsRouter from './controllers/fields.js';
 import filesRouter from './controllers/files.js';
@@ -47,13 +49,13 @@ import tusRouter from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
-import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
 	validateDatabaseConnection,
 	validateDatabaseExtensions,
 	validateMigrations,
 } from './database/index.js';
+import { registerDeploymentDrivers } from './deployment.js';
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
@@ -68,10 +70,10 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 import metricsSchedule from './schedules/metrics.js';
+import projectSchedule from './schedules/project.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
 import tusSchedule from './schedules/tus.js';
-import projectSchedule from './schedules/project.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
@@ -100,6 +102,12 @@ export default async function createApp(): Promise<express.Application> {
 		);
 	}
 
+	if (typeof env['SECRET'] === 'string' && Buffer.byteLength(env['SECRET']) < 32) {
+		logger.warn(
+			'"SECRET" env variable is shorter than 32 bytes which is insecure. This is not appropriate for production usage.',
+		);
+	}
+
 	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
 		logger.warn('"PUBLIC_URL" should be a full URL');
 	}
@@ -108,6 +116,7 @@ export default async function createApp(): Promise<express.Application> {
 	await validateStorage();
 
 	await registerAuthProviders();
+	registerDeploymentDrivers();
 
 	const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
@@ -119,7 +128,13 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', env['IP_TRUST_PROXY']);
-	app.set('query parser', (str: string) => qs.parse(str, { depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']) }));
+
+	app.set('query parser', (str: string) =>
+		qs.parse(str, {
+			depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']),
+			arrayLimit: Number(env['QUERYSTRING_ARRAY_LIMIT']),
+		}),
+	);
 
 	if (env['PRESSURE_LIMITER_ENABLED']) {
 		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
@@ -288,6 +303,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/collections', collectionsRouter);
 	app.use('/comments', commentsRouter);
 	app.use('/dashboards', dashboardsRouter);
+	app.use('/deployments', deploymentRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 
@@ -302,6 +318,10 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (toBoolean(env['MCP_ENABLED']) === true) {
 		app.use('/mcp', mcpRouter);
+	}
+
+	if (toBoolean(env['AI_ENABLED']) === true) {
+		app.use('/ai/chat', aiChatRouter);
 	}
 
 	if (env['METRICS_ENABLED'] === true) {
@@ -325,7 +345,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/versions', versionsRouter);
-	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });

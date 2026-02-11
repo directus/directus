@@ -1,10 +1,10 @@
+import http from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { createError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import axios, { AxiosError } from 'axios';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
-import http from 'node:http';
-import type { AddressInfo } from 'node:net';
 import type { Logger } from 'pino';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger/index.js';

@@ -113,4 +113,14 @@ export interface TelemetryReport {
 	 * Number of Visual Editor URLs configured in the system
 	 */
 	visual_editor_urls: number;
+
+	/**
+	 * Whether collaborative editing is enabled
+	 */
+	collaborative_editing_enabled: boolean;
+
+	/**
+	 * Whether WebSockets are enabled
+	 */
+	websockets_enabled: boolean;
 }

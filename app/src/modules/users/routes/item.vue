@@ -1,5 +1,25 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
+import type { User } from '@directus/types';
+import { computed, provide, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import UsersNavigation from '../components/navigation.vue';
+import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { logout } from '@/auth';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VChip from '@/components/v-chip.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -9,16 +29,13 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
+import { PrivateView } from '@/views/private';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { useCollection } from '@directus/composables';
-import type { User } from '@directus/types';
-import { computed, ref, toRefs, provide } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import UsersNavigation from '../components/navigation.vue';
-import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -59,6 +76,7 @@ const {
 	isArchived,
 	validationErrors,
 	refresh,
+	getItem,
 } = useItem<User>(
 	ref('directus_users'),
 	primaryKey,
@@ -68,6 +86,16 @@ const {
 			}
 		: undefined,
 );
+
+const {
+	users: collabUsers,
+	connected,
+	collabContext,
+	collabCollision,
+	update: updateCollab,
+	clearCollidingChanges,
+	discard: discardCollab,
+} = useCollab(ref('directus_users'), primaryKey, ref(null), item, edits, getItem);
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
@@ -89,6 +117,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
+const confirmDiscard = ref(false);
 
 // Provide the discard functionality to field interfaces
 provide('discardAllChanges', discardAndStay);
@@ -137,17 +166,6 @@ const archiveTooltip = computed(() => {
 
 useShortcut('meta+s', saveAndStay, form);
 useShortcut('meta+shift+s', saveAndAddNew, form);
-
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push('/users');
-}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
@@ -254,8 +272,17 @@ function discardAndLeave() {
 }
 
 function discardAndStay() {
-	edits.value = {};
+	if (collabUsers.value.length > 1) {
+		confirmDiscard.value = true;
+	} else {
+		discardAndStayConfirmed();
+	}
+}
+
+function discardAndStayConfirmed() {
+	discardCollab();
 	confirmLeave.value = false;
+	confirmDiscard.value = false;
 }
 
 async function toggleArchive() {
@@ -279,53 +306,46 @@ function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<private-view :title="title">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
+	<PrivateView :title="title" show-back back-to="/users">
 		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
+			<VBreadcrumb :items="breadcrumb" />
 		</template>
 
 		<template #actions>
-			<v-dialog
+			<CollabAvatars :model-value="collabUsers" :connected="connected" />
+
+			<VDialog
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
 				@esc="confirmDelete = false"
 				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						rounded
-						icon
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+						</VButton>
+						<VButton kind="danger" :loading="deleting" @click="deleteAndQuit">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-dialog
+			<VDialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
@@ -333,45 +353,39 @@ function revert(values: Record<string, any>) {
 				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
-						rounded
-						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
+						:icon="isArchived ? 'unarchive' : 'archive'"
 						@click="on"
-					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" />
-					</v-button>
+					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmArchive = false">
+					<VCardActions>
+						<VButton secondary @click="confirmArchive = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
+						</VButton>
+						<VButton kind="warning" :loading="archiving" @click="toggleArchive">
 							{{ isArchived ? $t('unarchive') : $t('archive') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
-				rounded
-				icon
 				:loading="saving"
 				:disabled="!isSavable"
+				icon="check"
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
-
 				<template #append-outer>
-					<save-options
+					<SaveOptions
 						v-if="isSavable"
 						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -380,30 +394,30 @@ function revert(values: Record<string, any>) {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>
-			<users-navigation :current-role="item?.role?.id ?? role" />
+			<UsersNavigation :current-role="item?.role?.id ?? role" />
 		</template>
 
 		<div class="user-item">
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
-					<v-skeleton-loader v-if="loading" />
-					<v-image
+					<VSkeletonLoader v-if="loading" />
+					<VImage
 						v-else-if="avatarSrc && !avatarError"
 						:src="avatarSrc"
 						:alt="$t('avatar')"
 						@error="avatarError = $event"
 					/>
-					<v-icon v-else name="account_circle" x-large />
+					<VIcon v-else name="account_circle" x-large />
 				</div>
 				<div class="user-box-content">
 					<template v-if="loading">
-						<v-skeleton-loader type="text" />
-						<v-skeleton-loader type="text" />
-						<v-skeleton-loader type="text" />
+						<VSkeletonLoader type="text" />
+						<VSkeletonLoader type="text" />
+						<VSkeletonLoader type="text" />
 					</template>
 					<template v-else-if="isNew === false && item">
 						<div class="name type-label">
@@ -411,19 +425,19 @@ function revert(values: Record<string, any>) {
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
 						<div v-if="item.email" class="email">
-							<v-icon name="alternate_email" small />
+							<VIcon name="alternate_email" small />
 							{{ item.email }}
 						</div>
 						<div v-if="item.location" class="location">
-							<v-icon name="place" small />
+							<VIcon name="place" small />
 							{{ item.location }}
 						</div>
-						<v-chip v-if="item.role?.name" :class="item.status" small>{{ item.role.name }}</v-chip>
+						<VChip v-if="item.role?.name" :class="item.status" small>{{ item.role.name }}</VChip>
 					</template>
 				</div>
 			</div>
 
-			<v-form
+			<VForm
 				ref="form"
 				v-model="edits"
 				:disabled="isNew ? false : updateAllowed === false"
@@ -431,35 +445,72 @@ function revert(values: Record<string, any>) {
 				:loading="loading"
 				:initial-values="user"
 				:primary-key="primaryKey"
+				:collab-context="collabContext"
 				:validation-errors="validationErrors"
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard v-if="!connected">
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+			<VCard v-else>
+				<VCardTitle>{{ $t('unsaved_changes_collab') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
+						{{ $t('leave_page') }}
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<VDialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+			<VCard>
+				<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
+				<VCardText>{{ $t('discard_changes_copy_collab') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndStayConfirmed">
+						{{ $t('discard_changes') }}
+					</VButton>
+					<VButton @click="confirmDiscard = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+
+		<ComparisonModal
+			:model-value="collabCollision !== undefined"
+			collection="directus_users"
+			:primary-key="primaryKey"
+			:current-collab="collabCollision"
+			:collab-context="collabContext"
+			mode="collab"
+			:delete-versions-allowed="false"
+			:current-version="null"
+			@confirm="updateCollab"
+			@cancel="clearCollidingChanges"
+		/>
 
 		<template #sidebar>
-			<user-info-sidebar-detail :is-new="isNew" :user="item" />
-			<revisions-sidebar-detail
+			<UserInfoSidebarDetail :is-new="isNew" :user="item" />
+			<RevisionsSidebarDetail
 				v-if="isNew === false && revisionsAllowed"
 				ref="revisionsSidebarDetail"
 				collection="directus_users"
 				:primary-key="primaryKey"
 				@revert="revert"
 			/>
-			<comments-sidebar-detail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
+			<CommentsSidebarDetail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
@@ -515,7 +566,7 @@ function revert(values: Record<string, any>) {
 			object-fit: cover;
 		}
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			inline-size: 144px;
 			block-size: 144px;
 			margin-inline-end: 22px;
@@ -565,7 +616,7 @@ function revert(values: Record<string, any>) {
 		}
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		block-size: 188px;
 
 		.user-box-content .location {

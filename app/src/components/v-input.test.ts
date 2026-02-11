@@ -1,9 +1,9 @@
+import { mount } from '@vue/test-utils';
+import { afterEach, describe, expect, it, test, vi } from 'vitest';
+import VInput from './v-input.vue';
 import { Focus } from '@/__utils__/focus';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
-import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, test, vi } from 'vitest';
-import VInput from './v-input.vue';
 import { i18n } from '@/lang';
 
 const global: GlobalMountOptions = {
@@ -273,7 +273,7 @@ describe('inline warning', () => {
 		valueMissing: false,
 	};
 
-	test('should appear for invalid input', async () => {
+	it('should appear for invalid input', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -302,7 +302,7 @@ describe('inline warning', () => {
 		expect(wrapper.html()).toMatchSnapshot();
 	});
 
-	test('should not appear for valid input', async () => {
+	it('should not appear for valid input', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -329,7 +329,7 @@ describe('inline warning', () => {
 		expect(wrapper.html()).toMatchSnapshot();
 	});
 
-	test('should appear when value exceeds maximum', async () => {
+	it('should appear when value exceeds maximum', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -348,7 +348,7 @@ describe('inline warning', () => {
 		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_max', { value: 10 }));
 	});
 
-	test('should appear when value is below minimum', async () => {
+	it('should appear when value is below minimum', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -367,7 +367,7 @@ describe('inline warning', () => {
 		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_min', { value: 0 }));
 	});
 
-	test('should not appear when value is within range', async () => {
+	it('should not appear when value is within range', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -385,7 +385,7 @@ describe('inline warning', () => {
 		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(false);
 	});
 
-	test('should work with decimal values for float type', async () => {
+	it('should work with decimal values for float type', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -404,7 +404,7 @@ describe('inline warning', () => {
 		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_max', { value: 10 }));
 	});
 
-	test('should show invalid_input key for non-number type', async () => {
+	it('should show invalid_input key for non-number type', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'text',
@@ -425,7 +425,7 @@ describe('inline warning', () => {
 		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_input'));
 	});
 
-	test('useInvalidInput takes priority over useInvalidRange', async () => {
+	it('useInvalidInput takes priority over useInvalidRange', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -450,10 +450,26 @@ describe('inline warning', () => {
 		expect((wrapper.vm as any).isBadInput).toBe(true);
 		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
 	});
+
+	it('should not appear for invalid input when nonEditable is true', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				integer: true,
+				nonEditable: true,
+				// // Note: if nonEditable is true, disabled prop will also be true
+				disabled: true,
+			},
+			global,
+		});
+
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(false);
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(false);
+	});
 });
 
 describe('step controls', () => {
-	test('isStepUpAllowed should work with integer values', async () => {
+	it('isStepUpAllowed should work with integer values', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -467,7 +483,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
 	});
 
-	test('isStepUpAllowed should work with float values', async () => {
+	it('isStepUpAllowed should work with float values', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -481,7 +497,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
 	});
 
-	test('isStepUpAllowed should be false when at max', async () => {
+	it('isStepUpAllowed should be false when at max', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -495,7 +511,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
 	});
 
-	test('isStepUpAllowed should be false when exceeding max', async () => {
+	it('isStepUpAllowed should be false when exceeding max', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -509,7 +525,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
 	});
 
-	test('isStepDownAllowed should work with integer values', async () => {
+	it('isStepDownAllowed should work with integer values', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -523,7 +539,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
 	});
 
-	test('isStepDownAllowed should work with float values', async () => {
+	it('isStepDownAllowed should work with float values', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -537,7 +553,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
 	});
 
-	test('isStepDownAllowed should be false when at min', async () => {
+	it('isStepDownAllowed should be false when at min', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -551,7 +567,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
 	});
 
-	test('isStepDownAllowed should be false when below min', async () => {
+	it('isStepDownAllowed should be false when below min', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -565,7 +581,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
 	});
 
-	test('isStepUpAllowed should be true when no max is set', async () => {
+	it('isStepUpAllowed should be true when no max is set', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -578,7 +594,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
 	});
 
-	test('isStepDownAllowed should be true when no min is set', async () => {
+	it('isStepDownAllowed should be true when no min is set', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -591,7 +607,7 @@ describe('step controls', () => {
 		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
 	});
 
-	test('step controls should be disabled when input is disabled', async () => {
+	it('step controls should be disabled when input is disabled', async () => {
 		const wrapper = mount(VInput, {
 			props: {
 				type: 'number',
@@ -606,5 +622,24 @@ describe('step controls', () => {
 
 		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
 		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
+	});
+
+	it('should not render when nonEditable is true', () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				min: 0,
+				max: 10,
+				nonEditable: true,
+				// Note: if nonEditable is true, disabled prop will also be true
+				disabled: true,
+				integer: true,
+			},
+			global,
+		});
+
+		expect(wrapper.find('.input .step-up').exists()).toBe(false);
+		expect(wrapper.find('.input .step-down').exists()).toBe(false);
 	});
 });

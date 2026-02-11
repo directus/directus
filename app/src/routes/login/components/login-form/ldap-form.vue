@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { RequestError } from '@/api';
-import { login } from '@/auth';
-import { translateAPIError } from '@/lang';
-import { useUserStore } from '@/stores/user';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { RequestError } from '@/api';
+import { login } from '@/auth';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { translateAPIError } from '@/lang';
+import { useUserStore } from '@/stores/user';
 
 type Credentials = {
 	identifier: string;
@@ -91,11 +96,11 @@ async function onSubmit() {
 
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input v-model="identifier" autofocus autocomplete="username" :placeholder="$t('identifier')" />
-		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="$t('password')" />
+		<VInput v-model="identifier" autofocus autocomplete="username" :placeholder="$t('identifier')" />
+		<VInput v-model="password" type="password" autocomplete="current-password" :placeholder="$t('password')" />
 
-		<transition-expand>
-			<v-input
+		<TransitionExpand>
+			<VInput
 				v-if="requiresTFA"
 				v-model="otp"
 				type="text"
@@ -103,14 +108,14 @@ async function onSubmit() {
 				:placeholder="$t('otp')"
 				autofocus
 			/>
-		</transition-expand>
+		</TransitionExpand>
 
-		<v-notice v-if="error" type="warning">
+		<VNotice v-if="error" type="warning">
 			{{ errorFormatted }}
-		</v-notice>
-		<v-button class="sign-in" type="submit" :loading="loggingIn" large>
-			<v-text-overflow :text="$t('sign_in')" />
-		</v-button>
+		</VNotice>
+		<VButton class="sign-in" type="submit" :loading="loggingIn" large>
+			<VTextOverflow :text="$t('sign_in')" />
+		</VButton>
 	</form>
 </template>
 

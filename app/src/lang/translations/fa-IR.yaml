@@ -171,7 +171,6 @@ create_policy: ساخت خط مشی
 create_user: ایجاد کاربر
 message: پیام
 delete_panel: حذف پنل
-create_webhook: ساخت وب هوک
 create_custom_translation: ایجاد ترجمه جدید
 edit_custom_translation: نگارش ترجمه سفارشی
 no_custom_translations: بدون ترجمه سفارشی
@@ -490,6 +489,7 @@ confirm_revert_body: با این کار، آیتم به وضعیت انتخاب 
 display: نحوه نمایش
 settings_update_success: تنظیمات بروزرسانی شد
 title: عنوان
+subtitle: زیرعنوان
 revision_delta_created: ایجاد شد
 revision_delta_created_externally: به شکل خارجی ایجاد شد
 revision_delta_updated: 'یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند'
@@ -498,8 +498,6 @@ revision_delta_reverted: بازگردانده شد
 revision_delta_update_message: این فیلد به روز شده است اما ارزش آن به دلایل امنیتی پنهان شده است.
 revision_delta_other: نسخه
 revision_delta_by: 'در {date} توسط {user}'
-updated_in_revision: در این بازنگری به‌روز شده
-updated_in_revision_matches_latest: در این بازنگری به‌روز شده اما با نسخه آخر منطبق است
 differences_count: 'بدون تفاوت | ۱ تفاوت | {count} تفاوت'
 presentation_text_values_cannot_be_reimported: 'از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد.'
 download_page_as_csv: 'دانلود صفحه به‌صورت CSV'
@@ -694,12 +692,6 @@ file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
 user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
-webhooks_count: 'هیچ وب‌هوک | یک وب‌هوک | {count} وب‌هوک'
-webhooks_deprecation_notice: |
-  وب‌هوک‌ها منسوخ شده‌اند و استفاده بیشتر توصیه نمی‌شود.
-
-  لطفا به جای آن از **جریان‌ها** با [عملیات وب‌هوک / درخواست URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) استفاده کنید.
-no_webhooks_copy: تاکنون هیچ وب‌هوکی پیکربندی نشده | جهت شروع یکی به پایین اضافه کنید.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
@@ -731,7 +723,6 @@ action: فعالیت
 ip_address: نشانی IP
 user_agent: عامل کاربر
 origin: مبدأ
-webhooks: وب‌هوک‌ها
 decimals: اعشاری
 value_decimals: مقدار اعشاری
 min_value: حداقل مقدار
@@ -817,7 +808,6 @@ errors:
   VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
   VALUE_TOO_LONG: مقدار، بسیار طولانی است
 security: امنیت
-value_hashed: این مقدار به طور امن، هش شده است
 bookmark_name: نام نشانک...
 create_bookmark: ساخت نشانک
 edit_bookmark: ویرایش نشانک
@@ -1045,6 +1035,15 @@ no_url_copy: لطفا یک URL در تنظیمات اضافه کنید.
 invalid_url: URL اشتباه
 invalid_url_copy: URL مشخص شده با هیچ یک از URL های مشخص شده در تنظیمات منطبق نیست.
 insights: بینش های داده ای
+deployment:
+  provider:
+    settings:
+      delete_confirm: این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
+    run:
+      cancel_confirm: این عمل دائمی است و قابل بازگشت نیست. آیا مطمئن هستید که می خواهید ادامه دهید؟
+      log_all: همه سطوح رخداد
+  target_value:
+    preview: پيش نمايش
 dashboard: پیشخوان
 panel: پنل
 panel_options: تنظیمات پنل
@@ -1193,7 +1192,6 @@ settings_project: تنظیمات
 settings_appearance: ظاهر
 settings_ai: هوش مصنوعی
 model_context_protocol: دستورالعمل زمینه مدل (MCP)
-settings_webhooks: هوک های تحت وب
 settings_flows: اتوماسیون
 settings_system_logs: لاگ‌های سیستم
 settings_presets: نشانک‌ها
@@ -1220,50 +1218,6 @@ discard_changes_copy: آیا مطمئن هستید که می‌خواهید تم
 show_x_axis: نمایش محور X
 show_y_axis: نمایش محور Y
 keep_editing: ادامه دادن ویرایش
-page_help_collections_overview: '**کلیات مجموعه ها** - لیستی از کلیه مجموعه هایی که به آنها دسترسی دارید.'
-page_help_collections_collection: >-
-  **مرور موارد** - تمام موارد مربوط به مجموعه {collection} که به آن دسترسی دارید را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
-page_help_collections_item: >-
-  **جزئیات آیتم** - فرمی برای نمایش و مدیریت این آیتم. همچنین، این نوار کناری شامل تاریخچه کاملی از نسخه ها و نظرات مرتبط است.
-page_help_activity_collection: >-
-  **مرور فعالیتها** - لیستی جامع از تمامی تنظیمات سیستمی کاربر شما و فعالیتهای محتوایی.
-page_help_docs_global: >-
-  **بررسی اجمالی مستندات** - مستنداتی صرفاً تنظیم شده با نسخه پروژه و شماتیک مربوطه.
-page_help_files_collection: >-
-  **مجموعه فایلها** - تمامی محتوای آپلود شده برای این پروژه را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
-page_help_files_item: >-
-  **جزئیات فایل** - فرمی برای مدیریت متادیتای فایل، ویرایش محتوای اصلی و بروزرسانی تنظیمات دسترسی.
-page_help_settings_project: "**تنظیمات** — تنظیمات سراسری پروژه شما."
-page_help_settings_appearance: "**ظاهر** - ظاهر پروژه شما و تنظیمات قالب‌بندی."
-page_help_settings_extensions: '**افزونه‌ها** — افزونه نصب‌شده در پروژه شما.'
-page_help_settings_ai: "**هوش مصنوعی** — گزینه‌های پیکربندی هوش مصنوعی پروژه شما."
-page_help_settings_datamodel_collections: >-
-  **مدل داده: مجموعه ها** - تمامی مجموعه های موجود را لیست می کند. این شامل مجموعه های پیدا و نهان و مجموعه های سیستمی و همچنین جداول پایگاه داده مدیریت نشده ای است که میتوانند اضافه شوند.
-page_help_settings_datamodel_fields: >-
-  **مدل داده: مجموعه** - فرمی برای مدیریت مجموعه و فیلدهای آن.
-page_help_settings_system_logs: '**لاگ‌های سیستم** — دسترسی به جریان زنده لاگ‌های سیستم.'
-page_help_settings_policies_collection: '**مرور سیاست‌ها** — همه سیاست‌های داخل پروژه را فهرست می‌کند.'
-page_help_settings_policies_item: '**جزئیات سیاست** — مدیریت مجوزهای یک سیاست و سایر تنظیمات.'
-page_help_settings_roles_collection: '**مرور نقش‌ها** - تمام نقش‌های کاربر در پروژه را لیست می‌کند.'
-page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
-page_help_settings_presets_collection: >-
-  **مرور الگوها** - لیستی از تمامی الگوهای موجود در پروژه شامل: کاربر، نقش و نشانک های بالاترین سطح بعلاوه نماهای پیش فرض.
-page_help_settings_presets_item: >-
-  **جزئیات از پیش تعیین شده** - فرمی برای مدیریت نشانک‌ها و از پیش تنظیم‌های مجموعه پیش فرض.
-page_help_settings_webhooks_collection: '**مرور Webhooks** - فهرستی از تمام وبک هوک های داخل پروژه.'
-page_help_settings_webhooks_item: '** جزئیات وب هوک ** - فرمی برای ایجاد و مدیریت وب هوک های پروژه.'
-page_help_settings_flows_collection: '**مرور جریان‌ها** - همه جریان‌های داخل پروژه را فهرست می کند.'
-page_help_settings_flows_item: '**جزئیات جریان** - محیط کاری برای مدیریت یک یا چند عملیات.'
-page_help_settings_translations_collection: '**مرور ترجمه‌های سفارشی** — تمام ترجمه‌های سفارشی داخل پروژه را لیست می‌کند.'
-page_help_settings_translations_item: '**جزئیات ترجمه‌های سفارشی** — فرمی برای دیدن و مدیریت این مورد.'
-page_help_users_collection: '**دایرکتوری کاربر** - لیست تمامی کاربران سیستم در این پروژه.'
-page_help_users_item: >-
-  **جزئیات کاربر** — اطلاعات حساب خود را مدیریت کنید یا جزئیات سایر کاربران را مشاهده کنید.
-page_help_insights_overview: '**اطلاعات** - لیست داشبوردهایی که به آنها دسترسی دارید.'
-page_help_insights_dashboard: '**داشبورد** - فضای کاری برای مدیریت یک یا چند پنل'
-page_help_marketplace_account: '**حساب** — ناشر یا نگهدارنده یک افزونه منتشر شده.'
-page_help_marketplace_registry: '**رجیستری** — افزونه‌های فعال در بازار دایرکتوس.'
-page_help_marketplace_extension: '**افزونه** — افزونه در بازار دایرکتوس.'
 activity_feed: گزارش فعالیت ها
 add_new: اضافه کردن
 create_new: ساخت آیتم جدید
@@ -1314,7 +1268,6 @@ directus_collection:
   directus_settings: گزینه های پیکربندی پروژه
   directus_shares: موارد به اشتراک گذاشته شده خارجی را ردیابی می کند
   directus_users: کاربران سیستمی برای پلتفرم
-  directus_webhooks: پیکربندی برای درخواست های HTTP مبتنی بر رویداد
   directus_translations: ترجمه های سفارشی
   directus_versions: نسخه‌های محتوا برای موارد
   directus_extensions: تنظیمات افزونه‌ها
@@ -1477,6 +1430,7 @@ fields:
     mcp_system_prompt_enabled_note: "از <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>پرامپت سیستمی پیش‌فرض</a> برای هدایت رفتار LLM استفاده کنید. برای حذف یا جایگزین کردن با پرامپت خودتان در پایین غیرفعال کنید."
     mcp_system_prompt: پرامپت سیستمی سفارشی
     mcp_system_prompt_note: 'پرامپت سیستمی سفارشی برای جایگزینی با پیش‌فرض. برای استفاده از مقدار پیش‌فرض خالی بگذارید (اگر بالا فعال شده).'
+    ai_header_name: سربرگ
   directus_shares:
     name: نام
     role: نقش
@@ -1507,18 +1461,6 @@ fields:
     admin_access: دسترسی مدیر
     ip_access: محدودیت IP
     enforce_tfa: اجبار به احراز هویت دو عاملی
-  directus_webhooks:
-    name: نام
-    method: شیوه یا متود
-    status: وضعیت
-    data: داده Data
-    header: سربرگ
-    value: مقدار
-    headers: درخواست Header
-    data_label: ارسال داده های رویداد
-    triggers: راه‌اندازها
-    actions: فعالیت ها
-    collections: کالکشن ها یا مجموعه ها
 field_options:
   directus_settings:
     project_name_placeholder: پروژه من...
@@ -1620,19 +1562,6 @@ field_options:
     status_dropdown_suspended: تعلیق شده
     status_dropdown_archived: بایگانی شده
     token: یک رمز دسترسی ایمن وارد کنید...
-  directus_webhooks:
-    status_options_active: فعال
-    status_options_inactive: غیر فعال
-    data_label: ارسال داده های رویداد
-    triggers_divider: محرک ها
-    actions_create: ایجاد
-    actions_update: بروزرسانی
-    actions_delete: حذف
-    actions_login: ورود به سیستم
-    headers:
-      header: سربرگ Header
-      value: مقدار
-      add: اضافه کردن Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: بدون مقدار
 do_nothing: کاری انجام نشود
@@ -1655,11 +1584,30 @@ live_preview:
   close_window: حالت توو در توو
   toggle_3d: حالت سه بعدی
   iframe_title: پیش نمایش زنده وب‌سایت
+  display_options: تنظیمات نحوه نمایش
 shares: اشتراک‌گذاری
 unlimited_usage: Unlimited usage
 uses_left: هیچ استفاده‌ای نمانده | یک استفاده مانده | {n} استفاده مانده
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
+ai:
+  input: ورودی
+  unknown: نامشخص
+  items: آیتمها
+  content: محتوا
+  settings: تنظیمات
+  tool_approval:
+    disabled: غیرفعال شده
+ai_tools:
+  items: آیتمها
+  files: فایل ها
+  folders: پوشه‌ها
+  flows: جریان‌ها
+  trigger-flow: راه‌اندازی جریان
+  operations: عملیات‌ها
+  schema: اسکیما
+  collections: مجموعه‌ها
+  fields: کادرها
 mcp_prompts_collection:
   no_collection_selected: مجموعه‌ای انتخاب نشده است
   no_collection_selected_copy: مجموعه‌ای را برای فعال‌سازی قالب‌های پرامپت قابل استفاده مجدد انتخاب کنید.
@@ -1719,7 +1667,6 @@ editing_role: 'نقشِ {role}'
 editing_policy: 'سیاست {policy}'
 no_permissions: بدون مجوز
 permission_add_collection: ایجاد مجموعه
-creating_webhook: ساخت وب هوک
 default_label: پیش‌فرض
 delete_label: حذف
 delete_are_you_sure: >-
@@ -2183,6 +2130,9 @@ interfaces:
   input-password:
     input-password: ورود رمز عبور
     description: ورودی پسورد با دکمه‌ای برای مخفی کردن مقدار
+  header:
+    header: سربرگ
+    links: لینک‌‌ها
 displays:
   translations:
     translations: ترجمه‌ها

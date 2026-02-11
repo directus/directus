@@ -10,6 +10,7 @@ export function translateShortcut(keys: string[]): string {
 				if (key === 'option') return '⌥';
 				if (key === 'shift') return '⇧';
 				if (key === 'alt') return '⌥';
+				if (key === 'enter') return '⏎';
 				return capitalize(key);
 			})
 			.join('');
@@ -17,6 +18,7 @@ export function translateShortcut(keys: string[]): string {
 		return keys
 			.map((key) => {
 				if (key === 'meta') return 'Ctrl';
+				if (key === 'enter') return '↵';
 				return capitalize(key);
 			})
 			.join('+');

@@ -41,7 +41,6 @@ required: Nauðsynlegt
 create_role: Búa til Hlutverk
 create_user: Búa til Notanda
 message: Skilaboð
-create_webhook: Búa til Vefkrækju
 invite_users: Bjóða notendum
 invite: Bjóða
 subject: Viðfangsefni
@@ -245,6 +244,9 @@ start_flow: Byrja Flæði
 stop_flow: Stoppa Flæði
 code: Kóði
 insights: Innsýnir
+deployment:
+  target_value:
+    preview: Forskoða
 visible: Sýnilegt
 no_data: Engin G0gn
 center_align: Miðju Jöfnun
@@ -352,6 +354,7 @@ fields:
   directus_settings:
     project_name: Verkefni Nafn
     custom_css: Sérsniðið CSS
+    ai_header_name: Haus
   directus_shares:
     name: Nafn
     role: Hlutverk
@@ -364,11 +367,6 @@ fields:
     description: Lýsing
   directus_policies:
     description: Lýsing
-  directus_webhooks:
-    name: Nafn
-    status: Staða
-    header: Haus
-    value: Gildi
 field_options:
   directus_settings:
     security_divider_title: Öryggi
@@ -394,19 +392,18 @@ field_options:
     preferences_divider: Notandi Stillingar
     status_dropdown_draft: Drög
     status_dropdown_active: Virkt
-  directus_webhooks:
-    status_options_active: Virkt
-    status_options_inactive: Óvirkt
-    actions_create: Búa til
-    actions_update: Uppfæra
-    actions_delete: Eyða
-    actions_login: Skrá inn
-    headers:
-      header: Haus
 do_nothing: Gera Ekkert
 comment: Athugasemd
 live_preview:
   new_window: Opna í Nýjum Glugga
+ai:
+  content: Efni
+  settings: Stillingar
+  tool_approval:
+    disabled: Óvirkt
+ai_tools:
+  files: Skrár
+  flows: Flæðir
 mcp_prompts_collection_schema:
   messages_role_user: Notandi
 share_copy_link: Afrita Hlekk
@@ -485,6 +482,8 @@ interfaces:
       code: Kóði
       image: Mynd
       table: Tafla
+  header:
+    header: Haus
 displays:
   translations:
     translations: Þýðingar
@@ -613,6 +612,7 @@ operations:
     to: Til
     body: Líkami
     template: Sniðmát
+    data: Gögn
   notification:
     name: Senda Tilkynningu
     recipient: Notandi

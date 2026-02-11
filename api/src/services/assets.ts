@@ -1,7 +1,10 @@
+import type { Readable } from 'node:stream';
+import path from 'path';
 import { useEnv } from '@directus/env';
 import {
 	ForbiddenError,
 	IllegalAssetTransformationError,
+	InvalidPayloadError,
 	InvalidQueryError,
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
@@ -11,28 +14,29 @@ import type {
 	Accountability,
 	File,
 	Range,
-	Stat,
 	SchemaOverview,
+	Stat,
 	Transformation,
 	TransformationSet,
 } from '@directus/types';
+import archiver from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
-import { contentType } from 'mime-types';
-import type { Readable } from 'node:stream';
+import { contentType, extension } from 'mime-types';
 import hash from 'object-hash';
-import path from 'path';
 import sharp from 'sharp';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
-import { FilesService } from './files.js';
+import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
+import { FilesService } from './files.js';
+import { FoldersService } from './folders.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -41,13 +45,145 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	filesService: FilesService;
+	sudoFilesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.filesService = new FilesService({ ...options, accountability: null });
+		this.sudoFilesService = new FilesService({ ...options, accountability: null });
+	}
+
+	private sanitizeFields(file: File, allowedFields: string[]): Partial<File> {
+		if (allowedFields.includes('*')) {
+			return file;
+		}
+
+		const bypassFields: (keyof File)[] = ['type', 'filesize'];
+		const fieldsToKeep = new Set<string>([...allowedFields, ...bypassFields]);
+
+		const filteredFile: Partial<File> = {};
+
+		for (const field of fieldsToKeep) {
+			if (field in file) {
+				(filteredFile as Record<string, unknown>)[field] = file[field as keyof File];
+			}
+		}
+
+		return filteredFile;
+	}
+
+	private zip(options: { folders?: Map<string, string>; files: Pick<File, 'id' | 'folder' | 'filename_download'>[] }) {
+		if (options.files.length === 0) {
+			throw new InvalidPayloadError({ reason: 'No files found in the selected folders tree' });
+		}
+
+		const archive = archiver('zip');
+
+		const complete = async () => {
+			const deduper = new NameDeduper();
+			const storage = await getStorage();
+
+			for (const { id, folder, filename_download } of options.files) {
+				const file = await this.sudoFilesService.readOne(id, {
+					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
+				});
+
+				const exists = await storage.location(file.storage).exists(file.filename_disk);
+
+				if (!exists) throw new ForbiddenError();
+
+				const version = file.modified_on ? (new Date(file.modified_on).getTime() / 1000).toFixed() : undefined;
+
+				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
+
+				const fileExtension = path.extname(file.filename_download) || (file.type && '.' + extension(file.type)) || '';
+
+				const dedupedFileName = deduper.add(filename_download, { group: folder, fallback: file.id + fileExtension });
+
+				const folderName = folder ? options.folders?.get(folder) : undefined;
+
+				archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
+			}
+
+			// add any empty folders, does not override already filled folder
+			if (options.folders) {
+				for (const [, folder] of options.folders) {
+					archive.append('', { name: folder + '/' });
+				}
+			}
+
+			await archive.finalize();
+		};
+
+		return { archive, complete };
+	}
+
+	async zipFiles(files: string[]) {
+		const filesService = new FilesService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const filesToZip = await filesService.readByQuery({
+			filter: {
+				id: {
+					_in: files,
+				},
+			},
+			limit: -1,
+		});
+
+		return this.zip({
+			files: filesToZip.map((file) => ({
+				id: file['id'],
+				folder: file['folder'],
+				filename_download: file['filename_download'],
+			})),
+		});
+	}
+
+	async zipFolder(root: string) {
+		const foldersService = new FoldersService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const folderTree = await foldersService.buildTree(root);
+
+		const filesService = new FilesService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const filesToZip = await filesService.readByQuery({
+			filter: {
+				folder: {
+					_in: Array.from(folderTree.keys()),
+				},
+			},
+			limit: -1,
+		});
+
+		const { archive, complete } = this.zip({
+			folders: folderTree,
+			files: filesToZip.map((file) => ({
+				id: file['id'],
+				folder: file['folder'],
+				filename_download: file['filename_download'],
+			})),
+		});
+
+		return {
+			archive,
+			complete,
+			metadata: {
+				name: folderTree.get(root),
+			},
+		};
 	}
 
 	async getAsset(
@@ -77,7 +213,7 @@ export class AssetsService {
 			.from('directus_settings')
 			.first();
 
-		const systemPublicKeys = Object.values(publicSettings || {});
+		const systemPublicKeys: string[] = Object.values(publicSettings || {});
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
@@ -86,19 +222,31 @@ export class AssetsService {
 		 */
 		if (!isValidUuid(id)) throw new ForbiddenError();
 
-		if (systemPublicKeys.includes(id) === false && this.accountability) {
-			await validateAccess(
+		let allowedFields: string[] = ['*'];
+
+		if (!systemPublicKeys.includes(id) && this.accountability && this.accountability.admin !== true) {
+			// Use validateItemAccess to check access and get allowed fields
+			const { allowedRootFields, accessAllowed } = await validateItemAccess(
 				{
 					accountability: this.accountability,
 					action: 'read',
 					collection: 'directus_files',
 					primaryKeys: [id],
+					returnAllowedRootFields: true,
 				},
 				{ knex: this.knex, schema: this.schema },
 			);
+
+			if (!accessAllowed) {
+				throw new ForbiddenError({
+					reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
+				});
+			}
+
+			allowedFields = allowedRootFields;
 		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
+		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
@@ -167,7 +315,7 @@ export class AssetsService {
 
 				return {
 					stream: deferStream ? assetStream : await assetStream(),
-					file,
+					file: this.sanitizeFields(file, allowedFields),
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
 			}
@@ -244,12 +392,16 @@ export class AssetsService {
 			return {
 				stream: deferStream ? assetStream : await assetStream(),
 				stat: await storage.location(file.storage).stat(assetFilename),
-				file,
+				file: this.sanitizeFields(file, allowedFields),
 			};
 		} else {
 			const assetStream = () => storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
-			return { stream: deferStream ? assetStream : await assetStream(), file, stat };
+			return {
+				stream: deferStream ? assetStream : await assetStream(),
+				file: this.sanitizeFields(file, allowedFields),
+				stat,
+			};
 		}
 	}
 }

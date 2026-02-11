@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { getLocalTypeForField } from '@/utils/get-local-type';
-import { getRelatedCollection } from '@/utils/get-related-collection';
-import { getItemRoute } from '@/utils/get-route';
 import { transformTemplateVariablesWithPath } from '@/utils/transform-template-variables-with-path';
 import { useCollection } from '@directus/composables';
 import { useCollectionsStore } from '@/stores/collections';
@@ -9,6 +6,18 @@ import { useFieldsStore } from '@/stores/fields';
 import { get } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import { getLocalTypeForField } from '@/utils/get-local-type';
+import { getRelatedCollection } from '@/utils/get-related-collection';
+import { getItemRoute } from '@/utils/get-route';
+import RenderTemplate from '@/views/private/components/render-template.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -182,8 +191,8 @@ function getLinkForItem(item: any) {
 </script>
 
 <template>
-	<value-null v-if="!relatedCollection" />
-	<v-menu
+	<ValueNull v-if="!relatedCollection" />
+	<VMenu
 		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType!)"
 		show-arrow
 		:disabled="value?.length === 0"
@@ -198,18 +207,18 @@ function getLinkForItem(item: any) {
 			</span>
 		</template>
 
-		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath!]">
-				<v-list-item-content>
-					<render-template :template="getTemplateForItem(item)" :item="item" :collection="getCollectionForItem(item)" />
-				</v-list-item-content>
-				<v-list-item-icon>
-					<router-link :to="getLinkForItem(item)!"><v-icon name="launch" small /></router-link>
-				</v-list-item-icon>
-			</v-list-item>
-		</v-list>
-	</v-menu>
-	<render-template v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
+		<VList class="links">
+			<VListItem v-for="item in value" :key="item[primaryKeyFieldPath!]">
+				<VListItemContent>
+					<RenderTemplate :template="getTemplateForItem(item)" :item="item" :collection="getCollectionForItem(item)" />
+				</VListItemContent>
+				<VListItemIcon>
+					<RouterLink :to="getLinkForItem(item)!"><VIcon name="launch" small /></RouterLink>
+				</VListItemIcon>
+			</VListItem>
+		</VList>
+	</VMenu>
+	<RenderTemplate v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
 </template>
 
 <style lang="scss" scoped>

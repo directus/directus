@@ -31,7 +31,6 @@ requires_value: An talvoud a zo ret
 create_preset: Krouiñ ur rakreoliñ
 create_role: Krouiñ ur roll
 create_user: Krouiñ un implijer
-create_webhook: Krouiñ ur webhook
 invite_users: Pediñ implijerien
 invite: Pediñ
 email_already_invited: '"{email}" a zo bet pedet dija'
@@ -208,6 +207,7 @@ confirm_revert_body: Adsavet e vo an elfenn d'ar stad dibabet.
 display: Diskwel
 settings_update_success: Arventennoù enrollet
 title: Titl
+subtitle: Istitl
 revision_delta_created: Krouet
 revision_delta_created_externally: Krouet en diavaez
 revision_delta_updated: '1 vaezienn hizivaet | {count} maezienn hizivaet'
@@ -327,8 +327,6 @@ file_count: 'Restr ebet | Ur restr | {count} restr'
 no_files_copy: N'eus restr ebet amañ.
 user_count: 'Implijer ebet | Un implijer | {count} implijer'
 no_users_copy: N'eus implijer ebet evit poent gant ar roll-mañ.
-webhooks_count: 'Webhook ebet | 1 Webhook | {count} Webhook'
-no_webhooks_copy: N'eus webhook ebet evit poent.
 all_items: An holl elfennoù
 no_collections: Dastumad ebet
 create_collection: Krouiñ un dastumad
@@ -345,7 +343,6 @@ activity: Obererezh
 action: Obererezh
 ip_address: Chomlec'h IP
 user_agent: Graer implijer
-webhooks: Webhookioù
 field_width: Led ar vaezienn
 add_filter: Ouzhpenn ur sil
 upper_limit: Bevenn uhel...
@@ -396,7 +393,6 @@ errors:
   ROUTE_NOT_FOUND: Dibosupl da gavout
   UNKNOWN: Fazi dianav
   USER_SUSPENDED: Implijer lakaet a gostez
-value_hashed: Talvoud hashet en un doare sur
 bookmark_name: Anv ar pennroll
 create_bookmark: Ouzhpenn e-giz pennroll
 edit_bookmark: Kemm ar pennroll
@@ -520,6 +516,12 @@ flow_name: Anv
 flow_tracking_activity: Enrollañ an obererezh hepken
 flow_tracking_null: Enrollañ netra
 code: Kod
+deployment:
+  provider:
+    settings:
+      delete_confirm: Padus e vo ha ne vo ket tu mont war-gil. Sur oc'h e fell deoc'h kenderc'hel ?
+    run:
+      cancel_confirm: Padus e vo ha ne vo ket tu mont war-gil. Sur oc'h e fell deoc'h kenderc'hel ?
 full_screen: Skramm a-bezh
 image_url: Url ar skeudenn
 alt_text: Eil testenn
@@ -596,7 +598,6 @@ editing_in_batch: 'Kemm a-stroll {count} elfenn'
 no_options_available: N'eus dibarzh ebet
 settings_data_model: Patrom roadennoù
 settings_project: Arventennoù
-settings_webhooks: Webhookioù
 settings_presets: Pennrolloù
 settings_translations: Troidigezhioù
 one_or_more_options_are_missing: Mankout a ra un dibarzh pe meur a hini
@@ -614,33 +615,6 @@ unsaved_changes: N'eo ket bet enrollet ar c'hemmoù
 unsaved_changes_copy: Sur oc'h ho peus c'hoant da guitaat ar bajenn-mañ?
 discard_changes: Dizober ar c'hemmoù
 keep_editing: Derc'hel gant an embann
-page_help_collections_overview: '**Alberzh an dastumadoù** — Roll an holl dastumadoù aotret evitoc''h.'
-page_help_collections_collection: >-
-  **Mont a-dreuz an elfennoù** - Listennañ an holl elfennoù e {collection} aotret evitoc'h. Personelaat ar pajennaozañ, ar siloù hag ar rummañ hag enrollañ e pennroll meur a reoliañ evit adkavout pep tra buan.
-page_help_collections_item: >-
-  **Munudoù an elfenn** — Ur furmskrid evit gwelet ha merañ an elfenn-mañ. E-barzh ar varenn gostez-mañ e kavoc'h ur roll eus ar c'hemmoù hag ar c'hemennadennoù.
-page_help_activity_collection: >-
-  **Mont a-dreuz an obererezh** — Roll klok ho sistem en e bezh hag oberezh an implijer.
-page_help_docs_global: >-
-  **Arberzh an teulioù** — Teulioù azasaet da stumm ha steuñv ar raktres-mañ.
-page_help_files_collection: >-
-  **Teuliaoueg** — Roll an holl restroù treuzkaset d'ar raktres-mañ. Personelaat ar pajennaozañ, ar siloù hag ar rummañ hag enrollañ e pennroll meur a reoliañ evit adkavout pep tra buan.
-page_help_files_item: >-
-  **Munudoù ar restr** — Feurmskrid evit merañ metaroadennoù ar restrooù, kemm ar restr orin ha hizivaat an arventennoù aotre.
-page_help_settings_datamodel_collections: >-
-  **Patrom roadennoù : Dastumadoù** — Roll an holl dastumadoù hegerz. Da lâret eo an dastumadoù a c'heller gwelet, ar re kuzhet ha sistem, hag an taolennoù gant diazoù roadennoù nann meret a c'hell bezañ ouzhpennet.
-page_help_settings_datamodel_fields: >-
-  **Patrom roadennoù : Dastumadoù** — Furmskrid evit merañ an dastumad hag e vaeziennoù.
-page_help_settings_roles_item: "**Mundoù ar roll** — Merañ an aotreoù hag arventennoù all ur roll."
-page_help_settings_presets_collection: >-
-  **Mont a-dreuz ar rakreoliñ** - Roll holl rakreoliñ ar raktres gant : an implijer, ar roll, ar pennrolloù hollek hag ar gweloù dre ziouer.
-page_help_settings_presets_item: >-
-  **Munudoù ar rakreoliñ** — Ur furmskrid evit merañ ar pennrolloù ha rakreoliñ an dastumad dre ziouer.
-page_help_settings_webhooks_collection: '**Mont a-dreuz ar Webhookioù** — Roll holl webhookioù ar raktres.'
-page_help_settings_webhooks_item: '**Munudoù ar Webhook** — Ur furmskrid evit krouiñ ha merañ webhookioù ar raktres.'
-page_help_users_collection: '**Roll implijerien** — Roll an holl implijerien sistem er raktres-mañ.'
-page_help_users_item: >-
-  **Munudoù an implijer** — Merañ titouroù ho kont pe sellet munudoù an implijerien all.
 activity_feed: Froudad keleier
 add_new: Nevez
 create_new: Nevez
@@ -747,11 +721,6 @@ fields:
     users: Izili gant ar roll
   directus_policies:
     description: Deskrivadur
-  directus_webhooks:
-    name: Anv
-    status: Stad
-    value: Talvoud
-    collections: Dastumadoù
 field_options:
   directus_settings:
     mapbox_placeholder: pk.eyJ1Ijo.....
@@ -777,12 +746,6 @@ field_options:
     collections_name: Dastumadoù
   directus_users:
     status_dropdown_active: Oberiat
-  directus_webhooks:
-    status_options_active: Oberiat
-    actions_create: Krouiñ
-    actions_update: Hizivaat
-    headers:
-      value: Talvoud
 no_fields_in_collection: 'N''eus ket a vaezienn e "{collection}" evit poent'
 do_nothing: Ober netra
 generate_and_save_uuid: Genel hag Enrollañ an UUID
@@ -794,6 +757,17 @@ inline: En linenn
 comment: Evezhiadenn
 live_preview:
   new_window: Digeriñ e-barzh ur prenestr nevez
+ai:
+  input: Enkas
+  items: Elfennoù
+  settings: Arventennoù
+  tool_approval:
+    disabled: Diaktivet
+ai_tools:
+  items: Elfennoù
+  files: Restroù
+  schema: Brastres
+  collections: Dastumadoù
 mcp_prompts_collection_schema:
   messages_role_user: Implijer
 relational_triggers: Distegneroù darempred
@@ -807,7 +781,6 @@ choose_action: Dibab un obererezh
 continue_as: >-
   {name} a zo dilesaet. Klikit evit kenderc'hel ma anavezit ar gont-mañ.
 editing_role: 'Roll {role}'
-creating_webhook: Krouiñ ar Webhook
 delete_are_you_sure: >-
   Padus e vo ha ne vo ket tu mont war-gil. Sur oc'h e fell deoc'h kenderc'hel ?
 delete_field_are_you_sure: >-
@@ -868,7 +841,7 @@ interfaces:
     add_filter: Ouzhpenn ur sil
     all: Holl
   presentation-links:
-    links: Liammoù
+    presentation-links: Boutonoù
     style: Stil
     primary: Diazez
     link: Liammoù
@@ -1073,6 +1046,8 @@ interfaces:
   group-raw:
     name: Maeziennoù kriz
     description: Diskwel ar maeziennoù e-giz normal.
+  header:
+    links: Liammoù
 displays:
   translations:
     translations: Troidigezhioù
