@@ -69,7 +69,6 @@ function selectOption(questionId: string, label: string, multiSelect: boolean) {
 		}
 	} else {
 		answers.value[questionId] = label;
-		// Clear any text input for this question
 		textInputValues.value[questionId] = '';
 		textInputActive.value[questionId] = false;
 		autoAdvance();
@@ -79,7 +78,6 @@ function selectOption(questionId: string, label: string, multiSelect: boolean) {
 function activateTextInput(questionId: string) {
 	textInputActive.value[questionId] = true;
 
-	// Clear option selection when typing
 	if (typeof answers.value[questionId] === 'string' && !textInputValues.value[questionId]) {
 		delete answers.value[questionId];
 	}
@@ -128,62 +126,51 @@ function isOptionSelected(questionId: string, label: string): boolean {
 	return answer === label;
 }
 
-// Keyboard handling
 function handleKeydown(event: KeyboardEvent) {
 	if (!currentQuestion.value) return;
 
 	const q = currentQuestion.value;
-	const optionCount = q.options?.length ?? 0;
 
 	// Number keys 1-4 to select options
 	const num = parseInt(event.key);
 
-	if (num >= 1 && num <= optionCount && q.options) {
+	if (num >= 1 && num <= (q.options?.length ?? 0) && q.options) {
 		event.preventDefault();
 		selectOption(q.id, q.options[num - 1]!.label, q.multi_select);
 		return;
 	}
 
-	// Left/Right to navigate tabs
-	if (event.key === 'ArrowLeft') {
-		event.preventDefault();
-		goToQuestion(activeQuestionIndex.value - 1);
-		return;
-	}
-
-	if (event.key === 'ArrowRight') {
-		event.preventDefault();
-		goToQuestion(activeQuestionIndex.value + 1);
-		return;
-	}
-
-	// Enter to advance or submit
-	if (event.key === 'Enter' && !event.shiftKey) {
-		// Don't capture Enter if text input is focused
-		if (textInputActive.value[q.id]) return;
-
-		event.preventDefault();
-
-		if (!isLastQuestion.value) {
+	switch (event.key) {
+		case 'ArrowLeft':
+			event.preventDefault();
+			goToQuestion(activeQuestionIndex.value - 1);
+			break;
+		case 'ArrowRight':
+			event.preventDefault();
 			goToQuestion(activeQuestionIndex.value + 1);
-		} else {
-			handleSubmit();
-		}
+			break;
+		case 'Enter':
+			if (event.shiftKey || textInputActive.value[q.id]) break;
+			event.preventDefault();
 
-		return;
-	}
+			if (isLastQuestion.value) {
+				handleSubmit();
+			} else {
+				goToQuestion(activeQuestionIndex.value + 1);
+			}
 
-	// Escape to skip question
-	if (event.key === 'Escape') {
-		event.preventDefault();
+			break;
+		case 'Escape':
+			event.preventDefault();
 
-		if (!isLastQuestion.value) {
-			goToQuestion(activeQuestionIndex.value + 1);
-		}
+			if (!isLastQuestion.value) {
+				goToQuestion(activeQuestionIndex.value + 1);
+			}
+
+			break;
 	}
 }
 
-// Tab scroll fades
 const tabsContainerRef = useTemplateRef<HTMLElement>('tabs-container');
 const showLeftFade = ref(false);
 const showRightFade = ref(false);
@@ -198,7 +185,6 @@ function updateFades() {
 	showRightFade.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
 }
 
-// Track slide direction and auto-scroll active tab into view
 watch(activeQuestionIndex, (newIndex, oldIndex) => {
 	slideDirection.value = newIndex > oldIndex ? 'forward' : 'backward';
 
@@ -232,7 +218,6 @@ onUnmounted(() => {
 
 <template>
 	<div ref="rootEl" class="ai-ask-user" tabindex="0" @keydown="handleKeydown">
-		<!-- Question tabs (hidden if single question) -->
 		<div
 			v-if="questions.length > 1"
 			class="question-tabs-wrapper"
@@ -287,7 +272,6 @@ onUnmounted(() => {
 							</div>
 						</button>
 
-						<!-- Free text option -->
 						<div
 							v-if="currentQuestion.allow_text"
 							class="option-card text-option"
@@ -317,21 +301,14 @@ onUnmounted(() => {
 
 						<div class="action-buttons">
 							<VButton
-								v-if="!isLastQuestion && !currentQuestionAnswered"
+								v-if="!isLastQuestion"
 								x-small
-								secondary
+								:secondary="!currentQuestionAnswered"
 								@click="goToQuestion(activeQuestionIndex + 1)"
 							>
-								{{ t('ai.ask_user_skip') }}
+								{{ currentQuestionAnswered ? t('ai.ask_user_next') : t('ai.ask_user_skip') }}
 							</VButton>
-							<VButton
-								v-if="!isLastQuestion && currentQuestionAnswered"
-								x-small
-								@click="goToQuestion(activeQuestionIndex + 1)"
-							>
-								{{ t('ai.ask_user_next') }}
-							</VButton>
-							<VButton v-if="isLastQuestion" x-small @click="handleSubmit">
+							<VButton v-else x-small @click="handleSubmit">
 								{{ t('ai.ask_user_submit') }}
 							</VButton>
 						</div>

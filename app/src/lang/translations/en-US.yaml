@@ -1837,7 +1837,6 @@ ai:
   ask_user_skip: Skip
   ask_user_chat_about_this: Chat about this
   ask_user_type_answer: Type your answer...
-  ask_user_answered: Answered
   ask_user_skipped: Skipped
   tool_descriptions:
     items: Create, read, update, and delete content

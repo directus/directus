@@ -10,7 +10,7 @@ const questionSchema = z.object({
 		.array(
 			z.object({
 				label: z.string().describe('Short option label'),
-				description: z.optional(z.string().describe('Longer explanation')),
+				description: z.string().describe('Longer explanation').optional(),
 			}),
 		)
 		.max(4)
@@ -31,22 +31,20 @@ interface PendingAskUser {
 	resolve: (value: Record<string, unknown>) => void;
 }
 
-/** Current pending ask_user tool call waiting for user response */
 export const pendingAskUser = ref<PendingAskUser | null>(null);
 
-/** Resolves any existing pending promise with a cancellation marker and clears the ref */
-export function cancelPending() {
-	if (pendingAskUser.value) {
-		pendingAskUser.value.resolve({ _cancelled: true });
-		pendingAskUser.value = null;
-	}
+function resolvePending(value: Record<string, unknown>): void {
+	if (!pendingAskUser.value) return;
+	pendingAskUser.value.resolve(value);
+	pendingAskUser.value = null;
 }
 
-export function submitAnswers(answers: Record<string, unknown>) {
-	if (pendingAskUser.value) {
-		pendingAskUser.value.resolve(answers);
-		pendingAskUser.value = null;
-	}
+export function cancelPending(): void {
+	resolvePending({ _cancelled: true });
+}
+
+export function submitAnswers(answers: Record<string, unknown>): void {
+	resolvePending(answers);
 }
 
 export function useAskUserTool() {

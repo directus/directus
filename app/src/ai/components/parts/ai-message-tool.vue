@@ -40,11 +40,10 @@ const state = computed(
 
 const approval = computed(() => props.part.approval);
 
-const isAskUser = computed(() => toolName.value === 'ask_user' && 'input' in props.part && props.part.input);
+const isAskUser = computed(() => toolName.value === 'ask_user');
 </script>
 
 <template>
-	<!-- ask_user: show summary when completed, hide when pending (interactive UI is in input area) -->
 	<AiToolCallCard v-if="isAskUser && state === 'output-available'" :state="state" :tool-name="toolName">
 		<template #title>
 			<VTextOverflow :text="toolDisplayName" />
