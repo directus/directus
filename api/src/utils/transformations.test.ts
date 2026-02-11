@@ -310,8 +310,7 @@ describe('resolvePreset', () => {
 		]);
 	});
 
-	test('Add resize transformation: withoutEnlargement with smaller dimensions unchanged', () => {
-		// Both dimensions are smaller than original - should work normally
+	test('Resize transformation with withoutEnlargement with smaller dimensions is unchanged', () => {
 		const transformationParams: TransformationParams = {
 			key: 'test-smaller',
 			width: 800,
