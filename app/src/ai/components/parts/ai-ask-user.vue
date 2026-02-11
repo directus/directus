@@ -2,7 +2,12 @@
 import formatTitle from '@directus/format-title';
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { type AskUserQuestion, cancelPending, pendingAskUser, submitAnswers } from '../../composables/use-ask-user-tool';
+import {
+	type AskUserQuestion,
+	cancelPending,
+	pendingAskUser,
+	submitAnswers,
+} from '../../composables/use-ask-user-tool';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
