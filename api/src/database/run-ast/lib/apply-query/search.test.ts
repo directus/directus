@@ -255,3 +255,120 @@ test(`Return falsy query when all searchable fields are excluded`, async () => {
 	expect(rawQuery.sql).toEqual(`select * where (1 = 0)`);
 	expect(rawQuery.bindings).toEqual([]);
 });
+
+test('Search includes fields from related o2m relation', async () => {
+	const schema = new SchemaBuilder()
+		.collection('items', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+			c.field('related').o2m('related', 'item_id');
+		})
+		.collection('related', (c) => {
+			c.field('id').id();
+			c.field('item_id').integer();
+			c.field('name').string();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, schema, queryBuilder, 'hello', 'items', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	// With whereExists, we expect an EXISTS subquery instead of a JOIN
+	expect(rawQuery.sql).toContain(`exists (select * from "related" where "related"."item_id" = "items"."id"`);
+	expect(rawQuery.sql).toContain(`LOWER("related"."name") LIKE ?`);
+	expect(rawQuery.bindings).toContain('%hello%');
+});
+
+test('Nested relation search (items.related.subrelated) should use parent alias for join', async () => {
+	const schema = new SchemaBuilder()
+		.collection('items', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+			c.field('related').o2m('related', 'item_id');
+		})
+		.collection('related', (c) => {
+			c.field('id').id();
+			c.field('item_id').integer();
+			c.field('name').string();
+			c.field('subrelated').o2m('subrelated', 'related_id');
+		})
+		.collection('subrelated', (c) => {
+			c.field('id').id();
+			c.field('related_id').integer();
+			c.field('name').string();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, schema, queryBuilder, 'hello', 'items', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	// With whereExists, we expect EXISTS subqueries instead of JOINs
+	expect(rawQuery.sql).toContain(`exists (select * from "related" where "related"."item_id" = "items"."id"`);
+	expect(rawQuery.sql).toContain(`LOWER("related"."name") LIKE ?`);
+
+	expect(rawQuery.sql).toContain(
+		`exists (select * from "related" left join "subrelated" on "related"."id" = "subrelated"."related_id"`,
+	);
+
+	expect(rawQuery.sql).toContain(`LOWER("subrelated"."name") LIKE ?`);
+});
+
+test('Translations relation search should work', async () => {
+	const schema = new SchemaBuilder()
+		.collection('items', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+			c.field('translations').translations();
+			c.field('related').o2m('related', 'item_id');
+		})
+		.collection('items_translations', (c) => {
+			c.field('id').id();
+			c.field('item_id').integer();
+			c.field('name').string();
+		})
+		.collection('related', (c) => {
+			c.field('id').id();
+			c.field('item_id').integer();
+			c.field('name').string();
+			c.field('subrelated').o2m('subrelated', 'related_id');
+		})
+		.collection('subrelated', (c) => {
+			c.field('id').id();
+			c.field('related_id').integer();
+			c.field('name').string();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, schema, queryBuilder, 'hello', 'items', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	// With whereExists, we expect EXISTS subqueries instead of JOINs
+	expect(rawQuery.sql).toContain(
+		`exists (select * from "items_translations" where "items_translations"."items_id" = "items"."id"`,
+	);
+
+	expect(rawQuery.sql).toContain(`LOWER("items_translations"."name") LIKE ?`);
+
+	expect(rawQuery.sql).toContain(`exists (select * from "related" where "related"."item_id" = "items"."id"`);
+	expect(rawQuery.sql).toContain(`LOWER("related"."name") LIKE ?`);
+
+	expect(rawQuery.sql).toContain(
+		`exists (select * from "related" left join "subrelated" on "related"."id" = "subrelated"."related_id"`,
+	);
+
+	expect(rawQuery.sql).toContain(`LOWER("subrelated"."name") LIKE ?`);
+
+	expect(rawQuery.sql).toMatchInlineSnapshot(`"select * where (LOWER("items"."title") LIKE ? or exists (select * from "items_translations" where "items_translations"."items_id" = "items"."id" and (LOWER("items_translations"."name") LIKE ?)) or exists (select * from "related" where "related"."item_id" = "items"."id" and (LOWER("related"."name") LIKE ?)) or exists (select * from "related" left join "subrelated" on "related"."id" = "subrelated"."related_id" where "related"."item_id" = "items"."id" and (LOWER("subrelated"."name") LIKE ?)))"`)
+});
