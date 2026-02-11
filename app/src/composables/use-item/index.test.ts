@@ -43,24 +43,19 @@ vi.mock('@/utils/notify', () => ({
 	notify: vi.fn(),
 }));
 
-vi.mock('@/sdk', () => {
-	return {
-		default: {
-			request: (options: () => { path: string; params?: Record<string, any> }) => {
-				const { path } = options();
+vi.mock('@/sdk', async () => {
+	const { mockSdk } = await import('@/test-utils/sdk');
+	return mockSdk(({ path }) => {
+		let payload: Record<string, unknown> = { id: 1 };
 
-				let payload: Record<string, unknown> = { id: 1 };
+		if (path === '/graphql') {
+			payload = {
+				item: payload,
+			};
+		}
 
-				if (path === '/graphql') {
-					payload = {
-						item: payload,
-					};
-				}
-
-				return Promise.resolve(payload);
-			},
-		},
-	};
+		return Promise.resolve(payload);
+	});
 });
 
 vi.mock('@directus/composables');

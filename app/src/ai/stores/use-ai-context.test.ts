@@ -6,11 +6,10 @@ import { MAX_PENDING_CONTEXT, useAiContextStore } from './use-ai-context';
 import sdk from '@/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-vi.mock('@/sdk', () => ({
-	default: {
-		request: vi.fn(),
-	},
-}));
+vi.mock('@/sdk', async () => {
+	const { mockSdk } = await import('@/test-utils/sdk');
+	return mockSdk();
+});
 
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),

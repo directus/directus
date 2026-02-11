@@ -15,11 +15,10 @@ vi.mock('vue-i18n', () => ({
 	createI18n: () => undefined,
 }));
 
-vi.mock('@/sdk', () => ({
-	default: {
-		request: vi.fn(),
-	},
-}));
+vi.mock('@/sdk', async () => {
+	const { mockSdk } = await import('@/test-utils/sdk');
+	return mockSdk();
+});
 
 vi.mock('@/utils/notify', () => ({
 	notify: vi.fn(),
