@@ -324,10 +324,6 @@ describe('resolvePreset', () => {
 			{ ...inputFile, focal_point_x: inputFile.width / 2, focal_point_y: inputFile.height / 2 },
 		);
 
-		// 1920x1080 -> 800x600
-		// hRatio = 1080/600 = 1.8, wRatio = 1920/800 = 2.4
-		// hRatio < wRatio, so factor = 1.8, height = 600, width = Math.round(1920/1.8) = 1067
-		// Extract region: newXCenter = 960/1.8 = 533.33, left = Math.round(533.33 - 400) = 133, top = 0
 		expect(output).toStrictEqual([
 			[
 				'resize',
