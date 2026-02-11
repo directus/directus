@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { getEndpoint } from '@directus/utils';
-import { isObject } from 'lodash';
+import { isObject, omit } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
@@ -98,15 +98,15 @@ function useActions() {
 		saving.value = true;
 
 		try {
-			const translationsField = getTranslationsField(internalEdits.value);
+			const translationsFields = getTranslationsFields(internalEdits.value);
 
-			if (!translationsField) {
+			if (translationsFields.length === 0) {
 				await api.patch(getEndpoint(collection.value), {
 					keys: props.primaryKeys,
 					data: internalEdits.value,
 				});
 			} else {
-				await saveBatchWithTranslations(translationsField);
+				await saveBatchWithTranslations(translationsFields);
 			}
 
 			emit('refresh');
@@ -143,7 +143,9 @@ function useActions() {
 	}
 }
 
-function getTranslationsField(edits: Record<string, any>): TranslationsFieldInfo | null {
+function getTranslationsFields(edits: Record<string, any>): TranslationsFieldInfo[] {
+	const results: TranslationsFieldInfo[] = [];
+
 	for (const [key, value] of Object.entries(edits)) {
 		if (!isObject(value) || !('create' in value)) continue;
 
@@ -155,21 +157,25 @@ function getTranslationsField(edits: Record<string, any>): TranslationsFieldInfo
 
 		if (!junctionField) continue;
 
-		return { field: key, creates: (value as any).create as Record<string, any>[], junctionField };
+		results.push({ field: key, creates: (value as any).create as Record<string, any>[], junctionField });
 	}
 
-	return null;
+	return results;
 }
 
-async function saveBatchWithTranslations({ field, creates, junctionField }: TranslationsFieldInfo) {
-	const { [field]: _, ...otherEdits } = internalEdits.value;
+async function saveBatchWithTranslations(translationsFields: TranslationsFieldInfo[]) {
+	const otherEdits = omit(
+		internalEdits.value,
+		translationsFields.map((t) => t.field),
+	);
+
 	const pkField = primaryKeyField.value!.field;
 	const endpoint = getEndpoint(collection.value);
 
 	const existingItems = await fetchAll<Record<string, any>>(endpoint, {
 		params: {
 			filter: { [pkField]: { _in: props.primaryKeys } },
-			fields: [pkField, `${field}.*`],
+			fields: [pkField, ...translationsFields.map((t) => `${t.field}.*`)],
 		},
 	});
 
@@ -179,16 +185,22 @@ async function saveBatchWithTranslations({ field, creates, junctionField }: Tran
 	const payload = props.primaryKeys
 		.filter((pk) => itemMap.has(pk))
 		.map((pk) => {
-			const existing = itemMap.get(pk)![field] || [];
-			const merged = [...existing];
+			const item: Record<string, any> = { [pkField]: pk, ...otherEdits };
 
-			for (const item of creates) {
-				const idx = merged.findIndex((e) => resolveId(e[junctionField]) === resolveId(item[junctionField]));
-				if (idx >= 0) merged[idx] = { ...merged[idx], ...item };
-				else merged.push(item);
+			for (const { field, creates, junctionField } of translationsFields) {
+				const merged = new Map(
+					(itemMap.get(pk)![field] || []).map((row: Record<string, any>) => [resolveId(row[junctionField]), row]),
+				);
+
+				for (const create of creates) {
+					const id = resolveId(create[junctionField]);
+					merged.set(id, { ...(merged.get(id) ?? {}), ...create });
+				}
+
+				item[field] = [...merged.values()];
 			}
 
-			return { [pkField]: pk, ...otherEdits, [field]: merged };
+			return item;
 		});
 
 	await api.patch(endpoint, payload);
