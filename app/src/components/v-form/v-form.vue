@@ -292,7 +292,28 @@ function apply(updates: { [field: string]: any }) {
 
 		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pickKeepMeta(updates, updatableKeys)));
 	} else {
-		emit('update:modelValue', pickKeepMeta(assign({}, props.modelValue, updates), updatableKeys));
+		// Preserve existing values for fields that belong to groups
+		const updatableGroupKeys = Object.keys(updates).filter((key) => {
+			if (key.startsWith('$')) return false;
+			const field = fieldsMap.value[key];
+			return !isNil(field?.meta?.group) && props.modelValue && key in props.modelValue;
+		});
+
+		// Preserve readonly field values when unchanged
+		const preservedReadonlyKeys = Object.keys(updates).filter((key) => {
+			if (key.startsWith('$') || updatableKeys.includes(key)) return false;
+			const field = fieldsMap.value[key];
+			return field && isDisabled(field) && isEqual(props.modelValue?.[key], updates[key]);
+		});
+
+		emit(
+			'update:modelValue',
+			pickKeepMeta(assign({}, props.modelValue, updates), [
+				...updatableKeys,
+				...updatableGroupKeys,
+				...preservedReadonlyKeys,
+			]),
+		);
 	}
 }
 
