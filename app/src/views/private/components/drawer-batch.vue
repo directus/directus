@@ -1,13 +1,24 @@
 <script setup lang="ts">
+import { useCollection } from '@directus/composables';
 import { getEndpoint } from '@directus/utils';
+import { isObject } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import api from '@/api';
 import VDrawer from '@/components/v-drawer.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { VALIDATION_TYPES } from '@/constants';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
+import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
+
+type TranslationsFieldInfo = {
+	field: string;
+	creates: Record<string, any>[];
+	junctionField: string;
+};
 
 const props = defineProps<{
 	collection: string;
@@ -28,6 +39,9 @@ const { internalActive } = useActiveState();
 const { save, cancel, saving, validationErrors } = useActions();
 
 const { collection } = toRefs(props);
+const { primaryKeyField } = useCollection(collection);
+const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 
 function useEdits() {
 	const localEdits = ref<Record<string, any>>({});
@@ -84,25 +98,36 @@ function useActions() {
 		saving.value = true;
 
 		try {
-			await api.patch(getEndpoint(collection.value), {
-				keys: props.primaryKeys,
-				data: internalEdits.value,
-			});
+			const translationsField = getTranslationsField(internalEdits.value);
+
+			if (!translationsField) {
+				await api.patch(getEndpoint(collection.value), {
+					keys: props.primaryKeys,
+					data: internalEdits.value,
+				});
+			} else {
+				await saveBatchWithTranslations(translationsField);
+			}
 
 			emit('refresh');
 
 			internalActive.value = false;
 			internalEdits.value = {};
 		} catch (error: any) {
-			validationErrors.value = error.response.data.errors
+			const errors = error?.response?.data?.errors;
+
+			if (!errors) {
+				unexpectedError(error);
+				return;
+			}
+
+			validationErrors.value = errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 				.map((err: APIError) => {
 					return err.extensions;
 				});
 
-			const otherErrors = error.response.data.errors.filter(
-				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false,
-			);
+			const otherErrors = errors.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false);
 
 			if (otherErrors.length > 0) {
 				otherErrors.forEach(unexpectedError);
@@ -116,6 +141,57 @@ function useActions() {
 		internalActive.value = false;
 		internalEdits.value = {};
 	}
+}
+
+function getTranslationsField(edits: Record<string, any>): TranslationsFieldInfo | null {
+	for (const [key, value] of Object.entries(edits)) {
+		if (!isObject(value) || !('create' in value)) continue;
+
+		const fieldInfo = fieldsStore.getField(collection.value, key);
+		if (!fieldInfo?.meta?.special?.includes('translations')) continue;
+
+		const relations = relationsStore.getRelationsForField(collection.value, key);
+		const junctionField = relations.find((r) => r.meta?.one_field === key)?.meta?.junction_field;
+
+		if (!junctionField) continue;
+
+		return { field: key, creates: (value as any).create as Record<string, any>[], junctionField };
+	}
+
+	return null;
+}
+
+async function saveBatchWithTranslations({ field, creates, junctionField }: TranslationsFieldInfo) {
+	const { [field]: _, ...otherEdits } = internalEdits.value;
+	const pkField = primaryKeyField.value!.field;
+	const endpoint = getEndpoint(collection.value);
+
+	const existingItems = await fetchAll<Record<string, any>>(endpoint, {
+		params: {
+			filter: { [pkField]: { _in: props.primaryKeys } },
+			fields: [pkField, `${field}.*`],
+		},
+	});
+
+	const itemMap = new Map(existingItems.map((item) => [item[pkField], item]));
+	const resolveId = (val: unknown) => (isObject(val) ? Object.values(val)[0] : val);
+
+	const payload = props.primaryKeys
+		.filter((pk) => itemMap.has(pk))
+		.map((pk) => {
+			const existing = itemMap.get(pk)![field] || [];
+			const merged = [...existing];
+
+			for (const item of creates) {
+				const idx = merged.findIndex((e) => resolveId(e[junctionField]) === resolveId(item[junctionField]));
+				if (idx >= 0) merged[idx] = { ...merged[idx], ...item };
+				else merged.push(item);
+			}
+
+			return { [pkField]: pk, ...otherEdits, [field]: merged };
+		});
+
+	await api.patch(endpoint, payload);
 }
 </script>
 
