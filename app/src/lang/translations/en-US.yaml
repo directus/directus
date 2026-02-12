@@ -1963,6 +1963,7 @@ colors:
 junction_collection: Junction Collection
 latency: Latency
 login: Log in
+logout: Log out
 my_activity: My Activity
 not_authenticated: Not Authenticated
 authenticated: Authenticated
