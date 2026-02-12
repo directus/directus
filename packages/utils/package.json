@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "13.2.0",
+	"version": "13.2.1",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
