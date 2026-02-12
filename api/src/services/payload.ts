@@ -1024,7 +1024,7 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(delta: Partial<Item>): Promise<string | null> {
+	async prepareDelta(delta: Partial<Item>): Promise<Partial<Item> | null> {
 		let payload = cloneDeep(delta);
 
 		for (const key in payload) {
@@ -1037,6 +1037,6 @@ export class PayloadService {
 
 		if (Object.keys(payload).length === 0) return null;
 
-		return JSON.stringify(payload);
+		return payload;
 	}
 }

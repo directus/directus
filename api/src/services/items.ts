@@ -348,33 +348,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const fields = this.schema.collections[this.collection]?.fields;
-					const relationalFields = [];
-
-					for (const relation of this.schema.relations) {
-						if (relation.collection === this.collection && fields?.[relation.field]) {
-							relationalFields.push(relation.field);
-						}
-
-						if (
-							relation.related_collection === this.collection &&
-							relation.meta?.one_field &&
-							fields?.[relation.meta.one_field]
-						) {
-							relationalFields.push(relation.meta.one_field);
-						}
-					}
-
-					const revisionPayload = omit(payloadAfterHooks, relationalFields);
-
-					const revisionDelta = await payloadService.prepareDelta(revisionPayload);
+					const revisionPayload = await payloadService.prepareDelta(payloadWithPresets);
 
 					const revision = await revisionsService.createOne({
 						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
-						data: revisionDelta,
-						delta: revisionDelta,
+						data: revisionPayload,
+						delta: revisionPayload,
 					});
 
 					// Make sure to set the parent field of the child-revision rows
@@ -899,26 +880,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const fields = this.schema.collections[this.collection]?.fields;
-					const relationalFields = [];
-
-					for (const relation of this.schema.relations) {
-						if (relation.collection === this.collection && fields?.[relation.field]) {
-							relationalFields.push(relation.field);
-						}
-
-						if (
-							relation.related_collection === this.collection &&
-							relation.meta?.one_field &&
-							fields?.[relation.meta.one_field]
-						) {
-							relationalFields.push(relation.meta.one_field);
-						}
-					}
-
-					const snapshots = await itemsService.readMany(keys, {
-						fields: Object.keys(omit(fields, relationalFields)),
-					});
+					const snapshots = await itemsService.readMany(keys);
 
 					const revisionsService = new RevisionsService({
 						knex: trx,
