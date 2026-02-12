@@ -35,7 +35,7 @@ export function isDeniedIp(ip: string): boolean {
 		}
 		
 		if (blockNetworkInterfaces) {
-			blockList.addNetworkInterfaces();
+			blockList.addLocalNetworkInterfaces();
 		}
 	} catch (error) {
 		// error adding blocked ranges to the blocklist

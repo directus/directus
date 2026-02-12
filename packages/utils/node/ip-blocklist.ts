@@ -21,7 +21,7 @@ export class IpBlocklist extends BlockList {
      * Internal interfaces are added as subnets (using CIDR notation),
      * while external interfaces are added as individual addresses.
      */
-    addNetworkInterfaces() {
+    addLocalNetworkInterfaces() {
         const networkInterfaces = Object.values(os.networkInterfaces());
 
         for (const networkInfo of networkInterfaces) {
