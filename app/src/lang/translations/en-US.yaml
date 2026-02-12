@@ -1114,6 +1114,15 @@ deployment:
         label: Team ID
         hint: Required for team accounts, leave empty for personal accounts.
         placeholder: team_xxxxxxxxxxxxx
+    netlify:
+      name: Netlify
+      settings_warning:
+        Changing credentials or account slug may affect your selected projects if they are no longer accessible with the
+        new configuration.
+      account_slug:
+        label: Account Slug
+        hint: Optional. Filter sites to a specific account. Leave empty to show all accessible sites.
+        placeholder: your-account-slug
     projects: Projects
     select_projects: Select Projects
     select_projects_hint: Choose which projects you want to manage from Directus
@@ -1125,7 +1134,8 @@ deployment:
       started: Started
       author: Author
       notice:
-        Only deployments triggered from Directus are shown here. Deployments made directly in Vercel will not appear.
+        Only deployments triggered from Directus are shown here. Deployments made directly on {provider} will not
+        appear.
       refresh: Refresh
       deploy_preview: Deploy Preview
       empty: No Deployment Runs
@@ -2906,3 +2916,4 @@ accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)
 text_direction_rtl: Right to Left (RTL)
+set_to_now: Set to Now

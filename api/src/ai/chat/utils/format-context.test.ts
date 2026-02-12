@@ -106,7 +106,9 @@ describe('formatContextForSystemPrompt', () => {
 		expect(result).toContain('<visual_editing>');
 		expect(result).toContain('### sections/456 — "Hero Section"');
 		expect(result).toContain('Editable fields: title, subtitle');
+		expect(result).toContain('To update: items tool with collection="sections", keys=["456"], action="update"');
 		expect(result).toContain('&quot;title&quot;: &quot;Welcome&quot;');
+		expect(result).toContain('NEVER use form-values tools for visual editor elements');
 		expect(result).toContain('</visual_editing>');
 	});
 

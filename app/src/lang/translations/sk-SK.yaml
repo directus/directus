@@ -955,6 +955,15 @@ operation_key_unique_error: Kľúče operácie musia byť v toku unikátne
 operation_handle_resolve: 'Úspech: kliknutím pridáte, potiahnutím presmerujete'
 operation_handle_reject: 'Chyba: kliknutím pridáte, potiahnutím presmerujete'
 insights: Prehľady
+deployment:
+  provider:
+    settings:
+      delete_confirm: Táto akcia je trvalá a nedá sa vrátiť. Naozaj chcete pokračovať?
+    run:
+      cancel_confirm: Táto akcia je trvalá a nedá sa vrátiť. Naozaj chcete pokračovať?
+      log_all: Všetky úrovne logov
+  target_value:
+    preview: Náhľad
 dashboard: Nástenka
 panel: Panel
 panel_options: Možnosti panela
@@ -1324,6 +1333,7 @@ fields:
     public_registration_email_filter_note: Len adersy vyhovujúce tomuto filtru sa môžu zaregistrovať.
     public_registration_verify_email: Overiť Email
     public_registration_verify_email_note: Pošle email registrovanému používateľovi so žiadosťou o kliknutie na verifikačný odkaz pred prihlásením.
+    ai_header_name: Hlavička
   directus_shares:
     name: Názov
     role: Rola
@@ -1475,6 +1485,7 @@ live_preview:
   new_window: Otvoriť v novom okne
   close_window: Otvoriť v rozdelenom okne
   toggle_3d: Prepnúť 3D
+  display_options: Možnosti zobrazenia
 shares: Zdieľania
 unlimited_usage: Neobmedzené používanie
 uses_left: Žiadne zostávajúce použitia | Jedno zostávajúce použitie | {n} zostávajúcich použití
@@ -1483,6 +1494,8 @@ new_share: Nové zdieľanie
 ai:
   input: Vstup
   unknown: Neznáme
+  items: Položky
+  content: Obsah
   settings: Nastavenia
   tool_approval:
     disabled: Vypnuté
@@ -2430,3 +2443,4 @@ search_flow: Hľadať tok...
 percent: Percent
 show_password: Zobraziť heslo
 hide_password: Skryť heslo
+set_to_now: Nastaviť na teraz
