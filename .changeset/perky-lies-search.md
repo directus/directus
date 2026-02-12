@@ -3,5 +3,4 @@
 '@directus/api': minor
 ---
 
-Added activity logging to authenticationService.logout(), mirroring the existing
-login pattern
+Added activity logging for explicit user logout
