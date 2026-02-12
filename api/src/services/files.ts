@@ -323,6 +323,13 @@ export class FilesService extends ItemsService<File> {
 	): Promise<PrimaryKey[]> {
 		const updatedFiles: Map<PrimaryKey, File> = new Map();
 
+		if (keys.length > 1 && data.filename_disk) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = new InvalidPayloadError({
+				reason: '"filename_disk" cannot be modified in bulk operations',
+			});
+		}
+
 		if (data.filename_disk) {
 			try {
 				await this.checkUniqueFilename(data.filename_disk);
