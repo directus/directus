@@ -84,6 +84,37 @@ export class RevisionsService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (data['collection']) {
+			const fields = this.schema.collections[data['collection']]?.fields;
+
+			// sanitize our relational fields from revision
+			if ((isObject(data['data']) || isObject(data['delta'])) && fields) {
+				const relationalFields = [];
+
+				for (const relation of this.schema.relations) {
+					if (relation.collection === this.collection && fields?.[relation.field]) {
+						relationalFields.push(relation.field);
+					}
+
+					if (
+						relation.related_collection === this.collection &&
+						relation.meta?.one_field &&
+						fields?.[relation.meta.one_field]
+					) {
+						relationalFields.push(relation.meta.one_field);
+					}
+				}
+
+				if (isObject(data['data'])) {
+					data['data'] = omit(data['data'], relationalFields);
+				}
+
+				if (isObject(data['delta'])) {
+					data['delta'] = omit(data['delta'], relationalFields);
+				}
+			}
+		}
+
 		return super.updateMany(keys, data, this.setDefaultOptions(opts));
 	}
 }
