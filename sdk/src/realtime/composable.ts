@@ -291,6 +291,7 @@ export function realtime(config: WebSocketConfig = {}) {
 						reject('Connection attempt timed out.');
 					}, config.connect.timeout ?? 10000);
 				}
+
 				ws.addEventListener('open', async (evt: Event) => {
 					debug('info', `Connection open.`);
 
@@ -308,6 +309,7 @@ export function realtime(config: WebSocketConfig = {}) {
 								'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
 							);
 						}
+
 						lastAccessToken = access_token;
 
 						ws.send(auth({ access_token }));
@@ -382,15 +384,19 @@ export function realtime(config: WebSocketConfig = {}) {
 			},
 			async sendMessage(message: string | Record<string, any>) {
 				const self = this as AuthWSClient<Schema>;
+
 				if (hasAuth(self)) {
 					const currentToken = await self.getToken();
+
 					if (lastAccessToken && currentToken && currentToken !== lastAccessToken) {
 						debug('info', 'Access token changed, reconnecting realtime socket...');
 						this.disconnect();
 						await this.connect();
 					}
+
 					lastAccessToken = currentToken;
 				}
+
 				if (state.code !== 'open') {
 					// TODO use directus error
 					throw new Error(
