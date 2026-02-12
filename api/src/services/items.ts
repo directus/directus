@@ -932,7 +932,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 								collection: this.collection,
 								item: keys[index],
 								data:
-									snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[index]) : JSON.stringify(snapshots),
+									Array.isArray(snapshots) && snapshots[index]
+										? await payloadService.prepareDelta(snapshots[index])
+										: undefined,
 								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
 							})),
 						)
