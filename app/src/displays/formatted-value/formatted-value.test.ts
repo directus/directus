@@ -155,6 +155,18 @@ describe('decimal conditional formatting', () => {
 	});
 });
 
+describe('string/text formatting', () => {
+	it('applies formatTitle with format enabled', () => {
+		const text = getDisplayText({ type: 'string', value: 'hello_world', format: true });
+		expect(text).toBe('Hello World');
+	});
+
+	it('displays raw value without format', () => {
+		const text = getDisplayText({ type: 'string', value: 'hello_world' });
+		expect(text).toBe('hello_world');
+	});
+});
+
 describe('prefix and suffix', () => {
 	it('applies prefix and suffix to decimal', () => {
 		const text = getDisplayText({ type: 'decimal', value: '9.99', prefix: '$', suffix: ' USD' });
