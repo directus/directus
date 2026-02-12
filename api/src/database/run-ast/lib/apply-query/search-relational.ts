@@ -26,30 +26,52 @@ export function applyRelationalSearch(
 
 		if (!relation) return;
 
-		subQuery
-			.from(relation.collection)
-			.andWhereRaw(`?? = ??`, [`${relation.collection}.${relation.field}`, `${collection}.${primaryKey}`])
-			.andWhere(function (subSubQuery) {
-				if (fieldOverview.special.includes('m2m') && relation.meta?.junction_field && relation.related_collection) {
-					// subSubQuery
-					// .from(relation.related_collection)
-					// .whereRaw(`?? = ??`, [`${relation.related_collection}.${schema.collections[relation.related_collection]?.primary}`, `${relation.collection}.${relation.meta?.junction_field}`])
-					// .andWhere(function (relatedSubQuery) {
-					// 	addWhereConditions(knex, schema, relatedSubQuery, searchQuery, relation.related_collection!, aliasMap, permissions, maxRelationDepth, currentDepth + 1);
-					// });
-				} else {
-					applySearch(
-						knex,
-						schema,
-						subSubQuery,
-						searchQuery,
-						relation.collection,
-						aliasMap,
-						permissions,
-						currentRelationalDepth + 1,
-					);
-				}
-			});
+		let targetCollection = relation.collection;
+
+		if (fieldOverview.special.includes('m2m')) {
+			if (!relation.meta?.junction_field) return;
+
+			const { relation: targetRelation } = getRelationInfo(
+				schema.relations,
+				relation.collection,
+				relation.meta.junction_field,
+			);
+
+			if (!targetRelation?.related_collection) return;
+
+			const targetPk = schema.collections[targetRelation.related_collection]?.primary;
+			const junctionField = relation.meta.junction_field;
+
+			if (!targetPk) return;
+
+			subQuery
+				.from(targetRelation.related_collection)
+				.whereIn(`${targetRelation.related_collection}.${targetPk}`, function (query) {
+					query
+						.select(`${relation.collection}.${junctionField}`)
+						.from(relation.collection)
+						.whereRaw(`?? = ??`, [`${relation.collection}.${relation.field}`, `${collection}.${primaryKey}`]);
+				});
+
+			targetCollection = targetRelation.related_collection;
+		} else {
+			subQuery
+				.from(relation.collection)
+				.andWhereRaw(`?? = ??`, [`${relation.collection}.${relation.field}`, `${collection}.${primaryKey}`]);
+		}
+
+		subQuery.andWhere(function (subSubQuery) {
+			applySearch(
+				knex,
+				schema,
+				subSubQuery,
+				searchQuery,
+				targetCollection,
+				aliasMap,
+				permissions,
+				currentRelationalDepth + 1,
+			);
+		});
 	});
 }
 
@@ -62,5 +84,5 @@ export function shouldHandleRelationalSearch(
 	currentDepth: number,
 	maxRelationDepth: number,
 ): boolean {
-	return isFieldRelational(field) && currentDepth <= maxRelationDepth;
+	return currentDepth <= maxRelationDepth && isFieldRelational(field);
 }
