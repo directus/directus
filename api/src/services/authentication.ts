@@ -138,7 +138,6 @@ export class AuthenticationService {
 			} catch (error) {
 				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-					user.status = 'suspended';
 
 					if (this.accountability) {
 						const activity = await this.activityService.createOne({
@@ -161,6 +160,8 @@ export class AuthenticationService {
 							delta: { status: 'suspended' },
 						});
 					}
+
+					user.status = 'suspended';
 
 					// This means that new attempts after the user has been re-activated will be accepted
 					await loginAttemptsLimiter.set(user.id, 0, 0);
