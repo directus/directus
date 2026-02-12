@@ -50,6 +50,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toBe(undefined);
@@ -63,6 +64,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toMatchObject([]);
@@ -76,6 +78,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toEqual(['test', 'directus']);
@@ -89,6 +92,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toMatchObject(['test', 'directus']);
@@ -102,6 +106,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toBe('test,directus');
@@ -115,6 +120,7 @@ describe('Integration Tests', () => {
 						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
+						overwriteDefaults: undefined,
 					});
 
 					expect(result).toBe('test,directus');
@@ -458,6 +464,63 @@ describe('Integration Tests', () => {
 				);
 
 				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
+			});
+		});
+
+		describe('prepareDelta', () => {
+			let service: PayloadService;
+
+			const REDACT_STR = '**********';
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('string').string();
+
+					c.field('hidden')
+						.hash()
+						.options({
+							special: ['hash', 'conceal'],
+						});
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test('should return an object for non-empty delta', async () => {
+				const result = await service.prepareDelta({ string: 'test-value' });
+
+				expect(result).toEqual({ string: 'test-value' });
+			});
+
+			test('should return null for empty delta', async () => {
+				const result = await service.prepareDelta({});
+				expect(result).toBeNull();
+			});
+
+			test('should process concealed fields through read transformation', async () => {
+				const result = await service.prepareDelta({ string: 'visible', hidden: 'secret' });
+				expect(result).toMatchObject({ string: 'visible', hidden: REDACT_STR });
+			});
+
+			test('should extract bindings from raw instances', async () => {
+				const result = await service.prepareDelta({
+					string: { isRawInstance: true, bindings: ['raw-value'] } as any,
+				});
+
+				expect(result).toEqual({ string: 'raw-value' });
+			});
+
+			test('should not mutate the original delta', async () => {
+				const original = { hidden: 'test' };
+				await service.prepareDelta(original);
+
+				expect(original).toEqual({ hidden: 'test' });
 			});
 		});
 	});
