@@ -47,7 +47,6 @@ export function realtime(config: WebSocketConfig = {}) {
 		let uid = generateUid();
 		let lastAccessToken: string | null = null;
 
-
 		let state: ConnectionState = {
 			code: 'closed',
 		};
@@ -311,7 +310,6 @@ export function realtime(config: WebSocketConfig = {}) {
 						}
 						lastAccessToken = access_token;
 
-
 						ws.send(auth({ access_token }));
 						const confirm = await messageCallback(ws);
 
@@ -384,15 +382,15 @@ export function realtime(config: WebSocketConfig = {}) {
 			},
 			async sendMessage(message: string | Record<string, any>) {
 				const self = this as AuthWSClient<Schema>;
-				  if (hasAuth(self)) {
-    				const currentToken = await self.getToken();
+				if (hasAuth(self)) {
+					const currentToken = await self.getToken();
 					if (lastAccessToken && currentToken && currentToken !== lastAccessToken) {
-      					debug('info', 'Access token changed, reconnecting realtime socket...');
-      					this.disconnect();
-      					await this.connect();
+						debug('info', 'Access token changed, reconnecting realtime socket...');
+						this.disconnect();
+						await this.connect();
 					}
 					lastAccessToken = currentToken;
-				  }
+				}
 				if (state.code !== 'open') {
 					// TODO use directus error
 					throw new Error(
