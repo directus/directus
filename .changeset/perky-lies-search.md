@@ -4,4 +4,4 @@
 ---
 
 Added activity logging to authenticationService.logout(), mirroring the existing
-LOGIN pattern
+login pattern
