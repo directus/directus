@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { defineComponent, nextTick, reactive, ref } from 'vue';
+import { defineComponent, nextTick, reactive } from 'vue';
 import { cancelPending, pendingAskUser, submitAnswers, useAskUserTool } from './use-ask-user-tool';
 
 const registerLocalTool = vi.fn();
