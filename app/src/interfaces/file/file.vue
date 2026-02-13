@@ -23,9 +23,11 @@ import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import VUpload from '@/components/v-upload.vue';
+import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
+import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -52,6 +54,7 @@ const props = withDefaults(
 		field: string;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		allowedMimeTypes?: string[];
 	}>(),
 	{
 		enableCreate: true,
@@ -69,6 +72,27 @@ const value = computed({
 		emit('input', value);
 	},
 });
+
+const { info } = useServerStore();
+
+const globalMimeTypeAllowList = computed(() => {
+	const allowList = info.files?.mimeTypeAllowList;
+
+	if (!allowList || allowList === '*/*') {
+		return undefined;
+	}
+
+	if (Array.isArray(allowList)) {
+		return allowList as string[];
+	}
+
+	return (allowList as string).split(',').map((type: string) => type.trim());
+});
+
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(
+	computed(() => props.allowedMimeTypes),
+	globalMimeTypeAllowList,
+);
 
 const query = ref<RelationQuerySingle>({
 	fields: ['id', 'title', 'type', 'filename_download', 'modified_on'],
@@ -127,7 +151,7 @@ const edits = computed(() => {
 const values = inject('values', ref<Record<string, unknown>>({}));
 
 const customFilter = computed(() => {
-	return parseFilter(
+	const filter = parseFilter(
 		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
@@ -136,6 +160,13 @@ const customFilter = computed(() => {
 			return val;
 		}),
 	);
+
+	if (!mimeTypeFilter.value) return filter;
+	if (!filter) return mimeTypeFilter.value;
+
+	return {
+		_and: [filter, mimeTypeFilter.value],
+	};
 });
 
 const internalDisabled = computed(() => {
@@ -332,7 +363,7 @@ function useURLImport() {
 			<VCard>
 				<VCardTitle>{{ $t('upload_from_device') }}</VCardTitle>
 				<VCardText>
-					<VUpload from-url :folder="folder" @input="onUpload" />
+					<VUpload from-url :folder="folder" :accept="combinedAcceptString" @input="onUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="activeDialog = null">{{ $t('cancel') }}</VButton>

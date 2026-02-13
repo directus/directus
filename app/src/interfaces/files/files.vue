@@ -22,9 +22,11 @@ import VPagination from '@/components/v-pagination.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VUpload from '@/components/v-upload.vue';
+import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
+import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
@@ -49,6 +51,7 @@ const props = withDefaults(
 		filter?: Filter;
 		showNavigation?: boolean;
 		limit?: number;
+		allowedMimeTypes?: string[];
 	}>(),
 	{
 		nonEditable: false,
@@ -72,6 +75,27 @@ const value = computed({
 		emit('input', val);
 	},
 });
+
+const { info } = useServerStore();
+
+const globalMimeTypeAllowList = computed(() => {
+	const allowList = info.files?.mimeTypeAllowList;
+
+	if (!allowList || allowList === '*/*') {
+		return undefined;
+	}
+
+	if (Array.isArray(allowList)) {
+		return allowList as string[];
+	}
+
+	return (allowList as string).split(',').map((type: string) => type.trim());
+});
+
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(
+	computed(() => props.allowedMimeTypes),
+	globalMimeTypeAllowList,
+);
 
 const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
@@ -308,6 +332,10 @@ const customFilter = computed(() => {
 		);
 	}
 
+	if (mimeTypeFilter.value) {
+		filter._and.push(mimeTypeFilter.value);
+	}
+
 	return filter;
 });
 
@@ -453,7 +481,7 @@ const allowDrag = computed(
 			<VCard>
 				<VCardTitle>{{ $t('upload_file') }}</VCardTitle>
 				<VCardText>
-					<VUpload multiple from-url :folder="folder" @input="onUpload" />
+					<VUpload multiple from-url :folder="folder" :accept="combinedAcceptString" @input="onUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton @click="showUpload = false">{{ $t('done') }}</VButton>
