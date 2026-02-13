@@ -22,6 +22,7 @@ import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getSpecialForType } from '@/utils/get-special-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { notify } from '@/utils/notify';
+import { remapFilterFieldKeys } from '@/utils/remap-filter-field';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = withDefaults(
@@ -134,6 +135,10 @@ function useDuplicate() {
 			delete newField.meta.id;
 			delete newField.meta.sort;
 			delete newField.meta.group;
+		}
+
+		if (newField.meta?.validation) {
+			newField.meta.validation = remapFilterFieldKeys(newField.meta.validation, props.field.field, duplicateName.value);
 		}
 
 		if (newField.schema) {
