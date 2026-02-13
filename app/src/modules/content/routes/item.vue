@@ -44,7 +44,7 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
-import CollabHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
+import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
@@ -700,7 +700,7 @@ function useItemNavigation() {
 		</template>
 
 		<template #actions>
-			<CollabHeader
+			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"

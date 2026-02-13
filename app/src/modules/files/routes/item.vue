@@ -22,7 +22,7 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
-import CollabHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
+import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
@@ -259,7 +259,7 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #actions>
-			<CollabHeader
+			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"

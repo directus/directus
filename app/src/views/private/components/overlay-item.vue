@@ -37,7 +37,7 @@ import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import CollabHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
+import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -619,7 +619,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions>
-			<CollabHeader
+			<CollabIndicatorHeader
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
 				:focuses="{ ...collab?.focused.value, ...relatedCollab?.focused.value }"
