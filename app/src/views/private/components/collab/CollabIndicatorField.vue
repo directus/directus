@@ -54,7 +54,7 @@ const users = computed(() => {
 	align-items: center;
 	cursor: default;
 
-	&-lock {
+	.collab-field-lock {
 		align-self: center;
 		font-size: 14px;
 		color: var(--text-50);

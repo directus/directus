@@ -138,14 +138,14 @@ function focusIntoView(cid: ClientID) {
 	:deep(.v-avatar) {
 		font-size: 12px;
 	}
+}
 
-	&-popover {
-		padding: 8px 4px;
-		display: flex;
-		flex-direction: column;
-	}
+.collab-header-popover {
+	padding: 8px 4px;
+	display: flex;
+	flex-direction: column;
 
-	&-popover-subtitle {
+	.collab-header-popover-subtitle {
 		font-size: 0.857em;
 		line-height: 1.2;
 		color: var(--theme--foreground-subdued);
@@ -162,29 +162,29 @@ function focusIntoView(cid: ClientID) {
 		margin: 0;
 	}
 
-	&-item {
+	.collab-header-more-popover-item {
 		padding: 4px;
 		display: flex;
 		align-items: center;
 		gap: 8px;
 		inline-size: 100%;
-	}
 
-	&-item-content {
-		padding: 2px 4px;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-	}
+		.collab-header-more-popover-item-content {
+			padding: 2px 4px;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
 
-	&-item-content-name {
-		line-height: 1.6;
-	}
+			.collab-header-more-popover-item-content-name {
+				line-height: 1.6;
+			}
 
-	&-item-content-status {
-		font-size: 0.857em;
-		line-height: 1.167em;
-		color: var(--theme--foreground-subdued);
+			.collab-header-more-popover-item-content-status {
+				font-size: 0.857em;
+				line-height: 1.167em;
+				color: var(--theme--foreground-subdued);
+			}
+		}
 	}
 }
 </style>
