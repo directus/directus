@@ -351,7 +351,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 					const relationalFields = getRelationsForCollection(this.schema, this.collection);
 
-					const revisionPayload = await payloadService.prepareDelta(omit(payloadAfterHooks, relationalFields));
+					const revisionPayload = await payloadService.prepareDelta(omit(payloadWithPresets, relationalFields));
 
 					const revision = await revisionsService.createOne({
 						activity: activity,
