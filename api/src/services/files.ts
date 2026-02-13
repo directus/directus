@@ -321,14 +321,7 @@ export class FilesService extends ItemsService<File> {
 		data: Partial<File>,
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
-		const updatedFiles: Map<PrimaryKey, File> = new Map();
-
-		if (keys.length > 1 && data.filename_disk) {
-			// Defer the error to be thrown until after permission checks
-			opts.preMutationError = new InvalidPayloadError({
-				reason: '"filename_disk" cannot be modified in bulk operations',
-			});
-		} else if (data.filename_disk) {
+		if (keys.length === 1 && data.filename_disk) {
 			try {
 				await this.checkUniqueFilename(data.filename_disk);
 			} catch (err: any) {
@@ -343,6 +336,8 @@ export class FilesService extends ItemsService<File> {
 				knex: this.knex,
 				schema: this.schema,
 			});
+
+			const updatedFiles: Map<PrimaryKey, File> = new Map();
 
 			const changedFiles = await sudoFilesItemsService.readMany(keys, {
 				fields: ['id', 'storage', 'filename_disk'],
@@ -410,6 +405,13 @@ export class FilesService extends ItemsService<File> {
 			}
 
 			return keys;
+		}
+
+		if (keys.length > 1 && data.filename_disk) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = new InvalidPayloadError({
+				reason: '"filename_disk" cannot be modified in bulk operations',
+			});
 		}
 
 		await super.updateMany(keys, data, opts);
