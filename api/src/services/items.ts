@@ -16,6 +16,7 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
+import { getRelationsForCollection } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
@@ -348,20 +349,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const fields = this.schema.collections[this.collection]?.fields;
-					const relationalFields = [];
-
-					for (const relation of this.schema.relations) {
-						if (relation.collection === this.collection && fields?.[relation.field]) {
-							relationalFields.push(relation.field);
-						} else if (
-							relation.related_collection === this.collection &&
-							relation.meta?.one_field &&
-							fields?.[relation.meta.one_field]
-						) {
-							relationalFields.push(relation.meta.one_field);
-						}
-					}
+					const relationalFields = getRelationsForCollection(this.schema, this.collection);
 
 					const revisionPayload = await payloadService.prepareDelta(omit(payloadAfterHooks, relationalFields));
 
@@ -895,20 +883,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const fields = this.schema.collections[this.collection]?.fields;
-					const relationalFields = [];
-
-					for (const relation of this.schema.relations) {
-						if (relation.collection === this.collection && fields?.[relation.field]) {
-							relationalFields.push(relation.field);
-						} else if (
-							relation.related_collection === this.collection &&
-							relation.meta?.one_field &&
-							fields?.[relation.meta.one_field]
-						) {
-							relationalFields.push(relation.meta.one_field);
-						}
-					}
+					const relationalFields = getRelationsForCollection(this.schema, this.collection);
 
 					const snapshots = await itemsService.readMany(keys, {
 						fields: Object.keys(omit(fields, relationalFields)),
