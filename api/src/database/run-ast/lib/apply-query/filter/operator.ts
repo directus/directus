@@ -5,6 +5,20 @@ import type { Knex } from 'knex';
 import { getHelpers } from '../../../../helpers/index.js';
 import { getColumn } from '../../../utils/get-column.js';
 
+function castToNumber(value: any): any {
+	if (Array.isArray(value)) {
+		return value.map((val) => {
+			const num = Number(val);
+			if (Number.isNaN(num)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
+			return num;
+		});
+	}
+
+	const num = Number(value);
+	if (Number.isNaN(num)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
+	return num;
+}
+
 export function applyOperator(
 	knex: Knex,
 	dbQuery: Knex.QueryBuilder,
@@ -73,16 +87,7 @@ export function applyOperator(
 		const type = getOutputTypeForFunction(functionName);
 
 		if (['integer', 'float', 'decimal'].includes(type)) {
-			if (Array.isArray(compareValue)) {
-				compareValue = compareValue.map((val) => {
-					const num = Number(val);
-					if (Number.isNaN(num)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
-					return num;
-				});
-			} else {
-				compareValue = Number(compareValue);
-				if (Number.isNaN(compareValue)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
-			}
+			compareValue = castToNumber(compareValue);
 		}
 	}
 
@@ -102,16 +107,7 @@ export function applyOperator(
 		}
 
 		if (['integer', 'float', 'decimal'].includes(type)) {
-			if (Array.isArray(compareValue)) {
-				compareValue = compareValue.map((val) => {
-					const num = Number(val);
-					if (Number.isNaN(num)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
-					return num;
-				});
-			} else {
-				compareValue = Number(compareValue);
-				if (Number.isNaN(compareValue)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
-			}
+			compareValue = castToNumber(compareValue);
 		}
 	}
 

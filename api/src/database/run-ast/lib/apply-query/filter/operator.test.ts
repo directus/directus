@@ -6,6 +6,15 @@ import { Client_SQLite3 } from '../mock.js';
 
 const { applyOperator } = await import('./operator.js');
 
+const schema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+		c.field('likes').integer();
+		c.field('links').o2m('links', 'article_id');
+	})
+	.build();
+
 for (const { field, operator, value, sql, bindings } of [
 	{
 		field: 'articles.title',
@@ -86,15 +95,6 @@ for (const { field, operator, value, sql, bindings } of [
 	},
 ]) {
 	test(`applyOperator on ${field} ${operator} ${value}`, async () => {
-		const schema = new SchemaBuilder()
-			.collection('articles', (c) => {
-				c.field('id').id();
-				c.field('title').string();
-				c.field('likes').integer();
-				c.field('links').o2m('links', 'article_id');
-			})
-			.build();
-
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 		const queryBuilder = db.queryBuilder();
 
@@ -108,15 +108,6 @@ for (const { field, operator, value, sql, bindings } of [
 }
 
 test('applyOperator throws InvalidQueryError for non-numeric value on function-based numeric field', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id();
-			c.field('title').string();
-			c.field('likes').integer();
-			c.field('links').o2m('links', 'article_id');
-		})
-		.build();
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -126,15 +117,6 @@ test('applyOperator throws InvalidQueryError for non-numeric value on function-b
 });
 
 test('applyOperator throws InvalidQueryError for non-numeric array value on function-based numeric field', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id();
-			c.field('title').string();
-			c.field('likes').integer();
-			c.field('links').o2m('links', 'article_id');
-		})
-		.build();
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -144,15 +126,6 @@ test('applyOperator throws InvalidQueryError for non-numeric array value on func
 });
 
 test('applyOperator throws InvalidQueryError for non-numeric value on integer field', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id();
-			c.field('title').string();
-			c.field('likes').integer();
-			c.field('links').o2m('links', 'article_id');
-		})
-		.build();
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -162,15 +135,6 @@ test('applyOperator throws InvalidQueryError for non-numeric value on integer fi
 });
 
 test('applyOperator throws InvalidQueryError for non-numeric array value on integer field', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id();
-			c.field('title').string();
-			c.field('likes').integer();
-			c.field('links').o2m('links', 'article_id');
-		})
-		.build();
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
