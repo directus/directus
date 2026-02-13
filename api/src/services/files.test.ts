@@ -36,15 +36,12 @@ describe('Service / Files', () => {
 
 	describe('createOne', () => {
 		let service: FilesService;
-		let superCreateOne: MockInstance;
 
 		beforeEach(() => {
 			service = new FilesService({
 				knex: db,
 				schema: { collections: {}, relations: [] },
 			});
-
-			superCreateOne = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(1);
 		});
 
 		it('throws InvalidPayloadError when "type" is not provided', async () => {
@@ -59,7 +56,7 @@ describe('Service / Files', () => {
 				expect(err.message).toBe('Invalid payload. "type" is required.');
 			}
 
-			expect(superCreateOne).not.toHaveBeenCalled();
+			expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
 		});
 
 		it('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
@@ -72,7 +69,7 @@ describe('Service / Files', () => {
 				filename_disk: 'existing-file.jpg',
 			});
 
-			expect(superCreateOne).toHaveBeenCalledWith(
+			expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
 				{
 					type: 'application/octet-stream',
 					filename_disk: 'existing-file.jpg',
@@ -89,7 +86,7 @@ describe('Service / Files', () => {
 				type: 'application/octet-stream',
 			});
 
-			expect(superCreateOne).toHaveBeenCalled();
+			expect(ItemsService.prototype.createOne).toHaveBeenCalled();
 		});
 
 		it('should normalize filename_disk path', async () => {
@@ -100,7 +97,7 @@ describe('Service / Files', () => {
 				filename_disk: '/folder/../new-file.jpg',
 			});
 
-			expect(superCreateOne).toHaveBeenCalledWith(
+			expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
 				{ filename_disk: 'new-file.jpg', type: 'application/octet-stream' },
 				{},
 			);
@@ -244,16 +241,31 @@ describe('Service / Files', () => {
 				{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
 			]);
 
-			const superUpdateMany = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1]);
-
 			await service.updateMany([1], {
 				filename_disk: 'existing-file.jpg',
 			});
 
-			expect(superUpdateMany).toHaveBeenCalledWith(
+			expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
 				[1],
 				{ filename_disk: 'existing-file.jpg' },
 				expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+			);
+		});
+
+		it('should throw deferred InvalidPayloadError when filename_disk is present in bulk update', async () => {
+			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+				{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
+				{ id: 2, storage: 'local', filename_disk: 'old-file-2.jpg' },
+			]);
+
+			await service.updateMany([1, 2], {
+				filename_disk: 'existing-file.jpg',
+			});
+
+			expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+				[1],
+				{ filename_disk: 'existing-file.jpg' },
+				expect.objectContaining({ preMutationError: expect.any(InvalidPayloadError) }),
 			);
 		});
 
@@ -439,15 +451,82 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).toHaveBeenCalledWith('old-file-thumbnail.jpg');
 		});
 
-		it('should process multiple files independently in separate transactions', async () => {
+		it('should update without file operations when filename_disk is not in data', async () => {
+			await service.updateMany([1], {
+				title: 'Updated Title',
+			});
+
+			expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith([1], { title: 'Updated Title' }, {});
+			expect(mockDriver.move).not.toHaveBeenCalled();
+			expect(mockDriver.delete).not.toHaveBeenCalled();
+		});
+
+		it('should skip file operations when file record has no filename_disk', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
-				{ id: 1, storage: 'local', filename_disk: 'file1.jpg' },
-				{ id: 2, storage: 'local', filename_disk: 'file2.jpg' },
+				{ id: 1, storage: 'local', filename_disk: null },
 			]);
 
-			vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([1, 2]);
+			await service.updateMany([1], {
+				filename_disk: 'new-file.jpg',
+			});
+
+			expect(mockDriver.move).not.toHaveBeenCalled();
+			expect(mockDriver.delete).not.toHaveBeenCalled();
+		});
+
+		it('should skip file operations when file record is not found in updatedFiles map', async () => {
+			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
+
+			await service.updateMany([1], {
+				filename_disk: 'new-file.jpg',
+			});
+
+			expect(mockDriver.move).not.toHaveBeenCalled();
+			expect(mockDriver.delete).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('deleteMany', () => {
+		let service: FilesService;
+		let mockDriver: Driver;
+
+		beforeEach(() => {
+			service = new FilesService({
+				knex: db,
+				schema: { collections: {}, relations: [] },
+			});
+
+			mockDriver = createMockDriver();
+			const mockStorage = createMockStorage(mockDriver);
+			vi.mocked(getStorage).mockResolvedValue(mockStorage);
+		});
+
+		it('should delete file and generated assets from storage', async () => {
+			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+				{ id: 1, storage: 'local', filename_disk: 'test-file.jpg' },
+			]);
+
+			vi.mocked(mockDriver.list).mockImplementation(async function* () {
+				yield 'test-file.jpg';
+				yield 'test-file-thumbnail-small.jpg';
+				yield 'test-file-thumbnail-large.jpg';
+			});
+
+			await service.deleteMany([1]);
+
+			expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith([1]);
+			expect(mockDriver.delete).toHaveBeenCalledWith('test-file.jpg');
+			expect(mockDriver.delete).toHaveBeenCalledWith('test-file-thumbnail-small.jpg');
+			expect(mockDriver.delete).toHaveBeenCalledWith('test-file-thumbnail-large.jpg');
+		});
+
+		it('should delete multiple files from storage', async () => {
+			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+				{ id: 1, storage: 'local', filename_disk: 'file1.jpg' },
+				{ id: 2, storage: 'local', filename_disk: 'file2.png' },
+			]);
 
 			let callCount = 0;
 
@@ -456,17 +535,15 @@ describe('Service / Files', () => {
 					callCount++;
 					yield 'file1.jpg';
 				} else {
-					yield 'file2.jpg';
+					yield 'file2.png';
 				}
 			});
 
-			await service.updateMany([1, 2], {
-				filename_disk: 'new-file.jpg',
-			});
+			await service.deleteMany([1, 2]);
 
-			expect(mockDriver.move).toHaveBeenCalledTimes(2);
-			expect(mockDriver.move).toHaveBeenCalledWith('file1.jpg', 'new-file.jpg');
-			expect(mockDriver.move).toHaveBeenCalledWith('file2.jpg', 'new-file.jpg');
+			expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith([1, 2]);
+			expect(mockDriver.delete).toHaveBeenCalledWith('file1.jpg');
+			expect(mockDriver.delete).toHaveBeenCalledWith('file2.png');
 		});
 	});
 });
