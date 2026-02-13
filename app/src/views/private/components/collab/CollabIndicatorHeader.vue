@@ -7,6 +7,8 @@ import { useI18n } from 'vue-i18n';
 import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar } from './utils';
 import VAvatar from '@/components/v-avatar.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import type { CollabUser } from '@/composables/use-collab';
 
@@ -89,30 +91,32 @@ function focusIntoView(cid: ClientID) {
 				</VAvatar>
 			</template>
 
-			<div class="collab-header-more-popover">
-				<ul>
-					<li v-for="user in users.slice(COLLAB_USERS_DISPLAY_LIMIT)" :key="user.connection">
-						<button class="collab-header-more-popover-item" @click="focusIntoView(user.connection)">
-							<VAvatar :border="`var(--${user.color})`" x-small round>
-								<img v-if="user.avatar_url" :src="user.avatar_url" />
-								<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
-								<VIcon v-else name="person" small />
-							</VAvatar>
+			<VList>
+				<VListItem
+					v-for="user in users.slice(COLLAB_USERS_DISPLAY_LIMIT)"
+					:key="user.connection"
+					class="collab-header-more-popover-item"
+					:clickable="!!user.focusedField"
+					@click="!user.focusedField ? undefined : focusIntoView(user.connection)"
+				>
+					<VAvatar :border="`var(--${user.color})`" x-small round>
+						<img v-if="user.avatar_url" :src="user.avatar_url" />
+						<template v-else-if="user.name">{{ user.name?.substring(0, 2) }}</template>
+						<VIcon v-else name="person" small />
+					</VAvatar>
 
-							<div class="collab-header-more-popover-item-content">
-								<span>{{ user.name ?? t('unknown_user') }}</span>
-								<span class="collab-header-popover-status">
-									{{
-										user.focusedField
-											? t('collab_editing_field', { field: formatTitle(user.focusedField) })
-											: t('collab_currently_viewing')
-									}}
-								</span>
-							</div>
-						</button>
-					</li>
-				</ul>
-			</div>
+					<div class="collab-header-more-popover-item-content">
+						<span>{{ user.name ?? t('unknown_user') }}</span>
+						<span class="collab-header-popover-status">
+							{{
+								user.focusedField
+									? t('collab_editing_field', { field: formatTitle(user.focusedField) })
+									: t('collab_currently_viewing')
+							}}
+						</span>
+					</div>
+				</VListItem>
+			</VList>
 		</VMenu>
 
 		<VIcon
@@ -153,29 +157,16 @@ function focusIntoView(cid: ClientID) {
 	color: var(--theme--foreground-subdued);
 }
 
-.collab-header-more-popover {
-	padding: 4px 0;
-	min-inline-size: 200px;
+.collab-header-more-popover-item {
+	padding-block: 4px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 
-	ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	.collab-header-more-popover-item {
-		padding: 4px;
+	.collab-header-more-popover-item-content {
 		display: flex;
-		align-items: center;
-		gap: 8px;
-		inline-size: 100%;
-
-		.collab-header-more-popover-item-content {
-			padding: 2px 4px;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-start;
-		}
+		flex-direction: column;
+		align-items: flex-start;
 	}
 }
 </style>
