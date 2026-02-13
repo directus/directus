@@ -3,6 +3,7 @@ import formatTitle from '@directus/format-title';
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
+	type AskUserAnswers,
 	type AskUserQuestion,
 	cancelPending,
 	pendingAskUser,
@@ -20,6 +21,14 @@ const activeQuestionIndex = ref(0);
 const answers = ref<Record<string, string | string[]>>({});
 const textInputValues = ref<Record<string, string>>({});
 const textInputActive = ref<Record<string, boolean>>({});
+
+// Reset local state when questions change (e.g. consecutive ask_user calls)
+watch(questions, () => {
+	activeQuestionIndex.value = 0;
+	answers.value = {};
+	textInputValues.value = {};
+	textInputActive.value = {};
+});
 
 const currentQuestion = computed<AskUserQuestion | undefined>(() => questions.value[activeQuestionIndex.value]);
 
@@ -78,7 +87,10 @@ function selectOption(questionId: string, label: string, multiSelect: boolean) {
 		answers.value[questionId] = label;
 		textInputValues.value[questionId] = '';
 		textInputActive.value[questionId] = false;
-		autoAdvance();
+
+		if (!isLastQuestion.value) {
+			goToQuestion(activeQuestionIndex.value + 1);
+		}
 	}
 }
 
@@ -90,22 +102,14 @@ function activateTextInput(questionId: string) {
 	}
 }
 
-function autoAdvance() {
-	setTimeout(() => {
-		if (!isLastQuestion.value) {
-			goToQuestion(activeQuestionIndex.value + 1);
-		}
-	}, 200);
-}
-
 function goToQuestion(index: number) {
 	if (index >= 0 && index < questions.value.length) {
 		activeQuestionIndex.value = index;
 	}
 }
 
-function gatherAnswers(): Record<string, unknown> {
-	const result: Record<string, unknown> = {};
+function gatherAnswers(): AskUserAnswers {
+	const result: AskUserAnswers = {};
 
 	for (const q of questions.value) {
 		if (answers.value[q.id] !== undefined) {
@@ -216,6 +220,7 @@ onMounted(() => {
 
 onUnmounted(() => {
 	resizeObserver?.disconnect();
+	// Safety net for non-standard unmount paths (e.g. parent route change)
 	cancelPending();
 });
 </script>
@@ -230,10 +235,12 @@ onUnmounted(() => {
 				'show-right-fade': showRightFade,
 			}"
 		>
-			<div ref="tabs-container" class="question-tabs" @scroll="updateFades">
+			<div ref="tabs-container" class="question-tabs" role="tablist" @scroll="updateFades">
 				<button
 					v-for="(q, index) in questions"
 					:key="q.id"
+					role="tab"
+					:aria-selected="index === activeQuestionIndex"
 					class="question-tab"
 					:class="{
 						active: index === activeQuestionIndex,
@@ -262,6 +269,7 @@ onUnmounted(() => {
 						<button
 							v-for="(option, index) in currentQuestion.options"
 							:key="option.label"
+							:aria-pressed="isOptionSelected(currentQuestion.id, option.label)"
 							class="option-card"
 							:class="{ selected: isOptionSelected(currentQuestion.id, option.label) }"
 							@click="selectOption(currentQuestion.id, option.label, currentQuestion.multi_select)"
