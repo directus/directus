@@ -1,7 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Relation, SchemaOverview } from '@directus/types';
-import { getRelation } from '@directus/utils';
-import { getRelationType } from '../../../utils/get-relation-type.js';
+import { getRelation, getRelationType } from '@directus/utils';
 
 export type RelationalJsonPathResult = {
 	/** The target collection containing the JSON field */
@@ -21,15 +20,15 @@ export type RelationalJsonPathResult = {
  *
  * @param schema - The schema overview containing collection and relation metadata
  * @param startCollection - The collection where the query starts
- * @param field - The field portion from json(field:path), e.g., "category.metadata"
+ * @param field - The field portion from json(field, path), e.g., "category.metadata"
  *
  * @example
- * // For json(category.metadata:color) on products collection:
+ * // For json(category.metadata, color) on products collection:
  * validateRelationalJsonPath(schema, 'products', 'category.metadata')
  * // Returns: { targetCollection: 'categories', jsonField: 'metadata', relationType: 'm2o', ... }
  *
  * @example
- * // For json(comments.data:type) on articles collection (O2M):
+ * // For json(comments.data, type) on articles collection (O2M):
  * validateRelationalJsonPath(schema, 'articles', 'comments.data')
  * // Returns: { targetCollection: 'comments', jsonField: 'data', relationType: 'o2m', ... }
  */
@@ -75,9 +74,9 @@ export function validateRelationalJsonPath(
 		} else if (relationType === 'o2m') {
 			currentCollection = relation.collection;
 			lastRelationType = 'o2m';
-		} else if (relationType === 'a2o') {
+		} else if (relationType === 'm2a') {
 			throw new InvalidQueryError({
-				reason: `Relational JSON does not support Any-to-One (a2o) relations at "${segment}"`,
+				reason: `Relational JSON does not support many-to-any relations at "${segment}"`,
 			});
 		} else {
 			throw new InvalidQueryError({

@@ -38,7 +38,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,name,json(metadata.color)',
+							fields: 'id,name,json(metadata, color)',
 							sort: 'id',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -90,7 +90,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,name,json(metadata.dimensions.width),json(metadata.dimensions.height)',
+							fields: 'id,name,json(metadata, dimensions.width),json(metadata, dimensions.height)',
 							sort: 'id',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -150,7 +150,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,name,json(metadata.tags[0]),json(metadata.tags[1])',
+							fields: 'id,name,json(metadata, tags[0]),json(metadata, tags[1])',
 							sort: 'id',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -204,7 +204,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,name,json(metadata.variants[0].sku),json(metadata.variants[0].price)',
+							fields: 'id,name,json(metadata, variants[0].sku),json(metadata, variants[0].price)',
 							sort: 'id',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -259,7 +259,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,json(metadata.color),json(settings.theme)',
+							fields: 'id,json(metadata, color),json(settings, theme)',
 							sort: 'id',
 							limit: 1,
 						})
@@ -281,7 +281,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,json(metadata.brand),json(metadata.dimensions.width),json(settings.theme)',
+							fields: 'id,json(metadata, brand),json(metadata, dimensions.width),json(settings, theme)',
 							sort: '-id',
 							limit: 1,
 						})
@@ -313,7 +313,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}/${thirdProductId}`)
 						.query({
-							fields: 'id,json(metadata.variants[0].sku)',
+							fields: 'id,json(metadata, variants[0].sku)',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -331,7 +331,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,name,metadata,json(metadata.color),json(metadata.brand)',
+							fields: 'id,name,metadata,json(metadata, color),json(metadata, brand)',
 							sort: 'id',
 							limit: 1,
 						})
@@ -362,7 +362,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,name,json(metadata.color)',
+							fields: 'id,name,json(metadata, color)',
 							filter: JSON.stringify({ name: { _eq: 'Product A' } }),
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -382,7 +382,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,name,json(metadata.color)',
+							fields: 'id,name,json(metadata, color)',
 							sort: '-id',
 							limit: 2,
 						})
@@ -411,7 +411,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,json(metadata.color)',
+							fields: 'id,json(metadata, color)',
 							sort: 'id',
 							limit: 2,
 							offset: 1,
@@ -440,7 +440,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}/${firstProductId}`)
 						.query({
-							fields: 'id,name,json(metadata.color),json(metadata.brand)',
+							fields: 'id,name,json(metadata, color),json(metadata, brand)',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -496,7 +496,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,json(name.invalid)',
+							fields: 'id,json(name, invalid)',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -512,7 +512,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,json(nonexistent.path)',
+							fields: 'id,json(nonexistent, path)',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -562,7 +562,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.post(`/items/${localCollectionProducts}`)
 						.query({
-							fields: 'id,name,json(metadata.color),json(metadata.brand)',
+							fields: 'id,name,json(metadata, color),json(metadata, brand)',
 						})
 						.send(newProduct)
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -602,7 +602,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.patch(`/items/${localCollectionProducts}/${created.id}`)
 						.query({
-							fields: 'id,json(metadata.color),json(metadata.brand)',
+							fields: 'id,json(metadata, color),json(metadata, brand)',
 						})
 						.send({
 							metadata: {

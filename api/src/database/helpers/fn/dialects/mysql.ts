@@ -55,7 +55,7 @@ export class FnHelperMySQL extends FnHelper {
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
 		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
 
-		// Check for relational JSON context (e.g., json(category.metadata:color))
+		// Check for relational JSON context (e.g., json(category.metadata, color))
 		if (options?.relationalJsonContext) {
 			const ctx = options.relationalJsonContext;
 			const fieldSchema = this.schema.collections?.[ctx.targetCollection]?.fields?.[ctx.jsonField];

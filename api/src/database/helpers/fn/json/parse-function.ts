@@ -1,10 +1,11 @@
 /**
- * Parses json(field:path.to.value) into components
- * Uses colon as delimiter between field and JSON path to avoid ambiguity with relational fields.
- * @example json(metadata:color) → { field: 'metadata', path: '.color', hasWildcard: false }
- * @example json(data:items[0].name) → { field: 'data', path: '.items[0].name', hasWildcard: false }
- * @example json(data:items[].name) → { field: 'data', path: '.items[].name', hasWildcard: true }
- * @example json(author.profile:settings.theme) → { field: 'author.profile', path: '.settings.theme', hasWildcard: false }
+ * Parses json(field, path.to.value) into components
+ * Uses comma as delimiter between field and JSON path, avoiding collision with A2O colon syntax.
+ * @example json(metadata, color) → { field: 'metadata', path: '.color', hasWildcard: false }
+ * @example json(data, items[0].name) → { field: 'data', path: '.items[0].name', hasWildcard: false }
+ * @example json(data, items[].name) → { field: 'data', path: '.items[].name', hasWildcard: true }
+ * @example json(author.profile, settings.theme) → { field: 'author.profile', path: '.settings.theme', hasWildcard: false }
+ * @example json(relation.item:collection.field, path) → { field: 'relation.item:collection.field', path: '.path', hasWildcard: false }
  */
 export function parseJsonFunction(functionString: string): { field: string; path: string; hasWildcard: boolean } {
 	if (!functionString.startsWith('json(') || !functionString.endsWith(')')) {
@@ -18,19 +19,19 @@ export function parseJsonFunction(functionString: string): { field: string; path
 		throw new Error('Invalid json() syntax');
 	}
 
-	// Split on colon to separate field from path
-	const colonIndex = content.indexOf(':');
+	// Split on comma to separate field from path
+	const commaIndex = content.indexOf(',');
 
-	if (colonIndex === -1) {
-		throw new Error('Invalid json() syntax: requires field:path format');
+	if (commaIndex === -1) {
+		throw new Error('Invalid json() syntax: requires json(field, path) format');
 	}
 
-	if (colonIndex === 0) {
+	if (commaIndex === 0) {
 		throw new Error('Invalid json() syntax: missing field name');
 	}
 
-	const field = content.substring(0, colonIndex);
-	const pathContent = content.substring(colonIndex + 1);
+	const field = content.substring(0, commaIndex).trim();
+	const pathContent = content.substring(commaIndex + 1).trim();
 
 	if (!pathContent) {
 		throw new Error('Invalid json() syntax: missing path');

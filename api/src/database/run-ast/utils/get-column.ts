@@ -50,9 +50,9 @@ export function getColumn(
 		if (functionName in fn) {
 			const collectionName = options?.originalCollectionName || table;
 
-			// For json function, extract the base field name from the path
-			// json(metadata.color) -> metadata
-			const baseFieldName = functionName === 'json' ? columnName!.split('.')[0]! : columnName!;
+			// For json function, extract the base field name from the arguments
+			// json(metadata, color) -> metadata
+			const baseFieldName = functionName === 'json' ? columnName!.split(',')[0]!.trim().split('.')[0]! : columnName!;
 
 			const type = schema?.collections[collectionName]?.fields?.[baseFieldName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);

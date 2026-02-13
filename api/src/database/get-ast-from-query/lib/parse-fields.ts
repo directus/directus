@@ -109,12 +109,12 @@ export async function parseFields(
 			}
 
 			// Create a FunctionFieldNode for json functions to preserve the full function call
-			// This is needed because json() requires the full path (e.g., json(metadata:color))
+			// This is needed because json() requires the full path (e.g., json(metadata, color))
 			if (functionName === 'json') {
 				const { field, path, hasWildcard } = parseJsonFunction(name);
 
 				// Check if the field portion contains a relational path (has dots)
-				// e.g., json(category.metadata:color) where category is a relation
+				// e.g., json(category.metadata, color) where category is a relation
 				if (field.includes('.')) {
 					// Relational JSON: validate the path and get target collection info
 					const validation = validateRelationalJsonPath(context.schema, options.parentCollection, field);
@@ -138,7 +138,7 @@ export async function parseFields(
 						},
 					});
 				} else {
-					// Direct JSON field on current collection: json(metadata:color)
+					// Direct JSON field on current collection: json(metadata, color)
 					children.push({
 						type: 'functionField',
 						name,

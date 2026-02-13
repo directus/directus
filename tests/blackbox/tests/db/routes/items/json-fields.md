@@ -7,8 +7,10 @@ This test suite validates the `json()` function for extracting specific values f
 The `json()` function allows you to extract specific paths from JSON fields in your queries:
 
 ```
-GET /items/products?fields=id,name,json(metadata.color)
+GET /items/products?fields=id,name,json(metadata, color)
 ```
+
+The comma separates the field name from the JSON path, avoiding collision with the colon used for A2O collection scoping.
 
 ## Test Structure
 
@@ -34,10 +36,10 @@ The seed data includes 5 products with different JSON structures to test:
 
 #### Basic Extraction Tests
 
-1. **Simple path** - `json(metadata.color)` → extracts `"red"`
-2. **Nested object path** - `json(metadata.dimensions.width)` → extracts `10`
-3. **Array index** - `json(metadata.tags[0])` → extracts `"electronics"`
-4. **Nested array and object** - `json(metadata.variants[0].sku)` → extracts `"SKU-001"`
+1. **Simple path** - `json(metadata, color)` → extracts `"red"`
+2. **Nested object path** - `json(metadata, dimensions.width)` → extracts `10`
+3. **Array index** - `json(metadata, tags[0])` → extracts `"electronics"`
+4. **Nested array and object** - `json(metadata, variants[0].sku)` → extracts `"SKU-001"`
 
 #### Advanced Tests
 
@@ -69,14 +71,14 @@ The seed data includes 5 products with different JSON structures to test:
 The `json()` function generates field aliases using this pattern:
 
 ```
-json(metadata.color) → metadata_color_json
-json(data.items[0].name) → data_items_0_name_json
-json(settings.theme) → settings_theme_json
+json(metadata, color) → metadata_color_json
+json(data, items[0].name) → data_items_0_name_json
+json(settings, theme) → settings_theme_json
 ```
 
 **Rules:**
 
-- Dots (`.`) become underscores (`_`)
+- Dots (`.`), commas (`,`), and spaces become underscores (`_`)
 - Function name (`json`) is appended at the end
 
 ## GraphQL Support

@@ -88,7 +88,7 @@ export type FieldNode = {
 };
 
 /**
- * Context for relational JSON field access (e.g., json(category.metadata:color))
+ * Context for relational JSON field access (e.g., json(category.metadata, color))
  */
 export type RelationalJsonContext = {
 	/** The relational path segments, e.g., ['category'] or ['author', 'profile'] */
@@ -124,7 +124,7 @@ export type FunctionFieldNode = {
 	cases: Filter[];
 
 	/**
-	 * Context for relational JSON access (e.g., json(category.metadata:color)).
+	 * Context for relational JSON access (e.g., json(category.metadata, color)).
 	 * Present when the json() function targets a JSON field on a related collection.
 	 */
 	relationalJsonContext?: RelationalJsonContext;
