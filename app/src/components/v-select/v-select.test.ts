@@ -3,6 +3,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import VList from '../v-list.vue';
+import SelectListItemGroup from './SelectListItemGroup.vue';
 import VSelect from './v-select.vue';
 import { Focus } from '@/__utils__/focus';
 import { Tooltip } from '@/__utils__/tooltip';
@@ -105,6 +106,98 @@ test('should render with string items', () => {
 	});
 
 	expect(wrapper.html()).toMatchSnapshot();
+});
+
+describe('SelectListItemGroup', () => {
+	const VListGroup = {
+		template: `<div class="v-list-group" @click="$emit('click')"><slot name="activator" /><slot /></div>`,
+	};
+
+	const groupGlobal: GlobalMountOptions = {
+		stubs: {
+			'v-list-group': VListGroup,
+			'v-list-item-icon': true,
+			'v-list-item-content': true,
+			'v-checkbox': true,
+			'v-icon': true,
+			'select-list-item': true,
+		},
+		plugins: [i18n],
+	};
+
+	test('should emit value when item has selectable: true without groupSelectable', async () => {
+		const item = {
+			text: 'Selectable Parent',
+			value: 'parent-1',
+			selectable: true,
+			children: [
+				{ text: 'Child 1', value: 'child-1' },
+			],
+		};
+
+		const wrapper = mount(SelectListItemGroup, {
+			props: { item, modelValue: null, multiple: false },
+			global: groupGlobal,
+		});
+
+		await wrapper.find('.v-list-group').trigger('click');
+		expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['parent-1']);
+	});
+
+	test('should not emit value when item has no selectable and groupSelectable is false', async () => {
+		const item = {
+			text: 'Non-selectable Group',
+			value: 'group-1',
+			children: [
+				{ text: 'Child 1', value: 'child-1' },
+			],
+		};
+
+		const wrapper = mount(SelectListItemGroup, {
+			props: { item, modelValue: null, multiple: false, groupSelectable: false },
+			global: groupGlobal,
+		});
+
+		await wrapper.find('.v-list-group').trigger('click');
+		expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+	});
+
+	test('should emit value when groupSelectable is true', async () => {
+		const item = {
+			text: 'Group',
+			value: 'group-1',
+			children: [
+				{ text: 'Child 1', value: 'child-1' },
+			],
+		};
+
+		const wrapper = mount(SelectListItemGroup, {
+			props: { item, modelValue: null, multiple: false, groupSelectable: true },
+			global: groupGlobal,
+		});
+
+		await wrapper.find('.v-list-group').trigger('click');
+		expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['group-1']);
+	});
+
+	test('should not emit value when nonEditable is true even if selectable', async () => {
+		const item = {
+			text: 'Selectable Parent',
+			value: 'parent-1',
+			selectable: true,
+			children: [
+				{ text: 'Child 1', value: 'child-1' },
+			],
+		};
+
+		const wrapper = mount(SelectListItemGroup, {
+			props: { item, modelValue: null, multiple: false, nonEditable: true },
+			global: groupGlobal,
+		});
+
+		await wrapper.find('.v-list-group').trigger('click');
+		expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+	});
 });
 
 describe('should hide items not matching search value', () => {
