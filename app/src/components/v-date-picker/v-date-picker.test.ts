@@ -847,6 +847,27 @@ describe('v-date-picker', () => {
 			const monthOptions = wrapper.findAll('#calendar-month-select option');
 			expect(monthOptions.length).toBe(12);
 		});
+
+		it('month option labels match their value in negative-UTC-offset timezones', () => {
+			const originalTZ = process.env.TZ;
+
+			try {
+				process.env.TZ = 'America/Los_Angeles';
+
+				const wrapper = createWrapper({
+					type: 'date',
+					modelValue: '2024-06-15',
+				});
+
+				const options = wrapper.findAll('#calendar-month-select option');
+
+				expect(options.at(0)?.text()).toBe('January');
+				expect(options.at(5)?.text()).toBe('June');
+				expect(options.at(11)?.text()).toBe('December');
+			} finally {
+				process.env.TZ = originalTZ;
+			}
+		});
 	});
 
 	describe('RTL support', () => {
