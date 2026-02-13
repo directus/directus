@@ -213,6 +213,7 @@ onMounted(() => {
 	});
 
 	if (tabsContainerRef.value) {
+		resizeObserver?.disconnect();
 		resizeObserver = new ResizeObserver(updateFades);
 		resizeObserver.observe(tabsContainerRef.value);
 	}
@@ -226,7 +227,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div ref="rootEl" class="ai-ask-user" tabindex="0" @keydown="handleKeydown">
+	<div ref="rootEl" class="ai-ask-user" role="region" :aria-label="t('ai.ask_user')" tabindex="0" @keydown="handleKeydown">
 		<div
 			v-if="questions.length > 1"
 			class="question-tabs-wrapper"
