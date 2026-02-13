@@ -67,11 +67,11 @@ function focusIntoView(cid: ClientID) {
 				</template>
 
 				<div class="collab-header-popover">
-					<p class="collab-header-popover-title">
+					<p>
 						{{ user.name }}
 						<template v-if="user.isCurrentUser">(you)</template>
 					</p>
-					<p class="collab-header-popover-subtitle">
+					<p class="collab-header-popover-status">
 						{{
 							user.focusedField
 								? t('collab_editing_field', { field: formatTitle(user.focusedField) })
@@ -100,8 +100,8 @@ function focusIntoView(cid: ClientID) {
 							</VAvatar>
 
 							<div class="collab-header-more-popover-item-content">
-								<span class="collab-header-more-popover-item-content-name">{{ user.name ?? t('unknown_user') }}</span>
-								<span class="collab-header-more-popover-item-content-status">
+								<span>{{ user.name ?? t('unknown_user') }}</span>
+								<span class="collab-header-popover-status">
 									{{
 										user.focusedField
 											? t('collab_editing_field', { field: formatTitle(user.focusedField) })
@@ -141,15 +141,16 @@ function focusIntoView(cid: ClientID) {
 }
 
 .collab-header-popover {
-	padding: 8px 4px;
+	padding: 4px;
+	padding-block-end: 7px;
 	display: flex;
 	flex-direction: column;
+}
 
-	.collab-header-popover-subtitle {
-		font-size: 0.857em;
-		line-height: 1.2;
-		color: var(--theme--foreground-subdued);
-	}
+.collab-header-popover-status {
+	font-size: 0.857em;
+	line-height: 1.2;
+	color: var(--theme--foreground-subdued);
 }
 
 .collab-header-more-popover {
@@ -174,16 +175,6 @@ function focusIntoView(cid: ClientID) {
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
-
-			.collab-header-more-popover-item-content-name {
-				line-height: 1.6;
-			}
-
-			.collab-header-more-popover-item-content-status {
-				font-size: 0.857em;
-				line-height: 1.167em;
-				color: var(--theme--foreground-subdued);
-			}
 		}
 	}
 }
