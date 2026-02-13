@@ -45,7 +45,6 @@ type DeepMapCallback<T> = (entry: DeepMapEntry, context: DeepMapCallbackContext)
 
 /**
  * Allows to deep map the data like a response or delta changes with collection, field and relation context for each entry.
- * Bottom to Top depth first mapping of values.
  * Traversal order of the provided object: [4, 5, 2, 6, 3, 1]
  *        [1]
  *       /   \
