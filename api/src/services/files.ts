@@ -328,9 +328,7 @@ export class FilesService extends ItemsService<File> {
 			opts.preMutationError = new InvalidPayloadError({
 				reason: '"filename_disk" cannot be modified in bulk operations',
 			});
-		}
-
-		if (data.filename_disk) {
+		} else if (data.filename_disk) {
 			try {
 				await this.checkUniqueFilename(data.filename_disk);
 			} catch (err: any) {
