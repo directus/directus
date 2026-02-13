@@ -155,10 +155,14 @@ const showSidebarToggle = computed(() => {
 .title-container {
 	position: relative;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	max-block-size: var(--header-bar-height);
 }
 
 .title {
 	display: flex;
+	min-block-size: 0;
 
 	&:deep(.type-title) {
 		line-height: 1.2em;
@@ -172,6 +176,7 @@ const showSidebarToggle = computed(() => {
 	font-weight: 600;
 	font-size: 12px;
 	line-height: 12px;
+	margin-block: 4px;
 	white-space: nowrap;
 	font-family: var(--theme--header--headline--font-family);
 }
