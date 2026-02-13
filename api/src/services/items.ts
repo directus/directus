@@ -928,7 +928,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 								data:
 									Array.isArray(snapshots) && snapshots[index]
 										? await payloadService.prepareDelta(snapshots[index])
-										: undefined,
+										: null,
 								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
 							})),
 						)
