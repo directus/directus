@@ -532,6 +532,7 @@ export function useCollab(
 
 	const onFocus = debounce((field: string | null) => {
 		if (field && Object.values(focused.value).includes(field)) return;
+		if (field && !fieldsStore.getField(collection.value, field)?.schema) return;
 
 		sendMessage({
 			action: ACTION.CLIENT.FOCUS,
