@@ -3,12 +3,14 @@ import type { Accountability, Query, Relation, SchemaOverview } from '@directus/
 import { getRelation, getRelationType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
+import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
+import { validateRelationalJsonPath } from '../utils/validate-relational-json-path.js';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
@@ -70,13 +72,100 @@ export async function parseFields(
 			}
 		}
 
+		// Check for function calls first, before checking if field is relational
+		// This handles cases like json(metadata.color) which contain dots but aren't relational
+		const isFunctionCall = name.includes('(') && name.includes(')');
+
+		if (isFunctionCall) {
+			const functionName = name.split('(')[0]!;
+			const columnName = name.match(REGEX_BETWEEN_PARENS)![1]!;
+
+			// For json functions, extract the base field name (before the first dot)
+			// json(metadata.color) -> metadata
+			const baseFieldName = functionName === 'json' ? columnName.split('.')[0]! : columnName;
+
+			const foundField = context.schema.collections[options.parentCollection]!.fields[baseFieldName];
+
+			// Create a FunctionFieldNode for relational count functions (count(related_items))
+			if (foundField && foundField.type === 'alias') {
+				const foundRelation = context.schema.relations.find(
+					(relation) =>
+						relation.related_collection === options.parentCollection && relation.meta?.one_field === baseFieldName,
+				);
+
+				if (foundRelation) {
+					children.push({
+						type: 'functionField',
+						name,
+						fieldKey,
+						query: {},
+						relatedCollection: foundRelation.collection,
+						whenCase: [],
+						cases: [],
+					});
+
+					continue;
+				}
+			}
+
+			// Create a FunctionFieldNode for json functions to preserve the full function call
+			// This is needed because json() requires the full path (e.g., json(metadata, color))
+			if (functionName === 'json') {
+				const { field, path, hasWildcard } = parseJsonFunction(name);
+
+				// Check if the field portion contains a relational path (has dots)
+				// e.g., json(category.metadata, color) where category is a relation
+				if (field.includes('.')) {
+					// Relational JSON: validate the path and get target collection info
+					const validation = validateRelationalJsonPath(context.schema, options.parentCollection, field);
+
+					children.push({
+						type: 'functionField',
+						name,
+						fieldKey,
+						query: {},
+						relatedCollection: validation.targetCollection,
+						whenCase: [],
+						cases: [],
+						relationalJsonContext: {
+							relationalPath: validation.relationalPath,
+							jsonField: validation.jsonField,
+							jsonPath: path,
+							hasWildcard,
+							relationType: validation.relationType,
+							relation: validation.relation,
+							targetCollection: validation.targetCollection,
+						},
+					});
+				} else {
+					// Direct JSON field on current collection: json(metadata, color)
+					children.push({
+						type: 'functionField',
+						name,
+						fieldKey,
+						query: {},
+						relatedCollection: options.parentCollection,
+						whenCase: [],
+						cases: [],
+					});
+				}
+
+				continue;
+			}
+
+			// For all other functions (year, month, etc.), treat as regular field
+			// Skip the relational check and create a FieldNode
+		}
+
+		// Only check if field is relational if it's NOT a function call
 		const isRelational =
-			name.includes('.') ||
-			// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
-			// anything
-			!!context.schema.relations.find(
-				(relation) => relation.related_collection === options.parentCollection && relation.meta?.one_field === name,
-			);
+			!isFunctionCall &&
+			(name.includes('.') ||
+				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
+				// anything
+				!!context.schema.relations.find(
+					(relation) => relation.related_collection === options.parentCollection && relation.meta?.one_field === name,
+				));
 
 		if (isRelational) {
 			// field is relational
@@ -114,32 +203,6 @@ export async function parseFields(
 				}
 			}
 		} else {
-			if (name.includes('(') && name.includes(')')) {
-				const columnName = name.match(REGEX_BETWEEN_PARENS)![1]!;
-				const foundField = context.schema.collections[options.parentCollection]!.fields[columnName];
-
-				if (foundField && foundField.type === 'alias') {
-					const foundRelation = context.schema.relations.find(
-						(relation) =>
-							relation.related_collection === options.parentCollection && relation.meta?.one_field === columnName,
-					);
-
-					if (foundRelation) {
-						children.push({
-							type: 'functionField',
-							name,
-							fieldKey,
-							query: {},
-							relatedCollection: foundRelation.collection,
-							whenCase: [],
-							cases: [],
-						});
-
-						continue;
-					}
-				}
-			}
-
 			if (name.includes(':')) {
 				const [key, scope] = name.split(':') as [string, string];
 
