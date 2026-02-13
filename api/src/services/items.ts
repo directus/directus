@@ -348,7 +348,24 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const revisionPayload = await payloadService.prepareDelta(payloadWithPresets);
+					const fields = this.schema.collections[this.collection]?.fields;
+					const relationalFields = [];
+
+					for (const relation of this.schema.relations) {
+						if (relation.collection === this.collection && fields?.[relation.field]) {
+							relationalFields.push(relation.field);
+						}
+
+						if (
+							relation.related_collection === this.collection &&
+							relation.meta?.one_field &&
+							fields?.[relation.meta.one_field]
+						) {
+							relationalFields.push(relation.meta.one_field);
+						}
+					}
+
+					const revisionPayload = await payloadService.prepareDelta(omit(payloadAfterHooks, relationalFields));
 
 					const revision = await revisionsService.createOne({
 						activity: activity,
@@ -880,7 +897,26 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const snapshots = await itemsService.readMany(keys);
+					const fields = this.schema.collections[this.collection]?.fields;
+					const relationalFields = [];
+
+					for (const relation of this.schema.relations) {
+						if (relation.collection === this.collection && fields?.[relation.field]) {
+							relationalFields.push(relation.field);
+						}
+
+						if (
+							relation.related_collection === this.collection &&
+							relation.meta?.one_field &&
+							fields?.[relation.meta.one_field]
+						) {
+							relationalFields.push(relation.meta.one_field);
+						}
+					}
+
+					const snapshots = await itemsService.readMany(keys, {
+						fields: Object.keys(omit(fields, relationalFields)),
+					});
 
 					const revisionsService = new RevisionsService({
 						knex: trx,
