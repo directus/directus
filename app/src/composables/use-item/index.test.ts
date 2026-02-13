@@ -5,8 +5,8 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed, ref } from 'vue';
 import { useItem } from '.';
-import api from '@/api';
 import { usePermissions } from '@/composables/use-permissions';
+import sdk from '@/sdk';
 import { applyConditions } from '@/utils/apply-conditions';
 
 /**
@@ -14,7 +14,7 @@ import { applyConditions } from '@/utils/apply-conditions';
  * @param fieldMeta - Partial field meta properties to override defaults
  * @returns A complete field meta object with all required properties
  */
-function createMockFieldMeta(fieldMeta: Partial<Field['meta']> = {}): Field['meta'] {
+function createMockFieldMeta(fieldMeta: Partial<Field['meta']> = {}) {
 	return {
 		id: 1,
 		collection: 'test',
@@ -36,21 +36,26 @@ function createMockFieldMeta(fieldMeta: Partial<Field['meta']> = {}): Field['met
 		validation: null,
 		validation_message: null,
 		...fieldMeta,
-	};
+	} as Field['meta'];
 }
 
 vi.mock('@/utils/notify', () => ({
 	notify: vi.fn(),
 }));
 
-vi.mock('@/api', () => {
-	return {
-		default: {
-			get: vi.fn(),
-			post: vi.fn(),
-			patch: vi.fn(),
-		},
-	};
+vi.mock('@/sdk', async () => {
+	const { mockSdk } = await import('@/test-utils/sdk');
+	return mockSdk(({ path }) => {
+		let payload: Record<string, unknown> = { id: 1 };
+
+		if (path === '/graphql') {
+			payload = {
+				item: payload,
+			};
+		}
+
+		return Promise.resolve(payload);
+	});
 });
 
 vi.mock('@directus/composables');
@@ -93,31 +98,14 @@ afterEach(() => {
 });
 
 describe('Save As Copy', () => {
-	const apiPostSpy = vi.spyOn(api, 'post');
-
-	const item = { id: 1 };
-
-	const mockRestResponse = {
-		data: {
-			data: item,
-		},
-	};
-
-	const mockGraphqlResponse = {
-		data: {
-			data: { item },
-		},
-	};
-
 	const mockCollection = {
 		collection: 'test',
 	} as AppCollection;
 
 	test('should use graphql to fetch existing item', async () => {
-		apiPostSpy.mockResolvedValue(mockGraphqlResponse);
-		apiPostSpy.mockResolvedValue(mockRestResponse);
-
 		const mockPrimaryKeyFieldName = 'id';
+
+		const sdkSpy = vi.spyOn(sdk, 'request');
 
 		const mockPrimaryKeyField = {
 			field: mockPrimaryKeyFieldName,
@@ -135,14 +123,17 @@ describe('Save As Copy', () => {
 
 		await saveAsCopy();
 
-		expect(apiPostSpy).toHaveBeenCalledWith('/graphql', { query: 'query { item: test_by_id (id: 1) }' });
+		expect(sdkSpy.mock.calls[1]?.[0]()).toEqual({
+			path: '/graphql',
+			body: { query: 'query { item: test_by_id (id: 1) }' },
+			method: 'POST',
+		});
 	});
 
 	test('should keep manual primary key', async () => {
-		apiPostSpy.mockResolvedValueOnce(mockGraphqlResponse);
-		apiPostSpy.mockResolvedValueOnce(mockRestResponse);
-
 		const mockPrimaryKeyFieldName = 'id';
+
+		const sdkSpy = vi.spyOn(sdk, 'request');
 
 		const mockPrimaryKeyField = {
 			collection: 'test',
@@ -161,14 +152,13 @@ describe('Save As Copy', () => {
 
 		await saveAsCopy();
 
-		expect(apiPostSpy.mock.lastCall![1]).toHaveProperty(mockPrimaryKeyFieldName);
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: { [mockPrimaryKeyFieldName]: 1 } }));
 	});
 
 	test('should omit auto incremented primary key', async () => {
-		apiPostSpy.mockResolvedValueOnce(mockGraphqlResponse);
-		apiPostSpy.mockResolvedValueOnce(mockRestResponse);
-
 		const mockPrimaryKeyFieldName = 'id';
+
+		const sdkSpy = vi.spyOn(sdk, 'request');
 
 		const mockPrimaryKeyField = {
 			field: mockPrimaryKeyFieldName,
@@ -189,14 +179,12 @@ describe('Save As Copy', () => {
 
 		await saveAsCopy();
 
-		expect(apiPostSpy.mock.lastCall![1]).not.toHaveProperty(mockPrimaryKeyFieldName);
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: {} }));
 	});
 
 	test('should omit special uuid primary key', async () => {
-		apiPostSpy.mockResolvedValueOnce(mockGraphqlResponse);
-		apiPostSpy.mockResolvedValueOnce(mockRestResponse);
-
 		const mockPrimaryKeyFieldName = 'id';
+		const sdkSpy = vi.spyOn(sdk, 'request');
 
 		const mockPrimaryKeyField = {
 			field: mockPrimaryKeyFieldName,
@@ -217,13 +205,11 @@ describe('Save As Copy', () => {
 
 		await saveAsCopy();
 
-		expect(apiPostSpy.mock.lastCall![1]).not.toHaveProperty(mockPrimaryKeyFieldName);
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: {} }));
 	});
 });
 
 describe('Clear Hidden Fields Condition', () => {
-	const apiPatchSpy = vi.spyOn(api, 'patch');
-
 	const mockCollection = {
 		collection: 'test',
 	} as AppCollection;
@@ -231,14 +217,6 @@ describe('Clear Hidden Fields Condition', () => {
 	const mockPrimaryKeyField = {
 		field: 'id',
 	} as Field;
-
-	beforeEach(() => {
-		apiPatchSpy.mockResolvedValue({
-			data: {
-				data: { id: 1, name: 'Test Item' },
-			},
-		});
-	});
 
 	test('should clear field when condition has clear_hidden_value_on_save set to true', async () => {
 		const mockField = {
@@ -261,6 +239,11 @@ describe('Clear Hidden Fields Condition', () => {
 		} as Field;
 
 		const mockFields = [mockField] as Field[];
+
+		const sdkSpy = vi.spyOn(sdk, 'request').mockResolvedValue({
+			id: 1,
+			name: 'Test Item',
+		});
 
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),
@@ -292,7 +275,11 @@ describe('Clear Hidden Fields Condition', () => {
 
 		await save();
 
-		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', { status: 'published' });
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
+			path: '/items/test/1',
+			method: 'PATCH',
+			body: { status: 'published' },
+		});
 	});
 
 	test('should not clear field when condition does not have clear_hidden_value_on_save set', async () => {
@@ -317,6 +304,11 @@ describe('Clear Hidden Fields Condition', () => {
 
 		const mockFields = [mockField] as Field[];
 
+		const sdkSpy = vi.spyOn(sdk, 'request').mockResolvedValue({
+			id: 1,
+			name: 'Test Item',
+		});
+
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),
 			primaryKeyField: computed(() => mockPrimaryKeyField),
@@ -338,7 +330,11 @@ describe('Clear Hidden Fields Condition', () => {
 
 		await save();
 
-		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', { status: 'draft' });
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
+			path: '/items/test/1',
+			method: 'PATCH',
+			body: { status: 'draft' },
+		});
 	});
 
 	test('should not clear field when field is statically hidden (no conditions)', async () => {
@@ -355,6 +351,11 @@ describe('Clear Hidden Fields Condition', () => {
 
 		const mockFields = [mockField] as Field[];
 
+		const sdkSpy = vi.spyOn(sdk, 'request').mockResolvedValue({
+			id: 1,
+			name: 'Test Item',
+		});
+
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),
 			primaryKeyField: computed(() => mockPrimaryKeyField),
@@ -367,7 +368,11 @@ describe('Clear Hidden Fields Condition', () => {
 
 		await save();
 
-		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', { status: 'draft' });
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
+			path: '/items/test/1',
+			method: 'PATCH',
+			body: { status: 'draft' },
+		});
 	});
 
 	test('should clear field to null when no default value is set', async () => {
@@ -388,6 +393,11 @@ describe('Clear Hidden Fields Condition', () => {
 		} as Field;
 
 		const mockFields = [mockField] as Field[];
+
+		const sdkSpy = vi.spyOn(sdk, 'request').mockResolvedValue({
+			id: 1,
+			name: 'Test Item',
+		});
 
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),
@@ -418,7 +428,11 @@ describe('Clear Hidden Fields Condition', () => {
 
 		await save();
 
-		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', { status: null });
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
+			path: '/items/test/1',
+			method: 'PATCH',
+			body: { status: null },
+		});
 	});
 
 	test('should clear multiple fields when multiple conditions are triggered', async () => {
@@ -460,6 +474,11 @@ describe('Clear Hidden Fields Condition', () => {
 
 		const mockFields = [mockField1, mockField2] as Field[];
 
+		const sdkSpy = vi.spyOn(sdk, 'request').mockResolvedValue({
+			id: 1,
+			name: 'Test Item',
+		});
+
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),
 			primaryKeyField: computed(() => mockPrimaryKeyField),
@@ -498,9 +517,10 @@ describe('Clear Hidden Fields Condition', () => {
 
 		await save();
 
-		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', {
-			status: 'published',
-			description: 'Default description',
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
+			path: '/items/test/1',
+			method: 'PATCH',
+			body: { status: 'published', description: 'Default description' },
 		});
 	});
 
@@ -524,6 +544,11 @@ describe('Clear Hidden Fields Condition', () => {
 		} as Field;
 
 		const mockFields = [mockField] as Field[];
+
+		const sdkSpy = vi.spyOn(sdk, 'request').mockResolvedValue({
+			id: 1,
+			name: 'Test Item',
+		});
 
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),
@@ -554,6 +579,10 @@ describe('Clear Hidden Fields Condition', () => {
 
 		await save();
 
-		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', { status: 'draft' });
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual({
+			path: '/items/test/1',
+			method: 'PATCH',
+			body: { status: 'draft' },
+		});
 	});
 });

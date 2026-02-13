@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { InvalidQueryError } from '@directus/errors';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { sanitizeQuery } from './sanitize-query.js';
@@ -84,6 +85,12 @@ describe('max limit', () => {
 });
 
 describe('fields', () => {
+	test.each([undefined, '', null])('should return undefined for  %s', async (value) => {
+		const sanitizedQuery = await sanitizeQuery({ fields: value }, null as any);
+
+		expect(sanitizedQuery.fields).toBeUndefined();
+	});
+
 	test('should accept valid value', async () => {
 		const fields = ['field_a', 'field_b'];
 
@@ -108,9 +115,14 @@ describe('fields', () => {
 		expect(sanitizedQuery.fields).toEqual(['field_a', 'field_b', 'field_c']);
 	});
 
-	test('should trim', async () => {
-		const fields = ['   field_a   '];
+	test.each([{}, 123])('should throw error for %s input', async (fields) => {
+		await expect(sanitizeQuery({ fields }, null as any)).rejects.toThrowError(InvalidQueryError);
+	});
 
+	test.each([
+		{ value: ['   field_a   '], type: 'array' },
+		{ value: '   field_a   ', type: 'string' },
+	])('should trim fields for $type', async ({ value: fields }) => {
 		const sanitizedQuery = await sanitizeQuery({ fields }, null as any);
 
 		expect(sanitizedQuery.fields).toEqual(['field_a']);

@@ -93,33 +93,36 @@ describe('external link', () => {
 		expect(buttonExternalLink.attributes('secondary')).toBe('false');
 	});
 
-	test('has correct child', () => {
+	test('has correct children', () => {
 		const buttonIcon = buttonExternalLink.find('.icon');
-
 		expect(buttonIcon.attributes('name')).toBe('test-icon-1');
-		expect(buttonIcon.html()).toContain('External URL Link');
 		expect(buttonIcon.attributes('left')).toBeTruthy();
+
+		const buttonSpan = buttonExternalLink.find('span:not(.icon)');
+		expect(buttonSpan.html()).toContain('External URL Link');
 	});
 });
 
 describe('internal link', () => {
 	const wrapper = mount(PresentationLinks, mountOptions);
 
-	const buttonExternalLink = wrapper.find('[data-test="internal"]');
+	const buttonInternalLink = wrapper.find('[data-test="internal"]');
 
 	test('has correct attributes', () => {
-		expect(buttonExternalLink.attributes('to')).toBe(mockLinks[1]!.url);
-		expect(buttonExternalLink.attributes('class')).toBe('action primary');
-		expect(buttonExternalLink.attributes('icon')).toBe('false');
-		expect(buttonExternalLink.attributes('secondary')).toBe('false');
+		expect(buttonInternalLink.attributes('to')).toBe(mockLinks[1]!.url);
+		expect(buttonInternalLink.attributes('class')).toBe('action primary');
+		expect(buttonInternalLink.attributes('icon')).toBe('false');
+		expect(buttonInternalLink.attributes('secondary')).toBe('false');
 	});
 
-	test('has correct child', () => {
-		const buttonIcon = buttonExternalLink.find('.icon');
+	test('has correct children ', () => {
+		const buttonIcon = buttonInternalLink.find('.icon');
 
 		expect(buttonIcon.attributes('name')).toBe('test-icon-2');
-		expect(buttonIcon.html()).toContain('Internal URL Link');
 		expect(buttonIcon.attributes('left')).toBeTruthy();
+
+		const buttonSpan = buttonInternalLink.find('span:not(.icon)');
+		expect(buttonSpan.html()).toContain('Internal URL Link');
 	});
 });
 
@@ -141,8 +144,10 @@ describe('flow link', () => {
 			const buttonIcon = buttonFlowLink.find('.icon');
 
 			expect(buttonIcon.attributes('name')).toBe('test-icon-3');
-			expect(buttonIcon.html()).toContain('Flow Link');
 			expect(buttonIcon.attributes('left')).toBeTruthy();
+
+			const buttonSpan = buttonFlowLink.find('span:not(.icon)');
+			expect(buttonSpan.html()).toContain('Flow Link');
 		});
 	});
 
