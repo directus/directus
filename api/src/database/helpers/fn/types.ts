@@ -117,11 +117,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			const subQuery = this.knex
 				.select(jsonExtraction)
 				.from({ [alias]: targetCollection })
-				.where(
-					this.knex.raw('??.??', [alias, targetPrimary]),
-					'=',
-					this.knex.raw('??.??', [table, relation.field]),
-				)
+				.where(this.knex.raw('??.??', [alias, targetPrimary]), '=', this.knex.raw('??.??', [table, relation.field]))
 				.limit(1);
 
 			return this.knex.raw('(' + subQuery.toQuery() + ')');

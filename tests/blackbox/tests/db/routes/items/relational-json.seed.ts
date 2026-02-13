@@ -121,7 +121,14 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 				field: 'content',
 				type: 'string',
 				filters: true,
-				possibleValues: ['Great article!', 'Very informative', 'Thanks for sharing', 'Loved it', 'Nice work', 'Helpful'],
+				possibleValues: [
+					'Great article!',
+					'Very informative',
+					'Thanks for sharing',
+					'Loved it',
+					'Nice work',
+					'Helpful',
+				],
 			},
 			data: {
 				field: 'data',

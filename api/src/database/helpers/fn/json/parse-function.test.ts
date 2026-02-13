@@ -5,7 +5,10 @@ const VALID_TEST_CASES = [
 	// Basic json(field, path) syntax
 	{ input: 'json(field, path)', expected: { field: 'field', path: '.path', hasWildcard: false } },
 	{ input: 'json(data, user.name)', expected: { field: 'data', path: '.user.name', hasWildcard: false } },
-	{ input: 'json(metadata, settings.theme.color)', expected: { field: 'metadata', path: '.settings.theme.color', hasWildcard: false } },
+	{
+		input: 'json(metadata, settings.theme.color)',
+		expected: { field: 'metadata', path: '.settings.theme.color', hasWildcard: false },
+	},
 	{ input: 'json(  field , path  )', expected: { field: 'field', path: '.path', hasWildcard: false } },
 	{ input: 'json(user_data, profile)', expected: { field: 'user_data', path: '.profile', hasWildcard: false } },
 	// Array access with index
@@ -13,16 +16,31 @@ const VALID_TEST_CASES = [
 	{ input: 'json(data, [0].name)', expected: { field: 'data', path: '[0].name', hasWildcard: false } },
 	{ input: 'json(data, [0])', expected: { field: 'data', path: '[0]', hasWildcard: false } },
 	// Relational fields with JSON path
-	{ input: 'json(author.profile, settings.theme)', expected: { field: 'author.profile', path: '.settings.theme', hasWildcard: false } },
-	{ input: 'json(category.parent.metadata, icon)', expected: { field: 'category.parent.metadata', path: '.icon', hasWildcard: false } },
+	{
+		input: 'json(author.profile, settings.theme)',
+		expected: { field: 'author.profile', path: '.settings.theme', hasWildcard: false },
+	},
+	{
+		input: 'json(category.parent.metadata, icon)',
+		expected: { field: 'category.parent.metadata', path: '.icon', hasWildcard: false },
+	},
 	// A2O relational fields with collection scoping (colon preserved in field portion)
-	{ input: 'json(relation.item:collection.field, path)', expected: { field: 'relation.item:collection.field', path: '.path', hasWildcard: false } },
+	{
+		input: 'json(relation.item:collection.field, path)',
+		expected: { field: 'relation.item:collection.field', path: '.path', hasWildcard: false },
+	},
 	// Array wildcard syntax
 	{ input: 'json(data, items[].name)', expected: { field: 'data', path: '.items[].name', hasWildcard: true } },
 	{ input: 'json(data, items[])', expected: { field: 'data', path: '.items[]', hasWildcard: true } },
 	{ input: 'json(data, [].name)', expected: { field: 'data', path: '[].name', hasWildcard: true } },
-	{ input: 'json(data, nested[].items[].value)', expected: { field: 'data', path: '.nested[].items[].value', hasWildcard: true } },
-	{ input: 'json(meta, variants[].options[].label)', expected: { field: 'meta', path: '.variants[].options[].label', hasWildcard: true } },
+	{
+		input: 'json(data, nested[].items[].value)',
+		expected: { field: 'data', path: '.nested[].items[].value', hasWildcard: true },
+	},
+	{
+		input: 'json(meta, variants[].options[].label)',
+		expected: { field: 'meta', path: '.variants[].options[].label', hasWildcard: true },
+	},
 ];
 
 const INVALID_TEST_CASES = [
