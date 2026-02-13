@@ -1,3 +1,9 @@
+<script lang="ts">
+// Persist folder navigation state across drawer open/close cycles (#25416).
+// Keyed by root folder prop to isolate state between different field configurations.
+const persistedState = new Map<string, { folder?: string; special?: SpecialFolder }>();
+</script>
+
 <script setup lang="ts">
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
@@ -26,8 +32,11 @@ const drawerProps = {
 	sidebarLabel: t('folders'),
 };
 
-const currentFolder = ref<string | undefined>(props.folder);
-const currentSpecial = ref<SpecialFolder>();
+const stateKey = props.folder ?? '';
+const persisted = persistedState.get(stateKey);
+
+const currentFolder = ref<string | undefined>(persisted?.folder ?? props.folder);
+const currentSpecial = ref<SpecialFolder | undefined>(persisted?.special);
 const folderFilter = ref<Filter>();
 
 const userStore = useUserStore();
@@ -35,6 +44,11 @@ const userStore = useUserStore();
 watch(
 	[currentFolder, currentSpecial],
 	() => {
+		persistedState.set(stateKey, {
+			folder: currentFolder.value,
+			special: currentSpecial.value,
+		});
+
 		folderFilter.value = getFolderFilter(currentFolder.value, currentSpecial.value, userStore?.currentUser?.id);
 	},
 	{ immediate: true },
