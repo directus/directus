@@ -133,9 +133,7 @@ function focusIntoView(cid: ClientID) {
 	display: flex;
 	align-items: center;
 
-	:deep(.v-menu + .v-menu .v-avatar),
-	:deep(.v-menu + .v-avatar),
-	:deep(.v-avatar + .v-avatar) {
+	:deep(.v-menu + .v-menu .v-avatar) {
 		margin-inline-start: -4px;
 	}
 
