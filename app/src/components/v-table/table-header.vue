@@ -164,6 +164,14 @@ function onMouseUp() {
 	}
 }
 
+function onMoveHandler(evt: { willInsertAfter: boolean }) {
+	if (isRTL.value) {
+		return evt.willInsertAfter ? -1 : 1;
+	}
+
+	return true;
+}
+
 function toggleManualSort() {
 	if (props.sort.by === props.manualSortKey) {
 		emit('update:sort', {
@@ -188,6 +196,7 @@ function toggleManualSort() {
 			tag="tr"
 			:disabled="!allowHeaderReorder"
 			:set-data="hideDragImage"
+			:move="onMoveHandler"
 			handle=".reorder-handle"
 			animation="150"
 			ghost-class="header-order-ghost"

@@ -100,6 +100,39 @@ describe('TableHeader', () => {
 		expect(wrapper.text()).toContain('Email');
 	});
 
+	test('passes move handler to Draggable that inverts direction for RTL', () => {
+		mockUserStore.textDirection = 'rtl';
+
+		const wrapper = mount(TableHeader, {
+			props: defaultProps,
+			global,
+		});
+
+		const draggable = wrapper.findComponent({ name: 'Draggable' });
+		const moveHandler = draggable.props('move') as (evt: { willInsertAfter: boolean }) => boolean | number;
+
+		// In RTL, willInsertAfter=true should be inverted to -1 (insert before)
+		expect(moveHandler({ willInsertAfter: true })).toBe(-1);
+		// In RTL, willInsertAfter=false should be inverted to 1 (insert after)
+		expect(moveHandler({ willInsertAfter: false })).toBe(1);
+	});
+
+	test('move handler uses default behavior in LTR', () => {
+		mockUserStore.textDirection = 'ltr';
+
+		const wrapper = mount(TableHeader, {
+			props: defaultProps,
+			global,
+		});
+
+		const draggable = wrapper.findComponent({ name: 'Draggable' });
+		const moveHandler = draggable.props('move') as (evt: { willInsertAfter: boolean }) => boolean | number;
+
+		// In LTR, move handler should return true (default behavior)
+		expect(moveHandler({ willInsertAfter: true })).toBe(true);
+		expect(moveHandler({ willInsertAfter: false })).toBe(true);
+	});
+
 	test('shows resize handles when showResize is true', () => {
 		const wrapper = mount(TableHeader, {
 			props: {
