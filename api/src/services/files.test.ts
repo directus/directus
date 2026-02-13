@@ -263,7 +263,7 @@ describe('Service / Files', () => {
 			});
 
 			expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
-				[1],
+				[1, 2],
 				{ filename_disk: 'existing-file.jpg' },
 				expect.objectContaining({ preMutationError: expect.any(InvalidPayloadError) }),
 			);

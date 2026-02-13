@@ -351,64 +351,68 @@ export class FilesService extends ItemsService<File> {
 			for (const file of changedFiles) {
 				updatedFiles.set(file.id, file);
 			}
-		}
 
-		for (const key of keys) {
-			// Transaction per file to ensure we only rollback changes related to that file on error
-			await transaction(this.knex, async (trx) => {
-				const filesItemService = new ItemsService(this.collection, {
-					knex: trx,
-					schema: this.schema,
-					accountability: this.accountability,
-				});
+			for (const key of keys) {
+				// Transaction per file to ensure we only rollback changes related to that file on error
+				await transaction(this.knex, async (trx) => {
+					const filesItemService = new ItemsService(this.collection, {
+						knex: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					});
 
-				await filesItemService.updateMany([key], data, opts);
+					await filesItemService.updateMany([key], data, opts);
 
-				// if filename is present and was updated rename files it was changed
-				if (data.filename_disk) {
-					const storage = await getStorage();
-					const file = updatedFiles.get(key);
+					// if filename is present and was updated rename files it was changed
+					if (data.filename_disk) {
+						const storage = await getStorage();
+						const file = updatedFiles.get(key);
 
-					if (!file || !file.filename_disk) return;
+						if (!file || !file.filename_disk) return;
 
-					// For backwards compatibility it must be resolved first to ensure consistent path
-					const existingFilePath = this.generateFilenamePath(file.filename_disk);
+						// For backwards compatibility it must be resolved first to ensure consistent path
+						const existingFilePath = this.generateFilenamePath(file.filename_disk);
 
-					if (existingFilePath === data.filename_disk) return;
+						if (existingFilePath === data.filename_disk) return;
 
-					const disk = storage.location(file['storage']);
+						const disk = storage.location(file['storage']);
 
-					const { name: filePrefix, dir: fileDir } = path.parse(existingFilePath);
-					const updatedFilePath = this.generateFilenamePath(data.filename_disk);
+						const { name: filePrefix, dir: fileDir } = path.parse(existingFilePath);
+						const updatedFilePath = this.generateFilenamePath(data.filename_disk);
 
-					const remoteFileExists = await disk.exists(data.filename_disk);
+						const remoteFileExists = await disk.exists(data.filename_disk);
 
-					const filePrefixPath = fileDir ? normalizePath(path.join(fileDir, filePrefix)) : filePrefix;
+						const filePrefixPath = fileDir ? normalizePath(path.join(fileDir, filePrefix)) : filePrefix;
 
-					for await (const filePath of disk.list(filePrefixPath)) {
-						/**
-						 * If the remote file exists, repoint the primary asset to it (i.e. db update only).
-						 * If the remote file does not exist, move the primary asset to location.
-						 *
-						 * NOTE
-						 * - On repoint the original asset will be deleted if `FILES_DELETE_ORIGINAL_ON_MOVE` is true.
-						 * - Any associated generated assets are deleted.
-						 */
-						if (filePath === existingFilePath) {
-							if (!remoteFileExists) {
-								await disk.move(filePath, updatedFilePath);
-								continue;
-							} else if (toBoolean(env['FILES_DELETE_ORIGINAL_ON_MOVE']) === false) {
-								continue;
+						for await (const filePath of disk.list(filePrefixPath)) {
+							/**
+							 * If the remote file exists, repoint the primary asset to it (i.e. db update only).
+							 * If the remote file does not exist, move the primary asset to location.
+							 *
+							 * NOTE
+							 * - On repoint the original asset will be deleted if `FILES_DELETE_ORIGINAL_ON_MOVE` is true.
+							 * - Any associated generated assets are deleted.
+							 */
+							if (filePath === existingFilePath) {
+								if (!remoteFileExists) {
+									await disk.move(filePath, updatedFilePath);
+									continue;
+								} else if (toBoolean(env['FILES_DELETE_ORIGINAL_ON_MOVE']) === false) {
+									continue;
+								}
 							}
-						}
 
-						// always delete generated assets
-						await disk.delete(filePath);
+							// always delete generated assets
+							await disk.delete(filePath);
+						}
 					}
-				}
-			});
+				});
+			}
+
+			return keys;
 		}
+
+		await super.updateMany(keys, data, opts);
 
 		return keys;
 	}
