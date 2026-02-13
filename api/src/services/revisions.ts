@@ -43,21 +43,19 @@ export class RevisionsService extends ItemsService {
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data['collection']) throw new InvalidPayloadError({ reason: '"collection" is required' });
-
-		const collection = data['collection'];
-		const fields = this.schema.collections[collection]?.fields;
+		const fields = this.schema.collections[data['collection']]?.fields;
 
 		// sanitize our relational fields from revision
 		if ((isObject(data['data']) || isObject(data['delta'])) && fields) {
 			const relationalFields = [];
 
 			for (const relation of this.schema.relations) {
-				if (relation.collection === collection && fields?.[relation.field]) {
+				if (relation.collection === this.collection && fields?.[relation.field]) {
 					relationalFields.push(relation.field);
 				}
 
 				if (
-					relation.related_collection === collection &&
+					relation.related_collection === this.collection &&
 					relation.meta?.one_field &&
 					fields?.[relation.meta.one_field]
 				) {
@@ -87,20 +85,19 @@ export class RevisionsService extends ItemsService {
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (data['collection']) {
-			const collection = data['collection'];
-			const fields = this.schema.collections[collection]?.fields;
+			const fields = this.schema.collections[data['collection']]?.fields;
 
 			// sanitize our relational fields from revision
 			if ((isObject(data['data']) || isObject(data['delta'])) && fields) {
 				const relationalFields = [];
 
 				for (const relation of this.schema.relations) {
-					if (relation.collection === collection && fields?.[relation.field]) {
+					if (relation.collection === this.collection && fields?.[relation.field]) {
 						relationalFields.push(relation.field);
 					}
 
 					if (
-						relation.related_collection === collection &&
+						relation.related_collection === this.collection &&
 						relation.meta?.one_field &&
 						fields?.[relation.meta.one_field]
 					) {
