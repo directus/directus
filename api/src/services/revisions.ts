@@ -1,7 +1,5 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
-import { isObject } from '@directus/utils';
-import { omit } from 'lodash-es';
 import { ItemsService } from './items.js';
 
 export class RevisionsService extends ItemsService {
