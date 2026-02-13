@@ -354,9 +354,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					for (const relation of this.schema.relations) {
 						if (relation.collection === this.collection && fields?.[relation.field]) {
 							relationalFields.push(relation.field);
-						}
-
-						if (
+						} else if (
 							relation.related_collection === this.collection &&
 							relation.meta?.one_field &&
 							fields?.[relation.meta.one_field]
@@ -903,9 +901,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					for (const relation of this.schema.relations) {
 						if (relation.collection === this.collection && fields?.[relation.field]) {
 							relationalFields.push(relation.field);
-						}
-
-						if (
+						} else if (
 							relation.related_collection === this.collection &&
 							relation.meta?.one_field &&
 							fields?.[relation.meta.one_field]
