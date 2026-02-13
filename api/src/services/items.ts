@@ -884,9 +884,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					});
 
 					const relationalFields = getRelationsForCollection(this.schema, this.collection);
+					const snapshotFields = Object.keys(omit(fields, relationalFields));
 
 					const snapshots = await itemsService.readMany(keys, {
-						fields: Object.keys(omit(fields, relationalFields)),
+						fields: snapshotFields.length > 0 ? snapshotFields : ['*'],
 					});
 
 					const revisionsService = new RevisionsService({
