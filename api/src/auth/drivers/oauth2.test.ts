@@ -1322,10 +1322,10 @@ describe('createOAuth2AuthRouter', () => {
 		return { req, res };
 	}
 
-	test('sets secure cookie option to true when AUTH_COOKIE_SECURE is true', () => {
+	test('sets secure cookie option to true when AUTH_TEST_COOKIE_SECURE is true', () => {
 		vi.mocked(useEnv).mockReturnValue({
 			EMAIL_TEMPLATES_PATH: './templates',
-			AUTH_COOKIE_SECURE: true,
+			AUTH_TEST_COOKIE_SECURE: true,
 		});
 
 		const mockDriver = {
@@ -1349,10 +1349,10 @@ describe('createOAuth2AuthRouter', () => {
 		);
 	});
 
-	test('sets secure cookie option to false when AUTH_COOKIE_SECURE is false', () => {
+	test('sets secure cookie option to false when AUTH_TEST_COOKIE_SECURE is false', () => {
 		vi.mocked(useEnv).mockReturnValue({
 			EMAIL_TEMPLATES_PATH: './templates',
-			AUTH_COOKIE_SECURE: false,
+			AUTH_TEST_COOKIE_SECURE: false,
 		});
 
 		const mockDriver = {
