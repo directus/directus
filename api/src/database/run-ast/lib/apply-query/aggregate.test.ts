@@ -46,7 +46,27 @@ test('aggregate counting id and title', async () => {
 	expect(rawQuery.bindings).toEqual([]);
 });
 
-test('aggregate counting *', async () => {
+test('aggregate counting * without joins', async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyAggregate(
+		schema,
+		queryBuilder,
+		{
+			count: ['*'],
+		},
+		'articles',
+		false,
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select count(*) as "count"`);
+	expect(rawQuery.bindings).toEqual([]);
+});
+
+test('aggregate counting * with joins uses regular count (deduplication handled upstream)', async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -62,6 +82,7 @@ test('aggregate counting *', async () => {
 
 	const rawQuery = queryBuilder.toSQL();
 
+	// applyAggregate now always uses regular count(*) - deduplication is handled in getDBQuery
 	expect(rawQuery.sql).toEqual(`select count(*) as "count"`);
 	expect(rawQuery.bindings).toEqual([]);
 });
