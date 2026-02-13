@@ -130,9 +130,7 @@ describe('SelectListItemGroup', () => {
 			text: 'Selectable Parent',
 			value: 'parent-1',
 			selectable: true,
-			children: [
-				{ text: 'Child 1', value: 'child-1' },
-			],
+			children: [{ text: 'Child 1', value: 'child-1' }],
 		};
 
 		const wrapper = mount(SelectListItemGroup, {
@@ -148,9 +146,7 @@ describe('SelectListItemGroup', () => {
 		const item = {
 			text: 'Non-selectable Group',
 			value: 'group-1',
-			children: [
-				{ text: 'Child 1', value: 'child-1' },
-			],
+			children: [{ text: 'Child 1', value: 'child-1' }],
 		};
 
 		const wrapper = mount(SelectListItemGroup, {
@@ -166,9 +162,7 @@ describe('SelectListItemGroup', () => {
 		const item = {
 			text: 'Group',
 			value: 'group-1',
-			children: [
-				{ text: 'Child 1', value: 'child-1' },
-			],
+			children: [{ text: 'Child 1', value: 'child-1' }],
 		};
 
 		const wrapper = mount(SelectListItemGroup, {
@@ -185,9 +179,7 @@ describe('SelectListItemGroup', () => {
 			text: 'Selectable Parent',
 			value: 'parent-1',
 			selectable: true,
-			children: [
-				{ text: 'Child 1', value: 'child-1' },
-			],
+			children: [{ text: 'Child 1', value: 'child-1' }],
 		};
 
 		const wrapper = mount(SelectListItemGroup, {
