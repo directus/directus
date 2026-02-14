@@ -295,7 +295,6 @@ function useComputedValues() {
 <style lang="scss" scoped>
 .field {
 	position: relative;
-	align-self: baseline;
 
 	> .avatars {
 		position: absolute;
