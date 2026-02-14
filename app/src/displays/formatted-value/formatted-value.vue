@@ -6,7 +6,6 @@ import { isNil } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { APP_NUMERIC_STRING_TYPES } from '@/constants';
 import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
@@ -40,7 +39,7 @@ const props = withDefaults(
 	},
 );
 
-const { t, n } = useI18n();
+const { t, n, locale } = useI18n();
 
 const matchedConditions = computed(() =>
 	(props.conditionalFormatting || []).filter(({ operator, value }) => {
@@ -48,10 +47,16 @@ const matchedConditions = computed(() =>
 			const left = String(props.value);
 			const right = String(value);
 			return matchString(left, right, operator);
-		} else if (props.type === 'float') {
+		} else if (props.type === 'float' || props.type === 'decimal') {
 			const left = parseFloat(String(props.value));
 			const right = parseFloat(String(value));
 			return matchNumber(left, right, operator);
+		} else if (props.type === 'bigInteger') {
+			try {
+				return matchNumber(BigInt(String(props.value)), BigInt(String(value)), operator);
+			} catch {
+				return false;
+			}
 		} else {
 			const left = parseInt(String(props.value));
 			const right = parseInt(String(value));
@@ -114,10 +119,16 @@ const displayValue = computed(() => {
 	value = decode(value);
 
 	if (props.format) {
-		if (['string', 'text', ...APP_NUMERIC_STRING_TYPES].includes(props.type)) {
-			value = formatTitle(value);
-		} else if (props.type === 'float') {
+		if (props.type === 'bigInteger') {
+			try {
+				value = new Intl.NumberFormat(locale.value).format(BigInt(value));
+			} catch {
+				// leave as-is if not a valid big integer string
+			}
+		} else if (props.type === 'float' || props.type === 'decimal') {
 			value = n(parseFloat(value));
+		} else if (['string', 'text'].includes(props.type)) {
+			value = formatTitle(value);
 		} else {
 			value = n(parseInt(value));
 		}
@@ -146,7 +157,9 @@ function matchString(left: string, right: string, operator: string) {
 	return;
 }
 
-function matchNumber(left: number, right: number, operator: string) {
+function matchNumber(left: number, right: number, operator: string): boolean | undefined;
+function matchNumber(left: bigint, right: bigint, operator: string): boolean | undefined;
+function matchNumber(left: number | bigint, right: number | bigint, operator: string) {
 	switch (operator) {
 		case 'eq':
 			return left === right;
