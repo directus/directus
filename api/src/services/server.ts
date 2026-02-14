@@ -73,6 +73,10 @@ export class ServerService {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 
+			info['files'] = {
+				mimeTypeAllowList: env['FILES_MIME_TYPE_ALLOW_LIST'] ?? '*/*',
+			};
+
 			if (env['RATE_LIMITER_ENABLED']) {
 				info['rateLimit'] = {
 					points: env['RATE_LIMITER_POINTS'],
