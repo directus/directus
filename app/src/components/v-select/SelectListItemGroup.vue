@@ -42,7 +42,7 @@ const isActive = computed(() => {
 });
 
 function onGroupClick(item: Option) {
-	if (!props.groupSelectable || props.nonEditable) return;
+	if ((!props.groupSelectable && !item.selectable) || props.nonEditable) return;
 
 	emit('update:modelValue', item.value);
 }
