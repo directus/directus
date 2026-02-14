@@ -26,7 +26,10 @@ setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
 setup_license_notice: >
   Directus бесплатный для организаций с годовым доходом, финансированием или бюджетом менее 5 миллионов долларов.
+setup_save_accept_license: >
+  Нажав сохранить, вы принимаете условия [{directusBsl} и {privacyPolicy}.
 setup_accept_license: Я принимаю условия {directusBsl} и {privacyPolicy}
+setup_marketing_emails: Присылать мне обновления и заметки к выпуску
 setup_launch: Запустить Directus
 setup_project: Организовать проект
 first_name: Имя
@@ -1028,11 +1031,24 @@ deployment:
   provider:
     settings:
       delete_confirm: Это действие является необратимым и не может быть отменено. Вы уверены, что хотите продолжить?
+    projects: Проекты
+    select_projects: Выбрать Проекты
+    runs:
+      started: Запущено
+      author: Автор
+      refresh: Обновить
+      empty: Нет запущенных приложений
     run:
       cancel_confirm: Это действие является необратимым и не может быть отменено. Вы уверены, что хотите продолжить?
       log_all: Все уровни ведения журнала
+      open_deployment: Перейти
+  no_projects: Нет проектов
+  no_projects_copy: Для этого поставщика не выбрано ни одного проекта.
+  no_runs: Нет запущенных приложений
   target_value:
     preview: Предпросмотр
+  runs_status:
+    ready: Готово
 dashboard: Доска
 panel: Панель
 panel_options: Параметры панели
