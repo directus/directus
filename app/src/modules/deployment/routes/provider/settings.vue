@@ -9,7 +9,7 @@ import {
 } from '@directus/sdk';
 import type { DeploymentConfig } from '@directus/types';
 import { isEmpty, isEqual, isNil, pickBy } from 'lodash';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
@@ -237,6 +237,14 @@ async function deleteConfig() {
 onMounted(() => {
 	loadConfig();
 });
+
+watch(
+	() => props.provider,
+	() => {
+		configurationEdits.value = {};
+		loadConfig();
+	},
+);
 </script>
 
 <template>

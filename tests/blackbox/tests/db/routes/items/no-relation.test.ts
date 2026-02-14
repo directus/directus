@@ -14,6 +14,7 @@ type Artist = {
 	id?: number | string;
 	name: string;
 	company?: string;
+	group?: string;
 };
 
 function createArtist(pkType: PrimaryKeyType): Artist {
@@ -625,6 +626,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 													id: expect.anything(),
 													name,
 													company: null,
+													group: null,
 												},
 											],
 										};
@@ -1228,6 +1230,76 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					for (let i = 0; i < companies.length; i++) {
 						expect(parseInt(gqlResponse.body.data[queryKey][i].count.id)).toEqual(companiesCount[i]);
+					}
+				});
+			});
+
+			describe('groups by field named "group" without collision', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const artistName = 'aggregate-group-field';
+					const groups = ['admin', 'editor', 'viewer'] as const;
+					const artists = [];
+
+					for (let i = 0; i < 6; i++) {
+						const artist = createArtist(pkType);
+						artist.name = artistName;
+						artist.group = groups[i % groups.length];
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['group'],
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									groupBy: ['group'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(groups.length);
+
+					for (const item of response.body.data) {
+						expect(groups).toContain(item.group);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toBe(groups.length);
+
+					for (const item of gqlResponse.body.data[queryKey]) {
+						expect(item.group).toBeDefined();
+						expect(typeof item.group).toBe('object');
+						expect(groups).toContain(item.group.group);
+						expect(parseInt(item.count.id)).toBe(2);
 					}
 				});
 			});
