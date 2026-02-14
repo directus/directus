@@ -45,6 +45,7 @@ export function realtime(config: WebSocketConfig = {}) {
 	return <Schema>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
 		let uid = generateUid();
+		let lastAccessToken: string | null = null;
 
 		let state: ConnectionState = {
 			code: 'closed',
@@ -309,6 +310,8 @@ export function realtime(config: WebSocketConfig = {}) {
 							);
 						}
 
+						lastAccessToken = access_token;
+
 						ws.send(auth({ access_token }));
 						const confirm = await messageCallback(ws);
 
@@ -379,7 +382,21 @@ export function realtime(config: WebSocketConfig = {}) {
 				eventHandlers[event].add(callback);
 				return () => eventHandlers[event].delete(callback);
 			},
-			sendMessage(message: string | Record<string, any>) {
+			async sendMessage(message: string | Record<string, any>) {
+				const self = this as AuthWSClient<Schema>;
+
+				if (hasAuth(self)) {
+					const currentToken = await self.getToken();
+
+					if (lastAccessToken && currentToken && currentToken !== lastAccessToken) {
+						debug('info', 'Access token changed, reconnecting realtime socket...');
+						this.disconnect();
+						await this.connect();
+					}
+
+					lastAccessToken = currentToken;
+				}
+
 				if (state.code !== 'open') {
 					// TODO use directus error
 					throw new Error(
@@ -414,7 +431,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					await this.connect();
 				}
 
-				this.sendMessage({ ...options, collection, type: 'subscribe' });
+				await this.sendMessage({ ...options, collection, type: 'subscribe' });
 				let subscribed = true;
 
 				async function* subscriptionGenerator(): AsyncGenerator<
@@ -460,9 +477,9 @@ export function realtime(config: WebSocketConfig = {}) {
 					}
 				}
 
-				const unsubscribe = () => {
+				const unsubscribe = async () => {
 					subscriptions.delete({ ...options, collection, type: 'subscribe' });
-					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
+					await this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
 					subscribed = false;
 				};
 
