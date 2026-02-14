@@ -140,3 +140,29 @@ test.each([
 		expect(shouldSkipCache(req)).toBe(value);
 	},
 );
+
+test.each([
+	{ scenario: 'accept', value: true },
+	{ scenario: 'ignore', value: false },
+])(
+	'should $scenario Cache-Control request header containing "no-cache" when CACHE_SKIP_ALLOWED is $value',
+	({ value }) => {
+		vi.mocked(useEnv).mockReturnValue({
+			PUBLIC_URL: '/',
+			CACHE_SKIP_ALLOWED: value,
+		});
+
+		const req = {
+			get: vi.fn((str) => {
+				switch (str) {
+					case 'cache-control':
+						return 'no-cache';
+					default:
+						return undefined;
+				}
+			}),
+		} as unknown as Request;
+
+		expect(shouldSkipCache(req)).toBe(value);
+	},
+);
