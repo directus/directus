@@ -160,23 +160,24 @@ export function realtime(config: WebSocketConfig = {}) {
 
 		async function handleAuthError(message: WebSocketAuthError, currentClient: AuthWSClient<Schema>) {
 			if (state.code !== 'open') return;
+
 			if (message.error.code === 'TOKEN_EXPIRED') {
-			debug('warn', 'Authentication token expired!');
+				debug('warn', 'Authentication token expired!');
 
-			// If SDK has access to token → resend auth
-			if (hasAuth(currentClient)) {
-				const access_token = await currentClient.getToken();
+				// If SDK has access to token → resend auth
+				if (hasAuth(currentClient)) {
+					const access_token = await currentClient.getToken();
 
-				if (access_token) {
-				state.connection.send(auth({ access_token }));
-				return;
+					if (access_token) {
+						state.connection.send(auth({ access_token }));
+						return;
+					}
 				}
-			}
 
-			// Otherwise cookie-session auth → reconnect
-			debug('warn', 'No token available, reconnecting websocket...');
-			await reconnect(currentClient);
-			return;
+				// Otherwise cookie-session auth → reconnect
+				debug('warn', 'No token available, reconnecting websocket...');
+				await reconnect(currentClient);
+				return;
 			}
 
 			if (message.error.code === 'AUTH_TIMEOUT') {
@@ -193,31 +194,28 @@ export function realtime(config: WebSocketConfig = {}) {
 
 			if (message.error.code === 'AUTH_FAILED') {
 				if (state.firstMessage && config.authMode === 'public') {
-				debug(
-					'warn',
-					'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead'
-				);
-				config.reconnect = false;
-				return state.connection.close();
-			}
+					debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
+					config.reconnect = false;
+					return state.connection.close();
+				}
 
-			debug('warn', 'Authentication failed!');
+				debug('warn', 'Authentication failed!');
 
-		// Token-based auth: retry auth
-			if (hasAuth(currentClient)) {
+				// Token-based auth: retry auth
+				if (hasAuth(currentClient)) {
 					const access_token = await currentClient.getToken();
 
-			if (access_token) {
-				state.connection.send(auth({ access_token }));
-					return;
-			}
-		}
+					if (access_token) {
+						state.connection.send(auth({ access_token }));
+						return;
+					}
+				}
 
-		// Cookie/session auth: reconnect
-		debug('warn', 'No token available, reconnecting websocket...');
-		await reconnect(currentClient);
-		return;
-		}
+				// Cookie/session auth: reconnect
+				debug('warn', 'No token available, reconnecting websocket...');
+				await reconnect(currentClient);
+				return;
+			}
 		}
 
 		const handleMessages = async (currentClient: AuthWSClient<Schema>) => {
@@ -320,10 +318,10 @@ export function realtime(config: WebSocketConfig = {}) {
 					reconnectState.attempts = 0;
 					reconnectState.active = false;
 					clearTimeout(connectTimeout);
-					
 
 					if (config.authMode === 'handshake' && hasAuth(client as any)) {
 						const access_token = await (client as any).getToken();
+
 						if (!access_token) {
 							return reject(
 								'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
@@ -348,11 +346,10 @@ export function realtime(config: WebSocketConfig = {}) {
 						} else {
 							debug('info', 'Authentication successful!');
 						}
-						
 					}
-					
+
 					handleMessages(self);
-					
+
 					eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
 
 					resolved = true;
