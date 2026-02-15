@@ -574,7 +574,7 @@ export class UsersService extends ItemsService {
 
 		if (user.provider !== DEFAULT_AUTH_PROVIDER) {
 			await stall(STALL_TIME, timeStart);
-			return;
+			throw new ForbiddenError();
 		}
 
 		const mailService = new MailService({

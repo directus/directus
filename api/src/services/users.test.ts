@@ -1,4 +1,4 @@
-import { InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -300,8 +300,8 @@ describe('Integration Tests', () => {
 		});
 
 		describe('requestPasswordReset', () => {
-			it('should silently return for external provider users', async () => {
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+			it('should throw ForbiddenError for external provider users', async () => {
+				tracker.on.select('directus_users').response({
 					id: 'user-id-ext',
 					role: 'role-id',
 					status: 'active',
@@ -317,13 +317,13 @@ describe('Integration Tests', () => {
 					schema,
 				});
 
-				await service.requestPasswordReset('ext@example.com', null);
+				await expect(service.requestPasswordReset('ext@example.com', null)).rejects.toThrow(ForbiddenError);
 
 				expect(mailService.send).not.toHaveBeenCalled();
 			});
 
 			it('should send reset email for default provider users', async () => {
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				tracker.on.select('directus_users').response({
 					id: 'user-id-def',
 					role: 'role-id',
 					status: 'active',
