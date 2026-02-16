@@ -1,7 +1,6 @@
 import type { Item, Query } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
 import type { GraphQLResolveInfo } from 'graphql';
-import { omit } from 'lodash-es';
 import type { GraphQLService } from '../index.js';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
@@ -52,11 +51,14 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 	if (args['id']) return result;
 
 	if (query.group) {
-		// for every entry in result add a group field based on query.group;
-		const aggregateKeys = Object.keys(query.aggregate ?? {});
-
 		result['map']((field: Item) => {
-			field['group'] = omit(field, aggregateKeys);
+			const groupValues: Record<string, any> = {};
+
+			for (const key of query.group!) {
+				groupValues[key] = field[key];
+			}
+
+			field['group'] = groupValues;
 		});
 	}
 

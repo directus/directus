@@ -207,6 +207,40 @@ describe('resolveQuery', () => {
 		expect(queryArg).toEqual(expect.objectContaining({ fields: ['count(a)', 'b.sum(c)', 'c.d.max(e)'] }));
 	});
 
+	test('inject group field when groupBy field is named "group"', async () => {
+		mockReplaceFragments.mockReturnValue([{}]);
+		mockParseArgs.mockReturnValue({});
+
+		mockGetAggregateQuery.mockResolvedValue({
+			group: ['group'],
+			aggregate: { count: ['id'] },
+		});
+
+		const gql: any = {
+			scope: 'app',
+			schema: { collections: {} },
+			accountability: {},
+			read: vi.fn(() => [
+				{ group: 'admin', count: { id: 3 } },
+				{ group: 'user', count: { id: 7 } },
+			]),
+		};
+
+		const info: any = {
+			fieldName: 'items_aggregated',
+			fieldNodes: [{ selectionSet: { selections: [{}] }, arguments: [] }],
+			fragments: {},
+			variableValues: {},
+		};
+
+		const res = await resolveQuery(gql, info);
+
+		expect(res).toEqual([
+			{ group: { group: 'admin' }, count: { id: 3 } },
+			{ group: { group: 'user' }, count: { id: 7 } },
+		]);
+	});
+
 	test('inject group field for each item when grouping', async () => {
 		mockReplaceFragments.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({});

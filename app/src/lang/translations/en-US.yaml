@@ -149,6 +149,9 @@ github: GitHub
 beta: Beta
 collab_collision: The item was changed while you were editing. Select which changes to keep.
 collab_disconnected: Collaborative Editing Disconnected
+collab_editing_field: Editing “{field}” field
+collab_currently_viewing: Currently viewing
+you: you
 n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Compatibility not guaranteed
@@ -1687,6 +1690,7 @@ field_options:
     overrides_divider_title: App Overrides
   directus_activity:
     login: Login
+    logout: Logout
     create: Create
     update: Update
     delete: Delete
@@ -1972,6 +1976,7 @@ colors:
 junction_collection: Junction Collection
 latency: Latency
 login: Log in
+logout: Log out
 my_activity: My Activity
 not_authenticated: Not Authenticated
 authenticated: Authenticated
