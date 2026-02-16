@@ -1,16 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar } from './utils';
+import {  formatUserAvatar, getFocusId } from './utils';
 import type { CollabUser } from '@/composables/use-collab';
 
 vi.mock('@/utils/get-asset-url', () => ({
 	getAssetUrl: (id: string, opts: Record<string, unknown>) => `http://assets/${id}?key=${opts.imageKey}`,
 }));
-
-describe('COLLAB_USERS_DISPLAY_LIMIT', () => {
-	it('should be 3', () => {
-		expect(COLLAB_USERS_DISPLAY_LIMIT).toBe(3);
-	});
-});
 
 describe('formatUserAvatar', () => {
 	const baseUser: CollabUser = {
@@ -56,5 +50,11 @@ describe('formatUserAvatar', () => {
 	it('should return undefined avatar_url when no avatar', () => {
 		const result = formatUserAvatar(baseUser);
 		expect(result.avatar_url).toBeUndefined();
+	});
+});
+
+describe('getFocusId', () => {
+	it('should return the correct id', () => {
+		expect(getFocusId('conn-1')).toBe('collab-focus-conn-1');
 	});
 });

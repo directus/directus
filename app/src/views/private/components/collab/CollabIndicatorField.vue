@@ -2,7 +2,7 @@
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar } from './utils';
+import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar, getFocusId } from './utils';
 import VAvatar from '@/components/v-avatar.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import type { CollabUser } from '@/composables/use-collab';
@@ -26,7 +26,7 @@ const users = computed(() => {
 	<div class="collab-field">
 		<template v-for="(user, index) in users.slice(0, COLLAB_USERS_DISPLAY_LIMIT)" :key="user.id">
 			<VAvatar
-				:id="`collab-focus-${user.connection}`"
+				:id="getFocusId(user.connection)"
 				v-tooltip.bottom="user.name ?? t('unknown_user')"
 				:border="`var(--${user.color})`"
 				:style="{ zIndex: COLLAB_USERS_DISPLAY_LIMIT - index }"

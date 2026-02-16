@@ -1,3 +1,4 @@
+import { ClientID } from '@directus/types/collab';
 import { CollabUser } from '@/composables/use-collab';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
@@ -15,3 +16,7 @@ export const formatUserAvatar = (user: CollabUser) => ({
 	id: user.id,
 	connection: user.connection,
 });
+
+export function getFocusId(connection: ClientID) {
+	return `collab-focus-${connection}`;
+}

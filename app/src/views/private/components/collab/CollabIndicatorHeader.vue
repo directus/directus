@@ -4,7 +4,7 @@ import type { ClientID } from '@directus/types/collab';
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar } from './utils';
+import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar, getFocusId } from './utils';
 import VAvatar from '@/components/v-avatar.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -41,7 +41,7 @@ const users = computed(() => {
 });
 
 function focusIntoView(cid: ClientID) {
-	const element = document.getElementById(`collab-focus-${cid}`);
+	const element = document.getElementById(getFocusId(cid));
 
 	if (element) {
 		element.scrollIntoView({ behavior: 'smooth', block: 'center' });
