@@ -3,7 +3,7 @@ import { useCollection, useLayout } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
@@ -21,6 +21,7 @@ import VInfo from '@/components/v-info.vue';
 import { useFlows } from '@/composables/use-flows';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { emitter, Events } from '@/events';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -300,6 +301,47 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
+
+const active = computed(() => refreshInterval.value && refreshInterval.value > 0);
+
+const interval = ref<NodeJS.Timeout>();
+
+const setRefreshInterval = (value: number | null) => {
+	clearInterval(interval.value);
+
+	if (!value || value <= 0) return;
+
+	interval.value = setInterval(() => {
+		refresh();
+	}, value * 1000);
+};
+
+const onIdle = () => clearInterval(interval.value);
+
+const onActive = () => {
+	if (active.value) refresh();
+	setRefreshInterval(refreshInterval.value);
+};
+
+onMounted(()=> {setRefreshInterval(refreshInterval.value)})
+
+emitter.on(Events.tabIdle, onIdle);
+emitter.on(Events.tabActive, onActive);
+
+onUnmounted(() => {
+	emitter.off(Events.tabIdle, onIdle);
+	emitter.off(Events.tabActive, onActive);
+});
+
+watch(refreshInterval, ()=> {
+	refresh();
+
+	if(refreshInterval.value)	{
+		setRefreshInterval(refreshInterval.value)
+	} else {
+		clearInterval(interval.value);
+	}
+	}, {immediate: true})
 </script>
 
 <template>

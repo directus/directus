@@ -3,7 +3,6 @@ import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SidebarDetail from './sidebar-detail.vue';
 import VSelect from '@/components/v-select/v-select.vue';
-import { emitter, Events } from '@/events';
 
 const model = defineModel<number | null>({ required: true });
 
@@ -14,34 +13,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const active = computed(() => model.value && model.value > 0);
-const interval = ref<NodeJS.Timeout>();
-
-const setRefreshInterval = (value: number | null) => {
-	clearInterval(interval.value);
-
-	if (!value || value <= 0) return;
-
-	interval.value = setInterval(() => {
-		emit('refresh');
-	}, value * 1000);
-};
-
-const onIdle = () => clearInterval(interval.value);
-
-const onActive = () => {
-	if (active.value) emit('refresh');
-	setRefreshInterval(model.value);
-};
-
-emitter.on(Events.tabIdle, onIdle);
-emitter.on(Events.tabActive, onActive);
-
-onUnmounted(() => {
-	emitter.off(Events.tabIdle, onIdle);
-	emitter.off(Events.tabActive, onActive);
-});
-
-watch(model, (value) => setRefreshInterval(value), { immediate: true });
 
 const items = computed(() => {
 	const intervals = [null, 10, 30, 60, 300];
