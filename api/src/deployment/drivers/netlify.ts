@@ -1,5 +1,16 @@
 import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
-import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
+import type {
+	Credentials,
+	Deployment,
+	DeploymentWebhookEvent,
+	Details,
+	Log,
+	Options,
+	Project,
+	Status,
+	TriggerResult,
+	WebhookRegistrationResult,
+} from '@directus/types';
 import { NetlifyAPI } from '@netlify/api';
 import { isNumber } from 'lodash-es';
 import { DeploymentDriver } from '../deployment.js';
@@ -209,6 +220,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		const triggerResult: TriggerResult = {
 			deployment_id: buildResponse.deploy_id!,
 			status: this.mapStatus(deployState.state),
+			created_at: new Date(deployState.created_at!),
 		};
 
 		return triggerResult;
@@ -330,6 +342,22 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 				}
 			});
 		});
+	}
+
+	async registerWebhook(_webhookUrl: string, _projectIds: string[]): Promise<WebhookRegistrationResult> {
+		throw new Error('Netlify webhook registration not yet implemented');
+	}
+
+	async unregisterWebhook(_webhookId: string): Promise<void> {
+		throw new Error('Netlify webhook unregistration not yet implemented');
+	}
+
+	verifyAndParseWebhook(
+		_rawBody: Buffer,
+		_headers: Record<string, string | string[] | undefined>,
+		_webhookSecret: string,
+	): DeploymentWebhookEvent | null {
+		throw new Error('Netlify webhook verification not yet implemented');
 	}
 
 	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {

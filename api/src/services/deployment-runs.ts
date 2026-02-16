@@ -6,6 +6,10 @@ export interface DeploymentRun {
 	project: string;
 	external_id: string;
 	target: string;
+	status: string | null;
+	url: string | null;
+	started_at: string | null;
+	completed_at: string | null;
 	date_created: string;
 	user_created: string;
 }

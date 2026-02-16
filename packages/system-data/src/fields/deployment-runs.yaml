@@ -6,6 +6,12 @@ fields:
   - field: project
   - field: external_id
   - field: target
+  - field: status
+  - field: url
+  - field: started_at
+    special: [cast-timestamp]
+  - field: completed_at
+    special: [cast-timestamp]
   - field: date_created
     special: [date-created, cast-timestamp]
   - field: user_created

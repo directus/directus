@@ -20,6 +20,7 @@ import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
 import commentsRouter from './controllers/comments.js';
 import dashboardsRouter from './controllers/dashboards.js';
+import deploymentWebhookRouter from './controllers/deployment-webhooks.js';
 import deploymentRouter from './controllers/deployment.js';
 import extensionsRouter from './controllers/extensions.js';
 import fieldsRouter from './controllers/fields.js';
@@ -55,7 +56,7 @@ import {
 	validateDatabaseExtensions,
 	validateMigrations,
 } from './database/index.js';
-import { registerDeploymentDrivers } from './deployment.js';
+import { ensureDeploymentWebhooks, registerDeploymentDrivers } from './deployment.js';
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
@@ -117,6 +118,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await registerAuthProviders();
 	registerDeploymentDrivers();
+	await ensureDeploymentWebhooks();
 
 	const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
@@ -212,6 +214,9 @@ export default async function createApp(): Promise<express.Application> {
 		(
 			express.json({
 				limit: env['MAX_PAYLOAD_SIZE'] as string,
+				verify: (_req, _res, buf) => {
+					(_req as any).rawBody = buf;
+				},
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -280,6 +285,9 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	app.get('/server/ping', (_req, res) => res.send('pong'));
+
+	// Public webhook endpoint (signature-verified by the provider)
+	app.use('/deployments/webhooks', deploymentWebhookRouter);
 
 	app.use(authenticate);
 

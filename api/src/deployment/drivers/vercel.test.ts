@@ -1,3 +1,4 @@
+import { createHmac } from 'node:crypto';
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type { AxiosResponse } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -402,6 +403,122 @@ describe('VercelDriver', () => {
 			const result = await driver.getDeployment('dpl-1');
 
 			expect(result.status).toBe(expected);
+		});
+	});
+
+	describe('registerWebhook', () => {
+		it('should call POST /v1/webhooks with url and events', async () => {
+			const webhookResponse = { id: 'hook_123', secret: 'whsec_abc' };
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, webhookResponse));
+
+			const result = await driver.registerWebhook('https://example.com/webhooks/vercel', ['prj_123', 'prj_456']);
+
+			expect(result).toEqual({ webhook_id: 'hook_123', webhook_secret: 'whsec_abc' });
+
+			const call = mockAxiosRequest.mock.calls[0]![0];
+			expect(call.method).toBe('POST');
+			expect(call.url).toContain('/v1/webhooks');
+
+			const body = JSON.parse(call.data);
+			expect(body.url).toBe('https://example.com/webhooks/vercel');
+			expect(body.events).toContain('deployment.created');
+			expect(body.events).toContain('deployment.succeeded');
+			expect(body.events).toContain('deployment.error');
+			expect(body.events).toContain('deployment.canceled');
+		});
+	});
+
+	describe('unregisterWebhook', () => {
+		it('should call DELETE /v1/webhooks/:id', async () => {
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, {}));
+
+			await driver.unregisterWebhook('hook_123');
+
+			const call = mockAxiosRequest.mock.calls[0]![0];
+			expect(call.method).toBe('DELETE');
+			expect(call.url).toContain('/v1/webhooks/hook_123');
+		});
+	});
+
+	describe('verifyAndParseWebhook', () => {
+		const secret = 'test-webhook-secret';
+
+		function createWebhookPayload(type: string) {
+			return {
+				type,
+				id: 'evt_123',
+				createdAt: 1700000000000,
+				payload: {
+					deployment: { id: 'dpl_abc', url: 'my-app-abc.vercel.app', name: 'my-app' },
+					project: { id: 'prj_xyz' },
+					target: 'production',
+				},
+			};
+		}
+
+		function signPayload(body: Buffer): string {
+			return createHmac('sha1', secret).update(body).digest('hex');
+		}
+
+		it('should verify valid signature and parse deployment.succeeded event', () => {
+			const payload = createWebhookPayload('deployment.succeeded');
+			const rawBody = Buffer.from(JSON.stringify(payload));
+			const signature = signPayload(rawBody);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-vercel-signature': signature }, secret);
+
+			expect(result).not.toBeNull();
+			expect(result!.type).toBe('deployment.succeeded');
+			expect(result!.provider).toBe('vercel');
+			expect(result!.project_external_id).toBe('prj_xyz');
+			expect(result!.deployment_external_id).toBe('dpl_abc');
+			expect(result!.status).toBe('ready');
+			expect(result!.url).toBe('https://my-app-abc.vercel.app');
+			expect(result!.target).toBe('production');
+			expect(result!.timestamp).toEqual(new Date(1700000000000));
+		});
+
+		it('should return null for invalid signature', () => {
+			const payload = createWebhookPayload('deployment.succeeded');
+			const rawBody = Buffer.from(JSON.stringify(payload));
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-vercel-signature': 'invalid-sig' }, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for missing signature header', () => {
+			const payload = createWebhookPayload('deployment.succeeded');
+			const rawBody = Buffer.from(JSON.stringify(payload));
+
+			const result = driver.verifyAndParseWebhook(rawBody, {}, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for unsupported event type', () => {
+			const payload = createWebhookPayload('project.created');
+			const rawBody = Buffer.from(JSON.stringify(payload));
+			const signature = signPayload(rawBody);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-vercel-signature': signature }, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it.each([
+			['deployment.created', 'building'],
+			['deployment.succeeded', 'ready'],
+			['deployment.error', 'error'],
+			['deployment.canceled', 'canceled'],
+		])('should map event type "%s" to status "%s"', (eventType, expectedStatus) => {
+			const payload = createWebhookPayload(eventType);
+			const rawBody = Buffer.from(JSON.stringify(payload));
+			const signature = signPayload(rawBody);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-vercel-signature': signature }, secret);
+
+			expect(result!.status).toBe(expectedStatus);
 		});
 	});
 });

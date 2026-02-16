@@ -16,7 +16,9 @@ import { has, isEmpty } from 'lodash-es';
 import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cache.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
 import { getDeploymentDriver } from '../deployment.js';
+import { useLogger } from '../logger/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import type { DeploymentProject } from './deployment-projects.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
@@ -162,6 +164,18 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 */
 	async deleteByProvider(provider: ProviderType): Promise<PrimaryKey> {
 		const deployment = await this.readByProvider(provider);
+
+		// Webhook cleanup
+		if (deployment.webhook_id) {
+			try {
+				const driver = await this.getDriver(provider);
+				await driver.unregisterWebhook(deployment.webhook_id);
+			} catch (err) {
+				const logger = useLogger();
+				logger.error(`Failed to unregister webhook for ${provider}: ${err}`);
+			}
+		}
+
 		return this.deleteOne(deployment.id);
 	}
 
@@ -197,6 +211,22 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	}
 
 	/**
+	 * Get webhook config for a provider (internal use by webhook controller)
+	 */
+	async getWebhookConfig(
+		provider: ProviderType,
+	): Promise<{ webhook_id: string | null; webhook_secret: string | null; credentials: Credentials; options: Options }> {
+		const config = await this.readConfig(provider);
+
+		return {
+			webhook_id: config.webhook_id ?? null,
+			webhook_secret: config.webhook_secret ?? null,
+			credentials: this.parseValue<Credentials>(config.credentials, {}),
+			options: this.parseValue<Options>(config.options, {}),
+		};
+	}
+
+	/**
 	 * Get a deployment driver instance with decrypted credentials
 	 */
 	async getDriver(provider: ProviderType): Promise<DeploymentDriver> {
@@ -205,6 +235,64 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const options = this.parseValue<Options>(deployment.options, {});
 
 		return getDeploymentDriver(deployment.provider, credentials, options);
+	}
+
+	/**
+	 * Sync webhook registration with current tracked projects.
+	 * Registers, re-registers, or unregisters as needed.
+	 */
+	async syncWebhook(provider: ProviderType): Promise<void> {
+		const logger = useLogger();
+		const config = await this.readConfig(provider);
+
+		const projectsService = new ItemsService<DeploymentProject>('directus_deployment_projects', {
+			knex: this.knex,
+			schema: this.schema,
+			accountability: null,
+		});
+
+		const projects = await projectsService.readByQuery({
+			filter: { deployment: { _eq: config.id } },
+			limit: -1,
+		});
+
+		const projectExternalIds = projects.map((p) => p.external_id);
+		const driver = await this.getDriver(provider);
+
+		// No projects → unregister webhook if exists
+		if (projectExternalIds.length === 0) {
+			if (config.webhook_id) {
+				try {
+					await driver.unregisterWebhook(config.webhook_id);
+				} catch {
+					// best effort
+				}
+
+				await super.updateOne(config.id, { webhook_id: null, webhook_secret: null } as Partial<DeploymentConfig>);
+			}
+
+			return;
+		}
+
+		// Unregister existing webhook before re-registering
+		if (config.webhook_id) {
+			try {
+				await driver.unregisterWebhook(config.webhook_id);
+			} catch {
+				// best effort
+			}
+		}
+
+		const publicUrl = env['PUBLIC_URL'] as string;
+		const webhookUrl = `${publicUrl}/deployments/webhooks/${provider}`;
+		const result = await driver.registerWebhook(webhookUrl, projectExternalIds);
+
+		await super.updateOne(config.id, {
+			webhook_id: result.webhook_id,
+			webhook_secret: result.webhook_secret,
+		} as Partial<DeploymentConfig>);
+
+		logger.info(`Webhook registered for ${provider} with ${projectExternalIds.length} project(s)`);
 	}
 
 	/**

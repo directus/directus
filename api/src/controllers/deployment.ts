@@ -9,6 +9,7 @@ import { DEPLOYMENT_PROVIDER_TYPES, type DeploymentConfig, type ProviderType } f
 import express from 'express';
 import Joi from 'joi';
 import getDatabase from '../database/index.js';
+import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -17,9 +18,15 @@ import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { transaction } from '../utils/transaction.js';
 
 const router = express.Router();
+
+function parseRange(range: unknown, defaultMs: number): Date {
+	const ms = getMilliseconds(range, defaultMs);
+	return new Date(Date.now() - ms);
+}
 
 router.use(useCollection('directus_deployments'));
 
@@ -305,6 +312,12 @@ router.patch(
 
 		const updatedProjects = await projectsService.updateSelection(deployment.id, value.create, value.delete);
 
+		// Sync webhook with updated project list
+		service.syncWebhook(provider).catch((err) => {
+			const logger = useLogger();
+			logger.error(`Failed to sync webhook for ${provider}: ${err}`);
+		});
+
 		res.locals['payload'] = { data: updatedProjects };
 		return next();
 	}),
@@ -312,6 +325,12 @@ router.patch(
 );
 
 // Dashboard - selected projects with stats
+const dashboardQuerySchema = Joi.object({
+	range: Joi.string()
+		.pattern(/^\d+(ms|s|m|h|d|w|y)$/)
+		.optional(),
+});
+
 router.get(
 	'/:provider/dashboard',
 	asyncHandler(async (req, res, next) => {
@@ -321,12 +340,25 @@ router.get(
 			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
 		}
 
+		const { error, value } = dashboardQuerySchema.validate(req.query);
+
+		if (error) {
+			throw new InvalidPayloadError({ reason: error.message });
+		}
+
+		const sinceDate = parseRange(value.range, 86_400_000);
+
 		const service = new DeploymentService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
 		const projectsService = new DeploymentProjectsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const runsService = new DeploymentRunsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -340,28 +372,68 @@ router.get(
 		});
 
 		if (selectedProjects.length === 0) {
-			res.locals['payload'] = { data: { projects: [] } };
+			res.locals['payload'] = {
+				data: {
+					projects: [],
+					stats: { active_deployments: 0, successful_builds: 0, failed_builds: 0 },
+				},
+			};
+
 			return next();
 		}
 
-		// Fetch full details for each selected project (parallel)
+		const projectIds = selectedProjects.map((p) => p.id);
+
 		const driver = await service.getDriver(provider);
 
-		const projectDetails = await Promise.all(
-			selectedProjects.map(async (p) => {
-				const details = await driver.getProject(p.external_id);
+		const [projectDetails, activeResult, statusCounts] = await Promise.all([
+			Promise.all(
+				selectedProjects.map(async (p) => {
+					const details = await driver.getProject(p.external_id);
 
-				return {
-					...details,
-					id: p.id,
-					external_id: p.external_id,
-				};
-			}),
-		);
+					return {
+						...details,
+						id: p.id,
+						external_id: p.external_id,
+					};
+				}),
+			),
+			// Active deployments
+			runsService.readByQuery({
+				filter: { project: { _in: projectIds }, status: { _eq: 'building' } },
+				aggregate: { count: ['*'] },
+			}) as Promise<any[]>,
+			// Grouped counts by status within date range
+			runsService.readByQuery({
+				filter: {
+					_and: [
+						{ project: { _in: projectIds } },
+						{ status: { _in: ['ready', 'error'] } },
+						{ date_created: { _gte: sinceDate.toISOString() } },
+					],
+				},
+				aggregate: { count: ['*'] },
+				group: ['status'],
+			}) as Promise<any[]>,
+		]);
+
+		const countByStatus = (status: string) =>
+			Number(statusCounts.find((r: any) => r['status'] === status)?.['count'] ?? 0);
 
 		// Disable cache - dashboard needs fresh data from provider
 		res.locals['cache'] = false;
-		res.locals['payload'] = { data: { projects: projectDetails } };
+
+		res.locals['payload'] = {
+			data: {
+				projects: projectDetails,
+				stats: {
+					active_deployments: Number(activeResult[0]?.['count'] ?? 0),
+					successful_builds: countByStatus('ready'),
+					failed_builds: countByStatus('error'),
+				},
+			},
+		};
+
 		return next();
 	}),
 	respond,
@@ -415,22 +487,19 @@ router.post(
 			clearCache: value.clear_cache,
 		});
 
-		// Store run in DB
+		// Store run in DB with initial data from trigger response
 		const runId = await runsService.createOne({
 			project: projectId,
 			external_id: result.deployment_id,
 			target: value.preview ? 'preview' : 'production',
+			status: result.status,
+			started_at: result.created_at.toISOString(),
+			...(result.url ? { url: result.url } : {}),
 		});
 
 		const run = await runsService.readOne(runId);
 
-		res.locals['payload'] = {
-			data: {
-				...run,
-				status: result.status,
-				url: result.url,
-			},
-		};
+		res.locals['payload'] = { data: run };
 
 		return next();
 	}),
@@ -507,20 +576,12 @@ router.delete(
 router.get(
 	'/:provider/projects/:id/runs',
 	asyncHandler(async (req, res, next) => {
-		// Disable cache - runs status needs to be fresh from provider
-		res.locals['cache'] = false;
-
 		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
 			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
 		}
-
-		const service = new DeploymentService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
 
 		const projectsService = new DeploymentProjectsService({
 			accountability: req.accountability,
@@ -535,7 +596,6 @@ router.get(
 		// Validate project exists
 		await projectsService.readOne(projectId);
 
-		// Get paginated runs from DB (default limit: 10)
 		const query = {
 			...req.sanitizedQuery,
 			filter: { project: { _eq: projectId } },
@@ -546,7 +606,6 @@ router.get(
 
 		const runs = await runsService.readByQuery(query);
 
-		// Get pagination meta
 		const metaService = new MetaService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -554,23 +613,90 @@ router.get(
 
 		const meta = await metaService.getMetaForQuery('directus_deployment_runs', query);
 
-		// Fetch status for each run from provider
-		const driver = await service.getDriver(provider);
+		res.locals['payload'] = { data: runs, meta };
+		return next();
+	}),
+	respond,
+);
 
-		const runsWithStatus = await Promise.all(
-			runs.map(async (run: any) => {
-				const details = await driver.getDeployment(run.external_id);
+// Project runs stats
+const runStatsQuerySchema = Joi.object({
+	range: Joi.string()
+		.pattern(/^\d+(ms|s|m|h|d|w|y)$/)
+		.optional(),
+});
 
-				return {
-					...run,
-					...details,
-					id: run.id,
-					external_id: run.external_id,
-				};
+router.get(
+	'/:provider/projects/:id/runs/stats',
+	asyncHandler(async (req, res, next) => {
+		const provider = req.params['provider'] as ProviderType;
+		const projectId = req.params['id']!;
+
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
+
+		const { error, value } = runStatsQuerySchema.validate(req.query);
+
+		if (error) {
+			throw new InvalidPayloadError({ reason: error.message });
+		}
+
+		const sinceDate = parseRange(value.range, 604_800_000);
+
+		const projectsService = new DeploymentProjectsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const runsService = new DeploymentRunsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		// Validate project exists
+		await projectsService.readOne(projectId);
+
+		const dateFilter = {
+			_and: [{ project: { _eq: projectId } }, { date_created: { _gte: sinceDate.toISOString() } }],
+		};
+
+		const [countResult, completedRuns] = await Promise.all([
+			runsService.readByQuery({
+				filter: dateFilter,
+				aggregate: { count: ['*'] },
+			}) as Promise<any[]>,
+			runsService.readByQuery({
+				filter: {
+					_and: [
+						{ project: { _eq: projectId } },
+						{ date_created: { _gte: sinceDate.toISOString() } },
+						{ started_at: { _nnull: true } },
+						{ completed_at: { _nnull: true } },
+					],
+				},
+				fields: ['started_at', 'completed_at'],
+				limit: -1,
 			}),
-		);
+		]);
 
-		res.locals['payload'] = { data: runsWithStatus, meta };
+		let averageBuildTime: number | null = null;
+
+		if (completedRuns.length > 0) {
+			const durations = completedRuns.map(
+				(r) => new Date(r.completed_at!).getTime() - new Date(r.started_at!).getTime(),
+			);
+
+			averageBuildTime = Math.round(durations.reduce((a, b) => a + b, 0) / durations.length);
+		}
+
+		res.locals['payload'] = {
+			data: {
+				total_deployments: Number(countResult[0]?.['count'] ?? 0),
+				average_build_time: averageBuildTime,
+			},
+		};
+
 		return next();
 	}),
 	respond,
@@ -613,20 +739,13 @@ router.get(
 		const run = await runsService.readOne(runId);
 
 		const driver = await service.getDriver(provider);
-
-		const [details, logs] = await Promise.all([
-			driver.getDeployment(run.external_id),
-			driver.getDeploymentLogs(run.external_id, sinceDate ? { since: sinceDate } : undefined),
-		]);
+		const logs = await driver.getDeploymentLogs(run.external_id, sinceDate ? { since: sinceDate } : undefined);
 
 		res.locals['cache'] = false;
 
 		res.locals['payload'] = {
 			data: {
 				...run,
-				...details,
-				id: run.id,
-				external_id: run.external_id,
 				logs,
 			},
 		};
@@ -662,17 +781,13 @@ router.post(
 		const driver = await service.getDriver(provider);
 		await driver.cancelDeployment(run.external_id);
 
-		// Fetch updated status
-		const details = await driver.getDeployment(run.external_id);
+		await runsService.updateOne(runId, {
+			status: 'canceled',
+		});
 
-		res.locals['payload'] = {
-			data: {
-				...run,
-				...details,
-				id: run.id,
-				external_id: run.external_id,
-			},
-		};
+		const updatedRun = await runsService.readOne(runId);
+
+		res.locals['payload'] = { data: updatedRun };
 
 		return next();
 	}),

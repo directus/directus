@@ -79,6 +79,7 @@ export interface TriggerResult {
 	deployment_id: string;
 	status: Status;
 	url?: string;
+	created_at: Date;
 }
 
 /**
@@ -89,8 +90,42 @@ export interface DeploymentConfig {
 	provider: ProviderType;
 	credentials: Credentials;
 	options: Options | null;
+	webhook_id: string | null;
+	webhook_secret: string | null;
 	date_created: string;
 	projects?: StoredProject[];
+}
+
+/**
+ * Webhook event types supported by providers
+ */
+export type DeploymentWebhookEventType =
+	| 'deployment.created'
+	| 'deployment.succeeded'
+	| 'deployment.error'
+	| 'deployment.canceled';
+
+/**
+ * Parsed webhook event from a provider
+ */
+export interface DeploymentWebhookEvent {
+	type: DeploymentWebhookEventType;
+	provider: ProviderType;
+	project_external_id: string;
+	deployment_external_id: string;
+	status: Status;
+	url?: string;
+	target?: string;
+	timestamp: Date;
+	raw?: Record<string, any>;
+}
+
+/**
+ * Result of registering a webhook with a provider
+ */
+export interface WebhookRegistrationResult {
+	webhook_id: string;
+	webhook_secret: string;
 }
 
 /**
@@ -115,4 +150,6 @@ export interface StoredRun {
 	target: string;
 	date_created: string;
 	url: string | null;
+	started_at: string | null;
+	completed_at: string | null;
 }
