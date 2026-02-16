@@ -70,9 +70,11 @@ const {
 );
 
 const activatorDisabled = computed(() => {
-	return (
-		disabled || (!item.value && !saveAllowed.value) || (item.value && !deleteAllowed.value && !isLocalItem(item.value))
-	);
+	return disabled || (!item.value && !saveAllowed.value);
+});
+
+const removeDisabled = computed(() => {
+	return disabled || (item.value && !deleteAllowed.value && !isLocalItem(item.value));
 });
 
 const { transition, iconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd } = useActivatorButton();
@@ -176,8 +178,8 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			<template #controls="{ active, toggle }">
 				<VRemove
 					v-if="item && !(nonEditable && item.$type !== 'deleted')"
-					:class="{ disabled: activatorDisabled }"
-					:disabled="activatorDisabled"
+					:class="{ disabled: removeDisabled }"
+					:disabled="removeDisabled"
 					:item-type="item.$type"
 					:item-info="relationInfo"
 					:item-is-local="isLocalItem(item)"
