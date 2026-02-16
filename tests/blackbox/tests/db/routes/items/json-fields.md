@@ -10,7 +10,8 @@ The `json()` function allows you to extract specific paths from JSON fields in y
 GET /items/products?fields=id,name,json(metadata, color)
 ```
 
-The comma separates the field name from the JSON path, avoiding collision with the colon used for A2O collection scoping.
+The comma separates the field name from the JSON path, avoiding collision with the colon used for A2O collection
+scoping.
 
 ## Test Structure
 

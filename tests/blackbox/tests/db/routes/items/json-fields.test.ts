@@ -253,6 +253,82 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
+			describe('returns nested object as parsed JSON, not as string', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							fields: 'id,json(metadata, dimensions)',
+							sort: 'id',
+							limit: 1,
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+
+					const dimensions = response.body.data[0].metadata_dimensions_json;
+
+					// Should be a parsed object, not a string
+					expect(typeof dimensions).toBe('object');
+					expect(dimensions).toEqual({ width: 10, height: 20, depth: 5 });
+				});
+			});
+
+			describe('returns array as parsed JSON, not as string', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							fields: 'id,json(metadata, tags)',
+							sort: 'id',
+							limit: 1,
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+
+					const tags = response.body.data[0].metadata_tags_json;
+
+					// Should be a parsed array, not a string
+					expect(Array.isArray(tags)).toBe(true);
+					expect(tags).toEqual(['electronics', 'premium', 'new']);
+				});
+			});
+
+			describe('returns nested array of objects as parsed JSON, not as string', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							fields: 'id,json(metadata, variants)',
+							sort: 'id',
+							limit: 1,
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+
+					const variants = response.body.data[0].metadata_variants_json;
+
+					// Should be a parsed array of objects, not a string
+					expect(Array.isArray(variants)).toBe(true);
+
+					expect(variants).toEqual([
+						{ sku: 'SKU-001', price: 99.99, available: true },
+						{ sku: 'SKU-002', price: 149.99, available: false },
+					]);
+				});
+			});
+
 			describe('retrieves multiple json extractions from different fields', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action
