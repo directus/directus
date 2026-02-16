@@ -1,4 +1,11 @@
-import { CreateCollection, CreateField, CreateFieldO2M, CreateItem, DeleteCollection } from '@common/functions';
+import {
+	CreateCollection,
+	CreateField,
+	CreateFieldM2A,
+	CreateFieldO2M,
+	CreateItem,
+	DeleteCollection,
+} from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { SeedFunctions } from '@common/seed-functions';
 import type { PrimaryKeyType } from '@common/types';
@@ -10,6 +17,9 @@ import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '..
 export const collectionArticles = 'test_rel_json_articles';
 export const collectionCategories = 'test_rel_json_categories';
 export const collectionComments = 'test_rel_json_comments';
+export const collectionShapes = 'test_rel_json_shapes';
+export const collectionCircles = 'test_rel_json_circles';
+export const collectionSquares = 'test_rel_json_squares';
 
 export type Category = {
 	id?: number | string;
@@ -38,6 +48,29 @@ export type Comment = {
 		type?: string;
 		rating?: number;
 		tags?: string[];
+	};
+};
+
+export type Shape = {
+	id?: number | string;
+	name: string;
+};
+
+export type Circle = {
+	id?: number | string;
+	name: string;
+	metadata?: {
+		color?: string;
+		size?: string;
+	};
+};
+
+export type Square = {
+	id?: number | string;
+	name: string;
+	metadata?: {
+		color?: string;
+		sides?: number;
 	};
 };
 
@@ -144,6 +177,83 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 				],
 			},
 		},
+		[`${collectionShapes}_${pkType}`]: {
+			id: {
+				field: 'id',
+				type: pkType,
+				isPrimaryKey: true,
+				filters: true,
+				possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
+					quantity: 3,
+					seed: `collectionShapes${seed}`,
+					incremental: true,
+				}),
+			},
+			name: {
+				field: 'name',
+				type: 'string',
+				filters: true,
+				possibleValues: ['Shape A', 'Shape B', 'Shape C'],
+			},
+		},
+		[`${collectionCircles}_${pkType}`]: {
+			id: {
+				field: 'id',
+				type: pkType,
+				isPrimaryKey: true,
+				filters: false,
+				possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
+					quantity: 3,
+					seed: `collectionCircles${seed}`,
+					incremental: true,
+				}),
+			},
+			name: {
+				field: 'name',
+				type: 'string',
+				filters: false,
+				possibleValues: ['Circle 1', 'Circle 2', 'Circle 3'],
+			},
+			metadata: {
+				field: 'metadata',
+				type: 'json',
+				filters: false,
+				possibleValues: [
+					{ color: 'red', size: 'small' },
+					{ color: 'blue', size: 'medium' },
+					{ color: 'green', size: 'large' },
+				],
+			},
+		},
+		[`${collectionSquares}_${pkType}`]: {
+			id: {
+				field: 'id',
+				type: pkType,
+				isPrimaryKey: true,
+				filters: false,
+				possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
+					quantity: 3,
+					seed: `collectionSquares${seed}`,
+					incremental: true,
+				}),
+			},
+			name: {
+				field: 'name',
+				type: 'string',
+				filters: false,
+				possibleValues: ['Square 1', 'Square 2', 'Square 3'],
+			},
+			metadata: {
+				field: 'metadata',
+				type: 'json',
+				filters: false,
+				possibleValues: [
+					{ color: 'yellow', sides: 4 },
+					{ color: 'orange', sides: 4 },
+					{ color: 'pink', sides: 4 },
+				],
+			},
+		},
 	};
 
 	return schema;
@@ -159,7 +269,16 @@ export const seedDBStructure = () => {
 					const localCollectionArticles = `${collectionArticles}_${pkType}`;
 					const localCollectionComments = `${collectionComments}_${pkType}`;
 
+					const localCollectionShapes = `${collectionShapes}_${pkType}`;
+					const localCollectionCircles = `${collectionCircles}_${pkType}`;
+					const localCollectionSquares = `${collectionSquares}_${pkType}`;
+					const localJunctionShapesChildren = `${collectionShapes}_children_${pkType}`;
+
 					// Delete existing collections (in reverse order due to FKs)
+					await DeleteCollection(vendor, { collection: localJunctionShapesChildren });
+					await DeleteCollection(vendor, { collection: localCollectionSquares });
+					await DeleteCollection(vendor, { collection: localCollectionCircles });
+					await DeleteCollection(vendor, { collection: localCollectionShapes });
 					await DeleteCollection(vendor, { collection: localCollectionComments });
 					await DeleteCollection(vendor, { collection: localCollectionArticles });
 					await DeleteCollection(vendor, { collection: localCollectionCategories });
@@ -232,6 +351,63 @@ export const seedDBStructure = () => {
 						primaryKeyType: pkType,
 						otherCollection: localCollectionComments,
 						otherField: 'article_id',
+					});
+
+					// Create shapes collection (parent for M2A)
+					await CreateCollection(vendor, {
+						collection: localCollectionShapes,
+						primaryKeyType: pkType,
+					});
+
+					await CreateField(vendor, {
+						collection: localCollectionShapes,
+						field: 'name',
+						type: 'string',
+					});
+
+					// Create circles collection (has JSON metadata, M2A target)
+					await CreateCollection(vendor, {
+						collection: localCollectionCircles,
+						primaryKeyType: pkType,
+					});
+
+					await CreateField(vendor, {
+						collection: localCollectionCircles,
+						field: 'name',
+						type: 'string',
+					});
+
+					await CreateField(vendor, {
+						collection: localCollectionCircles,
+						field: 'metadata',
+						type: 'json',
+					});
+
+					// Create squares collection (has JSON metadata, M2A target)
+					await CreateCollection(vendor, {
+						collection: localCollectionSquares,
+						primaryKeyType: pkType,
+					});
+
+					await CreateField(vendor, {
+						collection: localCollectionSquares,
+						field: 'name',
+						type: 'string',
+					});
+
+					await CreateField(vendor, {
+						collection: localCollectionSquares,
+						field: 'metadata',
+						type: 'json',
+					});
+
+					// Create M2A relationship: shapes -> children -> circles/squares
+					await CreateFieldM2A(vendor, {
+						collection: localCollectionShapes,
+						field: 'children',
+						junctionCollection: localJunctionShapesChildren,
+						relatedCollections: [localCollectionCircles, localCollectionSquares],
+						primaryKeyType: pkType,
 					});
 
 					expect(true).toBeTruthy();
@@ -329,6 +505,106 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				set(vendorSchemaValues, `${vendor}.${localCollectionCategories}.id`, categoriesIDs);
 				set(vendorSchemaValues, `${vendor}.${localCollectionArticles}.id`, articlesIDs);
 				set(vendorSchemaValues, `${vendor}.${localCollectionComments}.id`, commentsIDs);
+
+				// Seed M2A collections
+				const localCollectionShapes = `${collectionShapes}_${pkType}`;
+				const localCollectionCircles = `${collectionCircles}_${pkType}`;
+				const localCollectionSquares = `${collectionSquares}_${pkType}`;
+
+				// Create shapes
+				const itemShapes = [];
+
+				for (let i = 0; i < schema[localCollectionShapes]!['id']!.possibleValues.length; i++) {
+					const shape: Shape = {
+						name: schema[localCollectionShapes]!['name']!.possibleValues[i]!,
+					};
+
+					if (pkType === 'string') {
+						shape.id = schema[localCollectionShapes]!['id']!.possibleValues[i]!;
+					}
+
+					itemShapes.push(shape);
+				}
+
+				const shapes = await CreateItem(vendor, {
+					collection: localCollectionShapes,
+					item: itemShapes,
+				});
+
+				const shapesIDs = shapes.map((s: Shape) => s.id);
+
+				// Create circles
+				const itemCircles = [];
+
+				for (let i = 0; i < schema[localCollectionCircles]!['id']!.possibleValues.length; i++) {
+					const circle: Circle = {
+						name: schema[localCollectionCircles]!['name']!.possibleValues[i]!,
+						metadata: schema[localCollectionCircles]!['metadata']!.possibleValues[i]!,
+					};
+
+					if (pkType === 'string') {
+						circle.id = schema[localCollectionCircles]!['id']!.possibleValues[i]!;
+					}
+
+					itemCircles.push(circle);
+				}
+
+				const circles = await CreateItem(vendor, {
+					collection: localCollectionCircles,
+					item: itemCircles,
+				});
+
+				const circlesIDs = circles.map((c: Circle) => c.id);
+
+				// Create squares
+				const itemSquares = [];
+
+				for (let i = 0; i < schema[localCollectionSquares]!['id']!.possibleValues.length; i++) {
+					const square: Square = {
+						name: schema[localCollectionSquares]!['name']!.possibleValues[i]!,
+						metadata: schema[localCollectionSquares]!['metadata']!.possibleValues[i]!,
+					};
+
+					if (pkType === 'string') {
+						square.id = schema[localCollectionSquares]!['id']!.possibleValues[i]!;
+					}
+
+					itemSquares.push(square);
+				}
+
+				const squares = await CreateItem(vendor, {
+					collection: localCollectionSquares,
+					item: itemSquares,
+				});
+
+				const squaresIDs = squares.map((s: Square) => s.id);
+
+				// Create junction entries linking shapes to circles and squares
+				// Shape A gets circle 1 + circle 2 + square 1
+				// Shape B gets circle 3 + square 2 + square 3
+				// Shape C gets no children (empty)
+				const junctionCollectionName = `${collectionShapes}_children_${pkType}`;
+				const junctionFieldName = `${junctionCollectionName}_id`;
+
+				const junctionEntries = [
+					// Shape A -> circle 1, circle 2, square 1
+					{ [junctionFieldName]: shapesIDs[0], collection: localCollectionCircles, item: String(circlesIDs[0]) },
+					{ [junctionFieldName]: shapesIDs[0], collection: localCollectionCircles, item: String(circlesIDs[1]) },
+					{ [junctionFieldName]: shapesIDs[0], collection: localCollectionSquares, item: String(squaresIDs[0]) },
+					// Shape B -> circle 3, square 2, square 3
+					{ [junctionFieldName]: shapesIDs[1], collection: localCollectionCircles, item: String(circlesIDs[2]) },
+					{ [junctionFieldName]: shapesIDs[1], collection: localCollectionSquares, item: String(squaresIDs[1]) },
+					{ [junctionFieldName]: shapesIDs[1], collection: localCollectionSquares, item: String(squaresIDs[2]) },
+				];
+
+				await CreateItem(vendor, {
+					collection: junctionCollectionName,
+					item: junctionEntries,
+				});
+
+				set(vendorSchemaValues, `${vendor}.${localCollectionShapes}.id`, shapesIDs);
+				set(vendorSchemaValues, `${vendor}.${localCollectionCircles}.id`, circlesIDs);
+				set(vendorSchemaValues, `${vendor}.${localCollectionSquares}.id`, squaresIDs);
 			}
 		}),
 	);

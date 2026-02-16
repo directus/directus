@@ -1,5 +1,7 @@
 import type { Relation } from '@directus/types';
 import type { Knex } from 'knex';
+import type { RelationalJsonContext } from '../../../../types/ast.js';
+import { generateRelationalQueryAlias } from '../../../run-ast/utils/generate-alias.js';
 import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
@@ -107,6 +109,50 @@ export class FnHelperMSSQL extends FnHelper {
 		const subQuery = this.knex.raw(
 			`(SELECT COALESCE('[' + STRING_AGG('"' + STRING_ESCAPE(CAST(? AS NVARCHAR(MAX)), 'json') + '"', ',') + ']', '[]') FROM ?? AS ?? WHERE ??.?? = ??.??)`,
 			[jsonExtraction, relation.collection, alias, alias, relation.field, table, parentPrimary],
+		);
+
+		return subQuery;
+	}
+
+	protected _relationalJsonA2O(
+		table: string,
+		context: RelationalJsonContext,
+		options?: FnHelperOptions,
+	): Knex.Raw {
+		const collectionName = options?.originalCollectionName || table;
+		const parentPrimary = this.schema.collections[collectionName]!.primary;
+		const targetPrimary = this.schema.collections[context.targetCollection]!.primary;
+
+		const {
+			junctionCollection,
+			junctionItemField,
+			junctionParentField,
+			oneCollectionField,
+			collectionScope,
+			targetCollection,
+			jsonField,
+			jsonPath,
+			relationalPath,
+		} = context;
+
+		const junctionAlias = generateRelationalQueryAlias(table, relationalPath.join('.') + '_j', collectionName, options);
+		const targetAlias = generateRelationalQueryAlias(table, relationalPath.join('.') + '_t', collectionName, options);
+
+		// Build MSSQL JSON extraction for the target table
+		const mssqlJsonPath = '$' + jsonPath;
+
+		// MSSQL: Use STRING_AGG with manual JSON array wrapping, and LEFT JOIN through junction
+		const subQuery = this.knex.raw(
+			`(SELECT COALESCE('[' + STRING_AGG('"' + STRING_ESCAPE(CAST(JSON_VALUE(??.??, ?) AS NVARCHAR(MAX)), 'json') + '"', ',') + ']', '[]') FROM ?? AS ?? LEFT JOIN ?? AS ?? ON ??.?? = ? AND ??.?? = CAST(??.?? AS NVARCHAR(255)) WHERE ??.?? = ??.?? AND ??.?? = ?)`,
+			[
+				targetAlias, jsonField, mssqlJsonPath,
+				junctionCollection!, junctionAlias,
+				targetCollection, targetAlias,
+				junctionAlias, oneCollectionField!, collectionScope!,
+				junctionAlias, junctionItemField!, targetAlias, targetPrimary,
+				junctionAlias, junctionParentField!, table, parentPrimary,
+				junctionAlias, oneCollectionField!, collectionScope!,
+			],
 		);
 
 		return subQuery;

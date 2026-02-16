@@ -4,7 +4,7 @@ import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { CachedTestsSchema, TestsSchemaVendorValues } from '../../query/filter';
-import { collectionArticles, getTestsSchema, seedDBValues } from './relational-json.seed';
+import { collectionArticles, collectionShapes, getTestsSchema, seedDBValues } from './relational-json.seed';
 
 const cachedSchema = PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
 	acc[pkType] = getTestsSchema(pkType);
@@ -25,6 +25,7 @@ describe('Seed Database Values', () => {
 
 describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 	const localCollectionArticles = `${collectionArticles}_${pkType}`;
+	const localCollectionShapes = `${collectionShapes}_${pkType}`;
 
 	describe(`pkType: ${pkType}`, () => {
 		describe('M2O Relational JSON', () => {
@@ -328,6 +329,117 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Second article should be first in results (offset 1)
 					expect(response.body.data[0].title).toBe('Championship Finals');
+				});
+			});
+		});
+
+		describe('A2O (M2A) Relational JSON', () => {
+			describe('retrieves json field from A2O relation scoped to circles (returns array)', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Shape A has 2 circle children with metadata colors: 'red', 'blue'
+					const shapes = vendorSchemaValues[vendor]![localCollectionShapes]!.id;
+					const firstShapeId = shapes[0];
+
+					const localCollectionCircles = `${localCollectionShapes.replace('shapes', 'circles')}`;
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}/${firstShapeId}`)
+						.query({
+							fields: `id,name,json(children.item:${localCollectionCircles}.metadata, color)`,
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+
+					const fieldName = `children_item:${localCollectionCircles}_metadata_color_json`;
+					expect(response.body.data).toHaveProperty(fieldName);
+
+					const colors = response.body.data[fieldName];
+					const colorsArray = typeof colors === 'string' ? JSON.parse(colors) : colors;
+					expect(Array.isArray(colorsArray)).toBe(true);
+					expect(colorsArray.length).toBe(2);
+					expect(colorsArray).toContain('red');
+					expect(colorsArray).toContain('blue');
+				});
+			});
+
+			describe('retrieves json field from A2O relation scoped to squares', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Shape B has 2 square children with metadata colors: 'orange', 'pink'
+					const shapes = vendorSchemaValues[vendor]![localCollectionShapes]!.id;
+					const secondShapeId = shapes[1];
+
+					const localCollectionSquares = `${localCollectionShapes.replace('shapes', 'squares')}`;
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}/${secondShapeId}`)
+						.query({
+							fields: `id,name,json(children.item:${localCollectionSquares}.metadata, color)`,
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+
+					const fieldName = `children_item:${localCollectionSquares}_metadata_color_json`;
+					expect(response.body.data).toHaveProperty(fieldName);
+
+					const colors = response.body.data[fieldName];
+					const colorsArray = typeof colors === 'string' ? JSON.parse(colors) : colors;
+					expect(Array.isArray(colorsArray)).toBe(true);
+					expect(colorsArray.length).toBe(2);
+					expect(colorsArray).toContain('orange');
+					expect(colorsArray).toContain('pink');
+				});
+			});
+
+			describe('A2O relational json returns empty/null for shape with no matching children', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Shape C has no children
+					const shapes = vendorSchemaValues[vendor]![localCollectionShapes]!.id;
+					const thirdShapeId = shapes[2];
+
+					const localCollectionCircles = `${localCollectionShapes.replace('shapes', 'circles')}`;
+
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}/${thirdShapeId}`)
+						.query({
+							fields: `id,name,json(children.item:${localCollectionCircles}.metadata, color)`,
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+
+					const fieldName = `children_item:${localCollectionCircles}_metadata_color_json`;
+					expect(response.body.data).toHaveProperty(fieldName);
+
+					const colors = response.body.data[fieldName];
+
+					// Should return empty array or null for no matching children
+					if (colors !== null) {
+						const colorsArray = typeof colors === 'string' ? JSON.parse(colors) : colors;
+						expect(colorsArray).toEqual([]);
+					}
+				});
+			});
+
+			describe('returns error for invalid collection scope in A2O', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}`)
+						.query({
+							fields: 'id,json(children.item:nonexistent_collection.metadata, color)',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toBeDefined();
 				});
 			});
 		});

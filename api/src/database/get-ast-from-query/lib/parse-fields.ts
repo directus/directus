@@ -135,6 +135,16 @@ export async function parseFields(
 							relationType: validation.relationType,
 							relation: validation.relation,
 							targetCollection: validation.targetCollection,
+							...(validation.collectionScope
+								? {
+										collectionScope: validation.collectionScope,
+										junctionCollection: validation.junctionCollection!,
+										oneCollectionField: validation.oneCollectionField!,
+										junctionParentField: validation.junctionParentField!,
+										junctionItemField: validation.junctionItemField!,
+										o2mRelation: validation.o2mRelation!,
+									}
+								: {}),
 						},
 					});
 				} else {

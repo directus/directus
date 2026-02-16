@@ -121,6 +121,11 @@ export abstract class FnHelper extends DatabaseHelper {
 				.limit(1);
 
 			return this.knex.raw('(' + subQuery.toQuery() + ')');
+		} else if (relationType === 'a2o') {
+			// A2O: Multiple values through junction table with collection discriminator
+			// Example: shapes -> shapes_children (junction) -> circles
+			// Delegates to dialect-specific A2O aggregation
+			return this._relationalJsonA2O(table, context, options);
 		} else {
 			// O2M: Multiple values - the related table has the FK pointing back to parent
 			// Example: articles.id <- comments.article_id
@@ -147,5 +152,20 @@ export abstract class FnHelper extends DatabaseHelper {
 		targetCollection: string,
 		jsonExtraction: Knex.Raw,
 		parentPrimary: string,
+	): Knex.Raw;
+
+	/**
+	 * Abstract method for A2O (M2A) JSON aggregation. Each dialect must implement this
+	 * to build a correlated subquery that joins through the junction table to the
+	 * scoped target collection and aggregates the extracted JSON values.
+	 *
+	 * @param table - The parent table name
+	 * @param context - The relational JSON context with a2o-specific metadata
+	 * @param options - Function helper options
+	 */
+	protected abstract _relationalJsonA2O(
+		table: string,
+		context: RelationalJsonContext,
+		options?: FnHelperOptions,
 	): Knex.Raw;
 }

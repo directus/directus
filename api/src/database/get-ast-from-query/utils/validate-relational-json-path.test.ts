@@ -50,6 +50,104 @@ describe('validateRelationalJsonPath', () => {
 		});
 	});
 
+	describe('A2O (M2A) relations', () => {
+		test('validates A2O path through junction to scoped collection JSON field', () => {
+			const schema = new SchemaBuilder()
+				.collection('shapes', (c) => {
+					c.field('id').id();
+					c.field('children').m2a(['circles', 'squares']);
+				})
+				.collection('circles', (c) => {
+					c.field('id').id();
+					c.field('metadata').json();
+				})
+				.collection('squares', (c) => {
+					c.field('id').id();
+					c.field('metadata').json();
+				})
+				.build();
+
+			const result = validateRelationalJsonPath(schema, 'shapes', 'children.item:circles.metadata');
+
+			expect(result.targetCollection).toBe('circles');
+			expect(result.jsonField).toBe('metadata');
+			expect(result.relationType).toBe('a2o');
+			expect(result.relationalPath).toEqual(['children', 'item:circles']);
+			expect(result.collectionScope).toBe('circles');
+			expect(result.junctionCollection).toBe('shapes_builder');
+			expect(result.oneCollectionField).toBe('collection');
+			expect(result.junctionItemField).toBe('item');
+			expect(result.junctionParentField).toBe('shapes_id');
+			expect(result.o2mRelation).toBeDefined();
+		});
+
+		test('validates A2O path with different scoped collection', () => {
+			const schema = new SchemaBuilder()
+				.collection('shapes', (c) => {
+					c.field('id').id();
+					c.field('children').m2a(['circles', 'squares']);
+				})
+				.collection('circles', (c) => {
+					c.field('id').id();
+					c.field('metadata').json();
+				})
+				.collection('squares', (c) => {
+					c.field('id').id();
+					c.field('metadata').json();
+				})
+				.build();
+
+			const result = validateRelationalJsonPath(schema, 'shapes', 'children.item:squares.metadata');
+
+			expect(result.targetCollection).toBe('squares');
+			expect(result.jsonField).toBe('metadata');
+			expect(result.relationType).toBe('a2o');
+			expect(result.collectionScope).toBe('squares');
+		});
+
+		test('throws for A2O without collection scope', () => {
+			const schema = new SchemaBuilder()
+				.collection('shapes', (c) => {
+					c.field('id').id();
+					c.field('children').m2a(['circles', 'squares']);
+				})
+				.collection('circles', (c) => {
+					c.field('id').id();
+					c.field('metadata').json();
+				})
+				.collection('squares', (c) => {
+					c.field('id').id();
+					c.field('metadata').json();
+				})
+				.build();
+
+			expect(() => {
+				validateRelationalJsonPath(schema, 'shapes', 'children.item.metadata');
+			}).toThrow('requires collection scope syntax');
+		});
+
+		test('throws for A2O with invalid collection scope', () => {
+			const schema = new SchemaBuilder()
+				.collection('shapes', (c) => {
+					c.field('id').id();
+					c.field('children').m2a(['circles', 'squares']);
+				})
+				.collection('circles', (c) => {
+					c.field('id').id();
+					c.field('metadata').json();
+				})
+				.collection('squares', (c) => {
+					c.field('id').id();
+					c.field('metadata').json();
+				})
+				.build();
+
+			expect(() => {
+				validateRelationalJsonPath(schema, 'shapes', 'children.item:triangles.metadata');
+			}).toThrow('is not in the allowed collections');
+		});
+	});
+
 	describe('error cases', () => {
 		test('throws for non-existent relation', () => {
 			const schema = new SchemaBuilder()
