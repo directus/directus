@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import {  formatUserAvatar, getFocusId } from './utils';
+import { formatUserAvatar, getFocusId } from './utils';
 import type { CollabUser } from '@/composables/use-collab';
 
 vi.mock('@/utils/get-asset-url', () => ({
