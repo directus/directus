@@ -143,7 +143,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			:items="languageOptions"
 			:danger="item?.$type === 'deleted'"
 			:secondary
-			:disabled="activatorDisabled"
+			:disabled="disabled"
 			:non-editable
 		>
 			<template #prepend>
