@@ -205,7 +205,9 @@ describe('string conditional formatting', () => {
 		const wrapper = mountFormattedValue({
 			type: 'string',
 			value: 'hello world',
-			conditionalFormatting: [{ operator: 'contains', value: 'world', color: 'green', background: '', text: '', icon: '' }],
+			conditionalFormatting: [
+				{ operator: 'contains', value: 'world', color: 'green', background: '', text: '', icon: '' },
+			],
 		});
 
 		expect(wrapper.find('.display-formatted').attributes('style')).toContain('green');
@@ -215,7 +217,9 @@ describe('string conditional formatting', () => {
 		const wrapper = mountFormattedValue({
 			type: 'string',
 			value: 'hello world',
-			conditionalFormatting: [{ operator: 'starts_with', value: 'hello', color: 'green', background: '', text: '', icon: '' }],
+			conditionalFormatting: [
+				{ operator: 'starts_with', value: 'hello', color: 'green', background: '', text: '', icon: '' },
+			],
 		});
 
 		expect(wrapper.find('.display-formatted').attributes('style')).toContain('green');
@@ -225,7 +229,9 @@ describe('string conditional formatting', () => {
 		const wrapper = mountFormattedValue({
 			type: 'string',
 			value: 'hello world',
-			conditionalFormatting: [{ operator: 'ends_with', value: 'world', color: 'green', background: '', text: '', icon: '' }],
+			conditionalFormatting: [
+				{ operator: 'ends_with', value: 'world', color: 'green', background: '', text: '', icon: '' },
+			],
 		});
 
 		expect(wrapper.find('.display-formatted').attributes('style')).toContain('green');
@@ -279,7 +285,9 @@ describe('conditional text override', () => {
 			props: {
 				type: 'integer',
 				value: '1',
-				conditionalFormatting: [{ operator: 'eq', value: '1', color: '', background: '', text: '$t:status_active', icon: '' }],
+				conditionalFormatting: [
+					{ operator: 'eq', value: '1', color: '', background: '', text: '$t:status_active', icon: '' },
+				],
 			},
 			global: {
 				plugins: [i18nWithMessages],
