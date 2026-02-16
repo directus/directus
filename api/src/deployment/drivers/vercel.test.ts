@@ -413,7 +413,7 @@ describe('VercelDriver', () => {
 
 			const result = await driver.registerWebhook('https://example.com/webhooks/vercel', ['prj_123', 'prj_456']);
 
-			expect(result).toEqual({ webhook_id: 'hook_123', webhook_secret: 'whsec_abc' });
+			expect(result).toEqual({ webhook_ids: ['hook_123'], webhook_secret: 'whsec_abc' });
 
 			const call = mockAxiosRequest.mock.calls[0]![0];
 			expect(call.method).toBe('POST');
@@ -429,10 +429,10 @@ describe('VercelDriver', () => {
 	});
 
 	describe('unregisterWebhook', () => {
-		it('should call DELETE /v1/webhooks/:id', async () => {
+		it('should call DELETE /v1/webhooks/:id for each webhook', async () => {
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, {}));
 
-			await driver.unregisterWebhook('hook_123');
+			await driver.unregisterWebhook(['hook_123']);
 
 			const call = mockAxiosRequest.mock.calls[0]![0];
 			expect(call.method).toBe('DELETE');

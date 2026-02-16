@@ -157,11 +157,11 @@ export abstract class DeploymentDriver<
 	abstract registerWebhook(webhookUrl: string, projectIds: string[]): Promise<WebhookRegistrationResult>;
 
 	/**
-	 * Unregister a webhook from the provider
+	 * Unregister webhooks from the provider
 	 *
-	 * @param webhookId The webhook ID returned from registerWebhook
+	 * @param webhookIds The webhook IDs returned from registerWebhook
 	 */
-	abstract unregisterWebhook(webhookId: string): Promise<void>;
+	abstract unregisterWebhook(webhookIds: string[]): Promise<void>;
 
 	/**
 	 * Verify webhook signature and parse the event payload

@@ -75,7 +75,7 @@ export async function ensureDeploymentWebhooks(): Promise<void> {
 	});
 
 	const configs = await service.readByQuery({
-		filter: { webhook_id: { _null: true } },
+		filter: { webhook_ids: { _null: true } },
 		limit: -1,
 	});
 

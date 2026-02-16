@@ -364,15 +364,17 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		});
 
 		return {
-			webhook_id: response.id,
+			webhook_ids: [response.id],
 			webhook_secret: response.secret,
 		};
 	}
 
-	async unregisterWebhook(webhookId: string): Promise<void> {
-		await this.request(`/v1/webhooks/${encodeURIComponent(webhookId)}`, {
-			method: 'DELETE',
-		});
+	async unregisterWebhook(webhookIds: string[]): Promise<void> {
+		for (const id of webhookIds) {
+			await this.request(`/v1/webhooks/${encodeURIComponent(id)}`, {
+				method: 'DELETE',
+			});
+		}
 	}
 
 	verifyAndParseWebhook(

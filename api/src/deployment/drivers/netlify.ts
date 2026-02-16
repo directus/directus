@@ -1,8 +1,10 @@
+import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type {
 	Credentials,
 	Deployment,
 	DeploymentWebhookEvent,
+	DeploymentWebhookEventType,
 	Details,
 	Log,
 	Options,
@@ -43,6 +45,16 @@ const WS_CONNECTION_TIMEOUT = 10_000; // 10 seconds
 // eslint-disable-next-line no-control-regex
 const ANSI_REGEX = /[\x1b]\[[0-9;]*m/g;
 const WS_URL = 'wss://socketeer.services.netlify.com/build/logs';
+
+// Deploy notification events we subscribe to
+const NETLIFY_WEBHOOK_EVENTS = ['deploy_created', 'deploy_building', 'deploy_failed'];
+
+// Map Netlify deploy state to our normalized types
+const STATE_TO_EVENT: Record<string, { type: DeploymentWebhookEventType; status: Status }> = {
+	building: { type: 'deployment.created', status: 'building' },
+	ready: { type: 'deployment.succeeded', status: 'ready' },
+	error: { type: 'deployment.error', status: 'error' },
+};
 
 export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyOptions> {
 	private api: NetlifyAPI;
@@ -344,20 +356,95 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		});
 	}
 
-	async registerWebhook(_webhookUrl: string, _projectIds: string[]): Promise<WebhookRegistrationResult> {
-		throw new Error('Netlify webhook registration not yet implemented');
+	async registerWebhook(webhookUrl: string, projectIds: string[]): Promise<WebhookRegistrationResult> {
+		const secret = randomBytes(32).toString('hex');
+		const hookIds: string[] = [];
+
+		for (const siteId of projectIds) {
+			for (const event of NETLIFY_WEBHOOK_EVENTS) {
+				const hook = await this.handleApiError((api) =>
+					api.createHookBySiteId({
+						site_id: siteId,
+						body: { type: 'url', event, data: { url: webhookUrl, secret } },
+					}),
+				);
+
+				hookIds.push(hook.id!);
+			}
+		}
+
+		return { webhook_ids: hookIds, webhook_secret: secret };
 	}
 
-	async unregisterWebhook(_webhookId: string): Promise<void> {
-		throw new Error('Netlify webhook unregistration not yet implemented');
+	async unregisterWebhook(webhookIds: string[]): Promise<void> {
+		await Promise.allSettled(webhookIds.map((id) => this.handleApiError((api) => api.deleteHook({ hook_id: id }))));
 	}
 
 	verifyAndParseWebhook(
-		_rawBody: Buffer,
-		_headers: Record<string, string | string[] | undefined>,
-		_webhookSecret: string,
+		rawBody: Buffer,
+		headers: Record<string, string | string[] | undefined>,
+		webhookSecret: string,
 	): DeploymentWebhookEvent | null {
-		throw new Error('Netlify webhook verification not yet implemented');
+		const token = headers['x-webhook-signature'];
+
+		if (!token || typeof token !== 'string') {
+			return null;
+		}
+
+		// JWS verification: header.payload.signature
+		const parts = token.split('.');
+
+		if (parts.length !== 3) {
+			return null;
+		}
+
+		const [header64, payload64, signature64] = parts;
+
+		// Verify HMAC-SHA256 signature
+		const expected = createHmac('sha256', webhookSecret).update(`${header64}.${payload64}`).digest();
+
+		const sig = Buffer.from(signature64!, 'base64url');
+
+		if (expected.length !== sig.length || !timingSafeEqual(expected, sig)) {
+			return null;
+		}
+
+		// Decode and validate JWT payload
+		const payload = JSON.parse(Buffer.from(payload64!, 'base64url').toString('utf-8'));
+
+		if (payload.iss !== 'netlify') {
+			return null;
+		}
+
+		// Verify body hash
+		const bodyHash = createHash('sha256').update(rawBody).digest('hex');
+
+		if (payload.sha256 !== bodyHash) {
+			return null;
+		}
+
+		// Parse deploy object from body
+		const deploy = JSON.parse(rawBody.toString('utf-8'));
+		const state = this.mapStatus(deploy.state);
+		const mapping = STATE_TO_EVENT[state];
+
+		if (!mapping) {
+			return null;
+		}
+
+		const url = deploy.ssl_url || deploy.deploy_ssl_url || deploy.url;
+
+		return {
+			type: mapping.type,
+			provider: 'netlify',
+			project_external_id: deploy.site_id,
+			deployment_external_id: deploy.id,
+			status: mapping.status,
+			...(url ? { url } : {}),
+			...(deploy.context ? { target: deploy.context } : {}),
+			timestamp: new Date(deploy.created_at),
+			raw: deploy,
+		};
 	}
 
 	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {

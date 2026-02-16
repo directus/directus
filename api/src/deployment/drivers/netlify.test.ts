@@ -1,3 +1,4 @@
+import { createHash, createHmac } from 'node:crypto';
 import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NetlifyDriver } from './netlify.js';
@@ -10,6 +11,8 @@ const mockNetlifyAPI = vi.hoisted(() => ({
 	getDeploy: vi.fn(),
 	createSiteBuild: vi.fn(),
 	cancelSiteDeploy: vi.fn(),
+	createHookBySiteId: vi.fn(),
+	deleteHook: vi.fn(),
 }));
 
 vi.mock('@netlify/api', () => ({
@@ -555,6 +558,171 @@ describe('NetlifyDriver', () => {
 			expect(logs[2]!.message).toBe('Done');
 
 			expect(logs.some((log) => log.message === 'Old log before since date')).toBe(false);
+		});
+	});
+
+	describe('registerWebhook', () => {
+		it('should create hooks for each site and event', async () => {
+			let callCount = 0;
+
+			mockNetlifyAPI.createHookBySiteId.mockImplementation(() => {
+				callCount++;
+				return Promise.resolve({ id: `hook_${callCount}` });
+			});
+
+			const result = await driver.registerWebhook('https://example.com/webhooks/netlify', ['site_1', 'site_2']);
+
+			// 3 events × 2 sites = 6 hooks
+			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledTimes(6);
+			expect(result.webhook_ids).toHaveLength(6);
+			expect(result.webhook_ids).toEqual(['hook_1', 'hook_2', 'hook_3', 'hook_4', 'hook_5', 'hook_6']);
+			expect(result.webhook_secret).toBeTruthy();
+			expect(result.webhook_secret.length).toBe(64); // 32 bytes hex
+
+			// Verify first call structure
+			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledWith(
+				expect.objectContaining({
+					site_id: 'site_1',
+					body: expect.objectContaining({
+						type: 'url',
+						data: expect.objectContaining({ url: 'https://example.com/webhooks/netlify' }),
+					}),
+				}),
+			);
+		});
+	});
+
+	describe('unregisterWebhook', () => {
+		it('should delete each hook by ID', async () => {
+			mockNetlifyAPI.deleteHook.mockResolvedValue(undefined);
+
+			await driver.unregisterWebhook(['hook_1', 'hook_2', 'hook_3']);
+
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledTimes(3);
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'hook_1' });
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'hook_2' });
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'hook_3' });
+		});
+
+		it('should not throw if some deletes fail', async () => {
+			mockNetlifyAPI.deleteHook
+				.mockResolvedValueOnce(undefined)
+				.mockRejectedValueOnce(new Error('Not found'))
+				.mockResolvedValueOnce(undefined);
+
+			await expect(driver.unregisterWebhook(['hook_1', 'hook_2', 'hook_3'])).resolves.not.toThrow();
+		});
+	});
+
+	describe('verifyAndParseWebhook', () => {
+		const secret = 'test-webhook-secret';
+
+		function createJws(payload: Record<string, unknown>, signingSecret: string): string {
+			const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+			const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
+			const signature = createHmac('sha256', signingSecret).update(`${header}.${body}`).digest('base64url');
+			return `${header}.${body}.${signature}`;
+		}
+
+		function createDeployPayload(state: string) {
+			return {
+				id: 'deploy_abc',
+				site_id: 'site_xyz',
+				state,
+				ssl_url: 'https://my-site.netlify.app',
+				context: 'production',
+				created_at: '2024-06-01T12:00:00Z',
+				branch: 'main',
+			};
+		}
+
+		it('should verify valid JWS and parse ready deploy', () => {
+			const deploy = createDeployPayload('ready');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
+			const token = createJws({ iss: 'netlify', sha256: bodyHash }, secret);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+
+			expect(result).not.toBeNull();
+			expect(result!.type).toBe('deployment.succeeded');
+			expect(result!.provider).toBe('netlify');
+			expect(result!.project_external_id).toBe('site_xyz');
+			expect(result!.deployment_external_id).toBe('deploy_abc');
+			expect(result!.status).toBe('ready');
+			expect(result!.url).toBe('https://my-site.netlify.app');
+			expect(result!.target).toBe('production');
+			expect(result!.timestamp).toEqual(new Date('2024-06-01T12:00:00Z'));
+		});
+
+		it('should return null for missing signature header', () => {
+			const deploy = createDeployPayload('ready');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+
+			const result = driver.verifyAndParseWebhook(rawBody, {}, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for invalid signature', () => {
+			const deploy = createDeployPayload('ready');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
+			const token = createJws({ iss: 'netlify', sha256: bodyHash }, 'wrong-secret');
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for wrong issuer', () => {
+			const deploy = createDeployPayload('ready');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
+			const token = createJws({ iss: 'not-netlify', sha256: bodyHash }, secret);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for mismatched body hash', () => {
+			const deploy = createDeployPayload('ready');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+			const token = createJws({ iss: 'netlify', sha256: 'wrong-hash' }, secret);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for unmapped state', () => {
+			const deploy = createDeployPayload('new');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
+			const token = createJws({ iss: 'netlify', sha256: bodyHash }, secret);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+
+			// 'new' maps to 'building' via mapStatus, and 'building' IS in STATE_TO_EVENT
+			expect(result).not.toBeNull();
+			expect(result!.status).toBe('building');
+		});
+
+		it.each([
+			['building', 'deployment.created', 'building'],
+			['ready', 'deployment.succeeded', 'ready'],
+			['error', 'deployment.error', 'error'],
+		])('should map state "%s" to type "%s" with status "%s"', (state, expectedType, expectedStatus) => {
+			const deploy = createDeployPayload(state);
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
+			const token = createJws({ iss: 'netlify', sha256: bodyHash }, secret);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+
+			expect(result!.type).toBe(expectedType);
+			expect(result!.status).toBe(expectedStatus);
 		});
 	});
 });

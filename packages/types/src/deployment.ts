@@ -90,7 +90,7 @@ export interface DeploymentConfig {
 	provider: ProviderType;
 	credentials: Credentials;
 	options: Options | null;
-	webhook_id: string | null;
+	webhook_ids: string[] | null;
 	webhook_secret: string | null;
 	date_created: string;
 	projects?: StoredProject[];
@@ -124,7 +124,7 @@ export interface DeploymentWebhookEvent {
  * Result of registering a webhook with a provider
  */
 export interface WebhookRegistrationResult {
-	webhook_id: string;
+	webhook_ids: string[];
 	webhook_secret: string;
 }
 

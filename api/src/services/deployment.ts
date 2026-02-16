@@ -166,10 +166,10 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const deployment = await this.readByProvider(provider);
 
 		// Webhook cleanup
-		if (deployment.webhook_id) {
+		if (deployment.webhook_ids && deployment.webhook_ids.length > 0) {
 			try {
 				const driver = await this.getDriver(provider);
-				await driver.unregisterWebhook(deployment.webhook_id);
+				await driver.unregisterWebhook(deployment.webhook_ids);
 			} catch (err) {
 				const logger = useLogger();
 				logger.error(`Failed to unregister webhook for ${provider}: ${err}`);
@@ -215,11 +215,10 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 */
 	async getWebhookConfig(
 		provider: ProviderType,
-	): Promise<{ webhook_id: string | null; webhook_secret: string | null; credentials: Credentials; options: Options }> {
+	): Promise<{ webhook_secret: string | null; credentials: Credentials; options: Options }> {
 		const config = await this.readConfig(provider);
 
 		return {
-			webhook_id: config.webhook_id ?? null,
 			webhook_secret: config.webhook_secret ?? null,
 			credentials: this.parseValue<Credentials>(config.credentials, {}),
 			options: this.parseValue<Options>(config.options, {}),
@@ -259,25 +258,25 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const projectExternalIds = projects.map((p) => p.external_id);
 		const driver = await this.getDriver(provider);
 
-		// No projects → unregister webhook if exists
+		// No projects → unregister webhooks if any exist
 		if (projectExternalIds.length === 0) {
-			if (config.webhook_id) {
+			if (config.webhook_ids && config.webhook_ids.length > 0) {
 				try {
-					await driver.unregisterWebhook(config.webhook_id);
+					await driver.unregisterWebhook(config.webhook_ids);
 				} catch {
 					// best effort
 				}
 
-				await super.updateOne(config.id, { webhook_id: null, webhook_secret: null } as Partial<DeploymentConfig>);
+				await super.updateOne(config.id, { webhook_ids: null, webhook_secret: null } as Partial<DeploymentConfig>);
 			}
 
 			return;
 		}
 
-		// Unregister existing webhook before re-registering
-		if (config.webhook_id) {
+		// Unregister existing webhooks before re-registering
+		if (config.webhook_ids && config.webhook_ids.length > 0) {
 			try {
-				await driver.unregisterWebhook(config.webhook_id);
+				await driver.unregisterWebhook(config.webhook_ids);
 			} catch {
 				// best effort
 			}
@@ -288,7 +287,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const result = await driver.registerWebhook(webhookUrl, projectExternalIds);
 
 		await super.updateOne(config.id, {
-			webhook_id: result.webhook_id,
+			webhook_ids: result.webhook_ids,
 			webhook_secret: result.webhook_secret,
 		} as Partial<DeploymentConfig>);
 

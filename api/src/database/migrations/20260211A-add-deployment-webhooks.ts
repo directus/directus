@@ -2,7 +2,7 @@ import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_deployments', (table) => {
-		table.string('webhook_id').nullable();
+		table.json('webhook_ids').nullable();
 		table.string('webhook_secret').nullable();
 	});
 
@@ -23,7 +23,7 @@ export async function down(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.alterTable('directus_deployments', (table) => {
-		table.dropColumn('webhook_id');
+		table.dropColumn('webhook_ids');
 		table.dropColumn('webhook_secret');
 	});
 }
