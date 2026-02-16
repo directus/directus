@@ -9,7 +9,7 @@ function mimeTypeMatches(mimeType: string, pattern: string): boolean {
 
 	if (pattern.endsWith('/*')) {
 		const baseType = pattern.slice(0, -1); // "image/*" -> "image/"
-		return mimeType.startsWith(baseType) || mimeType + '/' === baseType;
+		return mimeType.startsWith(baseType);
 	}
 
 	if (mimeType.endsWith('/*')) {
