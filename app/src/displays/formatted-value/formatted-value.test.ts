@@ -148,6 +148,102 @@ describe('decimal conditional formatting', () => {
 	});
 });
 
+describe('integer conditional formatting', () => {
+	it('matches eq on integer values', () => {
+		const wrapper = mountFormattedValue({
+			type: 'integer',
+			value: '42',
+			conditionalFormatting: [{ operator: 'eq', value: '42', color: 'blue', background: '', text: '', icon: '' }],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style')).toContain('blue');
+	});
+
+	it('compares gt correctly for integers', () => {
+		const wrapper = mountFormattedValue({
+			type: 'integer',
+			value: '10',
+			conditionalFormatting: [{ operator: 'gt', value: '5', color: 'green', background: '', text: '', icon: '' }],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style')).toContain('green');
+	});
+
+	it('does not match when integer comparison fails', () => {
+		const wrapper = mountFormattedValue({
+			type: 'integer',
+			value: '3',
+			conditionalFormatting: [{ operator: 'gt', value: '5', color: 'red', background: '', text: '', icon: '' }],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style') ?? '').not.toContain('red');
+	});
+});
+
+describe('string conditional formatting', () => {
+	it('matches eq on string values', () => {
+		const wrapper = mountFormattedValue({
+			type: 'string',
+			value: 'hello',
+			conditionalFormatting: [{ operator: 'eq', value: 'hello', color: 'blue', background: '', text: '', icon: '' }],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style')).toContain('blue');
+	});
+
+	it('does not match neq when values are equal', () => {
+		const wrapper = mountFormattedValue({
+			type: 'string',
+			value: 'hello',
+			conditionalFormatting: [{ operator: 'neq', value: 'hello', color: 'red', background: '', text: '', icon: '' }],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style') ?? '').not.toContain('red');
+	});
+
+	it('matches contains operator', () => {
+		const wrapper = mountFormattedValue({
+			type: 'string',
+			value: 'hello world',
+			conditionalFormatting: [{ operator: 'contains', value: 'world', color: 'green', background: '', text: '', icon: '' }],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style')).toContain('green');
+	});
+
+	it('matches starts_with operator', () => {
+		const wrapper = mountFormattedValue({
+			type: 'string',
+			value: 'hello world',
+			conditionalFormatting: [{ operator: 'starts_with', value: 'hello', color: 'green', background: '', text: '', icon: '' }],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style')).toContain('green');
+	});
+
+	it('matches ends_with operator', () => {
+		const wrapper = mountFormattedValue({
+			type: 'string',
+			value: 'hello world',
+			conditionalFormatting: [{ operator: 'ends_with', value: 'world', color: 'green', background: '', text: '', icon: '' }],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style')).toContain('green');
+	});
+
+	it('does not match on unknown operator', () => {
+		const wrapper = mountFormattedValue({
+			type: 'string',
+			value: 'hello',
+			conditionalFormatting: [
+				{ operator: 'gt' as any, value: 'hello', color: 'red', background: '', text: '', icon: '' },
+			],
+		});
+
+		expect(wrapper.find('.display-formatted').attributes('style') ?? '').not.toContain('red');
+	});
+});
+
 describe('string/text formatting', () => {
 	it('applies formatTitle with format enabled', () => {
 		const text = getDisplayText({ type: 'string', value: 'hello_world', format: true });
@@ -157,6 +253,41 @@ describe('string/text formatting', () => {
 	it('displays raw value without format', () => {
 		const text = getDisplayText({ type: 'string', value: 'hello_world' });
 		expect(text).toBe('hello_world');
+	});
+});
+
+describe('conditional text override', () => {
+	it('displays custom text when condition matches', () => {
+		const text = getDisplayText({
+			type: 'integer',
+			value: '1',
+			conditionalFormatting: [{ operator: 'eq', value: '1', color: '', background: '', text: 'Active', icon: '' }],
+		});
+
+		expect(text).toBe('Active');
+	});
+
+	it('translates $t: prefixed text', () => {
+		const i18nWithMessages = createI18n({
+			legacy: false,
+			missingWarn: false,
+			locale: 'en-US',
+			messages: { 'en-US': { status_active: 'Active' } },
+		});
+
+		const wrapper = mount(FormattedValue, {
+			props: {
+				type: 'integer',
+				value: '1',
+				conditionalFormatting: [{ operator: 'eq', value: '1', color: '', background: '', text: '$t:status_active', icon: '' }],
+			},
+			global: {
+				plugins: [i18nWithMessages],
+				stubs: { VIcon: true, ValueNull: true },
+			},
+		});
+
+		expect(wrapper.find('.value').text()).toBe('Active');
 	});
 });
 
