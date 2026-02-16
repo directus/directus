@@ -116,20 +116,21 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getVersionSave(key: string, collection: string, item: string, mapDelta = true) {
-		const version = (
-			await this.readByQuery({
-				filter: {
-					key: { _eq: key },
-					collection: { _eq: collection },
-					item: { _eq: item },
-				},
-			})
-		)[0];
+	async getVersionSaves(key: string, collection: string, item: PrimaryKey | null, mapDelta = true) {
+		let versions = await this.readByQuery({
+			filter: {
+				key: { _eq: key },
+				collection: { _eq: collection },
+				...(item ? { item: { _eq: item } } : {}),
+			},
+		});
 
-		if (mapDelta && version?.delta) version.delta = this.mapDelta(version);
+		versions = versions.map((version) => {
+			if (mapDelta && version.delta) version.delta = this.mapDelta(version);
+			return version;
+		});
 
-		return version;
+		return versions;
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {

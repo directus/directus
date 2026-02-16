@@ -83,6 +83,10 @@ export async function sanitizeQuery(
 		query.versionRaw = Boolean(
 			'versionRaw' in rawQuery && (rawQuery['versionRaw'] === '' || rawQuery['versionRaw'] === 'true'),
 		);
+
+		query.showMain = Boolean(
+			'showMain' in rawQuery && (rawQuery['showMain'] === '' || rawQuery['showMain'] === 'true'),
+		);
 	}
 
 	if (rawQuery['export']) {

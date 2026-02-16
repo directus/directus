@@ -10,6 +10,7 @@ export type Query = {
 	search?: string | null;
 	version?: string | null;
 	versionRaw?: boolean | null;
+	showMain?: boolean | null;
 	export?: 'json' | 'csv' | 'csv_utf8' | 'xml' | 'yaml' | null;
 	group?: string[] | null;
 	aggregate?: Aggregate | null;

@@ -494,6 +494,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
+		if (query.version && query.version !== 'main') {
+			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
+		}
+
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
@@ -590,11 +594,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		let results: Item[] = [];
 
-		if (query.version && query.version !== 'main') {
-			results = [await handleVersion(this, key, queryWithKey, opts)];
-		} else {
-			results = await this.readByQuery(queryWithKey, opts);
-		}
+		results = await this.readByQuery(queryWithKey, { ...opts, key });
 
 		if (results.length === 0) {
 			throw new ForbiddenError();
@@ -620,7 +620,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			queryWithKey.limit = keys.length;
 		}
 
-		const results = await this.readByQuery(queryWithKey, opts);
+		let results: Item[] = [];
+
+		results = await this.readByQuery(queryWithKey, opts);
 
 		return results;
 	}
@@ -1189,7 +1191,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
 
 			if (key) {
-				record = await handleVersion(this, key, query, opts);
+				record = (await handleVersion(this, key, query, opts))[0];
 			}
 		} else {
 			record = (await this.readByQuery(query, opts))[0];
