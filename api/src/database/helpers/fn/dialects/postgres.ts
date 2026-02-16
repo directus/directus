@@ -66,7 +66,7 @@ export class FnHelperPostgres extends FnHelper {
 	}
 
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
+		const { field, path } = parseJsonFunction(functionCall);
 
 		// Check for relational JSON context (e.g., json(category.metadata, color))
 		if (options?.relationalJsonContext) {
@@ -100,13 +100,6 @@ export class FnHelperPostgres extends FnHelper {
 		}
 
 		const { dbType } = fieldSchema;
-
-		// Handle array wildcard syntax using jsonb_path_query_array
-		if (hasWildcard) {
-			const jsonPathExpr = convertToJsonPathExpr(path);
-
-			return this.knex.raw(`jsonb_path_query_array(??::jsonb, ?)`, [table + '.' + field, jsonPathExpr]);
-		}
 
 		// Convert dot notation to PostgreSQL JSON path
 		// "data.items[0].name" → "data"->'items'->0->>'name'

@@ -111,7 +111,7 @@ export async function parseFields(
 			// Create a FunctionFieldNode for json functions to preserve the full function call
 			// This is needed because json() requires the full path (e.g., json(metadata, color))
 			if (functionName === 'json') {
-				const { field, path, hasWildcard } = parseJsonFunction(name);
+				const { field, path } = parseJsonFunction(name);
 
 				// Check if the field portion contains a relational path (has dots)
 				// e.g., json(category.metadata, color) where category is a relation
@@ -131,7 +131,7 @@ export async function parseFields(
 							relationalPath: validation.relationalPath,
 							jsonField: validation.jsonField,
 							jsonPath: path,
-							hasWildcard,
+							hasWildcard: false,
 							relationType: validation.relationType,
 							relation: validation.relation,
 							targetCollection: validation.targetCollection,

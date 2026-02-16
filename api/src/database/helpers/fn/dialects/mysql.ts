@@ -53,7 +53,7 @@ export class FnHelperMySQL extends FnHelper {
 	}
 
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
+		const { field, path } = parseJsonFunction(functionCall);
 
 		// Check for relational JSON context (e.g., json(category.metadata, color))
 		if (options?.relationalJsonContext) {
@@ -81,12 +81,7 @@ export class FnHelperMySQL extends FnHelper {
 
 		// Convert dot notation to MySQL JSON path
 		// "data.items[0].name" → "$['items'][0]['name']"
-		const jsonPath = convertToMySQLPath(path, hasWildcard);
-
-		// For wildcards, JSON_EXTRACT returns a JSON array directly (don't unquote)
-		if (hasWildcard) {
-			return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [table, field, jsonPath]);
-		}
+		const jsonPath = convertToMySQLPath(path);
 
 		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, field, jsonPath]);
 	}

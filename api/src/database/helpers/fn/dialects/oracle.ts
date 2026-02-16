@@ -61,7 +61,7 @@ export class FnHelperOracle extends FnHelper {
 	}
 
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path, hasWildcard } = parseJsonFunction(functionCall);
+		const { field, path } = parseJsonFunction(functionCall);
 
 		// Check for relational JSON context (e.g., json(category.metadata, color))
 		if (options?.relationalJsonContext) {
@@ -89,14 +89,7 @@ export class FnHelperOracle extends FnHelper {
 
 		// Oracle uses JSON_VALUE or JSON_QUERY
 		// "data.items[0].name" → "$.items[0].name"
-		let jsonPath = '$' + path;
-
-		// Handle array wildcards using JSON_QUERY with array wrapper
-		if (hasWildcard) {
-			// Convert [] to [*] for Oracle's JSON path syntax
-			jsonPath = jsonPath.split('[]').join('[*]');
-			return this.knex.raw(`JSON_QUERY(??.??, ? WITH ARRAY WRAPPER)`, [table, field, jsonPath]);
-		}
+		const jsonPath = '$' + path;
 
 		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [table, field, jsonPath]);
 	}
