@@ -75,17 +75,10 @@ export class FnHelperPostgres extends FnHelper {
 		}
 
 		const { dbType } = fieldSchema;
+		const { template, bindings } = buildPostgresJsonPath(path);
+		const cast = dbType === 'jsonb' ? 'jsonb' : 'json';
 
-		// Convert dot notation to PostgreSQL JSON path
-		// "data.items[0].name" → "data"->'items'->0->>'name'
-		const jsonPath = convertToPostgresPath(path);
-
-		// Use JSONB operators for JSONB fields, JSON functions for JSON fields
-		if (dbType === 'jsonb') {
-			return this.knex.raw(`??::jsonb${jsonPath}`, [table + '.' + field]);
-		} else {
-			return this.knex.raw(`??::json${jsonPath}`, [table + '.' + field]);
-		}
+		return this.knex.raw(`??::${cast}${template}`, [table + '.' + field, ...bindings]);
 	}
 }
 
@@ -120,25 +113,32 @@ export function splitJsonPath(path: string): string[] {
 	return parts;
 }
 
-export function convertToPostgresPath(path: string): string {
-	// ".color" → "->>'color'"
-	// ".items[0].name" → "->'items'->0->>'name'"
-	// Use ->> for final element (returns text), -> for intermediate (returns json)
-
+/**
+ * Build a parameterized PostgreSQL JSON path using -> and ->> operators.
+ * Returns a template string containing only operators and ? placeholders,
+ * plus a bindings array with the actual values.
+ *
+ * @example ".color" → { template: "->>?", bindings: ["color"] }
+ * @example ".items[0].name" → { template: "->?->?->>?", bindings: ["items", 0, "name"] }
+ */
+export function buildPostgresJsonPath(path: string): { template: string; bindings: (string | number)[] } {
 	const parts = splitJsonPath(path);
 
-	let result = '';
+	let template = '';
+	const bindings: (string | number)[] = [];
 
 	for (let i = 0; i < parts.length; i++) {
 		const isLast = i === parts.length - 1;
 		const num = Number(parts[i]);
 
+		template += (isLast ? '->>' : '->') + '?';
+
 		if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
-			result += (isLast ? '->>' : '->') + parts[i];
+			bindings.push(num);
 		} else {
-			result += (isLast ? '->>' : '->') + `'${parts[i]}'`;
+			bindings.push(parts[i]!);
 		}
 	}
 
-	return result;
+	return { template, bindings };
 }
