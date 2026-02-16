@@ -59,8 +59,8 @@ function focusIntoView(cid: ClientID) {
 						:style="{ zIndex: COLLAB_USERS_DISPLAY_LIMIT - index }"
 						x-small
 						round
-						clickable
-						@click="focusIntoView(user.connection)"
+						:clickable="!!user.focusedField"
+						@click="user.focusedField && focusIntoView(user.connection)"
 					>
 						<img v-if="user.avatar_url" :src="user.avatar_url" />
 						<template v-else-if="user.name">{{ user.name?.substring(0, 1) }}</template>
