@@ -201,4 +201,9 @@ export const DEFAULTS = {
 	MCP_ENABLED: true,
 
 	AI_ENABLED: true,
+	AI_TELEMETRY_ENABLED: false,
+	AI_TELEMETRY_RECORD_IO: false,
+	LANGFUSE_SECRET_KEY: '',
+	LANGFUSE_PUBLIC_KEY: '',
+	LANGFUSE_BASE_URL: 'https://cloud.langfuse.com',
 } as const;

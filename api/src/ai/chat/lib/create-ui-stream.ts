@@ -15,6 +15,7 @@ import {
 	createAIProviderRegistry,
 	getProviderOptions,
 } from '../../providers/index.js';
+import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import type { ChatContext } from '../models/chat-request.js';
 import { formatContextForSystemPrompt } from '../utils/format-context.js';
@@ -25,16 +26,18 @@ export interface CreateUiStreamOptions {
 	tools: { [x: string]: Tool };
 	aiSettings: AISettings;
 	systemPrompt?: string;
+	userId?: string | null;
+	role?: string | null;
 	context?: ChatContext;
 	onUsage?: (usage: Pick<LanguageModelUsage, 'inputTokens' | 'outputTokens' | 'totalTokens'>) => void | Promise<void>;
 }
 
 export const createUiStream = async (
 	messages: UIMessage[],
-	{ provider, model, tools, aiSettings, systemPrompt, context, onUsage }: CreateUiStreamOptions,
+	{ provider, model, tools, aiSettings, systemPrompt, userId, role, context, onUsage }: CreateUiStreamOptions,
 ): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
 	const configs = buildProviderConfigs(aiSettings);
-	const providerConfig = configs.find((c) => c.type === provider);
+	const providerConfig = configs.find((c) p=> c.type === provider);
 
 	if (!providerConfig) {
 		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
@@ -47,6 +50,7 @@ export const createUiStream = async (
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
 	// Compute the full system prompt once to avoid re-computing on each step
 	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
+	const telemetryConfig = getAITelemetryConfig({ userId, role, provider, model });
 
 	const stream = streamText({
 		system: baseSystemPrompt,
@@ -55,6 +59,7 @@ export const createUiStream = async (
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
 		tools,
+		...(telemetryConfig ? ({ experimental_telemetry: telemetryConfig } as any) : {}),
 		/**
 		 * prepareStep is called before each AI step to prepare the system prompt.
 		 * When context exists, we override the system prompt to include context attachments.
