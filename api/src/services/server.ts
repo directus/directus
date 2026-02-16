@@ -74,7 +74,7 @@ export class ServerService {
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 
 			info['files'] = {
-				mimeTypeAllowList: env['FILES_MIME_TYPE_ALLOW_LIST'] ?? '*/*',
+				mimeTypeAllowList: env['FILES_MIME_TYPE_ALLOW_LIST'],
 			};
 
 			if (env['RATE_LIMITER_ENABLED']) {
@@ -124,6 +124,8 @@ export class ServerService {
 				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
 					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
 					: false;
+
+				info['websocket'].collaborativeEditing = toBoolean(env['WEBSOCKETS_COLLAB_ENABLED']);
 
 				info['websocket'].logs =
 					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin

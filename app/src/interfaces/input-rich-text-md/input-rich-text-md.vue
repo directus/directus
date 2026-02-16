@@ -215,11 +215,14 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		applyEdit(codemirror, type, options);
 	}
 }
+
+const menuActive = computed(() => imageDialogOpen.value);
 </script>
 
 <template>
 	<div
 		ref="markdownInterface"
+		v-prevent-focusout="menuActive"
 		class="interface-input-rich-text-md"
 		:class="[view, { disabled, 'non-editable': nonEditable }]"
 	>
@@ -571,7 +574,7 @@ textarea {
 .table-options {
 	--theme--form--row-gap: 12px;
 	--theme--form--column-gap: 12px;
-
+	min-inline-size: 280px;
 	padding: 12px;
 	@include mixins.form-grid;
 

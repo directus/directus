@@ -83,6 +83,9 @@ const value = computed<ChangesItem | any[]>({
 
 const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter, version } = toRefs(props);
 
+const addNewActive = defineModel<boolean>('addNewOpen');
+const selectDrawer = defineModel<boolean>('selectOpen');
+
 const drag = ref(false);
 const open = ref<Record<string, boolean>>({});
 
@@ -97,8 +100,6 @@ const query = computed<RelationQueryMultiple>(() => ({
 
 const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
 	useRelationMultiple(value, query, relationInfo, primaryKey, version);
-
-const selectDrawer = ref(false);
 
 const dragOptions = {
 	animation: 150,
@@ -172,8 +173,6 @@ function sort(from: number, to: number) {
 
 	update(...sortedItems);
 }
-
-const addNewActive = ref(false);
 
 function addNew(item: Record<string, any>) {
 	item[relationInfo.value.reverseJunctionField.field] = primaryKey.value;

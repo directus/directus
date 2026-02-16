@@ -28,7 +28,9 @@ export type Info = {
 	};
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
-	files?: Record<string, unknown>;
+	files?: {
+		mimeTypeAllowList: string;
+	};
 	setupCompleted: boolean;
 	rateLimit?:
 		| false
@@ -67,6 +69,7 @@ export type Info = {
 							path: string;
 					  };
 				heartbeat?: boolean | number;
+				collaborativeEditing?: boolean;
 		  };
 	version?: string;
 	extensions?: {

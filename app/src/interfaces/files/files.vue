@@ -346,11 +346,13 @@ const allowDrag = computed(
 		!props.disabled &&
 		updateAllowed.value,
 );
+
+const menuActive = computed(() => editModalActive.value || selectModalActive.value || showUpload.value);
 </script>
 
 <template>
 	<VNotice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
-	<div v-else class="many-to-many">
+	<div v-else v-prevent-focusout="menuActive" class="many-to-many">
 		<template v-if="loading">
 			<VSkeletonLoader
 				v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
