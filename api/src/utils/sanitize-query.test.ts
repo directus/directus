@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { getHelpers } from '../database/helpers/index.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { sanitizeQuery } from './sanitize-query.js';
 
@@ -8,6 +9,7 @@ import { sanitizeQuery } from './sanitize-query.js';
 vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 vi.mock('../database/index.js');
+vi.mock('../database/helpers/index.js');
 vi.mock('../permissions/lib/fetch-policies.js');
 vi.mock('../permissions/utils/fetch-dynamic-variable-data.js');
 
@@ -391,5 +393,59 @@ describe('alias', () => {
 		const sanitizedQuery = await sanitizeQuery({ alias }, null as any);
 
 		expect(sanitizedQuery.alias).toEqual({ field_a: 'testField' });
+	});
+});
+
+describe('json function support check', () => {
+	function mockJsonSupport(supported: boolean) {
+		vi.mocked(getHelpers).mockReturnValue({
+			capabilities: {
+				supportsJsonQueries: vi.fn().mockResolvedValue(supported),
+			},
+		} as any);
+	}
+
+	test('should allow json() in fields when supported', async () => {
+		mockJsonSupport(true);
+
+		const query = await sanitizeQuery({ fields: ['id', 'json(metadata, color)'] }, null as any);
+
+		expect(query.fields).toEqual(['id', 'json(metadata, color)']);
+	});
+
+	test('should allow regular fields when not supported', async () => {
+		mockJsonSupport(false);
+
+		const query = await sanitizeQuery({ fields: ['id', 'name'] }, null as any);
+
+		expect(query.fields).toEqual(['id', 'name']);
+	});
+
+	test('should reject json() in fields when not supported', async () => {
+		mockJsonSupport(false);
+
+		await expect(sanitizeQuery({ fields: ['id', 'json(metadata, color)'] }, null as any)).rejects.toThrowError(
+			'json() function is not supported',
+		);
+	});
+
+	test('should reject relational json() in fields when not supported', async () => {
+		mockJsonSupport(false);
+
+		await expect(sanitizeQuery({ fields: ['author.json(profile, avatar)'] }, null as any)).rejects.toThrowError(
+			'json() function is not supported',
+		);
+	});
+
+	test('should not call supportsJsonQueries when no json functions present', async () => {
+		const supportsJsonQueries = vi.fn();
+
+		vi.mocked(getHelpers).mockReturnValue({
+			capabilities: { supportsJsonQueries },
+		} as any);
+
+		await sanitizeQuery({ fields: ['id', 'name'], sort: 'name' }, null as any);
+
+		expect(supportsJsonQueries).not.toHaveBeenCalled();
 	});
 });

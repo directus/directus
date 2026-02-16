@@ -3,6 +3,7 @@ import { InvalidQueryError } from '@directus/errors';
 import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
@@ -40,12 +41,20 @@ export async function sanitizeQuery(
 		query.limit = Math.min(Number(env['QUERY_LIMIT_DEFAULT']), Number(env['QUERY_LIMIT_MAX']));
 	}
 
+	let hasJsonFields = false;
+
 	if (rawQuery['fields']) {
-		query.fields = sanitizeFields(rawQuery['fields']);
+		const result = sanitizeFields(rawQuery['fields']);
+
+		if (result) {
+			query.fields = result.fields;
+			hasJsonFields = result.hasJsonFunction;
+		}
 	}
 
 	if (rawQuery['groupBy']) {
-		query.group = sanitizeFields(rawQuery['groupBy']);
+		const result = sanitizeFields(rawQuery['groupBy']);
+		if (result) query.group = result.fields;
 	}
 
 	if (rawQuery['aggregate']) {
@@ -103,10 +112,19 @@ export async function sanitizeQuery(
 		query.backlink = sanitizeBacklink(rawQuery['backlink']);
 	}
 
+	if (hasJsonFields) {
+		const helpers = getHelpers(getDatabase());
+		const jsonSupported = await helpers.capabilities.supportsJsonQueries();
+
+		if (!jsonSupported) {
+			throw new InvalidQueryError({ reason: 'The json() function is not supported on this database' });
+		}
+	}
+
 	return query;
 }
 
-function sanitizeFields(rawFields: any) {
+function sanitizeFields(rawFields: any): { fields: string[]; hasJsonFunction: boolean } | null {
 	if (!rawFields) return null;
 
 	let fields: string[] = [];
@@ -122,9 +140,19 @@ function sanitizeFields(rawFields: any) {
 	// Case where array item includes CSV (fe fields[]=id,name):
 	fields = flatten(fields.map((field) => (field.includes(',') ? splitFields(field) : field)));
 
-	fields = fields.map((field) => field.trim());
+	let hasJsonFunction = false;
 
-	return fields;
+	fields = fields.map((field) => {
+		const trimmed = field.trim();
+
+		if (!hasJsonFunction && (trimmed.startsWith('json(') || trimmed.includes('.json('))) {
+			hasJsonFunction = true;
+		}
+
+		return trimmed;
+	});
+
+	return { fields, hasJsonFunction };
 }
 
 /**
