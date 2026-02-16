@@ -151,7 +151,7 @@ collab_collision: The item was changed while you were editing. Select which chan
 collab_disconnected: Collaborative Editing Disconnected
 collab_editing_field: Editing “{field}” field
 collab_currently_viewing: Currently viewing
-collab_you: (you)
+you: you
 n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Compatibility not guaranteed
