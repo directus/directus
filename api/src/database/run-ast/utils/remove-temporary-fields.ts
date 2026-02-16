@@ -1,6 +1,8 @@
 import type { Item, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { cloneDeep, pick } from 'lodash-es';
+import { getShadowName } from '../../../services/shadows/get-shadow-name.js';
+import { isShadow } from '../../../services/shadows/is-shadow.js';
 import type { AST, NestedCollectionNode } from '../../../types/ast.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
@@ -62,6 +64,10 @@ export function removeTemporaryFields(
 		const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 		for (const child of ast.children) {
+			if (isShadow(child.fieldKey, 'field')) {
+				continue;
+			}
+
 			if ('alias' in child && child.alias === true) {
 				aliasFields.push(child.fieldKey);
 			} else {
@@ -90,9 +96,15 @@ export function removeTemporaryFields(
 			let item = rawItem;
 
 			for (const nestedNode of nestedCollectionNodes) {
+				let nestedItem = item[nestedNode.fieldKey];
+
+				if ((nestedItem === null || nestedItem === undefined) && nestedNode.coalesce) {
+					nestedItem = item[getShadowName(nestedNode.fieldKey, 'field')];
+				}
+
 				item[nestedNode.fieldKey] = removeTemporaryFields(
 					schema,
-					item[nestedNode.fieldKey],
+					nestedItem,
 					nestedNode,
 					nestedNode.type === 'm2o'
 						? schema.collections[nestedNode.relation.related_collection!]!.primary

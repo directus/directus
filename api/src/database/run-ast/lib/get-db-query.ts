@@ -3,7 +3,6 @@ import type { Filter, Permission, Query } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import type { Context } from '../../../permissions/types.js';
-import { isShadow } from '../../../services/shadows/is-shadow.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
@@ -135,7 +134,6 @@ export function getDBQuery(
 							table,
 							alias: node.fieldKey,
 							permissions,
-							coalesce: node.coalesce,
 						},
 						{ knex, schema },
 					);
