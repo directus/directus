@@ -82,5 +82,4 @@ export abstract class FnHelper extends DatabaseHelper {
 		const { sql, bindings } = countQuery.toSQL();
 		return this.knex.raw(`(${sql})`, bindings);
 	}
-
 }

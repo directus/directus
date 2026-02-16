@@ -99,5 +99,4 @@ export class FnHelperSQLite extends FnHelper {
 
 		return this.knex.raw(`json_extract(??.??, ?)`, [table, field, jsonPath]);
 	}
-
 }

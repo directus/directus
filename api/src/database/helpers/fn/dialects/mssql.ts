@@ -75,5 +75,4 @@ export class FnHelperMSSQL extends FnHelper {
 
 		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [table, field, jsonPath]);
 	}
-
 }

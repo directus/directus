@@ -6,7 +6,7 @@
  * @example json(author.profile, settings.theme) → { field: 'author.profile', path: '.settings.theme' }
  * @example json(relation.item:collection.field, path) → { field: 'relation.item:collection.field', path: '.path' }
  */
-export function parseJsonFunction(functionString: string): { field: string; path: string; } {
+export function parseJsonFunction(functionString: string): { field: string; path: string } {
 	if (!functionString.startsWith('json(') || !functionString.endsWith(')')) {
 		throw new Error('Invalid json() syntax');
 	}

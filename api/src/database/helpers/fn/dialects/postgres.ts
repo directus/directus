@@ -87,7 +87,6 @@ export class FnHelperPostgres extends FnHelper {
 			return this.knex.raw(`??::json${jsonPath}`, [table + '.' + field]);
 		}
 	}
-
 }
 
 /**

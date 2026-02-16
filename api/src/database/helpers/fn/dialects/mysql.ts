@@ -67,7 +67,6 @@ export class FnHelperMySQL extends FnHelper {
 
 		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, field, jsonPath]);
 	}
-
 }
 
 /**

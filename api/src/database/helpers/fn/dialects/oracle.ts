@@ -75,5 +75,4 @@ export class FnHelperOracle extends FnHelper {
 
 		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [table, field, jsonPath]);
 	}
-
 }
