@@ -1,5 +1,22 @@
 import type { Filter } from '@directus/types';
 import { computed, type MaybeRef, unref } from 'vue';
+import { useServerStore } from '@/stores/server';
+
+/**
+ * Parses a MIME type allow list from server config (string, array, or undefined).
+ * Returns undefined if the list allows all types (wildcard).
+ */
+export function parseGlobalMimeTypeAllowList(allowList: string | string[] | undefined): string[] | undefined {
+	if (!allowList || allowList === '*/*') {
+		return undefined;
+	}
+
+	if (Array.isArray(allowList)) {
+		return allowList;
+	}
+
+	return allowList.split(',').map((type) => type.trim());
+}
 
 /**
  * Checks if a MIME type matches a pattern (supports wildcards like "image/*")
@@ -60,11 +77,14 @@ function intersectMimeTypes(interfaceTypes: string[], globalTypes: string[]): st
 /**
  * Creates a Directus filter for MIME type restrictions.
  * Supports wildcards like "image/*" and specific types like "image/jpeg".
+ *
+ * Global MIME type restrictions are automatically fetched from the server store.
  */
-export function useMimeTypeFilter(
-	allowedMimeTypes: MaybeRef<string[] | undefined>,
-	globalMimeTypes?: MaybeRef<string[] | undefined>,
-) {
+export function useMimeTypeFilter(allowedMimeTypes: MaybeRef<string[] | undefined>) {
+	const { info } = useServerStore();
+
+	const globalMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList));
+
 	const mimeTypeFilter = computed<Filter | null>(() => {
 		const types = unref(allowedMimeTypes);
 
@@ -103,7 +123,7 @@ export function useMimeTypeFilter(
 	 */
 	const combinedAcceptString = computed(() => {
 		const interfaceTypes = unref(allowedMimeTypes);
-		const globalTypes = unref(globalMimeTypes);
+		const globalTypes = globalMimeTypes.value;
 
 		// If no global restriction, use interface types
 		if (!globalTypes || globalTypes.length === 0) {

@@ -3,7 +3,7 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, inject, ref, toRef, toRefs } from 'vue';
 import Draggable from 'vuedraggable';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -26,7 +26,6 @@ import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
-import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
@@ -76,26 +75,7 @@ const value = computed({
 	},
 });
 
-const { info } = useServerStore();
-
-const globalMimeTypeAllowList = computed(() => {
-	const allowList = info.files?.mimeTypeAllowList;
-
-	if (!allowList || allowList === '*/*') {
-		return undefined;
-	}
-
-	if (Array.isArray(allowList)) {
-		return allowList as string[];
-	}
-
-	return (allowList as string).split(',').map((type: string) => type.trim());
-});
-
-const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(
-	computed(() => props.allowedMimeTypes),
-	globalMimeTypeAllowList,
-);
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(toRef(props, 'allowedMimeTypes'));
 
 const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
