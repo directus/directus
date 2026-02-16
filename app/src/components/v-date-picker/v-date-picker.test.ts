@@ -1,6 +1,6 @@
 import { CalendarDate, Time } from '@internationalized/date';
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
 import VDatePicker from './v-date-picker.vue';
 import { formatDatePickerModelValue } from '@/utils/format-date-picker-model-value';
@@ -846,6 +846,31 @@ describe('v-date-picker', () => {
 
 			const monthOptions = wrapper.findAll('#calendar-month-select option');
 			expect(monthOptions.length).toBe(12);
+		});
+
+		describe('in negative-UTC-offset timezones', () => {
+			const originalTZ = process.env.TZ;
+
+			beforeEach(() => {
+				process.env.TZ = 'America/Los_Angeles';
+			});
+
+			afterEach(() => {
+				process.env.TZ = originalTZ;
+			});
+
+			it('month option labels match their value', () => {
+				const wrapper = createWrapper({
+					type: 'date',
+					modelValue: '2024-06-15',
+				});
+
+				const options = wrapper.findAll('#calendar-month-select option');
+
+				expect(options.at(0)?.text()).toBe('January');
+				expect(options.at(5)?.text()).toBe('June');
+				expect(options.at(11)?.text()).toBe('December');
+			});
 		});
 	});
 
