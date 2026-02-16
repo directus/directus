@@ -37,14 +37,7 @@ function getDisplayText(props: FormattedValueProps) {
 describe('decimal formatting', () => {
 	it('preserves decimal places with format enabled', () => {
 		const text = getDisplayText({ type: 'decimal', value: '123.456', format: true });
-		expect(text).toContain('123');
-		expect(text).toContain('456');
-	});
-
-	it('does not truncate decimals to integer', () => {
-		const text = getDisplayText({ type: 'decimal', value: '99.99', format: true });
-		expect(text).not.toBe('99');
-		expect(text).toContain('99');
+		expect(text).toBe('123.456');
 	});
 
 	it('displays raw value without format', () => {
