@@ -1,7 +1,4 @@
-import type { Relation } from '@directus/types';
 import type { Knex } from 'knex';
-import type { RelationalJsonContext } from '../../../../types/ast.js';
-import { generateRelationalQueryAlias } from '../../../run-ast/utils/generate-alias.js';
 import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
@@ -65,23 +62,6 @@ export class FnHelperMSSQL extends FnHelper {
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
 		const { field, path } = parseJsonFunction(functionCall);
 
-		// Check for relational JSON context (e.g., json(category.metadata, color))
-		if (options?.relationalJsonContext) {
-			const ctx = options.relationalJsonContext;
-			const fieldSchema = this.schema.collections?.[ctx.targetCollection]?.fields?.[ctx.jsonField];
-
-			if (!fieldSchema || fieldSchema.type !== 'json') {
-				throw new Error(`Field ${ctx.jsonField} is not a JSON field on ${ctx.targetCollection}`);
-			}
-
-			// Build JSON extraction for the subquery
-			const jsonPath = '$' + ctx.jsonPath;
-			const jsonExtraction = this.knex.raw(`JSON_VALUE(??, ?)`, [ctx.jsonField, jsonPath]);
-
-			return this._relationalJson(table, ctx, jsonExtraction, options);
-		}
-
-		// Direct JSON field access (non-relational)
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
@@ -96,116 +76,4 @@ export class FnHelperMSSQL extends FnHelper {
 		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [table, field, jsonPath]);
 	}
 
-	protected _relationalJsonO2M(
-		table: string,
-		alias: string,
-		relation: Relation,
-		_targetCollection: string,
-		jsonExtraction: Knex.Raw,
-		parentPrimary: string,
-	): Knex.Raw {
-		// MSSQL O2M aggregation using STRING_AGG with JSON wrapper
-		// Note: STRING_AGG returns null for empty sets, COALESCE handles that
-		const subQuery = this.knex.raw(
-			`(SELECT COALESCE('[' + STRING_AGG('"' + STRING_ESCAPE(CAST(? AS NVARCHAR(MAX)), 'json') + '"', ',') + ']', '[]') FROM ?? AS ?? WHERE ??.?? = ??.??)`,
-			[jsonExtraction, relation.collection, alias, alias, relation.field, table, parentPrimary],
-		);
-
-		return subQuery;
-	}
-
-	protected _relationalJsonMultiHop(
-		table: string,
-		context: RelationalJsonContext,
-		options?: FnHelperOptions,
-	): Knex.Raw {
-		const collectionName = options?.originalCollectionName || table;
-		const parentPrimary = this.schema.collections[collectionName]!.primary;
-		const targetPrimary = this.schema.collections[context.targetCollection]!.primary;
-		const chain = context.relationChain!;
-		const firstHop = chain[0]!;
-		const lastHop = chain[chain.length - 1]!;
-
-		const junctionCollection =
-			firstHop.relationType === 'o2m' ? firstHop.relation.collection : firstHop.relation.related_collection!;
-
-		const junctionAlias = generateRelationalQueryAlias(
-			table, context.relationalPath.join('.') + '_j', collectionName, options,
-		);
-
-		const targetAlias = generateRelationalQueryAlias(
-			table, context.relationalPath.join('.') + '_t', collectionName, options,
-		);
-
-		const mssqlJsonPath = '$' + context.jsonPath;
-		const isFirstO2M = firstHop.relationType === 'o2m';
-
-		if (isFirstO2M) {
-			return this.knex.raw(
-				`(SELECT COALESCE('[' + STRING_AGG('"' + STRING_ESCAPE(CAST(JSON_VALUE(??.??, ?) AS NVARCHAR(MAX)), 'json') + '"', ',') + ']', '[]') FROM ?? AS ?? INNER JOIN ?? AS ?? ON ??.?? = ??.?? WHERE ??.?? = ??.??)`,
-				[
-					targetAlias, context.jsonField, mssqlJsonPath,
-					junctionCollection, junctionAlias,
-					context.targetCollection, targetAlias,
-					targetAlias, targetPrimary, junctionAlias, lastHop.relation.field,
-					junctionAlias, firstHop.relation.field, table, parentPrimary,
-				],
-			);
-		} else {
-			return this.knex.raw(
-				`(SELECT TOP 1 JSON_VALUE(??.??, ?) FROM ?? AS ?? INNER JOIN ?? AS ?? ON ??.?? = ??.?? WHERE ??.?? = ??.??)`,
-				[
-					targetAlias, context.jsonField, mssqlJsonPath,
-					junctionCollection, junctionAlias,
-					context.targetCollection, targetAlias,
-					targetAlias, targetPrimary, junctionAlias, lastHop.relation.field,
-					junctionAlias, this.schema.collections[junctionCollection]!.primary, table, firstHop.relation.field,
-				],
-			);
-		}
-	}
-
-	protected _relationalJsonA2O(
-		table: string,
-		context: RelationalJsonContext,
-		options?: FnHelperOptions,
-	): Knex.Raw {
-		const collectionName = options?.originalCollectionName || table;
-		const parentPrimary = this.schema.collections[collectionName]!.primary;
-		const targetPrimary = this.schema.collections[context.targetCollection]!.primary;
-
-		const {
-			junctionCollection,
-			junctionItemField,
-			junctionParentField,
-			oneCollectionField,
-			collectionScope,
-			targetCollection,
-			jsonField,
-			jsonPath,
-			relationalPath,
-		} = context;
-
-		const junctionAlias = generateRelationalQueryAlias(table, relationalPath.join('.') + '_j', collectionName, options);
-		const targetAlias = generateRelationalQueryAlias(table, relationalPath.join('.') + '_t', collectionName, options);
-
-		// Build MSSQL JSON extraction for the target table
-		const mssqlJsonPath = '$' + jsonPath;
-
-		// MSSQL: Use STRING_AGG with manual JSON array wrapping, and LEFT JOIN through junction
-		const subQuery = this.knex.raw(
-			`(SELECT COALESCE('[' + STRING_AGG('"' + STRING_ESCAPE(CAST(JSON_VALUE(??.??, ?) AS NVARCHAR(MAX)), 'json') + '"', ',') + ']', '[]') FROM ?? AS ?? LEFT JOIN ?? AS ?? ON ??.?? = ? AND ??.?? = CAST(??.?? AS NVARCHAR(255)) WHERE ??.?? = ??.?? AND ??.?? = ?)`,
-			[
-				targetAlias, jsonField, mssqlJsonPath,
-				junctionCollection!, junctionAlias,
-				targetCollection, targetAlias,
-				junctionAlias, oneCollectionField!, collectionScope!,
-				junctionAlias, junctionItemField!, targetAlias, targetPrimary,
-				junctionAlias, junctionParentField!, table, parentPrimary,
-				junctionAlias, oneCollectionField!, collectionScope!,
-			],
-		);
-
-		return subQuery;
-	}
 }

@@ -1,7 +1,4 @@
-import type { Relation } from '@directus/types';
 import type { Knex } from 'knex';
-import type { RelationalJsonContext } from '../../../../types/ast.js';
-import { generateRelationalQueryAlias } from '../../../run-ast/utils/generate-alias.js';
 import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
@@ -70,30 +67,6 @@ export class FnHelperPostgres extends FnHelper {
 	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
 		const { field, path } = parseJsonFunction(functionCall);
 
-		// Check for relational JSON context (e.g., json(category.metadata, color))
-		if (options?.relationalJsonContext) {
-			const ctx = options.relationalJsonContext;
-			const fieldSchema = this.schema.collections?.[ctx.targetCollection]?.fields?.[ctx.jsonField];
-
-			if (!fieldSchema || fieldSchema.type !== 'json') {
-				throw new Error(`Field ${ctx.jsonField} is not a JSON field on ${ctx.targetCollection}`);
-			}
-
-			const { dbType } = fieldSchema;
-
-			// Build JSON extraction for the aliased table in the subquery
-			// The alias will be applied by _relationalJson
-			const jsonPath = convertToPostgresPath(ctx.jsonPath);
-			
-			const jsonExtraction =
-				dbType === 'jsonb'
-					? this.knex.raw(`??::jsonb${jsonPath}`, [ctx.jsonField])
-					: this.knex.raw(`??::json${jsonPath}`, [ctx.jsonField]);
-
-			return this._relationalJson(table, ctx, jsonExtraction, options);
-		}
-
-		// Direct JSON field access (non-relational)
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
@@ -115,135 +88,6 @@ export class FnHelperPostgres extends FnHelper {
 		}
 	}
 
-	protected _relationalJsonO2M(
-		table: string,
-		alias: string,
-		relation: Relation,
-		_targetCollection: string,
-		jsonExtraction: Knex.Raw,
-		parentPrimary: string,
-	): Knex.Raw {
-		// PostgreSQL O2M aggregation using json_agg()
-		// Example: (SELECT json_agg(metadata->>'type') FROM comments AS abc WHERE abc.article_id = articles.id)
-		const subQuery = this.knex
-			.select(this.knex.raw('json_agg(?)', [jsonExtraction]))
-			.from({ [alias]: relation.collection })
-			.where(this.knex.raw('??.??', [alias, relation.field]), '=', this.knex.raw('??.??', [table, parentPrimary]));
-
-		return this.knex.raw('(' + subQuery.toQuery() + ')');
-	}
-
-	protected _relationalJsonMultiHop(
-		table: string,
-		context: RelationalJsonContext,
-		options?: FnHelperOptions,
-	): Knex.Raw {
-		const collectionName = options?.originalCollectionName || table;
-		const parentPrimary = this.schema.collections[collectionName]!.primary;
-		const targetPrimary = this.schema.collections[context.targetCollection]!.primary;
-		const chain = context.relationChain!;
-		const firstHop = chain[0]!;
-		const lastHop = chain[chain.length - 1]!;
-
-		const junctionCollection =
-			firstHop.relationType === 'o2m' ? firstHop.relation.collection : firstHop.relation.related_collection!;
-
-		const junctionAlias = generateRelationalQueryAlias(
-			table, context.relationalPath.join('.') + '_j', collectionName, options,
-		);
-
-		const targetAlias = generateRelationalQueryAlias(
-			table, context.relationalPath.join('.') + '_t', collectionName, options,
-		);
-
-		const fieldSchema = this.schema.collections?.[context.targetCollection]?.fields?.[context.jsonField];
-		const jsonPath = convertToPostgresPath(context.jsonPath);
-
-		const jsonExtraction =
-			fieldSchema?.dbType === 'jsonb'
-				? this.knex.raw(`??::jsonb${jsonPath}`, [targetAlias + '.' + context.jsonField])
-				: this.knex.raw(`??::json${jsonPath}`, [targetAlias + '.' + context.jsonField]);
-
-		const isFirstO2M = firstHop.relationType === 'o2m';
-
-		const subQuery = this.knex
-			.select(isFirstO2M ? this.knex.raw('json_agg(?)', [jsonExtraction]) : jsonExtraction)
-			.from({ [junctionAlias]: junctionCollection })
-			.innerJoin(
-				{ [targetAlias]: context.targetCollection },
-				`${targetAlias}.${targetPrimary}`,
-				`${junctionAlias}.${lastHop.relation.field}`,
-			)
-			.where(
-				this.knex.raw('??.??', [
-					junctionAlias,
-					isFirstO2M ? firstHop.relation.field : this.schema.collections[junctionCollection]!.primary,
-				]),
-				'=',
-				this.knex.raw('??.??', [table, isFirstO2M ? parentPrimary : firstHop.relation.field]),
-			);
-
-		if (!isFirstO2M) {
-			subQuery.limit(1);
-		}
-
-		return this.knex.raw('(' + subQuery.toQuery() + ')');
-	}
-
-	protected _relationalJsonA2O(
-		table: string,
-		context: RelationalJsonContext,
-		options?: FnHelperOptions,
-	): Knex.Raw {
-		const collectionName = options?.originalCollectionName || table;
-		const parentPrimary = this.schema.collections[collectionName]!.primary;
-		const targetPrimary = this.schema.collections[context.targetCollection]!.primary;
-
-		const {
-			junctionCollection,
-			junctionItemField,
-			junctionParentField,
-			oneCollectionField,
-			collectionScope,
-			targetCollection,
-			jsonField,
-			jsonPath,
-			relationalPath,
-		} = context;
-
-		const junctionAlias = generateRelationalQueryAlias(table, relationalPath.join('.') + '_j', collectionName, options);
-		const targetAlias = generateRelationalQueryAlias(table, relationalPath.join('.') + '_t', collectionName, options);
-
-		// Build qualified JSON extraction for the target table
-		const fieldSchema = this.schema.collections?.[targetCollection]?.fields?.[jsonField];
-		const pgJsonPath = convertToPostgresPath(jsonPath);
-
-		const jsonExtraction =
-			fieldSchema?.dbType === 'jsonb'
-				? this.knex.raw(`??::jsonb${pgJsonPath}`, [targetAlias + '.' + jsonField])
-				: this.knex.raw(`??::json${pgJsonPath}`, [targetAlias + '.' + jsonField]);
-
-		const subQuery = this.knex
-			.select(this.knex.raw('json_agg(?)', [jsonExtraction]))
-			.from({ [junctionAlias]: junctionCollection! })
-			.leftJoin({ [targetAlias]: targetCollection }, (joinClause) => {
-				joinClause
-					.onVal(`${junctionAlias}.${oneCollectionField!}`, '=', collectionScope!)
-					.andOn(
-						`${junctionAlias}.${junctionItemField!}`,
-						'=',
-						this.knex.raw('CAST(??.?? AS CHAR(255))', [targetAlias, targetPrimary]),
-					);
-			})
-			.where(
-				this.knex.raw('??.??', [junctionAlias, junctionParentField!]),
-				'=',
-				this.knex.raw('??.??', [table, parentPrimary]),
-			)
-			.andWhere(this.knex.raw('??.??', [junctionAlias, oneCollectionField!]), '=', collectionScope!);
-
-		return this.knex.raw('(' + subQuery.toQuery() + ')');
-	}
 }
 
 /**

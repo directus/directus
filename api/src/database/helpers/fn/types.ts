@@ -1,6 +1,5 @@
-import type { Filter, Permission, Query, Relation, SchemaOverview } from '@directus/types';
+import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import type { RelationalJsonContext } from '../../../types/ast.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { applyFilter } from '../../run-ast/lib/apply-query/filter/index.js';
 import { generateRelationalQueryAlias } from '../../run-ast/utils/generate-alias.js';
@@ -16,8 +15,6 @@ export type FnHelperOptions = {
 				permissions: Permission[];
 		  }
 		| undefined;
-	/** Context for relational JSON access, passed from FunctionFieldNode */
-	relationalJsonContext?: RelationalJsonContext;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
@@ -86,107 +83,4 @@ export abstract class FnHelper extends DatabaseHelper {
 		return this.knex.raw(`(${sql})`, bindings);
 	}
 
-	/**
-	 * Generates a correlated subquery for extracting JSON values from related collections.
-	 * Follows the same pattern as _relationalCount() but applies JSON extraction.
-	 *
-	 * @param table - The parent table name (with any aliases)
-	 * @param context - The relational JSON context from FunctionFieldNode
-	 * @param jsonExtraction - Dialect-specific Knex.Raw for JSON extraction (e.g., metadata::jsonb->>'color')
-	 * @param options - Function helper options
-	 */
-	protected _relationalJson(
-		table: string,
-		context: RelationalJsonContext,
-		jsonExtraction: Knex.Raw,
-		options?: FnHelperOptions,
-	): Knex.Raw {
-		const collectionName = options?.originalCollectionName || table;
-		const { relation, relationType, targetCollection, relationalPath } = context;
-
-		// Multi-hop paths (e.g., m2m: o2m → m2o) require JOIN-based subqueries
-		// A2O paths are excluded here since _relationalJsonA2O already handles the junction table traversal
-		if (context.relationChain && context.relationChain.length > 1 && relationType !== 'a2o') {
-			return this._relationalJsonMultiHop(table, context, options);
-		}
-
-		const currentPrimary = this.schema.collections[collectionName]!.primary;
-		const targetPrimary = this.schema.collections[targetCollection]!.primary;
-
-		// Generate unique alias for the subquery to prevent collisions
-		const alias = generateRelationalQueryAlias(table, relationalPath.join('.'), collectionName, options);
-
-		if (relationType === 'm2o') {
-			// M2O: Single value - the parent table has the FK pointing to the related table
-			// Example: products.category_id -> categories.id
-			// Subquery: (SELECT metadata->>'color' FROM categories WHERE categories.id = products.category_id LIMIT 1)
-			const subQuery = this.knex
-				.select(jsonExtraction)
-				.from({ [alias]: targetCollection })
-				.where(this.knex.raw('??.??', [alias, targetPrimary]), '=', this.knex.raw('??.??', [table, relation.field]))
-				.limit(1);
-
-			return this.knex.raw('(' + subQuery.toQuery() + ')');
-		} else if (relationType === 'a2o') {
-			// A2O: Multiple values through junction table with collection discriminator
-			// Example: shapes -> shapes_children (junction) -> circles
-			// Delegates to dialect-specific A2O aggregation
-			return this._relationalJsonA2O(table, context, options);
-		} else {
-			// O2M: Multiple values - the related table has the FK pointing back to parent
-			// Example: articles.id <- comments.article_id
-			// Delegates to dialect-specific aggregation (json_agg, JSON_ARRAYAGG, etc.)
-			return this._relationalJsonO2M(table, alias, relation, targetCollection, jsonExtraction, currentPrimary);
-		}
-	}
-
-	/**
-	 * Abstract method for O2M JSON aggregation. Each dialect must implement this
-	 * to use its native JSON array aggregation function.
-	 *
-	 * @param table - The parent table name
-	 * @param alias - The generated alias for the subquery
-	 * @param relation - The relation object with FK info
-	 * @param targetCollection - The related collection containing the JSON field
-	 * @param jsonExtraction - Dialect-specific JSON extraction expression
-	 * @param parentPrimary - The primary key field of the parent table
-	 */
-	protected abstract _relationalJsonO2M(
-		table: string,
-		alias: string,
-		relation: Relation,
-		targetCollection: string,
-		jsonExtraction: Knex.Raw,
-		parentPrimary: string,
-	): Knex.Raw;
-
-	/**
-	 * Abstract method for A2O (M2A) JSON aggregation. Each dialect must implement this
-	 * to build a correlated subquery that joins through the junction table to the
-	 * scoped target collection and aggregates the extracted JSON values.
-	 *
-	 * @param table - The parent table name
-	 * @param context - The relational JSON context with a2o-specific metadata
-	 * @param options - Function helper options
-	 */
-	protected abstract _relationalJsonA2O(
-		table: string,
-		context: RelationalJsonContext,
-		options?: FnHelperOptions,
-	): Knex.Raw;
-
-	/**
-	 * Abstract method for multi-hop JSON aggregation (e.g., m2m: o2m → m2o).
-	 * Builds a correlated subquery that JOINs through intermediate collections
-	 * to reach the target collection containing the JSON field.
-	 *
-	 * @param table - The parent table name
-	 * @param context - The relational JSON context with relationChain
-	 * @param options - Function helper options
-	 */
-	protected abstract _relationalJsonMultiHop(
-		table: string,
-		context: RelationalJsonContext,
-		options?: FnHelperOptions,
-	): Knex.Raw;
 }

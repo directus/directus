@@ -18,13 +18,6 @@ export function getUnaliasedFieldKey(node: NestedCollectionNode | FieldNode | Fu
 
 		case 'functionField':
 			if (node.name.startsWith('json')) {
-				if (node.relationalJsonContext) {
-					// The first segment of the relational path is always the user-facing
-					// field name on the root collection (FK field for m2o, alias field for o2m/m2m).
-					// This works for multi-hop paths too (e.g., m2m.jason_id.data → 'm2m').
-					return node.relationalJsonContext.relationalPath[0]!;
-				}
-
 				return parseJsonFunction(node.name).field;
 			} else {
 				// The field name might still include a function, so process that here as well

@@ -56,12 +56,6 @@ export function extractFieldsFromChildren(
 			// no-field read check to the related collection
 			extractFieldsFromChildren(child.relatedCollection, [], fieldMap, schema, [...path, child.fieldKey]);
 			extractFieldsFromQuery(child.relatedCollection, child.query, fieldMap, schema, [...path, child.fieldKey]);
-
-			// For relational JSON functions, also validate the JSON field on the target collection
-			if (child.relationalJsonContext) {
-				const relatedInfo = getInfoForPath(fieldMap, 'other', [...path, child.fieldKey], child.relatedCollection);
-				relatedInfo.fields.add(child.relationalJsonContext.jsonField);
-			}
 		}
 	}
 }

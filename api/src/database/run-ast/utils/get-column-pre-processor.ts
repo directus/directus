@@ -58,10 +58,6 @@ export function getColumnPreprocessor(
 			column = helpers.st.asText(table, field.field, rawColumnAlias);
 		} else if (fieldNode.type === 'functionField') {
 			// Include the field cases in the functionField query filter
-			const relationalJsonContext = fieldNode.relationalJsonContext
-				? { relationalJsonContext: fieldNode.relationalJsonContext }
-				: {};
-
 			column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema, {
 				query: {
 					...fieldNode.query,
@@ -69,7 +65,6 @@ export function getColumnPreprocessor(
 				},
 				permissions,
 				cases: fieldNode.cases,
-				...relationalJsonContext,
 			});
 		} else {
 			column = getColumn(knex, table, fieldNode.name, rawColumnAlias, schema);

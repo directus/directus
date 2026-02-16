@@ -10,7 +10,6 @@ import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
-import { validateRelationalJsonPath } from '../utils/validate-relational-json-path.js';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
@@ -117,38 +116,49 @@ export async function parseFields(
 				// Check if the field portion contains a relational path (has dots)
 				// e.g., json(category.metadata, color) where category is a relation
 				if (field.includes('.')) {
-					// Relational JSON: validate the path and get target collection info
-					const validation = validateRelationalJsonPath(context.schema, options.parentCollection, field);
+					// Decompose relational JSON into the existing relational structure.
+					// json(m2m.jason_id.data, test) becomes m2m → jason_id → json(data, test)
+					// so the existing AST nesting handles the relational traversal and the
+					// json() function only needs to operate on a direct field at the leaf.
+					const parts = field.split('.');
+					const jsonFieldName = parts.pop()!; // Last segment is the JSON field name
+					const relationalPrefix = parts; // Remaining segments are relations
 
-					children.push({
-						type: 'functionField',
-						name,
-						fieldKey,
-						query: {},
-						relatedCollection: validation.targetCollection,
-						whenCase: [],
-						cases: [],
-						relationalJsonContext: {
-							relationalPath: validation.relationalPath,
-							jsonField: validation.jsonField,
-							jsonPath: path,
-							hasWildcard: false,
-							relationType: validation.relationType,
-							relation: validation.relation,
-							targetCollection: validation.targetCollection,
-							relationChain: validation.relationChain,
-							...(validation.collectionScope
-								? {
-										collectionScope: validation.collectionScope,
-										junctionCollection: validation.junctionCollection!,
-										oneCollectionField: validation.oneCollectionField!,
-										junctionParentField: validation.junctionParentField!,
-										junctionItemField: validation.junctionItemField!,
-										o2mRelation: validation.o2mRelation!,
-									}
-								: {}),
-						},
-					});
+					// Reconstruct the leaf json function call
+					const pathContent = path.startsWith('.') ? path.substring(1) : path;
+					const leafFunction = `json(${jsonFieldName}, ${pathContent})`;
+
+					// Add to relationalStructure so the existing recursive parseFields handles it
+					let rootField = relationalPrefix[0]!;
+					let collectionScope: string | null = null;
+
+					if (rootField.includes(':')) {
+						const [key, scope] = rootField.split(':');
+						rootField = key!;
+						collectionScope = scope!;
+					}
+
+					if (rootField in relationalStructure === false) {
+						if (collectionScope) {
+							relationalStructure[rootField] = { [collectionScope]: [] };
+						} else {
+							relationalStructure[rootField] = [];
+						}
+					}
+
+					// Build nested field path: jason_id.json(data, test)
+					const nestedParts = [...relationalPrefix.slice(1), leafFunction];
+					const nestedField = nestedParts.join('.');
+
+					if (collectionScope) {
+						if (collectionScope in (relationalStructure[rootField] as CollectionScope) === false) {
+							(relationalStructure[rootField] as CollectionScope)[collectionScope] = [];
+						}
+
+						(relationalStructure[rootField] as CollectionScope)[collectionScope]!.push(nestedField);
+					} else {
+						(relationalStructure[rootField] as string[]).push(nestedField);
+					}
 				} else {
 					// Direct JSON field on current collection: json(metadata, color)
 					children.push({
@@ -169,9 +179,13 @@ export async function parseFields(
 			// Skip the relational check and create a FieldNode
 		}
 
-		// Only check if field is relational if it's NOT a function call
+		// A field is relational if it contains dots outside of a function call.
+		// "jason_id.json(data, test)" has a dot before the paren → relational (jason_id → json(data, test))
+		// "json(data, test)" has no dot outside the function → not relational
+		const hasDotBeforeFunction = isFunctionCall && name.includes('.') && name.indexOf('.') < name.indexOf('(');
+
 		const isRelational =
-			!isFunctionCall &&
+			(!isFunctionCall || hasDotBeforeFunction) &&
 			(name.includes('.') ||
 				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 				// anything

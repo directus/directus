@@ -49,18 +49,6 @@ class TestFnHelper extends FnHelper {
 	json() {
 		return this.knex.raw('');
 	}
-
-	protected _relationalJsonO2M() {
-		return this.knex.raw('');
-	}
-
-	protected _relationalJsonA2O() {
-		return this.knex.raw('');
-	}
-
-	protected _relationalJsonMultiHop() {
-		return this.knex.raw('');
-	}
 }
 
 describe('FnHelper', () => {
