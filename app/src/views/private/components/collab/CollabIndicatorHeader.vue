@@ -30,12 +30,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t } = useI18n();
 
+const currentUserId = computed(() => {
+	return toArray(props.modelValue).find((u) => u.connection === props.currentConnection)?.id ?? null;
+});
+
 const users = computed(() => {
 	return toArray(props.modelValue)
 		.map((user) => ({
 			...formatUserAvatar(user),
 			focusedField: props.focuses?.[user.connection] ?? null,
-			isCurrentUser: user.connection === props.currentConnection,
+			isCurrentUser: user.id === currentUserId.value,
 		}))
 		.reverse();
 });
