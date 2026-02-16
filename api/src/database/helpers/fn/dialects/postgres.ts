@@ -82,6 +82,7 @@ export class FnHelperPostgres extends FnHelper {
 			// Build JSON extraction for the aliased table in the subquery
 			// The alias will be applied by _relationalJson
 			const jsonPath = convertToPostgresPath(ctx.jsonPath);
+			
 			const jsonExtraction =
 				dbType === 'jsonb'
 					? this.knex.raw(`??::jsonb${jsonPath}`, [ctx.jsonField])

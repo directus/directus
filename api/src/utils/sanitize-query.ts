@@ -112,7 +112,7 @@ function sanitizeFields(rawFields: any) {
 	let fields: string[] = [];
 
 	if (typeof rawFields === 'string') {
-		fields = rawFields.split(',');
+		fields = splitFields(rawFields);
 	} else if (Array.isArray(rawFields)) {
 		fields = rawFields as string[];
 	} else {
@@ -120,10 +120,34 @@ function sanitizeFields(rawFields: any) {
 	}
 
 	// Case where array item includes CSV (fe fields[]=id,name):
-	fields = flatten(fields.map((field) => (field.includes(',') ? field.split(',') : field)));
+	fields = flatten(fields.map((field) => (field.includes(',') ? splitFields(field) : field)));
 
 	fields = fields.map((field) => field.trim());
 
+	return fields;
+}
+
+/**
+ * Parenthesis aware splitting of fields allowing for `json(a, b)` field functions
+ */
+function splitFields(input: string): string[] {
+	const fields: string[] = [];
+	let current = '';
+	let depth = 0;
+
+	for (const char of input) {
+		if (char === '(') depth++;
+		else if (char === ')') depth--;
+
+		if (char === ',' && depth === 0) {
+			fields.push(current);
+			current = '';
+		} else {
+			current += char;
+		}
+	}
+
+	fields.push(current);
 	return fields;
 }
 
