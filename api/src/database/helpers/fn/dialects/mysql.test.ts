@@ -77,18 +77,6 @@ const TEST_CASES = [
 	{ input: '.test123.value', expected: "$['test123']['value']", description: 'property with numbers in name' },
 ];
 
-const WILDCARD_TEST_CASES = [
-	{ input: '.items[].name', expected: "$['items'][*]['name']", description: 'simple wildcard path' },
-	{ input: '.items[]', expected: "$['items'][*]", description: 'wildcard at end of path' },
-	{ input: '.data.items[].value', expected: "$['data']['items'][*]['value']", description: 'nested wildcard' },
-	{
-		input: '.items[].nested[].value',
-		expected: "$['items'][*]['nested'][*]['value']",
-		description: 'multiple wildcards',
-	},
-	{ input: '[].name', expected: "$[*]['name']", description: 'root array wildcard' },
-];
-
 const SPLIT_PATH_TEST_CASES = [
 	{ input: '.color', expected: ['color'], description: 'simple property path' },
 	{ input: '.user.name', expected: ['user', 'name'], description: 'nested property path' },
@@ -107,12 +95,6 @@ const SPLIT_PATH_TEST_CASES = [
 describe('convertToMySQLPath', () => {
 	test.each(TEST_CASES)('converts "$input" to "$expected" ($description)', ({ input, expected }) => {
 		expect(convertToMySQLPath(input)).toBe(expected);
-	});
-
-	describe('with wildcards', () => {
-		test.each(WILDCARD_TEST_CASES)('converts "$input" to "$expected" ($description)', ({ input, expected }) => {
-			expect(convertToMySQLPath(input, true)).toBe(expected);
-		});
 	});
 });
 

@@ -101,33 +101,20 @@ export function splitJsonPath(path: string): string[] {
 	return parts;
 }
 
-export function convertToMySQLPath(path: string, hasWildcard: boolean = false): string {
+export function convertToMySQLPath(path: string): string {
 	// ".color" → "$['color']" (bracket notation for compatibility)
 	// ".items[0].name" → "$['items'][0]['name']"
-	// ".items[].name" → "$['items'][*]['name']" (wildcard)
-
-	// For wildcards, convert [] to [*] first
-	let processedPath = path;
-
-	if (hasWildcard) {
-		processedPath = path.split('[]').join('[*]');
-	}
-
-	const parts = splitJsonPath(processedPath);
+	const parts = splitJsonPath(path);
 
 	let result = '$';
 
 	for (const part of parts) {
-		if (part === '*') {
-			result += '[*]';
-		} else {
-			const num = Number(part);
+		const num = Number(part);
 
-			if (Number.isInteger(num) && num >= 0 && String(num) === part) {
-				result += `[${part}]`;
-			} else {
-				result += `['${part}']`;
-			}
+		if (Number.isInteger(num) && num >= 0 && String(num) === part) {
+			result += `[${part}]`;
+		} else {
+			result += `['${part}']`;
 		}
 	}
 

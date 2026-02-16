@@ -143,12 +143,3 @@ export function convertToPostgresPath(path: string): string {
 
 	return result;
 }
-
-export function convertToJsonPathExpr(path: string): string {
-	// Convert ".items[].name" → "$.items[*].name"
-	// Convert "[].name" → "$[*].name"
-	// PostgreSQL jsonb_path_query_array uses SQL/JSON path syntax
-	let result = '$' + path; // ".items" → "$.items", "[0]" → "$[0]"
-	result = result.split('[]').join('[*]'); // Replace [] with [*]
-	return result;
-}
