@@ -34,7 +34,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			key: Joi.string().required(),
 			name: Joi.string().allow(null),
 			collection: Joi.string().required(),
-			item: Joi.string().required(),
+			item: Joi.string().allow(null).required(),
 		});
 
 		const { error } = versionCreateSchema.validate(data);
@@ -123,6 +123,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				collection: { _eq: collection },
 				...(item ? { item: { _eq: item } } : {}),
 			},
+			limit: -1,
 		});
 
 		versions = versions.map((version) => {
