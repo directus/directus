@@ -70,7 +70,7 @@ function focusIntoView(cid: ClientID) {
 
 				<div class="collab-header-popover">
 					<p>
-						{{ user.name }}
+						{{ user.name ?? t('unknown_user') }}
 						<template v-if="user.isCurrentUser">(you)</template>
 					</p>
 					<p class="collab-header-popover-status">

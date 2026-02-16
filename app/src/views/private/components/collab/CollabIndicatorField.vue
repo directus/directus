@@ -27,7 +27,7 @@ const users = computed(() => {
 		<template v-for="(user, index) in users.slice(0, COLLAB_USERS_DISPLAY_LIMIT)" :key="user.id">
 			<VAvatar
 				:id="getFocusId(user.connection)"
-				v-tooltip.bottom="user.name ?? t('unknown_user')"
+				v-tooltip="user.name ?? t('unknown_user')"
 				:border="`var(--${user.color})`"
 				:style="{ zIndex: COLLAB_USERS_DISPLAY_LIMIT - index }"
 				x-small
