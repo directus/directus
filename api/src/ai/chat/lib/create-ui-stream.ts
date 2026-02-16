@@ -8,7 +8,9 @@ import {
 	type StreamTextResult,
 	type Tool,
 	type UIMessage,
+	wrapLanguageModel,
 } from 'ai';
+import { getDevToolsMiddleware } from '../../devtools/index.js';
 import {
 	type AISettings,
 	buildProviderConfigs,
@@ -37,7 +39,7 @@ export const createUiStream = async (
 	{ provider, model, tools, aiSettings, systemPrompt, userId, role, context, onUsage }: CreateUiStreamOptions,
 ): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
 	const configs = buildProviderConfigs(aiSettings);
-	const providerConfig = configs.find((c) p=> c.type === provider);
+	const providerConfig = configs.find((c) => c.type === provider);
 
 	if (!providerConfig) {
 		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
@@ -48,13 +50,28 @@ export const createUiStream = async (
 	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
 	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
+	let languageModel = registry.languageModel(`${provider}:${model}`);
+	const devToolsMiddleware = getDevToolsMiddleware();
+
+	if (devToolsMiddleware) {
+		languageModel = wrapLanguageModel({
+			model: languageModel,
+			middleware: devToolsMiddleware,
+		});
+	}
+
 	// Compute the full system prompt once to avoid re-computing on each step
 	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
-	const telemetryConfig = getAITelemetryConfig({ userId, role, provider, model });
+	const telemetryConfig = getAITelemetryConfig({
+		provider,
+		model,
+		...(userId !== undefined ? { userId } : {}),
+		...(role !== undefined ? { role } : {}),
+	});
 
 	const stream = streamText({
 		system: baseSystemPrompt,
-		model: registry.languageModel(`${provider}:${model}`),
+		model: languageModel,
 		messages: await convertToModelMessages(messages),
 		stopWhen: [stepCountIs(10)],
 		providerOptions,

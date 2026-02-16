@@ -8,6 +8,7 @@ packages:
 
 catalog:
   '@ai-sdk/anthropic': 3.0.9
+  '@ai-sdk/devtools': 0.0.13
   '@ai-sdk/google': 3.0.6
   '@ai-sdk/openai': 3.0.7
   '@ai-sdk/openai-compatible': 2.0.4

@@ -56,3 +56,4 @@ TODO
 .claude/*
 !.claude/CLAUDE.md
 !.claude/skills/
+.devtools/

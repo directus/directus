@@ -9,6 +9,9 @@ catalogs:
     '@ai-sdk/anthropic':
       specifier: 3.0.9
       version: 3.0.9
+    '@ai-sdk/devtools':
+      specifier: 0.0.13
+      version: 0.0.13
     '@ai-sdk/google':
       specifier: 3.0.6
       version: 3.0.6
@@ -1009,6 +1012,9 @@ importers:
       '@ai-sdk/anthropic':
         specifier: 'catalog:'
         version: 3.0.9(zod@4.1.12)
+      '@ai-sdk/devtools':
+        specifier: 'catalog:'
+        version: 0.0.13
       '@ai-sdk/google':
         specifier: 'catalog:'
         version: 3.0.6(zod@4.1.12)
@@ -3260,6 +3266,10 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
+  '@ai-sdk/devtools@0.0.13':
+    resolution: {integrity: sha512-gm/g9OQwCUpvnNFINfLZ6Pgbk64l/ATSdZxBUJYQcDQJVyjdJX5WKXK8Plsv0889a/muXIR79EpHXYu5qaenoQ==}
+    hasBin: true
+
   '@ai-sdk/gateway@3.0.10':
     resolution: {integrity: sha512-sRlPMKd38+fdp2y11USW44c0o8tsIsT6T/pgyY04VXC3URjIRnkxugxd9AkU2ogfpPDMz50cBAGPnMxj+6663Q==}
     engines: {node: '>=18'}
@@ -3292,6 +3302,10 @@ packages:
 
   '@ai-sdk/provider@3.0.2':
     resolution: {integrity: sha512-HrEmNt/BH/hkQ7zpi2o6N3k1ZR1QTb7z85WYhYygiTxOQuaml4CMtHCWRbric5WPU+RNsYI7r1EpyVQMKO1pYw==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/provider@3.0.8':
+    resolution: {integrity: sha512-oGMAgGoQdBXbZqNG0Ze56CHjDZ1IDYOwGYxYjO5KLSlz5HiNQ9udIXsPZ61VWaHGZ5XW/jyjmr6t2xz2jGVwbQ==}
     engines: {node: '>=18'}
 
   '@ai-sdk/vue@3.0.25':
@@ -14737,6 +14751,12 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.4(zod@4.1.12)
       zod: 4.1.12
 
+  '@ai-sdk/devtools@0.0.13':
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@hono/node-server': 1.19.9(hono@4.11.4)
+      hono: 4.11.4
+
   '@ai-sdk/gateway@3.0.10(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 3.0.2
@@ -14770,6 +14790,10 @@ snapshots:
       zod: 4.1.12
 
   '@ai-sdk/provider@3.0.2':
+    dependencies:
+      json-schema: 0.4.0
+
+  '@ai-sdk/provider@3.0.8':
     dependencies:
       json-schema: 0.4.0
 
