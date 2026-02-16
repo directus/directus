@@ -19,7 +19,7 @@ export async function parseCurrentLevel(
 		if (child.type == 'functionField' && child.name.startsWith('json')) {
 			const { field } = parseJsonFunction(child.name);
 
-			if (columnsInCollection.includes(field)) {
+			if (child.relationalJsonContext || columnsInCollection.includes(field)) {
 				columnsToSelectInternal.push(child.fieldKey);
 			}
 

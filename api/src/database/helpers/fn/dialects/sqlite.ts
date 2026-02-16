@@ -137,6 +137,58 @@ export class FnHelperSQLite extends FnHelper {
 		return this.knex.raw('(' + subQuery.toQuery() + ')');
 	}
 
+	protected _relationalJsonMultiHop(
+		table: string,
+		context: RelationalJsonContext,
+		options?: FnHelperOptions,
+	): Knex.Raw {
+		const collectionName = options?.originalCollectionName || table;
+		const parentPrimary = this.schema.collections[collectionName]!.primary;
+		const targetPrimary = this.schema.collections[context.targetCollection]!.primary;
+		const chain = context.relationChain!;
+		const firstHop = chain[0]!;
+		const lastHop = chain[chain.length - 1]!;
+
+		const junctionCollection =
+			firstHop.relationType === 'o2m' ? firstHop.relation.collection : firstHop.relation.related_collection!;
+
+		const junctionAlias = generateRelationalQueryAlias(
+			table, context.relationalPath.join('.') + '_j', collectionName, options,
+		);
+
+		const targetAlias = generateRelationalQueryAlias(
+			table, context.relationalPath.join('.') + '_t', collectionName, options,
+		);
+
+		const sqliteJsonPath = '$' + context.jsonPath;
+		const jsonExtraction = this.knex.raw(`json_extract(??, ?)`, [targetAlias + '.' + context.jsonField, sqliteJsonPath]);
+
+		const isFirstO2M = firstHop.relationType === 'o2m';
+
+		const subQuery = this.knex
+			.select(isFirstO2M ? this.knex.raw('json_group_array(?)', [jsonExtraction]) : jsonExtraction)
+			.from({ [junctionAlias]: junctionCollection })
+			.innerJoin(
+				{ [targetAlias]: context.targetCollection },
+				`${targetAlias}.${targetPrimary}`,
+				`${junctionAlias}.${lastHop.relation.field}`,
+			)
+			.where(
+				this.knex.raw('??.??', [
+					junctionAlias,
+					isFirstO2M ? firstHop.relation.field : this.schema.collections[junctionCollection]!.primary,
+				]),
+				'=',
+				this.knex.raw('??.??', [table, isFirstO2M ? parentPrimary : firstHop.relation.field]),
+			);
+
+		if (!isFirstO2M) {
+			subQuery.limit(1);
+		}
+
+		return this.knex.raw('(' + subQuery.toQuery() + ')');
+	}
+
 	protected _relationalJsonA2O(
 		table: string,
 		context: RelationalJsonContext,

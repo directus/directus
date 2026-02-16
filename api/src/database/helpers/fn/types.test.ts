@@ -45,6 +45,22 @@ class TestFnHelper extends FnHelper {
 	count(table: string, column: string, options?: FnHelperOptions) {
 		return this._relationalCount(table, column, options);
 	}
+
+	json() {
+		return this.knex.raw('');
+	}
+
+	protected _relationalJsonO2M() {
+		return this.knex.raw('');
+	}
+
+	protected _relationalJsonA2O() {
+		return this.knex.raw('');
+	}
+
+	protected _relationalJsonMultiHop() {
+		return this.knex.raw('');
+	}
 }
 
 describe('FnHelper', () => {

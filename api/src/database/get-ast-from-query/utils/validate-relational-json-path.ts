@@ -25,6 +25,8 @@ export type RelationalJsonPathResult = {
 	junctionItemField?: string;
 	/** For a2o: the O2M relation from parent to junction */
 	o2mRelation?: Relation;
+	/** Full chain of relations from start to target, used for multi-hop paths (e.g., m2m) */
+	relationChain: Array<{ relation: Relation; relationType: 'm2o' | 'o2m' | 'a2o'; sourceCollection: string }>;
 };
 
 /**
@@ -69,6 +71,9 @@ export function validateRelationalJsonPath(
 	let lastRelation: Relation | null = null;
 	let lastRelationType: 'm2o' | 'o2m' | 'a2o' = 'm2o';
 
+	// Full chain of relations from start to target, used for multi-hop paths (e.g., m2m)
+	const relationChain: Array<{ relation: Relation; relationType: 'm2o' | 'o2m' | 'a2o'; sourceCollection: string }> = [];
+
 	// A2O-specific metadata, populated when traversing m2a relations
 	let a2oInfo: {
 		collectionScope: string;
@@ -106,9 +111,11 @@ export function validateRelationalJsonPath(
 		});
 
 		if (relationType === 'm2o') {
+			relationChain.push({ relation, relationType: 'm2o', sourceCollection: currentCollection });
 			currentCollection = relation.related_collection!;
 			lastRelationType = 'm2o';
 		} else if (relationType === 'o2m') {
+			relationChain.push({ relation, relationType: 'o2m', sourceCollection: currentCollection });
 			currentCollection = relation.collection;
 			lastRelationType = 'o2m';
 		} else if (relationType === 'm2a') {
@@ -138,6 +145,7 @@ export function validateRelationalJsonPath(
 				o2mRelation: lastRelation!, // The O2M relation from the previous traversal step
 			};
 
+			relationChain.push({ relation, relationType: 'a2o', sourceCollection: currentCollection });
 			currentCollection = collectionScope;
 			lastRelationType = 'a2o';
 		} else {
@@ -178,6 +186,7 @@ export function validateRelationalJsonPath(
 		relationType: lastRelationType,
 		relationalPath,
 		relation: lastRelation!,
+		relationChain,
 		...(a2oInfo
 			? {
 					collectionScope: a2oInfo.collectionScope,

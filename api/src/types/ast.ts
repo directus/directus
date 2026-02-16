@@ -117,6 +117,12 @@ export type RelationalJsonContext = {
 	junctionItemField?: string;
 	/** For a2o: the O2M relation from parent to junction (needed for parent FK correlation) */
 	o2mRelation?: Relation;
+	/** For multi-hop paths (e.g., m2m): the full chain of relations from parent to target */
+	relationChain?: Array<{
+		relation: Relation;
+		relationType: 'm2o' | 'o2m' | 'a2o';
+		sourceCollection: string;
+	}>;
 };
 
 export type FunctionFieldNode = {

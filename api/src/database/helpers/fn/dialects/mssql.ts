@@ -114,6 +114,57 @@ export class FnHelperMSSQL extends FnHelper {
 		return subQuery;
 	}
 
+	protected _relationalJsonMultiHop(
+		table: string,
+		context: RelationalJsonContext,
+		options?: FnHelperOptions,
+	): Knex.Raw {
+		const collectionName = options?.originalCollectionName || table;
+		const parentPrimary = this.schema.collections[collectionName]!.primary;
+		const targetPrimary = this.schema.collections[context.targetCollection]!.primary;
+		const chain = context.relationChain!;
+		const firstHop = chain[0]!;
+		const lastHop = chain[chain.length - 1]!;
+
+		const junctionCollection =
+			firstHop.relationType === 'o2m' ? firstHop.relation.collection : firstHop.relation.related_collection!;
+
+		const junctionAlias = generateRelationalQueryAlias(
+			table, context.relationalPath.join('.') + '_j', collectionName, options,
+		);
+
+		const targetAlias = generateRelationalQueryAlias(
+			table, context.relationalPath.join('.') + '_t', collectionName, options,
+		);
+
+		const mssqlJsonPath = '$' + context.jsonPath;
+		const isFirstO2M = firstHop.relationType === 'o2m';
+
+		if (isFirstO2M) {
+			return this.knex.raw(
+				`(SELECT COALESCE('[' + STRING_AGG('"' + STRING_ESCAPE(CAST(JSON_VALUE(??.??, ?) AS NVARCHAR(MAX)), 'json') + '"', ',') + ']', '[]') FROM ?? AS ?? INNER JOIN ?? AS ?? ON ??.?? = ??.?? WHERE ??.?? = ??.??)`,
+				[
+					targetAlias, context.jsonField, mssqlJsonPath,
+					junctionCollection, junctionAlias,
+					context.targetCollection, targetAlias,
+					targetAlias, targetPrimary, junctionAlias, lastHop.relation.field,
+					junctionAlias, firstHop.relation.field, table, parentPrimary,
+				],
+			);
+		} else {
+			return this.knex.raw(
+				`(SELECT TOP 1 JSON_VALUE(??.??, ?) FROM ?? AS ?? INNER JOIN ?? AS ?? ON ??.?? = ??.?? WHERE ??.?? = ??.??)`,
+				[
+					targetAlias, context.jsonField, mssqlJsonPath,
+					junctionCollection, junctionAlias,
+					context.targetCollection, targetAlias,
+					targetAlias, targetPrimary, junctionAlias, lastHop.relation.field,
+					junctionAlias, this.schema.collections[junctionCollection]!.primary, table, firstHop.relation.field,
+				],
+			);
+		}
+	}
+
 	protected _relationalJsonA2O(
 		table: string,
 		context: RelationalJsonContext,

@@ -104,6 +104,12 @@ export abstract class FnHelper extends DatabaseHelper {
 		const collectionName = options?.originalCollectionName || table;
 		const { relation, relationType, targetCollection, relationalPath } = context;
 
+		// Multi-hop paths (e.g., m2m: o2m → m2o) require JOIN-based subqueries
+		// A2O paths are excluded here since _relationalJsonA2O already handles the junction table traversal
+		if (context.relationChain && context.relationChain.length > 1 && relationType !== 'a2o') {
+			return this._relationalJsonMultiHop(table, context, options);
+		}
+
 		const currentPrimary = this.schema.collections[collectionName]!.primary;
 		const targetPrimary = this.schema.collections[targetCollection]!.primary;
 
@@ -164,6 +170,21 @@ export abstract class FnHelper extends DatabaseHelper {
 	 * @param options - Function helper options
 	 */
 	protected abstract _relationalJsonA2O(
+		table: string,
+		context: RelationalJsonContext,
+		options?: FnHelperOptions,
+	): Knex.Raw;
+
+	/**
+	 * Abstract method for multi-hop JSON aggregation (e.g., m2m: o2m → m2o).
+	 * Builds a correlated subquery that JOINs through intermediate collections
+	 * to reach the target collection containing the JSON field.
+	 *
+	 * @param table - The parent table name
+	 * @param context - The relational JSON context with relationChain
+	 * @param options - Function helper options
+	 */
+	protected abstract _relationalJsonMultiHop(
 		table: string,
 		context: RelationalJsonContext,
 		options?: FnHelperOptions,

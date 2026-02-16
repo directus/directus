@@ -87,7 +87,8 @@ export async function parseFields(
 			const foundField = context.schema.collections[options.parentCollection]!.fields[baseFieldName];
 
 			// Create a FunctionFieldNode for relational count functions (count(related_items))
-			if (foundField && foundField.type === 'alias') {
+			// Skip json functions here — they are handled in the json-specific block below
+			if (functionName !== 'json' && foundField && foundField.type === 'alias') {
 				const foundRelation = context.schema.relations.find(
 					(relation) =>
 						relation.related_collection === options.parentCollection && relation.meta?.one_field === baseFieldName,
@@ -135,6 +136,7 @@ export async function parseFields(
 							relationType: validation.relationType,
 							relation: validation.relation,
 							targetCollection: validation.targetCollection,
+							relationChain: validation.relationChain,
 							...(validation.collectionScope
 								? {
 										collectionScope: validation.collectionScope,
