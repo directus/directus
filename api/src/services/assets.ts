@@ -1,4 +1,4 @@
-import type { Readable } from 'node:stream';
+import { Readable } from 'node:stream';
 import path from 'path';
 import { useEnv } from '@directus/env';
 import {
@@ -35,6 +35,7 @@ import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
+import { serializeIptc } from './files/utils/parse-image-metadata.js';
 import { FilesService } from './files.js';
 import { FoldersService } from './folders.js';
 
@@ -364,6 +365,34 @@ export class AssetsService {
 				throw error;
 			}
 
+			// Write EXIF metadata from the database into the resized image
+			if (file.metadata) {
+				const sectionMap: Record<string, string> = {
+					ifd0: 'IFD0',
+					ifd1: 'IFD1',
+					exif: 'IFD2',
+					gps: 'IFD3',
+				};
+
+				const exifData: Record<string, Record<string, string>> = {};
+
+				for (const [section, ifdName] of Object.entries(sectionMap)) {
+					if (file.metadata[section] && typeof file.metadata[section] === 'object') {
+						exifData[ifdName] = {};
+
+						for (const [key, value] of Object.entries(file.metadata[section] as Record<string, unknown>)) {
+							if (value != null) {
+								exifData[ifdName]![key] = String(value);
+							}
+						}
+					}
+				}
+
+				if (Object.keys(exifData).length > 0) {
+					transformer.withExifMerge(exifData);
+				}
+			}
+
 			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
 
 			readStream.on('error', (e: Error) => {
@@ -371,8 +400,23 @@ export class AssetsService {
 				readStream.unpipe(transformer);
 			});
 
+			let output: Readable = Readable.from(readStream.pipe(transformer));
+
+			// Determine if IPTC injection is needed (JPEG output only)
+			const outputFormat = maybeNewFormat || type?.split('/')[1];
+			const hasIptcMetadata = file.metadata?.['iptc'] && Object.keys(file.metadata['iptc']).length > 0;
+			const isJpegOutput = outputFormat === 'jpeg' || outputFormat === 'jpg';
+
+			if (hasIptcMetadata && isJpegOutput) {
+				const transformedBuffer = await transformer.toBuffer();
+
+				output = Readable.from(
+					injectIptcIntoJpeg(transformedBuffer, file.metadata!['iptc'] as Record<string, unknown>),
+				);
+			}
+
 			try {
-				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+				await storage.location(file.storage).write(assetFilename, output, type);
 			} catch (error) {
 				try {
 					await storage.location(file.storage).delete(assetFilename);
@@ -410,3 +454,45 @@ const getAssetSuffix = (transforms: Transformation[]) => {
 	if (Object.keys(transforms).length === 0) return '';
 	return `__${hash(transforms)}`;
 };
+
+/**
+ * Build a JPEG APP13 segment containing IPTC-IIM data and inject it into a JPEG buffer.
+ * The segment is inserted right after the SOI marker (0xFFD8).
+ */
+function injectIptcIntoJpeg(jpeg: Buffer, iptc: Record<string, unknown>): Buffer {
+	const iptcData = serializeIptc(iptc);
+
+	if (iptcData.byteLength === 0) return jpeg;
+
+	// Build 8BIM resource block for IPTC-IIM (resource ID 0x0404)
+	const signature = Buffer.from('8BIM');
+	const resourceId = Buffer.alloc(2);
+	resourceId.writeUInt16BE(0x0404, 0);
+
+	// Empty pascal string (name): single null byte, padded to even length
+	const pascalName = Buffer.from([0x00, 0x00]);
+
+	const dataSize = Buffer.alloc(4);
+	dataSize.writeUInt32BE(iptcData.byteLength, 0);
+
+	const resourceBlock = Buffer.concat([signature, resourceId, pascalName, dataSize, iptcData]);
+
+	// Pad resource block to even length if needed
+	const paddedBlock =
+		resourceBlock.byteLength % 2 !== 0 ? Buffer.concat([resourceBlock, Buffer.from([0x00])]) : resourceBlock;
+
+	// Build APP13 segment
+	const photoshopId = Buffer.from('Photoshop 3.0\0', 'ascii');
+	const segmentPayload = Buffer.concat([photoshopId, paddedBlock]);
+	const segmentHeader = Buffer.alloc(4);
+	segmentHeader.writeUInt16BE(0xffed, 0); // APP13 marker
+	segmentHeader.writeUInt16BE(segmentPayload.byteLength + 2, 2); // length includes the 2 length bytes
+
+	const app13Segment = Buffer.concat([segmentHeader, segmentPayload]);
+
+	// Insert after SOI marker (first 2 bytes of JPEG)
+	const soi = jpeg.subarray(0, 2);
+	const rest = jpeg.subarray(2);
+
+	return Buffer.concat([soi, app13Segment, rest]);
+}

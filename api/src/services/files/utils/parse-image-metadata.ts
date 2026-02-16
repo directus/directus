@@ -1,4 +1,4 @@
-const IPTC_ENTRY_TYPES = new Map([
+export const IPTC_ENTRY_TYPES = new Map([
 	[0x78, 'caption'],
 	[0x6e, 'credit'],
 	[0x19, 'keywords'],
@@ -48,6 +48,40 @@ export function parseIptc(buffer: Buffer): Record<string, unknown> {
 	}
 
 	return iptc;
+}
+
+export function serializeIptc(iptc: Record<string, unknown>): Buffer {
+	const nameToTag = new Map<string, number>();
+
+	for (const [tag, name] of IPTC_ENTRY_TYPES) {
+		nameToTag.set(name, tag);
+	}
+
+	const buffers: Buffer[] = [];
+
+	for (const [key, value] of Object.entries(iptc)) {
+		const tag = nameToTag.get(key);
+
+		if (tag === undefined) continue;
+
+		const values = Array.isArray(value) ? value : [value];
+
+		for (const v of values) {
+			if (v == null) continue;
+
+			const data = Buffer.from(String(v), 'utf-8');
+			const entry = Buffer.alloc(IPTC_ENTRY_MARKER.byteLength + 1 + 2 + data.byteLength);
+
+			IPTC_ENTRY_MARKER.copy(entry, 0);
+			entry.writeUInt8(tag, IPTC_ENTRY_MARKER.byteLength);
+			entry.writeUInt16BE(data.byteLength, IPTC_ENTRY_MARKER.byteLength + 1);
+			data.copy(entry, IPTC_ENTRY_MARKER.byteLength + 1 + 2);
+
+			buffers.push(entry);
+		}
+	}
+
+	return Buffer.concat(buffers);
 }
 
 export function parseXmp(buffer: Buffer): Record<string, unknown> {

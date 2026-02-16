@@ -1,5 +1,6 @@
 import { PassThrough } from 'node:stream';
 import { Readable } from 'node:stream';
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Driver, StorageManager } from '@directus/storage';
 import type { Accountability } from '@directus/types';
@@ -9,10 +10,12 @@ import contentDisposition from 'content-disposition';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import sharp from 'sharp';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { AssetsService } from './assets.js';
+import { getSharpInstance } from './files/lib/get-sharp-instance.js';
 import { FilesService } from './files.js';
 import { FoldersService } from './folders.js';
 
@@ -48,6 +51,14 @@ vi.mock('../utils/get-schema.js', () => ({
 }));
 
 vi.mock('../storage/index.js');
+
+vi.mock('sharp', () => ({
+	default: {
+		counters: vi.fn().mockReturnValue({ queue: 0, process: 0 }),
+	},
+}));
+
+vi.mock('./files/lib/get-sharp-instance.js');
 
 describe('AssetsService', () => {
 	let db: MockedFunction<Knex>;
@@ -730,6 +741,169 @@ describe('AssetsService', () => {
 			const header = contentDisposition(folderName, { type: 'attachment' });
 			expect(header).toContain('attachment');
 			expect(header).toContain('filename');
+		});
+	});
+
+	describe('getAsset metadata in transformed images', () => {
+		let service: AssetsService;
+		let mockDriver: Partial<Driver>;
+		let mockStorage: Partial<StorageManager>;
+		let mockTransformer: any;
+
+		beforeEach(() => {
+			vi.mocked(sharp.counters).mockReturnValue({ queue: 0, process: 0 });
+
+			mockTransformer = new PassThrough();
+			mockTransformer.timeout = vi.fn().mockReturnThis();
+			mockTransformer.rotate = vi.fn().mockReturnThis();
+			mockTransformer.resize = vi.fn().mockReturnThis();
+			mockTransformer.toFormat = vi.fn().mockReturnThis();
+			mockTransformer.withExifMerge = vi.fn().mockReturnThis();
+			mockTransformer.toBuffer = vi.fn().mockResolvedValue(Buffer.from([0xff, 0xd8, 0xff, 0xe0]));
+
+			vi.mocked(getSharpInstance).mockReturnValue(mockTransformer);
+
+			const readStream = new PassThrough();
+
+			process.nextTick(() => {
+				readStream.end(Buffer.from([0xff, 0xd8, 0xff, 0xe0]));
+			});
+
+			mockDriver = {
+				exists: vi.fn().mockResolvedValueOnce(true).mockResolvedValueOnce(false),
+				read: vi.fn().mockResolvedValue(readStream),
+				write: vi.fn().mockResolvedValue(undefined),
+				stat: vi.fn().mockResolvedValue({ size: 100 }),
+			};
+
+			mockStorage = {
+				location: vi.fn(() => mockDriver as Driver),
+			};
+
+			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
+
+			vi.mocked(validateItemAccess).mockResolvedValue({
+				accessAllowed: true,
+				allowedRootFields: ['*'],
+			});
+
+			vi.mocked(useEnv).mockReturnValue({
+				ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 10000,
+				ASSETS_TRANSFORM_MAX_CONCURRENT: 100,
+				ASSETS_TRANSFORM_TIMEOUT: '30s',
+			});
+
+			service = new AssetsService({
+				knex: db,
+				schema: { collections: {}, relations: [] },
+				accountability: { user: null, role: null, roles: [], admin: true, app: false, ip: '127.0.0.1' },
+			});
+		});
+
+		it('should call withExifMerge with correct mapped EXIF data from DB metadata', async () => {
+			const fileWithMetadata = {
+				...mockFile,
+				type: 'image/png',
+				metadata: {
+					ifd0: { Copyright: '© 2025 Test' },
+					exif: { ExposureTime: '1/100' },
+					gps: { GPSLatitude: '48.8566' },
+				},
+			};
+
+			vi.mocked(FilesService.prototype.readOne).mockResolvedValue(fileWithMetadata as any);
+
+			await service.getAsset(mockFileId, { transformationParams: { transforms: [['resize', { width: 100 }]] } });
+
+			expect(mockTransformer.withExifMerge).toHaveBeenCalledWith({
+				IFD0: { Copyright: '© 2025 Test' },
+				IFD2: { ExposureTime: '1/100' },
+				IFD3: { GPSLatitude: '48.8566' },
+			});
+		});
+
+		it('should not call withExifMerge when file has no metadata', async () => {
+			const fileWithoutMetadata = {
+				...mockFile,
+				type: 'image/png',
+				metadata: null,
+			};
+
+			vi.mocked(FilesService.prototype.readOne).mockResolvedValue(fileWithoutMetadata as any);
+
+			await service.getAsset(mockFileId, { transformationParams: { transforms: [['resize', { width: 100 }]] } });
+
+			expect(mockTransformer.withExifMerge).not.toHaveBeenCalled();
+		});
+
+		it('should only map EXIF sections not IPTC to withExifMerge', async () => {
+			const fileWithIptc = {
+				...mockFile,
+				type: 'image/png',
+				metadata: {
+					ifd0: { Copyright: 'Test' },
+					iptc: { copyright: 'IPTC Copyright' },
+				},
+			};
+
+			vi.mocked(FilesService.prototype.readOne).mockResolvedValue(fileWithIptc as any);
+
+			await service.getAsset(mockFileId, { transformationParams: { transforms: [['resize', { width: 100 }]] } });
+
+			expect(mockTransformer.withExifMerge).toHaveBeenCalledWith({
+				IFD0: { Copyright: 'Test' },
+			});
+		});
+
+		it('should inject IPTC into JPEG output when IPTC metadata exists', async () => {
+			const jpegFile = {
+				...mockFile,
+				type: 'image/jpeg',
+				metadata: {
+					iptc: { copyright: 'IPTC Test Copyright' },
+				},
+			};
+
+			vi.mocked(FilesService.prototype.readOne).mockResolvedValue(jpegFile as any);
+
+			await service.getAsset(mockFileId, { transformationParams: { transforms: [['resize', { width: 100 }]] } });
+
+			expect(mockTransformer.toBuffer).toHaveBeenCalled();
+
+			// Verify storage.write was called with a Readable (from the injected buffer)
+			expect(mockDriver.write).toHaveBeenCalledWith(expect.stringContaining('__'), expect.any(Object), 'image/jpeg');
+		});
+
+		it('should not inject IPTC for non-JPEG output formats', async () => {
+			const webpFile = {
+				...mockFile,
+				type: 'image/webp',
+				metadata: {
+					iptc: { copyright: 'IPTC Test Copyright' },
+				},
+			};
+
+			vi.mocked(FilesService.prototype.readOne).mockResolvedValue(webpFile as any);
+
+			await service.getAsset(mockFileId, { transformationParams: { transforms: [['resize', { width: 100 }]] } });
+
+			expect(mockTransformer.toBuffer).not.toHaveBeenCalled();
+		});
+
+		it('should use streaming path when no IPTC metadata exists', async () => {
+			const jpegNoIptc = {
+				...mockFile,
+				type: 'image/jpeg',
+				metadata: {
+					ifd0: { Copyright: 'Test' },
+				},
+			};
+
+			vi.mocked(FilesService.prototype.readOne).mockResolvedValue(jpegNoIptc as any);
+
+			await service.getAsset(mockFileId, { transformationParams: { transforms: [['resize', { width: 100 }]] } });
+
+			expect(mockTransformer.toBuffer).not.toHaveBeenCalled();
 		});
 	});
 });
