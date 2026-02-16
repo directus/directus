@@ -28,7 +28,9 @@ export type Info = {
 	};
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
-	files?: Record<string, unknown>;
+	files?: {
+		mimeTypeAllowList: string;
+	};
 	setupCompleted: boolean;
 	rateLimit?:
 		| false
