@@ -13,6 +13,7 @@ import type { ComparisonContext, FieldValues, FormField as TFormField } from './
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
+import { CollabContext } from '@/composables/use-collab';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
@@ -45,6 +46,7 @@ const props = withDefaults(
 		inline?: boolean;
 		version?: ContentVersion | null;
 		comparison?: ComparisonContext;
+		collabContext?: CollabContext;
 	}>(),
 	{
 		collection: undefined,
@@ -99,7 +101,7 @@ const {
 	isFieldVisible,
 } = useForm();
 
-useAiTools({ finalFields, fieldNames, setValue, values });
+useAiTools({ finalFields, fieldNames, setValue, values, collabContext: props.collabContext });
 
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
@@ -290,7 +292,28 @@ function apply(updates: { [field: string]: any }) {
 
 		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pickKeepMeta(updates, updatableKeys)));
 	} else {
-		emit('update:modelValue', pickKeepMeta(assign({}, props.modelValue, updates), updatableKeys));
+		// Preserve existing values for fields that belong to groups
+		const updatableGroupKeys = Object.keys(updates).filter((key) => {
+			if (key.startsWith('$')) return false;
+			const field = fieldsMap.value[key];
+			return !isNil(field?.meta?.group) && props.modelValue && key in props.modelValue;
+		});
+
+		// Preserve readonly field values when unchanged
+		const preservedReadonlyKeys = Object.keys(updates).filter((key) => {
+			if (key.startsWith('$') || updatableKeys.includes(key)) return false;
+			const field = fieldsMap.value[key];
+			return field && isDisabled(field) && isEqual(props.modelValue?.[key], updates[key]);
+		});
+
+		emit(
+			'update:modelValue',
+			pickKeepMeta(assign({}, props.modelValue, updates), [
+				...updatableKeys,
+				...updatableGroupKeys,
+				...preservedReadonlyKeys,
+			]),
+		);
 	}
 }
 
@@ -436,6 +459,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:direction="direction"
 					:version
 					:comparison="comparison"
+					:collab-context="collabContext"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
@@ -458,6 +482,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
 					:comparison-active="comparison?.selectedFields.includes(fieldName)"
+					:collab-field-context="collabContext?.registerField(fieldName)"
 					:primary-key="primaryKey"
 					:loading="loading"
 					:validation-error="

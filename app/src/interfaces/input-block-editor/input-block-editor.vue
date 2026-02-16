@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import EditorJS from '@editorjs/editorjs';
 import { isEqual } from 'lodash';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBus } from './bus';
 import { sanitizeValue } from './sanitize';
@@ -110,10 +110,11 @@ onUnmounted(() => {
 
 watch(
 	[editorjsIsReady, () => props.disabled],
-	([isReady, isDisabled]) => {
+	async ([isReady, isDisabled]) => {
 		if (!isReady) return;
 
 		// Note: EditorJS must be ready before readOnly is toggled; otherwise, the content won’t render, which could result in data loss!
+		await nextTick();
 		editorjsRef.value?.readOnly.toggle(isDisabled);
 	},
 	{ immediate: true },
@@ -166,10 +167,12 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 		unexpectedError(error);
 	}
 }
+
+const menuActive = computed(() => fileHandler.value !== null);
 </script>
 
 <template>
-	<div class="input-block-editor">
+	<div v-prevent-focusout="menuActive" class="input-block-editor">
 		<div
 			ref="editorElement"
 			class="editor"

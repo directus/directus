@@ -12,6 +12,8 @@ export interface Props {
 	inModal?: boolean;
 	disabled?: boolean;
 	nonEditable?: boolean;
+	/** Direct source URL, bypasses asset URL computation from file.id */
+	src?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), { preset: 'system-large-contain' });
@@ -22,12 +24,14 @@ defineEmits<{
 
 const file = toRef(props, 'file');
 
-const src = computed(() =>
-	getAssetUrl(file.value.id, {
+const src = computed(() => {
+	if (props.src) return props.src;
+
+	return getAssetUrl(file.value.id, {
 		imageKey: props.preset ?? undefined,
 		cacheBuster: file.value.modified_on,
-	}),
-);
+	});
+});
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {
 	const mimeType = file.value.type;
