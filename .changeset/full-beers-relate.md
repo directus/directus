@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed useComparison fetchMainVersion call to encode URI component to not strip out special characters
+Fixed item comparison failing when special characters are present in manual primary keys
