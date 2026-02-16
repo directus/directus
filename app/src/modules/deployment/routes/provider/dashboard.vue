@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type DeploymentDashboardOutput, readDeploymentDashboard } from '@directus/sdk';
 import { formatDistanceToNow } from 'date-fns';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
@@ -37,7 +37,9 @@ const projectItems = computed(() =>
 	})),
 );
 
-onMounted(async () => {
+async function loadDashboard() {
+	loading.value = true;
+
 	try {
 		const data = await sdk.request(readDeploymentDashboard(props.provider));
 		projects.value = data.projects;
@@ -46,7 +48,11 @@ onMounted(async () => {
 	} finally {
 		loading.value = false;
 	}
-});
+}
+
+onMounted(loadDashboard);
+
+watch(() => props.provider, loadDashboard);
 </script>
 
 <template>

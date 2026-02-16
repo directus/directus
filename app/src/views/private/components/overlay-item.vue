@@ -31,13 +31,15 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
+import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -292,7 +294,7 @@ const overlayItemContentProps = computed(() => {
 	};
 });
 
-const { provideRunManualFlow } = useFlows({
+const { flowDialogsContext, provideRunManualFlow } = useFlows({
 	collection,
 	primaryKey: primaryKey,
 	location: 'item',
@@ -323,9 +325,13 @@ function useItem() {
 	const loading = ref(false);
 	const initialValues = ref<Record<string, any> | null>(null);
 
+	const notificationsStore = useNotificationsStore();
+
 	watch(
 		() => props.active,
 		(isActive) => {
+			notificationsStore.setOverlayIsActive(!!isActive);
+
 			if (isActive) {
 				if (props.primaryKey !== '+') fetchItem();
 				if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
@@ -619,9 +625,11 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions>
-			<CollabAvatars
+			<CollabIndicatorHeader
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
+				:focuses="{ ...collab?.focused.value, ...relatedCollab?.focused.value }"
+				:current-connection="collab?.connectionId.value"
 			/>
 			<slot name="actions" />
 
@@ -717,6 +725,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 			/>
 		</div>
 	</VMenu>
+
+	<FlowDialogs v-bind="flowDialogsContext" />
 
 	<ComparisonModal
 		v-if="collab"

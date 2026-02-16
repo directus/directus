@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "15.1.1",
+	"version": "15.3.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -29,6 +29,7 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
+		"test:ui": "vitest --ui",
 		"typecheck": "vue-tsc --noEmit"
 	},
 	"devDependencies": {
@@ -73,6 +74,7 @@
 		"@fullcalendar/list": "catalog:",
 		"@fullcalendar/timegrid": "catalog:",
 		"@histoire/plugin-vue": "catalog:",
+		"@internationalized/date": "catalog:",
 		"@joeattardi/emoji-button": "catalog:",
 		"@json2csv/plainjs": "catalog:",
 		"@mapbox/mapbox-gl-draw": "catalog:",
@@ -103,6 +105,7 @@
 		"@unhead/vue": "catalog:",
 		"@vitejs/plugin-vue": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
+		"@vitest/ui": "catalog:",
 		"@vue/compiler-dom": "catalog:",
 		"@vue/test-utils": "catalog:",
 		"@vueuse/core": "catalog:",
@@ -124,7 +127,6 @@
 		"editorjs-toggle-block": "catalog:",
 		"escape-string-regexp": "catalog:",
 		"file-saver": "catalog:",
-		"flatpickr": "catalog:",
 		"focus-trap": "catalog:",
 		"geojson": "catalog:",
 		"happy-dom": "catalog:",
