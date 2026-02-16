@@ -1,8 +1,8 @@
 {
-  "$schema": "http://json.schemastore.org/prettierrc",
-  "printWidth": 120,
-  "useTabs": true,
-  "singleQuote": true,
-  "proseWrap": "always",
-  "htmlWhitespaceSensitivity": "ignore"
+	"$schema": "http://json.schemastore.org/prettierrc",
+	"printWidth": 120,
+	"useTabs": true,
+	"singleQuote": true,
+	"proseWrap": "always",
+	"htmlWhitespaceSensitivity": "ignore"
 }
