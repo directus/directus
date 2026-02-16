@@ -110,7 +110,10 @@ function focusIntoView(cid: ClientID) {
 					</VAvatar>
 
 					<div class="collab-header-more-popover-item-content">
-						<span>{{ user.name ?? t('unknown_user') }} <template v-if="user.isCurrentUser">({{ t('you') }})</template></span>
+						<span>
+							{{ user.name ?? t('unknown_user') }}
+							<template v-if="user.isCurrentUser">({{ t('you') }})</template>
+						</span>
 						<span class="collab-header-popover-status">
 							{{
 								user.focusedField
