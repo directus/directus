@@ -1687,6 +1687,7 @@ field_options:
     overrides_divider_title: App Overrides
   directus_activity:
     login: Login
+    logout: Logout
     create: Create
     update: Update
     delete: Delete
@@ -1972,6 +1973,7 @@ colors:
 junction_collection: Junction Collection
 latency: Latency
 login: Log in
+logout: Log out
 my_activity: My Activity
 not_authenticated: Not Authenticated
 authenticated: Authenticated
