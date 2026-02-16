@@ -549,7 +549,7 @@ test('parse fields with year function', async () => {
 	]);
 });
 
-test('parse fields with json function containing dotted path', async () => {
+test('parse fields with direct json function', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
 	const result = await parseFields(

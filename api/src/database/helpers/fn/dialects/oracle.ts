@@ -69,7 +69,7 @@ export class FnHelperOracle extends FnHelper {
 			throw new Error(`Field ${field} is not a JSON field`);
 		}
 
-		// Oracle uses JSON_VALUE or JSON_QUERY
+		// Oracle uses JSON_VALUE for scalar values
 		// "data.items[0].name" → "$.items[0].name"
 		const jsonPath = '$' + path;
 

@@ -72,15 +72,15 @@ export async function parseFields(
 		}
 
 		// Check for function calls first, before checking if field is relational
-		// This handles cases like json(metadata.color) which contain dots but aren't relational
+		// This handles cases like json(metadata, user.name) which contain dots but aren't relational
 		const isFunctionCall = name.includes('(') && name.includes(')');
 
 		if (isFunctionCall) {
 			const functionName = name.split('(')[0]!;
 			const columnName = name.match(REGEX_BETWEEN_PARENS)![1]!;
 
-			// For json functions, extract the base field name (before the first dot)
-			// json(metadata.color) -> metadata
+			// For json functions, extract the base field name from the paren contents.
+			// This only matters for non-json function paths below; json() is handled at line 113.
 			const baseFieldName = functionName === 'json' ? columnName.split('.')[0]! : columnName;
 
 			const foundField = context.schema.collections[options.parentCollection]!.fields[baseFieldName];
@@ -175,8 +175,8 @@ export async function parseFields(
 				continue;
 			}
 
-			// For all other functions (year, month, etc.), treat as regular field
-			// Skip the relational check and create a FieldNode
+			// For all other functions (year, month, etc.), fall through to create a FieldNode
+			// (isRelational will be false since there's no dot before the parenthesis)
 		}
 
 		// A field is relational if it contains dots outside of a function call.
