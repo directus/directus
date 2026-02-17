@@ -62,6 +62,7 @@ export const createUiStream = async (
 
 	// Compute the full system prompt once to avoid re-computing on each step
 	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
+
 	const telemetryConfig = getAITelemetryConfig({
 		provider,
 		model,

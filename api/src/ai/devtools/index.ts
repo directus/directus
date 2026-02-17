@@ -1,5 +1,5 @@
-import type { LanguageModelMiddleware } from 'ai';
 import { useEnv } from '@directus/env';
+import type { LanguageModelMiddleware } from 'ai';
 import { useLogger } from '../../logger/index.js';
 
 let devToolsMiddleware: LanguageModelMiddleware | null = null;
