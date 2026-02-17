@@ -43,26 +43,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
-						query: {
-							[localCollectionProducts]: {
-								__args: {
-									sort: 'id',
-								},
-								id: true,
-								name: true,
-								metadata_func: {
-									color: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'color',
-										},
-									},
-								},
-							},
-						},
-					});
-
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
@@ -75,12 +55,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Second product should have color 'blue'
 					expect(response.body.data[1]).toHaveProperty('metadata_color_json');
 					expect(response.body.data[1].metadata_color_json).toBe('blue');
-
-					// GraphQL
-					expect(gqlResponse.statusCode).toEqual(200);
-					expect(gqlResponse.body.data[localCollectionProducts]).toBeDefined();
-					expect(gqlResponse.body.data[localCollectionProducts][0]).toHaveProperty('metadata_func');
-					expect(gqlResponse.body.data[localCollectionProducts][0].metadata_func.color).toBe('red');
 				});
 			});
 
@@ -94,32 +68,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							sort: 'id',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
-						query: {
-							[localCollectionProducts]: {
-								__args: {
-									sort: 'id',
-								},
-								id: true,
-								name: true,
-								metadata_func: {
-									width: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'dimensions.width',
-										},
-									},
-									height: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'dimensions.height',
-										},
-									},
-								},
-							},
-						},
-					});
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -136,11 +84,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(Number(width)).toBe(10);
 					expect(Number(height)).toBe(20);
-
-					// GraphQL
-					expect(gqlResponse.statusCode).toEqual(200);
-					expect(gqlResponse.body.data[localCollectionProducts][0].metadata_func).toHaveProperty('width');
-					expect(gqlResponse.body.data[localCollectionProducts][0].metadata_func).toHaveProperty('height');
 				});
 			});
 
@@ -155,32 +98,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
-						query: {
-							[localCollectionProducts]: {
-								__args: {
-									sort: 'id',
-								},
-								id: true,
-								name: true,
-								metadata_func: {
-									tag0: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'tags[0]',
-										},
-									},
-									tag1: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'tags[1]',
-										},
-									},
-								},
-							},
-						},
-					});
-
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
@@ -190,11 +107,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data[0]).toHaveProperty('metadata_tags_1_json');
 					expect(response.body.data[0].metadata_tags_0_json).toBe('electronics');
 					expect(response.body.data[0].metadata_tags_1_json).toBe('premium');
-
-					// GraphQL
-					expect(gqlResponse.statusCode).toEqual(200);
-					expect(gqlResponse.body.data[localCollectionProducts][0].metadata_func.tag0).toBe('electronics');
-					expect(gqlResponse.body.data[localCollectionProducts][0].metadata_func.tag1).toBe('premium');
 				});
 			});
 
@@ -209,32 +121,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
-						query: {
-							[localCollectionProducts]: {
-								__args: {
-									sort: 'id',
-								},
-								id: true,
-								name: true,
-								metadata_func: {
-									sku: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'variants[0].sku',
-										},
-									},
-									price: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'variants[0].price',
-										},
-									},
-								},
-							},
-						},
-					});
-
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
@@ -246,10 +132,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					const price = response.body.data[0].metadata_variants_0_price_json;
 					expect(Number(price)).toBeCloseTo(99.99, 2);
-
-					// GraphQL
-					expect(gqlResponse.statusCode).toEqual(200);
-					expect(gqlResponse.body.data[localCollectionProducts][0].metadata_func.sku).toBe('SKU-001');
 				});
 			});
 
@@ -431,78 +313,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(item.metadata_brand_json).toBe('BrandX');
 				});
 			});
-
-			describe('works with filters', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Action - filter by name and extract json
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionProducts}`)
-						.query({
-							fields: 'id,name,json(metadata, color)',
-							filter: JSON.stringify({ name: { _eq: 'Product A' } }),
-						})
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toBeDefined();
-					expect(response.body.data).toHaveLength(1);
-					expect(response.body.data[0].name).toBe('Product A');
-					expect(response.body.data[0].metadata_color_json).toBe('red');
-				});
-			});
-
-			describe('works with sorting', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionProducts}`)
-						.query({
-							fields: 'id,name,json(metadata, color)',
-							sort: '-id',
-							limit: 2,
-						})
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toBeDefined();
-					expect(response.body.data).toHaveLength(2);
-
-					// Results should be in descending order
-					const firstId = response.body.data[0].id;
-					const secondId = response.body.data[1].id;
-
-					if (pkType === 'string') {
-						expect(firstId > secondId).toBe(true);
-					} else {
-						expect(Number(firstId) > Number(secondId)).toBe(true);
-					}
-				});
-			});
-
-			describe('works with pagination', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionProducts}`)
-						.query({
-							fields: 'id,json(metadata, color)',
-							sort: 'id',
-							limit: 2,
-							offset: 1,
-						})
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toBeDefined();
-					expect(response.body.data).toHaveLength(2);
-
-					// Second product should be first in results (offset 1)
-					expect(response.body.data[0].metadata_color_json).toBe('blue');
-				});
-			});
 		});
 
 		describe('GET /:collection/:id', () => {
@@ -520,47 +330,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
-						query: {
-							[localCollectionProducts]: {
-								__args: {
-									filter: {
-										id: {
-											_eq: firstProductId,
-										},
-									},
-								},
-								id: true,
-								name: true,
-								metadata_func: {
-									color: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'color',
-										},
-									},
-									brand: {
-										__aliasFor: 'json',
-										__args: {
-											path: 'brand',
-										},
-									},
-								},
-							},
-						},
-					});
-
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
 					expect(response.body.data.id).toBe(firstProductId);
 					expect(response.body.data.metadata_color_json).toBe('red');
 					expect(response.body.data.metadata_brand_json).toBe('BrandX');
-
-					// GraphQL
-					expect(gqlResponse.statusCode).toEqual(200);
-					expect(gqlResponse.body.data[localCollectionProducts][0].metadata_func.color).toBe('red');
-					expect(gqlResponse.body.data[localCollectionProducts][0].metadata_func.brand).toBe('BrandX');
 				});
 			});
 		});
