@@ -34,7 +34,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			key: Joi.string().required(),
 			name: Joi.string().allow(null),
 			collection: Joi.string().required(),
-			item: Joi.string().allow(null).required(),
+			item: Joi.string().allow(null),
 		});
 
 		const { error } = versionCreateSchema.validate(data);
