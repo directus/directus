@@ -2,7 +2,6 @@ import { randomUUID } from 'node:crypto';
 import { getUrl } from '@common/config';
 import { CreateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { requestGraphQL } from '@common/transport';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
