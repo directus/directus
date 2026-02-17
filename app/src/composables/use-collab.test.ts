@@ -46,7 +46,12 @@ const {
 	const mockNotificationsStore = { add: vi.fn(), queue: [] };
 	const mockPermissionsStore = { getPermission: vi.fn().mockReturnValue({ access: 'all' }) };
 	const mockRelationsStore = { getRelationForField: vi.fn() };
-	const mockFieldsStore = { getPrimaryKeyFieldForCollection: vi.fn() };
+
+	const mockFieldsStore = {
+		getPrimaryKeyFieldForCollection: vi.fn(),
+		getField: vi.fn().mockReturnValue({ schema: {} }),
+	};
+
 	const mockRouter = { push: vi.fn() };
 
 	return {
@@ -884,6 +889,35 @@ describe('useCollab', () => {
 		});
 
 		const field = collabContext.registerField('title');
+
+		mockSDK.sendMessage.mockClear();
+		field.onFocus();
+		vi.advanceTimersByTime(110);
+
+		expect(mockSDK.sendMessage).not.toHaveBeenCalledWith(expect.objectContaining({ action: ACTION.CLIENT.FOCUS }));
+	});
+
+	test('does not send focus if field doesnt have schema', async () => {
+		const { collabContext } = useCollab(collection, item, version, initialValues, edits, getItem);
+		emitWebSocketOpen();
+		await nextTick();
+		vi.advanceTimersByTime(10);
+
+		await emitWebSocketMessage({
+			type: 'collab',
+			action: ACTION.SERVER.INIT,
+			room: 'test-room',
+			connection: 'conn-1',
+			collection: 'test_collection',
+			item: '123',
+			changes: {},
+			users: [],
+			focuses: { 'conn-other': 'title' },
+		});
+
+		const field = collabContext.registerField('title');
+
+		vi.mocked(mockFieldsStore.getField).mockReturnValueOnce(null);
 
 		mockSDK.sendMessage.mockClear();
 		field.onFocus();

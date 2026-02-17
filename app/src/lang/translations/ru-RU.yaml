@@ -21,11 +21,15 @@
 #'Proxy', 'Intl'
 about: О программе
 privacy_policy: Политика конфиденциальности
-contact_our_team: Связаться с нашей командой
+contact_our_team: Связаться_с_нашей_командой
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
 setup_license_notice: >
   Directus бесплатный для организаций с годовым доходом, финансированием или бюджетом менее 5 миллионов долларов.
+setup_save_accept_license: >
+  Нажав сохранить, вы принимаете условия [{directusBsl} и {privacyPolicy}.
+setup_accept_license: Я принимаю условия {directusBsl} и {privacyPolicy}
+setup_marketing_emails: Присылать мне обновления и заметки к выпуску
 setup_launch: Запустить Directus
 setup_project: Организовать проект
 first_name: Имя
@@ -69,6 +73,7 @@ invalid_file_type: Недопустимый тип файла
 not_a_number: Не число
 maps: Карты
 switch_user: Сменить пользователя
+item_deleted: Предмет, который вы редактировали, был удален.
 item_creation: Создание элемента
 item_revision: Редакция элемента
 comparing_to: Сравнивая с
@@ -192,6 +197,7 @@ version: Версия
 version_key: Ключ Версии
 version_name: Название Версии
 main_version: Основная
+your_version: Ваша Версия
 switch_version: Сменить Версию
 switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.
 create_version: Создать Версию
@@ -513,6 +519,8 @@ import_data_indeterminate: Импорт данных...
 import_data_success: Данные успешно импортированы из {filename}
 import_data_errors: Ошибка импорта
 import_data_error: Структура данных этого файла не соответствует коллекции.
+snapshot:
+  export: Экспорт схемы
 label_import: Импорт
 label_export: Экспорт
 import_export: Импорт / Экспорт
@@ -769,6 +777,7 @@ errors:
   INVALID_OTP: Неверный одноразовый пароль
   INVALID_PAYLOAD: Недействительное содержимое
   INVALID_PROVIDER: Пользователь принадлежит другому провайдеру аутентификации
+  INVALID_PROVIDER_CONFIG: Неверная конфигурация провайдера
   INVALID_QUERY: Недействительный запрос
   INVALID_TOKEN: Недействительный токен
   INVALID_USER: Не удалось аутентифицировать пользователя
@@ -1017,14 +1026,29 @@ invalid_url: Недопустимый URL
 invalid_url_copy: Указанный URL не совпадает ни с одним URL, указанным в настройках.
 insights: Аналитика
 deployment:
+  overview:
+    providers: Провайдеры
   provider:
     settings:
       delete_confirm: Это действие является необратимым и не может быть отменено. Вы уверены, что хотите продолжить?
+    projects: Проекты
+    select_projects: Выбрать Проекты
+    runs:
+      started: Запущено
+      author: Автор
+      refresh: Обновить
+      empty: Нет запущенных приложений
     run:
       cancel_confirm: Это действие является необратимым и не может быть отменено. Вы уверены, что хотите продолжить?
       log_all: Все уровни ведения журнала
+      open_deployment: Перейти
+  no_projects: Нет проектов
+  no_projects_copy: Для этого поставщика не выбрано ни одного проекта.
+  no_runs: Нет запущенных приложений
   target_value:
     preview: Предпросмотр
+  runs_status:
+    ready: Готово
 dashboard: Доска
 panel: Панель
 panel_options: Параметры панели
@@ -1584,6 +1608,9 @@ ai_tools:
   schema: Схема
   collections: Коллекции
   fields: Поля
+mcp_prompts_collection:
+  generate_fields_dialog_title: Сгенерировать поля для AI запросов
+  validation_error_invalid: Коллекцию невозможно использовать
 mcp_prompts_collection_schema:
   messages_role_user: Пользователь
 expired: Истекло
@@ -2534,3 +2561,4 @@ percent: Процент
 show_password: Показать пароль
 hide_password: Скрыть пароль
 accepted: Принято
+set_to_now: Установить Сейчас
