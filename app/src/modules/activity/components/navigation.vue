@@ -112,5 +112,18 @@ function clearNavFilter() {
 				<VTextOverflow :text="$t('login')" />
 			</VListItemContent>
 		</VListItem>
+
+		<VListItem
+			clickable
+			:active="filterField === 'action' && filterValue === 'logout'"
+			@click="setNavFilter('action', 'logout')"
+		>
+			<VListItemIcon>
+				<VIcon name="logout" />
+			</VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="$t('logout')" />
+			</VListItemContent>
+		</VListItem>
 	</VList>
 </template>

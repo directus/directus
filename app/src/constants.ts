@@ -66,6 +66,11 @@ export const MODULE_BAR_DEFAULT = [
 		enabled: true,
 	},
 	{
+		type: 'module',
+		id: 'deployments',
+		enabled: false,
+	},
+	{
 		type: 'link',
 		id: 'docs',
 		enabled: true,

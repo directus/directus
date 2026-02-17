@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ContentVersion, PrimaryKey } from '@directus/types';
+import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -16,6 +16,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { CollabContext } from '@/composables/use-collab';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -25,9 +26,11 @@ interface Props {
 	deleteVersionsAllowed: boolean;
 	collection: string;
 	primaryKey: PrimaryKey;
-	mode: 'version' | 'revision';
+	mode: 'version' | 'revision' | 'collab';
 	currentVersion: ContentVersionWithType | null | undefined;
+	currentCollab: { from: Item; to: Item } | undefined;
 	revisions?: Revision[] | null;
+	collabContext?: CollabContext;
 }
 
 const props = defineProps<Props>();
@@ -37,12 +40,12 @@ const currentRevision = defineModel<Revision | null>('current-revision');
 const emit = defineEmits<{
 	cancel: [];
 	promote: [deleteOnPromote: boolean];
-	confirm: [data?: Record<string, any>];
+	confirm: [data: Record<string, any>];
 }>();
 
 const { t } = useI18n();
 
-const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
+const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions, currentCollab } = toRefs(props);
 
 const compareToOption = ref<'Previous' | 'Latest'>('Previous');
 
@@ -76,6 +79,7 @@ const {
 	currentVersion,
 	currentRevision,
 	revisions,
+	currentCollab,
 	compareToOption,
 });
 
@@ -138,6 +142,18 @@ watch(
 	},
 	{ immediate: true },
 );
+
+if (mode.value === 'collab') {
+	watch(
+		[currentCollab],
+		async () => {
+			if (!active.value) return;
+
+			await fetchComparisonData();
+		},
+		{ immediate: true },
+	);
+}
 
 watch(currentRevision, async () => {
 	if (!active.value || mode.value !== 'revision') return;
@@ -244,8 +260,10 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					<div class="col left">
 						<ComparisonHeader
 							:loading="modalLoading"
+							:mode="mode"
 							:title="baseDisplayName"
-							:date-updated="baseDateUpdated"
+							:subtitle="mode === 'collab' ? $t('collab_collision') : undefined"
+							:date-updated="mode === 'collab' ? $t('latest') : baseDateUpdated"
 							:user-updated="baseUserUpdated"
 							:user-loading="baseUserLoading"
 						/>
@@ -264,6 +282,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
+									:collab-context="collabContext"
 									:comparison="{
 										side: 'base',
 										fields: comparisonFields,
@@ -281,6 +300,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					<div class="col right vertical-divider">
 						<ComparisonHeader
 							:loading="modalLoading"
+							:mode="mode"
 							:title="deltaDisplayName"
 							:date-updated="normalizedData?.incoming.date.dateObject || null"
 							:user-updated="userUpdated"
@@ -354,7 +374,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									@click="$emit('cancel')"
 								>
 									<VIcon name="close" left />
-									<span class="button-text">{{ $t('cancel') }}</span>
+									<span class="button-text">{{ $t(mode === 'collab' ? 'discard' : 'cancel') }}</span>
 								</VButton>
 								<VButton
 									v-tooltip.top="applyButtonTooltip"

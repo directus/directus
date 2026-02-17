@@ -4,6 +4,10 @@ import { useSizeClass } from '@directus/composables';
 interface Props {
 	/** Render as a tile (square) */
 	tile?: boolean;
+	/** Render round */
+	round?: boolean;
+	/** Render border with optional color */
+	border?: boolean | string;
 	/** Renders a smaller avatar */
 	xSmall?: boolean;
 	/** Renders a small avatar */
@@ -12,6 +16,8 @@ interface Props {
 	large?: boolean;
 	/** Renders a larger avatar */
 	xLarge?: boolean;
+	/** Makes the avatar clickable */
+	clickable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -22,9 +28,15 @@ const sizeClass = useSizeClass(props);
 </script>
 
 <template>
-	<div class="v-avatar" :class="[{ tile }, sizeClass]">
+	<component
+		:is="clickable ? 'button' : 'div'"
+		:type="clickable ? 'button' : undefined"
+		class="v-avatar"
+		:class="[{ tile, round, border }, sizeClass]"
+		:style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []"
+	>
 		<slot />
-	</div>
+	</component>
 </template>
 
 <style scoped>
@@ -32,9 +44,10 @@ const sizeClass = useSizeClass(props);
 
 	Available Variables:
 
-		--v-avatar-color  [var(--theme--background-normal)]
-		--v-avatar-size   [48px]
-
+	--v-avatar-border-width [2px]
+	--v-avatar-border-color [var(--theme--border-color)]
+	--v-avatar-color  [var(--theme--background-normal)]
+	--v-avatar-size   [48px]
 */
 
 .v-avatar {
@@ -56,6 +69,10 @@ const sizeClass = useSizeClass(props);
 	border-radius: 0;
 }
 
+.border {
+	border: var(--v-avatar-border-width, 2px) solid var(--v-avatar-border-color, var(--theme--border-color));
+}
+
 .x-small {
 	--v-avatar-size: 24px;
 
@@ -72,6 +89,10 @@ const sizeClass = useSizeClass(props);
 
 .x-large {
 	--v-avatar-size: 80px;
+}
+
+.round {
+	border-radius: 50% !important;
 }
 
 :slotted(img) {

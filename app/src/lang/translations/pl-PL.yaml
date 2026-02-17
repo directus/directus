@@ -954,6 +954,15 @@ operation_key_unique_error: Klucze operacji muszą być unikalne w przepływie
 operation_handle_resolve: 'Rozwiązanie: Kliknij, aby dodać lub przeciągnąć do przekierowania'
 operation_handle_reject: 'Odrzuć: Kliknij, aby dodać lub przeciągnąć do przekierowania'
 insights: Statystyki
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
+    run:
+      cancel_confirm: Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
+      log_all: Wszystkie poziomy logów
+  target_value:
+    preview: Podgląd
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
@@ -1310,6 +1319,7 @@ fields:
     public_registration_email_filter_note: Tylko adresy e-mail pasujące do tego filtra mogą się zarejestrować.
     public_registration_verify_email: Potwierdź e-mail
     public_registration_verify_email_note: Wysyła e-mail do użytkownika rejestrującego z prośbą o kliknięcie na link weryfikacyjny zanim będzie mógł się zalogować.
+    ai_header_name: Nagłówek
   directus_shares:
     name: Nazwa
     role: Rola
@@ -1453,6 +1463,7 @@ live_preview:
   new_window: Otwórz w nowym oknie
   close_window: Otwórz w widoku podzielonym
   toggle_3d: Przełącz 3D
+  display_options: Opcje wyświetlania
 shares: Udostępnienia
 unlimited_usage: Nieograniczone użycie
 uses_left: Brak pozostałych zastosowań | Pozostało jedno użycie | {n} pozostało do użycia
@@ -1461,6 +1472,8 @@ new_share: Nowe udostępnianie
 ai:
   input: Wprowadź
   unknown: Nieznane
+  items: Elementy
+  content: Zawartość
   settings: Ustawienia
   tool_approval:
     disabled: Wyłączony
@@ -2407,3 +2420,4 @@ search_flow: Szukaj przepływu...
 percent: Procent
 show_password: Pokaż hasło
 hide_password: Schowaj hasło
+set_to_now: Ustaw na teraz
