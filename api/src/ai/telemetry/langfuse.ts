@@ -1,12 +1,5 @@
 import type { useEnv } from '@directus/env';
-
-type AITelemetryState = {
-	recordIO: boolean;
-	tracerProvider: {
-		getTracer: (name: string) => unknown;
-		shutdown: () => Promise<void>;
-	};
-};
+import type { AITelemetryState } from './index.js';
 
 const getStringAttribute = (attributes: Record<string, unknown>, key: string): string | undefined => {
 	const value = attributes[key];
@@ -25,31 +18,29 @@ export const createLangfuseInputOutputCompatSpanProcessor = () => {
 			if (!attributes || typeof attributes !== 'object') return;
 			if (typeof span?.name !== 'string' || !span.name.startsWith('ai.')) return;
 
-			const input =
-				getStringAttribute(attributes, 'langfuse.observation.input') ??
-				getStringAttribute(attributes, 'langfuse.trace.input') ??
-				getStringAttribute(attributes, 'ai.prompt.messages') ??
-				getStringAttribute(attributes, 'ai.prompt');
+			const observationInput = getStringAttribute(attributes, 'langfuse.observation.input');
+			const traceInput = getStringAttribute(attributes, 'langfuse.trace.input');
+			const fallbackInput = getStringAttribute(attributes, 'ai.prompt.messages') ?? getStringAttribute(attributes, 'ai.prompt');
+			const input = observationInput ?? traceInput ?? fallbackInput;
 
-			const output =
-				getStringAttribute(attributes, 'langfuse.observation.output') ??
-				getStringAttribute(attributes, 'langfuse.trace.output') ??
-				getStringAttribute(attributes, 'ai.response.text') ??
-				getStringAttribute(attributes, 'ai.response.object');
+			const observationOutput = getStringAttribute(attributes, 'langfuse.observation.output');
+			const traceOutput = getStringAttribute(attributes, 'langfuse.trace.output');
+			const fallbackOutput = getStringAttribute(attributes, 'ai.response.text') ?? getStringAttribute(attributes, 'ai.response.object');
+			const output = observationOutput ?? traceOutput ?? fallbackOutput;
 
-			if (!getStringAttribute(attributes, 'langfuse.observation.input') && input) {
+			if (!observationInput && input) {
 				attributes['langfuse.observation.input'] = input;
 			}
 
-			if (!getStringAttribute(attributes, 'langfuse.trace.input') && input) {
+			if (!traceInput && input) {
 				attributes['langfuse.trace.input'] = input;
 			}
 
-			if (!getStringAttribute(attributes, 'langfuse.observation.output') && output) {
+			if (!observationOutput && output) {
 				attributes['langfuse.observation.output'] = output;
 			}
 
-			if (!getStringAttribute(attributes, 'langfuse.trace.output') && output) {
+			if (!traceOutput && output) {
 				attributes['langfuse.trace.output'] = output;
 			}
 		},

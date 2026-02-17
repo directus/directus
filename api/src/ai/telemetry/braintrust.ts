@@ -1,12 +1,5 @@
 import type { useEnv } from '@directus/env';
-
-type AITelemetryState = {
-	recordIO: boolean;
-	tracerProvider: {
-		getTracer: (name: string) => unknown;
-		shutdown: () => Promise<void>;
-	};
-};
+import type { AITelemetryState } from './index.js';
 
 export const applyBraintrustEnv = (env: ReturnType<typeof useEnv>) => {
 	const apiKey = env['BRAINTRUST_API_KEY'];

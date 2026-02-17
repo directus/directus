@@ -14,7 +14,7 @@ type AITelemetryMetadata = {
 	model: string;
 };
 
-type AITelemetryState = {
+export type AITelemetryState = {
 	recordIO: boolean;
 	tracerProvider: TracerProviderLike;
 };
