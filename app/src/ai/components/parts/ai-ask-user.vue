@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
+import { onKeyStroke, useResizeObserver } from '@vueuse/core';
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
@@ -47,13 +48,13 @@ const isLastQuestion = computed(() => activeQuestionIndex.value === questions.va
 
 const slideDirection = ref<'forward' | 'backward'>('forward');
 
-const rootEl = ref<HTMLElement | null>(null);
+const rootEl = useTemplateRef<HTMLElement>('root-el');
 const questionWrapperRef = useTemplateRef<HTMLElement>('question-wrapper');
-let savedHeight = 0;
+const savedHeight = ref(0);
 
 function onBeforeLeave() {
 	const wrapper = questionWrapperRef.value;
-	if (wrapper) savedHeight = wrapper.offsetHeight;
+	if (wrapper) savedHeight.value = wrapper.offsetHeight;
 }
 
 function onEnter() {
@@ -62,7 +63,7 @@ function onEnter() {
 	if (!wrapper) return;
 
 	const newHeight = wrapper.offsetHeight;
-	wrapper.style.height = `${savedHeight}px`;
+	wrapper.style.height = `${savedHeight.value}px`;
 
 	requestAnimationFrame(() => {
 		wrapper.style.height = `${newHeight}px`;
@@ -133,55 +134,59 @@ function isOptionSelected(questionId: string, label: string): boolean {
 	return answer === label;
 }
 
-function handleKeydown(event: KeyboardEvent) {
+onKeyStroke('ArrowLeft', () => {
+	goToQuestion(activeQuestionIndex.value - 1);
+});
+
+onKeyStroke('ArrowRight', () => {
+	goToQuestion(activeQuestionIndex.value + 1);
+});
+
+// Enter key handling
+onKeyStroke('Enter', (e) => {
 	if (!currentQuestion.value) return;
-
 	const q = currentQuestion.value;
+	if (e.shiftKey || textInputActive.value[q.id]) return;
 
-	// Number keys 1-4 to select options
-	const num = parseInt(event.key);
+	e.preventDefault();
 
-	if (num >= 1 && num <= (q.options?.length ?? 0) && q.options) {
-		event.preventDefault();
+	if (isLastQuestion.value) {
+		handleSubmit();
+	} else {
+		goToQuestion(activeQuestionIndex.value + 1);
+	}
+});
+
+// Escape key handling
+onKeyStroke('Escape', (e) => {
+	e.preventDefault();
+
+	if (!isLastQuestion.value) {
+		goToQuestion(activeQuestionIndex.value + 1);
+	}
+});
+
+// Number keys 1-4 for option selection or text input activation
+onKeyStroke(['1', '2', '3', '4'], (e) => {
+	if (!currentQuestion.value) return;
+	const q = currentQuestion.value;
+	const num = parseInt(e.key);
+	const optionCount = q.options?.length ?? 0;
+
+	if (num >= 1 && num <= optionCount && q.options) {
+		e.preventDefault();
 		selectOption(q.id, q.options[num - 1]!.label, q.multi_select);
-		return;
+	} else if (q.allow_text && num === optionCount + 1) {
+		e.preventDefault();
+		activateTextInput(q.id);
 	}
+});
 
-	switch (event.key) {
-		case 'ArrowLeft':
-			event.preventDefault();
-			goToQuestion(activeQuestionIndex.value - 1);
-			break;
-		case 'ArrowRight':
-			event.preventDefault();
-			goToQuestion(activeQuestionIndex.value + 1);
-			break;
-		case 'Enter':
-			if (event.shiftKey || textInputActive.value[q.id]) break;
-			event.preventDefault();
-
-			if (isLastQuestion.value) {
-				handleSubmit();
-			} else {
-				goToQuestion(activeQuestionIndex.value + 1);
-			}
-
-			break;
-		case 'Escape':
-			event.preventDefault();
-
-			if (!isLastQuestion.value) {
-				goToQuestion(activeQuestionIndex.value + 1);
-			}
-
-			break;
-	}
-}
+// Tabs
 
 const tabsContainerRef = useTemplateRef<HTMLElement>('tabs-container');
 const showLeftFade = ref(false);
 const showRightFade = ref(false);
-let resizeObserver: ResizeObserver | null = null;
 
 function updateFades() {
 	const el = tabsContainerRef.value;
@@ -191,6 +196,8 @@ function updateFades() {
 	showLeftFade.value = el.scrollLeft > 0;
 	showRightFade.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
 }
+
+useResizeObserver(tabsContainerRef, updateFades);
 
 watch(activeQuestionIndex, (newIndex, oldIndex) => {
 	slideDirection.value = newIndex > oldIndex ? 'forward' : 'backward';
@@ -211,30 +218,16 @@ onMounted(() => {
 		rootEl.value?.focus();
 		updateFades();
 	});
-
-	if (tabsContainerRef.value) {
-		resizeObserver?.disconnect();
-		resizeObserver = new ResizeObserver(updateFades);
-		resizeObserver.observe(tabsContainerRef.value);
-	}
 });
 
 onUnmounted(() => {
-	resizeObserver?.disconnect();
 	// Safety net for non-standard unmount paths (e.g. parent route change)
 	cancelPending();
 });
 </script>
 
 <template>
-	<div
-		ref="rootEl"
-		class="ai-ask-user"
-		role="region"
-		:aria-label="t('ai.ask_user')"
-		tabindex="0"
-		@keydown="handleKeydown"
-	>
+	<div ref="rootEl" class="ai-ask-user" role="region" :aria-label="t('ai.ask_user')" tabindex="0">
 		<div
 			v-if="questions.length > 1"
 			class="question-tabs-wrapper"
