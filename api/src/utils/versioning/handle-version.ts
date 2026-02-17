@@ -107,9 +107,7 @@ export async function handleVersion(
 		delete query.version;
 
 		if (query.showMain !== true || key === NEW_VERSION) {
-			const ids = uniq(
-				key === NEW_VERSION ? (createdIDs[self.collection] ?? []) : versions.map((version) => version.item),
-			);
+			const ids = uniq(versions.map((version) => version.item ?? createdIDs[self.collection] ?? []).flat());
 
 			query.filter = {
 				_and: [
