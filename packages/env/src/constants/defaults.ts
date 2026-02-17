@@ -139,6 +139,8 @@ export const DEFAULTS = {
 	USERS_APP_ACCESS_LIMIT: Infinity,
 	USERS_API_ACCESS_LIMIT: Infinity,
 
+	MAX_JSON_QUERY_DEPTH: 10,
+
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
 	TUS_ENABLED: false,

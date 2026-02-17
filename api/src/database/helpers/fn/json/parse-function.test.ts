@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { parseJsonFunction } from './parse-function.js';
+import { calculateJsonPathDepth, parseJsonFunction } from './parse-function.js';
 
 const VALID_TEST_CASES = [
 	// Basic json(field, path) syntax
@@ -29,6 +29,15 @@ const VALID_TEST_CASES = [
 		input: 'json(relation.item:collection.field, path)',
 		expected: { field: 'relation.item:collection.field', path: '.path' },
 	},
+	// Depth validation - exactly at limit (depth 10 is allowed)
+	{
+		input: 'json(data, a.b.c.d.e.f.g.h.i.j)',
+		expected: { field: 'data', path: '.a.b.c.d.e.f.g.h.i.j' },
+	},
+	{
+		input: 'json(data, items[0].a.b.c.d.e.f.g.h)',
+		expected: { field: 'data', path: '.items[0].a.b.c.d.e.f.g.h' },
+	},
 ];
 
 const INVALID_TEST_CASES = [
@@ -47,9 +56,50 @@ const INVALID_TEST_CASES = [
 	{ input: 'json( , path)', expectedError: 'Invalid json() syntax: missing field name' },
 	// Missing path
 	{ input: 'json(field,)', expectedError: 'Invalid json() syntax: missing path' },
+	// Exceeds maximum depth (default is 10)
+	{
+		input: 'json(data, a.b.c.d.e.f.g.h.i.j.k)',
+		expectedError: 'JSON path depth exceeds maximum allowed depth of 10 (got 11)',
+	},
+	{
+		input: 'json(data, a[0].b[1].c[2].d[3].e[4].f[5])',
+		expectedError: 'JSON path depth exceeds maximum allowed depth of 10',
+	},
+];
+
+const JSON_PATH_DEPTH_TEST_CASES = [
+	// Empty string
+	{ path: '', expected: 0 },
+	// Single property access
+	{ path: '.color', expected: 1 },
+	{ path: 'color', expected: 0 },
+	// Nested property access
+	{ path: '.settings.theme', expected: 2 },
+	{ path: '.a.b.c', expected: 3 },
+	{ path: '.a.b.c.d.e.f.g.h.i.j', expected: 10 },
+	// Array access
+	{ path: '[0]', expected: 1 },
+	{ path: '.items[0]', expected: 2 },
+	{ path: '[0][1]', expected: 2 },
+	// Mixed property and array access
+	{ path: '.items[0].name', expected: 3 },
+	{ path: '.data[0].nested[1].value', expected: 5 },
+	{ path: '.a.b[0].c[1].d', expected: 6 },
+	// Complex paths
+	{ path: '.a.b.c.d.e.f.g.h.i.j.k', expected: 11 },
+	{ path: '.a[0].b[1].c[2].d[3].e[4].f[5]', expected: 12 },
+	// Paths without leading dot
+	{ path: 'a.b.c', expected: 2 },
+	{ path: 'items[0].name', expected: 2 },
 ];
 
 describe('JsonHelper', () => {
+	describe('calculateJsonPathDepth', () => {
+		test.each(JSON_PATH_DEPTH_TEST_CASES)('returns $expected for "$path"', ({ path, expected }) => {
+			expect(calculateJsonPathDepth(path)).toBe(expected);
+		});
+	});
+
 	describe('parseJsonFunction', () => {
 		describe('valid inputs', () => {
 			test.each(VALID_TEST_CASES)(
