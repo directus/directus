@@ -1,9 +1,10 @@
 import { defineModule } from '@directus/extensions';
 import { stringifyQuery } from 'vue-router';
 import VisualEditor from './routes/visual-editor.vue';
+import { getSettingsUrls } from './utils/get-settings-urls';
 import { getUrlRoute } from './utils/get-url-route';
+import { normalizeUrl } from './utils/normalize-url';
 import { sameOrigin } from './utils/same-origin';
-import { useSettingsStore } from '@/stores/settings';
 
 export default defineModule({
 	id: 'visual',
@@ -60,17 +61,3 @@ export default defineModule({
 		},
 	],
 });
-
-function getSettingsUrls() {
-	const { settings } = useSettingsStore();
-	const settingsUrls = settings?.visual_editor_urls?.map((item) => item.url).filter(Boolean) || [];
-	return settingsUrls.map(normalizeUrl).filter(Boolean);
-}
-
-function normalizeUrl(url: string) {
-	try {
-		return new URL(url).href.replace(/\/$/, '');
-	} catch {
-		return '';
-	}
-}
