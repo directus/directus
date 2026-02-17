@@ -1,13 +1,14 @@
 import { Action } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type {
-	AbstractServiceOptions,
-	ContentVersion,
-	Item,
-	MutationOptions,
-	PrimaryKey,
-	Query,
-	QueryOptions,
+import {
+	type AbstractServiceOptions,
+	type ContentVersion,
+	type Item,
+	type MutationOptions,
+	NEW_VERSION,
+	type PrimaryKey,
+	type Query,
+	type QueryOptions,
 } from '@directus/types';
 import { deepMapWithSchema } from '@directus/utils';
 import Joi from 'joi';
@@ -42,6 +43,10 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		// Reserves the "main" version key for the version query parameter
 		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+
+		if (!data['item'] && data['key'] !== 'draft') {
+			throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
+		}
 
 		if (this.accountability) {
 			try {
@@ -116,12 +121,17 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getVersionSaves(key: string, collection: string, item: PrimaryKey | null, mapDelta = true) {
+	async getVersionSaves(
+		key: string,
+		collection: string,
+		item: PrimaryKey | typeof NEW_VERSION | null,
+		mapDelta = true,
+	) {
 		let versions = await this.readByQuery({
 			filter: {
 				key: { _eq: key },
 				collection: { _eq: collection },
-				...(item ? { item: { _eq: item } } : {}),
+				...(item ? { item: { _eq: item === NEW_VERSION ? null : item } } : {}),
 			},
 			limit: -1,
 		});
@@ -137,9 +147,13 @@ export class VersionsService extends ItemsService<ContentVersion> {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.validateCreateData(data);
 
-		const mainItem = await this.getMainItem(data['collection'], data['item']);
+		if (data['item']) {
+			const mainItem = await this.getMainItem(data['collection'], data['item']);
 
-		data['hash'] = objectHash(mainItem);
+			data['hash'] = objectHash(mainItem);
+		} else {
+			data['hash'] = null;
+		}
 
 		return super.createOne(data, opts);
 	}
@@ -374,6 +388,8 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			updatedItemKey = await itemsService.createOne(payloadAfterHooks, {
 				overwriteDefaults: defaultOverwrites as any,
 			});
+
+			await super.updateOne(version, { item: String(updatedItemKey) });
 		}
 
 		emitter.emitAction(

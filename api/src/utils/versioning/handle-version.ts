@@ -1,16 +1,29 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import {
+	type Accountability,
+	type Filter,
+	type Item,
+	NEW_VERSION,
+	type PrimaryKey,
+	type Query,
+	type QueryOptions,
+} from '@directus/types';
 import { deepMapWithSchema } from '@directus/utils';
 import { cloneDeep, uniq } from 'lodash-es';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
 import { splitRecursive } from './split-recursive.js';
 
-export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | null, query: Query, opts?: QueryOptions) {
+export async function handleVersion(
+	self: ItemsServiceType,
+	key: PrimaryKey | typeof NEW_VERSION | null,
+	query: Query,
+	opts?: QueryOptions,
+) {
 	const { VersionsService } = await import('../../services/versions.js');
 	const { ItemsService } = await import('../../services/items.js');
 
-	if (key && query.versionRaw) {
+	if (key && key !== NEW_VERSION && query.versionRaw) {
 		const originalData = await self.readByQuery(query, opts);
 
 		if (originalData.length === 0) {
@@ -43,22 +56,6 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 		throw new ForbiddenError();
 	}
 
-	query = cloneDeep(query);
-	delete query.version;
-
-	if (query.showMain !== true) {
-		query.filter = {
-			_and: [
-				...(query.filter ? [query.filter] : []),
-				{
-					id: { _in: uniq(versions.map((version) => version.item)) },
-				},
-			],
-		};
-	}
-
-	delete query.showMain;
-
 	await transaction(self.knex, async (trx) => {
 		const itemsServiceAdmin = new ItemsService<Item>(self.collection, {
 			schema: self.schema,
@@ -72,17 +69,31 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 			if (delta) {
 				const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
-				await itemsServiceAdmin.updateOne(item, rawDelta, {
-					emitEvents: false,
-					autoPurgeCache: false,
-					skipTracking: true,
-					overwriteDefaults: defaultOverwrites as any,
-					onItemCreate: (collection, pk) => {
-						if (collection in createdIDs === false) createdIDs[collection] = [];
+				if (!item) {
+					await itemsServiceAdmin.createOne(rawDelta, {
+						emitEvents: false,
+						autoPurgeCache: false,
+						skipTracking: true,
+						overwriteDefaults: defaultOverwrites as any,
+						onItemCreate: (collection, pk) => {
+							if (collection in createdIDs === false) createdIDs[collection] = [];
 
-						createdIDs[collection]!.push(pk);
-					},
-				});
+							createdIDs[collection]!.push(pk);
+						},
+					});
+				} else {
+					await itemsServiceAdmin.updateOne(item, rawDelta, {
+						emitEvents: false,
+						autoPurgeCache: false,
+						skipTracking: true,
+						overwriteDefaults: defaultOverwrites as any,
+						onItemCreate: (collection, pk) => {
+							if (collection in createdIDs === false) createdIDs[collection] = [];
+
+							createdIDs[collection]!.push(pk);
+						},
+					});
+				}
 			}
 		}
 
@@ -91,6 +102,26 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 			accountability: self.accountability,
 			knex: trx,
 		});
+
+		query = cloneDeep(query);
+		delete query.version;
+
+		if (query.showMain !== true || key === NEW_VERSION) {
+			const ids = uniq(
+				key === NEW_VERSION ? (createdIDs[self.collection] ?? []) : versions.map((version) => version.item),
+			);
+
+			query.filter = {
+				_and: [
+					...(query.filter ? [query.filter] : []),
+					{
+						id: { _in: ids },
+					} as Filter,
+				],
+			};
+		}
+
+		delete query.showMain;
 
 		results = await itemsServiceUser.readByQuery(query, opts);
 
