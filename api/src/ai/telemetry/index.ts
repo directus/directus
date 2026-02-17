@@ -8,8 +8,8 @@ type TracerProviderLike = {
 };
 
 type AITelemetryMetadata = {
-	userId?: string | null;
-	role?: string | null;
+	userId?: string | null | undefined;
+	role?: string | null | undefined;
 	provider: ProviderType;
 	model: string;
 };
