@@ -27,6 +27,9 @@ export async function getAggregateQuery(
 		// filter out graphql pointers, like __typename
 		if (aggregationGroup.name.value.startsWith('__')) continue;
 
+		// skip the 'group' field — it holds grouped values, not an aggregate function
+		if (aggregationGroup.name.value === 'group') continue;
+
 		const aggregateProperty = aggregationGroup.name.value as keyof Aggregate;
 
 		query.aggregate[aggregateProperty] =

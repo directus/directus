@@ -64,8 +64,8 @@ catalogs:
       specifier: 1.4.2
       version: 1.4.2
     '@editorjs/editorjs':
-      specifier: 2.31.0
-      version: 2.31.0
+      specifier: 2.31.2
+      version: 2.31.2
     '@editorjs/embed':
       specifier: 2.7.6
       version: 2.7.6
@@ -1601,7 +1601,7 @@ importers:
         version: 1.4.2
       '@editorjs/editorjs':
         specifier: 'catalog:'
-        version: 2.31.0
+        version: 2.31.2
       '@editorjs/embed':
         specifier: 'catalog:'
         version: 2.7.6
@@ -3899,8 +3899,8 @@ packages:
   '@editorjs/dom@1.0.1':
     resolution: {integrity: sha512-yLO+86MYOIUr1Jl7SQw23SYT84ggv6aJW0EIRsI3NTHYgnQzmK7Bt2n5ZFupQlB0GJqmKqA5tCue3NKQb+o7Pw==}
 
-  '@editorjs/editorjs@2.31.0':
-    resolution: {integrity: sha512-CBcIZXtPlg0dSlC5clO9OfTCmcxelj723jd4d67teFlaFJobjjxU1PmMxFJdhaRep5+nqdD0jr+fdJBqEDqt1g==}
+  '@editorjs/editorjs@2.31.2':
+    resolution: {integrity: sha512-9fK4RsboiLtPF3GoeRspzx1Xp0sg32ArNL7W7obATSNw3CjmrSie878WWOk3xSpdftBmJGVo2wvFmbLGzJkttg==}
 
   '@editorjs/embed@2.7.6':
     resolution: {integrity: sha512-L3agW/23mOI0L+oksUE9UOR5VSNCqapxLH5lma+5j+idjKCC31nxbx07x53MSJ4rlOTO1L7cFVhkqptEdOliJA==}
@@ -15881,7 +15881,7 @@ snapshots:
     dependencies:
       '@editorjs/helpers': 1.0.1
 
-  '@editorjs/editorjs@2.31.0':
+  '@editorjs/editorjs@2.31.2':
     dependencies:
       '@editorjs/caret': 1.0.3
       codex-notifier: 1.1.2
@@ -15889,12 +15889,12 @@ snapshots:
 
   '@editorjs/embed@2.7.6':
     dependencies:
-      '@editorjs/editorjs': 2.31.0
+      '@editorjs/editorjs': 2.31.2
 
   '@editorjs/header@2.8.8':
     dependencies:
       '@codexteam/icons': 0.0.5
-      '@editorjs/editorjs': 2.31.0
+      '@editorjs/editorjs': 2.31.2
 
   '@editorjs/helpers@0.0.4': {}
 
