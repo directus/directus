@@ -38,11 +38,13 @@ const INVALID_TEST_CASES = [
 	{ input: 'json(   )', expectedError: 'Invalid json() syntax' },
 	{ input: ' json()', expectedError: 'Invalid json() syntax' },
 	{ input: 'json() ', expectedError: 'Invalid json() syntax' },
+	{ input: 'json(,,) ', expectedError: 'Invalid json() syntax' },
 	// Missing comma delimiter
 	{ input: 'json(fieldonly)', expectedError: 'Invalid json() syntax: requires json(field, path) format' },
 	{ input: 'json(field.path.no.comma)', expectedError: 'Invalid json() syntax: requires json(field, path) format' },
 	// Missing field name
 	{ input: 'json(, path)', expectedError: 'Invalid json() syntax: missing field name' },
+	{ input: 'json( , path)', expectedError: 'Invalid json() syntax: missing field name' },
 	// Missing path
 	{ input: 'json(field,)', expectedError: 'Invalid json() syntax: missing path' },
 ];
