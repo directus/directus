@@ -367,7 +367,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchMainVersion(collection: string, item: PrimaryKey): Promise<Record<string, any>> {
 		const endpoint = getEndpoint(collection);
-		const itemEndpoint = `${endpoint}/${item}`;
+		const itemEndpoint = `${endpoint}/${encodeURIComponent(item)}`;
 
 		try {
 			const itemResponse = await api.get(itemEndpoint);
