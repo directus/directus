@@ -1608,6 +1608,9 @@ ai_tools:
   schema: Схема
   collections: Коллекции
   fields: Поля
+mcp_prompts_collection:
+  generate_fields_dialog_title: Сгенерировать поля для AI запросов
+  validation_error_invalid: Коллекцию невозможно использовать
 mcp_prompts_collection_schema:
   messages_role_user: Пользователь
 expired: Истекло
