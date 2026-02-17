@@ -301,15 +301,21 @@ export class VersionsService extends ItemsService<ContentVersion> {
 	async promote(version: PrimaryKey, mainHash: string, fields?: string[]) {
 		const { collection, item, delta } = (await super.readOne(version)) as ContentVersion;
 
-		// will throw an error if the accountability does not have permission to update the item
+		// will throw an error if the accountability does not have permission to create/update the item
 		if (this.accountability) {
 			await validateAccess(
-				{
-					accountability: this.accountability,
-					action: 'update',
-					collection,
-					primaryKeys: [item],
-				},
+				item
+					? {
+							accountability: this.accountability,
+							action: 'update',
+							collection,
+							primaryKeys: [item],
+						}
+					: {
+							accountability: this.accountability,
+							action: 'create',
+							collection,
+						},
 				{
 					schema: this.schema,
 					knex: this.knex,
@@ -323,12 +329,14 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			});
 		}
 
-		const { outdated } = await this.verifyHash(collection, item, mainHash);
+		if (item) {
+			const { outdated } = await this.verifyHash(collection, item, mainHash);
 
-		if (outdated) {
-			throw new UnprocessableContentError({
-				reason: `Main item has changed since this version was last updated`,
-			});
+			if (outdated) {
+				throw new UnprocessableContentError({
+					reason: `Main item has changed since this version was last updated`,
+				});
+			}
 		}
 
 		const { rawDelta, defaultOverwrites } = splitRecursive(delta);
@@ -356,9 +364,17 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			},
 		);
 
-		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks, {
-			overwriteDefaults: defaultOverwrites as any,
-		});
+		let updatedItemKey;
+
+		if (item) {
+			updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks, {
+				overwriteDefaults: defaultOverwrites as any,
+			});
+		} else {
+			updatedItemKey = await itemsService.createOne(payloadAfterHooks, {
+				overwriteDefaults: defaultOverwrites as any,
+			});
+		}
 
 		emitter.emitAction(
 			['items.promote', `${collection}.items.promote`],
