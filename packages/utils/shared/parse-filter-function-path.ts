@@ -13,12 +13,20 @@ export function parseFilterFunctionPath(path: string): string {
 		const matched = path.match(REGEX_BETWEEN_PARENS);
 
 		if (matched) {
-			const fields = matched[1]!;
-			const fieldsHasColumns = fields.includes('.');
-			const columns = fieldsHasColumns ? fields.slice(0, fields.lastIndexOf('.') + 1) : '';
-			const field = fieldsHasColumns ? fields.slice(fields.lastIndexOf('.') + 1) : fields;
+			const argsString = matched[1]!;
+			// Split by comma to handle multiple arguments
+			const args = argsString.split(',').map((arg) => arg.trim());
 
-			return `${preColumns}${columns}${functionName}(${field})`;
+			// Extract path from the first argument only
+			const firstArg = args[0]!;
+			const firstArgHasColumns = firstArg.includes('.');
+			const firstArgColumns = firstArgHasColumns ? firstArg.slice(0, firstArg.lastIndexOf('.') + 1) : '';
+			const firstArgField = firstArgHasColumns ? firstArg.slice(firstArg.lastIndexOf('.') + 1) : firstArg;
+
+			// Keep other arguments as-is
+			const reconstructedArgs = [firstArgField, ...args.slice(1)].join(', ');
+
+			return `${preColumns}${firstArgColumns}${functionName}(${reconstructedArgs})`;
 		}
 	}
 
