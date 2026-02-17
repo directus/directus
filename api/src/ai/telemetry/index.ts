@@ -60,9 +60,7 @@ export const initAITelemetry = async (): Promise<void> => {
 		} catch (error) {
 			logger.warn(error, 'Failed to initialize AI telemetry');
 		}
-	})().finally(() => {
-		telemetryInitPromise = null;
-	});
+	})();
 
 	telemetryInitPromise = initPromise;
 

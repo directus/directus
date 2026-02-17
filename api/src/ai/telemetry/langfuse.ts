@@ -7,6 +7,10 @@ const getStringAttribute = (attributes: Record<string, unknown>, key: string): s
 	return typeof value === 'string' && value.length > 0 ? value : undefined;
 };
 
+/**
+ * Langfuse's OTel integration doesn't automatically pick up AI SDK span attributes for input/output display.
+ * This processor copies ai.prompt.* / ai.response.* attributes into the langfuse.* namespace as a workaround.
+ */
 export const createLangfuseInputOutputCompatSpanProcessor = () => {
 	return {
 		onStart() {
