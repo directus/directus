@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { applyLangfuseEnv } from './langfuse.js';
 
 describe('applyLangfuseEnv', () => {

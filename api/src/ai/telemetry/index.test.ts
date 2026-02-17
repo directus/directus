@@ -5,22 +5,6 @@ const mockLogger = { info: vi.fn(), warn: vi.fn() };
 const mockInitLangfuse = vi.fn();
 const mockInitBraintrust = vi.fn();
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => mockEnv),
-}));
-
-vi.mock('../../logger/index.js', () => ({
-	useLogger: vi.fn(() => mockLogger),
-}));
-
-vi.mock('./langfuse.js', () => ({
-	initLangfuse: mockInitLangfuse,
-}));
-
-vi.mock('./braintrust.js', () => ({
-	initBraintrust: mockInitBraintrust,
-}));
-
 let initAITelemetry: (typeof import('./index.js'))['initAITelemetry'];
 let getAITelemetryConfig: (typeof import('./index.js'))['getAITelemetryConfig'];
 let shutdownAITelemetry: (typeof import('./index.js'))['shutdownAITelemetry'];
