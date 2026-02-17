@@ -1172,11 +1172,11 @@ deployment:
   dashboard:
     projects: Projects ({count})
     deployed: Deployed
-    total_projects: "Total Projects: {value}"
-    active_deployments: "Active Deployment: {value}"
-    failed_builds: "Failed Builds (L24): {value}"
-    successful_builds: "Successful Builds (L24): {value}"
-    total_deployments: "Total Deployments (L7D): {value}"
+    total_projects: 'Total Projects: {value}'
+    active_deployments: 'Active Deployment: {value}'
+    failed_builds: 'Failed Builds (L24): {value}'
+    successful_builds: 'Successful Builds (L24): {value}'
+    total_deployments: 'Total Deployments (L7D): {value}'
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
