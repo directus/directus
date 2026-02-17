@@ -1,37 +1,56 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { parseFilterFunctionPath } from './parse-filter-function-path.js';
 
 describe('parseFilterFunctionPath', () => {
-	it('parses an empty input', () => {
-		const input = '';
-		expect(parseFilterFunctionPath(input)).toBe(input);
-	});
+	const testCases = [
+		{
+			description: 'parses an empty input',
+			input: '',
+			expected: '',
+		},
+		{
+			description: 'parses strings without functions',
+			input: 'noFunction',
+			expected: 'noFunction',
+		},
+		{
+			description: 'parses strings without functions (nested path)',
+			input: 'a.b.noFunction',
+			expected: 'a.b.noFunction',
+		},
+		{
+			description: 'parses functions without nested columns',
+			input: 'function(field)',
+			expected: 'function(field)',
+		},
+		{
+			description: 'parses functions with multiple arguments',
+			input: 'function(field, path)',
+			expected: 'function(field, path)',
+		},
+		{
+			description: 'parses functions with nested columns',
+			input: 'function(a.b.field)',
+			expected: 'a.b.function(field)',
+		},
+		{
+			description: 'parses nested functions without nested columns',
+			input: 'a.b.function(field)',
+			expected: 'a.b.function(field)',
+		},
+		{
+			description: 'parses nested functions with nested columns',
+			input: 'a.b.function(c.d.field)',
+			expected: 'a.b.c.d.function(field)',
+		},
+		{
+			description: 'parses nested functions with multiple arguments',
+			input: 'a.b.function(c.d.field, json.path)',
+			expected: 'a.b.c.d.function(field, json.path)',
+		},
+	];
 
-	it('parses strings without functions', () => {
-		let input = 'noFunction';
-		expect(parseFilterFunctionPath(input)).toBe(input);
-
-		input = 'a.b.noFunction';
-		expect(parseFilterFunctionPath(input)).toBe(input);
-	});
-
-	it('parses functions without nested columns', () => {
-		const input = 'function(field)';
-		expect(parseFilterFunctionPath(input)).toBe(input);
-	});
-
-	it('parses functions with nested columns', () => {
-		const input = 'function(a.b.field)';
-		expect(parseFilterFunctionPath(input)).toBe('a.b.function(field)');
-	});
-
-	it('parses nested functions without nested columns', () => {
-		const input = 'a.b.function(field)';
-		expect(parseFilterFunctionPath(input)).toBe(input);
-	});
-
-	it('parses nested functions with nested columns', () => {
-		const input = 'a.b.function(c.d.field)';
-		expect(parseFilterFunctionPath(input)).toBe('a.b.c.d.function(field)');
+	test.each(testCases)('$description', ({ input, expected }) => {
+		expect(parseFilterFunctionPath(input)).toBe(expected);
 	});
 });
