@@ -24,14 +24,18 @@ export const createLangfuseInputOutputCompatSpanProcessor = () => {
 
 			const observationInput = getStringAttribute(attributes, 'langfuse.observation.input');
 			const traceInput = getStringAttribute(attributes, 'langfuse.trace.input');
+
 			const fallbackInput =
 				getStringAttribute(attributes, 'ai.prompt.messages') ?? getStringAttribute(attributes, 'ai.prompt');
+
 			const input = observationInput ?? traceInput ?? fallbackInput;
 
 			const observationOutput = getStringAttribute(attributes, 'langfuse.observation.output');
 			const traceOutput = getStringAttribute(attributes, 'langfuse.trace.output');
+
 			const fallbackOutput =
 				getStringAttribute(attributes, 'ai.response.text') ?? getStringAttribute(attributes, 'ai.response.object');
+
 			const output = observationOutput ?? traceOutput ?? fallbackOutput;
 
 			if (!observationInput && input) {
