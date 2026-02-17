@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
+import { useResizeObserver } from '@vueuse/core';
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
@@ -178,10 +179,11 @@ function handleKeydown(event: KeyboardEvent) {
 	}
 }
 
+// Tabs
+
 const tabsContainerRef = useTemplateRef<HTMLElement>('tabs-container');
 const showLeftFade = ref(false);
 const showRightFade = ref(false);
-let resizeObserver: ResizeObserver | null = null;
 
 function updateFades() {
 	const el = tabsContainerRef.value;
@@ -191,6 +193,8 @@ function updateFades() {
 	showLeftFade.value = el.scrollLeft > 0;
 	showRightFade.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
 }
+
+useResizeObserver(tabsContainerRef, updateFades);
 
 watch(activeQuestionIndex, (newIndex, oldIndex) => {
 	slideDirection.value = newIndex > oldIndex ? 'forward' : 'backward';
@@ -211,16 +215,9 @@ onMounted(() => {
 		rootEl.value?.focus();
 		updateFades();
 	});
-
-	if (tabsContainerRef.value) {
-		resizeObserver?.disconnect();
-		resizeObserver = new ResizeObserver(updateFades);
-		resizeObserver.observe(tabsContainerRef.value);
-	}
 });
 
 onUnmounted(() => {
-	resizeObserver?.disconnect();
 	// Safety net for non-standard unmount paths (e.g. parent route change)
 	cancelPending();
 });
