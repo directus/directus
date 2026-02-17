@@ -55,6 +55,7 @@ catalog:
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
   '@keyv/redis': 3.0.1
+  '@braintrust/otel': 0.2.0
   '@langfuse/otel': 4.0.0
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1

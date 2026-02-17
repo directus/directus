@@ -22,78 +22,6 @@ type AITelemetryState = {
 let telemetryState: AITelemetryState | null = null;
 let telemetryInitPromise: Promise<void> | null = null;
 
-const getStringAttribute = (attributes: Record<string, unknown>, key: string): string | undefined => {
-	const value = attributes[key];
-
-	return typeof value === 'string' && value.length > 0 ? value : undefined;
-};
-
-const createLangfuseInputOutputCompatSpanProcessor = () => {
-	return {
-		onStart() {
-			// noop
-		},
-		onEnd(span: any) {
-			const attributes = span?.attributes as Record<string, unknown> | undefined;
-
-			if (!attributes || typeof attributes !== 'object') return;
-			if (typeof span?.name !== 'string' || !span.name.startsWith('ai.')) return;
-
-			const input =
-				getStringAttribute(attributes, 'langfuse.observation.input') ??
-				getStringAttribute(attributes, 'langfuse.trace.input') ??
-				getStringAttribute(attributes, 'ai.prompt.messages') ??
-				getStringAttribute(attributes, 'ai.prompt');
-
-			const output =
-				getStringAttribute(attributes, 'langfuse.observation.output') ??
-				getStringAttribute(attributes, 'langfuse.trace.output') ??
-				getStringAttribute(attributes, 'ai.response.text') ??
-				getStringAttribute(attributes, 'ai.response.object');
-
-			if (!getStringAttribute(attributes, 'langfuse.observation.input') && input) {
-				attributes['langfuse.observation.input'] = input;
-			}
-
-			if (!getStringAttribute(attributes, 'langfuse.trace.input') && input) {
-				attributes['langfuse.trace.input'] = input;
-			}
-
-			if (!getStringAttribute(attributes, 'langfuse.observation.output') && output) {
-				attributes['langfuse.observation.output'] = output;
-			}
-
-			if (!getStringAttribute(attributes, 'langfuse.trace.output') && output) {
-				attributes['langfuse.trace.output'] = output;
-			}
-		},
-		forceFlush: async () => {
-			// noop
-		},
-		shutdown: async () => {
-			// noop
-		},
-	};
-};
-
-const applyLangfuseEnv = (env: ReturnType<typeof useEnv>) => {
-	const secretKey = env['LANGFUSE_SECRET_KEY'];
-	const publicKey = env['LANGFUSE_PUBLIC_KEY'];
-	const baseUrl = env['LANGFUSE_BASE_URL'];
-
-	if (typeof secretKey === 'string' && secretKey.length > 0) {
-		process.env['LANGFUSE_SECRET_KEY'] = secretKey;
-	}
-
-	if (typeof publicKey === 'string' && publicKey.length > 0) {
-		process.env['LANGFUSE_PUBLIC_KEY'] = publicKey;
-	}
-
-	if (typeof baseUrl === 'string' && baseUrl.length > 0) {
-		process.env['LANGFUSE_BASE_URL'] = baseUrl;
-	}
-};
-
 export const initAITelemetry = async (): Promise<void> => {
 	if (telemetryState) return;
 	if (telemetryInitPromise) return telemetryInitPromise;
@@ -104,26 +32,31 @@ export const initAITelemetry = async (): Promise<void> => {
 		if (env['AI_TELEMETRY_ENABLED'] !== true) return;
 
 		const logger = useLogger();
+		const provider = (env['AI_TELEMETRY_PROVIDER'] as string) || 'langfuse';
 
 		try {
-			applyLangfuseEnv(env);
+			let state: AITelemetryState;
 
-			const [{ LangfuseSpanProcessor }, { NodeTracerProvider }] = await Promise.all([
-				import('@langfuse/otel'),
-				import('@opentelemetry/sdk-trace-node'),
-			]);
+			switch (provider) {
+				case 'langfuse': {
+					const { initLangfuse } = await import('./langfuse.js');
+					state = await initLangfuse(env);
+					break;
+				}
 
-			const tracerProvider = new NodeTracerProvider({
-				spanProcessors: [createLangfuseInputOutputCompatSpanProcessor() as any, new LangfuseSpanProcessor()],
-			} as any);
+				case 'braintrust': {
+					const { initBraintrust } = await import('./braintrust.js');
+					state = await initBraintrust(env);
+					break;
+				}
 
-			telemetryState = {
-				recordIO: env['AI_TELEMETRY_RECORD_IO'] === true,
-				tracerProvider: tracerProvider as TracerProviderLike,
-			};
+				default:
+					logger.warn(`Unknown AI telemetry provider "${provider}". Supported: langfuse, braintrust`);
+					return;
+			}
 
-			const baseUrl = env['LANGFUSE_BASE_URL'];
-			logger.info(`AI telemetry enabled, sending traces to ${baseUrl}`);
+			telemetryState = state;
+			logger.info(`AI telemetry enabled via ${provider}`);
 		} catch (error) {
 			logger.warn(error, 'Failed to initialize AI telemetry');
 		}

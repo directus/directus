@@ -98,6 +98,7 @@
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "catalog:",
+		"@braintrust/otel": "catalog:",
 		"@langfuse/otel": "catalog:",
 		"@modelcontextprotocol/sdk": "catalog:",
 		"@netlify/api": "catalog:",
