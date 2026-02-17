@@ -87,11 +87,17 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: text-input
+            interface: system-display-template
             required: true
             options:
-              iconRight: link
-              placeholder: https://example.com
+              placeholder: https://example.com/?version={{$version}}
+              fields:
+                - field: $version
+                  name: $t:version
+                  collection: ''
+                  key: $version
+                  path: $version
+                  type: string
 
   - field: security_divider
     interface: presentation-divider
