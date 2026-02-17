@@ -51,6 +51,7 @@ export async function handleVersion(
 
 	const createdIDs: Record<string, PrimaryKey[]> = {};
 	const versions = await versionsService.getVersionSaves(query.version!, self.collection, key, false);
+	const errors: Error[] = [];
 
 	if (versions.length === 0) {
 		throw new ForbiddenError();
@@ -69,30 +70,34 @@ export async function handleVersion(
 			if (delta) {
 				const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
-				if (!item) {
-					await itemsServiceAdmin.createOne(rawDelta, {
-						emitEvents: false,
-						autoPurgeCache: false,
-						skipTracking: true,
-						overwriteDefaults: defaultOverwrites as any,
-						onItemCreate: (collection, pk) => {
-							if (collection in createdIDs === false) createdIDs[collection] = [];
+				try {
+					if (!item) {
+						await itemsServiceAdmin.createOne(rawDelta, {
+							emitEvents: false,
+							autoPurgeCache: false,
+							skipTracking: true,
+							overwriteDefaults: defaultOverwrites as any,
+							onItemCreate: (collection, pk) => {
+								if (collection in createdIDs === false) createdIDs[collection] = [];
 
-							createdIDs[collection]!.push(pk);
-						},
-					});
-				} else {
-					await itemsServiceAdmin.updateOne(item, rawDelta, {
-						emitEvents: false,
-						autoPurgeCache: false,
-						skipTracking: true,
-						overwriteDefaults: defaultOverwrites as any,
-						onItemCreate: (collection, pk) => {
-							if (collection in createdIDs === false) createdIDs[collection] = [];
+								createdIDs[collection]!.push(pk);
+							},
+						});
+					} else {
+						await itemsServiceAdmin.updateOne(item, rawDelta, {
+							emitEvents: false,
+							autoPurgeCache: false,
+							skipTracking: true,
+							overwriteDefaults: defaultOverwrites as any,
+							onItemCreate: (collection, pk) => {
+								if (collection in createdIDs === false) createdIDs[collection] = [];
 
-							createdIDs[collection]!.push(pk);
-						},
-					});
+								createdIDs[collection]!.push(pk);
+							},
+						});
+					}
+				} catch (error) {
+					errors.push(error as Error);
 				}
 			}
 		}
@@ -125,6 +130,10 @@ export async function handleVersion(
 
 		await trx.rollback();
 	});
+
+	if (errors.length > 0) {
+		throw new Error(`Errors occurred while applying version deltas: ${errors.map((e) => e.message).join('; ')}`);
+	}
 
 	return results.map((result) => {
 		return deepMapWithSchema(
