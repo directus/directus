@@ -1,4 +1,3 @@
-import { createHash, createHmac } from 'node:crypto';
 import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NetlifyDriver } from './netlify.js';
@@ -12,6 +11,7 @@ const mockNetlifyAPI = vi.hoisted(() => ({
 	createSiteBuild: vi.fn(),
 	cancelSiteDeploy: vi.fn(),
 	createHookBySiteId: vi.fn(),
+	listHooksBySiteId: vi.fn(),
 	deleteHook: vi.fn(),
 }));
 
@@ -565,6 +565,8 @@ describe('NetlifyDriver', () => {
 		it('should create hooks for each site and event', async () => {
 			let callCount = 0;
 
+			mockNetlifyAPI.listHooksBySiteId.mockResolvedValue([]);
+
 			mockNetlifyAPI.createHookBySiteId.mockImplementation(() => {
 				callCount++;
 				return Promise.resolve({ id: `hook_${callCount}` });
@@ -579,16 +581,27 @@ describe('NetlifyDriver', () => {
 			expect(result.webhook_secret).toBeTruthy();
 			expect(result.webhook_secret.length).toBe(64); // 32 bytes hex
 
-			// Verify first call structure
-			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledWith(
-				expect.objectContaining({
-					site_id: 'site_1',
-					body: expect.objectContaining({
-						type: 'url',
-						data: expect.objectContaining({ url: 'https://example.com/webhooks/netlify' }),
-					}),
-				}),
-			);
+			// Verify URL includes token
+			const firstCall = mockNetlifyAPI.createHookBySiteId.mock.calls[0]![0];
+			expect(firstCall.site_id).toBe('site_1');
+			expect(firstCall.body.type).toBe('url');
+			expect(firstCall.body.data.url).toContain('https://example.com/webhooks/netlify?token=');
+		});
+
+		it('should cleanup stale hooks before registering', async () => {
+			mockNetlifyAPI.listHooksBySiteId.mockResolvedValue([
+				{ id: 'old_hook_1', data: { url: 'https://example.com/webhooks/netlify?token=old' } },
+			]);
+
+			mockNetlifyAPI.deleteHook.mockResolvedValue(undefined);
+
+			mockNetlifyAPI.createHookBySiteId.mockResolvedValue({ id: 'new_hook' });
+
+			await driver.registerWebhook('https://example.com/webhooks/netlify', ['site_1']);
+
+			// Stale hook should be deleted before new ones are created
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'old_hook_1' });
+			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledTimes(3);
 		});
 	});
 
@@ -617,13 +630,6 @@ describe('NetlifyDriver', () => {
 	describe('verifyAndParseWebhook', () => {
 		const secret = 'test-webhook-secret';
 
-		function createJws(payload: Record<string, unknown>, signingSecret: string): string {
-			const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
-			const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
-			const signature = createHmac('sha256', signingSecret).update(`${header}.${body}`).digest('base64url');
-			return `${header}.${body}.${signature}`;
-		}
-
 		function createDeployPayload(state: string) {
 			return {
 				id: 'deploy_abc',
@@ -636,13 +642,11 @@ describe('NetlifyDriver', () => {
 			};
 		}
 
-		it('should verify valid JWS and parse ready deploy', () => {
+		it('should verify valid token and parse ready deploy', () => {
 			const deploy = createDeployPayload('ready');
 			const rawBody = Buffer.from(JSON.stringify(deploy));
-			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
-			const token = createJws({ iss: 'netlify', sha256: bodyHash }, secret);
 
-			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-token': secret }, secret);
 
 			expect(result).not.toBeNull();
 			expect(result!.type).toBe('deployment.succeeded');
@@ -655,7 +659,7 @@ describe('NetlifyDriver', () => {
 			expect(result!.timestamp).toEqual(new Date('2024-06-01T12:00:00Z'));
 		});
 
-		it('should return null for missing signature header', () => {
+		it('should return null for missing token header', () => {
 			const deploy = createDeployPayload('ready');
 			const rawBody = Buffer.from(JSON.stringify(deploy));
 
@@ -664,49 +668,23 @@ describe('NetlifyDriver', () => {
 			expect(result).toBeNull();
 		});
 
-		it('should return null for invalid signature', () => {
+		it('should return null for wrong token', () => {
 			const deploy = createDeployPayload('ready');
 			const rawBody = Buffer.from(JSON.stringify(deploy));
-			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
-			const token = createJws({ iss: 'netlify', sha256: bodyHash }, 'wrong-secret');
 
-			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
-
-			expect(result).toBeNull();
-		});
-
-		it('should return null for wrong issuer', () => {
-			const deploy = createDeployPayload('ready');
-			const rawBody = Buffer.from(JSON.stringify(deploy));
-			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
-			const token = createJws({ iss: 'not-netlify', sha256: bodyHash }, secret);
-
-			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
-
-			expect(result).toBeNull();
-		});
-
-		it('should return null for mismatched body hash', () => {
-			const deploy = createDeployPayload('ready');
-			const rawBody = Buffer.from(JSON.stringify(deploy));
-			const token = createJws({ iss: 'netlify', sha256: 'wrong-hash' }, secret);
-
-			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-token': 'wrong-token' }, secret);
 
 			expect(result).toBeNull();
 		});
 
 		it('should return null for unmapped state', () => {
-			const deploy = createDeployPayload('new');
+			const deploy = createDeployPayload('canceled');
 			const rawBody = Buffer.from(JSON.stringify(deploy));
-			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
-			const token = createJws({ iss: 'netlify', sha256: bodyHash }, secret);
 
-			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-token': secret }, secret);
 
-			// 'new' maps to 'building' via mapStatus, and 'building' IS in STATE_TO_EVENT
-			expect(result).not.toBeNull();
-			expect(result!.status).toBe('building');
+			// 'canceled' maps to 'canceled' via mapStatus, and 'canceled' is NOT in STATE_TO_EVENT
+			expect(result).toBeNull();
 		});
 
 		it.each([
@@ -716,10 +694,8 @@ describe('NetlifyDriver', () => {
 		])('should map state "%s" to type "%s" with status "%s"', (state, expectedType, expectedStatus) => {
 			const deploy = createDeployPayload(state);
 			const rawBody = Buffer.from(JSON.stringify(deploy));
-			const bodyHash = createHash('sha256').update(rawBody).digest('hex');
-			const token = createJws({ iss: 'netlify', sha256: bodyHash }, secret);
 
-			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-signature': token }, secret);
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-token': secret }, secret);
 
 			expect(result!.type).toBe(expectedType);
 			expect(result!.status).toBe(expectedStatus);
