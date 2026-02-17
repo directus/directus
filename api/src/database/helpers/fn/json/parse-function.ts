@@ -1,5 +1,5 @@
 /**
- * Parses json(field, path.to.value) into components
+ * Parses a json function selection into its field and path components
  * Uses comma as delimiter between field and JSON path, avoiding collision with A2O colon syntax.
  * @example json(metadata, color) → { field: 'metadata', path: '.color' }
  * @example json(data, items[0].name) → { field: 'data', path: '.items[0].name' }
