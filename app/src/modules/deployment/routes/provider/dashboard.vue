@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { stat } from 'node:fs';
 import { type DeploymentDashboardOutput, readDeploymentDashboard } from '@directus/sdk';
 import { formatDistanceToNow } from 'date-fns';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -17,6 +18,7 @@ import { sdk } from '@/sdk';
 import { PrivateView } from '@/views/private';
 
 type Project = DeploymentDashboardOutput['projects'][number];
+type Stats = DeploymentDashboardOutput['stats'];
 
 const props = defineProps<{
 	provider: string;
@@ -26,6 +28,7 @@ const router = useRouter();
 
 const loading = ref(true);
 const projects = ref<Project[]>([]);
+const stats = ref<Stats>({ active_deployments: 0, successful_builds: 0, failed_builds: 0 });
 
 const projectItems = computed(() =>
 	projects.value.map((project) => ({
@@ -43,8 +46,10 @@ async function loadDashboard() {
 	try {
 		const data = await sdk.request(readDeploymentDashboard(props.provider));
 		projects.value = data.projects;
+		stats.value = data.stats;
 	} catch {
 		projects.value = [];
+		stats.value = { active_deployments: 0, successful_builds: 0, failed_builds: 0 };
 	} finally {
 		loading.value = false;
 	}
@@ -73,6 +78,28 @@ watch(() => props.provider, loadDashboard);
 			</VInfo>
 
 			<template v-else>
+				<div class="stats-bar">
+					<div class="stat-card">
+						<VIcon name="folder" class="stat-icon" />
+						<span>{{ $t('deployment.dashboard.total_projects', { value: projects.length }) }}</span>
+					</div>
+
+					<div class="stat-card warning">
+						<VIcon name="autorenew" class="stat-icon" />
+						<span>{{ $t('deployment.dashboard.active_deployments', { value: stats.active_deployments }) }}</span>
+					</div>
+
+					<div class="stat-card danger">
+						<VIcon name="error" class="stat-icon" />
+						<span>{{ $t('deployment.dashboard.failed_builds', { value: stats.failed_builds }) }}</span>
+					</div>
+
+					<div class="stat-card success">
+						<VIcon name="check" class="stat-icon" />
+						<span>{{ $t('deployment.dashboard.successful_builds', { value: stats.successful_builds }) }}</span>
+					</div>
+				</div>
+
 				<InterfacePresentationDivider
 					:title="$t('deployment.dashboard.projects', { count: projects.length })"
 					icon="folder"
@@ -121,6 +148,76 @@ watch(() => props.provider, loadDashboard);
 
 .spinner {
 	margin: 120px auto;
+}
+
+.stats-bar {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 16px;
+	margin-block-end: 24px;
+
+	@media (max-width: 1512px) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	@media (max-width: 1024px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@media (max-width: 768px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.stat-card {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
+	overflow: hidden;
+
+	&.warning {
+		background-color: var(--warning-10);
+		color: var(--theme--warning);
+
+		.stat-icon {
+			--v-icon-color: var(--theme--warning);
+		}
+	}
+
+	&.danger {
+		background-color: var(--danger-10);
+		color: var(--theme--danger);
+
+		.stat-icon {
+			--v-icon-color: var(--theme--danger);
+		}
+	}
+
+	&.success {
+		background-color: var(--success-10);
+		color: var(--theme--success);
+
+		.stat-icon {
+			--v-icon-color: var(--theme--success);
+		}
+	}
+}
+
+.stat-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+	flex-shrink: 0;
+}
+
+.stat-label {
+	color: var(--theme--foreground-subdued);
+	font-size: 14px;
+}
+
+.stat-value {
+	font-weight: 600;
 }
 
 :deep(.presentation-divider) {

@@ -242,6 +242,9 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 */
 	async syncWebhook(provider: ProviderType): Promise<void> {
 		const logger = useLogger();
+
+		logger.debug(`[webhook:${provider}] Starting webhook sync`);
+
 		const config = await this.readConfig(provider);
 
 		const projectsService = new ItemsService<DeploymentProject>('directus_deployment_projects', {
@@ -261,10 +264,12 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		// No projects → unregister webhooks if any exist
 		if (projectExternalIds.length === 0) {
 			if (config.webhook_ids && config.webhook_ids.length > 0) {
+				logger.debug(`[webhook:${provider}] No projects, unregistering ${config.webhook_ids.length} webhook(s)`);
+
 				try {
 					await driver.unregisterWebhook(config.webhook_ids);
-				} catch {
-					// best effort
+				} catch (err) {
+					logger.warn(`[webhook:${provider}] Failed to unregister: ${err}`);
 				}
 
 				await super.updateOne(config.id, { webhook_ids: null, webhook_secret: null } as Partial<DeploymentConfig>);
@@ -275,15 +280,22 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		// Unregister existing webhooks before re-registering
 		if (config.webhook_ids && config.webhook_ids.length > 0) {
+			logger.debug(`[webhook:${provider}] Unregistering ${config.webhook_ids.length} existing webhook(s)`);
+
 			try {
 				await driver.unregisterWebhook(config.webhook_ids);
-			} catch {
-				// best effort
+			} catch (err) {
+				logger.warn(`[webhook:${provider}] Failed to unregister: ${err}`);
 			}
 		}
 
 		const publicUrl = env['PUBLIC_URL'] as string;
 		const webhookUrl = `${publicUrl}/deployments/webhooks/${provider}`;
+
+		logger.debug(
+			`[webhook:${provider}] Registering webhook → ${webhookUrl} for ${projectExternalIds.length} project(s)`,
+		);
+
 		const result = await driver.registerWebhook(webhookUrl, projectExternalIds);
 
 		await super.updateOne(config.id, {
@@ -291,7 +303,9 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			webhook_secret: result.webhook_secret,
 		} as Partial<DeploymentConfig>);
 
-		logger.info(`Webhook registered for ${provider} with ${projectExternalIds.length} project(s)`);
+		logger.info(
+			`[webhook:${provider}] Registered ${result.webhook_ids.length} webhook(s): [${result.webhook_ids.join(', ')}]`,
+		);
 	}
 
 	/**

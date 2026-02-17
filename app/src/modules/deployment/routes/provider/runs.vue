@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type DeploymentRunsOutput, triggerDeployment } from '@directus/sdk';
+import { type DeploymentRunsOutput, readDeploymentRunStats, triggerDeployment } from '@directus/sdk';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -45,6 +45,7 @@ const deploying = ref(false);
 const runs = ref<Run[]>([]);
 const search = ref<string | null>(null);
 const totalCount = ref(0);
+const totalDeployments = ref(0);
 
 const page = ref(1);
 const limit = 10;
@@ -119,16 +120,20 @@ async function loadRuns() {
 	try {
 		const offset = (page.value - 1) * limit;
 
-		const response = await api.get(`/deployments/${props.provider}/projects/${props.projectId}/runs`, {
-			params: {
-				search: search.value || undefined,
-				offset,
-				meta: 'filter_count',
-			},
-		});
+		const [response, statsData] = await Promise.all([
+			api.get(`/deployments/${props.provider}/projects/${props.projectId}/runs`, {
+				params: {
+					search: search.value || undefined,
+					offset,
+					meta: 'filter_count',
+				},
+			}),
+			sdk.request(readDeploymentRunStats(props.provider, props.projectId, { range: '7d' })),
+		]);
 
 		runs.value = response.data.data as Run[];
 		totalCount.value = response.data.meta?.filter_count ?? 0;
+		totalDeployments.value = statsData.total_deployments;
 	} catch (error) {
 		if (runs.value.length === 0) {
 			unexpectedError(error);
@@ -217,6 +222,13 @@ watch(
 		<VProgressCircular v-if="loading" class="spinner" indeterminate />
 
 		<div v-else class="container">
+			<div class="stats-bar">
+				<div class="stat-card">
+					<VIcon name="deployed_code" class="stat-icon" />
+					<span>{{ $t('deployment.dashboard.total_deployments', { value: totalDeployments }) }}</span>
+				</div>
+			</div>
+
 			<VNotice class="notice">
 				{{ $t('deployment.provider.runs.notice', { provider: $t(`deployment.provider.${provider}.name`) }) }}
 			</VNotice>
@@ -278,6 +290,30 @@ watch(
 .container {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
+}
+
+.stats-bar {
+	margin-block-end: 16px;
+}
+
+.stat-card {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
+	color: var(--theme--foreground-subdued);
+}
+
+.stat-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+	flex-shrink: 0;
+}
+
+.stat-value {
+	color: var(--theme--foreground);
+	font-weight: 600;
 }
 
 .notice {

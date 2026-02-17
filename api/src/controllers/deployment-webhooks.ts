@@ -25,8 +25,11 @@ router.post(
 		const rawBody = (req as any).rawBody as Buffer | undefined;
 
 		if (!rawBody) {
+			logger.debug(`[webhook:${provider}] No raw body`);
 			return res.sendStatus(400);
 		}
+
+		logger.debug(`[webhook:${provider}] Incoming webhook (${rawBody.length} bytes)`);
 
 		const schema = await getSchema();
 		const knex = getDatabase();
@@ -42,20 +45,43 @@ router.post(
 		try {
 			webhookConfig = await deploymentService.getWebhookConfig(provider as ProviderType);
 		} catch {
+			logger.warn(`[webhook:${provider}] No webhook config found`);
 			return res.sendStatus(404);
 		}
 
 		if (!webhookConfig.webhook_secret) {
+			logger.warn(`[webhook:${provider}] No webhook secret configured`);
 			return res.sendStatus(404);
 		}
 
 		const driver = getDeploymentDriver(provider as ProviderType, webhookConfig.credentials, webhookConfig.options);
 
-		const event = driver.verifyAndParseWebhook(rawBody, req.headers, webhookConfig.webhook_secret);
+		// Fallback for providers whose API doesn't support webhook signature headers (e.g. Netlify)
+		const headers: Record<string, string | string[] | undefined> = { ...req.headers };
+		const queryToken = req.query['token'];
+
+		if (typeof queryToken === 'string') {
+			headers['x-webhook-token'] = queryToken;
+		}
+
+		const event = driver.verifyAndParseWebhook(rawBody, headers, webhookConfig.webhook_secret);
 
 		if (!event) {
+			logger.warn(`[webhook:${provider}] Verification failed or unknown event`);
+
+			try {
+				const body = JSON.parse(rawBody.toString('utf-8'));
+				logger.warn(`[webhook:${provider}] Raw event type: ${body.type ?? body.state ?? 'unknown'}`);
+			} catch {
+				// ignore parse error
+			}
+
 			return res.sendStatus(401);
 		}
+
+		logger.debug(
+			`[webhook:${provider}] ${event.type} | status: ${event.status} | project: ${event.project_external_id} | deploy: ${event.deployment_external_id}`,
+		);
 
 		// Look up project by external_id
 		const projectsService = new DeploymentProjectsService({
@@ -70,7 +96,7 @@ router.post(
 		});
 
 		if (!projects || projects.length === 0) {
-			// Project not tracked, silently ignore
+			logger.info(`[webhook:${provider}] Project ${event.project_external_id} not tracked, ignoring`);
 			return res.sendStatus(200);
 		}
 
@@ -101,14 +127,17 @@ router.post(
 		if (existingRuns && existingRuns.length > 0) {
 			runId = existingRuns[0]!.id;
 
-			await runsService.updateOne(runId, {
+			const updatePayload = {
 				status: event.status,
 				...(event.url ? { url: event.url } : {}),
 				...(event.type === 'deployment.created' ? { started_at: event.timestamp.toISOString() } : {}),
 				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
-			});
+			};
+
+			logger.debug(`[webhook:${provider}] Updating run ${runId}: ${JSON.stringify(updatePayload)}`);
+			await runsService.updateOne(runId, updatePayload);
 		} else {
-			runId = (await runsService.createOne({
+			const createPayload = {
 				project: project.id,
 				external_id: event.deployment_external_id,
 				target: event.target || 'production',
@@ -116,7 +145,10 @@ router.post(
 				...(event.url ? { url: event.url } : {}),
 				started_at: event.type === 'deployment.created' ? event.timestamp.toISOString() : null,
 				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
-			})) as string;
+			};
+
+			logger.debug(`[webhook:${provider}] Creating run: ${JSON.stringify(createPayload)}`);
+			runId = (await runsService.createOne(createPayload)) as string;
 		}
 
 		// Emit action events
@@ -134,7 +166,7 @@ router.post(
 		emitter.emitAction('deployment.webhook', eventPayload, null);
 		emitter.emitAction(`deployment.webhook.${event.type}`, eventPayload, null);
 
-		logger.debug(`Webhook received: ${event.type} for ${provider}/${event.project_external_id}`);
+		logger.info(`[webhook:${provider}] Processed: ${event.type} → run ${runId}`);
 
 		return res.sendStatus(200);
 	}),

@@ -75,17 +75,21 @@ export async function ensureDeploymentWebhooks(): Promise<void> {
 	});
 
 	const configs = await service.readByQuery({
-		filter: { webhook_ids: { _null: true } },
 		limit: -1,
 	});
 
-	if (!configs || configs.length === 0) return;
+	if (!configs || configs.length === 0) {
+		logger.debug('[webhook] No deployment configs found');
+		return;
+	}
+
+	logger.debug(`[webhook] Syncing webhooks for ${configs.length} config(s)...`);
 
 	for (const config of configs) {
 		try {
 			await service.syncWebhook(config.provider);
 		} catch (err) {
-			logger.error(`Failed to sync webhook for ${config.provider}: ${err}`);
+			logger.error(`[webhook] Failed to sync webhook for ${config.provider}: ${err}`);
 		}
 	}
 }

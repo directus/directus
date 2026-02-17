@@ -1,4 +1,4 @@
-import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type {
 	Credentials,
@@ -15,6 +15,7 @@ import type {
 } from '@directus/types';
 import { NetlifyAPI } from '@netlify/api';
 import { isNumber } from 'lodash-es';
+import { useLogger } from '../../logger/index.js';
 import { DeploymentDriver } from '../deployment.js';
 
 export interface NetlifyCredentials extends Credentials {
@@ -357,18 +358,29 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async registerWebhook(webhookUrl: string, projectIds: string[]): Promise<WebhookRegistrationResult> {
+		const logger = useLogger();
 		const secret = randomBytes(32).toString('hex');
 		const hookIds: string[] = [];
+
+		// Netlify API doesn't support JWS signing for API-created hooks,
+		// so we use a URL token for verification instead
+		const signedUrl = `${webhookUrl}?token=${secret}`;
+
+		// Clean up any stale hooks pointing to our webhook URL before creating new ones
+		for (const siteId of projectIds) {
+			await this.cleanupStaleHooks(siteId, webhookUrl);
+		}
 
 		for (const siteId of projectIds) {
 			for (const event of NETLIFY_WEBHOOK_EVENTS) {
 				const hook = await this.handleApiError((api) =>
 					api.createHookBySiteId({
 						site_id: siteId,
-						body: { type: 'url', event, data: { url: webhookUrl, secret } },
+						body: { type: 'url', event, data: { url: signedUrl } },
 					}),
 				);
 
+				logger.debug(`[webhook:netlify] Created hook ${hook.id} for event ${event}`);
 				hookIds.push(hook.id!);
 			}
 		}
@@ -376,8 +388,22 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		return { webhook_ids: hookIds, webhook_secret: secret };
 	}
 
+	private async cleanupStaleHooks(siteId: string, webhookUrl: string): Promise<void> {
+		const logger = useLogger();
+
+		const hooks = await this.handleApiError((api) => api.listHooksBySiteId({ site_id: siteId }));
+
+		const staleHooks = hooks.filter((h: any) => h.data?.url?.startsWith(webhookUrl));
+
+		if (staleHooks.length > 0) {
+			logger.debug(`[webhook:netlify] Cleaning up ${staleHooks.length} stale hook(s) for site ${siteId}`);
+
+			await Promise.allSettled(staleHooks.map((h: any) => this.api.deleteHook({ hook_id: h.id })));
+		}
+	}
+
 	async unregisterWebhook(webhookIds: string[]): Promise<void> {
-		await Promise.allSettled(webhookIds.map((id) => this.handleApiError((api) => api.deleteHook({ hook_id: id }))));
+		await Promise.allSettled(webhookIds.map((id) => this.api.deleteHook({ hook_id: id })));
 	}
 
 	verifyAndParseWebhook(
@@ -385,41 +411,23 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		headers: Record<string, string | string[] | undefined>,
 		webhookSecret: string,
 	): DeploymentWebhookEvent | null {
-		const token = headers['x-webhook-signature'];
+		const logger = useLogger();
+
+		// URL token verification — Netlify API doesn't support JWS signing for API-created hooks,
+		// so we embed a secret token in the webhook URL and verify it here.
+		// The token is passed via the 'x-webhook-token' pseudo-header (injected by the controller from query params).
+		const token = headers['x-webhook-token'];
 
 		if (!token || typeof token !== 'string') {
+			logger.warn(`[webhook:netlify] Missing webhook token`);
 			return null;
 		}
 
-		// JWS verification: header.payload.signature
-		const parts = token.split('.');
+		const tokenBuf = Buffer.from(token);
+		const secretBuf = Buffer.from(webhookSecret);
 
-		if (parts.length !== 3) {
-			return null;
-		}
-
-		const [header64, payload64, signature64] = parts;
-
-		// Verify HMAC-SHA256 signature
-		const expected = createHmac('sha256', webhookSecret).update(`${header64}.${payload64}`).digest();
-
-		const sig = Buffer.from(signature64!, 'base64url');
-
-		if (expected.length !== sig.length || !timingSafeEqual(expected, sig)) {
-			return null;
-		}
-
-		// Decode and validate JWT payload
-		const payload = JSON.parse(Buffer.from(payload64!, 'base64url').toString('utf-8'));
-
-		if (payload.iss !== 'netlify') {
-			return null;
-		}
-
-		// Verify body hash
-		const bodyHash = createHash('sha256').update(rawBody).digest('hex');
-
-		if (payload.sha256 !== bodyHash) {
+		if (tokenBuf.length !== secretBuf.length || !timingSafeEqual(tokenBuf, secretBuf)) {
+			logger.warn(`[webhook:netlify] Token mismatch`);
 			return null;
 		}
 
