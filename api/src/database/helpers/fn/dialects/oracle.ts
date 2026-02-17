@@ -66,11 +66,10 @@ export class FnHelperOracle extends FnHelper {
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
 		if (!fieldSchema || fieldSchema.type !== 'json') {
-			throw new Error(`Field ${field} is not a JSON field`);
+			throw new Error(`${collectionName}.${field} is not a JSON field`);
 		}
 
-		// Oracle uses JSON_VALUE for scalar values
-		// "data.items[0].name" → "$.items[0].name"
+		// ".items[0].name" → "$.items[0].name"
 		const jsonPath = '$' + path;
 
 		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [table, field, jsonPath]);

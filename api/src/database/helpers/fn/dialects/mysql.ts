@@ -58,11 +58,11 @@ export class FnHelperMySQL extends FnHelper {
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
 		if (!fieldSchema || fieldSchema.type !== 'json') {
-			throw new Error(`Field ${field} is not a JSON field`);
+			throw new Error(`${collectionName}.${field} is not a JSON field`);
 		}
 
 		// Convert dot notation to MySQL JSON path
-		// "data.items[0].name" → "$['items'][0]['name']"
+		// ".items[0].name" → "$['items'][0]['name']"
 		const jsonPath = convertToMySQLPath(path);
 
 		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, field, jsonPath]);

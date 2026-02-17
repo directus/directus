@@ -70,7 +70,7 @@ export class FnHelperMSSQL extends FnHelper {
 		}
 
 		// MSSQL uses JSON_VALUE for scalar values
-		// ".data.items[0].name" → "$.items[0].name"
+		// ".items[0].name" → "$.items[0].name"
 		const jsonPath = '$' + path;
 
 		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [table, field, jsonPath]);

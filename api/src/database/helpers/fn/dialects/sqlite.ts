@@ -90,11 +90,11 @@ export class FnHelperSQLite extends FnHelper {
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
 		if (!fieldSchema || fieldSchema.type !== 'json') {
-			throw new Error(`Field ${field} is not a JSON field`);
+			throw new Error(`${collectionName}.${field} is not a JSON field`);
 		}
 
 		// SQLite uses json_extract with $ path notation
-		// "data.items[0].name" → "$.items[0].name"
+		// ".data.items[0].name" → "$.items[0].name"
 		const jsonPath = '$' + path;
 
 		return this.knex.raw(`json_extract(??.??, ?)`, [table, field, jsonPath]);

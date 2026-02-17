@@ -71,7 +71,7 @@ export class FnHelperPostgres extends FnHelper {
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
 		if (!fieldSchema || fieldSchema.type !== 'json') {
-			throw new Error(`Field ${field} is not a JSON field`);
+			throw new Error(`${collectionName}.${field} is not a JSON field`);
 		}
 
 		const { dbType } = fieldSchema;
