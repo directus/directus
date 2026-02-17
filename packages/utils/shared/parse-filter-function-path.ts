@@ -1,32 +1,31 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-
 /**
  * Parse count(a.b.c) as a.b.count(c) and a.b.count(c.d) as a.b.c.count(d)
  */
 export function parseFilterFunctionPath(path: string): string {
-	if (path.includes('(') && path.includes(')')) {
-		const pre = path.split('(')[0]!;
-		const preHasColumns = pre.includes('.');
-		const preColumns = preHasColumns ? pre.slice(0, pre.lastIndexOf('.') + 1) : '';
-		const functionName = preHasColumns ? pre.slice(pre.lastIndexOf('.') + 1) : pre;
+	const openParensIndex = path.indexOf('(');
+	const closeParensIndex = path.indexOf(')');
 
-		const matched = path.match(REGEX_BETWEEN_PARENS);
+	if (openParensIndex >= 0 && closeParensIndex > openParensIndex) {
+		// get the function name and extract the path before it
+		const functionPart = path.slice(0, openParensIndex);
+		const lastSepIndex = functionPart.lastIndexOf('.');
+		const functionName = functionPart.slice(lastSepIndex + 1);
+		const initialColumns = functionPart.slice(0, lastSepIndex + 1);
 
-		if (matched) {
-			const argsString = matched[1]!;
-			// Split by comma to handle multiple arguments
-			const args = argsString.split(',').map((arg) => arg.trim());
+		// extract the first argument of the function body
+		const argSepIndex = path.indexOf(',');
+		const argEndIndex = argSepIndex >= 0 ? Math.min(closeParensIndex, argSepIndex) : closeParensIndex;
+		const argString = path.slice(openParensIndex + 1, argEndIndex).trim();
+		const argRestString = path.slice(argEndIndex);
 
+		if (argString) {
 			// Extract path from the first argument only
-			const firstArg = args[0]!;
-			const firstArgHasColumns = firstArg.includes('.');
-			const firstArgColumns = firstArgHasColumns ? firstArg.slice(0, firstArg.lastIndexOf('.') + 1) : '';
-			const firstArgField = firstArgHasColumns ? firstArg.slice(firstArg.lastIndexOf('.') + 1) : firstArg;
+			const argSepIndex = argString.lastIndexOf('.');
+			const firstArgField = argString.slice(argSepIndex + 1);
+			const relationColumns = initialColumns + argString.slice(0, argSepIndex + 1);
 
-			// Keep other arguments as-is
-			const reconstructedArgs = [firstArgField, ...args.slice(1)].join(', ');
-
-			return `${preColumns}${firstArgColumns}${functionName}(${reconstructedArgs})`;
+			// reconstruct the function path
+			return `${relationColumns}${functionName}(${firstArgField}${argRestString}`;
 		}
 	}
 
