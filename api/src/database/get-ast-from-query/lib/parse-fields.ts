@@ -71,8 +71,7 @@ export async function parseFields(
 			}
 		}
 
-		// Check for function calls first, before checking if field is relational
-		// This handles cases like json(metadata, user.name) which contain dots but aren't relational
+		// Count function with a relational field and json functions require special processing and are marked as functionField; all other functions are treated as regular field nodes.
 		const isFunctionCall = name.includes('(') && name.includes(')');
 
 		if (isFunctionCall) {
@@ -174,9 +173,6 @@ export async function parseFields(
 
 				continue;
 			}
-
-			// For all other functions (year, month, etc.), fall through to create a FieldNode
-			// (isRelational will be false since there's no dot before the parenthesis)
 		}
 
 		// A field is relational if it contains dots outside of a function call.
