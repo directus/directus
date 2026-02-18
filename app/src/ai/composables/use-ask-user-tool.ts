@@ -23,6 +23,7 @@ const inputSchema = z.object({
 	questions: z.array(questionSchema).min(1),
 });
 
+export { inputSchema };
 export type AskUserInput = z.infer<typeof inputSchema>;
 export type AskUserQuestion = z.infer<typeof questionSchema>;
 export type AskUserAnswers = Record<string, string | string[]>;
@@ -82,9 +83,10 @@ export function useAskUserTool() {
 		inputSchema,
 		execute: (args) => {
 			cancelPending();
+			const input = inputSchema.parse(args);
 
 			return new Promise<AskUserAnswers>((resolve) => {
-				pendingAskUser.value = { input: args, resolve };
+				pendingAskUser.value = { input, resolve };
 			});
 		},
 	});

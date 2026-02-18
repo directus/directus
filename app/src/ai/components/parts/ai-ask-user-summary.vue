@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import type { DynamicToolUIPart } from 'ai';
 import { computed } from 'vue';
-import type { AskUserAnswers, AskUserInput } from '../../composables/use-ask-user-tool';
+import type { AskUserAnswers } from '../../composables/use-ask-user-tool';
+import { inputSchema } from '../../composables/use-ask-user-tool';
 
 const props = defineProps<{
 	part: DynamicToolUIPart;
 }>();
 
-const questions = computed(() => (props.part.input as AskUserInput | undefined)?.questions ?? []);
-const output = computed(() => (props.part.output as AskUserAnswers) ?? {});
+const questions = computed(() => {
+	const parsed = inputSchema.safeParse(props.part.input);
+	return parsed.success ? parsed.data.questions : [];
+});
+
+function isAskUserAnswers(val: unknown): val is AskUserAnswers {
+	return typeof val === 'object' && val !== null;
+}
+
+const output = computed(() => (isAskUserAnswers(props.part.output) ? props.part.output : {}));
 
 function getAnswer(questionId: string): string | undefined {
 	const val = output.value[questionId];
