@@ -1,4 +1,8 @@
 import type { Query, SchemaOverview } from '@directus/types';
+import { getRelationInfo } from '@directus/utils';
+import { buildShadowNode } from '../../../services/shadows/build-shadow-node.js';
+import { getShadowName } from '../../../services/shadows/get-shadow-name.js';
+import { isShadow } from '../../../services/shadows/is-shadow.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 
@@ -20,6 +24,16 @@ export async function parseCurrentLevel(
 
 			if (columnsInCollection.includes(fieldName)) {
 				columnsToSelectInternal.push(child.fieldKey);
+
+				const relationInfo = getRelationInfo(schema.relations, collection, child.fieldKey);
+
+				if (relationInfo.relationType === 'm2o') {
+					const shadowField = getShadowName(child.fieldKey, 'field');
+
+					if (schema.collections[collection]?.fields[shadowField]) {
+						columnsToSelectInternal.push(shadowField);
+					}
+				}
 			}
 
 			continue;
@@ -29,6 +43,15 @@ export async function parseCurrentLevel(
 
 		if (child.type === 'm2o') {
 			columnsToSelectInternal.push(child.relation.field);
+
+			if (query.version && isShadow(collection, 'collection')) {
+				const shadowField = getShadowName(child.relation.field, 'field');
+
+				if (schema.collections[collection]?.fields[shadowField]) {
+					columnsToSelectInternal.push(shadowField);
+					nestedCollectionNodes.push(buildShadowNode(child));
+				}
+			}
 		}
 
 		if (child.type === 'a2o') {

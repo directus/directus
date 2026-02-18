@@ -2,11 +2,15 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	Field,
+	Item,
+	Query,
+	QueryOptions,
 	RawField,
 	Relation,
 	SchemaOverview,
 	Type,
 } from '@directus/types';
+import { omit } from 'graphql-compose';
 import type { Knex } from 'knex';
 import { ALIAS_TYPES, INJECTED_PRIMARY_KEY_FIELD } from '../constants.js';
 import type { Helpers } from '../database/helpers/index.js';
@@ -15,6 +19,7 @@ import getDatabase from '../database/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
 import { FieldsService } from './fields.js';
+import { ItemsService } from './items.js';
 import { RelationsService } from './relations.js';
 import { getShadowName } from './shadows/get-shadow-name.js';
 import { isShadow } from './shadows/is-shadow.js';

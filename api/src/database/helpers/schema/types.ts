@@ -173,10 +173,6 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		rootQuery.offset(offset);
 	}
 
-	coalesce(): string {
-		return 'COALESCE(??,??) AS ??';
-	}
-
 	castA2oPrimaryKey(): string {
 		return 'CAST(?? AS CHAR(255))';
 	}

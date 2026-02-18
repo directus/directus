@@ -14,7 +14,6 @@ type FunctionColumnOptions = {
 
 type OriginalCollectionName = {
 	originalCollectionName?: string | undefined;
-	coalesce?: boolean | undefined;
 };
 
 type GetColumnOptions = OriginalCollectionName | (FunctionColumnOptions & OriginalCollectionName);

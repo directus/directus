@@ -98,8 +98,10 @@ export function removeTemporaryFields(
 			for (const nestedNode of nestedCollectionNodes) {
 				let nestedItem = item[nestedNode.fieldKey];
 
-				if ((nestedItem === null || nestedItem === undefined) && nestedNode.coalesce) {
-					nestedItem = item[getShadowName(nestedNode.fieldKey, 'field')];
+				const shadowNestedItem = item[getShadowName(nestedNode.fieldKey, 'field')];
+
+				if (shadowNestedItem) {
+					nestedItem = { ...shadowNestedItem };
 				}
 
 				item[nestedNode.fieldKey] = removeTemporaryFields(

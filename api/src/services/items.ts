@@ -33,8 +33,8 @@ import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
-import { handleVersion } from '../utils/versioning/handle-version.js';
 import { PayloadService } from './payload.js';
+import { ShadowsService } from './shadow.js';
 
 const env = useEnv();
 
@@ -588,13 +588,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		let results: Item[] = [];
-
-		if (query.version && query.version !== 'main') {
-			results = [await handleVersion(this, key, queryWithKey, opts)];
-		} else {
-			results = await this.readByQuery(queryWithKey, opts);
-		}
+		const results = await this.readByQuery(queryWithKey, opts);
 
 		if (results.length === 0) {
 			throw new ForbiddenError();
@@ -1182,18 +1176,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		query.limit = 1;
 
-		let record;
-
-		if (query.version && query.version !== 'main') {
-			const primaryKeyField = this.schema.collections[this.collection]!.primary;
-			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
-
-			if (key) {
-				record = await handleVersion(this, key, query, opts);
-			}
-		} else {
-			record = (await this.readByQuery(query, opts))[0];
-		}
+		const record = (await this.readByQuery(query, opts))[0];
 
 		if (!record) {
 			let fields = Object.entries(this.schema.collections[this.collection]!.fields);
