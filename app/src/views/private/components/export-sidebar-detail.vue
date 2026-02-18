@@ -84,9 +84,7 @@ const exportSettings = reactive({
 	search: props.search,
 	fields:
 		props.layoutQuery?.fields ??
-		fields.value
-			?.filter((field) => field.type !== 'alias' && !field.field.startsWith('$'))
-			.map((field) => field.field),
+		fields.value?.filter((field) => field.type !== 'alias' && !field.field.startsWith('$')).map((field) => field.field),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
