@@ -2254,3 +2254,4 @@ accepted: 承認済み
 text_direction_auto: 自動 (言語に合わせる)
 text_direction_ltr: 左書き (LTR)
 text_direction_rtl: 右書き (RTL)
+set_to_now: 現在時刻を設定

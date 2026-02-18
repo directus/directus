@@ -72,9 +72,13 @@ collection_names_are_case_sensitive: 集合名称是区分大小写
 condition_rules: 条件规则
 input: 输入
 invalid_input: 无效的输入
+invalid_files_selected: '没有无效文件 | 已选择无效文件 | 选择了 {count} 个无效文件'
 not_a_number: 不是一个数字
+invalid_range_min: 数值低于最小值 {value}
+invalid_range_max: 数值超出最大值 {value}
 maps: 地图
 switch_user: 切换用户
+item_deleted: 您编辑中的项目已被删除。
 item_creation: 新建
 item_revision: 条目修订
 enter_a_name: 请输入名称...
@@ -1034,8 +1038,12 @@ invalid_url_copy: 指定的 URL 与设置中指定的任何 URL 都不匹配。
 insights: 洞察分析
 deployment:
   provider:
+    token:
+      placeholder: 输入您的访问令牌……
     settings:
+      settings: '{provider} 配置'
       delete_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
+      remove_projects_confirm: 移除下列项目（{projects}）会从Directus永久删除其所有部署历史。此操作不可撤销。您确定要继续吗？
     run:
       cancel_confirm: 此操作是永久性的，无法撤销。您确定要继续吗？
       log_all: 所有日志级别
@@ -2602,3 +2610,4 @@ accepted: 已接受
 text_direction_auto: 自动(匹配语言)
 text_direction_ltr: 从左到右 (LTR)
 text_direction_rtl: 从右到左 (RTL)
+set_to_now: 设置为现在

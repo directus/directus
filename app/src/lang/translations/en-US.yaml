@@ -149,6 +149,9 @@ github: GitHub
 beta: Beta
 collab_collision: The item was changed while you were editing. Select which changes to keep.
 collab_disconnected: Collaborative Editing Disconnected
+collab_editing_field: Editing “{field}” field
+collab_currently_viewing: Currently viewing
+you: you
 n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Compatibility not guaranteed
@@ -1114,6 +1117,15 @@ deployment:
         label: Team ID
         hint: Required for team accounts, leave empty for personal accounts.
         placeholder: team_xxxxxxxxxxxxx
+    netlify:
+      name: Netlify
+      settings_warning:
+        Changing credentials or account slug may affect your selected projects if they are no longer accessible with the
+        new configuration.
+      account_slug:
+        label: Account Slug
+        hint: Optional. Filter sites to a specific account. Leave empty to show all accessible sites.
+        placeholder: your-account-slug
     projects: Projects
     select_projects: Select Projects
     select_projects_hint: Choose which projects you want to manage from Directus
@@ -1125,7 +1137,8 @@ deployment:
       started: Started
       author: Author
       notice:
-        Only deployments triggered from Directus are shown here. Deployments made directly in Vercel will not appear.
+        Only deployments triggered from Directus are shown here. Deployments made directly on {provider} will not
+        appear.
       refresh: Refresh
       deploy_preview: Deploy Preview
       empty: No Deployment Runs
@@ -1677,6 +1690,7 @@ field_options:
     overrides_divider_title: App Overrides
   directus_activity:
     login: Login
+    logout: Logout
     create: Create
     update: Update
     delete: Delete
@@ -1962,6 +1976,7 @@ colors:
 junction_collection: Junction Collection
 latency: Latency
 login: Log in
+logout: Log out
 my_activity: My Activity
 not_authenticated: Not Authenticated
 authenticated: Authenticated
@@ -2146,6 +2161,10 @@ interfaces:
   file:
     file: File
     description: Select or upload a file
+    allowed_mime_types: Allowed MIME Types
+    mime_types_placeholder: Select or add allowed MIME types...
+    mime_types_note:
+      Note that the global FILES_MIME_TYPE_ALLOW_LIST defined in your env will take precedence over the above selection.
   files:
     files: Files
     description: Select or upload multiple files
@@ -2904,3 +2923,4 @@ accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)
 text_direction_rtl: Right to Left (RTL)
+set_to_now: Set to Now
