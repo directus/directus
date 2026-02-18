@@ -340,19 +340,6 @@ export async function validateDatabaseExtensions(): Promise<void> {
 				break;
 		}
 	}
-
-	const jsonSupport = await helpers.capabilities.supportsJsonQueries();
-
-	if (!jsonSupport) {
-		switch (client) {
-			case 'sqlite':
-				logger.warn('JSON Querying not supported. Use sqlite version >= 3.38.0 or install the JSON1 extension.');
-				break;
-			default:
-				logger.warn(`JSON Querying not supported on ${client}`);
-				break;
-		}
-	}
 }
 
 async function validateDatabaseCharset(database?: Knex): Promise<void> {

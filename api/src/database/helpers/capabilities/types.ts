@@ -1,10 +1,5 @@
 import { DatabaseHelper } from '../types.js';
 
-// persist capabilities in memory
-const CheckedCapabilities: {
-	json?: boolean | undefined;
-} = {};
-
 export class CapabilitiesHelper extends DatabaseHelper {
 	supportsColumnPositionInGroupBy(): boolean {
 		return false;
@@ -18,17 +13,5 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	 */
 	supportsDeduplicationOfParameters(): boolean {
 		return true;
-	}
-
-	protected async checkJsonSupport(): Promise<boolean> {
-		return false;
-	}
-
-	async supportsJsonQueries(): Promise<boolean> {
-		if (CheckedCapabilities.json === undefined) {
-			CheckedCapabilities.json = await this.checkJsonSupport();
-		}
-
-		return CheckedCapabilities.json;
 	}
 }
