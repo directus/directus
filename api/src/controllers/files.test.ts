@@ -2,16 +2,18 @@ import { PassThrough } from 'stream';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Request, Response } from 'express';
 import FormData from 'form-data';
-import { describe, expect, it, vi } from 'vitest';
-import { multipartHandler } from './files.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import router, { multipartHandler } from './files.js';
 
 vi.mock('../../src/database');
 
-vi.mock('../services', () => {
+vi.mock('../services', () => ({}));
+
+vi.mock('../services/files.js', () => {
 	const FilesService = vi.fn();
 	FilesService.prototype.uploadOne = vi.fn();
-	const MetaService = vi.fn();
-	MetaService.prototype.getMetaForQuery = vi.fn().mockResolvedValue({});
+	FilesService.prototype.importOne = vi.fn().mockResolvedValue('mock-file-id');
+	FilesService.prototype.readOne = vi.fn().mockResolvedValue(null);
 	return { FilesService };
 });
 
@@ -67,5 +69,85 @@ describe('multipartHandler', () => {
 			expect(err.message).toBe('Invalid payload. File is missing filename.');
 			expect(err).toBeInstanceOf(InvalidPayloadError);
 		});
+	});
+});
+
+describe('import route', () => {
+	let importHandler: (req: any, res: any, next: any) => Promise<void>;
+	let mockImportOne: ReturnType<typeof vi.fn>;
+	let mockReadOne: ReturnType<typeof vi.fn>;
+
+	beforeEach(async () => {
+		const { FilesService } = await import('../services/files.js');
+
+		mockImportOne = vi.mocked(FilesService.prototype.importOne);
+		mockReadOne = vi.mocked(FilesService.prototype.readOne);
+
+		vi.clearAllMocks();
+
+		mockImportOne.mockResolvedValue('mock-file-id');
+		mockReadOne.mockResolvedValue(null);
+
+		const importRouteLayer = (router as any).stack.find((layer: any) => layer.route?.path === '/import');
+		importHandler = importRouteLayer.route.stack[0].handle as (req: any, res: any, next: any) => Promise<void>;
+	});
+
+	it('passes allowedMimeTypes from the request body to service.importOne', async () => {
+		const next = vi.fn();
+
+		const req = {
+			body: {
+				url: 'https://example.com/photo.jpg',
+				data: { title: 'A photo' },
+				allowedMimeTypes: ['image/*'],
+			},
+			accountability: null,
+			schema: { collections: {}, relations: [] },
+			sanitizedQuery: {},
+		};
+
+		await importHandler(req, { locals: {} }, next);
+
+		expect(mockImportOne).toHaveBeenCalledWith('https://example.com/photo.jpg', { title: 'A photo' }, ['image/*']);
+
+		expect(next).toHaveBeenCalledWith();
+	});
+
+	it('passes allowedMimeTypes as undefined to service.importOne when omitted from the request body', async () => {
+		const next = vi.fn();
+
+		const req = {
+			body: {
+				url: 'https://example.com/photo.jpg',
+			},
+			accountability: null,
+			schema: { collections: {}, relations: [] },
+			sanitizedQuery: {},
+		};
+
+		await importHandler(req, { locals: {} }, next);
+
+		expect(mockImportOne).toHaveBeenCalledWith('https://example.com/photo.jpg', undefined, undefined);
+
+		expect(next).toHaveBeenCalledWith();
+	});
+
+	it('calls next with an InvalidPayloadError when allowedMimeTypes is not an array', async () => {
+		const next = vi.fn();
+
+		const req = {
+			body: {
+				url: 'https://example.com/photo.jpg',
+				allowedMimeTypes: 'image/*',
+			},
+			accountability: null,
+			schema: { collections: {}, relations: [] },
+			sanitizedQuery: {},
+		};
+
+		await importHandler(req, { locals: {} }, next);
+
+		expect(next).toHaveBeenCalledWith(expect.any(InvalidPayloadError));
+		expect(mockImportOne).not.toHaveBeenCalled();
 	});
 });
