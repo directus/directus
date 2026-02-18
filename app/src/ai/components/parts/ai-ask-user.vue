@@ -51,6 +51,7 @@ const slideDirection = ref<'forward' | 'backward'>('forward');
 const rootEl = useTemplateRef<HTMLElement>('root-el');
 const questionWrapperRef = useTemplateRef<HTMLElement>('question-wrapper');
 const savedHeight = ref(0);
+let rafId: number | null = null;
 
 function onBeforeLeave() {
 	const wrapper = questionWrapperRef.value;
@@ -65,7 +66,7 @@ function onEnter() {
 	const newHeight = wrapper.offsetHeight;
 	wrapper.style.height = `${savedHeight.value}px`;
 
-	requestAnimationFrame(() => {
+	rafId = requestAnimationFrame(() => {
 		wrapper.style.height = `${newHeight}px`;
 	});
 }
@@ -224,6 +225,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	if (rafId !== null) cancelAnimationFrame(rafId);
 	// Safety net for non-standard unmount paths (e.g. parent route change)
 	cancelPending();
 });
