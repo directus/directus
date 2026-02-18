@@ -2,7 +2,10 @@ import { InvalidQueryError } from '@directus/errors';
 import type { Filter, Permission, Relation, SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
+import { cloneDeep } from 'lodash-es';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
+import { getShadowName } from '../../../../../services/shadows/get-shadow-name.js';
+import { isShadow } from '../../../../../services/shadows/is-shadow.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../../utils/get-column-path.js';
 import { getHelpers } from '../../../../helpers/index.js';
@@ -204,6 +207,35 @@ export function applyFilter(
 				validateOperator(type, filterOperator, special);
 
 				applyOperator(knex, dbQuery, schema, columnPath, filterOperator, filterValue, logical, targetCollection);
+
+				if (isShadow(collection, 'collection')) {
+					const shadowParts = cloneDeep(filterPath);
+					shadowParts[0] = getShadowName(filterPath[0]!, 'field');
+
+					const { columnPath, targetCollection, addNestedPkField } = getColumnPath({
+						path: shadowParts,
+						collection,
+						relations,
+						aliasMap,
+						schema,
+					});
+
+					if (addNestedPkField) {
+						filterPath.push(addNestedPkField);
+					}
+
+					if (!columnPath) continue;
+
+					const { type, special } = getFilterType(
+						schema.collections[targetCollection]!.fields,
+						filterPath.at(-1)!,
+						targetCollection,
+					)!;
+
+					validateOperator(type, filterOperator, special);
+
+					applyOperator(knex, dbQuery, schema, columnPath, filterOperator, filterValue, 'or', targetCollection);
+				}
 			} else {
 				const { type, special } = getFilterType(schema.collections[collection]!.fields, filterPath[0]!, collection)!;
 
@@ -221,6 +253,21 @@ export function applyFilter(
 					logical,
 					collection,
 				);
+
+				if (relationType === 'm2o' && isShadow(collection, 'collection')) {
+					const aliasedShadow = aliasMap['']?.alias || collection;
+
+					applyOperator(
+						knex,
+						dbQuery,
+						schema,
+						`${aliasedShadow}.${getShadowName(filterPath[0]!, 'field')}`,
+						filterOperator,
+						filterValue,
+						'or',
+						collection,
+					);
+				}
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
+import { injectShadow } from './lib/inject-shadow.js';
 import type { FieldMap } from './types.js';
 import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
 import { validatePathExistence } from './utils/validate-path/validate-path-existence.js';
@@ -62,6 +63,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 	}
 
 	injectCases(options.ast, permissions);
+	injectShadow(options.ast);
 
 	return options.ast;
 }

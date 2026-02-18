@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash-es';
 import type { FunctionFieldNode, NestedCollectionNode } from '../../types/ast.js';
 import { getShadowName } from './get-shadow-name.js';
 
-export function buildShadowNode(node: NestedCollectionNode | FieldNode | FunctionFieldNode) {
+export function buildShadowNode<T extends NestedCollectionNode | FieldNode | FunctionFieldNode>(node: T): T {
 	const nodeCopy = cloneDeep(node);
 
 	if ('type' in nodeCopy && nodeCopy.type === 'm2o') {

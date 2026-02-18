@@ -2,7 +2,9 @@ import { InvalidQueryError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
-import { clone } from 'lodash-es';
+import { clone, cloneDeep } from 'lodash-es';
+import { getShadowName } from '../../../../services/shadows/get-shadow-name.js';
+import { isShadow } from '../../../../services/shadows/is-shadow.js';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getHelpers } from '../../../helpers/index.js';
 import { generateJoinAlias } from '../../utils/generate-alias.js';
@@ -53,14 +55,11 @@ type AddJoinProps = {
 	rootQuery: Knex.QueryBuilder;
 	schema: SchemaOverview;
 	knex: Knex;
-	raw?: boolean;
 };
 
-export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex, raw }: AddJoinProps) {
+export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }: AddJoinProps) {
 	let hasMultiRelational = false;
 	let isJoinAdded = false;
-	// TODO: Make dynamic
-	raw = false;
 
 	path = clone(path);
 	followRelation(path);
@@ -79,6 +78,12 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex, r
 			return;
 		}
 
+		if (isShadow(parentCollection, 'collection')) {
+			const shadowParts = cloneDeep(pathParts);
+			shadowParts[0] = getShadowName(pathRoot, 'field');
+			followRelation(shadowParts, parentCollection, parentFields);
+		}
+
 		const existingAlias = parentFields
 			? aliasMap[`${parentFields}.${pathParts[0]}`]?.alias
 			: aliasMap[pathParts[0]!]?.alias;
@@ -91,26 +96,11 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex, r
 			aliasMap[aliasKey] = { alias, collection: '' };
 
 			if (relationType === 'm2o') {
-				rootQuery.leftJoin({ [alias]: `directus_versions_${relation.related_collection!}` }, function (joinClause) {
-					joinClause.on(
-						`${aliasedParentCollection}.${relation.field}`,
-						'=',
-						`${alias}.${schema.collections[relation.related_collection!]!.primary}`,
-					);
-
-					// inject shadow field for m2o relations to be able to apply filters on the relation field even if it's hidden
-					if (raw === false) {
-						const shadowField = `directus_${relation.field}`;
-
-						if (schema.collections[parentCollection]?.fields[shadowField]) {
-							joinClause.orOn(
-								`${aliasedParentCollection}.${shadowField}`,
-								'=',
-								`${alias}.${schema.collections[relation.related_collection!]!.primary}`,
-							);
-						}
-					}
-				});
+				rootQuery.leftJoin(
+					{ [alias]: relation.related_collection! },
+					`${aliasedParentCollection}.${relation.field}`,
+					`${alias}.${schema.collections[relation.related_collection!]!.primary}`,
+				);
 
 				aliasMap[aliasKey]!.collection = relation.related_collection!;
 
