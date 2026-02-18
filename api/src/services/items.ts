@@ -495,7 +495,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
 		if (query.version && query.version !== 'main') {
-			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
+			const versionedResult = await handleVersion(this, opts?.key ?? null, query, opts);
+
+			if (query.showErrors) {
+				return [...versionedResult.data, ...versionedResult.errors] as Item[];
+			}
+
+			return versionedResult.data as Item[];
 		}
 
 		const updatedQuery =

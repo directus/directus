@@ -28,6 +28,7 @@ const querySchema = Joi.object({
 	version: Joi.string(),
 	versionRaw: Joi.boolean(),
 	showMain: Joi.boolean(),
+	showErrors: Joi.boolean(),
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),

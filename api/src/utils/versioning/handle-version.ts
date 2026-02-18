@@ -14,6 +14,13 @@ import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
 import { splitRecursive } from './split-recursive.js';
 
+export type VersionError = {
+	error: Error;
+	item: PrimaryKey | null;
+	version_id: string;
+	delta: Item;
+};
+
 export async function handleVersion(
 	self: ItemsServiceType,
 	key: PrimaryKey | typeof NEW_VERSION | null,
@@ -24,6 +31,9 @@ export async function handleVersion(
 	const { ItemsService } = await import('../../services/items.js');
 
 	if (key && key !== NEW_VERSION && query.versionRaw) {
+		delete query.version;
+		delete query.versionRaw;
+
 		const originalData = await self.readByQuery(query, opts);
 
 		if (originalData.length === 0) {
@@ -38,7 +48,7 @@ export async function handleVersion(
 
 		const versions = await versionsService.getVersionSaves(query.version!, self.collection, key);
 
-		return [Object.assign(originalData[0]!, versions?.[0]?.delta)];
+		return { errors: [], data: [Object.assign(originalData[0]!, versions?.[0]?.delta)] };
 	}
 
 	let results: Item[] = [];
@@ -51,54 +61,67 @@ export async function handleVersion(
 
 	const createdIDs: Record<string, PrimaryKey[]> = {};
 	const versions = await versionsService.getVersionSaves(query.version!, self.collection, key, false);
-	const errors: Error[] = [];
+	const errors: VersionError[] = [];
 
 	if (versions.length === 0) {
 		throw new ForbiddenError();
 	}
 
 	await transaction(self.knex, async (trx) => {
-		const itemsServiceAdmin = new ItemsService<Item>(self.collection, {
-			schema: self.schema,
-			accountability: {
-				admin: true,
-			} as Accountability,
-			knex: trx,
-		});
+		for (const { id, delta, item } of versions) {
+			if (!delta) continue;
 
-		for (const { delta, item } of versions) {
-			if (delta) {
-				const { rawDelta, defaultOverwrites } = splitRecursive(delta);
+			const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
-				try {
-					if (!item) {
-						await itemsServiceAdmin.createOne(rawDelta, {
-							emitEvents: false,
-							autoPurgeCache: false,
-							skipTracking: true,
-							overwriteDefaults: defaultOverwrites as any,
-							onItemCreate: (collection, pk) => {
-								if (collection in createdIDs === false) createdIDs[collection] = [];
+			try {
+				await trx.transaction(async (trx_inner) => {
+					const itemsServiceAdmin = new ItemsService<Item>(self.collection, {
+						schema: self.schema,
+						accountability: {
+							admin: true,
+						} as Accountability,
+						knex: trx_inner,
+					});
 
-								createdIDs[collection]!.push(pk);
-							},
-						});
-					} else {
-						await itemsServiceAdmin.updateOne(item, rawDelta, {
-							emitEvents: false,
-							autoPurgeCache: false,
-							skipTracking: true,
-							overwriteDefaults: defaultOverwrites as any,
-							onItemCreate: (collection, pk) => {
-								if (collection in createdIDs === false) createdIDs[collection] = [];
+					try {
+						if (!item) {
+							await itemsServiceAdmin.createOne(rawDelta, {
+								emitEvents: false,
+								autoPurgeCache: false,
+								skipTracking: true,
+								overwriteDefaults: defaultOverwrites as any,
+								onItemCreate: (collection, pk) => {
+									if (collection in createdIDs === false) createdIDs[collection] = [];
 
-								createdIDs[collection]!.push(pk);
-							},
+									createdIDs[collection]!.push(pk);
+								},
+							});
+						} else {
+							await itemsServiceAdmin.updateOne(item, rawDelta, {
+								emitEvents: false,
+								autoPurgeCache: false,
+								skipTracking: true,
+								overwriteDefaults: defaultOverwrites as any,
+								onItemCreate: (collection, pk) => {
+									if (collection in createdIDs === false) createdIDs[collection] = [];
+
+									createdIDs[collection]!.push(pk);
+								},
+							});
+						}
+					} catch (error) {
+						trx_inner.rollback(error as Error);
+
+						errors.push({
+							error: error as Error,
+							item: item ?? null,
+							version_id: id,
+							delta,
 						});
 					}
-				} catch (error) {
-					errors.push(error as Error);
-				}
+				});
+			} catch {
+				// Ignore errors
 			}
 		}
 
@@ -131,11 +154,7 @@ export async function handleVersion(
 		await trx.rollback();
 	});
 
-	if (errors.length > 0) {
-		throw new Error(`Errors occurred while applying version deltas: ${errors.map((e) => e.message).join('; ')}`);
-	}
-
-	return results.map((result) => {
+	results = results.map((result) => {
 		return deepMapWithSchema(
 			result,
 			([key, value], context) => {
@@ -176,4 +195,6 @@ export async function handleVersion(
 			{ collection: self.collection, schema: self.schema },
 		);
 	});
+
+	return { errors, data: results };
 }
