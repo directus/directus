@@ -28,6 +28,7 @@ import InterfaceSystemFields from '@/interfaces/_system/system-fields/system-fie
 import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-filter.vue';
 import { useServerStore } from '@/stores/server';
 import type { APIError } from '@/types/error';
+import { excludeVirtualFieldNames, excludeVirtualFields } from '@/utils/exclude-virtual-fields';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -82,9 +83,7 @@ const exportSettings = reactive({
 	limit: props.layoutQuery?.limit ?? defaultLimit,
 	filter: props.filter,
 	search: props.search,
-	fields:
-		props.layoutQuery?.fields ??
-		fields.value?.filter((field) => field.type !== 'alias' && !field.field.startsWith('$')).map((field) => field.field),
+	fields: props.layoutQuery?.fields ?? (fields.value ? excludeVirtualFields(fields.value) : undefined),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
@@ -93,9 +92,7 @@ watch(
 	() => {
 		if (props.layoutQuery?.fields) return;
 
-		exportSettings.fields = fields.value
-			?.filter((field) => field.type !== 'alias' && !field.field.startsWith('$'))
-			.map((field) => field.field);
+		exportSettings.fields = fields.value ? excludeVirtualFields(fields.value) : undefined;
 	},
 	{ immediate: true },
 );
@@ -106,8 +103,7 @@ watch(
 		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
 
 		if (props.layoutQuery?.fields) {
-			// Filter out virtual fields (prefixed with $) that don't exist as real DB columns
-			exportSettings.fields = props.layoutQuery.fields.filter((field) => !field.startsWith('$'));
+			exportSettings.fields = excludeVirtualFieldNames(props.layoutQuery.fields);
 		}
 
 		if (props.layoutQuery?.sort) {
