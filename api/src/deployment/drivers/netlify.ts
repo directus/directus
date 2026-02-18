@@ -47,7 +47,6 @@ const WS_CONNECTION_TIMEOUT = 10_000; // 10 seconds
 const ANSI_REGEX = /[\x1b]\[[0-9;]*m/g;
 const WS_URL = 'wss://socketeer.services.netlify.com/build/logs';
 
-// Deploy notification events we subscribe to
 const NETLIFY_WEBHOOK_EVENTS = ['deploy_created', 'deploy_building', 'deploy_failed'];
 
 // Map Netlify deploy state to our normalized types
@@ -363,10 +362,9 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		const hookIds: string[] = [];
 
 		// Netlify API doesn't support JWS signing for API-created hooks,
-		// so we use a URL token for verification instead
+		// so we inject a token for verification instead
 		const signedUrl = `${webhookUrl}?token=${secret}`;
 
-		// Clean up any stale hooks pointing to our webhook URL before creating new ones
 		for (const siteId of projectIds) {
 			await this.cleanupStaleHooks(siteId, webhookUrl);
 		}
@@ -415,7 +413,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 
 		// URL token verification — Netlify API doesn't support JWS signing for API-created hooks,
 		// so we embed a secret token in the webhook URL and verify it here.
-		// The token is passed via the 'x-webhook-token' pseudo-header (injected by the controller from query params).
+		// The token is passed via the 'x-webhook-token'
 		const token = headers['x-webhook-token'];
 
 		if (!token || typeof token !== 'string') {

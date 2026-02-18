@@ -120,20 +120,16 @@ async function loadRuns() {
 	try {
 		const offset = (page.value - 1) * limit;
 
-		const [response, statsData] = await Promise.all([
-			api.get(`/deployments/${props.provider}/projects/${props.projectId}/runs`, {
-				params: {
-					search: search.value || undefined,
-					offset,
-					meta: 'filter_count',
-				},
-			}),
-			sdk.request(readDeploymentRunStats(props.provider, props.projectId, { range: '7d' })),
-		]);
+		const response = await api.get(`/deployments/${props.provider}/projects/${props.projectId}/runs`, {
+			params: {
+				search: search.value || undefined,
+				offset,
+				meta: 'filter_count',
+			},
+		});
 
 		runs.value = response.data.data as Run[];
 		totalCount.value = response.data.meta?.filter_count ?? 0;
-		totalDeployments.value = statsData.total_deployments;
 	} catch (error) {
 		if (runs.value.length === 0) {
 			unexpectedError(error);
@@ -143,8 +139,18 @@ async function loadRuns() {
 	}
 }
 
+async function loadStats() {
+	try {
+		const statsData = await sdk.request(readDeploymentRunStats(props.provider, props.projectId, { range: '7d' }));
+		totalDeployments.value = statsData.total_deployments;
+	} catch (error) {
+		unexpectedError(error);
+	}
+}
+
 function refresh() {
 	loadRuns();
+	loadStats();
 }
 
 async function deploy(preview = false) {
@@ -177,6 +183,7 @@ watch(
 	() => props.projectId,
 	() => {
 		loadRuns();
+		loadStats();
 	},
 	{ immediate: true },
 );

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { stat } from 'node:fs';
 import { type DeploymentDashboardOutput, readDeploymentDashboard } from '@directus/sdk';
 import { formatDistanceToNow } from 'date-fns';
 import { computed, onMounted, ref, watch } from 'vue';

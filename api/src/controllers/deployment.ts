@@ -642,7 +642,7 @@ router.get(
 			throw new InvalidPayloadError({ reason: error.message });
 		}
 
-		const sinceDate = parseRange(value.range, 604_800_000);
+		const sinceDate = parseRange(value.range, 604_800_000).toISOString();
 
 		const projectsService = new DeploymentProjectsService({
 			accountability: req.accountability,
@@ -658,7 +658,7 @@ router.get(
 		await projectsService.readOne(projectId);
 
 		const dateFilter = {
-			_and: [{ project: { _eq: projectId } }, { date_created: { _gte: sinceDate.toISOString() } }],
+			_and: [{ project: { _eq: projectId } }, { date_created: { _gte: sinceDate } }],
 		};
 
 		const [countResult, completedRuns] = await Promise.all([
@@ -670,7 +670,7 @@ router.get(
 				filter: {
 					_and: [
 						{ project: { _eq: projectId } },
-						{ date_created: { _gte: sinceDate.toISOString() } },
+						{ date_created: { _gte: sinceDate } },
 						{ started_at: { _nnull: true } },
 						{ completed_at: { _nnull: true } },
 					],

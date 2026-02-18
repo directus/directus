@@ -211,7 +211,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	}
 
 	/**
-	 * Get webhook config for a provider (internal use by webhook controller)
+	 * Get webhook config for a provider
 	 */
 	async getWebhookConfig(
 		provider: ProviderType,
@@ -238,7 +238,6 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 	/**
 	 * Sync webhook registration with current tracked projects.
-	 * Registers, re-registers, or unregisters as needed.
 	 */
 	async syncWebhook(provider: ProviderType): Promise<void> {
 		const logger = useLogger();
