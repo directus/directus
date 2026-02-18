@@ -2161,6 +2161,10 @@ interfaces:
   file:
     file: File
     description: Select or upload a file
+    allowed_mime_types: Allowed MIME Types
+    mime_types_placeholder: Select or add allowed MIME types...
+    mime_types_note:
+      Note that the global FILES_MIME_TYPE_ALLOW_LIST defined in your env will take precedence over the above selection.
   files:
     files: Files
     description: Select or upload multiple files
