@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 
 const notificationsStore = useNotificationsStore();
 const queue = toRefs(notificationsStore).queue;
+
+const overlayIsActive = computed(() => notificationsStore.overlayIsActive);
 </script>
 
 <template>
-	<TransitionGroup class="notifications-group" name="slide-fade" tag="div">
+	<TransitionGroup class="notifications-group" :class="{ overlay: overlayIsActive }" name="slide-fade" tag="div">
 		<slot />
 		<NotificationItem
 			v-for="notification in queue"
@@ -20,6 +22,7 @@ const queue = toRefs(notificationsStore).queue;
 			:type="notification.type"
 			:loading="notification.loading"
 			:progress="notification.progress"
+			:show-reload="notification.showReload"
 			:show-close="notification.persist === true && notification.closeable !== false"
 			:always-show-text="notification.alwaysShowText"
 			:dismiss-icon="notification.dismissIcon"
@@ -39,6 +42,11 @@ const queue = toRefs(notificationsStore).queue;
 	flex-direction: column;
 	align-items: end;
 	inline-size: 256px;
+
+	&.overlay {
+		z-index: 700;
+		position: fixed;
+	}
 }
 
 .notification-item {

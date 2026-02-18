@@ -28,6 +28,9 @@ export type Info = {
 	};
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
+	files?: {
+		mimeTypeAllowList: string;
+	};
 	setupCompleted: boolean;
 	rateLimit?:
 		| false
@@ -66,13 +69,16 @@ export type Info = {
 							path: string;
 					  };
 				heartbeat?: boolean | number;
+				collaborativeEditing?: boolean;
 		  };
 	version?: string;
 	extensions?: {
 		limit: number | null;
 	};
 	uploads?: {
-		chunkSize: number;
+		tus?: boolean;
+		chunkSize?: number;
+		maxConcurrency?: number;
 	};
 };
 
@@ -86,6 +92,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		project: null,
 		mcp_enabled: true,
 		ai_enabled: true,
+		files: undefined,
 		setupCompleted: false,
 		extensions: undefined,
 		rateLimit: undefined,
@@ -124,6 +131,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.project = serverInfoResponse.data.data?.project;
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
+		info.files = serverInfoResponse.data.data?.files;
 		info.setupCompleted = serverInfoResponse.data.data?.setupCompleted;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;

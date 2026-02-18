@@ -7,7 +7,7 @@ import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { getCache } from '../cache.js';
-import { RESUMABLE_UPLOADS } from '../constants.js';
+import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
@@ -73,6 +73,10 @@ export class ServerService {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 
+			info['files'] = {
+				mimeTypeAllowList: env['FILES_MIME_TYPE_ALLOW_LIST'],
+			};
+
 			if (env['RATE_LIMITER_ENABLED']) {
 				info['rateLimit'] = {
 					points: env['RATE_LIMITER_POINTS'],
@@ -121,6 +125,8 @@ export class ServerService {
 					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
 					: false;
 
+				info['websocket'].collaborativeEditing = toBoolean(env['WEBSOCKETS_COLLAB_ENABLED']);
+
 				info['websocket'].logs =
 					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
 						? {
@@ -131,8 +137,16 @@ export class ServerService {
 				info['websocket'] = false;
 			}
 
+			if (FILE_UPLOADS.MAX_CONCURRENCY && FILE_UPLOADS.MAX_CONCURRENCY !== Infinity) {
+				info['uploads'] = {
+					maxConcurrency: FILE_UPLOADS.MAX_CONCURRENCY,
+				};
+			}
+
 			if (RESUMABLE_UPLOADS.ENABLED) {
 				info['uploads'] = {
+					...info['uploads'],
+					tus: true,
 					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
 				};
 			}

@@ -535,6 +535,18 @@ export class AuthenticationService {
 			const provider = getAuthProvider(user.provider);
 			await provider.logout(clone(user));
 
+			if (this.accountability) {
+				await this.activityService.createOne({
+					action: Action.LOGOUT,
+					user: user.id,
+					ip: this.accountability.ip,
+					user_agent: this.accountability.userAgent,
+					origin: this.accountability.origin,
+					collection: 'directus_users',
+					item: user.id,
+				});
+			}
+
 			await this.knex.delete().from('directus_sessions').where('token', refreshToken);
 		}
 	}

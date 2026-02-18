@@ -1,8 +1,11 @@
 import { DeepPartial, Field, InterfaceConfig } from '@directus/types';
 
-export type FormField = DeepPartial<Field> & {
+export type FormField = Omit<DeepPartial<Field>, 'meta'> & {
 	field: string;
 	name: string;
+	meta?: DeepPartial<Field['meta']> & {
+		non_editable?: boolean;
+	};
 } & Pick<InterfaceConfig, 'hideLabel' | 'hideLoader' | 'indicatorStyle'>;
 
 export interface ComparisonContext {
@@ -10,7 +13,7 @@ export interface ComparisonContext {
 	fields: Set<string>;
 	revisionFields?: Set<string>;
 	selectedFields: string[];
-	onToggleField: (field: string) => void;
+	onToggleField: ((field: string) => void) | null;
 }
 
 export type FieldValues = {

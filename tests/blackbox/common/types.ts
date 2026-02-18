@@ -7,13 +7,53 @@ export type PrimaryKeyType = 'integer' | 'uuid' | 'string';
 
 export type WebSocketAuthMethod = 'public' | 'handshake' | 'strict';
 export type WebSocketUID = string | number;
-export type WebSocketResponse = {
+export type WebSocketResponse = WebSocketCollabResponse | WebSocketDefaultResponse;
+
+export type WebSocketDefaultResponse = {
 	type: string;
 	status?: string;
 	uid?: WebSocketUID;
 	event?: string;
 	[field: string]: any;
 };
+
+export type WebSocketCollabResponse = {
+	type: 'collab';
+	status?: string;
+	uid?: WebSocketUID;
+	event?: string;
+	action?: 'init' | 'join' | 'leave' | 'update' | 'focus' | 'discard' | 'save' | 'delete' | 'error';
+
+	// Standard Props
+	room?: string;
+	connection?: string;
+	order?: number;
+
+	// Init Payload
+	collection?: string;
+	item?: string | number | null;
+	version?: string | null;
+	changes?: any;
+	focuses?: Record<string, string>;
+	users?: Array<{ user: string; connection: string; color: string }>;
+
+	// Update/Focus Props
+	field?: string | null;
+
+	// Discard Props
+	fields?: string[];
+
+	// Join Props
+	user?: string;
+	color?: string;
+
+	// Error Props
+	code?: string;
+	message?: string;
+
+	[field: string]: any;
+};
+
 export type WebSocketDefaultOptions = {
 	/**
 	 * Authenticate once websocket connection is opened

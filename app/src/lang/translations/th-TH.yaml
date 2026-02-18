@@ -66,7 +66,6 @@ create_panel: สร้างแผงควบคุม
 create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 message: ข้อความ
-create_webhook: สร้างเว็บฮุก
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว
@@ -418,8 +417,6 @@ file_count: 'ไม่มีไฟล์ | 1 ไฟล์ | {count} ไฟล์
 no_files_copy: ไม่มีไฟล์ที่นี่
 user_count: 'ไม่มีผู้ใช้ | ผู้ใช้ 1 คน | ผู้ใช้ {count} คน'
 no_users_copy: ยังไม่มีผู้ใช้ในบทบาท
-webhooks_count: 'ไม่มี webhook | มี 1 webhook | มี {count} webhook'
-no_webhooks_copy: ยังไม่มีการกำหนดค่าเว็บฮุค เริ่มต้นด้วยการสร้างด้านล่าง
 no_notifications: ไม่มีการแจ้งเตือน
 activity_log: รายงานกิจกรรม
 all_items: รายการทั้งหมด
@@ -445,7 +442,6 @@ activity_item: ฟีดกิจกรรม
 action: ดำเนินการ
 ip_address: หมายเลขไอพี
 user_agent: ตัวแทนของผู้ใช้
-webhooks: Webhooks
 decimals: เลขฐานสิบ
 min_value: ค่าต่ำสุด
 max_value: ค่าสูงสุด
@@ -645,6 +641,14 @@ flow_name: ชื่อ
 flow_tracking_activity: ติดตามกิจกรรมเท่านั้น
 flow_tracking_null: อย่าติดตามอะไรเลย
 code: โค้ด
+deployment:
+  provider:
+    settings:
+      delete_confirm: การกระทำนี้ถาวร และไม่สามรถย้อนกลับได้ คุณยังต้องการจะทำต่อหรือไม่?
+    run:
+      cancel_confirm: การกระทำนี้ถาวร และไม่สามรถย้อนกลับได้ คุณยังต้องการจะทำต่อหรือไม่?
+  target_value:
+    preview: ดูตัวอย่าง
 dashboard: แดชบอร์ด
 panel: แพแนล
 panel_options: ตัวเลือกแพแนล
@@ -743,7 +747,6 @@ editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
 no_options_available: ไม่มีตัวเลือกให้ใช้
 settings_data_model: รูปแบบข้อมูล
 settings_project: การตั้งค่า
-settings_webhooks: Webhooks
 settings_presets: บุ๊กมาร์ก
 settings_translations: การแปลภาษา
 one_or_more_options_are_missing: ไม่พบตัวเลือกรายการ
@@ -869,6 +872,7 @@ fields:
     storage_default_folder: โฟลเดอร์เริ่มต้น
     custom_css: CSS ที่กำหนดเอง
     module_bar: โมดูลบาร์
+    ai_header_name: เฮดเดอร์
   directus_shares:
     name: ชื่อ
     role: บทบาท
@@ -888,15 +892,6 @@ fields:
     users: ผู้ใช้ในบทบาทนี้
   directus_policies:
     description: รายละเอียด
-  directus_webhooks:
-    name: ชื่อ
-    method: เมธอด
-    status: สถานะ
-    data: ข้อมูล
-    header: เฮดเดอร์
-    value: ค่า
-    headers: รีเควส เฮดเดอร์
-    collections: คอลเลกชัน
 field_options:
   directus_settings:
     security_divider_title: ความปลอดภัย
@@ -933,16 +928,6 @@ field_options:
     status_dropdown_suspended: ระงับชั่วคราว
     status_dropdown_archived: เก็บถาวร
     token: ระบุโทเค็นความปลอดภัย
-  directus_webhooks:
-    status_options_active: เปิดใช้งาน
-    status_options_inactive: ไม่ใช้งาน
-    actions_create: สร้าง
-    actions_update: แก้ไข
-    actions_delete: ลบ
-    actions_login: เข้าสู่ระบบ
-    headers:
-      header: เฮดเดอร์
-      value: ค่า
 no_fields_in_collection: 'ยังไม่มีฟิลด์ใน {collection}'
 no_value: ไม่มีค่า
 do_nothing: ไม่ต้องทำอะไร
@@ -958,6 +943,8 @@ live_preview:
   new_window: เปิดในหน้าต่างใหม่
 ai:
   input: Input
+  items: รายการ
+  content: เนื้อหา
   settings: การตั้งค่า
   tool_approval:
     disabled: ปิดใช้งาน
@@ -980,7 +967,6 @@ continue_label: ดำเนินการต่อ
 continue_as: >-
   บัญชี {name} ถูกยืนยันตัวตนแล้ว ถ้าเป็นบัญชีของคุณ คลิ๊กที่นี่เพื่อเข้าสู่ระบบ
 editing_role: 'บทบาท {role}'
-creating_webhook: สร้าง webhook
 default_label: ค่าเริ่มต้น
 delete_label: ลบ
 delete_are_you_sure: >-
@@ -1467,3 +1453,4 @@ fonts:
   bold: ตัวหนา
   italic: ตัวเอียง
   auto: อัตโนมัติ
+set_to_now: ตั้งค่าเป็นตอนนี้

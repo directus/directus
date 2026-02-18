@@ -89,7 +89,6 @@ create_role: Create Role
 create_user: Create User
 message: Message
 delete_panel: Delete Panel
-create_webhook: Create Webhook
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -492,8 +491,6 @@ file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
-webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
 activity_log: Activity Log
@@ -522,7 +519,6 @@ action: Action
 ip_address: IP Address
 user_agent: User Agent
 origin: Origin
-webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
 min_value: Min Value
@@ -793,6 +789,14 @@ operation_key_unique_error: Operation keys must be unique in a Flow
 operation_handle_resolve: 'Resolve: Click to Add or Drag to Reroute'
 operation_handle_reject: 'Reject: Click to Add or Drag to Reroute'
 insights: Insights
+deployment:
+  provider:
+    settings:
+      delete_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+    run:
+      cancel_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+  target_value:
+    preview: Preview
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -911,7 +915,6 @@ editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
 settings_project: Settings
-settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Bookmarks
 settings_translations: Translations
@@ -971,7 +974,6 @@ directus_collection:
   directus_settings: Project configuration options
   directus_shares: Tracks externally shared items
   directus_users: System users for the platform
-  directus_webhooks: Configuration for event-based HTTP requests
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1092,6 +1094,7 @@ fields:
     transformations_presets: Limit transformations to presets below
     image_editor: Image Editor
     custom_aspect_ratios: Custom Aspect Ratios
+    ai_header_name: Header
   directus_shares:
     name: Name
     role: Role
@@ -1115,18 +1118,6 @@ fields:
     users: Users in Role
   directus_policies:
     description: Description
-  directus_webhooks:
-    name: Name
-    method: Method
-    status: Status
-    data: Data
-    header: Header
-    value: Value
-    headers: Request Headers
-    data_label: Send Event Data
-    triggers: Triggers
-    actions: Actions
-    collections: Collections
 field_options:
   directus_settings:
     project_name_placeholder: My project...
@@ -1215,19 +1206,6 @@ field_options:
     status_dropdown_suspended: Suspended
     status_dropdown_archived: Archived
     token: Enter a secure access token...
-  directus_webhooks:
-    status_options_active: Active
-    status_options_inactive: Inactive
-    data_label: Send Event Data
-    triggers_divider: Triggers
-    actions_create: Create
-    actions_update: Update
-    actions_delete: Delete
-    actions_login: Login
-    headers:
-      header: Header
-      value: Value
-      add: Add Header
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
@@ -1249,6 +1227,8 @@ no_shares: No shares to show
 new_share: New Share
 ai:
   input: Input
+  items: Items
+  content: Content
   settings: Settings
   tool_approval:
     disabled: Disabled
@@ -1292,7 +1272,6 @@ continue_label: Continue
 continue_as: >-
   {name} is currently authenticated. If you recognise this account, press continue.
 editing_role: '{role} Role'
-creating_webhook: Creating Webhook
 default_label: Default
 delete_label: Delete
 delete_are_you_sure: >-
@@ -2093,3 +2072,4 @@ fonts:
   black: Black
   italic: Italic
   auto: Auto
+set_to_now: Set to Now
