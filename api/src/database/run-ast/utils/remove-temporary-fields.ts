@@ -1,5 +1,5 @@
 import type { Item, SchemaOverview } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { getRelationInfo, toArray } from '@directus/utils';
 import { cloneDeep, pick } from 'lodash-es';
 import { getShadowName } from '../../../services/shadows/get-shadow-name.js';
 import { isShadow } from '../../../services/shadows/is-shadow.js';
@@ -113,6 +113,20 @@ export function removeTemporaryFields(
 						: schema.collections[nestedNode.relation.collection]!.primary,
 					item,
 				);
+			}
+
+			if (nestedCollectionNodes.length === 0) {
+				Object.keys(item).forEach((key) => {
+					const relationInfo = getRelationInfo(schema.relations, ast.name, key);
+
+					if (relationInfo.relationType === 'm2o' && !isShadow(key, 'field')) {
+						const shadowNestedItem = item[getShadowName(key, 'field')];
+
+						if (shadowNestedItem) {
+							item[key] = shadowNestedItem;
+						}
+					}
+				});
 			}
 
 			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
