@@ -66,7 +66,6 @@ create_role: Napravi ulogu
 create_user: Napravi korisnika
 message: Poruka
 delete_panel: Obriši Panel
-create_webhook: Napravi Webhook
 invite_users: Pozovi korisnike
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
@@ -377,7 +376,6 @@ file_count: 'Nema Fajlova | Jedan Fajl | {count} Fajlova'
 no_files_copy: Ovdje nema fajlova.
 user_count: 'Nema Korisnika | Jedan Korisnik | {count} Korisnika'
 no_users_copy: Ne postoji nijedan korisnik u ovoj roli.
-webhooks_count: 'Ne postoje Webhooks | Jedan Webhook | {count} Webhooks'
 all_items: Sve Stavke
 csv: CSV
 no_collections: Nema Kolekcija
@@ -395,7 +393,6 @@ activity: Aktivnost
 action: Akcija
 ip_address: IP adresa
 user_agent: Korisnički Agent
-webhooks: Webhooks
 field_width: Širina Polja
 add_filter: Dodaj Filter
 upper_limit: Gornja granica...
@@ -566,6 +563,12 @@ flow_name: Ime
 flow_tracking_activity: Samo Prati Aktivnost
 flow_tracking_null: Bez praćenja
 code: Kod
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
+    run:
+      cancel_confirm: Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
 full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
@@ -643,7 +646,6 @@ editing_in_batch: 'Grupna izmjena {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model Podataka
 settings_project: Podešavanja
-settings_webhooks: Webhooks
 settings_presets: Oznake
 settings_translations: Prevodi
 one_or_more_options_are_missing: Jedna ili više opcija nedostaje
@@ -773,11 +775,6 @@ fields:
     users: Svi korisnici ove Uloge
   directus_policies:
     description: Opis
-  directus_webhooks:
-    name: Ime
-    status: Status
-    value: Vrijednost
-    collections: Kolekcije
 field_options:
   directus_activity:
     create: Kreiraj
@@ -801,12 +798,6 @@ field_options:
     collections_name: Kolekcije
   directus_users:
     status_dropdown_active: Aktivan
-  directus_webhooks:
-    status_options_active: Aktivan
-    actions_create: Kreiraj
-    actions_update: Ažuriranje
-    headers:
-      value: Vrijednost
 no_fields_in_collection: 'Trenutno ne postoji nijedno polje u "{collection}" kolekciji'
 do_nothing: Ne radi ništa
 generate_and_save_uuid: Generiši i Sačuvaj UUID
@@ -820,6 +811,7 @@ live_preview:
   new_window: Otvori u Novom Prozoru
 ai:
   input: Unos
+  items: Stavke
   settings: Podešavanja
   tool_approval:
     disabled: Isključeno
@@ -839,7 +831,6 @@ referential_action_set_null: Poništi vrijednost {field} polja
 referential_action_set_default: Postavi {field} na njegovu podrazumijevanu vrijednost
 choose_action: Izaberi Radnju
 editing_role: '{role} Uloga'
-creating_webhook: Kreiranje Webhook-a
 delete_are_you_sure: >-
   Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
 delete_field_are_you_sure: >-
@@ -1236,6 +1227,9 @@ both: Oba
 panels:
   label:
     name: Oznaka
+triggers:
+  webhook:
+    method: Metoda
 operations:
   json-web-token:
     token: Token
@@ -1250,6 +1244,7 @@ operations:
     subject: Naslov
   request:
     url: URL adresa
+    method: Metoda
 standard: Uobičajeno
 compact: Kompaktno
 style: Stil
@@ -1258,3 +1253,4 @@ fonts:
   bold: Podebljano
   italic: Kurziv
   auto: Automatski
+set_to_now: Postavi na Sadašnji

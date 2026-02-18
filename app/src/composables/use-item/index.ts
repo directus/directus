@@ -8,6 +8,7 @@ import { cloneDeep, mergeWith } from 'lodash';
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
+import { transformM2AAliases } from './lib/transform-m2a-aliases';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
@@ -120,8 +121,14 @@ export function useItem<T extends Item>(
 		loadingItem.value = true;
 		error.value = null;
 
+		const rawQuery: Record<string, unknown> = unref(query);
+
+		if ('fields' in rawQuery && Array.isArray(rawQuery.fields)) {
+			rawQuery.fields = rawQuery.fields.join(',');
+		}
+
 		try {
-			const response = await api.get(itemEndpoint.value, { params: unref(query) });
+			const response = await api.get(itemEndpoint.value, { params: rawQuery });
 			setItemValueToResponse(response);
 		} catch (err) {
 			error.value = err;
@@ -228,7 +235,7 @@ export function useItem<T extends Item>(
 
 		const fields = collectionInfo.value?.meta?.item_duplication_fields ?? [];
 
-		const queryFields = getGraphqlQueryFields(fields, collection.value);
+		const { queryFields, m2aAliasMap } = getGraphqlQueryFields(fields, collection.value);
 		const alias = isSystemCollection(collection.value) ? collection.value.substring(9) : collection.value;
 
 		const query = jsonToGraphQLQuery({
@@ -254,7 +261,8 @@ export function useItem<T extends Item>(
 			throw error;
 		}
 
-		const itemData = response.data.data.item;
+		// Transform aliased M2A fields back to their original names
+		const itemData = transformM2AAliases(response.data.data.item, m2aAliasMap);
 
 		const newItem: Item = {
 			...(itemData || {}),

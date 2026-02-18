@@ -1,12 +1,30 @@
+import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { nextTick, ref } from 'vue';
+import { defineComponent, nextTick, ref } from 'vue';
 import { type GroupableInstance, useGroupable, useGroupableParent } from './use-groupable';
+
+// Helper to run composables within a proper Vue component context
+function withSetup<T>(composable: () => T): { result: T } {
+	let result!: T;
+
+	const TestComponent = defineComponent({
+		setup() {
+			result = composable();
+			return {};
+		},
+		render: () => null,
+	});
+
+	mount(TestComponent);
+
+	return { result };
+}
 
 describe('useGroupable', () => {
 	it('should return inactive state when no parent is available', () => {
 		// When there's no parent context (provide/inject not available),
 		// the composable should gracefully handle the missing context
-		const result = useGroupable();
+		const { result } = withSetup(() => useGroupable());
 
 		expect(result.active.value).toBe(false);
 		expect(typeof result.toggle).toBe('function');
@@ -15,7 +33,7 @@ describe('useGroupable', () => {
 	});
 
 	it('should work with custom group name when no parent is available', () => {
-		const result = useGroupable({ group: 'custom-group' });
+		const { result } = withSetup(() => useGroupable({ group: 'custom-group' }));
 
 		expect(result.active.value).toBe(false);
 		expect(typeof result.toggle).toBe('function');
@@ -24,14 +42,14 @@ describe('useGroupable', () => {
 	});
 
 	it('should handle value option when no parent is available', () => {
-		const result = useGroupable({ value: 'test-value' });
+		const { result } = withSetup(() => useGroupable({ value: 'test-value' }));
 
 		expect(result.active.value).toBe(false);
 	});
 
 	it('should handle active option when no parent is available', () => {
 		const active = ref(true);
-		const result = useGroupable({ active });
+		const { result } = withSetup(() => useGroupable({ active }));
 
 		// Should initialize as inactive when no parent is available
 		expect(result.active.value).toBe(false);
@@ -39,13 +57,13 @@ describe('useGroupable', () => {
 
 	it('should handle watch option when no parent is available', () => {
 		const active = ref(false);
-		const result = useGroupable({ active, watch: true });
+		const { result } = withSetup(() => useGroupable({ active, watch: true }));
 
 		expect(result.active.value).toBe(false);
 	});
 
 	it('should handle methods when no parent is available', () => {
-		const result = useGroupable();
+		const { result } = withSetup(() => useGroupable());
 
 		// These should not throw when called without parent
 		expect(() => result.toggle()).not.toThrow();
@@ -59,7 +77,7 @@ describe('useGroupable', () => {
 
 describe('useGroupableParent', () => {
 	it('should initialize with empty items and selection', () => {
-		const result = useGroupableParent();
+		const { result } = withSetup(() => useGroupableParent());
 
 		expect(result.items.value).toEqual([]);
 		expect(result.selection.value).toEqual([]);
@@ -70,14 +88,14 @@ describe('useGroupableParent', () => {
 
 	it('should use external selection when provided', () => {
 		const externalSelection = ref(['item1', 'item2']);
-		const result = useGroupableParent({ selection: externalSelection });
+		const { result } = withSetup(() => useGroupableParent({ selection: externalSelection }));
 
 		expect(result.selection.value).toEqual(['item1', 'item2']);
 	});
 
 	it('should call onSelectionChange when selection changes', async () => {
 		const onSelectionChange = vi.fn();
-		const result = useGroupableParent({ onSelectionChange });
+		const { result } = withSetup(() => useGroupableParent({ onSelectionChange }));
 
 		// Change selection
 		result.selection.value = ['item1'];
@@ -90,26 +108,30 @@ describe('useGroupableParent', () => {
 	it('should handle readonly external selection', () => {
 		const externalSelection = ref(['item1'] as readonly (string | number)[]);
 
-		const result = useGroupableParent({
-			selection: externalSelection,
-			onSelectionChange: vi.fn(),
-		});
+		const { result } = withSetup(() =>
+			useGroupableParent({
+				selection: externalSelection,
+				onSelectionChange: vi.fn(),
+			}),
+		);
 
 		// Should use external selection
 		expect(result.selection.value).toEqual(['item1']);
 	});
 
 	it('should handle undefined external selection', () => {
-		const result = useGroupableParent({
-			selection: ref(undefined),
-			onSelectionChange: vi.fn(),
-		});
+		const { result } = withSetup(() =>
+			useGroupableParent({
+				selection: ref(undefined),
+				onSelectionChange: vi.fn(),
+			}),
+		);
 
 		expect(result.selection.value).toEqual([]);
 	});
 
 	it('should generate correct values for items without explicit values', () => {
-		const result = useGroupableParent();
+		const { result } = withSetup(() => useGroupableParent());
 
 		const mockItem1: GroupableInstance = { active: ref(false), value: undefined };
 		const mockItem2: GroupableInstance = { active: ref(false), value: 'explicit' };
@@ -125,7 +147,7 @@ describe('useGroupableParent', () => {
 	});
 
 	it('should handle updateChildren function', () => {
-		const result = useGroupableParent();
+		const { result } = withSetup(() => useGroupableParent());
 
 		const item1 = { active: ref(false), value: 'item1' };
 		const item2 = { active: ref(false), value: 'item2' };
@@ -142,21 +164,21 @@ describe('useGroupableParent', () => {
 
 	it('should handle mandatory option initialization', () => {
 		const mandatory = ref(true);
-		const result = useGroupableParent({}, { mandatory });
+		const { result } = withSetup(() => useGroupableParent({}, { mandatory }));
 
 		expect(result.selection.value).toEqual([]);
 	});
 
 	it('should handle multiple selection mode option', () => {
 		const multiple = ref(true);
-		const result = useGroupableParent({}, { multiple });
+		const { result } = withSetup(() => useGroupableParent({}, { multiple }));
 
 		expect(result.selection.value).toEqual([]);
 	});
 
 	it('should handle max selection option', () => {
 		const max = ref(3);
-		const result = useGroupableParent({}, { max });
+		const { result } = withSetup(() => useGroupableParent({}, { max }));
 
 		expect(result.selection.value).toEqual([]);
 	});
@@ -168,19 +190,21 @@ describe('useGroupableParent', () => {
 			max: ref(5),
 		};
 
-		const result = useGroupableParent(
-			{
-				selection: ref(['item1']),
-				onSelectionChange: vi.fn(),
-			},
-			options,
+		const { result } = withSetup(() =>
+			useGroupableParent(
+				{
+					selection: ref(['item1']),
+					onSelectionChange: vi.fn(),
+				},
+				options,
+			),
 		);
 
 		expect(result.selection.value).toEqual(['item1']);
 	});
 
 	it('should handle custom group name', () => {
-		const result = useGroupableParent({}, {}, 'custom-group');
+		const { result } = withSetup(() => useGroupableParent({}, {}, 'custom-group'));
 
 		expect(result.items.value).toEqual([]);
 		expect(result.selection.value).toEqual([]);
@@ -188,7 +212,7 @@ describe('useGroupableParent', () => {
 
 	it('should handle onToggle callback registration', () => {
 		const onToggle = vi.fn();
-		const result = useGroupableParent({ onToggle });
+		const { result } = withSetup(() => useGroupableParent({ onToggle }));
 
 		expect(result.items.value).toEqual([]);
 	});
@@ -197,10 +221,12 @@ describe('useGroupableParent', () => {
 		const externalSelection = ref(['initial']);
 		const onSelectionChange = vi.fn();
 
-		const result = useGroupableParent({
-			selection: externalSelection,
-			onSelectionChange,
-		});
+		const { result } = withSetup(() =>
+			useGroupableParent({
+				selection: externalSelection,
+				onSelectionChange,
+			}),
+		);
 
 		expect(result.selection.value).toEqual(['initial']);
 
@@ -211,10 +237,12 @@ describe('useGroupableParent', () => {
 	});
 
 	it('should handle complex selection scenarios', () => {
-		const result = useGroupableParent({
-			onSelectionChange: vi.fn(),
-			onToggle: vi.fn(),
-		});
+		const { result } = withSetup(() =>
+			useGroupableParent({
+				onSelectionChange: vi.fn(),
+				onToggle: vi.fn(),
+			}),
+		);
 
 		const item1 = { active: ref(false), value: 'a' };
 		const item2 = { active: ref(false), value: 'b' };
@@ -237,7 +265,7 @@ describe('useGroupableParent', () => {
 	});
 
 	it('should handle internalSelection computed property reactivity', async () => {
-		const result = useGroupableParent();
+		const { result } = withSetup(() => useGroupableParent());
 
 		// Initially empty
 		expect(result.internalSelection.value).toEqual([]);
@@ -250,7 +278,7 @@ describe('useGroupableParent', () => {
 
 	it('should handle mandatory watcher with different values', async () => {
 		const mandatory = ref(false);
-		const result = useGroupableParent({}, { mandatory });
+		const { result } = withSetup(() => useGroupableParent({}, { mandatory }));
 
 		// Add an item first
 		const item = { active: ref(false), value: 'test' };
@@ -268,10 +296,12 @@ describe('useGroupableParent', () => {
 		const onSelectionChange = vi.fn();
 		const externalSelection = ref(['item1']);
 
-		const result = useGroupableParent({
-			selection: externalSelection,
-			onSelectionChange,
-		});
+		const { result } = withSetup(() =>
+			useGroupableParent({
+				selection: externalSelection,
+				onSelectionChange,
+			}),
+		);
 
 		// Initial state should be set
 		expect(result.selection.value).toEqual(['item1']);
@@ -287,7 +317,7 @@ describe('useGroupableParent', () => {
 
 	it('should handle selection watcher without external selection', async () => {
 		const onSelectionChange = vi.fn();
-		const result = useGroupableParent({ onSelectionChange });
+		const { result } = withSetup(() => useGroupableParent({ onSelectionChange }));
 
 		// Change internal selection
 		result.selection.value = ['item1'];
@@ -298,7 +328,7 @@ describe('useGroupableParent', () => {
 
 	it('should handle edge cases with empty selection and mandatory', async () => {
 		const mandatory = ref(false);
-		const result = useGroupableParent({}, { mandatory });
+		const { result } = withSetup(() => useGroupableParent({}, { mandatory }));
 
 		// Start with empty selection
 		expect(result.selection.value).toEqual([]);
@@ -312,7 +342,7 @@ describe('useGroupableParent', () => {
 	});
 
 	it('should handle different types of selection values', async () => {
-		const result = useGroupableParent();
+		const { result } = withSetup(() => useGroupableParent());
 
 		// Test with string values
 		result.selection.value = ['string1', 'string2'];
@@ -335,7 +365,7 @@ describe('useGroupableParent', () => {
 		const multiple = ref(false);
 		const max = ref(-1);
 
-		const result = useGroupableParent({}, { mandatory, multiple, max });
+		const { result } = withSetup(() => useGroupableParent({}, { mandatory, multiple, max }));
 
 		// Change all options
 		mandatory.value = true;
@@ -351,7 +381,7 @@ describe('useGroupableParent', () => {
 
 	it('should handle equal value comparison in mandatory watcher', async () => {
 		const mandatory = ref(true);
-		const result = useGroupableParent({}, { mandatory });
+		const { result } = withSetup(() => useGroupableParent({}, { mandatory }));
 
 		// Start with empty selection
 		expect(result.selection.value).toEqual([]);
@@ -378,7 +408,7 @@ describe('useGroupableParent', () => {
 	});
 
 	it('should handle updateChildren with multiple items and partial selection', () => {
-		const result = useGroupableParent();
+		const { result } = withSetup(() => useGroupableParent());
 
 		const item1 = { active: ref(true), value: 'a' };
 		const item2 = { active: ref(true), value: 'b' };
@@ -395,7 +425,7 @@ describe('useGroupableParent', () => {
 	});
 
 	it('should handle items with numeric and string values correctly', () => {
-		const result = useGroupableParent();
+		const { result } = withSetup(() => useGroupableParent());
 
 		const item1 = { active: ref(false), value: 0 }; // Numeric zero
 		const item2 = { active: ref(false), value: '0' }; // String zero
@@ -412,7 +442,7 @@ describe('useGroupableParent', () => {
 
 	it('should handle onToggle callback with state parameter', () => {
 		const onToggle = vi.fn();
-		const result = useGroupableParent({ onToggle });
+		const { result } = withSetup(() => useGroupableParent({ onToggle }));
 
 		// Mock internal methods by accessing them directly
 		// This tests the onToggle callback mechanism
@@ -421,7 +451,7 @@ describe('useGroupableParent', () => {
 	});
 
 	it('should handle computed internalSelection with different external selection types', () => {
-		const result = useGroupableParent();
+		const { result } = withSetup(() => useGroupableParent());
 
 		// Test array selection
 		result.selection.value = ['a', 'b'];

@@ -17,6 +17,7 @@ import VProgressLinear from '@/components/v-progress-linear.vue';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
@@ -37,6 +38,7 @@ interface Props {
 	fromLibrary?: boolean;
 	folder?: string;
 	filter?: Filter;
+	disabled?: boolean;
 	accept?: string;
 }
 
@@ -52,6 +54,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const notificationsStore = useNotificationsStore();
+const { info } = useServerStore();
 
 let uploadController: Upload | null = null;
 
@@ -61,6 +64,9 @@ const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
+const userSelectOpen = ref(false);
+
+const menuActivce = computed(() => Boolean(activeDialog.value) || userSelectOpen.value);
 
 onUnmounted(() => {
 	uploadController?.abort();
@@ -169,6 +175,7 @@ function useUpload() {
 				};
 
 				const uploadedFiles = await uploadFiles(Array.from(files), {
+					maxConcurrency: info.uploads?.maxConcurrency,
 					onProgressChange: (percentages) => {
 						newUpload.progress.value = Math.round(
 							(sum(fileSizes.map((total, i) => total * (percentages[i]! / 100))) / totalBytes) * 100,
@@ -234,6 +241,8 @@ function useUpload() {
 		if (files) {
 			upload(files);
 		}
+
+		userSelectOpen.value = false;
 	}
 }
 
@@ -360,6 +369,7 @@ function useURLImport() {
 }
 
 function openFileBrowser() {
+	userSelectOpen.value = true;
 	input.value?.click();
 }
 
@@ -372,9 +382,10 @@ defineExpose({ abort });
 
 <template>
 	<div
+		v-prevent-focusout="menuActivce"
 		data-dropzone
 		class="v-upload"
-		:class="{ dragging: dragging && fromUser, uploading }"
+		:class="{ dragging: dragging && fromUser, uploading, disabled }"
 		@dragenter.prevent="onDragEnter"
 		@dragover.prevent
 		@dragleave.prevent="onDragLeave"
@@ -399,7 +410,15 @@ defineExpose({ abort });
 
 		<template v-else>
 			<div class="actions">
-				<VButton v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+				<VButton
+					v-if="fromUser"
+					v-tooltip="!disabled && $t('click_to_browse')"
+					icon
+					rounded
+					secondary
+					:disabled
+					@click="openFileBrowser"
+				>
 					<input
 						ref="input"
 						class="browse"
@@ -407,26 +426,29 @@ defineExpose({ abort });
 						tabindex="-1"
 						:multiple="multiple"
 						:accept="accept"
+						@cancel="userSelectOpen = false"
 						@input="onBrowseSelect"
 					/>
 					<VIcon name="file_upload" />
 				</VButton>
 				<VButton
 					v-if="fromLibrary"
-					v-tooltip="$t('choose_from_library')"
+					v-tooltip="!disabled && $t('choose_from_library')"
 					icon
 					rounded
 					secondary
+					:disabled
 					@click="activeDialog = 'choose'"
 				>
 					<VIcon name="folder_open" />
 				</VButton>
 				<VButton
 					v-if="fromUrl && fromUser"
-					v-tooltip="$t('import_from_url')"
+					v-tooltip="!disabled && $t('import_from_url')"
 					icon
 					rounded
 					secondary
+					:disabled
 					@click="activeDialog = 'url'"
 				>
 					<VIcon name="link" />
@@ -491,7 +513,11 @@ defineExpose({ abort });
 		color: inherit;
 	}
 
-	&:not(.uploading):hover {
+	&.disabled {
+		background-color: var(--theme--form--field--input--background-subdued);
+	}
+
+	&:not(.uploading):not(.disabled):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 }

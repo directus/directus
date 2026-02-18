@@ -134,7 +134,6 @@ create_policy: Utwórz Politykę
 create_user: Utwórz użytkownika
 message: Wiadomość
 delete_panel: Usuń panel
-create_webhook: Stwórz webhook
 create_custom_translation: Utwórz własne tłumaczenie
 edit_custom_translation: Edytuj własne tłumaczenie
 no_custom_translations: Brak niestandardowych tłumaczeń
@@ -628,12 +627,6 @@ file_count: 'Brak plików | Jeden plik | {count} plików'
 no_files_copy: Brak plików.
 user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
 no_users_copy: Nie ma jeszcze użytkowników w tej roli.
-webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
-webhooks_deprecation_notice: |
-  Webhooki są przestarzałe i ich dalsze używanie jest odradzane.
-
-  Zamiast tego użyj **Flows** z operacją [Webhook / Request URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
-no_webhooks_copy: Nie skonfigurowano jeszcze żadnych webhooków. Zacznij od utworzenia jednego poniżej.
 no_notifications: Brak powiadomień
 no_notifications_copy: Jesteś na bieżąco z wiadomościami!
 activity_log: Dziennik aktywności
@@ -664,7 +657,6 @@ action: Czynność
 ip_address: Adres IP
 user_agent: User agent
 origin: Pochodzenie
-webhooks: Webhooki
 decimals: Dziesiętne
 value_decimals: Wartość dziesiętna
 min_value: Minimalna wartość
@@ -962,6 +954,15 @@ operation_key_unique_error: Klucze operacji muszą być unikalne w przepływie
 operation_handle_resolve: 'Rozwiązanie: Kliknij, aby dodać lub przeciągnąć do przekierowania'
 operation_handle_reject: 'Odrzuć: Kliknij, aby dodać lub przeciągnąć do przekierowania'
 insights: Statystyki
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
+    run:
+      cancel_confirm: Ta akcja jest trwała i nie może zostać cofnięta. Czy na pewno chcesz kontynuować?
+      log_all: Wszystkie poziomy logów
+  target_value:
+    preview: Podgląd
 dashboard: Pulpit
 panel: Panel
 panel_options: Opcje panelu
@@ -1100,7 +1101,6 @@ settings_roles: Role użytkownika
 settings_permissions: Polityki dostępu
 settings_project: Ustawienia
 settings_appearance: Wygląd
-settings_webhooks: Webhooki
 settings_flows: Przepływy
 settings_system_logs: Dzienniki systemowe
 settings_presets: Zakładki
@@ -1174,7 +1174,6 @@ directus_collection:
   directus_settings: Opcje konfiguracji projektu
   directus_shares: Śledzenie elementów współdzielonych na zewnątrz
   directus_users: Użytkownicy systemu dla platformy
-  directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
   directus_translations: Własne tłumaczenia
   directus_versions: Wersje zawartości dla elementów
   directus_extensions: Konfiguracja rozszerzeń
@@ -1320,6 +1319,7 @@ fields:
     public_registration_email_filter_note: Tylko adresy e-mail pasujące do tego filtra mogą się zarejestrować.
     public_registration_verify_email: Potwierdź e-mail
     public_registration_verify_email_note: Wysyła e-mail do użytkownika rejestrującego z prośbą o kliknięcie na link weryfikacyjny zanim będzie mógł się zalogować.
+    ai_header_name: Nagłówek
   directus_shares:
     name: Nazwa
     role: Rola
@@ -1344,18 +1344,6 @@ fields:
   directus_policies:
     name: Nazwa polityki
     description: Opis
-  directus_webhooks:
-    name: Nazwa
-    method: Metoda
-    status: Status
-    data: Dane
-    header: Nagłówek
-    value: Wartość
-    headers: Nagłówki żądania
-    data_label: Wyślij dane wydarzenia
-    triggers: Wyzwalacze
-    actions: Akcje
-    collections: Kolekcje
 field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
@@ -1454,19 +1442,6 @@ field_options:
     status_dropdown_suspended: Zawieszony
     status_dropdown_archived: Zarchiwizowane
     token: Wprowadź bezpieczny token dostępu...
-  directus_webhooks:
-    status_options_active: Aktywne
-    status_options_inactive: Nieaktywny
-    data_label: Wyślij dane wydarzenia
-    triggers_divider: Wyzwalacze
-    actions_create: Stwórz
-    actions_update: Zaktualizuj
-    actions_delete: Usuń
-    actions_login: Logowanie
-    headers:
-      header: Nagłówek
-      value: Wartość
-      add: Dodaj nagłówek
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
 no_value: Brak wartości
 do_nothing: Nic nie rób
@@ -1488,6 +1463,7 @@ live_preview:
   new_window: Otwórz w nowym oknie
   close_window: Otwórz w widoku podzielonym
   toggle_3d: Przełącz 3D
+  display_options: Opcje wyświetlania
 shares: Udostępnienia
 unlimited_usage: Nieograniczone użycie
 uses_left: Brak pozostałych zastosowań | Pozostało jedno użycie | {n} pozostało do użycia
@@ -1496,6 +1472,8 @@ new_share: Nowe udostępnianie
 ai:
   input: Wprowadź
   unknown: Nieznane
+  items: Elementy
+  content: Zawartość
   settings: Ustawienia
   tool_approval:
     disabled: Wyłączony
@@ -1545,7 +1523,6 @@ editing_role: 'Rola {role}'
 editing_policy: 'Polityka {policy}'
 no_permissions: Brak uprawnień
 permission_add_collection: Dodaj kolekcję
-creating_webhook: Tworzenie Webhooka
 default_label: Domyślny
 delete_label: Usuń
 delete_are_you_sure: >-
@@ -2443,3 +2420,4 @@ search_flow: Szukaj przepływu...
 percent: Procent
 show_password: Pokaż hasło
 hide_password: Schowaj hasło
+set_to_now: Ustaw na teraz

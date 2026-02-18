@@ -71,7 +71,6 @@ create_role: Buat Peran
 create_user: Buat User
 message: Pesan
 delete_panel: Hapus Panel
-create_webhook: Buat Webhook
 create_custom_translation: Buat Terjemahan Khusus
 edit_custom_translation: Ubah Terjemahan Khusus
 no_custom_translations: Tidak Ada Terjemahan Khusus
@@ -490,8 +489,6 @@ file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'
 no_files_copy: Tidak ada berkas disini.
 user_count: 'Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna'
 no_users_copy: Belum ada pengguna didalam peran ini.
-webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
-no_webhooks_copy: Belum ada webhook yang dikonfigurasi. Mulailah dengan membuat satu di bawah ini.
 no_notifications: Tidak ada Pemberitahuan
 no_notifications_copy: Selesai!
 activity_log: Catatan Aktifitas
@@ -521,7 +518,6 @@ action: Aksi
 ip_address: Alamat IP
 user_agent: Agen pengguna
 origin: Asal
-webhooks: Webhooks
 decimals: Desimal
 value_decimals: Nilai Desimal
 min_value: Nilai minimal
@@ -799,6 +795,9 @@ operation_key_unique_error: Tombol operasi harus unik
 operation_handle_resolve: 'Solusi: klik untuk menambahkan atau geser untuk mengatur ulang'
 operation_handle_reject: 'Membatalkan: klik untuk menambahkan atau geser untuk mengatur ulang'
 insights: Wawasan
+deployment:
+  target_value:
+    preview: Pratinjau
 dashboard: Dasbor
 panel: Panel
 panel_options: Opsi Panel
@@ -917,7 +916,6 @@ editing_in_batch: 'Mengedit Masal {count} item'
 no_options_available: Tidak ada opsi tersedia
 settings_data_model: Model Data
 settings_project: Pengaturan
-settings_webhooks: Webhooks
 settings_flows: Kumpulan Alur
 settings_presets: Markah
 settings_translations: Terjemahan
@@ -1103,11 +1101,6 @@ fields:
     description: Deskripsi
   directus_policies:
     description: Deskripsi
-  directus_webhooks:
-    name: Nama
-    status: Status
-    value: Nilai
-    collections: Pengumpulan
 field_options:
   directus_settings:
     security_divider_title: Keamanan
@@ -1177,19 +1170,6 @@ field_options:
     status_dropdown_suspended: Tergantung
     status_dropdown_archived: Diarsipkan
     token: Masukkan token akses aman...
-  directus_webhooks:
-    status_options_active: Aktif
-    status_options_inactive: Tidak aktif
-    data_label: Kirim Data Acara
-    triggers_divider: Pencetus
-    actions_create: Buat
-    actions_update: Perbarui
-    actions_delete: Hapus
-    actions_login: Masuk
-    headers:
-      header: Header
-      value: Nilai
-      add: Tambah Header
 no_fields_in_collection: 'Belum ada bidang pada "{collection}" ini'
 no_value: Tidak berharga
 do_nothing: Tidak Ada
@@ -1209,6 +1189,8 @@ live_preview:
   refresh: Segarkan pratinjau
   new_window: Buka di Jendela Baru
 ai:
+  items: Barang-barang
+  content: Konten
   settings: Pengaturan
   tool_approval:
     disabled: Dinonaktifkan
@@ -1487,6 +1469,9 @@ start: Mulai
 panels:
   label:
     name: Label
+triggers:
+  webhook:
+    method: Metode
 operations:
   item-create:
     payload: Muatan
@@ -1500,15 +1485,19 @@ operations:
     message: Pesan
   mail:
     template: Templat
+    data: Data
   notification:
     recipient: Pengguna
     message: Pesan
     subject: Subjek
   request:
     url: URL
+    method: Metode
+    data: Data
   trigger:
     flows: Kumpulan Alur
     flow: Alur
+    data: Data
 standard: Standar
 compact: Rapat
 style: Gaya

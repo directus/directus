@@ -131,7 +131,6 @@ create_role: Създаване на роля
 create_user: Създаване на потребител
 message: Съобщение
 delete_panel: Изтриване на панела
-create_webhook: Създаване на уеб-кука
 create_custom_translation: Създайте персонализиран превод
 edit_custom_translation: Редактиране на персонализиран превод
 no_custom_translations: Без персонализирани преводи
@@ -605,12 +604,6 @@ file_count: 'Няма файлове | Един файл | {count} файла'
 no_files_copy: Тук не са открити файлове.
 user_count: 'Няма потребители | Един потребител | {count} потребителя'
 no_users_copy: Все още няма потребители към ролята.
-webhooks_count: 'Няма уеб-куки | 1 уеб-кука | {count} уеб-куки'
-webhooks_deprecation_notice: |
-  Webhooks са отхвърлени и по-нататъшното им използване не се препоръчва.
-
-  Моля, използвайте **Flows** с [Webhook/Request URL операция](https://docs.directus.io/app/flows/operations.html#webhook-request-url) вместо това.
-no_webhooks_copy: Няма зададени уеб-куки. Натиснете бутона по-долу за да започнете.
 no_notifications: Няма известия
 no_notifications_copy: Всичко е прегледано!
 activity_log: Дневник на активността
@@ -641,7 +634,6 @@ action: Действие
 ip_address: IP адрес
 user_agent: Потребителски агент
 origin: Произход
-webhooks: Уеб-куки
 decimals: Десетични знаци
 value_decimals: Десетични знаци
 min_value: Минимална стойност
@@ -935,6 +927,14 @@ operation_key_unique_error: Оперативните ключове трябва
 operation_handle_resolve: 'Изпълнение: Натиснете за добавяне или придърпайте за пренасочване'
 operation_handle_reject: 'Отхвърляне: Натиснете за добавяне или придърпайте за пренасочване'
 insights: Задълбочен анализ
+deployment:
+  provider:
+    settings:
+      delete_confirm: Действието е завинаги и не може да бъде отменено. Сигурни ли сте, че искате да продължите?
+    run:
+      cancel_confirm: Действието е завинаги и не може да бъде отменено. Сигурни ли сте, че искате да продължите?
+  target_value:
+    preview: Преглед
 dashboard: Табло
 panel: Панел
 panel_options: Настройки на панела
@@ -1062,7 +1062,6 @@ no_options_available: Не са налични настройки
 settings_data_model: Модел на данните
 settings_project: Настройки
 settings_appearance: Външен вид
-settings_webhooks: Уеб-куки
 settings_flows: Автоматизирани процеси
 settings_presets: Отметки
 settings_translations: Преводи
@@ -1135,7 +1134,6 @@ directus_collection:
   directus_settings: Настройки за проекти
   directus_shares: Проследяване на външно споделените записи
   directus_users: Системни потребители за платформата
-  directus_webhooks: Конфигурация от HTTP завките базирани на събития
   directus_translations: Преводи по поръчка
   directus_versions: Версии на съдържанието за елементи
   directus_extensions: Конфигуриране на разширения
@@ -1274,6 +1272,7 @@ fields:
     custom_aspect_ratios: Собствени аспектни съотношения
     theme_light_overrides: Персонализиране на светла тема
     theme_dark_overrides: Персонализиране на тъмна тема
+    ai_header_name: Хедър
   directus_shares:
     name: Име
     role: Роля
@@ -1297,18 +1296,6 @@ fields:
     users: Потребители към ролята
   directus_policies:
     description: Описание
-  directus_webhooks:
-    name: Име
-    method: Метод
-    status: Статус
-    data: Данни
-    header: Хедър
-    value: Стойност
-    headers: Хедъри при заявката
-    data_label: Изпращане на данните
-    triggers: Задействане
-    actions: Действия
-    collections: Колекции
 field_options:
   directus_settings:
     project_name_placeholder: Моят проект...
@@ -1402,19 +1389,6 @@ field_options:
     status_dropdown_suspended: Спрян
     status_dropdown_archived: Архивиран
     token: Въвеждане на сигурен токен...
-  directus_webhooks:
-    status_options_active: Активна
-    status_options_inactive: Неактивна
-    data_label: Изпращане на данните
-    triggers_divider: Задействане
-    actions_create: Създаване
-    actions_update: Обновяване
-    actions_delete: Изтриване
-    actions_login: Вход
-    headers:
-      header: Хедър
-      value: Стойност
-      add: Добавяне на хедър
 no_fields_in_collection: 'Все още няма полета в „{collection}“'
 no_value: Няма стойност
 do_nothing: Без действие
@@ -1436,6 +1410,7 @@ live_preview:
   new_window: Отваряне в нов прозорец
   close_window: Отворете в разделен изглед
   toggle_3d: Превключване на 3D
+  display_options: Опции на дисплея
 shares: Споделяния
 unlimited_usage: Неограничено използване
 no_shares: Не е споделено
@@ -1443,6 +1418,8 @@ new_share: Ново споделяне
 ai:
   input: Текстово поле
   unknown: Неизвестен
+  items: Записи
+  content: Съдържание
   settings: Настройки
   tool_approval:
     disabled: Изключване
@@ -1489,7 +1466,6 @@ continue_label: Продължаване
 continue_as: >-
   {name} в момента е оторизиран. Ако разпознавате профила, изберете бутона за продължаване.
 editing_role: 'Роля - {role}'
-creating_webhook: Създаване на уеб-кука
 default_label: По подразбиране
 delete_label: Изтриване
 delete_are_you_sure: >-
@@ -2373,3 +2349,4 @@ search_flow: Поток на търсене...
 percent: Процент
 show_password: Показване на паролата
 hide_password: Скриване на паролата
+set_to_now: Сегашно време

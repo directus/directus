@@ -10,6 +10,8 @@ const props = withDefaults(
 	defineProps<{
 		modelValue?: string;
 		items?: Record<string, any>[];
+		disabled?: boolean;
+		nonEditable?: boolean;
 		secondary?: boolean;
 		danger?: boolean;
 	}>(),
@@ -27,7 +29,12 @@ const displayValue = computed(() => {
 </script>
 
 <template>
-	<VMenu attached class="language-select" :class="{ secondary, danger }">
+	<VMenu
+		attached
+		class="language-select"
+		:class="{ secondary, danger, disabled, 'non-editable': nonEditable }"
+		:disabled="disabled && !nonEditable"
+	>
 		<template #activator="{ toggle, active }">
 			<button class="toggle" type="button" @click="toggle">
 				<slot name="prepend" />
@@ -103,6 +110,23 @@ const displayValue = computed(() => {
 
 		color: var(--theme--danger);
 		background-color: var(--theme--danger-background);
+	}
+
+	.disabled:not(.non-editable) & {
+		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+		--v-icon-color-hover: var(--v-icon-color);
+
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		cursor: not-allowed;
+
+		.secondary & {
+			--v-icon-color: var(---theme--secondary-subdued);
+			--v-icon-color-hover: var(--v-icon-color);
+
+			color: var(--theme--secondary-subdued);
+			background-color: var(--theme--secondary-background);
+		}
 	}
 }
 

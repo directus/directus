@@ -126,7 +126,6 @@ create_policy: Tạo chính sách
 create_user: Tạo Người dùng
 message: Tin nhắn
 delete_panel: Xóa bảng
-create_webhook: Tạo Webhook
 create_custom_translation: Bản dịch tùy chỉnh mới
 edit_custom_translation: Sửa bản dịch tùy chỉnh
 no_custom_translations: Không có bản dịch tùy chỉnh
@@ -513,7 +512,6 @@ file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
 no_users_copy: Chưa có user nào thuộc quyền này.
-no_webhooks_copy: Chưa có webhook nào. Hãy tạo mới bằng nút dưới đây.
 no_notifications: Không có thông báo
 no_notifications_copy: Chưa có thông báo mới!
 activity_log: Nhật ký hoạt động
@@ -538,7 +536,6 @@ activity: Hoạt động
 action: Hành động
 ip_address: Địa chỉ IP
 user_agent: Tài khoản người dùng
-webhooks: Webhooks
 min_value: Giá trị nhỏ nhất
 max_value: Giá trị lớn nhất
 automatic: Tự động
@@ -743,6 +740,12 @@ flow_delete_confirm: Bạn có chắc chắn muốn xóa quy trình "{flow}" kh�
 flow_name: Tên
 flow_tracking_null: Không theo dõi bất cứ điều gì
 code: Mã nguồn
+deployment:
+  provider:
+    settings:
+      delete_confirm: Hành động này là vĩnh viễn và không thể hoàn tác.
+    run:
+      cancel_confirm: Hành động này là vĩnh viễn và không thể hoàn tác.
 dashboard: Bảng điều khiển
 panel: Bảng
 panel_options: Tùy chọn Bảng
@@ -823,7 +826,6 @@ no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
 settings_roles: Vai trò người dùng
 settings_project: Cài đặt
-settings_webhooks: Webhooks
 settings_presets: Đánh dấu
 settings_translations: Các Bản Dịch
 one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
@@ -942,13 +944,6 @@ fields:
   directus_policies:
     name: Tên chính sách
     description: Mô tả
-  directus_webhooks:
-    name: Tên
-    method: Phương thức
-    status: Trạng thái
-    data: Dữ liệu
-    value: Giá trị
-    collections: Danh mục
 field_options:
   directus_settings:
     security_divider_title: Bảo mật
@@ -982,20 +977,13 @@ field_options:
     status_dropdown_active: Kích hoạt
     status_dropdown_suspended: Tạm ngưng
     status_dropdown_archived: Đã lưu trữ
-  directus_webhooks:
-    status_options_active: Kích hoạt
-    status_options_inactive: Không hoạt động
-    actions_create: Tạo
-    actions_update: Cập nhật
-    actions_login: Đăng nhập
-    headers:
-      value: Giá trị
 no_value: Không có giá trị
 comment: Bình luận
 live_preview:
   new_window: Mở trong Cửa Sổ Mới
 ai:
   unknown: Không xác định
+  content: Nội dung
   settings: Cài đặt
   tool_approval:
     disabled: Đã tắt

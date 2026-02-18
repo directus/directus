@@ -104,7 +104,6 @@ create_role: Crea un rol
 create_user: Crear usuari
 message: Missatge
 delete_panel: Elimina el panell
-create_webhook: Crear Webhook
 invite_users: Convidar usuaris
 invite: Convida
 email_already_invited: El correu "{email}" ja s'ha convidat
@@ -511,8 +510,6 @@ file_count: 'No hi ha fitxers | Un fitxer | {count} fitxers'
 no_files_copy: No hi ha fitxers aquí.
 user_count: 'No hi ha usuaris | Un usuari | {count} usuaris'
 no_users_copy: Encara no hi ha usuaris en aquest rol.
-webhooks_count: 'No hi ha webhooks | Un webhook | {count} webhooks'
-no_webhooks_copy: No s'han configurat webhooks encara. Comença creant-ne un.
 no_notifications: Cap notificació
 no_notifications_copy: Estàs al dia!
 activity_log: Registre d'activitat
@@ -541,7 +538,6 @@ action: Acció
 ip_address: Adreça IP
 user_agent: Agent de l'usuari
 origin: Origen
-webhooks: Webhooks
 decimals: Decimals
 value_decimals: Valor decimal
 min_value: Valor mínim
@@ -779,6 +775,14 @@ flow_name: Nom
 flow_tracking_activity: Només traça l'activitat
 flow_tracking_null: No tracis res
 code: Codi
+deployment:
+  provider:
+    settings:
+      delete_confirm: Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+    run:
+      cancel_confirm: Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+  target_value:
+    preview: Vista prèvia
 suffix_placeholder: Text després del valor...
 decimals_placeholder: Nombre de posicions decimals...
 no_dashboards: Sense taulers de control
@@ -883,7 +887,6 @@ editing_in_batch: 'Editant {count} elements'
 no_options_available: Sense opcions disponibles
 settings_data_model: Model de dades
 settings_project: Configuració
-settings_webhooks: Webhooks
 settings_flows: Fluxes
 settings_presets: Favorits
 settings_translations: Traduccions
@@ -943,7 +946,6 @@ directus_collection:
   directus_settings: Opcions de configuració del projecte
   directus_shares: Rastreja els elements compartits externament
   directus_users: Usuaris del sistema per a la plataforma
-  directus_webhooks: Configuració per a les peticions HTTP basades en esdeveniments
 fields:
   directus_activity:
     item: Clau primaria de l'ítem
@@ -1062,6 +1064,7 @@ fields:
     transformations_presets: Limita les transformacions al predefinits de sota
     image_editor: Editor d'imatge
     custom_aspect_ratios: Relació d'aspecte personalitzat
+    ai_header_name: Capçalera
   directus_shares:
     name: Nom
     role: Rol
@@ -1085,18 +1088,6 @@ fields:
     users: Usuaris al rol
   directus_policies:
     description: Descripció
-  directus_webhooks:
-    name: Nom
-    method: Mètode
-    status: Estat
-    data: Dades
-    header: Capçalera
-    value: Valor
-    headers: Capçaleres de petició
-    data_label: Envia les dades de l'event
-    triggers: Disparadors
-    actions: Accions
-    collections: Col·leccions
 field_options:
   directus_settings:
     project_name_placeholder: El meu projecte...
@@ -1165,17 +1156,6 @@ field_options:
     status_dropdown_suspended: Suspès
     status_dropdown_archived: Arxivat
     token: Entra un testimoni d'accés (token) segur...
-  directus_webhooks:
-    status_options_active: Activa
-    status_options_inactive: Inactiva
-    data_label: Envia les dades de l'event
-    triggers_divider: Disparadors
-    actions_create: Crear
-    actions_update: Actualitzar
-    actions_delete: Elimina
-    headers:
-      header: Capçalera
-      value: Valor
 no_fields_in_collection: 'Encara no hi ha camps a "{collection}"'
 do_nothing: No facis res
 generate_and_save_uuid: Genera i Desa UUID
@@ -1191,6 +1171,8 @@ live_preview:
 ai:
   input: Entrada
   unknown: Desconegut
+  items: Elements
+  content: Contingut
   settings: Configuració
   tool_approval:
     disabled: Deshabilitat
@@ -1215,7 +1197,6 @@ continue_label: Continua
 continue_as: >-
   {name} està autenticat. Si no reconeixes aquest compte, polsa continua.
 editing_role: 'Rol {role}'
-creating_webhook: Creant el webhook
 default_label: Predeterminat
 delete_label: Elimina
 delete_are_you_sure: >-
@@ -1766,3 +1747,4 @@ fonts:
   black: Negre
   italic: Cursiva
   auto: Auto
+set_to_now: Fixa'l a "Ara"

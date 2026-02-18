@@ -134,7 +134,6 @@ create_policy: Sukurti polisą
 create_user: Sukurti vartotojo paskyrą
 message: Pranešimas
 delete_panel: Pašalinti skydelį
-create_webhook: Sukurti Webhook'ą
 create_custom_translation: Sukurti vertimą
 edit_custom_translation: Redaguoti vertimą
 no_custom_translations: Vertimų nėra
@@ -630,12 +629,6 @@ file_count: 'Nėra failų | Vienas failas | {count} failų'
 no_files_copy: Nėra failų.
 user_count: 'Nėra vartotojų | Vienas vartotojas | {count} vartotojų'
 no_users_copy: Nėra vartotojų šioje grupėje.
-webhooks_count: 'Nėra "Webhook"ų | Vienas "Webhook"as | {count} "Webhook"ų"'
-webhooks_deprecation_notice: |
-  Webhooks are deprecated and further use is discouraged.
-
-  Please use **Flows** with the [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url) instead.
-no_webhooks_copy: Nėra sukurtų "webhooks".
 no_notifications: Nėra pranešimų
 no_notifications_copy: Perskaitėte visus pranešimus!
 activity_log: Įvykių žurnalas
@@ -666,7 +659,6 @@ action: Veiksmas
 ip_address: IP adresas
 user_agent: Naršyklė
 origin: Šaltinis
-webhooks: '„Webhook“''ai'
 decimals: Trupmeniniai skaičiai
 value_decimals: Trupmeninio skaičiaus reikšmė
 min_value: Mažiausia reikšmė
@@ -967,6 +959,15 @@ operation_key_unique_error: Operacijų pavadinimai turi būti unikalūs esamam p
 operation_handle_resolve: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 operation_handle_reject: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 insights: Įžvalgos
+deployment:
+  provider:
+    settings:
+      delete_confirm: Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+    run:
+      cancel_confirm: Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+      log_all: Visi įvykių lygiai
+  target_value:
+    preview: Peržiūra
 dashboard: Prietaisų skydelis
 panel: Skydelis
 panel_options: Skydelio nustatymai
@@ -1113,7 +1114,6 @@ settings_roles: Naudotojo rolės
 settings_permissions: Prieigos polisai
 settings_project: Nustatymai
 settings_appearance: Atvaizdavimas
-settings_webhooks: '„Webhook“''ai'
 settings_flows: Procesai
 settings_system_logs: Sistemos žurnalas
 settings_presets: Žymės
@@ -1191,7 +1191,6 @@ directus_collection:
   directus_settings: Projekto nustatymų parinktys
   directus_shares: Išoriškai pasidalintų įrašų sekimas
   directus_users: Sisteminiai platformos naudotojai
-  directus_webhooks: Event-based HTTP užklausų nustatymai
   directus_translations: Pasirinktiniai vertimai
   directus_versions: Įrašų turinio versijos
   directus_extensions: Plėtinių nustatymai
@@ -1339,6 +1338,7 @@ fields:
     public_registration_email_filter_note: Tik el. pašto adresai, kurie atitinka šį filtrą gali registruotis sistemoje.
     public_registration_verify_email: El. pašto patvirtinimas
     public_registration_verify_email_note: Naudotojui bus išsiųstas el. laiškas su patvirtinimo nuoroda.
+    ai_header_name: Header
   directus_shares:
     name: Pavadinimas
     role: Vaidmuo
@@ -1369,18 +1369,6 @@ fields:
     admin_access: Administratoriaus prieiga
     ip_access: IP adresų filtras
     enforce_tfa: Reikalauti 2FA
-  directus_webhooks:
-    name: Pavadinimas
-    method: Method
-    status: Būsena
-    data: Data
-    header: Header
-    value: Reikšmė
-    headers: Request Headers
-    data_label: Send Event Data
-    triggers: Triggers
-    actions: Actions
-    collections: Kolekcijos
 field_options:
   directus_settings:
     project_name_placeholder: Projektas...
@@ -1482,19 +1470,6 @@ field_options:
     status_dropdown_suspended: Sustabdytas
     status_dropdown_archived: Archyvuotas
     token: Įveskite slaptą access token...
-  directus_webhooks:
-    status_options_active: Aktyvus
-    status_options_inactive: Neaktyvus
-    data_label: Send Event Data
-    triggers_divider: Triggers
-    actions_create: Kurti
-    actions_update: Atnaujinti
-    actions_delete: Pašalinti
-    actions_login: Prisijungti
-    headers:
-      header: Header
-      value: Reikšmė
-      add: Add Header
 no_fields_in_collection: 'Kolekcijoje "{collection}" dar nėra elementų'
 no_value: Nėra reikšmės
 do_nothing: Nieko nedaryti
@@ -1516,6 +1491,7 @@ live_preview:
   new_window: Atversti naujame lange
   close_window: Atidaryti padalinto vaizdo rėžimu
   toggle_3d: Perjungti į 3D
+  display_options: Atvaizdavimo nustatymai
 shares: Pasidalinimai
 unlimited_usage: Be naudojimo limitų
 uses_left: Išnaudotas naudojimo limitas | Vienas panaudojimas liko | {n} panaudojimų liko
@@ -1524,6 +1500,8 @@ new_share: Naujas pasidalinimas
 ai:
   input: Įvestis
   unknown: Nežinomas
+  items: Įrašai
+  content: Turinys
   settings: Nustatymai
   tool_approval:
     disabled: Išjungta
@@ -1573,7 +1551,6 @@ editing_role: '{role} grupė'
 editing_policy: '{policy} polisas'
 no_permissions: Nėra teisių
 permission_add_collection: Pridėti kolekciją
-creating_webhook: Kuriamas Webhook'ą
 default_label: Numatytasis
 delete_label: Pašalinti
 delete_are_you_sure: >-
@@ -2315,7 +2292,7 @@ triggers:
   webhook:
     name: Webhook
     description: Triggers on an incoming HTTP request
-    method: Method
+    method: Metodas
     async: Asynchronous
   operation:
     name: Kitas procesas
@@ -2393,7 +2370,7 @@ operations:
     to_placeholder: Add email addresses and press enter...
     body: Body
     template: Šablonas
-    data: Data
+    data: Duomenys
     cc: CC
     cc_placeholder: Add CC email addresses and press enter...
     bcc: BCC
@@ -2414,8 +2391,8 @@ operations:
     description: 'Make a request to a URL'
     url: URL
     url_placeholder: https://example.com/example
-    method: Method
-    data: Data
+    method: Metodas
+    data: Duomenys
     headers: Headers
     header: Header
     header_placeholder: Authorization...
@@ -2431,7 +2408,7 @@ operations:
     name: Paleisti procesą
     flows: Procesai
     flow: Procesas
-    data: Data
+    data: Duomenys
     iteration_mode: Iteration Mode
     iteration_mode_note: Mode for iterating over arrays.
     serial: Serial
@@ -2482,3 +2459,4 @@ search_flow: Ieškoti proceso...
 percent: Procentai
 show_password: Rodyti slaptažodį
 hide_password: Nerodyti slaptažodžio
+set_to_now: Nustatyti į dabartinį laiką

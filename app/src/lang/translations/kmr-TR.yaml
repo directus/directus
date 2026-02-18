@@ -134,7 +134,6 @@ create_policy: Polîtîka Biafirîne
 create_user: Bikarhêner Biafirîne
 message: Peyam
 delete_panel: Panelê Jê Bibe
-create_webhook: Webhook Biafirîne
 create_custom_translation: Wergerîna Taybet Biafirîne
 edit_custom_translation: Wergerîna Taybet Biguherîne
 no_custom_translations: Wergerînên Taybet Tunene
@@ -631,12 +630,6 @@ file_count: 'Ti Pel Tune | Yek Pel | {count} Pel'
 no_files_copy: Li vir ti pel tune ne.
 user_count: 'Ti Bikarhêner Tune | Yek Bikarhêner | {count} Bikarhêner'
 no_users_copy: Hîna ti bikarhêner di vê rolê de tune ne.
-webhooks_count: 'Ti Webhook Tune | Yek Webhook | {count} Webhook'
-webhooks_deprecation_notice: |
-  Webhook kevn bûne û zêdetir bikaranîn tê neşîretkirin.
-
-  Ji kerema xwe **Herikînan** bi [operasyona Webhook / URL ya Daxwazê](https://docs.directus.io/app/flows/operations.html#webhook-request-url) bikar bîne.
-no_webhooks_copy: Hîna ti webhook nehatine mîhengkirin. Bi afirandina yekê dest pê bike.
 no_notifications: Ti Agahdarî Tune
 no_notifications_copy: Te hemû nirxand!
 activity_log: Têketina Çalakiyê
@@ -667,7 +660,6 @@ action: Çalakî
 ip_address: Navnîşana IP
 user_agent: User Agent
 origin: Çavkanî
-webhooks: Webhook
 decimals: Dehek
 value_decimals: Dehdekên Nirxê
 min_value: Nirxa Kêmtirîn
@@ -973,6 +965,15 @@ toggle_editable_elements: Elementên Guhêrbar Veke/Bigire
 no_url: Ti URL nehatiye dayîn
 no_url_copy: Ji kerema xwe di mîhengkariyan de URLek zêde bike.
 insights: Têgihiştin
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ev çalakî daîmî ye û nayê vegerandin. Tu bi rastî dixwazî berdewam bikî?
+    run:
+      cancel_confirm: Ev çalakî daîmî ye û nayê vegerandin. Tu bi rastî dixwazî berdewam bikî?
+      log_all: Hemû Astên Têketinê
+  target_value:
+    preview: Pêşdîtin
 dashboard: Daşbord
 panel: Panel
 panel_options: Vebijêrkên Panelê
@@ -1119,7 +1120,6 @@ settings_roles: Rolên Bikarhêner
 settings_permissions: Polîtîkayên Gihîştinê
 settings_project: Mîhengkarî
 settings_appearance: Xuyang
-settings_webhooks: Webhook
 settings_flows: Herikîn
 settings_system_logs: Têketinên Pergalê
 settings_presets: Nîşank
@@ -1197,7 +1197,6 @@ directus_collection:
   directus_settings: Vebijêrkên veavakirina projeyê
   directus_shares: Hêmanên ku ji derve hatine parvekirin dişopîne
   directus_users: Bikarhênerên pergalê ji bo platformê
-  directus_webhooks: Veavakirin ji bo daxwazên HTTP yên li ser bûyerê
   directus_translations: Wergerînên taybet
   directus_versions: Guhertoyên Naveroka hêmanan
   directus_extensions: Veavakirina pêvekan
@@ -1346,6 +1345,7 @@ fields:
     public_registration_verify_email: E-peyamê Rast Bike
     public_registration_verify_email_note: E-peyamek ji bikarhênerê ku qeyd dibe re dişîne û jê dixwaze ku beriya têketinê li girêdana rastpêkirinê bitikîne.
     visual_editor_urls: URL yên Edîtora Dîtbarî
+    ai_header_name: Sernav
   directus_shares:
     name: Nav
     role: Rol
@@ -1376,18 +1376,6 @@ fields:
     admin_access: Gihîştina Rêveber
     ip_access: Gihîştina IP
     enforce_tfa: 2FA Mecbûr Bike
-  directus_webhooks:
-    name: Nav
-    method: Rêbaz
-    status: Rewş
-    data: Dane
-    header: Sernav
-    value: Nirx
-    headers: Sernavên Daxwazê
-    data_label: Daneyên Bûyerê Bişîne
-    triggers: Tetîk
-    actions: Çalakî
-    collections: Koleksiyon
 field_options:
   directus_settings:
     project_name_placeholder: Projeya min...
@@ -1489,19 +1477,6 @@ field_options:
     status_dropdown_suspended: Rawestandî
     status_dropdown_archived: Arşîvkirî
     token: Tokena gihîştina ewle binivîse...
-  directus_webhooks:
-    status_options_active: Çalak
-    status_options_inactive: Neçalak
-    data_label: Daneyên Bûyerê Bişîne
-    triggers_divider: Tetîk
-    actions_create: Afirandin
-    actions_update: Nûkirin
-    actions_delete: Jêbirin
-    actions_login: Têketin
-    headers:
-      header: Sernav
-      value: Nirx
-      add: Sernavê Zêde Bike
 no_fields_in_collection: 'Hîn ti qad di "{collection}" de tune ne'
 no_value: Ti nirx tune
 do_nothing: Tiştek Neke
@@ -1523,6 +1498,7 @@ live_preview:
   new_window: Di Pencereyeke Nû de Veke
   close_window: Di Dîtina Parvekirî de Veke
   toggle_3d: 3D Veke/Bigire
+  display_options: Vebijêrkên Nîşandanê
 shares: Parvekirî
 unlimited_usage: Bikaranîna bêsînor
 uses_left: Ti bikaranînên mayî tune ne | Yek bikaranîna mayî | {n} bikaranînên mayî
@@ -1531,6 +1507,8 @@ new_share: Parvekirina Nû
 ai:
   input: Têketin
   unknown: Nenas
+  items: Hêman
+  content: Naverok
   settings: Mîhengkarî
   tool_approval:
     disabled: Neçalak
@@ -1580,7 +1558,6 @@ editing_role: 'Rola {role}'
 editing_policy: 'Polîtîkaya {policy}'
 no_permissions: Ti Destûr Tune
 permission_add_collection: Koleksiyonê Zêde Bike
-creating_webhook: Webhookê Tê Afirandin
 default_label: Standard
 delete_label: Jê Bibe
 delete_are_you_sure: >-
@@ -2490,3 +2467,4 @@ search_flow: Herikînê Bigere...
 percent: Rêje
 show_password: Şîfreyê nîşan bide
 hide_password: Şîfreyê veşêre
+set_to_now: Dayne li Niha
