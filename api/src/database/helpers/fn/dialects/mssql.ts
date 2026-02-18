@@ -70,10 +70,14 @@ export class FnHelperMSSQL extends FnHelper {
 			throw new InvalidQueryError({ reason: `${collectionName}.${field} is not a JSON field` });
 		}
 
-		// MSSQL uses JSON_VALUE for scalar values
 		// ".items[0].name" → "$.items[0].name"
 		const jsonPath = '$' + path;
 
-		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [table, field, jsonPath]);
+		// JSON_VALUE only returns scalar values (returns NULL for objects/arrays)
+		// JSON_QUERY only returns objects/arrays (returns NULL for scalars)
+		// COALESCE handles both cases
+		return this.knex.raw(`COALESCE(JSON_QUERY(??.??, ?), JSON_VALUE(??.??, ?))`, [
+			table, field, jsonPath, table, field, jsonPath,
+		]);
 	}
 }

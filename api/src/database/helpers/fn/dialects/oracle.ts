@@ -73,6 +73,11 @@ export class FnHelperOracle extends FnHelper {
 		// ".items[0].name" → "$.items[0].name"
 		const jsonPath = '$' + path;
 
-		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [table, field, jsonPath]);
+		// JSON_VALUE only returns scalar values (returns NULL for objects/arrays)
+		// JSON_QUERY only returns objects/arrays (returns NULL for scalars)
+		// COALESCE handles both cases
+		return this.knex.raw(`COALESCE(JSON_QUERY(??.??, ?), JSON_VALUE(??.??, ?))`, [
+			table, field, jsonPath, table, field, jsonPath,
+		]);
 	}
 }
