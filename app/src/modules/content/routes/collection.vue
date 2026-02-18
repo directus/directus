@@ -323,7 +323,9 @@ const onActive = () => {
 	setRefreshInterval(refreshInterval.value);
 };
 
-onMounted(()=> {setRefreshInterval(refreshInterval.value)})
+onMounted(() => {
+	setRefreshInterval(refreshInterval.value);
+});
 
 emitter.on(Events.tabIdle, onIdle);
 emitter.on(Events.tabActive, onActive);
@@ -333,15 +335,19 @@ onUnmounted(() => {
 	emitter.off(Events.tabActive, onActive);
 });
 
-watch(refreshInterval, ()=> {
-	refresh();
+watch(
+	refreshInterval,
+	() => {
+		refresh();
 
-	if(refreshInterval.value)	{
-		setRefreshInterval(refreshInterval.value)
-	} else {
-		clearInterval(interval.value);
-	}
-	}, {immediate: true})
+		if (refreshInterval.value) {
+			setRefreshInterval(refreshInterval.value);
+		} else {
+			clearInterval(interval.value);
+		}
+	},
+	{ immediate: true },
+);
 </script>
 
 <template>
