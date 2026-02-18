@@ -29,8 +29,6 @@ router.post(
 			return res.sendStatus(400);
 		}
 
-		logger.debug(`[webhook:${provider}] Incoming webhook (${rawBody.length} bytes)`);
-
 		const schema = await getSchema();
 		const knex = getDatabase();
 
@@ -78,10 +76,6 @@ router.post(
 
 			return res.sendStatus(401);
 		}
-
-		logger.debug(
-			`[webhook:${provider}] ${event.type} | status: ${event.status} | project: ${event.project_external_id} | deploy: ${event.deployment_external_id}`,
-		);
 
 		// Look up project by external_id
 		const projectsService = new DeploymentProjectsService({
@@ -134,7 +128,6 @@ router.post(
 				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
 			};
 
-			logger.debug(`[webhook:${provider}] Updating run ${runId}: ${JSON.stringify(updatePayload)}`);
 			await runsService.updateOne(runId, updatePayload);
 		} else {
 			const createPayload = {
@@ -147,7 +140,6 @@ router.post(
 				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
 			};
 
-			logger.debug(`[webhook:${provider}] Creating run: ${JSON.stringify(createPayload)}`);
 			runId = (await runsService.createOne(createPayload)) as string;
 		}
 
