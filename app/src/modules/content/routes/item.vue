@@ -1017,12 +1017,6 @@ function useItemNavigation() {
 
 :deep(.type-title) {
 	min-inline-size: 0;
-
-	.render-template {
-		img {
-			block-size: 20px;
-		}
-	}
 }
 
 .headline-wrapper {
