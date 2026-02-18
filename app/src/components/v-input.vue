@@ -350,7 +350,7 @@ function useInlineWarning() {
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
+					:value="modelValue == null ? '' : float ? String(modelValue).replace(',', '.') : String(modelValue)"
 					v-on="listeners"
 					@keydown.space="$emit('keydown:space', $event)"
 					@keydown.enter="$emit('keydown:enter', $event)"
