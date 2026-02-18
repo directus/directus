@@ -157,12 +157,14 @@ export const seedDBStructure = () => {
 						collection: localCollectionProducts,
 						field: 'metadata',
 						type: 'json',
+						meta: { special: ['cast-json'] },
 					});
 
 					await CreateField(vendor, {
 						collection: localCollectionProducts,
 						field: 'settings',
 						type: 'json',
+						meta: { special: ['cast-json'] },
 					});
 
 					expect(true).toBeTruthy();

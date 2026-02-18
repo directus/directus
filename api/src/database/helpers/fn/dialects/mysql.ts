@@ -102,8 +102,9 @@ export function splitJsonPath(path: string): string[] {
 }
 
 export function convertToMySQLPath(path: string): string {
-	// ".color" → "$['color']" (bracket notation for compatibility)
-	// ".items[0].name" → "$['items'][0]['name']"
+	// Use dot notation for object keys (compatible with both MySQL and MariaDB)
+	// ".color" → "$.color"
+	// ".items[0].name" → "$.items[0].name"
 	const parts = splitJsonPath(path);
 
 	let result = '$';
@@ -114,7 +115,7 @@ export function convertToMySQLPath(path: string): string {
 		if (Number.isInteger(num) && num >= 0 && String(num) === part) {
 			result += `[${part}]`;
 		} else {
-			result += `['${part}']`;
+			result += `.${part}`;
 		}
 	}
 
