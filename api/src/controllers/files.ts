@@ -186,6 +186,7 @@ router.post(
 const importSchema = Joi.object({
 	url: Joi.string().required(),
 	data: Joi.object(),
+	allowedMimeTypes: Joi.array().items(Joi.string()),
 });
 
 router.post(
@@ -202,7 +203,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.importOne(req.body.url, req.body.data);
+		const primaryKey = await service.importOne(req.body.url, req.body.data, req.body.allowedMimeTypes);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
