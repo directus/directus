@@ -83,7 +83,10 @@ const exportSettings = reactive({
 	filter: props.filter,
 	search: props.search,
 	fields:
-		props.layoutQuery?.fields ?? fields.value?.filter((field) => field.type !== 'alias').map((field) => field.field),
+		props.layoutQuery?.fields ??
+		fields.value
+			?.filter((field) => field.type !== 'alias' && !field.field.startsWith('$'))
+			.map((field) => field.field),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
@@ -91,7 +94,10 @@ watch(
 	fields,
 	() => {
 		if (props.layoutQuery?.fields) return;
-		exportSettings.fields = fields.value?.filter((field) => field.type !== 'alias').map((field) => field.field);
+
+		exportSettings.fields = fields.value
+			?.filter((field) => field.type !== 'alias' && !field.field.startsWith('$'))
+			.map((field) => field.field);
 	},
 	{ immediate: true },
 );
@@ -102,7 +108,8 @@ watch(
 		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
 
 		if (props.layoutQuery?.fields) {
-			exportSettings.fields = props.layoutQuery?.fields;
+			// Filter out virtual fields (prefixed with $) that don't exist as real DB columns
+			exportSettings.fields = props.layoutQuery.fields.filter((field) => !field.startsWith('$'));
 		}
 
 		if (props.layoutQuery?.sort) {
