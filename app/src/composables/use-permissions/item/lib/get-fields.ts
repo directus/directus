@@ -28,9 +28,21 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 			fields = fields.filter((field) => readableFields.includes(field.field));
 		}
 
-		const permission = collectionInfo.value?.meta?.singleton
-			? fetchedItemPermissions.value.update
-			: getPermission(collectionValue, unref(isNew) ? 'create' : 'update');
+		let permission;
+
+		if (collectionInfo.value?.meta?.singleton) {
+			permission = fetchedItemPermissions.value.update;
+		} else if (unref(isNew)) {
+			permission = getPermission(collectionValue, 'create');
+		} else {
+			const storePermission = getPermission(collectionValue, 'update');
+
+			if (storePermission?.access !== 'partial') {
+				permission = storePermission;
+			} else {
+				permission = fetchedItemPermissions.value.update.access ? storePermission : null;
+			}
+		}
 
 		if (!permission?.fields?.includes('*')) {
 			for (const field of fields) {
