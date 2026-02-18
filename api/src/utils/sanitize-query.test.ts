@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getHelpers } from '../database/helpers/index.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { sanitizeQuery } from './sanitize-query.js';
 
