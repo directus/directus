@@ -38,7 +38,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,name,json(metadata, color)',
-							sort: 'id',
+							sort: 'name',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -64,7 +64,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,name,json(metadata, dimensions.width),json(metadata, dimensions.height)',
-							sort: 'id',
+							sort: 'name',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -93,7 +93,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,name,json(metadata, tags[0]),json(metadata, tags[1])',
-							sort: 'id',
+							sort: 'name',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -116,7 +116,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,name,json(metadata, variants[0].sku),json(metadata, variants[0].price)',
-							sort: 'id',
+							sort: 'name',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -141,7 +141,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,json(metadata, dimensions)',
-							sort: 'id',
+							sort: 'name',
 							limit: 1,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -165,7 +165,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,json(metadata, tags)',
-							sort: 'id',
+							sort: 'name',
 							limit: 1,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -189,7 +189,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,json(metadata, variants)',
-							sort: 'id',
+							sort: 'name',
 							limit: 1,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -217,7 +217,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,json(metadata, color),json(settings, theme)',
-							sort: 'id',
+							sort: 'name',
 							limit: 1,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -239,7 +239,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,json(metadata, brand),json(metadata, dimensions.width),json(settings, theme)',
-							sort: '-id',
+							sort: '-name',
 							limit: 1,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -263,9 +263,16 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 			describe('handles empty arrays', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					// Action - third product has empty variants array
-					const products = vendorSchemaValues[vendor][localCollectionProducts].id;
-					const thirdProductId = products[2];
+					// Action - find Product C which has empty variants array
+					const listResponse = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							fields: 'id',
+							filter: JSON.stringify({ name: { _eq: 'Product C' } }),
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const thirdProductId = listResponse.body.data[0].id;
 
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionProducts}/${thirdProductId}`)
@@ -289,7 +296,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionProducts}`)
 						.query({
 							fields: 'id,name,metadata,json(metadata, color),json(metadata, brand)',
-							sort: 'id',
+							sort: 'name',
 							limit: 1,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -317,9 +324,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 		describe('GET /:collection/:id', () => {
 			describe('retrieves single item with json extraction', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const products = vendorSchemaValues[vendor][localCollectionProducts].id;
-					const firstProductId = products[0];
+					// Setup - find Product A by name to get a stable ID regardless of pkType
+					const listResponse = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							fields: 'id',
+							sort: 'name',
+							limit: 1,
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const firstProductId = listResponse.body.data[0].id;
 
 					// Action
 					const response = await request(getUrl(vendor))

@@ -1,3 +1,4 @@
+import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
 import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
@@ -66,7 +67,7 @@ export class FnHelperOracle extends FnHelper {
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
 
 		if (!fieldSchema || fieldSchema.type !== 'json') {
-			throw new Error(`${collectionName}.${field} is not a JSON field`);
+			throw new InvalidQueryError({ reason: `${collectionName}.${field} is not a JSON field` });
 		}
 
 		// ".items[0].name" → "$.items[0].name"
