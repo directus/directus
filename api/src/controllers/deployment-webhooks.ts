@@ -71,7 +71,7 @@ router.post(
 				const body = JSON.parse(rawBody.toString('utf-8'));
 				logger.warn(`[webhook:${provider}] Raw event type: ${body.type ?? body.state ?? 'unknown'}`);
 			} catch {
-				// ignore parse error
+				logger.warn(`[webhook:${provider}] Unparseable body: ${rawBody.toString('utf-8').slice(0, 200)}`);
 			}
 
 			return res.sendStatus(401);
@@ -90,8 +90,9 @@ router.post(
 		});
 
 		if (!projects || projects.length === 0) {
-			logger.info(`[webhook:${provider}] Project ${event.project_external_id} not tracked, ignoring`);
-			return res.sendStatus(200);
+			// 410 signals the provider this project is no longer tracked,
+			logger.info(`[webhook:${provider}] Project ${event.project_external_id} not tracked`);
+			return res.sendStatus(410);
 		}
 
 		const project = projects[0]!;

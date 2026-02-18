@@ -6,4 +6,4 @@
 '@directus/sdk': minor
 ---
 
-Added webhook-driven deployment status updates
+Supported provider webhooks for deployment real-time updates
