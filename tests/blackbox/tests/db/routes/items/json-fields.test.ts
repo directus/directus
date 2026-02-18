@@ -367,7 +367,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
-					expect(response.statusCode).toEqual(400);
+					expect(response.statusCode).toEqual(403);
 					expect(response.body.errors).toBeDefined();
 				});
 			});

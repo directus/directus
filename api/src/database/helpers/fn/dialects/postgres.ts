@@ -114,12 +114,12 @@ export function splitJsonPath(path: string): string[] {
 }
 
 /**
- * Build a parameterized PostgreSQL JSON path using -> and ->> operators.
+ * Build a parameterized PostgreSQL JSON path using -> operators.
  * Returns a template string containing only operators and ? placeholders,
  * plus a bindings array with the actual values.
  *
- * @example ".color" → { template: "->>?", bindings: ["color"] }
- * @example ".items[0].name" → { template: "->?->?->>?", bindings: ["items", 0, "name"] }
+ * @example ".color" → { template: "->?", bindings: ["color"] }
+ * @example ".items[0].name" → { template: "->?->?->?", bindings: ["items", 0, "name"] }
  */
 export function buildPostgresJsonPath(path: string): { template: string; bindings: (string | number)[] } {
 	const parts = splitJsonPath(path);
@@ -128,10 +128,9 @@ export function buildPostgresJsonPath(path: string): { template: string; binding
 	const bindings: (string | number)[] = [];
 
 	for (let i = 0; i < parts.length; i++) {
-		const isLast = i === parts.length - 1;
 		const num = Number(parts[i]);
 
-		template += (isLast ? '->>' : '->') + '?';
+		template += '->?';
 
 		if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
 			bindings.push(num);

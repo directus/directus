@@ -1,3 +1,5 @@
+import { InvalidQueryError } from '@directus/errors';
+
 // import { useEnv } from "@directus/env";
 
 // const env = useEnv();
@@ -33,32 +35,32 @@ export function calculateJsonPathDepth(path: string): number {
  */
 export function parseJsonFunction(functionString: string): { field: string; path: string } {
 	if (!functionString.startsWith('json(') || !functionString.endsWith(')')) {
-		throw new Error('Invalid json() syntax');
+		throw new InvalidQueryError({ reason: 'Invalid json() syntax' });
 	}
 
 	// Extract content between parentheses
 	const content = functionString.substring('json('.length, functionString.length - 1).trim();
 
 	if (!content) {
-		throw new Error('Invalid json() syntax');
+		throw new InvalidQueryError({ reason: 'Invalid json() syntax' });
 	}
 
 	// Split on comma to separate field from path
 	const commaIndex = content.indexOf(',');
 
 	if (commaIndex === -1) {
-		throw new Error('Invalid json() syntax: requires json(field, path) format');
+		throw new InvalidQueryError({ reason: 'Invalid json() syntax: requires json(field, path) format' });
 	}
 
 	if (commaIndex === 0) {
-		throw new Error('Invalid json() syntax: missing field name');
+		throw new InvalidQueryError({ reason: 'Invalid json() syntax: missing field name' });
 	}
 
 	const field = content.substring(0, commaIndex).trim();
 	const pathContent = content.substring(commaIndex + 1).trim();
 
 	if (!pathContent) {
-		throw new Error('Invalid json() syntax: missing path');
+		throw new InvalidQueryError({ reason: 'Invalid json() syntax: missing path' });
 	}
 
 	// Normalize path to always start with dot or bracket
