@@ -113,10 +113,13 @@ function gatherAnswers(): AskUserAnswers {
 	const result: AskUserAnswers = {};
 
 	for (const q of questions.value) {
-		if (answers.value[q.id] !== undefined) {
-			result[q.id] = answers.value[q.id];
-		} else if (textInputValues.value[q.id]) {
-			result[q.id] = textInputValues.value[q.id];
+		const answer = answers.value[q.id];
+		const textValue = textInputValues.value[q.id];
+
+		if (answer !== undefined) {
+			result[q.id] = answer;
+		} else if (textValue) {
+			result[q.id] = textValue;
 		}
 	}
 
@@ -266,7 +269,17 @@ onUnmounted(() => {
 				<div v-if="currentQuestion" :key="currentQuestion.id" class="question-body">
 					<p class="question-text">{{ currentQuestion.question }}</p>
 
-					<div class="options">
+					<!-- Text-only: render input directly -->
+					<VInput
+						v-if="currentQuestion.allow_text && !currentQuestion.options?.length"
+						v-model="textInputValues[currentQuestion.id]"
+						autofocus
+						:placeholder="t('ai.ask_user_type_answer')"
+						@keydown.enter.stop="!isLastQuestion ? goToQuestion(activeQuestionIndex + 1) : handleSubmit()"
+					/>
+
+					<!-- Has options -->
+					<div v-else-if="currentQuestion.options?.length && currentQuestion.options.length > 0" class="options">
 						<button
 							v-for="(option, index) in currentQuestion.options"
 							:key="option.label"
@@ -285,16 +298,18 @@ onUnmounted(() => {
 							</div>
 						</button>
 
+						<!-- Options + allow_text: show card with click-to-activate -->
 						<div
 							v-if="currentQuestion.allow_text"
 							class="option-card text-option"
 							:class="{ active: textInputActive[currentQuestion.id] }"
+							@click="!textInputActive[currentQuestion.id] && activateTextInput(currentQuestion.id)"
 						>
 							<template v-if="!textInputActive[currentQuestion.id]">
 								<span class="option-number">{{ (currentQuestion.options?.length ?? 0) + 1 }}</span>
-								<button class="option-content text-trigger" @click="activateTextInput(currentQuestion.id)">
+								<span class="option-content">
 									<span class="option-label placeholder">{{ t('ai.ask_user_type_answer') }}</span>
-								</button>
+								</span>
 							</template>
 							<template v-else>
 								<VInput
@@ -540,15 +555,6 @@ onUnmounted(() => {
 	color: var(--theme--foreground-subdued);
 	margin-block-start: 0.125rem;
 	line-height: 1.3;
-}
-
-.text-trigger {
-	background: none;
-	border: none;
-	padding: 0;
-	cursor: pointer;
-	inline-size: 100%;
-	text-align: start;
 }
 
 .actions {
