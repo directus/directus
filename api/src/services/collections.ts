@@ -221,13 +221,21 @@ export class CollectionsService {
 
 			// concurrent index creation cannot be done inside the transaction
 			if (attemptConcurrentIndex && payload.schema && Array.isArray(payload.fields)) {
-				const fieldsService = new FieldsService({ schema: this.schema });
+				if (opts?.deferredIndexes) {
+					for (const field of payload.fields) {
+						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+							opts.deferredIndexes.push({ collection: payload.collection, field });
+						}
+					}
+				} else {
+					const fieldsService = new FieldsService({ schema: this.schema });
 
-				for (const field of payload.fields) {
-					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-						await fieldsService.addColumnIndex(payload.collection, field, {
-							attemptConcurrentIndex,
-						});
+					for (const field of payload.fields) {
+						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+							await fieldsService.addColumnIndex(payload.collection, field, {
+								attemptConcurrentIndex,
+							});
+						}
 					}
 				}
 			}

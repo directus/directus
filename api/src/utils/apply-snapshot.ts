@@ -9,14 +9,24 @@ import { getSnapshot } from './get-snapshot.js';
 
 export async function applySnapshot(
 	snapshot: Snapshot,
-	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff },
+	options?: {
+		database?: Knex;
+		schema?: SchemaOverview;
+		current?: Snapshot;
+		diff?: SnapshotDiff;
+		attemptConcurrentIndex?: boolean;
+	},
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
 
-	await applyDiff(current, snapshotDiff, { database, schema });
+	await applyDiff(current, snapshotDiff, {
+		database,
+		schema,
+		...(options?.attemptConcurrentIndex && { attemptConcurrentIndex: true }),
+	});
 
 	await flushCaches();
 }

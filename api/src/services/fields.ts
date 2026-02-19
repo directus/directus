@@ -472,9 +472,13 @@ export class FieldsService {
 
 			// concurrent index creation cannot be done inside the transaction
 			if (attemptConcurrentIndex && hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-				await this.addColumnIndex(collection, hookAdjustedField as Field, {
-					attemptConcurrentIndex,
-				});
+				if (opts?.deferredIndexes) {
+					opts.deferredIndexes.push({ collection, field: hookAdjustedField as Field });
+				} else {
+					await this.addColumnIndex(collection, hookAdjustedField as Field, {
+						attemptConcurrentIndex,
+					});
+				}
 			}
 		} finally {
 			if (runPostColumnChange) {
@@ -575,10 +579,14 @@ export class FieldsService {
 
 						// concurrent index creation cannot be done inside the transaction
 						if (attemptConcurrentIndex) {
-							await this.addColumnIndex(collection, field, {
-								existing: existingColumn,
-								attemptConcurrentIndex,
-							});
+							if (opts?.deferredIndexes) {
+								opts.deferredIndexes.push({ collection, field, existing: existingColumn });
+							} else {
+								await this.addColumnIndex(collection, field, {
+									existing: existingColumn,
+									attemptConcurrentIndex,
+								});
+							}
 						}
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);
