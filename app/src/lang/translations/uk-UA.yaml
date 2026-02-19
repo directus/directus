@@ -1605,6 +1605,8 @@ ai:
   settings: Налаштування
   tool_approval:
     disabled: Вимкнено
+  ask_user_submit: Підтвердити
+  ask_user_next: Уперед
 ai_tools:
   items: Об'єкти
   files: Файли
