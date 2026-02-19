@@ -1441,6 +1441,8 @@ ai:
   settings: إعدادات
   tool_approval:
     disabled: مُعطل
+  ask_user_submit: إرسال
+  ask_user_next: التالي
 ai_tools:
   items: العناصر
   files: الملفات
