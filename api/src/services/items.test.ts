@@ -61,7 +61,9 @@ describe('Integration Tests', () => {
 
 		describe('read with version "test"', () => {
 			test('on readOne', async () => {
-				vi.mocked(handleVersion).mockReturnValueOnce(new Promise((resolve) => resolve([{ id: 1 }])));
+				vi.mocked(handleVersion).mockReturnValueOnce(
+					new Promise((resolve) => resolve({ errors: [], data: [{ id: 1 }] })),
+				);
 
 				await service.readOne(1, { version: 'test' });
 
@@ -69,7 +71,9 @@ describe('Integration Tests', () => {
 			});
 
 			test('on readSingleton', async () => {
-				vi.mocked(handleVersion).mockReturnValueOnce(new Promise((resolve) => resolve([{ id: 1 }])));
+				vi.mocked(handleVersion).mockReturnValueOnce(
+					new Promise((resolve) => resolve({ errors: [], data: [{ id: 1 }] })),
+				);
 
 				vi.spyOn(db, 'select').mockReturnValueOnce({
 					from: () => ({
