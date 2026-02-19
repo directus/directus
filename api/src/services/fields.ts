@@ -677,6 +677,7 @@ export class FieldsService {
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
 						attemptConcurrentIndex,
+						...(opts?.deferredIndexes ? { deferredIndexes: opts.deferredIndexes } : {}),
 					}),
 				);
 			}

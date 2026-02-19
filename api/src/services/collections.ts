@@ -228,7 +228,7 @@ export class CollectionsService {
 						}
 					}
 				} else {
-					const fieldsService = new FieldsService({ schema: this.schema });
+					const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
 
 					for (const field of payload.fields) {
 						if (field.type && ALIAS_TYPES.includes(field.type) === false) {

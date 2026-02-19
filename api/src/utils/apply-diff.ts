@@ -374,7 +374,15 @@ export async function applyDiff(
 				indexOptions.existing = deferred.existing as Column | null;
 			}
 
-			await fieldsService.addColumnIndex(deferred.collection, deferred.field, indexOptions);
+			try {
+				await fieldsService.addColumnIndex(deferred.collection, deferred.field, indexOptions);
+			} catch (err) {
+				logger.error(
+					`Failed to create concurrent index for field "${deferred.field.field}" in collection "${deferred.collection}". For PostgreSQL, you may need to manually drop any INVALID indexes.`,
+				);
+
+				throw err;
+			}
 		}
 	}
 
