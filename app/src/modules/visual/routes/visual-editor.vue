@@ -16,9 +16,11 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { BREAKPOINTS, DRAFT_VERSION_KEY } from '@/constants';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import type { NavigationData } from '@/modules/visual/types';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import { analyzeTemplate, extractVersion, matchesTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useServerStore } from '@/stores/server';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
@@ -27,7 +29,6 @@ import NotificationsGroup from '@/views/private/components/notifications-group.v
 import PrivateViewDrawer from '@/views/private/private-view/components/private-view-drawer.vue';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
-	urls: string[];
 	dynamicUrl?: string;
 	invalidUrl?: boolean;
 }>();
@@ -46,6 +47,13 @@ const showEditableElements = ref(false);
 const { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering } = useAiSidebar(isMobile);
 
 const { dynamicDisplay, onNavigation } = usePageInfo();
+
+const { urlTemplates, getUrls } = useVisualEditorUrls();
+
+const { versions, selectedVersion, isVersionSelectable, onVersionSelect } = useVersionSelection();
+
+const urls = computed(() => getUrls(selectedVersion.value.key));
+
 
 function usePageInfo() {
 	const dynamicDisplay = ref<string>();
@@ -107,6 +115,63 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 
 	return { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering };
 }
+
+function useVersionSelection() {
+	const globalVersions: Pick<ContentVersion, 'key' | 'name'>[] = [
+		{ key: 'main', name: null },
+		{ key: DRAFT_VERSION_KEY, name: null },
+	];
+
+	const versionPlacements = computed(() => urlTemplates.value.map(analyzeTemplate));
+
+	const activeVersionPlacement = computed(() => {
+		if (!dynamicUrl) return null;
+
+		for (let i = 0; i < urlTemplates.value.length; i++) {
+			if (matchesTemplate(urlTemplates.value[i]!, dynamicUrl, versionPlacements.value[i]!)) {
+				return versionPlacements.value[i]!;
+			}
+		}
+
+		return null;
+	});
+
+	const isVersionSelectable = computed(() => activeVersionPlacement.value !== null);
+
+	const detectedVersion = computed<ContentVersion['key'] | null | undefined>(() => {
+		if (!dynamicUrl || !activeVersionPlacement.value) return undefined;
+
+		return extractVersion(dynamicUrl, activeVersionPlacement.value) ?? 'main';
+	});
+
+	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
+		const isDetectedVersionCustom =
+			detectedVersion.value && !globalVersions.some((v) => v.key === detectedVersion.value);
+
+		const versionsIncludingCustom = isDetectedVersionCustom
+			? [...globalVersions, { key: detectedVersion.value, name: null }]
+			: globalVersions;
+
+		return versionsIncludingCustom.map((version) => ({
+			key: version.key,
+			name: getVersionDisplayName(version),
+		}));
+	});
+
+	const selectedVersion = computed(() => {
+		return versions.value.find((version) => version.key === detectedVersion.value) ?? versions.value[0]!;
+	});
+
+	return { versions, selectedVersion, isVersionSelectable, onVersionSelect };
+
+	function onVersionSelect(versionKey: ContentVersion['key']) {
+		if (!activeVersionPlacement.value || !dynamicUrl) return;
+
+		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey);
+		router.replace(getUrlRoute(newUrl));
+	}
+}
+
 </script>
 
 <template>
@@ -156,6 +221,32 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 					<VIcon small name="edit" outline />
 				</VButton>
 			</template>
+
+			<template #append-url>
+				<VMenu v-if="isVersionSelectable" show-arrow :placement="'bottom'">
+					<template #activator="{ toggle, active }">
+						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
+							{{ selectedVersion.name }}
+							<VIcon small name="arrow_drop_down"></VIcon>
+						</VChip>
+					</template>
+
+					<VList v-if="versions.length">
+						<VListItem
+							v-for="(version, index) in versions"
+							:key="index"
+							:active="version.key === selectedVersion.key"
+							clickable
+							@click="onVersionSelect(version.key)"
+						>
+							<VListItemContent>
+								{{ version.name }}
+							</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
+			</template>
+
 
 			<template #append-header>
 				<VButton
