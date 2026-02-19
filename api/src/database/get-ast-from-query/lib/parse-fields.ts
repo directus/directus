@@ -1,12 +1,11 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelation, getRelationType } from '@directus/utils';
+import { getRelation, getRelationType, parseFilterFunctionPath } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
-import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
@@ -71,24 +70,25 @@ export async function parseFields(
 			}
 		}
 
-		// Count function with a relational field and json functions require special processing and are marked as functionField; all other functions are treated as regular field nodes.
+		// Normalize function calls to move relational prefixes outside the function.
+		// e.g., json(m2m.data, color) → m2m.json(data, color)
+		// This allows the standard relational handling below to process the traversal
+		// uniformly for all functions (json, count, year, etc.).
+		name = parseFilterFunctionPath(name);
+
 		const isFunctionCall = name.includes('(') && name.includes(')');
 
 		if (isFunctionCall) {
 			const functionName = name.split('(')[0]!;
 			const columnName = name.match(REGEX_BETWEEN_PARENS)![1]!;
 
-			// For json functions, extract the base field name from the paren contents.
-			// This only matters for non-json function paths below; json() is handled at line 113.
-			const baseFieldName = functionName === 'json' ? columnName.split('.')[0]! : columnName;
-
-			const foundField = context.schema.collections[options.parentCollection]!.fields[baseFieldName];
+			const foundField = context.schema.collections[options.parentCollection]!.fields[columnName];
 
 			// Create a FunctionFieldNode for relational count functions (count(related_items))
-			if (functionName == 'count' && foundField && foundField.type === 'alias') {
+			if (functionName === 'count' && foundField && foundField.type === 'alias') {
 				const foundRelation = context.schema.relations.find(
 					(relation) =>
-						relation.related_collection === options.parentCollection && relation.meta?.one_field === baseFieldName,
+						relation.related_collection === options.parentCollection && relation.meta?.one_field === columnName,
 				);
 
 				if (foundRelation) {
@@ -106,77 +106,22 @@ export async function parseFields(
 				}
 			}
 
-			// Create a FunctionFieldNode for json functions to preserve the full function call
-			// This is needed because json() requires the full path (e.g., json(metadata, color))
+			// Create a FunctionFieldNode for direct (non-relational) json function calls
 			if (functionName === 'json') {
-				const { field, path } = parseJsonFunction(name);
-
-				// Check if the field portion contains a relational path (has dots)
-				// e.g., json(category.metadata, color) where category is a relation
-				if (field.includes('.')) {
-					// Decompose relational JSON into the existing relational structure.
-					// json(m2m.jason_id.data, test) becomes m2m → jason_id → json(data, test)
-					// so the existing AST nesting handles the relational traversal and the
-					// json() function only needs to operate on a direct field at the leaf.
-					const parts = field.split('.');
-					const jsonFieldName = parts.pop()!; // Last segment is the JSON field name
-					const relationalPrefix = parts; // Remaining segments are relations
-
-					// Reconstruct the leaf json function call
-					const pathContent = path.startsWith('.') ? path.substring(1) : path;
-					const leafFunction = `json(${jsonFieldName}, ${pathContent})`;
-
-					// Add to relationalStructure so the existing recursive parseFields handles it
-					let rootField = relationalPrefix[0]!;
-					let collectionScope: string | null = null;
-
-					if (rootField.includes(':')) {
-						const [key, scope] = rootField.split(':');
-						rootField = key!;
-						collectionScope = scope!;
-					}
-
-					if (rootField in relationalStructure === false) {
-						if (collectionScope) {
-							relationalStructure[rootField] = { [collectionScope]: [] };
-						} else {
-							relationalStructure[rootField] = [];
-						}
-					}
-
-					// Build nested field path: jason_id.json(data, test)
-					const nestedParts = [...relationalPrefix.slice(1), leafFunction];
-					const nestedField = nestedParts.join('.');
-
-					if (collectionScope) {
-						if (collectionScope in (relationalStructure[rootField] as CollectionScope) === false) {
-							(relationalStructure[rootField] as CollectionScope)[collectionScope] = [];
-						}
-
-						(relationalStructure[rootField] as CollectionScope)[collectionScope]!.push(nestedField);
-					} else {
-						(relationalStructure[rootField] as string[]).push(nestedField);
-					}
-				} else {
-					// Direct JSON field on current collection: json(metadata, color)
-					children.push({
-						type: 'functionField',
-						name,
-						fieldKey,
-						query: {},
-						relatedCollection: options.parentCollection,
-						whenCase: [],
-						cases: [],
-					});
-				}
+				children.push({
+					type: 'functionField',
+					name,
+					fieldKey,
+					query: {},
+					relatedCollection: options.parentCollection,
+					whenCase: [],
+					cases: [],
+				});
 
 				continue;
 			}
 		}
 
-		// A field is relational if it contains dots outside of a function call.
-		// "jason_id.json(data, test)" has a dot before the paren → relational (jason_id → json(data, test))
-		// "json(data, test)" has no dot outside the function → not relational
 		const hasDotBeforeFunction = isFunctionCall && name.includes('.') && name.indexOf('.') < name.indexOf('(');
 
 		const isRelational =
@@ -189,8 +134,11 @@ export async function parseFields(
 				));
 
 		if (isRelational) {
-			// field is relational
-			const parts = fieldKey.split('.');
+			// For normalized function calls, split on the resolved name since
+			// parseFilterFunctionPath may have moved relational segments outside
+			// the function args (e.g., json(m2m.data, color) → m2m.json(data, color)).
+			// For plain fields, split on fieldKey to preserve existing alias behavior.
+			const parts = (isFunctionCall ? name : fieldKey).split('.');
 
 			let rootField = parts[0]!;
 			let collectionScope: string | null = null;
