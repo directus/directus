@@ -789,6 +789,8 @@ ai:
   settings: Innstillinger
   tool_approval:
     disabled: Deaktivert
+  ask_user_submit: Send inn
+  ask_user_next: Neste
 ai_tools:
   items: Elementer
   files: Filer
