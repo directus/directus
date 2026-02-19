@@ -3,6 +3,8 @@ import type { Filter, Permission, Relation, SchemaOverview } from '@directus/typ
 import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
+import { isVersionedCollection } from '../../../../../services/versions/is-versioned-collection.js';
+import { toVersionedRelationName } from '../../../../../services/versions/to-versioned-relation-name.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../../utils/get-column-path.js';
 import { getHelpers } from '../../../../helpers/index.js';
@@ -203,6 +205,38 @@ export function applyFilter(
 
 				validateOperator(type, filterOperator, special);
 
+				/*
+				 * If we are querying a version collection with a relational filter that points to a versioned collection,
+				 *  apply the same condition to the version field on the version target collection .
+				 */
+				if (isVersionedCollection(collection) && schema.collections[targetCollection]?.versioning) {
+					const versionFilterPath = filterPath
+						//Remove the nested PK field if it was injected
+						.slice(0, addNestedPkField ? -1 : undefined)
+						.with(0, toVersionedRelationName(filterPath[0]!));
+
+					const { columnPath: versionColumnPath, targetCollection: versionTargetCollection } = getColumnPath({
+						path: versionFilterPath,
+						collection,
+						relations,
+						aliasMap,
+						schema,
+					});
+
+					if (versionColumnPath) {
+						dbQuery[logical].where((subQuery) => {
+							[
+								{ table: targetCollection, key: columnPath },
+								{ table: versionTargetCollection, key: versionColumnPath },
+							].forEach(({ table, key }) => {
+								applyOperator(knex, subQuery, schema, key, filterOperator, filterValue, 'or', table);
+							});
+						});
+
+						return;
+					}
+				}
+
 				applyOperator(knex, dbQuery, schema, columnPath, filterOperator, filterValue, logical, targetCollection);
 			} else {
 				const { type, special } = getFilterType(schema.collections[collection]!.fields, filterPath[0]!, collection)!;
@@ -210,6 +244,36 @@ export function applyFilter(
 				validateOperator(type, filterOperator, special);
 
 				const aliasedCollection = aliasMap['']?.alias || collection;
+
+				/*
+				 * If we are querying a version collection and a top level M2O filter (e.g. {"m2o":{"_gte":1}}) points to a versioned collection,
+				 *  apply the same condition to the version field.
+				 */
+				if (
+					isVersionedCollection(collection) &&
+					relation &&
+					relationType === 'm2o' &&
+					schema.collections[relation.related_collection!]?.versioning
+				) {
+					const versionRelationField = toVersionedRelationName(filterPath[0]!);
+
+					dbQuery[logical].where((subQuery) => {
+						[filterPath[0]!, versionRelationField].forEach((field) => {
+							applyOperator(
+								knex,
+								subQuery,
+								schema,
+								`${aliasedCollection}.${field}`,
+								filterOperator,
+								filterValue,
+								'or',
+								collection,
+							);
+						});
+					});
+
+					return;
+				}
 
 				applyOperator(
 					knex,

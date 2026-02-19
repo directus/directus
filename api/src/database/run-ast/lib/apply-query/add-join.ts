@@ -3,6 +3,9 @@ import type { SchemaOverview } from '@directus/types';
 import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone } from 'lodash-es';
+import { isVersionedCollection } from '../../../../services/versions/is-versioned-collection.js';
+import { toVersionedCollectionName } from '../../../../services/versions/to-versioned-collection-name.js';
+import { toVersionedRelationName } from '../../../../services/versions/to-versioned-relation-name.js';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getHelpers } from '../../../helpers/index.js';
 import { generateJoinAlias } from '../../utils/generate-alias.js';
@@ -95,6 +98,28 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 				);
 
 				aliasMap[aliasKey]!.collection = relation.related_collection!;
+
+				/**
+				 * When the current collection is a version table and the M2O pointer collection is versioned,
+				 * an extra join is added to query the versioned related collection.
+				 * This ensures a single query can return results if either the main record or its version matches the filter.
+				 */
+				if (isVersionedCollection(parentCollection) && schema.collections[relation.related_collection!]?.versioning) {
+					const versionRelationField = toVersionedRelationName(pathParts[0]!);
+					const versionCollection = toVersionedCollectionName(relation.related_collection!);
+					const versionPathParts = pathParts.with(0, versionRelationField);
+
+					const versionAlias = generateJoinAlias(parentCollection, versionPathParts, relationType, parentFields);
+					const versionAliasKey = parentFields ? `${parentFields}.${versionRelationField}` : `${versionRelationField}`;
+
+					aliasMap[versionAliasKey] = { alias: versionAlias, collection: versionCollection };
+
+					rootQuery.leftJoin(
+						{ [versionAlias]: versionCollection },
+						`${aliasedParentCollection}.${toVersionedRelationName(relation.field)}`,
+						`${versionAlias}.${schema.collections[relation.related_collection!]?.primary}`,
+					);
+				}
 
 				isJoinAdded = true;
 			} else if (relationType === 'a2o') {
