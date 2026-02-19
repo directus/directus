@@ -1477,6 +1477,8 @@ ai:
   settings: Ayarlar
   tool_approval:
     disabled: Devre Dışı
+  ask_user_submit: Gönder
+  ask_user_next: Sonraki
 ai_tools:
   items: Öğeler
   files: Dosyalar
