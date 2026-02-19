@@ -58,7 +58,7 @@ export function getColumn(
 				fieldName = result.field;
 				jsonPath = result.path;
 			}
-			
+
 			const type = schema?.collections[collectionName]?.fields?.[fieldName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 

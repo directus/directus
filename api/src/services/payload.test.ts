@@ -10,7 +10,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
-	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	getDatabaseClient: vi.fn().mockReturnValue('sqlite'),
 }));
 
 describe('Integration Tests', () => {
@@ -623,7 +623,7 @@ describe('Integration Tests', () => {
 				const aliasMap = {
 					metadata_color_json: 'json(metadata.color)',
 				};
-				
+
 				service.processJsonFunctionResults(payload, aliasMap);
 
 				expect(payload[0]!.metadata_color_json).toBeNull();
