@@ -15,6 +15,7 @@ type Artist = {
 	name: string;
 	company?: string;
 	group?: string;
+	date_published?: string;
 };
 
 function createArtist(pkType: PrimaryKeyType): Artist {
@@ -627,6 +628,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 													name,
 													company: null,
 													group: null,
+													date_published: null,
 												},
 											],
 										};
@@ -1234,7 +1236,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe('groups by field named "group" without collision', () => {
+			describe('group by field named "group"', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const artistName = 'aggregate-group-field';
@@ -1242,9 +1244,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artists = [];
 
 					for (let i = 0; i < 6; i++) {
-						const artist = createArtist(pkType);
-						artist.name = artistName;
-						artist.group = groups[i % groups.length];
+						const artist = {
+							...createArtist(pkType),
+							name: artistName,
+							group: groups[i % groups.length],
+						};
+
 						artists.push(artist);
 					}
 
@@ -1296,9 +1301,148 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.body.data[queryKey].length).toBe(groups.length);
 
 					for (const item of gqlResponse.body.data[queryKey]) {
-						expect(item.group).toBeDefined();
-						expect(typeof item.group).toBe('object');
 						expect(groups).toContain(item.group.group);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+				});
+			});
+
+			describe('group by function field', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const artistName = 'aggregate-group-function-field';
+					const dates = ['2024-02-01', '2025-02-02', '2026-02-03'] as const;
+					const artists = [];
+
+					for (let i = 0; i < 6; i++) {
+						const artist = { ...createArtist(pkType), name: artistName, date_published: dates[i % dates.length] };
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['year(date_published)'],
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									groupBy: ['year(date_published)'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(dates.length);
+
+					for (const item of response.body.data) {
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(item.date_published_year);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toBe(dates.length);
+
+					for (const item of gqlResponse.body.data[queryKey]) {
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(item.group.date_published_year);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+				});
+			});
+
+			describe('group by multiple fields', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const artistName = 'aggregate-group-multiple-field';
+					const groups = ['admin', 'editor', 'viewer'] as const;
+					const dates = ['2024-02-01', '2025-02-02', '2026-02-03'] as const;
+					const artists = [];
+
+					for (let i = 0; i < 6; i++) {
+						const artist = {
+							...createArtist(pkType),
+							name: artistName,
+							date_published: dates[i % dates.length],
+							group: groups[i % groups.length],
+						};
+
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['group', 'date_published'],
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									groupBy: ['group', 'date_published'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(groups.length);
+
+					for (const item of response.body.data) {
+						expect(groups).toContain(item.group);
+						expect(dates).toContain(item.date_published);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toBe(groups.length);
+
+					for (const item of gqlResponse.body.data[queryKey]) {
+						expect(groups).toContain(item.group.group);
+						expect(dates).toContain(item.group.date_published);
 						expect(parseInt(item.count.id)).toBe(2);
 					}
 				});
