@@ -1,6 +1,5 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
-import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -52,21 +51,19 @@ export class FnHelperMySQL extends FnHelper {
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 
-	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path } = parseJsonFunction(functionCall);
-
+	json(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		const collectionName = options?.originalCollectionName || table;
-		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
+		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[column];
 
-		if (!fieldSchema || fieldSchema.type !== 'json') {
-			throw new InvalidQueryError({ reason: `${collectionName}.${field} is not a JSON field` });
+		if (!fieldSchema || fieldSchema.type !== 'json' || !options?.jsonPath) {
+			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
 		}
 
 		// Convert dot notation to MySQL JSON path
 		// ".items[0].name" → "$['items'][0]['name']"
-		const jsonPath = convertToMySQLPath(path);
+		const jsonPath = convertToMySQLPath(options.jsonPath);
 
-		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, field, jsonPath]);
+		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, column, jsonPath]);
 	}
 }
 

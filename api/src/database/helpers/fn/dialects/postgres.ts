@@ -1,6 +1,5 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
-import { parseJsonFunction } from '../json/parse-function.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -65,21 +64,21 @@ export class FnHelperPostgres extends FnHelper {
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 
-	json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw {
-		const { field, path } = parseJsonFunction(functionCall);
+	json(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
+		// const { field, path } = parseJsonFunction(functionCall);
 
 		const collectionName = options?.originalCollectionName || table;
-		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[field];
+		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[column];
 
-		if (!fieldSchema || fieldSchema.type !== 'json') {
-			throw new InvalidQueryError({ reason: `${collectionName}.${field} is not a JSON field` });
+		if (!fieldSchema || fieldSchema.type !== 'json' || !options?.jsonPath) {
+			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
 		}
 
 		const { dbType } = fieldSchema;
-		const { template, bindings } = buildPostgresJsonPath(path);
+		const { template, bindings } = buildPostgresJsonPath(options.jsonPath);
 		const cast = dbType === 'jsonb' ? 'jsonb' : 'json';
 
-		return this.knex.raw(`??::${cast}${template}`, [table + '.' + field, ...bindings]);
+		return this.knex.raw(`??::${cast}${template}`, [table + '.' + column, ...bindings]);
 	}
 }
 

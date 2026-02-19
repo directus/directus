@@ -48,22 +48,25 @@ export function getColumn(
 		if (functionName in fn) {
 			const collectionName = options?.originalCollectionName || table;
 
+			let fieldName = columnName!;
+			let jsonPath: string | undefined;
+
 			// For json function, extract the base field name from the arguments
 			// json(metadata, color) -> metadata
-			const baseFieldName = functionName === 'json' ? parseJsonFunction(column).field : columnName!;
-
-			const type = schema?.collections[collectionName]?.fields?.[baseFieldName]?.type ?? 'unknown';
+			if (functionName === 'json') {
+				const result = parseJsonFunction(column);
+				fieldName = result.field;
+				jsonPath = result.path;
+			}
+			
+			const type = schema?.collections[collectionName]?.fields?.[fieldName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {
 				throw new InvalidQueryError({ reason: `Invalid function specified "${functionName}"` });
 			}
 
-			// For json function, pass the full function call to preserve the path
-			// For other functions, pass just the column name
-			const functionArg = functionName === 'json' ? column : columnName!;
-
-			const result = fn[functionName as keyof typeof fn](table, functionArg, {
+			const result = fn[functionName as keyof typeof fn](table, fieldName, {
 				type,
 				relationalCountOptions: isFunctionColumnOptions(options)
 					? {
@@ -73,6 +76,7 @@ export function getColumn(
 						}
 					: undefined,
 				originalCollectionName: options?.originalCollectionName,
+				jsonPath,
 			}) as Knex.Raw;
 
 			if (alias) {

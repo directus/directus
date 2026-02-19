@@ -15,6 +15,7 @@ export type FnHelperOptions = {
 				permissions: Permission[];
 		  }
 		| undefined;
+	jsonPath: string | undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
@@ -35,7 +36,7 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract minute(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract second(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
-	abstract json(table: string, functionCall: string, options?: FnHelperOptions): Knex.Raw;
+	abstract json(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		const collectionName = options?.originalCollectionName || table;
