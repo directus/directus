@@ -77,7 +77,12 @@ export class FnHelperOracle extends FnHelper {
 		// JSON_QUERY only returns objects/arrays (returns NULL for scalars)
 		// COALESCE handles both cases
 		return this.knex.raw(`COALESCE(JSON_QUERY(??.??, ?), JSON_VALUE(??.??, ?))`, [
-			table, field, jsonPath, table, field, jsonPath,
+			table,
+			field,
+			jsonPath,
+			table,
+			field,
+			jsonPath,
 		]);
 	}
 }

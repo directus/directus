@@ -448,6 +448,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 
 				// Build name→id map so ordering is independent of API return order (important for string PKs)
 				const categoryIdByName = Object.fromEntries(categories.map((c: Category) => [c.name as string, c.id]));
+
 				const categoriesIDs = (schema[localCollectionCategories]!['name']!.possibleValues as string[]).map(
 					(name) => categoryIdByName[name]!,
 				);
@@ -531,10 +532,11 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				});
 
 				// Build name->id map so ordering is independent of API return order (important for uuid/string PKs)
-			const shapeIdByName = Object.fromEntries(shapes.map((s: Shape) => [s.name as string, s.id]));
-			const shapesIDs = (schema[localCollectionShapes]!['name']!.possibleValues as string[]).map(
-				(name) => shapeIdByName[name]!,
-			);
+				const shapeIdByName = Object.fromEntries(shapes.map((s: Shape) => [s.name as string, s.id]));
+
+				const shapesIDs = (schema[localCollectionShapes]!['name']!.possibleValues as string[]).map(
+					(name) => shapeIdByName[name]!,
+				);
 
 				// Create circles
 				const itemCircles = [];
@@ -558,10 +560,11 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				});
 
 				// Build name->id map so ordering is independent of API return order (important for uuid/string PKs)
-			const circleIdByName = Object.fromEntries(circles.map((c: Circle) => [c.name as string, c.id]));
-			const circlesIDs = (schema[localCollectionCircles]!['name']!.possibleValues as string[]).map(
-				(name) => circleIdByName[name]!,
-			);
+				const circleIdByName = Object.fromEntries(circles.map((c: Circle) => [c.name as string, c.id]));
+
+				const circlesIDs = (schema[localCollectionCircles]!['name']!.possibleValues as string[]).map(
+					(name) => circleIdByName[name]!,
+				);
 
 				// Create squares
 				const itemSquares = [];
@@ -585,10 +588,11 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				});
 
 				// Build name->id map so ordering is independent of API return order (important for uuid/string PKs)
-			const squareIdByName = Object.fromEntries(squares.map((s: Square) => [s.name as string, s.id]));
-			const squaresIDs = (schema[localCollectionSquares]!['name']!.possibleValues as string[]).map(
-				(name) => squareIdByName[name]!,
-			);
+				const squareIdByName = Object.fromEntries(squares.map((s: Square) => [s.name as string, s.id]));
+
+				const squaresIDs = (schema[localCollectionSquares]!['name']!.possibleValues as string[]).map(
+					(name) => squareIdByName[name]!,
+				);
 
 				// Create junction entries linking shapes to circles and squares
 				// Shape A gets circle 1 + circle 2 + square 1
