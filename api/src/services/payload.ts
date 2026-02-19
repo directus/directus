@@ -366,13 +366,13 @@ export class PayloadService {
 	processJsonFunctionResults<T extends Partial<Record<string, any>>[]>(
 		payloads: T,
 		aliasMap: Record<string, string> = {},
-	): T {
+	) {
 		// Find all fields that came from json() function calls
 		const jsonFunctionFields = Object.entries(aliasMap).filter(([_alias, originalField]) => {
 			return originalField.startsWith('json(') && originalField.endsWith(')');
 		});
 
-		if (jsonFunctionFields.length === 0) return payloads;
+		if (jsonFunctionFields.length === 0) return;
 
 		// Parse stringified JSON values for all affected fields
 		for (const [aliasField] of jsonFunctionFields) {
@@ -397,8 +397,6 @@ export class PayloadService {
 				}
 			}
 		}
-
-		return payloads;
 	}
 
 	/**

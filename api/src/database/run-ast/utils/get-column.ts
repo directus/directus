@@ -3,6 +3,7 @@ import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
+import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
 import { getFunctions } from '../../helpers/index.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
@@ -49,7 +50,7 @@ export function getColumn(
 
 			// For json function, extract the base field name from the arguments
 			// json(metadata, color) -> metadata
-			const baseFieldName = functionName === 'json' ? columnName!.split(',')[0]!.trim().split('.')[0]! : columnName!;
+			const baseFieldName = functionName === 'json' ? parseJsonFunction(column).field : columnName!;
 
 			const type = schema?.collections[collectionName]?.fields?.[baseFieldName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
