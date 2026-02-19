@@ -1,6 +1,9 @@
 import { useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
 
+const env = useEnv();
+const MAX_JSON_QUERY_DEPTH = Number(env['MAX_JSON_QUERY_DEPTH']);
+
 /**
  * Calculates the depth of a JSON path by counting the number of property accesses and array accesses.
  * @example .color → 1
@@ -61,13 +64,11 @@ export function parseJsonFunction(functionString: string): { field: string; path
 	const path = pathContent.startsWith('[') ? pathContent : '.' + pathContent;
 
 	// Validate JSON path depth
-	const env = useEnv();
-	const maxDepth = Number(env['MAX_JSON_QUERY_DEPTH']);
 	const depth = calculateJsonPathDepth(path);
 
-	if (depth > maxDepth) {
+	if (depth > MAX_JSON_QUERY_DEPTH) {
 		throw new InvalidQueryError({
-			reason: `JSON path depth exceeds maximum allowed depth of ${maxDepth} (got ${depth})`,
+			reason: `JSON path depth exceeds maximum allowed depth of ${MAX_JSON_QUERY_DEPTH} (got ${depth})`,
 		});
 	}
 
