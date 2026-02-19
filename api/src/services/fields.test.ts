@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability, Field, RawField } from '@directus/types';
+import type { Accountability, DeferredIndex, Field, RawField } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
@@ -714,6 +714,41 @@ describe('Integration Tests', () => {
 				await service.updateFields('test_collection', fields);
 
 				expect(clearSpy).toHaveBeenCalled();
+			});
+
+			test('should propagate deferredIndexes to updateField', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				const updateFieldSpy = vi.spyOn(service, 'updateField').mockResolvedValue('field');
+
+				const deferredIndexes: DeferredIndex[] = [];
+
+				const fields: RawField[] = [
+					{ field: 'name', type: 'string' },
+					{ field: 'email', type: 'string' },
+				];
+
+				await service.updateFields('test_collection', fields, {
+					attemptConcurrentIndex: true,
+					deferredIndexes,
+				});
+
+				expect(updateFieldSpy).toHaveBeenCalledTimes(2);
+
+				for (const call of updateFieldSpy.mock.calls) {
+					const opts = call[2];
+
+					expect(opts).toEqual(
+						expect.objectContaining({
+							attemptConcurrentIndex: true,
+							deferredIndexes,
+						}),
+					);
+				}
 			});
 		});
 

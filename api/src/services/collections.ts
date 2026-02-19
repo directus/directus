@@ -7,6 +7,7 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	DeferredIndex,
 	FieldMeta,
 	FieldMutationOptions,
 	MutationOptions,
@@ -266,6 +267,8 @@ export class CollectionsService {
 	 */
 	async createMany(payloads: RawCollection[], opts?: FieldMutationOptions): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
+		const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+		const deferredIndexes: DeferredIndex[] = [];
 
 		try {
 			const collections = await transaction(this.knex, async (trx) => {
@@ -282,7 +285,8 @@ export class CollectionsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+						attemptConcurrentIndex,
+						...(attemptConcurrentIndex ? { deferredIndexes } : {}),
 					});
 
 					collectionNames.push(name);
@@ -290,6 +294,17 @@ export class CollectionsService {
 
 				return collectionNames;
 			});
+
+			// Process deferred indexes outside the transaction (e.g. CREATE INDEX CONCURRENTLY on PostgreSQL)
+			if (deferredIndexes.length > 0) {
+				const fieldsService = new FieldsService({ knex: this.knex, schema: this.schema });
+
+				for (const deferred of deferredIndexes) {
+					await fieldsService.addColumnIndex(deferred.collection, deferred.field, {
+						attemptConcurrentIndex: true,
+					});
+				}
+			}
 
 			return collections;
 		} finally {

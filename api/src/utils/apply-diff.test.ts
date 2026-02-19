@@ -51,6 +51,19 @@ vi.mock('../emitter.js', () => ({
 	},
 }));
 
+const mockLogger = vi.hoisted(() => ({
+	error: vi.fn(),
+	warn: vi.fn(),
+	info: vi.fn(),
+	debug: vi.fn(),
+	trace: vi.fn(),
+	child: vi.fn().mockReturnThis(),
+}));
+
+vi.mock('../logger/index.js', () => ({
+	useLogger: vi.fn().mockReturnValue(mockLogger),
+}));
+
 class Client_PG extends MockClient {}
 
 describe('isNestedMetaUpdate', () => {
@@ -966,6 +979,83 @@ describe('applyDiff', () => {
 				expect.not.objectContaining({
 					attemptConcurrentIndex: expect.anything(),
 				}),
+			);
+		});
+	});
+
+	describe('Deferred index error handling', () => {
+		it('Logs error and rethrows when addColumnIndex fails for deferred indexes', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [
+					{
+						collection: 'test_collection',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'test_collection',
+									meta: { group: null },
+									schema: { name: 'test_collection' },
+								} as Collection,
+							},
+						],
+					},
+				],
+				fields: [
+					{
+						collection: 'test_collection',
+						field: 'id',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'test_collection',
+									field: 'id',
+									type: 'integer',
+									meta: {},
+									schema: { is_primary_key: true },
+								} as SnapshotField,
+							},
+						],
+					},
+				],
+				systemFields: [],
+				relations: [],
+			};
+
+			const mockField = { field: 'indexed_field', type: 'string' };
+			const indexError = new Error('CREATE INDEX CONCURRENTLY cannot run inside a transaction block');
+
+			vi.spyOn(CollectionsService.prototype, 'createOne').mockImplementation(async (_data, opts: any) => {
+				opts.deferredIndexes.push({
+					collection: 'test_collection',
+					field: mockField,
+				});
+
+				return 'test';
+			});
+
+			vi.spyOn(FieldsService.prototype, 'addColumnIndex').mockRejectedValue(indexError);
+
+			await expect(
+				applyDiff(currentSnapshot, snapshotDiff, {
+					database: db,
+					schema: snapshotApplyTestSchema,
+					attemptConcurrentIndex: true,
+				}),
+			).rejects.toThrow(indexError);
+
+			expect(mockLogger.error).toHaveBeenCalledWith(
+				expect.stringContaining('Failed to create concurrent index for field "indexed_field"'),
 			);
 		});
 	});

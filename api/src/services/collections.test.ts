@@ -294,6 +294,70 @@ describe('Integration Tests', () => {
 				expect(result).toEqual(['test', 'test']);
 				expect(createOneSpy).toHaveBeenCalledTimes(2);
 			});
+
+			test('should pass deferredIndexes to createOne and call addColumnIndex after transaction when attemptConcurrentIndex is true', async () => {
+				const mockField = { field: 'test_field', type: 'string' };
+
+				const createOneSpy = vi
+					.spyOn(CollectionsService.prototype, 'createOne')
+					.mockImplementation(async (_data, opts: any) => {
+						if (opts?.deferredIndexes) {
+							opts.deferredIndexes.push({
+								collection: 'test_collection',
+								field: mockField,
+							});
+						}
+
+						return 'test';
+					});
+
+				const addColumnIndexSpy = vi.spyOn(FieldsService.prototype, 'addColumnIndex').mockResolvedValue(undefined);
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				const result = await service.createMany([{ collection: 'collection1' }], {
+					attemptConcurrentIndex: true,
+				} as FieldMutationOptions);
+
+				expect(result).toEqual(['test']);
+
+				expect(createOneSpy).toHaveBeenCalledWith(
+					expect.anything(),
+					expect.objectContaining({
+						attemptConcurrentIndex: true,
+						deferredIndexes: expect.any(Array),
+					}),
+				);
+
+				expect(addColumnIndexSpy).toHaveBeenCalledTimes(1);
+
+				expect(addColumnIndexSpy).toHaveBeenCalledWith('test_collection', mockField, {
+					attemptConcurrentIndex: true,
+				});
+			});
+
+			test('should not pass deferredIndexes when attemptConcurrentIndex is false', async () => {
+				const createOneSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await service.createMany([{ collection: 'collection1' }]);
+
+				expect(createOneSpy).toHaveBeenCalledWith(
+					expect.anything(),
+					expect.not.objectContaining({
+						deferredIndexes: expect.anything(),
+					}),
+				);
+			});
 		});
 
 		describe('readByQuery', () => {
