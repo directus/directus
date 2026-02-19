@@ -2,6 +2,7 @@ import {
 	CreateCollection,
 	CreateField,
 	CreateFieldM2A,
+	CreateFieldM2O,
 	CreateFieldO2M,
 	CreateItem,
 	DeleteCollection,
@@ -313,17 +314,11 @@ export const seedDBStructure = () => {
 						type: 'string',
 					});
 
-					await CreateField(vendor, {
+					await CreateFieldM2O(vendor, {
 						collection: localCollectionArticles,
 						field: 'category_id',
-						type: pkType === 'integer' ? 'integer' : 'string',
-						schema: {
-							foreign_key_table: localCollectionCategories,
-							foreign_key_column: 'id',
-						},
-						meta: {
-							special: ['m2o'],
-						},
+						primaryKeyType: pkType,
+						otherCollection: localCollectionCategories,
 					});
 
 					// Create comments collection (O2M from articles, has JSON data)

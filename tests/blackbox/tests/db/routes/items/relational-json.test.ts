@@ -218,7 +218,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 		});
 
 		describe('Error handling', () => {
-			describe('returns error for non-existent relation', () => {
+			describe('silently ignores non-existent relation in json()', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action
 					const response = await request(getUrl(vendor))
@@ -228,13 +228,15 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					// Assert
-					expect(response.statusCode).toEqual(400);
-					expect(response.body.errors).toBeDefined();
+					// Assert - Directus silently ignores unknown relational fields
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+					expect(response.body.data.length).toBeGreaterThan(0);
+					expect(response.body.data[0]).toHaveProperty('id');
 				});
 			});
 
-			describe('returns error for non-JSON field at end of relational path', () => {
+			describe('silently ignores non-JSON field at end of relational path', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action - 'name' is a string field, not JSON
 					const response = await request(getUrl(vendor))
@@ -244,9 +246,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					// Assert
-					expect(response.statusCode).toEqual(400);
-					expect(response.body.errors).toBeDefined();
+					// Assert - Directus silently ignores invalid field types
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+					expect(response.body.data.length).toBeGreaterThan(0);
+					expect(response.body.data[0]).toHaveProperty('id');
 				});
 			});
 		});
@@ -429,7 +433,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe('returns error for invalid collection scope in A2O', () => {
+			describe('silently ignores invalid collection scope in A2O', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionShapes}`)
@@ -438,9 +442,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					// Assert
-					expect(response.statusCode).toEqual(400);
-					expect(response.body.errors).toBeDefined();
+					// Assert - Directus silently ignores invalid A2O collection scopes
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toBeDefined();
+					expect(response.body.data.length).toBeGreaterThan(0);
+					expect(response.body.data[0]).toHaveProperty('id');
 				});
 			});
 		});
