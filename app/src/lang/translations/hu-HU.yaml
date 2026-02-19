@@ -1394,6 +1394,8 @@ ai:
   settings: Beállítások
   tool_approval:
     disabled: Letiltva
+  ask_user_submit: Beküldés
+  ask_user_next: Következő
 ai_tools:
   items: Elemek
   files: Fájlok
