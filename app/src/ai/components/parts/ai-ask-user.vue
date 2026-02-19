@@ -138,11 +138,13 @@ function isOptionSelected(questionId: string, label: string): boolean {
 	return answer === label;
 }
 
-onKeyStroke('ArrowLeft', () => {
+onKeyStroke('ArrowLeft', (e) => {
+	if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 	goToQuestion(activeQuestionIndex.value - 1);
 });
 
-onKeyStroke('ArrowRight', () => {
+onKeyStroke('ArrowRight', (e) => {
+	if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 	goToQuestion(activeQuestionIndex.value + 1);
 });
 
@@ -173,6 +175,7 @@ onKeyStroke('Escape', (e) => {
 // Number keys 1-4 for option selection or text input activation
 onKeyStroke(['1', '2', '3', '4'], (e) => {
 	if (!currentQuestion.value) return;
+	if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 	const q = currentQuestion.value;
 	const num = parseInt(e.key);
 	const optionCount = q.options?.length ?? 0;
