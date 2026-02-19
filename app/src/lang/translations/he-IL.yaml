@@ -440,6 +440,7 @@ ai:
   unknown: לא ידוע
   tool_approval:
     disabled: מושבת
+  ask_user_next: המשך
 ai_tools:
   files: קבצים
   folders: תיקיות
