@@ -78,16 +78,15 @@ function getUrlPath(request: FetchContext['request']): string | null {
  * import { getEndpoint } from '@directus/utils';
  *
  * const posts = await sdk.request(
- *  requestEndpoint<Item>({
- *    path: getEndpoint(collection),
- *    method: "GET",
- *    params: { fields: ["id", "title", "content"] },
- *  }),
- * );
+ * requestEndpoint(getEndpoint(collection), {
+ * method: 'GET',
+ * params: { fields: ['id', 'title', 'content'] },
+ * });
  * ```
  */
 export function requestEndpoint<Output = unknown>(
-	options: Omit<RequestOptions, 'body'> & { body?: Record<string, unknown> },
+	path: string,
+	options: Omit<RequestOptions, 'body' | 'path'> & { body?: Record<string, unknown> },
 ): RestCommand<Output, never> {
 	let body: undefined | string;
 
@@ -97,6 +96,7 @@ export function requestEndpoint<Output = unknown>(
 
 	return () => ({
 		...options,
+		path,
 		body,
 	});
 }
