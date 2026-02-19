@@ -21,7 +21,7 @@
 #'Proxy', 'Intl'
 about: О программе
 privacy_policy: Политика конфиденциальности
-contact_our_team: Связаться_с_нашей_командой
+contact_our_team: Связаться с нами
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
 setup_license_notice: >
@@ -197,7 +197,7 @@ version: Версия
 version_key: Ключ Версии
 version_name: Название Версии
 main_version: Основная
-your_version: Ваша Версия
+your_version: Ваша версия
 switch_version: Сменить Версию
 switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.
 create_version: Создать Версию
