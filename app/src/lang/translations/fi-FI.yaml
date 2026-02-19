@@ -1153,6 +1153,8 @@ ai:
   settings: Asetukset
   tool_approval:
     disabled: Pois käytöstä
+  ask_user_submit: Lähetä
+  ask_user_next: Seuraava
 ai_tools:
   items: Kohteet
   files: Tiedostot
