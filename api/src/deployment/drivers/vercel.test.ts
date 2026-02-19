@@ -289,12 +289,18 @@ describe('VercelDriver', () => {
 				link: { type: 'github', productionBranch: 'main', repoId: 'repo-123' },
 			};
 
-			const deployResponse = { id: 'dpl-new', status: 'BUILDING', url: 'my-app-new.vercel.app' };
+			const deployResponse = {
+				id: 'dpl-new',
+				status: 'BUILDING',
+				url: 'my-app-new.vercel.app',
+				createdAt: 1700000000000,
+			};
 
 			const expected = {
 				deployment_id: 'dpl-new',
 				status: 'building',
 				url: 'https://my-app-new.vercel.app',
+				created_at: new Date(1700000000000),
 			};
 
 			mockAxiosRequest
