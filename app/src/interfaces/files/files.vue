@@ -3,7 +3,7 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, inject, ref, toRef, toRefs } from 'vue';
 import Draggable from 'vuedraggable';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -22,6 +22,7 @@ import VPagination from '@/components/v-pagination.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VUpload from '@/components/v-upload.vue';
+import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
@@ -49,6 +50,7 @@ const props = withDefaults(
 		filter?: Filter;
 		showNavigation?: boolean;
 		limit?: number;
+		allowedMimeTypes?: string[];
 	}>(),
 	{
 		nonEditable: false,
@@ -72,6 +74,8 @@ const value = computed({
 		emit('input', val);
 	},
 });
+
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(toRef(props, 'allowedMimeTypes'));
 
 const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
@@ -308,6 +312,10 @@ const customFilter = computed(() => {
 		);
 	}
 
+	if (mimeTypeFilter.value) {
+		filter._and.push(mimeTypeFilter.value);
+	}
+
 	return filter;
 });
 
@@ -455,7 +463,7 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 			<VCard>
 				<VCardTitle>{{ $t('upload_file') }}</VCardTitle>
 				<VCardText>
-					<VUpload multiple from-url :folder="folder" @input="onUpload" />
+					<VUpload multiple from-url :folder="folder" :accept="combinedAcceptString" @input="onUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton @click="showUpload = false">{{ $t('done') }}</VButton>
