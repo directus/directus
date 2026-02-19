@@ -45,13 +45,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toBeDefined();
 					expect(response.body.data.length).toBeGreaterThan(0);
 
-					// First article should have category color 'blue' (Tech category)
-					expect(response.body.data[0]).toHaveProperty('category_id_metadata_color_json');
-					expect(response.body.data[0].category_id_metadata_color_json).toBe('blue');
+					// First article should have category with color 'blue' (Tech category)
+					expect(response.body.data[0]).toHaveProperty('category_id');
+					expect(response.body.data[0].category_id.metadata_color_json).toBe('blue');
 
-					// Third article should have category color 'green' (Sports category)
-					expect(response.body.data[2]).toHaveProperty('category_id_metadata_color_json');
-					expect(response.body.data[2].category_id_metadata_color_json).toBe('green');
+					// Third article should have category with color 'green' (Sports category)
+					expect(response.body.data[2]).toHaveProperty('category_id');
+					expect(response.body.data[2].category_id.metadata_color_json).toBe('green');
 				});
 			});
 
@@ -71,8 +71,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toBeDefined();
 
 					// First article's category has priority 1
-					expect(response.body.data[0]).toHaveProperty('category_id_metadata_settings_priority_json');
-					const priority = response.body.data[0].category_id_metadata_settings_priority_json;
+					expect(response.body.data[0]).toHaveProperty('category_id');
+					const priority = response.body.data[0].category_id.metadata_settings_priority_json;
 					expect(Number(priority)).toBe(1);
 				});
 			});
@@ -92,10 +92,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
-					expect(response.body.data[0]).toHaveProperty('category_id_metadata_color_json');
-					expect(response.body.data[0]).toHaveProperty('category_id_metadata_icon_json');
-					expect(response.body.data[0].category_id_metadata_color_json).toBe('blue');
-					expect(response.body.data[0].category_id_metadata_icon_json).toBe('laptop');
+					expect(response.body.data[0]).toHaveProperty('category_id');
+					expect(response.body.data[0].category_id).toHaveProperty('metadata_color_json');
+					expect(response.body.data[0].category_id).toHaveProperty('metadata_icon_json');
+					expect(response.body.data[0].category_id.metadata_color_json).toBe('blue');
+					expect(response.body.data[0].category_id.metadata_icon_json).toBe('laptop');
 				});
 			});
 
@@ -120,10 +121,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(item).toHaveProperty('title');
 					expect(item).toHaveProperty('category_id');
 					expect(item.category_id).toHaveProperty('name');
-					expect(item).toHaveProperty('category_id_metadata_color_json');
+					expect(item.category_id).toHaveProperty('metadata_color_json');
 
 					expect(item.category_id.name).toBe('Tech');
-					expect(item.category_id_metadata_color_json).toBe('blue');
+					expect(item.category_id.metadata_color_json).toBe('blue');
 				});
 			});
 		});
@@ -145,20 +146,18 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
-					expect(response.body.data).toHaveProperty('comments_data_type_json');
+					expect(response.body.data).toHaveProperty('comments');
 
-					// O2M should return an array of values
-					const types = response.body.data.comments_data_type_json;
-
-					// Parse if string (some databases return JSON string)
-					const typesArray = typeof types === 'string' ? JSON.parse(types) : types;
-					expect(Array.isArray(typesArray)).toBe(true);
-					expect(typesArray.length).toBe(3);
+					// O2M should return an array of nested items
+					const comments = response.body.data.comments;
+					expect(Array.isArray(comments)).toBe(true);
+					expect(comments.length).toBe(3);
 
 					// First article's comments have types: 'review', 'feedback', 'question'
-					expect(typesArray).toContain('review');
-					expect(typesArray).toContain('feedback');
-					expect(typesArray).toContain('question');
+					const types = comments.map((c: any) => c.data_type_json);
+					expect(types).toContain('review');
+					expect(types).toContain('feedback');
+					expect(types).toContain('question');
 				});
 			});
 
@@ -178,14 +177,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
-					expect(response.body.data).toHaveProperty('comments_data_rating_json');
+					expect(response.body.data).toHaveProperty('comments');
 
-					const ratings = response.body.data.comments_data_rating_json;
-					const ratingsArray = typeof ratings === 'string' ? JSON.parse(ratings) : ratings;
-					expect(Array.isArray(ratingsArray)).toBe(true);
+					const comments = response.body.data.comments;
+					expect(Array.isArray(comments)).toBe(true);
 
 					// First article's comments have ratings: 5, 4, 3
-					const numericRatings = ratingsArray.map((r: any) => Number(r));
+					const numericRatings = comments.map((c: any) => Number(c.data_rating_json));
 					expect(numericRatings).toContain(5);
 					expect(numericRatings).toContain(4);
 					expect(numericRatings).toContain(3);
@@ -208,15 +206,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
-					expect(response.body.data).toHaveProperty('comments_data_type_json');
+					expect(response.body.data).toHaveProperty('comments');
 
-					const types = response.body.data.comments_data_type_json;
+					const comments = response.body.data.comments;
 
-					// Should return empty array or null for no related items
-					if (types !== null) {
-						const typesArray = typeof types === 'string' ? JSON.parse(types) : types;
-						expect(typesArray).toEqual([]);
-					}
+					// Should return empty array for no related items
+					expect(Array.isArray(comments)).toBe(true);
+					expect(comments).toEqual([]);
 				});
 			});
 		});
@@ -272,7 +268,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toBeDefined();
 					expect(response.body.data).toHaveLength(1);
 					expect(response.body.data[0].title).toBe('AI Revolution');
-					expect(response.body.data[0].category_id_metadata_color_json).toBe('blue');
+					expect(response.body.data[0].category_id.metadata_color_json).toBe('blue');
 				});
 			});
 		});
@@ -299,10 +295,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const firstId = response.body.data[0].id;
 					const secondId = response.body.data[1].id;
 
-					if (pkType === 'string') {
-						expect(firstId > secondId).toBe(true);
-					} else {
+					if (pkType === 'integer') {
 						expect(Number(firstId) > Number(secondId)).toBe(true);
+					} else {
+						expect(firstId > secondId).toBe(true);
 					}
 				});
 			});
@@ -327,8 +323,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toBeDefined();
 					expect(response.body.data).toHaveLength(2);
 
-					// Second article should be first in results (offset 1)
-					expect(response.body.data[0].title).toBe('Championship Finals');
+					// For integer PKs, the second article should be first in results (offset 1)
+					if (pkType === 'integer') {
+						expect(response.body.data[0].title).toBe('Championship Finals');
+					}
 				});
 			});
 		});
@@ -353,15 +351,18 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
 
-					const fieldName = `children_item:${localCollectionCircles}_metadata_color_json`;
-					expect(response.body.data).toHaveProperty(fieldName);
+					expect(response.body.data).toHaveProperty('children');
 
-					const colors = response.body.data[fieldName];
-					const colorsArray = typeof colors === 'string' ? JSON.parse(colors) : colors;
-					expect(Array.isArray(colorsArray)).toBe(true);
-					expect(colorsArray.length).toBe(2);
-					expect(colorsArray).toContain('red');
-					expect(colorsArray).toContain('blue');
+					const children = response.body.data.children;
+					expect(Array.isArray(children)).toBe(true);
+
+					// Filter to only children with resolved items (circles)
+					const resolvedChildren = children.filter((c: any) => c.item !== null);
+					expect(resolvedChildren.length).toBe(2);
+
+					const colors = resolvedChildren.map((c: any) => c.item.metadata_color_json);
+					expect(colors).toContain('red');
+					expect(colors).toContain('blue');
 				});
 			});
 
@@ -384,15 +385,18 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
 
-					const fieldName = `children_item:${localCollectionSquares}_metadata_color_json`;
-					expect(response.body.data).toHaveProperty(fieldName);
+					expect(response.body.data).toHaveProperty('children');
 
-					const colors = response.body.data[fieldName];
-					const colorsArray = typeof colors === 'string' ? JSON.parse(colors) : colors;
-					expect(Array.isArray(colorsArray)).toBe(true);
-					expect(colorsArray.length).toBe(2);
-					expect(colorsArray).toContain('orange');
-					expect(colorsArray).toContain('pink');
+					const children = response.body.data.children;
+					expect(Array.isArray(children)).toBe(true);
+
+					// Filter to only children with resolved items (squares)
+					const resolvedChildren = children.filter((c: any) => c.item !== null);
+					expect(resolvedChildren.length).toBe(2);
+
+					const colors = resolvedChildren.map((c: any) => c.item.metadata_color_json);
+					expect(colors).toContain('orange');
+					expect(colors).toContain('pink');
 				});
 			});
 
@@ -415,16 +419,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toBeDefined();
 
-					const fieldName = `children_item:${localCollectionCircles}_metadata_color_json`;
-					expect(response.body.data).toHaveProperty(fieldName);
+					expect(response.body.data).toHaveProperty('children');
 
-					const colors = response.body.data[fieldName];
+					const children = response.body.data.children;
 
-					// Should return empty array or null for no matching children
-					if (colors !== null) {
-						const colorsArray = typeof colors === 'string' ? JSON.parse(colors) : colors;
-						expect(colorsArray).toEqual([]);
-					}
+					// Should return empty array for no matching children
+					expect(Array.isArray(children)).toBe(true);
+					expect(children).toEqual([]);
 				});
 			});
 

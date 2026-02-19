@@ -316,7 +316,7 @@ export const seedDBStructure = () => {
 					await CreateField(vendor, {
 						collection: localCollectionArticles,
 						field: 'category_id',
-						type: pkType === 'string' ? 'string' : 'integer',
+						type: pkType === 'integer' ? 'integer' : 'string',
 						schema: {
 							foreign_key_table: localCollectionCategories,
 							foreign_key_column: 'id',
