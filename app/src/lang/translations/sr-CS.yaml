@@ -815,6 +815,8 @@ ai:
   settings: Podešavanja
   tool_approval:
     disabled: Isključeno
+  ask_user_submit: Pošalji
+  ask_user_next: Sljedeća
 ai_tools:
   items: Stavke
   files: Fajlovi
