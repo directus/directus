@@ -146,6 +146,39 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 
 				aliasMap[aliasKey]!.collection = pathScope;
 
+				/**
+				 * When the current collection is a version table and the A2O target collection is versioned,
+				 * an extra join is added to query the versioned target collection.
+				 * This ensures a single query can return results if either the main record or its version matches the filter.
+				 */
+				if (isVersionedCollection(parentCollection) && schema.collections[pathScope]?.versioning) {
+					const versionRelationField = toVersionedRelationName(pathParts[0]!);
+					const versionPathScope = toVersionedCollectionName(pathScope);
+					const versionPathParts = pathParts.with(0, versionRelationField);
+
+					const versionAlias = generateJoinAlias(parentCollection, versionPathParts, relationType, parentFields);
+					const versionAliasKey = parentFields ? `${parentFields}.${versionRelationField}` : versionRelationField;
+
+					aliasMap[versionAliasKey] = { alias: versionAlias, collection: versionPathScope };
+
+					rootQuery.leftJoin({ [versionAlias]: versionPathScope }, (joinClause) => {
+						joinClause
+							.onVal(
+								`${aliasedParentCollection}.${toVersionedRelationName(relation.meta!.one_collection_field!)}`,
+								'=',
+								versionPathScope,
+							)
+							.andOn(
+								`${aliasedParentCollection}.${toVersionedRelationName(relation.field)}`,
+								'=',
+								knex.raw(
+									getHelpers(knex).schema.castA2oPrimaryKey(),
+									`${versionAlias}.${schema.collections[pathScope]!.primary}`,
+								),
+							);
+					});
+				}
+
 				isJoinAdded = true;
 			} else if (relationType === 'o2a') {
 				rootQuery.leftJoin({ [alias]: relation.collection }, (joinClause) => {
@@ -162,6 +195,39 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 				});
 
 				aliasMap[aliasKey]!.collection = relation.collection;
+
+				/**
+				 * When the current collection is a version table and the O2A child collection is versioned,
+				 * an extra join is added to query the versioned child collection.
+				 * This ensures a single query can return results if either the main record or its version matches the filter.
+				 */
+				if (isVersionedCollection(parentCollection) && schema.collections[relation.collection]?.versioning) {
+					const versionRelationField = toVersionedRelationName(pathParts[0]!);
+					const versionCollection = toVersionedCollectionName(relation.collection);
+					const versionPathParts = pathParts.with(0, versionRelationField);
+
+					const versionAlias = generateJoinAlias(parentCollection, versionPathParts, relationType, parentFields);
+					const versionAliasKey = parentFields ? `${parentFields}.${versionRelationField}` : versionRelationField;
+
+					aliasMap[versionAliasKey] = { alias: versionAlias, collection: versionCollection };
+
+					rootQuery.leftJoin({ [versionAlias]: versionCollection }, (joinClause) => {
+						joinClause
+							.onVal(
+								`${versionAlias}.${toVersionedRelationName(relation.meta!.one_collection_field!)}`,
+								'=',
+								parentCollection,
+							)
+							.andOn(
+								`${versionAlias}.${toVersionedRelationName(relation.field)}`,
+								'=',
+								knex.raw(
+									getHelpers(knex).schema.castA2oPrimaryKey(),
+									`${aliasedParentCollection}.${schema.collections[parentCollection]!.primary}`,
+								),
+							);
+					});
+				}
 
 				hasMultiRelational = true;
 				isJoinAdded = true;
