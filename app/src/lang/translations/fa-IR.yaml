@@ -1775,6 +1775,8 @@ ai:
     disabled: غیرفعال شده
   enabled_tools: ابزارهای فعال شده
   disabled_tools: ابزارهای غیرفعال شده
+  ask_user_submit: ارسال
+  ask_user_next: بعدی
   tool_descriptions:
     items: ایجاد، خواندن، ویرایش و حذف محتوا
     files: جستجو و مدیریت فایل‌ها
