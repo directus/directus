@@ -1194,6 +1194,8 @@ ai:
   settings: Pengaturan
   tool_approval:
     disabled: Dinonaktifkan
+  ask_user_submit: Kirim
+  ask_user_next: Lanjut
 ai_tools:
   items: Barang-barang
   files: Berkas
