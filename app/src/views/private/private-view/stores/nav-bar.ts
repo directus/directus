@@ -14,7 +14,13 @@ export const useNavBarStore = defineStore('nav-bar-store', () => {
 	const size = computed({
 		get() {
 			const val = storedSize.value;
-			return Number.isFinite(val) ? val : DEFAULT_SIZE;
+
+			if (!Number.isFinite(val)) {
+				storedSize.value = DEFAULT_SIZE;
+				return DEFAULT_SIZE;
+			}
+
+			return val;
 		},
 		set(val: number) {
 			if (Number.isFinite(val)) storedSize.value = val;

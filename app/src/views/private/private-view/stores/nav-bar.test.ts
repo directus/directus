@@ -1,14 +1,20 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ref } from 'vue';
+import { type Ref, ref } from 'vue';
 import { useNavBarStore } from './nav-bar';
+
+const storageRefs = new Map<string, Ref>();
 
 vi.mock('@vueuse/core', async () => {
 	const actual = await vi.importActual<typeof import('@vueuse/core')>('@vueuse/core');
 
 	return {
 		...actual,
-		useLocalStorage: (_key: string, defaultValue: unknown) => ref(defaultValue),
+		useLocalStorage: (key: string, defaultValue: unknown) => {
+			const r = ref(defaultValue);
+			storageRefs.set(key, r);
+			return r;
+		},
 		useBreakpoints: () => ({
 			lg: ref(true),
 			xl: ref(true),
@@ -23,6 +29,7 @@ vi.mock('vue-router', () => ({
 }));
 
 beforeEach(() => {
+	storageRefs.clear();
 	setActivePinia(createPinia());
 });
 
@@ -65,5 +72,14 @@ describe('nav-bar store size guard', () => {
 		store.size = 320;
 		store.size = NaN;
 		expect(store.size).toBe(320);
+	});
+
+	it('self-heals corrupted stored value back to default', () => {
+		const store = useNavBarStore();
+		const storedSize = storageRefs.get('nav-bar-size')!;
+
+		storedSize.value = NaN;
+		expect(store.size).toBe(250);
+		expect(storedSize.value).toBe(250);
 	});
 });

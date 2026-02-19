@@ -1,18 +1,25 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ref } from 'vue';
+import { type Ref, ref } from 'vue';
 import { useSidebarStore } from './sidebar';
+
+const storageRefs = new Map<string, Ref>();
 
 vi.mock('@vueuse/core', async () => {
 	const actual = await vi.importActual<typeof import('@vueuse/core')>('@vueuse/core');
 
 	return {
 		...actual,
-		useLocalStorage: (_key: string, defaultValue: unknown) => ref(defaultValue),
+		useLocalStorage: (key: string, defaultValue: unknown) => {
+			const r = ref(defaultValue);
+			storageRefs.set(key, r);
+			return r;
+		},
 	};
 });
 
 beforeEach(() => {
+	storageRefs.clear();
 	setActivePinia(createPinia());
 });
 
@@ -55,5 +62,14 @@ describe('sidebar store size guard', () => {
 		store.size = 500;
 		store.size = NaN;
 		expect(store.size).toBe(500);
+	});
+
+	it('self-heals corrupted stored value back to default', () => {
+		const store = useSidebarStore();
+		const storedSize = storageRefs.get('sidebar-size')!;
+
+		storedSize.value = NaN;
+		expect(store.size).toBe(370);
+		expect(storedSize.value).toBe(370);
 	});
 });
