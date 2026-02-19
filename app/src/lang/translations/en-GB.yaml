@@ -1232,6 +1232,8 @@ ai:
   settings: Settings
   tool_approval:
     disabled: Disabled
+  ask_user_submit: Submit
+  ask_user_next: Next
 ai_tools:
   items: Items
   files: Files
