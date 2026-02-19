@@ -483,9 +483,9 @@ describe('Integration Tests', () => {
 					metadata_color_json: 'json(metadata.color)',
 				};
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
+				service.processJsonFunctionResults(payload, aliasMap);
 
-				expect(result[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+				expect(payload[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
 			});
 
 			test('Parses stringified JSON arrays from json() function results', () => {
@@ -500,9 +500,9 @@ describe('Integration Tests', () => {
 					data_items_json: 'json(data.items)',
 				};
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
+				service.processJsonFunctionResults(payload, aliasMap);
 
-				expect(result[0]!.data_items_json).toEqual([{ name: 'item1' }, { name: 'item2' }]);
+				expect(payload[0]!.data_items_json).toEqual([{ name: 'item1' }, { name: 'item2' }]);
 			});
 
 			test('Preserves string values that are not JSON objects/arrays', () => {
@@ -517,9 +517,9 @@ describe('Integration Tests', () => {
 					metadata_name_json: 'json(metadata.name)',
 				};
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
+				service.processJsonFunctionResults(payload, aliasMap);
 
-				expect(result[0]!.metadata_name_json).toBe('John Doe');
+				expect(payload[0]!.metadata_name_json).toBe('John Doe');
 			});
 
 			test('Preserves already parsed objects', () => {
@@ -534,9 +534,9 @@ describe('Integration Tests', () => {
 					metadata_color_json: 'json(metadata.color)',
 				};
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
+				service.processJsonFunctionResults(payload, aliasMap);
 
-				expect(result[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+				expect(payload[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
 			});
 
 			test('Handles malformed JSON gracefully', () => {
@@ -551,10 +551,10 @@ describe('Integration Tests', () => {
 					metadata_data_json: 'json(metadata.data)',
 				};
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
+				service.processJsonFunctionResults(payload, aliasMap);
 
 				// Should keep the original string value when parsing fails
-				expect(result[0]!.metadata_data_json).toBe('{invalid json}');
+				expect(payload[0]!.metadata_data_json).toBe('{invalid json}');
 			});
 
 			test('Does nothing when aliasMap is empty', () => {
@@ -565,9 +565,9 @@ describe('Integration Tests', () => {
 					},
 				];
 
-				const result = service.processJsonFunctionResults(payload, {});
+				service.processJsonFunctionResults(payload, {});
 
-				expect(result).toEqual(payload);
+				expect(payload).toEqual(payload);
 			});
 
 			test('Only processes fields from json() functions', () => {
@@ -584,12 +584,12 @@ describe('Integration Tests', () => {
 					date_created_year: 'year(date_created)',
 				};
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
+				service.processJsonFunctionResults(payload, aliasMap);
 
 				// JSON field should be parsed
-				expect(result[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+				expect(payload[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
 				// Non-JSON function field should remain unchanged
-				expect(result[0]!.date_created_year).toBe('2024');
+				expect(payload[0]!.date_created_year).toBe('2024');
 			});
 
 			test('Handles multiple json() fields in a single payload', () => {
@@ -606,10 +606,10 @@ describe('Integration Tests', () => {
 					data_settings_json: 'json(data.settings)',
 				};
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
+				service.processJsonFunctionResults(payload, aliasMap);
 
-				expect(result[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
-				expect(result[0]!.data_settings_json).toEqual({ theme: 'dark', locale: 'en' });
+				expect(payload[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+				expect(payload[0]!.data_settings_json).toEqual({ theme: 'dark', locale: 'en' });
 			});
 
 			test('Handles null values', () => {
@@ -623,10 +623,10 @@ describe('Integration Tests', () => {
 				const aliasMap = {
 					metadata_color_json: 'json(metadata.color)',
 				};
+				
+				service.processJsonFunctionResults(payload, aliasMap);
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
-
-				expect(result[0]!.metadata_color_json).toBeNull();
+				expect(payload[0]!.metadata_color_json).toBeNull();
 			});
 
 			test('Parses numeric strings as strings, not numbers', () => {
@@ -641,10 +641,10 @@ describe('Integration Tests', () => {
 					metadata_value_json: 'json(metadata.value)',
 				};
 
-				const result = service.processJsonFunctionResults(payload, aliasMap);
+				service.processJsonFunctionResults(payload, aliasMap);
 
 				// Numeric strings should remain as strings since parseJSON returns primitives
-				expect(result[0]!.metadata_value_json).toBe('123');
+				expect(payload[0]!.metadata_value_json).toBe('123');
 			});
 		});
 	});
