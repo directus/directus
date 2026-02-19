@@ -3,9 +3,12 @@ import path from 'node:path';
 import { APP_SHARED_DEPS } from '@directus/extensions';
 import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
+import { templateCompilerOptions } from '@tresjs/core'
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { searchForWorkspaceRoot } from 'vite';
+import glsl from 'vite-plugin-glsl'
 import vueDevtools from 'vite-plugin-vue-devtools';
 import { defineConfig } from 'vitest/config';
 
@@ -31,7 +34,10 @@ export default defineConfig({
 	},
 	plugins: [
 		directusExtensions(),
-		vue(),
+		vue({
+			// Required for the custom renderer to work
+			...templateCompilerOptions,
+		}),
 		UnheadVite(),
 		yaml({
 			transform(data) {
@@ -48,10 +54,13 @@ export default defineConfig({
 			},
 		},
 		vueDevtools(),
-	],
+		glsl(),
+		process.env.ANALYZE && visualizer({ open: true, gzip: true, filename: 'dist/stats.html' }),
+	].filter(Boolean),
 	define: {
 		__VUE_I18N_LEGACY_API__: false,
 	},
+
 	resolve: {
 		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},

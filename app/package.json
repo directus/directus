@@ -22,6 +22,7 @@
 	],
 	"scripts": {
 		"build": "vite build",
+		"build:analyze": "ANALYZE=true vite build",
 		"dev": "vite --host",
 		"story:build": "histoire build && echo \"/*  /index.html  200\" >> .histoire/dist/_redirects",
 		"story:dev": "histoire dev",
@@ -147,6 +148,7 @@
 		"pinia": "catalog:",
 		"qrcode": "catalog:",
 		"reka-ui": "catalog:",
+		"rollup-plugin-visualizer": "catalog:",
 		"sass-embedded": "catalog:",
 		"semver": "catalog:",
 		"string-width": "catalog:",
@@ -155,6 +157,7 @@
 		"typescript": "catalog:",
 		"universal-cookie": "catalog:",
 		"vite": "catalog:",
+		"vite-plugin-glsl": "catalog:",
 		"vite-plugin-vue-devtools": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",
@@ -165,5 +168,12 @@
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
 		"zod": "catalog:"
+	},
+	"dependencies": {
+		"@tresjs/cientos": "catalog:",
+		"@tresjs/core": "catalog:",
+		"@tresjs/post-processing": "catalog:",
+		"@types/three": "catalog:",
+		"three": "catalog:"
 	}
 }

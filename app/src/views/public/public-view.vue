@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import Experience from './components/experience.vue';
 import VImage from '@/components/v-image.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
@@ -83,9 +84,7 @@ const logoURL = computed<string | null>(() => {
 		</div>
 		<div class="art" :style="artStyles">
 			<div v-if="!hasCustomBackground" class="fallback">
-				<div><div></div></div>
-				<div><div></div></div>
-				<div><div></div></div>
+				<Experience />
 			</div>
 
 			<video v-else-if="customBackgroundIsVideo" :src="customBackgroundUrl" autoplay muted loop />
