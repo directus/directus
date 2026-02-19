@@ -1473,6 +1473,8 @@ ai:
   settings: Postavke
   tool_approval:
     disabled: Onemogućeno
+  ask_user_submit: Pošalji
+  ask_user_next: Nastavi
 ai_tools:
   items: Stavke
   files: Datoteke
