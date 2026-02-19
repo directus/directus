@@ -79,7 +79,7 @@ export function useAskUserTool() {
 		name: 'ask_user',
 		displayName: 'Ask User',
 		description:
-			'Ask the user one or more questions and wait for their answers. Use to confirm choices, get preferences, or clarify requirements. Each question must have options or allow_text (or both). Question ids must be unique. Each question can have up to 4 predefined options, but prefer fewer when possible — only include options that are meaningfully different. Do not overuse — only ask when the answer meaningfully affects your next steps. Output is keyed by question id; missing keys mean skipped. If _cancelled is present, the interaction was interrupted and no answers were collected.',
+			'Ask the user one or more questions and wait for their answers. Use to confirm choices, get preferences, or clarify requirements. Each question must have options or allow_text (or both). Question ids must be unique. Each question can have up to 4 predefined options, but prefer fewer when possible — only include options that are meaningfully different. Do not overuse — only ask when the answer meaningfully affects your next steps. If your questions involve collections, fields, or relationships, always call schema() tool first to ensure your questions and options reflect the actual schema. Output is keyed by question id; missing keys mean skipped. If _cancelled is present, the interaction was interrupted and no answers were collected.',
 		inputSchema,
 		execute: (args) => {
 			cancelPending();
