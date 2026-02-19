@@ -11,7 +11,6 @@ vi.mock('../adapters/index.js', () => ({
 	uploadToGoogle: vi.fn(),
 }));
 
-
 describe('uploadToProvider', () => {
 	const mockFile: UploadedFile = {
 		filename: 'test.pdf',

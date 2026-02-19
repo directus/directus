@@ -1,22 +1,31 @@
 import type { ProviderFileRef, UploadedFile } from '../types.js';
 
+const UPLOAD_TIMEOUT = 120_000;
+
 export async function uploadToGoogle(file: UploadedFile, apiKey: string): Promise<ProviderFileRef> {
 	const baseUrl = 'https://generativelanguage.googleapis.com/upload/v1beta/files';
 
 	// Step 1: Start resumable upload
-	const startResponse = await fetch(`${baseUrl}?key=${apiKey}`, {
-		method: 'POST',
-		headers: {
-			'X-Goog-Upload-Protocol': 'resumable',
-			'X-Goog-Upload-Command': 'start',
-			'X-Goog-Upload-Header-Content-Length': String(file.data.length),
-			'X-Goog-Upload-Header-Content-Type': file.mimeType,
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			file: { display_name: file.filename },
-		}),
-	});
+	let startResponse: Response;
+
+	try {
+		startResponse = await fetch(`${baseUrl}?key=${apiKey}`, {
+			method: 'POST',
+			headers: {
+				'X-Goog-Upload-Protocol': 'resumable',
+				'X-Goog-Upload-Command': 'start',
+				'X-Goog-Upload-Header-Content-Length': String(file.data.length),
+				'X-Goog-Upload-Header-Content-Type': file.mimeType,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				file: { display_name: file.filename },
+			}),
+			signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
+		});
+	} catch (error) {
+		throw new Error(`Google upload init request failed: ${(error as Error).message}`);
+	}
 
 	if (!startResponse.ok) {
 		const error = await startResponse.text();
@@ -38,6 +47,7 @@ export async function uploadToGoogle(file: UploadedFile, apiKey: string): Promis
 			'Content-Type': file.mimeType,
 		},
 		body: new Uint8Array(file.data),
+		signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
 	});
 
 	if (!uploadResponse.ok) {

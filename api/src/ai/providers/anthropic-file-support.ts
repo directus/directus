@@ -74,8 +74,12 @@ export function createAnthropicWithFileSupport(apiKey: string) {
 					headers: headersObj,
 					body: JSON.stringify(body),
 				});
-			} catch {
-				return fetch(url, options);
+			} catch (error) {
+				if (error instanceof SyntaxError) {
+					return fetch(url, options);
+				}
+
+				throw error;
 			}
 		},
 	});

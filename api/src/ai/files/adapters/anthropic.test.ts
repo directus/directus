@@ -49,7 +49,7 @@ describe('uploadToAnthropic', () => {
 	it('should make POST request to Anthropic files endpoint with correct headers', async () => {
 		await uploadToAnthropic(mockFile, mockApiKey);
 
-		expect(fetch).toHaveBeenCalledWith('https://api.anthropic.com/v1/files', {
+		expect(fetch).toHaveBeenCalledWith('https://api.anthropic.com/v1/files', expect.objectContaining({
 			method: 'POST',
 			headers: {
 				'x-api-key': 'sk-ant-test-key',
@@ -57,7 +57,7 @@ describe('uploadToAnthropic', () => {
 				'anthropic-beta': 'files-api-2025-04-14',
 			},
 			body: expect.any(FormData),
-		});
+		}));
 	});
 
 	it('should include beta header for files API', async () => {

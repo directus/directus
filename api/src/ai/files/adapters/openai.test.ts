@@ -46,16 +46,53 @@ describe('uploadToOpenAI', () => {
 		});
 	});
 
+	it('should use provider-reported bytes for sizeBytes', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue({
+				ok: true,
+				json: () =>
+					Promise.resolve({
+						id: 'file-abc123',
+						bytes: 9999,
+						filename: 'test.pdf',
+					}),
+			}),
+		);
+
+		const result = await uploadToOpenAI(mockFile, mockApiKey);
+
+		expect(result.sizeBytes).toBe(9999);
+	});
+
+	it('should fall back to local buffer length when bytes missing', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue({
+				ok: true,
+				json: () =>
+					Promise.resolve({
+						id: 'file-abc123',
+						filename: 'test.pdf',
+					}),
+			}),
+		);
+
+		const result = await uploadToOpenAI(mockFile, mockApiKey);
+
+		expect(result.sizeBytes).toBe(mockFile.data.length);
+	});
+
 	it('should make POST request to OpenAI files endpoint', async () => {
 		await uploadToOpenAI(mockFile, mockApiKey);
 
-		expect(fetch).toHaveBeenCalledWith('https://api.openai.com/v1/files', {
+		expect(fetch).toHaveBeenCalledWith('https://api.openai.com/v1/files', expect.objectContaining({
 			method: 'POST',
 			headers: {
 				Authorization: 'Bearer sk-test-key',
 			},
 			body: expect.any(FormData),
-		});
+		}));
 	});
 
 	it('should include purpose field as user_data', async () => {

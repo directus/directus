@@ -1,4 +1,4 @@
-import { createAnthropic } from '@ai-sdk/anthropic';
+import { createAnthropicWithFileSupport } from './anthropic-file-support.js';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
@@ -51,7 +51,7 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 				providers['openai'] = createOpenAI({ apiKey: config.apiKey });
 				break;
 			case 'anthropic':
-				providers['anthropic'] = createAnthropic({ apiKey: config.apiKey });
+				providers['anthropic'] = createAnthropicWithFileSupport(config.apiKey);
 				break;
 			case 'google':
 				providers['google'] = createGoogleGenerativeAI({ apiKey: config.apiKey });

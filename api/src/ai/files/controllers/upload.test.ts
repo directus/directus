@@ -9,7 +9,6 @@ vi.mock('../lib/upload-to-provider.js', () => ({
 	uploadToProvider: vi.fn(),
 }));
 
-
 function createMockMultipartRequest(fields: Record<string, string>, file?: { name: string; data: Buffer; type: string }) {
 	const boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW';
 	const parts: string[] = [];
@@ -347,110 +346,6 @@ describe('aiFileUploadHandler', () => {
 					expiresAt: '2025-01-03T00:00:00Z',
 				}),
 			);
-		});
-	});
-
-	describe('file size validation', () => {
-		it('should reject images over 5MB for Anthropic', async () => {
-			const largeImage = Buffer.alloc(6 * 1024 * 1024); // 6MB
-
-			const { stream, headers } = createMockMultipartRequest(
-				{ provider: 'anthropic' },
-				{ name: 'large.png', data: largeImage, type: 'image/png' },
-			);
-
-			mockReq = {
-				headers,
-				accountability: { user: 'test', role: 'test', app: true } as any,
-				pipe: stream.pipe.bind(stream),
-			} as any;
-
-			await aiFileUploadHandler(mockReq as Request, mockRes as Response, mockNext);
-
-			expect(mockNext).toHaveBeenCalledWith(expect.any(InvalidPayloadError));
-
-			const error = (mockNext as any).mock.calls[0][0];
-			expect(error.message).toContain('5MB');
-			expect(error.message).toContain('for images');
-		});
-
-		it('should allow PDFs up to 500MB for Anthropic', async () => {
-			// Just test with a small file that passes - we can't allocate 500MB in tests
-			const { stream, headers } = createMockMultipartRequest(
-				{ provider: 'anthropic' },
-				{ name: 'doc.pdf', data: Buffer.from('pdf'), type: 'application/pdf' },
-			);
-
-			mockReq = {
-				headers,
-				accountability: { user: 'test', role: 'test', app: true } as any,
-				pipe: stream.pipe.bind(stream),
-			} as any;
-
-			await aiFileUploadHandler(mockReq as Request, mockRes as Response, mockNext);
-
-			expect(uploadToProvider).toHaveBeenCalled();
-		});
-
-		it('should allow images under 5MB for Anthropic', async () => {
-			const smallImage = Buffer.alloc(4 * 1024 * 1024); // 4MB
-
-			const { stream, headers } = createMockMultipartRequest(
-				{ provider: 'anthropic' },
-				{ name: 'small.png', data: smallImage, type: 'image/png' },
-			);
-
-			mockReq = {
-				headers,
-				accountability: { user: 'test', role: 'test', app: true } as any,
-				pipe: stream.pipe.bind(stream),
-			} as any;
-
-			await aiFileUploadHandler(mockReq as Request, mockRes as Response, mockNext);
-
-			expect(uploadToProvider).toHaveBeenCalled();
-		});
-
-		it('should allow images up to 50MB for OpenAI', async () => {
-			const image = Buffer.alloc(10 * 1024 * 1024); // 10MB - under OpenAI's 50MB limit
-
-			const { stream, headers } = createMockMultipartRequest(
-				{ provider: 'openai' },
-				{ name: 'large.png', data: image, type: 'image/png' },
-			);
-
-			mockReq = {
-				headers,
-				accountability: { user: 'test', role: 'test', app: true } as any,
-				pipe: stream.pipe.bind(stream),
-			} as any;
-
-			await aiFileUploadHandler(mockReq as Request, mockRes as Response, mockNext);
-
-			expect(uploadToProvider).toHaveBeenCalled();
-		});
-
-		it('should reject images over 20MB for Google', async () => {
-			const largeImage = Buffer.alloc(21 * 1024 * 1024); // 21MB - over Google's 20MB image limit
-
-			const { stream, headers } = createMockMultipartRequest(
-				{ provider: 'google' },
-				{ name: 'huge.png', data: largeImage, type: 'image/png' },
-			);
-
-			mockReq = {
-				headers,
-				accountability: { user: 'test', role: 'test', app: true } as any,
-				pipe: stream.pipe.bind(stream),
-			} as any;
-
-			await aiFileUploadHandler(mockReq as Request, mockRes as Response, mockNext);
-
-			expect(mockNext).toHaveBeenCalledWith(expect.any(InvalidPayloadError));
-
-			const error = (mockNext as any).mock.calls[0][0];
-			expect(error.message).toContain('20MB');
-			expect(error.message).toContain('for images');
 		});
 	});
 

@@ -1,5 +1,7 @@
 import type { ProviderFileRef, UploadedFile } from '../types.js';
 
+const UPLOAD_TIMEOUT = 120_000;
+
 export async function uploadToAnthropic(file: UploadedFile, apiKey: string): Promise<ProviderFileRef> {
 	const formData = new FormData();
 	formData.append('file', new Blob([new Uint8Array(file.data)], { type: file.mimeType }), file.filename);
@@ -12,6 +14,7 @@ export async function uploadToAnthropic(file: UploadedFile, apiKey: string): Pro
 			'anthropic-beta': 'files-api-2025-04-14',
 		},
 		body: formData,
+		signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
 	});
 
 	if (!response.ok) {

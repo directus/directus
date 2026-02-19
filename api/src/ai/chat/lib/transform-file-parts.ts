@@ -30,7 +30,7 @@ function isFileUIPart(part: unknown): part is FileUIPart {
  */
 export function transformFilePartsForProvider(messages: UIMessage[]): UIMessage[] {
 	return messages.map((msg) => {
-		if (!msg.parts || !Array.isArray(msg.parts)) {
+		if (!Array.isArray(msg.parts)) {
 			return msg;
 		}
 
@@ -41,14 +41,12 @@ export function transformFilePartsForProvider(messages: UIMessage[]): UIMessage[
 					return part;
 				}
 
-				// Check if we have a fileId from Directus
 				const fileId = part.providerMetadata?.directus?.fileId;
 
 				if (!fileId) {
 					return part;
 				}
 
-				// Replace url with fileId for provider consumption
 				return {
 					...part,
 					url: fileId,

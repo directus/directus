@@ -1,5 +1,7 @@
 import type { ProviderFileRef, UploadedFile } from '../types.js';
 
+const UPLOAD_TIMEOUT = 120_000;
+
 export async function uploadToOpenAI(file: UploadedFile, apiKey: string): Promise<ProviderFileRef> {
 	const formData = new FormData();
 	formData.append('file', new Blob([new Uint8Array(file.data)], { type: file.mimeType }), file.filename);
@@ -11,6 +13,7 @@ export async function uploadToOpenAI(file: UploadedFile, apiKey: string): Promis
 			Authorization: `Bearer ${apiKey}`,
 		},
 		body: formData,
+		signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
 	});
 
 	if (!response.ok) {
@@ -25,7 +28,7 @@ export async function uploadToOpenAI(file: UploadedFile, apiKey: string): Promis
 		fileId: result.id,
 		filename: file.filename,
 		mimeType: file.mimeType,
-		sizeBytes: file.data.length,
+		sizeBytes: result.bytes ?? file.data.length,
 		expiresAt: null,
 	};
 }

@@ -12,6 +12,7 @@ import express from 'express';
 import { merge } from 'lodash-es';
 import qs from 'qs';
 import { aiChatRouter } from './ai/chat/router.js';
+import { aiFilesRouter } from './ai/files/router.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
@@ -322,6 +323,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (toBoolean(env['AI_ENABLED']) === true) {
 		app.use('/ai/chat', aiChatRouter);
+		app.use('/ai/files', aiFilesRouter);
 	}
 
 	if (env['METRICS_ENABLED'] === true) {
