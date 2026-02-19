@@ -66,6 +66,19 @@ export class AuthenticationService {
 
 		const provider = getAuthProvider(providerName);
 
+		emitter.emitAction(
+			'auth.login.attempt',
+			{
+				payload,
+				provider: providerName,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			},
+		);
+
 		let userId;
 
 		try {
