@@ -1477,6 +1477,8 @@ ai:
   settings: Ustawienia
   tool_approval:
     disabled: Wyłączony
+  ask_user_submit: Zatwierdź
+  ask_user_next: Następny
 ai_tools:
   items: Elementy
   files: Pliki
