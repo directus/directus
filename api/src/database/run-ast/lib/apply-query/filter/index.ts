@@ -4,6 +4,7 @@ import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
 import { isVersionedCollection } from '../../../../../services/versions/is-versioned-collection.js';
+import { toVersionedCollectionName } from '../../../../../services/versions/to-versioned-collection-name.js';
 import { toVersionedRelationName } from '../../../../../services/versions/to-versioned-relation-name.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../../utils/get-column-path.js';
@@ -161,17 +162,46 @@ export function applyFilter(
 
 						const { cases: subCases } = getCases(relation!.collection, permissions, []);
 
-						if (childKey === '_none') {
-							dbQuery[logical].whereNotIn(
-								pkField as string,
-								subQueryBuilder(Object.values(value)[0] as Filter, subCases),
-							);
+						const operator: keyof Knex.QueryBuilder = childKey === '_none' ? 'whereNotIn' : 'whereIn';
+
+						/*
+						 * If we are querying a versioned collection we need to check both the main and version table for results.
+						 * _some: match if either the main or version child collection contains a matching record.
+						 * _none: match only if neither the main nor version child collection contains a matching record.
+						 */
+						if (isVersionedCollection(collection) && schema.collections[relation!.collection]?.versioning) {
+							const versionCollection = toVersionedCollectionName(relation!.collection);
+
+							const subVersionQueryBuilder =
+								(filter: Filter, cases: Filter[]) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+									const field = relation!.field;
+									const column = `${versionCollection}.${field}`;
+
+									subQueryKnex
+										.select({ [field]: column })
+										.from(versionCollection)
+										.whereNotNull(column);
+
+									applyQuery(knex, versionCollection, subQueryKnex, { filter }, schema, cases, permissions);
+								};
+
+							const { cases: subVersionCases } = getCases(versionCollection, permissions, []);
+
+							dbQuery[logical].where((subQuery) => {
+								subQuery[operator](pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
+
+								subQuery[operator](
+									pkField as string,
+									subVersionQueryBuilder(Object.values(value)[0] as Filter, subVersionCases),
+								);
+							});
 
 							continue;
-						} else if (childKey === '_some') {
-							dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
-							continue;
 						}
+
+						dbQuery[logical][operator](pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
+
+						continue;
 					}
 				}
 
