@@ -44,6 +44,6 @@ export function mockSdk(handler?: (options: RequestOptions) => Promise<unknown>)
 		default: {
 			request: handler ? vi.fn((command) => handler(command())) : vi.fn(),
 		},
-		requestEndpoint: vi.fn((options) => () => options),
+		requestEndpoint: vi.fn((path, options) => () => ({ ...options, path })),
 	};
 }
