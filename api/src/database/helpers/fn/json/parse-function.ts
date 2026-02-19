@@ -21,12 +21,11 @@ export function calculateJsonPathDepth(path: string): number {
 }
 
 /**
- * Parses a json function selection into its field and path components
- * Uses comma as delimiter between field and JSON path, avoiding collision with A2O colon syntax.
+ * Parses a json function selection into its field and path components.
+ * Expects relational prefixes to have already been extracted by parseFilterFunctionPath,
+ * so the field should always be a simple column name.
  * @example json(metadata, color) → { field: 'metadata', path: '.color' }
  * @example json(data, items[0].name) → { field: 'data', path: '.items[0].name' }
- * @example json(author.profile, settings.theme) → { field: 'author.profile', path: '.settings.theme' }
- * @example json(relation.item:collection.field, path) → { field: 'relation.item:collection.field', path: '.path' }
  */
 export function parseJsonFunction(functionString: string): { field: string; path: string } {
 	if (!functionString.startsWith('json(') || !functionString.endsWith(')')) {
@@ -61,7 +60,7 @@ export function parseJsonFunction(functionString: string): { field: string; path
 	// Normalize path to always start with dot or bracket
 	const path = pathContent.startsWith('[') ? pathContent : '.' + pathContent;
 
-	// Validate JSON path depth (only counts the JSON path portion, not relational field segments)
+	// Validate JSON path depth
 	const env = useEnv();
 	const maxDepth = Number(env['MAX_JSON_QUERY_DEPTH']);
 	const depth = calculateJsonPathDepth(path);

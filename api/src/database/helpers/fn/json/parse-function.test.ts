@@ -21,20 +21,6 @@ const VALID_TEST_CASES = [
 	{ input: 'json(data, items[0].name)', expected: { field: 'data', path: '.items[0].name' } },
 	{ input: 'json(data, [0].name)', expected: { field: 'data', path: '[0].name' } },
 	{ input: 'json(data, [0])', expected: { field: 'data', path: '[0]' } },
-	// Relational fields with JSON path
-	{
-		input: 'json(author.profile, settings.theme)',
-		expected: { field: 'author.profile', path: '.settings.theme' },
-	},
-	{
-		input: 'json(category.parent.metadata, icon)',
-		expected: { field: 'category.parent.metadata', path: '.icon' },
-	},
-	// A2O relational fields with collection scoping (colon preserved in field portion)
-	{
-		input: 'json(relation.item:collection.field, path)',
-		expected: { field: 'relation.item:collection.field', path: '.path' },
-	},
 	// Depth validation - exactly at limit (depth 10 is allowed)
 	{
 		input: 'json(data, a.b.c.d.e.f.g.h.i.j)',
@@ -43,19 +29,6 @@ const VALID_TEST_CASES = [
 	{
 		input: 'json(data, items[0].a.b.c.d.e.f.g.h)',
 		expected: { field: 'data', path: '.items[0].a.b.c.d.e.f.g.h' },
-	},
-	// Relational fields should NOT count toward JSON path depth
-	{
-		input: 'json(a.b.c.d.e.f.g.h.i.j, color)',
-		expected: { field: 'a.b.c.d.e.f.g.h.i.j', path: '.color' },
-	},
-	{
-		input: 'json(deep.nested.relation.field, a.b.c.d.e.f.g.h.i.j)',
-		expected: { field: 'deep.nested.relation.field', path: '.a.b.c.d.e.f.g.h.i.j' },
-	},
-	{
-		input: 'json(a.b.c.d.e.f.g.h.i:collection.j.k.l, simple)',
-		expected: { field: 'a.b.c.d.e.f.g.h.i:collection.j.k.l', path: '.simple' },
 	},
 ];
 
@@ -82,15 +55,6 @@ const INVALID_TEST_CASES = [
 	},
 	{
 		input: 'json(data, a[0].b[1].c[2].d[3].e[4].f[5])',
-		expectedError: 'JSON path depth exceeds maximum allowed depth of 10',
-	},
-	// Relational field depth does NOT offset the limit — only JSON path counts
-	{
-		input: 'json(deep.nested.relation.field, a.b.c.d.e.f.g.h.i.j.k)',
-		expectedError: 'JSON path depth exceeds maximum allowed depth of 10 (got 11)',
-	},
-	{
-		input: 'json(a.b.c:collection.d.e, x[0].y[1].z[2].w[3].v[4].u[5])',
 		expectedError: 'JSON path depth exceeds maximum allowed depth of 10',
 	},
 ];
