@@ -84,8 +84,7 @@ export function useContextStaging() {
 
 		try {
 			const response = await sdk.request<Item[]>(
-				requestEndpoint({
-					path: getEndpoint(collection),
+				requestEndpoint(getEndpoint(collection), {
 					params: {
 						fields: [primaryKey, ...displayFields],
 						filter: { [primaryKey]: { _in: ids } },
@@ -185,8 +184,7 @@ export function useContextStaging() {
 				const field = element.fields[0]!;
 
 				const item = await sdk.request<Item>(
-					requestEndpoint({
-						path: `${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`,
+					requestEndpoint(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
 						params: { fields: [field] },
 					}),
 				);
@@ -204,8 +202,7 @@ export function useContextStaging() {
 			const displayFields = getFieldsFromTemplate(displayTemplate);
 
 			const item = await sdk.request<Item>(
-				requestEndpoint({
-					path: `${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`,
+				requestEndpoint(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
 					params: { fields: [primaryKey, ...displayFields] },
 				}),
 			);

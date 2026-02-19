@@ -392,8 +392,7 @@ export function useRelationMultiple(
 				}
 
 				const response = await sdk.request<Item[]>(
-					requestEndpoint({
-						path: getEndpoint(targetCollection),
+					requestEndpoint(getEndpoint(targetCollection), {
 						params: {
 							search: previewQuery.value.search,
 							fields: Array.from(fields),
@@ -472,8 +471,7 @@ export function useRelationMultiple(
 		}
 
 		const response = await sdk.request<{ count: Record<string, unknown> }[]>(
-			requestEndpoint({
-				path: getEndpoint(targetCollection),
+			requestEndpoint(getEndpoint(targetCollection), {
 				params: {
 					search: previewQuery.value.search,
 					aggregate: {

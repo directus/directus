@@ -50,8 +50,7 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 			loading.value = true;
 
 			const response = await sdk.request<Item[]>(
-				requestEndpoint({
-					path: getEndpoint(collection.value),
+				requestEndpoint(getEndpoint(collection.value), {
 					params: {
 						fields: Array.from(fields),
 						filter: { [primaryKey.value]: { _in: ids.value } },

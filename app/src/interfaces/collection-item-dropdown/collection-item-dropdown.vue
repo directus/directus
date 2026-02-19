@@ -89,8 +89,7 @@ async function getDisplayItem() {
 		loading.value = true;
 
 		const response = await sdk.request<Item[]>(
-			requestEndpoint({
-				path: getEndpoint(unref(selectedCollection)),
+			requestEndpoint(getEndpoint(unref(selectedCollection)), {
 				params: { fields: Array.from(fields), filter: { [primaryKey.value]: { _eq: value.value?.key } } },
 			}),
 		);

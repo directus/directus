@@ -75,8 +75,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*']) => {
 		try {
 			const response = await sdk.request<Item>(
-				requestEndpoint({
-					path: `${getEndpoint(collection)}/${id}`,
+				requestEndpoint(`${getEndpoint(collection)}/${id}`, {
 					params: { fields },
 				}),
 			);

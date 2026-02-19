@@ -54,8 +54,7 @@ watch(
 
 		try {
 			const item = await sdk.request<Item>(
-				requestEndpoint({
-					path: `${getEndpoint(props.collection)}/${value}`,
+				requestEndpoint(`${getEndpoint(props.collection)}/${value}`, {
 					params: {
 						fields: relatedFieldsFromTemplates,
 					},

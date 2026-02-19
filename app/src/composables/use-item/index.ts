@@ -121,7 +121,8 @@ export function useItem<T extends Item>(
 		error.value = null;
 
 		try {
-			const item = await sdk.request<T>(requestEndpoint({ path: itemEndpoint.value, params: unref(query) }));
+			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
+
 			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
@@ -200,8 +201,7 @@ export function useItem<T extends Item>(
 
 			if (isNew.value) {
 				response = await sdk.request<T>(
-					requestEndpoint({
-						path: getEndpoint(collection.value),
+					requestEndpoint(getEndpoint(collection.value), {
 						method: 'POST',
 						body: editsWithClearedValues,
 					}),
@@ -212,8 +212,7 @@ export function useItem<T extends Item>(
 				});
 			} else {
 				response = await sdk.request<T>(
-					requestEndpoint({
-						path: itemEndpoint.value,
+					requestEndpoint(itemEndpoint.value, {
 						method: 'PATCH',
 						body: editsWithClearedValues,
 					}),
@@ -260,8 +259,7 @@ export function useItem<T extends Item>(
 
 		try {
 			response = await sdk.request<Item>(
-				requestEndpoint({
-					path: graphqlEndpoint,
+				requestEndpoint(graphqlEndpoint, {
 					method: 'POST',
 					body: { query },
 				}),
@@ -370,8 +368,7 @@ export function useItem<T extends Item>(
 
 		try {
 			const response = await sdk.request<Item>(
-				requestEndpoint({
-					path: getEndpoint(collection.value),
+				requestEndpoint(getEndpoint(collection.value), {
 					method: 'POST',
 					body: newItem,
 				}),
@@ -416,8 +413,7 @@ export function useItem<T extends Item>(
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
 			const response = await sdk.request<Item[]>(
-				requestEndpoint({
-					path: getEndpoint(relation.collection),
+				requestEndpoint(getEndpoint(relation.collection), {
 					params: {
 						fields: Array.from(fieldsToFetch),
 						[`filter[${relation.field}][_eq]`]: primaryKey.value,
@@ -500,8 +496,7 @@ export function useItem<T extends Item>(
 			if (value === 'false') value = false;
 
 			await sdk.request(
-				requestEndpoint({
-					path: itemEndpoint.value,
+				requestEndpoint(itemEndpoint.value, {
 					method: 'PATCH',
 					body: {
 						[field]: value,
@@ -530,7 +525,7 @@ export function useItem<T extends Item>(
 		deleting.value = true;
 
 		try {
-			await sdk.request(requestEndpoint({ path: itemEndpoint.value, method: 'DELETE' }));
+			await sdk.request(requestEndpoint(itemEndpoint.value, { method: 'DELETE' }));
 
 			item.value = null;
 
