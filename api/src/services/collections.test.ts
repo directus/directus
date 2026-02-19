@@ -273,6 +273,47 @@ describe('Integration Tests', () => {
 
 				expect(addColumnIndexSpy).toHaveBeenCalled();
 			});
+
+			test('should push to deferredIndexes instead of calling addColumnIndex when deferredIndexes is provided', async () => {
+				tracker.on.select('directus_collections').response([]);
+
+				const addColumnIndexSpy = vi.spyOn(FieldsService.prototype, 'addColumnIndex').mockResolvedValue();
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				const deferredIndexes: Array<{ collection: string; field: any }> = [];
+
+				await service.createOne(
+					{
+						collection: 'deferred_index_collection',
+						schema: {},
+						fields: [
+							{
+								field: 'name',
+								type: 'string',
+							},
+							{
+								field: 'alias_field',
+								type: 'alias',
+							},
+						],
+					},
+					{
+						attemptConcurrentIndex: true,
+						deferredIndexes,
+					} as FieldMutationOptions,
+				);
+
+				expect(addColumnIndexSpy).not.toHaveBeenCalled();
+				// Default primary key 'id' (integer) + 'name' (string) are non-alias, alias_field is excluded
+				expect(deferredIndexes).toHaveLength(2);
+				expect(deferredIndexes.every((d) => d.collection === 'deferred_index_collection')).toBe(true);
+				expect(deferredIndexes.some((d) => d.field.field === 'name')).toBe(true);
+			});
 		});
 
 		describe('createMany', () => {

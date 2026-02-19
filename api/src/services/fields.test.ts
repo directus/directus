@@ -448,6 +448,43 @@ describe('Integration Tests', () => {
 				expect(alterTableSpy).not.toHaveBeenCalled();
 			});
 
+			test('should push to deferredIndexes instead of calling addColumnIndex when deferredIndexes is provided', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				tracker.on.select('directus_fields').response([]);
+				tracker.on.select('max').response([{ max: 1 }]);
+
+				db.schema.alterTable = mockAlterTable() as any;
+				vi.spyOn(service, 'addColumnToTable').mockImplementation(() => {});
+
+				const addColumnIndexSpy = vi.spyOn(service, 'addColumnIndex').mockResolvedValue();
+
+				const field: Partial<Field> & { field: string; type: 'string' } = {
+					field: 'new_field',
+					type: 'string',
+				};
+
+				const deferredIndexes: DeferredIndex[] = [];
+
+				await service.createField('test_collection', field, undefined, {
+					attemptConcurrentIndex: true,
+					deferredIndexes,
+				});
+
+				expect(addColumnIndexSpy).not.toHaveBeenCalled();
+				expect(deferredIndexes).toHaveLength(1);
+
+				expect(deferredIndexes[0]).toEqual(
+					expect.objectContaining({
+						collection: 'test_collection',
+					}),
+				);
+			});
+
 			test('should clear cache after field creation', async () => {
 				const clearSpy = vi.fn();
 
@@ -663,6 +700,68 @@ describe('Integration Tests', () => {
 				await service.updateField('test_collection', field);
 
 				expect(createOneSpy).toHaveBeenCalled();
+			});
+
+			test('should push to deferredIndexes instead of calling addColumnIndex when deferredIndexes is provided', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				const existingColumn = {
+					name: 'name',
+					table: 'test_collection',
+					data_type: 'varchar',
+					default_value: null,
+					max_length: 255,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_generated: false,
+					generation_expression: null,
+					is_nullable: true,
+					is_unique: false,
+					is_indexed: false,
+					is_primary_key: false,
+					has_auto_increment: false,
+					foreign_key_column: null,
+					foreign_key_table: null,
+				};
+
+				service.schemaInspector.columnInfo = vi.fn().mockResolvedValue([existingColumn]);
+				tracker.on.select('directus_fields').response([]);
+
+				db.schema.alterTable = mockAlterTable() as any;
+				vi.spyOn(service, 'addColumnToTable').mockImplementation(() => {});
+
+				const addColumnIndexSpy = vi.spyOn(service, 'addColumnIndex').mockResolvedValue();
+
+				const field: RawField = {
+					field: 'name',
+					type: 'string',
+					schema: {
+						...existingColumn,
+						max_length: 500,
+					},
+				};
+
+				const deferredIndexes: DeferredIndex[] = [];
+
+				await service.updateField('test_collection', field, {
+					attemptConcurrentIndex: true,
+					deferredIndexes,
+				});
+
+				expect(addColumnIndexSpy).not.toHaveBeenCalled();
+				expect(deferredIndexes).toHaveLength(1);
+
+				expect(deferredIndexes[0]).toEqual(
+					expect.objectContaining({
+						collection: 'test_collection',
+						field,
+						existing: existingColumn,
+					}),
+				);
 			});
 		});
 

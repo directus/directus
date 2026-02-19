@@ -12,6 +12,7 @@ import {
 	snapshotCreateCollectionNotNested,
 } from '../__utils__/snapshots.js';
 import { CollectionsService, FieldsService } from '../services/index.js';
+import * as applyDiffModule from './apply-diff.js';
 import { applySnapshot } from './apply-snapshot.js';
 import * as getSchema from './get-schema.js';
 
@@ -435,6 +436,57 @@ describe('applySnapshot', () => {
 				expect(createOneCollectionSpy).toHaveBeenCalledWith(expected, mutationOptions);
 			},
 		);
+	});
+
+	describe('attemptConcurrentIndex', () => {
+		afterEach(() => {
+			vi.restoreAllMocks();
+		});
+
+		it('Passes attemptConcurrentIndex to applyDiff when set to true', async () => {
+			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue();
+
+			const applyDiffSpy = vi.spyOn(applyDiffModule, 'applyDiff').mockResolvedValue();
+
+			await applySnapshot(snapshotCreateCollectionNotNested, {
+				database: db,
+				current: snapshotBeforeCreateCollection,
+				schema: snapshotApplyTestSchema,
+				attemptConcurrentIndex: true,
+			});
+
+			expect(applyDiffSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				expect.anything(),
+				expect.objectContaining({
+					attemptConcurrentIndex: true,
+				}),
+			);
+		});
+
+		it('Does not pass attemptConcurrentIndex to applyDiff when not set', async () => {
+			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue();
+
+			const applyDiffSpy = vi.spyOn(applyDiffModule, 'applyDiff').mockResolvedValue();
+
+			await applySnapshot(snapshotCreateCollectionNotNested, {
+				database: db,
+				current: snapshotBeforeCreateCollection,
+				schema: snapshotApplyTestSchema,
+			});
+
+			expect(applyDiffSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				expect.anything(),
+				expect.not.objectContaining({
+					attemptConcurrentIndex: true,
+				}),
+			);
+		});
 	});
 
 	describe('Delete collections', () => {
