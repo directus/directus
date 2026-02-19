@@ -28,7 +28,7 @@ catalog:
   '@editorjs/checklist': 1.6.0
   '@editorjs/code': 2.9.3
   '@editorjs/delimiter': 1.4.2
-  '@editorjs/editorjs': 2.31.0
+  '@editorjs/editorjs': 2.31.2
   '@editorjs/embed': 2.7.6
   '@editorjs/header': 2.8.8
   '@editorjs/image': 2.10.3
