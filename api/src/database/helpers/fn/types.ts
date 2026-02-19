@@ -1,4 +1,5 @@
 import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import type { Knex } from 'knex';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { applyFilter } from '../../run-ast/lib/apply-query/filter/index.js';
@@ -37,6 +38,24 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract second(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract json(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
+
+	/**
+	 * Parse a value returned from a json() function query.
+	 * Most databases return objects/arrays as stringified JSON — override this to skip parsing
+	 * for drivers that already deserialize the result (e.g. the pg driver for PostgreSQL).
+	 */
+	parseJsonResult(value: unknown): unknown {
+		if (typeof value !== 'string') return value;
+
+		try {
+			const parsed = parseJSON(value);
+			if (typeof parsed === 'object' && parsed !== null) return parsed;
+		} catch {
+			// keep original string value (e.g. actual string data in the JSON path)
+		}
+
+		return value;
+	}
 
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		const collectionName = options?.originalCollectionName || table;

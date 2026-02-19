@@ -63,7 +63,7 @@ export class FnHelperMSSQL extends FnHelper {
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[column];
 
-		if (!fieldSchema || fieldSchema.type !== 'json' || options?.jsonPath) {
+		if (!fieldSchema || fieldSchema.type !== 'json' || !options?.jsonPath) {
 			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
 		}
 

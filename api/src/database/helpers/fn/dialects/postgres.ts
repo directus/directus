@@ -64,6 +64,11 @@ export class FnHelperPostgres extends FnHelper {
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
 	}
 
+	// The pg driver automatically deserializes json/jsonb columns, so no string parsing needed.
+	override parseJsonResult(value: unknown): unknown {
+		return value;
+	}
+
 	json(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		// const { field, path } = parseJsonFunction(functionCall);
 

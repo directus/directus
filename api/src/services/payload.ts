@@ -25,7 +25,7 @@ import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, pick } from 'lodash-es';
 import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
+import { getFunctions, getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
 import { generateHash } from '../utils/generate-hash.js';
@@ -359,42 +359,21 @@ export class PayloadService {
 	}
 
 	/**
-	 * When accessing JSON paths that contain objects or arrays, certain databases
-	 * (PostgreSQL, MySQL, SQLite, MSSQL, Oracle) return stringified JSON.
-	 * This method parses those stringified values back into proper JavaScript objects/arrays.
+	 * When accessing JSON paths that contain objects or arrays, certain databases return stringified
+	 * JSON (MySQL, SQLite, MSSQL, Oracle). The fn helper's parseJsonResult handles this per-dialect —
+	 * vendors whose drivers already deserialize the result (e.g. pg for PostgreSQL) use a no-op.
 	 */
 	processJsonFunctionResults<T extends Partial<Record<string, any>>[]>(
 		payloads: T,
 		aliasMap: Record<string, string> = {},
 	) {
-		// Find all fields that came from json() function calls
-		const jsonFunctionFields = Object.entries(aliasMap).filter(([_alias, originalField]) => {
-			return originalField.startsWith('json(') && originalField.endsWith(')');
-		});
+		const fn = getFunctions(this.knex, this.schema);
 
-		if (jsonFunctionFields.length === 0) return;
+		for (const [aliasField, originalField] of Object.entries(aliasMap)) {
+			if (!originalField.startsWith('json(') || !originalField.endsWith(')')) continue;
 
-		// Parse stringified JSON values for all affected fields
-		for (const [aliasField] of jsonFunctionFields) {
 			for (const payload of payloads) {
-				const value = payload[aliasField];
-
-				// Only parse if the value is a string (databases return objects/arrays as strings)
-				if (typeof value === 'string') {
-					try {
-						// Try to parse as JSON
-						const parsed = parseJSON(value);
-
-						// Only replace the value if it was actually JSON (object or array)
-						// This preserves actual string values that happen to be in JSON paths
-						if (typeof parsed === 'object' && parsed !== null) {
-							payload[aliasField] = parsed;
-						}
-					} catch {
-						// If parsing fails, keep the original string value
-						// This is expected for actual string values in the JSON path
-					}
-				}
+				payload[aliasField] = fn.parseJsonResult(payload[aliasField]);
 			}
 		}
 	}
