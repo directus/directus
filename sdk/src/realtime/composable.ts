@@ -45,6 +45,7 @@ export function realtime(config: WebSocketConfig = {}) {
 	return <Schema>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
 		let uid = generateUid();
+		let lastAccessToken: string | null = null;
 
 		let state: ConnectionState = {
 			code: 'closed',
@@ -163,15 +164,20 @@ export function realtime(config: WebSocketConfig = {}) {
 			if (message.error.code === 'TOKEN_EXPIRED') {
 				debug('warn', 'Authentication token expired!');
 
+				// If SDK has access to token → resend auth
 				if (hasAuth(currentClient)) {
 					const access_token = await currentClient.getToken();
 
-					if (!access_token) {
-						throw Error('No token for re-authenticating the websocket');
+					if (access_token) {
+						state.connection.send(auth({ access_token }));
+						return;
 					}
-
-					state.connection.send(auth({ access_token }));
 				}
+
+				// Otherwise cookie-session auth → reconnect
+				debug('warn', 'No token available, reconnecting websocket...');
+				await reconnect(currentClient);
+				return;
 			}
 
 			if (message.error.code === 'AUTH_TIMEOUT') {
@@ -188,13 +194,27 @@ export function realtime(config: WebSocketConfig = {}) {
 
 			if (message.error.code === 'AUTH_FAILED') {
 				if (state.firstMessage && config.authMode === 'public') {
-					// detected likely misconfigured authMode
 					debug('warn', 'Authentication failed! Currently the "authMode" is "public" try using "handshake" instead');
 					config.reconnect = false;
 					return state.connection.close();
 				}
 
 				debug('warn', 'Authentication failed!');
+
+				// Token-based auth: retry auth
+				if (hasAuth(currentClient)) {
+					const access_token = await currentClient.getToken();
+
+					if (access_token) {
+						state.connection.send(auth({ access_token }));
+						return;
+					}
+				}
+
+				// Cookie/session auth: reconnect
+				debug('warn', 'No token available, reconnecting websocket...');
+				await reconnect(currentClient);
+				return;
 			}
 		}
 
@@ -298,16 +318,17 @@ export function realtime(config: WebSocketConfig = {}) {
 					reconnectState.attempts = 0;
 					reconnectState.active = false;
 					clearTimeout(connectTimeout);
-					handleMessages(self);
 
-					if (config.authMode === 'handshake' && hasAuth(self)) {
-						const access_token = await self.getToken();
+					if (config.authMode === 'handshake' && hasAuth(client as any)) {
+						const access_token = await (client as any).getToken();
 
 						if (!access_token) {
 							return reject(
 								'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
 							);
 						}
+
+						lastAccessToken = access_token;
 
 						ws.send(auth({ access_token }));
 						const confirm = await messageCallback(ws);
@@ -326,6 +347,8 @@ export function realtime(config: WebSocketConfig = {}) {
 							debug('info', 'Authentication successful!');
 						}
 					}
+
+					handleMessages(self);
 
 					eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
 
@@ -379,7 +402,21 @@ export function realtime(config: WebSocketConfig = {}) {
 				eventHandlers[event].add(callback);
 				return () => eventHandlers[event].delete(callback);
 			},
-			sendMessage(message: string | Record<string, any>) {
+			async sendMessage(message: string | Record<string, any>) {
+				const self = this as AuthWSClient<Schema>;
+
+				if (hasAuth(self)) {
+					const currentToken = await self.getToken();
+
+					if (lastAccessToken && currentToken && currentToken !== lastAccessToken) {
+						debug('info', 'Access token changed, reconnecting realtime socket...');
+						this.disconnect();
+						await this.connect();
+					}
+
+					lastAccessToken = currentToken;
+				}
+
 				if (state.code !== 'open') {
 					// TODO use directus error
 					throw new Error(
@@ -414,7 +451,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					await this.connect();
 				}
 
-				this.sendMessage({ ...options, collection, type: 'subscribe' });
+				await this.sendMessage({ ...options, collection, type: 'subscribe' });
 				let subscribed = true;
 
 				async function* subscriptionGenerator(): AsyncGenerator<
@@ -460,9 +497,9 @@ export function realtime(config: WebSocketConfig = {}) {
 					}
 				}
 
-				const unsubscribe = () => {
+				const unsubscribe = async () => {
 					subscriptions.delete({ ...options, collection, type: 'subscribe' });
-					this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
+					await this.sendMessage({ uid: options.uid, type: 'unsubscribe' });
 					subscribed = false;
 				};
 
