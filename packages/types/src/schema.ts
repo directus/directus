@@ -22,6 +22,7 @@ export type CollectionOverview = {
 	collection: string;
 	primary: string;
 	singleton: boolean;
+	versioning: boolean;
 	sortField: string | null;
 	note: string | null;
 	accountability: 'all' | 'activity' | null;
