@@ -1018,6 +1018,8 @@ ai:
   settings: Seaded
   tool_approval:
     disabled: keelatud
+  ask_user_submit: Saada
+  ask_user_next: Järgmine
 ai_tools:
   items: kirjet
   files: Failid
