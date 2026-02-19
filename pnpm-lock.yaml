@@ -64,8 +64,8 @@ catalogs:
       specifier: 1.4.2
       version: 1.4.2
     '@editorjs/editorjs':
-      specifier: 2.31.0
-      version: 2.31.0
+      specifier: 2.31.2
+      version: 2.31.2
     '@editorjs/embed':
       specifier: 2.7.6
       version: 2.7.6
@@ -153,6 +153,9 @@ catalogs:
     '@modelcontextprotocol/sdk':
       specifier: 1.26.0
       version: 1.26.0
+    '@netlify/api':
+      specifier: 14.0.14
+      version: 14.0.14
     '@ngneat/falso':
       specifier: 8.0.2
       version: 8.0.2
@@ -1093,6 +1096,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: 'catalog:'
         version: 1.26.0(zod@4.1.12)
+      '@netlify/api':
+        specifier: 'catalog:'
+        version: 14.0.14
       '@rollup/plugin-alias':
         specifier: 'catalog:'
         version: 5.1.1(rollup@4.52.5)
@@ -1595,7 +1601,7 @@ importers:
         version: 1.4.2
       '@editorjs/editorjs':
         specifier: 'catalog:'
-        version: 2.31.0
+        version: 2.31.2
       '@editorjs/embed':
         specifier: 'catalog:'
         version: 2.7.6
@@ -3893,8 +3899,8 @@ packages:
   '@editorjs/dom@1.0.1':
     resolution: {integrity: sha512-yLO+86MYOIUr1Jl7SQw23SYT84ggv6aJW0EIRsI3NTHYgnQzmK7Bt2n5ZFupQlB0GJqmKqA5tCue3NKQb+o7Pw==}
 
-  '@editorjs/editorjs@2.31.0':
-    resolution: {integrity: sha512-CBcIZXtPlg0dSlC5clO9OfTCmcxelj723jd4d67teFlaFJobjjxU1PmMxFJdhaRep5+nqdD0jr+fdJBqEDqt1g==}
+  '@editorjs/editorjs@2.31.2':
+    resolution: {integrity: sha512-9fK4RsboiLtPF3GoeRspzx1Xp0sg32ArNL7W7obATSNw3CjmrSie878WWOk3xSpdftBmJGVo2wvFmbLGzJkttg==}
 
   '@editorjs/embed@2.7.6':
     resolution: {integrity: sha512-L3agW/23mOI0L+oksUE9UOR5VSNCqapxLH5lma+5j+idjKCC31nxbx07x53MSJ4rlOTO1L7cFVhkqptEdOliJA==}
@@ -5170,6 +5176,14 @@ packages:
 
   '@napi-rs/wasm-runtime@1.0.7':
     resolution: {integrity: sha512-SeDnOO0Tk7Okiq6DbXmmBODgOAb9dp9gjlphokTUxmt8U3liIP1ZsozBahH69j/RJv+Rfs6IwUKHTgQYJ/HBAw==}
+
+  '@netlify/api@14.0.14':
+    resolution: {integrity: sha512-/YwcFbI0RsKXof+e+f48pVqmELzkGWOrhqZuL5xCUNdHYhvUd9El0jQDv7fBjdhxHSrflnZfXFUW56xaI69k4A==}
+    engines: {node: '>=18.14.0'}
+
+  '@netlify/open-api@2.48.0':
+    resolution: {integrity: sha512-nO2wJmzF32OETFtIqX76c9vNqKRBniEuktDNuVQ78HsxZDkEihel+O12gOaWf065ubtmeDM9/50BCX0safM9gA==}
+    engines: {node: '>=14.8.0'}
 
   '@ngneat/falso@8.0.2':
     resolution: {integrity: sha512-vhPtuoHoxE5JGWPSPBqEyTXcjI4MAn8GllR+Vs8FfpAQu2sQRd4PJc3e8kc9vdbdhYHx1C9HmbECgtGLK30z4w==}
@@ -8610,6 +8624,10 @@ packages:
     resolution: {integrity: sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==}
     engines: {node: '>= 6'}
 
+  data-uri-to-buffer@4.0.1:
+    resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
+    engines: {node: '>= 12'}
+
   data-uri-to-buffer@6.0.2:
     resolution: {integrity: sha512-7hvf7/GW8e86rW0ptuwS3OcBGDjIi6SZva7hCyWC0yYry2cOPmLIjXAUHI6DK2HsnwJd9ifmt57i8eV2n4YNpw==}
     engines: {node: '>= 14'}
@@ -9342,6 +9360,10 @@ packages:
       domexception:
         optional: true
 
+  fetch-blob@3.2.0:
+    resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
+    engines: {node: ^12.20 || >= 14.13}
+
   fflate@0.8.2:
     resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
 
@@ -9453,6 +9475,10 @@ packages:
   form-data@4.0.4:
     resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
     engines: {node: '>= 6'}
+
+  formdata-polyfill@4.0.10:
+    resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
+    engines: {node: '>=12.20.0'}
 
   formidable@2.1.5:
     resolution: {integrity: sha512-Oz5Hwvwak/DCaXVVUtPn4oLMLLy1CdclLKO1LFgU7XzDpVMUU5UjlSLpGMocyQNNk8F6IJW9M/YdooSn2MRI+Q==}
@@ -11207,6 +11233,11 @@ packages:
     resolution: {integrity: sha512-/bRZty2mXUIFY/xU5HLvveNHlswNJej+RnxBjOMkidWfwZzgTbPG1E3K5TOxRLOR+5hX7bSofy8yf1hZevMS8A==}
     engines: {node: ^18 || ^20 || >= 21}
 
+  node-domexception@1.0.0:
+    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
+    engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
+
   node-fetch-native@1.6.7:
     resolution: {integrity: sha512-g9yhqoedzIUm0nTnTqAQvueMPVOuIY16bqgAJJC8XOOubYFNwz6IER9qs0Gq2Xd0+CecCKFjtdDTMA4u4xG06Q==}
 
@@ -11218,6 +11249,10 @@ packages:
     peerDependenciesMeta:
       encoding:
         optional: true
+
+  node-fetch@3.3.2:
+    resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   node-forge@1.3.2:
     resolution: {integrity: sha512-6xKiQ+cph9KImrRh0VsjH2d8/GXA4FIMlgU4B757iI1ApvcyA9VlouP0yZJha01V+huImO+kKMU7ih+2+E14fw==}
@@ -11570,6 +11605,10 @@ packages:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
 
+  p-wait-for@5.0.2:
+    resolution: {integrity: sha512-lwx6u1CotQYPVju77R+D0vFomni/AqRfqLmqQ8hekklqZ6gAY9rONh7lBQ0uxWMkC2AuX9b2DVAl8To0NyP1JA==}
+    engines: {node: '>=12'}
+
   pac-proxy-agent@7.2.0:
     resolution: {integrity: sha512-TEB8ESquiLMc0lV8vcd5Ql/JAKAoyzHFXaStwjkzpOpC5Yv+pIzLfHvjTSdf3vpa2bMiUQrg9i6276yn8666aA==}
     engines: {node: '>= 14'}
@@ -11773,6 +11812,9 @@ packages:
   picomatch@4.0.3:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
+
+  picoquery@2.5.0:
+    resolution: {integrity: sha512-j1kgOFxtaCyoFCkpoYG2Oj3OdGakadO7HZ7o5CqyRazlmBekKhbDoUnNnXASE07xSY4nDImWZkrZv7toSxMi/g==}
 
   pidusage@2.0.21:
     resolution: {integrity: sha512-cv3xAQos+pugVX+BfXpHsbyz/dLzX+lr44zNMsYiGxUw+kV5sgQCIcLd1z+0vq+KyC7dJ+/ts2PsfgWfSC3WXA==}
@@ -14260,6 +14302,10 @@ packages:
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
+  web-streams-polyfill@3.3.3:
+    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
+    engines: {node: '>= 8'}
+
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
@@ -15835,7 +15881,7 @@ snapshots:
     dependencies:
       '@editorjs/helpers': 1.0.1
 
-  '@editorjs/editorjs@2.31.0':
+  '@editorjs/editorjs@2.31.2':
     dependencies:
       '@editorjs/caret': 1.0.3
       codex-notifier: 1.1.2
@@ -15843,12 +15889,12 @@ snapshots:
 
   '@editorjs/embed@2.7.6':
     dependencies:
-      '@editorjs/editorjs': 2.31.0
+      '@editorjs/editorjs': 2.31.2
 
   '@editorjs/header@2.8.8':
     dependencies:
       '@codexteam/icons': 0.0.5
-      '@editorjs/editorjs': 2.31.0
+      '@editorjs/editorjs': 2.31.2
 
   '@editorjs/helpers@0.0.4': {}
 
@@ -17049,6 +17095,15 @@ snapshots:
       '@emnapi/runtime': 1.7.0
       '@tybys/wasm-util': 0.10.1
     optional: true
+
+  '@netlify/api@14.0.14':
+    dependencies:
+      '@netlify/open-api': 2.48.0
+      node-fetch: 3.3.2
+      p-wait-for: 5.0.2
+      picoquery: 2.5.0
+
+  '@netlify/open-api@2.48.0': {}
 
   '@ngneat/falso@8.0.2':
     dependencies:
@@ -21144,6 +21199,8 @@ snapshots:
 
   data-uri-to-buffer@3.0.1: {}
 
+  data-uri-to-buffer@4.0.1: {}
+
   data-uri-to-buffer@6.0.2: {}
 
   data-urls@3.0.2:
@@ -22052,6 +22109,11 @@ snapshots:
 
   fetch-blob@2.1.2: {}
 
+  fetch-blob@3.2.0:
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 3.3.3
+
   fflate@0.8.2: {}
 
   figures@6.1.0:
@@ -22197,6 +22259,10 @@ snapshots:
       es-set-tostringtag: 2.1.0
       hasown: 2.0.2
       mime-types: 2.1.35
+
+  formdata-polyfill@4.0.10:
+    dependencies:
+      fetch-blob: 3.2.0
 
   formidable@2.1.5:
     dependencies:
@@ -24073,6 +24139,8 @@ snapshots:
 
   node-addon-api@8.5.0: {}
 
+  node-domexception@1.0.0: {}
+
   node-fetch-native@1.6.7: {}
 
   node-fetch@2.7.0(encoding@0.1.13):
@@ -24080,6 +24148,12 @@ snapshots:
       whatwg-url: 5.0.0
     optionalDependencies:
       encoding: 0.1.13
+
+  node-fetch@3.3.2:
+    dependencies:
+      data-uri-to-buffer: 4.0.1
+      fetch-blob: 3.2.0
+      formdata-polyfill: 4.0.10
 
   node-forge@1.3.2: {}
 
@@ -24523,6 +24597,10 @@ snapshots:
 
   p-try@2.2.0: {}
 
+  p-wait-for@5.0.2:
+    dependencies:
+      p-timeout: 6.1.4
+
   pac-proxy-agent@7.2.0:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
@@ -24722,6 +24800,8 @@ snapshots:
   picomatch@2.3.1: {}
 
   picomatch@4.0.3: {}
+
+  picoquery@2.5.0: {}
 
   pidusage@2.0.21:
     dependencies:
@@ -27751,6 +27831,8 @@ snapshots:
   wcwidth@1.0.1:
     dependencies:
       defaults: 1.0.4
+
+  web-streams-polyfill@3.3.3: {}
 
   webidl-conversions@3.0.1: {}
 
