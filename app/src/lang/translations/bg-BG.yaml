@@ -1423,6 +1423,8 @@ ai:
   settings: Настройки
   tool_approval:
     disabled: Изключване
+  ask_user_submit: Изпращане
+  ask_user_next: Напред
 ai_tools:
   items: Записи
   files: Файлове
