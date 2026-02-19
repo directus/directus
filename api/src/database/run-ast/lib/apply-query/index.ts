@@ -10,6 +10,7 @@ import { joinFilterWithCases } from './join-filter-with-cases.js';
 import { applyLimit, applyOffset } from './pagination.js';
 import { applySearch } from './search.js';
 import { applySort } from './sort.js';
+import { applyVersion } from './version.js';
 
 type ApplyQueryOptions = {
 	aliasMap?: AliasMap;
@@ -52,6 +53,10 @@ export default function applyQuery(
 		if (!hasJoins) {
 			hasJoins = sortResult.hasJoins;
 		}
+	}
+
+	if (query.version) {
+		applyVersion(knex, schema, dbQuery, query.version, collection);
 	}
 
 	// `cases` are the permissions cases that are required for the current data set. We're

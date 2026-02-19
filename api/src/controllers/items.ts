@@ -1,12 +1,15 @@
-import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidQueryError, isDirectusError, RouteNotFoundError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
+import getDatabase from '../database/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { ItemsService } from '../services/items.js';
 import { MetaService } from '../services/meta.js';
+import { toVersionedCollectionName } from '../services/versions/to-versioned-collection-name.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
@@ -60,6 +63,31 @@ router.post(
 
 const readHandler = asyncHandler(async (req, res, next) => {
 	if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+
+	// TODO: Move to middleware?
+	if (req.sanitizedQuery.version) {
+		if (req.accountability) {
+			await validateAccess(
+				{
+					accountability: req.accountability,
+					action: 'read',
+					collection: req.collection,
+				},
+				{
+					knex: getDatabase(),
+					schema: req.schema,
+				},
+			);
+		}
+
+		if (req.schema.collections[req.collection]?.versioning === false) {
+			throw new InvalidQueryError({
+				reason: `"version" is not supported for ${req.collection} as it is not versioned`,
+			});
+		}
+
+		req.collection = toVersionedCollectionName(req.collection);
+	}
 
 	const service = new ItemsService(req.collection, {
 		accountability: req.accountability,
