@@ -36,7 +36,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionArticles}`)
 						.query({
 							fields: 'id,title,json(category_id.metadata, color)',
-							sort: 'id',
+							sort: 'title',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -62,7 +62,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionArticles}`)
 						.query({
 							fields: 'id,title,json(category_id.metadata, settings.priority)',
-							sort: 'id',
+							sort: 'title',
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -84,7 +84,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionArticles}`)
 						.query({
 							fields: 'id,title,json(category_id.metadata, color),json(category_id.metadata, icon)',
-							sort: 'id',
+							sort: 'title',
 							limit: 1,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -107,7 +107,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionArticles}`)
 						.query({
 							fields: 'id,title,category_id.name,json(category_id.metadata, color)',
-							sort: 'id',
+							sort: 'title',
 							limit: 1,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -236,7 +236,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe('silently ignores non-JSON field at end of relational path', () => {
+			describe('returns error for non-JSON field at end of relational path', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action - 'name' is a string field, not JSON
 					const response = await request(getUrl(vendor))
@@ -246,11 +246,9 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					// Assert - Directus silently ignores invalid field types
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toBeDefined();
-					expect(response.body.data.length).toBeGreaterThan(0);
-					expect(response.body.data[0]).toHaveProperty('id');
+					// Assert - using json() on a non-JSON field returns an error
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toBeDefined();
 				});
 			});
 		});
@@ -360,8 +358,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const children = response.body.data.children;
 					expect(Array.isArray(children)).toBe(true);
 
-					// Filter to only children with resolved items (circles)
-					const resolvedChildren = children.filter((c: any) => c.item !== null);
+					// Filter to only children where json extraction succeeded (circles have metadata_color_json)
+					const resolvedChildren = children.filter((c: any) => c.item?.metadata_color_json != null);
 					expect(resolvedChildren.length).toBe(2);
 
 					const colors = resolvedChildren.map((c: any) => c.item.metadata_color_json);
@@ -394,8 +392,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const children = response.body.data.children;
 					expect(Array.isArray(children)).toBe(true);
 
-					// Filter to only children with resolved items (squares)
-					const resolvedChildren = children.filter((c: any) => c.item !== null);
+					// Filter to only children where json extraction succeeded (squares have metadata_color_json)
+					const resolvedChildren = children.filter((c: any) => c.item?.metadata_color_json != null);
 					expect(resolvedChildren.length).toBe(2);
 
 					const colors = resolvedChildren.map((c: any) => c.item.metadata_color_json);
