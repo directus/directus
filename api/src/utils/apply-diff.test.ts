@@ -767,6 +767,209 @@ describe('applyDiff', () => {
 		});
 	});
 
+	describe('Concurrent index creation', () => {
+		it('Passes attemptConcurrentIndex and deferredIndexes in mutationOptions when enabled', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [
+					{
+						collection: 'test_collection',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'test_collection',
+									meta: { group: null },
+									schema: { name: 'test_collection' },
+								} as Collection,
+							},
+						],
+					},
+				],
+				fields: [
+					{
+						collection: 'test_collection',
+						field: 'id',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'test_collection',
+									field: 'id',
+									type: 'integer',
+									meta: {},
+									schema: { is_primary_key: true },
+								} as SnapshotField,
+							},
+						],
+					},
+				],
+				systemFields: [],
+				relations: [],
+			};
+
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+
+			await applyDiff(currentSnapshot, snapshotDiff, {
+				database: db,
+				schema: snapshotApplyTestSchema,
+				attemptConcurrentIndex: true,
+			});
+
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				expect.objectContaining({
+					autoPurgeSystemCache: false,
+					bypassLimits: true,
+					attemptConcurrentIndex: true,
+					deferredIndexes: expect.any(Array),
+				}),
+			);
+		});
+
+		it('Calls addColumnIndex after transaction for deferred indexes', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [
+					{
+						collection: 'test_collection',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'test_collection',
+									meta: { group: null },
+									schema: { name: 'test_collection' },
+								} as Collection,
+							},
+						],
+					},
+				],
+				fields: [
+					{
+						collection: 'test_collection',
+						field: 'id',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'test_collection',
+									field: 'id',
+									type: 'integer',
+									meta: {},
+									schema: { is_primary_key: true },
+								} as SnapshotField,
+							},
+						],
+					},
+				],
+				systemFields: [],
+				relations: [],
+			};
+
+			const mockField = { field: 'test_field', type: 'string' };
+
+			vi.spyOn(CollectionsService.prototype, 'createOne').mockImplementation(async (_data, opts: any) => {
+				opts.deferredIndexes.push({
+					collection: 'test_collection',
+					field: mockField,
+				});
+
+				return 'test';
+			});
+
+			const addColumnIndexSpy = vi.spyOn(FieldsService.prototype, 'addColumnIndex').mockResolvedValue(undefined as any);
+
+			await applyDiff(currentSnapshot, snapshotDiff, {
+				database: db,
+				schema: snapshotApplyTestSchema,
+				attemptConcurrentIndex: true,
+			});
+
+			expect(addColumnIndexSpy).toHaveBeenCalledTimes(1);
+
+			expect(addColumnIndexSpy).toHaveBeenCalledWith('test_collection', mockField, {
+				attemptConcurrentIndex: true,
+			});
+		});
+
+		it('Does not include concurrent options when attemptConcurrentIndex is not set', async () => {
+			const currentSnapshot: Snapshot = {
+				version: 1,
+				directus: '0.0.0',
+				collections: [],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			const snapshotDiff: SnapshotDiff = {
+				collections: [
+					{
+						collection: 'test_collection',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'test_collection',
+									meta: { group: null },
+									schema: { name: 'test_collection' },
+								} as Collection,
+							},
+						],
+					},
+				],
+				fields: [
+					{
+						collection: 'test_collection',
+						field: 'id',
+						diff: [
+							{
+								kind: DiffKind.NEW,
+								rhs: {
+									collection: 'test_collection',
+									field: 'id',
+									type: 'integer',
+									meta: {},
+									schema: { is_primary_key: true },
+								} as SnapshotField,
+							},
+						],
+					},
+				],
+				systemFields: [],
+				relations: [],
+			};
+
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+
+			await applyDiff(currentSnapshot, snapshotDiff, { database: db, schema: snapshotApplyTestSchema });
+
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				expect.not.objectContaining({
+					attemptConcurrentIndex: expect.anything(),
+				}),
+			);
+		});
+	});
+
 	describe('UUID field casting', () => {
 		it.each(['char', 'varchar'])(
 			'casts UUID fields from %s(36) to uuid type when creating collection',
