@@ -237,7 +237,7 @@ function useItemWithEdits() {
 			return getCollectionRoute(collection.value);
 		}
 
-		return getItemRoute(collection.value, primaryKey.value);
+		return getItemRoute(collection.value, primaryKey.value, version?.key);
 	}
 
 	function resetEdits() {
