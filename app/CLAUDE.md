@@ -77,7 +77,8 @@ const emit = defineEmits<{
 - Named export, `use*` prefix: `export function useMyFeature() {}`
 - File naming: `use-my-feature.ts` in `src/composables/`
 - Return a plain object
-- **Check VueUse before writing custom reactive logic.** `@vueuse/core`, `@vueuse/integrations`, and `@vueuse/router` are available. Common cases that VueUse already covers:
+- **Check VueUse before writing custom reactive logic.** `@vueuse/core`, `@vueuse/integrations`, and `@vueuse/router`
+  are available. Common cases that VueUse already covers:
   - Event listeners → `useEventListener`
   - `window`/`document` size or scroll → `useWindowSize`, `useScroll`, `useIntersectionObserver`
   - Keyboard shortcuts → `useKeyModifier`, `onKeyStroke`
