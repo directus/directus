@@ -383,6 +383,8 @@ function useUrls() {
 						</VListItem>
 					</VList>
 				</VMenu>
+
+				<slot name="append-url" />
 			</div>
 
 			<div class="spacer" />

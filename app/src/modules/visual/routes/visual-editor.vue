@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ContentVersion } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
 import { computed, type ComputedRef, ref, useTemplateRef, watch } from 'vue';
@@ -9,6 +10,7 @@ import AiMagicButton from '@/ai/components/ai-magic-button.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VButton from '@/components/v-button.vue';
+import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -22,6 +24,7 @@ import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { analyzeTemplate, extractVersion, matchesTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useServerStore } from '@/stores/server';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
@@ -53,7 +56,6 @@ const { urlTemplates, resolveUrls } = useVisualEditorUrls();
 const { versions, selectedVersion, isVersionSelectable, onVersionSelect } = useVersionSelection();
 
 const urls = computed(() => resolveUrls(selectedVersion.value?.key));
-
 
 function usePageInfo() {
 	const dynamicDisplay = ref<string>();
@@ -167,7 +169,6 @@ function useVersionSelection() {
 		router.replace(getUrlRoute(newUrl));
 	}
 }
-
 </script>
 
 <template>
@@ -244,7 +245,6 @@ function useVersionSelection() {
 				</VMenu>
 			</template>
 
-
 			<template #append-header>
 				<VButton
 					v-if="serverStore.info.ai_enabled"
@@ -313,5 +313,30 @@ function useVersionSelection() {
 	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 	display: flex;
 	flex-direction: column;
+}
+
+.spacer {
+	flex: 1;
+}
+
+.version-select-activator {
+	--v-chip-padding: 0 6px 0 12px;
+	--v-chip-color: var(--theme--foreground-accent);
+	--v-chip-color-hover: var(--v-chip-color);
+	--v-chip-background-color-hover: color-mix(
+		in srgb,
+		var(--theme--navigation--modules--background),
+		var(--theme--navigation--modules--button--background-active) 87.5%
+	);
+
+	&.active {
+		--v-chip-color: var(--foreground-inverted);
+		--v-chip-background-color: var(--theme--primary);
+		--v-chip-background-color-hover: var(--v-chip-background-color);
+	}
+
+	&.v-chip {
+		border-width: 0;
+	}
 }
 </style>
