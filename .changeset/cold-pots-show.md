@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Updated dependency
+Updated vue-split-panel dependency
