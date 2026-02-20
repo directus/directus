@@ -10,7 +10,7 @@ Vue 3 CMS app studio built with Vite and Pinia. See [root agents.md](../agents.m
 - Block order enforced by ESLint: `<script>` → `<template>` → `<style>`
 - Define props inline with `defineProps<{}>()` and destructure directly (Vue 3.5+) — defaults go in the destructuring assignment
 - Use `withDefaults` only when the inline type gets unwieldy or you need to reference `props` as an object
-- Add JSDoc comments to every prop
+- Prefer descriptive naming over JSDocs comments for props
 - Use typed `defineEmits` signatures
 
 ```vue
