@@ -264,7 +264,7 @@ export class FilesService extends ItemsService<File> {
 
 		if (globalMimeTypeAllowed === false) {
 			throw new InvalidPayloadError({
-				reason: `File content type "${mimeType}" is not allowed by the global MIME type restrictions`,
+				reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
 			});
 		}
 
@@ -276,7 +276,7 @@ export class FilesService extends ItemsService<File> {
 
 			if (interfaceMimeTypeAllowed === false) {
 				throw new InvalidPayloadError({
-					reason: `File content type "${mimeType}" is not allowed by the field MIME type restrictions`,
+					reason: `File content type "${mimeType}" is not allowed for upload by this field's file type restrictions`,
 				});
 			}
 		}
