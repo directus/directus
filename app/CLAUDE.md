@@ -77,6 +77,20 @@ const emit = defineEmits<{
 - Named export, `use*` prefix: `export function useMyFeature() {}`
 - File naming: `use-my-feature.ts` in `src/composables/`
 - Return a plain object
+- **Check VueUse before writing custom reactive logic.** `@vueuse/core`, `@vueuse/integrations`, and `@vueuse/router` are available. Common cases that VueUse already covers:
+  - Event listeners → `useEventListener`
+  - `window`/`document` size or scroll → `useWindowSize`, `useScroll`, `useIntersectionObserver`
+  - Keyboard shortcuts → `useKeyModifier`, `onKeyStroke`
+  - Clipboard → `useClipboard`
+  - Local/session storage → `useLocalStorage`, `useSessionStorage`
+  - Debounce / throttle → `useDebounceFn`, `useThrottleFn`
+  - Fetch / async state → `useFetch`, `useAsyncState`
+  - Media queries → `useMediaQuery`
+  - Element visibility → `useElementVisibility`
+  - Mouse position → `useMouse`
+  - `ResizeObserver` → `useResizeObserver`
+  - `MutationObserver` → `useMutationObserver`
+  - Router params/query (typed) → `@vueuse/router`
 - **A composable must use Vue's reactivity system** — it should own reactive state (`ref`, `reactive`, `computed`) or
   call another composable/store that does. If a function has no reactive state and no lifecycle hooks, it's a utility
   function and belongs in `src/utils/` instead.
