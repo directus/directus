@@ -1532,7 +1532,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data.length).toBe(dates.length);
 
 					for (const item of response.body.data) {
-						expect(dates.map((d) => new Date(d).getFullYear())).toContain(item.date_published_year);
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(Number(item.date_published_year));
 						expect(parseInt(item.count.id)).toBe(2);
 					}
 
@@ -1540,7 +1540,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.body.data[queryKey].length).toBe(dates.length);
 
 					for (const item of gqlResponse.body.data[queryKey]) {
-						expect(dates.map((d) => new Date(d).getFullYear())).toContain(item.group.date_published_year);
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(Number(item.group.date_published_year));
 						expect(parseInt(item.count.id)).toBe(2);
 					}
 				});
