@@ -268,7 +268,13 @@ function useVersionSelection() {
 			</template>
 
 			<template #overlay="{ frameEl, frameSrc }">
-				<EditingLayer :frame-src :frame-el :show-editable-elements @navigation="onNavigation" />
+				<EditingLayer
+					:frame-src
+					:frame-el
+					:show-editable-elements
+					:version="selectedVersion"
+					@navigation="onNavigation"
+				/>
 			</template>
 
 			<template #notifications>

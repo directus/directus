@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import { PrimaryKey } from '@directus/types';
+import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { useEventListener } from '@vueuse/core';
 import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
@@ -30,10 +30,11 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
 
-const { frameSrc, frameEl, showEditableElements } = defineProps<{
+const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
 	frameSrc: string;
 	frameEl?: HTMLIFrameElement;
 	showEditableElements?: boolean;
+	version: Pick<ContentVersion, 'key' | 'name'> | null;
 }>();
 
 const emit = defineEmits<{
@@ -243,11 +244,42 @@ function useItemWithEdits() {
 		edits.value = {};
 	}
 
+	async function fetchOrCreateVersionId(versionKey: ContentVersion['key']) {
+		const {
+			data: { data: existing },
+		} = await api.get('/versions', {
+			params: {
+				filter: {
+					collection: { _eq: collection.value },
+					item: { _eq: String(primaryKey.value) },
+					key: { _eq: versionKey },
+				},
+				limit: 1,
+				fields: ['id'],
+			},
+		});
+
+		if (existing.length) return existing[0].id;
+
+		const {
+			data: { data: created },
+		} = await api.post('/versions', {
+			key: versionKey,
+			collection: collection.value,
+			item: String(primaryKey.value),
+		});
+
+		return created.id;
+	}
+
 	async function save() {
 		try {
 			let response;
 
-			if (isNew.value) {
+			if (version) {
+				const versionId: PrimaryKey = await fetchOrCreateVersionId(version.key);
+				response = await api.post(`/versions/${versionId}/save`, edits.value);
+			} else if (isNew.value) {
 				response = await api.post(itemEndpoint.value, edits.value);
 				notify({ title: t('item_create_success', 1), icon: 'check' });
 			} else {
@@ -361,6 +393,7 @@ function usePopoverWidth() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
+			:version="version?.key"
 			:popover-props="position.width > popoverWidth ? { arrowPlacement: 'start' } : {}"
 			apply-shortcut="meta+s"
 			prevent-cancel-with-edits
