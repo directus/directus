@@ -1358,7 +1358,7 @@ unsaved_changes_copy_collab:
   You’re editing this item with others. Your changes will remain in the collaborative session for now, but may be lost
   if no one saves them.
 leave_page: Leave Page
-close_drawer: Close Drawer
+cancel_anyway: Cancel Anyway
 discard_changes: Discard Changes
 discard_all_changes: Discard All Changes
 discard_changes_copy: Are you sure you want to discard all the changes made?
@@ -1848,6 +1848,12 @@ ai:
     disabled: Disabled
   enabled_tools: Enabled Tools
   disabled_tools: Disabled Tools
+  ask_user_submit: Submit
+  ask_user_next: Next
+  ask_user_skip: Skip
+  ask_user_chat_about_this: Chat about this
+  ask_user_type_answer: Type your answer...
+  ask_user_skipped: Skipped
   tool_descriptions:
     items: Create, read, update, and delete content
     files: Search and manage files
@@ -1860,6 +1866,7 @@ ai:
     fields: Create and configure collection fields
     relations: Set up relationships between collections
 ai_tools:
+  ask_user: Ask User
   update_form_values: Update Form Values
   read_form_values: Read Form Values
   items: Items
@@ -2164,6 +2171,10 @@ interfaces:
   file:
     file: File
     description: Select or upload a file
+    allowed_mime_types: Allowed MIME Types
+    mime_types_placeholder: Select or add allowed MIME types...
+    mime_types_note:
+      Note that the global FILES_MIME_TYPE_ALLOW_LIST defined in your env will take precedence over the above selection.
   files:
     files: Files
     description: Select or upload multiple files

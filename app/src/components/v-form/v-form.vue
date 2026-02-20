@@ -11,6 +11,7 @@ import ValidationErrors from './components/validation-errors.vue';
 import { useAiTools } from './composables/use-ai-tools';
 import type { ComparisonContext, FieldValues, FormField as TFormField } from './types';
 import { getFormFields } from './utils/get-form-fields';
+import { selectiveClone } from './utils/selective-clone';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import { CollabContext } from '@/composables/use-collab';
@@ -67,8 +68,30 @@ const props = withDefaults(
 
 const emit = defineEmits(['update:modelValue']);
 
+const fieldsStore = useFieldsStore();
+
+const fieldDefinitions = computed<Field[]>(() => {
+	if (props.collection) {
+		return fieldsStore.getFieldsForCollection(props.collection);
+	}
+
+	if (props.fields) {
+		return props.fields;
+	}
+
+	return [];
+});
+
+const fieldDefinitionsMap = computed<Record<string, Field | undefined>>(() => {
+	return Object.fromEntries(fieldDefinitions.value.map((field) => [field.field, field]));
+});
+
 const values = computed(() => {
-	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
+	return Object.assign(
+		{},
+		selectiveClone(props.initialValues, fieldDefinitionsMap.value),
+		selectiveClone(props.modelValue, fieldDefinitionsMap.value),
+	);
 });
 
 const el = ref<Element>();
@@ -270,7 +293,7 @@ function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 
 	if (opts?.force !== true && (!field || isDisabled(field))) return;
 
-	const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
+	const edits = props.modelValue ? selectiveClone(props.modelValue, fieldDefinitionsMap.value) : {};
 	edits[fieldKey] = value;
 	emit('update:modelValue', edits);
 }
