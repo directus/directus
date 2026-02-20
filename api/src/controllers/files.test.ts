@@ -99,7 +99,7 @@ describe('import route', () => {
 			body: {
 				url: 'https://example.com/photo.jpg',
 				data: { title: 'A photo' },
-				allowedMimeTypes: ['image/*'],
+				options: { filterMimeType: ['image/*'] },
 			},
 			accountability: null,
 			schema: { collections: {}, relations: [] },
@@ -108,7 +108,11 @@ describe('import route', () => {
 
 		await importHandler(req, { locals: {} }, next);
 
-		expect(mockImportOne).toHaveBeenCalledWith('https://example.com/photo.jpg', { title: 'A photo' }, ['image/*']);
+		expect(mockImportOne).toHaveBeenCalledWith(
+			'https://example.com/photo.jpg',
+			{ title: 'A photo' },
+			{ filterMimeType: ['image/*'] },
+		);
 
 		expect(next).toHaveBeenCalledWith();
 	});

@@ -288,9 +288,9 @@ describe('Integration Tests', () => {
 					request: { res: { responseUrl: 'https://example.com/image.png' } },
 				});
 
-				await expect(service.importOne('https://example.com/image.png', {}, ['image/jpeg'])).rejects.toBeInstanceOf(
-					InvalidPayloadError,
-				);
+				await expect(
+					service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/jpeg'] }),
+				).rejects.toBeInstanceOf(InvalidPayloadError);
 
 				expect(uploadOneSpy).not.toHaveBeenCalled();
 			});
@@ -302,9 +302,9 @@ describe('Integration Tests', () => {
 					request: { res: { responseUrl: 'https://example.com/image.png' } },
 				});
 
-				await expect(service.importOne('https://example.com/image.png', {}, ['image/*'])).resolves.toBe(
-					'imported-file-id',
-				);
+				await expect(
+					service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/*'] }),
+				).resolves.toBe('imported-file-id');
 
 				expect(uploadOneSpy).toHaveBeenCalled();
 			});
