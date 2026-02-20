@@ -37,10 +37,7 @@ export async function parseCurrentLevel(
 			}
 
 			// Since M2O fields can also be a top-level selection, we need to check and add a version equivalent field.
-			if (
-				isVersionedCollection(collection) &&
-				schema.collections[collection]?.fields[child.fieldKey]?.type === 'alias'
-			) {
+			if (isVersionedCollection(collection)) {
 				const relation = schema.relations.find((r) => r.collection === collection && r.field === fieldName);
 
 				if (relation && relation.related_collection && schema.collections[relation.related_collection]?.versioning) {
