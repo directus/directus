@@ -1010,8 +1010,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					const fields = Object.keys(response.body.data);
 
-					expect(fields).toHaveLength(4);
-					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group']));
+					expect(fields).toHaveLength(5);
+					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group', 'date_published']));
 				});
 			});
 
@@ -1034,8 +1034,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					const fields = Object.keys(response.body.data);
 
-					expect(fields).toHaveLength(4);
-					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group']));
+					expect(fields).toHaveLength(5);
+					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group', 'date_published']));
 				});
 			});
 
