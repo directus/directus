@@ -8,8 +8,8 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VUpload from '@/components/v-upload.vue';
-import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import { useServerStore } from '@/stores/server';
 
 const props = defineProps<{
