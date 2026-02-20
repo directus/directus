@@ -7,14 +7,16 @@ export function useVisualEditorUrls() {
 	const { settings } = useSettingsStore();
 	const urlTemplates = computed(() => settings?.visual_editor_urls?.map((item) => item.url).filter(Boolean) || []);
 
-	const urls = computed(() => getUrls());
-	const firstUrl = computed(() => urls.value[0] || null);
+	const resolvedUrls = computed(() => resolveUrls());
+	const firstResolvedUrl = computed(() => resolvedUrls.value[0] || null);
 
-	return { urlTemplates, firstUrl, getUrls };
+	return { urlTemplates, firstResolvedUrl, resolveUrls };
 
-	function getUrls(version = 'main') {
+	function resolveUrls(version?: string | null) {
+		const $version = version ?? 'main';
+
 		return urlTemplates.value
-			.map((urlTemplate) => renderPlainStringTemplate(urlTemplate, { $version: version }) ?? urlTemplate)
+			.map((urlTemplate) => renderPlainStringTemplate(urlTemplate, { $version }) ?? urlTemplate)
 			.map(normalizeUrl)
 			.filter(Boolean);
 	}

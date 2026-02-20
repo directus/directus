@@ -39,91 +39,91 @@ describe('useVisualEditorUrls', () => {
 		});
 	});
 
-	describe('getUrls', () => {
+	describe('resolveUrls', () => {
 		it('resolves {{$version}} template', () => {
 			mockSettings([{ url: 'https://example.com/?version={{$version}}' }]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls('draft')).toEqual(['https://example.com/?version=draft']);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls('draft')).toEqual(['https://example.com/?version=draft']);
 		});
 
 		it('resolves {{ $version }} template with spaces', () => {
 			mockSettings([{ url: 'https://example.com/?v={{ $version }}' }]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls('draft')).toEqual(['https://example.com/?v=draft']);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls('draft')).toEqual(['https://example.com/?v=draft']);
 		});
 
 		it('passes through URLs without template', () => {
 			mockSettings([{ url: 'https://example.com/path' }]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls('draft')).toEqual(['https://example.com/path']);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls('draft')).toEqual(['https://example.com/path']);
 		});
 
 		it('resolves template in path', () => {
 			mockSettings([{ url: 'https://example.com/{{$version}}/preview' }]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls('draft')).toEqual(['https://example.com/draft/preview']);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls('draft')).toEqual(['https://example.com/draft/preview']);
 		});
 
 		it('resolves template in subdomain', () => {
 			mockSettings([{ url: 'https://{{$version}}.example.com/preview' }]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls('draft')).toEqual(['https://draft.example.com/preview']);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls('draft')).toEqual(['https://draft.example.com/preview']);
 		});
 
 		it('defaults to main version when no arg provided', () => {
 			mockSettings([{ url: 'https://example.com/?version={{$version}}' }]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls()).toEqual(['https://example.com/?version=main']);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls()).toEqual(['https://example.com/?version=main']);
 		});
 
 		it('filters out invalid URLs', () => {
 			mockSettings([{ url: 'not-a-url' }, { url: 'https://example.com/?version={{$version}}' }]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls()).toEqual(['https://example.com/?version=main']);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls()).toEqual(['https://example.com/?version=main']);
 		});
 
 		it('returns empty array for empty settings', () => {
 			mockSettings([]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls()).toEqual([]);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls()).toEqual([]);
 		});
 
 		it('returns empty array for null settings', () => {
 			mockSettings(undefined, true);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls()).toEqual([]);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls()).toEqual([]);
 		});
 
 		it('filters invalid URLs from mixed list', () => {
 			mockSettings([{ url: 'https://a.com' }, { url: 'bad' }, { url: 'https://b.com' }]);
-			const { getUrls } = useVisualEditorUrls();
-			expect(getUrls()).toEqual(['https://a.com', 'https://b.com']);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls()).toEqual(['https://a.com', 'https://b.com']);
 		});
 	});
 
-	describe('firstUrl', () => {
+	describe('firstResolvedUrl', () => {
 		it('returns first valid URL', () => {
 			mockSettings([{ url: 'https://example.com/?version={{$version}}' }]);
-			const { firstUrl } = useVisualEditorUrls();
-			expect(firstUrl.value).not.toBeNull();
+			const { firstResolvedUrl } = useVisualEditorUrls();
+			expect(firstResolvedUrl.value).not.toBeNull();
 		});
 
 		it('returns null when no URLs', () => {
 			mockSettings([]);
-			const { firstUrl } = useVisualEditorUrls();
-			expect(firstUrl.value).toBeNull();
+			const { firstResolvedUrl } = useVisualEditorUrls();
+			expect(firstResolvedUrl.value).toBeNull();
 		});
 
 		it('returns null for null settings', () => {
 			mockSettings(undefined, true);
-			const { firstUrl } = useVisualEditorUrls();
-			expect(firstUrl.value).toBeNull();
+			const { firstResolvedUrl } = useVisualEditorUrls();
+			expect(firstResolvedUrl.value).toBeNull();
 		});
 
 		it('skips invalid URLs and returns first valid one', () => {
 			mockSettings([{ url: 'invalid-url' }, { url: 'https://example.com' }]);
-			const { firstUrl } = useVisualEditorUrls();
-			expect(firstUrl.value).toBe('https://example.com');
+			const { firstResolvedUrl } = useVisualEditorUrls();
+			expect(firstResolvedUrl.value).toBe('https://example.com');
 		});
 	});
 });

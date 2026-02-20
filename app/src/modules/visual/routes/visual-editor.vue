@@ -48,11 +48,11 @@ const { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiBu
 
 const { dynamicDisplay, onNavigation } = usePageInfo();
 
-const { urlTemplates, getUrls } = useVisualEditorUrls();
+const { urlTemplates, resolveUrls } = useVisualEditorUrls();
 
 const { versions, selectedVersion, isVersionSelectable, onVersionSelect } = useVersionSelection();
 
-const urls = computed(() => getUrls(selectedVersion.value?.key ?? 'main'));
+const urls = computed(() => resolveUrls(selectedVersion.value?.key));
 
 
 function usePageInfo() {

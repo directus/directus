@@ -15,9 +15,9 @@ export default defineModule({
 			name: 'visual-editor',
 			path: '',
 			redirect() {
-				const { firstUrl } = useVisualEditorUrls();
-				if (!firstUrl.value) return { name: 'visual-editor-no-url' };
-				return getUrlRoute(firstUrl.value);
+				const { firstResolvedUrl } = useVisualEditorUrls();
+				if (!firstResolvedUrl.value) return { name: 'visual-editor-no-url' };
+				return getUrlRoute(firstResolvedUrl.value);
 			},
 		},
 		{
@@ -32,11 +32,11 @@ export default defineModule({
 				};
 			},
 			beforeEnter(to) {
-				const { urlTemplates, firstUrl } = useVisualEditorUrls();
-				if (!firstUrl.value) return { name: 'visual-editor-no-url' };
+				const { urlTemplates, firstResolvedUrl } = useVisualEditorUrls();
+				if (!firstResolvedUrl.value) return { name: 'visual-editor-no-url' };
 
 				// if path is `/admin/visual/` with trailing slash
-				if (!to.params.url) return getUrlRoute(firstUrl.value);
+				if (!to.params.url) return getUrlRoute(firstResolvedUrl.value);
 
 				const concreteUrl = String(to.params.url);
 
