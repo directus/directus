@@ -33,9 +33,10 @@ const emit = defineEmits<{
 
 ### Template
 
-- PascalCase for component names: `<MyComponent />` not `<my-component />`  (enforced by ESLint)
+- PascalCase for component names: `<MyComponent />` not `<my-component />` (enforced by ESLint)
 - Shorthand attributes: `:prop`, `@event`, `#slot`
-- **Always check `src/components/` before writing plain HTML or creating a new component.** Components are globally registered via `registerComponents()` — no import needed in templates. Key components:
+- **Always check `src/components/` before writing plain HTML or creating a new component.** Components are globally
+  registered via `registerComponents()` — no import needed in templates. Key components:
   - Buttons/links: `VButton`
   - Inputs: `VInput`, `VTextarea`, `VCheckbox`, `VRadio`, `VSelect`, `VSlider`, `VDatePicker`
   - Layout: `VCard` + `VCardTitle`/`VCardText`/`VCardActions`, `VSheet`, `VDivider`, `VList`/`VListItem`/`VListGroup`
@@ -68,14 +69,17 @@ const emit = defineEmits<{
   - `inset-inline-start` / `inset-inline-end` instead of `left` / `right`
   - `inset-block-start` / `inset-block-end` instead of `top` / `bottom`
   - `padding-inline` / `margin-block` instead of directional shorthands
-- Theme design tokens available via `var(--theme--*)` (e.g. `--theme--primary`, `--theme--foreground`, `--theme--background`)
+- Theme design tokens available via `var(--theme--*)` (e.g. `--theme--primary`, `--theme--foreground`,
+  `--theme--background`)
 
 ## Composables
 
 - Named export, `use*` prefix: `export function useMyFeature() {}`
 - File naming: `use-my-feature.ts` in `src/composables/`
 - Return a plain object
-- **A composable must use Vue's reactivity system** — it should own reactive state (`ref`, `reactive`, `computed`) or call another composable/store that does. If a function has no reactive state and no lifecycle hooks, it's a utility function and belongs in `src/utils/` instead.
+- **A composable must use Vue's reactivity system** — it should own reactive state (`ref`, `reactive`, `computed`) or
+  call another composable/store that does. If a function has no reactive state and no lifecycle hooks, it's a utility
+  function and belongs in `src/utils/` instead.
 
 ```ts
 // composable — owns reactive state
@@ -84,7 +88,9 @@ export function useMyFeature() {
 	const derived = computed(() => state.value?.name);
 	return { state, derived, doSomething };
 
-	function doSomething() { /* ... */ }
+	function doSomething() {
+		/* ... */
+	}
 }
 
 // NOT a composable — pure logic, no reactivity → put in src/utils/
