@@ -259,7 +259,9 @@ export class FilesService extends ItemsService<File> {
 		const globalMimeTypeAllowed = globalAllowedPatterns.some((pattern) => minimatch(mimeType, pattern));
 
 		if (globalMimeTypeAllowed === false) {
-			throw new InvalidPayloadError({ reason: `File is of invalid content type` });
+			throw new InvalidPayloadError({
+				reason: `File content type "${mimeType}" is not allowed by the global MIME type restrictions`,
+			});
 		}
 
 		// Check against interface-level MIME type restrictions if provided
@@ -267,7 +269,9 @@ export class FilesService extends ItemsService<File> {
 			const interfaceMimeTypeAllowed = allowedMimeTypes.some((pattern) => minimatch(mimeType, pattern));
 
 			if (interfaceMimeTypeAllowed === false) {
-				throw new InvalidPayloadError({ reason: `File is of invalid content type` });
+				throw new InvalidPayloadError({
+					reason: `File content type "${mimeType}" is not allowed by the field MIME type restrictions`,
+				});
 			}
 		}
 
