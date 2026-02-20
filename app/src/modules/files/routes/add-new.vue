@@ -8,6 +8,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VUpload from '@/components/v-upload.vue';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useServerStore } from '@/stores/server';
 
@@ -22,13 +23,7 @@ const isOpen = useDialogRoute();
 const { info } = useServerStore();
 
 const allowedMimeTypes = computed(() => {
-	const allowList = info.files?.mimeTypeAllowList;
-
-	if (!allowList || allowList === '*/*') {
-		return undefined;
-	}
-
-	return allowList;
+	return parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(',');
 });
 
 function close() {
