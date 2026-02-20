@@ -4,6 +4,7 @@ export interface ReadProviderOutput {
 	name: string;
 	driver: string;
 	icon?: string | null;
+	label?: string | null;
 }
 
 /**
