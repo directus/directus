@@ -105,20 +105,125 @@ describe('Interface', () => {
 		expect(wrapper.find('.item-actions v-icon-stub.add').attributes('disabled')).toBe('true');
 	});
 
-	it('should hide action buttons when nonEditable is true', () => {
+	it('should hide action buttons when nonEditable is true and enableLink is false', () => {
 		const wrapper = mount(SelectDropdownM2O, {
 			props: {
+				value: '1',
 				collection: 'test-collection',
 				field: 'test-field',
-				enableLink: true,
+				enableLink: false,
 				nonEditable: true,
-				// Note: if nonEditable is true, disabled prop will also be true
 				disabled: true,
 			},
 			global,
 		});
 
 		expect(wrapper.find('.item-actions').exists()).toBe(false);
+	});
+
+	it('should show item-actions with navigate link when nonEditable is true and enableLink is true', () => {
+		const wrapper = mount(SelectDropdownM2O, {
+			props: {
+				value: '1',
+				collection: 'test-collection',
+				field: 'test-field',
+				enableLink: true,
+				nonEditable: true,
+				disabled: true,
+			},
+			global,
+		});
+
+		expect(wrapper.find('.item-actions').exists()).toBe(true);
+		expect(wrapper.find('.item-actions router-link-stub').exists()).toBe(true);
+	});
+
+	it('should hide edit and remove controls when nonEditable is true', () => {
+		const wrapper = mount(SelectDropdownM2O, {
+			props: {
+				value: '1',
+				collection: 'test-collection',
+				field: 'test-field',
+				enableLink: true,
+				nonEditable: true,
+				disabled: true,
+			},
+			global,
+		});
+
+		expect(wrapper.find('.item-actions').exists()).toBe(true);
+		expect(wrapper.find('.item-actions v-icon-stub[name="edit"]').exists()).toBe(false);
+		expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(false);
+	});
+
+	it('should show edit and remove controls when nonEditable is false', () => {
+		const wrapper = mount(SelectDropdownM2O, {
+			props: {
+				value: '1',
+				collection: 'test-collection',
+				field: 'test-field',
+				enableLink: true,
+				nonEditable: false,
+				disabled: false,
+			},
+			global,
+		});
+
+		expect(wrapper.find('.item-actions').exists()).toBe(true);
+		expect(wrapper.find('.item-actions v-icon-stub[name="edit"]').exists()).toBe(true);
+		expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(true);
+	});
+
+	it('should render clickable navigate link when nonEditable and disabled are both true', () => {
+		const globalWithRouterLink: GlobalMountOptions = {
+			...global,
+			stubs: {
+				...global.stubs,
+				RouterLink: {
+					template: '<div class="router-link-stub"><slot v-bind="{ href: \'/test\', navigate: () => {} }" /></div>',
+				},
+			},
+		};
+
+		const wrapper = mount(SelectDropdownM2O, {
+			props: {
+				value: '1',
+				collection: 'test-collection',
+				field: 'test-field',
+				enableLink: true,
+				nonEditable: true,
+				disabled: true,
+			},
+			global: globalWithRouterLink,
+		});
+
+		expect(wrapper.find('.item-actions .item-link').exists()).toBe(true);
+	});
+
+	it('should render non-clickable icon when disabled is true and nonEditable is false', () => {
+		const globalWithRouterLink: GlobalMountOptions = {
+			...global,
+			stubs: {
+				...global.stubs,
+				RouterLink: {
+					template: '<div class="router-link-stub"><slot v-bind="{ href: \'/test\', navigate: () => {} }" /></div>',
+				},
+			},
+		};
+
+		const wrapper = mount(SelectDropdownM2O, {
+			props: {
+				value: '1',
+				collection: 'test-collection',
+				field: 'test-field',
+				enableLink: true,
+				nonEditable: false,
+				disabled: true,
+			},
+			global: globalWithRouterLink,
+		});
+
+		expect(wrapper.find('.item-actions .item-link').exists()).toBe(false);
 	});
 
 	describe('on click', () => {
