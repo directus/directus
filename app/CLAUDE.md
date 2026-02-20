@@ -8,20 +8,26 @@ Vue 3 CMS app studio built with Vite and Pinia. See [root agents.md](../agents.m
 
 - Always use `<script setup lang="ts">` — no Options API
 - Block order enforced by ESLint: `<script>` → `<template>` → `<style>`
-- Define props with a TypeScript interface + `defineProps<Props>()`, use `withDefaults` for any defaults
+- Define props inline with `defineProps<{}>()` and destructure directly (Vue 3.5+) — defaults go in the destructuring assignment
+- Use `withDefaults` only when the inline type gets unwieldy or you need to reference `props` as an object
 - Add JSDoc comments to every prop
 - Use typed `defineEmits` signatures
 
 ```vue
 <script setup lang="ts">
-interface Props {
+// preferred — destructuring with defaults
+const {
 	/** Description of what this prop does */
-	label?: string;
+	label,
 	/** Whether the component is disabled */
+	disabled = false,
+} = defineProps<{
+	label?: string;
 	disabled?: boolean;
-}
+}>();
 
-const props = withDefaults(defineProps<Props>(), {
+// use withDefaults when you need props as a reactive object
+const props = withDefaults(defineProps<{ label?: string; disabled?: boolean }>(), {
 	disabled: false,
 });
 
@@ -35,14 +41,7 @@ const emit = defineEmits<{
 
 - PascalCase for component names: `<MyComponent />` not `<my-component />` (enforced by ESLint)
 - Shorthand attributes: `:prop`, `@event`, `#slot`
-- **Always check `src/components/` before writing plain HTML or creating a new component.** Components are globally
-  registered via `registerComponents()` — no import needed in templates. Key components:
-  - Buttons/links: `VButton`
-  - Inputs: `VInput`, `VTextarea`, `VCheckbox`, `VRadio`, `VSelect`, `VSlider`, `VDatePicker`
-  - Layout: `VCard` + `VCardTitle`/`VCardText`/`VCardActions`, `VSheet`, `VDivider`, `VList`/`VListItem`/`VListGroup`
-  - Overlay/navigation: `VDialog`, `VDrawer`, `VMenu`, `VOverlay`, `VTabs`/`VTab`
-  - Feedback: `VNotice`, `VProgressLinear`, `VProgressCircular`, `VSkeletonLoader`
-  - Display: `VIcon`, `VAvatar`, `VBadge`, `VChip`, `VHighlight`, `VImage`, `VInfo`, `VPagination`, `VTable`
+- **Always check `src/components/` before writing plain HTML or creating a new component.** Consult `src/components/register.ts` for the full list of globally registered components — no import needed in templates.
 
 ### File naming
 
