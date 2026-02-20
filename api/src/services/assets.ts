@@ -31,11 +31,11 @@ import { useLogger } from '../logger/index.js';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { injectIptcIntoJpeg } from '../utils/inject-iptc-into-jpeg.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
-import { injectIptcIntoJpeg } from '../utils/inject-iptc-into-jpeg.js';
 import { FilesService } from './files.js';
 import { FoldersService } from './folders.js';
 
@@ -454,4 +454,3 @@ const getAssetSuffix = (transforms: Transformation[]) => {
 	if (Object.keys(transforms).length === 0) return '';
 	return `__${hash(transforms)}`;
 };
-
