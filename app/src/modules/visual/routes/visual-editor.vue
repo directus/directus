@@ -118,7 +118,7 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 
 function useVersionSelection() {
 	const globalVersions: Pick<ContentVersion, 'key' | 'name'>[] = [
-		{ key: 'main', name: null },
+		{ key: 'main', name: t('main_version') },
 		{ key: DRAFT_VERSION_KEY, name: null },
 	];
 
