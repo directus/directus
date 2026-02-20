@@ -52,7 +52,7 @@ const { urlTemplates, getUrls } = useVisualEditorUrls();
 
 const { versions, selectedVersion, isVersionSelectable, onVersionSelect } = useVersionSelection();
 
-const urls = computed(() => getUrls(selectedVersion.value.key));
+const urls = computed(() => getUrls(selectedVersion.value?.key ?? 'main'));
 
 
 function usePageInfo() {
@@ -117,11 +117,6 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 }
 
 function useVersionSelection() {
-	const globalVersions: Pick<ContentVersion, 'key' | 'name'>[] = [
-		{ key: 'main', name: t('main_version') },
-		{ key: DRAFT_VERSION_KEY, name: null },
-	];
-
 	const versionPlacements = computed(() => urlTemplates.value.map(analyzeTemplate));
 
 	const activeVersionPlacement = computed(() => {
@@ -141,33 +136,34 @@ function useVersionSelection() {
 	const detectedVersion = computed<ContentVersion['key'] | null | undefined>(() => {
 		if (!dynamicUrl || !activeVersionPlacement.value) return undefined;
 
-		return extractVersion(dynamicUrl, activeVersionPlacement.value) ?? 'main';
+		const extractedVersion = extractVersion(dynamicUrl, activeVersionPlacement.value);
+
+		return extractedVersion === 'main' ? null : extractedVersion;
 	});
 
 	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
-		const isDetectedVersionCustom =
-			detectedVersion.value && !globalVersions.some((v) => v.key === detectedVersion.value);
+		const versionList = [{ key: DRAFT_VERSION_KEY, name: null }];
+		const isDetectedVersionCustom = detectedVersion.value !== null && detectedVersion.value !== DRAFT_VERSION_KEY;
 
-		const versionsIncludingCustom = isDetectedVersionCustom
-			? [...globalVersions, { key: detectedVersion.value, name: null }]
-			: globalVersions;
+		if (isDetectedVersionCustom) versionList.push({ key: detectedVersion.value!, name: null });
 
-		return versionsIncludingCustom.map((version) => ({
+		return versionList.map((version) => ({
 			key: version.key,
 			name: getVersionDisplayName(version),
 		}));
 	});
 
 	const selectedVersion = computed(() => {
-		return versions.value.find((version) => version.key === detectedVersion.value) ?? versions.value[0]!;
+		if (detectedVersion.value == null) return null;
+		return versions.value.find((version) => version.key === detectedVersion.value) ?? null;
 	});
 
 	return { versions, selectedVersion, isVersionSelectable, onVersionSelect };
 
-	function onVersionSelect(versionKey: ContentVersion['key']) {
+	function onVersionSelect(versionKey: ContentVersion['key'] | null) {
 		if (!activeVersionPlacement.value || !dynamicUrl) return;
 
-		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey);
+		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? 'main');
 		router.replace(getUrlRoute(newUrl));
 	}
 }
@@ -226,22 +222,23 @@ function useVersionSelection() {
 				<VMenu v-if="isVersionSelectable" show-arrow :placement="'bottom'">
 					<template #activator="{ toggle, active }">
 						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
-							{{ selectedVersion.name }}
+							{{ selectedVersion?.name ?? $t('main_version') }}
 							<VIcon small name="arrow_drop_down"></VIcon>
 						</VChip>
 					</template>
 
-					<VList v-if="versions.length">
+					<VList>
+						<VListItem clickable :active="selectedVersion === null" @click="onVersionSelect(null)">
+							<VListItemContent>{{ $t('main_version') }}</VListItemContent>
+						</VListItem>
 						<VListItem
 							v-for="(version, index) in versions"
 							:key="index"
-							:active="version.key === selectedVersion.key"
+							:active="version.key === selectedVersion?.key"
 							clickable
 							@click="onVersionSelect(version.key)"
 						>
-							<VListItemContent>
-								{{ version.name }}
-							</VListItemContent>
+							<VListItemContent>{{ version.name }}</VListItemContent>
 						</VListItem>
 					</VList>
 				</VMenu>
