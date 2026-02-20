@@ -1,6 +1,10 @@
 import type { Item, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { cloneDeep, pick } from 'lodash-es';
+import { isVersionedCollection } from '../../../services/versions/is-versioned-collection.js';
+import { isVersionedRelation } from '../../../services/versions/is-versioned-relation.js';
+import { toVersionNode } from '../../../services/versions/to-version-node.js';
+import { toVersionedRelationName } from '../../../services/versions/to-versioned-relation-name.js';
 import type { AST, NestedCollectionNode } from '../../../types/ast.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
@@ -60,15 +64,28 @@ export function removeTemporaryFields(
 		const fields: string[] = [];
 		const aliasFields: string[] = [];
 		const nestedCollectionNodes: NestedCollectionNode[] = [];
+		const versionDirectMap = new Map<string, string>();
+		const versionRelationMap = new Map<string, string>();
 
 		for (const child of ast.children) {
 			if ('alias' in child && child.alias === true) {
 				aliasFields.push(child.fieldKey);
 			} else {
+				if (ast.type === 'root' && isVersionedCollection(ast.name) && !isVersionedRelation(child.fieldKey)) {
+					versionDirectMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
+				}
+
+				// dont expose top level version fields
+				if (isVersionedRelation(child.fieldKey)) continue;
+
 				fields.push(child.fieldKey);
 			}
 
 			if (child.type !== 'field' && child.type !== 'functionField') {
+				if (isVersionedCollection(ast.name) && !isVersionedRelation(child.fieldKey)) {
+					versionRelationMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
+				}
+
 				nestedCollectionNodes.push(child);
 			}
 		}
@@ -89,8 +106,21 @@ export function removeTemporaryFields(
 
 			let item = rawItem;
 
-			for (const nestedNode of nestedCollectionNodes) {
-				item[nestedNode.fieldKey] = removeTemporaryFields(
+			for (let nestedNode of nestedCollectionNodes) {
+				const key = nestedNode.fieldKey;
+				const versionKey = versionRelationMap.get(nestedNode.fieldKey);
+
+				// Dont duplicate process versioned nodes
+				if (isVersionedRelation(nestedNode.fieldKey)) {
+					continue;
+				}
+
+				// Merge version node into original if its empty
+				if (versionKey && item[key] === null) {
+					nestedNode = toVersionNode(nestedNode);
+				}
+
+				item[key] = removeTemporaryFields(
 					schema,
 					item[nestedNode.fieldKey],
 					nestedNode,
@@ -99,6 +129,12 @@ export function removeTemporaryFields(
 						: schema.collections[nestedNode.relation.collection]!.primary,
 					item,
 				);
+			}
+
+			for (const [original, version] of versionDirectMap.entries()) {
+				if (item[original] === null) {
+					item[original] = item[version];
+				}
 			}
 
 			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
