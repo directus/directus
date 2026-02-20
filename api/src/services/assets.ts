@@ -31,11 +31,11 @@ import { useLogger } from '../logger/index.js';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { injectIptcIntoJpeg } from '../utils/inject-iptc-into-jpeg.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
-import { injectIptcIntoJpeg } from '../utils/inject-iptc-into-jpeg.js';
 import { FilesService } from './files.js';
 import { FoldersService } from './folders.js';
 
@@ -400,19 +400,22 @@ export class AssetsService {
 				readStream.unpipe(transformer);
 			});
 
-			let output: Readable = Readable.from(readStream.pipe(transformer));
-
 			// Determine if IPTC injection is needed (JPEG output only)
 			const outputFormat = maybeNewFormat || type?.split('/')[1];
 			const hasIptcMetadata = file.metadata?.['iptc'] && Object.keys(file.metadata['iptc']).length > 0;
 			const isJpegOutput = outputFormat === 'jpeg' || outputFormat === 'jpg';
 
+			let output: Readable;
+
 			if (hasIptcMetadata && isJpegOutput) {
+				readStream.pipe(transformer);
 				const transformedBuffer = await transformer.toBuffer();
 
 				output = Readable.from(
 					injectIptcIntoJpeg(transformedBuffer, file.metadata!['iptc'] as Record<string, unknown>),
 				);
+			} else {
+				output = Readable.from(readStream.pipe(transformer));
 			}
 
 			try {
@@ -454,4 +457,3 @@ const getAssetSuffix = (transforms: Transformation[]) => {
 	if (Object.keys(transforms).length === 0) return '';
 	return `__${hash(transforms)}`;
 };
-

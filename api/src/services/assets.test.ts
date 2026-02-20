@@ -14,6 +14,7 @@ import sharp from 'sharp';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
+import { injectIptcIntoJpeg } from '../utils/inject-iptc-into-jpeg.js';
 import { AssetsService } from './assets.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
 import { FilesService } from './files.js';
@@ -59,6 +60,7 @@ vi.mock('sharp', () => ({
 }));
 
 vi.mock('./files/lib/get-sharp-instance.js');
+vi.mock('../utils/inject-iptc-into-jpeg.js');
 
 describe('AssetsService', () => {
 	let db: MockedFunction<Knex>;
@@ -793,6 +795,8 @@ describe('AssetsService', () => {
 				ASSETS_TRANSFORM_TIMEOUT: '30s',
 			});
 
+			vi.mocked(injectIptcIntoJpeg).mockReturnValue(Buffer.alloc(0));
+
 			service = new AssetsService({
 				knex: db,
 				schema: { collections: {}, relations: [] },
@@ -870,8 +874,7 @@ describe('AssetsService', () => {
 
 			expect(mockTransformer.toBuffer).toHaveBeenCalled();
 
-			// Verify storage.write was called with a Readable (from the injected buffer)
-			expect(mockDriver.write).toHaveBeenCalledWith(expect.stringContaining('__'), expect.any(Object), 'image/jpeg');
+			expect(injectIptcIntoJpeg).toHaveBeenCalledWith(expect.any(Buffer), { copyright: 'IPTC Test Copyright' });
 		});
 
 		it('should not inject IPTC for non-JPEG output formats', async () => {
