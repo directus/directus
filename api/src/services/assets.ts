@@ -35,7 +35,7 @@ import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
-import { serializeIptc } from './files/utils/parse-image-metadata.js';
+import { injectIptcIntoJpeg } from '../utils/inject-iptc-into-jpeg.js';
 import { FilesService } from './files.js';
 import { FoldersService } from './folders.js';
 
@@ -455,44 +455,3 @@ const getAssetSuffix = (transforms: Transformation[]) => {
 	return `__${hash(transforms)}`;
 };
 
-/**
- * Build a JPEG APP13 segment containing IPTC-IIM data and inject it into a JPEG buffer.
- * The segment is inserted right after the SOI marker (0xFFD8).
- */
-function injectIptcIntoJpeg(jpeg: Buffer, iptc: Record<string, unknown>): Buffer {
-	const iptcData = serializeIptc(iptc);
-
-	if (iptcData.byteLength === 0) return jpeg;
-
-	// Build 8BIM resource block for IPTC-IIM (resource ID 0x0404)
-	const signature = Buffer.from('8BIM');
-	const resourceId = Buffer.alloc(2);
-	resourceId.writeUInt16BE(0x0404, 0);
-
-	// Empty pascal string (name): single null byte, padded to even length
-	const pascalName = Buffer.from([0x00, 0x00]);
-
-	const dataSize = Buffer.alloc(4);
-	dataSize.writeUInt32BE(iptcData.byteLength, 0);
-
-	const resourceBlock = Buffer.concat([signature, resourceId, pascalName, dataSize, iptcData]);
-
-	// Pad resource block to even length if needed
-	const paddedBlock =
-		resourceBlock.byteLength % 2 !== 0 ? Buffer.concat([resourceBlock, Buffer.from([0x00])]) : resourceBlock;
-
-	// Build APP13 segment
-	const photoshopId = Buffer.from('Photoshop 3.0\0', 'ascii');
-	const segmentPayload = Buffer.concat([photoshopId, paddedBlock]);
-	const segmentHeader = Buffer.alloc(4);
-	segmentHeader.writeUInt16BE(0xffed, 0); // APP13 marker
-	segmentHeader.writeUInt16BE(segmentPayload.byteLength + 2, 2); // length includes the 2 length bytes
-
-	const app13Segment = Buffer.concat([segmentHeader, segmentPayload]);
-
-	// Insert after SOI marker (first 2 bytes of JPEG)
-	const soi = jpeg.subarray(0, 2);
-	const rest = jpeg.subarray(2);
-
-	return Buffer.concat([soi, app13Segment, rest]);
-}
