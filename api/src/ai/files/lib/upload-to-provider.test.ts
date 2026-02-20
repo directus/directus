@@ -78,9 +78,7 @@ describe('uploadToProvider', () => {
 		it('should throw InvalidPayloadError when OpenAI API key not configured', async () => {
 			await expect(uploadToProvider(mockFile, 'openai', baseSettings)).rejects.toThrow(InvalidPayloadError);
 
-			await expect(uploadToProvider(mockFile, 'openai', baseSettings)).rejects.toThrow(
-				'OpenAI API key not configured',
-			);
+			await expect(uploadToProvider(mockFile, 'openai', baseSettings)).rejects.toThrow('OpenAI API key not configured');
 		});
 	});
 
@@ -114,9 +112,7 @@ describe('uploadToProvider', () => {
 		it('should throw InvalidPayloadError when Google API key not configured', async () => {
 			await expect(uploadToProvider(mockFile, 'google', baseSettings)).rejects.toThrow(InvalidPayloadError);
 
-			await expect(uploadToProvider(mockFile, 'google', baseSettings)).rejects.toThrow(
-				'Google API key not configured',
-			);
+			await expect(uploadToProvider(mockFile, 'google', baseSettings)).rejects.toThrow('Google API key not configured');
 		});
 	});
 

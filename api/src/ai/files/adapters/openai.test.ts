@@ -86,13 +86,16 @@ describe('uploadToOpenAI', () => {
 	it('should make POST request to OpenAI files endpoint', async () => {
 		await uploadToOpenAI(mockFile, mockApiKey);
 
-		expect(fetch).toHaveBeenCalledWith('https://api.openai.com/v1/files', expect.objectContaining({
-			method: 'POST',
-			headers: {
-				Authorization: 'Bearer sk-test-key',
-			},
-			body: expect.any(FormData),
-		}));
+		expect(fetch).toHaveBeenCalledWith(
+			'https://api.openai.com/v1/files',
+			expect.objectContaining({
+				method: 'POST',
+				headers: {
+					Authorization: 'Bearer sk-test-key',
+				},
+				body: expect.any(FormData),
+			}),
+		);
 	});
 
 	it('should include purpose field as user_data', async () => {

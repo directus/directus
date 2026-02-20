@@ -128,9 +128,7 @@ describe('uploadToGoogle', () => {
 			}),
 		);
 
-		await expect(uploadToGoogle(mockFile, mockApiKey)).rejects.toThrow(
-			'Google upload init did not return upload URL',
-		);
+		await expect(uploadToGoogle(mockFile, mockApiKey)).rejects.toThrow('Google upload init did not return upload URL');
 	});
 
 	it('should throw error when upload fails', async () => {

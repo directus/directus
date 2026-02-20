@@ -9,7 +9,10 @@ vi.mock('../lib/upload-to-provider.js', () => ({
 	uploadToProvider: vi.fn(),
 }));
 
-function createMockMultipartRequest(fields: Record<string, string>, file?: { name: string; data: Buffer; type: string }) {
+function createMockMultipartRequest(
+	fields: Record<string, string>,
+	file?: { name: string; data: Buffer; type: string },
+) {
 	const boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW';
 	const parts: string[] = [];
 
