@@ -421,17 +421,24 @@ export class UsersService extends ItemsService {
 
 		const user = await this.getUserByEmail(email);
 
-		if (user?.status !== 'invited') {
+		if (isEmpty(user)) {
 			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
 		}
 
-		// Allow unauthenticated update
+		if (user.status !== 'invited' && user.status !== 'active') {
+			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
+		}
+
 		const service = new UsersService({
 			knex: this.knex,
 			schema: this.schema,
 		});
 
-		await service.updateOne(user.id, { password, status: 'active' });
+		const payload: { password: string; status?: string } = { password };
+		if (user.status === 'invited') {
+			payload.status = 'active';
+		}
+		await service.updateOne(user.id, payload);
 	}
 
 	async registerUser(input: RegisterUserInput) {
