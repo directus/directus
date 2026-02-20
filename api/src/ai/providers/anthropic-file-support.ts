@@ -51,22 +51,18 @@ export function createAnthropicWithFileSupport(apiKey: string) {
 				const { messages, hasFileIds } = transformMessagesForFileId(body.messages);
 				body.messages = messages;
 
-				// Convert headers to plain object
 				const headersObj: Record<string, string> =
 					options.headers instanceof Headers
 						? Object.fromEntries(options.headers.entries())
 						: { ...(options.headers as Record<string, string>) };
 
-				// Add files-api beta header if using file_id references
 				if (hasFileIds) {
-					const existingBetas = headersObj['anthropic-beta'] || '';
-					const betasList = existingBetas ? existingBetas.split(',').map((b) => b.trim()) : [];
+					const existing = headersObj['anthropic-beta'];
+					const betaFlag = 'files-api-2025-04-14';
 
-					if (!betasList.includes('files-api-2025-04-14')) {
-						betasList.push('files-api-2025-04-14');
+					if (!existing?.includes(betaFlag)) {
+						headersObj['anthropic-beta'] = existing ? `${existing},${betaFlag}` : betaFlag;
 					}
-
-					headersObj['anthropic-beta'] = betasList.join(',');
 				}
 
 				return fetch(url, {

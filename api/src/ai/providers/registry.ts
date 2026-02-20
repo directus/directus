@@ -1,8 +1,8 @@
-import { createAnthropicWithFileSupport } from './anthropic-file-support.js';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { createProviderRegistry } from 'ai';
+import { createAnthropicWithFileSupport } from './anthropic-file-support.js';
 import type { AISettings, ProviderConfig } from './types.js';
 
 type ProviderRegistry = ReturnType<typeof createProviderRegistry>;
@@ -58,14 +58,9 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 				break;
 			case 'openai-compatible':
 				if (config.baseUrl) {
-					const customHeaders =
-						settings?.openaiCompatibleHeaders?.reduce(
-							(acc, { header, value }) => {
-								acc[header] = value;
-								return acc;
-							},
-							{} as Record<string, string>,
-						) ?? {};
+					const customHeaders = Object.fromEntries(
+						settings?.openaiCompatibleHeaders?.map(({ header, value }) => [header, value]) ?? [],
+					);
 
 					providers['openai-compatible'] = createOpenAICompatible({
 						name: settings?.openaiCompatibleName ?? 'openai-compatible',

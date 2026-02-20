@@ -74,6 +74,7 @@ describe('uploadToAnthropic', () => {
 			'fetch',
 			vi.fn().mockResolvedValue({
 				ok: false,
+				status: 429,
 				text: () => Promise.resolve('Rate limit exceeded'),
 			}),
 		);
@@ -81,5 +82,32 @@ describe('uploadToAnthropic', () => {
 		await expect(uploadToAnthropic(mockFile, mockApiKey)).rejects.toThrow(
 			'Anthropic upload failed: Rate limit exceeded',
 		);
+	});
+
+	it('should throw error when response is missing file ID', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue({
+				ok: true,
+				json: () => Promise.resolve({ type: 'file' }),
+			}),
+		);
+
+		await expect(uploadToAnthropic(mockFile, mockApiKey)).rejects.toThrow(
+			'Anthropic upload returned unexpected response',
+		);
+	});
+
+	it('should handle response.text() failure in error path', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue({
+				ok: false,
+				status: 500,
+				text: () => Promise.reject(new Error('body unavailable')),
+			}),
+		);
+
+		await expect(uploadToAnthropic(mockFile, mockApiKey)).rejects.toThrow('Anthropic upload failed: HTTP 500');
 	});
 });

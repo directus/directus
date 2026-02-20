@@ -156,6 +156,60 @@ describe('uploadToGoogle', () => {
 		await expect(uploadToGoogle(mockFile, mockApiKey)).rejects.toThrow('Google upload failed: Upload failed');
 	});
 
+	it('should throw error when response is missing file data', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockImplementation((url: string) => {
+				if (url.includes('generativelanguage.googleapis.com/upload/v1beta/files')) {
+					return Promise.resolve({
+						ok: true,
+						headers: {
+							get: () => 'https://upload.example.com/session',
+						},
+					});
+				}
+
+				return Promise.resolve({
+					ok: true,
+					json: () => Promise.resolve({ file: {} }),
+				});
+			}),
+		);
+
+		await expect(uploadToGoogle(mockFile, mockApiKey)).rejects.toThrow('Google upload returned unexpected response');
+	});
+
+	it('should fall back to local buffer length when sizeBytes is missing', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockImplementation((url: string) => {
+				if (url.includes('generativelanguage.googleapis.com/upload/v1beta/files')) {
+					return Promise.resolve({
+						ok: true,
+						headers: {
+							get: () => 'https://upload.example.com/session',
+						},
+					});
+				}
+
+				return Promise.resolve({
+					ok: true,
+					json: () =>
+						Promise.resolve({
+							file: {
+								uri: 'https://example.com/files/abc',
+								displayName: 'test.pdf',
+								mimeType: 'application/pdf',
+							},
+						}),
+				});
+			}),
+		);
+
+		const result = await uploadToGoogle(mockFile, mockApiKey);
+		expect(result.sizeBytes).toBe(mockFile.data.length);
+	});
+
 	it('should handle missing expirationTime', async () => {
 		vi.stubGlobal(
 			'fetch',

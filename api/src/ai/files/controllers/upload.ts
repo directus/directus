@@ -19,7 +19,7 @@ const ALLOWED_MIME_TYPES = new Set([
 	'video/mp4',
 ]);
 
-const SUPPORTED_PROVIDERS = new Set(['openai', 'anthropic', 'google']);
+const SUPPORTED_PROVIDERS: Set<string> = new Set<FileUploadProvider>(['openai', 'anthropic', 'google']);
 
 interface ParsedMultipart {
 	file?: UploadedFile;
@@ -38,20 +38,15 @@ async function parseMultipart(headers: IncomingHttpHeaders, stream: NodeJS.Reada
 
 		bb.on('file', (_name, fileStream, info) => {
 			const chunks: Buffer[] = [];
-			let truncated = false;
 
 			fileStream.on('data', (chunk: Buffer) => chunks.push(chunk));
 
 			fileStream.on('limit', () => {
-				truncated = true;
+				fileStream.destroy();
+				reject(new InvalidPayloadError({ reason: `File exceeds maximum size of ${MAX_FILE_SIZE / (1024 * 1024)}MB` }));
 			});
 
 			fileStream.on('close', () => {
-				if (truncated) {
-					reject(new InvalidPayloadError({ reason: `File exceeds maximum size of ${MAX_FILE_SIZE / (1024 * 1024)}MB` }));
-					return;
-				}
-
 				file = {
 					filename: info.filename || 'file',
 					mimeType: info.mimeType,

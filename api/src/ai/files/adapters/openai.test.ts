@@ -109,10 +109,36 @@ describe('uploadToOpenAI', () => {
 			'fetch',
 			vi.fn().mockResolvedValue({
 				ok: false,
+				status: 401,
 				text: () => Promise.resolve('Invalid API key'),
 			}),
 		);
 
 		await expect(uploadToOpenAI(mockFile, mockApiKey)).rejects.toThrow('OpenAI upload failed: Invalid API key');
+	});
+
+	it('should throw error when response is missing file ID', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue({
+				ok: true,
+				json: () => Promise.resolve({ object: 'file' }),
+			}),
+		);
+
+		await expect(uploadToOpenAI(mockFile, mockApiKey)).rejects.toThrow('OpenAI upload returned unexpected response');
+	});
+
+	it('should handle response.text() failure in error path', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue({
+				ok: false,
+				status: 500,
+				text: () => Promise.reject(new Error('body unavailable')),
+			}),
+		);
+
+		await expect(uploadToOpenAI(mockFile, mockApiKey)).rejects.toThrow('OpenAI upload failed: HTTP 500');
 	});
 });

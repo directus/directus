@@ -6,29 +6,23 @@ export async function uploadToGoogle(file: UploadedFile, apiKey: string): Promis
 	const baseUrl = 'https://generativelanguage.googleapis.com/upload/v1beta/files';
 
 	// Step 1: Start resumable upload
-	let startResponse: Response;
-
-	try {
-		startResponse = await fetch(`${baseUrl}?key=${apiKey}`, {
-			method: 'POST',
-			headers: {
-				'X-Goog-Upload-Protocol': 'resumable',
-				'X-Goog-Upload-Command': 'start',
-				'X-Goog-Upload-Header-Content-Length': String(file.data.length),
-				'X-Goog-Upload-Header-Content-Type': file.mimeType,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				file: { display_name: file.filename },
-			}),
-			signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
-		});
-	} catch (error) {
-		throw new Error(`Google upload init request failed: ${(error as Error).message}`);
-	}
+	const startResponse = await fetch(`${baseUrl}?key=${apiKey}`, {
+		method: 'POST',
+		headers: {
+			'X-Goog-Upload-Protocol': 'resumable',
+			'X-Goog-Upload-Command': 'start',
+			'X-Goog-Upload-Header-Content-Length': String(file.data.length),
+			'X-Goog-Upload-Header-Content-Type': file.mimeType,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			file: { display_name: file.filename },
+		}),
+		signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
+	});
 
 	if (!startResponse.ok) {
-		const error = await startResponse.text();
+		const error = await startResponse.text().catch(() => `HTTP ${startResponse.status}`);
 		throw new Error(`Google upload init failed: ${error}`);
 	}
 
@@ -51,19 +45,23 @@ export async function uploadToGoogle(file: UploadedFile, apiKey: string): Promis
 	});
 
 	if (!uploadResponse.ok) {
-		const error = await uploadResponse.text();
+		const error = await uploadResponse.text().catch(() => `HTTP ${uploadResponse.status}`);
 		throw new Error(`Google upload failed: ${error}`);
 	}
 
 	const result = await uploadResponse.json();
 	const fileData = result.file;
 
+	if (!fileData?.uri) {
+		throw new Error('Google upload returned unexpected response');
+	}
+
 	return {
 		provider: 'google',
 		fileId: fileData.uri,
 		filename: fileData.displayName,
 		mimeType: fileData.mimeType,
-		sizeBytes: parseInt(fileData.sizeBytes, 10),
+		sizeBytes: parseInt(fileData.sizeBytes, 10) || file.data.length,
 		expiresAt: fileData.expirationTime ?? null,
 	};
 }

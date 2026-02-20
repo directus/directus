@@ -17,11 +17,15 @@ export async function uploadToOpenAI(file: UploadedFile, apiKey: string): Promis
 	});
 
 	if (!response.ok) {
-		const error = await response.text();
+		const error = await response.text().catch(() => `HTTP ${response.status}`);
 		throw new Error(`OpenAI upload failed: ${error}`);
 	}
 
 	const result = await response.json();
+
+	if (!result.id) {
+		throw new Error('OpenAI upload returned unexpected response');
+	}
 
 	return {
 		provider: 'openai',
