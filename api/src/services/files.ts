@@ -215,7 +215,11 @@ export class FilesService extends ItemsService<File> {
 	/**
 	 * Import a single file from an external URL
 	 */
-	async importOne(importURL: string, body: Partial<File>, allowedMimeTypes?: string[]): Promise<PrimaryKey> {
+	async importOne(
+		importURL: string,
+		body: Partial<File>,
+		options: { filterMimeType?: string[] } = {},
+	): Promise<PrimaryKey> {
 		if (this.accountability) {
 			await validateAccess(
 				{
@@ -264,9 +268,11 @@ export class FilesService extends ItemsService<File> {
 			});
 		}
 
+		const { filterMimeType } = options;
+
 		// Check against interface-level MIME type restrictions if provided
-		if (allowedMimeTypes && allowedMimeTypes.length > 0) {
-			const interfaceMimeTypeAllowed = allowedMimeTypes.some((pattern) => minimatch(mimeType, pattern));
+		if (filterMimeType && filterMimeType.length > 0) {
+			const interfaceMimeTypeAllowed = filterMimeType.some((pattern: string) => minimatch(mimeType, pattern));
 
 			if (interfaceMimeTypeAllowed === false) {
 				throw new InvalidPayloadError({

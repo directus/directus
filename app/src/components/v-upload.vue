@@ -344,7 +344,7 @@ function useURLImport() {
 			const response = await api.post(`/files/import`, {
 				url: url.value,
 				data,
-				allowedMimeTypes: props.accept ? props.accept.split(',') : '',
+				options: { filterMimeType: props.accept ? props.accept.split(',') : '' },
 			});
 
 			newUpload.progress.value = 100;
