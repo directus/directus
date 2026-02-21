@@ -1,5 +1,5 @@
 ---
-'@directus/app': minor
+'@directus/app': patch
 ---
 
-autorefresh fix for issue #26468
+Fixed auto-refresh not working on small screens when the sidebar is closed

@@ -12,6 +12,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
 import VInfo from '@/components/v-info.vue';
+import { useAutoRefresh } from '@/composables/use-auto-refresh';
 import { usePreset } from '@/composables/use-preset';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -101,6 +102,8 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
+
+useAutoRefresh(refreshInterval, refresh);
 </script>
 
 <template>
