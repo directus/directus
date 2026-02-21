@@ -1,0 +1,38 @@
+name: Audit
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+  schedule:
+    - cron: '0 6 * * 1' # Weekly Monday 06:00 UTC
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
+      - name: Run audit
+        # GHSA-3ppc-4f35-3m26: minimatch ReDoS in transitive 3.x/5.x/9.x deps
+        # from dev tools (eslint, glob, etc.) — cannot override to 10.x
+        run: pnpm audit --audit-level high --ignore GHSA-3ppc-4f35-3m26
