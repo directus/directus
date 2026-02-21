@@ -4,6 +4,7 @@
 	"homepage": "https://directus.io",
 	"type": "module",
 	"scripts": {
+		"audit:deps": "pnpm audit --audit-level high --ignore GHSA-3ppc-4f35-3m26",
 		"build": "pnpm --recursive run build",
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
@@ -34,11 +35,12 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.3.4",
+			"fast-xml-parser": "5.3.6",
 			"minimatch>@isaacs/brace-expansion": "5.0.1",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
-			"pm2-sysmonit>systeminformation": "5.27.14",
-			"tar": "7.5.7",
+			"pm2-sysmonit>systeminformation": "5.31.0",
+			"tar": "7.5.8",
+			"nodemailer": "7.0.11",
 			"qs": "6.14.1"
 		}
 	},
