@@ -938,6 +938,8 @@ ai:
   settings: Nastavitve
   tool_approval:
     disabled: Onemogočeno
+  ask_user_submit: Pošlji
+  ask_user_next: Naslednje
 ai_tools:
   items: Zapisi
   files: Datoteke

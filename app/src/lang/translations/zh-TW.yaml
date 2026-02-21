@@ -1306,6 +1306,8 @@ ai:
   settings: 設定
   tool_approval:
     disabled: 已停用
+  ask_user_submit: 送出
+  ask_user_next: 下一個
 ai_tools:
   items: 項目
   files: 檔案

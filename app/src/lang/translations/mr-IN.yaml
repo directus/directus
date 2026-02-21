@@ -1503,6 +1503,8 @@ ai:
   settings: सेटिंग्स
   tool_approval:
     disabled: बंद करा
+  ask_user_submit: सादर करा
+  ask_user_next: पुढे
 ai_tools:
   items: आयटम्स
   files: फाईल्स

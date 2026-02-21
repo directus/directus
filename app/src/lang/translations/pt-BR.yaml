@@ -1609,6 +1609,8 @@ ai:
   settings: Configurações
   tool_approval:
     disabled: Desabilitado
+  ask_user_submit: Enviar
+  ask_user_next: Próximo
   tool_descriptions:
     items: Criar, ler, atualizar e deletar conteúdo
 ai_tools:

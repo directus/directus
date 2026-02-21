@@ -1271,6 +1271,8 @@ ai:
   settings: Indstillinger
   tool_approval:
     disabled: Deaktiveret
+  ask_user_submit: Send
+  ask_user_next: Næste
 ai_tools:
   items: elementer
   files: Filer

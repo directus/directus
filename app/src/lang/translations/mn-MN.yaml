@@ -1503,6 +1503,8 @@ ai:
   settings: Тохиргоо
   tool_approval:
     disabled: Идэвхгүй
+  ask_user_submit: Батлах
+  ask_user_next: Дараагийн
 ai_tools:
   items: Оруулгууд
   files: Файлууд

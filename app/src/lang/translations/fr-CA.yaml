@@ -1539,6 +1539,8 @@ ai:
   settings: Réglages
   tool_approval:
     disabled: Désactivé
+  ask_user_submit: Envoyer
+  ask_user_next: Suivant
 ai_tools:
   items: Éléments
   files: Fichiers

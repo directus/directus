@@ -1559,6 +1559,8 @@ ai:
   settings: 설정
   tool_approval:
     disabled: 비활성화 됨
+  ask_user_submit: 확인
+  ask_user_next: 다음
 ai_tools:
   items: 항목
   files: 파일

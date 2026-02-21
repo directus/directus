@@ -1513,6 +1513,8 @@ ai:
   settings: ڕێکخستنەکان
   tool_approval:
     disabled: ناکاراکراو
+  ask_user_submit: پێشکەشکردن
+  ask_user_next: دواتر
 ai_tools:
   items: ماددەکان
   files: پەڕگەکان

@@ -1671,6 +1671,8 @@ ai:
     disabled: 無効
   enabled_tools: 有効なツール
   disabled_tools: 無効なツール
+  ask_user_submit: 送信
+  ask_user_next: 次
   tool_descriptions:
     items: コンテンツの作成、閲覧、編集、削除
     files: ファイルの検索と管理

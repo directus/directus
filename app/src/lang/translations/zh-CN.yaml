@@ -1607,6 +1607,8 @@ ai:
   settings: 设置
   tool_approval:
     disabled: 禁用
+  ask_user_submit: 提交
+  ask_user_next: 下一步
 ai_tools:
   items: 条目
   files: 多个文件

@@ -1635,6 +1635,8 @@ ai:
     disabled: Uitgeschakeld
   enabled_tools: Ingeschakelde Tools
   disabled_tools: Uitgeschakelde Tools
+  ask_user_submit: Verstuur
+  ask_user_next: Volgende
   tool_descriptions:
     items: Maak, lees, update en verwijder content
     files: Zoek en beheer bestanden

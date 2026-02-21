@@ -763,6 +763,8 @@ ai:
   settings: Arventennoù
   tool_approval:
     disabled: Diaktivet
+  ask_user_submit: Kas
+  ask_user_next: Da-heul
 ai_tools:
   items: Elfennoù
   files: Restroù

@@ -948,6 +948,8 @@ ai:
   settings: การตั้งค่า
   tool_approval:
     disabled: ปิดใช้งาน
+  ask_user_submit: ส่งข้อมูล
+  ask_user_next: ถัดไป
 ai_tools:
   items: รายการ
   files: ไฟล์

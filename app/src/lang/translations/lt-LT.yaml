@@ -1505,6 +1505,8 @@ ai:
   settings: Nustatymai
   tool_approval:
     disabled: Išjungta
+  ask_user_submit: Išsaugoti
+  ask_user_next: Tęsti
 ai_tools:
   items: Įrašai
   files: Failai

@@ -1509,6 +1509,8 @@ ai:
   settings: Nastavení
   tool_approval:
     disabled: Zakázáno
+  ask_user_submit: Potvrdit
+  ask_user_next: Další
 ai_tools:
   items: Položky
   files: Soubory

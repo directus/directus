@@ -1390,6 +1390,8 @@ ai:
   settings: Inställningar
   tool_approval:
     disabled: Inaktiverad
+  ask_user_submit: Skicka
+  ask_user_next: Nästa
 ai_tools:
   items: Objekt
   files: Filer

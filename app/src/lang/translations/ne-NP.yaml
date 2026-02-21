@@ -1162,6 +1162,8 @@ ai:
   settings: सेटिंग्सहरु
   tool_approval:
     disabled: सक्षम गरिएको छैन
+  ask_user_submit: पेश गर्नुहोस्
+  ask_user_next: अर्को
 ai_tools:
   items: बस्तुहरु
   files: फाइलहरू

@@ -987,6 +987,8 @@ ai:
   settings: Cài đặt
   tool_approval:
     disabled: Đã tắt
+  ask_user_submit: Gửi đi
+  ask_user_next: Tiếp theo
 ai_tools:
   files: Tệp
   folders: Thư mục

@@ -1176,6 +1176,8 @@ ai:
   settings: Configuració
   tool_approval:
     disabled: Deshabilitat
+  ask_user_submit: Envia
+  ask_user_next: Següent
 ai_tools:
   items: Elements
   files: Arxius

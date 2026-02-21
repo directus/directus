@@ -1530,6 +1530,8 @@ ai:
   settings: Ajustes
   tool_approval:
     disabled: Desactivado
+  ask_user_submit: Enviar
+  ask_user_next: Siguiente
 ai_tools:
   items: Elementos
   files: Archivos

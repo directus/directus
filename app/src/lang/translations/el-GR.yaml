@@ -422,6 +422,8 @@ ai:
   unknown: Άγνωστο
   content: Περιεχόμενο
   settings: Ρυθμίσεις
+  ask_user_submit: Υποβολή
+  ask_user_next: Επόμενο
 ai_tools:
   files: Αρχεία
   flows: Ροές

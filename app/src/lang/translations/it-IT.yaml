@@ -1517,6 +1517,8 @@ ai:
   settings: impostazioni
   tool_approval:
     disabled: Disabilitato
+  ask_user_submit: Invia
+  ask_user_next: Avanti
 ai_tools:
   items: Elementi
   files: File
