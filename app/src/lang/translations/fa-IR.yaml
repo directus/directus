@@ -1469,10 +1469,10 @@ fields:
     avif: AVIF
     reporting: گزارش‌گیری
     mapping: نقشه برداری
-    basemaps: Basemap
+    basemaps: نقشه‌های پایه
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
-    basemaps_style: Mapbox Style
+    basemaps_style: سبک مپ‌باکس
     mapbox_key: کلید دسترسی Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: انتساب
@@ -1610,11 +1610,11 @@ field_options:
     transforms_note: نام متود شارپ و آرگومان های آن. برای اطلاعات بیشتر به https://sharp.pixelplumbing.com/api-constructor مراجعه کنید.
     mapbox_key: کلید دسترسی Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
-    basemaps: Basemap
-    basemaps_name_placeholder: نام Basemap را وارد کنید...
+    basemaps: نقشه‌های پایه
+    basemaps_name_placeholder: نام نقشه پایه را وارد کنید...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
-    basemaps_style: Mapbox Style
+    basemaps_style: سبک مپ‌باکس
     files_divider_title: فایلها و تصاویر کوچک
     overrides_divider_title: لغو برنامه
   directus_activity:
@@ -2495,7 +2495,7 @@ layouts:
     first_day: اولین روز هفته
   map:
     map: نقشه
-    basemap: نقشه اصلی
+    basemap: نقشه پایه
     layers: لایه‌ها
     cluster_options: تنظیمات کلاسترینگ
     cluster: دسته‌بندی داده‌‌های نزدیک
