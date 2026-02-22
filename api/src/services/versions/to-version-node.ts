@@ -19,6 +19,12 @@ export function toVersionNode<T extends NestedCollectionNode | FieldNode | Funct
 		child.relation.field = toVersionedRelationName(child.relation.field);
 	}
 
+	if (child.type === 'o2m') {
+		child.fieldKey = toVersionedRelationName(child.fieldKey);
+		child.relation.collection = toVersionedCollectionName(child.relation.collection);
+		child.relation.field = toVersionedRelationName(child.relation.field);
+	}
+
 	if (child.type === 'a2o') {
 		child.fieldKey = toVersionedRelationName(child.fieldKey);
 		child.relation.field = toVersionedRelationName(child.relation.field);
