@@ -3,6 +3,7 @@ import { isVersionedCollection } from '../../../services/versions/is-versioned-c
 import { isVersionedRelation } from '../../../services/versions/is-versioned-relation.js';
 import { toVersionNode } from '../../../services/versions/to-version-node.js';
 import { toVersionedRelationName } from '../../../services/versions/to-versioned-relation-name.js';
+import { VERSION_SYSTEM_FIELDS } from '../../../services/versions/version-system-fields.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 
@@ -76,6 +77,13 @@ export async function parseCurrentLevel(
 		}
 
 		nestedCollectionNodes.push(child);
+	}
+
+	if (isVersionedCollection(collection)) {
+		// inject version fields for "meta"
+		Object.values(VERSION_SYSTEM_FIELDS).forEach((f) => {
+			columnsToSelectInternal.push(f.field);
+		});
 	}
 
 	const isAggregate = (query.group || (query.aggregate && Object.keys(query.aggregate).length > 0)) ?? false;
