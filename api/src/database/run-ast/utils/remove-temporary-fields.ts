@@ -82,12 +82,15 @@ export function removeTemporaryFields(
 			}
 
 			if (child.type !== 'field' && child.type !== 'functionField') {
-				if (isVersionedCollection(ast.name) && !isVersionedRelation(child.fieldKey)) {
-					const relation = schema.relations.find((r) => r.collection === ast.name && r.field === child.fieldKey);
+				const collection = child.type === 'o2m' ? child.relation.related_collection! : child.relation.collection;
+				const target = child.type === 'o2m' ? child.relation.collection : child.relation.related_collection!;
 
-					if (relation && relation.related_collection && schema.collections[relation.related_collection]?.versioning) {
-						versionRelationMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
-					}
+				if (
+					isVersionedCollection(collection) &&
+					!isVersionedRelation(child.fieldKey) &&
+					schema.collections[target]?.versioning
+				) {
+					versionRelationMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
 				}
 
 				nestedCollectionNodes.push(child);
