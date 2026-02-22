@@ -83,7 +83,11 @@ export function removeTemporaryFields(
 
 			if (child.type !== 'field' && child.type !== 'functionField') {
 				if (isVersionedCollection(ast.name) && !isVersionedRelation(child.fieldKey)) {
-					versionRelationMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
+					const relation = schema.relations.find((r) => r.collection === ast.name && r.field === child.fieldKey);
+
+					if (relation && relation.related_collection && schema.collections[relation.related_collection]?.versioning) {
+						versionRelationMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
+					}
 				}
 
 				nestedCollectionNodes.push(child);
