@@ -5,3 +5,7 @@
 ---
 
 Fixed password reset sending emails to external auth provider users
+
+:::notice
+`requestPasswordReset` now throws a `Forbidden` error for external auth provider users.
+:::
