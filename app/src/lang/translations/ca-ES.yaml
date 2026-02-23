@@ -624,7 +624,6 @@ unexpected_error: Error inesperat
 copy_details: Copia detalls
 no_app_access: Sense accés a l'aplicació
 no_app_access_copy: Aquest usuari no pot administrar l'aplicació.
-password_reset_sent: Si teniu un compte, us hem enviat un enllaç segur per restablir la vostra contrasenya
 password_reset_successful: Contrasenya restablerta correctament
 back: Enrere
 filter: Filtre
