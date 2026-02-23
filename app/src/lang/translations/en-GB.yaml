@@ -607,7 +607,6 @@ unexpected_error: Unexpected Error
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
-password_reset_sent: If you have an account, we've sent you a secure link to reset your password
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
