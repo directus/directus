@@ -756,7 +756,6 @@ unexpected_error_copy: Ndodhi një gabim i papritur. Ju lutem provoni përsëri.
 copy_details: Kopjo Detajet
 no_app_access: S'ka Akses në Aplikacion
 no_app_access_copy: Ky përdorues nuk ka leje për të përdorur aplikacionin e administrimit.
-password_reset_sent: Nëse keni një llogari, kemi dërguar një lidhje të sigurt për të rivendosur fjalëkalimin tuaj
 password_reset_successful: Fjalëkalimi u rivendos me sukses
 back: Mbrapa
 filter: Filtri
