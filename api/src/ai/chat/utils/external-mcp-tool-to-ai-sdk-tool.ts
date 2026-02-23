@@ -39,8 +39,7 @@ export function externalMCPToolToAiSdkTool(
 	const approvalMode = toolApprovals?.[externalTool.fullName] ?? externalTool.toolApproval;
 	const needsApproval = approvalMode !== 'always';
 
-	return tool({
-		name: externalTool.fullName,
+	return tool<any, { type: 'text'; data: string }>({
 		description: `[${externalTool.serverName}] ${externalTool.description}`,
 		inputSchema: jsonSchema(externalTool.inputSchema as Parameters<typeof jsonSchema>[0]),
 		needsApproval,
