@@ -3,8 +3,8 @@ import { useScroll } from '@vueuse/core';
 import { nanoid } from 'nanoid';
 import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAiContextStore } from '../stores/use-ai-context';
 import { useAiStore } from '../stores/use-ai';
+import { useAiContextStore } from '../stores/use-ai-context';
 import AiHeader from './ai-header.vue';
 import AiInput from './ai-input.vue';
 import AiMessageList from './ai-message-list.vue';
@@ -22,6 +22,18 @@ const userStore = useUserStore();
 
 const dragging = ref(false);
 let dragCounter = 0;
+
+const allowedMimeTypes = new Set([
+	'image/jpeg',
+	'image/png',
+	'image/gif',
+	'image/webp',
+	'application/pdf',
+	'text/plain',
+	'audio/mpeg',
+	'audio/wav',
+	'video/mp4',
+]);
 
 const hasProviders = computed(() => aiStore.models.length > 0);
 
@@ -109,13 +121,24 @@ function onDrop(event: DragEvent) {
 	const files = event.dataTransfer?.files;
 
 	if (files) {
+		let rejected = 0;
+
 		for (const file of Array.from(files)) {
+			if (!allowedMimeTypes.has(file.type)) {
+				rejected++;
+				continue;
+			}
+
 			contextStore.addPendingContext({
 				id: nanoid(),
 				type: 'local-file',
 				data: { file },
 				display: file.name,
 			});
+		}
+
+		if (rejected > 0) {
+			notify({ title: t('ai.unsupported_file_type'), type: 'warning' });
 		}
 
 		aiStore.focusInput();

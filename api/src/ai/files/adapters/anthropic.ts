@@ -6,23 +6,39 @@ export async function uploadToAnthropic(file: UploadedFile, apiKey: string): Pro
 	const formData = new FormData();
 	formData.append('file', new Blob([new Uint8Array(file.data)], { type: file.mimeType }), file.filename);
 
-	const response = await fetch('https://api.anthropic.com/v1/files', {
-		method: 'POST',
-		headers: {
-			'x-api-key': apiKey,
-			'anthropic-version': '2023-06-01',
-			'anthropic-beta': 'files-api-2025-04-14',
-		},
-		body: formData,
-		signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
-	});
+	let response: Response;
+
+	try {
+		response = await fetch('https://api.anthropic.com/v1/files', {
+			method: 'POST',
+			headers: {
+				'x-api-key': apiKey,
+				'anthropic-version': '2023-06-01',
+				'anthropic-beta': 'files-api-2025-04-14',
+			},
+			body: formData,
+			signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
+		});
+	} catch (error) {
+		if (error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError')) {
+			throw new Error(`Anthropic upload timed out after ${UPLOAD_TIMEOUT / 1000}s`);
+		}
+
+		throw error;
+	}
 
 	if (!response.ok) {
 		const error = await response.text().catch(() => `HTTP ${response.status}`);
 		throw new Error(`Anthropic upload failed: ${error}`);
 	}
 
-	const result = await response.json();
+	let result;
+
+	try {
+		result = await response.json();
+	} catch {
+		throw new Error('Anthropic upload succeeded but returned invalid response');
+	}
 
 	if (!result.id) {
 		throw new Error('Anthropic upload returned unexpected response');
@@ -31,9 +47,9 @@ export async function uploadToAnthropic(file: UploadedFile, apiKey: string): Pro
 	return {
 		provider: 'anthropic',
 		fileId: result.id,
-		filename: result.filename,
-		mimeType: result.mime_type,
-		sizeBytes: result.size_bytes,
+		filename: result.filename ?? file.filename,
+		mimeType: result.mime_type ?? file.mimeType,
+		sizeBytes: result.size_bytes ?? file.data.length,
 		expiresAt: null,
 	};
 }

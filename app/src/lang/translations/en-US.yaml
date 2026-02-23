@@ -1833,6 +1833,7 @@ ai:
   upload_file_subtitle: Upload local files
   file_upload_failed: 'Failed to upload {name}'
   file_upload_not_supported: File uploads are not supported for this provider
+  unsupported_file_type: Unsupported file type
   provider_locked_tooltip: Cannot change providers after uploading files. Start a new conversation to switch.
   image_preview: Image preview
   item_staged: Item staged

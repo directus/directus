@@ -1,4 +1,5 @@
 import type { UIMessage } from 'ai';
+import { useLogger } from '../../../logger/index.js';
 
 interface FileUIPart {
 	type: 'file';
@@ -44,6 +45,8 @@ export function transformFilePartsForProvider(messages: UIMessage[]): UIMessage[
 				const fileId = part.providerMetadata?.directus?.fileId;
 
 				if (!fileId) {
+					const logger = useLogger();
+					logger.warn('File part missing providerMetadata.directus.fileId, passing through unchanged');
 					return part;
 				}
 

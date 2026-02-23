@@ -77,3 +77,12 @@ export type ContextAttachment =
 	| { type: 'item'; data: ItemContextData; display: string; snapshot: Record<string, unknown> }
 	| { type: 'visual-element'; data: VisualElementContextData; display: string; snapshot: Record<string, unknown> }
 	| { type: 'prompt'; data: PromptContextData; display: string; snapshot: Record<string, unknown> };
+
+export interface ProviderFileRef {
+	provider: StandardProviderType;
+	fileId: string;
+	filename: string;
+	mimeType: string;
+	sizeBytes: number;
+	expiresAt: string | null;
+}

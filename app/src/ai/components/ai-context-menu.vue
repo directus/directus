@@ -350,7 +350,14 @@ function closeList() {
 
 		<DrawerFiles v-model:active="showFileDrawer" multiple @input="handleFileSelect" />
 
-		<input ref="fileInputRef" type="file" multiple style="display: none" @change="handleFileUpload" />
+		<input
+			ref="fileInputRef"
+			type="file"
+			multiple
+			accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,text/plain,audio/mpeg,audio/wav,video/mp4"
+			style="display: none"
+			@change="handleFileUpload"
+		/>
 	</div>
 </template>
 

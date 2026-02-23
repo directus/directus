@@ -1,5 +1,7 @@
-import type { ItemContextData, VisualElementContextData } from '@directus/ai';
+import type { ItemContextData, ProviderFileRef, VisualElementContextData } from '@directus/ai';
 import type { MCPPrompt } from './prompts';
+
+export type { ProviderFileRef };
 
 export interface PromptContextData {
 	text: string;
@@ -17,15 +19,6 @@ export interface FileContextData {
 export interface LocalFileContextData {
 	file: File;
 	thumbnailUrl?: string;
-}
-
-export interface ProviderFileRef {
-	provider: string;
-	fileId: string;
-	filename: string;
-	mimeType: string;
-	sizeBytes: number;
-	expiresAt: string | null;
 }
 
 export type PendingContextItem =

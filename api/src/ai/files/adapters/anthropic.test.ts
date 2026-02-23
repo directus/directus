@@ -101,6 +101,31 @@ describe('uploadToAnthropic', () => {
 		);
 	});
 
+	it('should throw timeout error when upload times out', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockRejectedValue(Object.assign(new Error('The operation was aborted'), { name: 'TimeoutError' })),
+		);
+
+		await expect(uploadToAnthropic(mockFile, mockApiKey)).rejects.toThrow(
+			'Anthropic upload timed out after 120s',
+		);
+	});
+
+	it('should throw error when response JSON is invalid', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue({
+				ok: true,
+				json: () => Promise.reject(new SyntaxError('Unexpected token')),
+			}),
+		);
+
+		await expect(uploadToAnthropic(mockFile, mockApiKey)).rejects.toThrow(
+			'Anthropic upload succeeded but returned invalid response',
+		);
+	});
+
 	it('should handle response.text() failure in error path', async () => {
 		vi.stubGlobal(
 			'fetch',

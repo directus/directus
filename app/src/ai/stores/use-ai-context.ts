@@ -20,6 +20,7 @@ export const MAX_PENDING_CONTEXT = 10;
 
 export const useAiContextStore = defineStore('ai-context-store', () => {
 	const pendingContext = ref<PendingContextItem[]>([]);
+	const createdObjectUrls = new Set<string>();
 
 	const visualElementContextUrl = ref<string | null>(null);
 
@@ -94,9 +95,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 	};
 
 	const fetchContextData = async (): Promise<ContextAttachment[]> => {
-		const nonFileItems = pendingContext.value.filter(
-			(item) => !isFileContext(item) && !isLocalFileContext(item),
-		);
+		const nonFileItems = pendingContext.value.filter((item) => !isFileContext(item) && !isLocalFileContext(item));
 
 		const fetches = nonFileItems.map(async (item): Promise<ContextAttachment | null> => {
 			if (isVisualElement(item)) {
@@ -150,23 +149,21 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		return response.data;
 	};
 
-	interface UploadedFile {
+	interface UploadedFileResult {
 		ref: ProviderFileRef;
 		display: string;
 		displayUrl: string;
 		mimeType: string;
 	}
 
-	const uploadPendingFiles = async (provider?: string): Promise<UploadedFile[]> => {
+	const uploadPendingFiles = async (provider?: string): Promise<UploadedFileResult[]> => {
 		if (!provider) return [];
 
-		const fileItems = pendingContext.value.filter(
-			(item) => isFileContext(item) || isLocalFileContext(item),
-		);
+		const fileItems = pendingContext.value.filter((item) => isFileContext(item) || isLocalFileContext(item));
 
 		if (fileItems.length === 0) return [];
 
-		const results: UploadedFile[] = [];
+		const results: UploadedFileResult[] = [];
 
 		for (const item of fileItems) {
 			try {
@@ -175,7 +172,13 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 				if (isLocalFileContext(item)) {
 					file = item.data.file;
-					displayUrl = item.data.thumbnailUrl ?? URL.createObjectURL(file);
+
+					if (item.data.thumbnailUrl) {
+						displayUrl = item.data.thumbnailUrl;
+					} else {
+						displayUrl = URL.createObjectURL(file);
+						createdObjectUrls.add(displayUrl);
+					}
 				} else if (isFileContext(item)) {
 					const assetResponse = await api.get(`/assets/${item.data.id}`, { responseType: 'blob' });
 					file = new File([assetResponse.data], item.data.filename_download, { type: item.data.type });
@@ -192,7 +195,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 					displayUrl,
 					mimeType: file.type,
 				});
-			} catch {
+			} catch (error) {
 				notify({
 					title: i18n.global.t('ai.file_upload_failed', { name: item.display }),
 					type: 'warning',
@@ -203,7 +206,16 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		return results;
 	};
 
+	const revokeObjectUrls = () => {
+		for (const url of createdObjectUrls) {
+			URL.revokeObjectURL(url);
+		}
+
+		createdObjectUrls.clear();
+	};
+
 	const dehydrate = () => {
+		revokeObjectUrls();
 		clearPendingContext();
 		visualElementContextUrl.value = null;
 	};

@@ -1,4 +1,5 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
+import { useLogger } from '../../logger/index.js';
 
 interface AnthropicMessageContent {
 	type: string;
@@ -77,6 +78,8 @@ export function createAnthropicWithFileSupport(apiKey: string) {
 				});
 			} catch (error) {
 				if (error instanceof SyntaxError) {
+					const logger = useLogger();
+					logger.warn('Anthropic file support: could not parse request body, skipping file_id transformation');
 					return fetch(url, options);
 				}
 
