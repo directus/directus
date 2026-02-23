@@ -98,6 +98,8 @@ const file = computed(() => ({
 
 	.file-icon {
 		flex-shrink: 0;
+		--v-icon-size: 34px;
+		--v-icon-file-label-size: 7px;
 	}
 }
 </style>
