@@ -756,7 +756,6 @@ unexpected_error_copy: एक अनपेक्षित त्रुटी आ
 copy_details: तपशील कॉपी करा
 no_app_access: तपशील कॉपी करा
 no_app_access_copy: या वापरकर्त्याला प्रशासक ॲप वापरण्याची परवानगी नाही.
-password_reset_sent: तुमचे खाते असल्यास, तुमचा पासवर्ड रीसेट करण्यासाठी आम्ही तुम्हाला एक सुरक्षित लिंक पाठवली आहे
 password_reset_successful: पासवर्ड यशस्वीरित्या रीसेट केला
 back: मागे
 filter: फिल्टर
