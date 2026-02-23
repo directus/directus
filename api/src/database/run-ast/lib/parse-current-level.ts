@@ -2,6 +2,7 @@ import type { Query, SchemaOverview } from '@directus/types';
 import { isVersionedCollection } from '../../../services/versions/is-versioned-collection.js';
 import { isVersionedRelation } from '../../../services/versions/is-versioned-relation.js';
 import { toVersionNode } from '../../../services/versions/to-version-node.js';
+import { toVersionedCollectionName } from '../../../services/versions/to-versioned-collection-name.js';
 import { toVersionedRelationName } from '../../../services/versions/to-versioned-relation-name.js';
 import { VERSION_SYSTEM_FIELDS } from '../../../services/versions/version-system-fields.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
@@ -39,8 +40,12 @@ export async function parseCurrentLevel(
 			}
 
 			// Since M2O fields can also be a top-level selection, we need to check and add a version equivalent field.
-			if (isVersionedCollection(collection) && !isVersionedRelation(child.fieldKey)) {
-				const relation = schema.relations.find((r) => r.collection === collection && r.field === child.fieldKey);
+			if (isVersionedCollection(collection)) {
+				const relation = schema.relations.find(
+					(r) =>
+						toVersionedCollectionName(r.collection) === collection &&
+						r.field === toVersionedRelationName(child.fieldKey),
+				);
 
 				if (relation && relation.related_collection && schema.collections[relation.related_collection]?.versioning) {
 					columnsToSelectInternal.push(toVersionedRelationName(child.fieldKey));
@@ -53,6 +58,10 @@ export async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
+			if (isVersionedRelation(child.relation.field)) {
+				continue;
+			}
+
 			columnsToSelectInternal.push(child.relation.field);
 
 			if (isVersionedCollection(collection) && schema.collections[child.relation.related_collection!]?.versioning) {
@@ -64,6 +73,10 @@ export async function parseCurrentLevel(
 		}
 
 		if (child.type === 'a2o') {
+			if (isVersionedRelation(child.relation.field)) {
+				continue;
+			}
+
 			columnsToSelectInternal.push(child.relation.field);
 			columnsToSelectInternal.push(child.relation.meta!.one_collection_field!);
 

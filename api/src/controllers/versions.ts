@@ -1,23 +1,57 @@
-import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+// import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+// import type { PrimaryKey } from '@directus/types';
+// import { assign } from 'lodash-es';
+// import { respond } from '../middleware/respond.js';
+import { ErrorCode, InvalidPathParameterError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
-import { assign } from 'lodash-es';
+import getDatabase from '../database/index.js';
 import { respond } from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
-import { validateBatch } from '../middleware/validate-batch.js';
-import { MetaService } from '../services/meta.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { toVersionedCollectionName } from '../services/versions/to-versioned-collection-name.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
-import { sanitizeQuery } from '../utils/sanitize-query.js';
+// import { validateBatch } from '../middleware/validate-batch.js';
+// import { MetaService } from '../services/meta.js';
+// import { VersionsService } from '../services/versions.js';
+// import asyncHandler from '../utils/async-handler.js';
+// import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
-router.use(useCollection('directus_versions'));
-
 router.post(
-	'/',
+	'/:collection',
 	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
+		const collection = req.params['collection'];
+
+		if (typeof collection !== 'string') {
+			throw new InvalidPathParameterError({ reason: `"collection" parameter is required` });
+		}
+
+		// TODO: Move to middleware?
+		if (req.accountability) {
+			await validateAccess(
+				{
+					accountability: req.accountability,
+					action: 'read',
+					collection,
+				},
+				{
+					knex: getDatabase(),
+					schema: req.schema,
+				},
+			);
+		}
+
+		if (req.schema.collections[req.collection]?.versioning === false) {
+			throw new InvalidPathParameterError({
+				reason: `Versioning is not enabled for ${collection}`,
+			});
+		}
+
+		const versionedCollection = toVersionedCollectionName(collection);
+
+		const service = new VersionsService(versionedCollection, {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -53,218 +87,218 @@ router.post(
 	respond,
 );
 
-const readHandler = asyncHandler(async (req, res, next) => {
-	const service = new VersionsService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
+// const readHandler = asyncHandler(async (req, res, next) => {
+// 	const service = new VersionsService({
+// 		accountability: req.accountability,
+// 		schema: req.schema,
+// 	});
 
-	const metaService = new MetaService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
+// 	const metaService = new MetaService({
+// 		accountability: req.accountability,
+// 		schema: req.schema,
+// 	});
 
-	let result;
+// 	let result;
 
-	if (req.singleton) {
-		result = await service.readSingleton(req.sanitizedQuery);
-	} else if (req.body.keys) {
-		result = await service.readMany(req.body.keys, req.sanitizedQuery);
-	} else {
-		result = await service.readByQuery(req.sanitizedQuery);
-	}
+// 	if (req.singleton) {
+// 		result = await service.readSingleton(req.sanitizedQuery);
+// 	} else if (req.body.keys) {
+// 		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+// 	} else {
+// 		result = await service.readByQuery(req.sanitizedQuery);
+// 	}
 
-	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+// 	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
-	res.locals['payload'] = { data: result, meta };
-	return next();
-});
+// 	res.locals['payload'] = { data: result, meta };
+// 	return next();
+// });
 
-router.get('/', validateBatch('read'), readHandler, respond);
-router.search('/', validateBatch('read'), readHandler, respond);
+// router.get('/', validateBatch('read'), readHandler, respond);
+// router.search('/', validateBatch('read'), readHandler, respond);
 
-router.get(
-	'/:pk',
-	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+// router.get(
+// 	'/:pk',
+// 	asyncHandler(async (req, res, next) => {
+// 		const service = new VersionsService({
+// 			accountability: req.accountability,
+// 			schema: req.schema,
+// 		});
 
-		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
+// 		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
-		res.locals['payload'] = { data: record || null };
-		return next();
-	}),
-	respond,
-);
+// 		res.locals['payload'] = { data: record || null };
+// 		return next();
+// 	}),
+// 	respond,
+// );
 
-router.patch(
-	'/',
-	validateBatch('update'),
-	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+// router.patch(
+// 	'/',
+// 	validateBatch('update'),
+// 	asyncHandler(async (req, res, next) => {
+// 		const service = new VersionsService({
+// 			accountability: req.accountability,
+// 			schema: req.schema,
+// 		});
 
-		let keys: PrimaryKey[] = [];
+// 		let keys: PrimaryKey[] = [];
 
-		if (Array.isArray(req.body)) {
-			keys = await service.updateBatch(req.body);
-		} else if (req.body.keys) {
-			keys = await service.updateMany(req.body.keys, req.body.data);
-		} else {
-			const sanitizedQuery = await sanitizeQuery(req.body.query, req.schema, req.accountability);
-			keys = await service.updateByQuery(sanitizedQuery, req.body.data);
-		}
+// 		if (Array.isArray(req.body)) {
+// 			keys = await service.updateBatch(req.body);
+// 		} else if (req.body.keys) {
+// 			keys = await service.updateMany(req.body.keys, req.body.data);
+// 		} else {
+// 			const sanitizedQuery = await sanitizeQuery(req.body.query, req.schema, req.accountability);
+// 			keys = await service.updateByQuery(sanitizedQuery, req.body.data);
+// 		}
 
-		try {
-			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals['payload'] = { data: result || null };
-		} catch (error: any) {
-			if (isDirectusError(error, ErrorCode.Forbidden)) {
-				return next();
-			}
+// 		try {
+// 			const result = await service.readMany(keys, req.sanitizedQuery);
+// 			res.locals['payload'] = { data: result || null };
+// 		} catch (error: any) {
+// 			if (isDirectusError(error, ErrorCode.Forbidden)) {
+// 				return next();
+// 			}
 
-			throw error;
-		}
+// 			throw error;
+// 		}
 
-		return next();
-	}),
-	respond,
-);
+// 		return next();
+// 	}),
+// 	respond,
+// );
 
-router.patch(
-	'/:pk',
-	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+// router.patch(
+// 	'/:pk',
+// 	asyncHandler(async (req, res, next) => {
+// 		const service = new VersionsService({
+// 			accountability: req.accountability,
+// 			schema: req.schema,
+// 		});
 
-		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
+// 		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
-		try {
-			const record = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals['payload'] = { data: record || null };
-		} catch (error: any) {
-			if (isDirectusError(error, ErrorCode.Forbidden)) {
-				return next();
-			}
+// 		try {
+// 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
+// 			res.locals['payload'] = { data: record || null };
+// 		} catch (error: any) {
+// 			if (isDirectusError(error, ErrorCode.Forbidden)) {
+// 				return next();
+// 			}
 
-			throw error;
-		}
+// 			throw error;
+// 		}
 
-		return next();
-	}),
-	respond,
-);
+// 		return next();
+// 	}),
+// 	respond,
+// );
 
-router.delete(
-	'/',
-	validateBatch('delete'),
-	asyncHandler(async (req, _res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+// router.delete(
+// 	'/',
+// 	validateBatch('delete'),
+// 	asyncHandler(async (req, _res, next) => {
+// 		const service = new VersionsService({
+// 			accountability: req.accountability,
+// 			schema: req.schema,
+// 		});
 
-		if (Array.isArray(req.body)) {
-			await service.deleteMany(req.body);
-		} else if (req.body.keys) {
-			await service.deleteMany(req.body.keys);
-		} else {
-			const sanitizedQuery = await sanitizeQuery(req.body.query, req.schema, req.accountability);
-			await service.deleteByQuery(sanitizedQuery);
-		}
+// 		if (Array.isArray(req.body)) {
+// 			await service.deleteMany(req.body);
+// 		} else if (req.body.keys) {
+// 			await service.deleteMany(req.body.keys);
+// 		} else {
+// 			const sanitizedQuery = await sanitizeQuery(req.body.query, req.schema, req.accountability);
+// 			await service.deleteByQuery(sanitizedQuery);
+// 		}
 
-		return next();
-	}),
-	respond,
-);
+// 		return next();
+// 	}),
+// 	respond,
+// );
 
-router.delete(
-	'/:pk',
-	asyncHandler(async (req, _res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+// router.delete(
+// 	'/:pk',
+// 	asyncHandler(async (req, _res, next) => {
+// 		const service = new VersionsService({
+// 			accountability: req.accountability,
+// 			schema: req.schema,
+// 		});
 
-		await service.deleteOne(req.params['pk']!);
+// 		await service.deleteOne(req.params['pk']!);
 
-		return next();
-	}),
-	respond,
-);
+// 		return next();
+// 	}),
+// 	respond,
+// );
 
-router.get(
-	'/:pk/compare',
-	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+// router.get(
+// 	'/:pk/compare',
+// 	asyncHandler(async (req, res, next) => {
+// 		const service = new VersionsService({
+// 			accountability: req.accountability,
+// 			schema: req.schema,
+// 		});
 
-		const version = await service.readOne(req.params['pk']!);
+// 		const version = await service.readOne(req.params['pk']!);
 
-		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
+// 		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
 
-		const delta = version.delta ?? {};
-		delta[req.schema.collections[version.collection]!.primary] = version.item;
+// 		const delta = version.delta ?? {};
+// 		delta[req.schema.collections[version.collection]!.primary] = version.item;
 
-		const main = await service.getMainItem(version['collection'], version['item']);
+// 		const main = await service.getMainItem(version['collection'], version['item']);
 
-		res.locals['payload'] = { data: { outdated, mainHash, current: delta, main } };
+// 		res.locals['payload'] = { data: { outdated, mainHash, current: delta, main } };
 
-		return next();
-	}),
-	respond,
-);
+// 		return next();
+// 	}),
+// 	respond,
+// );
 
-router.post(
-	'/:pk/save',
-	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+// router.post(
+// 	'/:pk/save',
+// 	asyncHandler(async (req, res, next) => {
+// 		const service = new VersionsService({
+// 			accountability: req.accountability,
+// 			schema: req.schema,
+// 		});
 
-		const version = await service.readOne(req.params['pk']!);
+// 		const version = await service.readOne(req.params['pk']!);
 
-		const mainItem = await service.getMainItem(version['collection'], version['item']);
+// 		const mainItem = await service.getMainItem(version['collection'], version['item']);
 
-		const updatedVersion = await service.save(req.params['pk']!, req.body);
+// 		const updatedVersion = await service.save(req.params['pk']!, req.body);
 
-		const result = assign(mainItem, updatedVersion);
+// 		const result = assign(mainItem, updatedVersion);
 
-		res.locals['payload'] = { data: result || null };
+// 		res.locals['payload'] = { data: result || null };
 
-		return next();
-	}),
-	respond,
-);
+// 		return next();
+// 	}),
+// 	respond,
+// );
 
-router.post(
-	'/:pk/promote',
-	asyncHandler(async (req, res, next) => {
-		if (typeof req.body.mainHash !== 'string') {
-			throw new InvalidPayloadError({ reason: `"mainHash" field is required` });
-		}
+// router.post(
+// 	'/:pk/promote',
+// 	asyncHandler(async (req, res, next) => {
+// 		if (typeof req.body.mainHash !== 'string') {
+// 			throw new InvalidPayloadError({ reason: `"mainHash" field is required` });
+// 		}
 
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+// 		const service = new VersionsService({
+// 			accountability: req.accountability,
+// 			schema: req.schema,
+// 		});
 
-		const updatedItemKey = await service.promote(req.params['pk']!, req.body.mainHash, req.body?.['fields']);
+// 		const updatedItemKey = await service.promote(req.params['pk']!, req.body.mainHash, req.body?.['fields']);
 
-		res.locals['payload'] = { data: updatedItemKey || null };
+// 		res.locals['payload'] = { data: updatedItemKey || null };
 
-		return next();
-	}),
-	respond,
-);
+// 		return next();
+// 	}),
+// 	respond,
+// );
 
 export default router;

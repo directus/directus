@@ -14,7 +14,7 @@ import type {
 	RawField,
 	SchemaOverview,
 } from '@directus/types';
-import { addFieldFlag } from '@directus/utils';
+import { addFieldFlag, toBoolean } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { chunk, groupBy, merge, omit } from 'lodash-es';
@@ -35,6 +35,7 @@ import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.j
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
+import { VersionsService } from './versions.js';
 
 export class CollectionsService {
 	knex: Knex;
@@ -216,6 +217,11 @@ export class CollectionsService {
 					);
 				}
 
+				if (payload.meta?.versioning && payload.schema) {
+					const versionsService = new VersionsService(payload.collection, { schema: this.schema, knex: trx });
+					await versionsService.createTable(payload);
+				}
+
 				return payload.collection;
 			});
 
@@ -243,7 +249,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -443,40 +449,64 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const collectionsItemsService = new ItemsService('directus_collections', {
-				knex: this.knex,
-				accountability: this.accountability,
-				schema: this.schema,
-			});
+			await transaction(this.knex, async (trx) => {
+				const payload = data as Partial<Collection>;
 
-			const payload = data as Partial<Collection>;
+				if (!payload.meta) {
+					return;
+				}
 
-			if (!payload.meta) {
-				return collectionKey;
-			}
-
-			const exists = !!(await this.knex
-				.select('collection')
-				.from('directus_collections')
-				.where({ collection: collectionKey })
-				.first());
-
-			if (exists) {
-				await collectionsItemsService.updateOne(collectionKey, payload.meta, {
-					...opts,
-					bypassEmitAction: (params) =>
-						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+				const collectionsItemsService = new ItemsService('directus_collections', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
 				});
-			} else {
-				await collectionsItemsService.createOne(
-					{ ...payload.meta, collection: collectionKey },
-					{
+
+				const exists = await trx
+					.select('collection', 'versioning')
+					.from('directus_collections')
+					.where({ collection: collectionKey })
+					.first();
+
+				if (exists) {
+					await collectionsItemsService.updateOne(collectionKey, payload.meta, {
 						...opts,
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					},
-				);
-			}
+					});
+				} else {
+					await collectionsItemsService.createOne(
+						{ ...payload.meta, collection: collectionKey },
+						{
+							...opts,
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						},
+					);
+				}
+
+				if (payload.meta && 'versioning' in payload.meta) {
+					const versionsService = new VersionsService(collectionKey, { knex: trx, schema: this.schema });
+
+					if (payload.meta.versioning) {
+						if (!exists || toBoolean(exists.versioning) === false) {
+							const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+							const fields = await fieldsService.readAll(collectionKey);
+
+							await versionsService.createTable({
+								collection: collectionKey,
+								fields: fields.filter((f) => f.meta !== null),
+								schema: {},
+								meta: payload.meta,
+							});
+						}
+					} else {
+						if (exists && toBoolean(exists.versioning) === true) {
+							await versionsService.dropTable(collectionKey);
+						}
+					}
+				}
+			});
 
 			return collectionKey;
 		} finally {
@@ -769,6 +799,11 @@ export class CollectionsService {
 							.where({ id: relation.meta!.id });
 					}
 				}
+
+				if (collectionToBeDeleted.meta?.versioning) {
+					const versionsService = new VersionsService(collectionKey, { knex: trx, schema: this.schema });
+					await versionsService.dropTable(collectionKey);
+				}
 			});
 
 			return collectionKey;
@@ -782,7 +817,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;

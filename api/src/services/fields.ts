@@ -49,6 +49,7 @@ import { getCollectionRelationList } from './fields/get-collection-relation-list
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+import { VersionsService } from './versions.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
@@ -467,6 +468,11 @@ export class FieldsService {
 					opts.bypassEmitAction(actionEvent);
 				} else {
 					nestedActionEvents.push(actionEvent);
+				}
+
+				if (this.schema.collections[collection]?.versioning) {
+					const shadowsService = new VersionsService(collection, { knex: trx, schema: this.schema });
+					await shadowsService.createField(collection, field);
 				}
 			});
 

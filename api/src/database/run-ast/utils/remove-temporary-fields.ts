@@ -1,10 +1,11 @@
 import type { Item, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { cloneDeep, pick } from 'lodash-es';
+import { cloneDeep, get, pick, set, unset } from 'lodash-es';
 import { isVersionedCollection } from '../../../services/versions/is-versioned-collection.js';
 import { isVersionedRelation } from '../../../services/versions/is-versioned-relation.js';
 import { toVersionNode } from '../../../services/versions/to-version-node.js';
 import { toVersionedRelationName } from '../../../services/versions/to-versioned-relation-name.js';
+import { VERSION_SYSTEM_FIELDS } from '../../../services/versions/version-system-fields.js';
 import type { AST, NestedCollectionNode } from '../../../types/ast.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
@@ -72,7 +73,12 @@ export function removeTemporaryFields(
 				aliasFields.push(child.fieldKey);
 			} else {
 				if (ast.type === 'root' && isVersionedCollection(ast.name) && !isVersionedRelation(child.fieldKey)) {
-					versionDirectMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
+					if (
+						schema.collections[ast.name]?.fields[child.fieldKey]?.type === 'alias' ||
+						schema.relations.find((r) => r.collection === ast.name && r.field === child.fieldKey)
+					) {
+						versionDirectMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
+					}
 				}
 
 				// dont expose top level version fields
@@ -87,8 +93,8 @@ export function removeTemporaryFields(
 
 				if (
 					isVersionedCollection(collection) &&
-					!isVersionedRelation(child.fieldKey) &&
-					schema.collections[target]?.versioning
+					schema.collections[target]?.versioning &&
+					!isVersionedRelation(child.fieldKey)
 				) {
 					versionRelationMap.set(child.fieldKey, toVersionedRelationName(child.fieldKey));
 				}
@@ -123,7 +129,14 @@ export function removeTemporaryFields(
 				}
 
 				// Merge version node into original if its empty
-				if (versionKey && item[key] === null) {
+				if (
+					versionKey &&
+					((item[key] === null && item[toVersionedRelationName(key)] !== null) ||
+						(Array.isArray(item[key]) &&
+							item[key].length === 0 &&
+							Array.isArray(toVersionedRelationName(key)) &&
+							item[toVersionedRelationName(key)].length > 0))
+				) {
 					nestedNode = toVersionNode(nestedNode);
 				}
 
@@ -139,14 +152,26 @@ export function removeTemporaryFields(
 			}
 
 			for (const [original, version] of versionDirectMap.entries()) {
-				if (item[original] === null) {
+				if (item[original] === null && item[version]) {
 					item[original] = item[version];
 				}
 			}
 
+			Object.values(VERSION_SYSTEM_FIELDS).forEach(({ field }) => {
+				const metaValue = get(item, field);
+
+				if (metaValue) {
+					unset(item, field);
+					set(item, ['$meta', field], metaValue);
+				}
+			});
+
 			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
 
-			item = fields.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied, aliasFields) : rawItem[primaryKeyField];
+			item =
+				fields.length > 0
+					? pick(rawItem, fieldsWithFunctionsApplied, aliasFields, ['$meta'])
+					: rawItem[primaryKeyField];
 
 			items.push(item);
 		}

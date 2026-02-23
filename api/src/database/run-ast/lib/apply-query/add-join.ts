@@ -117,7 +117,7 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 					rootQuery.leftJoin(
 						{ [versionAlias]: versionCollection },
 						`${aliasedParentCollection}.${toVersionedRelationName(relation.field)}`,
-						`${versionAlias}.${schema.collections[relation.related_collection!]?.primary}`,
+						`${versionAlias}.${schema.collections[versionCollection]?.primary}`,
 					);
 				}
 
@@ -173,7 +173,7 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 								'=',
 								knex.raw(
 									getHelpers(knex).schema.castA2oPrimaryKey(),
-									`${versionAlias}.${schema.collections[pathScope]!.primary}`,
+									`${versionAlias}.${schema.collections[versionPathScope]!.primary}`,
 								),
 							);
 					});
@@ -257,7 +257,7 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 
 					rootQuery.leftJoin(
 						{ [versionAlias]: versionCollection },
-						`${aliasedParentCollection}.${schema.collections[relation.related_collection!]!.primary}`,
+						`${aliasedParentCollection}.${schema.collections[versionCollection]!.primary}`,
 						`${versionAlias}.${toVersionedRelationName(relation.field)}`,
 					);
 				}

@@ -30,7 +30,7 @@ import type { FieldOverview, SchemaOverview } from './schema.js';
 import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from './snapshot.js';
 import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
-import type { ContentVersion } from './versions.js';
+// import type { ContentVersion } from './versions.js';
 import type { WebSocketClient, WebSocketMessage } from './websockets/index.js';
 
 export type AbstractServiceOptions = {
@@ -497,13 +497,13 @@ interface UtilsService {
 /**
  * The VersionsService
  */
-interface VersionsService {
-	getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item>;
-	verifyHash(collection: string, item: PrimaryKey, hash: string): Promise<{ outdated: boolean; mainHash: string }>;
-	getVersionSave(key: string, collection: string, item: string | undefined): Promise<ContentVersion | undefined>;
-	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
-	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
-}
+// interface VersionsService {
+// 	getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item>;
+// 	verifyHash(collection: string, item: PrimaryKey, hash: string): Promise<{ outdated: boolean; mainHash: string }>;
+// 	getVersionSave(key: string, collection: string, item: string | undefined): Promise<ContentVersion | undefined>;
+// 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
+// 	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
+// }
 
 /**
  * The WebSocketService
@@ -775,7 +775,7 @@ export interface ExtensionsServices {
 	/**
 	 * The VersionsService
 	 */
-	VersionsService: new (options: AbstractServiceOptions) => AbstractService & VersionsService;
+	// VersionsService: new (options:/ AbstractServiceOptions) => AbstractService & VersionsService;
 	/**
 	 * The WebSocketService
 	 */
