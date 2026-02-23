@@ -833,7 +833,6 @@ unexpected_error_copy: 予期しないエラーが発生しました。もう一
 copy_details: 詳細をコピー
 no_app_access: アプリにアクセスできません
 no_app_access_copy: このユーザーは管理者用アプリを使用できません
-password_reset_sent: アカウントをお持ちの場合は、パスワードをリセットするための安全なリンクを送信しました。
 password_reset_successful: パスワードをリセットしました
 back: 戻る
 filter: 絞り込み
