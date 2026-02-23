@@ -76,6 +76,15 @@ const global: GlobalMountOptions = {
 	],
 };
 
+const routerLinkStub = {
+	template: '<div class="router-link-stub"><slot v-bind="{ href: \'/test\', navigate: () => {} }" /></div>',
+};
+
+const globalWithRouterLink: GlobalMountOptions = {
+	...global,
+	stubs: { ...global.stubs, RouterLink: routerLinkStub },
+};
+
 describe('Interface', () => {
 	it('should mount', () => {
 		const wrapper = mount(SelectDropdownM2O, {
@@ -112,6 +121,7 @@ describe('Interface', () => {
 				collection: 'test-collection',
 				field: 'test-field',
 				enableLink: false,
+				// Note: if nonEditable is true, disabled prop will also be true
 				nonEditable: true,
 				disabled: true,
 			},
@@ -175,16 +185,6 @@ describe('Interface', () => {
 	});
 
 	it('should render clickable navigate link when nonEditable and disabled are both true', () => {
-		const globalWithRouterLink: GlobalMountOptions = {
-			...global,
-			stubs: {
-				...global.stubs,
-				RouterLink: {
-					template: '<div class="router-link-stub"><slot v-bind="{ href: \'/test\', navigate: () => {} }" /></div>',
-				},
-			},
-		};
-
 		const wrapper = mount(SelectDropdownM2O, {
 			props: {
 				value: '1',
@@ -201,16 +201,6 @@ describe('Interface', () => {
 	});
 
 	it('should render non-clickable icon when disabled is true and nonEditable is false', () => {
-		const globalWithRouterLink: GlobalMountOptions = {
-			...global,
-			stubs: {
-				...global.stubs,
-				RouterLink: {
-					template: '<div class="router-link-stub"><slot v-bind="{ href: \'/test\', navigate: () => {} }" /></div>',
-				},
-			},
-		};
-
 		const wrapper = mount(SelectDropdownM2O, {
 			props: {
 				value: '1',

@@ -111,14 +111,13 @@ const global: GlobalMountOptions = {
 	],
 };
 
+const routerLinkStub = {
+	template: '<div class="router-link-stub"><slot v-bind="{ href: \'/test\', navigate: () => {} }" /></div>',
+};
+
 const globalWithRouterLink: GlobalMountOptions = {
 	...global,
-	stubs: {
-		...global.stubs,
-		RouterLink: {
-			template: '<div class="router-link-stub"><slot v-bind="{ href: \'/test\', navigate: () => {} }" /></div>',
-		},
-	},
+	stubs: { ...global.stubs, RouterLink: routerLinkStub },
 };
 
 const tableGlobal: GlobalMountOptions = {
@@ -134,12 +133,7 @@ const tableGlobal: GlobalMountOptions = {
 
 const tableGlobalWithRouterLink: GlobalMountOptions = {
 	...tableGlobal,
-	stubs: {
-		...tableGlobal.stubs,
-		RouterLink: {
-			template: '<div class="router-link-stub"><slot v-bind="{ href: \'/test\', navigate: () => {} }" /></div>',
-		},
-	},
+	stubs: { ...tableGlobal.stubs, RouterLink: routerLinkStub },
 };
 
 const listProps = {
@@ -209,6 +203,18 @@ describe('list-o2m', () => {
 			});
 		});
 
+		describe('disabled state', () => {
+			it('should render action buttons disabled when disabled is true', () => {
+				const wrapper = mount(ListO2M, {
+					props: { ...listProps, disabled: true },
+					global,
+				});
+
+				expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(true);
+				expect(wrapper.find('.item-actions v-remove-stub').attributes('disabled')).toBe('true');
+			});
+		});
+
 		describe('editable state', () => {
 			it('should show remove button when nonEditable is false', () => {
 				const wrapper = mount(ListO2M, {
@@ -259,6 +265,18 @@ describe('list-o2m', () => {
 				});
 
 				expect(wrapper.find('.item-actions .item-link').exists()).toBe(false);
+			});
+		});
+
+		describe('disabled state', () => {
+			it('should render action buttons disabled when disabled is true', () => {
+				const wrapper = mount(ListO2M, {
+					props: { ...listProps, layout: LAYOUTS.TABLE, disabled: true },
+					global: tableGlobal,
+				});
+
+				expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(true);
+				expect(wrapper.find('.item-actions v-remove-stub').attributes('disabled')).toBe('true');
 			});
 		});
 
