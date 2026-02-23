@@ -612,7 +612,6 @@ unexpected_error: Lỗi Bất Thường
 copy_details: Sao chép Chi tiết
 no_app_access: Không Có Quyền Truy Cập Chương Trình
 no_app_access_copy: Người dùng này không có quyền truy cập chương trình quản trị.
-password_reset_sent: Nếu email tồn tại, hệ thống sẽ gửi liên kết đến email của bạn để tạo lại mật khẩu.
 password_reset_successful: Mật khẩu được đặt lại thành công
 back: Trở lại
 filter: Bộ lọc
