@@ -1546,7 +1546,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe('group by multiple fields', () => {
+			describe('group by multiple regular fields', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const artistName = 'aggregate-group-multiple-field';
@@ -1616,6 +1616,81 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					for (const item of gqlResponse.body.data[queryKey]) {
 						expect(groups).toContain(item.group.group);
 						expect(dates).toContain(item.group.date_published);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+				});
+			});
+
+			describe('group by multiple regular and function fields', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const artistName = 'aggregate-group-multiple-diff-type-field';
+					const groups = ['admin', 'editor', 'viewer'] as const;
+					const dates = ['2024-02-01', '2025-02-02', '2026-02-03'] as const;
+					const artists = [];
+
+					for (let i = 0; i < 6; i++) {
+						const artist = {
+							...createArtist(pkType),
+							name: artistName,
+							date_published: dates[i % dates.length],
+							group: groups[i % groups.length],
+						};
+
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['group', 'year(date_published)'],
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									groupBy: ['group', 'year(date_published)'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(groups.length);
+
+					for (const item of response.body.data) {
+						expect(groups).toContain(item.group);
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(Number(item.date_published_year));
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toBe(groups.length);
+
+					for (const item of gqlResponse.body.data[queryKey]) {
+						expect(groups).toContain(item.group.group);
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(Number(item.group.date_published_year));
 						expect(parseInt(item.count.id)).toBe(2);
 					}
 				});
