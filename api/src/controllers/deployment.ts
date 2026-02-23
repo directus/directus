@@ -1,4 +1,10 @@
-import { ErrorCode, ForbiddenError, InvalidPathParameterError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import {
+	ErrorCode,
+	ForbiddenError,
+	InvalidPathParameterError,
+	InvalidPayloadError,
+	isDirectusError,
+} from '@directus/errors';
 import { DEPLOYMENT_PROVIDER_TYPES, type DeploymentConfig, type ProviderType } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
@@ -318,13 +324,13 @@ router.patch(
 	respond,
 );
 
-// Dashboard - selected projects with stats
-const dashboardQuerySchema = Joi.object({
+const rangeQuerySchema = Joi.object({
 	range: Joi.string()
 		.pattern(/^\d+(ms|s|m|h|d|w|y)$/)
 		.optional(),
 });
 
+// Dashboard - selected projects with stats
 router.get(
 	'/:provider/dashboard',
 	asyncHandler(async (req, res, next) => {
@@ -334,7 +340,7 @@ router.get(
 			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
 		}
 
-		const { error, value } = dashboardQuerySchema.validate(req.query);
+		const { error, value } = rangeQuerySchema.validate(req.query);
 
 		if (error) {
 			throw new InvalidPayloadError({ reason: error.message });
@@ -510,11 +516,6 @@ router.get(
 );
 
 // Project runs stats
-const runStatsQuerySchema = Joi.object({
-	range: Joi.string()
-		.pattern(/^\d+(ms|s|m|h|d|w|y)$/)
-		.optional(),
-});
 
 router.get(
 	'/:provider/projects/:id/runs/stats',
@@ -526,7 +527,7 @@ router.get(
 			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
 		}
 
-		const { error, value } = runStatsQuerySchema.validate(req.query);
+		const { error, value } = rangeQuerySchema.validate(req.query);
 
 		if (error) {
 			throw new InvalidPayloadError({ reason: error.message });
