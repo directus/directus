@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Enabled navigation for non-editable relational fields
+Enabled “Navigate to Item” button for non-editable relational fields
