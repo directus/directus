@@ -54,11 +54,11 @@ const totalPages = computed(() => Math.ceil(totalCount.value / limit) || 1);
 // Reset to page 1 on search change
 watch(search, () => {
 	page.value = 1;
-	loadRuns();
+	refresh();
 });
 
 watch(page, (newPage, oldPage) => {
-	if (newPage !== oldPage) loadRuns();
+	if (newPage !== oldPage) refresh();
 });
 
 const pageTitle = computed(() => currentProject.value?.name || t('deployment.provider.runs.runs'));
@@ -115,8 +115,6 @@ const tableHeaders = ref<Header[]>([
 ]);
 
 async function loadRuns() {
-	loading.value = true;
-
 	try {
 		const offset = (page.value - 1) * limit;
 
@@ -134,8 +132,6 @@ async function loadRuns() {
 		if (runs.value.length === 0) {
 			unexpectedError(error);
 		}
-	} finally {
-		loading.value = false;
 	}
 }
 
@@ -148,9 +144,14 @@ async function loadStats() {
 	}
 }
 
-function refresh() {
-	loadRuns();
-	loadStats();
+async function refresh() {
+	loading.value = true;
+
+	try {
+		await Promise.all([loadRuns(), loadStats()]);
+	} finally {
+		loading.value = false;
+	}
 }
 
 async function deploy(preview = false) {
@@ -181,10 +182,7 @@ const runItems = computed(() =>
 
 watch(
 	() => props.projectId,
-	() => {
-		loadRuns();
-		loadStats();
-	},
+	() => refresh(),
 	{ immediate: true },
 );
 </script>
