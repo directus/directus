@@ -761,7 +761,6 @@ unexpected_error_copy: Si è verificato un errore imprevisto. Per favore riprova
 copy_details: Copia Dettagli
 no_app_access: Nessun Accesso all'App
 no_app_access_copy: Questo utente non è autorizzato ad utilizzare l'app amministratore.
-password_reset_sent: Se hai un account riceverai via email un link sicuro per reimpostare la tua password
 password_reset_successful: Password reimpostata con successo
 back: Indietro
 filter: Filtro
