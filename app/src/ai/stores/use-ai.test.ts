@@ -4,6 +4,7 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ref } from 'vue';
 import { useAiStore } from './use-ai';
+import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 
 let lastChatConfig: any;
@@ -68,7 +69,7 @@ vi.mock('@ai-sdk/vue', () => {
 				messages,
 				status: 'idle',
 				error: null,
-				sendMessage: vi.fn(),
+				sendMessage: vi.fn(() => Promise.resolve()),
 				clearError: vi.fn(),
 				regenerate: vi.fn(),
 				stop: vi.fn(),
@@ -105,6 +106,62 @@ beforeEach(() => {
 });
 
 describe('useAiStore', () => {
+	describe('loading states', () => {
+		test('tracks submission preparation while context/files are prepared', async () => {
+			const aiStore = useAiStore();
+			const contextStore = useAiContextStore();
+
+			aiStore.input = 'Summarize this';
+
+			let resolveFetchContextData: ((value: any[]) => void) | undefined;
+			const fetchContextDataPromise = new Promise<any[]>((resolve) => {
+				resolveFetchContextData = resolve;
+			});
+
+			vi.spyOn(contextStore, 'fetchContextData').mockReturnValue(fetchContextDataPromise as any);
+			vi.spyOn(contextStore, 'uploadPendingFiles').mockResolvedValue([]);
+
+			const submitPromise = aiStore.submit();
+
+			expect(aiStore.isPreparingSubmission).toBe(true);
+			expect(aiStore.isUiLoading).toBe(true);
+
+			resolveFetchContextData?.([]);
+			await submitPromise;
+
+			expect(aiStore.isPreparingSubmission).toBe(false);
+			expect(aiStore.isUiLoading).toBe(false);
+		});
+
+		test('shows pending tool execution when assistant tool input is still in progress', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [{ type: 'tool-items', toolCallId: 'call-1', state: 'input-available', input: {} } as any],
+			});
+
+			expect(aiStore.isAwaitingToolExecution).toBe(true);
+			expect(aiStore.hasPendingToolCall).toBe(false);
+			expect(aiStore.isUiLoading).toBe(true);
+		});
+
+		test('does not treat approval-requested tool state as execution-in-progress', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [{ type: 'tool-items', toolCallId: 'call-1', state: 'approval-requested', input: {} } as any],
+			});
+
+			expect(aiStore.hasPendingToolCall).toBe(true);
+			expect(aiStore.isAwaitingToolExecution).toBe(false);
+			expect(aiStore.isUiLoading).toBe(false);
+		});
+	});
+
 	describe('message sanitization', () => {
 		test('sanitizes data/blob file URLs before transport send', () => {
 			useAiStore();

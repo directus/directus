@@ -208,6 +208,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	// Store snapshotted context attachments for sending with request
 	const pendingContextSnapshot = ref<ContextAttachment[]>([]);
+	const isPreparingSubmission = ref(false);
 
 	// Chat instance
 	const chat = new Chat<UIMessage>({
@@ -260,66 +261,67 @@ export const useAiStore = defineStore('ai-store', () => {
 					},
 				};
 			},
-			}),
-			sendAutomaticallyWhen: ({ messages }) =>
-				lastAssistantMessageIsCompleteWithApprovalResponses({ messages }) ||
-				lastAssistantMessageIsCompleteWithToolCalls({ messages }),
-			onData: (data) => {
-				if (data.type === 'data-usage') {
-					const usageData = data.data as Record<string, unknown>;
-					const { inputTokens, outputTokens, totalTokens } = usageData;
+		}),
+		sendAutomaticallyWhen: ({ messages }) =>
+			lastAssistantMessageIsCompleteWithApprovalResponses({ messages }) ||
+			lastAssistantMessageIsCompleteWithToolCalls({ messages }),
+		onData: (data) => {
+			if (data.type === 'data-usage') {
+				const usageData = data.data as Record<string, unknown>;
+				const { inputTokens, outputTokens, totalTokens } = usageData;
 
-					if (typeof inputTokens === 'number') tokenUsage.inputTokens = inputTokens;
-					if (typeof outputTokens === 'number') tokenUsage.outputTokens = outputTokens;
-					if (typeof totalTokens === 'number') tokenUsage.totalTokens = totalTokens;
+				if (typeof inputTokens === 'number') tokenUsage.inputTokens = inputTokens;
+				if (typeof outputTokens === 'number') tokenUsage.outputTokens = outputTokens;
+				if (typeof totalTokens === 'number') tokenUsage.totalTokens = totalTokens;
 
-					if (contextUsagePercentage.value > 0) {
-						estimatedMaxMessages.value = Math.floor((messages.value.length / contextUsagePercentage.value) * 100);
+				if (contextUsagePercentage.value > 0) {
+					estimatedMaxMessages.value = Math.floor((messages.value.length / contextUsagePercentage.value) * 100);
+				}
+			}
+		},
+		onToolCall: async ({ toolCall }) => {
+			const isServerTool = toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName);
+
+			if (isServerTool) {
+				return;
+			}
+
+			const tool = toolsStore.localTools.find((tool) => tool.name === toolCall.toolName);
+
+			if (!tool) {
+				throw new Error(`Tool by name "${toolCall.toolName}" does not exist`);
+			}
+
+			try {
+				const output = await tool.execute(toolCall.input as Record<string, unknown>);
+				chat.addToolResult({ tool: toolCall.toolName, output, toolCallId: toolCall.toolCallId });
+			} catch (e: unknown) {
+				const errorText = e instanceof Error ? e.message : String(e);
+
+				chat.addToolResult({
+					tool: toolCall.toolName,
+					state: 'output-error',
+					errorText,
+					toolCallId: toolCall.toolCallId,
+				});
+			}
+		},
+		onFinish: ({ isAbort, message }) => {
+			if (isAbort) {
+				message.parts.forEach((part) => {
+					if (part.type === 'reasoning') {
+						part.state = 'done';
+						delete part.providerMetadata;
 					}
-				}
-			},
-			onToolCall: async ({ toolCall }) => {
-				const isServerTool = toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName);
+				});
+			}
 
-				if (isServerTool) {
-					return;
-				}
-
-				const tool = toolsStore.localTools.find((tool) => tool.name === toolCall.toolName);
-
-				if (!tool) {
-					throw new Error(`Tool by name "${toolCall.toolName}" does not exist`);
-				}
-
-				try {
-					const output = await tool.execute(toolCall.input as Record<string, unknown>);
-					chat.addToolResult({ tool: toolCall.toolName, output, toolCallId: toolCall.toolCallId });
-				} catch (e: unknown) {
-					const errorText = e instanceof Error ? e.message : String(e);
-
-					chat.addToolResult({
-						tool: toolCall.toolName,
-						state: 'output-error',
-						errorText,
-						toolCallId: toolCall.toolCallId,
-					});
-				}
-			},
-			onFinish: ({ isAbort, message }) => {
-				if (isAbort) {
-					message.parts.forEach((part) => {
-						if (part.type === 'reasoning') {
-							part.state = 'done';
-							delete part.providerMetadata;
-						}
-					});
-				}
-
-				storedMessages.value = sanitizeMessages(chat.messages);
-			},
-		});
+			storedMessages.value = sanitizeMessages(chat.messages);
+		},
+	});
 
 	const error = computed(() => chat.error);
+	const status = computed(() => chat.status);
 
 	const messages = computed(() =>
 		chat.messages.map((msg) => ({
@@ -342,6 +344,21 @@ export const useAiStore = defineStore('ai-store', () => {
 
 		return lastMessage.parts.some((part) => 'state' in part && part.state === 'approval-requested');
 	});
+
+	const isAwaitingToolExecution = computed(() => {
+		const lastMessage = latestMessage.value;
+		if (!lastMessage || lastMessage.role !== 'assistant') return false;
+
+		const hasExecutingTool = lastMessage.parts.some(
+			(part) => 'state' in part && (part.state === 'input-streaming' || part.state === 'input-available'),
+		);
+
+		return hasExecutingTool && !hasPendingToolCall.value;
+	});
+
+	const isUiLoading = computed(
+		() => isPreparingSubmission.value || status.value === 'submitted' || isAwaitingToolExecution.value,
+	);
 
 	// Watch for tool results to trigger hooks
 	const processedToolCallIds = new Set<string>();
@@ -366,8 +383,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		}
 	});
 
-	const status = computed(() => chat.status);
-
 	const submitHook = createEventHook();
 
 	function buildFileParts(
@@ -388,7 +403,9 @@ export const useAiStore = defineStore('ai-store', () => {
 	}
 
 	const submit = async () => {
-		if (chat.status === 'streaming' || chat.status === 'submitted') return;
+		if (isPreparingSubmission.value || chat.status === 'streaming' || chat.status === 'submitted') return;
+
+		isPreparingSubmission.value = true;
 
 		const provider = selectedModel.value?.provider;
 
@@ -400,6 +417,7 @@ export const useAiStore = defineStore('ai-store', () => {
 				contextStore.uploadPendingFiles(provider),
 			]);
 		} catch (error) {
+			isPreparingSubmission.value = false;
 			unexpectedError(error);
 			return;
 		}
@@ -420,17 +438,24 @@ export const useAiStore = defineStore('ai-store', () => {
 			message.files = files;
 		}
 
-		chat.sendMessage(message).catch((error) => {
-			input.value = previousInput;
+		try {
+			chat.sendMessage(message).catch((error) => {
+				input.value = previousInput;
 
-			for (const item of previousContext) {
-				contextStore.addPendingContext(item);
-			}
+				for (const item of previousContext) {
+					contextStore.addPendingContext(item);
+				}
 
+				unexpectedError(error);
+			});
+		} catch (error) {
+			isPreparingSubmission.value = false;
 			unexpectedError(error);
-		});
+			return;
+		}
 
-		submitHook.trigger(input.value);
+		isPreparingSubmission.value = false;
+		submitHook.trigger(previousInput);
 		input.value = '';
 		contextStore.clearNonVisualContext();
 	};
@@ -449,6 +474,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
 		processedToolCallIds.clear();
+		isPreparingSubmission.value = false;
 
 		tokenUsage.inputTokens = 0;
 		tokenUsage.outputTokens = 0;
@@ -506,6 +532,9 @@ export const useAiStore = defineStore('ai-store', () => {
 		dehydrate,
 		onSubmit: submitHook.on,
 		hasPendingToolCall,
+		isPreparingSubmission,
+		isAwaitingToolExecution,
+		isUiLoading,
 		approveToolCall,
 		denyToolCall,
 

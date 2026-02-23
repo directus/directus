@@ -25,7 +25,7 @@ const canSubmit = computed(
 	() =>
 		aiStore.input.trim().length > 0 &&
 		aiStore.status !== 'streaming' &&
-		aiStore.status !== 'submitted' &&
+		!aiStore.isUiLoading &&
 		!aiStore.hasPendingToolCall,
 );
 
