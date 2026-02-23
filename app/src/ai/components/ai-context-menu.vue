@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
 import formatTitle from '@directus/format-title';
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useContextStaging } from '../composables/use-context-staging';
 import { usePrompts } from '../composables/use-prompts';
-import { useAiStore } from '../stores/use-ai';
 import { useSearchFilter } from '../composables/use-search-filter';
+import { useAiStore } from '../stores/use-ai';
 import type { MCPPrompt } from '../types';
 import AiContextMenuItem from './ai-context-menu/context-menu-item.vue';
 import AiContextListView from './ai-context-menu/list-view.vue';
@@ -354,7 +355,7 @@ function closeList() {
 			ref="fileInputRef"
 			type="file"
 			multiple
-			accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,text/plain,audio/mpeg,audio/wav,video/mp4"
+			:accept="AI_ALLOWED_MIME_TYPES.join(',')"
 			style="display: none"
 			@change="handleFileUpload"
 		/>

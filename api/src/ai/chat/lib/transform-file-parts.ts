@@ -30,6 +30,8 @@ function isFileUIPart(part: unknown): part is FileUIPart {
  * with the provider's native file handling.
  */
 export function transformFilePartsForProvider(messages: UIMessage[]): UIMessage[] {
+	const logger = useLogger();
+
 	return messages.map((msg) => {
 		if (!Array.isArray(msg.parts)) {
 			return msg;
@@ -37,24 +39,25 @@ export function transformFilePartsForProvider(messages: UIMessage[]): UIMessage[
 
 		return {
 			...msg,
-			parts: msg.parts.map((part) => {
-				if (!isFileUIPart(part)) {
-					return part;
-				}
+			parts: msg.parts
+				.map((part) => {
+					if (!isFileUIPart(part)) {
+						return part;
+					}
 
-				const fileId = part.providerMetadata?.directus?.fileId;
+					const fileId = part.providerMetadata?.directus?.fileId;
 
-				if (!fileId) {
-					const logger = useLogger();
-					logger.warn('File part missing providerMetadata.directus.fileId, passing through unchanged');
-					return part;
-				}
+					if (!fileId) {
+						logger.warn('File part missing providerMetadata.directus.fileId, filtering out');
+						return null;
+					}
 
-				return {
-					...part,
-					url: fileId,
-				};
-			}),
+					return {
+						...part,
+						url: fileId,
+					};
+				})
+				.filter((part): part is NonNullable<typeof part> => part !== null),
 		};
 	}) as UIMessage[];
 }

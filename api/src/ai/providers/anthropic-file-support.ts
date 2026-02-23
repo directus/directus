@@ -77,12 +77,8 @@ export function createAnthropicWithFileSupport(apiKey: string) {
 					body: JSON.stringify(body),
 				});
 			} catch (error) {
-				if (error instanceof SyntaxError) {
-					const logger = useLogger();
-					logger.warn('Anthropic file support: could not parse request body, skipping file_id transformation');
-					return fetch(url, options);
-				}
-
+				const logger = useLogger();
+				logger.error('Anthropic file support: could not parse request body');
 				throw error;
 			}
 		},

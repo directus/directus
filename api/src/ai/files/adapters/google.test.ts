@@ -231,9 +231,7 @@ describe('uploadToGoogle', () => {
 					});
 				}
 
-				return Promise.reject(
-					Object.assign(new Error('The operation was aborted'), { name: 'TimeoutError' }),
-				);
+				return Promise.reject(Object.assign(new Error('The operation was aborted'), { name: 'TimeoutError' }));
 			}),
 		);
 

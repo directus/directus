@@ -44,22 +44,17 @@ describe('createAnthropicWithFileSupport', () => {
 		);
 	});
 
-	it('should pass through when body is not valid JSON', async () => {
+	it('should throw when body is not valid JSON', async () => {
 		createAnthropicWithFileSupport('test-key');
 		const customFetch = getCustomFetch();
 
-		await customFetch('https://api.anthropic.com/v1/messages', {
-			method: 'POST',
-			body: 'not json',
-			headers: new Headers(),
-		});
-
-		expect(mockFetch).toHaveBeenCalledWith(
-			'https://api.anthropic.com/v1/messages',
-			expect.objectContaining({
+		await expect(
+			customFetch('https://api.anthropic.com/v1/messages', {
+				method: 'POST',
 				body: 'not json',
+				headers: new Headers(),
 			}),
-		);
+		).rejects.toThrow();
 	});
 
 	it('should pass through when body has no messages', async () => {
@@ -263,7 +258,7 @@ describe('createAnthropicWithFileSupport', () => {
 		expect(sentHeaders['anthropic-beta']).toBeUndefined();
 	});
 
-	it('should re-throw non-SyntaxError exceptions', async () => {
+	it('should throw on transformation errors', async () => {
 		createAnthropicWithFileSupport('test-key');
 		const customFetch = getCustomFetch();
 

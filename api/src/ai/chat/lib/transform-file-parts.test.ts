@@ -25,7 +25,7 @@ describe('transformFilePartsForProvider', () => {
 		expect(result[0]!.parts).toEqual([{ type: 'text', text: 'hello' }]);
 	});
 
-	it('should pass through file parts without providerMetadata', () => {
+	it('should filter out file parts without providerMetadata', () => {
 		const messages = [
 			{
 				id: '1',
@@ -37,10 +37,10 @@ describe('transformFilePartsForProvider', () => {
 
 		const result = transformFilePartsForProvider(messages);
 
-		expect((result[0]!.parts[0] as any).url).toBe('blob:http://localhost/abc');
+		expect(result[0]!.parts).toHaveLength(0);
 	});
 
-	it('should pass through file parts without directus fileId', () => {
+	it('should filter out file parts without directus fileId', () => {
 		const messages = [
 			{
 				id: '1',
@@ -59,7 +59,7 @@ describe('transformFilePartsForProvider', () => {
 
 		const result = transformFilePartsForProvider(messages);
 
-		expect((result[0]!.parts[0] as any).url).toBe('blob:http://localhost/abc');
+		expect(result[0]!.parts).toHaveLength(0);
 	});
 
 	it('should replace url with fileId when providerMetadata.directus.fileId exists', () => {
@@ -114,9 +114,9 @@ describe('transformFilePartsForProvider', () => {
 		const result = transformFilePartsForProvider(messages);
 		const parts = result[0]!.parts;
 
+		expect(parts).toHaveLength(2);
 		expect((parts[0] as any).text).toBe('check this file');
 		expect((parts[1] as any).url).toBe('file_abc123');
-		expect((parts[2] as any).url).toBe('blob:http://localhost/def');
 	});
 
 	it('should handle multiple messages', () => {

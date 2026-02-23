@@ -1,4 +1,5 @@
 import type { IncomingHttpHeaders } from 'node:http';
+import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
@@ -8,17 +9,7 @@ import type { FileUploadProvider, UploadedFile } from '../types.js';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
-const ALLOWED_MIME_TYPES = new Set([
-	'image/jpeg',
-	'image/png',
-	'image/gif',
-	'image/webp',
-	'application/pdf',
-	'text/plain',
-	'audio/mpeg',
-	'audio/wav',
-	'video/mp4',
-]);
+const ALLOWED_MIME_TYPES: Set<string> = new Set(AI_ALLOWED_MIME_TYPES);
 
 const SUPPORTED_PROVIDERS = new Set<FileUploadProvider>(['openai', 'anthropic', 'google']);
 
@@ -134,7 +125,7 @@ export const aiFileUploadHandler: RequestHandler = async (req, res, next) => {
 		res.json(result);
 	} catch (error) {
 		if (error instanceof Error && !(error instanceof ForbiddenError) && !(error instanceof InvalidPayloadError)) {
-			logger.warn(`AI file upload failed: ${error.message}`);
+			logger.error(error, 'AI file upload failed');
 		}
 
 		next(error);

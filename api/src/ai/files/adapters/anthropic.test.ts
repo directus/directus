@@ -107,9 +107,7 @@ describe('uploadToAnthropic', () => {
 			vi.fn().mockRejectedValue(Object.assign(new Error('The operation was aborted'), { name: 'TimeoutError' })),
 		);
 
-		await expect(uploadToAnthropic(mockFile, mockApiKey)).rejects.toThrow(
-			'Anthropic upload timed out after 120s',
-		);
+		await expect(uploadToAnthropic(mockFile, mockApiKey)).rejects.toThrow('Anthropic upload timed out after 120s');
 	});
 
 	it('should throw error when response JSON is invalid', async () => {
