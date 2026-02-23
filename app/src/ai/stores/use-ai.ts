@@ -154,6 +154,33 @@ export const useAiStore = defineStore('ai-store', () => {
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
 
+	const sanitizeFilePartUrl = (url: string): string => {
+		if (url.startsWith('data:') || url.startsWith('blob:')) {
+			return '';
+		}
+
+		return url;
+	};
+
+	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] => {
+		return messageList.map((message) => ({
+			...message,
+			parts: message.parts?.map((part) => {
+				if (part.type !== 'file' || typeof part.url !== 'string') {
+					return part;
+				}
+
+				const sanitizedUrl = sanitizeFilePartUrl(part.url);
+
+				if (sanitizedUrl === part.url) {
+					return part;
+				}
+
+				return { ...part, url: sanitizedUrl };
+			}),
+		}));
+	};
+
 	// Helper to convert local tool to API format
 	const toApiTool = (tool: StaticToolDefinition) => ({
 		name: tool.name,
@@ -223,19 +250,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			prepareSendMessagesRequest: (req) => {
 				const limitedMessages =
 					estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
-
-				// Strip data URLs from file parts to avoid exceeding MAX_PAYLOAD_SIZE.
-				// The API replaces url with fileId via transformFilePartsForProvider anyway.
-				const messages = limitedMessages.map((msg) => ({
-					...msg,
-					parts: msg.parts?.map((part) => {
-						if (part.type === 'file' && 'url' in part && typeof part.url === 'string' && part.url.startsWith('data:')) {
-							return { ...part, url: '' };
-						}
-
-						return part;
-					}),
-				}));
+				const messages = sanitizeMessages(limitedMessages);
 
 				return {
 					...req,
@@ -245,64 +260,64 @@ export const useAiStore = defineStore('ai-store', () => {
 					},
 				};
 			},
-		}),
-		sendAutomaticallyWhen: ({ messages }) =>
-			lastAssistantMessageIsCompleteWithApprovalResponses({ messages }) ||
-			lastAssistantMessageIsCompleteWithToolCalls({ messages }),
-		onData: (data) => {
-			if (data.type === 'data-usage') {
-				const usageData = data.data as Record<string, unknown>;
-				const { inputTokens, outputTokens, totalTokens } = usageData;
+			}),
+			sendAutomaticallyWhen: ({ messages }) =>
+				lastAssistantMessageIsCompleteWithApprovalResponses({ messages }) ||
+				lastAssistantMessageIsCompleteWithToolCalls({ messages }),
+			onData: (data) => {
+				if (data.type === 'data-usage') {
+					const usageData = data.data as Record<string, unknown>;
+					const { inputTokens, outputTokens, totalTokens } = usageData;
 
-				if (typeof inputTokens === 'number') tokenUsage.inputTokens = inputTokens;
-				if (typeof outputTokens === 'number') tokenUsage.outputTokens = outputTokens;
-				if (typeof totalTokens === 'number') tokenUsage.totalTokens = totalTokens;
+					if (typeof inputTokens === 'number') tokenUsage.inputTokens = inputTokens;
+					if (typeof outputTokens === 'number') tokenUsage.outputTokens = outputTokens;
+					if (typeof totalTokens === 'number') tokenUsage.totalTokens = totalTokens;
 
-				if (contextUsagePercentage.value > 0) {
-					estimatedMaxMessages.value = Math.floor((messages.value.length / contextUsagePercentage.value) * 100);
-				}
-			}
-		},
-		onToolCall: async ({ toolCall }) => {
-			const isServerTool = toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName);
-
-			if (isServerTool) {
-				return;
-			}
-
-			const tool = toolsStore.localTools.find((tool) => tool.name === toolCall.toolName);
-
-			if (!tool) {
-				throw new Error(`Tool by name "${toolCall.toolName}" does not exist`);
-			}
-
-			try {
-				const output = await tool.execute(toolCall.input as Record<string, unknown>);
-				chat.addToolResult({ tool: toolCall.toolName, output, toolCallId: toolCall.toolCallId });
-			} catch (e: unknown) {
-				const errorText = e instanceof Error ? e.message : String(e);
-
-				chat.addToolResult({
-					tool: toolCall.toolName,
-					state: 'output-error',
-					errorText,
-					toolCallId: toolCall.toolCallId,
-				});
-			}
-		},
-		onFinish: ({ isAbort, message }) => {
-			if (isAbort) {
-				message.parts.forEach((part) => {
-					if (part.type === 'reasoning') {
-						part.state = 'done';
-						delete part.providerMetadata;
+					if (contextUsagePercentage.value > 0) {
+						estimatedMaxMessages.value = Math.floor((messages.value.length / contextUsagePercentage.value) * 100);
 					}
-				});
-			}
+				}
+			},
+			onToolCall: async ({ toolCall }) => {
+				const isServerTool = toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName);
 
-			storedMessages.value = chat.messages;
-		},
-	});
+				if (isServerTool) {
+					return;
+				}
+
+				const tool = toolsStore.localTools.find((tool) => tool.name === toolCall.toolName);
+
+				if (!tool) {
+					throw new Error(`Tool by name "${toolCall.toolName}" does not exist`);
+				}
+
+				try {
+					const output = await tool.execute(toolCall.input as Record<string, unknown>);
+					chat.addToolResult({ tool: toolCall.toolName, output, toolCallId: toolCall.toolCallId });
+				} catch (e: unknown) {
+					const errorText = e instanceof Error ? e.message : String(e);
+
+					chat.addToolResult({
+						tool: toolCall.toolName,
+						state: 'output-error',
+						errorText,
+						toolCallId: toolCall.toolCallId,
+					});
+				}
+			},
+			onFinish: ({ isAbort, message }) => {
+				if (isAbort) {
+					message.parts.forEach((part) => {
+						if (part.type === 'reasoning') {
+							part.state = 'done';
+							delete part.providerMetadata;
+						}
+					});
+				}
+
+				storedMessages.value = sanitizeMessages(chat.messages);
+			},
+		});
 
 	const error = computed(() => chat.error);
 

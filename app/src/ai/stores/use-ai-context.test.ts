@@ -9,6 +9,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
+		post: vi.fn(),
 	},
 }));
 
@@ -283,6 +284,79 @@ describe('useAiContextStore', () => {
 			expect(unexpectedError).toHaveBeenCalled();
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.snapshot).toEqual({ id: '1', title: 'Success' });
+		});
+	});
+
+	describe('uploadPendingFiles', () => {
+		test('returns empty array when provider is missing', async () => {
+			const store = useAiContextStore();
+			const results = await store.uploadPendingFiles();
+
+			expect(results).toEqual([]);
+		});
+
+		test('uploads local non-image files without creating preview URLs', async () => {
+			const store = useAiContextStore();
+
+			store.addPendingContext({
+				id: 'local-file',
+				type: 'local-file',
+				data: { file: new File(['test'], 'test.txt', { type: 'text/plain' }) },
+				display: 'test.txt',
+			});
+
+			vi.mocked(api.post).mockResolvedValue({
+				data: {
+					provider: 'openai',
+					fileId: 'file-1',
+					filename: 'test.txt',
+					mimeType: 'text/plain',
+					sizeBytes: 4,
+					expiresAt: null,
+				},
+			});
+
+			const results = await store.uploadPendingFiles('openai');
+
+			expect(results).toHaveLength(1);
+			expect(results[0]!.displayUrl).toBe('');
+			expect(api.post).toHaveBeenCalledWith('/ai/files', expect.any(FormData));
+		});
+
+		test('uses asset URLs for staged library files', async () => {
+			const store = useAiContextStore();
+
+			store.addPendingContext({
+				id: 'file',
+				type: 'file',
+				data: {
+					id: 'abc123',
+					filename_download: 'doc.pdf',
+					type: 'application/pdf',
+					title: 'Document',
+				},
+				display: 'Document',
+			});
+
+			vi.mocked(api.get).mockResolvedValue({
+				data: new Blob(['pdf']),
+			});
+
+			vi.mocked(api.post).mockResolvedValue({
+				data: {
+					provider: 'openai',
+					fileId: 'file-2',
+					filename: 'doc.pdf',
+					mimeType: 'application/pdf',
+					sizeBytes: 3,
+					expiresAt: null,
+				},
+			});
+
+			const results = await store.uploadPendingFiles('openai');
+
+			expect(results).toHaveLength(1);
+			expect(results[0]!.displayUrl).toBe('/assets/abc123');
 		});
 	});
 

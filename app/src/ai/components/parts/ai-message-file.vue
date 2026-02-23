@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FileUIPart } from 'ai';
 import { computed, ref } from 'vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
+import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 
@@ -11,21 +11,41 @@ const props = defineProps<{
 
 const lightboxActive = ref(false);
 
+const hasImagePreview = computed(() => {
+	return (
+		props.part.mediaType?.startsWith('image/') === true &&
+		typeof props.part.url === 'string' &&
+		props.part.url.length > 0
+	);
+});
+
+const fileExtension = computed(() => {
+	const mimeType = props.part.mediaType;
+
+	if (!mimeType) return 'file';
+
+	const slashIndex = mimeType.indexOf('/');
+
+	if (slashIndex === -1) return mimeType;
+
+	return mimeType.slice(slashIndex + 1) || 'file';
+});
+
 const file = computed(() => ({
-	id: '', // Not used for local files/data URLs in this context
+	id: '',
 	title: props.part.filename || '',
 	type: props.part.mediaType || 'application/octet-stream',
 	modified_on: new Date().toISOString(),
 	width: 0,
 	height: 0,
-	data: props.part.url, // Pass the data URL directly if supported by file-preview or handle it
+	data: props.part.url,
 }));
 </script>
 
 <template>
 	<div class="message-file">
 		<button
-			v-if="part.mediaType?.startsWith('image/')"
+			v-if="hasImagePreview"
 			type="button"
 			class="image-preview"
 			:aria-label="part.filename || $t('ai.image_preview')"
@@ -34,11 +54,11 @@ const file = computed(() => ({
 			<VImage :src="part.url" :alt="part.filename || $t('ai.image_preview')" />
 		</button>
 		<div v-else class="file-attachment">
-			<VIcon name="attach_file" small />
+			<VIconFile :ext="fileExtension" class="file-icon" />
 			<span>{{ part.filename || $t('file') }}</span>
 		</div>
 
-		<FileLightbox v-model="lightboxActive" :file="file" :src="part.url" />
+		<FileLightbox v-if="hasImagePreview" v-model="lightboxActive" :file="file" :src="part.url" />
 	</div>
 </template>
 
@@ -74,6 +94,10 @@ const file = computed(() => ({
 		border-radius: var(--theme--border-radius);
 		background-color: var(--theme--background-subdued);
 		border: 1px solid var(--theme--border-color-subdued);
+	}
+
+	.file-icon {
+		flex-shrink: 0;
 	}
 }
 </style>

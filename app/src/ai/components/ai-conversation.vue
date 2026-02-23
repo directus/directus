@@ -102,11 +102,11 @@ function onDragEnter() {
 }
 
 function onDragLeave() {
-	dragCounter--;
+	if (!aiStore.supportsFileUpload) return;
 
-	if (dragCounter === 0) {
-		dragging.value = false;
-	}
+	dragCounter = Math.max(0, dragCounter - 1);
+
+	dragging.value = dragCounter > 0;
 }
 
 function onDrop(event: DragEvent) {

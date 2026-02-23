@@ -20,7 +20,6 @@ export const MAX_PENDING_CONTEXT = 10;
 
 export const useAiContextStore = defineStore('ai-context-store', () => {
 	const pendingContext = ref<PendingContextItem[]>([]);
-	const createdObjectUrls = new Set<string>();
 
 	const visualElementContextUrl = ref<string | null>(null);
 
@@ -176,8 +175,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 					if (item.data.thumbnailUrl) {
 						displayUrl = item.data.thumbnailUrl;
 					} else {
-						displayUrl = URL.createObjectURL(file);
-						createdObjectUrls.add(displayUrl);
+						displayUrl = '';
 					}
 				} else if (isFileContext(item)) {
 					const assetResponse = await api.get(`/assets/${item.data.id}`, { responseType: 'blob' });
@@ -195,7 +193,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 					displayUrl,
 					mimeType: file.type,
 				});
-			} catch (error) {
+			} catch {
 				notify({
 					title: i18n.global.t('ai.file_upload_failed', { name: item.display }),
 					type: 'warning',
@@ -206,16 +204,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		return results;
 	};
 
-	const revokeObjectUrls = () => {
-		for (const url of createdObjectUrls) {
-			URL.revokeObjectURL(url);
-		}
-
-		createdObjectUrls.clear();
-	};
-
 	const dehydrate = () => {
-		revokeObjectUrls();
 		clearPendingContext();
 		visualElementContextUrl.value = null;
 	};

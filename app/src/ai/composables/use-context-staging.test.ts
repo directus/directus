@@ -206,6 +206,62 @@ describe('useContextStaging', () => {
 		});
 	});
 
+	describe('stageFiles', () => {
+		test('notifies max reached when no files can be staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(false);
+
+			vi.mocked(api.get).mockResolvedValue({
+				data: {
+					data: [{ id: '1', filename_download: 'doc.pdf', type: 'application/pdf', title: 'Document' }],
+				},
+			});
+
+			const { stageFiles } = useContextStaging();
+
+			await stageFiles(['1']);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.max_elements_reached' });
+		});
+
+		test('notifies partial success when only some files are staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValueOnce(true).mockReturnValueOnce(false);
+
+			vi.mocked(api.get).mockResolvedValue({
+				data: {
+					data: [
+						{ id: '1', filename_download: 'doc1.pdf', type: 'application/pdf', title: 'Document 1' },
+						{ id: '2', filename_download: 'doc2.pdf', type: 'application/pdf', title: 'Document 2' },
+					],
+				},
+			});
+
+			const { stageFiles } = useContextStaging();
+
+			await stageFiles(['1', '2']);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.some_files_staged' });
+		});
+
+		test('notifies success when all files are staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
+
+			vi.mocked(api.get).mockResolvedValue({
+				data: {
+					data: [{ id: '1', filename_download: 'doc.pdf', type: 'application/pdf', title: 'Document' }],
+				},
+			});
+
+			const { stageFiles } = useContextStaging();
+
+			await stageFiles(['1']);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.files_staged', type: 'success' });
+		});
+	});
+
 	describe('stageVisualElement', () => {
 		test('forwards to parent window if opener exists', async () => {
 			const postMessageMock = vi.fn();

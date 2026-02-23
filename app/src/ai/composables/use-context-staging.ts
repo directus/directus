@@ -223,6 +223,7 @@ export function useContextStaging() {
 			});
 
 			const files: FileContextData[] = response.data.data;
+			let stagedCount = 0;
 
 			for (const file of files) {
 				const added = contextStore.addPendingContext({
@@ -233,9 +234,16 @@ export function useContextStaging() {
 				});
 
 				if (!added) break;
+				stagedCount++;
 			}
 
-			notify({ title: t('ai.files_staged'), type: 'success' });
+			if (stagedCount === 0) {
+				notify({ title: t('ai.max_elements_reached') });
+			} else if (stagedCount < files.length) {
+				notify({ title: t('ai.some_files_staged', { count: stagedCount }) });
+			} else {
+				notify({ title: t('ai.files_staged'), type: 'success' });
+			}
 		} catch (error) {
 			unexpectedError(error);
 		}
