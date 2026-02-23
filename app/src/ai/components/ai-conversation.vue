@@ -4,10 +4,12 @@ import { useScroll } from '@vueuse/core';
 import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useContextStaging } from '../composables/use-context-staging';
+import { pendingAskUser, useAskUserTool } from '../composables/use-ask-user-tool';
 import { useAiStore } from '../stores/use-ai';
 import AiHeader from './ai-header.vue';
 import AiInput from './ai-input.vue';
 import AiMessageList from './ai-message-list.vue';
+import AiAskUser from './parts/ai-ask-user.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -19,11 +21,11 @@ const { t } = useI18n();
 const aiStore = useAiStore();
 const { stageLocalFiles } = useContextStaging();
 const userStore = useUserStore();
-
 const allowedMimeTypes = new Set<string>(AI_ALLOWED_MIME_TYPES);
 
 const dragging = ref(false);
 let dragCounter = 0;
+useAskUserTool();
 
 const hasProviders = computed(() => aiStore.models.length > 0);
 
@@ -184,7 +186,8 @@ function onDrop(event: DragEvent) {
 				</VButton>
 			</div>
 
-			<AiInput />
+			<AiAskUser v-if="pendingAskUser" />
+			<AiInput v-else />
 		</div>
 
 		<div v-if="dragging" class="drop-overlay">
