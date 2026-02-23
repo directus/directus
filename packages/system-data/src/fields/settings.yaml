@@ -857,7 +857,7 @@ fields:
     options:
       label: $t:fields.directus_settings.ai_system_prompt
 
-- field: ai_openai_compatible_divider
+  - field: ai_openai_compatible_divider
     interface: presentation-divider
     options:
       inlineTitle: true
