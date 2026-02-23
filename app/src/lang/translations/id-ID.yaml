@@ -606,7 +606,6 @@ unexpected_error: Kesalahan Tidak Terduga
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
-password_reset_sent: Jika Anda memiliki akun, kami telah mengirimkan tautan yang aman untuk mengatur ulang kata sandi Anda
 password_reset_successful: Sandi berhasil diatur ulang
 back: Kembali
 filter: Penyaring
