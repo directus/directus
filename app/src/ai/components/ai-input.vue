@@ -65,6 +65,8 @@ function handleSubmit() {
 				<AiInputSubmit
 					:status="aiStore.status"
 					:can-submit="canSubmit"
+					:is-processing="aiStore.isPreparingSubmission || aiStore.isAwaitingToolExecution || aiStore.hasPendingToolCall"
+					:can-stop="aiStore.status === 'streaming' || aiStore.status === 'submitted'"
 					@stop="aiStore.stop"
 					@reload="aiStore.retry"
 					@submit="handleSubmit"

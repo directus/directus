@@ -23,7 +23,7 @@ onMounted(() => {
 	<div ref="el" :data-status="aiStore.status" class="ai-message-list">
 		<AiMessage v-for="message in aiStore.messages" :key="message.id" v-bind="message" />
 
-		<AiMessage v-if="aiStore.isUiLoading" id="indicator" role="assistant" :parts="[]">
+		<AiMessage v-if="aiStore.showAssistantLoadingIndicator" id="indicator" role="assistant" :parts="[]">
 			<AiLoadingIndicator />
 		</AiMessage>
 	</div>

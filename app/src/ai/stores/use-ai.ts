@@ -251,6 +251,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			prepareSendMessagesRequest: (req) => {
 				const limitedMessages =
 					estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
+
 				const messages = sanitizeMessages(limitedMessages);
 
 				return {
@@ -360,6 +361,8 @@ export const useAiStore = defineStore('ai-store', () => {
 		() => isPreparingSubmission.value || status.value === 'submitted' || isAwaitingToolExecution.value,
 	);
 
+	const showAssistantLoadingIndicator = computed(() => status.value === 'submitted' || isAwaitingToolExecution.value);
+
 	// Watch for tool results to trigger hooks
 	const processedToolCallIds = new Set<string>();
 
@@ -385,9 +388,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const submitHook = createEventHook();
 
-	function buildFileParts(
-		uploadedFiles: Awaited<ReturnType<typeof contextStore.uploadPendingFiles>>,
-	): FileUIPart[] {
+	function buildFileParts(uploadedFiles: Awaited<ReturnType<typeof contextStore.uploadPendingFiles>>): FileUIPart[] {
 		return uploadedFiles.map((uploaded) => ({
 			type: 'file' as const,
 			mediaType: uploaded.mimeType,
@@ -438,21 +439,15 @@ export const useAiStore = defineStore('ai-store', () => {
 			message.files = files;
 		}
 
-		try {
-			chat.sendMessage(message).catch((error) => {
-				input.value = previousInput;
+		chat.sendMessage(message).catch((error) => {
+			input.value = previousInput;
 
-				for (const item of previousContext) {
-					contextStore.addPendingContext(item);
-				}
+			for (const item of previousContext) {
+				contextStore.addPendingContext(item);
+			}
 
-				unexpectedError(error);
-			});
-		} catch (error) {
-			isPreparingSubmission.value = false;
 			unexpectedError(error);
-			return;
-		}
+		});
 
 		isPreparingSubmission.value = false;
 		submitHook.trigger(previousInput);
@@ -535,6 +530,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		isPreparingSubmission,
 		isAwaitingToolExecution,
 		isUiLoading,
+		showAssistantLoadingIndicator,
 		approveToolCall,
 		denyToolCall,
 

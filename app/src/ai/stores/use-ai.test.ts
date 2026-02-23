@@ -114,6 +114,7 @@ describe('useAiStore', () => {
 			aiStore.input = 'Summarize this';
 
 			let resolveFetchContextData: ((value: any[]) => void) | undefined;
+
 			const fetchContextDataPromise = new Promise<any[]>((resolve) => {
 				resolveFetchContextData = resolve;
 			});
@@ -125,12 +126,14 @@ describe('useAiStore', () => {
 
 			expect(aiStore.isPreparingSubmission).toBe(true);
 			expect(aiStore.isUiLoading).toBe(true);
+			expect(aiStore.showAssistantLoadingIndicator).toBe(false);
 
 			resolveFetchContextData?.([]);
 			await submitPromise;
 
 			expect(aiStore.isPreparingSubmission).toBe(false);
 			expect(aiStore.isUiLoading).toBe(false);
+			expect(aiStore.showAssistantLoadingIndicator).toBe(false);
 		});
 
 		test('shows pending tool execution when assistant tool input is still in progress', () => {
@@ -145,6 +148,7 @@ describe('useAiStore', () => {
 			expect(aiStore.isAwaitingToolExecution).toBe(true);
 			expect(aiStore.hasPendingToolCall).toBe(false);
 			expect(aiStore.isUiLoading).toBe(true);
+			expect(aiStore.showAssistantLoadingIndicator).toBe(true);
 		});
 
 		test('does not treat approval-requested tool state as execution-in-progress', () => {
@@ -159,6 +163,7 @@ describe('useAiStore', () => {
 			expect(aiStore.hasPendingToolCall).toBe(true);
 			expect(aiStore.isAwaitingToolExecution).toBe(false);
 			expect(aiStore.isUiLoading).toBe(false);
+			expect(aiStore.showAssistantLoadingIndicator).toBe(false);
 		});
 	});
 
