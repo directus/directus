@@ -1,5 +1,6 @@
 ---
 '@directus/api': major
+'@directus/app': patch
 '@directus/specs': patch
 ---
 
