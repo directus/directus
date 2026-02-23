@@ -52,10 +52,15 @@ export function createAnthropicWithFileSupport(apiKey: string) {
 				const { messages, hasFileIds } = transformMessagesForFileId(body.messages);
 				body.messages = messages;
 
-				const headersObj: Record<string, string> =
-					options.headers instanceof Headers
-						? Object.fromEntries(options.headers.entries())
-						: { ...(options.headers as Record<string, string>) };
+				const headersObj: Record<string, string> = {};
+
+				if (options.headers instanceof Headers) {
+					options.headers.forEach((value, key) => {
+						headersObj[key] = value;
+					});
+				} else {
+					Object.assign(headersObj, options.headers as Record<string, string>);
+				}
 
 				if (hasFileIds) {
 					const existing = headersObj['anthropic-beta'];
