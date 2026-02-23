@@ -14,6 +14,7 @@ type Artist = {
 	id?: number | string;
 	name: string;
 	company?: string;
+	group?: string;
 };
 
 function createArtist(pkType: PrimaryKeyType): Artist {
@@ -97,9 +98,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(gqlResponse.statusCode).toBe(200);
 
 						switch (vendor) {
-							case 'sqlite3':
-								expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
-								break;
 							case 'postgres':
 							case 'postgres10':
 							case 'mssql':
@@ -625,6 +623,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 													id: expect.anything(),
 													name,
 													company: null,
+													group: null,
 												},
 											],
 										};
@@ -987,7 +986,180 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe('Logical Filters', () => {
+		describe('Field Selection Test', () => {
+			describe('No selection returns all fields', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// setup
+					const insertedArtist = await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: createArtist(pkType),
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+
+					const fields = Object.keys(response.body.data);
+
+					expect(fields).toHaveLength(4);
+					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group']));
+				});
+			});
+
+			describe('* selection returns all fields', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// setup
+					const insertedArtist = await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: createArtist(pkType),
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
+						.query('fields=*')
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+
+					const fields = Object.keys(response.body.data);
+
+					expect(fields).toHaveLength(4);
+					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group']));
+				});
+			});
+
+			describe('Array syntax within QUERYSTRING_ARRAY_LIMIT', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// setup
+					const insertedArtist = await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: createArtist(pkType),
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
+						.query('fields[]=name&fields=[]=name&[]=name')
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+
+					expect(Object.keys(response.body.data)).toEqual(['name']);
+				});
+			});
+
+			describe('Array syntax exceeding QUERYSTRING_ARRAY_LIMIT', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// setup
+					const insertedArtist = await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: createArtist(pkType),
+					});
+
+					// Action
+					// Use array indices beyond the QUERYSTRING_ARRAY_LIMIT (100)
+					// When qs encounters array > arrayLimit, it parses it as an object
+					// It should result in invalid input
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
+						.query('fields[101]=name&fields[102]=name')
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(400);
+					expect(response.body.errors[0].extensions.code).toBe('INVALID_QUERY');
+				});
+
+				it.each(vendors)('%s', async (vendor) => {
+					// setup
+					const insertedArtist = await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: createArtist(pkType),
+					});
+
+					// Action
+					// A regular array beyond the QUERYSTRING_ARRAY_LIMIT (100)
+					// When qs encounters array > arrayLimit, it parses it as an object
+					// It should result in invalid input
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
+						.query(Array(102).fill('fields[]=name').join('&'))
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(400);
+					expect(response.body.errors[0].extensions.code).toBe('INVALID_QUERY');
+				});
+			});
+
+			describe('Comma-separated syntax bypasses QUERYSTRING_ARRAY_LIMIT', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// setup
+					const insertedArtist = await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: createArtist(pkType),
+					});
+
+					// Action
+					// Comma-separated fields are parsed as a single string by qs
+					// It should bypass the QUERYSTRING_ARRAY_LIMIT limit
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
+						.query('fields=' + Array(102).fill('name').join(','))
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+
+					expect(Object.keys(response.body.data)).toEqual(['name']);
+				});
+			});
+		});
+
+		describe('Filter Tests', () => {
+			describe('Filter with array depth parameters with array indices larger than 20', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const pkType = 'integer';
+					const localCollectionArtists = `${collectionArtists}_${pkType}`;
+					const artists = [];
+					const artistsCount = 30;
+
+					for (let i = 0; i < artistsCount; i++) {
+						artists.push(createArtist(pkType));
+					}
+
+					const items = await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Generate a filter that looks like this:
+					// filter[id][_in][0]=1&filter[id][_in][1]=2&filter[id][_in][2]=3...
+					const filters = [];
+
+					for (const [index, value] of items.entries()) {
+						filters.push(`filter[id][_in][${index}]=${value.id}`);
+					}
+
+					const filter = filters.join('&');
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query(filter)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.length).toEqual(artistsCount);
+				});
+			});
+
 			describe('retrieves artists with name equality _AND company equality', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
@@ -1228,6 +1400,76 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					for (let i = 0; i < companies.length; i++) {
 						expect(parseInt(gqlResponse.body.data[queryKey][i].count.id)).toEqual(companiesCount[i]);
+					}
+				});
+			});
+
+			describe('groups by field named "group" without collision', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const artistName = 'aggregate-group-field';
+					const groups = ['admin', 'editor', 'viewer'] as const;
+					const artists = [];
+
+					for (let i = 0; i < 6; i++) {
+						const artist = createArtist(pkType);
+						artist.name = artistName;
+						artist.group = groups[i % groups.length]!;
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['group'],
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									groupBy: ['group'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(groups.length);
+
+					for (const item of response.body.data) {
+						expect(groups).toContain(item.group);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toBe(groups.length);
+
+					for (const item of gqlResponse.body.data[queryKey]) {
+						expect(item.group).toBeDefined();
+						expect(typeof item.group).toBe('object');
+						expect(groups).toContain(item.group.group);
+						expect(parseInt(item.count.id)).toBe(2);
 					}
 				});
 			});
@@ -2347,41 +2589,5 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
-	});
-});
-
-describe('Query parameters with array indices larger than 20', () => {
-	it.each(vendors)('%s', async (vendor) => {
-		// Setup
-		const pkType = 'integer';
-		const localCollectionArtists = `${collectionArtists}_${pkType}`;
-		const artists = [];
-		const artistsCount = 30;
-
-		for (let i = 0; i < artistsCount; i++) {
-			artists.push(createArtist(pkType));
-		}
-
-		const items = await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
-
-		// Generate a filter that looks like this:
-		// filter[id][_in][0]=1&filter[id][_in][1]=2&filter[id][_in][2]=3...
-		const filters = [];
-
-		for (const [index, value] of items.entries()) {
-			filters.push(`filter[id][_in][${index}]=${value.id}`);
-		}
-
-		const filter = filters.join('&');
-
-		// Action
-		const response = await request(getUrl(vendor))
-			.get(`/items/${localCollectionArtists}`)
-			.query(filter)
-			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-		// Assert
-		expect(response.statusCode).toEqual(200);
-		expect(response.body.data.length).toEqual(artistsCount);
 	});
 });
