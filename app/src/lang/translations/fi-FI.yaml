@@ -580,7 +580,6 @@ unexpected_error: Odottamaton virhe
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
-password_reset_sent: Olemme lähettäneet salasanan palautuslinkin, mikäli omaat tilin
 password_reset_successful: Salasanan palauttaminen onnistui
 back: Takaisin
 filter: Suodatin
