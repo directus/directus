@@ -763,7 +763,6 @@ unexpected_error_copy: Beklenmedik bir problem oluştu. Lütfen yineden deneyin.
 copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
-password_reset_sent: Bir hesabınız varsa, şifrenizi sıfırlamanız için size güvenli bir bağlantı gönderdik
 password_reset_successful: Parola başarıyla sıfırlandı
 back: Geri
 filter: Filtrele
