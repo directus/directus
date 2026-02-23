@@ -566,7 +566,6 @@ unexpected_error: Neočekivana greška
 copy_details: Kopiraj detalje
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.
-password_reset_sent: Ako imate korisnički račun, poslali smo vam sigurni link za ponovno zadavanje lozinke
 password_reset_successful: Lozinka je uspješno resetovana
 back: Povratak
 edit_image: Uredi sliku
