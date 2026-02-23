@@ -37,6 +37,10 @@ function unsetValue(e: any) {
 	e.stopPropagation();
 	emit('input', null);
 }
+
+function closeDatePicker() {
+	menuActive.value = false;
+}
 </script>
 
 <template>
@@ -74,7 +78,7 @@ function unsetValue(e: any) {
 			:include-seconds
 			:disabled
 			@update:model-value="$emit('input', $event)"
-			@close="dateTimeMenu?.deactivate"
+			@close="closeDatePicker"
 		/>
 	</VMenu>
 </template>
