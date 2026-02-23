@@ -622,7 +622,6 @@ unexpected_error: Uventet feil
 copy_details: Kopier detaljer
 no_app_access: Ingen app-tilgang
 no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
-password_reset_sent: Hvis du har en konto, har vi sent deg en sikker lenke for å tilbakestille passordet ditt
 password_reset_successful: Passord tilbakestilt
 back: Tilbake
 filter: Filter
