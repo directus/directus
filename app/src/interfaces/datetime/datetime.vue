@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isValid } from 'date-fns';
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -28,6 +28,7 @@ const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
 
+const dateTimeMenu = useTemplateRef('dateTimeMenu');
 const menuActive = ref(false);
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
@@ -39,7 +40,7 @@ function unsetValue(e: any) {
 }
 
 function closeDatePicker() {
-	menuActive.value = false;
+	dateTimeMenu.value?.deactivate();
 }
 </script>
 
