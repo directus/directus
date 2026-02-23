@@ -1,6 +1,6 @@
 import type { VisualElementContextData } from '@directus/ai';
 import formatTitle from '@directus/format-title';
-import { Item } from '@directus/types';
+import type { Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';

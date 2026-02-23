@@ -1,5 +1,5 @@
 import type { ContextAttachment, PrimaryKey, VisualElementContextData } from '@directus/ai';
-import { Item } from '@directus/types';
+import type { Item } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -87,13 +87,11 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*']) => {
 		try {
-			const response = await sdk.request<Item>(
+			return await sdk.request<Item>(
 				requestEndpoint(`${getEndpoint(collection)}/${id}`, {
 					params: { fields },
 				}),
 			);
-
-			return response;
 		} catch (error) {
 			unexpectedError(error);
 			return null;
@@ -178,12 +176,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 				if (isLocalFileContext(item)) {
 					file = item.data.file;
-
-					if (item.data.thumbnailUrl) {
-						displayUrl = item.data.thumbnailUrl;
-					} else {
-						displayUrl = '';
-					}
+					displayUrl = item.data.thumbnailUrl ?? '';
 				} else if (isFileContext(item)) {
 					const assetResponse = await api.get(`/assets/${item.data.id}`, { responseType: 'blob' });
 					file = new File([assetResponse.data], item.data.filename_download, { type: item.data.type });

@@ -32,32 +32,29 @@ function isFileUIPart(part: unknown): part is FileUIPart {
 export function transformFilePartsForProvider(messages: UIMessage[]): UIMessage[] {
 	const logger = useLogger();
 
-	return messages.map((msg) => {
+	return messages.map((msg): UIMessage => {
 		if (!Array.isArray(msg.parts)) {
 			return msg;
 		}
 
-		return {
-			...msg,
-			parts: msg.parts
-				.map((part) => {
-					if (!isFileUIPart(part)) {
-						return part;
-					}
+		const parts = [];
 
-					const fileId = part.providerMetadata?.directus?.fileId;
+		for (const part of msg.parts) {
+			if (!isFileUIPart(part)) {
+				parts.push(part);
+				continue;
+			}
 
-					if (!fileId) {
-						logger.warn('File part missing providerMetadata.directus.fileId, filtering out');
-						return null;
-					}
+			const fileId = part.providerMetadata?.directus?.fileId;
 
-					return {
-						...part,
-						url: fileId,
-					};
-				})
-				.filter((part): part is NonNullable<typeof part> => part !== null),
-		};
-	}) as UIMessage[];
+			if (!fileId) {
+				logger.warn('File part missing providerMetadata.directus.fileId, filtering out');
+				continue;
+			}
+
+			parts.push({ ...part, url: fileId });
+		}
+
+		return { ...msg, parts };
+	});
 }

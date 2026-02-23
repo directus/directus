@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useSdk } from '@directus/composables';
-import { Item, PrimaryKey } from '@directus/types';
+import type { Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { pickBy } from 'lodash';
 import { render } from 'micromustache';

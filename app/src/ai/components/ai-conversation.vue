@@ -113,19 +113,10 @@ function onDrop(event: DragEvent) {
 	const files = event.dataTransfer?.files;
 
 	if (files) {
-		const accepted: File[] = [];
-		let rejected = 0;
+		const allFiles = Array.from(files);
+		const accepted = allFiles.filter((file) => allowedMimeTypes.has(file.type));
 
-		for (const file of Array.from(files)) {
-			if (!allowedMimeTypes.has(file.type)) {
-				rejected++;
-				continue;
-			}
-
-			accepted.push(file);
-		}
-
-		if (rejected > 0) {
+		if (accepted.length < allFiles.length) {
 			notify({ title: t('ai.unsupported_file_type'), type: 'warning' });
 		}
 
