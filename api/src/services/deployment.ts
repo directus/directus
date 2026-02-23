@@ -19,6 +19,9 @@ import { getDeploymentDriver } from '../deployment.js';
 import { useLogger } from '../logger/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import type { DeploymentProject } from './deployment-projects.js';
+import { DeploymentProjectsService } from './deployment-projects.js';
+import type { DeploymentRun } from './deployment-runs.js';
+import { DeploymentRunsService } from './deployment-runs.js';
 import { ItemsService } from './items.js';
 
 const env = useEnv();
@@ -355,5 +358,155 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		// Return with full TTL (just cached)
 		return { data: project, remainingTTL: DEPLOYMENT_CACHE_TTL };
+	}
+
+	/**
+	 * Dashboard: selected projects with enriched details and run stats
+	 */
+	async getDashboard(
+		provider: ProviderType,
+		sinceDate: Date,
+	): Promise<{
+		projects: any[];
+		stats: { active_deployments: number; successful_builds: number; failed_builds: number };
+	}> {
+		const projectsService = new DeploymentProjectsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const runsService = new DeploymentRunsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const deployment = await this.readByProvider(provider);
+
+		const selectedProjects = await projectsService.readByQuery({
+			filter: { deployment: { _eq: deployment.id } },
+		});
+
+		if (selectedProjects.length === 0) {
+			return {
+				projects: [],
+				stats: { active_deployments: 0, successful_builds: 0, failed_builds: 0 },
+			};
+		}
+
+		const projectIds = selectedProjects.map((p) => p.id);
+		const driver = await this.getDriver(provider);
+
+		const [projectDetails, activeResult, statusCounts] = await Promise.all([
+			Promise.all(
+				selectedProjects.map(async (p) => {
+					const details = await driver.getProject(p.external_id);
+
+					return {
+						...details,
+						id: p.id,
+						external_id: p.external_id,
+					};
+				}),
+			),
+			runsService.readByQuery({
+				filter: { project: { _in: projectIds }, status: { _eq: 'building' } },
+				aggregate: { count: ['*'] },
+			}) as Promise<any[]>,
+			runsService.readByQuery({
+				filter: {
+					_and: [
+						{ project: { _in: projectIds } },
+						{ status: { _in: ['ready', 'error'] } },
+						{ date_created: { _gte: sinceDate.toISOString() } },
+					],
+				},
+				aggregate: { count: ['*'] },
+				group: ['status'],
+			}) as Promise<any[]>,
+		]);
+
+		const countByStatus = (status: string) =>
+			Number(statusCounts.find((r: any) => r['status'] === status)?.['count'] ?? 0);
+
+		return {
+			projects: projectDetails,
+			stats: {
+				active_deployments: Number(activeResult[0]?.['count'] ?? 0),
+				successful_builds: countByStatus('ready'),
+				failed_builds: countByStatus('error'),
+			},
+		};
+	}
+
+	/**
+	 * Trigger a deployment for a project
+	 */
+	async triggerDeployment(
+		provider: ProviderType,
+		projectId: string,
+		options: { preview: boolean; clearCache: boolean },
+	): Promise<DeploymentRun> {
+		const projectsService = new DeploymentProjectsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const runsService = new DeploymentRunsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const project = await projectsService.readOne(projectId);
+		const driver = await this.getDriver(provider);
+
+		const result = await driver.triggerDeployment(project.external_id, {
+			preview: options.preview,
+			clearCache: options.clearCache,
+		});
+
+		const runId = await runsService.createOne({
+			project: projectId,
+			external_id: result.deployment_id,
+			target: options.preview ? 'preview' : 'production',
+			status: result.status,
+			started_at: result.created_at.toISOString(),
+			...(result.url ? { url: result.url } : {}),
+		});
+
+		return runsService.readOne(runId);
+	}
+
+	/**
+	 * Cancel a deployment run
+	 */
+	async cancelDeployment(provider: ProviderType, runId: string): Promise<DeploymentRun> {
+		const runsService = new DeploymentRunsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const run = await runsService.readOne(runId);
+		const driver = await this.getDriver(provider);
+
+		const status = await driver.cancelDeployment(run.external_id);
+		await runsService.updateOne(runId, { status });
+
+		return runsService.readOne(runId);
+	}
+
+	/**
+	 * Get a run with its logs from the provider
+	 */
+	async getRunWithLogs(provider: ProviderType, runId: string, since?: Date): Promise<DeploymentRun & { logs: any }> {
+		const runsService = new DeploymentRunsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const run = await runsService.readOne(runId);
+		const driver = await this.getDriver(provider);
+		const logs = await driver.getDeploymentLogs(run.external_id, since ? { since } : undefined);
+
+		return { ...run, logs };
 	}
 }

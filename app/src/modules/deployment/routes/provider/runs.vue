@@ -232,7 +232,7 @@ watch(
 			<div class="stats-bar">
 				<div class="stat-card">
 					<VIcon name="deployed_code" class="stat-icon" />
-					<span>{{ $t('deployment.dashboard.total_deployments', { value: totalDeployments }) }}</span>
+					<span>{{ $t('deployment.dashboard.total_deployments', { count: totalDeployments }, totalDeployments) }}</span>
 				</div>
 			</div>
 
@@ -316,11 +316,6 @@ watch(
 .stat-icon {
 	--v-icon-color: var(--theme--foreground-subdued);
 	flex-shrink: 0;
-}
-
-.stat-value {
-	color: var(--theme--foreground);
-	font-weight: 600;
 }
 
 .notice {

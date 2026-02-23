@@ -80,22 +80,22 @@ watch(() => props.provider, loadDashboard);
 				<div class="stats-bar">
 					<div class="stat-card">
 						<VIcon name="folder" class="stat-icon" />
-						<span>{{ $t('deployment.dashboard.total_projects', { value: projects.length }) }}</span>
+						<span>{{ $t('deployment.dashboard.total_projects', { count: projects.length }, projects.length) }}</span>
 					</div>
 
 					<div class="stat-card warning">
 						<VIcon name="autorenew" class="stat-icon" />
-						<span>{{ $t('deployment.dashboard.active_deployments', { value: stats.active_deployments }) }}</span>
+						<span>{{ $t('deployment.dashboard.active_deployments', { count: stats.active_deployments }, stats.active_deployments) }}</span>
 					</div>
 
 					<div class="stat-card danger">
 						<VIcon name="error" class="stat-icon" />
-						<span>{{ $t('deployment.dashboard.failed_builds', { value: stats.failed_builds }) }}</span>
+						<span>{{ $t('deployment.dashboard.failed_builds', { count: stats.failed_builds }, stats.failed_builds) }}</span>
 					</div>
 
 					<div class="stat-card success">
 						<VIcon name="check" class="stat-icon" />
-						<span>{{ $t('deployment.dashboard.successful_builds', { value: stats.successful_builds }) }}</span>
+						<span>{{ $t('deployment.dashboard.successful_builds', { count: stats.successful_builds }, stats.successful_builds) }}</span>
 					</div>
 				</div>
 
@@ -208,15 +208,6 @@ watch(() => props.provider, loadDashboard);
 .stat-icon {
 	--v-icon-color: var(--theme--foreground-subdued);
 	flex-shrink: 0;
-}
-
-.stat-label {
-	color: var(--theme--foreground-subdued);
-	font-size: 14px;
-}
-
-.stat-value {
-	font-weight: 600;
 }
 
 :deep(.presentation-divider) {

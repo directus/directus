@@ -359,12 +359,41 @@ describe('NetlifyDriver', () => {
 	});
 
 	describe('cancelDeployment', () => {
-		it('should cancel a deployment', async () => {
+		it('should cancel a deployment and return canceled', async () => {
 			mockNetlifyAPI.cancelSiteDeploy.mockResolvedValueOnce(undefined);
 
-			await expect(driver.cancelDeployment('deploy-1')).resolves.not.toThrow();
+			const status = await driver.cancelDeployment('deploy-1');
 
 			expect(mockNetlifyAPI.cancelSiteDeploy).toHaveBeenCalledWith({ deployId: 'deploy-1' });
+			expect(status).toBe('canceled');
+		});
+
+		it('should return actual status when deployment already finished', async () => {
+			mockNetlifyAPI.cancelSiteDeploy.mockRejectedValueOnce(Object.assign(new Error('Cannot cancel'), { status: 400 }));
+
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({
+				id: 'deploy-1',
+				site_id: 'site-1',
+				state: 'ready',
+				created_at: new Date().toISOString(),
+			});
+
+			const status = await driver.cancelDeployment('deploy-1');
+
+			expect(status).toBe('ready');
+		});
+
+		it('should throw when deployment is still building and cancel fails', async () => {
+			mockNetlifyAPI.cancelSiteDeploy.mockRejectedValueOnce(Object.assign(new Error('Cannot cancel'), { status: 400 }));
+
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({
+				id: 'deploy-1',
+				site_id: 'site-1',
+				state: 'building',
+				created_at: new Date().toISOString(),
+			});
+
+			await expect(driver.cancelDeployment('deploy-1')).rejects.toThrow(ServiceUnavailableError);
 		});
 	});
 

@@ -6,6 +6,7 @@ import type {
 	Log,
 	Options,
 	Project,
+	Status,
 	TriggerResult,
 	WebhookRegistrationResult,
 } from '@directus/types';
@@ -133,7 +134,7 @@ export abstract class DeploymentDriver<
 	 * @throws {HitRateLimitError} When rate limit is exceeded
 	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
-	abstract cancelDeployment(deploymentId: string): Promise<void>;
+	abstract cancelDeployment(deploymentId: string): Promise<Status>;
 
 	/**
 	 * Get deployment build logs

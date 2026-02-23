@@ -321,10 +321,25 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		return triggerResult;
 	}
 
-	async cancelDeployment(deploymentId: string): Promise<void> {
-		await this.request(`/v12/deployments/${encodeURIComponent(deploymentId)}/cancel`, {
-			method: 'PATCH',
-		});
+	async cancelDeployment(deploymentId: string): Promise<Status> {
+		try {
+			await this.request(`/v12/deployments/${encodeURIComponent(deploymentId)}/cancel`, {
+				method: 'PATCH',
+			});
+
+			return 'canceled';
+		} catch {
+			const details = await this.getDeployment(deploymentId);
+
+			if (details.status !== 'building') {
+				return details.status;
+			}
+
+			throw new ServiceUnavailableError({
+				service: 'vercel',
+				reason: `Could not cancel the deployment: ${deploymentId}`,
+			});
+		}
 	}
 
 	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {

@@ -238,9 +238,25 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		return triggerResult;
 	}
 
-	async cancelDeployment(deploymentId: string): Promise<void> {
-		await this.handleApiError((api) => api.cancelSiteDeploy({ deployId: deploymentId }));
-		this.closeWsConnection(deploymentId);
+	async cancelDeployment(deploymentId: string): Promise<Status> {
+		try {
+			await this.handleApiError((api) => api.cancelSiteDeploy({ deployId: deploymentId }));
+			this.closeWsConnection(deploymentId);
+
+			return 'canceled';
+		} catch {
+			const details = await this.getDeployment(deploymentId);
+
+			if (details.status !== 'building') {
+				this.closeWsConnection(deploymentId);
+				return details.status;
+			}
+
+			throw new ServiceUnavailableError({
+				service: 'netlify',
+				reason: `Could not cancel the deployment: ${deploymentId}`,
+			});
+		}
 	}
 
 	private closeWsConnection(deploymentId: string, remove = true): void {

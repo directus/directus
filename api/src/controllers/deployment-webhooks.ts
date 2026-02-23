@@ -84,18 +84,13 @@ router.post(
 			accountability: null,
 		});
 
-		const projects = await projectsService.readByQuery({
-			filter: { external_id: { _eq: event.project_external_id } },
-			limit: 1,
-		});
+		const project = await projectsService.readByExternalId(event.project_external_id);
 
-		if (!projects || projects.length === 0) {
-			// 410 signals the provider this project is no longer tracked,
+		if (!project) {
+			// 410 signals the provider this project is no longer tracked
 			logger.info(`[webhook:${provider}] Project ${event.project_external_id} not tracked`);
 			return res.sendStatus(410);
 		}
-
-		const project = projects[0]!;
 
 		// Check if run already exists
 		const runsService = new DeploymentRunsService({

@@ -12,6 +12,8 @@ export async function up(knex: Knex): Promise<void> {
 		table.timestamp('started_at').nullable();
 		table.timestamp('completed_at').nullable();
 	});
+
+	await knex('directus_deployment_runs').delete();
 }
 
 export async function down(knex: Knex): Promise<void> {

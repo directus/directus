@@ -346,14 +346,37 @@ describe('VercelDriver', () => {
 	});
 
 	describe('cancelDeployment', () => {
-		it('should send PATCH to cancel endpoint', async () => {
+		it('should send PATCH to cancel endpoint and return canceled', async () => {
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, {}));
 
-			await driver.cancelDeployment('dpl-1');
+			const status = await driver.cancelDeployment('dpl-1');
 
 			const call = mockAxiosRequest.mock.calls[0]![0];
 			expect(call.method).toBe('PATCH');
 			expect(call.url).toContain('/v12/deployments/dpl-1/cancel');
+			expect(status).toBe('canceled');
+		});
+
+		it('should return actual status when deployment already finished', async () => {
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(400, { error: { message: 'Cannot cancel' } }));
+
+			mockAxiosRequest.mockResolvedValueOnce(
+				createAxiosResponse(200, { id: 'dpl-1', projectId: 'prj-1', state: 'READY', createdAt: Date.now() }),
+			);
+
+			const status = await driver.cancelDeployment('dpl-1');
+
+			expect(status).toBe('ready');
+		});
+
+		it('should throw when deployment is still building and cancel fails', async () => {
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(400, { error: { message: 'Cannot cancel' } }));
+
+			mockAxiosRequest.mockResolvedValueOnce(
+				createAxiosResponse(200, { id: 'dpl-1', projectId: 'prj-1', state: 'BUILDING', createdAt: Date.now() }),
+			);
+
+			await expect(driver.cancelDeployment('dpl-1')).rejects.toThrow();
 		});
 	});
 

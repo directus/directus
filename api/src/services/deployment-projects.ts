@@ -18,6 +18,18 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	}
 
 	/**
+	 * Find a project by its provider-side external ID. Returns null if not tracked.
+	 */
+	async readByExternalId(externalId: string): Promise<DeploymentProject | null> {
+		const results = await this.readByQuery({
+			filter: { external_id: { _eq: externalId } },
+			limit: 1,
+		});
+
+		return results?.[0] ?? null;
+	}
+
+	/**
 	 * Update project selection (create/delete)
 	 */
 	async updateSelection(
