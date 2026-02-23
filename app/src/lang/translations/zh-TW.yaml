@@ -681,7 +681,6 @@ unexpected_error: 未預期的錯誤
 copy_details: 複製詳細資訊
 no_app_access: 無使用權限
 no_app_access_copy: 這個使用者無法使用管理介面。
-password_reset_sent: 如果您的帳號存在，我們會透過Email寄送密碼重設連結。
 password_reset_successful: 密碼重設成功
 back: 返回
 filter: 篩選
