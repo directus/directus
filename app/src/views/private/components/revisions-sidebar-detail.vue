@@ -4,6 +4,7 @@ import { ContentVersion, PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import SidebarDetail from './sidebar-detail.vue';
@@ -34,6 +35,7 @@ const { active: open } = useGroupable({
 const { collection, primaryKey, version } = toRefs(props);
 
 const sidebarStore = useSidebarStore();
+const route = useRoute();
 
 const comparisonModalActive = ref(false);
 const currentRevision = ref<Revision | null>(null);
@@ -66,6 +68,8 @@ watch(
 		refresh(newPage);
 	},
 );
+
+watch(() => route.fullPath, closeModal);
 
 function openModal(id: number) {
 	currentRevision.value = (revisions.value as Revision[])?.find((revision) => revision.id === id) ?? null;
