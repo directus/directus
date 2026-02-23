@@ -785,7 +785,6 @@ unexpected_error_copy: Une erreur inattendue est survenue. Veuillez réessayer.
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
-password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sécurisé pour réinitialiser votre mot de passe
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
