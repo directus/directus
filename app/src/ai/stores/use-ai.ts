@@ -3,6 +3,7 @@ import { type ContextAttachment, type PrimaryKey, type StandardProviderType, typ
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
 	DefaultChatTransport,
+	type FileUIPart,
 	lastAssistantMessageIsCompleteWithApprovalResponses,
 	lastAssistantMessageIsCompleteWithToolCalls,
 	type UIMessage,
@@ -143,7 +144,13 @@ export const useAiStore = defineStore('ai-store', () => {
 		);
 	});
 
+	const supportsFileUpload = computed(() => selectedModel.value?.provider !== 'openai-compatible');
+
 	const selectModel = (modelDefinition: AppModelDefinition) => {
+		if (isProviderLocked.value && modelDefinition.provider !== selectedModel.value?.provider) {
+			return;
+		}
+
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
 
@@ -217,11 +224,24 @@ export const useAiStore = defineStore('ai-store', () => {
 				const limitedMessages =
 					estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
 
+				// Strip data URLs from file parts to avoid exceeding MAX_PAYLOAD_SIZE.
+				// The API replaces url with fileId via transformFilePartsForProvider anyway.
+				const messages = limitedMessages.map((msg) => ({
+					...msg,
+					parts: msg.parts?.map((part) => {
+						if (part.type === 'file' && 'url' in part && typeof part.url === 'string' && part.url.startsWith('data:')) {
+							return { ...part, url: '' };
+						}
+
+						return part;
+					}),
+				}));
+
 				return {
 					...req,
 					body: {
 						...req.body,
-						messages: limitedMessages,
+						messages,
 					},
 				};
 			},
@@ -295,6 +315,12 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const latestMessage = computed(() => messages.value.at(-1));
 
+	const hasFilesInMessages = computed(() =>
+		messages.value.some((msg) => msg.parts?.some((part) => part.type === 'file')),
+	);
+
+	const isProviderLocked = computed(() => contextStore.hasFileContext || hasFilesInMessages.value);
+
 	const hasPendingToolCall = computed(() => {
 		const lastMessage = latestMessage.value;
 		if (!lastMessage || lastMessage.role !== 'assistant') return false;
@@ -329,35 +355,65 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const submitHook = createEventHook();
 
+	function buildFileParts(
+		uploadedFiles: Awaited<ReturnType<typeof contextStore.uploadPendingFiles>>,
+	): FileUIPart[] {
+		return uploadedFiles.map((uploaded) => ({
+			type: 'file' as const,
+			mediaType: uploaded.mimeType,
+			filename: uploaded.display,
+			url: uploaded.displayUrl,
+			providerMetadata: {
+				directus: {
+					fileId: uploaded.ref.fileId,
+					provider: uploaded.ref.provider,
+				},
+			},
+		}));
+	}
+
 	const submit = async () => {
 		if (chat.status === 'streaming' || chat.status === 'submitted') return;
 
+		const provider = selectedModel.value?.provider;
+
+		let uploadedFiles: Awaited<ReturnType<typeof contextStore.uploadPendingFiles>>;
+
 		try {
-			pendingContextSnapshot.value = await contextStore.fetchContextData();
+			[pendingContextSnapshot.value, uploadedFiles] = await Promise.all([
+				contextStore.fetchContextData(),
+				contextStore.uploadPendingFiles(provider),
+			]);
 		} catch (error) {
 			unexpectedError(error);
 			return;
 		}
 
+		const files = buildFileParts(uploadedFiles);
+
 		const previousInput = input.value;
 		const previousContext = [...contextStore.pendingContext.filter((item) => !isVisualElement(item))];
 
-		chat
-			.sendMessage({
-				text: input.value,
-				metadata: {
-					attachments: pendingContextSnapshot.value.length > 0 ? pendingContextSnapshot.value : undefined,
-				},
-			})
-			.catch((error) => {
-				input.value = previousInput;
+		const message: { text: string; files?: FileUIPart[]; metadata: Record<string, unknown> } = {
+			text: input.value,
+			metadata: {
+				attachments: pendingContextSnapshot.value.length > 0 ? pendingContextSnapshot.value : undefined,
+			},
+		};
 
-				for (const item of previousContext) {
-					contextStore.addPendingContext(item);
-				}
+		if (files.length > 0) {
+			message.files = files;
+		}
 
-				unexpectedError(error);
-			});
+		chat.sendMessage(message).catch((error) => {
+			input.value = previousInput;
+
+			for (const item of previousContext) {
+				contextStore.addPendingContext(item);
+			}
+
+			unexpectedError(error);
+		});
 
 		submitHook.trigger(input.value);
 		input.value = '';
@@ -442,6 +498,8 @@ export const useAiStore = defineStore('ai-store', () => {
 		selectedModel,
 		models,
 		selectModel,
+		isProviderLocked,
+		supportsFileUpload,
 
 		// Token usage
 		tokenUsage,

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useScroll } from '@vueuse/core';
-import { computed, nextTick, onMounted, useTemplateRef } from 'vue';
+import { nanoid } from 'nanoid';
+import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useAiContextStore } from '../stores/use-ai-context';
 import { useAiStore } from '../stores/use-ai';
 import AiHeader from './ai-header.vue';
 import AiInput from './ai-input.vue';
@@ -10,9 +13,15 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useUserStore } from '@/stores/user';
+import { notify } from '@/utils/notify';
 
+const { t } = useI18n();
 const aiStore = useAiStore();
+const contextStore = useAiContextStore();
 const userStore = useUserStore();
+
+const dragging = ref(false);
+let dragCounter = 0;
 
 const hasProviders = computed(() => aiStore.models.length > 0);
 
@@ -49,7 +58,6 @@ const messagesContainerRef = useTemplateRef<HTMLElement>('messages-container');
 const { arrivedState } = useScroll(messagesContainerRef);
 
 const showScrollButton = computed(() => {
-	// Only show if we have messages and are not at the bottom
 	return aiStore.messages.length > 0 && !arrivedState.bottom;
 });
 
@@ -70,10 +78,59 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 		el.scrollTo({ top: el.scrollHeight, behavior });
 	}
 }
+
+function onDragEnter() {
+	if (!aiStore.supportsFileUpload) return;
+
+	dragCounter++;
+
+	if (dragCounter === 1) {
+		dragging.value = true;
+	}
+}
+
+function onDragLeave() {
+	dragCounter--;
+
+	if (dragCounter === 0) {
+		dragging.value = false;
+	}
+}
+
+function onDrop(event: DragEvent) {
+	dragCounter = 0;
+	dragging.value = false;
+
+	if (!aiStore.supportsFileUpload) {
+		notify({ title: t('ai.file_upload_not_supported') });
+		return;
+	}
+
+	const files = event.dataTransfer?.files;
+
+	if (files) {
+		for (const file of Array.from(files)) {
+			contextStore.addPendingContext({
+				id: nanoid(),
+				type: 'local-file',
+				data: { file },
+				display: file.name,
+			});
+		}
+
+		aiStore.focusInput();
+	}
+}
 </script>
 
 <template>
-	<div class="ai-conversation">
+	<div
+		class="ai-conversation"
+		@dragenter.prevent="onDragEnter"
+		@dragover.prevent
+		@dragleave.prevent="onDragLeave"
+		@drop.stop.prevent="onDrop"
+	>
 		<AiHeader v-if="hasProviders" />
 
 		<div ref="messages-container" class="messages-container">
@@ -115,6 +172,11 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 			</div>
 
 			<AiInput />
+		</div>
+
+		<div v-if="dragging" class="drop-overlay">
+			<VIcon class="upload-icon" x-large name="file_upload" />
+			<p class="type-label">{{ $t('drop_to_upload') }}</p>
 		</div>
 	</div>
 </template>
@@ -198,5 +260,23 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .scroll-to-bottom-btn {
 	box-shadow: 0 0 8px rgb(0 0 0 / 0.15);
 	pointer-events: all;
+}
+
+.drop-overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 100;
+	background-color: var(--theme--primary-background);
+	border: 2px dashed var(--theme--primary);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: var(--theme--primary);
+	pointer-events: none;
+
+	.upload-icon {
+		margin-block-end: 12px;
+	}
 }
 </style>

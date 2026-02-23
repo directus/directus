@@ -4,6 +4,7 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useContextStaging } from '../composables/use-context-staging';
 import { usePrompts } from '../composables/use-prompts';
+import { useAiStore } from '../stores/use-ai';
 import { useSearchFilter } from '../composables/use-search-filter';
 import type { MCPPrompt } from '../types';
 import AiContextMenuItem from './ai-context-menu/context-menu-item.vue';
@@ -19,13 +20,15 @@ import { useSettingsStore } from '@/stores/settings';
 import type { Collection } from '@/types/collections';
 import { notify } from '@/utils/notify';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
 
 const { t } = useI18n();
 const serverStore = useServerStore();
 const settingsStore = useSettingsStore();
 const collectionsStore = useCollectionsStore();
 const { fetchPrompts, extractVariables } = usePrompts();
-const { stagePrompt, stageItems } = useContextStaging();
+const aiStore = useAiStore();
+const { stagePrompt, stageItems, stageFiles, stageLocalFiles } = useContextStaging();
 
 const prompts = ref<MCPPrompt[]>([]);
 const loading = ref(false);
@@ -38,6 +41,8 @@ const mainMenuOpen = ref(false);
 const showItemDrawer = ref(false);
 const selectedCollection = ref<string | null>(null);
 const searchInputRef = ref<InstanceType<typeof VInput> | null>(null);
+const showFileDrawer = ref(false);
+const fileInputRef = ref<HTMLInputElement | null>(null);
 
 const openListType = ref<'prompts' | 'items' | null>(null);
 
@@ -81,6 +86,30 @@ const menuOptions = computed(() => {
 		subtitle: t('ai.insert_item_context'),
 		action: () => openList('items'),
 	});
+
+	if (aiStore.supportsFileUpload) {
+		options.push({
+			id: 'attach_file',
+			icon: 'folder',
+			title: t('file_library'),
+			subtitle: t('ai.attach_file_subtitle'),
+			action: () => {
+				showFileDrawer.value = true;
+				mainMenuOpen.value = false;
+			},
+		});
+
+		options.push({
+			id: 'upload_file',
+			icon: 'upload_file',
+			title: t('upload_file'),
+			subtitle: t('ai.upload_file_subtitle'),
+			action: () => {
+				fileInputRef.value?.click();
+				mainMenuOpen.value = false;
+			},
+		});
+	}
 
 	if (!searchQuery.value) return options;
 
@@ -152,6 +181,18 @@ async function handleItemSelect(ids: (string | number)[] | null) {
 	}
 
 	selectedCollection.value = null;
+}
+
+async function handleFileSelect(ids: string[]) {
+	showFileDrawer.value = false;
+	await stageFiles(ids);
+}
+
+function handleFileUpload(event: Event) {
+	const files = (event.target as HTMLInputElement).files;
+	stageLocalFiles(files);
+
+	if (fileInputRef.value) fileInputRef.value.value = '';
 }
 
 onMounted(() => {
@@ -306,6 +347,10 @@ function closeList() {
 			multiple
 			@input="handleItemSelect"
 		/>
+
+		<DrawerFiles v-model:active="showFileDrawer" multiple @input="handleFileSelect" />
+
+		<input ref="fileInputRef" type="file" multiple style="display: none" @change="handleFileUpload" />
 	</div>
 </template>
 

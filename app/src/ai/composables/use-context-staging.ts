@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '../stores/use-ai';
 import { useAiContextStore } from '../stores/use-ai-context';
-import type { MCPPrompt } from '../types';
+import type { FileContextData, MCPPrompt } from '../types';
 import { usePrompts } from './use-prompts';
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
@@ -211,9 +211,69 @@ export function useContextStaging() {
 		}
 	}
 
+	async function stageFiles(ids: string[]) {
+		if (ids.length === 0) return;
+
+		try {
+			const response = await api.get('/files', {
+				params: {
+					filter: { id: { _in: ids } },
+					fields: ['id', 'filename_download', 'type', 'title'],
+				},
+			});
+
+			const files: FileContextData[] = response.data.data;
+
+			for (const file of files) {
+				const added = contextStore.addPendingContext({
+					id: nanoid(),
+					type: 'file',
+					data: file,
+					display: file.title || file.filename_download,
+				});
+
+				if (!added) break;
+			}
+
+			notify({ title: t('ai.files_staged'), type: 'success' });
+		} catch (error) {
+			unexpectedError(error);
+		}
+	}
+
+	async function stageLocalFiles(files: FileList | null) {
+		if (!files) return;
+
+		for (const file of Array.from(files)) {
+			let thumbnailUrl: string | undefined;
+
+			if (file.type.startsWith('image/')) {
+				thumbnailUrl = await readAsDataUrl(file);
+			}
+
+			contextStore.addPendingContext({
+				id: nanoid(),
+				type: 'local-file',
+				data: { file, thumbnailUrl },
+				display: file.name,
+			});
+		}
+	}
+
+	function readAsDataUrl(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result as string);
+			reader.onerror = () => reject(reader.error);
+			reader.readAsDataURL(file);
+		});
+	}
+
 	return {
 		stagePrompt,
 		stageItems,
 		stageVisualElement,
+		stageFiles,
+		stageLocalFiles,
 	};
 }

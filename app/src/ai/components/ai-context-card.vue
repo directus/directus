@@ -11,9 +11,11 @@ type ContextItem = ContextAttachment | PendingContextItem;
 const props = withDefaults(
 	defineProps<{
 		item: ContextItem;
+		imageUrl?: string;
 		removable?: boolean;
 	}>(),
 	{
+		imageUrl: undefined,
 		removable: false,
 	},
 );
@@ -41,6 +43,10 @@ const icon = computed(() => {
 		case 'prompt':
 			return 'magic_button';
 
+		case 'file':
+		case 'local-file':
+			return 'description';
+
 		default:
 			return 'attachment';
 	}
@@ -48,10 +54,19 @@ const icon = computed(() => {
 </script>
 
 <template>
-	<div class="ai-context-card" :class="{ removable }" @mouseenter="emit('mouseenter')" @mouseleave="emit('mouseleave')">
-		<div class="icon-wrapper">
-			<VIcon :name="icon" x-small class="item-icon" />
-		</div>
+	<div
+		:class="['ai-context-card', { removable, 'has-image': imageUrl }]"
+		@mouseenter="emit('mouseenter')"
+		@mouseleave="emit('mouseleave')"
+	>
+		<template v-if="imageUrl">
+			<img :src="imageUrl" :alt="item.display" class="chip-image" />
+		</template>
+		<template v-else>
+			<div class="icon-wrapper">
+				<VIcon :name="icon" x-small class="item-icon" />
+			</div>
+		</template>
 		<VTextOverflow :text="String(item.display)" class="display-text" />
 		<button v-if="removable" type="button" class="close-button" :aria-label="$t('remove')" @click.stop="emit('remove')">
 			<VIcon name="close" small />
@@ -83,6 +98,10 @@ const icon = computed(() => {
 			background-color: var(--theme--background-normal);
 		}
 	}
+
+	&.has-image {
+		padding-inline-start: 4px;
+	}
 }
 
 .icon-wrapper {
@@ -97,6 +116,14 @@ const icon = computed(() => {
 
 .item-icon {
 	--v-icon-color: var(--purple);
+}
+
+.chip-image {
+	inline-size: 20px;
+	block-size: 20px;
+	object-fit: cover;
+	border-radius: 4px;
+	flex-shrink: 0;
 }
 
 .display-text {

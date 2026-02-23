@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
 import { useAiContextStore } from '../stores/use-ai-context';
-import type { PendingContextItem } from '../types';
+import { isFileContext, isLocalFileContext, type PendingContextItem } from '../types';
 import AiContextCard from './ai-context-card.vue';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import FileLightbox from '@/views/private/components/file-lightbox.vue';
 
 const contextStore = useAiContextStore();
 const { highlight, clearHighlight } = useVisualElementHighlight();
+
+const lightboxActive = ref(false);
+const activeItem = ref<PendingContextItem | null>(null);
 
 const scrollContainerRef = useTemplateRef<HTMLElement>('scroll-container');
 const showLeftFade = ref(false);
@@ -48,6 +53,78 @@ function handleRemove(item: PendingContextItem) {
 	clearHighlight();
 	contextStore.removePendingContext(item.id);
 }
+
+function isImageFile(item: PendingContextItem): boolean {
+	if (isLocalFileContext(item)) {
+		return item.data.file.type.startsWith('image/');
+	}
+
+	if (isFileContext(item)) {
+		return item.data.type?.startsWith('image/') ?? false;
+	}
+
+	return false;
+}
+
+function getImageUrl(item: PendingContextItem): string | undefined {
+	if (!isImageFile(item)) return undefined;
+
+	if (isLocalFileContext(item)) {
+		return item.data.thumbnailUrl;
+	}
+
+	if (isFileContext(item)) {
+		if (item.data.type?.includes('svg')) {
+			return getAssetUrl(item.data.id);
+		}
+
+		return getAssetUrl(item.data.id, { key: 'system-small-cover' });
+	}
+
+	return undefined;
+}
+
+function handleCardClick(item: PendingContextItem) {
+	if (isImageFile(item)) {
+		activeItem.value = item;
+		lightboxActive.value = true;
+	}
+}
+
+const activeFile = computed(() => {
+	if (!activeItem.value) return null;
+
+	const item = activeItem.value;
+
+	if (isLocalFileContext(item)) {
+		return {
+			id: '',
+			title: item.display,
+			type: item.data.file.type,
+			modified_on: new Date().toISOString(),
+			width: 0,
+			height: 0,
+		};
+	}
+
+	if (isFileContext(item)) {
+		return {
+			id: item.data.id,
+			title: item.data.title || item.display,
+			type: item.data.type,
+			modified_on: new Date().toISOString(),
+			width: 0,
+			height: 0,
+		};
+	}
+
+	return null;
+});
+
+const activeSrc = computed(() => {
+	if (!activeItem.value) return undefined;
+	return getImageUrl(activeItem.value);
+});
 </script>
 
 <template>
@@ -64,12 +141,16 @@ function handleRemove(item: PendingContextItem) {
 				v-for="item in contextStore.pendingContext"
 				:key="item.id"
 				:item="item"
+				:image-url="getImageUrl(item)"
 				removable
+				@click="handleCardClick(item)"
 				@remove="handleRemove(item)"
 				@mouseenter="highlight(item)"
 				@mouseleave="clearHighlight()"
 			/>
 		</div>
+
+		<FileLightbox v-if="activeFile" v-model="lightboxActive" :file="activeFile" :src="activeSrc" />
 	</div>
 </template>
 

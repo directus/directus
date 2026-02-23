@@ -1828,6 +1828,12 @@ ai:
   prompt_staged: Prompt staged
   items_staged: Items staged
   some_items_staged: '{count} item(s) staged (limit reached)'
+  files_staged: Files staged
+  attach_file_subtitle: Attach existing files
+  upload_file_subtitle: Upload local files
+  file_upload_failed: 'Failed to upload {name}'
+  file_upload_not_supported: File uploads are not supported for this provider
+  provider_locked_tooltip: Cannot change providers after uploading files. Start a new conversation to switch.
   image_preview: Image preview
   item_staged: Item staged
   invalid_collection: Invalid collection

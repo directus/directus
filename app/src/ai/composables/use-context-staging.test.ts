@@ -269,7 +269,7 @@ describe('useContextStaging', () => {
 
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_already_staged' });
 			expect(result).toBe(false);
-			expect(contextStore.pendingContext[0]?.data.key).toBe('key-2');
+			expect((contextStore.pendingContext[0]?.data as { key: string }).key).toBe('key-2');
 		});
 
 		test('returns false when max limit reached', async () => {
