@@ -20,12 +20,15 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
+directus_bsl: Directus BSL 1.1
 privacy_policy: Политика конфиденциальности
 contact_our_team: Связаться с нами
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
 setup_license_notice: >
   Directus бесплатный для организаций с годовым доходом, финансированием или бюджетом менее 5 миллионов долларов.
+setup_license_follow_up: >
+  Лица выше данного предела обязаны получить платную лицензию. Теперь вы можете продолжить анализ Directus и {contactOurTeam}, когда вы готовы обсудить использование продукции.
 setup_save_accept_license: >
   Нажав сохранить, вы принимаете условия [{directusBsl} и {privacyPolicy}.
 setup_accept_license: Я принимаю условия {directusBsl} и {privacyPolicy}
@@ -71,11 +74,14 @@ input: Ввод текста
 invalid_input: Некорректное значение
 invalid_file_type: Недопустимый тип файла
 not_a_number: Не число
+invalid_range_max: Значение превышает максимальный размер {value}
 maps: Карты
 switch_user: Сменить пользователя
 item_deleted: Предмет, который вы редактировали, был удален.
 item_creation: Создание элемента
 item_revision: Редакция элемента
+previous_revision: Предыдущая версия
+latest_revision: Последняя версия
 comparing_to: Сравнивая с
 enter_a_name: Введите название...
 duplicate_field: Дублировать поле
@@ -131,6 +137,9 @@ report_an_issue: Сообщить об ошибке
 website: Веб-сайт
 github: GitHub
 beta: Бета
+collab_collision: Этот элемент был изменен во время редактирования. Выберите какие изменения оставить.
+collab_editing_field: Редактирование поля “{field}”
+you: вы
 n_downloads: '{n} загрузок'
 downloads: Загрузки
 compatibility_not_guaranteed: Совместимость не гарантирована
@@ -1033,8 +1042,15 @@ deployment:
   provider:
     token:
       label: Личный ключ доступа
+      placeholder: Введите ваш ключ доступа...
     settings:
+      edit_configuration: Редактирование конфигурации
       delete_confirm: Это действие является необратимым и не может быть отменено. Вы уверены, что хотите продолжить?
+    vercel:
+      name: Верцель
+      team_id:
+        label: ID команды
+        hint: Требуется для командных учетных записей, оставьте пустым для личных учетных записей.
     projects: Проекты
     select_projects: Выбрать Проекты
     runs:
