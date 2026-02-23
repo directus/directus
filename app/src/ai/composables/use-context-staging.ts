@@ -249,22 +249,37 @@ export function useContextStaging() {
 		}
 	}
 
-	async function stageLocalFiles(files: FileList | null) {
+	async function stageLocalFiles(files: FileList | File[] | null) {
 		if (!files) return;
+
+		let stagedCount = 0;
 
 		for (const file of Array.from(files)) {
 			let thumbnailUrl: string | undefined;
 
 			if (file.type.startsWith('image/')) {
-				thumbnailUrl = await readAsDataUrl(file);
+				try {
+					thumbnailUrl = await readAsDataUrl(file);
+				} catch {
+					thumbnailUrl = undefined;
+				}
 			}
 
-			contextStore.addPendingContext({
+			const added = contextStore.addPendingContext({
 				id: nanoid(),
 				type: 'local-file',
 				data: { file, thumbnailUrl },
 				display: file.name,
 			});
+
+			if (!added) break;
+			stagedCount++;
+		}
+
+		if (stagedCount === 0 && Array.from(files).length > 0) {
+			notify({ title: t('ai.max_elements_reached') });
+		} else if (stagedCount < Array.from(files).length) {
+			notify({ title: t('ai.some_files_staged', { count: stagedCount }) });
 		}
 	}
 

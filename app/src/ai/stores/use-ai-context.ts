@@ -193,7 +193,9 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 					displayUrl,
 					mimeType: file.type,
 				});
-			} catch {
+			} catch (error) {
+				unexpectedError(error);
+
 				notify({
 					title: i18n.global.t('ai.file_upload_failed', { name: item.display }),
 					type: 'warning',

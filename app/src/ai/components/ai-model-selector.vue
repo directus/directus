@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAiStore } from '@/ai/stores/use-ai';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -8,8 +10,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const aiStore = useAiStore();

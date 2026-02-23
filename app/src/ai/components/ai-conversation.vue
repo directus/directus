@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
 import { useScroll } from '@vueuse/core';
-import { nanoid } from 'nanoid';
 import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useContextStaging } from '../composables/use-context-staging';
 import { useAiStore } from '../stores/use-ai';
-import { useAiContextStore } from '../stores/use-ai-context';
 import AiHeader from './ai-header.vue';
 import AiInput from './ai-input.vue';
 import AiMessageList from './ai-message-list.vue';
@@ -17,23 +17,13 @@ import { notify } from '@/utils/notify';
 
 const { t } = useI18n();
 const aiStore = useAiStore();
-const contextStore = useAiContextStore();
+const { stageLocalFiles } = useContextStaging();
 const userStore = useUserStore();
+
+const allowedMimeTypes = new Set<string>(AI_ALLOWED_MIME_TYPES);
 
 const dragging = ref(false);
 let dragCounter = 0;
-
-const allowedMimeTypes = new Set([
-	'image/jpeg',
-	'image/png',
-	'image/gif',
-	'image/webp',
-	'application/pdf',
-	'text/plain',
-	'audio/mpeg',
-	'audio/wav',
-	'video/mp4',
-]);
 
 const hasProviders = computed(() => aiStore.models.length > 0);
 
@@ -121,6 +111,7 @@ function onDrop(event: DragEvent) {
 	const files = event.dataTransfer?.files;
 
 	if (files) {
+		const accepted: File[] = [];
 		let rejected = 0;
 
 		for (const file of Array.from(files)) {
@@ -129,16 +120,15 @@ function onDrop(event: DragEvent) {
 				continue;
 			}
 
-			contextStore.addPendingContext({
-				id: nanoid(),
-				type: 'local-file',
-				data: { file },
-				display: file.name,
-			});
+			accepted.push(file);
 		}
 
 		if (rejected > 0) {
 			notify({ title: t('ai.unsupported_file_type'), type: 'warning' });
+		}
+
+		if (accepted.length > 0) {
+			stageLocalFiles(accepted);
 		}
 
 		aiStore.focusInput();
