@@ -14,6 +14,7 @@ import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
@@ -348,6 +349,10 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 
 			<VList class="version-list">
 				<VListItem class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
+					<VListItemIcon class="version-item-icon">
+						<span v-tooltip="$t('content_edited')" class="edit-dot" />
+					</VListItemIcon>
+
 					<VListItemContent>
 						{{ $t('main_version') }}
 					</VListItemContent>
@@ -361,11 +366,13 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					:disabled="!canAccessGlobalVersion(draftVersion)"
 					@click="switchVersion(draftVersion)"
 				>
+					<VListItemIcon class="version-item-icon">
+						<span v-if="hasVersionEdits(draftVersion)" v-tooltip="$t('content_edited')" class="edit-dot" />
+					</VListItemIcon>
+
 					<VListItemContent>
 						<VTextOverflow :text="getVersionDisplayName(draftVersion)" />
 					</VListItemContent>
-
-					<span v-if="hasVersionEdits(draftVersion)" v-tooltip="$t('content_edited')" class="edit-dot" />
 				</VListItem>
 
 				<VListItem
@@ -376,17 +383,23 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					:active="versionItem.id === currentVersion?.id"
 					@click="switchVersion(versionItem)"
 				>
+					<VListItemIcon class="version-item-icon">
+						<span v-if="hasVersionEdits(versionItem)" v-tooltip="$t('content_edited')" class="edit-dot" />
+					</VListItemIcon>
+
 					<VListItemContent>
 						<VTextOverflow :text="getVersionDisplayName(versionItem)" />
 					</VListItemContent>
-
-					<span v-if="hasVersionEdits(versionItem)" v-tooltip="$t('content_edited')" class="edit-dot" />
 				</VListItem>
 
 				<template v-if="createVersionsAllowed">
 					<VDivider />
 
 					<VListItem clickable @click="createDialogActive = true">
+						<VListItemIcon>
+							<VIcon name="add" />
+						</VListItemIcon>
+
 						<VListItemContent>{{ $t('create_version') }}</VListItemContent>
 					</VListItem>
 				</template>
@@ -400,10 +413,18 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 						clickable
 						@click="comparisonModalActive = true"
 					>
+						<VListItemIcon>
+							<VIcon name="arrow_upload_progress" />
+						</VListItemIcon>
+
 						<VListItemContent>{{ $t('promote_version') }}</VListItemContent>
 					</VListItem>
 
 					<VListItem v-if="updateVersionsAllowed && !isCurrentVersionGlobal" clickable @click="openRenameDialog">
+						<VListItemIcon>
+							<VIcon name="edit" />
+						</VListItemIcon>
+
 						<VListItemContent>{{ $t('rename_version') }}</VListItemContent>
 					</VListItem>
 
@@ -414,6 +435,10 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 						clickable
 						@click="deleteDialogActive = true"
 					>
+						<VListItemIcon>
+							<VIcon :name="isCurrentVersionGlobal ? 'undo' : 'delete'" />
+						</VListItemIcon>
+
 						<VListItemContent>{{ $t(isCurrentVersionGlobal ? 'discard_changes' : 'delete_version') }}</VListItemContent>
 					</VListItem>
 				</template>
@@ -600,11 +625,15 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	--v-list-item-color-active-hover: var(--white);
 	--v-list-item-background-color-active-hover: var(--theme--primary-accent);
 
-	gap: 1em;
-
 	&.active {
 		--focus-ring-color: var(--v-list-item-color-active);
 		--focus-ring-offset: var(--focus-ring-offset-inset);
+	}
+
+	.version-item-icon {
+		inline-size: var(--v-icon-size, 24px);
+		display: flex;
+		justify-content: center;
 	}
 
 	.edit-dot {
@@ -626,7 +655,8 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 
 .version-delete {
 	--v-list-item-color: var(--theme--danger);
-	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-color-hover: var(--v-list-item-color);
+	--v-list-item-icon-color: var(--v-list-item-color);
 }
 
 .version-name {
