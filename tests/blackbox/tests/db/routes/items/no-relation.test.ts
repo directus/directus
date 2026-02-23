@@ -98,9 +98,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(gqlResponse.statusCode).toBe(200);
 
 						switch (vendor) {
-							case 'sqlite3':
-								expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
-								break;
 							case 'postgres':
 							case 'postgres10':
 							case 'mssql':
