@@ -827,7 +827,6 @@ unexpected_error_copy: Er is een onverwachte fout opgetreden. Probeer het opnieu
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
 no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.
-password_reset_sent: Als je een account hebt, dan hebben we je een beveiligde link gestuurd om je wachtwoord te resetten
 password_reset_successful: Wachtwoord succesvol opnieuw ingesteld
 back: Terug
 filter: Filter
