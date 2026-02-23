@@ -848,7 +848,6 @@ unexpected_error_copy: خطای غیرمنتظره‌ای رخ داده است. 
 copy_details: کپی کردنِ جزئیات
 no_app_access: عدم دسترسی به برنامه
 no_app_access_copy: کاربر اجازه دسترسی به سامانه مدیریت را ندارد.
-password_reset_sent: اگر حساب کاربری دارید، یک پیوند امن برای بازنشانی رمز عبور برای شما ارسال کرده ایم
 password_reset_successful: رمز عبور با موفقیت بازنشانی شد
 back: بازگشت
 filter: فیلتر
