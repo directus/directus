@@ -2,6 +2,23 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { UploadedFile } from '../types.js';
 import { uploadToGoogle } from './google.js';
 
+function isGoogleUploadInitUrl(url: string): boolean {
+	try {
+		const parsed = new URL(url);
+		return parsed.hostname === 'generativelanguage.googleapis.com' && parsed.pathname === '/upload/v1beta/files';
+	} catch {
+		return false;
+	}
+}
+
+function isUploadHostUrl(url: string): boolean {
+	try {
+		return new URL(url).hostname === 'upload.example.com';
+	} catch {
+		return false;
+	}
+}
+
 describe('uploadToGoogle', () => {
 	const mockFile: UploadedFile = {
 		filename: 'test.pdf',
@@ -16,7 +33,7 @@ describe('uploadToGoogle', () => {
 			'fetch',
 			vi.fn().mockImplementation((url: string) => {
 				// Step 1: Start resumable upload
-				if (url.includes('generativelanguage.googleapis.com/upload/v1beta/files')) {
+				if (isGoogleUploadInitUrl(url)) {
 					return Promise.resolve({
 						ok: true,
 						headers: {
@@ -27,7 +44,7 @@ describe('uploadToGoogle', () => {
 				}
 
 				// Step 2: Upload file data
-				if (url.includes('upload.example.com')) {
+				if (isUploadHostUrl(url)) {
 					return Promise.resolve({
 						ok: true,
 						json: () =>
@@ -136,7 +153,7 @@ describe('uploadToGoogle', () => {
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockImplementation((url: string) => {
-				if (url.includes('generativelanguage.googleapis.com')) {
+				if (isGoogleUploadInitUrl(url)) {
 					return Promise.resolve({
 						ok: true,
 						headers: {
@@ -159,7 +176,7 @@ describe('uploadToGoogle', () => {
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockImplementation((url: string) => {
-				if (url.includes('generativelanguage.googleapis.com/upload/v1beta/files')) {
+				if (isGoogleUploadInitUrl(url)) {
 					return Promise.resolve({
 						ok: true,
 						headers: {
@@ -182,7 +199,7 @@ describe('uploadToGoogle', () => {
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockImplementation((url: string) => {
-				if (url.includes('generativelanguage.googleapis.com/upload/v1beta/files')) {
+				if (isGoogleUploadInitUrl(url)) {
 					return Promise.resolve({
 						ok: true,
 						headers: {
@@ -222,7 +239,7 @@ describe('uploadToGoogle', () => {
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockImplementation((url: string) => {
-				if (url.includes('generativelanguage.googleapis.com')) {
+				if (isGoogleUploadInitUrl(url)) {
 					return Promise.resolve({
 						ok: true,
 						headers: {
@@ -242,7 +259,7 @@ describe('uploadToGoogle', () => {
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockImplementation((url: string) => {
-				if (url.includes('generativelanguage.googleapis.com/upload/v1beta/files')) {
+				if (isGoogleUploadInitUrl(url)) {
 					return Promise.resolve({
 						ok: true,
 						headers: {
@@ -267,7 +284,7 @@ describe('uploadToGoogle', () => {
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockImplementation((url: string) => {
-				if (url.includes('generativelanguage.googleapis.com/upload/v1beta/files')) {
+				if (isGoogleUploadInitUrl(url)) {
 					return Promise.resolve({
 						ok: true,
 						headers: {
