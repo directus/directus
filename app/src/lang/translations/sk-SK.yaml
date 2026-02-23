@@ -754,7 +754,6 @@ unexpected_error_copy: Vyskytla sa neočakávaná chyba. Prosím skúste znova.
 copy_details: Kopírovať podrobnosti
 no_app_access: Žiadny prístup applikácie
 no_app_access_copy: Tento používateľ nemôže používať admin.
-password_reset_sent: Ak máte účet, poslali sme vám bezpečný odkaz na obnoveni vášho hesla
 password_reset_successful: Heslo úspešne obnovené
 back: Späť
 filter: Filter
