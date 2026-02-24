@@ -197,8 +197,21 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	}
 
 	async listProjects(): Promise<Project[]> {
-		const response = await this.request<{ projects: VercelProject[] }>('/v9/projects', { params: { limit: '100' } });
-		return response.projects.map((project) => this.mapProjectBase(project));
+		const allProjects: Project[] = [];
+		let until: string | undefined;
+
+		do {
+			const response = await this.request<{ projects: VercelProject[]; pagination?: { next?: number } }>(
+				'/v9/projects',
+				{ params: { limit: '100', ...(until ? { until } : {}) } },
+			);
+
+			allProjects.push(...response.projects.map((project) => this.mapProjectBase(project)));
+
+			until = response.pagination?.next ? String(response.pagination.next) : undefined;
+		} while (until);
+
+		return allProjects;
 	}
 
 	async getProject(projectId: string): Promise<Project> {
