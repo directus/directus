@@ -166,7 +166,6 @@ router.get(
 			.filter((update): update is { id: string; name: string } => update !== null);
 
 		if (namesToUpdate.length > 0) {
-			// Internal maintenance: bypass user permissions for name sync
 			const internalProjectsService = new DeploymentProjectsService({
 				accountability: null,
 				schema: req.schema,
