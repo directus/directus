@@ -7,7 +7,7 @@ import DeploymentProviderRuns from './routes/provider/runs.vue';
 import DeploymentProviderSettings from './routes/provider/settings.vue';
 
 function ensureNavLoaded() {
-	useDeploymentNavigation().fetch();
+	return useDeploymentNavigation().fetch();
 }
 
 export default defineModule({
