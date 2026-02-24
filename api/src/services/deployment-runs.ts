@@ -1,4 +1,4 @@
-import type { AbstractServiceOptions } from '@directus/types';
+import type { AbstractServiceOptions, DeploymentWebhookEvent } from '@directus/types';
 import { ItemsService } from './items.js';
 
 export interface DeploymentRun {
@@ -17,6 +17,48 @@ export interface DeploymentRun {
 export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_deployment_runs', options);
+	}
+
+	/**
+	 * Process a webhook event: create or update a run based on the event data.
+	 * Returns the run ID.
+	 */
+	async processWebhookEvent(projectId: string, event: DeploymentWebhookEvent): Promise<string> {
+		const existingRuns = await this.readByQuery({
+			filter: {
+				project: { _eq: projectId },
+				external_id: { _eq: event.deployment_external_id },
+			},
+			limit: 1,
+		});
+
+		const isTerminal =
+			event.type === 'deployment.succeeded' ||
+			event.type === 'deployment.error' ||
+			event.type === 'deployment.canceled';
+
+		if (existingRuns && existingRuns.length > 0) {
+			const runId = existingRuns[0]!.id;
+
+			await this.updateOne(runId, {
+				status: event.status,
+				...(event.url ? { url: event.url } : {}),
+				...(event.type === 'deployment.created' ? { started_at: event.timestamp.toISOString() } : {}),
+				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
+			});
+
+			return runId;
+		}
+
+		return (await this.createOne({
+			project: projectId,
+			external_id: event.deployment_external_id,
+			target: event.target || 'production',
+			status: event.status,
+			...(event.url ? { url: event.url } : {}),
+			started_at: event.type === 'deployment.created' ? event.timestamp.toISOString() : null,
+			...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
+		})) as string;
 	}
 
 	/**
