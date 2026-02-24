@@ -2,4 +2,4 @@
 '@directus/env': patch
 ---
 
-Increased default value of QUERYSTRING_ARRAY_LIMIT from 100 -> 500
+Increased the default `QUERYSTRING_ARRAY_LIMIT` from 100 to 500
