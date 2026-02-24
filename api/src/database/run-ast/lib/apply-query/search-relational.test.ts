@@ -43,7 +43,7 @@ const schema = new SchemaBuilder()
 
 const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 
-test('Relational search should be disabled if SEARCH_RELATION_MAX_DEPTH = 0', async () => {
+test('Relational search should be disabled if MAX_RELATIONAL_SEARCH_DEPTH = 0', async () => {
 	const queryBuilder = db.queryBuilder();
 
 	applySearch(db as any, schema, queryBuilder, 'foo', 'test', {}, []);
@@ -54,7 +54,7 @@ test('Relational search should be disabled if SEARCH_RELATION_MAX_DEPTH = 0', as
 });
 
 test('Relational search should only include searchable relations', async () => {
-	Object.assign(useEnv(), { SEARCH_RELATION_MAX_DEPTH: Infinity });
+	Object.assign(useEnv(), { MAX_RELATIONAL_SEARCH_DEPTH: Infinity });
 	schema.collections['test']!.fields['translations']!.searchable = false;
 	schema.collections['test']!.fields['m2m_relation']!.searchable = false;
 
@@ -70,7 +70,7 @@ test('Relational search should only include searchable relations', async () => {
 });
 
 test('Relational search should handle o2m relations', async () => {
-	Object.assign(useEnv(), { SEARCH_RELATION_MAX_DEPTH: Infinity });
+	Object.assign(useEnv(), { MAX_RELATIONAL_SEARCH_DEPTH: Infinity });
 
 	schema.collections['test']!.fields['translations']!.searchable = true;
 
@@ -86,7 +86,7 @@ test('Relational search should handle o2m relations', async () => {
 });
 
 test('Relational search should handle nested m2m/o2m relations', async () => {
-	Object.assign(useEnv(), { SEARCH_RELATION_MAX_DEPTH: Infinity });
+	Object.assign(useEnv(), { MAX_RELATIONAL_SEARCH_DEPTH: Infinity });
 
 	schema.collections['test']!.fields['m2m_relation']!.searchable = true;
 
@@ -101,8 +101,8 @@ test('Relational search should handle nested m2m/o2m relations', async () => {
 	);
 });
 
-test('Relational search should respect SEARCH_RELATION_MAX_DEPTH', async () => {
-	Object.assign(useEnv(), { SEARCH_RELATION_MAX_DEPTH: 1 });
+test('Relational search should respect MAX_RELATIONAL_SEARCH_DEPTH', async () => {
+	Object.assign(useEnv(), { MAX_RELATIONAL_SEARCH_DEPTH: 1 });
 	const queryBuilder = db.queryBuilder();
 	applySearch(db as any, schema, queryBuilder, 'foo', 'test', {}, []);
 	const rawQuery = queryBuilder.toSQL();
@@ -111,7 +111,7 @@ test('Relational search should respect SEARCH_RELATION_MAX_DEPTH', async () => {
 		`select * where (LOWER("test"."title") LIKE ? or exists (select * from "o2m_related" where "o2m_related"."test_id" = "test"."id" and ((LOWER("o2m_related"."name") LIKE ?))) or exists (select * from "test_translations" where "test_translations"."test_id" = "test"."id" and ((LOWER("test_translations"."name") LIKE ?))) or exists (select * from "m2m_related" where "m2m_related"."id" in (select "test_m2m_related_junction"."m2m_related_id" from "test_m2m_related_junction" where "test_m2m_related_junction"."test_id" = "test"."id") and ((LOWER("m2m_related"."name") LIKE ?))))`,
 	);
 
-	Object.assign(useEnv(), { SEARCH_RELATION_MAX_DEPTH: 2 });
+	Object.assign(useEnv(), { MAX_RELATIONAL_SEARCH_DEPTH: 2 });
 	const queryBuilder2 = db.queryBuilder();
 	applySearch(db as any, schema, queryBuilder2, 'foo', 'test', {}, []);
 	const rawQuery2 = queryBuilder2.toSQL();
@@ -122,7 +122,7 @@ test('Relational search should respect SEARCH_RELATION_MAX_DEPTH', async () => {
 });
 
 test('Relational search should respect persmissions', async () => {
-	Object.assign(useEnv(), { SEARCH_RELATION_MAX_DEPTH: Infinity });
+	Object.assign(useEnv(), { MAX_RELATIONAL_SEARCH_DEPTH: Infinity });
 
 	const queryBuilder = db.queryBuilder();
 

@@ -202,5 +202,5 @@ export const DEFAULTS = {
 
 	AI_ENABLED: true,
 
-	SEARCH_RELATION_MAX_DEPTH: 0,
+	MAX_RELATIONAL_SEARCH_DEPTH: 0,
 } as const;

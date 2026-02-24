@@ -38,7 +38,7 @@ export function applySearch(
 	}
 
 	const env = useEnv();
-	const maxRelationDepth = Number(env['SEARCH_RELATION_MAX_DEPTH']);
+	const maxRelationDepth = Number(env['MAX_RELATIONAL_SEARCH_DEPTH']);
 
 	dbQuery.andWhere(function (queryBuilder) {
 		let needsFallbackCondition = true;
