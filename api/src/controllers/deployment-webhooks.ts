@@ -112,8 +112,7 @@ router.post(
 			timestamp: event.timestamp,
 		};
 
-		emitter.emitAction('deployment.webhook', eventPayload, null);
-		emitter.emitAction(`deployment.webhook.${event.type}`, eventPayload, null);
+		emitter.emitAction(['deployment.webhook', `deployment.webhook.${event.type}`], eventPayload, null);
 
 		logger.info(`[webhook:${provider}] Processed: ${event.type} → run ${runId}`);
 
