@@ -22,6 +22,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import { Header } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
 import { sdk } from '@/sdk';
+import { usePermissionsStore } from '@/stores/permissions';
 import { formatDurationMs } from '@/utils/format-duration-ms';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -39,6 +40,7 @@ const props = defineProps<{
 const router = useRouter();
 const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
+const canDeploy = usePermissionsStore().hasPermission('directus_deployment_runs', 'create');
 
 const loading = ref(true);
 const deploying = ref(false);
@@ -200,7 +202,15 @@ watch(
 		<template #actions>
 			<SearchInput v-if="totalCount > 0 || search" v-model="search" :show-filter="false" small />
 
-			<VButton :tooltip="$t('deployment.deploy')" rounded icon small :loading="deploying" @click="deploy()">
+			<VButton
+				:tooltip="$t('deployment.deploy')"
+				rounded
+				icon
+				small
+				:loading="deploying"
+				:disabled="!canDeploy"
+				@click="deploy()"
+			>
 				<VIcon name="rocket_launch" small />
 
 				<template #append-outer>
@@ -210,7 +220,7 @@ watch(
 						</template>
 
 						<VList>
-							<VListItem clickable :disabled="deploying" @click="deploy(true)">
+							<VListItem clickable :disabled="deploying || !canDeploy" @click="deploy(true)">
 								<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
 								<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
 							</VListItem>

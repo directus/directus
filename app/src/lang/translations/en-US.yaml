@@ -1156,6 +1156,7 @@ deployment:
       open_deployment: Visit
   no_providers: No Deployment Providers
   no_providers_copy: Configure a deployment provider in the settings to get started.
+  no_providers_copy_nonadmin: No deployment providers are available for your account. Contact an administrator.
   select_provider: Select a Provider
   select_provider_copy: Choose a deployment provider from the sidebar to view your projects.
   no_projects: No Projects

@@ -1,10 +1,4 @@
-import {
-	ErrorCode,
-	ForbiddenError,
-	InvalidPathParameterError,
-	InvalidPayloadError,
-	isDirectusError,
-} from '@directus/errors';
+import { ErrorCode, InvalidPathParameterError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { DEPLOYMENT_PROVIDER_TYPES, type DeploymentConfig, type ProviderType } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
@@ -29,15 +23,6 @@ function parseRange(range: unknown, defaultMs: number): Date {
 }
 
 router.use(useCollection('directus_deployments'));
-
-// Require admin access for all deployment routes
-router.use((_req, _res, next) => {
-	if (_req.accountability && _req.accountability.admin !== true) {
-		throw new ForbiddenError();
-	}
-
-	return next();
-});
 
 // Validate provider parameter
 const validateProvider = (provider: string): provider is ProviderType => {
@@ -101,6 +86,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	});
 
 	const records = await service.readByQuery(req.sanitizedQuery);
+
 	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
 	res.locals['payload'] = { data: records || null, meta };
@@ -180,7 +166,13 @@ router.get(
 			.filter((update): update is { id: string; name: string } => update !== null);
 
 		if (namesToUpdate.length > 0) {
-			await projectsService.updateBatch(namesToUpdate);
+			// Internal maintenance: bypass user permissions for name sync
+			const internalProjectsService = new DeploymentProjectsService({
+				accountability: null,
+				schema: req.schema,
+			});
+
+			await internalProjectsService.updateBatch(namesToUpdate);
 		}
 
 		// Merge with DB structure (id !== null means selected)

@@ -21,6 +21,7 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import LogsDisplay from '@/modules/settings/routes/system-logs/components/logs-display.vue';
 import type { Log as SystemLog } from '@/modules/settings/routes/system-logs/types';
 import { sdk } from '@/sdk';
+import { usePermissionsStore } from '@/stores/permissions';
 import { formatDurationMs } from '@/utils/format-duration-ms';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -34,6 +35,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
+const canCancel = usePermissionsStore().hasPermission('directus_deployment_runs', 'update');
 
 const loading = ref(true);
 const canceling = ref(false);
@@ -268,7 +270,7 @@ onUnmounted(() => {
 				</span>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="isBuilding"
+					v-if="isBuilding && canCancel"
 					v-tooltip.bottom="$t('deployment.provider.run.stop')"
 					icon="dangerous"
 					secondary
