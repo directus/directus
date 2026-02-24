@@ -384,6 +384,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		const selectedProjects = await projectsService.readByQuery({
 			filter: { deployment: { _eq: deployment.id } },
+			limit: -1,
 		});
 
 		if (selectedProjects.length === 0) {

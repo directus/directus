@@ -119,18 +119,27 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async listProjects(): Promise<Project[]> {
-		const params: Record<string, string> = { per_page: '100' };
+		const allSites: any[] = [];
+		const perPage = 100;
+		let hasMore = true;
 
-		const response = await this.handleApiError((api) => {
-			return this.options.account_slug
-				? api.listSitesForAccount({
-						account_slug: this.options.account_slug,
-						...params,
-					})
-				: api.listSites(params);
-		});
+		for (let page = 1; hasMore; page++) {
+			const params: Record<string, string> = { per_page: String(perPage), page: String(page) };
 
-		return response.map((site) => this.mapSiteBase(site));
+			const response = await this.handleApiError((api) => {
+				return this.options.account_slug
+					? api.listSitesForAccount({
+							account_slug: this.options.account_slug,
+							...params,
+						})
+					: api.listSites(params);
+			});
+
+			allSites.push(...response);
+			hasMore = response.length >= perPage;
+		}
+
+		return allSites.map((site) => this.mapSiteBase(site));
 	}
 
 	async getProject(projectId: string): Promise<Project> {

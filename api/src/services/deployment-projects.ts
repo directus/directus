@@ -37,6 +37,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	async listWithSync(deploymentId: string, providerProjects: ProviderProject[]) {
 		const selectedProjects = await this.readByQuery({
 			filter: { deployment: { _eq: deploymentId } },
+			limit: -1,
 		});
 
 		const selectedMap = new Map(selectedProjects.map((p) => [p.external_id, p]));
@@ -123,6 +124,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 
 			return trxService.readByQuery({
 				filter: { deployment: { _eq: deploymentId } },
+				limit: -1,
 			});
 		});
 	}

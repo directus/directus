@@ -141,6 +141,28 @@ describe('VercelDriver', () => {
 
 			expect(result).toEqual([]);
 		});
+
+		it('should paginate when pagination.next is present', async () => {
+			mockAxiosRequest
+				.mockResolvedValueOnce(
+					createAxiosResponse(200, {
+						projects: [{ id: 'proj-1', name: 'App 1', link: { type: 'github' } }],
+						pagination: { next: 1700000000000 },
+					}),
+				)
+				.mockResolvedValueOnce(
+					createAxiosResponse(200, {
+						projects: [{ id: 'proj-2', name: 'App 2' }],
+					}),
+				);
+
+			const result = await driver.listProjects();
+
+			expect(result).toHaveLength(2);
+			expect(result[0]).toEqual({ id: 'proj-1', name: 'App 1', deployable: true });
+			expect(result[1]).toEqual({ id: 'proj-2', name: 'App 2', deployable: false });
+			expect(mockAxiosRequest).toHaveBeenCalledTimes(2);
+		});
 	});
 
 	describe('getProject', () => {
