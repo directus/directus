@@ -92,52 +92,13 @@ router.post(
 			return res.sendStatus(410);
 		}
 
-		// Check if run already exists
 		const runsService = new DeploymentRunsService({
 			schema,
 			knex,
 			accountability: null,
 		});
 
-		const existingRuns = await runsService.readByQuery({
-			filter: {
-				project: { _eq: project.id },
-				external_id: { _eq: event.deployment_external_id },
-			},
-			limit: 1,
-		});
-
-		let runId: string;
-
-		const isTerminal =
-			event.type === 'deployment.succeeded' ||
-			event.type === 'deployment.error' ||
-			event.type === 'deployment.canceled';
-
-		if (existingRuns && existingRuns.length > 0) {
-			runId = existingRuns[0]!.id;
-
-			const updatePayload = {
-				status: event.status,
-				...(event.url ? { url: event.url } : {}),
-				...(event.type === 'deployment.created' ? { started_at: event.timestamp.toISOString() } : {}),
-				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
-			};
-
-			await runsService.updateOne(runId, updatePayload);
-		} else {
-			const createPayload = {
-				project: project.id,
-				external_id: event.deployment_external_id,
-				target: event.target || 'production',
-				status: event.status,
-				...(event.url ? { url: event.url } : {}),
-				started_at: event.type === 'deployment.created' ? event.timestamp.toISOString() : null,
-				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
-			};
-
-			runId = (await runsService.createOne(createPayload)) as string;
-		}
+		const runId = await runsService.processWebhookEvent(project.id, event);
 
 		// Emit action events
 		const eventPayload = {

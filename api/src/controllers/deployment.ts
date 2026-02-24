@@ -134,58 +134,14 @@ router.get(
 		});
 
 		const projectsService = new DeploymentProjectsService({
-			accountability: req.accountability,
+			accountability: null,
 			schema: req.schema,
 		});
 
-		// Get provider config to find deployment ID
 		const deployment = await service.readByProvider(provider);
-
-		// Get projects from provider (with cache)
 		const { data: providerProjects, remainingTTL } = await service.listProviderProjects(provider);
+		const projects = await projectsService.listWithSync(deployment.id, providerProjects);
 
-		// Get selected projects from DB
-		const selectedProjects = await projectsService.readByQuery({
-			filter: { deployment: { _eq: deployment.id } },
-		});
-
-		// Map by external_id for quick lookup
-		const selectedMap = new Map(selectedProjects.map((p) => [p.external_id, p]));
-
-		// Sync names from provider
-		const namesToUpdate = selectedProjects
-			.map((dbProject) => {
-				const providerProject = providerProjects.find((p) => p.id === dbProject.external_id);
-
-				if (providerProject && providerProject.name !== dbProject.name) {
-					return { id: dbProject.id, name: providerProject.name };
-				}
-
-				return null;
-			})
-			.filter((update): update is { id: string; name: string } => update !== null);
-
-		if (namesToUpdate.length > 0) {
-			const internalProjectsService = new DeploymentProjectsService({
-				accountability: null,
-				schema: req.schema,
-			});
-
-			await internalProjectsService.updateBatch(namesToUpdate);
-		}
-
-		// Merge with DB structure (id !== null means selected)
-		const projects = providerProjects.map((project) => {
-			return {
-				id: selectedMap.get(project.id)?.id ?? null,
-				external_id: project.id,
-				name: project.name,
-				deployable: project.deployable,
-				framework: project.framework,
-			};
-		});
-
-		// Pass remaining TTL for response headers
 		res.locals['cache'] = false;
 		res.locals['cacheTTL'] = remainingTTL;
 		res.locals['payload'] = { data: projects };
@@ -283,22 +239,7 @@ router.patch(
 		// Validate deployable projects before any mutation
 		if (value.create.length > 0) {
 			const driver = await service.getDriver(provider);
-			const providerProjects = await driver.listProjects();
-			const projectsMap = new Map(providerProjects.map((p) => [p.id, p]));
-
-			const nonDeployable = value.create.filter(
-				(p: { external_id: string }) => !projectsMap.get(p.external_id)?.deployable,
-			);
-
-			if (nonDeployable.length > 0) {
-				const names = nonDeployable
-					.map((p: { external_id: string }) => projectsMap.get(p.external_id)?.name || p.external_id)
-					.join(', ');
-
-				throw new InvalidPayloadError({
-					reason: `Cannot add non-deployable projects: ${names}`,
-				});
-			}
+			await projectsService.validateDeployable(driver, value.create);
 		}
 
 		const updatedProjects = await projectsService.updateSelection(deployment.id, value.create, value.delete);
