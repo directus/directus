@@ -75,6 +75,8 @@ export class CollectionsService {
 			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
 		}
 
+		payload.collection = await this.helpers.schema.parseCollectionName(payload.collection);
+
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
