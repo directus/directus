@@ -16,7 +16,7 @@ interface Props {
 	/** Lets other overlays (drawer) open on top */
 	keepBehind?: boolean;
 	applyShortcut?: ApplyShortcut;
-	/** Keep content mounted even when closed (prevents unmounting child components) */
+	/** Prevents unmounting child components when closed on small screens */
 	eager?: boolean;
 }
 
