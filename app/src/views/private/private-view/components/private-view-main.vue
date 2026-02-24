@@ -143,7 +143,7 @@ const splitterCollapsed = computed({
 					</PrivateViewSidebar>
 				</template>
 
-				<PrivateViewDrawer v-else v-model:collapsed="sidebarStore.collapsed" placement="right">
+				<PrivateViewDrawer v-else v-model:collapsed="sidebarStore.collapsed" placement="right" eager>
 					<SkipMenu section="sidebar" />
 					<PrivateViewSidebar id="sidebar" class="mobile-sidebar">
 						<template #sidebar><slot name="sidebar" /></template>
