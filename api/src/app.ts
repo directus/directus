@@ -214,8 +214,8 @@ export default async function createApp(): Promise<express.Application> {
 		(
 			express.json({
 				limit: env['MAX_PAYLOAD_SIZE'] as string,
-				verify: (_req, _res, buf) => {
-					(_req as any).rawBody = buf;
+				verify: (req, _res, buf) => {
+					(req as any).rawBody = buf;
 				},
 			}) as RequestHandler
 		)(req, res, (err: any) => {
