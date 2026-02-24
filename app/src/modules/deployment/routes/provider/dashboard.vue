@@ -85,17 +85,35 @@ watch(() => props.provider, loadDashboard);
 
 					<div class="stat-card warning">
 						<VIcon name="autorenew" class="stat-icon" />
-						<span>{{ $t('deployment.dashboard.active_deployments', { count: stats.active_deployments }, stats.active_deployments) }}</span>
+						<span>
+							{{
+								$t(
+									'deployment.dashboard.active_deployments',
+									{ count: stats.active_deployments },
+									stats.active_deployments,
+								)
+							}}
+						</span>
 					</div>
 
 					<div class="stat-card danger">
 						<VIcon name="error" class="stat-icon" />
-						<span>{{ $t('deployment.dashboard.failed_builds', { count: stats.failed_builds }, stats.failed_builds) }}</span>
+						<span>
+							{{ $t('deployment.dashboard.failed_builds', { count: stats.failed_builds }, stats.failed_builds) }}
+						</span>
 					</div>
 
 					<div class="stat-card success">
 						<VIcon name="check" class="stat-icon" />
-						<span>{{ $t('deployment.dashboard.successful_builds', { count: stats.successful_builds }, stats.successful_builds) }}</span>
+						<span>
+							{{
+								$t(
+									'deployment.dashboard.successful_builds',
+									{ count: stats.successful_builds },
+									stats.successful_builds,
+								)
+							}}
+						</span>
 					</div>
 				</div>
 
