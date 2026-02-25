@@ -1066,12 +1066,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 
 					// Action
-					// Use array indices beyond the QUERYSTRING_ARRAY_LIMIT (100)
+					// Use array indices beyond the QUERYSTRING_ARRAY_LIMIT (500)
 					// When qs encounters array > arrayLimit, it parses it as an object
 					// It should result in invalid input
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
-						.query('fields[101]=name&fields[102]=name')
+						.query('fields[501]=name&fields[502]=name')
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -1087,12 +1087,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 
 					// Action
-					// A regular array beyond the QUERYSTRING_ARRAY_LIMIT (100)
+					// A regular array beyond the QUERYSTRING_ARRAY_LIMIT (500)
 					// When qs encounters array > arrayLimit, it parses it as an object
 					// It should result in invalid input
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
-						.query(Array(102).fill('fields[]=name').join('&'))
+						.query(Array(502).fill('fields[]=name').join('&'))
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -1114,7 +1114,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// It should bypass the QUERYSTRING_ARRAY_LIMIT limit
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
-						.query('fields=' + Array(102).fill('name').join(','))
+						.query('fields=' + Array(502).fill('name').join(','))
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert

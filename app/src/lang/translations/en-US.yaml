@@ -1176,11 +1176,15 @@ deployment:
   dashboard:
     projects: Projects ({count})
     deployed: Deployed
-    total_projects: 'No Projects | {count} Project | {count} Projects'
-    active_deployments: 'No Active Deployments | {count} Active Deployment | {count} Active Deployments'
-    failed_builds: 'No Failed Builds (L24) | {count} Failed Build (L24) | {count} Failed Builds (L24)'
-    successful_builds: 'No Successful Builds (L24) | {count} Successful Build (L24) | {count} Successful Builds (L24)'
-    total_deployments: 'No Deployments (L7D) | {count} Deployment (L7D) | {count} Deployments (L7D)'
+    total_projects: 'Total Project: {count} | Total Projects: {count}'
+    active_deployments: 'Active Deployment: {count} | Active Deployments: {count}'
+    failed_builds: 'Failed Build: {count} | Failed Builds: {count}'
+    successful_builds: 'Successful Build: {count} | Successful Builds: {count}'
+    total_deployments: 'Deployment: {count} | Deployments: {count}'
+  range:
+    1d: Last 24 Hours
+    7d: Last 7 Days
+    30d: Last 30 Days
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options

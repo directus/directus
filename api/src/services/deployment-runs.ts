@@ -38,16 +38,18 @@ export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 			event.type === 'deployment.canceled';
 
 		if (existingRuns && existingRuns.length > 0) {
-			const runId = existingRuns[0]!.id;
+			const existingRun = existingRuns[0]!;
 
-			await this.updateOne(runId, {
+			await this.updateOne(existingRun.id, {
 				status: event.status,
 				...(event.url ? { url: event.url } : {}),
-				...(event.type === 'deployment.created' ? { started_at: event.timestamp.toISOString() } : {}),
+				...(event.type === 'deployment.created' && !existingRun.started_at
+					? { started_at: event.timestamp.toISOString() }
+					: {}),
 				...(isTerminal ? { completed_at: event.timestamp.toISOString() } : {}),
 			});
 
-			return runId;
+			return existingRun.id;
 		}
 
 		return (await this.createOne({

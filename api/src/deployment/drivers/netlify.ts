@@ -465,6 +465,8 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 
 		const url = deploy.ssl_url || deploy.deploy_ssl_url || deploy.url;
 
+		const timestamp = deploy.published_at || deploy.updated_at || deploy.created_at;
+
 		return {
 			type: mapping.type,
 			provider: 'netlify',
@@ -473,7 +475,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 			status: mapping.status,
 			...(url ? { url } : {}),
 			...(deploy.context ? { target: deploy.context } : {}),
-			timestamp: new Date(deploy.created_at),
+			timestamp: new Date(timestamp),
 			raw: deploy,
 		};
 	}
