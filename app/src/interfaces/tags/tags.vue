@@ -135,7 +135,7 @@ function clearVariable() {
 
 <template>
 	<div class="interface-tags">
-		<VInput v-if="isVariableMode" :model-value="(value as string)" readonly>
+		<VInput v-if="isVariableMode" :model-value="value as string" readonly>
 			<template #append>
 				<span class="remove-variable">
 					<VIcon v-tooltip="$t('interfaces.tags.remove_variable')" name="close" clickable @click.stop="clearVariable" />
