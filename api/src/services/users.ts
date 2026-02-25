@@ -438,9 +438,11 @@ export class UsersService extends ItemsService {
 		});
 
 		const payload: { password: string; status?: string } = { password };
+
 		if (user.status === 'invited') {
 			payload.status = 'active';
 		}
+
 		await service.updateOne(user.id, payload);
 	}
 
