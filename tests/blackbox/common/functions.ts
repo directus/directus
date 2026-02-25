@@ -53,7 +53,7 @@ export type OptionsCreateRole = {
 
 export type OptionsCreateVersion = {
 	collection: string;
-	item: PrimaryKey;
+	item: PrimaryKey | null;
 	key: string;
 	name: string;
 };

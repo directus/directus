@@ -1,4 +1,4 @@
-import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { assign } from 'lodash-es';
@@ -257,10 +257,6 @@ router.post(
 router.post(
 	'/:pk/promote',
 	asyncHandler(async (req, res, next) => {
-		if (typeof req.body.mainHash !== 'string') {
-			throw new InvalidPayloadError({ reason: `"mainHash" field is required` });
-		}
-
 		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
