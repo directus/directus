@@ -19,6 +19,7 @@ const props = withDefaults(
 		presets?: string[];
 		allowCustom?: boolean;
 		direction?: string;
+		rawEditorEnabled?: boolean;
 	}>(),
 	{
 		iconRight: 'local_offer',
@@ -33,11 +34,19 @@ const presetVals = computed<string[]>(() => {
 	return [];
 });
 
+function isStringValue(val: unknown): val is string {
+	return props.rawEditorEnabled === true && typeof val === 'string';
+}
+
+const isVariableMode = ref(isStringValue(props.value));
+
 const selectedValsLocal = ref<string[]>(Array.isArray(props.value) ? processArray(props.value) : []);
 
 watch(
 	() => props.value,
 	(newVal) => {
+		isVariableMode.value = isStringValue(newVal);
+
 		if (Array.isArray(newVal)) {
 			selectedValsLocal.value = processArray(newVal);
 		}
@@ -117,12 +126,24 @@ function removeTag(tag: string) {
 function emitValue() {
 	emit('input', selectedVals.value);
 }
+
+function clearVariable() {
+	isVariableMode.value = false;
+	emit('input', null);
+}
 </script>
 
 <template>
 	<div class="interface-tags">
+		<VInput v-if="isVariableMode" :model-value="(value as string)" readonly>
+			<template #append>
+				<span class="remove-variable">
+					<VIcon v-tooltip="$t('interfaces.tags.remove_variable')" name="close" clickable @click.stop="clearVariable" />
+				</span>
+			</template>
+		</VInput>
 		<VInput
-			v-if="allowCustom"
+			v-else-if="allowCustom"
 			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
 			:disabled
 			:non-editable
@@ -176,6 +197,11 @@ function emitValue() {
 </template>
 
 <style lang="scss" scoped>
+.remove-variable {
+	display: flex;
+	--v-icon-color-hover: var(--v-remove-color, var(--theme--danger));
+}
+
 .tags {
 	display: flex;
 	flex-wrap: wrap;
