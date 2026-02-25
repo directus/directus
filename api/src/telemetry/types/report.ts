@@ -123,4 +123,39 @@ export interface TelemetryReport {
 	 * Whether WebSockets are enabled
 	 */
 	websockets_enabled: boolean;
+
+	/**
+	 * Count of GET Api Requests
+	 */
+	api_requests_get?: number;
+
+	/**
+	 * Count of POST Api Requests
+	 */
+	api_requests_post?: number;
+
+	/**
+	 * Count of PATCH Api Requests
+	 */
+	api_requests_patch?: number;
+
+	/**
+	 * Count of DELETE Api Requests
+	 */
+	api_requests_delete?: number;
+
+	/**
+	 * Count of PUT Api Requests
+	 */
+	api_requests_put?: number;
+
+	/**
+	 * Total count of Api Requests
+	 */
+	api_requests: number;
+
+	/**
+	 * Count of cached Api Requests
+	 */
+	api_requests_cached?: number;
 }
