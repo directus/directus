@@ -199,6 +199,7 @@ function clearVariable() {
 <style lang="scss" scoped>
 .remove-variable {
 	display: flex;
+
 	--v-icon-color-hover: var(--v-remove-color, var(--theme--danger));
 }
 
