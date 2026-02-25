@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed sidebar remaining mounted on mobile to preserve auto-refresh
+Fixed auto-refresh on mobile by preserving sidebar state via Teleport
