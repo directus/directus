@@ -228,7 +228,7 @@ export async function generateTranslations(
 		}
 
 		let languagePrimaryKeyField = 'code';
-		let languagePrimaryKeyType: Type = 'string';
+		let languagePrimaryKeyType: Type;
 
 		if (currentSchema.collections[languagesCollection]) {
 			const existingLanguagesCollection = currentSchema.collections[languagesCollection];
