@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed vmenu closing when type is date
+Fixed datetime picker not closing after selecting a date
