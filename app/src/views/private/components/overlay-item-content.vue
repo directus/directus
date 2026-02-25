@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Field, PrimaryKey } from '@directus/types';
 import { cloneDeep, isEqual } from 'lodash';
-import { computed, inject, type Ref, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, useTemplateRef, watch } from 'vue';
 import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VInfo from '@/components/v-info.vue';
@@ -43,6 +43,20 @@ const internalEdits = defineModel<Record<string, any>>('internal-edits');
 const { mainInitialValues, junctionInitialValues } = useInitialValues();
 const { file } = useFile();
 const { scrollToField } = useValidationScrollToField();
+
+const validationErrorsEl = useTemplateRef<any>('validationErrors');
+
+watch(
+	() => validationErrors,
+	async (newVal, oldVal) => {
+		if (isEqual(newVal, oldVal)) return;
+
+		if (newVal?.length > 0) {
+			await nextTick();
+			validationErrorsEl.value?.$el?.scrollIntoView({ behavior: 'smooth' });
+		}
+	},
+);
 
 const swapFormOrder = computed(() => junctionFieldLocation === 'top');
 const hasVisibleFieldsRelated = computed(() => relatedCollectionFields.some((field: Field) => !field.meta?.hidden));
@@ -96,15 +110,6 @@ function useFile() {
 function useValidationScrollToField() {
 	const mainFormEl = useTemplateRef<any>('mainForm');
 	const junctionFormEl = useTemplateRef<any>('junctionForm');
-	const mainDrawerElement = inject<Ref<HTMLElement | null>>('main-element');
-
-	watch(
-		() => validationErrors,
-		(newVal, oldVal) => {
-			if (isEqual(newVal, oldVal)) return;
-			if (newVal?.length > 0) mainDrawerElement?.value?.scrollTo({ top: 0, behavior: 'smooth' });
-		},
-	);
 
 	return { scrollToField };
 
@@ -132,6 +137,7 @@ function useValidationScrollToField() {
 		<div v-else class="overlay-item-order" :class="{ swap: swapFormOrder }">
 			<ValidationErrors
 				v-if="validationErrors?.length"
+				ref="validationErrors"
 				class="validation-errors"
 				:validation-errors
 				:fields="[...fields, ...relatedCollectionFields]"
