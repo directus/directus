@@ -68,6 +68,7 @@ import extractToken from './middleware/extract-token.js';
 import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
+import requestCounter from './middleware/request-counter.js';
 import schema from './middleware/schema.js';
 import metricsSchedule from './schedules/metrics.js';
 import projectSchedule from './schedules/project.js';
@@ -286,6 +287,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(schema);
 
 	app.use(sanitizeQuery);
+
+	app.use(requestCounter);
 
 	app.use(cache);
 
