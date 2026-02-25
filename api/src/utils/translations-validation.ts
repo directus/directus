@@ -8,4 +8,5 @@ export const dbSafeIdentifierSchema = z
 	.string()
 	.trim()
 	.min(1)
+	.max(63)
 	.regex(REGEX_DB_SAFE_IDENTIFIER, DB_SAFE_IDENTIFIER_MESSAGE);

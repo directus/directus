@@ -6,6 +6,7 @@ import type {
 	FieldMeta,
 	MutationOptions,
 	Relation,
+	RelationMeta,
 	SchemaOverview,
 	Type,
 } from '@directus/types';
@@ -375,7 +376,7 @@ export async function generateTranslations(
 		const relationsService = new RelationsService(getServiceOptions(currentSchema));
 		const onDeleteSchema = { on_delete: 'SET NULL' } as NonNullable<Relation['schema']>;
 
-		const parentRelationPayload = {
+		const parentRelationPayload: Partial<Relation> = {
 			collection: translationsCollection,
 			field: resolvedParentForeignKeyField,
 			related_collection: collection,
@@ -384,13 +385,13 @@ export async function generateTranslations(
 				sort_field: null,
 				one_deselect_action: 'nullify',
 				junction_field: resolvedLanguageForeignKeyField,
-			},
+			} as unknown as RelationMeta,
 			schema: onDeleteSchema,
-		} as unknown as Parameters<RelationsService['createOne']>[0];
+		};
 
 		await relationsService.createOne(parentRelationPayload, mutationOptions);
 
-		const languageRelationPayload = {
+		const languageRelationPayload: Partial<Relation> = {
 			collection: translationsCollection,
 			field: resolvedLanguageForeignKeyField,
 			related_collection: languagesCollection,
@@ -401,7 +402,7 @@ export async function generateTranslations(
 				junction_field: resolvedParentForeignKeyField,
 			},
 			schema: onDeleteSchema,
-		} as unknown as Parameters<RelationsService['createOne']>[0];
+		};
 
 		await relationsService.createOne(languageRelationPayload, mutationOptions);
 
