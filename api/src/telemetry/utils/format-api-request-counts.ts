@@ -1,9 +1,10 @@
 export type TrackedMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
+export type TrackedKey = TrackedMethod | 'cached';
 
-export type ApiRequestInput = Partial<Record<TrackedMethod, number>>;
+export type ApiRequestInput = Partial<Record<TrackedKey, number>>;
 
 export type ApiRequestOutput = {
-	[K in TrackedMethod as `api_requests_${K}`]?: number;
+	[K in TrackedKey as `api_requests_${K}`]?: number;
 } & {
 	api_requests: number;
 };
@@ -12,10 +13,13 @@ export function formatApiRequestCounts(counts: ApiRequestInput): ApiRequestOutpu
 	const formatted: Record<string, number> = {};
 	let total = 0;
 
-	for (const method in counts) {
-		const count = counts[method as TrackedMethod]!;
-		formatted[`api_requests_${method}`] = count;
-		total += count;
+	for (const key in counts) {
+		const count = counts[key as TrackedKey]!;
+		formatted[`api_requests_${key}`] = count;
+
+		if (key !== 'cached') {
+			total += count;
+		}
 	}
 
 	formatted['api_requests'] = total;

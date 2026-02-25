@@ -56,4 +56,11 @@ describe('formatApiRequestCounts', () => {
 		});
 	});
 
+	test('Includes cached count in output but not in total', () => {
+		const result = formatApiRequestCounts({ get: 10, post: 5, cached: 3 });
+
+		expect(result['api_requests_cached']).toBe(3);
+		expect(result['api_requests']).toBe(15);
+	});
+
 });
