@@ -77,6 +77,8 @@ const splitterCollapsed = computed({
 		sidebarStore.collapsed = val;
 	},
 });
+
+const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet' : '#sidebar-desktop-outlet'));
 </script>
 
 <template>
@@ -136,21 +138,24 @@ const splitterCollapsed = computed({
 			</template>
 
 			<template #end>
-				<template v-if="!isMobile">
-					<SkipMenu section="sidebar" />
-					<PrivateViewSidebar id="sidebar">
-						<template #sidebar><slot name="sidebar" /></template>
-					</PrivateViewSidebar>
-				</template>
-
-				<PrivateViewDrawer v-else v-model:collapsed="sidebarStore.collapsed" placement="right" eager>
-					<SkipMenu section="sidebar" />
-					<PrivateViewSidebar id="sidebar" class="mobile-sidebar">
-						<template #sidebar><slot name="sidebar" /></template>
-					</PrivateViewSidebar>
+				<div v-show="!isMobile" id="sidebar-desktop-outlet" class="sidebar-outlet" />
+				<PrivateViewDrawer
+					:collapsed="isMobile ? sidebarStore.collapsed : true"
+					placement="right"
+					eager
+					@update:collapsed="isMobile && (sidebarStore.collapsed = $event ?? false)"
+				>
+					<div id="sidebar-mobile-outlet" class="sidebar-outlet" />
 				</PrivateViewDrawer>
 			</template>
 		</SplitPanel>
+
+		<Teleport defer :to="teleportTarget">
+			<SkipMenu section="sidebar" />
+			<PrivateViewSidebar id="sidebar" :class="{ 'mobile-sidebar': isMobile }">
+				<template #sidebar><slot name="sidebar" /></template>
+			</PrivateViewSidebar>
+		</Teleport>
 	</div>
 </template>
 
@@ -223,6 +228,11 @@ const splitterCollapsed = computed({
 
 .mobile-sidebar {
 	max-inline-size: 340px;
+}
+
+.sidebar-outlet {
+	block-size: 100%;
+	inline-size: 100%;
 }
 
 .main-content-container {
