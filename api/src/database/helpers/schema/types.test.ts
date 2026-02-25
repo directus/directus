@@ -73,4 +73,13 @@ describe('SchemaHelper', () => {
 			'name',
 		]);
 	});
+
+	describe('parseCollectionName', () => {
+		test('should return exactly the same collection name by default', async () => {
+			const { helper } = createHelper();
+			const result = await helper.parseCollectionName('Original_Name_123');
+
+			expect(result).toBe('Original_Name_123');
+		});
+	});
 });

@@ -219,4 +219,8 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
+
+	async parseCollectionName(collection: string): Promise<string> {
+		return collection;
+	}
 }
