@@ -450,50 +450,30 @@ export class ExtensionManager {
 		logger.info('Watching extensions for changes...');
 
 		const extensionDirUrl = pathToRelativeUrl(getExtensionsPath());
-		const extensionDirPath = path.resolve(getExtensionsPath());
 
-		this.watcher = chokidar.watch([path.resolve('package.json'), extensionDirPath], {
-			ignoreInitial: true,
-			// dotdirs are watched by default and frequently found in 'node_modules'
-			ignored: `${extensionDirUrl}/**/node_modules/**`,
-			depth: 2,
-			// on macOS dotdirs in linked extensions are watched too
-			followSymlinks: os.platform() === 'darwin' ? false : true,
-		});
-
-		const isExtensionPackageJson = (filePath: string) => {
-			const relative = path.relative(extensionDirPath, filePath);
-			return /^[^/\\]+[/\\]package\.json$/.test(relative);
-		};
-
-		const isRootPackageJson = (filePath: string) => {
-			return path.basename(filePath) === 'package.json' && path.dirname(filePath) === process.cwd();
-		};
+		this.watcher = chokidar.watch(
+			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json')],
+			{
+				ignoreInitial: true,
+				// dotdirs are watched by default and frequently found in 'node_modules'
+				ignored: `${extensionDirUrl}/**/node_modules/**`,
+				// on macOS dotdirs in linked extensions are watched too
+				followSymlinks: os.platform() === 'darwin' ? false : true,
+			},
+		);
 
 		this.watcher
 			.on(
 				'add',
-				debounce((filePath: string) => {
-					if (isExtensionPackageJson(filePath) || isRootPackageJson(filePath)) {
-						this.reload();
-					}
-				}, 500),
+				debounce(() => this.reload(), 500),
 			)
 			.on(
 				'change',
-				debounce((filePath: string) => {
-					if (isExtensionPackageJson(filePath) || isRootPackageJson(filePath)) {
-						this.reload();
-					}
-				}, 650),
+				debounce(() => this.reload(), 650),
 			)
 			.on(
 				'unlink',
-				debounce((filePath: string) => {
-					if (isExtensionPackageJson(filePath) || isRootPackageJson(filePath)) {
-						this.reload();
-					}
-				}, 2000),
+				debounce(() => this.reload(), 2000),
 			);
 	}
 
