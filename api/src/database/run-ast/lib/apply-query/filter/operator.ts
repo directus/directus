@@ -1,8 +1,23 @@
+import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, SchemaOverview } from '@directus/types';
 import { getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getHelpers } from '../../../../helpers/index.js';
 import { getColumn } from '../../../utils/get-column.js';
+
+function castToNumber(value: any): any {
+	if (Array.isArray(value)) {
+		return value.map((val) => {
+			const num = Number(val);
+			if (Number.isNaN(num)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
+			return num;
+		});
+	}
+
+	const num = Number(value);
+	if (Number.isNaN(num)) throw new InvalidQueryError({ reason: `Invalid numeric value` });
+	return num;
+}
 
 export function applyOperator(
 	knex: Knex,
@@ -72,7 +87,7 @@ export function applyOperator(
 		const type = getOutputTypeForFunction(functionName);
 
 		if (['integer', 'float', 'decimal'].includes(type)) {
-			compareValue = Array.isArray(compareValue) ? compareValue.map(Number) : Number(compareValue);
+			compareValue = castToNumber(compareValue);
 		}
 	}
 
@@ -92,11 +107,7 @@ export function applyOperator(
 		}
 
 		if (['integer', 'float', 'decimal'].includes(type)) {
-			if (Array.isArray(compareValue)) {
-				compareValue = compareValue.map((val) => Number(val));
-			} else {
-				compareValue = Number(compareValue);
-			}
+			compareValue = castToNumber(compareValue);
 		}
 	}
 

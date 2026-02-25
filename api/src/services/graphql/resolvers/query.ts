@@ -51,12 +51,30 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 
 	if (args['id']) return result;
 
+	/**
+	 * Since grouped fields are returned at the top level, we duplicate those fields
+	 * into the expected `group` property on the payload, excluding any non-group
+	 * fields (i.e. aggregate keys).
+	 *
+	 * The payload can only contain grouped fields and aggregate keys, as the
+	 * aggregate selection is restricted to those fields. Therefore, the original
+	 * grouped fields can safely remain at the top level.
+	 *
+	 * We cannot iterate over `query.group`, because grouped fields that use
+	 * functions are normalized (e.g. function(field) → function_field), which would
+	 * result in them being skipped.
+	 *
+	 * Before:
+	 * { year_date: 2023, count: { id: 42 } }
+	 *
+	 * After:
+	 * { year_date: 2023, count: { id: 42 }, group: { year_date: 2023 } }
+	 */
 	if (query.group) {
-		// for every entry in result add a group field based on query.group;
 		const aggregateKeys = Object.keys(query.aggregate ?? {});
 
-		result['map']((field: Item) => {
-			field['group'] = omit(field, aggregateKeys);
+		result['map']((payload: Item) => {
+			payload['group'] = omit(payload, aggregateKeys);
 		});
 	}
 
