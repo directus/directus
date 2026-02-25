@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ContentVersion } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
 import { computed, type ComputedRef, ref, useTemplateRef, watch } from 'vue';
@@ -9,13 +10,21 @@ import AiMagicButton from '@/ai/components/ai-magic-button.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VButton from '@/components/v-button.vue';
+import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { BREAKPOINTS } from '@/constants';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import { BREAKPOINTS, DRAFT_VERSION_KEY } from '@/constants';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import type { NavigationData } from '@/modules/visual/types';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import { analyzeTemplate, extractVersion, matchesTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useServerStore } from '@/stores/server';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
@@ -23,7 +32,6 @@ import NotificationsGroup from '@/views/private/components/notifications-group.v
 import PrivateViewDrawer from '@/views/private/private-view/components/private-view-drawer.vue';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
-	urls: string[];
 	dynamicUrl?: string;
 	invalidUrl?: boolean;
 }>();
@@ -42,6 +50,12 @@ const showEditableElements = ref(false);
 const { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering } = useAiSidebar(isMobile);
 
 const { dynamicDisplay, onNavigation } = usePageInfo();
+
+const { urlTemplates, resolveUrls } = useVisualEditorUrls();
+
+const { versions, selectedVersion, isVersionSelectable, onVersionSelect } = useVersionSelection();
+
+const urls = computed(() => resolveUrls(selectedVersion.value?.key));
 
 function usePageInfo() {
 	const dynamicDisplay = ref<string>();
@@ -103,6 +117,58 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 
 	return { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering };
 }
+
+function useVersionSelection() {
+	const versionPlacements = computed(() => urlTemplates.value.map(analyzeTemplate));
+
+	const activeVersionPlacement = computed(() => {
+		if (!dynamicUrl) return null;
+
+		for (let i = 0; i < urlTemplates.value.length; i++) {
+			if (matchesTemplate(urlTemplates.value[i]!, dynamicUrl, versionPlacements.value[i]!)) {
+				return versionPlacements.value[i]!;
+			}
+		}
+
+		return null;
+	});
+
+	const isVersionSelectable = computed(() => activeVersionPlacement.value !== null);
+
+	const detectedVersion = computed<ContentVersion['key'] | null | undefined>(() => {
+		if (!dynamicUrl || !activeVersionPlacement.value) return undefined;
+
+		const extractedVersion = extractVersion(dynamicUrl, activeVersionPlacement.value);
+
+		return extractedVersion === 'main' ? null : extractedVersion;
+	});
+
+	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
+		const versionList = [{ key: DRAFT_VERSION_KEY, name: null }];
+		const isDetectedVersionCustom = detectedVersion.value !== null && detectedVersion.value !== DRAFT_VERSION_KEY;
+
+		if (isDetectedVersionCustom) versionList.push({ key: detectedVersion.value!, name: null });
+
+		return versionList.map((version) => ({
+			key: version.key,
+			name: getVersionDisplayName(version),
+		}));
+	});
+
+	const selectedVersion = computed(() => {
+		if (detectedVersion.value == null) return null;
+		return versions.value.find((version) => version.key === detectedVersion.value) ?? null;
+	});
+
+	return { versions, selectedVersion, isVersionSelectable, onVersionSelect };
+
+	function onVersionSelect(versionKey: ContentVersion['key'] | null) {
+		if (!activeVersionPlacement.value || !dynamicUrl) return;
+
+		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? 'main');
+		router.replace(getUrlRoute(newUrl));
+	}
+}
 </script>
 
 <template>
@@ -153,6 +219,32 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 				</VButton>
 			</template>
 
+			<template #append-url>
+				<VMenu v-if="isVersionSelectable" show-arrow :placement="'bottom'">
+					<template #activator="{ toggle, active }">
+						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
+							{{ selectedVersion?.name ?? $t('main_version') }}
+							<VIcon small name="arrow_drop_down"></VIcon>
+						</VChip>
+					</template>
+
+					<VList>
+						<VListItem clickable :active="selectedVersion === null" @click="onVersionSelect(null)">
+							<VListItemContent>{{ $t('main_version') }}</VListItemContent>
+						</VListItem>
+						<VListItem
+							v-for="(version, index) in versions"
+							:key="index"
+							:active="version.key === selectedVersion?.key"
+							clickable
+							@click="onVersionSelect(version.key)"
+						>
+							<VListItemContent>{{ version.name }}</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
+			</template>
+
 			<template #append-header>
 				<VButton
 					v-if="serverStore.info.ai_enabled"
@@ -176,7 +268,13 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 			</template>
 
 			<template #overlay="{ frameEl, frameSrc }">
-				<EditingLayer :frame-src :frame-el :show-editable-elements @navigation="onNavigation" />
+				<EditingLayer
+					:frame-src
+					:frame-el
+					:show-editable-elements
+					:version="selectedVersion"
+					@navigation="onNavigation"
+				/>
 			</template>
 
 			<template #notifications>
@@ -215,5 +313,30 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 	display: flex;
 	flex-direction: column;
+}
+
+.spacer {
+	flex: 1;
+}
+
+.version-select-activator {
+	--v-chip-padding: 0 6px 0 12px;
+	--v-chip-color: var(--theme--foreground-accent);
+	--v-chip-color-hover: var(--v-chip-color);
+	--v-chip-background-color-hover: color-mix(
+		in srgb,
+		var(--theme--navigation--modules--background),
+		var(--theme--navigation--modules--button--background-active) 87.5%
+	);
+
+	&.active {
+		--v-chip-color: var(--foreground-inverted);
+		--v-chip-background-color: var(--theme--primary);
+		--v-chip-background-color-hover: var(--v-chip-background-color);
+	}
+
+	&.v-chip {
+		border-width: 0;
+	}
 }
 </style>

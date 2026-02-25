@@ -214,8 +214,7 @@ function useResizeObserver() {
 }
 
 function useUrls() {
-	const initialDynamicUrl = dynamicUrl;
-	const selectedUrl = ref<string>();
+	const internalFrameSrc = ref<string>();
 	const urlArray = computed(() => (Array.isArray(url) ? url : [url]));
 	const multipleUrls = computed(() => urls.value.length > 1);
 	const dynamicUrlIncluded = computed(() => dynamicUrl && urlArray.value.includes(dynamicUrl));
@@ -226,9 +225,9 @@ function useUrls() {
 	});
 
 	const frameSrc = computed({
-		get: () => selectedUrl.value ?? initialDynamicUrl ?? urls.value[0],
+		get: () => internalFrameSrc.value ?? urls.value[0],
 		set(value) {
-			selectedUrl.value = value;
+			internalFrameSrc.value = value;
 		},
 	});
 
@@ -236,6 +235,8 @@ function useUrls() {
 		if (invalidUrl) return t('select');
 		return dynamicDisplay ?? frameSrc.value;
 	});
+
+	watch(urlArray, updateFrameSrcWithDynamicUrl, { immediate: true });
 
 	return {
 		urls,
@@ -245,6 +246,10 @@ function useUrls() {
 		dynamicUrlIncluded,
 		selectUrl,
 	};
+
+	function updateFrameSrcWithDynamicUrl() {
+		if (dynamicUrl) internalFrameSrc.value = dynamicUrl;
+	}
 
 	function selectUrl(newUrl: string) {
 		emit('selectUrl', newUrl, String(frameSrc.value));
@@ -378,6 +383,8 @@ function useUrls() {
 						</VListItem>
 					</VList>
 				</VMenu>
+
+				<slot name="append-url" />
 			</div>
 
 			<div class="spacer" />
