@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
+import VRemove from '@/components/v-remove.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -34,19 +35,13 @@ const presetVals = computed<string[]>(() => {
 	return [];
 });
 
-function isStringValue(val: unknown): val is string {
-	return props.rawEditorEnabled === true && typeof val === 'string';
-}
-
-const isVariableMode = ref(isStringValue(props.value));
+const isVariableMode = computed(() => props.rawEditorEnabled === true && typeof props.value === 'string');
 
 const selectedValsLocal = ref<string[]>(Array.isArray(props.value) ? processArray(props.value) : []);
 
 watch(
 	() => props.value,
 	(newVal) => {
-		isVariableMode.value = isStringValue(newVal);
-
 		if (Array.isArray(newVal)) {
 			selectedValsLocal.value = processArray(newVal);
 		}
@@ -128,31 +123,34 @@ function emitValue() {
 }
 
 function clearVariable() {
-	isVariableMode.value = false;
 	emit('input', null);
 }
 </script>
 
 <template>
 	<div class="interface-tags">
-		<VInput v-if="isVariableMode" :model-value="value as string" readonly>
-			<template #append>
-				<span class="remove-variable">
-					<VIcon v-tooltip="$t('interfaces.tags.remove_variable')" name="close" clickable @click.stop="clearVariable" />
-				</span>
-			</template>
-		</VInput>
 		<VInput
-			v-else-if="allowCustom"
-			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
-			:disabled
-			:non-editable
+			v-if="isVariableMode || allowCustom"
+			:model-value="isVariableMode ? (value as string) : undefined"
+			:placeholder="isVariableMode ? undefined : placeholder || $t('interfaces.tags.add_tags')"
+			:disabled="isVariableMode || disabled"
+			:non-editable="isVariableMode || nonEditable"
 			:dir="direction"
 			@keydown="onInput"
 			@blur="onInput"
 		>
-			<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
-			<template #append><VIcon :name="iconRight" /></template>
+			<template v-if="!isVariableMode && iconLeft" #prepend><VIcon :name="iconLeft" /></template>
+			<template #append>
+				<VIcon
+					v-if="isVariableMode"
+					v-tooltip="$t('clear_value')"
+					class="remove-variable"
+					name="close"
+					clickable
+					@click.stop="clearVariable"
+				/>
+				<VIcon v-else :name="iconRight" />
+			</template>
 		</VInput>
 		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
 			<span v-if="presetVals.length > 0" class="presets tag-container">

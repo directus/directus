@@ -2303,7 +2303,6 @@ interfaces:
     alphabetize: Alphabetize
     alphabetize_label: Force Alphabetical Order
     add_tags: Add a tag and press Enter...
-    remove_variable: Remove variable
   input:
     input: Input
     description: Manually enter a value
