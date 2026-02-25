@@ -66,35 +66,11 @@ export class AuthenticationService {
 
 		const provider = getAuthProvider(providerName);
 
-		const emitStatus = (
-			status: 'fail' | 'success',
-			loginPayload: any,
-			loginUser: User | undefined,
-			error?: unknown,
-		) => {
-			emitter.emitAction(
-				'auth.login',
-				{
-					payload: loginPayload,
-					status,
-					user: loginUser?.id,
-					provider: providerName,
-					error,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
-		};
-
 		let userId;
 
 		try {
 			userId = await provider.getUserID(cloneDeep(payload));
 		} catch (err) {
-			emitStatus('fail', payload, undefined, err);
 			await stall(STALL_TIME, timeStart);
 			throw err;
 		}
@@ -122,11 +98,27 @@ export class AuthenticationService {
 			},
 		);
 
+		const emitStatus = (status: 'fail' | 'success') => {
+			emitter.emitAction(
+				'auth.login',
+				{
+					payload: updatedPayload,
+					status,
+					user: user?.id,
+					provider: providerName,
+				},
+				{
+					database: this.knex,
+					schema: this.schema,
+					accountability: this.accountability,
+				},
+			);
+		};
+
 		if (user?.status !== 'active' || user?.provider !== providerName) {
-			const loginError = new InvalidCredentialsError();
-			emitStatus('fail', updatedPayload, user, loginError);
+			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
-			throw loginError;
+			throw new InvalidCredentialsError();
 		}
 
 		const settingsService = new SettingsService({
@@ -183,17 +175,16 @@ export class AuthenticationService {
 
 		try {
 			await provider.login(clone(user), cloneDeep(updatedPayload));
-		} catch (err) {
-			emitStatus('fail', updatedPayload, user, err);
+		} catch (e) {
+			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
-			throw err;
+			throw e;
 		}
 
 		if (user.tfa_secret && !options?.otp) {
-			const loginError = new InvalidOtpError();
-			emitStatus('fail', updatedPayload, user, loginError);
+			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
-			throw loginError;
+			throw new InvalidOtpError();
 		}
 
 		if (user.tfa_secret && options?.otp) {
@@ -201,10 +192,9 @@ export class AuthenticationService {
 			const otpValid = await tfaService.verifyOTP(user.id, options?.otp);
 
 			if (otpValid === false) {
-				const loginError = new InvalidOtpError();
-				emitStatus('fail', updatedPayload, user, loginError);
+				emitStatus('fail');
 				await stall(STALL_TIME, timeStart);
-				throw loginError;
+				throw new InvalidOtpError();
 			}
 		}
 
@@ -295,7 +285,7 @@ export class AuthenticationService {
 
 		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
 
-		emitStatus('success', updatedPayload, user);
+		emitStatus('success');
 
 		if (allowedAttempts !== null) {
 			await loginAttemptsLimiter.set(user.id, 0, 0);

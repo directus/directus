@@ -1,8 +1,11 @@
-import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
+import { clearSystemCache } from '../cache.js';
+import { getDatabase } from '../database/index.js';
+import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
@@ -10,6 +13,7 @@ import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
+import { generateTranslations } from '../utils/generate-translations.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
@@ -167,6 +171,29 @@ router.post(
 			file: req.body.file,
 		});
 
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/translations/generate',
+	asyncHandler(async (req, _res, next) => {
+		if (!req.accountability?.admin) throw new ForbiddenError();
+
+		const result = await generateTranslations(req.body, {
+			knex: getDatabase(),
+			schema: req.schema,
+			accountability: req.accountability,
+		});
+
+		try {
+			await clearSystemCache({ forced: true });
+		} catch (error) {
+			useLogger().error(error, 'Failed to clear system cache after translation changes');
+		}
+
+		_res.locals['payload'] = { data: result };
 		return next();
 	}),
 	respond,

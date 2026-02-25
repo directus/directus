@@ -556,6 +556,38 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
+enable_translations: Enable Translations
+manage_translation_fields: Add Translation Fields
+translation_setup: Translation Setup
+fields_to_translate: Fields to Translate
+fields_to_add_to_translations: Fields to Add to Translations
+translations_collection_name: Translations collection name
+translations_already_enabled: Translations enabled
+translations_manage_helper_description: You can add more fields to translate from this collection.
+translations_copy_data_note: Fields are copied to the translations collection. Existing data is not migrated.
+translations_source_fields_hidden_note: Selected source fields will be set to hidden and readonly.
+add_fields: Add Fields
+show_advanced_options: Show Relationship Details
+hide_advanced_options: Hide Relationship Details
+this_collection_primary_key: This Collection Primary Key
+translation_parent_foreign_key: Translation Parent Foreign Key
+translation_language_foreign_key: Translation Language Foreign Key
+languages_collection_primary_key: Languages Collection Primary Key
+translations_selected_count: Selected {count} of {total}
+translations_field_name_required: All translation field names are required.
+translations_foreign_key_name_conflict: Parent and language foreign key names must be different.
+translations_duplicate_field_names: Translation field names must be unique.
+translation_configuration: Translation Configuration
+translations_invalid_config_warning:
+  '{count} translation config could not be resolved and will remain read-only | {count} translation configs could not be
+  resolved and will remain read-only'
+translations_collection_already_exists: Translations collection already exists
+translations_fields_up_to_date: All eligible fields are already present in the translations collection.
+translations_preview_collections: Collections
+translations_preview_fields: Fields
+translations_preview_relations: Relations
+ungrouped: Ungrouped
+translations_enable_helper_description: Translate content into multiple languages.
 import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
 import_data_indeterminate: Importing Data...
@@ -1699,6 +1731,8 @@ field_options:
     only_track_activity: Only Track Activity
     do_not_track_anything: Do Not Track Anything
     collection_setup: Collection Setup
+    collection_naming_translations_note:
+      "Override the collection's display name in the app based on the user's language."
     note_placeholder: A description of this collection...
     hidden_label: Hide within the App
     singleton: Treat as single object
@@ -1718,6 +1752,7 @@ field_options:
     accountability_divider: Accountability
     duplication_divider: Duplication
     preview_divider: Preview
+    content_translations_divider: Content Translations
     content_versioning_divider: Content Versioning
     enable_versioning: Enable Versioning
   directus_files:
