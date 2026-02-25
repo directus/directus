@@ -134,7 +134,7 @@ router.get(
 		});
 
 		const projectsService = new DeploymentProjectsService({
-			accountability: null,
+			accountability: req.accountability,
 			schema: req.schema,
 		});
 
