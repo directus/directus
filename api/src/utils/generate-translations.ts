@@ -228,7 +228,7 @@ export async function generateTranslations(
 			}
 		}
 
-		let languagePrimaryKeyField = 'code';
+		let languagePrimaryKeyField: string;
 		let languagePrimaryKeyType: Type;
 
 		if (currentSchema.collections[languagesCollection]) {
