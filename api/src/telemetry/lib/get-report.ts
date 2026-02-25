@@ -11,6 +11,8 @@ import { getFilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getSettings } from '../utils/get-settings.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
+import { useBufferedCounter } from '../counter/use-buffered-counter.js';
+import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
 
 const basicCountTasks = [
 	{ collection: 'directus_dashboards' },
@@ -29,9 +31,10 @@ const basicCountTasks = [
 export const getReport = async (): Promise<TelemetryReport> => {
 	const db = getDatabase();
 	const env = useEnv();
+	const requestCounter = useBufferedCounter('api-requests');
 	const helpers = getHelpers(db);
 
-	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize, filesizes, settings] =
+	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize, filesizes, settings, requestCounts] =
 		await Promise.all([
 			getItemCount(db, basicCountTasks),
 			fetchUserCount({ knex: db }),
@@ -41,6 +44,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 			helpers.schema.getDatabaseSize(),
 			getFilesizeSum(db),
 			getSettings(db),
+			requestCounter.getAndResetAll()
 		]);
 
 	return {
@@ -72,5 +76,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		websockets_enabled: toBoolean(env['WEBSOCKETS_ENABLED'] ?? false),
 
 		...settings,
+
+		...formatApiRequestCounts(requestCounts),
 	};
 };
