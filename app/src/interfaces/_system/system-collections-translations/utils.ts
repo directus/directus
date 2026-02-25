@@ -3,6 +3,7 @@ import type { Field, Relation } from '@directus/types';
 
 const DANGEROUS_SPECIALS = new Set<string>(GENERATE_SPECIAL);
 const RELATIONAL_SPECIALS = new Set<string>(RELATIONAL_TYPES);
+
 export type TranslationConfig = {
 	translationField: string;
 	translationsCollection: string;
@@ -82,13 +83,18 @@ export function detectTranslationConfigs(
 			};
 		}
 
+		const languagesCollection =
+			typeof languageRelation.related_collection === 'string' && languageRelation.related_collection.length > 0
+				? languageRelation.related_collection
+				: null;
+
 		return {
 			translationField: translationField.field,
 			translationsCollection: parentRelation.collection,
 			parentForeignKeyField,
 			languageForeignKeyField,
-			languagesCollection: languageRelation.related_collection ?? null,
-			valid: true,
+			languagesCollection,
+			valid: languagesCollection !== null,
 		};
 	});
 }

@@ -68,6 +68,7 @@ function createSchemaWithTranslations() {
 	const schema = createBaseSchema();
 
 	schema.collections.articles.fields['translations'] = { type: 'alias', special: ['translations'] };
+
 	schema.collections['articles_translations'] = {
 		primary: 'id',
 		fields: {
@@ -83,8 +84,21 @@ function createSchemaWithTranslations() {
 			field: 'articles_id',
 			related_collection: 'articles',
 			meta: {
+				one_collection: null,
+				many_collection: null,
 				one_field: 'translations',
 				junction_field: 'languages_code',
+			},
+		},
+		{
+			collection: 'articles_translations',
+			field: 'languages_code',
+			related_collection: 'languages',
+			meta: {
+				one_collection: null,
+				many_collection: null,
+				one_field: null,
+				junction_field: 'articles_id',
 			},
 		},
 	];
@@ -216,6 +230,42 @@ describe('generateTranslations', () => {
 	test('rejects when translation collection is not related to source collection', async () => {
 		const schema = createSchemaWithTranslations();
 		schema.relations = [];
+
+		await expect(
+			generateTranslations(
+				{
+					collection: 'articles',
+					fields: ['title'],
+				},
+				{
+					knex: database as any,
+					schema,
+				},
+			),
+		).rejects.toBeInstanceOf(InvalidPayloadError);
+	});
+
+	test('rejects when existing translation relation does not point to a translations field', async () => {
+		const schema = createSchemaWithTranslations();
+		schema.relations[0]!.meta!.one_field = 'title';
+
+		await expect(
+			generateTranslations(
+				{
+					collection: 'articles',
+					fields: ['title'],
+				},
+				{
+					knex: database as any,
+					schema,
+				},
+			),
+		).rejects.toBeInstanceOf(InvalidPayloadError);
+	});
+
+	test('rejects when existing translation relation is missing reciprocal language relation', async () => {
+		const schema = createSchemaWithTranslations();
+		schema.relations = [schema.relations[0]!];
 
 		await expect(
 			generateTranslations(
@@ -760,6 +810,7 @@ describe('generateTranslations', () => {
 			});
 
 		const schemaAfterJunction = structuredClone(schema);
+
 		schemaAfterJunction.collections['articles_translations'] = {
 			primary: 'id',
 			fields: {
@@ -792,12 +843,14 @@ describe('generateTranslations', () => {
 		);
 
 		expect(createCollectionSpy).toHaveBeenCalledTimes(1);
+
 		expect(result).toEqual({
 			created: true,
 			translationsCollection: 'articles_translations',
 			languagesCollection: 'languages',
 			fields: ['title'],
 		});
+
 		expect(emitter.emitAction).not.toHaveBeenCalled();
 	});
 
@@ -854,6 +907,7 @@ describe('generateTranslations', () => {
 		);
 
 		expect(createFieldSpy).toHaveBeenCalledTimes(1);
+
 		expect(createFieldSpy).toHaveBeenCalledWith(
 			'articles_translations',
 			expect.objectContaining({
@@ -880,11 +934,13 @@ describe('generateTranslations', () => {
 				bypassEmitAction: expect.any(Function),
 			}),
 		);
+
 		expect(result).toEqual({
 			created: false,
 			translationsCollection: 'articles_translations',
 			fields: ['title'],
 		});
+
 		expect(emitter.emitAction).toHaveBeenCalledWith(
 			'test.event',
 			{ collection: 'articles_translations' },
@@ -924,11 +980,13 @@ describe('generateTranslations', () => {
 		);
 
 		expect(createFieldSpy).toHaveBeenCalledTimes(1);
+
 		expect(result).toEqual({
 			created: false,
 			translationsCollection: 'articles_translations',
 			fields: ['title'],
 		});
+
 		expect(emitter.emitAction).not.toHaveBeenCalled();
 	});
 });

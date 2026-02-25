@@ -178,7 +178,7 @@ router.post(
 
 router.post(
 	'/translations/generate',
-	asyncHandler(async (req, _res, next) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.admin) throw new ForbiddenError();
 
 		const result = await generateTranslations(req.body, {
@@ -193,7 +193,7 @@ router.post(
 			useLogger().error(error, 'Failed to clear system cache after translation changes');
 		}
 
-		_res.locals['payload'] = { data: result };
+		res.locals['payload'] = { data: result };
 		return next();
 	}),
 	respond,

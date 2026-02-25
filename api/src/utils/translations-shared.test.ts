@@ -29,6 +29,19 @@ describe('translations-shared', () => {
 				} as any,
 			]),
 		).toThrow(InvalidPayloadError);
+
+		expect(() =>
+			validateFieldsEligibility([
+				{
+					collection: 'articles',
+					field: 'title',
+					type: 'string',
+					schema: {},
+					meta: { special: null, system: true },
+					name: 'title',
+				} as any,
+			]),
+		).toThrow(InvalidPayloadError);
 	});
 
 	test('cloneFields clones source fields and strips unsupported metadata/specials', () => {

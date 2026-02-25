@@ -3,6 +3,7 @@ import type {
 	AbstractServiceOptions,
 	ActionEventParams,
 	Field,
+	FieldMeta,
 	MutationOptions,
 	Relation,
 	SchemaOverview,
@@ -22,6 +23,10 @@ import { cloneFields, validateFieldsEligibility } from './translations-shared.js
 import { dbSafeIdentifierSchema } from './translations-validation.js';
 
 const logger = useLogger();
+
+function findDuplicate(names: string[]): string | undefined {
+	return names.find((name, index) => names.indexOf(name) !== index);
+}
 
 const GenerateTranslationsInput = z.object({
 	collection: dbSafeIdentifierSchema,
@@ -86,7 +91,7 @@ export async function generateTranslations(
 			throw new InvalidPayloadError({ reason: `Collection "${collection}" does not exist` });
 		}
 
-		const duplicateRequestedField = fieldNames.find((fieldName, index) => fieldNames.indexOf(fieldName) !== index);
+		const duplicateRequestedField = findDuplicate(fieldNames);
 
 		if (duplicateRequestedField) {
 			throw new InvalidPayloadError({
@@ -102,18 +107,63 @@ export async function generateTranslations(
 			);
 		};
 
+		const validateExistingTranslationsCollection = (): { parentRelation: Relation; languageRelation: Relation } => {
+			const parentRelations = currentSchema.relations.filter(
+				(relation) =>
+					relation.collection === translationsCollection &&
+					relation.related_collection === collection &&
+					(relation.meta?.one_collection === null || relation.meta?.one_collection === collection) &&
+					(relation.meta?.many_collection === null || relation.meta?.many_collection === translationsCollection) &&
+					typeof relation.meta?.one_field === 'string' &&
+					relation.meta.one_field.length > 0 &&
+					typeof relation.meta?.junction_field === 'string' &&
+					relation.meta.junction_field.length > 0,
+			);
+
+			if (parentRelations.length !== 1) {
+				throw new InvalidPayloadError({
+					reason: `Collection "${translationsCollection}" is not a valid translations collection for "${collection}"`,
+				});
+			}
+
+			const parentRelation = parentRelations[0]!;
+			const translationField = parentRelation.meta!.one_field!;
+			const sourceTranslationField = sourceCollection.fields[translationField];
+
+			const sourceTranslationSpecials = Array.isArray(sourceTranslationField?.special)
+				? sourceTranslationField.special
+				: [];
+
+			if (!sourceTranslationField || !sourceTranslationSpecials.includes('translations')) {
+				throw new InvalidPayloadError({
+					reason: `Collection "${translationsCollection}" is not a valid translations collection for "${collection}"`,
+				});
+			}
+
+			const languageForeignKeyField = parentRelation.meta!.junction_field!;
+
+			const languageRelation = currentSchema.relations.find(
+				(relation) =>
+					relation.collection === translationsCollection &&
+					relation.field === languageForeignKeyField &&
+					relation.meta?.junction_field === parentRelation.field &&
+					typeof relation.related_collection === 'string' &&
+					relation.related_collection.length > 0,
+			);
+
+			if (!languageRelation) {
+				throw new InvalidPayloadError({
+					reason: `Collection "${translationsCollection}" is not a valid translations collection for "${collection}"`,
+				});
+			}
+
+			return { parentRelation, languageRelation };
+		};
+
 		const existingTranslationsCollection = currentSchema.collections[translationsCollection];
 
 		if (existingTranslationsCollection) {
-			const hasParentRelation = currentSchema.relations.some(
-				(relation) => relation.collection === translationsCollection && relation.related_collection === collection,
-			);
-
-			if (!hasParentRelation) {
-				throw new InvalidPayloadError({
-					reason: `Collection "${translationsCollection}" is not linked to "${collection}"`,
-				});
-			}
+			validateExistingTranslationsCollection();
 
 			for (const fieldName of fieldNames) {
 				if (sourceCollection.fields[fieldName] === undefined) {
@@ -172,7 +222,7 @@ export async function generateTranslations(
 		const parentPrimaryKeyType = (sourceCollection.fields[parentPrimaryKeyField]?.type ?? 'integer') as Type;
 
 		for (const fieldName of fieldNames) {
-			if (parentFieldNames.includes(fieldName) === false) {
+			if (!parentFieldNames.includes(fieldName)) {
 				throw new InvalidPayloadError({ reason: `Field "${fieldName}" does not exist on "${collection}"` });
 			}
 		}
@@ -181,7 +231,7 @@ export async function generateTranslations(
 		let languagePrimaryKeyType: Type = 'string';
 
 		if (currentSchema.collections[languagesCollection]) {
-			const existingLanguagesCollection = currentSchema.collections[languagesCollection]!;
+			const existingLanguagesCollection = currentSchema.collections[languagesCollection];
 
 			languagePrimaryKeyField = existingLanguagesCollection.primary;
 			languagePrimaryKeyType = (existingLanguagesCollection.fields[languagePrimaryKeyField]?.type ?? 'string') as Type;
@@ -275,9 +325,7 @@ export async function generateTranslations(
 		const resolvedParentForeignKeyField = parentFkField ?? `${collection}_${parentPrimaryKeyField}`;
 		const resolvedLanguageForeignKeyField = languageFkField ?? `${languagesCollection}_${languagePrimaryKeyField}`;
 		const targetFieldNames = ['id', resolvedParentForeignKeyField, resolvedLanguageForeignKeyField, ...fieldNames];
-		const duplicateTargetField = targetFieldNames.find(
-			(fieldName, index) => targetFieldNames.indexOf(fieldName) !== index,
-		);
+		const duplicateTargetField = findDuplicate(targetFieldNames);
 
 		if (duplicateTargetField) {
 			throw new InvalidPayloadError({
@@ -372,7 +420,8 @@ export async function generateTranslations(
 		const languagesFields = resolvedLanguagesCollection.fields;
 		const languageField = languagesFields['name'] ? 'name' : null;
 		const languageDirectionField = languagesFields['direction'] ? 'direction' : null;
-		const translationsAliasField = {
+
+		const translationsAliasField: Partial<Field> & { field: string; type: Type | null } = {
 			field: 'translations',
 			type: 'alias',
 			meta: {
@@ -382,8 +431,8 @@ export async function generateTranslations(
 					languageField,
 					languageDirectionField,
 				},
-			},
-		} as unknown as Parameters<FieldsService['createField']>[1];
+			} as unknown as FieldMeta,
+		};
 
 		await fieldsService.createField(collection, translationsAliasField, undefined, mutationOptions);
 

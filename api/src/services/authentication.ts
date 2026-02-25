@@ -175,10 +175,10 @@ export class AuthenticationService {
 
 		try {
 			await provider.login(clone(user), cloneDeep(updatedPayload));
-		} catch (e) {
+		} catch (err) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
-			throw e;
+			throw err;
 		}
 
 		if (user.tfa_secret && !options?.otp) {

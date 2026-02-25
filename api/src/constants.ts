@@ -1,5 +1,5 @@
+import { GENERATE_SPECIAL } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { GENERATE_SPECIAL as SHARED_GENERATE_SPECIAL } from '@directus/constants';
 import type { TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
@@ -62,7 +62,7 @@ export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
 
-export const GENERATE_SPECIAL = SHARED_GENERATE_SPECIAL;
+export { GENERATE_SPECIAL };
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 

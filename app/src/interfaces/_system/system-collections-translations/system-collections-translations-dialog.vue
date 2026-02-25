@@ -90,12 +90,12 @@ const existingManageFieldNames = computed(() => {
 	const excluded = new Set(['id', props.config.parentForeignKeyField, props.config.languageForeignKeyField]);
 
 	return new Set(
-		manageTranslationFields.value.filter((field) => excluded.has(field.field) === false).map((field) => field.field),
+		manageTranslationFields.value.filter((field) => !excluded.has(field.field)).map((field) => field.field),
 	);
 });
 
 const missingManageFields = computed(() =>
-	availableFields.value.filter((field) => existingManageFieldNames.value.has(field.field) === false),
+	availableFields.value.filter((field) => !existingManageFieldNames.value.has(field.field)),
 );
 
 const targetFields = computed(() => (isManageMode.value ? missingManageFields.value : availableFields.value));
@@ -208,7 +208,7 @@ const previewFields = computed(() => {
 		`${props.collection}.translations`,
 	];
 
-	return fields.filter((field) => field.includes('..') === false);
+	return fields.filter((field) => !field.includes('..'));
 });
 
 const previewRelations = computed(() => {
@@ -220,7 +220,7 @@ const previewRelations = computed(() => {
 	return [
 		`${translationsCollection}.${resolvedParentForeignKeyField.value} -> ${props.collection}`,
 		`${translationsCollection}.${resolvedLanguageForeignKeyField.value} -> ${languages}`,
-	].filter((entry) => entry.includes('..') === false);
+	].filter((entry) => !entry.includes('..'));
 });
 
 const canSubmit = computed(() => {
@@ -232,7 +232,7 @@ const canSubmit = computed(() => {
 		selectedFields.value.length > 0 &&
 		translationsCollectionName.value.trim().length > 0 &&
 		languagesCollection.value.trim().length > 0 &&
-		translationsCollectionExists.value === false &&
+		!translationsCollectionExists.value &&
 		fieldNameValidationMessage.value === null
 	);
 });
@@ -305,6 +305,7 @@ async function submitTranslations() {
 			translationsCollection: manageTargetCollection.value,
 			fields: selectedFields.value,
 		});
+
 		return;
 	}
 
@@ -383,9 +384,9 @@ async function submit() {
 						<VCheckbox
 							v-for="field in targetFieldOptions"
 							:key="field.field"
+							v-model="selectedFields"
 							:value="field.field"
 							:label="field.name"
-							v-model="selectedFields"
 						/>
 					</div>
 					<div class="selection-footer">

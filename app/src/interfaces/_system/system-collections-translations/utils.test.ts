@@ -178,6 +178,51 @@ describe('system-collections-translations utils', () => {
 		]);
 	});
 
+	test('detectTranslationConfigs marks config invalid when language relation has no related collection', () => {
+		const configs = detectTranslationConfigs(
+			'articles',
+			[
+				makeField({
+					field: 'translations',
+					type: 'alias',
+					meta: { special: ['translations'], system: false } as any,
+					schema: null,
+				}),
+			],
+			[
+				makeRelation({}),
+				makeRelation({
+					collection: 'articles_translations',
+					field: 'languages_code',
+					related_collection: null,
+					meta: {
+						id: 2,
+						many_collection: 'articles_translations',
+						many_field: 'languages_code',
+						one_collection: null,
+						one_field: null,
+						one_collection_field: null,
+						one_allowed_collections: null,
+						one_deselect_action: 'nullify',
+						junction_field: 'articles_id',
+						sort_field: null,
+					},
+				}),
+			],
+		);
+
+		expect(configs).toEqual([
+			{
+				translationField: 'translations',
+				translationsCollection: 'articles_translations',
+				parentForeignKeyField: 'articles_id',
+				languageForeignKeyField: 'languages_code',
+				languagesCollection: null,
+				valid: false,
+			},
+		]);
+	});
+
 	test('detectTranslationConfigs ignores same-collection relations to avoid false matches', () => {
 		const configs = detectTranslationConfigs(
 			'articles',

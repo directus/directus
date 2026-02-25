@@ -1,5 +1,5 @@
-import { InvalidPayloadError } from '@directus/errors';
 import { GENERATE_SPECIAL, RELATIONAL_TYPES, TRANSLATIONS_STRIPPED_ON_CLONE_SPECIALS } from '@directus/constants';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Field, RawField } from '@directus/types';
 
 export const DANGEROUS_SPECIALS = new Set<string>(GENERATE_SPECIAL);
@@ -10,7 +10,11 @@ export function validateFieldsEligibility(sourceFields: Field[]) {
 	for (const sourceField of sourceFields) {
 		const specials = Array.isArray(sourceField.meta?.special) ? sourceField.meta.special : [];
 
-		if (sourceField.type === 'alias' || sourceField.schema?.has_auto_increment === true) {
+		if (
+			sourceField.type === 'alias' ||
+			sourceField.meta?.system === true ||
+			sourceField.schema?.has_auto_increment === true
+		) {
 			throw new InvalidPayloadError({ reason: `Field "${sourceField.field}" is not eligible for translations` });
 		}
 
@@ -42,9 +46,7 @@ export function cloneFields(options: { fields: string[]; sourceFields: Field[] }
 		clonedMeta.readonly = false;
 
 		if (Array.isArray(clonedMeta.special)) {
-			clonedMeta.special = clonedMeta.special.filter(
-				(special: string) => STRIPPED_ON_CLONE_SPECIALS.has(special) === false,
-			);
+			clonedMeta.special = clonedMeta.special.filter((special: string) => !STRIPPED_ON_CLONE_SPECIALS.has(special));
 
 			if (clonedMeta.special.length === 0) {
 				clonedMeta.special = null;
