@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Field, PrimaryKey } from '@directus/types';
-import { cloneDeep } from 'lodash';
-import { computed, useTemplateRef } from 'vue';
+import { cloneDeep, isEqual } from 'lodash';
+import { computed, inject, type Ref, useTemplateRef, watch } from 'vue';
 import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VInfo from '@/components/v-info.vue';
@@ -15,6 +15,7 @@ const {
 	relatedCollectionFields,
 	initialValues,
 	fields,
+	validationErrors,
 	junctionFieldLocation = 'bottom',
 	relatedPrimaryKeyField,
 } = defineProps<{
@@ -95,6 +96,15 @@ function useFile() {
 function useValidationScrollToField() {
 	const mainFormEl = useTemplateRef<any>('mainForm');
 	const junctionFormEl = useTemplateRef<any>('junctionForm');
+	const mainDrawerElement = inject<Ref<HTMLElement | null>>('main-element');
+
+	watch(
+		() => validationErrors,
+		(newVal, oldVal) => {
+			if (isEqual(newVal, oldVal)) return;
+			if (newVal?.length > 0) mainDrawerElement?.value?.scrollTo({ top: 0, behavior: 'smooth' });
+		},
+	);
 
 	return { scrollToField };
 
