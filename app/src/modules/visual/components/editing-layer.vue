@@ -7,6 +7,7 @@ import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } fr
 import { useI18n } from 'vue-i18n';
 import type {
 	AddToContextData,
+	CheckFieldAccessData,
 	EditConfig,
 	HighlightElementData,
 	NavigationData,
@@ -22,9 +23,13 @@ import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useCollectionPermissions } from '@/composables/use-permissions';
+import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
+import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -65,8 +70,17 @@ watch(editOverlayActive, (isActive) => {
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
+	const userStore = useUserStore();
+	const permissionsStore = usePermissionsStore();
+	const collectionsStore = useCollectionsStore();
 	const contextStore = useAiContextStore();
 	const { stageVisualElement } = useContextStaging();
+
+	const {
+		readAllowed: readVersionsAllowed,
+		createAllowed: createVersionsAllowed,
+		updateAllowed: updateVersionsAllowed,
+	} = useCollectionPermissions('directus_versions');
 
 	useEventListener('message', (event) => {
 		if (!sameOrigin(event.origin, frameSrc)) {
@@ -80,6 +94,8 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 			if (showEditableElements) sendShowEditableElements(true);
 			contextStore.syncVisualElementContextUrl(frameSrc);
 		}
+
+		if (action === 'checkFieldAccess') receiveCheckFieldAccess(data);
 
 		if (action === 'navigation') receiveNavigation(data);
 
@@ -102,6 +118,39 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		if (url === undefined || title === undefined) return;
 
 		emit('navigation', { url, title });
+	}
+
+	function receiveCheckFieldAccess(data: unknown) {
+		const elements = data as CheckFieldAccessData[];
+		const canEditVersions = readVersionsAllowed.value && (createVersionsAllowed.value || updateVersionsAllowed.value);
+
+		if (version && !userStore.isAdmin && !canEditVersions) {
+			send('activateElements', []);
+			return;
+		}
+
+		const permittedKeys = elements.filter((element) => hasAnyUpdatableField(element)).map(({ key }) => key);
+		send('activateElements', permittedKeys);
+	}
+
+	function hasAnyUpdatableField({ collection, item, fields }: CheckFieldAccessData) {
+		if (item == null || item === '') return false;
+
+		const collectionInfo = collectionsStore.getCollection(collection);
+		if (!collectionInfo) return false;
+
+		if (version && !collectionInfo.meta?.versioning) return false;
+
+		if (userStore.isAdmin) return true;
+
+		const permission = permissionsStore.getPermission(collection, 'update');
+		if (!permission || permission.access === 'none') return false;
+
+		if (fields.length && permission.fields && !permission.fields.includes('*')) {
+			if (!fields.some((field) => permission.fields!.includes(field))) return false;
+		}
+
+		return true;
 	}
 
 	function send(action: SendAction, data: unknown) {
@@ -189,6 +238,7 @@ function useVisualEditingAi({
 
 function useItemWithEdits() {
 	const edits = ref<Record<string, any>>({});
+	const saving = ref(false);
 	const editOverlayActive = ref(false);
 	const msgKey = ref('');
 	const collection = ref<EditConfig['collection']>('');
@@ -205,9 +255,10 @@ function useItemWithEdits() {
 
 	const editingLayerEl = useTemplateRef<HTMLElement>('editing-layer');
 
-	watch(edits, (newEdits) => {
+	watch([edits, saving], ([newEdits, isSaving]) => {
 		const hasEdits = Object.keys(newEdits)?.length;
-		if (!hasEdits) return;
+		if (!hasEdits || isSaving) return;
+
 		save();
 	});
 
@@ -273,6 +324,8 @@ function useItemWithEdits() {
 	}
 
 	async function save() {
+		saving.value = true;
+
 		try {
 			let response;
 
@@ -302,6 +355,8 @@ function useItemWithEdits() {
 			resetEdits();
 		} catch (error) {
 			unexpectedError(error);
+		} finally {
+			saving.value = false;
 		}
 	}
 

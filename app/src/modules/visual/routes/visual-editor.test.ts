@@ -2,12 +2,13 @@ import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextTick } from 'vue';
+import { computed, nextTick } from 'vue';
 import type { Router } from 'vue-router';
 import VisualEditor from './visual-editor.vue';
 import { generateRouter } from '@/__utils__/router';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { DRAFT_VERSION_KEY } from '@/constants';
 import { i18n } from '@/lang';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
@@ -15,6 +16,23 @@ import { analyzeTemplate, replaceVersion } from '@/modules/visual/utils/version-
 import { useSettingsStore } from '@/stores/settings';
 
 vi.mock('@unhead/vue', () => ({ useHead: vi.fn() }));
+vi.mock('@directus/format-title', () => ({ default: (str: string) => str ?? '' }));
+
+vi.mock('@/composables/use-permissions', () => ({
+	useCollectionPermissions: vi.fn(),
+}));
+
+function mockPermissions({ read = false } = {}) {
+	vi.mocked(useCollectionPermissions).mockReturnValue({
+		readAllowed: computed(() => read),
+		createAllowed: computed(() => false),
+		updateAllowed: computed(() => false),
+		deleteAllowed: computed(() => false),
+		sortAllowed: computed(() => false),
+		archiveAllowed: computed(() => false),
+		revisionsAllowed: computed(() => false),
+	});
+}
 
 const mockSettingsUrls = (templates: string[]) => {
 	useSettingsStore().settings!.visual_editor_urls = templates.map((url) => ({ url }));
@@ -65,6 +83,8 @@ beforeEach(() => {
 
 	setActivePinia(pinia);
 
+	mockPermissions();
+
 	router = generateRouter([{ path: '/:pathMatch(.*)*', component: { template: '<div />' } }]);
 
 	global = {
@@ -80,6 +100,7 @@ afterEach(() => {
 
 describe('Version selector', () => {
 	it('is not rendered when the URL has no version template', () => {
+		mockPermissions({ read: true });
 		mockSettingsUrls(['https://example.com/preview']);
 
 		const wrapper = mount(VisualEditor, {
@@ -90,7 +111,19 @@ describe('Version selector', () => {
 		expect(wrapper.find('.version-select-activator').exists()).toBe(false);
 	});
 
-	it('is rendered when the URL matches a version template', () => {
+	it('is not rendered when user lacks read permission on directus_versions', () => {
+		mockSettingsUrls(['https://example.com/?version={{$version}}']);
+
+		const wrapper = mount(VisualEditor, {
+			global,
+			props: { dynamicUrl: 'https://example.com/?version=v1' },
+		});
+
+		expect(wrapper.find('.version-select-activator').exists()).toBe(false);
+	});
+
+	it('is rendered when the URL matches a version template and user can read versions', () => {
+		mockPermissions({ read: true });
 		mockSettingsUrls(['https://example.com/?version={{$version}}']);
 
 		const wrapper = mount(VisualEditor, {
@@ -102,6 +135,7 @@ describe('Version selector', () => {
 	});
 
 	it('adds a new version to the list when the URL contains a custom version key', async () => {
+		mockPermissions({ read: true });
 		mockSettingsUrls(['https://example.com/?version={{$version}}']);
 
 		const wrapper = mount(VisualEditor, {
@@ -117,6 +151,7 @@ describe('Version selector', () => {
 	});
 
 	it('calls router.replace with the version-substituted URL when a version is selected', async () => {
+		mockPermissions({ read: true });
 		const template = 'https://example.com/?version={{$version}}';
 		const currentUrl = `https://example.com/?version=`;
 		mockSettingsUrls([template]);

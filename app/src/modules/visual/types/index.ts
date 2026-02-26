@@ -17,6 +17,13 @@ export type SavedData = {
 	payload: Record<string, unknown>;
 };
 
+export type CheckFieldAccessData = {
+	key: string;
+	collection: EditConfig['collection'];
+	item: EditConfig['item'];
+	fields: string[];
+};
+
 export type AddToContextData = {
 	key: string;
 	editConfig: EditConfig;
@@ -34,9 +41,9 @@ export type ConfirmData = {
 	aiEnabled: boolean;
 };
 
-export type ReceiveAction = 'connect' | 'edit' | 'navigation' | 'addToContext';
+export type ReceiveAction = 'connect' | 'checkFieldAccess' | 'edit' | 'navigation' | 'addToContext';
 
-export type SendAction = 'confirm' | 'showEditableElements' | 'saved' | 'highlightElement';
+export type SendAction = 'confirm' | 'activateElements' | 'showEditableElements' | 'saved' | 'highlightElement';
 
 /** Not shared with the package */
 
@@ -49,4 +56,5 @@ export type ReceiveData =
 	| { action: 'edit'; data: EditData }
 	| { action: 'navigation'; data: NavigationData }
 	| { action: 'addToContext'; data: AddToContextData }
+	| { action: 'checkFieldAccess'; data: CheckFieldAccessData[] }
 	| { action: null; data: null };
