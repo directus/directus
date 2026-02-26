@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
+import { fileExtension, isImagePreview, toLightboxFile } from './file-ui-part-utils';
 
 const props = defineProps<{
 	part: FileUIPart;
@@ -11,34 +12,9 @@ const props = defineProps<{
 
 const lightboxActive = ref(false);
 
-const hasImagePreview = computed(
-	() =>
-		props.part.mediaType?.startsWith('image/') === true &&
-		typeof props.part.url === 'string' &&
-		props.part.url.length > 0,
-);
-
-const fileExtension = computed(() => {
-	const mimeType = props.part.mediaType;
-
-	if (!mimeType) return 'file';
-
-	const slashIndex = mimeType.indexOf('/');
-
-	if (slashIndex === -1) return mimeType;
-
-	return mimeType.slice(slashIndex + 1) || 'file';
-});
-
-const file = computed(() => ({
-	id: '',
-	title: props.part.filename || '',
-	type: props.part.mediaType || 'application/octet-stream',
-	modified_on: new Date().toISOString(),
-	width: 0,
-	height: 0,
-	data: props.part.url,
-}));
+const hasImagePreview = computed(() => isImagePreview(props.part));
+const ext = computed(() => fileExtension(props.part.mediaType));
+const file = computed(() => toLightboxFile(props.part));
 </script>
 
 <template>
@@ -53,7 +29,7 @@ const file = computed(() => ({
 			<VImage :src="part.url" :alt="part.filename || $t('ai.image_preview')" />
 		</button>
 		<div v-else class="file-attachment">
-			<VIconFile :ext="fileExtension" class="file-icon" />
+			<VIconFile :ext="ext" class="file-icon" />
 			<span>{{ part.filename || $t('file') }}</span>
 		</div>
 

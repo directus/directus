@@ -1,0 +1,22 @@
+import type { FileUIPart } from 'ai';
+import mime from 'mime/lite';
+
+export function isImagePreview(part: FileUIPart): boolean {
+	return !!part.mediaType?.startsWith('image/') && !!part.url;
+}
+
+export function toLightboxFile(part: FileUIPart): Record<string, unknown> {
+	return {
+		id: '',
+		title: part.filename || '',
+		type: part.mediaType || 'application/octet-stream',
+		modified_on: new Date().toISOString(),
+		width: 0,
+		height: 0,
+		data: part.url,
+	};
+}
+
+export function fileExtension(mediaType: string | undefined): string {
+	return mime.getExtension(mediaType ?? '') || 'file';
+}
