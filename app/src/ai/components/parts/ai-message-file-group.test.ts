@@ -1,5 +1,5 @@
-import type { FileUIPart } from 'ai';
 import { shallowMount } from '@vue/test-utils';
+import type { FileUIPart } from 'ai';
 import { describe, expect, test } from 'vitest';
 import AiMessageFileGroup from './ai-message-file-group.vue';
 

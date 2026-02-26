@@ -59,6 +59,7 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 	return props.parts.reduce<RenderBlock[]>((blocks, part, i) => {
 		if (isFilePart(part)) {
 			const last = blocks.at(-1);
+
 			if (last?.kind === 'file-group') {
 				last.parts.push(part);
 			} else {
@@ -67,6 +68,7 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 		} else {
 			blocks.push({ kind: 'part', key: `${prefix}-${part.type}-${i}`, part });
 		}
+
 		return blocks;
 	}, []);
 });

@@ -1,6 +1,6 @@
 import type { IncomingHttpHeaders } from 'node:http';
-import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
 import type { StandardProviderType } from '@directus/ai';
+import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';

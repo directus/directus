@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { FileUIPart } from 'ai';
 import { computed, ref } from 'vue';
+import { fileExtension, isImagePreview, toLightboxFile } from './file-ui-part-utils';
 import VIconFile from '@/components/v-icon-file.vue';
 import VImage from '@/components/v-image.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
-import { fileExtension, isImagePreview, toLightboxFile } from './file-ui-part-utils';
 
 const props = defineProps<{
 	part: FileUIPart;

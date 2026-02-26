@@ -294,6 +294,7 @@ describe('useContextStaging', () => {
 		test('stages image files when thumbnail generation fails', async () => {
 			const contextStore = useAiContextStore();
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
+
 			const readSpy = vi.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(function () {
 				this.onerror?.(new ProgressEvent('error'));
 			});

@@ -1,6 +1,6 @@
 import type { ProviderFileRef } from '@directus/ai';
-import type { UploadedFile } from '../types.js';
 import { fetchProvider } from '../lib/fetch-provider.js';
+import type { UploadedFile } from '../types.js';
 
 export async function uploadToOpenAI(file: UploadedFile, apiKey: string): Promise<ProviderFileRef> {
 	const formData = new FormData();

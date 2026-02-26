@@ -2,9 +2,9 @@
 import type { FileUIPart } from 'ai';
 import { computed, ref } from 'vue';
 import AiMessageFile from './ai-message-file.vue';
+import { isImagePreview, toLightboxFile } from './file-ui-part-utils';
 import VImage from '@/components/v-image.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
-import { isImagePreview, toLightboxFile } from './file-ui-part-utils';
 
 const props = defineProps<{
 	parts: FileUIPart[];
@@ -20,7 +20,7 @@ const lightboxActive = computed({
 });
 
 const useGrid = computed(() => props.parts.length > 1 && props.parts.every(isImagePreview));
-const activePart = computed(() => (activeIndex.value !== null ? props.parts[activeIndex.value] ?? null : null));
+const activePart = computed(() => (activeIndex.value !== null ? (props.parts[activeIndex.value] ?? null) : null));
 const activeFile = computed(() => (activePart.value ? toLightboxFile(activePart.value) : null));
 
 function openLightbox(index: number) {
