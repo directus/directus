@@ -44,7 +44,7 @@ const { mainInitialValues, junctionInitialValues } = useInitialValues();
 const { file } = useFile();
 const { scrollToField } = useValidationScrollToField();
 
-const validationErrorsEl = useTemplateRef('validationErrors');
+const validationErrorsEl = useTemplateRef('validationErrorsEl');
 
 watch(
 	() => validationErrors,
@@ -53,7 +53,7 @@ watch(
 
 		if (newVal?.length > 0) {
 			await nextTick();
-			validationErrorsEl.value?.$el?.scrollIntoView({ behavior: 'smooth' });
+			validationErrorsEl.value?.scrollIntoView({ behavior: 'smooth' });
 		}
 	},
 );
@@ -135,14 +135,15 @@ function useValidationScrollToField() {
 		</VInfo>
 
 		<div v-else class="overlay-item-order" :class="{ swap: swapFormOrder }">
-			<ValidationErrors
-				v-if="validationErrors?.length"
-				ref="validationErrors"
-				class="validation-errors"
-				:validation-errors
-				:fields="[...fields, ...relatedCollectionFields]"
-				@scroll-to-field="scrollToField"
-			/>
+			<div ref="validationErrorsEl">
+				<ValidationErrors
+					v-if="validationErrors?.length"
+					class="validation-errors"
+					:validation-errors
+					:fields="[...fields, ...relatedCollectionFields]"
+					@scroll-to-field="scrollToField"
+				/>
+			</div>
 
 			<VForm
 				v-if="junctionField"
