@@ -1199,6 +1199,7 @@ settings_project: 设置
 settings_appearance: 外观
 settings_ai: AI
 model_context_protocol: 模型上下文协议
+ai_assistant: AI助手
 settings_flows: 流程
 settings_system_logs: 系统日志
 settings_presets: 书签
