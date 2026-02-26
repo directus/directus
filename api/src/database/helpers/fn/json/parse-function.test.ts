@@ -51,11 +51,11 @@ const INVALID_TEST_CASES = [
 	// Exceeds maximum depth (default is 10)
 	{
 		input: 'json(data, a.b.c.d.e.f.g.h.i.j.k)',
-		expectedError: 'JSON path depth exceeds maximum allowed depth of 10 (got 11)',
+		expectedError: 'Invalid query. JSON path depth (11) exceeds allowed maximum of 10.',
 	},
 	{
 		input: 'json(data, a[0].b[1].c[2].d[3].e[4].f[5])',
-		expectedError: 'JSON path depth exceeds maximum allowed depth of 10',
+		expectedError: 'Invalid query. JSON path depth (12) exceeds allowed maximum of 10.',
 	},
 ];
 
