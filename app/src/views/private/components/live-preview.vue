@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
+import type { ContentVersion } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -34,6 +35,7 @@ const {
 	singleUrlSubdued = true,
 	canEnableVisualEditing = false,
 	visualEditorUrls = [],
+	version = null,
 	showOpenInVisualEditor = true,
 	defaultShowEditableElements = false,
 	isFullWidth = false,
@@ -53,6 +55,7 @@ const {
 	centered?: boolean;
 	canEnableVisualEditing?: boolean;
 	visualEditorUrls?: string[];
+	version?: Pick<ContentVersion, 'key' | 'name'> | null;
 	showOpenInVisualEditor?: boolean;
 	defaultShowEditableElements?: boolean;
 	isFullWidth?: boolean;
@@ -490,6 +493,7 @@ function useUrls() {
 								v-if="visualEditingEnabled && !overlayProvided"
 								:frame-el="frameEl"
 								:frame-src="frameSrc"
+								:version="version"
 								:show-editable-elements="showEditableElements"
 								@saved="(data) => emit('saved', data)"
 							/>
@@ -531,6 +535,7 @@ function useUrls() {
 						v-if="visualEditingEnabled && !overlayProvided"
 						:frame-el="frameEl"
 						:frame-src="frameSrc"
+						:version="version"
 						:show-editable-elements="showEditableElements"
 						@saved="(data) => emit('saved', data)"
 					/>
