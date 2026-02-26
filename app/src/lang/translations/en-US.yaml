@@ -1535,6 +1535,7 @@ fields:
     project_color: Project Color
     project_logo: Project Logo
     default_language: Default Language
+    project_owner: Project Owner
     branding: Branding
     public_foreground: Public Foreground
     public_background: Public Background
@@ -1570,6 +1571,9 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
+    report_feature_url: Report Feature URL
+    report_bug_url: Report Bug URL
+    report_error_url: Report Error URL
     collaborative_editing: Collaborative Editing
     collaborative_editing_note: WebSockets are required for collaborative editing to work.
     ai_notice:
@@ -1649,6 +1653,7 @@ fields:
     users: Users in Role
     parent: Parent Role
     children: Child Roles
+    policies: Policies
   directus_policies:
     name: Policy Name
     description: Description
