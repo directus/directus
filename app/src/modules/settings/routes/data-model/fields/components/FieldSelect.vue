@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { Field, Width, Filter } from '@directus/types';
+import type { Field, Width } from '@directus/types';
+import { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { computed, ref, unref, ComputedRef } from 'vue';
+import { computed, ComputedRef, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink, useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import FieldSelectMenu from './field-select-menu.vue';
+import { deepMapFilter } from "@/../../packages/utils/shared/deep-map-filter"
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -16,17 +18,15 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import { useExtension } from '@/composables/use-extension';
 import InterfaceSystemCollection from '@/interfaces/_system/system-collection/system-collection.vue';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getSpecialForType } from '@/utils/get-special-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { notify } from '@/utils/notify';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
-import { useCollectionsStore } from '@/stores/collections';
-import { deepMapFilter } from "@/../../packages/utils/shared/deep-map-filter"
 
 const props = withDefaults(
 	defineProps<{
@@ -54,6 +54,7 @@ const inter = useExtension(
 	'interface',
 	computed(() => props.field.meta?.interface ?? null),
 );
+
 const useSchemaOverview = (): ComputedRef<SchemaOverview> => {
 	const relationsStore = useRelationsStore();
 	const fieldsStore = useFieldsStore();
@@ -97,27 +98,8 @@ const useSchemaOverview = (): ComputedRef<SchemaOverview> => {
 		relations: relationsStore.relations,
 	}));
 }
+
 const schemaOverview = useSchemaOverview();
-function extractFieldsFromFilter(filter: Filter) {
-	const fields: Set<string> = new Set();
-
-	deepMapFilter(
-		filter,
-		([key, value], context) => {
-			if (context.leaf && context.field) {
-				fields.add([...context.path, key].join('.'));
-			}
-
-			return [key, value];
-		},
-		{
-			schema: schemaOverview.value,
-			collection: props.field.collection, // or whichever collection you're working with
-		}
-	);
-
-	return Array.from(fields);
-}
 
 const interfaceName = computed(() => inter.value?.name ?? null);
 
@@ -203,11 +185,17 @@ function useDuplicate() {
 			delete newField.meta.sort;
 			delete newField.meta.group;
 		}
+
 		if (newField.meta?.validation) {
 			newField.meta.validation = deepMapFilter(
 				newField.meta.validation,
 				([key, value], context) => {
-					if (key === props.field.field) {
+					if (
+						context.leaf &&
+						context.field &&
+						context.collection.collection === props.field.collection &&
+						key === props.field.field
+					) {
 						return [duplicateName.value, value];
 					}
 
@@ -281,7 +269,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 			</template>
 
 			<template #input>
-				<div v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+				<div
+v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
 					class="label">
 					<div class="label-inner">
 						<span class="name">{{ field.field }}</span>
@@ -292,7 +281,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		</VInput>
 
 		<template v-else>
-			<Draggable v-if="localType === 'group'" class="field-grid group full nested" :model-value="nestedFields"
+			<Draggable
+v-if="localType === 'group'" class="field-grid group full nested" :model-value="nestedFields"
 				handle=".drag-handle" :group="{ name: 'fields' }" :set-data="hideDragImage" :animation="150"
 				item-key="field" v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
 				@update:model-value="onGroupSortChange">
@@ -303,9 +293,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 							{{ field.field }}
 							<VIcon v-if="field.meta?.required === true" name="star" class="required" sup filled />
 						</span>
-						<VIcon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon"
+						<VIcon
+v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon"
 							small />
-						<FieldSelectMenu :field="field" :no-delete="nestedFields.length > 0"
+						<FieldSelectMenu
+:field="field" :no-delete="nestedFields.length > 0"
 							@toggle-visibility="toggleVisibility" @set-width="setWidth($event)"
 							@duplicate="duplicateActive = true" @delete="deleteActive = true" />
 					</div>
@@ -322,7 +314,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				</template>
 
 				<template #input>
-					<div v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+					<div
+v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
 						class="label" @click="openFieldDetail">
 						<div class="label-inner">
 							<span class="name">
@@ -337,19 +330,24 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 				<template #append>
 					<div class="icons">
-						<VIcon v-if="field.schema && field.schema.is_primary_key" v-tooltip="$t('primary_key')"
+						<VIcon
+v-if="field.schema && field.schema.is_primary_key" v-tooltip="$t('primary_key')"
 							name="vpn_key" small />
-						<VIcon v-if="!field.meta" v-tooltip="$t('db_only_click_to_configure')" name="report_problem"
+						<VIcon
+v-if="!field.meta" v-tooltip="$t('db_only_click_to_configure')" name="report_problem"
 							class="unmanaged" small />
-						<VIcon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon"
+						<VIcon
+v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon"
 							small />
 
-						<RouterLink v-if="showRelatedCollectionLink"
+						<RouterLink
+v-if="showRelatedCollectionLink"
 							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`">
 							<VIcon name="open_in_new" class="link-icon" small />
 						</RouterLink>
 
-						<FieldSelectMenu :field="field" @toggle-visibility="toggleVisibility" @set-width="setWidth($event)"
+						<FieldSelectMenu
+:field="field" @toggle-visibility="toggleVisibility" @set-width="setWidth($event)"
 							@duplicate="duplicateActive = true" @delete="deleteActive = true" />
 					</div>
 				</template>
@@ -362,7 +360,8 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 						<div class="form-grid">
 							<div class="field">
 								<span class="type-label">{{ $t('collection', 0) }}</span>
-								<InterfaceSystemCollection :value="duplicateTo" class="monospace"
+								<InterfaceSystemCollection
+:value="duplicateTo" class="monospace"
 									@input="duplicateTo = $event" />
 							</div>
 
