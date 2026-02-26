@@ -1,7 +1,5 @@
-import type { ItemContextData, ProviderFileRef, VisualElementContextData } from '@directus/ai';
+import type { ItemContextData, VisualElementContextData } from '@directus/ai';
 import type { MCPPrompt } from './prompts';
-
-export type { ProviderFileRef };
 
 export interface PromptContextData {
 	text: string;

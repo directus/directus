@@ -1,20 +1,21 @@
 import type { IncomingHttpHeaders } from 'node:http';
 import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
+import type { StandardProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import { useLogger } from '../../../logger/index.js';
 import { uploadToProvider } from '../lib/upload-to-provider.js';
-import type { FileUploadProvider, UploadedFile } from '../types.js';
+import type { UploadedFile } from '../types.js';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 const ALLOWED_MIME_TYPES: Set<string> = new Set(AI_ALLOWED_MIME_TYPES);
 
-const SUPPORTED_PROVIDERS = new Set<FileUploadProvider>(['openai', 'anthropic', 'google']);
+const SUPPORTED_PROVIDERS = new Set<StandardProviderType>(['openai', 'anthropic', 'google']);
 
-function isSupportedProvider(provider: string): provider is FileUploadProvider {
-	return SUPPORTED_PROVIDERS.has(provider as FileUploadProvider);
+function isSupportedProvider(provider: string): provider is StandardProviderType {
+	return SUPPORTED_PROVIDERS.has(provider as StandardProviderType);
 }
 
 interface ParsedMultipart {

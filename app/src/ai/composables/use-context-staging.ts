@@ -23,6 +23,16 @@ export function useContextStaging() {
 	const fieldsStore = useFieldsStore();
 	const { convertToUIMessages } = usePrompts();
 
+	function notifyStagingResult(stagedCount: number, totalCount: number, showSuccess = false) {
+		if (stagedCount === 0) {
+			notify({ title: t('ai.max_elements_reached') });
+		} else if (stagedCount < totalCount) {
+			notify({ title: t('ai.some_files_staged', { count: stagedCount }) });
+		} else if (showSuccess) {
+			notify({ title: t('ai.files_staged'), type: 'success' });
+		}
+	}
+
 	function normalizeFields(fields: string[] | undefined): string[] {
 		if (!fields?.length) return [];
 		return fields.filter((f) => f.length > 0).sort();
@@ -219,14 +229,20 @@ export function useContextStaging() {
 		if (ids.length === 0) return;
 
 		try {
-			const response = await api.get('/files', {
-				params: {
-					filter: { id: { _in: ids } },
-					fields: ['id', 'filename_download', 'type', 'title'],
-				},
-			});
+			const response = await sdk.request<FileContextData[]>(
+				requestEndpoint(getEndpoint('directus_files'), {
+					params: {
+						filter: { id: { _in: ids } },
+						fields: ['id', 'filename_download', 'type', 'title'],
+					},
+				}),
+			);
 
-			const files: FileContextData[] = response.data.data;
+			if (!Array.isArray(response)) {
+				throw new Error('Invalid files response');
+			}
+
+			const files: FileContextData[] = response;
 			let stagedCount = 0;
 
 			for (const file of files) {
@@ -241,13 +257,7 @@ export function useContextStaging() {
 				stagedCount++;
 			}
 
-			if (stagedCount === 0) {
-				notify({ title: t('ai.max_elements_reached') });
-			} else if (stagedCount < files.length) {
-				notify({ title: t('ai.some_files_staged', { count: stagedCount }) });
-			} else {
-				notify({ title: t('ai.files_staged'), type: 'success' });
-			}
+			notifyStagingResult(stagedCount, files.length, true);
 		} catch (error) {
 			unexpectedError(error);
 		}
@@ -256,9 +266,11 @@ export function useContextStaging() {
 	async function stageLocalFiles(files: FileList | File[] | null) {
 		if (!files) return;
 
+		const fileArray = Array.from(files);
+		if (fileArray.length === 0) return;
 		let stagedCount = 0;
 
-		for (const file of Array.from(files)) {
+		for (const file of fileArray) {
 			let thumbnailUrl: string | undefined;
 
 			if (file.type.startsWith('image/')) {
@@ -280,11 +292,7 @@ export function useContextStaging() {
 			stagedCount++;
 		}
 
-		if (stagedCount === 0 && Array.from(files).length > 0) {
-			notify({ title: t('ai.max_elements_reached') });
-		} else if (stagedCount < Array.from(files).length) {
-			notify({ title: t('ai.some_files_staged', { count: stagedCount }) });
-		}
+		notifyStagingResult(stagedCount, fileArray.length);
 	}
 
 	function readAsDataUrl(file: File): Promise<string> {

@@ -154,32 +154,16 @@ export const useAiStore = defineStore('ai-store', () => {
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
 
-	const sanitizeFilePartUrl = (url: string): string => {
-		if (url.startsWith('data:') || url.startsWith('blob:')) {
-			return '';
-		}
-
-		return url;
-	};
-
-	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] => {
-		return messageList.map((message) => ({
+	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] =>
+		messageList.map((message) => ({
 			...message,
 			parts: message.parts?.map((part) => {
-				if (part.type !== 'file' || typeof part.url !== 'string') {
-					return part;
-				}
-
-				const sanitizedUrl = sanitizeFilePartUrl(part.url);
-
-				if (sanitizedUrl === part.url) {
-					return part;
-				}
-
-				return { ...part, url: sanitizedUrl };
+				if (part.type !== 'file' || typeof part.url !== 'string') return part;
+				if (!part.url.startsWith('data:') && !part.url.startsWith('blob:')) return part;
+				// Local data/blob URLs are client-only and cannot be resolved by the API.
+				return { ...part, url: '' };
 			}),
 		}));
-	};
 
 	// Helper to convert local tool to API format
 	const toApiTool = (tool: StaticToolDefinition) => ({

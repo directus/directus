@@ -1,4 +1,4 @@
-import type { ContextAttachment, PrimaryKey, VisualElementContextData } from '@directus/ai';
+import type { ContextAttachment, PrimaryKey, ProviderFileRef, VisualElementContextData } from '@directus/ai';
 import type { Item } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { defineStore } from 'pinia';
@@ -10,7 +10,6 @@ import {
 	isPromptContext,
 	isVisualElement,
 	type PendingContextItem,
-	type ProviderFileRef,
 } from '../types';
 import api from '@/api';
 import { i18n } from '@/lang';

@@ -204,11 +204,9 @@ describe('useContextStaging', () => {
 			const contextStore = useAiContextStore();
 			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(false);
 
-			vi.mocked(api.get).mockResolvedValue({
-				data: {
-					data: [{ id: '1', filename_download: 'doc.pdf', type: 'application/pdf', title: 'Document' }],
-				},
-			});
+			vi.mocked(sdk.request).mockResolvedValue([
+				{ id: '1', filename_download: 'doc.pdf', type: 'application/pdf', title: 'Document' },
+			]);
 
 			const { stageFiles } = useContextStaging();
 
@@ -221,14 +219,10 @@ describe('useContextStaging', () => {
 			const contextStore = useAiContextStore();
 			vi.spyOn(contextStore, 'addPendingContext').mockReturnValueOnce(true).mockReturnValueOnce(false);
 
-			vi.mocked(api.get).mockResolvedValue({
-				data: {
-					data: [
-						{ id: '1', filename_download: 'doc1.pdf', type: 'application/pdf', title: 'Document 1' },
-						{ id: '2', filename_download: 'doc2.pdf', type: 'application/pdf', title: 'Document 2' },
-					],
-				},
-			});
+			vi.mocked(sdk.request).mockResolvedValue([
+				{ id: '1', filename_download: 'doc1.pdf', type: 'application/pdf', title: 'Document 1' },
+				{ id: '2', filename_download: 'doc2.pdf', type: 'application/pdf', title: 'Document 2' },
+			]);
 
 			const { stageFiles } = useContextStaging();
 
@@ -241,17 +235,84 @@ describe('useContextStaging', () => {
 			const contextStore = useAiContextStore();
 			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
 
-			vi.mocked(api.get).mockResolvedValue({
-				data: {
-					data: [{ id: '1', filename_download: 'doc.pdf', type: 'application/pdf', title: 'Document' }],
-				},
-			});
+			vi.mocked(sdk.request).mockResolvedValue([
+				{ id: '1', filename_download: 'doc.pdf', type: 'application/pdf', title: 'Document' },
+			]);
 
 			const { stageFiles } = useContextStaging();
 
 			await stageFiles(['1']);
 
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.files_staged', type: 'success' });
+		});
+
+		test('handles invalid response shape', async () => {
+			vi.mocked(sdk.request).mockResolvedValue(null as any);
+
+			const { stageFiles } = useContextStaging();
+
+			await stageFiles(['1']);
+
+			expect(unexpectedError).toHaveBeenCalledWith(expect.any(Error));
+		});
+	});
+
+	describe('stageLocalFiles', () => {
+		test('returns early for empty list', async () => {
+			const { stageLocalFiles } = useContextStaging();
+
+			await stageLocalFiles([]);
+
+			expect(notify).not.toHaveBeenCalled();
+		});
+
+		test('notifies max reached when no local files can be staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(false);
+
+			const { stageLocalFiles } = useContextStaging();
+
+			await stageLocalFiles([new File(['data'], 'test.txt', { type: 'text/plain' })]);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.max_elements_reached' });
+		});
+
+		test('notifies partial success when only some local files are staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValueOnce(true).mockReturnValueOnce(false);
+
+			const { stageLocalFiles } = useContextStaging();
+
+			await stageLocalFiles([
+				new File(['data-1'], 'one.txt', { type: 'text/plain' }),
+				new File(['data-2'], 'two.txt', { type: 'text/plain' }),
+			]);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.some_files_staged' });
+		});
+
+		test('stages image files when thumbnail generation fails', async () => {
+			const contextStore = useAiContextStore();
+			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
+			const readSpy = vi.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(function () {
+				this.onerror?.(new ProgressEvent('error'));
+			});
+
+			try {
+				const { stageLocalFiles } = useContextStaging();
+
+				await stageLocalFiles([new File(['image-data'], 'image.png', { type: 'image/png' })]);
+
+				expect(addSpy).toHaveBeenCalledTimes(1);
+				const call = addSpy.mock.calls[0]?.[0];
+				expect(call?.type).toBe('local-file');
+
+				if (call?.type === 'local-file') {
+					expect(call.data.thumbnailUrl).toBeUndefined();
+				}
+			} finally {
+				readSpy.mockRestore();
+			}
 		});
 	});
 
