@@ -213,6 +213,8 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		if ('key' in data) {
 			// Reserves the "main" version key for the version query parameter
 			if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+			if (data['key'] !== 'draft' && data['item'] === null)
+				throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
 
 			const keyCombos = new Set();
 
