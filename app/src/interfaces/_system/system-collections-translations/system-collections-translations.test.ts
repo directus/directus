@@ -100,7 +100,6 @@ const i18n = createI18n({
 			translations_enable_helper_description: 'Translate content into multiple languages.',
 			translations_manage_helper_description: 'You can add more fields to translate from this collection.',
 			translations_copy_data_note: 'Fields are copied to the translations collection. Existing data is not migrated.',
-			translations_source_fields_hidden_note: 'Selected source fields will be set to hidden and readonly.',
 			translation_configuration: 'Translation Configuration',
 			translations_invalid_config_warning:
 				'{count} translation config could not be resolved and will remain read-only | {count} translation configs could not be resolved and will remain read-only',
@@ -392,7 +391,6 @@ describe('system-collections-translations dialog', () => {
 		const allEligible = (wrapper.vm as any).targetFieldOptions.map((field: { field: string }) => field.field);
 
 		expect((wrapper.vm as any).selectedFields).toEqual(allEligible);
-		expect(wrapper.text()).toContain('Selected source fields will be set to hidden and readonly.');
 	});
 
 	test('submits enable payload and closes on success', async () => {
@@ -595,8 +593,7 @@ describe('system-collections-translations dialog', () => {
 			makeField('languages', 'code', 'string', { isPrimaryKey: true }),
 		];
 
-		const updateFieldsSpy = vi.spyOn(fieldsStore, 'updateFields').mockRejectedValue(new Error('Update failed'));
-		const hydrateCollectionsSpy = vi.spyOn(collectionsStore, 'hydrate').mockResolvedValue();
+		const hydrateCollectionsSpy = vi.spyOn(collectionsStore, 'hydrate').mockRejectedValue(new Error('Hydrate failed'));
 		const hydrateFieldsSpy = vi.spyOn(fieldsStore, 'hydrate').mockResolvedValue();
 		const hydrateRelationsSpy = vi.spyOn(relationsStore, 'hydrate').mockResolvedValue();
 
@@ -628,13 +625,12 @@ describe('system-collections-translations dialog', () => {
 		(wrapper.vm as any).parentForeignKeyField = 'articles_id';
 		(wrapper.vm as any).languageForeignKeyField = 'languages_code';
 
-		await (wrapper.vm as any).submit();
+			await (wrapper.vm as any).submit();
 
-		expect(updateFieldsSpy).toHaveBeenCalledTimes(1);
-		expect(hydrateCollectionsSpy).toHaveBeenCalledTimes(1);
-		expect(hydrateFieldsSpy).toHaveBeenCalledTimes(1);
-		expect(hydrateRelationsSpy).toHaveBeenCalledTimes(1);
-		expect(unexpectedError).toHaveBeenCalledTimes(1);
-		expect(wrapper.emitted('update:active')).toEqual([[false]]);
+			expect(hydrateCollectionsSpy).toHaveBeenCalledTimes(1);
+			expect(hydrateFieldsSpy).not.toHaveBeenCalled();
+			expect(hydrateRelationsSpy).not.toHaveBeenCalled();
+			expect(unexpectedError).toHaveBeenCalledTimes(1);
+			expect(wrapper.emitted('update:active')).toEqual([[false]]);
+		});
 	});
-});

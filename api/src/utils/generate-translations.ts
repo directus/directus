@@ -400,7 +400,7 @@ export async function generateTranslations(
 				sort_field: null,
 				one_deselect_action: 'nullify',
 				junction_field: resolvedParentForeignKeyField,
-			},
+			} as unknown as RelationMeta,
 			schema: onDeleteSchema,
 		};
 

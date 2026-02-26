@@ -564,7 +564,6 @@ translations_collection_name: Translations collection name
 translations_already_enabled: Translations enabled
 translations_manage_helper_description: You can add more fields to translate from this collection.
 translations_copy_data_note: Fields are copied to the translations collection. Existing data is not migrated.
-translations_source_fields_hidden_note: Selected source fields will be set to hidden and readonly.
 add_fields: Add Fields
 show_advanced_options: Show Relationship Details
 hide_advanced_options: Hide Relationship Details

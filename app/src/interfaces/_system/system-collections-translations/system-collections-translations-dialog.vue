@@ -334,32 +334,10 @@ async function submit() {
 		return;
 	}
 
-	// Best-effort post-processing — server changes already committed
-	let postProcessingError: unknown = null;
-
-	try {
-		await fieldsStore.updateFields(
-			props.collection,
-			selectedFields.value.map((field) => ({
-				field,
-				meta: {
-					hidden: true,
-					readonly: true,
-				},
-			})),
-		);
-	} catch (error) {
-		postProcessingError = error;
-	}
-
 	try {
 		await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), relationsStore.hydrate()]);
 	} catch (error) {
-		postProcessingError ||= error;
-	}
-
-	if (postProcessingError) {
-		unexpectedError(postProcessingError);
+		unexpectedError(error);
 	}
 
 	active.value = false;
@@ -490,8 +468,6 @@ async function submit() {
 						<span>{{ $t('new_data_alert') }}</span>
 					</div>
 				</template>
-
-				<p class="generated-data-side-effect-note">{{ $t('translations_source_fields_hidden_note') }}</p>
 
 				<template v-if="isManageMode">
 					<ul v-if="previewFields.length > 0">
