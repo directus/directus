@@ -11,6 +11,7 @@ import type { Context } from '../permissions/types.js';
 import { extractRequiredDynamicVariableContext } from '../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
+import { splitFields } from './split-fields.js';
 
 /**
  * Sanitize the query parameters and parse them where necessary.
@@ -127,29 +128,6 @@ function sanitizeFields(rawFields: any) {
 	return fields;
 }
 
-/**
- * Parenthesis aware splitting of fields allowing for `json(a, b)` field functions
- */
-function splitFields(input: string): string[] {
-	const fields: string[] = [];
-	let current = '';
-	let depth = 0;
-
-	for (const char of input) {
-		if (char === '(') depth++;
-		else if (char === ')') depth--;
-
-		if (char === ',' && depth === 0) {
-			fields.push(current);
-			current = '';
-		} else {
-			current += char;
-		}
-	}
-
-	fields.push(current);
-	return fields;
-}
 
 function sanitizeSort(rawSort: any) {
 	let fields: string[] = [];

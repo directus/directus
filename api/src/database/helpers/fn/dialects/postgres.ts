@@ -71,8 +71,6 @@ export class FnHelperPostgres extends FnHelper {
 	}
 
 	json(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
-		// const { field, path } = parseJsonFunction(functionCall);
-
 		const collectionName = options?.originalCollectionName || table;
 		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[column];
 
