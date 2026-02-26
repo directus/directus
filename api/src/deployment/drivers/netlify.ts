@@ -28,6 +28,11 @@ export interface NetlifyOptions extends Options {
 
 type NetlifySite = Awaited<ReturnType<NetlifyAPI['getSite']>>;
 
+interface NetlifyHook {
+	id?: string;
+	data?: { url?: string };
+}
+
 interface DeploymentConnection {
 	ws: WebSocket;
 	logs: Log[];
@@ -119,7 +124,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async listProjects(): Promise<Project[]> {
-		const allSites: any[] = [];
+		const allSites: NetlifySite[] = [];
 		const perPage = 100;
 		let hasMore = true;
 
@@ -416,12 +421,12 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 
 		const hooks = await this.handleApiError((api) => api.listHooksBySiteId({ site_id: siteId }));
 
-		const staleHooks = hooks.filter((h: any) => h.data?.url?.startsWith(webhookUrl));
+		const staleHooks = hooks.filter((h: NetlifyHook) => h.data?.url?.startsWith(webhookUrl));
 
 		if (staleHooks.length > 0) {
 			logger.debug(`[webhook:netlify] Cleaning up ${staleHooks.length} stale hook(s) for site ${siteId}`);
 
-			await Promise.allSettled(staleHooks.map((h: any) => this.api.deleteHook({ hook_id: h.id })));
+			await Promise.allSettled(staleHooks.map((h: NetlifyHook) => this.api.deleteHook({ hook_id: h.id! })));
 		}
 	}
 
