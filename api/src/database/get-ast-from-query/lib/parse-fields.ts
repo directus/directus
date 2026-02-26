@@ -122,10 +122,10 @@ export async function parseFields(
 			}
 		}
 
-		const hasDotBeforeFunction = isFunctionCall && name.includes('.') && name.indexOf('.') < name.indexOf('(');
+		const isRelationalFunctionCall = isFunctionCall && name.includes('.') && name.indexOf('.') < name.indexOf('(');
 
 		const isRelational =
-			(!isFunctionCall || hasDotBeforeFunction) &&
+			(!isFunctionCall || isRelationalFunctionCall) &&
 			(name.includes('.') ||
 				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 				// anything
