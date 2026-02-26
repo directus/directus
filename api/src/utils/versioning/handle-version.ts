@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import {
 	type Accountability,
@@ -8,17 +9,16 @@ import {
 	type Query,
 	type QueryOptions,
 } from '@directus/types';
-import { deepMapWithSchema } from '@directus/utils';
-import { cloneDeep, uniq } from 'lodash-es';
+import { deepMapWithSchema, getRelationInfo } from '@directus/utils';
+import { cloneDeep, pick, uniq } from 'lodash-es';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
 import { splitRecursive } from './split-recursive.js';
 
-export type VersionError = {
-	error: Error;
-	item: PrimaryKey | null;
+export type VersionMeta = {
 	version_id: string;
 	delta: Item;
+	error?: Error;
 };
 
 export async function handleVersion(
@@ -48,7 +48,7 @@ export async function handleVersion(
 
 		const versions = await versionsService.getVersionSaves(query.version!, self.collection, key);
 
-		return { errors: [], data: [Object.assign(originalData[0]!, versions?.[0]?.delta)] };
+		return [Object.assign(originalData[0]!, versions?.[0]?.delta)];
 	}
 
 	let results: Item[] = [];
@@ -61,15 +61,29 @@ export async function handleVersion(
 
 	const createdIDs: Record<string, PrimaryKey[]> = {};
 	const versions = await versionsService.getVersionSaves(query.version!, self.collection, key, false);
-	const errors: VersionError[] = [];
 
-	if (versions.length === 0) {
+	const itemlessErrors: VersionMeta[] = [];
+	const itemMeta: Record<string, VersionMeta> = {};
+
+	if (key && versions.length === 0) {
 		throw new ForbiddenError();
 	}
 
 	await transaction(self.knex, async (trx) => {
-		for (const { id, delta, item } of versions) {
-			if (!delta) continue;
+		for (const version of versions) {
+			const { id, item } = version;
+			let delta = version.delta;
+
+			if (!delta && item) {
+				itemMeta[item] = {
+					version_id: id,
+					delta: {},
+				};
+
+				continue;
+			}
+
+			delta = delta ?? {};
 
 			const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
@@ -83,9 +97,9 @@ export async function handleVersion(
 						knex: trx_inner,
 					});
 
-					try {
-						if (!item) {
-							await itemsServiceAdmin.createOne(rawDelta, {
+					if (!item) {
+						try {
+							const item = await itemsServiceAdmin.createOne(rawDelta, {
 								emitEvents: false,
 								autoPurgeCache: false,
 								skipTracking: true,
@@ -96,7 +110,22 @@ export async function handleVersion(
 									createdIDs[collection]!.push(pk);
 								},
 							});
-						} else {
+
+							itemMeta[item] = {
+								version_id: id,
+								delta,
+							};
+						} catch (error: any) {
+							trx_inner.rollback(error);
+
+							itemlessErrors.push({
+								error: error,
+								version_id: id,
+								delta,
+							});
+						}
+					} else {
+						try {
 							await itemsServiceAdmin.updateOne(item, rawDelta, {
 								emitEvents: false,
 								autoPurgeCache: false,
@@ -108,16 +137,20 @@ export async function handleVersion(
 									createdIDs[collection]!.push(pk);
 								},
 							});
-						}
-					} catch (error) {
-						trx_inner.rollback(error as Error);
 
-						errors.push({
-							error: error as Error,
-							item: item ?? null,
-							version_id: id,
-							delta,
-						});
+							itemMeta[item] = {
+								version_id: id,
+								delta,
+							};
+						} catch (error: any) {
+							trx_inner.rollback(error);
+
+							itemMeta[item] = {
+								error: error,
+								version_id: id,
+								delta,
+							};
+						}
 					}
 				});
 			} catch {
@@ -134,28 +167,36 @@ export async function handleVersion(
 		query = cloneDeep(query);
 		delete query.version;
 
-		if (query.showMain !== true || key === NEW_VERSION) {
-			const ids = uniq(versions.map((version) => version.item ?? createdIDs[self.collection] ?? []).flat());
+		const ids = uniq([
+			...(createdIDs[self.collection] ?? []),
+			...versions.map((version) => version.item).filter(Boolean),
+		]) as PrimaryKey[];
 
-			query.filter = {
-				_and: [
-					...(query.filter ? [query.filter] : []),
-					{
-						id: { _in: ids },
-					} as Filter,
-				],
-			};
-		}
-
-		delete query.showMain;
+		query.filter = {
+			_and: [
+				...(query.filter ? [query.filter] : []),
+				{
+					id: { _in: ids },
+				} as Filter,
+			],
+		};
 
 		results = await itemsServiceUser.readByQuery(query, opts);
 
 		await trx.rollback();
 	});
 
+	const primaryKeyField = self.schema.collections[self.collection]!.primary;
+
+	const nonRelationFields = Object.values(self.schema.collections[self.collection]!.fields)
+		.filter((field) => {
+			const relationInfo = getRelationInfo(self.schema.relations, self.collection, field.field);
+			return relationInfo.relationType === null;
+		})
+		.map((field) => field.field);
+
 	results = results.map((result) => {
-		return deepMapWithSchema(
+		result = deepMapWithSchema(
 			result,
 			([key, value], context) => {
 				if (context.relationType === 'm2o' || context.relationType === 'a2o') {
@@ -194,7 +235,36 @@ export async function handleVersion(
 			},
 			{ collection: self.collection, schema: self.schema },
 		);
+
+		const id = result[primaryKeyField];
+		const meta = itemMeta[id];
+
+		if (meta) {
+			result['$meta'] = meta;
+
+			if (meta.error) {
+				Object.assign(result, pick(meta.delta, nonRelationFields));
+			}
+		}
+
+		return result;
 	});
 
-	return { errors, data: results };
+	const env = useEnv();
+
+	if (results.length < (query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']))) {
+		results.push(
+			...itemlessErrors.map((errorMeta) => {
+				const item = { $meta: errorMeta };
+
+				if (errorMeta.error) {
+					Object.assign(item, pick(errorMeta.delta, nonRelationFields));
+				}
+
+				return item;
+			}),
+		);
+	}
+
+	return results;
 }
