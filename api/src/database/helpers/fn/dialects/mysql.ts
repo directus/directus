@@ -1,5 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
+import { toPath } from 'lodash-es';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -67,42 +68,12 @@ export class FnHelperMySQL extends FnHelper {
 	}
 }
 
-/**
- * Split a JSON path string on dots and brackets
- * @example ".items[0].name" → ["items", "0", "name"]
- */
-export function splitJsonPath(path: string): string[] {
-	const parts: string[] = [];
-	let current = '';
-
-	// Skip leading dot if present
-	const start = path.startsWith('.') ? 1 : 0;
-
-	for (let i = start; i < path.length; i++) {
-		const char = path[i];
-
-		if (char === '.' || char === '[' || char === ']') {
-			if (current) {
-				parts.push(current);
-				current = '';
-			}
-		} else {
-			current += char;
-		}
-	}
-
-	if (current) {
-		parts.push(current);
-	}
-
-	return parts;
-}
 
 export function convertToMySQLPath(path: string): string {
 	// Use dot notation for object keys (compatible with both MySQL and MariaDB)
 	// ".color" → "$.color"
 	// ".items[0].name" → "$.items[0].name"
-	const parts = splitJsonPath(path);
+	const parts = toPath(path.startsWith('.') ? path.slice(1) : path);
 
 	let result = '$';
 
