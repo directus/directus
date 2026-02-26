@@ -7,10 +7,26 @@ import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
+import { decrypt } from '../utils/encrypt.js';
+import { getSecret } from '../utils/get-secret.js';
+import { useLogger } from '../logger/index.js';
 import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
+
+vi.mock('../utils/encrypt.js', () => ({
+	encrypt: vi.fn(),
+	decrypt: vi.fn(),
+}));
+
+vi.mock('../utils/get-secret.js', () => ({
+	getSecret: vi.fn(),
+}));
+
+vi.mock('../logger/index.js', () => ({
+	useLogger: vi.fn(),
 }));
 
 describe('Integration Tests', () => {
@@ -118,6 +134,48 @@ describe('Integration Tests', () => {
 					});
 
 					expect(result).toBe('test,directus');
+				});
+			});
+
+			describe('encrypt', () => {
+				let warn: ReturnType<typeof vi.fn>;
+
+				beforeEach(() => {
+					warn = vi.fn();
+					vi.mocked(useLogger).mockReturnValue({ warn } as any);
+					vi.mocked(getSecret).mockReturnValue('test-secret');
+				});
+
+				test('returns null and logs warning when decrypt throws', async () => {
+					vi.mocked(decrypt).mockRejectedValue(new Error('bad key'));
+
+					const result = await service.transformers['encrypt']!({
+						value: 'some-encrypted-blob',
+						action: 'read',
+						payload: {},
+						accountability: null,
+						specials: ['encrypt'],
+						helpers,
+					});
+
+					expect(result).toBeNull();
+					expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad key'));
+				});
+
+				test('returns decrypted value when decrypt succeeds', async () => {
+					vi.mocked(decrypt).mockResolvedValue('plaintext');
+
+					const result = await service.transformers['encrypt']!({
+						value: 'some-encrypted-blob',
+						action: 'read',
+						payload: {},
+						accountability: null,
+						specials: ['encrypt'],
+						helpers,
+					});
+
+					expect(result).toBe('plaintext');
+					expect(warn).not.toHaveBeenCalled();
 				});
 			});
 		});
