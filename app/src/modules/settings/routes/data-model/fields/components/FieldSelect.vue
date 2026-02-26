@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { RouterLink, useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import FieldSelectMenu from './field-select-menu.vue';
-import { deepMapFilter } from "@/../../packages/utils/shared/deep-map-filter"
+import { deepMapFilter } from '@/../../packages/utils/shared/deep-map-filter';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -97,7 +97,7 @@ const useSchemaOverview = (): ComputedRef<SchemaOverview> => {
 		),
 		relations: relationsStore.relations,
 	}));
-}
+};
 
 const schemaOverview = useSchemaOverview();
 
@@ -204,7 +204,7 @@ function useDuplicate() {
 				{
 					schema: schemaOverview.value,
 					collection: props.field.collection,
-				}
+				},
 			);
 		}
 
@@ -270,8 +270,9 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 			<template #input>
 				<div
-v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
-					class="label">
+					v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+					class="label"
+				>
 					<div class="label-inner">
 						<span class="name">{{ field.field }}</span>
 						<span v-if="interfaceName" class="interface">{{ interfaceName }}</span>
@@ -282,10 +283,17 @@ v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${int
 
 		<template v-else>
 			<Draggable
-v-if="localType === 'group'" class="field-grid group full nested" :model-value="nestedFields"
-				handle=".drag-handle" :group="{ name: 'fields' }" :set-data="hideDragImage" :animation="150"
-				item-key="field" v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
-				@update:model-value="onGroupSortChange">
+				v-if="localType === 'group'"
+				class="field-grid group full nested"
+				:model-value="nestedFields"
+				handle=".drag-handle"
+				:group="{ name: 'fields' }"
+				:set-data="hideDragImage"
+				:animation="150"
+				item-key="field"
+				v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
+				@update:model-value="onGroupSortChange"
+			>
 				<template #header>
 					<div class="header full">
 						<VIcon class="drag-handle" name="drag_indicator" @click.stop />
@@ -293,13 +301,15 @@ v-if="localType === 'group'" class="field-grid group full nested" :model-value="
 							{{ field.field }}
 							<VIcon v-if="field.meta?.required === true" name="star" class="required" sup filled />
 						</span>
-						<VIcon
-v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon"
-							small />
+						<VIcon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<FieldSelectMenu
-:field="field" :no-delete="nestedFields.length > 0"
-							@toggle-visibility="toggleVisibility" @set-width="setWidth($event)"
-							@duplicate="duplicateActive = true" @delete="deleteActive = true" />
+							:field="field"
+							:no-delete="nestedFields.length > 0"
+							@toggle-visibility="toggleVisibility"
+							@set-width="setWidth($event)"
+							@duplicate="duplicateActive = true"
+							@delete="deleteActive = true"
+						/>
 					</div>
 				</template>
 
@@ -315,8 +325,10 @@ v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden
 
 				<template #input>
 					<div
-v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
-						class="label" @click="openFieldDetail">
+						v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+						class="label"
+						@click="openFieldDetail"
+					>
 						<div class="label-inner">
 							<span class="name">
 								{{ field.field }}
@@ -331,24 +343,34 @@ v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${int
 				<template #append>
 					<div class="icons">
 						<VIcon
-v-if="field.schema && field.schema.is_primary_key" v-tooltip="$t('primary_key')"
-							name="vpn_key" small />
+							v-if="field.schema && field.schema.is_primary_key"
+							v-tooltip="$t('primary_key')"
+							name="vpn_key"
+							small
+						/>
 						<VIcon
-v-if="!field.meta" v-tooltip="$t('db_only_click_to_configure')" name="report_problem"
-							class="unmanaged" small />
-						<VIcon
-v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon"
-							small />
+							v-if="!field.meta"
+							v-tooltip="$t('db_only_click_to_configure')"
+							name="report_problem"
+							class="unmanaged"
+							small
+						/>
+						<VIcon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 
 						<RouterLink
-v-if="showRelatedCollectionLink"
-							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`">
+							v-if="showRelatedCollectionLink"
+							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`"
+						>
 							<VIcon name="open_in_new" class="link-icon" small />
 						</RouterLink>
 
 						<FieldSelectMenu
-:field="field" @toggle-visibility="toggleVisibility" @set-width="setWidth($event)"
-							@duplicate="duplicateActive = true" @delete="deleteActive = true" />
+							:field="field"
+							@toggle-visibility="toggleVisibility"
+							@set-width="setWidth($event)"
+							@duplicate="duplicateActive = true"
+							@delete="deleteActive = true"
+						/>
 					</div>
 				</template>
 			</VInput>
@@ -360,9 +382,7 @@ v-if="showRelatedCollectionLink"
 						<div class="form-grid">
 							<div class="field">
 								<span class="type-label">{{ $t('collection', 0) }}</span>
-								<InterfaceSystemCollection
-:value="duplicateTo" class="monospace"
-									@input="duplicateTo = $event" />
+								<InterfaceSystemCollection :value="duplicateTo" class="monospace" @input="duplicateTo = $event" />
 							</div>
 
 							<div class="field">
@@ -443,7 +463,7 @@ v-if="showRelatedCollectionLink"
 		margin-block-end: 4px;
 	}
 
-	.duplicate-field+.duplicate-field {
+	.duplicate-field + .duplicate-field {
 		margin-block-end: 32px;
 	}
 }
@@ -455,7 +475,7 @@ v-if="showRelatedCollectionLink"
 	padding-block: 40px 16px;
 	border-radius: var(--theme--border-radius);
 
-	>* {
+	> * {
 		position: relative;
 		z-index: 2;
 	}
@@ -514,7 +534,7 @@ v-if="showRelatedCollectionLink"
 	gap: 8px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
-	&+& {
+	& + & {
 		margin-block-start: 8px;
 	}
 
@@ -576,7 +596,7 @@ v-if="showRelatedCollectionLink"
 }
 
 .icons {
-	*+*:not(:last-child) {
+	* + *:not(:last-child) {
 		margin-inline-start: 8px;
 	}
 }
@@ -599,7 +619,7 @@ v-if="showRelatedCollectionLink"
 	border-radius: var(--theme--border-radius);
 	outline: 2px dashed var(--theme--primary);
 
-	>* {
+	> * {
 		opacity: 0;
 	}
 }
