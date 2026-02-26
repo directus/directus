@@ -1452,6 +1452,7 @@ fields:
     ai_openai_compatible_base_url: 根URL
     ai_openai_compatible_models: 模型
     ai_openai_compatible_headers: 自定义标头
+    ai_model_id: 型号
     ai_header_name: 报头
   directus_shares:
     name: 名称
