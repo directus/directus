@@ -7,7 +7,7 @@ export const TRACKED_KEYS = [...TRACKED_METHODS, 'cached'] as const;
 export type ApiRequestInput = Partial<Record<TrackedKey, number>>;
 
 export type ApiRequestOutput = {
-	[K in TrackedKey as `api_requests_${K}`]?: number;
+	[K in TrackedKey as `api_requests_${K}`]: number;
 } & {
 	api_requests: number;
 };
@@ -18,8 +18,6 @@ export function formatApiRequestCounts(counts: ApiRequestInput): ApiRequestOutpu
 
 	for (const key of TRACKED_KEYS) {
 		const count = counts[key] ?? 0;
-
-		if (!(key in counts)) continue;
 
 		formatted[`api_requests_${key}`] = count;
 

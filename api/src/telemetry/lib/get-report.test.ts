@@ -99,8 +99,10 @@ beforeEach(() => {
 		api_requests_get: 100,
 		api_requests_post: 50,
 		api_requests_patch: 20,
+		api_requests_put: 0,
 		api_requests_delete: 5,
 		api_requests: 175,
+		api_requests_cached: 0,
 	});
 
 	vi.mocked(getItemCount).mockResolvedValue({});
@@ -218,8 +220,9 @@ test('Runs and returns formatted API request counts', async () => {
 
 	expect(report.api_requests_get).toBe(100);
 	expect(report.api_requests_post).toBe(50);
+	expect(report.api_requests_put).toBe(0);
 	expect(report.api_requests_patch).toBe(20);
 	expect(report.api_requests_delete).toBe(5);
-	expect(report.api_requests_put).toBeUndefined();
+	expect(report.api_requests_cached).toBe(0);
 	expect(report.api_requests).toBe(175);
 });

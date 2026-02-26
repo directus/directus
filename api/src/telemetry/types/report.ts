@@ -127,27 +127,27 @@ export interface TelemetryReport {
 	/**
 	 * Count of GET Api Requests
 	 */
-	api_requests_get?: number;
+	api_requests_get: number;
 
 	/**
 	 * Count of POST Api Requests
 	 */
-	api_requests_post?: number;
+	api_requests_post: number;
 
 	/**
 	 * Count of PATCH Api Requests
 	 */
-	api_requests_patch?: number;
+	api_requests_patch: number;
 
 	/**
 	 * Count of DELETE Api Requests
 	 */
-	api_requests_delete?: number;
+	api_requests_delete: number;
 
 	/**
 	 * Count of PUT Api Requests
 	 */
-	api_requests_put?: number;
+	api_requests_put: number;
 
 	/**
 	 * Total count of Api Requests
@@ -157,5 +157,5 @@ export interface TelemetryReport {
 	/**
 	 * Count of cached Api Requests
 	 */
-	api_requests_cached?: number;
+	api_requests_cached: number;
 }

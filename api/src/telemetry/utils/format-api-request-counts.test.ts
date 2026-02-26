@@ -27,10 +27,18 @@ describe('formatApiRequestCounts', () => {
 		expect(result['api_requests']).toBe(10);
 	});
 
-	test('Returns only api_requests total when given empty input', () => {
+	test('Returns all keys with zero values when given empty input', () => {
 		const result = formatApiRequestCounts({});
 
-		expect(result).toEqual({ api_requests: 0 });
+		expect(result).toEqual({
+			api_requests_get: 0,
+			api_requests_post: 0,
+			api_requests_put: 0,
+			api_requests_patch: 0,
+			api_requests_delete: 0,
+			api_requests_cached: 0,
+			api_requests: 0,
+		});
 	});
 
 	test('Handles single method', () => {
@@ -38,6 +46,11 @@ describe('formatApiRequestCounts', () => {
 
 		expect(result).toEqual({
 			api_requests_get: 42,
+			api_requests_post: 0,
+			api_requests_put: 0,
+			api_requests_patch: 0,
+			api_requests_delete: 0,
+			api_requests_cached: 0,
 			api_requests: 42,
 		});
 	});
@@ -51,6 +64,7 @@ describe('formatApiRequestCounts', () => {
 			api_requests_put: 3,
 			api_requests_patch: 2,
 			api_requests_delete: 1,
+			api_requests_cached: 0,
 			api_requests: 21,
 		});
 	});
