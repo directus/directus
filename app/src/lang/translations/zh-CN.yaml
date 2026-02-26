@@ -1393,6 +1393,7 @@ fields:
     project_color: 项目颜色
     project_logo: 项目 Logo
     default_language: 默认语言
+    project_owner: 项目负责人
     branding: 招牌
     public_foreground: 公共前景
     public_background: 公共背景
@@ -1426,6 +1427,9 @@ fields:
     public_registration_verify_email: 验证电子邮件
     public_registration_verify_email_note: 向注册用户发送一封电子邮件，请他们在登录前点击验证链接。
     visual_editor_urls: 可视化编辑器网址
+    report_feature_url: 用于反馈功能的网址
+    report_bug_url: 用于反馈Bug的网址
+    report_error_url: 用于反馈错误的网址
     collaborative_editing: 共同编辑
     collaborative_editing_note: 共同编辑需要WebSockets才能正常工作。
     ai_notice: 'AI助手提供一个内置的侧边栏，用于与大型语言模型交谈。启用后，从工具栏中打开此侧边栏，以便询问问题、生成内容、获取帮助。<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">了解更多关于配置和使用AI助手的信息。</a>'
@@ -1477,6 +1481,7 @@ fields:
     users: 角色中的用户
     parent: 父角色
     children: 子角色
+    policies: 策略
   directus_policies:
     name: 策略名称
     description: 描述
