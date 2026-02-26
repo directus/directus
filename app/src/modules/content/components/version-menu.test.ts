@@ -85,6 +85,7 @@ const mountOptions = {
 				props: ['clickable', 'active', 'disabled'],
 			},
 			VListItemContent: { template: '<div class="v-list-item-content"><slot /></div>' },
+			VListItemIcon: { template: '<div class="v-list-item-icon"><slot /></div>' },
 			VDivider: { template: '<hr class="v-divider" />' },
 			VIcon: { template: '<span class="v-icon" :data-name="$attrs.name"></span>' },
 			VTextOverflow: { template: '<span class="v-text-overflow">{{ $attrs.text }}</span>' },
@@ -134,6 +135,11 @@ describe('VersionMenu', () => {
 			});
 
 			expect(wrapper.find('.edit-dot').exists()).toBe(true);
+
+			const versionItems = wrapper.findAll('.v-list-item');
+			const versionItem = versionItems.find((item) => item.text().includes('Version Name'));
+
+			expect(versionItem!.find('.edit-dot').exists()).toBe(true);
 		});
 
 		it('should not show edit dot for versions without content changes', () => {
@@ -152,7 +158,10 @@ describe('VersionMenu', () => {
 				},
 			});
 
-			expect(wrapper.find('.edit-dot').exists()).toBe(false);
+			const versionItems = wrapper.findAll('.v-list-item');
+			const versionItem = versionItems.find((item) => item.text().includes('Version Name'));
+
+			expect(versionItem!.find('.edit-dot').exists()).toBe(false);
 		});
 	});
 
