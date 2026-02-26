@@ -15,9 +15,6 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-	vi.useRealTimers();
-	vi.clearAllMocks();
-
 	for (const key of Object.keys(_bufferedCounterCache)) {
 		if (_bufferedCounterCache[key]?.timer) {
 			clearInterval(_bufferedCounterCache[key]!.timer!);
@@ -25,6 +22,9 @@ afterEach(async () => {
 
 		_bufferedCounterCache[key] = null;
 	}
+
+	vi.useRealTimers();
+	vi.clearAllMocks();
 });
 
 describe('useBufferedCounter', () => {
