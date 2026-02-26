@@ -238,6 +238,7 @@ function useVisualEditingAi({
 
 function useItemWithEdits() {
 	const edits = ref<Record<string, any>>({});
+	const saving = ref(false);
 	const editOverlayActive = ref(false);
 	const msgKey = ref('');
 	const collection = ref<EditConfig['collection']>('');
@@ -254,9 +255,10 @@ function useItemWithEdits() {
 
 	const editingLayerEl = useTemplateRef<HTMLElement>('editing-layer');
 
-	watch(edits, (newEdits) => {
+	watch([edits, saving], ([newEdits, isSaving]) => {
 		const hasEdits = Object.keys(newEdits)?.length;
-		if (!hasEdits) return;
+		if (!hasEdits || isSaving) return;
+
 		save();
 	});
 
@@ -322,6 +324,8 @@ function useItemWithEdits() {
 	}
 
 	async function save() {
+		saving.value = true;
+
 		try {
 			let response;
 
@@ -351,6 +355,8 @@ function useItemWithEdits() {
 			resetEdits();
 		} catch (error) {
 			unexpectedError(error);
+		} finally {
+			saving.value = false;
 		}
 	}
 
