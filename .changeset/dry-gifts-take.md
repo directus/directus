@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Add new entries into app\src\lang\translations\en-US.yaml to translate some texts.
+Added some missing translation keys for directus_settings and directus_roles.
