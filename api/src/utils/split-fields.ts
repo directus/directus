@@ -23,7 +23,7 @@ export function splitFields(input: string): string[] {
 			fields.push(current);
 			current = '';
 		} else {
-			current += char; 
+			current += char;
 		}
 	}
 

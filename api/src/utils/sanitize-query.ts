@@ -128,7 +128,6 @@ function sanitizeFields(rawFields: any) {
 	return fields;
 }
 
-
 function sanitizeSort(rawSort: any) {
 	let fields: string[] = [];
 

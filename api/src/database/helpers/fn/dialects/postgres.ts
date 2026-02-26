@@ -85,7 +85,6 @@ export class FnHelperPostgres extends FnHelper {
 	}
 }
 
-
 /**
  * Build a parameterized PostgreSQL JSON path using -> operators.
  * Returns a template string containing only operators and ? placeholders,

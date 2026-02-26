@@ -68,7 +68,6 @@ export class FnHelperMySQL extends FnHelper {
 	}
 }
 
-
 export function convertToMySQLPath(path: string): string {
 	// Use dot notation for object keys (compatible with both MySQL and MariaDB)
 	// ".color" → "$.color"
