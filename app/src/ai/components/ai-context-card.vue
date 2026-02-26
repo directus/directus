@@ -59,14 +59,10 @@ const icon = computed(() => {
 		@mouseenter="emit('mouseenter')"
 		@mouseleave="emit('mouseleave')"
 	>
-		<template v-if="imageUrl">
-			<img :src="imageUrl" :alt="item.display" class="chip-image" />
-		</template>
-		<template v-else>
-			<div class="icon-wrapper">
-				<VIcon :name="icon" x-small class="item-icon" />
-			</div>
-		</template>
+		<img v-if="imageUrl" :src="imageUrl" :alt="item.display" class="chip-image" />
+		<div v-else class="icon-wrapper">
+			<VIcon :name="icon" x-small class="item-icon" />
+		</div>
 		<VTextOverflow :text="String(item.display)" class="display-text" />
 		<button v-if="removable" type="button" class="close-button" :aria-label="$t('remove')" @click.stop="emit('remove')">
 			<VIcon name="close" small />

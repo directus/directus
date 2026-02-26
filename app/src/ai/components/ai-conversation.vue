@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
-import { useScroll } from '@vueuse/core';
-import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import { useDropZone, useScroll } from '@vueuse/core';
+import { computed, nextTick, onMounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { pendingAskUser, useAskUserTool } from '../composables/use-ask-user-tool';
 import { useContextStaging } from '../composables/use-context-staging';
@@ -23,8 +23,6 @@ const { stageLocalFiles } = useContextStaging();
 const userStore = useUserStore();
 const allowedMimeTypes = new Set<string>(AI_ALLOWED_MIME_TYPES);
 
-const dragging = ref(false);
-let dragCounter = 0;
 useAskUserTool();
 
 const hasProviders = computed(() => aiStore.models.length > 0);
@@ -57,7 +55,29 @@ const emptyState = computed(() => {
 	return null;
 });
 
+const conversationRef = useTemplateRef<HTMLElement>('conversation');
 const messagesContainerRef = useTemplateRef<HTMLElement>('messages-container');
+
+const { isOverDropZone: dragging } = useDropZone(conversationRef, {
+	dataTypes: (types) => aiStore.supportsFileUpload && types.some((t) => allowedMimeTypes.has(t)),
+	onDrop(files) {
+		if (!files) return;
+
+		const accepted = files.filter((f) => allowedMimeTypes.has(f.type));
+
+		if (accepted.length < files.length) {
+			notify({ title: t('ai.unsupported_file_type'), type: 'warning' });
+		}
+
+		if (accepted.length > 0) {
+			stageLocalFiles(accepted);
+		}
+
+		aiStore.focusInput();
+	},
+	multiple: true,
+	preventDefaultForUnhandled: true,
+});
 
 const { arrivedState } = useScroll(messagesContainerRef);
 
@@ -82,61 +102,10 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 		el.scrollTo({ top: el.scrollHeight, behavior });
 	}
 }
-
-function onDragEnter() {
-	if (!aiStore.supportsFileUpload) return;
-
-	dragCounter++;
-
-	if (dragCounter === 1) {
-		dragging.value = true;
-	}
-}
-
-function onDragLeave() {
-	if (!aiStore.supportsFileUpload) return;
-
-	dragCounter = Math.max(0, dragCounter - 1);
-
-	dragging.value = dragCounter > 0;
-}
-
-function onDrop(event: DragEvent) {
-	dragCounter = 0;
-	dragging.value = false;
-
-	if (!aiStore.supportsFileUpload) {
-		notify({ title: t('ai.file_upload_not_supported') });
-		return;
-	}
-
-	const files = event.dataTransfer?.files;
-
-	if (files) {
-		const allFiles = Array.from(files);
-		const accepted = allFiles.filter((file) => allowedMimeTypes.has(file.type));
-
-		if (accepted.length < allFiles.length) {
-			notify({ title: t('ai.unsupported_file_type'), type: 'warning' });
-		}
-
-		if (accepted.length > 0) {
-			stageLocalFiles(accepted);
-		}
-
-		aiStore.focusInput();
-	}
-}
 </script>
 
 <template>
-	<div
-		class="ai-conversation"
-		@dragenter.prevent="onDragEnter"
-		@dragover.prevent
-		@dragleave.prevent="onDragLeave"
-		@drop.stop.prevent="onDrop"
-	>
+	<div ref="conversation" class="ai-conversation">
 		<AiHeader v-if="hasProviders" />
 
 		<div ref="messages-container" class="messages-container">

@@ -11,13 +11,12 @@ const props = defineProps<{
 
 const lightboxActive = ref(false);
 
-const hasImagePreview = computed(() => {
-	return (
+const hasImagePreview = computed(
+	() =>
 		props.part.mediaType?.startsWith('image/') === true &&
 		typeof props.part.url === 'string' &&
-		props.part.url.length > 0
-	);
-});
+		props.part.url.length > 0,
+);
 
 const fileExtension = computed(() => {
 	const mimeType = props.part.mediaType;

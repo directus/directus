@@ -167,43 +167,40 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 		if (fileItems.length === 0) return [];
 
-		const results: UploadedFileResult[] = [];
+		const results = await Promise.all(
+			fileItems.map(async (item) => {
+				try {
+					let file: File;
+					let displayUrl: string;
 
-		for (const item of fileItems) {
-			try {
-				let file: File;
-				let displayUrl: string;
+					if (isLocalFileContext(item)) {
+						file = item.data.file;
+						displayUrl = item.data.thumbnailUrl ?? '';
+					} else if (isFileContext(item)) {
+						const assetResponse = await api.get(`/assets/${item.data.id}`, { responseType: 'blob' });
+						file = new File([assetResponse.data], item.data.filename_download, { type: item.data.type });
+						displayUrl = `/assets/${item.data.id}`;
+					} else {
+						return null;
+					}
 
-				if (isLocalFileContext(item)) {
-					file = item.data.file;
-					displayUrl = item.data.thumbnailUrl ?? '';
-				} else if (isFileContext(item)) {
-					const assetResponse = await api.get(`/assets/${item.data.id}`, { responseType: 'blob' });
-					file = new File([assetResponse.data], item.data.filename_download, { type: item.data.type });
-					displayUrl = `/assets/${item.data.id}`;
-				} else {
-					continue;
+					const ref = await uploadFileToProvider(file, provider);
+
+					return { ref, display: item.display, displayUrl, mimeType: file.type };
+				} catch (error) {
+					unexpectedError(error);
+
+					notify({
+						title: i18n.global.t('ai.file_upload_failed', { name: item.display }),
+						type: 'warning',
+					});
+
+					return null;
 				}
+			}),
+		);
 
-				const ref = await uploadFileToProvider(file, provider);
-
-				results.push({
-					ref,
-					display: item.display,
-					displayUrl,
-					mimeType: file.type,
-				});
-			} catch (error) {
-				unexpectedError(error);
-
-				notify({
-					title: i18n.global.t('ai.file_upload_failed', { name: item.display }),
-					type: 'warning',
-				});
-			}
-		}
-
-		return results;
+		return results.filter((r): r is UploadedFileResult => r !== null);
 	};
 
 	const dehydrate = () => {
