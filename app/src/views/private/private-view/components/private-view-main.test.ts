@@ -54,10 +54,10 @@ vi.mock('./private-view-sidebar.vue', () => ({
 	},
 }));
 
-// Mock PrivateViewDrawer to render its slot without the VDialog teleport.
+// Mock PrivateViewDrawer to render its slot without the Teleport.
 vi.mock('./private-view-drawer.vue', () => ({
 	default: {
-		props: ['collapsed', 'placement', 'eager'],
+		props: ['collapsed', 'placement'],
 		emits: ['update:collapsed'],
 		template: '<div class="drawer"><slot /></div>',
 	},

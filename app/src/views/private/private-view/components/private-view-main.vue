@@ -142,7 +142,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 				<PrivateViewDrawer
 					:collapsed="isMobile ? sidebarStore.collapsed : true"
 					placement="right"
-					eager
 					@update:collapsed="isMobile && (sidebarStore.collapsed = $event ?? false)"
 				>
 					<div id="sidebar-mobile-outlet" class="sidebar-outlet" />
