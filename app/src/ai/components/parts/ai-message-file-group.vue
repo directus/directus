@@ -61,20 +61,8 @@ function openLightbox(index: number) {
 
 .message-file-grid {
 	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
 	gap: 0.375rem;
-}
-
-@container (min-width: 11rem) {
-	.message-file-grid {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-}
-
-@container (min-width: 14rem) {
-	.message-file-grid {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-	}
 }
 
 .grid-item {
