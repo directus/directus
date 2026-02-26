@@ -160,6 +160,47 @@ describe('NetlifyDriver', () => {
 			});
 		});
 
+		it('should paginate when response length equals perPage', async () => {
+			const fullPage = Array.from({ length: 100 }, (_, i) => ({
+				id: `site-${i}`,
+				name: `Site ${i}`,
+				build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo' },
+			}));
+
+			const secondPage = [
+				{
+					id: 'site-100',
+					name: 'Site 100',
+					build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo' },
+				},
+			];
+
+			mockNetlifyAPI.listSites.mockResolvedValueOnce(fullPage).mockResolvedValueOnce(secondPage);
+
+			const projects = await driver.listProjects();
+
+			expect(projects).toHaveLength(101);
+			expect(mockNetlifyAPI.listSites).toHaveBeenCalledTimes(2);
+
+			expect(mockNetlifyAPI.listSites).toHaveBeenNthCalledWith(1, { per_page: '100', page: '1' });
+			expect(mockNetlifyAPI.listSites).toHaveBeenNthCalledWith(2, { per_page: '100', page: '2' });
+		});
+
+		it('should stop paginating when total is an exact multiple of perPage', async () => {
+			const exactPage = Array.from({ length: 100 }, (_, i) => ({
+				id: `site-${i}`,
+				name: `Site ${i}`,
+				build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo' },
+			}));
+
+			mockNetlifyAPI.listSites.mockResolvedValueOnce(exactPage).mockResolvedValueOnce([]);
+
+			const projects = await driver.listProjects();
+
+			expect(projects).toHaveLength(100);
+			expect(mockNetlifyAPI.listSites).toHaveBeenCalledTimes(2);
+		});
+
 		it('should mark sites without git source as not deployable', async () => {
 			const mockSites = [
 				{

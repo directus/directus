@@ -119,7 +119,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async listProjects(): Promise<Project[]> {
-		const allSites: any[] = [];
+		const allSites: NetlifySite[] = [];
 		const perPage = 100;
 		let hasMore = true;
 
