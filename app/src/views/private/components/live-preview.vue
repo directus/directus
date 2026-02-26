@@ -75,11 +75,10 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const router = useRouter();
 const slots = useSlots();
-const { resolveUrls } = useVisualEditorUrls();
-
 useResizeObserver();
 
 const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, selectUrl } = useUrls();
+const { visualEditingEnabled, showEditableElements, openInVisualEditor } = useVisualEditing();
 
 const width = ref<number>();
 const height = ref<number>();
@@ -87,7 +86,6 @@ const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
-const showEditableElements = ref(defaultShowEditableElements);
 const overlayProvided = computed(() => !!slots.overlay);
 const hasDisplayOptions = computed(() => !!slots['display-options']);
 const hasSidebar = computed(() => !!slots.sidebar);
@@ -132,19 +130,6 @@ const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
 });
 
-const visualEditingEnabled = computed(() => {
-	if (!canEnableVisualEditing) return false;
-	if (invalidUrl) return false;
-
-	const currentUrl = frameSrc.value;
-	if (!currentUrl) return false;
-
-	const allowedUrls = resolveUrls(version?.key);
-	if (!allowedUrls.length) return false;
-
-	return allowedUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
-});
-
 function toggleFullscreen() {
 	if (fullscreen.value) {
 		width.value = 400;
@@ -170,22 +155,42 @@ function onIframeLoad() {
 	isRefreshing.value = false;
 }
 
-function openInVisualEditor() {
-	if (frameSrc.value) router.push(getUrlRoute(frameSrc.value));
-}
-
 window.refreshLivePreview = refresh;
 
-watch(
-	() => frameSrc.value,
-	() => {
-		showEditableElements.value = false;
-	},
-);
+function useVisualEditing() {
+	const { resolveUrls } = useVisualEditorUrls();
+	const showEditableElements = ref(defaultShowEditableElements);
 
-watch(visualEditingEnabled, (enabled) => {
-	if (!enabled) showEditableElements.value = false;
-});
+	const visualEditingEnabled = computed(() => {
+		if (!canEnableVisualEditing) return false;
+		if (invalidUrl) return false;
+
+		const currentUrl = frameSrc.value;
+		if (!currentUrl) return false;
+
+		const allowedUrls = resolveUrls(version?.key);
+		if (!allowedUrls.length) return false;
+
+		return allowedUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
+	});
+
+	watch(
+		() => frameSrc.value,
+		() => {
+			showEditableElements.value = false;
+		},
+	);
+
+	watch(visualEditingEnabled, (enabled) => {
+		if (!enabled) showEditableElements.value = false;
+	});
+
+	return { visualEditingEnabled, showEditableElements, openInVisualEditor };
+
+	function openInVisualEditor() {
+		if (frameSrc.value) router.push(getUrlRoute(frameSrc.value));
+	}
+}
 
 function useResizeObserver() {
 	let observerInitialized = false;
