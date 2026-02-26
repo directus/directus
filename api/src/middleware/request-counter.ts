@@ -3,8 +3,9 @@ import { toBoolean } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import { useLogger } from '../logger/index.js';
 import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
+import { TRACKED_METHODS } from '../telemetry/utils/format-api-request-counts.js';
 
-const TRACKED_METHODS = new Set(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+const TRACKED_METHODS_UPPER = new Set(TRACKED_METHODS.map((m) => m.toUpperCase()));
 
 let requestCounterMiddleware: RequestHandler = (_req, _res, next) => next();
 
@@ -12,7 +13,7 @@ const env = useEnv();
 
 if (toBoolean(env['TELEMETRY'])) {
 	requestCounterMiddleware = (req, _res, next) => {
-		if (TRACKED_METHODS.has(req.method)) {
+		if (TRACKED_METHODS_UPPER.has(req.method)) {
 			const logger = useLogger();
 
 			try {

@@ -5,6 +5,7 @@ import { getHelpers } from '../../database/helpers/index.js';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { useBufferedCounter } from '../counter/use-buffered-counter.js';
+import { TRACKED_KEYS } from '../utils/format-api-request-counts.js';
 import type { TelemetryReport } from '../types/report.js';
 import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
 import { getExtensionCount } from '../utils/get-extension-count.js';
@@ -53,7 +54,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		helpers.schema.getDatabaseSize(),
 		getFilesizeSum(db),
 		getSettings(db),
-		requestCounter.getAndResetAll(['get', 'post', 'put', 'patch', 'delete', 'cached']),
+		requestCounter.getAndResetAll([...TRACKED_KEYS]),
 	]);
 
 	return {
