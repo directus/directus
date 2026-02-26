@@ -14,7 +14,7 @@ export function parseFilterFunctionPath(path: string): string {
 
 		// extract the first argument of the function body
 		const argSepIndex = path.indexOf(',');
-		const argEndIndex = argSepIndex >= 0 ? Math.min(closeParensIndex, argSepIndex) : closeParensIndex;
+		const argEndIndex = argSepIndex > 0 ? argSepIndex : closeParensIndex;
 		const argString = path.slice(openParensIndex + 1, argEndIndex).trim();
 		const argRestString = path.slice(argEndIndex);
 
