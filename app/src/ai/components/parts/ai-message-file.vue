@@ -40,6 +40,8 @@ const file = computed(() => toLightboxFile(props.part));
 <style scoped>
 .message-file {
 	margin: 0.5rem 0;
+	display: grid;
+	justify-items: end;
 
 	.image-preview {
 		cursor: zoom-in;
