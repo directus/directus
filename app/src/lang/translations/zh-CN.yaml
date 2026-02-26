@@ -1434,7 +1434,7 @@ fields:
     mcp_notice: '模型上下文协议（Model Context Protocol）是将大型语言模型（LLM）连接到像 Directus 这样的应用的标准。启用后，Directus MCP 服务器将在 /mcp 可用。<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">了解有关 MCP 及如何连接的更多信息。</a>'
     mcp_allow_deletes: 允许删除
     mcp_allow_deletes_note:
-      - 这可能导致数据丢失。</strong>出于安全考虑，默认为禁用。
+      - 允许通过MCP工具删除条目、文件、流程、字段、关系以及模型。<strong>注意：这可能导致数据丢失。</strong>出于安全考虑，默认为禁用。
     mcp_prompts_collection: AI 提示词集合
     mcp_prompts_collection_note: '选择用于存储 AI 交互<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">可重复使用的提示词模板</a>的集合。'
     mcp_system_prompt_divider: 系统提示配置
