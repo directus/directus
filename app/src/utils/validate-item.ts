@@ -7,6 +7,7 @@ import {
 } from '@directus/validation';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
+import { pushGroupOptionsDown } from './push-group-options-down';
 import { useRelationsStore } from '@/stores/relations';
 
 export function validateItem(
@@ -20,13 +21,29 @@ export function validateItem(
 	const validationRules: LogicalFilterAND = { _and: [] };
 	const updatedItem = cloneDeep(item);
 
-	const fieldsWithConditions = fields.map((field) => {
-		const conditionedField = applyConditions(item, field, currentVersion);
+	// Apply conditions to all fields
+	const fieldsWithConditions = fields.map((field) => applyConditions(item, field, currentVersion));
 
-		return conditionedField;
+	// group-level required/readonly after conditions have been applied.
+	const fieldsWithResolvedGroups = pushGroupOptionsDown(fieldsWithConditions);
+
+	// lookup map for group ancestry
+	const fieldMap = new Map(fieldsWithResolvedGroups.map((f) => [f.field, f]));
+
+	// Filter required fields. Skip any field whose ancestor is hidden group.
+	const requiredFields = fieldsWithResolvedGroups.filter((field) => {
+		if (field.meta?.required !== true) return false;
+		let groupName = field.meta?.group;
+
+		while (groupName) {
+			const group = fieldMap.get(groupName);
+			if (!group) break;
+			if (group.meta?.hidden === true) return false;
+			groupName = group.meta?.group ?? null;
+		}
+
+		return true;
 	});
-
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);
