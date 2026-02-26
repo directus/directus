@@ -78,9 +78,8 @@ export class FnHelperPostgres extends FnHelper {
 			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
 		}
 
-		const { dbType } = fieldSchema;
 		const { template, bindings } = buildPostgresJsonPath(options.jsonPath);
-		const cast = dbType === 'jsonb' ? 'jsonb' : 'json';
+		const cast = fieldSchema.dbType === 'jsonb' ? 'jsonb' : 'json';
 
 		return this.knex.raw(`??::${cast}${template}`, [table + '.' + column, ...bindings]);
 	}
