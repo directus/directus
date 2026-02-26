@@ -196,6 +196,9 @@ export async function handleVersion(
 		.map((field) => field.field);
 
 	results = results.map((result) => {
+		const id = result[primaryKeyField];
+		const meta = itemMeta[id];
+
 		result = deepMapWithSchema(
 			result,
 			([key, value], context) => {
@@ -235,9 +238,6 @@ export async function handleVersion(
 			},
 			{ collection: self.collection, schema: self.schema },
 		);
-
-		const id = result[primaryKeyField];
-		const meta = itemMeta[id];
 
 		if (meta) {
 			result['$meta'] = meta;
