@@ -2,7 +2,6 @@ import { describe, expect, test } from 'vitest';
 import { formatApiRequestCounts } from './format-api-request-counts.js';
 
 describe('formatApiRequestCounts', () => {
-
 	test('Formats method counts with api_requests_ prefix', () => {
 		const result = formatApiRequestCounts({ get: 10, post: 5 });
 
@@ -62,5 +61,4 @@ describe('formatApiRequestCounts', () => {
 		expect(result['api_requests_cached']).toBe(3);
 		expect(result['api_requests']).toBe(15);
 	});
-
 });

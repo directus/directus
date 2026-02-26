@@ -34,18 +34,27 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	const requestCounter = useBufferedCounter('api-requests');
 	const helpers = getHelpers(db);
 
-	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize, filesizes, settings, requestCounts] =
-		await Promise.all([
-			getItemCount(db, basicCountTasks),
-			fetchUserCount({ knex: db }),
-			getUserItemCount(db),
-			getFieldCount(db),
-			getExtensionCount(db),
-			helpers.schema.getDatabaseSize(),
-			getFilesizeSum(db),
-			getSettings(db),
-			requestCounter.getAndResetAll(['get', 'post', 'put', 'patch', 'delete', 'cached'])
-		]);
+	const [
+		basicCounts,
+		userCounts,
+		userItemCount,
+		fieldsCounts,
+		extensionsCounts,
+		databaseSize,
+		filesizes,
+		settings,
+		requestCounts,
+	] = await Promise.all([
+		getItemCount(db, basicCountTasks),
+		fetchUserCount({ knex: db }),
+		getUserItemCount(db),
+		getFieldCount(db),
+		getExtensionCount(db),
+		helpers.schema.getDatabaseSize(),
+		getFilesizeSum(db),
+		getSettings(db),
+		requestCounter.getAndResetAll(['get', 'post', 'put', 'patch', 'delete', 'cached']),
+	]);
 
 	return {
 		url: env['PUBLIC_URL'] as string,

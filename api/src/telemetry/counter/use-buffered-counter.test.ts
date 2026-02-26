@@ -28,7 +28,6 @@ afterEach(async () => {
 });
 
 describe('useBufferedCounter', () => {
-
 	describe('instantiation', () => {
 		test('Creates a flusher bound to a counter namespace', () => {
 			const flusher = useBufferedCounter('requests');
@@ -225,9 +224,10 @@ describe('useBufferedCounter', () => {
 			let resolveFirst!: () => void;
 
 			mockCounter.increment.mockImplementationOnce(
-				() => new Promise<number>((resolve) => {
-					resolveFirst = () => resolve(0);
-				}),
+				() =>
+					new Promise<number>((resolve) => {
+						resolveFirst = () => resolve(0);
+					}),
 			);
 
 			const flusher = useBufferedCounter('requests');
@@ -329,9 +329,10 @@ describe('useBufferedCounter', () => {
 			let resolveFlush!: () => void;
 
 			mockCounter.increment.mockImplementationOnce(
-				() => new Promise<number>((resolve) => {
-					resolveFlush = () => resolve(0);
-				}),
+				() =>
+					new Promise<number>((resolve) => {
+						resolveFlush = () => resolve(0);
+					}),
 			);
 
 			const flusher = useBufferedCounter('requests', { flushIntervalMs: 1000 });
@@ -591,4 +592,4 @@ describe('useBufferedCounter', () => {
 			});
 		});
 	});
-})
+});

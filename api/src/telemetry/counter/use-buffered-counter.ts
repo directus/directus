@@ -91,9 +91,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 	};
 
 	const flushAll = async (): Promise<void> => {
-		await Promise.all(
-			Object.keys(flusher.counters).map((subKey) => flush(subKey)),
-		);
+		await Promise.all(Object.keys(flusher.counters).map((subKey) => flush(subKey)));
 	};
 
 	const destroy = async (): Promise<void> => {
