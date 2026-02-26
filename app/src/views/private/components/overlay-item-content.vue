@@ -44,7 +44,7 @@ const { mainInitialValues, junctionInitialValues } = useInitialValues();
 const { file } = useFile();
 const { scrollToField } = useValidationScrollToField();
 
-const validationErrorsEl = useTemplateRef<any>('validationErrors');
+const validationErrorsEl = useTemplateRef('validationErrors');
 
 watch(
 	() => validationErrors,
