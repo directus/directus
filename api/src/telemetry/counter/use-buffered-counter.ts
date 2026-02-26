@@ -1,4 +1,4 @@
-import { useCounter } from './use-counter.js';
+import { useCounters } from './use-counters.js';
 
 interface FlusherOptions {
 	/** Maximum count to accumulate before forcing a flush. Default: 100 */
@@ -29,7 +29,7 @@ export const _bufferedCounterCache: Record<string, FlusherEntry | null> = {};
  * Returns a buffered counter bound to a counter namespace (e.g. "requests").
  * Internally manages independent buckets per sub-key (e.g. "GET", "POST").
  *
- * @param key - The counter namespace passed to `useCounter`.
+ * @param key - The counter namespace (e.g. "requests").
  * @param options - Optional bucket size and interval configuration.
  */
 export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
@@ -42,7 +42,6 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 			timer: null as ReturnType<typeof setInterval> | null,
 		};
 
-		// Single timer for all sub-keys under this namespace
 		flusherEntry.timer = setInterval(() => {
 			for (const [subKey, state] of Object.entries(flusherEntry.counters)) {
 				if (state.count > 0 && !state.flushing) {
@@ -59,7 +58,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 	}
 
 	const flusher = _bufferedCounterCache[key];
-	const counter = useCounter(key);
+	const counter = useCounters();
 
 	const getOrCreateState = (subKey: string): CounterState => {
 		let state = flusher.counters[subKey];
@@ -82,7 +81,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 		state.count = 0;
 
 		try {
-			await counter.increment(subKey, amount);
+			await counter.increment(`${key}:${subKey}`, amount);
 		} catch (err) {
 			state.count += amount;
 			throw err;
@@ -123,7 +122,6 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 	 *   processes (but not seen locally) are still captured.
 	 */
 	const getAndResetAll = async (expectedKeys?: string[]): Promise<Record<string, number>> => {
-		// Flush any buffered counts so the counter has the full picture
 		await flushAll();
 
 		const localKeys = Object.keys(flusher.counters);
@@ -131,15 +129,14 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 		const result: Record<string, number> = {};
 
 		for (const subKey of subKeys) {
-			const value = await counter.get<number>(subKey);
+			const value = await counter.get<number>(`${key}:${subKey}`);
 			result[subKey] = value ?? 0;
 		}
 
-		// Reset all sub-keys in the counter to 0 using increment with negative value
 		await Promise.all(
 			subKeys.map((subKey) => {
 				if (result[subKey]! > 0) {
-					return counter.increment(subKey, -result[subKey]!);
+					return counter.increment(`${key}:${subKey}`, -result[subKey]!);
 				}
 
 				return Promise.resolve();

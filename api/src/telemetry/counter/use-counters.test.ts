@@ -2,12 +2,12 @@ import { createKv, type KvLocal, type KvRedis } from '@directus/memory';
 import type { Redis } from 'ioredis';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
-import { _cache, useCounter } from './use-counter.js';
+import { _cache, useCounters } from './use-counters.js';
 
 vi.mock('../../redis/index.js');
 vi.mock('@directus/memory');
 
-describe('useCounter', () => {
+describe('useCounters', () => {
 	let mockCounter: KvLocal | KvRedis;
 
 	beforeEach(() => {
@@ -17,16 +17,13 @@ describe('useCounter', () => {
 
 	afterEach(() => {
 		vi.clearAllMocks();
-
-		for (const key in _cache) {
-			delete _cache[key];
-		}
+		_cache.counter = null;
 	});
 
-	test('Returns existing counter for the same key if it exists', () => {
-		_cache['test-key'] = mockCounter;
+	test('Returns existing counter if it exists', () => {
+		_cache.counter = mockCounter;
 
-		const counter = useCounter('test-key');
+		const counter = useCounters();
 
 		expect(counter).toBe(mockCounter);
 	});
@@ -36,51 +33,45 @@ describe('useCounter', () => {
 		vi.mocked(redisConfigAvailable).mockReturnValue(true);
 		vi.mocked(useRedis).mockReturnValue(mockRedis);
 
-		useCounter('test-key');
+		useCounters();
 
 		expect(createKv).toHaveBeenCalledWith({
 			type: 'redis',
 			redis: mockRedis,
-			namespace: 'directus:counter:test-key',
+			namespace: 'directus:counters',
 		});
 
-		expect(_cache['test-key']).toBe(mockCounter);
+		expect(_cache.counter).toBe(mockCounter);
 	});
 
 	test('Creates Local counter if Redis configuration is unavailable', () => {
 		vi.mocked(redisConfigAvailable).mockReturnValue(false);
 
-		useCounter('test-key');
+		useCounters();
 
 		expect(createKv).toHaveBeenCalledWith({
 			type: 'local',
 		});
 
-		expect(_cache['test-key']).toBe(mockCounter);
+		expect(_cache.counter).toBe(mockCounter);
 	});
 
 	test('Returns created counter', () => {
 		vi.mocked(redisConfigAvailable).mockReturnValue(false);
 
-		const counter = useCounter('test-key');
+		const counter = useCounters();
 
-		expect(counter).toBe(_cache['test-key']);
+		expect(counter).toBe(_cache.counter);
 		expect(counter).toBe(mockCounter);
 	});
 
-	test('Caches counters independently per key', () => {
-		const mockCounterA = { id: 'a' } as unknown as KvLocal;
-		const mockCounterB = { id: 'b' } as unknown as KvLocal;
-
+	test('Returns same instance on subsequent calls', () => {
 		vi.mocked(redisConfigAvailable).mockReturnValue(false);
-		vi.mocked(createKv).mockReturnValueOnce(mockCounterA).mockReturnValueOnce(mockCounterB);
 
-		const counterA = useCounter('key-a');
-		const counterB = useCounter('key-b');
+		const counterA = useCounters();
+		const counterB = useCounters();
 
-		expect(counterA).toBe(mockCounterA);
-		expect(counterB).toBe(mockCounterB);
-		expect(counterA).not.toBe(counterB);
-		expect(createKv).toHaveBeenCalledTimes(2);
+		expect(counterA).toBe(counterB);
+		expect(createKv).toHaveBeenCalledTimes(1);
 	});
 });
