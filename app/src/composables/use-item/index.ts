@@ -2,17 +2,16 @@ import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint, isObject } from '@directus/utils';
-import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { cloneDeep, mergeWith } from 'lodash';
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
-import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
+import sdk, { requestEndpoint } from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
@@ -35,7 +34,7 @@ type UsableItem<T extends Item> = {
 	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
-	save: () => Promise<T>;
+	save: () => Promise<T | undefined>;
 	isNew: ComputedRef<boolean>;
 	remove: () => Promise<void>;
 	deleting: Ref<boolean>;
@@ -121,15 +120,10 @@ export function useItem<T extends Item>(
 		loadingItem.value = true;
 		error.value = null;
 
-		const rawQuery: Record<string, unknown> = unref(query);
-
-		if ('fields' in rawQuery && Array.isArray(rawQuery.fields)) {
-			rawQuery.fields = rawQuery.fields.join(',');
-		}
-
 		try {
-			const response = await api.get(itemEndpoint.value, { params: rawQuery });
-			setItemValueToResponse(response);
+			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
+
+			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
 		} finally {
@@ -206,13 +200,23 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await api.post(getEndpoint(collection.value), editsWithClearedValues);
+				response = await sdk.request<T>(
+					requestEndpoint(getEndpoint(collection.value), {
+						method: 'POST',
+						body: editsWithClearedValues,
+					}),
+				);
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await api.patch(itemEndpoint.value, editsWithClearedValues);
+				response = await sdk.request<T>(
+					requestEndpoint(itemEndpoint.value, {
+						method: 'PATCH',
+						body: editsWithClearedValues,
+					}),
+				);
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),
@@ -221,7 +225,7 @@ export function useItem<T extends Item>(
 
 			setItemValueToResponse(response);
 			edits.value = {};
-			return response.data.data;
+			return response;
 		} catch (error) {
 			saveErrorHandler(error);
 		} finally {
@@ -254,7 +258,12 @@ export function useItem<T extends Item>(
 		let response;
 
 		try {
-			response = await api.post(graphqlEndpoint, { query });
+			response = await sdk.request<Item>(
+				requestEndpoint(graphqlEndpoint, {
+					method: 'POST',
+					body: { query },
+				}),
+			);
 		} catch (error) {
 			saving.value = false;
 			unexpectedError(error);
@@ -262,7 +271,7 @@ export function useItem<T extends Item>(
 		}
 
 		// Transform aliased M2A fields back to their original names
-		const itemData = transformM2AAliases(response.data.data.item, m2aAliasMap);
+		const itemData = transformM2AAliases(response.item, m2aAliasMap);
 
 		const newItem: Item = {
 			...(itemData || {}),
@@ -358,7 +367,12 @@ export function useItem<T extends Item>(
 		}
 
 		try {
-			const response = await api.post(getEndpoint(collection.value), newItem);
+			const response = await sdk.request<Item>(
+				requestEndpoint(getEndpoint(collection.value), {
+					method: 'POST',
+					body: newItem,
+				}),
+			);
 
 			notify({
 				title: i18n.global.t('item_create_success', 1),
@@ -367,7 +381,7 @@ export function useItem<T extends Item>(
 			// Reset edits to the current item
 			edits.value = {};
 
-			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
+			return primaryKeyField.value ? response[primaryKeyField.value.field] : null;
 		} catch (error) {
 			saveErrorHandler(error);
 		} finally {
@@ -398,14 +412,16 @@ export function useItem<T extends Item>(
 
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
-			const response = await api.get(getEndpoint(relation.collection), {
-				params: {
-					fields: Array.from(fieldsToFetch),
-					[`filter[${relation.field}][_eq]`]: primaryKey.value,
-				},
-			});
+			const response = await sdk.request<Item[]>(
+				requestEndpoint(getEndpoint(relation.collection), {
+					params: {
+						fields: Array.from(fieldsToFetch),
+						[`filter[${relation.field}][_eq]`]: primaryKey.value,
+					},
+				}),
+			);
 
-			return response.data.data;
+			return response;
 		}
 
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {
@@ -439,16 +455,14 @@ export function useItem<T extends Item>(
 	}
 
 	function saveErrorHandler(error: any) {
-		if (error?.response?.data?.errors) {
-			validationErrors.value = error.response.data.errors
+		if (error?.errors) {
+			validationErrors.value = error.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 				.map((err: APIError) => {
 					return err.extensions;
 				});
 
-			const otherErrors = error.response.data.errors.filter(
-				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
-			);
+			const otherErrors = error.errors.filter((err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code));
 
 			if (otherErrors.length > 0) {
 				otherErrors.forEach(unexpectedError);
@@ -481,9 +495,14 @@ export function useItem<T extends Item>(
 			if (value === 'true') value = true;
 			if (value === 'false') value = false;
 
-			await api.patch(itemEndpoint.value, {
-				[field]: value,
-			});
+			await sdk.request(
+				requestEndpoint(itemEndpoint.value, {
+					method: 'PATCH',
+					body: {
+						[field]: value,
+					},
+				}),
+			);
 
 			item.value = {
 				...(item.value as T),
@@ -506,7 +525,7 @@ export function useItem<T extends Item>(
 		deleting.value = true;
 
 		try {
-			await api.delete(itemEndpoint.value);
+			await sdk.request(requestEndpoint(itemEndpoint.value, { method: 'DELETE' }));
 
 			item.value = null;
 
@@ -543,14 +562,14 @@ export function useItem<T extends Item>(
 		}
 	}
 
-	function setItemValueToResponse(response: AxiosResponse) {
+	function setItemValueToResponse(response: T) {
 		if (
 			(isSystemCollection(collection.value) && collection.value !== 'directus_collections') ||
-			(collection.value === 'directus_collections' && isSystemCollection(response.data.data.collection ?? ''))
+			(collection.value === 'directus_collections' && isSystemCollection(response.collection ?? ''))
 		) {
-			response.data.data = translate(response.data.data);
+			response = translate(response);
 		}
 
-		item.value = response.data.data;
+		item.value = response;
 	}
 }

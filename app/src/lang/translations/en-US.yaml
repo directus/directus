@@ -866,7 +866,7 @@ unexpected_error_copy: An unexpected error has occurred. Please try again.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
-password_reset_sent: If you have an account, we've sent you a secure link to reset your password
+password_reset_sent: If you have an account and it supports password reset, we've sent a secure link to your email
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
@@ -1356,7 +1356,7 @@ unsaved_changes_copy_collab:
   You’re editing this item with others. Your changes will remain in the collaborative session for now, but may be lost
   if no one saves them.
 leave_page: Leave Page
-close_drawer: Close Drawer
+cancel_anyway: Cancel Anyway
 discard_changes: Discard Changes
 discard_all_changes: Discard All Changes
 discard_changes_copy: Are you sure you want to discard all the changes made?
@@ -1535,6 +1535,7 @@ fields:
     project_color: Project Color
     project_logo: Project Logo
     default_language: Default Language
+    project_owner: Project Owner
     branding: Branding
     public_foreground: Public Foreground
     public_background: Public Background
@@ -1570,6 +1571,9 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
+    report_feature_url: Report Feature URL
+    report_bug_url: Report Bug URL
+    report_error_url: Report Error URL
     collaborative_editing: Collaborative Editing
     collaborative_editing_note: WebSockets are required for collaborative editing to work.
     ai_notice:
@@ -1649,6 +1653,7 @@ fields:
     users: Users in Role
     parent: Parent Role
     children: Child Roles
+    policies: Policies
   directus_policies:
     name: Policy Name
     description: Description
@@ -1846,6 +1851,12 @@ ai:
     disabled: Disabled
   enabled_tools: Enabled Tools
   disabled_tools: Disabled Tools
+  ask_user_submit: Submit
+  ask_user_next: Next
+  ask_user_skip: Skip
+  ask_user_chat_about_this: Chat about this
+  ask_user_type_answer: Type your answer...
+  ask_user_skipped: Skipped
   tool_descriptions:
     items: Create, read, update, and delete content
     files: Search and manage files
@@ -1858,6 +1869,7 @@ ai:
     fields: Create and configure collection fields
     relations: Set up relationships between collections
 ai_tools:
+  ask_user: Ask User
   update_form_values: Update Form Values
   read_form_values: Read Form Values
   items: Items
@@ -2161,6 +2173,10 @@ interfaces:
   file:
     file: File
     description: Select or upload a file
+    allowed_mime_types: Allowed MIME Types
+    mime_types_placeholder: Select or add allowed MIME types...
+    mime_types_note:
+      Note that the global FILES_MIME_TYPE_ALLOW_LIST defined in your env will take precedence over the above selection.
   files:
     files: Files
     description: Select or upload multiple files

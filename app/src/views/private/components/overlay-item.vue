@@ -753,7 +753,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	/>
 
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-		<VCard v-if="!collab?.connected">
+		<VCard v-if="!collab?.connected.value">
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 			<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -768,7 +768,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndLeave">
-					{{ $t('close_drawer') }}
+					{{ $t('cancel_anyway') }}
 				</VButton>
 				<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>
@@ -776,7 +776,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	</VDialog>
 
 	<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
-		<VCard v-if="!collab?.connected">
+		<VCard v-if="!collab?.connected.value">
 			<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
 			<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -791,7 +791,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndCancel">
-					{{ $t('close_drawer') }}
+					{{ $t('cancel_anyway') }}
 				</VButton>
 				<VButton @click="confirmCancel = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>

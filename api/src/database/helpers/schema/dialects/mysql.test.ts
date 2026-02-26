@@ -123,4 +123,30 @@ describe('SchemaHelperMySQL', () => {
 			'my_custom_column',
 		]);
 	});
+
+	describe('parseCollectionName', () => {
+		test('should return collection name in lowercase if lower_case_table_names === 1', async () => {
+			vi.resetModules();
+			const { SchemaHelperMySQL } = await import('./mysql.js');
+			const mockRaw = vi.fn().mockResolvedValue([[{ lctn: 1 }]]);
+			const mockKnex = { raw: mockRaw } as unknown as Knex;
+			const helper = new SchemaHelperMySQL(mockKnex);
+			const result = await helper.parseCollectionName('MyCollection');
+
+			expect(result).toBe('mycollection');
+			expect(mockRaw).toHaveBeenCalledWith('SELECT @@lower_case_table_names AS lctn');
+		});
+
+		test('should return original collection name if lower_case_table_names !== 1', async () => {
+			vi.resetModules();
+			const { SchemaHelperMySQL } = await import('./mysql.js');
+			const mockRaw = vi.fn().mockResolvedValue([[{ lctn: 2 }]]);
+			const mockKnex = { raw: mockRaw } as unknown as Knex;
+			const helper = new SchemaHelperMySQL(mockKnex);
+			const result = await helper.parseCollectionName('MyCollection');
+
+			expect(result).toBe('MyCollection');
+			expect(mockRaw).toHaveBeenCalledWith('SELECT @@lower_case_table_names AS lctn');
+		});
+	});
 });
