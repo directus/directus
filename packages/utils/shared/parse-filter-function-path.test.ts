@@ -48,6 +48,21 @@ describe('parseFilterFunctionPath', () => {
 			input: 'a.b.function(c.d.field, json.path)',
 			expected: 'a.b.c.d.function(field, json.path)',
 		},
+		{
+			description: 'returns path unchanged when function name is missing',
+			input: '(a.b.field)',
+			expected: '(a.b.field)',
+		},
+		{
+			description: 'returns path unchanged when arg contains nested parens',
+			input: 'outer(inner(a.b.field))',
+			expected: 'outer(inner(a.b.field))',
+		},
+		{
+			description: 'ignores a comma that appears before the opening paren',
+			input: 'a,b.function(field)',
+			expected: 'a,b.function(field)',
+		},
 	];
 
 	test.each(testCases)('$description', ({ input, expected }) => {

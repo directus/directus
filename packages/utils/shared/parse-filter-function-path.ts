@@ -12,13 +12,18 @@ export function parseFilterFunctionPath(path: string): string {
 		const functionName = functionPart.slice(lastSepIndex + 1);
 		const initialColumns = functionPart.slice(0, lastSepIndex + 1);
 
+		if (!functionName) return path;
+
 		// extract the first argument of the function body
-		const argSepIndex = path.indexOf(',');
-		const argEndIndex = argSepIndex > 0 ? argSepIndex : closeParensIndex;
+		const argSepIndex = path.indexOf(',', openParensIndex);
+		const argEndIndex = argSepIndex > openParensIndex ? argSepIndex : closeParensIndex;
+
+		if (argEndIndex <= openParensIndex) return path;
+
 		const argString = path.slice(openParensIndex + 1, argEndIndex).trim();
 		const argRestString = path.slice(argEndIndex);
 
-		if (argString) {
+		if (argString && !argString.includes('(')) {
 			// Extract path from the first argument only
 			const argSepIndex = argString.lastIndexOf('.');
 			const firstArgField = argString.slice(argSepIndex + 1);
