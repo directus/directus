@@ -371,7 +371,7 @@ const livePreviewSize = computed({
 
 provide('live-preview-active', livePreviewActive);
 
-const { visualEditingEnabled, visualEditorUrls, visualModuleEnabled } = useVisualEditing({
+const { visualEditingEnabled, visualModuleEnabled } = useVisualEditing({
 	previewUrl,
 	isNew,
 });
@@ -902,7 +902,6 @@ function useItemNavigation() {
 					:url="previewUrl"
 					:version="currentVersion"
 					:can-enable-visual-editing="visualEditingEnabled"
-					:visual-editor-urls="visualEditorUrls"
 					:show-open-in-visual-editor="visualModuleEnabled"
 					:is-full-width="livePreviewFullWidth"
 					@new-window="livePreviewMode = 'popup'"

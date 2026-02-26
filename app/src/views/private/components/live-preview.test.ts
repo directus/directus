@@ -8,6 +8,10 @@ import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
+vi.mock('@/modules/visual/composables/use-visual-editor-urls', () => ({
+	useVisualEditorUrls: () => ({ urlTemplates: ref([]), firstResolvedUrl: ref(null), resolveUrls: () => [] }),
+}));
+
 vi.mock('@directus/composables', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('@directus/composables')>();
 	return { ...actual, useElementSize: vi.fn(() => ({ width: ref(0), height: ref(0) })) };

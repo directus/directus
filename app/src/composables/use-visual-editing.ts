@@ -21,10 +21,6 @@ export function useVisualEditing({ previewUrl, isNew = false }: UseVisualEditing
 	const settingsStore = useSettingsStore();
 	const moduleBar = computed(() => settingsStore.settings?.module_bar ?? MODULE_BAR_DEFAULT);
 
-	const visualEditorUrls = computed(
-		() => settingsStore.settings?.visual_editor_urls?.map(({ url }) => url).filter(Boolean) ?? [],
-	);
-
 	const visualModuleEnabled = computed(() =>
 		moduleBar.value.some((part) => part.type === 'module' && part.id === 'visual' && part.enabled),
 	);
@@ -36,12 +32,7 @@ export function useVisualEditing({ previewUrl, isNew = false }: UseVisualEditing
 	 * This does NOT require the visual module to be enabled - only that VE-URLs are configured.
 	 * The visual module toggle only controls access to the full Visual Editor page.
 	 */
-	const visualEditingEnabled = computed(
-		() =>
-			!!normalizedPreviewUrl.value &&
-			!unref(isNew) &&
-			visualEditorUrls.value.length > 0,
-	);
+	const visualEditingEnabled = computed(() => !!normalizedPreviewUrl.value && !unref(isNew));
 
-	return { visualEditingEnabled, visualEditorUrls, visualModuleEnabled };
+	return { visualEditingEnabled, visualModuleEnabled };
 }

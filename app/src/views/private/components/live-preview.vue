@@ -17,6 +17,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
@@ -34,7 +35,6 @@ const {
 	dynamicDisplay,
 	singleUrlSubdued = true,
 	canEnableVisualEditing = false,
-	visualEditorUrls = [],
 	version = null,
 	showOpenInVisualEditor = true,
 	defaultShowEditableElements = false,
@@ -54,7 +54,6 @@ const {
 	inPopup?: boolean;
 	centered?: boolean;
 	canEnableVisualEditing?: boolean;
-	visualEditorUrls?: string[];
 	version?: Pick<ContentVersion, 'key' | 'name'> | null;
 	showOpenInVisualEditor?: boolean;
 	defaultShowEditableElements?: boolean;
@@ -76,6 +75,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const router = useRouter();
 const slots = useSlots();
+const { resolveUrls } = useVisualEditorUrls();
 
 useResizeObserver();
 
@@ -137,9 +137,12 @@ const visualEditingEnabled = computed(() => {
 	if (invalidUrl) return false;
 
 	const currentUrl = frameSrc.value;
-	if (!currentUrl || !visualEditorUrls.length) return false;
+	if (!currentUrl) return false;
 
-	return visualEditorUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
+	const allowedUrls = resolveUrls(version?.key);
+	if (!allowedUrls.length) return false;
+
+	return allowedUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
 });
 
 function toggleFullscreen() {
