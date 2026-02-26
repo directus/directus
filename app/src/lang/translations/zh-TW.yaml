@@ -988,6 +988,7 @@ editing_in_batch: '批次編輯 {count} 個項目'
 no_options_available: 沒有可用的選項
 settings_data_model: 資料模型
 settings_project: 設定
+ai_assistant: AI助手
 settings_flows: 流程
 settings_presets: 書籤
 settings_translations: 翻譯
@@ -1169,9 +1170,10 @@ fields:
     collaborative_editing_note: 共同編輯需要WebSockets才能正常工作。
     ai_notice: 'AI助手提供一個內建的側邊欄，用於與大型語言模型對話。啟用後，從工具列中開啟此側邊欄，以便詢問問題、生成內容、獲取協助。<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">了解更多關於配置和使用AI助手的資訊。</a>'
     mcp_allow_deletes_note:
-      - 這可能導致資料遺失。</strong>出於安全考量，預設為停用。
+      - 允許通過MCP工具刪除項目、檔案、流程、欄位、關聯以及資料集。<strong>注意：這可能導致資料遺失。</strong>基於安全考量，預設為停用。
     ai_system_prompt: 用於AI系統的提示詞
     ai_system_prompt_note: '自訂用於AI系統的提示詞，可以在與AI助手的互動中引導大型語言模型的行為。若留空，則使用預設值。'
+    ai_openai_allowed_models: AI OpenAI的可用模型
     ai_anthropic_allowed_models: Anthropic的可用模型
     ai_google_allowed_models: Google的可用模型
     ai_openai_compatible: 與OpenAI相兼容的提供者
