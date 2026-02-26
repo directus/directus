@@ -48,6 +48,17 @@ const INVALID_TEST_CASES = [
 	{ input: 'json( , path)', expectedError: 'Invalid json() syntax: missing field name' },
 	// Missing path
 	{ input: 'json(field,)', expectedError: 'Invalid json() syntax: missing path' },
+	// Unsupported path expressions
+	{ input: 'json(data, items[].name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, [])', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, *)', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, items[*].name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, items.*)', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, items[?(@.price > 10)])', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, ?.name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, @.name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, name$value)', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{ input: 'json(data, $.name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
 	// Exceeds maximum depth (default is 10)
 	{
 		input: 'json(data, a.b.c.d.e.f.g.h.i.j.k)',
