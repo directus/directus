@@ -181,7 +181,7 @@ export async function handleVersion(
 			],
 		};
 
-		results = await itemsServiceUser.readByQuery(query, opts);
+		results = await itemsServiceUser.readByQuery(query, { ...opts, stripNonRequested: false });
 
 		await trx.rollback();
 	});
