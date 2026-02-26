@@ -68,7 +68,7 @@ export function parseJsonFunction(functionString: string): { field: string; path
 
 	if (depth > MAX_JSON_QUERY_DEPTH) {
 		throw new InvalidQueryError({
-			reason: `JSON path depth exceeds maximum allowed depth of ${MAX_JSON_QUERY_DEPTH} (got ${depth})`,
+			reason: `JSON path depth (${depth}) exceeds allowed maximum of ${MAX_JSON_QUERY_DEPTH}`,
 		});
 	}
 
