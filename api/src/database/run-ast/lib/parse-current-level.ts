@@ -16,18 +16,14 @@ export async function parseCurrentLevel(
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 	for (const child of children) {
-		if (child.type == 'functionField' && child.name.startsWith('json')) {
-			const { field } = parseJsonFunction(child.name);
-
-			if (columnsInCollection.includes(field)) {
-				columnsToSelectInternal.push(child.fieldKey);
-			}
-
-			continue;
-		}
-
 		if (child.type === 'field' || child.type === 'functionField') {
-			const { fieldName } = parseFilterKey(child.name);
+			let fieldName;
+
+			if (child.type == 'functionField' && child.name.startsWith('json')) {
+				fieldName = parseJsonFunction(child.name).field;
+			} else {
+				fieldName = parseFilterKey(child.name).fieldName;
+			}
 
 			if (columnsInCollection.includes(fieldName)) {
 				columnsToSelectInternal.push(child.fieldKey);
