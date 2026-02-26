@@ -625,12 +625,12 @@ describe('system-collections-translations dialog', () => {
 		(wrapper.vm as any).parentForeignKeyField = 'articles_id';
 		(wrapper.vm as any).languageForeignKeyField = 'languages_code';
 
-			await (wrapper.vm as any).submit();
+		await (wrapper.vm as any).submit();
 
-			expect(hydrateCollectionsSpy).toHaveBeenCalledTimes(1);
-			expect(hydrateFieldsSpy).not.toHaveBeenCalled();
-			expect(hydrateRelationsSpy).not.toHaveBeenCalled();
-			expect(unexpectedError).toHaveBeenCalledTimes(1);
-			expect(wrapper.emitted('update:active')).toEqual([[false]]);
-		});
+		expect(hydrateCollectionsSpy).toHaveBeenCalledTimes(1);
+		expect(hydrateFieldsSpy).not.toHaveBeenCalled();
+		expect(hydrateRelationsSpy).not.toHaveBeenCalled();
+		expect(unexpectedError).toHaveBeenCalledTimes(1);
+		expect(wrapper.emitted('update:active')).toEqual([[false]]);
 	});
+});
