@@ -7,6 +7,7 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('../telemetry/counter/use-buffered-counter.js');
+
 vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
 		trace: vi.fn(),
@@ -14,7 +15,6 @@ vi.mock('../logger/index.js', () => ({
 }));
 
 import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
-import { useLogger } from '../logger/index.js';
 import requestCounterMiddleware from './request-counter.js';
 
 const mockIncrement = vi.fn();

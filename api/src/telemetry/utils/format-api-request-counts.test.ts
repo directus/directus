@@ -1,4 +1,4 @@
-import { expect, test, describe } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { formatApiRequestCounts } from './format-api-request-counts.js';
 
 describe('formatApiRequestCounts', () => {

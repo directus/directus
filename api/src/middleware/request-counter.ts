@@ -14,6 +14,7 @@ if (toBoolean(env['TELEMETRY'])) {
 	requestCounterMiddleware = (req, _res, next) => {
 		if (TRACKED_METHODS.has(req.method)) {
 			const logger = useLogger();
+
 			try {
 				const counter = useBufferedCounter('api-requests');
 				counter.increment(req.method.toLowerCase());
