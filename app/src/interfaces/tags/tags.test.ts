@@ -24,8 +24,8 @@ describe('Variable mode', () => {
 			global,
 		});
 
-		expect(wrapper.find('input[readonly]').exists()).toBe(true);
-		expect((wrapper.find('input[readonly]').element as HTMLInputElement).value).toBe('{{$trigger.payload.id}}');
+		expect(wrapper.find('input[disabled]').exists()).toBe(true);
+		expect((wrapper.find('input[disabled]').element as HTMLInputElement).value).toBe('{{$trigger.payload.id}}');
 		expect(wrapper.find('v-icon-stub[name="close"]').exists()).toBe(true);
 		expect(wrapper.findAll('.v-chip.tag').length).toBe(0);
 	});
@@ -36,7 +36,7 @@ describe('Variable mode', () => {
 			global,
 		});
 
-		await wrapper.find('input[readonly]').trigger('keydown', { key: 'Enter' });
+		await wrapper.find('input[disabled]').trigger('keydown', { key: 'Enter' });
 
 		expect(wrapper.emitted('input')).toBeUndefined();
 	});
@@ -48,30 +48,31 @@ describe('Variable mode', () => {
 		});
 
 		await wrapper.find('v-icon-stub[name="close"]').trigger('click');
+		await wrapper.setProps({ value: null });
 
 		expect(wrapper.emitted('input')).toBeTruthy();
 		expect(wrapper.emitted('input')![0]).toEqual([null]);
-		expect(wrapper.find('input[readonly]').exists()).toBe(false);
+		expect(wrapper.find('input[disabled]').exists()).toBe(false);
 	});
 
 	it('any string value triggers variable mode when rawEditorEnabled', () => {
 		const wrapper = mount(Tags, { props: { value: 'foo', rawEditorEnabled: true }, global });
 
-		expect(wrapper.find('input[readonly]').exists()).toBe(true);
+		expect(wrapper.find('input[disabled]').exists()).toBe(true);
 	});
 
 	it('string value without rawEditorEnabled stays in normal tags mode', () => {
 		const wrapper = mount(Tags, { props: { value: '{{$trigger.payload.id}}' }, global });
 
-		expect(wrapper.find('input[readonly]').exists()).toBe(false);
+		expect(wrapper.find('input[disabled]').exists()).toBe(false);
 	});
 
 	it('null or array value stays in normal tags mode', () => {
 		const wrapper1 = mount(Tags, { props: { value: null }, global });
 		const wrapper2 = mount(Tags, { props: { value: ['a', 'b'] }, global });
 
-		expect(wrapper1.find('input[readonly]').exists()).toBe(false);
-		expect(wrapper2.find('input[readonly]').exists()).toBe(false);
+		expect(wrapper1.find('input[disabled]').exists()).toBe(false);
+		expect(wrapper2.find('input[disabled]').exists()).toBe(false);
 	});
 });
 
