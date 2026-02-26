@@ -23,6 +23,7 @@ import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
@@ -75,6 +76,12 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	const contextStore = useAiContextStore();
 	const { stageVisualElement } = useContextStaging();
 
+	const {
+		readAllowed: readVersionsAllowed,
+		createAllowed: createVersionsAllowed,
+		updateAllowed: updateVersionsAllowed,
+	} = useCollectionPermissions('directus_versions');
+
 	useEventListener('message', (event) => {
 		if (!sameOrigin(event.origin, frameSrc)) {
 			return;
@@ -115,6 +122,13 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	function receiveCheckFieldAccess(data: unknown) {
 		const elements = data as CheckFieldAccessData[];
+		const canEditVersions = readVersionsAllowed.value && (createVersionsAllowed.value || updateVersionsAllowed.value);
+
+		if (version && !userStore.isAdmin && !canEditVersions) {
+			send('activateElements', []);
+			return;
+		}
+
 		const permittedKeys = elements.filter((element) => hasAnyUpdatableField(element)).map(({ key }) => key);
 		send('activateElements', permittedKeys);
 	}

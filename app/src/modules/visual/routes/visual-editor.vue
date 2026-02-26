@@ -2,6 +2,7 @@
 import type { ContentVersion } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
+import { isNil } from 'lodash';
 import { computed, type ComputedRef, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -16,6 +17,7 @@ import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { BREAKPOINTS, DRAFT_VERSION_KEY } from '@/constants';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
@@ -119,6 +121,7 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 }
 
 function useVersionSelection() {
+	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
 	const versionPlacements = computed(() => urlTemplates.value.map(analyzeTemplate));
 
 	const activeVersionPlacement = computed(() => {
@@ -133,10 +136,10 @@ function useVersionSelection() {
 		return null;
 	});
 
-	const isVersionSelectable = computed(() => activeVersionPlacement.value !== null);
+	const isVersionSelectable = computed(() => readVersionsAllowed.value && activeVersionPlacement.value !== null);
 
 	const detectedVersion = computed<ContentVersion['key'] | null | undefined>(() => {
-		if (!dynamicUrl || !activeVersionPlacement.value) return undefined;
+		if (!dynamicUrl || !isVersionSelectable.value) return undefined;
 
 		const extractedVersion = extractVersion(dynamicUrl, activeVersionPlacement.value);
 
@@ -145,7 +148,7 @@ function useVersionSelection() {
 
 	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
 		const versionList = [{ key: DRAFT_VERSION_KEY, name: null }];
-		const isDetectedVersionCustom = detectedVersion.value !== null && detectedVersion.value !== DRAFT_VERSION_KEY;
+		const isDetectedVersionCustom = !isNil(detectedVersion.value) && detectedVersion.value !== DRAFT_VERSION_KEY;
 
 		if (isDetectedVersionCustom) versionList.push({ key: detectedVersion.value!, name: null });
 
@@ -156,7 +159,7 @@ function useVersionSelection() {
 	});
 
 	const selectedVersion = computed(() => {
-		if (detectedVersion.value == null) return null;
+		if (isNil(detectedVersion.value)) return null;
 		return versions.value.find((version) => version.key === detectedVersion.value) ?? null;
 	});
 

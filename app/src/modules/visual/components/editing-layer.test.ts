@@ -109,8 +109,8 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-function mountLayer(version: { key: string; name: string } | null = null) {
-	return mount(EditingLayer, {
+function mountEditingLayer(version: { key: string; name: string } | null = null) {
+	mount(EditingLayer, {
 		global: mountOptions,
 		props: { frameSrc: FRAME_SRC, frameEl: mockFrameEl, version },
 	});
@@ -127,20 +127,30 @@ function setupPermission(fields: string[] | null = null, access = 'full') {
 	vi.mocked(usePermissionsStore().getPermission).mockReturnValue({ access, fields } as any);
 }
 
+function setupVersionPermissions({ read = false, create = false, update = false }) {
+	vi.mocked(usePermissionsStore().hasPermission).mockImplementation((collection, action) => {
+		if (collection !== 'directus_versions') return false;
+		if (action === 'read') return read;
+		if (action === 'create') return create;
+		if (action === 'update') return update;
+		return false;
+	});
+}
+
 function setupNonAdmin() {
 	(useUserStore() as any).isAdmin = false;
 }
 
 describe('checkFieldAccess', () => {
 	it.each([null, ''])('filters out elements with item=%j', (item) => {
-		mountLayer();
+		mountEditingLayer();
 		sendCheckFieldAccess(createElements({ item }));
 
 		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: [] }, FRAME_SRC);
 	});
 
 	it('filters out elements with unknown collection', () => {
-		mountLayer();
+		mountEditingLayer();
 		vi.mocked(useCollectionsStore().getCollection).mockReturnValue(null);
 
 		sendCheckFieldAccess(createElements());
@@ -149,7 +159,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('filters out elements when version is set but collection has no versioning', () => {
-		mountLayer({ key: 'draft', name: 'Draft' });
+		mountEditingLayer({ key: 'draft', name: 'Draft' });
 		setupCollection({ versioning: false });
 
 		sendCheckFieldAccess(createElements());
@@ -158,7 +168,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('allows elements when version is set and collection has versioning', () => {
-		mountLayer({ key: 'draft', name: 'Draft' });
+		mountEditingLayer({ key: 'draft', name: 'Draft' });
 		setupCollection({ versioning: true });
 		(useUserStore() as any).isAdmin = true;
 
@@ -168,7 +178,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('allows all elements for admin users', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection();
 		(useUserStore() as any).isAdmin = true;
 
@@ -178,7 +188,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('filters out elements when no permission exists', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection();
 		setupNonAdmin();
 
@@ -188,7 +198,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('filters out elements when permission access is none', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection();
 		setupNonAdmin();
 		setupPermission(null, 'none');
@@ -199,7 +209,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('filters out elements when none of the fields are permitted', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection();
 		setupNonAdmin();
 		setupPermission(['body', 'status']);
@@ -210,7 +220,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('allows elements when at least one field is permitted', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection();
 		setupNonAdmin();
 		setupPermission(['title', 'status']);
@@ -221,7 +231,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('allows elements when permission has wildcard fields', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection();
 		setupNonAdmin();
 		setupPermission(['*']);
@@ -232,7 +242,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('allows elements when element declares no specific fields', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection();
 		setupNonAdmin();
 		setupPermission(['title']);
@@ -243,7 +253,7 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('allows elements when permission has no field restrictions', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection();
 		setupNonAdmin();
 		setupPermission(null);
@@ -254,9 +264,66 @@ describe('checkFieldAccess', () => {
 	});
 
 	it('allows elements when no version is set on a versioned collection', () => {
-		mountLayer();
+		mountEditingLayer();
 		setupCollection({ versioning: true });
 		(useUserStore() as any).isAdmin = true;
+
+		sendCheckFieldAccess(createElements());
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: ['el-0'] }, FRAME_SRC);
+	});
+
+	it('filters out elements when version is set but user has no directus_versions permissions', () => {
+		mountEditingLayer({ key: 'draft', name: 'Draft' });
+		setupCollection({ versioning: true });
+		setupNonAdmin();
+		setupPermission(['*']);
+
+		sendCheckFieldAccess(createElements());
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: [] }, FRAME_SRC);
+	});
+
+	it('filters out elements when user has only read on directus_versions', () => {
+		mountEditingLayer({ key: 'draft', name: 'Draft' });
+		setupCollection({ versioning: true });
+		setupNonAdmin();
+		setupVersionPermissions({ read: true });
+
+		sendCheckFieldAccess(createElements());
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: [] }, FRAME_SRC);
+	});
+
+	it('allows elements when user has read + create on directus_versions', () => {
+		mountEditingLayer({ key: 'draft', name: 'Draft' });
+		setupCollection({ versioning: true });
+		setupNonAdmin();
+		setupPermission(['*']);
+		setupVersionPermissions({ read: true, create: true });
+
+		sendCheckFieldAccess(createElements());
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: ['el-0'] }, FRAME_SRC);
+	});
+
+	it('allows elements when user has read + update on directus_versions', () => {
+		mountEditingLayer({ key: 'draft', name: 'Draft' });
+		setupCollection({ versioning: true });
+		setupNonAdmin();
+		setupPermission(['*']);
+		setupVersionPermissions({ read: true, update: true });
+
+		sendCheckFieldAccess(createElements());
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: ['el-0'] }, FRAME_SRC);
+	});
+
+	it('skips version permission check when no version is set', () => {
+		mountEditingLayer();
+		setupCollection();
+		setupNonAdmin();
+		setupPermission(['*']);
 
 		sendCheckFieldAccess(createElements());
 
