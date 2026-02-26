@@ -1,4 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
+import requestCounterMiddleware from './request-counter.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
@@ -13,9 +15,6 @@ vi.mock('../logger/index.js', () => ({
 		trace: vi.fn(),
 	}),
 }));
-
-import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
-import requestCounterMiddleware from './request-counter.js';
 
 const mockIncrement = vi.fn();
 
