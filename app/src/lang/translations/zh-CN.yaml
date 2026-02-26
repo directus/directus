@@ -1426,12 +1426,15 @@ fields:
     public_registration_verify_email: 验证电子邮件
     public_registration_verify_email_note: 向注册用户发送一封电子邮件，请他们在登录前点击验证链接。
     visual_editor_urls: 可视化编辑器网址
+    collaborative_editing: 共同编辑
+    collaborative_editing_note: 共同编辑需要WebSockets才能正常工作。
+    ai_notice: 'AI助手提供一个内置的侧边栏，用于与大型语言模型交谈。启用后，从工具栏中打开此侧边栏，以便询问问题、生成内容、获取帮助。<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">了解更多关于配置和使用AI助手的信息。</a>'
     mcp_enabled: MCP服务器
     mcp_enabled_note: '通过 <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">模型上下文协议 (MCP)</a> 将 AI/LLM 工具连接到您的 Directus 项目。这使 AI 助手能够安全地读取您的 Directus 数据并与之交互。'
     mcp_notice: '模型上下文协议（Model Context Protocol）是将大型语言模型（LLM）连接到像 Directus 这样的应用的标准。启用后，Directus MCP 服务器将在 /mcp 可用。<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">了解有关 MCP 及如何连接的更多信息。</a>'
     mcp_allow_deletes: 允许删除
     mcp_allow_deletes_note:
-      - 可能会导致数据丢失。</strong>出于安全考虑，默认禁用。
+      - 这可能导致数据丢失。</strong>出于安全考虑，默认为禁用。
     mcp_prompts_collection: AI 提示词集合
     mcp_prompts_collection_note: '选择用于存储 AI 交互<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">可重复使用的提示词模板</a>的集合。'
     mcp_system_prompt_divider: 系统提示配置
@@ -1439,6 +1442,16 @@ fields:
     mcp_system_prompt_enabled_note: "使用<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>默认系统提示词</a>来指导大型语言模型（LLM）的行为。禁用后可以移除或使用下方您自己的提示词覆盖。"
     mcp_system_prompt: 自定义系统提示
     mcp_system_prompt_note: '自定义系统提示替换默认值。留空则使用默认值(如果已启用)。'
+    ai_system_prompt: 用于AI系统的提示词
+    ai_system_prompt_note: '自定义用于AI系统的提示词，可以在与AI助手的交互中引导大型语言模型的行为。若留空，则使用默认值。'
+    ai_openai_allowed_models: AI OpenAI的可用模型
+    ai_anthropic_allowed_models: AI Anthropic的可用模型
+    ai_google_allowed_models: AI Google的可用模型
+    ai_openai_compatible: 与OpenAI相兼容的提供者
+    ai_openai_compatible_name: 提供者的名称
+    ai_openai_compatible_base_url: 根URL
+    ai_openai_compatible_models: 模型
+    ai_openai_compatible_headers: 自定义标头
     ai_header_name: 报头
   directus_shares:
     name: 名称
