@@ -117,12 +117,17 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 	 * Flush all buffered counts to the counter, read back every sub-key's
 	 * total, and reset them all to 0 in the counter. Returns a record of
 	 * sub-key → count.
+	 *
+	 * @param expectedKeys - Optional explicit list of sub-keys to always
+	 *   include when reading/resetting. Ensures keys tracked by other
+	 *   processes (but not seen locally) are still captured.
 	 */
-	const getAndResetAll = async (): Promise<Record<string, number>> => {
+	const getAndResetAll = async (expectedKeys?: string[]): Promise<Record<string, number>> => {
 		// Flush any buffered counts so the counter has the full picture
 		await flushAll();
 
-		const subKeys = Object.keys(flusher.counters);
+		const localKeys = Object.keys(flusher.counters);
+		const subKeys = expectedKeys ? [...new Set([...localKeys, ...expectedKeys])] : localKeys;
 		const result: Record<string, number> = {};
 
 		for (const subKey of subKeys) {
@@ -136,6 +141,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 				if (result[subKey]! > 0) {
 					return counter.increment(subKey, -result[subKey]!);
 				}
+
 				return Promise.resolve();
 			}),
 		);

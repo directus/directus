@@ -4,15 +4,15 @@ import { version } from 'directus/version';
 import { getHelpers } from '../../database/helpers/index.js';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
+import { useBufferedCounter } from '../counter/use-buffered-counter.js';
 import type { TelemetryReport } from '../types/report.js';
+import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
 import { getExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount } from '../utils/get-field-count.js';
 import { getFilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getSettings } from '../utils/get-settings.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
-import { useBufferedCounter } from '../counter/use-buffered-counter.js';
-import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
 
 const basicCountTasks = [
 	{ collection: 'directus_dashboards' },
@@ -44,7 +44,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 			helpers.schema.getDatabaseSize(),
 			getFilesizeSum(db),
 			getSettings(db),
-			requestCounter.getAndResetAll()
+			requestCounter.getAndResetAll(['get', 'post', 'put', 'patch', 'delete', 'cached'])
 		]);
 
 	return {

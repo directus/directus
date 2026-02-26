@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { useCounter } from './use-counter.js';
 import { _bufferedCounterCache, useBufferedCounter } from './use-buffered-counter.js';
+import { useCounter } from './use-counter.js';
 
 vi.mock('./use-counter.js');
 
@@ -518,6 +518,77 @@ describe('useBufferedCounter', () => {
 			const result = await flusher.getAndResetAll();
 
 			expect(result).toEqual({});
+		});
+
+		test('Includes expectedKeys not seen locally', async () => {
+			const flusher = useBufferedCounter('requests');
+
+			flusher.increment('get', 10);
+
+			mockCounter.get.mockImplementation(async (key: string) => {
+				if (key === 'get') return 10;
+				if (key === 'post') return 7;
+				if (key === 'delete') return 3;
+				return undefined;
+			});
+
+			const result = await flusher.getAndResetAll(['get', 'post', 'delete']);
+
+			expect(result).toEqual({
+				get: 10,
+				post: 7,
+				delete: 3,
+			});
+		});
+
+		test('Resets expectedKeys not seen locally', async () => {
+			const flusher = useBufferedCounter('requests');
+
+			mockCounter.get.mockImplementation(async (key: string) => {
+				if (key === 'post') return 5;
+				return undefined;
+			});
+
+			mockCounter.increment.mockClear();
+
+			await flusher.getAndResetAll(['post']);
+
+			expect(mockCounter.increment).toHaveBeenCalledWith('post', -5);
+		});
+
+		test('Deduplicates local and expected keys', async () => {
+			const flusher = useBufferedCounter('requests');
+
+			flusher.increment('get', 10);
+
+			mockCounter.get.mockImplementation(async (key: string) => {
+				if (key === 'get') return 10;
+				if (key === 'post') return 5;
+				return undefined;
+			});
+
+			const result = await flusher.getAndResetAll(['get', 'post']);
+
+			expect(result).toEqual({
+				get: 10,
+				post: 5,
+			});
+
+			expect(mockCounter.get).toHaveBeenCalledTimes(2);
+		});
+
+		test('Defaults to 0 for expectedKeys with no stored value', async () => {
+			const flusher = useBufferedCounter('requests');
+
+			mockCounter.get.mockResolvedValue(undefined);
+
+			const result = await flusher.getAndResetAll(['get', 'post', 'cached']);
+
+			expect(result).toEqual({
+				get: 0,
+				post: 0,
+				cached: 0,
+			});
 		});
 	});
 })

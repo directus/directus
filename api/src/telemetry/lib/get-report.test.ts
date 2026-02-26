@@ -1,17 +1,17 @@
 import { useEnv } from '@directus/env';
 import { version } from 'directus/version';
 import { type Knex } from 'knex';
-import { describe, afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
+import { useBufferedCounter } from '../counter/use-buffered-counter.js';
+import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
 import { type ExtensionCount, getExtensionCount } from '../utils/get-extension-count.js';
 import { type FieldCount, getFieldCount } from '../utils/get-field-count.js';
 import { type FilesizeSum, getFilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getSettings, type TelemetrySettings } from '../utils/get-settings.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
-import { useBufferedCounter } from '../counter/use-buffered-counter.js';
-import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
 import { getReport } from './get-report.js';
 
 vi.mock('../../database/index.js');
