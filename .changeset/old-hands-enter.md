@@ -1,7 +1,8 @@
 ---
-'@directus/utils': major
-'@directus/api': major
-'@directus/constants': patch
+'@directus/utils': minor
+'@directus/api': minor
+'@directus/constants': minor
+'@directus/env': minor
 ---
 
 Added JSON field selection support
