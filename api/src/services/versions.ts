@@ -221,6 +221,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			for (const pk of keys) {
 				const { collection, item } = await this.readOne(pk, { fields: ['collection', 'item'] });
 
+				if (data['key'] !== 'draft' && item === null)
+					throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
+
 				const keyCombo = `${data['key']}-${collection}-${item}`;
 
 				if (keyCombos.has(keyCombo)) {
@@ -230,6 +233,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				}
 
 				keyCombos.add(keyCombo);
+
+				// Skip checking for existing versions if the version is itemless.
+				if (item === null) continue;
 
 				const existingVersions = await super.readByQuery({
 					aggregate: { count: ['*'] },

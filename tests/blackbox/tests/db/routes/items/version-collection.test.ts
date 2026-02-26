@@ -84,3 +84,57 @@ describe('promoting an itemless version', () => {
 		expect(response.body.data).toBeDefined();
 	});
 });
+
+describe('deny updating non draft version from item to itemless', () => {
+	it.each(vendors)('%s', async (vendor) => {
+		const version = await CreateVersion(vendor, {
+			collection: c.articles,
+			item: 1,
+			key: 'test',
+			name: 'draft',
+		});
+
+		await SaveVersion(vendor, {
+			id: version.id,
+			delta: {
+				title: 'title',
+			},
+		});
+
+		const response = await request(getUrl(vendor))
+			.patch(`/versions/${version.id}`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+			.send({
+				item: null,
+			});
+
+		expect(response.body.error).toBeDefined();
+	});
+});
+
+describe('deny updating itemless draft version to item(full)', () => {
+	it.each(vendors)('%s', async (vendor) => {
+		const version = await CreateVersion(vendor, {
+			collection: c.articles,
+			item: null,
+			key: 'draft',
+			name: 'draft',
+		});
+
+		await SaveVersion(vendor, {
+			id: version.id,
+			delta: {
+				title: 'title',
+			},
+		});
+
+		const response = await request(getUrl(vendor))
+			.patch(`/versions/${version.id}`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+			.send({
+				key: 'test2',
+			});
+
+		expect(response.body.error).toBeDefined();
+	});
+});
