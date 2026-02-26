@@ -1165,6 +1165,20 @@ fields:
     transformations_presets: 限制資料轉換範圍為以下清單
     image_editor: 圖片編輯器
     custom_aspect_ratios: 自訂比例
+    collaborative_editing: 共同編輯
+    collaborative_editing_note: 共同編輯需要WebSockets才能正常工作。
+    ai_notice: 'AI助手提供一個內建的側邊欄，用於與大型語言模型對話。啟用後，從工具列中開啟此側邊欄，以便詢問問題、生成內容、獲取協助。<a href="https://directus.io/docs/guides/ai/assistant" target="_blank">了解更多關於配置和使用AI助手的資訊。</a>'
+    mcp_allow_deletes_note:
+      - 這可能導致資料遺失。</strong>出於安全考量，預設為停用。
+    ai_system_prompt: 用於AI系統的提示詞
+    ai_system_prompt_note: '自訂用於AI系統的提示詞，可以在與AI助手的互動中引導大型語言模型的行為。若留空，則使用預設值。'
+    ai_anthropic_allowed_models: Anthropic的可用模型
+    ai_google_allowed_models: Google的可用模型
+    ai_openai_compatible: 與OpenAI相兼容的提供者
+    ai_openai_compatible_name: 提供者的名稱
+    ai_openai_compatible_base_url: 根URL
+    ai_openai_compatible_models: 模型
+    ai_openai_compatible_headers: 自訂標頭
     ai_header_name: 標題
   directus_shares:
     name: 名稱
