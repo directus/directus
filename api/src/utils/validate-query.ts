@@ -181,8 +181,14 @@ function validateAlias(alias: any) {
 			throw new InvalidQueryError({ reason: `"alias" value has to be a string. "${typeof key}" given` });
 		}
 
-		if (key.includes('.') || value.includes('.')) {
-			throw new InvalidQueryError({ reason: `"alias" key/value can't contain a period character \`.\`` });
+		if (key.includes('.')) {
+			throw new InvalidQueryError({ reason: `"alias" key can't contain a period character \`.\`` });
+		}
+
+		const isJsonFunction = value.trim().startsWith('json(') && value.endsWith(')');
+
+		if (!isJsonFunction && value.includes('.')) {
+			throw new InvalidQueryError({ reason: `"alias" value can't contain a period character \`.\`` });
 		}
 	}
 }
