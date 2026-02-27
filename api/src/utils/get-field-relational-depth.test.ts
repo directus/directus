@@ -43,6 +43,11 @@ describe('getFieldRelationalDepth', () => {
 			input: 'json(a.b.field, some.path)',
 			expected: 3,
 		},
+		{
+			description: 'counts relational segments from the first argument of a multi-argument function combined with before the function',
+			input: 'a.b.json(c.d.field, some.path[0].nested)',
+			expected: 5,
+		},
 	];
 
 	test.each(testCases)('$description', ({ input, expected }) => {
