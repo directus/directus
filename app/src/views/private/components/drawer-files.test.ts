@@ -1,11 +1,23 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import DrawerFiles from './drawer-files.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
+
+const sessionStore = new Map<string, ReturnType<typeof ref>>();
+
+vi.mock('@vueuse/core', () => ({
+	useSessionStorage: vi.fn((key: string, initialValue: unknown) => {
+		if (!sessionStore.has(key)) {
+			sessionStore.set(key, ref(initialValue));
+		}
+
+		return sessionStore.get(key);
+	}),
+}));
 
 vi.mock('@/stores/user', () => ({
 	useUserStore: vi.fn(),
@@ -32,6 +44,8 @@ let global: GlobalMountOptions;
 let mockUserStore: any;
 
 beforeEach(() => {
+	sessionStore.clear();
+
 	const pinia = createPinia();
 	setActivePinia(pinia);
 
