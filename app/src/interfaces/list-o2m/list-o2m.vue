@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { useLocalStorage } from '@vueuse/core';
+import { useEventListener, useLocalStorage } from '@vueuse/core';
 import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
@@ -84,6 +84,15 @@ const columnWidths = useLocalStorage<Record<string, number>>(
 	() => `directus-o2m-column-widths-${collection.value}-${field.value}`,
 	{},
 );
+
+const pendingColumnWidths = ref<Record<string, number>>({});
+
+useEventListener(window, 'pointerup', () => {
+	if (Object.keys(pendingColumnWidths.value).length > 0) {
+		columnWidths.value = { ...columnWidths.value, ...pendingColumnWidths.value };
+		pendingColumnWidths.value = {};
+	}
+});
 
 const value = computed({
 	get: () => props.value,
@@ -217,7 +226,7 @@ const headers = computed({
 				return {
 					text: field.name,
 					value: key,
-					width: columnWidths.value[key] ?? defaultWidth,
+					width: pendingColumnWidths.value[key] ?? columnWidths.value[key] ?? defaultWidth,
 					sortable: !['json'].includes(field.type),
 				};
 			})
@@ -230,7 +239,7 @@ const headers = computed({
 			widths[h.value] = h.width ?? 160;
 		});
 
-		columnWidths.value = { ...columnWidths.value, ...widths };
+		pendingColumnWidths.value = { ...pendingColumnWidths.value, ...widths };
 	},
 });
 
