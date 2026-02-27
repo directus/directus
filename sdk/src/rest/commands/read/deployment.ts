@@ -57,6 +57,8 @@ export interface DeploymentDashboardOutput {
 export interface DeploymentRunStatsOutput {
 	total_deployments: number;
 	average_build_time: number | null;
+	failed_builds: number;
+	successful_builds: number;
 }
 
 export interface DeploymentRunsOutput {
@@ -66,9 +68,10 @@ export interface DeploymentRunsOutput {
 	target: string;
 	status: 'building' | 'ready' | 'error' | 'canceled';
 	url?: string;
+	started_at?: string;
+	completed_at?: string;
 	date_created: string;
-	finished_at?: string;
-	author?: string;
+	user_created?: Record<string, string>;
 }
 
 /**

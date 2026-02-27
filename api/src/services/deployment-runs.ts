@@ -69,12 +69,17 @@ export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 	async getStats(
 		projectId: string,
 		sinceDate: string,
-	): Promise<{ total_deployments: number; average_build_time: number | null }> {
+	): Promise<{
+		total_deployments: number;
+		average_build_time: number | null;
+		failed_builds: number;
+		successful_builds: number;
+	}> {
 		const dateFilter = {
 			_and: [{ project: { _eq: projectId } }, { date_created: { _gte: sinceDate } }],
 		};
 
-		const [countResult, completedRuns] = await Promise.all([
+		const [countResult, completedRuns, statusCounts] = await Promise.all([
 			this.readByQuery({
 				filter: dateFilter,
 				aggregate: { count: ['*'] },
@@ -91,6 +96,17 @@ export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 				fields: ['started_at', 'completed_at'],
 				limit: -1,
 			}),
+			this.readByQuery({
+				filter: {
+					_and: [
+						{ project: { _eq: projectId } },
+						{ date_created: { _gte: sinceDate } },
+						{ status: { _in: ['ready', 'error'] } },
+					],
+				},
+				aggregate: { count: ['*'] },
+				group: ['status'],
+			}) as Promise<any[]>,
 		]);
 
 		let averageBuildTime: number | null = null;
@@ -103,9 +119,13 @@ export class DeploymentRunsService extends ItemsService<DeploymentRun> {
 			averageBuildTime = Math.round(durations.reduce((a, b) => a + b, 0) / durations.length);
 		}
 
+		const statusMap = new Map(statusCounts.map((r: any) => [r.status, Number(r.count)]));
+
 		return {
 			total_deployments: Number(countResult[0]?.['count'] ?? 0),
 			average_build_time: averageBuildTime,
+			failed_builds: statusMap.get('error') ?? 0,
+			successful_builds: statusMap.get('ready') ?? 0,
 		};
 	}
 }
