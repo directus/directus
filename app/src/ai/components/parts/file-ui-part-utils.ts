@@ -8,7 +8,9 @@ export function isImagePreview(part: FileUIPart): boolean {
 	return !!part.mediaType?.startsWith('image/') && !!part.url;
 }
 
-export function toLightboxFile(part: FileUIPart): Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'> {
+export function toLightboxFile(
+	part: FileUIPart,
+): Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'> {
 	return {
 		id: '',
 		title: part.filename || '',
