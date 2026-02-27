@@ -6,10 +6,6 @@ const mockModuleBar = vi.hoisted(() => ({
 	value: [] as Array<{ type: string; id: string; enabled: boolean }>,
 }));
 
-const mockVisualEditorUrls = vi.hoisted(() => ({
-	value: [] as Array<{ url: string }>,
-}));
-
 vi.mock('@/utils/normalize-url', () => ({
 	normalizeUrl: (url: string | null) => url,
 }));
@@ -19,9 +15,6 @@ vi.mock('@/stores/settings', () => ({
 		settings: {
 			get module_bar() {
 				return mockModuleBar.value;
-			},
-			get visual_editor_urls() {
-				return mockVisualEditorUrls.value;
 			},
 		},
 	}),
@@ -33,7 +26,6 @@ beforeEach(() => {
 		{ type: 'module', id: 'visual', enabled: true },
 	];
 
-	mockVisualEditorUrls.value = [{ url: 'https://example.com' }];
 });
 
 afterEach(() => {
