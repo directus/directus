@@ -183,4 +183,42 @@ describe('useAiStore', () => {
 			expect(aiStore.chatOpen).toBe(false);
 		});
 	});
+
+	describe('reset', () => {
+		test('should stop ongoing request', () => {
+			const aiStore = useAiStore();
+
+			aiStore.reset();
+
+			expect(aiStore.chat.stop).toHaveBeenCalled();
+		});
+	});
+
+	describe('selectModel', () => {
+		test('should reset chat when switching models', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push(
+				{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] },
+				{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Hi!' }] },
+			);
+
+			const model = aiStore.models[0]!;
+			aiStore.selectModel(model);
+
+			expect(aiStore.chat.messages.length).toBe(0);
+			expect(aiStore.chat.clearError).toHaveBeenCalled();
+			expect(aiStore.chat.stop).toHaveBeenCalled();
+		});
+
+		test('should update selected model', () => {
+			const aiStore = useAiStore();
+
+			const model = aiStore.models[1]!;
+			aiStore.selectModel(model);
+
+			expect(aiStore.selectedModel?.provider).toBe(model.provider);
+			expect(aiStore.selectedModel?.model).toBe(model.model);
+		});
+	});
 });

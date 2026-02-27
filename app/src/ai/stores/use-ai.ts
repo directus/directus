@@ -144,6 +144,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	});
 
 	const selectModel = (modelDefinition: AppModelDefinition) => {
+		reset();
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
 
@@ -374,6 +375,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	};
 
 	const reset = () => {
+		stop();
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
