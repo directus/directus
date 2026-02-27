@@ -1,7 +1,21 @@
+import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
-import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
+import type {
+	Credentials,
+	Deployment,
+	DeploymentWebhookEvent,
+	DeploymentWebhookEventType,
+	Details,
+	Log,
+	Options,
+	Project,
+	Status,
+	TriggerResult,
+	WebhookRegistrationResult,
+} from '@directus/types';
 import { NetlifyAPI } from '@netlify/api';
 import { isNumber } from 'lodash-es';
+import { useLogger } from '../../logger/index.js';
 import { DeploymentDriver } from '../deployment.js';
 
 export interface NetlifyCredentials extends Credentials {
@@ -13,6 +27,11 @@ export interface NetlifyOptions extends Options {
 }
 
 type NetlifySite = Awaited<ReturnType<NetlifyAPI['getSite']>>;
+
+interface NetlifyHook {
+	id?: string;
+	data?: { url?: string };
+}
 
 interface DeploymentConnection {
 	ws: WebSocket;
@@ -32,6 +51,15 @@ const WS_CONNECTION_TIMEOUT = 10_000; // 10 seconds
 // eslint-disable-next-line no-control-regex
 const ANSI_REGEX = /[\x1b]\[[0-9;]*m/g;
 const WS_URL = 'wss://socketeer.services.netlify.com/build/logs';
+
+const NETLIFY_WEBHOOK_EVENTS = ['deploy_created', 'deploy_building', 'deploy_failed', 'deploy_succeeded'];
+
+// Map Netlify deploy state to our normalized types
+const STATE_TO_EVENT: Record<string, { type: DeploymentWebhookEventType; status: Status }> = {
+	building: { type: 'deployment.created', status: 'building' },
+	ready: { type: 'deployment.succeeded', status: 'ready' },
+	error: { type: 'deployment.error', status: 'error' },
+};
 
 export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyOptions> {
 	private api: NetlifyAPI;
@@ -96,18 +124,27 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	}
 
 	async listProjects(): Promise<Project[]> {
-		const params: Record<string, string> = { per_page: '100' };
+		const allSites: NetlifySite[] = [];
+		const perPage = 100;
+		let hasMore = true;
 
-		const response = await this.handleApiError((api) => {
-			return this.options.account_slug
-				? api.listSitesForAccount({
-						account_slug: this.options.account_slug,
-						...params,
-					})
-				: api.listSites(params);
-		});
+		for (let page = 1; hasMore; page++) {
+			const params: Record<string, string> = { per_page: String(perPage), page: String(page) };
 
-		return response.map((site) => this.mapSiteBase(site));
+			const response = await this.handleApiError((api) => {
+				return this.options.account_slug
+					? api.listSitesForAccount({
+							account_slug: this.options.account_slug,
+							...params,
+						})
+					: api.listSites(params);
+			});
+
+			allSites.push(...response);
+			hasMore = response.length >= perPage;
+		}
+
+		return allSites.map((site) => this.mapSiteBase(site));
 	}
 
 	async getProject(projectId: string): Promise<Project> {
@@ -209,14 +246,31 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 		const triggerResult: TriggerResult = {
 			deployment_id: buildResponse.deploy_id!,
 			status: this.mapStatus(deployState.state),
+			created_at: new Date(deployState.created_at!),
 		};
 
 		return triggerResult;
 	}
 
-	async cancelDeployment(deploymentId: string): Promise<void> {
-		await this.handleApiError((api) => api.cancelSiteDeploy({ deployId: deploymentId }));
-		this.closeWsConnection(deploymentId);
+	async cancelDeployment(deploymentId: string): Promise<Status> {
+		try {
+			await this.handleApiError((api) => api.cancelSiteDeploy({ deployId: deploymentId }));
+			this.closeWsConnection(deploymentId);
+
+			return 'canceled';
+		} catch {
+			const details = await this.getDeployment(deploymentId);
+
+			if (details.status !== 'building') {
+				this.closeWsConnection(deploymentId);
+				return details.status;
+			}
+
+			throw new ServiceUnavailableError({
+				service: 'netlify',
+				reason: `Could not cancel the deployment: ${deploymentId}`,
+			});
+		}
 	}
 
 	private closeWsConnection(deploymentId: string, remove = true): void {
@@ -330,6 +384,105 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 				}
 			});
 		});
+	}
+
+	async registerWebhook(webhookUrl: string, projectIds: string[]): Promise<WebhookRegistrationResult> {
+		const logger = useLogger();
+		const secret = randomBytes(32).toString('hex');
+		const hookIds: string[] = [];
+
+		// Netlify API doesn't support JWS signing for API-created hooks,
+		// so we inject a token for verification instead
+		const signedUrl = `${webhookUrl}?token=${secret}`;
+
+		for (const siteId of projectIds) {
+			await this.cleanupStaleHooks(siteId, webhookUrl);
+		}
+
+		for (const siteId of projectIds) {
+			for (const event of NETLIFY_WEBHOOK_EVENTS) {
+				const hook = await this.handleApiError((api) =>
+					api.createHookBySiteId({
+						site_id: siteId,
+						body: { type: 'url', event, data: { url: signedUrl } },
+					}),
+				);
+
+				logger.debug(`[webhook:netlify] Created hook ${hook.id} for event ${event}`);
+				hookIds.push(hook.id!);
+			}
+		}
+
+		return { webhook_ids: hookIds, webhook_secret: secret };
+	}
+
+	private async cleanupStaleHooks(siteId: string, webhookUrl: string): Promise<void> {
+		const logger = useLogger();
+
+		const hooks = await this.handleApiError((api) => api.listHooksBySiteId({ site_id: siteId }));
+
+		const staleHooks = hooks.filter((h: NetlifyHook) => h.data?.url?.startsWith(webhookUrl));
+
+		if (staleHooks.length > 0) {
+			logger.debug(`[webhook:netlify] Cleaning up ${staleHooks.length} stale hook(s) for site ${siteId}`);
+
+			await Promise.allSettled(staleHooks.map((h: NetlifyHook) => this.api.deleteHook({ hook_id: h.id! })));
+		}
+	}
+
+	async unregisterWebhook(webhookIds: string[]): Promise<void> {
+		await Promise.allSettled(webhookIds.map((id) => this.api.deleteHook({ hook_id: id })));
+	}
+
+	verifyAndParseWebhook(
+		rawBody: Buffer,
+		headers: Record<string, string | string[] | undefined>,
+		webhookSecret: string,
+	): DeploymentWebhookEvent | null {
+		const logger = useLogger();
+
+		// URL token verification — Netlify API doesn't support JWS signing for API-created hooks,
+		// so we embed a secret token in the webhook URL and verify it here.
+		// The token is passed via the 'x-webhook-token'
+		const token = headers['x-webhook-token'];
+
+		if (!token || typeof token !== 'string') {
+			logger.warn(`[webhook:netlify] Missing webhook token`);
+			return null;
+		}
+
+		const tokenBuf = Buffer.from(token);
+		const secretBuf = Buffer.from(webhookSecret);
+
+		if (tokenBuf.length !== secretBuf.length || !timingSafeEqual(tokenBuf, secretBuf)) {
+			logger.warn(`[webhook:netlify] Token mismatch`);
+			return null;
+		}
+
+		// Parse deploy object from body
+		const deploy = JSON.parse(rawBody.toString('utf-8'));
+		const state = this.mapStatus(deploy.state);
+		const mapping = STATE_TO_EVENT[state];
+
+		if (!mapping) {
+			return null;
+		}
+
+		const url = deploy.ssl_url || deploy.deploy_ssl_url || deploy.url;
+
+		const timestamp = deploy.published_at || deploy.updated_at || deploy.created_at;
+
+		return {
+			type: mapping.type,
+			provider: 'netlify',
+			project_external_id: deploy.site_id,
+			deployment_external_id: deploy.id,
+			status: mapping.status,
+			...(url ? { url } : {}),
+			...(deploy.context ? { target: deploy.context } : {}),
+			timestamp: new Date(timestamp),
+			raw: deploy,
+		};
 	}
 
 	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {

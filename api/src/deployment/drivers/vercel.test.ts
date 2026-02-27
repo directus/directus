@@ -1,3 +1,4 @@
+import { createHmac } from 'node:crypto';
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type { AxiosResponse } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -139,6 +140,28 @@ describe('VercelDriver', () => {
 			const result = await driver.listProjects();
 
 			expect(result).toEqual([]);
+		});
+
+		it('should paginate when pagination.next is present', async () => {
+			mockAxiosRequest
+				.mockResolvedValueOnce(
+					createAxiosResponse(200, {
+						projects: [{ id: 'proj-1', name: 'App 1', link: { type: 'github' } }],
+						pagination: { next: 1700000000000 },
+					}),
+				)
+				.mockResolvedValueOnce(
+					createAxiosResponse(200, {
+						projects: [{ id: 'proj-2', name: 'App 2' }],
+					}),
+				);
+
+			const result = await driver.listProjects();
+
+			expect(result).toHaveLength(2);
+			expect(result[0]).toEqual({ id: 'proj-1', name: 'App 1', deployable: true });
+			expect(result[1]).toEqual({ id: 'proj-2', name: 'App 2', deployable: false });
+			expect(mockAxiosRequest).toHaveBeenCalledTimes(2);
 		});
 	});
 
@@ -288,12 +311,18 @@ describe('VercelDriver', () => {
 				link: { type: 'github', productionBranch: 'main', repoId: 'repo-123' },
 			};
 
-			const deployResponse = { id: 'dpl-new', status: 'BUILDING', url: 'my-app-new.vercel.app' };
+			const deployResponse = {
+				id: 'dpl-new',
+				status: 'BUILDING',
+				url: 'my-app-new.vercel.app',
+				createdAt: 1700000000000,
+			};
 
 			const expected = {
 				deployment_id: 'dpl-new',
 				status: 'building',
 				url: 'https://my-app-new.vercel.app',
+				created_at: new Date(1700000000000),
 			};
 
 			mockAxiosRequest
@@ -339,14 +368,37 @@ describe('VercelDriver', () => {
 	});
 
 	describe('cancelDeployment', () => {
-		it('should send PATCH to cancel endpoint', async () => {
+		it('should send PATCH to cancel endpoint and return canceled', async () => {
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, {}));
 
-			await driver.cancelDeployment('dpl-1');
+			const status = await driver.cancelDeployment('dpl-1');
 
 			const call = mockAxiosRequest.mock.calls[0]![0];
 			expect(call.method).toBe('PATCH');
 			expect(call.url).toContain('/v12/deployments/dpl-1/cancel');
+			expect(status).toBe('canceled');
+		});
+
+		it('should return actual status when deployment already finished', async () => {
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(400, { error: { message: 'Cannot cancel' } }));
+
+			mockAxiosRequest.mockResolvedValueOnce(
+				createAxiosResponse(200, { id: 'dpl-1', projectId: 'prj-1', state: 'READY', createdAt: Date.now() }),
+			);
+
+			const status = await driver.cancelDeployment('dpl-1');
+
+			expect(status).toBe('ready');
+		});
+
+		it('should throw when deployment is still building and cancel fails', async () => {
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(400, { error: { message: 'Cannot cancel' } }));
+
+			mockAxiosRequest.mockResolvedValueOnce(
+				createAxiosResponse(200, { id: 'dpl-1', projectId: 'prj-1', state: 'BUILDING', createdAt: Date.now() }),
+			);
+
+			await expect(driver.cancelDeployment('dpl-1')).rejects.toThrow();
 		});
 	});
 
@@ -402,6 +454,122 @@ describe('VercelDriver', () => {
 			const result = await driver.getDeployment('dpl-1');
 
 			expect(result.status).toBe(expected);
+		});
+	});
+
+	describe('registerWebhook', () => {
+		it('should call POST /v1/webhooks with url and events', async () => {
+			const webhookResponse = { id: 'hook_123', secret: 'whsec_abc' };
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, webhookResponse));
+
+			const result = await driver.registerWebhook('https://example.com/webhooks/vercel', ['prj_123', 'prj_456']);
+
+			expect(result).toEqual({ webhook_ids: ['hook_123'], webhook_secret: 'whsec_abc' });
+
+			const call = mockAxiosRequest.mock.calls[0]![0];
+			expect(call.method).toBe('POST');
+			expect(call.url).toContain('/v1/webhooks');
+
+			const body = JSON.parse(call.data);
+			expect(body.url).toBe('https://example.com/webhooks/vercel');
+			expect(body.events).toContain('deployment.created');
+			expect(body.events).toContain('deployment.succeeded');
+			expect(body.events).toContain('deployment.error');
+			expect(body.events).toContain('deployment.canceled');
+		});
+	});
+
+	describe('unregisterWebhook', () => {
+		it('should call DELETE /v1/webhooks/:id for each webhook', async () => {
+			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, {}));
+
+			await driver.unregisterWebhook(['hook_123']);
+
+			const call = mockAxiosRequest.mock.calls[0]![0];
+			expect(call.method).toBe('DELETE');
+			expect(call.url).toContain('/v1/webhooks/hook_123');
+		});
+	});
+
+	describe('verifyAndParseWebhook', () => {
+		const secret = 'test-webhook-secret';
+
+		function createWebhookPayload(type: string) {
+			return {
+				type,
+				id: 'evt_123',
+				createdAt: 1700000000000,
+				payload: {
+					deployment: { id: 'dpl_abc', url: 'my-app-abc.vercel.app', name: 'my-app' },
+					project: { id: 'prj_xyz' },
+					target: 'production',
+				},
+			};
+		}
+
+		function signPayload(body: Buffer): string {
+			return createHmac('sha1', secret).update(body).digest('hex');
+		}
+
+		it('should verify valid signature and parse deployment.succeeded event', () => {
+			const payload = createWebhookPayload('deployment.succeeded');
+			const rawBody = Buffer.from(JSON.stringify(payload));
+			const signature = signPayload(rawBody);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-vercel-signature': signature }, secret);
+
+			expect(result).not.toBeNull();
+			expect(result!.type).toBe('deployment.succeeded');
+			expect(result!.provider).toBe('vercel');
+			expect(result!.project_external_id).toBe('prj_xyz');
+			expect(result!.deployment_external_id).toBe('dpl_abc');
+			expect(result!.status).toBe('ready');
+			expect(result!.url).toBe('https://my-app-abc.vercel.app');
+			expect(result!.target).toBe('production');
+			expect(result!.timestamp).toEqual(new Date(1700000000000));
+		});
+
+		it('should return null for invalid signature', () => {
+			const payload = createWebhookPayload('deployment.succeeded');
+			const rawBody = Buffer.from(JSON.stringify(payload));
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-vercel-signature': 'invalid-sig' }, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for missing signature header', () => {
+			const payload = createWebhookPayload('deployment.succeeded');
+			const rawBody = Buffer.from(JSON.stringify(payload));
+
+			const result = driver.verifyAndParseWebhook(rawBody, {}, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for unsupported event type', () => {
+			const payload = createWebhookPayload('project.created');
+			const rawBody = Buffer.from(JSON.stringify(payload));
+			const signature = signPayload(rawBody);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-vercel-signature': signature }, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it.each([
+			['deployment.created', 'building'],
+			['deployment.succeeded', 'ready'],
+			['deployment.error', 'error'],
+			['deployment.canceled', 'canceled'],
+		])('should map event type "%s" to status "%s"', (eventType, expectedStatus) => {
+			const payload = createWebhookPayload(eventType);
+			const rawBody = Buffer.from(JSON.stringify(payload));
+			const signature = signPayload(rawBody);
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-vercel-signature': signature }, secret);
+
+			expect(result!.status).toBe(expectedStatus);
 		});
 	});
 });

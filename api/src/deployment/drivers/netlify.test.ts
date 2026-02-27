@@ -10,6 +10,9 @@ const mockNetlifyAPI = vi.hoisted(() => ({
 	getDeploy: vi.fn(),
 	createSiteBuild: vi.fn(),
 	cancelSiteDeploy: vi.fn(),
+	createHookBySiteId: vi.fn(),
+	listHooksBySiteId: vi.fn(),
+	deleteHook: vi.fn(),
 }));
 
 vi.mock('@netlify/api', () => ({
@@ -155,6 +158,47 @@ describe('NetlifyDriver', () => {
 				url: 'https://mysite.com',
 				deployable: true,
 			});
+		});
+
+		it('should paginate when response length equals perPage', async () => {
+			const fullPage = Array.from({ length: 100 }, (_, i) => ({
+				id: `site-${i}`,
+				name: `Site ${i}`,
+				build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo' },
+			}));
+
+			const secondPage = [
+				{
+					id: 'site-100',
+					name: 'Site 100',
+					build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo' },
+				},
+			];
+
+			mockNetlifyAPI.listSites.mockResolvedValueOnce(fullPage).mockResolvedValueOnce(secondPage);
+
+			const projects = await driver.listProjects();
+
+			expect(projects).toHaveLength(101);
+			expect(mockNetlifyAPI.listSites).toHaveBeenCalledTimes(2);
+
+			expect(mockNetlifyAPI.listSites).toHaveBeenNthCalledWith(1, { per_page: '100', page: '1' });
+			expect(mockNetlifyAPI.listSites).toHaveBeenNthCalledWith(2, { per_page: '100', page: '2' });
+		});
+
+		it('should stop paginating when total is an exact multiple of perPage', async () => {
+			const exactPage = Array.from({ length: 100 }, (_, i) => ({
+				id: `site-${i}`,
+				name: `Site ${i}`,
+				build_settings: { provider: 'github', repo_url: 'https://github.com/user/repo' },
+			}));
+
+			mockNetlifyAPI.listSites.mockResolvedValueOnce(exactPage).mockResolvedValueOnce([]);
+
+			const projects = await driver.listProjects();
+
+			expect(projects).toHaveLength(100);
+			expect(mockNetlifyAPI.listSites).toHaveBeenCalledTimes(2);
 		});
 
 		it('should mark sites without git source as not deployable', async () => {
@@ -356,12 +400,41 @@ describe('NetlifyDriver', () => {
 	});
 
 	describe('cancelDeployment', () => {
-		it('should cancel a deployment', async () => {
+		it('should cancel a deployment and return canceled', async () => {
 			mockNetlifyAPI.cancelSiteDeploy.mockResolvedValueOnce(undefined);
 
-			await expect(driver.cancelDeployment('deploy-1')).resolves.not.toThrow();
+			const status = await driver.cancelDeployment('deploy-1');
 
 			expect(mockNetlifyAPI.cancelSiteDeploy).toHaveBeenCalledWith({ deployId: 'deploy-1' });
+			expect(status).toBe('canceled');
+		});
+
+		it('should return actual status when deployment already finished', async () => {
+			mockNetlifyAPI.cancelSiteDeploy.mockRejectedValueOnce(Object.assign(new Error('Cannot cancel'), { status: 400 }));
+
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({
+				id: 'deploy-1',
+				site_id: 'site-1',
+				state: 'ready',
+				created_at: new Date().toISOString(),
+			});
+
+			const status = await driver.cancelDeployment('deploy-1');
+
+			expect(status).toBe('ready');
+		});
+
+		it('should throw when deployment is still building and cancel fails', async () => {
+			mockNetlifyAPI.cancelSiteDeploy.mockRejectedValueOnce(Object.assign(new Error('Cannot cancel'), { status: 400 }));
+
+			mockNetlifyAPI.getDeploy.mockResolvedValueOnce({
+				id: 'deploy-1',
+				site_id: 'site-1',
+				state: 'building',
+				created_at: new Date().toISOString(),
+			});
+
+			await expect(driver.cancelDeployment('deploy-1')).rejects.toThrow(ServiceUnavailableError);
 		});
 	});
 
@@ -555,6 +628,147 @@ describe('NetlifyDriver', () => {
 			expect(logs[2]!.message).toBe('Done');
 
 			expect(logs.some((log) => log.message === 'Old log before since date')).toBe(false);
+		});
+	});
+
+	describe('registerWebhook', () => {
+		it('should create hooks for each site and event', async () => {
+			let callCount = 0;
+
+			mockNetlifyAPI.listHooksBySiteId.mockResolvedValue([]);
+
+			mockNetlifyAPI.createHookBySiteId.mockImplementation(() => {
+				callCount++;
+				return Promise.resolve({ id: `hook_${callCount}` });
+			});
+
+			const result = await driver.registerWebhook('https://example.com/webhooks/netlify', ['site_1', 'site_2']);
+
+			// 3 events × 2 sites = 6 hooks
+			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledTimes(6);
+			expect(result.webhook_ids).toHaveLength(6);
+			expect(result.webhook_ids).toEqual(['hook_1', 'hook_2', 'hook_3', 'hook_4', 'hook_5', 'hook_6']);
+			expect(result.webhook_secret).toBeTruthy();
+			expect(result.webhook_secret.length).toBe(64); // 32 bytes hex
+
+			// Verify URL includes token
+			const firstCall = mockNetlifyAPI.createHookBySiteId.mock.calls[0]![0];
+			expect(firstCall.site_id).toBe('site_1');
+			expect(firstCall.body.type).toBe('url');
+			expect(firstCall.body.data.url).toContain('https://example.com/webhooks/netlify?token=');
+		});
+
+		it('should cleanup stale hooks before registering', async () => {
+			mockNetlifyAPI.listHooksBySiteId.mockResolvedValue([
+				{ id: 'old_hook_1', data: { url: 'https://example.com/webhooks/netlify?token=old' } },
+			]);
+
+			mockNetlifyAPI.deleteHook.mockResolvedValue(undefined);
+
+			mockNetlifyAPI.createHookBySiteId.mockResolvedValue({ id: 'new_hook' });
+
+			await driver.registerWebhook('https://example.com/webhooks/netlify', ['site_1']);
+
+			// Stale hook should be deleted before new ones are created
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'old_hook_1' });
+			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledTimes(3);
+		});
+	});
+
+	describe('unregisterWebhook', () => {
+		it('should delete each hook by ID', async () => {
+			mockNetlifyAPI.deleteHook.mockResolvedValue(undefined);
+
+			await driver.unregisterWebhook(['hook_1', 'hook_2', 'hook_3']);
+
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledTimes(3);
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'hook_1' });
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'hook_2' });
+			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'hook_3' });
+		});
+
+		it('should not throw if some deletes fail', async () => {
+			mockNetlifyAPI.deleteHook
+				.mockResolvedValueOnce(undefined)
+				.mockRejectedValueOnce(new Error('Not found'))
+				.mockResolvedValueOnce(undefined);
+
+			await expect(driver.unregisterWebhook(['hook_1', 'hook_2', 'hook_3'])).resolves.not.toThrow();
+		});
+	});
+
+	describe('verifyAndParseWebhook', () => {
+		const secret = 'test-webhook-secret';
+
+		function createDeployPayload(state: string) {
+			return {
+				id: 'deploy_abc',
+				site_id: 'site_xyz',
+				state,
+				ssl_url: 'https://my-site.netlify.app',
+				context: 'production',
+				created_at: '2024-06-01T12:00:00Z',
+				branch: 'main',
+			};
+		}
+
+		it('should verify valid token and parse ready deploy', () => {
+			const deploy = createDeployPayload('ready');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-token': secret }, secret);
+
+			expect(result).not.toBeNull();
+			expect(result!.type).toBe('deployment.succeeded');
+			expect(result!.provider).toBe('netlify');
+			expect(result!.project_external_id).toBe('site_xyz');
+			expect(result!.deployment_external_id).toBe('deploy_abc');
+			expect(result!.status).toBe('ready');
+			expect(result!.url).toBe('https://my-site.netlify.app');
+			expect(result!.target).toBe('production');
+			expect(result!.timestamp).toEqual(new Date('2024-06-01T12:00:00Z'));
+		});
+
+		it('should return null for missing token header', () => {
+			const deploy = createDeployPayload('ready');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+
+			const result = driver.verifyAndParseWebhook(rawBody, {}, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for wrong token', () => {
+			const deploy = createDeployPayload('ready');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-token': 'wrong-token' }, secret);
+
+			expect(result).toBeNull();
+		});
+
+		it('should return null for unmapped state', () => {
+			const deploy = createDeployPayload('canceled');
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-token': secret }, secret);
+
+			// 'canceled' maps to 'canceled' via mapStatus, and 'canceled' is NOT in STATE_TO_EVENT
+			expect(result).toBeNull();
+		});
+
+		it.each([
+			['building', 'deployment.created', 'building'],
+			['ready', 'deployment.succeeded', 'ready'],
+			['error', 'deployment.error', 'error'],
+		])('should map state "%s" to type "%s" with status "%s"', (state, expectedType, expectedStatus) => {
+			const deploy = createDeployPayload(state);
+			const rawBody = Buffer.from(JSON.stringify(deploy));
+
+			const result = driver.verifyAndParseWebhook(rawBody, { 'x-webhook-token': secret }, secret);
+
+			expect(result!.type).toBe(expectedType);
+			expect(result!.status).toBe(expectedStatus);
 		});
 	});
 });

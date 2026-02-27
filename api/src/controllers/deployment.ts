@@ -9,6 +9,7 @@ import { DEPLOYMENT_PROVIDER_TYPES, type DeploymentConfig, type ProviderType } f
 import express from 'express';
 import Joi from 'joi';
 import getDatabase from '../database/index.js';
+import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -17,9 +18,15 @@ import { DeploymentRunsService } from '../services/deployment-runs.js';
 import { DeploymentService } from '../services/deployment.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { transaction } from '../utils/transaction.js';
 
 const router = express.Router();
+
+function parseRange(range: unknown, defaultMs: number): Date {
+	const ms = getMilliseconds(range, defaultMs);
+	return new Date(Date.now() - ms);
+}
 
 router.use(useCollection('directus_deployments'));
 
@@ -141,53 +148,14 @@ router.get(
 		});
 
 		const projectsService = new DeploymentProjectsService({
-			accountability: req.accountability,
+			accountability: null,
 			schema: req.schema,
 		});
 
-		// Get provider config to find deployment ID
 		const deployment = await service.readByProvider(provider);
-
-		// Get projects from provider (with cache)
 		const { data: providerProjects, remainingTTL } = await service.listProviderProjects(provider);
+		const projects = await projectsService.listWithSync(deployment.id, providerProjects);
 
-		// Get selected projects from DB
-		const selectedProjects = await projectsService.readByQuery({
-			filter: { deployment: { _eq: deployment.id } },
-		});
-
-		// Map by external_id for quick lookup
-		const selectedMap = new Map(selectedProjects.map((p) => [p.external_id, p]));
-
-		// Sync names from provider
-		const namesToUpdate = selectedProjects
-			.map((dbProject) => {
-				const providerProject = providerProjects.find((p) => p.id === dbProject.external_id);
-
-				if (providerProject && providerProject.name !== dbProject.name) {
-					return { id: dbProject.id, name: providerProject.name };
-				}
-
-				return null;
-			})
-			.filter((update): update is { id: string; name: string } => update !== null);
-
-		if (namesToUpdate.length > 0) {
-			await projectsService.updateBatch(namesToUpdate);
-		}
-
-		// Merge with DB structure (id !== null means selected)
-		const projects = providerProjects.map((project) => {
-			return {
-				id: selectedMap.get(project.id)?.id ?? null,
-				external_id: project.id,
-				name: project.name,
-				deployable: project.deployable,
-				framework: project.framework,
-			};
-		});
-
-		// Pass remaining TTL for response headers
 		res.locals['cache'] = false;
 		res.locals['cacheTTL'] = remainingTTL;
 		res.locals['payload'] = { data: projects };
@@ -285,31 +253,28 @@ router.patch(
 		// Validate deployable projects before any mutation
 		if (value.create.length > 0) {
 			const driver = await service.getDriver(provider);
-			const providerProjects = await driver.listProjects();
-			const projectsMap = new Map(providerProjects.map((p) => [p.id, p]));
-
-			const nonDeployable = value.create.filter(
-				(p: { external_id: string }) => !projectsMap.get(p.external_id)?.deployable,
-			);
-
-			if (nonDeployable.length > 0) {
-				const names = nonDeployable
-					.map((p: { external_id: string }) => projectsMap.get(p.external_id)?.name || p.external_id)
-					.join(', ');
-
-				throw new InvalidPayloadError({
-					reason: `Cannot add non-deployable projects: ${names}`,
-				});
-			}
+			await projectsService.validateDeployable(driver, value.create);
 		}
 
 		const updatedProjects = await projectsService.updateSelection(deployment.id, value.create, value.delete);
+
+		// Sync webhook with updated project list
+		service.syncWebhook(provider).catch((err) => {
+			const logger = useLogger();
+			logger.error(`Failed to sync webhook for ${provider}: ${err}`);
+		});
 
 		res.locals['payload'] = { data: updatedProjects };
 		return next();
 	}),
 	respond,
 );
+
+const rangeQuerySchema = Joi.object({
+	range: Joi.string()
+		.pattern(/^\d+(ms|s|m|h|d|w|y)$/)
+		.optional(),
+});
 
 // Dashboard - selected projects with stats
 router.get(
@@ -321,47 +286,24 @@ router.get(
 			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
 		}
 
+		const { error, value } = rangeQuerySchema.validate(req.query);
+
+		if (error) {
+			throw new InvalidPayloadError({ reason: error.message });
+		}
+
+		const sinceDate = parseRange(value.range, 86_400_000);
+
 		const service = new DeploymentService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const projectsService = new DeploymentProjectsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		const data = await service.getDashboard(provider, sinceDate);
 
-		// Get provider config
-		const deployment = await service.readByProvider(provider);
-
-		// Get selected projects from DB
-		const selectedProjects = await projectsService.readByQuery({
-			filter: { deployment: { _eq: deployment.id } },
-		});
-
-		if (selectedProjects.length === 0) {
-			res.locals['payload'] = { data: { projects: [] } };
-			return next();
-		}
-
-		// Fetch full details for each selected project (parallel)
-		const driver = await service.getDriver(provider);
-
-		const projectDetails = await Promise.all(
-			selectedProjects.map(async (p) => {
-				const details = await driver.getProject(p.external_id);
-
-				return {
-					...details,
-					id: p.id,
-					external_id: p.external_id,
-				};
-			}),
-		);
-
-		// Disable cache - dashboard needs fresh data from provider
 		res.locals['cache'] = false;
-		res.locals['payload'] = { data: { projects: projectDetails } };
+		res.locals['payload'] = { data };
+
 		return next();
 	}),
 	respond,
@@ -394,43 +336,12 @@ router.post(
 			schema: req.schema,
 		});
 
-		const projectsService = new DeploymentProjectsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const runsService = new DeploymentRunsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		// Get project from DB
-		const project = await projectsService.readOne(projectId);
-
-		// Trigger deployment via driver
-		const driver = await service.getDriver(provider);
-
-		const result = await driver.triggerDeployment(project.external_id, {
+		const run = await service.triggerDeployment(provider, projectId, {
 			preview: value.preview,
 			clearCache: value.clear_cache,
 		});
 
-		// Store run in DB
-		const runId = await runsService.createOne({
-			project: projectId,
-			external_id: result.deployment_id,
-			target: value.preview ? 'preview' : 'production',
-		});
-
-		const run = await runsService.readOne(runId);
-
-		res.locals['payload'] = {
-			data: {
-				...run,
-				status: result.status,
-				url: result.url,
-			},
-		};
+		res.locals['payload'] = { data: run };
 
 		return next();
 	}),
@@ -507,20 +418,12 @@ router.delete(
 router.get(
 	'/:provider/projects/:id/runs',
 	asyncHandler(async (req, res, next) => {
-		// Disable cache - runs status needs to be fresh from provider
-		res.locals['cache'] = false;
-
 		const provider = req.params['provider'] as ProviderType;
 		const projectId = req.params['id']!;
 
 		if (!validateProvider(provider)) {
 			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
 		}
-
-		const service = new DeploymentService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
 
 		const projectsService = new DeploymentProjectsService({
 			accountability: req.accountability,
@@ -535,7 +438,6 @@ router.get(
 		// Validate project exists
 		await projectsService.readOne(projectId);
 
-		// Get paginated runs from DB (default limit: 10)
 		const query = {
 			...req.sanitizedQuery,
 			filter: { project: { _eq: projectId } },
@@ -546,7 +448,6 @@ router.get(
 
 		const runs = await runsService.readByQuery(query);
 
-		// Get pagination meta
 		const metaService = new MetaService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -554,23 +455,49 @@ router.get(
 
 		const meta = await metaService.getMetaForQuery('directus_deployment_runs', query);
 
-		// Fetch status for each run from provider
-		const driver = await service.getDriver(provider);
+		res.locals['payload'] = { data: runs, meta };
+		return next();
+	}),
+	respond,
+);
 
-		const runsWithStatus = await Promise.all(
-			runs.map(async (run: any) => {
-				const details = await driver.getDeployment(run.external_id);
+// Project runs stats
 
-				return {
-					...run,
-					...details,
-					id: run.id,
-					external_id: run.external_id,
-				};
-			}),
-		);
+router.get(
+	'/:provider/projects/:id/runs/stats',
+	asyncHandler(async (req, res, next) => {
+		const provider = req.params['provider'] as ProviderType;
+		const projectId = req.params['id']!;
 
-		res.locals['payload'] = { data: runsWithStatus, meta };
+		if (!validateProvider(provider)) {
+			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
+		}
+
+		const { error, value } = rangeQuerySchema.validate(req.query);
+
+		if (error) {
+			throw new InvalidPayloadError({ reason: error.message });
+		}
+
+		const sinceDate = parseRange(value.range, 604_800_000).toISOString();
+
+		const projectsService = new DeploymentProjectsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const runsService = new DeploymentRunsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		// Validate project exists and user has access
+		await projectsService.readOne(projectId);
+
+		const data = await runsService.getStats(projectId, sinceDate);
+
+		res.locals['payload'] = { data };
+
 		return next();
 	}),
 	respond,
@@ -598,38 +525,15 @@ router.get(
 			throw new InvalidPayloadError({ reason: error.message });
 		}
 
-		const sinceDate: Date | undefined = value.since;
-
-		const runsService = new DeploymentRunsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
 		const service = new DeploymentService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const run = await runsService.readOne(runId);
-
-		const driver = await service.getDriver(provider);
-
-		const [details, logs] = await Promise.all([
-			driver.getDeployment(run.external_id),
-			driver.getDeploymentLogs(run.external_id, sinceDate ? { since: sinceDate } : undefined),
-		]);
+		const data = await service.getRunWithLogs(provider, runId, value.since);
 
 		res.locals['cache'] = false;
-
-		res.locals['payload'] = {
-			data: {
-				...run,
-				...details,
-				id: run.id,
-				external_id: run.external_id,
-				logs,
-			},
-		};
+		res.locals['payload'] = { data };
 
 		return next();
 	}),
@@ -647,32 +551,14 @@ router.post(
 			throw new InvalidPathParameterError({ reason: `${provider} is not a supported provider` });
 		}
 
-		const runsService = new DeploymentRunsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
 		const service = new DeploymentService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const run = await runsService.readOne(runId);
+		const data = await service.cancelDeployment(provider, runId);
 
-		const driver = await service.getDriver(provider);
-		await driver.cancelDeployment(run.external_id);
-
-		// Fetch updated status
-		const details = await driver.getDeployment(run.external_id);
-
-		res.locals['payload'] = {
-			data: {
-				...run,
-				...details,
-				id: run.id,
-				external_id: run.external_id,
-			},
-		};
+		res.locals['payload'] = { data };
 
 		return next();
 	}),

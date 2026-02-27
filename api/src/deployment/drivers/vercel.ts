@@ -1,5 +1,18 @@
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
-import type { Credentials, Deployment, Details, Log, Options, Project, Status, TriggerResult } from '@directus/types';
+import type {
+	Credentials,
+	Deployment,
+	DeploymentWebhookEvent,
+	DeploymentWebhookEventType,
+	Details,
+	Log,
+	Options,
+	Project,
+	Status,
+	TriggerResult,
+	WebhookRegistrationResult,
+} from '@directus/types';
 import pLimit from 'p-limit';
 import { DeploymentDriver, type DeploymentRequestOptions } from '../deployment.js';
 
@@ -54,6 +67,35 @@ interface VercelEvent {
 	};
 	text?: string;
 }
+
+interface VercelWebhookResponse {
+	id: string;
+	secret: string;
+}
+
+interface VercelWebhookPayload {
+	type: string;
+	id: string;
+	createdAt: number;
+	payload: {
+		deployment: {
+			id: string;
+			url?: string;
+			name?: string;
+		};
+		project: {
+			id: string;
+		};
+		target?: string;
+	};
+}
+
+const VERCEL_WEBHOOK_EVENTS: DeploymentWebhookEventType[] = [
+	'deployment.created',
+	'deployment.succeeded',
+	'deployment.error',
+	'deployment.canceled',
+];
 
 export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOptions> {
 	private static readonly API_URL = 'https://api.vercel.com';
@@ -155,8 +197,21 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 	}
 
 	async listProjects(): Promise<Project[]> {
-		const response = await this.request<{ projects: VercelProject[] }>('/v9/projects');
-		return response.projects.map((project) => this.mapProjectBase(project));
+		const allProjects: Project[] = [];
+		let until: string | undefined;
+
+		do {
+			const response = await this.request<{ projects: VercelProject[]; pagination?: { next?: number } }>(
+				'/v9/projects',
+				{ params: { limit: '100', ...(until ? { until } : {}) } },
+			);
+
+			allProjects.push(...response.projects.map((project) => this.mapProjectBase(project)));
+
+			until = response.pagination?.next ? String(response.pagination.next) : undefined;
+		} while (until);
+
+		return allProjects;
 	}
 
 	async getProject(projectId: string): Promise<Project> {
@@ -269,6 +324,7 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		const triggerResult: TriggerResult = {
 			deployment_id: response.id,
 			status: this.mapStatus(response.status),
+			created_at: new Date(response.createdAt),
 		};
 
 		if (response.url) {
@@ -278,10 +334,25 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 		return triggerResult;
 	}
 
-	async cancelDeployment(deploymentId: string): Promise<void> {
-		await this.request(`/v12/deployments/${encodeURIComponent(deploymentId)}/cancel`, {
-			method: 'PATCH',
-		});
+	async cancelDeployment(deploymentId: string): Promise<Status> {
+		try {
+			await this.request(`/v12/deployments/${encodeURIComponent(deploymentId)}/cancel`, {
+				method: 'PATCH',
+			});
+
+			return 'canceled';
+		} catch {
+			const details = await this.getDeployment(deploymentId);
+
+			if (details.status !== 'building') {
+				return details.status;
+			}
+
+			throw new ServiceUnavailableError({
+				service: 'vercel',
+				reason: `Could not cancel the deployment: ${deploymentId}`,
+			});
+		}
 	}
 
 	async getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]> {
@@ -308,5 +379,72 @@ export class VercelDriver extends DeploymentDriver<VercelCredentials, VercelOpti
 				type: mapEventType(event.type),
 				message: event.text || event.payload?.text || '',
 			}));
+	}
+
+	async registerWebhook(webhookUrl: string, projectIds: string[]): Promise<WebhookRegistrationResult> {
+		const response = await this.request<VercelWebhookResponse>('/v1/webhooks', {
+			method: 'POST',
+			body: JSON.stringify({
+				url: webhookUrl,
+				events: VERCEL_WEBHOOK_EVENTS,
+				projectIds,
+			}),
+		});
+
+		return {
+			webhook_ids: [response.id],
+			webhook_secret: response.secret,
+		};
+	}
+
+	async unregisterWebhook(webhookIds: string[]): Promise<void> {
+		for (const id of webhookIds) {
+			await this.request(`/v1/webhooks/${encodeURIComponent(id)}`, {
+				method: 'DELETE',
+			});
+		}
+	}
+
+	verifyAndParseWebhook(
+		rawBody: Buffer,
+		headers: Record<string, string | string[] | undefined>,
+		webhookSecret: string,
+	): DeploymentWebhookEvent | null {
+		const signature = headers['x-vercel-signature'];
+
+		if (!signature || typeof signature !== 'string') {
+			return null;
+		}
+
+		const expected = createHmac('sha1', webhookSecret).update(rawBody).digest('hex');
+
+		if (signature.length !== expected.length || !timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+			return null;
+		}
+
+		const body: VercelWebhookPayload = JSON.parse(rawBody.toString('utf-8'));
+
+		if (!VERCEL_WEBHOOK_EVENTS.includes(body.type as DeploymentWebhookEventType)) {
+			return null;
+		}
+
+		const eventTypeToStatus: Record<string, Status> = {
+			'deployment.created': 'building',
+			'deployment.succeeded': 'ready',
+			'deployment.error': 'error',
+			'deployment.canceled': 'canceled',
+		};
+
+		return {
+			type: body.type as DeploymentWebhookEventType,
+			provider: 'vercel',
+			project_external_id: body.payload.project.id,
+			deployment_external_id: body.payload.deployment.id,
+			status: eventTypeToStatus[body.type] ?? 'building',
+			...(body.payload.deployment.url ? { url: `https://${body.payload.deployment.url}` } : {}),
+			...(body.payload.target ? { target: body.payload.target } : {}),
+			timestamp: new Date(body.createdAt),
+			raw: body as unknown as Record<string, any>,
+		};
 	}
 }
