@@ -210,43 +210,48 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const { error } = versionUpdateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		if ('key' in data) {
-			// Reserves the "main" version key for the version query parameter
-			if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
-			if (data['key'] !== 'draft' && data['item'] === null)
+		// Reserves the "main" version key for the version query parameter
+		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+
+		const keyCombos = new Set();
+
+		for (const pk of keys) {
+			const existingVersion = await this.readOne(pk, { fields: ['collection', 'item', 'key'] });
+
+			const collection = existingVersion.collection;
+			const item = 'item' in data ? data['item'] : existingVersion.item;
+			const key = 'key' in data ? data['key'] : existingVersion.key;
+
+			if (key !== 'draft' && item === null)
 				throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
 
-			const keyCombos = new Set();
+			const keyCombo = `${key}-${collection}-${item}`;
 
-			for (const pk of keys) {
-				const { collection, item, key } = await this.readOne(pk, { fields: ['collection', 'item', 'key'] });
-
-				if (data['key'] !== 'draft' && item === null)
-					throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
-
-				const keyCombo = `${data['key']}-${collection}-${item}`;
-
-				if (keyCombos.has(keyCombo)) {
-					throw new UnprocessableContentError({
-						reason: `Cannot update multiple versions on "${item}" in collection "${collection}" to the same key "${data['key']}"`,
-					});
-				}
-
-				keyCombos.add(keyCombo);
-
-				// Skip checking for existing versions if the version is itemless.
-				if ((data['item'] ?? item) === null && (data['key'] ?? key) === 'draft') continue;
-
-				const existingVersions = await super.readByQuery({
-					aggregate: { count: ['*'] },
-					filter: { id: { _neq: pk }, key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
+			if (keyCombos.has(keyCombo)) {
+				throw new UnprocessableContentError({
+					reason: `Cannot update multiple versions on "${item}" in collection "${collection}" to the same key "${data['key']}"`,
 				});
+			}
 
-				if ((existingVersions as any)[0]['count'] > 0) {
-					throw new UnprocessableContentError({
-						reason: `Version "${data['key']}" already exists for item "${item}" in collection "${collection}"`,
-					});
-				}
+			keyCombos.add(keyCombo);
+
+			// Skip checking for existing versions if the version is itemless.
+			if (key === 'draft' && item === null) continue;
+
+			const existingVersions = await super.readByQuery({
+				aggregate: { count: ['*'] },
+				filter: {
+					id: { _neq: pk },
+					key: { _eq: key },
+					collection: { _eq: collection },
+					item: { _eq: item },
+				},
+			});
+
+			if ((existingVersions as any)[0]['count'] > 0) {
+				throw new UnprocessableContentError({
+					reason: `Version "${key}" already exists for item "${item}" in collection "${collection}"`,
+				});
 			}
 		}
 

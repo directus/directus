@@ -11,6 +11,9 @@ const fields = [
 		collection: c.articles,
 		field: 'title',
 		type: 'string',
+		schema: {
+			is_nullable: false,
+		},
 	},
 	{
 		collection: c.articles,
