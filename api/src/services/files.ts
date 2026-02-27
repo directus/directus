@@ -4,7 +4,12 @@ import zlib from 'node:zlib';
 import path from 'path';
 import url from 'url';
 import { useEnv } from '@directus/env';
-import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import {
+	ContentTooLargeError,
+	InternalServerError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+} from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type {
 	AbstractServiceOptions,
@@ -149,6 +154,8 @@ export class FilesService extends ItemsService<File> {
 
 			if (err instanceof ContentTooLargeError) {
 				throw err;
+			} else if (err?.code && ['EROFS', 'EACCES', 'EPERM'].includes(err.code)) {
+				throw new InternalServerError();
 			} else {
 				throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
 			}
