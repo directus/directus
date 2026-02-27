@@ -1,161 +1,378 @@
+/**
+ * Telemetry Report v1
+ *
+ * Structured telemetry payload sent to the intake server. All data is anonymous —
+ * no PII, credentials, or user-specific content is included. Boolean flags for API keys
+ * indicate *presence* only. Statistics use min/max/median/mean summaries to avoid
+ * transmitting per-row data.
+ */
+
+// ---------------------------------------------------------------------------
+// Shared primitives
+// ---------------------------------------------------------------------------
+
+/** Four-number distribution summary used throughout metrics. */
+export interface DistributionSummary {
+	min: number;
+	max: number;
+	median: number;
+	mean: number;
+}
+
+/** Count wrapper — keeps the shape consistent across the report. */
+export interface CountMetric {
+	count: number;
+}
+
+/** Count + size distribution for a MIME group. */
+export interface FileSizeByType extends CountMetric {
+	size: DistributionSummary;
+}
+
+/** Count + source breakdown. */
+export interface ExtensionCountBySource extends CountMetric {
+	source: {
+		registry: CountMetric;
+		local: CountMetric;
+		module: CountMetric;
+	};
+}
+
+/** Aggregate breakdown for an extension state (active / inactive). */
+export interface ExtensionBreakdown {
+	/** Counts bundles as one item, ignores bundle children. */
+	bundles: ExtensionCountBySource;
+	/** Counts individual extensions (bundle children), ignores bundle parents. */
+	individual: ExtensionCountBySource;
+	type: {
+		// App extensions
+		display: ExtensionCountBySource;
+		interface: ExtensionCountBySource;
+		module: ExtensionCountBySource;
+		layout: ExtensionCountBySource;
+		panel: ExtensionCountBySource;
+		theme: ExtensionCountBySource;
+		// API extensions
+		endpoint: ExtensionCountBySource;
+		hook: ExtensionCountBySource;
+		operation: ExtensionCountBySource;
+		// Bundles
+		bundle: ExtensionCountBySource;
+	};
+}
+
+// ---------------------------------------------------------------------------
+// Top-level sections
+// ---------------------------------------------------------------------------
+
 export interface TelemetryReport {
-	/**
-	 * The project's web-facing public URL
-	 */
-	url: string;
+	project: TelemetryProject;
+	meta: TelemetryMeta;
+	config: TelemetryConfig;
+	features: TelemetryFeatures;
+	metrics: TelemetryMetrics;
+}
 
-	/**
-	 * Current Directus version in use
-	 */
+// ---------------------------------------------------------------------------
+// project
+// ---------------------------------------------------------------------------
+
+export interface TelemetryProject {
+	/** UUID v7 project identifier (from directus_settings.project_id). */
+	id: string;
+	/** ISO-8601 timestamp derived from the UUID v7 time component. */
+	created_at: string;
+	/** Directus semver version string. */
 	version: string;
+	/** Project templates that have been applied (e.g. ["cms"]). */
+	templates_applied: string[];
+}
 
-	/**
-	 * Database client in use
-	 */
-	database: string;
+// ---------------------------------------------------------------------------
+// meta
+// ---------------------------------------------------------------------------
 
-	/**
-	 * Number of users in the system that have admin access to the system
-	 */
-	admin_users: number;
+export interface TelemetryMeta {
+	/** Schema version of this telemetry format. */
+	version: number;
+	/** ISO-8601 timestamp of when the report was generated. */
+	timestamp: string;
+	/** What triggered the report: "startup" | "scheduled". */
+	trigger: 'startup' | 'scheduled';
+}
 
-	/**
-	 * Number of users that can access the app, but don't have admin access
-	 */
-	app_users: number;
+// ---------------------------------------------------------------------------
+// config
+// ---------------------------------------------------------------------------
 
-	/**
-	 * Number of users that can only access the API
-	 */
-	api_users: number;
+export interface TelemetryConfig {
+	auth: {
+		/** Configured auth provider driver names (e.g. ["local","oauth2"]). */
+		providers: string[];
+		/** Inferred identity provider issuers (e.g. ["google","azure"]). */
+		issuers: string[];
+	};
+	/** Whether AI chat is enabled via env. */
+	ai: boolean;
+	/** Whether MCP is enabled via env. */
+	mcp: boolean;
+	cache: {
+		enabled: boolean;
+		/** Cache store type (e.g. "redis", "memory"). */
+		store: string;
+	};
+	database: {
+		/** Knex client name (e.g. "postgres", "sqlite3"). */
+		driver: string;
+		/** Raw database version string. */
+		version: string | null;
+	};
+	email: {
+		/** Email transport (e.g. "smtp", "sendgrid"). */
+		transport: string;
+	};
+	marketplace: {
+		/** Extension sandbox trust mode. */
+		trust: 'sandbox' | 'all';
+		/** Whether the default public registry or a custom one is configured. */
+		registry: 'default' | 'custom';
+	};
+	extensions: {
+		must_load: boolean;
+		auto_reload: boolean;
+		cache_ttl: string | false;
+		limit: number | false;
+		rolldown: boolean;
+	};
+	storage: {
+		/** Unique storage driver names configured. */
+		drivers: string[];
+	};
+	retention: {
+		enabled: boolean;
+		activity: string | false;
+		revisions: string | false;
+		flow_logs: string | false;
+	};
+	websockets: {
+		enabled: boolean;
+		rest: boolean;
+		graphql: boolean;
+		logs: boolean;
+	};
+	prometheus: {
+		/** Whether Prometheus metrics endpoint is enabled. */
+		enabled: boolean;
+	};
+	rate_limiting: {
+		enabled: boolean;
+		pressure: boolean;
+		email: boolean;
+		email_flows: boolean;
+	};
+	synchronization: {
+		/** Sync store type (e.g. "redis", "memory"). */
+		store: string;
+	};
+	pm2: {
+		/** Number of PM2 instances (from PM2_INSTANCES env var). */
+		instances: number;
+	};
+}
 
-	/**
-	 * Number of unique roles in the system
-	 */
-	roles: number;
+// ---------------------------------------------------------------------------
+// features  (derived from directus_settings – never exposes secrets)
+// ---------------------------------------------------------------------------
 
-	/**
-	 * Number of unique flows in the system
-	 */
-	flows: number;
+export interface TelemetryFeatures {
+	mcp: {
+		enabled: boolean;
+		allow_deletes: boolean;
+		system_prompt: boolean;
+	};
+	ai: {
+		enabled: boolean;
+		/** Whether a custom AI system prompt is set. */
+		system_prompt: boolean;
+		providers: {
+			openai: {
+				api_key: boolean;
+				models: {
+					/** Known default models from the allowed list. */
+					allowed: string[];
+					/** Count of user-added models not in the default list. */
+					custom: CountMetric;
+				};
+			};
+			anthropic: {
+				api_key: boolean;
+				models: {
+					allowed: string[];
+					custom: CountMetric;
+				};
+			};
+			google: {
+				api_key: boolean;
+				models: {
+					allowed: string[];
+					custom: CountMetric;
+				};
+			};
+			openai_compatible: {
+				api_key: boolean;
+				base_url: boolean;
+				name: boolean;
+				headers: boolean;
+				models: CountMetric;
+			};
+		};
+	};
+	modules: {
+		content: boolean;
+		files: boolean;
+		users: boolean;
+		visual_editor: boolean;
+		insights: boolean;
+		settings: boolean;
+		deployments: boolean;
+	};
+	visual_editor: {
+		urls: CountMetric;
+	};
+	files: {
+		/** "all" | "none" | "presets" */
+		transformations: string;
+		presets: CountMetric;
+	};
+	collaborative_editing: {
+		enabled: boolean;
+	};
+	mapping: {
+		mapbox_api_key: boolean;
+		basemaps: CountMetric;
+	};
+	image_editor: {
+		custom_aspect_ratios: CountMetric;
+	};
+	extensions: {
+		installed: {
+			/** Registry extensions with id and version (only when using the default public registry). */
+			registry: Array<{ id: string; version: string }>;
+		};
+	};
+	appearance: {
+		project_color: boolean;
+		project_logo: boolean;
+		public_foreground: boolean;
+		public_background: boolean;
+		public_favicon: boolean;
+		public_note: boolean;
+		report_feature_url: boolean;
+		report_bug_url: boolean;
+		report_error_url: boolean;
+		theme: {
+			default_appearance: string;
+			default_light_theme: string;
+			default_dark_theme: string;
+			light_theme_customization: boolean;
+			dark_theme_customization: boolean;
+			custom_css: boolean;
+		};
+	};
+}
 
-	/**
-	 * Number of unique dashboards in the system
-	 */
-	dashboards: number;
+// ---------------------------------------------------------------------------
+// metrics
+// ---------------------------------------------------------------------------
 
-	/**
-	 * Number of installed extensions in the system. Does not differentiate between enabled/disabled
-	 */
-	extensions: number;
+export interface TelemetryMetrics {
+	api_requests: {
+		count: number;
+		cached: CountMetric;
+		method: {
+			get: CountMetric;
+			post: CountMetric;
+			put: CountMetric;
+			patch: CountMetric;
+			delete: CountMetric;
+		};
+	};
 
-	/**
-	 * Number of Directus-managed collections
-	 */
-	collections: number;
+	fields: CountMetric;
 
-	/**
-	 * Total number of items in the non-system tables
-	 */
-	items: number;
+	collections: {
+		count: number;
+		shares: DistributionSummary;
+		fields: DistributionSummary;
+		items: DistributionSummary;
+		versioned: {
+			count: number;
+			items: DistributionSummary;
+		};
+		archive_app_filter: {
+			count: number;
+			items: DistributionSummary;
+		};
+		activity: {
+			all: { count: number; items: DistributionSummary };
+			activity: { count: number; items: DistributionSummary };
+			none: { count: number; items: DistributionSummary };
+		};
+	};
 
-	/**
-	 * Number of files in the system
-	 */
-	files: number;
+	shares: CountMetric;
 
-	/**
-	 * Number of shares in the system
-	 */
-	shares: number;
+	items: CountMetric;
 
-	/**
-	 * Maximum number of fields in a collection
-	 */
-	fields_max: number;
+	files: {
+		count: number;
+		size: {
+			sum: number;
+			min: number;
+			max: number;
+			median: number;
+			mean: number;
+		};
+		types: Record<string, FileSizeByType>;
+	};
 
-	/**
-	 * Number of fields in the system
-	 */
-	fields_total: number;
+	users: {
+		admin: CountMetric;
+		app: CountMetric;
+		api: CountMetric;
+	};
 
-	/**
-	 * Size of the database in bytes
-	 */
-	database_size: number;
+	roles: {
+		count: number;
+		users: DistributionSummary;
+		policies: DistributionSummary;
+		roles: DistributionSummary;
+	};
 
-	/**
-	 * Total size of the files in bytes
-	 */
-	files_size_total: number;
+	policies: CountMetric;
 
-	/**
-	 * Unique project identifier
-	 */
-	project_id: string;
+	flows: {
+		active: CountMetric;
+		inactive: CountMetric;
+	};
 
-	/**
-	 * Whether the project has enabled MCP
-	 */
-	mcp_enabled: boolean;
+	translations: {
+		count: number;
+		language: {
+			count: number;
+			translations: DistributionSummary;
+		};
+	};
 
-	/**
-	 * Whether the project allows deletes in MCP
-	 */
-	mcp_allow_deletes: boolean;
+	dashboards: {
+		count: number;
+		panels: DistributionSummary;
+	};
 
-	/**
-	 * Whether the project has enabled MCP system prompt
-	 */
-	mcp_system_prompt_enabled: boolean;
+	panels: CountMetric;
 
-	/**
-	 * Number of Visual Editor URLs configured in the system
-	 */
-	visual_editor_urls: number;
-
-	/**
-	 * Whether collaborative editing is enabled
-	 */
-	collaborative_editing_enabled: boolean;
-
-	/**
-	 * Whether WebSockets are enabled
-	 */
-	websockets_enabled: boolean;
-
-	/**
-	 * Count of GET Api Requests
-	 */
-	api_requests_get: number;
-
-	/**
-	 * Count of POST Api Requests
-	 */
-	api_requests_post: number;
-
-	/**
-	 * Count of PATCH Api Requests
-	 */
-	api_requests_patch: number;
-
-	/**
-	 * Count of DELETE Api Requests
-	 */
-	api_requests_delete: number;
-
-	/**
-	 * Count of PUT Api Requests
-	 */
-	api_requests_put: number;
-
-	/**
-	 * Total count of Api Requests
-	 */
-	api_requests: number;
-
-	/**
-	 * Count of cached Api Requests
-	 */
-	api_requests_cached: number;
+	extensions: {
+		active: ExtensionBreakdown;
+		inactive: ExtensionBreakdown;
+	};
 }

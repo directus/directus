@@ -21,7 +21,7 @@ test('Posts stringified report to configured ingress URL', async () => {
 		TELEMETRY_URL: mockIngress,
 	});
 
-	const url = new URL('/v1/metrics', mockIngress);
+	const url = new URL('/v2/metrics', mockIngress);
 
 	const mockReport = {} as unknown as TelemetryReport;
 	const reportStringified = JSON.stringify(mockReport);
@@ -45,7 +45,7 @@ test('Sets optional authorization header based on configured auth var', async ()
 		TELEMETRY_AUTHORIZATION: 'test-auth',
 	});
 
-	const url = new URL('/v1/metrics', mockIngress);
+	const url = new URL('/v2/metrics', mockIngress);
 
 	const mockReport = {} as unknown as TelemetryReport;
 	const reportStringified = JSON.stringify(mockReport);

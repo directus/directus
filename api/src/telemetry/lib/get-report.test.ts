@@ -1,28 +1,20 @@
-import { useEnv } from '@directus/env';
-import { version } from 'directus/version';
+import type { SchemaOverview } from '@directus/types';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getDatabase, getDatabaseClient } from '../../database/index.js';
-import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
-import { useBufferedCounter } from '../counter/use-buffered-counter.js';
-import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
-import { type ExtensionCount, getExtensionCount } from '../utils/get-extension-count.js';
-import { type FieldCount, getFieldCount } from '../utils/get-field-count.js';
-import { type FilesizeSum, getFilesizeSum } from '../utils/get-filesize-sum.js';
-import { getItemCount } from '../utils/get-item-count.js';
-import { getSettings, type TelemetrySettings } from '../utils/get-settings.js';
-import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
+import { getDatabase } from '../../database/index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { collectConfig } from '../collectors/config.js';
+import { collectFeatures } from '../collectors/features.js';
+import { collectMetrics } from '../collectors/metrics/index.js';
+import { collectProject } from '../collectors/project.js';
 import { getReport } from './get-report.js';
 
 vi.mock('../../database/index.js');
-
-vi.mock('../../database/helpers/index.js', () => ({
-	getHelpers: vi.fn().mockImplementation(() => ({
-		schema: {
-			getDatabaseSize: vi.fn().mockReturnValue(0),
-		},
-	})),
-}));
+vi.mock('../../utils/get-schema.js');
+vi.mock('../collectors/project.js');
+vi.mock('../collectors/config.js');
+vi.mock('../collectors/features.js');
+vi.mock('../collectors/metrics/index.js');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
@@ -32,197 +24,176 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
-vi.mock('../utils/get-item-count.js');
-vi.mock('../utils/get-storage.js');
-vi.mock('../utils/get-user-item-count.js');
-vi.mock('../utils/get-field-count.js');
-vi.mock('../utils/get-extension-count.js');
-vi.mock('../../utils/fetch-user-count/fetch-user-count.js');
-vi.mock('../utils/get-filesize-sum.js');
-vi.mock('../utils/get-settings.js');
-vi.mock('../counter/use-buffered-counter.js');
-vi.mock('../utils/format-api-request-counts.js');
-
-let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
-let mockUserCounts: UserCount;
-let mockUserItemCounts: UserItemCount;
-let mockFieldCounts: FieldCount;
-let mockExtensionCounts: ExtensionCount;
-let mockFilesizeSums: FilesizeSum;
-let mockSettings: TelemetrySettings;
-let mockRequestCounts: Record<string, number>;
+let mockSchema: SchemaOverview;
+
+const mockProject = {
+	id: 'test-project-id',
+	created_at: '2024-01-01T00:00:00.000Z',
+	version: '11.0.0',
+	templates_applied: [],
+	deployed_on: 'unknown',
+	replicas: 1,
+};
+
+const mockConfig = {
+	auth: { providers: ['local'], issuers: [] },
+	ai: false,
+	mcp: false,
+	cache: { enabled: false, store: null },
+	database: { driver: 'postgres', version: '16.0' },
+	email: { transport: 'smtp' },
+	marketplace: { trust: 'sandbox' as const, registry: 'default' as const },
+	extensions: { must_load: false, auto_reload: false, cache_ttl: null, limit: null, rolldown: false },
+	storage: { drivers: ['local'] },
+	retention: { enabled: false, activity: null, revisions: null, flow_logs: null },
+	websockets: { enabled: false, rest: false, graphql: false, logs: false },
+	prometheus: { enabled: false },
+	rate_limiting: { enabled: false, pressure: false, email: false, email_flows: false },
+	synchronization: { store: null },
+	pm2: { instances: 0 },
+};
+
+const mockFeatures = {
+	mcp: { enabled: false, allow_deletes: false, system_prompt: false },
+	ai: {
+		enabled: false,
+		system_prompt: false,
+		providers: {
+			openai: { api_key: false, models: { allowed: [], custom: { count: 0 } } },
+			anthropic: { api_key: false, models: { allowed: [], custom: { count: 0 } } },
+			google: { api_key: false, models: { allowed: [], custom: { count: 0 } } },
+			openai_compatible: { api_key: false, base_url: false, name: false, headers: false, models: { count: 0 } },
+		},
+	},
+	modules: { content: true, files: true, users: true, visual_editor: false, insights: true, settings: true, deployments: false },
+	visual_editor: { urls: { count: 0 } },
+	files: { transformations: 'none', presets: { count: 0 } },
+	collaborative_editing: { enabled: false },
+	mapping: { mapbox_api_key: false, basemaps: { count: 0 } },
+	image_editor: { custom_aspect_ratios: { count: 0 } },
+	appearance: {
+		project_color: false, project_logo: false, public_foreground: false,
+		public_background: false, public_favicon: false, public_note: false,
+		report_feature_url: false, report_bug_url: false, report_error_url: false,
+		theme: { default_appearance: 'auto', default_light_theme: 'default', default_dark_theme: 'default',
+			light_theme_customization: false, dark_theme_customization: false, custom_css: false },
+	},
+	extensions: {
+		installed: {
+			registry: [],
+		},
+	},
+};
+
+const mockMetrics = {
+	api_requests: { count: 0, cached: { count: 0 }, method: { get: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } } },
+	fields: { count: 0 },
+	collections: {
+		count: 0, shares: { min: 0, max: 0, median: 0, mean: 0 }, fields: { min: 0, max: 0, median: 0, mean: 0 }, items: { min: 0, max: 0, median: 0, mean: 0 },
+		versioned: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
+		archive_app_filter: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
+		activity: { all: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } }, activity: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } }, none: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } } },
+	},
+	shares: { count: 0 },
+	items: { count: 0 },
+	files: { count: 0, size: { sum: 0, min: 0, max: 0, median: 0, mean: 0 }, types: {} },
+	users: { admin: { count: 0 }, app: { count: 0 }, api: { count: 0 } },
+	roles: { count: 0, users: { min: 0, max: 0, median: 0, mean: 0 }, policies: { min: 0, max: 0, median: 0, mean: 0 }, roles: { min: 0, max: 0, median: 0, mean: 0 } },
+	policies: { count: 0 },
+	flows: { active: { count: 0 }, inactive: { count: 0 } },
+	translations: { count: 0, language: { count: 0, translations: { min: 0, max: 0, median: 0, mean: 0 } } },
+	dashboards: { count: 0, panels: { min: 0, max: 0, median: 0, mean: 0 } },
+	panels: { count: 0 },
+	extensions: (() => {
+		const s = { count: 0, source: { registry: { count: 0 }, local: { count: 0 }, module: { count: 0 } } };
+
+		const breakdown = {
+			...s,
+			bundles: { ...s },
+			individual: { ...s },
+			type: {
+				display: { ...s }, interface: { ...s }, module: { ...s }, layout: { ...s },
+				panel: { ...s }, theme: { ...s }, endpoint: { ...s }, hook: { ...s },
+				operation: { ...s }, bundle: { ...s },
+			},
+		};
+
+		return { active: { ...breakdown }, inactive: { ...breakdown } };
+	})(),
+};
 
 beforeEach(() => {
-	mockEnv = {
-		PUBLIC_URL: 'test-public-url',
-	};
-
 	mockDb = {} as unknown as Knex;
-
-	mockUserCounts = { admin: 5, app: 3, api: 15 };
-
-	mockUserItemCounts = { collections: 25, items: 15000 };
-
-	mockFieldCounts = { max: 28, total: 88 };
-
-	mockExtensionCounts = { totalEnabled: 55 };
-
-	mockFilesizeSums = { total: 10 };
-
-	mockSettings = {
-		project_id: 'test-project-id',
-		mcp_enabled: true,
-		mcp_allow_deletes: false,
-		mcp_system_prompt_enabled: true,
-		visual_editor_urls: 2,
-		ai_openai_api_key: false,
-		ai_anthropic_api_key: false,
-		ai_system_prompt: false,
-		collaborative_editing_enabled: false,
-	};
-
-	mockRequestCounts = { get: 100, post: 50, patch: 20, delete: 5 };
-
-	vi.mocked(useEnv).mockReturnValue(mockEnv);
+	mockSchema = {} as unknown as SchemaOverview;
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
-
-	vi.mocked(useBufferedCounter).mockReturnValue({
-		increment: vi.fn(),
-		flush: vi.fn(),
-		flushAll: vi.fn(),
-		getAndResetAll: vi.fn().mockResolvedValue(mockRequestCounts),
-		destroy: vi.fn(),
-	});
-
-	vi.mocked(formatApiRequestCounts).mockReturnValue({
-		api_requests_get: 100,
-		api_requests_post: 50,
-		api_requests_patch: 20,
-		api_requests_put: 0,
-		api_requests_delete: 5,
-		api_requests: 175,
-		api_requests_cached: 0,
-	});
-
-	vi.mocked(getItemCount).mockResolvedValue({});
-	vi.mocked(fetchUserCount).mockResolvedValue(mockUserCounts);
-	vi.mocked(getUserItemCount).mockResolvedValue(mockUserItemCounts);
-	vi.mocked(getFieldCount).mockResolvedValue(mockFieldCounts);
-	vi.mocked(getExtensionCount).mockResolvedValue(mockExtensionCounts);
-	vi.mocked(getFilesizeSum).mockResolvedValue(mockFilesizeSums);
-	vi.mocked(getSettings).mockResolvedValue(mockSettings);
+	vi.mocked(getSchema).mockResolvedValue(mockSchema);
+	vi.mocked(collectProject).mockResolvedValue(mockProject);
+	vi.mocked(collectConfig).mockResolvedValue(mockConfig);
+	vi.mocked(collectFeatures).mockResolvedValue(mockFeatures);
+	vi.mocked(collectMetrics).mockResolvedValue(mockMetrics);
 });
 
 afterEach(() => {
 	vi.clearAllMocks();
 });
 
-test('Returns environment information', async () => {
-	vi.mocked(getDatabaseClient).mockReturnValue('test-db' as any);
-
+test('Returns structured report with all five top-level sections', async () => {
 	const report = await getReport();
 
-	expect(report.url).toBe(mockEnv['PUBLIC_URL']);
-	expect(report.database).toBe('test-db');
-	expect(report.version).toBe(version);
+	expect(report).toHaveProperty('project');
+	expect(report).toHaveProperty('meta');
+	expect(report).toHaveProperty('config');
+	expect(report).toHaveProperty('features');
+	expect(report).toHaveProperty('metrics');
 });
 
-test('Runs and returns basic counts', async () => {
-	const mockItemCount = {
-		directus_dashboards: 15,
-		directus_files: 45,
-		directus_flows: 60,
-		directus_roles: 75,
-		directus_shares: 90,
-	};
+test('Calls all collectors with the database instance and schema', async () => {
+	await getReport();
 
-	vi.mocked(getItemCount).mockResolvedValue(mockItemCount);
-
-	const report = await getReport();
-
-	expect(getItemCount).toHaveBeenCalledWith(mockDb, [
-		{ collection: 'directus_dashboards' },
-		{ collection: 'directus_files' },
-		{ collection: 'directus_flows', where: ['status', '=', 'active'] },
-		{ collection: 'directus_roles' },
-		{ collection: 'directus_shares' },
-	]);
-
-	expect(report.dashboards).toBe(mockItemCount.directus_dashboards);
-	expect(report.files).toBe(mockItemCount.directus_files);
-	expect(report.flows).toBe(mockItemCount.directus_flows);
-	expect(report.roles).toBe(mockItemCount.directus_roles);
-	expect(report.shares).toBe(mockItemCount.directus_shares);
+	expect(getSchema).toHaveBeenCalledWith({ database: mockDb });
+	expect(collectProject).toHaveBeenCalledWith(mockDb, mockSchema);
+	expect(collectConfig).toHaveBeenCalledWith(mockDb);
+	expect(collectFeatures).toHaveBeenCalledWith(mockDb, mockSchema);
+	expect(collectMetrics).toHaveBeenCalledWith(mockDb, mockSchema);
 });
 
-test('Runs and returns user counts', async () => {
+test('Defaults trigger to scheduled in meta', async () => {
 	const report = await getReport();
-
-	expect(fetchUserCount).toHaveBeenCalledWith({ knex: mockDb });
-
-	expect(report.admin_users).toBe(mockUserCounts.admin);
-	expect(report.app_users).toBe(mockUserCounts.app);
-	expect(report.api_users).toBe(mockUserCounts.api);
+	expect(report.meta.trigger).toBe('scheduled');
 });
 
-test('Runs and returns user item counts', async () => {
-	const report = await getReport();
-
-	expect(getUserItemCount).toHaveBeenCalledWith(mockDb);
-
-	expect(report.collections).toBe(mockUserItemCounts.collections);
-	expect(report.items).toBe(mockUserItemCounts.items);
+test('Forwards custom trigger to meta', async () => {
+	const report = await getReport('startup');
+	expect(report.meta.trigger).toBe('startup');
 });
 
-test('Runs and returns field counts', async () => {
+test('Returns project section from collectProject', async () => {
 	const report = await getReport();
-
-	expect(getFieldCount).toHaveBeenCalledWith(mockDb);
-
-	expect(report.fields_max).toBe(mockFieldCounts.max);
-	expect(report.fields_total).toBe(mockFieldCounts.total);
+	expect(report.project).toEqual(mockProject);
 });
 
-test('Runs and returns extension counts', async () => {
+test('Returns meta section with correct structure', async () => {
 	const report = await getReport();
 
-	expect(getExtensionCount).toHaveBeenCalledWith(mockDb);
-
-	expect(report.extensions).toBe(mockExtensionCounts.totalEnabled);
+	expect(report.meta).toEqual({
+		version: 1,
+		timestamp: expect.any(String),
+		trigger: 'scheduled',
+	});
 });
 
-test('Runs and returns extension counts', async () => {
+test('Returns config section from collectConfig', async () => {
 	const report = await getReport();
-
-	expect(getFilesizeSum).toHaveBeenCalledWith(mockDb);
-
-	expect(report.files_size_total).toBe(mockFilesizeSums.total);
+	expect(report.config).toEqual(mockConfig);
 });
 
-test('Runs and returns settings', async () => {
+test('Returns features section from collectFeatures', async () => {
 	const report = await getReport();
-
-	expect(getSettings).toHaveBeenCalledWith(mockDb);
-
-	expect(report.project_id).toBe(mockSettings.project_id);
-	expect(report.mcp_enabled).toBe(mockSettings.mcp_enabled);
-	expect(report.mcp_allow_deletes).toBe(mockSettings.mcp_allow_deletes);
-	expect(report.mcp_system_prompt_enabled).toBe(mockSettings.mcp_system_prompt_enabled);
-	expect(report.visual_editor_urls).toBe(mockSettings.visual_editor_urls);
+	expect(report.features).toEqual(mockFeatures);
 });
 
-test('Runs and returns formatted API request counts', async () => {
+test('Returns metrics section from collectMetrics', async () => {
 	const report = await getReport();
-
-	expect(useBufferedCounter).toHaveBeenCalledWith('api-requests');
-	expect(formatApiRequestCounts).toHaveBeenCalledWith(mockRequestCounts);
-
-	expect(report.api_requests_get).toBe(100);
-	expect(report.api_requests_post).toBe(50);
-	expect(report.api_requests_put).toBe(0);
-	expect(report.api_requests_patch).toBe(20);
-	expect(report.api_requests_delete).toBe(5);
-	expect(report.api_requests_cached).toBe(0);
-	expect(report.api_requests).toBe(175);
+	expect(report.metrics).toEqual(mockMetrics);
 });

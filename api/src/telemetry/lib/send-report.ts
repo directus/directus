@@ -14,7 +14,7 @@ export const sendReport = async (report: TelemetryReport | OwnerReport) => {
 	const url =
 		'project_owner' in report
 			? new URL('/v1/owner', String(env['COMPLIANCE_URL']))
-			: new URL('/v1/metrics', String(env['TELEMETRY_URL']));
+			: new URL('/v2/metrics', String(env['TELEMETRY_URL']));
 
 	const headers: ResponseInit['headers'] = {
 		'Content-Type': 'application/json',

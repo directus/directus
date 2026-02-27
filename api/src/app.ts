@@ -360,7 +360,7 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.after', { app });
 
 	await retentionSchedule();
-	await telemetrySchedule();
+	telemetrySchedule();
 	await tusSchedule();
 	await metricsSchedule();
 	await projectSchedule();

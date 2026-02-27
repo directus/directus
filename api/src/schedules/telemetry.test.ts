@@ -52,7 +52,7 @@ describe('telemetry', () => {
 		await telemetrySchedule();
 
 		expect(mockCache.lockCache.set).toHaveBeenCalledWith('telemetry-lock', true, 30000);
-		expect(track).toHaveBeenCalledWith({ wait: false });
+		expect(track).toHaveBeenCalledWith({ wait: false, trigger: 'startup' });
 	});
 
 	test('Returns true on successful init', async () => {
@@ -66,6 +66,6 @@ describe('jobCallback', () => {
 	test('Calls track', () => {
 		jobCallback();
 
-		expect(track).toHaveBeenCalledWith();
+		expect(track).toHaveBeenCalledWith({ trigger: 'scheduled' });
 	});
 });
