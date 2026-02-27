@@ -7,9 +7,9 @@ import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
+import { useLogger } from '../logger/index.js';
 import { decrypt } from '../utils/encrypt.js';
 import { getSecret } from '../utils/get-secret.js';
-import { useLogger } from '../logger/index.js';
 import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
