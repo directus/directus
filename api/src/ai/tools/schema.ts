@@ -152,13 +152,13 @@ export const FlowItemInputSchema = z
 		color: z.union([z.string(), z.null()]),
 		description: z.union([z.string(), z.null()]),
 		status: z.enum(['active', 'inactive']),
-		trigger: z.union([z.enum(['event', 'schedule', 'operation', 'webhook', 'manual']), z.null()]),
+		trigger: z.enum(['event', 'schedule', 'operation', 'webhook', 'manual']),
 		options: z.union([z.record(z.string(), z.any()), z.null()]),
 		operation: z.union([z.string(), z.null()]),
 		operations: z.array(OperationItemInputSchema),
 		date_created: z.string(),
 		user_created: z.string(),
-		accountability: z.union([z.enum(['all', 'activity']), z.null()]),
+		accountability: z.enum(['all', 'activity']),
 	})
 	.partial();
 
