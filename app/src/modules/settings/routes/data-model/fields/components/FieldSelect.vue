@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Field, Width } from '@directus/types';
-import { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { computed, ComputedRef, ref, unref } from 'vue';
+import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink, useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
@@ -17,10 +16,9 @@ import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import { useExtension } from '@/composables/use-extension';
+import { useSchemaOverview } from '@/composables/use-schema';
 import InterfaceSystemCollection from '@/interfaces/_system/system-collection/system-collection.vue';
-import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getSpecialForType } from '@/utils/get-special-for-type';
@@ -54,50 +52,6 @@ const inter = useExtension(
 	'interface',
 	computed(() => props.field.meta?.interface ?? null),
 );
-
-const useSchemaOverview = (): ComputedRef<SchemaOverview> => {
-	const relationsStore = useRelationsStore();
-	const fieldsStore = useFieldsStore();
-	const collectionsStore = useCollectionsStore();
-
-	return computed(() => ({
-		collections: Object.fromEntries(
-			collectionsStore.collections.map((collection) => {
-				const fields = fieldsStore.getFieldsForCollection(collection.collection).map((field) => [
-					field.field,
-					{
-						field: field.field,
-						defaultValue: field.schema?.default_value,
-						nullable: field.schema?.is_nullable ?? false,
-						generated: false, // unimplemented
-						type: field.type,
-						dbType: field.schema?.data_type ?? null,
-						alias: false, // unimplemented
-						searchable: field.meta?.searchable ?? true,
-						note: field.meta?.note ?? null,
-						precision: field.schema?.numeric_precision ?? null,
-						scale: field.schema?.numeric_scale ?? null,
-						special: field.meta?.special ?? [],
-						validation: field.meta?.validation ?? null,
-					} satisfies FieldOverview,
-				]);
-
-				const collectionInfo: CollectionOverview = {
-					collection: collection.collection,
-					fields: Object.fromEntries(fields),
-					accountability: collection.meta?.accountability ?? null,
-					note: collection.meta?.note ?? null,
-					primary: fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field,
-					singleton: collection.meta?.singleton ?? false,
-					sortField: collection.meta?.sort_field ?? null,
-				};
-
-				return [collection.collection, collectionInfo];
-			}),
-		),
-		relations: relationsStore.relations,
-	}));
-};
 
 const schemaOverview = useSchemaOverview();
 
