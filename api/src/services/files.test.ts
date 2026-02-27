@@ -1,5 +1,5 @@
-import { PassThrough } from 'node:stream';
-import { InvalidPayloadError } from '@directus/errors';
+import { PassThrough, Readable } from 'node:stream';
+import { InternalServerError, InvalidPayloadError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -197,6 +197,25 @@ describe('Integration Tests', () => {
 				);
 
 				vi.useRealTimers();
+			});
+
+			it('returns 500 for permanent filesystem errors', async () => {
+				const stream = Readable.from(Buffer.from('test content'));
+
+				// Get real storage instance
+				const storage = await getStorage();
+				const disk = storage.location('local');
+
+				// Spy on write to simulate EROFS
+				vi.spyOn(disk, 'write').mockRejectedValue(Object.assign(new Error('read-only'), { code: 'EROFS' }));
+
+				await expect(
+					service.uploadOne(stream, {
+						storage: 'local',
+						filename_download: 'test.txt',
+						type: 'text/plain',
+					} as any),
+				).rejects.toBeInstanceOf(InternalServerError);
 			});
 		});
 	});

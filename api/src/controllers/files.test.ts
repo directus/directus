@@ -1,9 +1,8 @@
-import { PassThrough, Readable } from 'stream';
-import { InternalServerError, InvalidPayloadError } from '@directus/errors';
+import { PassThrough } from 'stream';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Request, Response } from 'express';
 import FormData from 'form-data';
 import { describe, expect, it, vi } from 'vitest';
-import { FilesService } from '../services/files.js';
 import { multipartHandler } from './files.js';
 
 vi.mock('../../src/database');
@@ -68,44 +67,5 @@ describe('multipartHandler', () => {
 			expect(err.message).toBe('Invalid payload. File is missing filename.');
 			expect(err).toBeInstanceOf(InvalidPayloadError);
 		});
-	});
-});
-
-describe('FilesService - permanent filesystem errors', () => {
-	it('returns 500 for EROFS errors', async () => {
-		const schema = {
-			collections: {
-				directus_files: {
-					collection: 'directus_files',
-					primary: 'id',
-					singleton: false,
-					sortField: null,
-					note: null,
-					accountability: null,
-					fields: {},
-				},
-			},
-			relations: [],
-		} as any;
-
-		const service = new FilesService({
-			accountability: null,
-			schema,
-		});
-
-		const fsError = new Error('read-only');
-		(fsError as any).code = 'EROFS';
-
-		const stream = Readable.from(Buffer.from('test content'));
-
-		// mock storage write to throw error
-		vi.spyOn(service, 'uploadOne').mockRejectedValue(fsError);
-
-		await expect(
-			service.uploadOne(stream, {
-				storage: 'local',
-				filename_download: 'test.txt',
-			} as any),
-		).rejects.toBeInstanceOf(InternalServerError);
 	});
 });
