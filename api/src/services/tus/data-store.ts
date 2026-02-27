@@ -1,4 +1,4 @@
-import { extname } from 'node:path';
+import { extname, parse } from 'node:path';
 import stream from 'node:stream';
 import formatTitle from '@directus/format-title';
 import type { TusDriver } from '@directus/storage';
@@ -66,7 +66,7 @@ export class TusDataStore extends DataStore {
 		}
 
 		if (!upload.metadata['title']) {
-			upload.metadata['title'] = formatTitle(upload.metadata['filename_download']);
+			upload.metadata['title'] = formatTitle(parse(upload.metadata['filename_download']).name);
 		}
 
 		let existingFile: Record<string, any> | null = null;

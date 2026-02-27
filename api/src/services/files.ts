@@ -255,7 +255,7 @@ export class FilesService extends ItemsService<File> {
 			filename_download: filename,
 			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
 			type: fileResponse.headers['content-type'],
-			title: formatTitle(filename),
+			title: formatTitle(path.parse(filename).name),
 			...(body || {}),
 		};
 
