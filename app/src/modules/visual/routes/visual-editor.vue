@@ -236,8 +236,8 @@ function useVersionSelection() {
 							<VListItemContent>{{ $t('main_version') }}</VListItemContent>
 						</VListItem>
 						<VListItem
-							v-for="(version, index) in versions"
-							:key="index"
+							v-for="version in versions"
+							:key="version.key"
 							:active="version.key === selectedVersion?.key"
 							clickable
 							@click="onVersionSelect(version.key)"
