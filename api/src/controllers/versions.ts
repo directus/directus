@@ -1,4 +1,4 @@
-import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { assign } from 'lodash-es';
@@ -209,6 +209,10 @@ router.get(
 
 		const version = await service.readOne(req.params['pk']!);
 
+		if (!version.item) {
+			throw new ForbiddenError({ reason: `Version with key ${req.params['pk']} does not have an associated item` });
+		}
+
 		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
 
 		const delta = version.delta ?? {};
@@ -233,7 +237,11 @@ router.post(
 
 		const version = await service.readOne(req.params['pk']!);
 
-		const mainItem = await service.getMainItem(version['collection'], version['item']);
+		let mainItem = {};
+
+		if (version.item) {
+			mainItem = await service.getMainItem(version['collection'], version['item']);
+		}
 
 		const updatedVersion = await service.save(req.params['pk']!, req.body);
 
@@ -249,10 +257,6 @@ router.post(
 router.post(
 	'/:pk/promote',
 	asyncHandler(async (req, res, next) => {
-		if (typeof req.body.mainHash !== 'string') {
-			throw new InvalidPayloadError({ reason: `"mainHash" field is required` });
-		}
-
 		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
