@@ -118,7 +118,7 @@ const icon = computed(() => {
 	inline-size: 20px;
 	block-size: 20px;
 	object-fit: cover;
-	border-radius: 4px;
+	border-radius: var(--theme--border-radius);
 	flex-shrink: 0;
 }
 
@@ -138,7 +138,7 @@ const icon = computed(() => {
 	align-items: center;
 	justify-content: center;
 	padding: 2px;
-	border-radius: 4px;
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	opacity: 0.5;
 	flex-shrink: 0;
