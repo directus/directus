@@ -1575,6 +1575,7 @@ fields:
     report_bug_url: Report Bug URL
     report_error_url: Report Error URL
     collaborative_editing: Collaborative Editing
+    collaborative_editing_enabled: Enable Collaborative Editing
     collaborative_editing_note: WebSockets are required for collaborative editing to work.
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
