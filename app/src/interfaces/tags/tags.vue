@@ -4,7 +4,6 @@ import { computed, ref, watch } from 'vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
-import VRemove from '@/components/v-remove.vue';
 
 const props = withDefaults(
 	defineProps<{
