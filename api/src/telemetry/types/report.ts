@@ -1,17 +1,3 @@
-/**
- * Telemetry Report v1
- *
- * Structured telemetry payload sent to the intake server. All data is anonymous —
- * no PII, credentials, or user-specific content is included. Boolean flags for API keys
- * indicate *presence* only. Statistics use min/max/median/mean summaries to avoid
- * transmitting per-row data.
- */
-
-// ---------------------------------------------------------------------------
-// Shared primitives
-// ---------------------------------------------------------------------------
-
-/** Four-number distribution summary used throughout metrics. */
 export interface DistributionSummary {
 	min: number;
 	max: number;
@@ -19,17 +5,14 @@ export interface DistributionSummary {
 	mean: number;
 }
 
-/** Count wrapper — keeps the shape consistent across the report. */
 export interface CountMetric {
 	count: number;
 }
 
-/** Count + size distribution for a MIME group. */
 export interface FileSizeByType extends CountMetric {
 	size: DistributionSummary;
 }
 
-/** Count + source breakdown. */
 export interface ExtensionCountBySource extends CountMetric {
 	source: {
 		registry: CountMetric;
@@ -38,32 +21,22 @@ export interface ExtensionCountBySource extends CountMetric {
 	};
 }
 
-/** Aggregate breakdown for an extension state (active / inactive). */
 export interface ExtensionBreakdown {
-	/** Counts bundles as one item, ignores bundle children. */
 	bundles: ExtensionCountBySource;
-	/** Counts individual extensions (bundle children), ignores bundle parents. */
 	individual: ExtensionCountBySource;
 	type: {
-		// App extensions
 		display: ExtensionCountBySource;
 		interface: ExtensionCountBySource;
 		module: ExtensionCountBySource;
 		layout: ExtensionCountBySource;
 		panel: ExtensionCountBySource;
 		theme: ExtensionCountBySource;
-		// API extensions
 		endpoint: ExtensionCountBySource;
 		hook: ExtensionCountBySource;
 		operation: ExtensionCountBySource;
-		// Bundles
 		bundle: ExtensionCountBySource;
 	};
 }
-
-// ---------------------------------------------------------------------------
-// Top-level sections
-// ---------------------------------------------------------------------------
 
 export interface TelemetryReport {
 	project: TelemetryProject;
@@ -73,68 +46,39 @@ export interface TelemetryReport {
 	metrics: TelemetryMetrics;
 }
 
-// ---------------------------------------------------------------------------
-// project
-// ---------------------------------------------------------------------------
-
 export interface TelemetryProject {
-	/** UUID v7 project identifier (from directus_settings.project_id). */
 	id: string;
-	/** ISO-8601 timestamp derived from the UUID v7 time component. */
 	created_at: string;
-	/** Directus semver version string. */
 	version: string;
-	/** Project templates that have been applied (e.g. ["cms"]). */
 	templates_applied: string[];
 }
 
-// ---------------------------------------------------------------------------
-// meta
-// ---------------------------------------------------------------------------
-
 export interface TelemetryMeta {
-	/** Schema version of this telemetry format. */
 	version: number;
-	/** ISO-8601 timestamp of when the report was generated. */
 	timestamp: string;
-	/** What triggered the report: "startup" | "scheduled". */
 	trigger: 'startup' | 'scheduled';
 }
 
-// ---------------------------------------------------------------------------
-// config
-// ---------------------------------------------------------------------------
-
 export interface TelemetryConfig {
 	auth: {
-		/** Configured auth provider driver names (e.g. ["local","oauth2"]). */
 		providers: string[];
-		/** Inferred identity provider issuers (e.g. ["google","azure"]). */
 		issuers: string[];
 	};
-	/** Whether AI chat is enabled via env. */
 	ai: boolean;
-	/** Whether MCP is enabled via env. */
 	mcp: boolean;
 	cache: {
 		enabled: boolean;
-		/** Cache store type (e.g. "redis", "memory"). */
 		store: string;
 	};
 	database: {
-		/** Knex client name (e.g. "postgres", "sqlite3"). */
 		driver: string;
-		/** Raw database version string. */
 		version: string | null;
 	};
 	email: {
-		/** Email transport (e.g. "smtp", "sendgrid"). */
 		transport: string;
 	};
 	marketplace: {
-		/** Extension sandbox trust mode. */
 		trust: 'sandbox' | 'all';
-		/** Whether the default public registry or a custom one is configured. */
 		registry: 'default' | 'custom';
 	};
 	extensions: {
@@ -145,7 +89,6 @@ export interface TelemetryConfig {
 		rolldown: boolean;
 	};
 	storage: {
-		/** Unique storage driver names configured. */
 		drivers: string[];
 	};
 	retention: {
@@ -161,7 +104,6 @@ export interface TelemetryConfig {
 		logs: boolean;
 	};
 	prometheus: {
-		/** Whether Prometheus metrics endpoint is enabled. */
 		enabled: boolean;
 	};
 	rate_limiting: {
@@ -171,18 +113,12 @@ export interface TelemetryConfig {
 		email_flows: boolean;
 	};
 	synchronization: {
-		/** Sync store type (e.g. "redis", "memory"). */
 		store: string;
 	};
 	pm2: {
-		/** Number of PM2 instances (from PM2_INSTANCES env var). */
 		instances: number;
 	};
 }
-
-// ---------------------------------------------------------------------------
-// features  (derived from directus_settings – never exposes secrets)
-// ---------------------------------------------------------------------------
 
 export interface TelemetryFeatures {
 	mcp: {
@@ -192,15 +128,12 @@ export interface TelemetryFeatures {
 	};
 	ai: {
 		enabled: boolean;
-		/** Whether a custom AI system prompt is set. */
 		system_prompt: boolean;
 		providers: {
 			openai: {
 				api_key: boolean;
 				models: {
-					/** Known default models from the allowed list. */
 					allowed: string[];
-					/** Count of user-added models not in the default list. */
 					custom: CountMetric;
 				};
 			};
@@ -240,7 +173,6 @@ export interface TelemetryFeatures {
 		urls: CountMetric;
 	};
 	files: {
-		/** "all" | "none" | "presets" */
 		transformations: string;
 		presets: CountMetric;
 	};
@@ -256,7 +188,6 @@ export interface TelemetryFeatures {
 	};
 	extensions: {
 		installed: {
-			/** Registry extensions with id and version (only when using the default public registry). */
 			registry: Array<{ id: string; version: string }>;
 		};
 	};
@@ -280,10 +211,6 @@ export interface TelemetryFeatures {
 		};
 	};
 }
-
-// ---------------------------------------------------------------------------
-// metrics
-// ---------------------------------------------------------------------------
 
 export interface TelemetryMetrics {
 	api_requests: {

@@ -3,7 +3,6 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getTemplatesApplied, templates } from './get-templates-applied.js';
 
 afterEach(() => {
-	// Restore original templates after each test
 	for (const key of Object.keys(templates)) {
 		delete templates[key];
 	}

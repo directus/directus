@@ -1,7 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { collectEmail } from './email.js';
 
-// Mock environment variables
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));

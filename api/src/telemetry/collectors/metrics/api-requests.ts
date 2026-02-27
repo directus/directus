@@ -3,10 +3,6 @@ import type { TelemetryReport } from '../../types/report.js';
 
 type ApiRequestMetrics = TelemetryReport['metrics']['api_requests'];
 
-/**
- * Read buffered API request counters and reset them.
- * Returns structured counts by method + cached.
- */
 export async function collectApiRequestMetrics(): Promise<ApiRequestMetrics> {
 	const counter = useBufferedCounter('api-requests');
 	const raw = await counter.getAndResetAll();

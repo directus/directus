@@ -6,10 +6,6 @@ import { distributionFromCounts, emptyDistribution } from '../../utils/stats.js'
 
 type DashboardMetrics = TelemetryReport['metrics']['dashboards'];
 
-/**
- * Collect dashboard metrics using the native DashboardsService with relational
- * count fields instead of raw Knex GROUP BY queries.
- */
 export async function collectDashboardMetrics(db: Knex, schema: SchemaOverview): Promise<DashboardMetrics> {
 	const dashboardsService = new DashboardsService({ knex: db, schema });
 

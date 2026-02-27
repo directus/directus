@@ -6,11 +6,6 @@ import { distributionFromCounts, emptyDistribution } from '../../utils/stats.js'
 
 type RoleMetrics = TelemetryReport['metrics']['roles'];
 
-/**
- * Collect role metrics using the native Directus RolesService with relational
- * count fields — avoids raw Knex GROUP BY queries in favour of the service
- * query layer which handles joins and permission-safe access.
- */
 export async function collectRoleMetrics(db: Knex, schema: SchemaOverview): Promise<RoleMetrics> {
 	const rolesService = new RolesService({ knex: db, schema });
 

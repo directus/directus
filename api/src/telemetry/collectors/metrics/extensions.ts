@@ -5,7 +5,6 @@ import type { ExtensionBreakdown, ExtensionCountBySource, TelemetryReport } from
 
 type ExtensionMetrics = TelemetryReport['metrics']['extensions'];
 
-/** Extension types that have their own breakdown bucket. */
 const EXTENSION_TYPES = new Set<string>([
 	'display', 'interface', 'module', 'layout', 'panel', 'theme', 'endpoint', 'hook', 'operation', 'bundle',
 ]);
@@ -22,24 +21,20 @@ export async function collectExtensionMetrics(db: Knex, schema: SchemaOverview):
 		const source = extension.meta.source;
 		const type = extension.schema?.type;
 
-		// Skip extensions without a recognised type so all counters stay consistent
 		if (!type || !EXTENSION_TYPES.has(type)) continue;
 
 		const isBundle = type === 'bundle';
 		const isBundleChild = extension.bundle !== null;
 
-		// Track type breakdown
 		const bucket = target.type[type];
 		bucket.count += 1;
 		bucket.source[source].count += 1;
 
-		// "bundles" view: count bundles + non-bundled extensions, skip bundle children
 		if (!isBundleChild) {
 			target.bundles.count += 1;
 			target.bundles.source[source].count += 1;
 		}
 
-		// "individual" view: count actual extensions, skip bundle parents
 		if (!isBundle) {
 			target.individual.count += 1;
 			target.individual.source[source].count += 1;
@@ -49,7 +44,6 @@ export async function collectExtensionMetrics(db: Knex, schema: SchemaOverview):
 	return { active, inactive };
 }
 
-/** Create a zeroed-out ExtensionBreakdown structure. */
 export function createEmptyBreakdown(): ExtensionBreakdown {
 	const emptyCountBySource = (): ExtensionCountBySource => ({
 		count: 0,

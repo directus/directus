@@ -2,7 +2,6 @@ import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { ItemsService } from '../../services/items.js';
 
-/** Use service aggregate to get a simple count for a system collection. */
 export async function serviceCount(
 	db: Knex,
 	schema: SchemaOverview,

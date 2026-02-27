@@ -111,15 +111,12 @@ describe('collectExtensionMetrics', () => {
 
 		const result = await collectExtensionMetrics(mockDb, mockSchema);
 
-		// "bundles" counts the bundle parent, skips children
 		expect(result.active.bundles.count).toBe(1);
 		expect(result.active.bundles.source.registry.count).toBe(1);
 
-		// "individual" counts the children, skips the bundle parent
 		expect(result.active.individual.count).toBe(2);
 		expect(result.active.individual.source.registry.count).toBe(2);
 
-		// type tracks everything
 		expect(result.active.type.bundle.count).toBe(1);
 		expect(result.active.type.interface.count).toBe(2);
 	});

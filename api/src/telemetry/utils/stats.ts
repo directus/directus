@@ -1,16 +1,9 @@
 import type { DistributionSummary } from '../types/report.js';
 
-/**
- * Returns a zeroed-out distribution summary.
- */
 export function emptyDistribution(): DistributionSummary {
 	return { min: 0, max: 0, median: 0, mean: 0 };
 }
 
-/**
- * Compute a DistributionSummary (min, max, median, mean) from an array of
- * numeric values. Returns all zeros for an empty array.
- */
 export function distributionFromCounts(counts: number[]): DistributionSummary {
 	if (counts.length === 0) return emptyDistribution();
 

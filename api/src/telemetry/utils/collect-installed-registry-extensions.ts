@@ -3,11 +3,6 @@ import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { ExtensionsService } from '../../services/extensions.js';
 
-/**
- * Collect installed registry extensions (id + version).
- * Only includes top-level registry extensions (not bundle children) and only
- * when the project is using the default public registry (MARKETPLACE_REGISTRY is not set).
- */
 export async function collectInstalledRegistryExtensions(
 	db: Knex,
 	schema: SchemaOverview,

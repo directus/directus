@@ -99,7 +99,6 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 		],
 	}) as FeatureSettingsResponse;
 
-	// Build sets of known model IDs per provider for whitelist filtering
 	const knownModels: Record<string, Set<string>> = { openai: new Set(), anthropic: new Set(), google: new Set() };
 
 	for (const m of DEFAULT_AI_MODELS) {
@@ -117,7 +116,6 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 		? (settings['custom_aspect_ratios'] as unknown[]).length
 		: 0;
 
-	// Detect enabled modules from module_bar setting
 	const moduleBar = settings?.['module_bar'] ?? [];
 
 	const enabledModuleIds = new Set(

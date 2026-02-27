@@ -14,14 +14,6 @@ import { collectUserMetrics } from './users.js';
 
 type Metrics = TelemetryReport['metrics'];
 
-/**
- * Collect all metric sections in parallel. Each sub-collector is independently
- * safe to run — failures in one will not prevent the others from completing.
- *
- * Individual collectors manage their own query concurrency (e.g. collections
- * uses p-limit(3) for item counts). The overall Promise.all here only adds
- * parallelism across *different* metric domains.
- */
 export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<Metrics> {
 
 	const [
@@ -54,7 +46,6 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 		serviceCount(db, schema, 'directus_policies'),
 	]);
 
-	// Strip internal-only properties before returning
 	const { _totalItems, _totalFields, ...collections } = collectionMetrics;
 
 	return {

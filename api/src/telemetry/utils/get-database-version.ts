@@ -1,12 +1,6 @@
 import type { DatabaseClient } from '@directus/types';
 import type { Knex } from 'knex';
 
-/**
- * Get the version string of the connected database
- * @param db Knex instance to query against
- * @param driver The database driver/client identifier
- * @returns The database version string, or null if it could not be determined
- */
 export async function getDatabaseVersion(db: Knex, driver: DatabaseClient): Promise<string | null> {
 	try {
 		let row;
