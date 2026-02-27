@@ -5,7 +5,7 @@ import { useVisualElementHighlight } from '../composables/use-visual-element-hig
 import { useAiContextStore } from '../stores/use-ai-context';
 import { isFileContext, isLocalFileContext, type PendingContextItem } from '../types';
 import AiContextCard from './ai-context-card.vue';
-import { getAssetUrl } from '@/utils/get-asset-url';
+import { getImageUrl, isImageFile } from './parts/file-ui-part-utils';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 
 const contextStore = useAiContextStore();
@@ -53,36 +53,6 @@ onUnmounted(() => {
 function handleRemove(item: PendingContextItem) {
 	clearHighlight();
 	contextStore.removePendingContext(item.id);
-}
-
-function isImageFile(item: PendingContextItem): boolean {
-	if (isLocalFileContext(item)) {
-		return item.data.file.type.startsWith('image/');
-	}
-
-	if (isFileContext(item)) {
-		return item.data.type?.startsWith('image/') ?? false;
-	}
-
-	return false;
-}
-
-function getImageUrl(item: PendingContextItem): string | undefined {
-	if (!isImageFile(item)) return undefined;
-
-	if (isLocalFileContext(item)) {
-		return item.data.thumbnailUrl;
-	}
-
-	if (isFileContext(item)) {
-		if (item.data.type?.includes('svg')) {
-			return getAssetUrl(item.data.id);
-		}
-
-		return getAssetUrl(item.data.id, { key: 'system-small-cover' });
-	}
-
-	return undefined;
 }
 
 function handleCardClick(item: PendingContextItem) {
