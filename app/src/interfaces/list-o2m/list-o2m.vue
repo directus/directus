@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { useEventListener, useLocalStorage } from '@vueuse/core';
 import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
@@ -18,6 +17,7 @@ import VSelect from '@/components/v-select/v-select.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
+import { useColumnWidths } from '@/composables/use-column-widths';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
@@ -80,19 +80,9 @@ const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
 
-const columnWidths = useLocalStorage<Record<string, number>>(
+const { getWidth, updateWidths } = useColumnWidths(
 	() => `directus-o2m-column-widths-${collection.value}-${field.value}`,
-	{},
 );
-
-const pendingColumnWidths = ref<Record<string, number>>({});
-
-useEventListener(window, 'pointerup', () => {
-	if (Object.keys(pendingColumnWidths.value).length > 0) {
-		columnWidths.value = { ...columnWidths.value, ...pendingColumnWidths.value };
-		pendingColumnWidths.value = {};
-	}
-});
 
 const value = computed({
 	get: () => props.value,
@@ -226,21 +216,13 @@ const headers = computed({
 				return {
 					text: field.name,
 					value: key,
-					width: pendingColumnWidths.value[key] ?? columnWidths.value[key] ?? defaultWidth,
+					width: getWidth(key, defaultWidth),
 					sortable: !['json'].includes(field.type),
 				};
 			})
 			.filter((h) => h !== null);
 	},
-	set: (val: Array<any>) => {
-		const widths: Record<string, number> = {};
-
-		val.forEach((h) => {
-			widths[h.value] = h.width ?? 160;
-		});
-
-		pendingColumnWidths.value = { ...pendingColumnWidths.value, ...widths };
-	},
+	set: updateWidths,
 });
 
 const spacings = {
