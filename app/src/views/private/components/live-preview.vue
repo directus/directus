@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
+import type { ContentVersion } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -16,6 +17,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
@@ -33,7 +35,7 @@ const {
 	dynamicDisplay,
 	singleUrlSubdued = true,
 	canEnableVisualEditing = false,
-	visualEditorUrls = [],
+	version = null,
 	showOpenInVisualEditor = true,
 	defaultShowEditableElements = false,
 	isFullWidth = false,
@@ -52,7 +54,7 @@ const {
 	inPopup?: boolean;
 	centered?: boolean;
 	canEnableVisualEditing?: boolean;
-	visualEditorUrls?: string[];
+	version?: Pick<ContentVersion, 'key' | 'name'> | null;
 	showOpenInVisualEditor?: boolean;
 	defaultShowEditableElements?: boolean;
 	isFullWidth?: boolean;
@@ -73,10 +75,10 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const router = useRouter();
 const slots = useSlots();
-
 useResizeObserver();
 
 const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, selectUrl } = useUrls();
+const { visualEditingEnabled, showEditableElements, openInVisualEditor } = useVisualEditing();
 
 const width = ref<number>();
 const height = ref<number>();
@@ -84,7 +86,6 @@ const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
-const showEditableElements = ref(defaultShowEditableElements);
 const overlayProvided = computed(() => !!slots.overlay);
 const hasDisplayOptions = computed(() => !!slots['display-options']);
 const hasSidebar = computed(() => !!slots.sidebar);
@@ -129,16 +130,6 @@ const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
 });
 
-const visualEditingEnabled = computed(() => {
-	if (!canEnableVisualEditing) return false;
-	if (invalidUrl) return false;
-
-	const currentUrl = frameSrc.value;
-	if (!currentUrl || !visualEditorUrls.length) return false;
-
-	return visualEditorUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
-});
-
 function toggleFullscreen() {
 	if (fullscreen.value) {
 		width.value = 400;
@@ -164,22 +155,42 @@ function onIframeLoad() {
 	isRefreshing.value = false;
 }
 
-function openInVisualEditor() {
-	if (frameSrc.value) router.push(getUrlRoute(frameSrc.value));
-}
-
 window.refreshLivePreview = refresh;
 
-watch(
-	() => frameSrc.value,
-	() => {
-		showEditableElements.value = false;
-	},
-);
+function useVisualEditing() {
+	const { resolveUrls } = useVisualEditorUrls();
+	const showEditableElements = ref(defaultShowEditableElements);
 
-watch(visualEditingEnabled, (enabled) => {
-	if (!enabled) showEditableElements.value = false;
-});
+	const visualEditingEnabled = computed(() => {
+		if (!canEnableVisualEditing) return false;
+		if (invalidUrl) return false;
+
+		const currentUrl = frameSrc.value;
+		if (!currentUrl) return false;
+
+		const allowedUrls = resolveUrls(version?.key);
+		if (!allowedUrls.length) return false;
+
+		return allowedUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
+	});
+
+	watch(
+		() => frameSrc.value,
+		() => {
+			showEditableElements.value = false;
+		},
+	);
+
+	watch(visualEditingEnabled, (enabled) => {
+		if (!enabled) showEditableElements.value = false;
+	});
+
+	return { visualEditingEnabled, showEditableElements, openInVisualEditor };
+
+	function openInVisualEditor() {
+		if (frameSrc.value) router.push(getUrlRoute(frameSrc.value));
+	}
+}
 
 function useResizeObserver() {
 	let observerInitialized = false;
@@ -214,8 +225,7 @@ function useResizeObserver() {
 }
 
 function useUrls() {
-	const initialDynamicUrl = dynamicUrl;
-	const selectedUrl = ref<string>();
+	const internalFrameSrc = ref<string>();
 	const urlArray = computed(() => (Array.isArray(url) ? url : [url]));
 	const multipleUrls = computed(() => urls.value.length > 1);
 	const dynamicUrlIncluded = computed(() => dynamicUrl && urlArray.value.includes(dynamicUrl));
@@ -226,9 +236,9 @@ function useUrls() {
 	});
 
 	const frameSrc = computed({
-		get: () => selectedUrl.value ?? initialDynamicUrl ?? urls.value[0],
+		get: () => internalFrameSrc.value ?? urls.value[0],
 		set(value) {
-			selectedUrl.value = value;
+			internalFrameSrc.value = value;
 		},
 	});
 
@@ -236,6 +246,8 @@ function useUrls() {
 		if (invalidUrl) return t('select');
 		return dynamicDisplay ?? frameSrc.value;
 	});
+
+	watch(urlArray, updateFrameSrcWithDynamicUrl, { immediate: true });
 
 	return {
 		urls,
@@ -245,6 +257,10 @@ function useUrls() {
 		dynamicUrlIncluded,
 		selectUrl,
 	};
+
+	function updateFrameSrcWithDynamicUrl() {
+		if (dynamicUrl) internalFrameSrc.value = dynamicUrl;
+	}
 
 	function selectUrl(newUrl: string) {
 		emit('selectUrl', newUrl, String(frameSrc.value));
@@ -378,6 +394,8 @@ function useUrls() {
 						</VListItem>
 					</VList>
 				</VMenu>
+
+				<slot name="append-url" />
 			</div>
 
 			<div class="spacer" />
@@ -483,6 +501,7 @@ function useUrls() {
 								v-if="visualEditingEnabled && !overlayProvided"
 								:frame-el="frameEl"
 								:frame-src="frameSrc"
+								:version="version"
 								:show-editable-elements="showEditableElements"
 								@saved="(data) => emit('saved', data)"
 							/>
@@ -524,6 +543,7 @@ function useUrls() {
 						v-if="visualEditingEnabled && !overlayProvided"
 						:frame-el="frameEl"
 						:frame-src="frameSrc"
+						:version="version"
 						:show-editable-elements="showEditableElements"
 						@saved="(data) => emit('saved', data)"
 					/>

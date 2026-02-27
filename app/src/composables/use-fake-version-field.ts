@@ -2,6 +2,7 @@ import type { Field } from '@directus/types';
 import { computed, type ComputedRef, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useVersions } from './use-versions';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 
 type Choice = { text: string; value: string | null };
 
@@ -60,7 +61,7 @@ export function useFakeVersionField(
 
 		return versions.value
 			?.map((version) => ({
-				text: version.name || version.key,
+				text: getVersionDisplayName(version),
 				value: version.key,
 			}))
 			.filter(uniqueItems);

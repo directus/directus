@@ -1,9 +1,10 @@
 import { defineModule } from '@directus/extensions';
 import { stringifyQuery } from 'vue-router';
+import { useVisualEditorUrls } from './composables/use-visual-editor-urls';
 import VisualEditor from './routes/visual-editor.vue';
 import { getUrlRoute } from './utils/get-url-route';
-import { sameOrigin } from './utils/same-origin';
-import { useSettingsStore } from '@/stores/settings';
+import { normalizeUrl } from './utils/normalize-url';
+import { analyzeTemplate, matchesTemplate } from './utils/version-url';
 
 export default defineModule({
 	id: 'visual',
@@ -14,10 +15,9 @@ export default defineModule({
 			name: 'visual-editor',
 			path: '',
 			redirect() {
-				const urls = getSettingsUrls();
-				const firstUrl = urls[0];
-				if (!firstUrl) return { name: 'visual-editor-no-url' };
-				return getUrlRoute(firstUrl);
+				const { firstResolvedUrl } = useVisualEditorUrls();
+				if (!firstResolvedUrl.value) return { name: 'visual-editor-no-url' };
+				return getUrlRoute(firstResolvedUrl.value);
 			},
 		},
 		{
@@ -25,22 +25,26 @@ export default defineModule({
 			path: ':url(.*)',
 			component: VisualEditor,
 			props(route) {
-				const urls = getSettingsUrls();
 				const queryString = stringifyQuery(route.query);
 
 				return {
-					urls,
 					dynamicUrl: normalizeUrl(`${route.params.url}${queryString ? `?${queryString}` : ''}${route.hash}`),
 				};
 			},
 			beforeEnter(to) {
-				const urls = getSettingsUrls();
-				if (!urls.length) return { name: 'visual-editor-no-url' };
+				const { urlTemplates, firstResolvedUrl } = useVisualEditorUrls();
+				if (!firstResolvedUrl.value) return { name: 'visual-editor-no-url' };
 
 				// if path is `/admin/visual/` with trailing slash
-				if (!to.params.url) return getUrlRoute(urls[0]!);
+				if (!to.params.url) return getUrlRoute(firstResolvedUrl.value);
 
-				const validUrl = urls.some((url) => sameOrigin(url, String(to.params.url)));
+				const concreteUrl = String(to.params.url);
+
+				const validUrl = urlTemplates.value.some((urlTemplate) => {
+					const placement = analyzeTemplate(urlTemplate);
+					return matchesTemplate(urlTemplate, concreteUrl, placement);
+				});
+
 				if (!validUrl) return { name: 'visual-editor-invalid-url' };
 			},
 		},
@@ -49,8 +53,7 @@ export default defineModule({
 			path: 'invalid-url',
 			component: VisualEditor,
 			props() {
-				const urls = getSettingsUrls();
-				return { invalidUrl: true, urls };
+				return { invalidUrl: true };
 			},
 		},
 		{
@@ -60,17 +63,3 @@ export default defineModule({
 		},
 	],
 });
-
-function getSettingsUrls() {
-	const { settings } = useSettingsStore();
-	const settingsUrls = settings?.visual_editor_urls?.map((item) => item.url).filter(Boolean) || [];
-	return settingsUrls.map(normalizeUrl).filter(Boolean);
-}
-
-function normalizeUrl(url: string) {
-	try {
-		return new URL(url).href.replace(/\/$/, '');
-	} catch {
-		return '';
-	}
-}

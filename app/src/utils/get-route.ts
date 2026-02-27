@@ -48,9 +48,14 @@ export function getCollectionRoute(collection: string | null) {
  *
  * @param collection - Collection name
  * @param primaryKey - Primary key of item
+ * @param versionKey - Optional version key to append as query parameter
  * @returns - URL route for the item
  */
-export function getItemRoute(collection: string | null, primaryKey: string | number) {
+export function getItemRoute(
+	collection: string | null,
+	primaryKey: string | number,
+	versionKey?: string | null | undefined,
+) {
 	if (collection === null) return '';
 
 	const collectionRoute = getCollectionRoute(collection);
@@ -62,5 +67,7 @@ export function getItemRoute(collection: string | null, primaryKey: string | num
 
 	const itemRoute = primaryKey === '+' ? primaryKey : encodeURIComponent(primaryKey);
 
-	return `${collectionRoute}/${itemRoute}`;
+	const base = `${collectionRoute}/${itemRoute}`;
+
+	return versionKey ? `${base}?version=${versionKey}` : base;
 }
