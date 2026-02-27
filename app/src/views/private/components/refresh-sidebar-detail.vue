@@ -37,6 +37,7 @@ emitter.on(Events.tabIdle, onIdle);
 emitter.on(Events.tabActive, onActive);
 
 onUnmounted(() => {
+	clearInterval(interval.value);
 	emitter.off(Events.tabIdle, onIdle);
 	emitter.off(Events.tabActive, onActive);
 });
