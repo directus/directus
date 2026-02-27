@@ -283,7 +283,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionArticles}`)
 						.query({
 							fields: 'id,title,json(category_id.metadata, color)',
-							sort: '-id',
+							sort: '-title',
 							limit: 2,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -293,15 +293,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toBeDefined();
 					expect(response.body.data).toHaveLength(2);
 
-					// Results should be in descending order by id
-					const firstId = response.body.data[0].id;
-					const secondId = response.body.data[1].id;
-
-					if (pkType === 'integer') {
-						expect(Number(firstId) > Number(secondId)).toBe(true);
-					} else {
-						expect(firstId > secondId).toBe(true);
-					}
+					// Results should be in descending order by title.
+					// Sorting by title (varchar) gives consistent lexicographic ordering across all
+					// vendors. Sorting by id for uuid pkType is unreliable because MSSQL sorts
+					// uniqueidentifier by an internal byte order that differs from JS string comparison.
+					const firstTitle = response.body.data[0].title;
+					const secondTitle = response.body.data[1].title;
+					expect(firstTitle > secondTitle).toBe(true);
 				});
 			});
 		});
