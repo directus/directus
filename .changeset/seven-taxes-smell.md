@@ -6,4 +6,4 @@
 ---
 
 Added image and PDF upload support to Directus AI Assistant with a provider adapter pattern for 3 major providers
-(OpenAI, Anthrophic, Gemini).
+(OpenAI, Anthropic, Gemini).
