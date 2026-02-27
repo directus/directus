@@ -99,9 +99,16 @@ describe('promoting an itemless version', () => {
 
 describe('deny updating non draft version from item to itemless', () => {
 	it.each(vendors)('%s', async (vendor) => {
+		const item = await CreateItem(vendor, {
+			collection: c.articles,
+			item: {
+				title: 'item1',
+			},
+		});
+
 		const version = await CreateVersion(vendor, {
 			collection: c.articles,
-			item: '1',
+			item: String(item.id),
 			key: 'test',
 			name: 'draft',
 		});
@@ -123,6 +130,11 @@ describe('deny updating non draft version from item to itemless', () => {
 		expect(response.body.errors).toBeDefined();
 
 		await DeleteVersion(vendor, version.id);
+
+		await DeleteItem(vendor, {
+			collection: c.articles,
+			id: item.id,
+		});
 	});
 });
 
