@@ -25,7 +25,6 @@ beforeEach(() => {
 		{ type: 'module', id: 'content', enabled: true },
 		{ type: 'module', id: 'visual', enabled: true },
 	];
-
 });
 
 afterEach(() => {
