@@ -15,6 +15,7 @@ type Artist = {
 	name: string;
 	company?: string;
 	group?: string;
+	date_published?: string;
 };
 
 function createArtist(pkType: PrimaryKeyType): Artist {
@@ -98,9 +99,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(gqlResponse.statusCode).toBe(200);
 
 						switch (vendor) {
-							case 'sqlite3':
-								expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
-								break;
 							case 'postgres':
 							case 'postgres10':
 							case 'mssql':
@@ -627,6 +625,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 													name,
 													company: null,
 													group: null,
+													date_published: null,
 												},
 											],
 										};
@@ -1008,8 +1007,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					const fields = Object.keys(response.body.data);
 
-					expect(fields).toHaveLength(4);
-					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group']));
+					expect(fields).toHaveLength(5);
+					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group', 'date_published']));
 				});
 			});
 
@@ -1032,8 +1031,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					const fields = Object.keys(response.body.data);
 
-					expect(fields).toHaveLength(4);
-					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group']));
+					expect(fields).toHaveLength(5);
+					expect(fields).toEqual(expect.arrayContaining(['id', 'name', 'company', 'group', 'date_published']));
 				});
 			});
 
@@ -1067,12 +1066,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 
 					// Action
-					// Use array indices beyond the QUERYSTRING_ARRAY_LIMIT (100)
+					// Use array indices beyond the QUERYSTRING_ARRAY_LIMIT (500)
 					// When qs encounters array > arrayLimit, it parses it as an object
 					// It should result in invalid input
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
-						.query('fields[101]=name&fields[102]=name')
+						.query('fields[501]=name&fields[502]=name')
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -1088,12 +1087,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 
 					// Action
-					// A regular array beyond the QUERYSTRING_ARRAY_LIMIT (100)
+					// A regular array beyond the QUERYSTRING_ARRAY_LIMIT (500)
 					// When qs encounters array > arrayLimit, it parses it as an object
 					// It should result in invalid input
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
-						.query(Array(102).fill('fields[]=name').join('&'))
+						.query(Array(502).fill('fields[]=name').join('&'))
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -1115,7 +1114,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// It should bypass the QUERYSTRING_ARRAY_LIMIT limit
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
-						.query('fields=' + Array(102).fill('name').join(','))
+						.query('fields=' + Array(502).fill('name').join(','))
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -1407,7 +1406,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe('groups by field named "group" without collision', () => {
+			describe('group by field named "group"', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const artistName = 'aggregate-group-field';
@@ -1415,9 +1414,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artists = [];
 
 					for (let i = 0; i < 6; i++) {
-						const artist = createArtist(pkType);
-						artist.name = artistName;
-						artist.group = groups[i % groups.length]!;
+						const artist = {
+							...createArtist(pkType),
+							name: artistName,
+							group: groups[i % groups.length],
+						};
+
 						artists.push(artist);
 					}
 
@@ -1469,9 +1471,223 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.body.data[queryKey].length).toBe(groups.length);
 
 					for (const item of gqlResponse.body.data[queryKey]) {
-						expect(item.group).toBeDefined();
-						expect(typeof item.group).toBe('object');
 						expect(groups).toContain(item.group.group);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+				});
+			});
+
+			describe('group by function field', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const artistName = 'aggregate-group-function-field';
+					const dates = ['2024-02-01', '2025-02-02', '2026-02-03'] as const;
+					const artists = [];
+
+					for (let i = 0; i < 6; i++) {
+						const artist = { ...createArtist(pkType), name: artistName, date_published: dates[i % dates.length] };
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['year(date_published)'],
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									groupBy: ['year(date_published)'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(dates.length);
+
+					for (const item of response.body.data) {
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(Number(item.date_published_year));
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toBe(dates.length);
+
+					for (const item of gqlResponse.body.data[queryKey]) {
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(Number(item.group.date_published_year));
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+				});
+			});
+
+			describe('group by multiple regular fields', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const artistName = 'aggregate-group-multiple-field';
+					const groups = ['admin', 'editor', 'viewer'] as const;
+					const dates = ['2024-02-01', '2025-02-02', '2026-02-03'] as const;
+					const artists = [];
+
+					for (let i = 0; i < 6; i++) {
+						const artist = {
+							...createArtist(pkType),
+							name: artistName,
+							date_published: dates[i % dates.length],
+							group: groups[i % groups.length],
+						};
+
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['group', 'date_published'],
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									groupBy: ['group', 'date_published'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(groups.length);
+
+					for (const item of response.body.data) {
+						expect(groups).toContain(item.group);
+						expect(dates).toContain(item.date_published);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toBe(groups.length);
+
+					for (const item of gqlResponse.body.data[queryKey]) {
+						expect(groups).toContain(item.group.group);
+						expect(dates).toContain(item.group.date_published);
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+				});
+			});
+
+			describe('group by multiple regular and function fields', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const artistName = 'aggregate-group-multiple-diff-type-field';
+					const groups = ['admin', 'editor', 'viewer'] as const;
+					const dates = ['2024-02-01', '2025-02-02', '2026-02-03'] as const;
+					const artists = [];
+
+					for (let i = 0; i < 6; i++) {
+						const artist = {
+							...createArtist(pkType),
+							name: artistName,
+							date_published: dates[i % dates.length],
+							group: groups[i % groups.length],
+						};
+
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['group', 'year(date_published)'],
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									groupBy: ['group', 'year(date_published)'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(groups.length);
+
+					for (const item of response.body.data) {
+						expect(groups).toContain(item.group);
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(Number(item.date_published_year));
+						expect(parseInt(item.count.id)).toBe(2);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toBe(groups.length);
+
+					for (const item of gqlResponse.body.data[queryKey]) {
+						expect(groups).toContain(item.group.group);
+						expect(dates.map((d) => new Date(d).getFullYear())).toContain(Number(item.group.date_published_year));
 						expect(parseInt(item.count.id)).toBe(2);
 					}
 				});
