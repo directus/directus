@@ -19,6 +19,7 @@ const props = withDefaults(
 		presets?: string[];
 		allowCustom?: boolean;
 		direction?: string;
+		rawEditorEnabled?: boolean;
 	}>(),
 	{
 		iconRight: 'local_offer',
@@ -32,6 +33,8 @@ const presetVals = computed<string[]>(() => {
 	if (props.presets !== undefined) return processArray(props.presets);
 	return [];
 });
+
+const isVariableMode = computed(() => props.rawEditorEnabled === true && typeof props.value === 'string');
 
 const selectedValsLocal = ref<string[]>(Array.isArray(props.value) ? processArray(props.value) : []);
 
@@ -85,6 +88,8 @@ function processArray(array: string[]): string[] {
 }
 
 function onInput(event: KeyboardEvent) {
+	if (isVariableMode.value) return;
+
 	if (event.target && (event.key === 'Enter' || event.key === ',' || (event.type === 'blur' && document.hasFocus()))) {
 		event.preventDefault();
 		addTag((event.target as HTMLInputElement).value);
@@ -117,21 +122,36 @@ function removeTag(tag: string) {
 function emitValue() {
 	emit('input', selectedVals.value);
 }
+
+function clearVariable() {
+	emit('input', null);
+}
 </script>
 
 <template>
 	<div class="interface-tags">
 		<VInput
-			v-if="allowCustom"
-			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
-			:disabled
-			:non-editable
+			v-if="isVariableMode || allowCustom"
+			:model-value="isVariableMode ? (value as string) : undefined"
+			:placeholder="isVariableMode ? undefined : placeholder || $t('interfaces.tags.add_tags')"
+			:disabled="isVariableMode || disabled"
+			:non-editable="isVariableMode || nonEditable"
 			:dir="direction"
 			@keydown="onInput"
 			@blur="onInput"
 		>
-			<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
-			<template #append><VIcon :name="iconRight" /></template>
+			<template v-if="!isVariableMode && iconLeft" #prepend><VIcon :name="iconLeft" /></template>
+			<template #append>
+				<VIcon
+					v-if="isVariableMode"
+					v-tooltip="$t('clear_value')"
+					class="remove-variable"
+					name="close"
+					clickable
+					@click.stop="clearVariable"
+				/>
+				<VIcon v-else :name="iconRight" />
+			</template>
 		</VInput>
 		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
 			<span v-if="presetVals.length > 0" class="presets tag-container">
@@ -176,6 +196,12 @@ function emitValue() {
 </template>
 
 <style lang="scss" scoped>
+.remove-variable {
+	display: flex;
+
+	--v-icon-color-hover: var(--v-remove-color, var(--theme--danger));
+}
+
 .tags {
 	display: flex;
 	flex-wrap: wrap;
