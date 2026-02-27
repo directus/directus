@@ -3,6 +3,7 @@ import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
+import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
 import { getFunctions } from '../../helpers/index.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
@@ -46,14 +47,26 @@ export function getColumn(
 
 		if (functionName in fn) {
 			const collectionName = options?.originalCollectionName || table;
-			const type = schema?.collections[collectionName]?.fields?.[columnName!]?.type ?? 'unknown';
+
+			let fieldName = columnName!;
+			let jsonPath: string | undefined;
+
+			// For json function, extract the base field name from the arguments
+			// json(metadata, color) -> metadata
+			if (functionName === 'json') {
+				const result = parseJsonFunction(column);
+				fieldName = result.field;
+				jsonPath = result.path;
+			}
+
+			const type = schema?.collections[collectionName]?.fields?.[fieldName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {
 				throw new InvalidQueryError({ reason: `Invalid function specified "${functionName}"` });
 			}
 
-			const result = fn[functionName as keyof typeof fn](table, columnName!, {
+			const result = fn[functionName as keyof typeof fn](table, fieldName, {
 				type,
 				relationalCountOptions: isFunctionColumnOptions(options)
 					? {
@@ -63,6 +76,7 @@ export function getColumn(
 						}
 					: undefined,
 				originalCollectionName: options?.originalCollectionName,
+				jsonPath,
 			}) as Knex.Raw;
 
 			if (alias) {

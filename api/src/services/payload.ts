@@ -25,7 +25,7 @@ import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, pick } from 'lodash-es';
 import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
+import { getFunctions, getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
@@ -255,6 +255,10 @@ export class PayloadService {
 		this.processGeometries(fieldEntries, processedPayload, action);
 		this.processDates(fieldEntries, processedPayload, action, aliasMap, aggregate);
 
+		if (action === 'read') {
+			this.processJsonFunctionResults(processedPayload, aliasMap);
+		}
+
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
@@ -359,6 +363,26 @@ export class PayloadService {
 		}
 
 		return payloads;
+	}
+
+	/**
+	 * When accessing JSON paths that contain objects or arrays, certain databases return stringified
+	 * JSON (MySQL, SQLite, MSSQL, Oracle). The fn helper's parseJsonResult handles this per-dialect —
+	 * vendors whose drivers already deserialize the result (e.g. pg for PostgreSQL) use a no-op.
+	 */
+	processJsonFunctionResults<T extends Partial<Record<string, any>>[]>(
+		payloads: T,
+		aliasMap: Record<string, string> = {},
+	) {
+		const fn = getFunctions(this.knex, this.schema);
+
+		for (const [aliasField, originalField] of Object.entries(aliasMap)) {
+			if (!originalField.startsWith('json(') || !originalField.endsWith(')')) continue;
+
+			for (const payload of payloads) {
+				payload[aliasField] = fn.parseJsonResult(payload[aliasField]);
+			}
+		}
 	}
 
 	/**

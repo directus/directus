@@ -22,6 +22,8 @@ export class DateHelperSQLite extends DateHelper {
 
 	override fieldFlagForField(fieldType: string): string {
 		switch (fieldType) {
+			case 'json':
+				return 'cast-json';
 			case 'timestamp':
 				return 'cast-timestamp';
 			default:

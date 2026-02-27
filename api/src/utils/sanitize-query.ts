@@ -11,6 +11,7 @@ import type { Context } from '../permissions/types.js';
 import { extractRequiredDynamicVariableContext } from '../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
+import { splitFields } from './split-fields.js';
 
 /**
  * Sanitize the query parameters and parse them where necessary.
@@ -112,7 +113,7 @@ function sanitizeFields(rawFields: any) {
 	let fields: string[] = [];
 
 	if (typeof rawFields === 'string') {
-		fields = rawFields.split(',');
+		fields = splitFields(rawFields);
 	} else if (Array.isArray(rawFields)) {
 		fields = rawFields as string[];
 	} else {
@@ -120,7 +121,7 @@ function sanitizeFields(rawFields: any) {
 	}
 
 	// Case where array item includes CSV (fe fields[]=id,name):
-	fields = flatten(fields.map((field) => (field.includes(',') ? field.split(',') : field)));
+	fields = flatten(fields.map((field) => (field.includes(',') ? splitFields(field) : field)));
 
 	fields = fields.map((field) => field.trim());
 

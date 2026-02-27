@@ -9,6 +9,7 @@ import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
 import type { RunASTOptions } from './types.js';
+import { applyFunctionToColumnName } from './utils/apply-function-to-column-name.js';
 import { applyParentFilters } from './utils/apply-parent-filters.js';
 import { mergeWithParentItems } from './utils/merge-with-parent-items.js';
 import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
@@ -90,10 +91,21 @@ export async function runAst(
 		// Run the items through the special transforms
 		const payloadService = new PayloadService(collection, { accountability, knex, schema });
 
+		// Build alias map that includes auto-generated json function field mappings
+		// so processJsonFunctionResults can detect and parse stringified JSON values
+		const aliasMap: Record<string, string> = { ...query.alias };
+
+		for (const child of children) {
+			if (child.type === 'functionField' && child.name.startsWith('json(')) {
+				const alias = applyFunctionToColumnName(child.fieldKey);
+				aliasMap[alias] = child.name;
+			}
+		}
+
 		let items: null | Item | Item[] = await payloadService.processValues(
 			'read',
 			rawItems,
-			query.alias ?? {},
+			aliasMap,
 			query.aggregate ?? {},
 		);
 
