@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { useLocalStorage } from '@vueuse/core';
 import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
@@ -78,6 +79,11 @@ const { t, n } = useI18n();
 const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
+
+const columnWidths = useLocalStorage<Record<string, number>>(
+	() => `directus-o2m-column-widths-${collection.value}-${field.value}`,
+	{},
+);
 
 const value = computed({
 	get: () => props.value,
@@ -178,15 +184,9 @@ const showingCount = computed(() =>
 	}),
 );
 
-const headers = ref<Array<any>>([]);
-
-watch(
-	[props, relationInfo, displayItems],
-	() => {
-		if (!relationInfo.value) {
-			headers.value = [];
-			return;
-		}
+const headers = computed({
+	get: (): Array<any> => {
+		if (!relationInfo.value) return [];
 
 		const relatedCollection = relationInfo.value.relatedCollection.collection;
 
@@ -204,24 +204,35 @@ watch(
 			});
 		});
 
-		headers.value = props.fields
+		return props.fields
 			.map((key) => {
 				const field = fieldsStore.getField(relatedCollection, key);
 
 				// when user has no permission to this field or junction collection
 				if (!field) return null;
 
+				const defaultWidth =
+					contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160;
+
 				return {
 					text: field.name,
 					value: key,
-					width: contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+					width: columnWidths.value[key] ?? defaultWidth,
 					sortable: !['json'].includes(field.type),
 				};
 			})
-			.filter((key) => key !== null);
+			.filter((h) => h !== null);
 	},
-	{ immediate: true },
-);
+	set: (val: Array<any>) => {
+		const widths: Record<string, number> = {};
+
+		val.forEach((h) => {
+			widths[h.value] = h.width ?? 160;
+		});
+
+		columnWidths.value = { ...columnWidths.value, ...widths };
+	},
+});
 
 const spacings = {
 	compact: 32,

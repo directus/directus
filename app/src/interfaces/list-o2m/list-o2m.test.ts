@@ -1,7 +1,7 @@
 import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, ref } from 'vue';
 import ListO2M from './list-o2m.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
@@ -37,10 +37,12 @@ vi.mock('@/composables/use-relation-permissions', () => ({
 	}),
 }));
 
+const mockGetField = vi.hoisted(() => vi.fn(() => null as any));
+
 vi.mock('@/stores/fields', () => ({
 	useFieldsStore: () => ({
 		getFieldsForCollection: vi.fn(() => []),
-		getField: vi.fn(() => null),
+		getField: mockGetField,
 		getPrimaryKeyFieldForCollection: vi.fn(() => ({ field: 'id' })),
 	}),
 }));
@@ -134,6 +136,19 @@ const tableGlobal: GlobalMountOptions = {
 const tableGlobalWithRouterLink: GlobalMountOptions = {
 	...tableGlobal,
 	stubs: { ...tableGlobal.stubs, RouterLink: routerLinkStub },
+};
+
+const tableGlobalWithHeaderEmit: GlobalMountOptions = {
+	...global,
+	stubs: {
+		...global.stubs,
+		VTable: {
+			name: 'VTable',
+			template: '<div class="v-table" />',
+			props: ['modelValue', 'headers', 'items'],
+			emits: ['update:headers'],
+		},
+	},
 };
 
 const listProps = {
@@ -289,6 +304,47 @@ describe('list-o2m', () => {
 
 				expect(wrapper.find('.item-actions').exists()).toBe(true);
 				expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(true);
+			});
+		});
+
+		describe('column width persistence', () => {
+			beforeEach(() => {
+				localStorage.clear();
+				mockGetField.mockReset();
+			});
+
+			it('persists resized column widths to localStorage', async () => {
+				const wrapper = mount(ListO2M, {
+					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
+					global: tableGlobalWithHeaderEmit,
+				});
+
+				const vTable = wrapper.findComponent({ name: 'VTable' });
+
+				// Simulate column resize: v-table emits update:headers with a new width
+				await vTable.vm.$emit('update:headers', [{ text: 'Name', value: 'name', width: 250 }]);
+
+				const stored = JSON.parse(
+					localStorage.getItem(`directus-o2m-column-widths-test-collection-test-field`) ?? '{}',
+				);
+
+				expect(stored).toEqual({ name: 250 });
+			});
+
+			it('restores persisted column widths on mount', async () => {
+				localStorage.setItem('directus-o2m-column-widths-test-collection-test-field', JSON.stringify({ name: 300 }));
+
+				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
+
+				const wrapper = mount(ListO2M, {
+					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
+					global: tableGlobalWithHeaderEmit,
+				});
+
+				const vTable = wrapper.findComponent({ name: 'VTable' });
+				const headers = vTable.props('headers') as Array<{ value: string; width: number }>;
+				const nameHeader = headers?.find((h) => h.value === 'name');
+				expect(nameHeader?.width).toBe(300);
 			});
 		});
 	});
