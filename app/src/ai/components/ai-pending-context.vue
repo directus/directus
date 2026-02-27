@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { File } from '@directus/types';
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
 import { useAiContextStore } from '../stores/use-ai-context';
@@ -91,7 +92,7 @@ function handleCardClick(item: PendingContextItem) {
 	}
 }
 
-const activeFile = computed(() => {
+const activeFile = computed<Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'> | null>(() => {
 	if (!activeItem.value) return null;
 
 	const item = activeItem.value;
