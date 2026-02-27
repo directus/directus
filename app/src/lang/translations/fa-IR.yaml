@@ -1311,7 +1311,6 @@ unsaved_changes_copy: آيا مطمئن هستيد که می خواهيد این
 unsaved_changes_collab: تغییرات مشارکتی ذخیره نشده
 unsaved_changes_copy_collab: شما در حال ویرایش این مورد با دیگران هستید. تغییرات شما فعلا در نشست مشارکتی باقی می‌ماند؛ ولی ممکن است اگر کسی آن‌ها را ذخیره نکند از دست برود.
 leave_page: ترک صفحه
-close_drawer: بستن کشو
 discard_changes: لغو تغییرات
 discard_all_changes: لغو تمام تغییرات
 discard_changes_copy: آیا مطمئن هستید که می‌خواهید تمام تغییرات خود را لغو کنید؟

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useApi } from '@directus/composables';
-import { PrimaryKey } from '@directus/types';
+import { useSdk } from '@directus/composables';
+import { Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { pickBy } from 'lodash';
 import { render } from 'micromustache';
@@ -8,6 +8,7 @@ import { computed, inject, ref, toRefs, watch } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectRunManualFlow } from '@/composables/use-flows';
+import { requestEndpoint } from '@/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 type Link = {
@@ -38,7 +39,7 @@ const props = withDefaults(
 	},
 );
 
-const api = useApi();
+const sdk = useSdk();
 const itemValues = inject('values', ref<Record<string, any>>({}));
 const resolvedRelationalValues = ref<Record<string, any>>({});
 const { primaryKey } = toRefs(props);
@@ -52,17 +53,19 @@ watch(
 		if (relatedFieldsFromTemplates.length === 0) return;
 
 		try {
-			const response = await api.get(`${getEndpoint(props.collection)}/${value}`, {
-				params: {
-					fields: relatedFieldsFromTemplates,
-				},
-			});
+			const item = await sdk.request<Item>(
+				requestEndpoint(`${getEndpoint(props.collection)}/${value}`, {
+					params: {
+						fields: relatedFieldsFromTemplates,
+					},
+				}),
+			);
 
 			/*
 			 * Pick only non-arrays because we can't render those types of relations.
 			 * For example, a M2M relation would return an array.
 			 */
-			resolvedRelationalValues.value = pickBy(response.data.data, (value) => !Array.isArray(value));
+			resolvedRelationalValues.value = pickBy(item, (value) => !Array.isArray(value));
 		} catch (err) {
 			unexpectedError(err);
 		}
@@ -143,13 +146,13 @@ function getRelatedFieldsFromTemplates() {
 				:icon="!link.label"
 				:href="link.href"
 				:to="link.to"
-				:loading="link.flow && runningFlows.includes(link.flow)"
+				:loading="Boolean(link.flow && runningFlows.includes(link.flow))"
 				:disabled="link.disabled"
 				@click="() => runManualFlow(link.flow!)"
 			>
 				<VIcon v-if="!link.icon && !link.label" name="smart_button" />
 
-				<VIcon v-if="link.icon" :left="link.label" :name="link.icon" />
+				<VIcon v-if="link.icon" :left="Boolean(link.label)" :name="link.icon" />
 
 				<span v-if="link.label">{{ link.label }}</span>
 			</VButton>

@@ -1,5 +1,6 @@
 import type { VisualElementContextData } from '@directus/ai';
 import formatTitle from '@directus/format-title';
+import { Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';
@@ -7,7 +8,7 @@ import { useAiStore } from '../stores/use-ai';
 import { useAiContextStore } from '../stores/use-ai-context';
 import type { MCPPrompt } from '../types';
 import { usePrompts } from './use-prompts';
-import api from '@/api';
+import sdk, { requestEndpoint } from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { notify } from '@/utils/notify';
@@ -82,14 +83,16 @@ export function useContextStaging() {
 		const displayFields = getFieldsFromTemplate(displayTemplate);
 
 		try {
-			const response = await api.get(getEndpoint(collection), {
-				params: {
-					fields: [primaryKey, ...displayFields],
-					filter: { [primaryKey]: { _in: ids } },
-				},
-			});
+			const response = await sdk.request<Item[]>(
+				requestEndpoint(getEndpoint(collection), {
+					params: {
+						fields: [primaryKey, ...displayFields],
+						filter: { [primaryKey]: { _in: ids } },
+					},
+				}),
+			);
 
-			const items: Record<string, unknown>[] = response.data.data ?? [];
+			const items = response ?? [];
 
 			let stagedCount = 0;
 
@@ -180,11 +183,12 @@ export function useContextStaging() {
 			if (element.fields?.length === 1) {
 				const field = element.fields[0]!;
 
-				const response = await api.get(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
-					params: { fields: [field] },
-				});
+				const item = await sdk.request<Item>(
+					requestEndpoint(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
+						params: { fields: [field] },
+					}),
+				);
 
-				const item = response.data.data;
 				if (item?.[field]) return String(item[field]);
 				return fallback;
 			}
@@ -197,11 +201,11 @@ export function useContextStaging() {
 			const displayTemplate = collectionInfo.meta.display_template;
 			const displayFields = getFieldsFromTemplate(displayTemplate);
 
-			const response = await api.get(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
-				params: { fields: [primaryKey, ...displayFields] },
-			});
-
-			const item = response.data.data;
+			const item = await sdk.request<Item>(
+				requestEndpoint(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
+					params: { fields: [primaryKey, ...displayFields] },
+				}),
+			);
 
 			if (!item) return fallback;
 
