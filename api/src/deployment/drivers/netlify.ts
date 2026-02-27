@@ -52,7 +52,7 @@ const WS_CONNECTION_TIMEOUT = 10_000; // 10 seconds
 const ANSI_REGEX = /[\x1b]\[[0-9;]*m/g;
 const WS_URL = 'wss://socketeer.services.netlify.com/build/logs';
 
-const NETLIFY_WEBHOOK_EVENTS = ['deploy_created', 'deploy_building', 'deploy_failed'];
+const NETLIFY_WEBHOOK_EVENTS = ['deploy_created', 'deploy_building', 'deploy_failed', 'deploy_succeeded'];
 
 // Map Netlify deploy state to our normalized types
 const STATE_TO_EVENT: Record<string, { type: DeploymentWebhookEventType; status: Status }> = {

@@ -1136,13 +1136,11 @@ deployment:
       id: Deployment ID
       started: Started
       author: Author
-      notice:
-        Only deployments triggered from Directus are shown here. Deployments made directly on {provider} will not
-        appear.
       refresh: Refresh
       deploy_preview: Deploy Preview
       empty: No Deployment Runs
       empty_copy: This project has no deployment history yet.
+      external_user: External User
     run:
       title: '{project}: Deployment Details'
       id: Deployment ID
@@ -1180,6 +1178,8 @@ deployment:
     failed_builds: 'Failed Build: {count} | Failed Builds: {count}'
     successful_builds: 'Successful Build: {count} | Successful Builds: {count}'
     total_deployments: 'Deployment: {count} | Deployments: {count}'
+    average_build_time: 'Avg Build Time: {value}'
+    success_rate: 'Success Rate: {value}%'
   range:
     1d: Last 24 Hours
     7d: Last 7 Days
