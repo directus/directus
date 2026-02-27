@@ -1,3 +1,4 @@
+import { useLogger } from '../../logger/index.js';
 import { useCounters } from './use-counters.js';
 
 interface FlusherOptions {
@@ -33,6 +34,8 @@ export const _bufferedCounterCache: Record<string, FlusherEntry | null> = {};
  * @param options - Optional bucket size and interval configuration.
  */
 export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
+	const logger = useLogger();
+
 	if (!_bufferedCounterCache[key]) {
 		const opts = { ...DEFAULT_OPTIONS, ...options };
 
@@ -84,7 +87,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 			await counter.increment(`${key}:${subKey}`, amount);
 		} catch (err) {
 			state.count += amount;
-			throw err;
+			logger.error(`Failed to flush buffered counter for ${key}:${subKey}`, err);
 		} finally {
 			state.flushing = false;
 		}
@@ -157,7 +160,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 			state.count += amount;
 
 			if (state.count >= flusher.options.maxBucketSize) {
-				void flush(subKey);
+				flush(subKey);
 			}
 		},
 
