@@ -356,7 +356,7 @@ function closeList() {
 			type="file"
 			multiple
 			:accept="AI_ALLOWED_MIME_TYPES.join(',')"
-			style="display: none"
+			class="hidden-file-input"
 			@change="handleFileUpload"
 		/>
 	</div>
@@ -365,6 +365,10 @@ function closeList() {
 <style scoped>
 .ai-context-menu {
 	display: inline-flex;
+}
+
+.hidden-file-input {
+	display: none;
 }
 
 .menu-container {
