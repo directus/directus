@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { useServerStore } from '@/stores/server';
 import type { Revision, RevisionPartial, RevisionsByDate, RevisionWithTime } from '@/types/revisions';
-import type { ContentVersionMaybeNew } from '@/types/versions';
+import type { ContentVersionWithType } from '@/types/versions';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -20,7 +20,7 @@ type UseRevisionsOptions = {
 export function useRevisions(
 	collection: Ref<string>,
 	primaryKey: Ref<number | string>,
-	version: Ref<ContentVersionMaybeNew | null | undefined>,
+	version: Ref<ContentVersionWithType | null | undefined>,
 	options?: UseRevisionsOptions,
 ) {
 	const { t } = useI18n();
