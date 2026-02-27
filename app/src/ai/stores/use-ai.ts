@@ -14,7 +14,7 @@ import { useRoute } from 'vue-router';
 import { z } from 'zod';
 import type { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
-import { isVisualElement } from '../types/context';
+import { isVisualElement, type UploadedFileResult } from '../types/context';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
@@ -372,7 +372,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const submitHook = createEventHook();
 
-	function buildFileParts(uploadedFiles: Awaited<ReturnType<typeof contextStore.uploadPendingFiles>>): FileUIPart[] {
+	function buildFileParts(uploadedFiles: UploadedFileResult[]): FileUIPart[] {
 		return uploadedFiles.map((uploaded) => ({
 			type: 'file' as const,
 			mediaType: uploaded.mimeType,

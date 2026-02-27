@@ -1,4 +1,4 @@
-import type { ItemContextData, VisualElementContextData } from '@directus/ai';
+import type { ItemContextData, ProviderFileRef, VisualElementContextData } from '@directus/ai';
 import type { MCPPrompt } from './prompts';
 
 export interface PromptContextData {
@@ -48,4 +48,11 @@ export function isLocalFileContext(
 	item: PendingContextItem,
 ): item is Extract<PendingContextItem, { type: 'local-file' }> {
 	return item.type === 'local-file';
+}
+
+export interface UploadedFileResult {
+	ref: ProviderFileRef;
+	display: string;
+	displayUrl: string;
+	mimeType: string;
 }

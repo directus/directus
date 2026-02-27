@@ -10,6 +10,7 @@ import {
 	isPromptContext,
 	isVisualElement,
 	type PendingContextItem,
+	type UploadedFileResult,
 } from '../types';
 import api from '@/api';
 import { i18n } from '@/lang';
@@ -151,13 +152,6 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		const response = await api.post('/ai/files', formData);
 		return response.data;
 	};
-
-	interface UploadedFileResult {
-		ref: ProviderFileRef;
-		display: string;
-		displayUrl: string;
-		mimeType: string;
-	}
 
 	const uploadPendingFiles = async (provider?: string): Promise<UploadedFileResult[]> => {
 		if (!provider) return [];
