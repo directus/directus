@@ -4,6 +4,8 @@ import { type Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
+import { useBufferedCounter } from '../counter/use-buffered-counter.js';
+import { formatApiRequestCounts } from '../utils/format-api-request-counts.js';
 import { type ExtensionCount, getExtensionCount } from '../utils/get-extension-count.js';
 import { type FieldCount, getFieldCount } from '../utils/get-field-count.js';
 import { type FilesizeSum, getFilesizeSum } from '../utils/get-filesize-sum.js';
@@ -38,6 +40,8 @@ vi.mock('../utils/get-extension-count.js');
 vi.mock('../../utils/fetch-user-count/fetch-user-count.js');
 vi.mock('../utils/get-filesize-sum.js');
 vi.mock('../utils/get-settings.js');
+vi.mock('../counter/use-buffered-counter.js');
+vi.mock('../utils/format-api-request-counts.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
@@ -47,6 +51,7 @@ let mockFieldCounts: FieldCount;
 let mockExtensionCounts: ExtensionCount;
 let mockFilesizeSums: FilesizeSum;
 let mockSettings: TelemetrySettings;
+let mockRequestCounts: Record<string, number>;
 
 beforeEach(() => {
 	mockEnv = {
@@ -71,10 +76,34 @@ beforeEach(() => {
 		mcp_allow_deletes: false,
 		mcp_system_prompt_enabled: true,
 		visual_editor_urls: 2,
+		ai_openai_api_key: false,
+		ai_anthropic_api_key: false,
+		ai_system_prompt: false,
+		collaborative_editing_enabled: false,
 	};
+
+	mockRequestCounts = { get: 100, post: 50, patch: 20, delete: 5 };
 
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
+
+	vi.mocked(useBufferedCounter).mockReturnValue({
+		increment: vi.fn(),
+		flush: vi.fn(),
+		flushAll: vi.fn(),
+		getAndResetAll: vi.fn().mockResolvedValue(mockRequestCounts),
+		destroy: vi.fn(),
+	});
+
+	vi.mocked(formatApiRequestCounts).mockReturnValue({
+		api_requests_get: 100,
+		api_requests_post: 50,
+		api_requests_patch: 20,
+		api_requests_put: 0,
+		api_requests_delete: 5,
+		api_requests: 175,
+		api_requests_cached: 0,
+	});
 
 	vi.mocked(getItemCount).mockResolvedValue({});
 	vi.mocked(fetchUserCount).mockResolvedValue(mockUserCounts);
@@ -181,4 +210,19 @@ test('Runs and returns settings', async () => {
 	expect(report.mcp_allow_deletes).toBe(mockSettings.mcp_allow_deletes);
 	expect(report.mcp_system_prompt_enabled).toBe(mockSettings.mcp_system_prompt_enabled);
 	expect(report.visual_editor_urls).toBe(mockSettings.visual_editor_urls);
+});
+
+test('Runs and returns formatted API request counts', async () => {
+	const report = await getReport();
+
+	expect(useBufferedCounter).toHaveBeenCalledWith('api-requests');
+	expect(formatApiRequestCounts).toHaveBeenCalledWith(mockRequestCounts);
+
+	expect(report.api_requests_get).toBe(100);
+	expect(report.api_requests_post).toBe(50);
+	expect(report.api_requests_put).toBe(0);
+	expect(report.api_requests_patch).toBe(20);
+	expect(report.api_requests_delete).toBe(5);
+	expect(report.api_requests_cached).toBe(0);
+	expect(report.api_requests).toBe(175);
 });

@@ -1,7 +1,9 @@
 import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import { getCache, getCacheValue } from '../cache.js';
 import { useLogger } from '../logger/index.js';
+import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';
@@ -49,6 +51,15 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 		res.setHeader('Cache-Control', getCacheControlHeader(req, cacheTTL, true, true));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		if (env['CACHE_STATUS_HEADER']) res.setHeader(`${env['CACHE_STATUS_HEADER']}`, 'HIT');
+
+		if (toBoolean(env['TELEMETRY'])) {
+			try {
+				const counter = useBufferedCounter('api-requests');
+				counter.increment('cached');
+			} catch (err) {
+				logger.trace(err, 'Failed to increment cached request counter');
+			}
+		}
 
 		return res.json(cachedData);
 	} else {
