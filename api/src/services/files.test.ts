@@ -13,6 +13,7 @@ import {
 	it,
 	type MockedFunction,
 	type MockInstance,
+	test,
 	vi,
 } from 'vitest';
 import { getStorage } from '../storage/index.js';
@@ -199,23 +200,25 @@ describe('Integration Tests', () => {
 				vi.useRealTimers();
 			});
 
-			it('returns 500 for permanent filesystem errors', async () => {
-				const stream = Readable.from(Buffer.from('test content'));
+			describe('uploadOne - permanent filesystem errors', () => {
+				const errorCodes = ['EROFS', 'EACCES', 'EPERM'] as const;
 
-				// Get real storage instance
-				const storage = await getStorage();
-				const disk = storage.location('local');
+				test.each(errorCodes)('returns 500 for %s filesystem error', async (code: any) => {
+					const stream = Readable.from(Buffer.from('test content'));
 
-				// Spy on write to simulate EROFS
-				vi.spyOn(disk, 'write').mockRejectedValue(Object.assign(new Error('read-only'), { code: 'EROFS' }));
+					const storage = await getStorage();
+					const disk = storage.location('local');
 
-				await expect(
-					service.uploadOne(stream, {
-						storage: 'local',
-						filename_download: 'test.txt',
-						type: 'text/plain',
-					} as any),
-				).rejects.toBeInstanceOf(InternalServerError);
+					vi.spyOn(disk, 'write').mockRejectedValue(Object.assign(new Error('fs error'), { code }));
+
+					await expect(
+						service.uploadOne(stream, {
+							storage: 'local',
+							filename_download: 'test.txt',
+							type: 'text/plain',
+						} as any),
+					).rejects.toBeInstanceOf(InternalServerError);
+				});
 			});
 		});
 	});
