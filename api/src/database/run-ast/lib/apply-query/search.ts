@@ -1,4 +1,5 @@
 import { NUMERIC_TYPES } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import type { FieldOverview, NumericType, Permission, SchemaOverview } from '@directus/types';
 import { isIn } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -8,6 +9,7 @@ import { isValidUuid } from '../../../../utils/is-valid-uuid.js';
 import { parseNumericString } from '../../../../utils/parse-numeric-string.js';
 import { getHelpers } from '../../../helpers/index.js';
 import { applyFilter } from './filter/index.js';
+import { applyRelationalSearch, shouldHandleRelationalSearch } from './search-relational.js';
 
 export function applySearch(
 	knex: Knex,
@@ -17,6 +19,7 @@ export function applySearch(
 	collection: string,
 	aliasMap: AliasMap,
 	permissions: Permission[],
+	currentRelationalDepth = 1,
 ) {
 	const { number: numberHelper } = getHelpers(knex);
 
@@ -34,10 +37,30 @@ export function applySearch(
 		fields = fields.filter((field) => allowedFields.has(field[0]));
 	}
 
+	const env = useEnv();
+	const maxRelationDepth = Number(env['MAX_RELATIONAL_SEARCH_DEPTH']);
+
 	dbQuery.andWhere(function (queryBuilder) {
 		let needsFallbackCondition = true;
 
 		fields.forEach(([name, field]) => {
+			if (shouldHandleRelationalSearch(field, currentRelationalDepth, maxRelationDepth)) {
+				applyRelationalSearch(
+					knex,
+					schema,
+					queryBuilder,
+					searchQuery,
+					collection,
+					aliasMap,
+					permissions,
+					name,
+					field,
+					currentRelationalDepth,
+				);
+
+				return;
+			}
+
 			// only account for when cases when full access is not given
 			const whenCases = allowedFields.has('*') ? [] : (caseMap[name] ?? []).map((caseIndex) => cases[caseIndex]!);
 
@@ -52,7 +75,6 @@ export function applySearch(
 			if (cases.length !== 0 && whenCases?.length !== 0) {
 				queryBuilder.orWhere((subQuery) => {
 					addSearchCondition(subQuery, name, fieldType, 'and');
-
 					applyFilter(knex, schema, subQuery, { _or: whenCases }, collection, aliasMap, cases, permissions);
 				});
 			} else {

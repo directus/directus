@@ -23,8 +23,7 @@ const userStore = useUserStore();
 const searchable = syncFieldDetailStoreProperty('field.meta.searchable', true);
 
 const isSearchableType = computed(() => {
-	// exclude alias fields (o2m, m2m, m2a) as they don't store searchable data
-	if (type.value === 'alias') return false;
+	if (type.value === 'alias') return SEARCHABLE_TYPES.includes(localType.value);
 
 	// exclude relational fields except m2o, which stores foreign keys that are typically not useful for search
 	if (localType.value && localType.value !== 'standard') return false;
