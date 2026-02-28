@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { ContextAttachment } from '@directus/ai';
-import type { DynamicToolUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
+import type { DynamicToolUIPart, FileUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
+import { computed } from 'vue';
 import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
 import AiContextCard from './ai-context-card.vue';
-import AiMessageFile from './parts/ai-message-file.vue';
+import AiMessageFileGroup from './parts/ai-message-file-group.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
 import AiMessageSourceDocument from './parts/ai-message-source-document.vue';
 import AiMessageSourceUrl from './parts/ai-message-source-url.vue';
@@ -27,45 +28,74 @@ export interface AiMessageMetadata {
 }
 
 interface Props {
-	/** Message ID for tracking */
 	id?: string;
-	/** Message role */
 	role: 'user' | 'assistant' | 'system';
-	/** Message parts for structured content */
 	parts?: AiMessagePart[];
-	/** Action buttons displayed below message */
 	actions?: AiMessageAction[];
-	/** Message metadata including context attachments */
 	metadata?: AiMessageMetadata;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
 	parts: () => [],
 });
 
 const { highlight, clearHighlight } = useVisualElementHighlight();
 
-const isToolPart = (part: AiMessagePart): part is DynamicToolUIPart => part.type.startsWith('tool-');
+function isToolPart(part: AiMessagePart): part is DynamicToolUIPart {
+	return part.type.startsWith('tool-');
+}
+
+function isFilePart(part: AiMessagePart): part is FileUIPart {
+	return part.type === 'file';
+}
+
+type RenderBlock =
+	| { kind: 'part'; key: string; part: AiMessagePart }
+	| { kind: 'file-group'; key: string; parts: FileUIPart[] };
+
+const renderBlocks = computed<RenderBlock[]>(() => {
+	const prefix = props.id ?? 'msg';
+
+	return props.parts.reduce<RenderBlock[]>((blocks, part, i) => {
+		if (isFilePart(part)) {
+			const last = blocks.at(-1);
+
+			if (last?.kind === 'file-group') {
+				last.parts.push(part);
+			} else {
+				blocks.push({ kind: 'file-group', key: `${prefix}-files-${i}`, parts: [part] });
+			}
+		} else {
+			blocks.push({ kind: 'part', key: `${prefix}-${part.type}-${i}`, part });
+		}
+
+		return blocks;
+	}, []);
+});
 </script>
 
 <template>
 	<article :data-role="role" class="ai-message">
 		<div class="message-content">
 			<slot>
-				<template
-					v-for="(part, index) in parts"
-					:key="`${id}-${part.type}-${index}-${'state' in part ? `-${part.state}` : ''}`"
-				>
-					<AiMessageText v-if="part.type === 'text'" :text="part.text" :state="part.state || 'done'" :role="role" />
-					<AiMessageReasoning
-						v-else-if="part.type === 'reasoning' && (part.text || part.state === 'streaming')"
-						:text="part.text"
-						:state="part.state ?? 'done'"
-					/>
-					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
-					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
-					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
-					<AiMessageTool v-else-if="isToolPart(part)" :part="part" />
+				<template v-for="block in renderBlocks" :key="block.key">
+					<template v-if="block.kind === 'part'">
+						<AiMessageText
+							v-if="block.part.type === 'text'"
+							:text="block.part.text"
+							:state="block.part.state || 'done'"
+							:role="role"
+						/>
+						<AiMessageReasoning
+							v-else-if="block.part.type === 'reasoning' && (block.part.text || block.part.state === 'streaming')"
+							:text="block.part.text"
+							:state="block.part.state ?? 'done'"
+						/>
+						<AiMessageSourceUrl v-else-if="block.part.type === 'source-url'" :part="block.part" />
+						<AiMessageSourceDocument v-else-if="block.part.type === 'source-document'" :part="block.part" />
+						<AiMessageTool v-else-if="isToolPart(block.part)" :part="block.part" />
+					</template>
+					<AiMessageFileGroup v-else :parts="block.parts" />
 				</template>
 			</slot>
 

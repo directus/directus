@@ -21,11 +21,17 @@ onUnmounted(() => {
 	unsubscribeFocus.off();
 });
 
+const isProcessing = computed(
+	() => aiStore.isPreparingSubmission || aiStore.isAwaitingToolExecution || aiStore.hasPendingToolCall,
+);
+
+const canStop = computed(() => aiStore.status === 'streaming' || aiStore.status === 'submitted');
+
 const canSubmit = computed(
 	() =>
 		aiStore.input.trim().length > 0 &&
 		aiStore.status !== 'streaming' &&
-		aiStore.status !== 'submitted' &&
+		!aiStore.isUiLoading &&
 		!aiStore.hasPendingToolCall,
 );
 
@@ -65,6 +71,8 @@ function handleSubmit() {
 				<AiInputSubmit
 					:status="aiStore.status"
 					:can-submit="canSubmit"
+					:is-processing="isProcessing"
+					:can-stop="canStop"
 					@stop="aiStore.stop"
 					@reload="aiStore.retry"
 					@submit="handleSubmit"

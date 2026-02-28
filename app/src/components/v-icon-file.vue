@@ -37,7 +37,7 @@ defineProps<Props>();
 		text-transform: uppercase;
 		inset-inline-start: 50%;
 		inset-block-start: 55%;
-		font-size: 12px;
+		font-size: var(--v-icon-file-label-size, 12px);
 		font-weight: 800;
 		line-height: 1;
 		padding: 2px 0;
@@ -52,7 +52,7 @@ defineProps<Props>();
 	&.right {
 		.label {
 			background-color: var(--v-icon-file-background-color, var(--theme--background-normal));
-			inset-inline-start: calc(100% - 12px - 3ch);
+			inset-inline-start: calc(100% - var(--v-icon-file-label-size, 12px) - 3ch);
 			text-align: start;
 			transform: none;
 			padding-inline-end: 8px;

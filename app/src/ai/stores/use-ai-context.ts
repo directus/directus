@@ -1,9 +1,18 @@
-import type { ContextAttachment, PrimaryKey, VisualElementContextData } from '@directus/ai';
-import { Item } from '@directus/types';
+import type { ContextAttachment, PrimaryKey, ProviderFileRef, VisualElementContextData } from '@directus/ai';
+import type { Item } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { isItemContext, isPromptContext, isVisualElement, type PendingContextItem } from '../types';
+import {
+	isFileContext,
+	isItemContext,
+	isLocalFileContext,
+	isPromptContext,
+	isVisualElement,
+	type PendingContextItem,
+	type UploadedFileResult,
+} from '../types';
+import api from '@/api';
 import { i18n } from '@/lang';
 import sdk, { requestEndpoint } from '@/sdk';
 import { notify } from '@/utils/notify';
@@ -21,6 +30,10 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 	const hasVisualElementContext = computed(() => visualElements.value.length > 0);
 
 	const hasPendingContext = computed(() => pendingContext.value.length > 0);
+
+	const hasFileContext = computed(() =>
+		pendingContext.value.some((item) => isFileContext(item) || isLocalFileContext(item)),
+	);
 
 	const addPendingContext = (item: PendingContextItem): boolean => {
 		if (pendingContext.value.length >= MAX_PENDING_CONTEXT) {
@@ -74,13 +87,11 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*']) => {
 		try {
-			const response = await sdk.request<Item>(
+			return await sdk.request<Item>(
 				requestEndpoint(`${getEndpoint(collection)}/${id}`, {
 					params: { fields },
 				}),
 			);
-
-			return response;
 		} catch (error) {
 			unexpectedError(error);
 			return null;
@@ -88,7 +99,9 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 	};
 
 	const fetchContextData = async (): Promise<ContextAttachment[]> => {
-		const fetches = pendingContext.value.map(async (item): Promise<ContextAttachment | null> => {
+		const nonFileItems = pendingContext.value.filter((item) => !isFileContext(item) && !isLocalFileContext(item));
+
+		const fetches = nonFileItems.map(async (item): Promise<ContextAttachment | null> => {
 			if (isVisualElement(item)) {
 				const fields = item.data.fields?.length ? item.data.fields : ['*'];
 				const snapshot = await fetchItem(item.data.collection, item.data.item, fields);
@@ -131,6 +144,58 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		return results.filter((a): a is ContextAttachment => a !== null);
 	};
 
+	const uploadFileToProvider = async (file: File, provider: string): Promise<ProviderFileRef> => {
+		const formData = new FormData();
+		formData.append('file', file);
+		formData.append('provider', provider);
+
+		const response = await api.post('/ai/files', formData);
+		return response.data;
+	};
+
+	const uploadPendingFiles = async (provider?: string): Promise<UploadedFileResult[]> => {
+		if (!provider) return [];
+
+		const fileItems = pendingContext.value.filter((item) => isFileContext(item) || isLocalFileContext(item));
+
+		if (fileItems.length === 0) return [];
+
+		const results = await Promise.all(
+			fileItems.map(async (item) => {
+				try {
+					let file: File;
+					let displayUrl: string;
+
+					if (isLocalFileContext(item)) {
+						file = item.data.file;
+						displayUrl = item.data.thumbnailUrl ?? '';
+					} else if (isFileContext(item)) {
+						const assetResponse = await api.get(`/assets/${item.data.id}`, { responseType: 'blob' });
+						file = new File([assetResponse.data], item.data.filename_download, { type: item.data.type });
+						displayUrl = `/assets/${item.data.id}`;
+					} else {
+						return null;
+					}
+
+					const ref = await uploadFileToProvider(file, provider);
+
+					return { ref, display: item.display, displayUrl, mimeType: file.type };
+				} catch (error) {
+					unexpectedError(error);
+
+					notify({
+						title: i18n.global.t('ai.file_upload_failed', { name: item.display }),
+						type: 'warning',
+					});
+
+					return null;
+				}
+			}),
+		);
+
+		return results.filter((r): r is UploadedFileResult => r !== null);
+	};
+
 	const dehydrate = () => {
 		clearPendingContext();
 		visualElementContextUrl.value = null;
@@ -145,6 +210,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		visualElements,
 		hasVisualElementContext,
 		hasPendingContext,
+		hasFileContext,
 
 		// Actions
 		addPendingContext,
@@ -155,6 +221,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		clearVisualElementContext,
 		syncVisualElementContextUrl,
 		fetchContextData,
+		uploadPendingFiles,
 		dehydrate,
 	};
 });

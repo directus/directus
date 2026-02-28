@@ -11,9 +11,11 @@ type ContextItem = ContextAttachment | PendingContextItem;
 const props = withDefaults(
 	defineProps<{
 		item: ContextItem;
+		imageUrl?: string;
 		removable?: boolean;
 	}>(),
 	{
+		imageUrl: undefined,
 		removable: false,
 	},
 );
@@ -41,6 +43,10 @@ const icon = computed(() => {
 		case 'prompt':
 			return 'magic_button';
 
+		case 'file':
+		case 'local-file':
+			return 'description';
+
 		default:
 			return 'attachment';
 	}
@@ -48,8 +54,13 @@ const icon = computed(() => {
 </script>
 
 <template>
-	<div class="ai-context-card" :class="{ removable }" @mouseenter="emit('mouseenter')" @mouseleave="emit('mouseleave')">
-		<div class="icon-wrapper">
+	<div
+		:class="['ai-context-card', { removable, 'has-image': imageUrl }]"
+		@mouseenter="emit('mouseenter')"
+		@mouseleave="emit('mouseleave')"
+	>
+		<img v-if="imageUrl" :src="imageUrl" :alt="item.display" class="chip-image" />
+		<div v-else class="icon-wrapper">
 			<VIcon :name="icon" x-small class="item-icon" />
 		</div>
 		<VTextOverflow :text="String(item.display)" class="display-text" />
@@ -83,6 +94,10 @@ const icon = computed(() => {
 			background-color: var(--theme--background-normal);
 		}
 	}
+
+	&.has-image {
+		padding-inline-start: 4px;
+	}
 }
 
 .icon-wrapper {
@@ -97,6 +112,14 @@ const icon = computed(() => {
 
 .item-icon {
 	--v-icon-color: var(--purple);
+}
+
+.chip-image {
+	inline-size: 20px;
+	block-size: 20px;
+	object-fit: cover;
+	border-radius: var(--theme--border-radius);
+	flex-shrink: 0;
 }
 
 .display-text {
@@ -115,7 +138,7 @@ const icon = computed(() => {
 	align-items: center;
 	justify-content: center;
 	padding: 2px;
-	border-radius: 4px;
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	opacity: 0.5;
 	flex-shrink: 0;
