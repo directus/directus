@@ -11,7 +11,7 @@ import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 type ConditionalFillFormat = {
 	operator: StringConditionalFillOperators;
 	color: string;
-	value: number;
+	value: number | string;
 };
 
 const props = withDefaults(
@@ -110,7 +110,9 @@ async function setupChart() {
 
 	const baseColors: string[] = monoThemeGenerator(props.color || cssVar('--theme--primary'), labels.length);
 
-	const colors = baseColors.map((baseColor, index) => formatColor(baseColor, series[index]));
+	const colors = baseColors.map((baseColor, index) =>
+		formatColor(baseColor, isNumberColumn.value ? series[index] : labels[index]),
+	);
 
 	const size = props.height < props.width ? props.height * 20 : props.width * 20;
 
@@ -233,33 +235,39 @@ function formatColor(color: string | number, value?: string | number) {
 function checkMatchingConditionalFill(value: string | number, format: ConditionalFillFormat): boolean {
 	let baseValue: string | number = value;
 	let compareValue: string | number = format.value;
+	const operator = format.operator || '>=';
+	const isNumericComparison = ['>', '>=', '<', '<='].includes(operator);
 
-	if (isNumberColumn.value) {
+	if (isNumericComparison) {
 		if (isNaN(Number(value)) || isNaN(Number(format.value))) return false;
+
 		baseValue = Number(value);
 		compareValue = Number(format.value);
+
+		switch (operator) {
+			case '>':
+				return baseValue > compareValue;
+			case '>=':
+				return baseValue >= compareValue;
+			case '<':
+				return baseValue < compareValue;
+			case '<=':
+				return baseValue <= compareValue;
+		}
 	}
 
-	switch (format.operator || '>=') {
+	switch (operator) {
 		case '=':
 			return baseValue === compareValue;
 		case '!=':
 			return baseValue !== compareValue;
-		case '>':
-			return Number(baseValue) > compareValue;
-		case '>=':
-			return Number(baseValue) >= compareValue;
-		case '<':
-			return Number(baseValue) < compareValue;
-		case '<=':
-			return Number(baseValue) < compareValue;
 		case 'contains':
-			return typeof compareValue === 'string' && typeof baseValue === 'string'
-				? (compareValue as string).includes(baseValue)
+			return typeof baseValue === 'string' && typeof compareValue === 'string'
+				? baseValue.includes(compareValue)
 				: false;
 		case 'ncontains':
-			return typeof compareValue === 'string' && typeof baseValue === 'string'
-				? !(compareValue as string).includes(baseValue)
+			return typeof baseValue === 'string' && typeof compareValue === 'string'
+				? !baseValue.includes(compareValue)
 				: false;
 		default:
 			return false;
