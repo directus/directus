@@ -1,3 +1,4 @@
+import { GENERATE_SPECIAL } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import type { TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
@@ -61,15 +62,7 @@ export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
 
-export const GENERATE_SPECIAL = [
-	'uuid',
-	'date-created',
-	'date-updated',
-	'role-created',
-	'role-updated',
-	'user-created',
-	'user-updated',
-] as const;
+export { GENERATE_SPECIAL };
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
