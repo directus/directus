@@ -4,6 +4,12 @@ import { createTracker } from 'knex-mock-client';
 import { expect, test, vi } from 'vitest';
 import { Client_SQLite3 } from './mock.js';
 
+const aliasFn = vi.fn();
+
+vi.doMock('nanoid/non-secure', () => ({
+	customAlphabet: () => aliasFn,
+}));
+
 const { applySort } = await import('./sort.js');
 
 const schema = new SchemaBuilder()
