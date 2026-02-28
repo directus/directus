@@ -17,6 +17,7 @@ import VSelect from '@/components/v-select/v-select.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
+import { useColumnWidths } from '@/composables/use-column-widths';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
@@ -78,6 +79,10 @@ const { t, n } = useI18n();
 const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
+
+const { getWidth, updateWidths } = useColumnWidths(
+	() => `directus-o2m-column-widths-${collection.value}-${field.value}`,
+);
 
 const value = computed({
 	get: () => props.value,
@@ -178,15 +183,9 @@ const showingCount = computed(() =>
 	}),
 );
 
-const headers = ref<Array<any>>([]);
-
-watch(
-	[props, relationInfo, displayItems],
-	() => {
-		if (!relationInfo.value) {
-			headers.value = [];
-			return;
-		}
+const headers = computed({
+	get: (): Array<any> => {
+		if (!relationInfo.value) return [];
 
 		const relatedCollection = relationInfo.value.relatedCollection.collection;
 
@@ -204,24 +203,27 @@ watch(
 			});
 		});
 
-		headers.value = props.fields
+		return props.fields
 			.map((key) => {
 				const field = fieldsStore.getField(relatedCollection, key);
 
 				// when user has no permission to this field or junction collection
 				if (!field) return null;
 
+				const defaultWidth =
+					contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160;
+
 				return {
 					text: field.name,
 					value: key,
-					width: contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+					width: getWidth(key, defaultWidth),
 					sortable: !['json'].includes(field.type),
 				};
 			})
-			.filter((key) => key !== null);
+			.filter((h) => h !== null);
 	},
-	{ immediate: true },
-);
+	set: updateWidths,
+});
 
 const spacings = {
 	compact: 32,
