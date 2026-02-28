@@ -7,6 +7,7 @@ import { debounce, pick } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
+import { sanitizeExportFieldSelection } from './export-sidebar-detail.utils';
 import ImportErrorDialog from './import-error-dialog.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import api from '@/api';
@@ -78,12 +79,19 @@ const { info } = useServerStore();
 const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
 const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
 
+function getDefaultExportFields() {
+	return fields.value?.filter((field) => field.type !== 'alias').map((field) => field.field);
+}
+
+function sanitizeExportFields(selectedFields: string[] | null | undefined) {
+	return sanitizeExportFieldSelection(selectedFields, fields.value);
+}
+
 const exportSettings = reactive({
 	limit: props.layoutQuery?.limit ?? defaultLimit,
 	filter: props.filter,
 	search: props.search,
-	fields:
-		props.layoutQuery?.fields ?? fields.value?.filter((field) => field.type !== 'alias').map((field) => field.field),
+	fields: sanitizeExportFields(props.layoutQuery?.fields ?? getDefaultExportFields()),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
@@ -91,7 +99,7 @@ watch(
 	fields,
 	() => {
 		if (props.layoutQuery?.fields) return;
-		exportSettings.fields = fields.value?.filter((field) => field.type !== 'alias').map((field) => field.field);
+		exportSettings.fields = sanitizeExportFields(getDefaultExportFields());
 	},
 	{ immediate: true },
 );
@@ -102,7 +110,7 @@ watch(
 		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
 
 		if (props.layoutQuery?.fields) {
-			exportSettings.fields = props.layoutQuery?.fields;
+			exportSettings.fields = sanitizeExportFields(props.layoutQuery?.fields);
 		}
 
 		if (props.layoutQuery?.sort) {
@@ -253,6 +261,10 @@ async function openExportDialog() {
 	exportDialogActive.value = true;
 }
 
+function onExportFieldsInput(selectedFields: string[] | null) {
+	exportSettings.fields = sanitizeExportFields(selectedFields);
+}
+
 function onChange(event: Event) {
 	const files = (event.target as HTMLInputElement)?.files;
 
@@ -333,6 +345,7 @@ function startExport() {
 
 function exportDataLocal() {
 	const endpoint = getEndpoint(collection.value);
+	const selectedExportFields = sanitizeExportFields(exportSettings.fields);
 
 	// usually getEndpoint contains leading slash, but here we need to remove it
 	const url = getPublicURL() + endpoint.substring(1);
@@ -342,7 +355,7 @@ function exportDataLocal() {
 	};
 
 	if (exportSettings.sort && exportSettings.sort !== '') params.sort = exportSettings.sort;
-	if (exportSettings.fields) params.fields = exportSettings.fields;
+	if (selectedExportFields) params.fields = selectedExportFields;
 	if (exportSettings.search) params.search = exportSettings.search;
 	if (exportSettings.filter) params.filter = exportSettings.filter;
 	if (exportSettings.search) params.search = exportSettings.search;
@@ -359,6 +372,7 @@ function exportDataLocal() {
 
 async function exportDataFiles() {
 	if (exporting.value) return;
+	const selectedExportFields = sanitizeExportFields(exportSettings.fields);
 
 	exporting.value = true;
 
@@ -366,6 +380,7 @@ async function exportDataFiles() {
 		await api.post(`/utils/export/${collection.value}`, {
 			query: {
 				...exportSettings,
+				fields: selectedExportFields,
 				...(exportSettings.sort && exportSettings.sort !== '' && { sort: [exportSettings.sort] }),
 			},
 			format: format.value,
@@ -616,7 +631,7 @@ async function exportDataFiles() {
 						:value="exportSettings.fields"
 						:collection-name="collection"
 						allow-select-all
-						@input="exportSettings.fields = $event"
+						@input="onExportFieldsInput"
 					/>
 				</div>
 			</div>
