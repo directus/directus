@@ -1,5 +1,6 @@
 import type { DirectusError } from './error.js';
 import type { EventContext } from './events.js';
+import type { Field, RawField } from './fields.js';
 import type { PermissionsAction } from './permissions.js';
 import type { UserIntegrityCheckFlag } from './users.js';
 
@@ -108,6 +109,13 @@ export type MutationOptions = {
 	onRequireUserIntegrityCheck?: ((flags: UserIntegrityCheckFlag) => void) | undefined;
 };
 
+export type DeferredIndex = {
+	collection: string;
+	field: Field | RawField;
+	existing?: unknown;
+};
+
 export type FieldMutationOptions = MutationOptions & {
 	attemptConcurrentIndex?: boolean;
+	deferredIndexes?: DeferredIndex[];
 };

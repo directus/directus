@@ -1,7 +1,9 @@
+import type { Column } from '@directus/schema';
 import type {
 	ActionEventParams,
+	DeferredIndex,
 	Field,
-	MutationOptions,
+	FieldMutationOptions,
 	RawField,
 	Relation,
 	SchemaOverview,
@@ -37,18 +39,21 @@ const logger = useLogger();
 export async function applyDiff(
 	currentSnapshot: Snapshot,
 	snapshotDiff: SnapshotDiff,
-	options?: { database?: Knex; schema?: SchemaOverview },
+	options?: { database?: Knex; schema?: SchemaOverview; attemptConcurrentIndex?: boolean },
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
 	const helpers = getHelpers(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
+	const attemptConcurrentIndex = Boolean(options?.attemptConcurrentIndex);
+	const deferredIndexes: DeferredIndex[] = [];
 	const nestedActionEvents: ActionEventParams[] = [];
 
-	const mutationOptions: MutationOptions = {
+	const mutationOptions: FieldMutationOptions = {
 		autoPurgeSystemCache: false,
 		bypassEmitAction: (params) => nestedActionEvents.push(params),
 		bypassLimits: true,
+		...(attemptConcurrentIndex && { attemptConcurrentIndex: true, deferredIndexes }),
 	};
 
 	const runPostColumnChange = await helpers.schema.preColumnChange();
@@ -352,6 +357,34 @@ export async function applyDiff(
 			}
 		}
 	});
+
+	// After the transaction, create deferred indexes concurrently
+	if (deferredIndexes.length > 0) {
+		const fieldsService = new FieldsService({
+			knex: database,
+			schema: await getSchema({ database, bypassCache: true }),
+		});
+
+		for (const deferred of deferredIndexes) {
+			const indexOptions: { attemptConcurrentIndex: boolean; existing?: Column | null } = {
+				attemptConcurrentIndex: true,
+			};
+
+			if (deferred.existing !== undefined) {
+				indexOptions.existing = deferred.existing as Column | null;
+			}
+
+			try {
+				await fieldsService.addColumnIndex(deferred.collection, deferred.field, indexOptions);
+			} catch (err) {
+				logger.error(
+					`Failed to create concurrent index for field "${deferred.field.field}" in collection "${deferred.collection}". For PostgreSQL, you may need to manually drop any INVALID indexes.`,
+				);
+
+				throw err;
+			}
+		}
+	}
 
 	if (runPostColumnChange) {
 		await helpers.schema.postColumnChange();

@@ -291,6 +291,47 @@ describe('Integration Tests', () => {
 
 				expect(addColumnIndexSpy).toHaveBeenCalled();
 			});
+
+			test('should push to deferredIndexes instead of calling addColumnIndex when deferredIndexes is provided', async () => {
+				tracker.on.select('directus_collections').response([]);
+
+				const addColumnIndexSpy = vi.spyOn(FieldsService.prototype, 'addColumnIndex').mockResolvedValue();
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				const deferredIndexes: Array<{ collection: string; field: any }> = [];
+
+				await service.createOne(
+					{
+						collection: 'deferred_index_collection',
+						schema: {},
+						fields: [
+							{
+								field: 'name',
+								type: 'string',
+							},
+							{
+								field: 'alias_field',
+								type: 'alias',
+							},
+						],
+					},
+					{
+						attemptConcurrentIndex: true,
+						deferredIndexes,
+					} as FieldMutationOptions,
+				);
+
+				expect(addColumnIndexSpy).not.toHaveBeenCalled();
+				// Default primary key 'id' (integer) + 'name' (string) are non-alias, alias_field is excluded
+				expect(deferredIndexes).toHaveLength(2);
+				expect(deferredIndexes.every((d) => d.collection === 'deferred_index_collection')).toBe(true);
+				expect(deferredIndexes.some((d) => d.field.field === 'name')).toBe(true);
+			});
 		});
 
 		describe('createMany', () => {
@@ -311,6 +352,70 @@ describe('Integration Tests', () => {
 
 				expect(result).toEqual(['test', 'test']);
 				expect(createOneSpy).toHaveBeenCalledTimes(2);
+			});
+
+			test('should pass deferredIndexes to createOne and call addColumnIndex after transaction when attemptConcurrentIndex is true', async () => {
+				const mockField = { field: 'test_field', type: 'string' };
+
+				const createOneSpy = vi
+					.spyOn(CollectionsService.prototype, 'createOne')
+					.mockImplementation(async (_data, opts: any) => {
+						if (opts?.deferredIndexes) {
+							opts.deferredIndexes.push({
+								collection: 'test_collection',
+								field: mockField,
+							});
+						}
+
+						return 'test';
+					});
+
+				const addColumnIndexSpy = vi.spyOn(FieldsService.prototype, 'addColumnIndex').mockResolvedValue(undefined);
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				const result = await service.createMany([{ collection: 'collection1' }], {
+					attemptConcurrentIndex: true,
+				} as FieldMutationOptions);
+
+				expect(result).toEqual(['test']);
+
+				expect(createOneSpy).toHaveBeenCalledWith(
+					expect.anything(),
+					expect.objectContaining({
+						attemptConcurrentIndex: true,
+						deferredIndexes: expect.any(Array),
+					}),
+				);
+
+				expect(addColumnIndexSpy).toHaveBeenCalledTimes(1);
+
+				expect(addColumnIndexSpy).toHaveBeenCalledWith('test_collection', mockField, {
+					attemptConcurrentIndex: true,
+				});
+			});
+
+			test('should not pass deferredIndexes when attemptConcurrentIndex is false', async () => {
+				const createOneSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await service.createMany([{ collection: 'collection1' }]);
+
+				expect(createOneSpy).toHaveBeenCalledWith(
+					expect.anything(),
+					expect.not.objectContaining({
+						deferredIndexes: expect.anything(),
+					}),
+				);
 			});
 		});
 
