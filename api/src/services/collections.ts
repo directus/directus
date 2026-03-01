@@ -258,7 +258,6 @@ export class CollectionsService {
 			}
 		}
 	}
-		
 
 	/**
 	 * Create multiple new collections
