@@ -388,8 +388,8 @@ export class FieldsService {
 
 					.andWhereRaw('LOWER(??) = LOWER(?)', ['field', field.field])
 					.first();
-				
-					existsInDb = !!dbResult;
+
+				existsInDb = !!dbResult;
 			} else {
 				const dbResult = await this.knex
 					.select('id')
@@ -397,19 +397,18 @@ export class FieldsService {
 					.from('directus_fields')
 					.where({ collection, field: field.field })
 					.first();
-				
-					existsInDb = !!dbResult;
+
+				existsInDb = !!dbResult;
 			}
 
 			const exists = existsInSchema || existsInDb;
 
 			if (exists) {
-
 				throw new InvalidPayloadError({
 					reason: `Field "${field.field}" already exists in collection "${collection}"`,
 				});
 			}
-			
+
 			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
 			if (flagToAdd) {
