@@ -57,204 +57,208 @@ export class CollectionsService {
 		this.systemCache = systemCache;
 	}
 
-	/**
-	 * Create a single new collection
-	 */
+	
 	async createOne(payload: RawCollection, opts?: FieldMutationOptions): Promise<string> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+    if (this.accountability && this.accountability.admin !== true) {
+        throw new ForbiddenError();
+    }
 
-		if (!('collection' in payload)) throw new InvalidPayloadError({ reason: `"collection" is required` });
+    if (!('collection' in payload)) throw new InvalidPayloadError({ reason: `"collection" is required` });
 
-		if (typeof payload.collection !== 'string' || payload.collection === '') {
-			throw new InvalidPayloadError({ reason: `"collection" must be a non-empty string` });
-		}
+    if (typeof payload.collection !== 'string' || payload.collection === '') {
+        throw new InvalidPayloadError({ reason: `"collection" must be a non-empty string` });
+    }
 
-		if (payload.collection.startsWith('directus_')) {
-			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
-		}
+    if (payload.collection.startsWith('directus_')) {
+        throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
+    }
 
-		const fieldList = Array.isArray(payload.fields) ? [...payload.fields] : [];
+    const fieldList = Array.isArray(payload.fields) ? [...payload.fields] : [];
 
-		if (!fieldList.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)) {
-			fieldList.push({ field: 'id' } as RawField);
-		}
+    if (!fieldList.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)) {
+        fieldList.push({ field: 'id' } as RawField);
+    }
 
-		const seenFields = new Set<string>();
+    const dbType = this.knex.client.config.client;
+    const isCaseInsensitiveDb = ['mysql', 'mariadb'].includes(dbType);
 
-		for (const field of fieldList) {
-			if (!field.field) continue;
-			const lowerName = field.field.toLowerCase();
+    const seenFields = new Set<string>();
 
-			if (seenFields.has(lowerName)) {
-				throw new InvalidPayloadError({
-					reason: `Collection "${payload.collection}" cannot have multiple fields with the same name "${field.field}" (case-insensitive).`,
-				});
-			}
+    for (const field of fieldList) {
+        if (!field.field) continue;
 
-			seenFields.add(lowerName);
-		}
+        const fieldNameForComparison = isCaseInsensitiveDb ? field.field.toLowerCase() : field.field;
 
-		const nestedActionEvents: ActionEventParams[] = [];
+        if (seenFields.has(fieldNameForComparison)) {
+            throw new InvalidPayloadError({
+                reason: isCaseInsensitiveDb 
+                    ? `Field "${field.field}" already exists in collection "${payload.collection}" (case-insensitive check for ${dbType}).`
+                    : `Field "${field.field}" already exists in collection "${payload.collection}".`
+            });
+        }
 
-		try {
-			const existingCollections: string[] = [
-				...((await this.knex.select('collection').from('directus_collections'))?.map(({ collection }) => collection) ??
-					[]),
-				...Object.keys(this.schema.collections),
-			];
+        seenFields.add(fieldNameForComparison);
+    }
 
-			if (existingCollections.includes(payload.collection)) {
-				throw new InvalidPayloadError({ reason: `Collection "${payload.collection}" already exists` });
-			}
+    const nestedActionEvents: ActionEventParams[] = [];
 
-			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+    try {
+        const existingCollections: string[] = [
+            ...((await this.knex.select('collection').from('directus_collections'))?.map(({ collection }) => collection) ??
+                []),
+            ...Object.keys(this.schema.collections),
+        ];
 
-			await transaction(this.knex, async (trx) => {
-				if (payload.schema) {
-					if ('fields' in payload && !Array.isArray(payload.fields)) {
-						throw new InvalidPayloadError({ reason: `"fields" must be an array` });
-					}
+        if (existingCollections.includes(payload.collection)) {
+            throw new InvalidPayloadError({ reason: `Collection "${payload.collection}" already exists` });
+        }
 
-					const injectedPrimaryKeyField: RawField = {
-						field: 'id',
-						type: 'integer',
-						meta: {
-							hidden: true,
-							interface: 'numeric',
-							readonly: true,
-						},
-						schema: {
-							is_primary_key: true,
-							has_auto_increment: true,
-						},
-					};
+        const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-					if (!payload.fields || payload.fields.length === 0) {
-						payload.fields = [injectedPrimaryKeyField];
-					} else if (
-						!payload.fields.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)
-					) {
-						payload.fields = [injectedPrimaryKeyField, ...payload.fields];
-					}
+        await transaction(this.knex, async (trx) => {
+            if (payload.schema) {
+                if ('fields' in payload && !Array.isArray(payload.fields)) {
+                    throw new InvalidPayloadError({ reason: `"fields" must be an array` });
+                }
 
-					payload.fields = payload.fields.map((field) => {
-						if (field.meta) {
-							field.meta = {
-								...field.meta,
-								field: field.field,
-								collection: payload.collection!,
-							};
-						}
+                const injectedPrimaryKeyField: RawField = {
+                    field: 'id',
+                    type: 'integer',
+                    meta: {
+                        hidden: true,
+                        interface: 'numeric',
+                        readonly: true,
+                    },
+                    schema: {
+                        is_primary_key: true,
+                        has_auto_increment: true,
+                    },
+                };
 
-						const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+                if (!payload.fields || payload.fields.length === 0) {
+                    payload.fields = [injectedPrimaryKeyField];
+                } else if (
+                    !payload.fields.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)
+                ) {
+                    payload.fields = [injectedPrimaryKeyField, ...payload.fields];
+                }
 
-						if (flagToAdd) {
-							addFieldFlag(field, flagToAdd);
-						}
+                payload.fields = payload.fields.map((field) => {
+                    if (field.meta) {
+                        field.meta = {
+                            ...field.meta,
+                            field: field.field,
+                            collection: payload.collection!,
+                        };
+                    }
 
-						return field;
-					});
+                    const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
-					const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+                    if (flagToAdd) {
+                        addFieldFlag(field, flagToAdd);
+                    }
 
-					await trx.schema.createTable(payload.collection, (table) => {
-						for (const field of payload.fields!) {
-							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field, {
-									attemptConcurrentIndex,
-								});
-							}
-						}
-					});
+                    return field;
+                });
 
-					const fieldItemsService = new ItemsService('directus_fields', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
+                const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-					const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
+                await trx.schema.createTable(payload.collection, (table) => {
+                    for (const field of payload.fields!) {
+                        if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+                            fieldsService.addColumnToTable(table, payload.collection, field, {
+                                attemptConcurrentIndex,
+                            });
+                        }
+                    }
+                });
 
-					let sortedFieldPayloads = fieldPayloads
-						.filter((field) => field?.group === undefined || field?.group === null)
-						.map((field, index) => merge({ sort: index + 1 }, field));
+                const fieldItemsService = new ItemsService('directus_fields', {
+                    knex: trx,
+                    accountability: this.accountability,
+                    schema: this.schema,
+                });
 
-					if (sortedFieldPayloads.length < fieldPayloads.length) {
-						const fieldsWithGroups = groupBy(
-							fieldPayloads.filter((field) => field?.group),
-							(field) => field?.group,
-						);
+                const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
 
-						for (const [_group, fields] of Object.entries(fieldsWithGroups)) {
-							sortedFieldPayloads = sortedFieldPayloads.concat(
-								fields.map((field, index) => merge({ sort: index + 1 }, field)),
-							);
-						}
-					}
+                let sortedFieldPayloads = fieldPayloads
+                    .filter((field) => field?.group === undefined || field?.group === null)
+                    .map((field, index) => merge({ sort: index + 1 }, field));
 
-					await fieldItemsService.createMany(sortedFieldPayloads, {
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						bypassLimits: true,
-					});
-				}
+                if (sortedFieldPayloads.length < fieldPayloads.length) {
+                    const fieldsWithGroups = groupBy(
+                        fieldPayloads.filter((field) => field?.group),
+                        (field) => field?.group,
+                    );
 
-				if (payload.meta) {
-					const collectionsItemsService = new ItemsService('directus_collections', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
+                    for (const [_group, fields] of Object.entries(fieldsWithGroups)) {
+                        sortedFieldPayloads = sortedFieldPayloads.concat(
+                            fields.map((field, index) => merge({ sort: index + 1 }, field)),
+                        );
+                    }
+                }
 
-					await collectionsItemsService.createOne(
-						{
-							...payload.meta,
-							collection: payload.collection,
-						},
-						{
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						},
-					);
-				}
+                await fieldItemsService.createMany(sortedFieldPayloads, {
+                    bypassEmitAction: (params) =>
+                        opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+                    bypassLimits: true,
+                });
+            }
 
-				return payload.collection;
-			});
+            if (payload.meta) {
+                const collectionsItemsService = new ItemsService('directus_collections', {
+                    knex: trx,
+                    accountability: this.accountability,
+                    schema: this.schema,
+                });
 
-			if (attemptConcurrentIndex && payload.schema && Array.isArray(payload.fields)) {
-				const fieldsService = new FieldsService({ schema: this.schema });
+                await collectionsItemsService.createOne(
+                    {
+                        ...payload.meta,
+                        collection: payload.collection,
+                    },
+                    {
+                        bypassEmitAction: (params) =>
+                            opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+                    },
+                );
+            }
 
-				for (const field of payload.fields) {
-					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-						await fieldsService.addColumnIndex(payload.collection, field, {
-							attemptConcurrentIndex,
-						});
-					}
-				}
-			}
+            return payload.collection;
+        });
 
-			return payload.collection;
-		} finally {
-			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
-			}
+        if (attemptConcurrentIndex && payload.schema && Array.isArray(payload.fields)) {
+            const fieldsService = new FieldsService({ schema: this.schema });
 
-			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-			}
+            for (const field of payload.fields) {
+                if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+                    await fieldsService.addColumnIndex(payload.collection, field, {
+                        attemptConcurrentIndex,
+                    });
+                }
+            }
+        }
 
-			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+        return payload.collection;
+    } finally {
+        if (shouldClearCache(this.cache, opts)) {
+            await this.cache!.clear();
+        }
 
-				for (const nestedActionEvent of nestedActionEvents) {
-					nestedActionEvent.context.schema = updatedSchema;
-					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-				}
-			}
-		}
-	}
+        if (opts?.autoPurgeSystemCache !== false) {
+            await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+        }
+
+        if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+            const updatedSchema = await getSchema();
+
+            for (const nestedActionEvent of nestedActionEvents) {
+                nestedActionEvent.context.schema = updatedSchema;
+                emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+            }
+        }
+    }
+}
 
 	/**
 	 * Create multiple new collections

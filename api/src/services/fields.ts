@@ -272,7 +272,7 @@ export class FieldsService {
 			});
 		}
 
-		// Update specific database type overrides
+	
 		for (const field of result) {
 			field.type = this.helpers.schema.processFieldType(field);
 		}
@@ -331,7 +331,7 @@ export class FieldsService {
 		try {
 			column = await this.columnInfo(collection, field);
 		} catch {
-			// Do nothing
+			
 		}
 
 		if (!column && !fieldInfo) throw new ForbiddenError();
@@ -357,157 +357,170 @@ export class FieldsService {
 	}
 
 	async createField(
-		collection: string,
-		field: Partial<Field> & { field: string; type: Type | null },
-		table?: Knex.CreateTableBuilder, // allows collection creation to
-		opts?: FieldMutationOptions,
-	): Promise<void> {
-		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
-		}
+    collection: string,
+    field: Partial<Field> & { field: string; type: Type | null },
+    table?: Knex.CreateTableBuilder, // allows collection creation to
+    opts?: FieldMutationOptions,
+): Promise<void> {
+    if (this.accountability && this.accountability.admin !== true) {
+        throw new ForbiddenError();
+    }
 
-		const runPostColumnChange = await this.helpers.schema.preColumnChange();
-		const nestedActionEvents: ActionEventParams[] = [];
+    const runPostColumnChange = await this.helpers.schema.preColumnChange();
+    const nestedActionEvents: ActionEventParams[] = [];
 
-		try {
-			// Check if field already exists (Case-Insensitive)
-			const fieldsInSchema = Object.keys(this.schema.collections[collection]?.fields || {});
+    try {
+        
+        const dbType = String(this.knex.client.config.client || '').toLowerCase();
+        const isCaseInsensitiveDb = dbType.includes('mysql') || dbType.includes('mariadb');
 
-			const existsInSchema = fieldsInSchema.some((f) => f.toLowerCase() === field.field.toLowerCase());
+        const fieldsInSchema = Object.keys(this.schema.collections[collection]?.fields || {});
 
-			const existsInDb = await this.knex
+        const existsInSchema = fieldsInSchema.some((f) => {
+            return isCaseInsensitiveDb ? f.toLowerCase() === field.field.toLowerCase() : f === field.field;
+        });
 
-				.select('id')
-				.from('directus_fields')
-				.where({ collection })
-				.andWhereRaw('LOWER(??) = LOWER(?)', ['field', field.field])
-				.first();
+        let existsInDb = false;
 
-			const exists = existsInSchema || !!existsInDb;
+        if (isCaseInsensitiveDb) {
+            const dbResult = await this.knex
+                .select('id')
+                .from('directus_fields')
+                .where({ collection })
+                .andWhereRaw('LOWER(??) = LOWER(?)', ['field', field.field])
+                .first();
+            existsInDb = !!dbResult;
+        } else {
+            const dbResult = await this.knex
+                .select('id')
+                .from('directus_fields')
+                .where({ collection, field: field.field })
+                .first();
+            existsInDb = !!dbResult;
+        }
 
-			// Check if field already exists, either as a column, or as a row in directus_fields
-			if (exists) {
-				throw new InvalidPayloadError({
-					reason: `Field "${field.field}" already exists in collection "${collection}"`,
-				});
-			}
+        const exists = existsInSchema || existsInDb;
 
-			// Add flag for specific database type overrides
-			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+        if (exists) {
+            throw new InvalidPayloadError({
+                reason: `Field "${field.field}" already exists in collection "${collection}"`,
+            });
+        }
+        const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
-			if (flagToAdd) {
-				addFieldFlag(field, flagToAdd);
-			}
+        if (flagToAdd) {
+            addFieldFlag(field, flagToAdd);
+        }
 
-			let hookAdjustedField = field;
-			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+        let hookAdjustedField = field;
+        const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-			await transaction(this.knex, async (trx) => {
-				const itemsService = new ItemsService('directus_fields', {
-					knex: trx,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
+        await transaction(this.knex, async (trx) => {
+            const itemsService = new ItemsService('directus_fields', {
+                knex: trx,
+                accountability: this.accountability,
+                schema: this.schema,
+            });
 
-				hookAdjustedField =
-					opts?.emitEvents !== false
-						? await emitter.emitFilter(
-								`fields.create`,
-								field,
-								{
-									collection: collection,
-								},
-								{
-									database: trx,
-									schema: this.schema,
-									accountability: this.accountability,
-								},
-							)
-						: field;
+            hookAdjustedField =
+                opts?.emitEvents !== false
+                    ? await emitter.emitFilter(
+                            `fields.create`,
+                            field,
+                            {
+                                collection: collection,
+                            },
+                            {
+                                database: trx,
+                                schema: this.schema,
+                                accountability: this.accountability,
+                            },
+                        )
+                    : field;
 
-				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-					if (table) {
-						this.addColumnToTable(table, collection, hookAdjustedField as Field, {
-							attemptConcurrentIndex,
-						});
-					} else {
-						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, collection, hookAdjustedField as Field, {
-								attemptConcurrentIndex,
-							});
-						});
-					}
-				}
+            if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+                if (table) {
+                    this.addColumnToTable(table, collection, hookAdjustedField as Field, {
+                        attemptConcurrentIndex,
+                    });
+                } else {
+                    await trx.schema.alterTable(collection, (table) => {
+                        this.addColumnToTable(table, collection, hookAdjustedField as Field, {
+                            attemptConcurrentIndex,
+                        });
+                    });
+                }
+            }
 
-				if (hookAdjustedField.meta) {
-					const existingSortRecord: Record<'max', number | null> | undefined = await trx
-						.from('directus_fields')
-						.where(hookAdjustedField.meta?.group ? { collection, group: hookAdjustedField.meta.group } : { collection })
-						.max('sort', { as: 'max' })
-						.first();
+            if (hookAdjustedField.meta) {
+                const existingSortRecord: Record<'max', number | null> | undefined = await trx
+                    .from('directus_fields')
+                    .where(hookAdjustedField.meta?.group ? { collection, group: hookAdjustedField.meta.group } : { collection })
+                    .max('sort', { as: 'max' })
+                    .first();
 
-					const newSortValue: number = existingSortRecord?.max ? existingSortRecord.max + 1 : 1;
+                const newSortValue: number = existingSortRecord?.max ? existingSortRecord.max + 1 : 1;
 
-					await itemsService.createOne(
-						{
-							...merge({ sort: newSortValue }, hookAdjustedField.meta),
-							collection: collection,
-							field: hookAdjustedField.field,
-						},
-						{ emitEvents: false },
-					);
-				}
+                await itemsService.createOne(
+                    {
+                        ...merge({ sort: newSortValue }, hookAdjustedField.meta),
+                        collection: collection,
+                        field: hookAdjustedField.field,
+                    },
+                    { emitEvents: false },
+                );
+            }
 
-				const actionEvent = {
-					event: 'fields.create',
-					meta: {
-						payload: hookAdjustedField,
-						key: hookAdjustedField.field,
-						collection: collection,
-					},
-					context: {
-						database: getDatabase(),
-						schema: this.schema,
-						accountability: this.accountability,
-					},
-				};
+            const actionEvent = {
+                event: 'fields.create',
+                meta: {
+                    payload: hookAdjustedField,
+                    key: hookAdjustedField.field,
+                    collection: collection,
+                },
+                context: {
+                    database: getDatabase(),
+                    schema: this.schema,
+                    accountability: this.accountability,
+                },
+            };
 
-				if (opts?.bypassEmitAction) {
-					opts.bypassEmitAction(actionEvent);
-				} else {
-					nestedActionEvents.push(actionEvent);
-				}
-			});
+            if (opts?.bypassEmitAction) {
+                opts.bypassEmitAction(actionEvent);
+            } else {
+                nestedActionEvents.push(actionEvent);
+            }
+        });
 
-			// concurrent index creation cannot be done inside the transaction
-			if (attemptConcurrentIndex && hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-				await this.addColumnIndex(collection, hookAdjustedField as Field, {
-					attemptConcurrentIndex,
-				});
-			}
-		} finally {
-			if (runPostColumnChange) {
-				await this.helpers.schema.postColumnChange();
-			}
+        // concurrent index creation cannot be done inside the transaction
+        if (attemptConcurrentIndex && hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+            await this.addColumnIndex(collection, hookAdjustedField as Field, {
+                attemptConcurrentIndex,
+            });
+        }
+    } finally {
+        if (runPostColumnChange) {
+            await this.helpers.schema.postColumnChange();
+        }
 
-			if (shouldClearCache(this.cache, opts)) {
-				await this.cache.clear();
-			}
+        if (shouldClearCache(this.cache, opts)) {
+            await this.cache.clear();
+        }
 
-			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-			}
+        if (opts?.autoPurgeSystemCache !== false) {
+            await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+        }
 
-			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema({ database: this.knex });
+        if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+            const updatedSchema = await getSchema({ database: this.knex });
 
-				for (const nestedActionEvent of nestedActionEvents) {
-					nestedActionEvent.context.schema = updatedSchema;
-					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-				}
-			}
-		}
-	}
+            for (const nestedActionEvent of nestedActionEvents) {
+                nestedActionEvent.context.schema = updatedSchema;
+                emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+            }
+        }
+    }
+}
 
 	async updateField(collection: string, field: RawField, opts?: FieldMutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
