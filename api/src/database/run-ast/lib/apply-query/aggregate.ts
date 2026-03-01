@@ -11,11 +11,12 @@ export function applyAggregate(
 	for (const [operation, fields] of Object.entries(aggregate)) {
 		if (!fields) continue;
 
+		if (operation === 'countAll') {
+			dbQuery.count('*', { as: 'countAll' });
+			continue;
+		}
+
 		for (const field of fields) {
-			if (operation === 'countAll') {
-				dbQuery.count('*', { as: 'countAll' });
-				continue;
-			}
 
 			if (operation === 'count' && field === '*') {
 				dbQuery.count('*', { as: 'count' });
