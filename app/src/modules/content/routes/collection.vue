@@ -18,6 +18,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
+import { useAutoRefresh } from '@/composables/use-auto-refresh';
 import { useFlows } from '@/composables/use-flows';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
@@ -300,6 +301,8 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
+
+useAutoRefresh(refreshInterval, refresh);
 </script>
 
 <template>

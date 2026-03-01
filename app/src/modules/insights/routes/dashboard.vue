@@ -20,6 +20,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import VWorkspace from '@/components/v-workspace.vue';
+import { useAutoRefresh } from '@/composables/use-auto-refresh';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -203,6 +204,8 @@ const refreshInterval = computed({
 		refreshIntervals.value = assign({}, unref(refreshIntervals), { [props.primaryKey]: val });
 	},
 });
+
+useAutoRefresh(refreshInterval, () => insightsStore.refresh(props.primaryKey));
 </script>
 
 <template>
