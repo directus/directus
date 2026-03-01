@@ -1,4 +1,4 @@
-import type { Readable } from 'node:stream';
+import { Readable } from 'node:stream';
 import path from 'path';
 import { useEnv } from '@directus/env';
 import {
@@ -31,6 +31,7 @@ import { useLogger } from '../logger/index.js';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { injectIptcIntoJpeg } from '../utils/inject-iptc-into-jpeg.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { NameDeduper } from './assets/name-deduper.js';
@@ -364,6 +365,34 @@ export class AssetsService {
 				throw error;
 			}
 
+			// Write EXIF metadata from the database into the resized image
+			if (file.metadata) {
+				const sectionMap: Record<string, string> = {
+					ifd0: 'IFD0',
+					ifd1: 'IFD1',
+					exif: 'IFD2',
+					gps: 'IFD3',
+				};
+
+				const exifData: Record<string, Record<string, string>> = {};
+
+				for (const [section, ifdName] of Object.entries(sectionMap)) {
+					if (file.metadata[section] && typeof file.metadata[section] === 'object') {
+						exifData[ifdName] = {};
+
+						for (const [key, value] of Object.entries(file.metadata[section] as Record<string, unknown>)) {
+							if (value != null) {
+								exifData[ifdName]![key] = String(value);
+							}
+						}
+					}
+				}
+
+				if (Object.keys(exifData).length > 0) {
+					transformer.withExifMerge(exifData);
+				}
+			}
+
 			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
 
 			readStream.on('error', (e: Error) => {
@@ -371,8 +400,23 @@ export class AssetsService {
 				readStream.unpipe(transformer);
 			});
 
+			let output: Readable = Readable.from(readStream.pipe(transformer));
+
+			// Determine if IPTC injection is needed (JPEG output only)
+			const outputFormat = maybeNewFormat || type?.split('/')[1];
+			const hasIptcMetadata = file.metadata?.['iptc'] && Object.keys(file.metadata['iptc']).length > 0;
+			const isJpegOutput = outputFormat === 'jpeg' || outputFormat === 'jpg';
+
+			if (hasIptcMetadata && isJpegOutput) {
+				const transformedBuffer = await transformer.toBuffer();
+
+				output = Readable.from(
+					injectIptcIntoJpeg(transformedBuffer, file.metadata!['iptc'] as Record<string, unknown>),
+				);
+			}
+
 			try {
-				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+				await storage.location(file.storage).write(assetFilename, output, type);
 			} catch (error) {
 				try {
 					await storage.location(file.storage).delete(assetFilename);
