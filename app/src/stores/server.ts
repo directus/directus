@@ -29,7 +29,7 @@ export type Info = {
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
 	files?: {
-		mimeTypeAllowList: string;
+		mimeTypeAllowList: string[];
 	};
 	setupCompleted: boolean;
 	rateLimit?:

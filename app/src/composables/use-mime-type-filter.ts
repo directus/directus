@@ -3,19 +3,13 @@ import { computed, type MaybeRef, unref } from 'vue';
 import { useServerStore } from '@/stores/server';
 
 /**
- * Parses a MIME type allow list from server config (string, array, or undefined).
- * Returns undefined if the list allows all types (wildcard).
+ * Parses a MIME type allow list from server config.
+ * Returns undefined if the list is empty or allows all types (wildcard).
  */
-export function parseGlobalMimeTypeAllowList(allowList: string | string[] | undefined): string[] | undefined {
-	if (!allowList || allowList === '*/*') {
-		return undefined;
-	}
-
-	if (Array.isArray(allowList)) {
-		return allowList;
-	}
-
-	return allowList.split(',').map((type) => type.trim());
+export function parseGlobalMimeTypeAllowList(allowList: string[] | undefined): string[] | undefined {
+	if (!allowList || allowList.length === 0) return undefined;
+	if (allowList.length === 1 && allowList[0] === '*/*') return undefined;
+	return allowList;
 }
 
 /**
