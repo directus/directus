@@ -329,7 +329,9 @@ export class FieldsService {
 
 		try {
 			column = await this.columnInfo(collection, field);
-		} catch {}
+		} catch {
+			//nothing
+		}
 
 		if (!column && !fieldInfo) throw new ForbiddenError();
 
@@ -383,25 +385,31 @@ export class FieldsService {
 					.select('id')
 					.from('directus_fields')
 					.where({ collection })
+
 					.andWhereRaw('LOWER(??) = LOWER(?)', ['field', field.field])
 					.first();
-				existsInDb = !!dbResult;
+				
+					existsInDb = !!dbResult;
 			} else {
 				const dbResult = await this.knex
 					.select('id')
+
 					.from('directus_fields')
 					.where({ collection, field: field.field })
 					.first();
-				existsInDb = !!dbResult;
+				
+					existsInDb = !!dbResult;
 			}
 
 			const exists = existsInSchema || existsInDb;
 
 			if (exists) {
+
 				throw new InvalidPayloadError({
 					reason: `Field "${field.field}" already exists in collection "${collection}"`,
 				});
 			}
+			
 			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
 			if (flagToAdd) {
