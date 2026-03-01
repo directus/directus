@@ -122,6 +122,7 @@ describe('Integration Tests', () => {
 				[{}, 'collection name is missing'],
 				[{ collection: '' }, 'collection name is empty'],
 				[{ collection: 'directus_test' }, 'collection names start with "directus_"'],
+				[{ collection: 'directus_new_service' }, 'custom collections starting with directus_'],
 			];
 
 			test.each(invalidPayloads)('should throw InvalidPayloadError when %s', async (payload, _description) => {
@@ -290,6 +291,29 @@ describe('Integration Tests', () => {
 				);
 
 				expect(addColumnIndexSpy).toHaveBeenCalled();
+			});
+			test('should throw InvalidPayloadError for duplicate fields on MySQL (case-insensitive)', async () => {
+				tracker.on.select('directus_collections').response([]);
+
+				// Force the client to mysql to trigger your specific validation logic
+				db.client.config.client = 'mysql';
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await expect(
+					service.createOne({
+						collection: 'case_test',
+						schema: {},
+						fields: [
+							{ field: 'First_Name', type: 'string' },
+							{ field: 'first_name', type: 'string' }, // Duplicate in case-insensitive check
+						],
+					}),
+				).rejects.toThrow(InvalidPayloadError);
 			});
 		});
 
