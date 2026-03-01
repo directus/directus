@@ -12,6 +12,7 @@ export const useAiToolsStore = defineStore('ai-tools-store', () => {
 	const systemTools = shallowRef<SystemTool[]>([
 		'items',
 		'files',
+		'file-content',
 		'folders',
 		'flows',
 		'trigger-flow',

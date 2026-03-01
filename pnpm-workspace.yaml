@@ -255,6 +255,7 @@ catalog:
   p-limit: 7.2.0
   p-queue: 8.1.0
   papaparse: 5.5.3
+  pdf-parse: 2.4.5
   pg: 8.16.3
   pinia: 2.3.1
   pino: 9.7.0
