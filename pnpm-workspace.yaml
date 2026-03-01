@@ -8,6 +8,7 @@ packages:
 
 catalog:
   '@ai-sdk/anthropic': 3.0.9
+  '@ai-sdk/devtools': 0.0.13
   '@ai-sdk/google': 3.0.6
   '@ai-sdk/openai': 3.0.7
   '@ai-sdk/openai-compatible': 2.0.4
@@ -54,6 +55,8 @@ catalog:
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
   '@keyv/redis': 3.0.1
+  '@braintrust/otel': 0.2.0
+  '@langfuse/otel': 4.0.0
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
@@ -61,6 +64,7 @@ catalog:
   '@netlify/api': 14.0.14
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
+  '@opentelemetry/sdk-trace-node': 2.1.0
   '@pinia/testing': 1.0.3
   '@pnpm/logger': 1001.0.1
   '@pnpm/workspace.find-packages': 1000.0.43

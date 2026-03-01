@@ -10,6 +10,7 @@ import { createTerminus } from '@godaddy/terminus';
 import type { Request } from 'express';
 import { once } from 'lodash-es';
 import qs from 'qs';
+import { shutdownAITelemetry } from './ai/telemetry/index.js';
 import createApp from './app.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
@@ -135,6 +136,7 @@ export async function createServer(): Promise<http.Server> {
 		getWebSocketController()?.terminate();
 		getLogsController()?.terminate();
 		await getCollabHandler()?.terminate();
+		await shutdownAITelemetry();
 
 		const database = getDatabase();
 		await database.destroy();
