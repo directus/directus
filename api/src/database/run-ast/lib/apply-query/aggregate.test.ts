@@ -126,6 +126,26 @@ test('aggregate countAll', async () => {
 	expect(rawQuery.bindings).toEqual([]);
 });
 
+test('aggregate countAll with empty fields (GraphQL)', async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyAggregate(
+		schema,
+		queryBuilder,
+		{
+			countAll: [],
+		},
+		'articles',
+		false,
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select count(*) as "countAll"`);
+	expect(rawQuery.bindings).toEqual([]);
+});
+
 test('aggregate count o2m', async () => {
 	const o2mSchema = new SchemaBuilder()
 		.collection('articles', (c) => {
