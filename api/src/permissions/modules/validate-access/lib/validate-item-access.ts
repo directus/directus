@@ -57,7 +57,7 @@ export async function validateItemAccess(
 
 	// For non-singletons, we must have PKs to validate against
 	if (!isSingleton && !hasPrimaryKeys) {
-		throw new Error(`Primary keys are required for non-singleton collection "${options.collection}"`);
+		return { accessAllowed: false };
 	}
 
 	// When we're looking up access to specific items, we have to read them from the database to
