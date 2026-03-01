@@ -81,6 +81,8 @@ export class CollectionsService {
 		const dbType = this.knex.client.config.client;
 		const isCaseInsensitiveDb = ['mysql', 'mariadb'].includes(dbType);
 
+		payload.collection = await this.helpers.schema.parseCollectionName(payload.collection);
+
 		const seenFields = new Set<string>();
 
 		for (const field of fieldList) {
@@ -109,7 +111,7 @@ export class CollectionsService {
 			];
 
 			if (existingCollections.includes(payload.collection)) {
-				throw new InvalidPayloadError({ reason: `Collection "${payload.collection}" already exists` });
+				throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });;
 			}
 
 			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
