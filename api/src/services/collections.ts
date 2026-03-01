@@ -111,7 +111,7 @@ export class CollectionsService {
 			];
 
 			if (existingCollections.includes(payload.collection)) {
-				throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });;
+				throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
 			}
 
 			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
