@@ -24,7 +24,7 @@ import type {
 import { addFieldFlag, getRelations, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { isEqual, isNil, merge } from 'lodash-es';
+import { isEqual, merge } from 'lodash-es';
 import { z } from 'zod';
 import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
 import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
@@ -272,7 +272,6 @@ export class FieldsService {
 			});
 		}
 
-		// Update specific database type overrides
 		for (const field of result) {
 			field.type = this.helpers.schema.processFieldType(field);
 		}
@@ -331,7 +330,7 @@ export class FieldsService {
 		try {
 			column = await this.columnInfo(collection, field);
 		} catch {
-			// Do nothing
+			//nothing
 		}
 
 		if (!column && !fieldInfo) throw new ForbiddenError();
@@ -370,20 +369,46 @@ export class FieldsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const exists =
-				field.field in this.schema.collections[collection]!.fields ||
-				isNil(
-					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first(),
-				) === false;
+			const dbType = String(this.knex.client.config.client || '').toLowerCase();
+			const isCaseInsensitiveDb = dbType.includes('mysql') || dbType.includes('mariadb');
 
-			// Check if field already exists, either as a column, or as a row in directus_fields
+			const fieldsInSchema = Object.keys(this.schema.collections[collection]?.fields || {});
+
+			const existsInSchema = fieldsInSchema.some((f) => {
+				return isCaseInsensitiveDb ? f.toLowerCase() === field.field.toLowerCase() : f === field.field;
+			});
+
+			let existsInDb = false;
+
+			if (isCaseInsensitiveDb) {
+				const dbResult = await this.knex
+					.select('id')
+					.from('directus_fields')
+					.where({ collection })
+
+					.andWhereRaw('LOWER(??) = LOWER(?)', ['field', field.field])
+					.first();
+
+				existsInDb = !!dbResult;
+			} else {
+				const dbResult = await this.knex
+					.select('id')
+
+					.from('directus_fields')
+					.where({ collection, field: field.field })
+					.first();
+
+				existsInDb = !!dbResult;
+			}
+
+			const exists = existsInSchema || existsInDb;
+
 			if (exists) {
 				throw new InvalidPayloadError({
 					reason: `Field "${field.field}" already exists in collection "${collection}"`,
 				});
 			}
 
-			// Add flag for specific database type overrides
 			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
 			if (flagToAdd) {

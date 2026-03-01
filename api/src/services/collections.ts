@@ -57,9 +57,6 @@ export class CollectionsService {
 		this.systemCache = systemCache;
 	}
 
-	/**
-	 * Create a single new collection
-	 */
 	async createOne(payload: RawCollection, opts?: FieldMutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -75,7 +72,34 @@ export class CollectionsService {
 			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
 		}
 
+		const fieldList = Array.isArray(payload.fields) ? [...payload.fields] : [];
+
+		if (!fieldList.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)) {
+			fieldList.push({ field: 'id' } as RawField);
+		}
+
+		const dbType = this.knex.client.config.client;
+		const isCaseInsensitiveDb = ['mysql', 'mariadb'].includes(dbType);
+
 		payload.collection = await this.helpers.schema.parseCollectionName(payload.collection);
+
+		const seenFields = new Set<string>();
+
+		for (const field of fieldList) {
+			if (!field.field) continue;
+
+			const fieldNameForComparison = isCaseInsensitiveDb ? field.field.toLowerCase() : field.field;
+
+			if (seenFields.has(fieldNameForComparison)) {
+				throw new InvalidPayloadError({
+					reason: isCaseInsensitiveDb
+						? `Field "${field.field}" already exists in collection "${payload.collection}" (case-insensitive check for ${dbType}).`
+						: `Field "${field.field}" already exists in collection "${payload.collection}".`,
+				});
+			}
+
+			seenFields.add(fieldNameForComparison);
+		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -87,25 +111,16 @@ export class CollectionsService {
 			];
 
 			if (existingCollections.includes(payload.collection)) {
-				throw new InvalidPayloadError({ reason: `Collection "${payload.collection}" already exists` });
+				throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
 			}
 
 			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
-			// Create the collection/fields in a transaction so it'll be reverted in case of errors or
-			// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
-			// transactions.
 			await transaction(this.knex, async (trx) => {
 				if (payload.schema) {
 					if ('fields' in payload && !Array.isArray(payload.fields)) {
 						throw new InvalidPayloadError({ reason: `"fields" must be an array` });
 					}
-
-					/**
-					 * Directus heavily relies on the primary key of a collection, so we have to make sure that
-					 * every collection that is created has a primary key. If no primary key field is created
-					 * while making the collection, we default to an auto incremented id named `id`
-					 */
 
 					const injectedPrimaryKeyField: RawField = {
 						field: 'id',
@@ -129,7 +144,6 @@ export class CollectionsService {
 						payload.fields = [injectedPrimaryKeyField, ...payload.fields];
 					}
 
-					// Ensure that every field meta has the field/collection fields filled correctly
 					payload.fields = payload.fields.map((field) => {
 						if (field.meta) {
 							field.meta = {
@@ -139,7 +153,6 @@ export class CollectionsService {
 							};
 						}
 
-						// Add flag for specific database type overrides
 						const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
 						if (flagToAdd) {
@@ -169,22 +182,16 @@ export class CollectionsService {
 
 					const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
 
-					// Sort new fields that does not have any group defined, in ascending order.
-					// Lodash merge is used so that the "sort" can be overridden if defined.
 					let sortedFieldPayloads = fieldPayloads
 						.filter((field) => field?.group === undefined || field?.group === null)
 						.map((field, index) => merge({ sort: index + 1 }, field));
 
-					// Sort remaining new fields with group defined, if any, in ascending order.
-					// sortedFieldPayloads will be less than fieldPayloads if it filtered out any fields with group defined.
 					if (sortedFieldPayloads.length < fieldPayloads.length) {
 						const fieldsWithGroups = groupBy(
 							fieldPayloads.filter((field) => field?.group),
 							(field) => field?.group,
 						);
 
-						// The sort order is restarted from 1 for fields in each group and appended to sortedFieldPayloads.
-						// Lodash merge is used so that the "sort" can be overridden if defined.
 						for (const [_group, fields] of Object.entries(fieldsWithGroups)) {
 							sortedFieldPayloads = sortedFieldPayloads.concat(
 								fields.map((field, index) => merge({ sort: index + 1 }, field)),
@@ -221,7 +228,6 @@ export class CollectionsService {
 				return payload.collection;
 			});
 
-			// concurrent index creation cannot be done inside the transaction
 			if (attemptConcurrentIndex && payload.schema && Array.isArray(payload.fields)) {
 				const fieldsService = new FieldsService({ schema: this.schema });
 
@@ -237,7 +243,7 @@ export class CollectionsService {
 			return payload.collection;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache.clear();
+				await this.cache!.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
