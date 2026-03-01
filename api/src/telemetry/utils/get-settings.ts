@@ -1,3 +1,5 @@
+import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { SettingsService } from '../../services/settings.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -11,6 +13,7 @@ export type TelemetrySettings = {
 	ai_openai_api_key: boolean;
 	ai_anthropic_api_key: boolean;
 	ai_system_prompt: boolean;
+	collaborative_editing_enabled: boolean;
 };
 
 export type DatabaseSettings = {
@@ -22,9 +25,12 @@ export type DatabaseSettings = {
 	ai_openai_api_key?: string;
 	ai_anthropic_api_key?: string;
 	ai_system_prompt?: string;
+	collaborative_editing_enabled?: boolean;
 };
 
 export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
+	const env = useEnv();
+
 	const settingsService = new SettingsService({
 		knex: db,
 		schema: await getSchema({ database: db }),
@@ -40,6 +46,7 @@ export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 			'ai_openai_api_key',
 			'ai_anthropic_api_key',
 			'ai_system_prompt',
+			'collaborative_editing_enabled',
 		],
 	})) as DatabaseSettings;
 
@@ -52,5 +59,7 @@ export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 		ai_openai_api_key: Boolean(settings?.ai_openai_api_key),
 		ai_anthropic_api_key: Boolean(settings?.ai_anthropic_api_key),
 		ai_system_prompt: Boolean(settings?.ai_system_prompt),
+		collaborative_editing_enabled:
+			toBoolean(env['WEBSOCKETS_COLLAB_ENABLED'] ?? true) && (settings?.collaborative_editing_enabled ?? false),
 	};
 };

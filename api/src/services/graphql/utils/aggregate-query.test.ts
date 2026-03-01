@@ -196,6 +196,30 @@ describe('getAggregateQuery', () => {
 			});
 		});
 
+		test('should skip the group field selection', async () => {
+			const selections: SelectionNode[] = [
+				{
+					kind: 'Field',
+					name: { value: 'count' },
+					selectionSet: {
+						selections: [{ kind: 'Field', name: { value: 'id' } } as FieldNode],
+					},
+				} as unknown as FieldNode,
+				{
+					kind: 'Field',
+					name: { value: 'group' },
+				} as FieldNode,
+			];
+
+			const result = await getAggregateQuery({}, selections, schema);
+
+			expect(result.aggregate).toEqual({
+				count: ['id'],
+			});
+
+			expect(result.aggregate).not.toHaveProperty('group');
+		});
+
 		test('should handle field nodes with an empty selectionSet', async () => {
 			const selections: SelectionNode[] = [
 				{

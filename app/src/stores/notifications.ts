@@ -14,6 +14,7 @@ export const useNotificationsStore = defineStore({
 		previous: [] as Snackbar[],
 		notifications: [] as Notification[],
 		unread: 0,
+		overlayIsActive: false,
 	}),
 	actions: {
 		async hydrate() {
@@ -54,6 +55,9 @@ export const useNotificationsStore = defineStore({
 		},
 		setUnreadCount(count: number) {
 			this.unread = count < 0 ? 0 : count;
+		},
+		setOverlayIsActive(active: boolean) {
+			this.overlayIsActive = active;
 		},
 		add(notification: SnackbarRaw) {
 			const id = nanoid();

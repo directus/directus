@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, ref, Ref } from 'vue';
 import { getFields } from './get-fields';
 import { mockedStore } from '@/__utils__/store';
+import type { FormField } from '@/components/v-form/types';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 
@@ -310,6 +311,104 @@ describe('non-admin users', () => {
 
 				expect(nameField?.schema?.default_value).toEqual(namePreset);
 			});
+		});
+	});
+
+	describe('collection with partial access (custom item rules)', () => {
+		beforeEach(() => {
+			vi.mocked(useCollection).mockReturnValue({
+				fields: ref(sample.fields),
+				info: ref({ meta: { singleton: false } }),
+			} as any);
+		});
+
+		it('should mark all fields as non-editable when item fails custom rule', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'update') return { access: 'partial', fields: ['id', 'name', 'start_date', 'end_date'] };
+				return null;
+			});
+
+			fetchedItemPermissions = computed(() => ({
+				update: { access: false },
+				delete: { access: false },
+				share: { access: false },
+			}));
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions);
+
+			for (const field of fields.value) {
+				expect(field.meta?.readonly).toBe(true);
+				expect((field as FormField).meta?.non_editable).toBe(true);
+			}
+		});
+
+		it('should use store fields when item passes custom rule', () => {
+			const allowedFields = ['id', 'start_date'];
+
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'update') return { access: 'partial', fields: allowedFields };
+				return null;
+			});
+
+			fetchedItemPermissions = computed(() => ({
+				update: { access: true },
+				delete: { access: false },
+				share: { access: false },
+			}));
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions);
+
+			for (const field of fields.value) {
+				const readonly = allowedFields.includes(field.field) ? undefined : true;
+				expect(field.meta?.readonly).toBe(readonly);
+			}
+		});
+
+		it('should use store permission directly when access is full', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'update') return { access: 'full', fields: ['*'] };
+				return null;
+			});
+
+			fetchedItemPermissions = computed(() => ({
+				update: { access: false },
+				delete: { access: false },
+				share: { access: false },
+			}));
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions);
+
+			for (const field of fields.value) {
+				expect(!!field.meta?.readonly).toBe(false);
+			}
+		});
+
+		it('should use store create permission for new items regardless of partial access', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'create') return { access: 'partial', fields: ['*'] };
+				if (action === 'update') return { access: 'partial', fields: ['id'] };
+				return null;
+			});
+
+			fetchedItemPermissions = computed(() => ({
+				update: { access: false },
+				delete: { access: false },
+				share: { access: false },
+			}));
+
+			const fields = getFields(sample.collection, true, fetchedItemPermissions);
+
+			for (const field of fields.value) {
+				expect(!!field.meta?.readonly).toBe(false);
+			}
 		});
 	});
 });

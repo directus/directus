@@ -7,6 +7,9 @@ export default defineWorkspace([
 			name: 'common',
 			include: ['tests/common/**/*.test.ts', 'common/common.test.ts'],
 			globalSetup: './setup/setup.ts',
+			env: {
+				TEST_PROJECT: 'common',
+			},
 		},
 	},
 	{
@@ -15,6 +18,9 @@ export default defineWorkspace([
 			name: 'db',
 			include: ['tests/db/**/*.test.ts', 'common/common.test.ts'],
 			globalSetup: './setup/setup.ts',
+			env: {
+				TEST_PROJECT: 'db',
+			},
 		},
 	},
 ]);

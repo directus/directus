@@ -4,7 +4,7 @@ import { isEmpty, isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
@@ -68,9 +68,9 @@ const fakeFilesField: Field = {
 let currentUpdate: string;
 
 export const useFieldsStore = defineStore('fieldsStore', () => {
-	const aiStore = useAiStore();
+	const toolsStore = useAiToolsStore();
 
-	aiStore.onSystemToolResult(async (toolName) => {
+	toolsStore.onSystemToolResult(async (toolName) => {
 		// Fields can be modified as a nested object within collections as well
 		if (toolName === 'collections' || toolName === 'fields') {
 			await hydrate();

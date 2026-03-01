@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -8,6 +9,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useServerStore } from '@/stores/server';
 
 const props = defineProps<{
 	folder?: string;
@@ -16,6 +18,18 @@ const props = defineProps<{
 const router = useRouter();
 
 const isOpen = useDialogRoute();
+
+const { info } = useServerStore();
+
+const allowedMimeTypes = computed(() => {
+	const allowList = info.files?.mimeTypeAllowList;
+
+	if (!allowList || allowList === '*/*') {
+		return undefined;
+	}
+
+	return allowList;
+});
 
 function close() {
 	router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
@@ -27,7 +41,7 @@ function close() {
 		<VCard>
 			<VCardTitle>{{ $t('add_file') }}</VCardTitle>
 			<VCardText>
-				<VUpload :folder="props.folder" multiple from-url @input="close" />
+				<VUpload :folder="props.folder" multiple from-url :accept="allowedMimeTypes" @input="close" />
 			</VCardText>
 			<VCardActions>
 				<VButton secondary @click="close">{{ $t('done') }}</VButton>

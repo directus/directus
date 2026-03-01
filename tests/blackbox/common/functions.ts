@@ -744,7 +744,7 @@ export type OptionsCreatePolicy = {
 	name: string;
 	appAccessEnabled: boolean;
 	adminAccessEnabled: boolean;
-	role?: keyof typeof ROLE;
+	role?: keyof typeof ROLE | { id: string };
 };
 
 export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy) {
@@ -760,15 +760,24 @@ export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy)
 		return roleResponse.body.data[0];
 	}
 
-	let roleId = options.role;
+	let actualRoleId: string | undefined;
 
-	if (roleId && roleId in ROLE) {
-		const role = await request(getUrl(vendor))
-			.get('/roles')
-			.query({ filter: { name: { _eq: ROLE[roleId].NAME } } })
-			.set('Authorization', `Bearer ${USER.APP_ACCESS.TOKEN}`);
+	if (options.role) {
+		if (typeof options.role === 'string') {
+			if (options.role in ROLE) {
+				const roleObj = await request(getUrl(vendor))
+					.get('/roles')
+					.query({ filter: { name: { _eq: ROLE[options.role as keyof typeof ROLE].NAME } } })
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
-		roleId = role.body.data[0].id;
+				actualRoleId = roleObj.body.data?.[0]?.id;
+			} else {
+				// Assume it's a raw role ID
+				actualRoleId = options.role;
+			}
+		} else if (typeof options.role === 'object' && 'id' in options.role) {
+			actualRoleId = options.role.id;
+		}
 	}
 
 	const response = await request(getUrl(vendor))
@@ -778,10 +787,18 @@ export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy)
 			name: options.name,
 			app_access: options.appAccessEnabled,
 			admin_access: options.adminAccessEnabled,
-			roles: [{ role: roleId }],
 		});
 
-	return response.body.data;
+	const policy = response.body?.data;
+
+	if (actualRoleId) {
+		await request(getUrl(vendor)).post(`/access`).set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`).send({
+			role: actualRoleId,
+			policy: policy.id,
+		});
+	}
+
+	return policy;
 }
 
 export type OptionsCreatePermission = {
@@ -809,7 +826,9 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 			role: roleId,
 			adminAccessEnabled: false,
 			appAccessEnabled: false,
-			name: options.policyName ? `${options.role}-${options.policyName}` : `${options.role}-${randomUUID()}`,
+			name: options.policyName
+				? `${(options.role as any).name || (options.role as any).id || options.role}-${options.policyName}`
+				: `${(options.role as any).name || (options.role as any).id || options.role}-${randomUUID()}`,
 		});
 
 		policyId = policy.id;

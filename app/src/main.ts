@@ -16,6 +16,7 @@ import { router } from './router';
 import './styles/main.scss';
 import '@directus/vue-split-panel/index.css';
 import { registerViews } from './views/register';
+import { useSystem } from '@/composables/use-system';
 import { getVueComponentName } from '@/utils/get-vue-component-name';
 
 init();
@@ -54,6 +55,8 @@ async function init() {
 	// Add router after loading of extensions to ensure all routes are registered
 	app.use(router);
 
+	// #26411 'inject' occurred in pinia store should need vue instance level 'provide'
+	useSystem(app);
 	app.mount('#app');
 
 	console.timeEnd('🕓 Application Loaded');

@@ -29,7 +29,79 @@ test('Throws error when primary key does not exist in given collection', async (
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1] }, {
 			schema,
 		} as Context),
-	).rejects.toBeInstanceOf(Error);
+	).rejects.toThrowError('Cannot find primary key');
+});
+
+test('Throws error when primary keys are missing for non-singleton collection', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	await expect(
+		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a' }, {
+			schema,
+		} as Context),
+	).rejects.toThrowError('Primary keys are required');
+});
+
+test('Does not throw error when primary keys are missing for singleton collection', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-singleton', (c) => {
+			c.field('id').id();
+		})
+		.options({ singleton: true })
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ id: 1 }]);
+
+	await expect(
+		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-singleton' }, {
+			schema,
+		} as Context),
+	).resolves.toEqual({ accessAllowed: true });
+});
+
+test('Queries singleton with limit 1 and no PK filter when primary keys are missing', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-singleton', (c) => {
+			c.field('id').id();
+		})
+		.options({ singleton: true })
+		.build();
+
+	schema.collections['collection-singleton']!.singleton = true;
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ id: 1 }]);
+
+	await validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-singleton' }, {
+		schema,
+	} as Context);
+
+	expect(processAst).toHaveBeenCalledWith(
+		expect.objectContaining({
+			ast: expect.objectContaining({
+				query: expect.objectContaining({ limit: 1 }),
+			}),
+		}),
+		expect.anything(),
+	);
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			query: expect.not.objectContaining({
+				filter: expect.anything(),
+			}),
+		}),
+		expect.anything(),
+	);
 });
 
 test('Queries the database', async () => {

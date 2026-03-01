@@ -433,6 +433,8 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 	return m2oFields.length > 0 && totalItemCount.value > 0;
 });
+
+const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModalActive.value || batchEditActive.value);
 </script>
 
 <template>
@@ -442,7 +444,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}
 	</VNotice>
-	<div v-else class="one-to-many">
+	<div v-else v-prevent-focusout="menuActive" class="one-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE, disabled, 'non-editable': nonEditable }]">
 			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
 				<div class="spacer" />
@@ -525,10 +527,10 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 					/>
 				</template>
 
-				<template v-if="!nonEditable" #item-append="{ item }">
+				<template v-if="!nonEditable || enableLink" #item-append="{ item }">
 					<div class="item-actions">
 						<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem(item)!" custom>
-							<VIcon v-if="disabled || item.$type === 'created'" name="launch" />
+							<VIcon v-if="(disabled && !nonEditable) || item.$type === 'created'" name="launch" />
 
 							<a
 								v-else
@@ -543,7 +545,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 						</RouterLink>
 
 						<VRemove
-							v-if="deleteAllowed || isLocalItem(item)"
+							v-if="!nonEditable && (deleteAllowed || isLocalItem(item))"
 							:disabled
 							:class="{ deleted: item.$type === 'deleted' }"
 							:item-type="item.$type"
@@ -605,9 +607,9 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 							<div class="spacer" />
 
-							<div v-if="!nonEditable" class="item-actions">
+							<div v-if="!nonEditable || enableLink" class="item-actions" @click.stop>
 								<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem(element)!" custom>
-									<VIcon v-if="disabled || element.$type === 'created'" name="launch" />
+									<VIcon v-if="(disabled && !nonEditable) || element.$type === 'created'" name="launch" />
 
 									<a
 										v-else
@@ -622,7 +624,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 								</RouterLink>
 
 								<VRemove
-									v-if="deleteAllowed || isLocalItem(element)"
+									v-if="!nonEditable && (deleteAllowed || isLocalItem(element))"
 									:disabled
 									:item-type="element.$type"
 									:item-info="relationInfo"
