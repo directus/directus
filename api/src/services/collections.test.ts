@@ -292,6 +292,7 @@ describe('Integration Tests', () => {
 
 				expect(addColumnIndexSpy).toHaveBeenCalled();
 			});
+			
 			test('should throw InvalidPayloadError for duplicate fields on MySQL (case-insensitive)', async () => {
 				tracker.on.select('directus_collections').response([]);
 
