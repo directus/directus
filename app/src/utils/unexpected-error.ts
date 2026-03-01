@@ -1,17 +1,13 @@
-import type { RequestError } from '@/api';
 import { i18n } from '@/lang';
 import { useNotificationsStore } from '@/stores/notifications';
-import type { APIError } from '@/types/error';
+import { extractErrorCode } from '@/utils/extract-error-code';
 
 let store: any;
 
 export function unexpectedError(error: unknown): void {
 	if (!store) store = useNotificationsStore();
 
-	const code =
-		(error as RequestError).response?.data?.errors?.[0]?.extensions?.code ||
-		(error as APIError)?.extensions?.code ||
-		'UNKNOWN';
+	const code = extractErrorCode(error);
 
 	// eslint-disable-next-line no-console
 	console.warn(error);

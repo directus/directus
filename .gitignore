@@ -52,3 +52,7 @@ TODO
 /tests/blackbox/sequencer-data.json
 /packages/extensions-sdk/temp-extension-*/
 
+# AI
+.claude/*
+!.claude/CLAUDE.md
+!.claude/skills/

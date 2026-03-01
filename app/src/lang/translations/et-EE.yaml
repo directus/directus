@@ -748,6 +748,14 @@ flow_name: Nimi
 flow_tracking_activity: Jälgi ainult aktiivsust
 flow_tracking_null: Ära jälgi midagi
 code: Kood
+deployment:
+  provider:
+    settings:
+      delete_confirm: See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
+    run:
+      cancel_confirm: See tegevus on lõplik ja seda ei saa tühistada. Kas oled kindel, et jätkame?
+  target_value:
+    preview: Eelvaade
 dashboard: Töölaud
 panel: Paneel
 details: Üksikasjad
@@ -1005,6 +1013,8 @@ live_preview:
 ai:
   input: Sisend
   unknown: Tundmatu
+  items: kirjet
+  content: Sisu
   settings: Seaded
   tool_approval:
     disabled: keelatud
@@ -1480,3 +1490,4 @@ fonts:
   black: Must
   italic: Kaldkiri
   auto: Automaatne
+set_to_now: Seadista praegusele hetkele

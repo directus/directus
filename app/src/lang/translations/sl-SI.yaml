@@ -619,6 +619,12 @@ flow_name: Ime
 flow_tracking_activity: Sledi samo aktivnosti
 flow_tracking_null: Ne sledi ničesar
 code: Koda
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ta aktivnost je permanetna in se ne da povrniti. Ste prepričani, da želite nadaljevati?
+    run:
+      cancel_confirm: Ta aktivnost je permanetna in se ne da povrniti. Ste prepričani, da želite nadaljevati?
 accountability: Odgovornost
 full_screen: Celozaslonski način
 image_url: URL naslov slike
@@ -928,6 +934,7 @@ live_preview:
   new_window: Odpri v novem oknu
 ai:
   input: Vnos
+  items: Zapisi
   settings: Nastavitve
   tool_approval:
     disabled: Onemogočeno
@@ -1433,3 +1440,4 @@ fonts:
   bold: Krepko
   italic: Ležeče
   auto: Samodejno
+set_to_now: Nastavi na trenutni čas

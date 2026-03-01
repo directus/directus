@@ -10,6 +10,7 @@ export enum ErrorCode {
 	InvalidIp = 'INVALID_IP',
 	InvalidOtp = 'INVALID_OTP',
 	InvalidPayload = 'INVALID_PAYLOAD',
+	InvalidPathParameter = 'INVALID_PATH_PARAMETER',
 	InvalidProvider = 'INVALID_PROVIDER',
 	InvalidProviderConfig = 'INVALID_PROVIDER_CONFIG',
 	InvalidQuery = 'INVALID_QUERY',

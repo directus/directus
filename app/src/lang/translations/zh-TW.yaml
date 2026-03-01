@@ -863,6 +863,14 @@ operation_key_unique_error: 操作流程的名稱在同一個流程中不能重�
 operation_handle_resolve: '解決方式: 點此新增或拖到其他地方重新連結'
 operation_handle_reject: '退回: 點此新增或拖到其他地方重新連結'
 insights: 數據分析
+deployment:
+  provider:
+    settings:
+      delete_confirm: 此操作是永久性的，無法撤銷。是否確實要繼續？
+    run:
+      cancel_confirm: 此操作是永久性的，無法撤銷。是否確實要繼續？
+  target_value:
+    preview: 預覽
 dashboard: 儀表板
 panel: 面板
 panel_options: 面板選項
@@ -1158,6 +1166,7 @@ fields:
     transformations_presets: 限制資料轉換範圍為以下清單
     image_editor: 圖片編輯器
     custom_aspect_ratios: 自訂比例
+    ai_header_name: 標題
   directus_shares:
     name: 名稱
     role: 角色
@@ -1292,6 +1301,8 @@ new_share: 新增分享
 ai:
   input: 輸入
   unknown: 未知
+  items: 項目
+  content: 內容管理
   settings: 設定
   tool_approval:
     disabled: 已停用
@@ -2074,3 +2085,4 @@ fonts:
   black: 黑色
   italic: 斜體
   auto: 自動
+set_to_now: 設為現在

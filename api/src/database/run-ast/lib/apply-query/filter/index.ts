@@ -1,10 +1,10 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Filter, Permission, Relation, SchemaOverview } from '@directus/types';
+import { getRelationInfo } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../../utils/get-column-path.js';
-import { getRelationInfo } from '../../../../../utils/get-relation-info.js';
 import { getHelpers } from '../../../../helpers/index.js';
 import { addJoin } from '../add-join.js';
 import { getFilterPath } from '../get-filter-path.js';

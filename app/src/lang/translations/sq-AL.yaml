@@ -957,6 +957,15 @@ operation_key_unique_error: Çelësat e operacionit duhet të jenë unikë në n
 operation_handle_resolve: 'Zgjidh: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
 operation_handle_reject: 'Refuzo: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
 insights: Insight-e
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ky veprim është përfundimtar dhe nuk mund të zhbëhet. A jeni i sigurt se doni të vazhdoni?
+    run:
+      cancel_confirm: Ky veprim është përfundimtar dhe nuk mund të zhbëhet. A jeni i sigurt se doni të vazhdoni?
+      log_all: Të Gjitha Nivelet e Regjistrave
+  target_value:
+    preview: Parashiko
 dashboard: Dashboard
 panel: Paneli
 panel_options: Opsionet e Panelit
@@ -1327,6 +1336,7 @@ fields:
     public_registration_email_filter_note: Vetëm adresat e email-it që përputhen me këtë filtër mund të regjistrohen.
     public_registration_verify_email: Verifiko Email-in
     public_registration_verify_email_note: Dërgon një email përdoruesit që po regjistrohet duke kërkuar që të klikojnë në një lidhje verifikimi përpara se të mund të identifikohen.
+    ai_header_name: Header
   directus_shares:
     name: Emri
     role: Roli
@@ -1479,6 +1489,7 @@ live_preview:
   new_window: Hap në Dritare të Re
   close_window: Hap në Pamje të Ndara
   toggle_3d: Ndëro 3D
+  display_options: Opsionet e Shfaqjes
 shares: Ndaj
 unlimited_usage: Përdorim i Pakufizuar
 uses_left: Asnjë përdorim i mbetur | Një përdorim i mbetur | {n} përdorime të mbetura
@@ -1487,6 +1498,8 @@ new_share: Ndarje e Re
 ai:
   input: Input
   unknown: Panjohur
+  items: Artikuj
+  content: Përmbajtje
   settings: Parametra
   tool_approval:
     disabled: I Çaktivizuar
@@ -2435,3 +2448,4 @@ search_flow: Kërko në Rrjedhë...
 percent: Përqind
 show_password: Shfaq fjalëkalimin
 hide_password: Fshih fjalëkalimin
+set_to_now: Cakto Tani

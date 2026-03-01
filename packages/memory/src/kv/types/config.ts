@@ -2,6 +2,7 @@ import type { Redis } from 'ioredis';
 
 export interface ExtendedRedis extends Redis {
 	setMax(key: string, value: number): Promise<number>;
+	release(key: string, value: string): Promise<number>;
 }
 
 export interface KvConfigAbstract {
@@ -47,6 +48,11 @@ export interface KvConfigRedis extends KvConfigAbstract {
 	 * @default 1000
 	 */
 	compressionMinSize?: number;
+
+	/**
+	 * Requested lock duration in miliseconds
+	 */
+	lockTimeout?: number;
 
 	/**
 	 * Existing or new Redis connection to use with this memory class

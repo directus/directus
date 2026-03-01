@@ -407,6 +407,56 @@ describe('useComparison', () => {
 			expect(comparisonData.value?.previousRevision).toBeNull();
 		});
 
+		it('should properly encode primary keys with special characters when fetching main item', async () => {
+			const specialPrimaryKey = 'test/key#123';
+
+			const currentRevisionData = {
+				id: 1280,
+				collection: 'test_collection',
+				item: specialPrimaryKey,
+				data: {
+					title: 'New Title',
+				},
+				delta: {
+					title: 'New Title',
+				},
+				activity: {
+					action: 'create',
+					timestamp: '2026-01-13T20:27:50.000Z',
+					user: {
+						id: 'user-456',
+						email: 'newuser@example.com',
+						first_name: 'New',
+						last_name: 'User',
+					},
+				},
+			};
+
+			const mainItemData = {
+				id: specialPrimaryKey,
+				title: 'Main Item Title',
+			};
+
+			const testCase = getTestData('revision', {
+				primaryKeyOverwrite: specialPrimaryKey,
+				currentRevisionOverwrites: currentRevisionData,
+				revisionsListOverwrites: [currentRevisionData], // Only current revision, triggers fetchMainVersion
+				mainItemOverwrites: mainItemData,
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { comparisonData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			// Verify the API was called with the encoded path
+			expect(mockApi.get).toHaveBeenCalledWith(`/items/test_collection/${encodeURIComponent(specialPrimaryKey)}`);
+
+			// Base should be main item (fetched via encoded URL)
+			expect(comparisonData.value?.base.title).toBe('Main Item Title');
+		});
+
 		it('should merge incoming data with default values when fields are missing', async () => {
 			const previousRevisionData = {
 				id: 1250,
@@ -890,10 +940,11 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 		revisionsListOverwrites = null,
 		previousRevisionOverwrites = null,
 		compareToOptionOverwrite = 'Previous',
+		primaryKeyOverwrite = null,
 	} = overwrites;
 
 	const collection = 'test_collection';
-	const primaryKey = 1;
+	const primaryKey = primaryKeyOverwrite ?? 1;
 	const versionCompareHash = '2b0ca481b8b806ca320d628ce13c6b15c9bc4d09';
 
 	const adminUser = {
@@ -1002,7 +1053,7 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 			return Promise.resolve({ data: { data: adminUser } });
 		}
 
-		if (path === `/items/${collection}/${primaryKey}`) {
+		if (path === `/items/${collection}/${encodeURIComponent(primaryKey)}`) {
 			return Promise.resolve({ data: { data: mainItem } });
 		}
 

@@ -2,7 +2,7 @@
 import { Filter } from '@directus/types';
 import { deepMap } from '@directus/utils';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, inject, ref, toRef, toRefs } from 'vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -23,6 +23,7 @@ import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import VUpload from '@/components/v-upload.vue';
+import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -52,6 +53,7 @@ const props = withDefaults(
 		field: string;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		allowedMimeTypes?: string[];
 	}>(),
 	{
 		enableCreate: true,
@@ -70,12 +72,17 @@ const value = computed({
 	},
 });
 
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(toRef(props, 'allowedMimeTypes'));
+
 const query = ref<RelationQuerySingle>({
 	fields: ['id', 'title', 'type', 'filename_download', 'modified_on'],
 });
 
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
+
+const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
+const menuOpen = ref(false);
 
 const {
 	displayItem: file,
@@ -87,8 +94,6 @@ const {
 });
 
 const { createAllowed } = useRelationPermissionsM2O(relationInfo);
-
-const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -127,7 +132,7 @@ const edits = computed(() => {
 const values = inject('values', ref<Record<string, unknown>>({}));
 
 const customFilter = computed(() => {
-	return parseFilter(
+	const filter = parseFilter(
 		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
@@ -136,11 +141,20 @@ const customFilter = computed(() => {
 			return val;
 		}),
 	);
+
+	if (!mimeTypeFilter.value) return filter;
+	if (!filter) return mimeTypeFilter.value;
+
+	return {
+		_and: [filter, mimeTypeFilter.value],
+	};
 });
 
 const internalDisabled = computed(() => {
 	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
 });
+
+const interfaceOpen = computed(() => Boolean(activeDialog.value) || menuOpen.value || editDrawerActive.value);
 
 function setSelection(selection: (string | number)[] | null) {
 	if (selection![0]) {
@@ -197,8 +211,8 @@ function useURLImport() {
 </script>
 
 <template>
-	<div class="file">
-		<VMenu attached :disabled="loading || internalDisabled">
+	<div v-prevent-focusout="interfaceOpen" class="file">
+		<VMenu v-model="menuOpen" attached :disabled="loading || internalDisabled">
 			<template #activator="{ toggle, active, deactivate }">
 				<div>
 					<VSkeletonLoader v-if="loading" type="input" />
@@ -332,7 +346,7 @@ function useURLImport() {
 			<VCard>
 				<VCardTitle>{{ $t('upload_from_device') }}</VCardTitle>
 				<VCardText>
-					<VUpload from-url :folder="folder" @input="onUpload" />
+					<VUpload from-url :folder="folder" :accept="combinedAcceptString" @input="onUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="activeDialog = null">{{ $t('cancel') }}</VButton>

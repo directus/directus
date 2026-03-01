@@ -142,7 +142,7 @@ services:
       - 5113:26257
 
   redis:
-    image: redis:6-alpine
+    image: ${REDIS_IMAGE:-redis:6-alpine}
     ports:
       - 5105:6379
 

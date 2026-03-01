@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { RawData, WebSocket } from 'ws';
 import { waitForAnyMessage, waitForMessageType } from './wait-for-message.js';
 
@@ -16,6 +16,15 @@ function mockClient(handler: (callback: (event: RawData) => void) => void) {
 }
 
 describe('Wait for messages', () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+	});
+
+	afterEach(() => {
+		vi.clearAllTimers();
+		vi.useRealTimers();
+	});
+
 	test('should succeed, 5ms delay, 10ms timeout', async () => {
 		const TEST_TIMEOUT = 10;
 		const TEST_MSG = { type: 'test', id: 1 };
@@ -26,7 +35,11 @@ describe('Wait for messages', () => {
 			}, 5);
 		});
 
-		const msg = await waitForAnyMessage(fakeClient, TEST_TIMEOUT);
+		const msgPromise = waitForAnyMessage(fakeClient, TEST_TIMEOUT);
+
+		vi.advanceTimersByTime(5);
+
+		const msg = await msgPromise;
 
 		expect(msg).toStrictEqual(TEST_MSG);
 	});
@@ -41,19 +54,27 @@ describe('Wait for messages', () => {
 			}, 10);
 		});
 
-		await expect(() => waitForAnyMessage(fakeClient, TEST_TIMEOUT)).rejects.toBe(undefined);
+		const msgPromise = waitForAnyMessage(fakeClient, TEST_TIMEOUT);
+
+		vi.advanceTimersByTime(5);
+
+		await expect(msgPromise).rejects.toBe(undefined);
 	});
 
 	test('should fail parsing', async () => {
-		const TEST_TIMEOUT = 5;
+		const TEST_TIMEOUT = 10;
 
 		const fakeClient = mockClient((callback) => {
 			setTimeout(() => {
 				callback(Buffer.from('{invalid:json}'));
-			}, 10);
+			}, 5);
 		});
 
-		await expect(() => waitForAnyMessage(fakeClient, TEST_TIMEOUT)).rejects.toBe(undefined);
+		const msgPromise = waitForAnyMessage(fakeClient, TEST_TIMEOUT);
+
+		vi.advanceTimersByTime(5);
+
+		await expect(msgPromise).rejects.toThrow();
 	});
 });
 
@@ -61,13 +82,26 @@ describe('Wait for specific types messages', () => {
 	const MSG_A = { type: 'test', id: 1 };
 	const MSG_B = { type: 'other', id: 2 };
 
+	beforeEach(() => {
+		vi.useFakeTimers();
+	});
+
+	afterEach(() => {
+		vi.clearAllTimers();
+		vi.useRealTimers();
+	});
+
 	test('should find the correct message', async () => {
 		const fakeClient = mockClient((callback) => {
 			setTimeout(() => callback(bufferMessage(MSG_B)), 5);
 			setTimeout(() => callback(bufferMessage(MSG_A)), 10);
 		});
 
-		const msg = await waitForMessageType(fakeClient, 'test', 15);
+		const msgPromise = waitForMessageType(fakeClient, 'test', 15);
+
+		vi.advanceTimersByTime(10);
+
+		const msg = await msgPromise;
 
 		expect(msg).toStrictEqual(MSG_A);
 	});
@@ -79,7 +113,11 @@ describe('Wait for specific types messages', () => {
 			}, 5);
 		});
 
-		await expect(() => waitForMessageType(fakeClient, 'test', 10)).rejects.toBe(undefined);
+		const msgPromise = waitForMessageType(fakeClient, 'test', 10);
+
+		vi.advanceTimersByTime(10);
+
+		await expect(msgPromise).rejects.toBe(undefined);
 	});
 
 	test('should fail parsing', async () => {
@@ -89,6 +127,10 @@ describe('Wait for specific types messages', () => {
 			}, 5);
 		});
 
-		await expect(() => waitForMessageType(fakeClient, 'test', 10)).rejects.toBe(undefined);
+		const msgPromise = waitForMessageType(fakeClient, 'test', 10);
+
+		vi.advanceTimersByTime(10);
+
+		await expect(msgPromise).rejects.toBe(undefined);
 	});
 });

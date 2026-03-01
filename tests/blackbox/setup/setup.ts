@@ -61,7 +61,8 @@ export async function setup() {
 									});
 
 									server.stderr.on('data', (data) => {
-										console.log(data.toString());
+										serverOutput += data.toString();
+										console.log(`[MAIN] ${data.toString()}`);
 									});
 
 									server.on('exit', async (code) => {
@@ -87,6 +88,11 @@ export async function setup() {
 
 									serverNoCache.stdout.on('data', (data) => {
 										serverNoCacheOutput += data.toString();
+									});
+
+									serverNoCache.stderr.on('data', (data) => {
+										serverNoCacheOutput += data.toString();
+										console.log(`[NO CACHE] ${data.toString()}`);
 									});
 
 									serverNoCache.on('exit', async (code) => {

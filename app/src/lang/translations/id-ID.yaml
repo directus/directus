@@ -795,6 +795,9 @@ operation_key_unique_error: Tombol operasi harus unik
 operation_handle_resolve: 'Solusi: klik untuk menambahkan atau geser untuk mengatur ulang'
 operation_handle_reject: 'Membatalkan: klik untuk menambahkan atau geser untuk mengatur ulang'
 insights: Wawasan
+deployment:
+  target_value:
+    preview: Pratinjau
 dashboard: Dasbor
 panel: Panel
 panel_options: Opsi Panel
@@ -1186,6 +1189,8 @@ live_preview:
   refresh: Segarkan pratinjau
   new_window: Buka di Jendela Baru
 ai:
+  items: Barang-barang
+  content: Konten
   settings: Pengaturan
   tool_approval:
     disabled: Dinonaktifkan

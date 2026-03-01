@@ -111,3 +111,13 @@ data:
 
   - collection: directus_extensions
     note: $t:directus_collection.directus_extensions
+
+  - collection: directus_deployments
+    icon: cloud_upload
+    note: $t:directus_collection.directus_deployments
+
+  - collection: directus_deployment_projects
+    note: $t:directus_collection.directus_deployment_projects
+
+  - collection: directus_deployment_runs
+    note: $t:directus_collection.directus_deployment_runs

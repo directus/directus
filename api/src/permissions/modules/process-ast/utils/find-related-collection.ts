@@ -1,5 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
-import { getRelationInfo } from '../../../../utils/get-relation-info.js';
+import { getRelationInfo } from '@directus/utils';
 import type { CollectionKey, FieldKey } from '../types.js';
 
 export function findRelatedCollection(

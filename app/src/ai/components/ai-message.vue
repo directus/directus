@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { ContextAttachment } from '@directus/ai';
 import type { DynamicToolUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
+import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
+import AiContextCard from './ai-context-card.vue';
 import AiMessageFile from './parts/ai-message-file.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
 import AiMessageSourceDocument from './parts/ai-message-source-document.vue';
@@ -9,7 +12,6 @@ import AiMessageTool from './parts/ai-message-tool.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
-// Alias for SDK message parts - component handles text/reasoning/file parts
 export type AiMessagePart = SDKUIMessagePart<UIDataTypes, UITools>;
 
 export interface AiMessageAction {
@@ -18,6 +20,10 @@ export interface AiMessageAction {
 	onClick?: (event: MouseEvent) => void;
 	disabled?: boolean;
 	loading?: boolean;
+}
+
+export interface AiMessageMetadata {
+	attachments?: ContextAttachment[];
 }
 
 interface Props {
@@ -29,11 +35,17 @@ interface Props {
 	parts?: AiMessagePart[];
 	/** Action buttons displayed below message */
 	actions?: AiMessageAction[];
+	/** Message metadata including context attachments */
+	metadata?: AiMessageMetadata;
 }
 
 withDefaults(defineProps<Props>(), {
 	parts: () => [],
 });
+
+const { highlight, clearHighlight } = useVisualElementHighlight();
+
+const isToolPart = (part: AiMessagePart): part is DynamicToolUIPart => part.type.startsWith('tool-');
 </script>
 
 <template>
@@ -53,9 +65,20 @@ withDefaults(defineProps<Props>(), {
 					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
 					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
 					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
-					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part as DynamicToolUIPart" />
+					<AiMessageTool v-else-if="isToolPart(part)" :part="part" />
 				</template>
 			</slot>
+
+			<!-- Context attachments from metadata (user messages only) -->
+			<div v-if="role === 'user' && metadata?.attachments?.length" class="context-attachments">
+				<AiContextCard
+					v-for="(attachment, index) in metadata.attachments"
+					:key="`${attachment.type}-${index}`"
+					:item="attachment"
+					@mouseenter="highlight(attachment)"
+					@mouseleave="clearHighlight()"
+				/>
+			</div>
 
 			<div v-if="actions && actions.length > 0" class="message-actions">
 				<VButton
@@ -128,5 +151,11 @@ withDefaults(defineProps<Props>(), {
 	gap: 0.25rem;
 	align-items: center;
 	margin-block-start: 0.25rem;
+}
+
+.context-attachments {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
 }
 </style>

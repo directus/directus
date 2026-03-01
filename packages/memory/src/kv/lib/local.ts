@@ -69,6 +69,17 @@ export class KvLocal implements Kv {
 		return true;
 	}
 
+	async acquireLock(_key: string) {
+		return {
+			release: async () => {},
+			extend: async (_duration: number) => {},
+		};
+	}
+
+	async usingLock<T>(_key: string, callback: () => Promise<T>): Promise<T> {
+		return callback();
+	}
+
 	async clear() {
 		this.store.clear();
 	}

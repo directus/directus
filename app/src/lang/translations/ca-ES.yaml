@@ -775,6 +775,14 @@ flow_name: Nom
 flow_tracking_activity: Només traça l'activitat
 flow_tracking_null: No tracis res
 code: Codi
+deployment:
+  provider:
+    settings:
+      delete_confirm: Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+    run:
+      cancel_confirm: Aquesta acció és permanent i no es pot desfer. Estàs segur que vols continuar?
+  target_value:
+    preview: Vista prèvia
 suffix_placeholder: Text després del valor...
 decimals_placeholder: Nombre de posicions decimals...
 no_dashboards: Sense taulers de control
@@ -1056,6 +1064,7 @@ fields:
     transformations_presets: Limita les transformacions al predefinits de sota
     image_editor: Editor d'imatge
     custom_aspect_ratios: Relació d'aspecte personalitzat
+    ai_header_name: Capçalera
   directus_shares:
     name: Nom
     role: Rol
@@ -1162,6 +1171,8 @@ live_preview:
 ai:
   input: Entrada
   unknown: Desconegut
+  items: Elements
+  content: Contingut
   settings: Configuració
   tool_approval:
     disabled: Deshabilitat
@@ -1736,3 +1747,4 @@ fonts:
   black: Negre
   italic: Cursiva
   auto: Auto
+set_to_now: Fixa'l a "Ara"

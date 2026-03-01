@@ -949,6 +949,14 @@ operation_key_unique_error: A műveleti kulcsoknak egyedinek kell lenniük a fol
 operation_handle_resolve: 'Megoldás: Kattintson a Hozzáadáshoz vagy húzza az átirányításhoz'
 operation_handle_reject: 'Elutasítás: Kattintson a Hozzáadáshoz vagy húzza az átirányításhoz'
 insights: Kimutatások
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ez a művelet végleges és visszavonhatatlan. Biztos, hogy folytatni szeretné?
+    run:
+      cancel_confirm: Ez a művelet végleges és visszavonhatatlan. Biztos, hogy folytatni szeretné?
+  target_value:
+    preview: Előnézet
 dashboard: Irányítópult
 panel: Panel
 panel_options: Panel beállításai
@@ -1245,6 +1253,7 @@ fields:
     transformations_presets: Korlátozza az átalakításokat a beállítások szerint
     image_editor: Képszerkesztő
     custom_aspect_ratios: Egyedi képarányok
+    ai_header_name: Fejléc
   directus_shares:
     name: Név
     role: Szerepkör
@@ -1380,6 +1389,8 @@ ai:
   input: Bevitel
   unknown: Ismeretlen
   prompt_input_placeholder: Írja be az üzenetét ide...
+  items: Elemek
+  content: Ügyvitel
   settings: Beállítások
   tool_approval:
     disabled: Letiltva
@@ -2241,3 +2252,4 @@ fonts:
   black: Fekete
   italic: Dőlt
   auto: Automatikus
+set_to_now: Mai nap
