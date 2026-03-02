@@ -14,12 +14,11 @@ const env = useEnv();
 if (toBoolean(env['TELEMETRY'])) {
 	requestCounterMiddleware = (req, _res, next) => {
 		if (TRACKED_METHODS_UPPER.has(req.method)) {
-			const logger = useLogger();
-
 			try {
 				const counter = useBufferedCounter('api-requests');
 				counter.increment(req.method.toLowerCase());
 			} catch (err) {
+				const logger = useLogger();
 				logger.trace(err, 'Failed to increment request counter');
 			}
 		}
