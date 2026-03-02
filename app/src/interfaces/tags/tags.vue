@@ -34,6 +34,9 @@ const presetVals = computed<string[]>(() => {
 	return [];
 });
 
+// Variable mode: when `rawEditorEnabled` is true and the value is a string rather than an array.
+// This happens in contexts like Flows and Insights where the field value can be a dynamic
+// variable expression (e.g. "{{$trigger.body.tags}}") instead of an array of tags.
 const isVariableMode = computed(() => props.rawEditorEnabled === true && typeof props.value === 'string');
 
 const selectedValsLocal = ref<string[]>(Array.isArray(props.value) ? processArray(props.value) : []);
@@ -133,14 +136,14 @@ function clearVariable() {
 		<VInput
 			v-if="isVariableMode || allowCustom"
 			:model-value="isVariableMode ? (value as string) : undefined"
-			:placeholder="isVariableMode ? undefined : placeholder || $t('interfaces.tags.add_tags')"
+			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
 			:disabled="isVariableMode || disabled"
 			:non-editable="isVariableMode || nonEditable"
 			:dir="direction"
 			@keydown="onInput"
 			@blur="onInput"
 		>
-			<template v-if="!isVariableMode && iconLeft" #prepend><VIcon :name="iconLeft" /></template>
+			<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
 			<template #append>
 				<VIcon
 					v-if="isVariableMode"
@@ -148,6 +151,7 @@ function clearVariable() {
 					class="remove-variable"
 					name="close"
 					clickable
+					:disabled
 					@click.stop="clearVariable"
 				/>
 				<VIcon v-else :name="iconRight" />
@@ -197,8 +201,6 @@ function clearVariable() {
 
 <style lang="scss" scoped>
 .remove-variable {
-	display: flex;
-
 	--v-icon-color-hover: var(--v-remove-color, var(--theme--danger));
 }
 
