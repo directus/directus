@@ -47,18 +47,32 @@ export interface DeploymentDashboardOutput {
 			finished_at?: string;
 		};
 	}>;
+	stats: {
+		active_deployments: number;
+		successful_builds: number;
+		failed_builds: number;
+	};
+}
+
+export interface DeploymentRunStatsOutput {
+	total_deployments: number;
+	average_build_time: number | null;
+	failed_builds: number;
+	successful_builds: number;
 }
 
 export interface DeploymentRunsOutput {
 	id: string;
 	project: string;
 	external_id: string;
+	name?: string;
 	target: string;
 	status: 'building' | 'ready' | 'error' | 'canceled';
 	url?: string;
+	started_at: string | null;
+	completed_at: string | null;
 	date_created: string;
-	finished_at?: string;
-	author?: string;
+	user_created: Record<string, any> | string | null;
 }
 
 /**
@@ -106,12 +120,13 @@ export const readDeployment =
  * @throws Will throw if provider is empty
  */
 export const readDeploymentDashboard =
-	<Schema>(provider: string): RestCommand<DeploymentDashboardOutput, Schema> =>
+	<Schema>(provider: string, query?: { range?: string }): RestCommand<DeploymentDashboardOutput, Schema> =>
 	() => {
 		throwIfEmpty(provider, 'Provider cannot be empty');
 
 		return {
 			path: `/deployments/${provider}/dashboard`,
+			params: query ?? {},
 			method: 'GET',
 		};
 	};
@@ -204,6 +219,31 @@ export const readDeploymentRun =
 
 		return {
 			path: `/deployments/${provider}/runs/${runId}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};
+
+/**
+ * Get stats for a project's deployment runs.
+ * @param provider The provider type (e.g. 'vercel')
+ * @param projectId The project ID
+ * @param query Optional query parameters (range for time window, e.g. '24h', '7d', '30d')
+ * @returns Stats with total deployments and average build time.
+ * @throws Will throw if provider or projectId is empty
+ */
+export const readDeploymentRunStats =
+	<Schema>(
+		provider: string,
+		projectId: string,
+		query?: { range?: string },
+	): RestCommand<DeploymentRunStatsOutput, Schema> =>
+	() => {
+		throwIfEmpty(provider, 'Provider cannot be empty');
+		throwIfEmpty(projectId, 'Project ID cannot be empty');
+
+		return {
+			path: `/deployments/${provider}/projects/${projectId}/runs/stats`,
 			params: query ?? {},
 			method: 'GET',
 		};
