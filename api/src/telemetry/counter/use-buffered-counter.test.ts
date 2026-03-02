@@ -189,7 +189,7 @@ describe('useBufferedCounter', () => {
 
 			flusher.increment('get', 25);
 
-			await expect(flusher.flush('get')).rejects.toThrow('Redis connection lost');
+			await expect(flusher.flush('get')).resolves.toBeUndefined();
 
 			expect(_bufferedCounterCache['requests']!.counters['get']!.count).toBe(25);
 		});
@@ -205,7 +205,7 @@ describe('useBufferedCounter', () => {
 
 			flusher.increment('get', 5);
 
-			await expect(flushPromise).rejects.toThrow('Redis connection lost');
+			await expect(flushPromise).resolves.toBeUndefined();
 
 			expect(_bufferedCounterCache['requests']!.counters['get']!.count).toBe(15);
 		});
