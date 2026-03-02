@@ -415,8 +415,8 @@ catalogs:
       specifier: 0.5.0
       version: 0.5.0
     axios:
-      specifier: 1.12.2
-      version: 1.12.2
+      specifier: 1.13.5
+      version: 1.13.5
     axios-cache-interceptor:
       specifier: 1.8.3
       version: 1.8.3
@@ -1135,7 +1135,7 @@ importers:
         version: 0.5.0
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.13.5
       busboy:
         specifier: 'catalog:'
         version: 1.6.0
@@ -1767,7 +1767,7 @@ importers:
         version: 14.0.0(vue@3.5.24(typescript@5.9.3))
       '@vueuse/integrations':
         specifier: 'catalog:'
-        version: 14.0.0(axios@1.12.2)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))
+        version: 14.0.0(axios@1.13.5)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))
       '@vueuse/router':
         specifier: 'catalog:'
         version: 14.0.0(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))
@@ -1779,7 +1779,7 @@ importers:
         version: 4.7.0
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.13.5
       base-64:
         specifier: 'catalog:'
         version: 1.0.0
@@ -1965,7 +1965,7 @@ importers:
         version: link:../utils
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.13.5
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
@@ -2957,10 +2957,10 @@ importers:
     dependencies:
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.13.5
       axios-cache-interceptor:
         specifier: 'catalog:'
-        version: 1.8.3(axios@1.12.2)
+        version: 1.8.3(axios@1.13.5)
       boxen:
         specifier: 'catalog:'
         version: 8.0.1
@@ -3182,7 +3182,7 @@ importers:
         version: 8.0.0
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.13.5
       get-port:
         specifier: 'catalog:'
         version: 7.1.0
@@ -7733,8 +7733,8 @@ packages:
     peerDependencies:
       axios: ^1
 
-  axios@1.12.2:
-    resolution: {integrity: sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==}
+  axios@1.13.5:
+    resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
 
   b4a@1.7.3:
     resolution: {integrity: sha512-5Q2mfq2WfGuFp3uS//0s6baOJLMoVduPYVeNmDYxu5OUA1/cBfvr2RIS7vi62LdNj/urk1hfmj867I3qt6uZ7Q==}
@@ -9480,6 +9480,10 @@ packages:
 
   form-data@4.0.4:
     resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
+    engines: {node: '>= 6'}
+
+  form-data@4.0.5:
+    resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
     engines: {node: '>= 6'}
 
   formdata-polyfill@4.0.10:
@@ -19907,13 +19911,13 @@ snapshots:
       '@vueuse/shared': 14.2.1(vue@3.5.24(typescript@5.9.3))
       vue: 3.5.24(typescript@5.9.3)
 
-  '@vueuse/integrations@14.0.0(axios@1.12.2)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))':
+  '@vueuse/integrations@14.0.0(axios@1.13.5)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 14.0.0(vue@3.5.24(typescript@5.9.3))
       '@vueuse/shared': 14.0.0(vue@3.5.24(typescript@5.9.3))
       vue: 3.5.24(typescript@5.9.3)
     optionalDependencies:
-      axios: 1.12.2
+      axios: 1.13.5
       focus-trap: 7.6.6
       qrcode: 1.5.4
       sortablejs: 1.14.0
@@ -20380,17 +20384,17 @@ snapshots:
   aws-ssl-profiles@1.1.2:
     optional: true
 
-  axios-cache-interceptor@1.8.3(axios@1.12.2):
+  axios-cache-interceptor@1.8.3(axios@1.13.5):
     dependencies:
-      axios: 1.12.2
+      axios: 1.13.5
       cache-parser: 1.2.5
       fast-defer: 1.1.8
       object-code: 1.3.3
 
-  axios@1.12.2:
+  axios@1.13.5:
     dependencies:
       follow-redirects: 1.15.11(debug@4.3.7)
-      form-data: 4.0.4
+      form-data: 4.0.5
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
@@ -22248,6 +22252,14 @@ snapshots:
       hasown: 2.0.2
       mime-types: 2.1.35
 
+  form-data@4.0.5:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.2
+      mime-types: 2.1.35
+
   formdata-polyfill@4.0.10:
     dependencies:
       fetch-blob: 3.2.0
@@ -23677,7 +23689,7 @@ snapshots:
 
   mailgun.js@8.2.2:
     dependencies:
-      axios: 1.12.2
+      axios: 1.13.5
       base-64: 1.0.0
       url-join: 4.0.1
     transitivePeerDependencies:
