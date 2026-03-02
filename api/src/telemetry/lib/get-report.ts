@@ -6,7 +6,7 @@ import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { useBufferedCounter } from '../counter/use-buffered-counter.js';
 import type { TelemetryReport } from '../types/report.js';
-import { TRACKED_KEYS, formatApiRequestCounts } from '../utils/format-api-request-counts.js';
+import { formatApiRequestCounts, TRACKED_KEYS } from '../utils/format-api-request-counts.js';
 import { getExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount } from '../utils/get-field-count.js';
 import { getFilesizeSum } from '../utils/get-filesize-sum.js';
