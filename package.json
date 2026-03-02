@@ -35,7 +35,6 @@
 	"pnpm": {
 		"overrides": {
 			"fast-xml-parser": "5.3.6",
-			"vite>rollup": "4.59.0",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"@rollup/plugin-terser>serialize-javascript": "7.0.3",
 			"tar": "7.5.8",
