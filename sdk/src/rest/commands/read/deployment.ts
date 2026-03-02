@@ -65,13 +65,14 @@ export interface DeploymentRunsOutput {
 	id: string;
 	project: string;
 	external_id: string;
+	name?: string;
 	target: string;
 	status: 'building' | 'ready' | 'error' | 'canceled';
 	url?: string;
-	started_at?: string;
-	completed_at?: string;
+	started_at: string | null;
+	completed_at: string | null;
 	date_created: string;
-	user_created?: Record<string, string>;
+	user_created: Record<string, any> | string | null;
 }
 
 /**

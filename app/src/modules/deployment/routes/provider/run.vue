@@ -119,10 +119,10 @@ const displayLogs = computed<SystemLog[]>(() =>
 );
 
 const duration = computed(() => {
-	if (!run.value) return '—';
+	if (!run.value?.started_at) return '—';
 
-	const start = new Date(run.value.date_created).getTime();
-	const end = run.value.finished_at ? new Date(run.value.finished_at).getTime() : Date.now();
+	const start = new Date(run.value.started_at).getTime();
+	const end = run.value.completed_at ? new Date(run.value.completed_at).getTime() : Date.now();
 
 	return formatDurationMs(end - start);
 });
