@@ -27,6 +27,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
+import { useLogger } from '../logger/index.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { getSecret } from '../utils/get-secret.js';
@@ -172,7 +173,13 @@ export class PayloadService {
 				// In-system calls can still get the decrypted value
 				if (accountability === null) {
 					const key = getSecret();
-					return await decrypt(value, key);
+
+					try {
+						return await decrypt(value, key);
+					} catch (err) {
+						useLogger().warn(`Failed to decrypt field value: ${(err as Error).message}`);
+						return null;
+					}
 				}
 
 				// Requests from the API entrypoints have accountability and shouldn't get the raw value

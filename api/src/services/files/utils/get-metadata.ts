@@ -107,16 +107,16 @@ export async function getMetadata(
 					}
 				}
 
-				if (fullMetadata?.iptc?.['Caption'] && typeof fullMetadata.iptc['Caption'] === 'string') {
-					metadata.description = fullMetadata.iptc?.['Caption'];
+				if (fullMetadata?.iptc?.['caption'] && typeof fullMetadata.iptc['caption'] === 'string') {
+					metadata.description = fullMetadata.iptc['caption'];
 				}
 
-				if (fullMetadata?.iptc?.['Headline'] && typeof fullMetadata.iptc['Headline'] === 'string') {
-					metadata.title = fullMetadata.iptc['Headline'];
+				if (fullMetadata?.iptc?.['headline'] && typeof fullMetadata.iptc['headline'] === 'string') {
+					metadata.title = fullMetadata.iptc['headline'];
 				}
 
-				if (fullMetadata?.iptc?.['Keywords']) {
-					metadata.tags = fullMetadata.iptc['Keywords'] as string;
+				if (fullMetadata?.iptc?.['keywords']) {
+					metadata.tags = fullMetadata.iptc['keywords'] as string;
 				}
 
 				if (allowList === '*' || allowList?.[0] === '*') {

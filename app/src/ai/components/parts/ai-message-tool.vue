@@ -2,6 +2,7 @@
 import formatTitle from '@directus/format-title';
 import type { DynamicToolUIPart } from 'ai';
 import { computed } from 'vue';
+import AiAskUserSummary from './ai-ask-user-summary.vue';
 import AiToolCallCard from './ai-tool-call-card.vue';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import VNotice from '@/components/v-notice.vue';
@@ -38,10 +39,23 @@ const state = computed(
 );
 
 const approval = computed(() => props.part.approval);
+
+const isAskUser = computed(() => toolName.value === 'ask_user');
 </script>
 
 <template>
+	<AiToolCallCard v-if="isAskUser && state === 'output-available'" :state="state" :tool-name="toolName">
+		<template #title>
+			<VTextOverflow :text="toolDisplayName" />
+		</template>
+		<template #content>
+			<AiAskUserSummary :part="part" />
+		</template>
+	</AiToolCallCard>
+	<template v-else-if="isAskUser && state !== 'output-error'" />
+
 	<AiToolCallCard
+		v-else
 		:state="state"
 		:approval="approval"
 		:tool-name="toolName"

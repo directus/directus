@@ -20,8 +20,14 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca
+contact_our_team: Contacta a nossa equipa
+setup_welcome: Bem-vindo ao Directus
+setup_license_notice: >
+  A Directus tem utilização gratuita para entidades abaixo dos 5 milhões em receitas anuais, fundos, ou orçamento operacional. 
 first_name: Primeiro Nome
 last_name: Apelido
+email_address: Endereço de e-mail
+organization_name: Nome da organização 
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -48,6 +54,9 @@ location: Localização
 collection_names_are_case_sensitive: Os nomes das coleções são sensíveis a maiúsculas e minúsculas
 condition_rules: Regras de Condição
 input: Input
+invalid_input: Dados inválidos
+invalid_file_type: Tipo de ficheiro inválido 
+files_are_empty: 'Os seguintes ficheiro encontram-se vazios e não podem ser carregados: '
 maps: Mapas
 switch_user: Mudar de utilizador
 item_creation: Criação de Item
@@ -632,6 +641,7 @@ no_notifications: Sem notificações
 no_notifications_copy: Tudo em dia!
 activity_log: Registo de Atividade
 all_items: Todos os documentos
+any: Qualquer
 csv: CSV
 no_collections: Nenhuma coleção
 create_collection: Criar coleção
@@ -682,7 +692,12 @@ bookmark_doesnt_exist_copy: O marcador que você está tentando abrir não pôde
 bookmark_doesnt_exist_cta: Voltar à coleção
 select_an_item: Selecione um item...
 edit: Editar
+edit_item: Editar “item” 
 enabled: Activo
+partially_enabled: Ativo parcialmente 
+enable_all: Ativar todos 
+disable_all: Desativar todos 
+enabled_dev_tooltip: Extensões da "App" estão sempre ativadas em modo "dev"
 disable_tfa: Desactivar 2FA
 tfa_scan_code: Digitalize o código no seu aplicativo de autenticação para terminar de configurar o 2FA
 enter_otp_to_disable_tfa: Digite o OTP para desativar a 2FA
@@ -693,22 +708,33 @@ corresponding_field: Campo correspondente
 errors:
   COLLECTION_NOT_FOUND: "A coleção não existe"
   CONTAINS_NULL_VALUES: Campo contém valores nulos
+  CONTENT_TOO_LARGE: Documento ou ficheiro submetido é demasiado pesado
+  FAILED_VALIDATION: Falha na validação
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Proibido
   ILLEGAL_ASSET_TRANSFORMATION: A imagem é muito grande para visualizar
   INTERNAL_SERVER_ERROR: Erro Inesperado
+  INVALID_CONFIG: Configuração inválida 
   INVALID_CREDENTIALS: Nome do utilizador ou palavra-passe inválidos
   INVALID_FOREIGN_KEY: Chave estrangeira inválida
+  INVALID_IP: Endereço de IP não autorizado 
   INVALID_OTP: Senha de uso único errada
   INVALID_PAYLOAD: Payload inválido
   INVALID_PROVIDER: O utilizador pertence a um provedor de autenticação diferente
   INVALID_QUERY: Consulta inválida
+  INVALID_TOKEN: Token inválido 
   INVALID_USER: Falha ao autenticar utilizador
   ITEM_LIMIT_REACHED: Limite de itens atingido
   ITEM_NOT_FOUND: Item não encontrado
+  LIMIT_EXCEEDED: 'Limite excedido'
+  METHOD_NOT_ALLOWED: Método não autorizado
   NOT_NULL_VIOLATION: O valor não pode ser nulo
   RECORD_NOT_UNIQUE: Valor duplicado detectado
+  REQUESTS_EXCEEDED: Limite de pedido atingido
   ROUTE_NOT_FOUND: Não encontrado
+  SERVICE_UNAVAILABLE: Serviço indisponível
+  TOKEN_EXPIRED: Token expirado
+  UNEXPECTED_RESPONSE: Resposta inesperada
   UNKNOWN: Erro Inesperado
   USER_SUSPENDED: Utilizador suspenso
   VALUE_OUT_OF_RANGE: Valor fora da gama
@@ -721,8 +747,12 @@ edit_global_bookmark: Editar marcador global
 cannot_edit_global_bookmarks: Sem permissão para editar marcadores globais
 bookmarks: Favoritos
 unexpected_error: Erro Inesperado
+copy_details: Copiar detalhes
+no_app_access_copy: Este utilizador não está autorizado a utilizar a "app" administrativa 
 password_reset_sent: Se a conta existir, um email terá sido enviado para fazer a reposição da palavra passe.
 back: Voltar
+filter: Filtro
+edit_image: Editar imagem
 editing_image: Editando Imagem
 square: Quadrado
 free: Grátis
@@ -1103,8 +1133,10 @@ table: Tabela
 search_filter: Pesquisa & Filtro
 interfaces:
   filter:
+    name: Filtro
     add_filter: Adicionar filtro
     all: Todos
+    any: Qualquer
   presentation-links:
     primary: Primário
     error: Não é possível executar a ação

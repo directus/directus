@@ -85,7 +85,6 @@ const { collection, field, primaryKey, relationInfo, root, fields, template, cus
 
 const addNewActive = defineModel<boolean>('addNewOpen');
 const selectDrawer = defineModel<boolean>('selectOpen');
-const editOpen = defineModel<boolean>('editOpen');
 
 const drag = ref(false);
 const open = ref<Record<string, boolean>>({});
@@ -217,7 +216,6 @@ function stageEdits(item: Record<string, any>) {
 				:class="{ draggable: element.$type !== 'deleted' }"
 			>
 				<ItemPreview
-					v-model:edit-open="editOpen"
 					:item="element"
 					:edits="getItemEdits(element)"
 					:template="template"
@@ -234,7 +232,6 @@ function stageEdits(item: Record<string, any>) {
 				/>
 				<NestedDraggable
 					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
-					v-model:edit-open="editOpen"
 					:model-value="element[field]"
 					:template="template"
 					:collection="collection"

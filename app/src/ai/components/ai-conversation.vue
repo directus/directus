@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useScroll } from '@vueuse/core';
 import { computed, nextTick, onMounted, useTemplateRef } from 'vue';
+import { pendingAskUser, useAskUserTool } from '../composables/use-ask-user-tool';
 import { useAiStore } from '../stores/use-ai';
 import AiHeader from './ai-header.vue';
 import AiInput from './ai-input.vue';
 import AiMessageList from './ai-message-list.vue';
+import AiAskUser from './parts/ai-ask-user.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -13,6 +15,8 @@ import { useUserStore } from '@/stores/user';
 
 const aiStore = useAiStore();
 const userStore = useUserStore();
+
+useAskUserTool();
 
 const hasProviders = computed(() => aiStore.models.length > 0);
 
@@ -114,7 +118,8 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 				</VButton>
 			</div>
 
-			<AiInput />
+			<AiAskUser v-if="pendingAskUser" />
+			<AiInput v-else />
 		</div>
 	</div>
 </template>
