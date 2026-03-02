@@ -696,9 +696,6 @@ catalogs:
     node-machine-id:
       specifier: 1.1.12
       version: 1.1.12
-    nodemailer:
-      specifier: 7.0.11
-      version: 7.0.11
     nodemailer-mailgun-transport:
       specifier: 2.1.5
       version: 2.1.5
@@ -942,6 +939,7 @@ overrides:
   minimatch@9: 9.0.7
   minimatch@5: 5.1.8
   minimatch@3: 3.1.4
+  nodemailer: 7.0.11
 
 importers:
 
@@ -1290,7 +1288,7 @@ importers:
         specifier: 'catalog:'
         version: 1.1.12
       nodemailer:
-        specifier: 'catalog:'
+        specifier: 7.0.11
         version: 7.0.11
       object-hash:
         specifier: 'catalog:'
@@ -2916,7 +2914,7 @@ importers:
         specifier: 'catalog:'
         version: 16.12.0
       nodemailer:
-        specifier: 'catalog:'
+        specifier: 7.0.11
         version: 7.0.11
       openapi3-ts:
         specifier: 'catalog:'
@@ -11285,10 +11283,6 @@ packages:
   nodemailer-mailgun-transport@2.1.5:
     resolution: {integrity: sha512-hF7POkaxFgMvYEd5aHLaQJI2511ld+aQlQi7JH6bGjhjlZ33cIbTB9PimlIrLu5XC3z76Kde6e65OIwL9lOdTA==}
 
-  nodemailer@7.0.10:
-    resolution: {integrity: sha512-Us/Se1WtT0ylXgNFfyFSx4LElllVLJXQjWi2Xz17xWw7amDKO2MLtFnVp1WACy7GkVGs+oBlRopVNUzlrGSw1w==}
-    engines: {node: '>=6.0.0'}
-
   nodemailer@7.0.11:
     resolution: {integrity: sha512-gnXhNRE0FNhD7wPSCGhdNh46Hs6nm+uTyg+Kq0cZukNQiYdnCsoQjodNP9BQVG9XrcK/v6/MgpAPBUFyzh9pvw==}
     engines: {node: '>=6.0.0'}
@@ -19630,7 +19624,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -19709,7 +19703,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/utils@1.6.1':
     dependencies:
@@ -23705,7 +23699,7 @@ snapshots:
       iconv-lite: 0.7.0
       libmime: 5.3.7
       linkify-it: 5.0.0
-      nodemailer: 7.0.10
+      nodemailer: 7.0.11
       punycode.js: 2.3.1
       tlds: 1.261.0
 
@@ -24250,8 +24244,6 @@ snapshots:
       - walrus
       - whiskers
     optional: true
-
-  nodemailer@7.0.10: {}
 
   nodemailer@7.0.11: {}
 
@@ -26232,7 +26224,7 @@ snapshots:
     dependencies:
       base32.js: 0.1.0
       ipv6-normalize: 1.0.1
-      nodemailer: 7.0.10
+      nodemailer: 7.0.11
       punycode.js: 2.3.1
 
   snake-case@3.0.4:

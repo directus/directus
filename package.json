@@ -43,7 +43,8 @@
 			"minimatch@10": "10.2.3",
 			"minimatch@9": "9.0.7",
 			"minimatch@5": "5.1.8",
-			"minimatch@3": "3.1.4"
+			"minimatch@3": "3.1.4",
+			"nodemailer": "7.0.11"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
