@@ -3,11 +3,11 @@ import VDialog from '@/components/v-dialog.vue';
 
 const collapsed = defineModel<boolean>('collapsed');
 
-defineProps<{ placement: 'left' | 'right' }>();
+defineProps<{ placement: 'left' | 'right'; eager?: boolean }>();
 </script>
 
 <template>
-	<VDialog :model-value="!collapsed" :placement eager @update:model-value="collapsed = !$event">
+	<VDialog :model-value="!collapsed" :placement :eager @update:model-value="collapsed = !$event">
 		<div class="panel">
 			<slot />
 		</div>
@@ -16,6 +16,8 @@ defineProps<{ placement: 'left' | 'right' }>();
 
 <style scoped>
 .panel {
+	position: relative;
+	display: flex;
 	block-size: 100%;
 	inline-size: 280px;
 	max-inline-size: 100%;
