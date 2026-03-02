@@ -132,6 +132,94 @@ describe('DrawerFiles', () => {
 		wrapper2.unmount();
 	});
 
+	test('isolates persisted state between different field props without a root folder', async () => {
+		// Mount with field "avatar" and navigate to a subfolder
+		const wrapperA = mount(DrawerFiles, {
+			props: { field: 'avatar' },
+			global,
+		});
+
+		await flushPromises();
+
+		const navA = wrapperA.findComponent(FilesNavigationStub);
+		const handlerA = navA.props('customTargetHandler') as (target: { folder?: string }) => void;
+		handlerA({ folder: 'photos' });
+		await flushPromises();
+
+		wrapperA.unmount();
+
+		// Mount with field "banner" — should have independent state
+		const wrapperB = mount(DrawerFiles, {
+			props: { field: 'banner' },
+			global,
+		});
+
+		await flushPromises();
+
+		// Should NOT see field A's state
+		const navB = wrapperB.findComponent(FilesNavigationStub);
+		expect(navB.props('currentFolder')).toBeUndefined();
+
+		wrapperB.unmount();
+
+		// Remount field A — should see its own persisted state
+		const wrapperA2 = mount(DrawerFiles, {
+			props: { field: 'avatar' },
+			global,
+		});
+
+		await flushPromises();
+
+		const navA2 = wrapperA2.findComponent(FilesNavigationStub);
+		expect(navA2.props('currentFolder')).toBe('photos');
+
+		wrapperA2.unmount();
+	});
+
+	test('isolates persisted state between different fields sharing the same root folder', async () => {
+		// Mount field "avatar" scoped to root-x and navigate to a subfolder
+		const wrapperA = mount(DrawerFiles, {
+			props: { field: 'avatar', folder: 'root-x' },
+			global,
+		});
+
+		await flushPromises();
+
+		const navA = wrapperA.findComponent(FilesNavigationStub);
+		const handlerA = navA.props('customTargetHandler') as (target: { folder?: string }) => void;
+		handlerA({ folder: 'subfolder-avatar' });
+		await flushPromises();
+
+		wrapperA.unmount();
+
+		// Mount field "banner" scoped to the same root-x
+		const wrapperB = mount(DrawerFiles, {
+			props: { field: 'banner', folder: 'root-x' },
+			global,
+		});
+
+		await flushPromises();
+
+		// Should NOT see field A's subfolder — should start at root-x
+		const navB = wrapperB.findComponent(FilesNavigationStub);
+		expect(navB.props('currentFolder')).toBe('root-x');
+
+		wrapperB.unmount();
+
+		// Remount field A — should see its own persisted subfolder
+		const wrapperA2 = mount(DrawerFiles, {
+			props: { field: 'avatar', folder: 'root-x' },
+			global,
+		});
+
+		await flushPromises();
+
+		const navA2 = wrapperA2.findComponent(FilesNavigationStub);
+		expect(navA2.props('currentFolder')).toBe('subfolder-avatar');
+
+		wrapperA2.unmount();
+	});
+
 	test('isolates persisted state between different root folder props', async () => {
 		// Mount with folder A and navigate to subfolder
 		const wrapperA = mount(DrawerFiles, {

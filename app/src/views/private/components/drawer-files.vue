@@ -14,6 +14,7 @@ const props = withDefaults(
 	defineProps<{
 		collection?: string;
 		folder?: string;
+		field?: string;
 		filter?: Filter;
 	}>(),
 	{
@@ -27,7 +28,9 @@ const drawerProps = {
 	sidebarLabel: t('folders'),
 };
 
-const stateKey = props.folder ?? '';
+// Positional key so that field-only and folder-only contexts never collide
+// (e.g. field="avatar" → "avatar:", folder="abc" → ":abc", both → "avatar:abc")
+const stateKey = `${props.field ?? ''}:${props.folder ?? ''}`;
 
 const persisted = useSessionStorage<{ folder?: string; special?: SpecialFolder }>(
 	`directus-drawer-files-state:${stateKey}`,
