@@ -2,8 +2,40 @@ import { createTestingPinia } from '@pinia/testing';
 import type { UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { ref } from 'vue';
 import { useAiStore } from './use-ai';
+import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
+
+let lastChatConfig: any;
+let lastTransportConfig: any;
+let sessionMessagesRef: { value: UIMessage[] } | undefined;
+
+vi.mock('@vueuse/core', () => {
+	return {
+		createEventHook: vi.fn(() => {
+			const listeners = new Set<(value: unknown) => void>();
+
+			return {
+				on: (callback: (value: unknown) => void) => {
+					listeners.add(callback);
+					return () => listeners.delete(callback);
+				},
+				trigger: (value: unknown) => {
+					for (const listener of listeners) {
+						listener(value);
+					}
+				},
+			};
+		}),
+		useLocalStorage: vi.fn((_key: string, initialValue: unknown) => ref(initialValue)),
+		useSessionStorage: vi.fn((_key: string, initialValue: UIMessage[]) => {
+			const cloned = JSON.parse(JSON.stringify(initialValue ?? [])) as UIMessage[];
+			sessionMessagesRef = ref(cloned);
+			return sessionMessagesRef;
+		}),
+	};
+});
 
 // Mock dependencies
 vi.mock('@/stores/settings', () => ({
@@ -28,6 +60,8 @@ vi.mock('@/views/private/private-view/stores/sidebar', () => ({
 vi.mock('@ai-sdk/vue', () => {
 	return {
 		Chat: vi.fn().mockImplementation((config: any) => {
+			lastChatConfig = config;
+
 			// Create a mutable messages array from the initial messages
 			const messages = config?.messages || [];
 
@@ -35,7 +69,7 @@ vi.mock('@ai-sdk/vue', () => {
 				messages,
 				status: 'idle',
 				error: null,
-				sendMessage: vi.fn(),
+				sendMessage: vi.fn(() => Promise.resolve()),
 				clearError: vi.fn(),
 				regenerate: vi.fn(),
 				stop: vi.fn(),
@@ -47,7 +81,10 @@ vi.mock('@ai-sdk/vue', () => {
 });
 
 vi.mock('ai', () => ({
-	DefaultChatTransport: vi.fn(),
+	DefaultChatTransport: vi.fn((config: any) => {
+		lastTransportConfig = config;
+		return config;
+	}),
 	lastAssistantMessageIsCompleteWithApprovalResponses: vi.fn(),
 	lastAssistantMessageIsCompleteWithToolCalls: vi.fn(),
 }));
@@ -63,9 +100,125 @@ beforeEach(() => {
 	// Clear localStorage and sessionStorage before each test
 	localStorage.clear();
 	sessionStorage.clear();
+	lastChatConfig = undefined;
+	lastTransportConfig = undefined;
+	sessionMessagesRef = undefined;
 });
 
 describe('useAiStore', () => {
+	describe('loading states', () => {
+		test('tracks submission preparation while context/files are prepared', async () => {
+			const aiStore = useAiStore();
+			const contextStore = useAiContextStore();
+
+			aiStore.input = 'Summarize this';
+
+			let resolveFetchContextData: ((value: any[]) => void) | undefined;
+
+			const fetchContextDataPromise = new Promise<any[]>((resolve) => {
+				resolveFetchContextData = resolve;
+			});
+
+			vi.spyOn(contextStore, 'fetchContextData').mockReturnValue(fetchContextDataPromise as any);
+			vi.spyOn(contextStore, 'uploadPendingFiles').mockResolvedValue([]);
+
+			const submitPromise = aiStore.submit();
+
+			expect(aiStore.isPreparingSubmission).toBe(true);
+			expect(aiStore.isUiLoading).toBe(true);
+			expect(aiStore.showAssistantLoadingIndicator).toBe(false);
+
+			resolveFetchContextData?.([]);
+			await submitPromise;
+
+			expect(aiStore.isPreparingSubmission).toBe(false);
+			expect(aiStore.isUiLoading).toBe(false);
+			expect(aiStore.showAssistantLoadingIndicator).toBe(false);
+		});
+
+		test('shows pending tool execution when assistant tool input is still in progress', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [{ type: 'tool-items', toolCallId: 'call-1', state: 'input-available', input: {} } as any],
+			});
+
+			expect(aiStore.isAwaitingToolExecution).toBe(true);
+			expect(aiStore.hasPendingToolCall).toBe(false);
+			expect(aiStore.isUiLoading).toBe(true);
+			expect(aiStore.showAssistantLoadingIndicator).toBe(true);
+		});
+
+		test('does not treat approval-requested tool state as execution-in-progress', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [{ type: 'tool-items', toolCallId: 'call-1', state: 'approval-requested', input: {} } as any],
+			});
+
+			expect(aiStore.hasPendingToolCall).toBe(true);
+			expect(aiStore.isAwaitingToolExecution).toBe(false);
+			expect(aiStore.isUiLoading).toBe(false);
+			expect(aiStore.showAssistantLoadingIndicator).toBe(false);
+		});
+	});
+
+	describe('message sanitization', () => {
+		test('sanitizes data/blob file URLs before transport send', () => {
+			useAiStore();
+
+			const request = {
+				body: {},
+				messages: [
+					{
+						id: '1',
+						role: 'user',
+						parts: [
+							{ type: 'file', mediaType: 'image/png', filename: 'a.png', url: 'data:image/png;base64,abc' },
+							{ type: 'file', mediaType: 'image/png', filename: 'b.png', url: 'blob:http://localhost/123' },
+							{ type: 'file', mediaType: 'image/png', filename: 'c.png', url: '/assets/abc' },
+						],
+					},
+				],
+			};
+
+			const result = lastTransportConfig.prepareSendMessagesRequest(request);
+			const parts = result.body.messages[0].parts;
+
+			expect(parts[0].url).toBe('');
+			expect(parts[1].url).toBe('');
+			expect(parts[2].url).toBe('/assets/abc');
+		});
+
+		test('sanitizes stored message file URLs on finish', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'user',
+				parts: [
+					{ type: 'file', mediaType: 'image/png', filename: 'a.png', url: 'data:image/png;base64,abc' } as any,
+					{ type: 'file', mediaType: 'image/png', filename: 'b.png', url: 'blob:http://localhost/123' } as any,
+					{ type: 'file', mediaType: 'image/png', filename: 'c.png', url: '/assets/abc' } as any,
+				],
+			});
+
+			lastChatConfig.onFinish({ isAbort: false, message: { parts: [] } });
+			const parts = sessionMessagesRef?.value[0]?.parts as Array<{ url: string }> | undefined;
+
+			expect(parts).toBeDefined();
+			if (!parts) return;
+
+			expect(parts[0].url).toBe('');
+			expect(parts[1].url).toBe('');
+			expect(parts[2].url).toBe('/assets/abc');
+		});
+	});
+
 	describe('dehydrate', () => {
 		test('should clear all messages', async () => {
 			const aiStore = useAiStore();
