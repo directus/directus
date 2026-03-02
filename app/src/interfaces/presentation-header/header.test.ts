@@ -78,6 +78,7 @@ const urlLink = {
 	actionType: 'url',
 	url: 'https://example.com',
 };
+
 const flowLink = { icon: 'automation', label: 'flow', type: 'normal' as const, actionType: 'flow', flow: 'test-flow' };
 
 describe('Interface', () => {
