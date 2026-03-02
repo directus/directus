@@ -34,7 +34,7 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.3.4",
+			"fast-xml-parser": "5.3.6",
 			"minimatch>@isaacs/brace-expansion": "5.0.1",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"pm2-sysmonit>systeminformation": "5.27.14",
