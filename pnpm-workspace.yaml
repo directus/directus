@@ -141,14 +141,14 @@ catalog:
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
   ai: 6.0.25
-  ajv: 8.17.1
+  ajv: 8.18.0
   apexcharts: 4.7.0
   archiver: 7.0.1
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
   axios: 1.13.5
-  axios-cache-interceptor: 1.8.3
+  axios-cache-interceptor: 1.11.1
   base-64: 1.0.0
   boxen: 8.0.1
   busboy: 1.6.0
@@ -304,7 +304,7 @@ catalog:
   tus-js-client: 4.3.1
   typescript: 5.9.3
   typescript-eslint: 8.46.4
-  undici: 7.16.0
+  undici: 7.18.2
   universal-cookie: 8.0.1
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
