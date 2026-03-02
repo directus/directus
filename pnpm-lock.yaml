@@ -935,7 +935,7 @@ overrides:
   fast-xml-parser: 5.3.6
   minimatch>@isaacs/brace-expansion: 5.0.1
   '@yarnpkg/shell>cross-spawn': 7.0.6
-  pm2-sysmonit>systeminformation: 5.27.14
+  pm2-sysmonit>systeminformation: 5.31.0
   tar: 7.5.8
   qs: 6.14.1
 
@@ -13462,8 +13462,8 @@ packages:
     resolution: {integrity: sha512-MeQTA1r0litLUf0Rp/iisCaL8761lKAZHaimlbGK4j0HysC4PLfqygQj9srcs0m2RdtDYnF8UuYyKpbjHYp7Jw==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  systeminformation@5.27.14:
-    resolution: {integrity: sha512-3DoNDYSZBLxBwaJtQGWNpq0fonga/VZ47HY1+7/G3YoIPaPz93Df6egSzzTKbEMmlzUpy3eQ0nR9REuYIycXGg==}
+  systeminformation@5.31.0:
+    resolution: {integrity: sha512-z5pjzvC8UnQJ/iu34z+mo3lAeMzTGdArjPQoG5uPyV5XY4BY+M6ZcRTl4XnZqudz6sP713LhWMKv6e0kGFGCgQ==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
@@ -24928,7 +24928,7 @@ snapshots:
       async: 3.2.6
       debug: 4.4.3(supports-color@5.5.0)
       pidusage: 2.0.21
-      systeminformation: 5.27.14
+      systeminformation: 5.31.0
       tx2: 1.0.5
     transitivePeerDependencies:
       - supports-color
@@ -26824,7 +26824,7 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.2.9
 
-  systeminformation@5.27.14:
+  systeminformation@5.31.0:
     optional: true
 
   tabbable@4.0.0: {}
