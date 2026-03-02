@@ -32,6 +32,7 @@ describe('formatApiRequestCounts', () => {
 
 		expect(result).toEqual({
 			api_requests_get: 0,
+			api_requests_search: 0,
 			api_requests_post: 0,
 			api_requests_put: 0,
 			api_requests_patch: 0,
@@ -46,6 +47,7 @@ describe('formatApiRequestCounts', () => {
 
 		expect(result).toEqual({
 			api_requests_get: 42,
+			api_requests_search: 0,
 			api_requests_post: 0,
 			api_requests_put: 0,
 			api_requests_patch: 0,
@@ -60,6 +62,7 @@ describe('formatApiRequestCounts', () => {
 
 		expect(result).toEqual({
 			api_requests_get: 10,
+			api_requests_search: 0,
 			api_requests_post: 5,
 			api_requests_put: 3,
 			api_requests_patch: 2,

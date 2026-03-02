@@ -1,7 +1,7 @@
-export type TrackedMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
+export type TrackedMethod = 'get' | 'search' | 'post' | 'put' | 'patch' | 'delete';
 export type TrackedKey = TrackedMethod | 'cached';
 
-export const TRACKED_METHODS = ['get', 'post', 'put', 'patch', 'delete'] as const;
+export const TRACKED_METHODS = ['get', 'search', 'post', 'put', 'patch', 'delete'] as const;
 export const TRACKED_KEYS = [...TRACKED_METHODS, 'cached'] as const;
 
 export type ApiRequestInput = Partial<Record<TrackedKey, number>>;

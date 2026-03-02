@@ -130,6 +130,11 @@ export interface TelemetryReport {
 	api_requests_get: number;
 
 	/**
+	 * Count of SEARCH Api Requests
+	 */
+	api_requests_search: number;
+
+	/**
 	 * Count of POST Api Requests
 	 */
 	api_requests_post: number;

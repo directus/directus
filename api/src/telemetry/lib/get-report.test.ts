@@ -97,6 +97,7 @@ beforeEach(() => {
 
 	vi.mocked(formatApiRequestCounts).mockReturnValue({
 		api_requests_get: 100,
+		api_requests_search: 0,
 		api_requests_post: 50,
 		api_requests_patch: 20,
 		api_requests_put: 0,
@@ -219,6 +220,7 @@ test('Runs and returns formatted API request counts', async () => {
 	expect(formatApiRequestCounts).toHaveBeenCalledWith(mockRequestCounts);
 
 	expect(report.api_requests_get).toBe(100);
+	expect(report.api_requests_search).toBe(0);
 	expect(report.api_requests_post).toBe(50);
 	expect(report.api_requests_put).toBe(0);
 	expect(report.api_requests_patch).toBe(20);
