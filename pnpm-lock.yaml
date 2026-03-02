@@ -936,7 +936,7 @@ overrides:
   minimatch>@isaacs/brace-expansion: 5.0.1
   '@yarnpkg/shell>cross-spawn': 7.0.6
   pm2-sysmonit>systeminformation: 5.27.14
-  tar: 7.5.7
+  tar: 7.5.8
   qs: 6.14.1
 
 importers:
@@ -1364,8 +1364,8 @@ importers:
         specifier: 'catalog:'
         version: 1.9.1
       tar:
-        specifier: 7.5.7
-        version: 7.5.7
+        specifier: 7.5.8
+        version: 7.5.8
       tsx:
         specifier: 'catalog:'
         version: 4.20.6
@@ -13488,8 +13488,8 @@ packages:
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
 
-  tar@7.5.7:
-    resolution: {integrity: sha512-fov56fJiRuThVFXD6o6/Q354S7pnWMJIVlDBYijsTNx6jKSE4pvrDTs6lUnmGvNyfJwFQQwWy3owKz1ucIhveQ==}
+  tar@7.5.8:
+    resolution: {integrity: sha512-SYkBtK99u0yXa+IWL0JRzzcl7RxNpvX/U08Z+8DKnysfno7M+uExnTZH8K+VGgShf2qFPKtbNr9QBl8n7WBP6Q==}
     engines: {node: '>=18'}
 
   tarn@3.0.2:
@@ -20583,7 +20583,7 @@ snapshots:
       promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
-      tar: 7.5.7
+      tar: 7.5.8
       unique-filename: 1.1.1
     transitivePeerDependencies:
       - bluebird
@@ -20601,7 +20601,7 @@ snapshots:
       minipass-pipeline: 1.2.4
       p-map: 7.0.3
       ssri: 12.0.0
-      tar: 7.5.7
+      tar: 7.5.8
       unique-filename: 4.0.0
 
   cache-parser@1.2.5: {}
@@ -24142,7 +24142,7 @@ snapshots:
       nopt: 8.1.0
       proc-log: 5.0.0
       semver: 7.7.3
-      tar: 7.5.7
+      tar: 7.5.8
       tinyglobby: 0.2.15
       which: 5.0.0
     transitivePeerDependencies:
@@ -24158,7 +24158,7 @@ snapshots:
       npmlog: 6.0.2
       rimraf: 3.0.2
       semver: 7.7.3
-      tar: 7.5.7
+      tar: 7.5.8
       which: 2.0.2
     transitivePeerDependencies:
       - bluebird
@@ -26372,7 +26372,7 @@ snapshots:
       bindings: 1.5.0
       node-addon-api: 7.1.1
       prebuild-install: 7.1.3
-      tar: 7.5.7
+      tar: 7.5.8
     optionalDependencies:
       node-gyp: 8.4.1
     transitivePeerDependencies:
@@ -26863,7 +26863,7 @@ snapshots:
       - bare-abort-controller
       - react-native-b4a
 
-  tar@7.5.7:
+  tar@7.5.8:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
