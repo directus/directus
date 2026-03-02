@@ -24,6 +24,12 @@ interface ParsedMultipart {
 }
 
 async function parseMultipart(headers: IncomingHttpHeaders, stream: NodeJS.ReadableStream): Promise<ParsedMultipart> {
+	const contentType = headers['content-type'];
+
+	if (!contentType || !contentType.toLowerCase().startsWith('multipart/')) {
+		throw new InvalidPayloadError({ reason: 'Expected multipart/form-data content type' });
+	}
+
 	return new Promise((resolve, reject) => {
 		let file: UploadedFile | undefined;
 		let provider: string | undefined;

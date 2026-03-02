@@ -232,6 +232,28 @@ describe('aiFileUploadHandler', () => {
 			expect(error.message).toContain('Unsupported file type');
 		});
 
+		it('should throw InvalidPayloadError for non-multipart content type', async () => {
+			const stream = new Readable({
+				read() {
+					this.push(Buffer.from('{}'));
+					this.push(null);
+				},
+			});
+
+			mockReq = {
+				headers: { 'content-type': 'application/json' },
+				accountability: { user: 'test', role: 'test', app: true } as any,
+				pipe: stream.pipe.bind(stream),
+			} as any;
+
+			await aiFileUploadHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(mockNext).toHaveBeenCalledWith(expect.any(InvalidPayloadError));
+
+			const error = (mockNext as any).mock.calls[0][0];
+			expect(error.message).toContain('Expected multipart/form-data content type');
+		});
+
 		it('should throw InvalidPayloadError when AI settings not loaded', async () => {
 			const { stream, headers } = createMockMultipartRequest(
 				{ provider: 'openai' },

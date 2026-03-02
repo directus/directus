@@ -340,6 +340,33 @@ describe('useAiContextStore', () => {
 			expect(api.post).toHaveBeenCalledWith('/ai/files', expect.any(FormData));
 		});
 
+		test('drops failed uploads and reports errors for partial failures', async () => {
+			const store = useAiContextStore();
+
+			for (let i = 1; i <= 3; i++) {
+				store.addPendingContext({
+					id: `local-file-${i}`,
+					type: 'local-file',
+					data: { file: new File([`content-${i}`], `file-${i}.txt`, { type: 'text/plain' }) },
+					display: `file-${i}.txt`,
+				});
+			}
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({
+					data: { provider: 'openai', fileId: 'file-1', filename: 'file-1.txt', mimeType: 'text/plain', sizeBytes: 9, expiresAt: null },
+				})
+				.mockRejectedValueOnce(new Error('500'))
+				.mockResolvedValueOnce({
+					data: { provider: 'openai', fileId: 'file-3', filename: 'file-3.txt', mimeType: 'text/plain', sizeBytes: 9, expiresAt: null },
+				});
+
+			const results = await store.uploadPendingFiles('openai');
+
+			expect(results).toHaveLength(2);
+			expect(unexpectedError).toHaveBeenCalledOnce();
+		});
+
 		test('uses asset URLs for staged library files', async () => {
 			const store = useAiContextStore();
 
