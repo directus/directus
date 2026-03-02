@@ -235,7 +235,7 @@ catalog:
   micromustache: 8.0.3
   mime: 4.1.0
   mime-types: 3.0.1
-  minimatch: 10.1.1
+  minimatch: 10.2.3
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
