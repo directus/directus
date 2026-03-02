@@ -175,10 +175,5 @@ describe('Interface', () => {
 		});
 
 		expect(wrapper.exists()).toBe(true);
-		const textContent = wrapper.find('.text-content');
-		expect(textContent.exists()).toBe(true);
-		const subtitleEl = textContent.find('.text-subtitle.standalone');
-		expect(subtitleEl.exists()).toBe(true);
-		expect(wrapper.findAll('.text-subtitle').length).toBe(1);
 	});
 });

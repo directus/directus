@@ -359,11 +359,11 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	color: var(--header-color, var(--theme--foreground));
 	align-items: baseline;
 	justify-content: space-between;
+	min-inline-size: 0;
 
 	&--centered {
 		align-items: center;
 	}
-	min-inline-size: 0;
 
 	.text-content {
 		min-inline-size: 0;
