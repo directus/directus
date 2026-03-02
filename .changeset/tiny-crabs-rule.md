@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixes API calls being made in insights store when no edits are present
+Fixed `insightsStore.saveChanges` to send requests only when the corresponding action array is non-empty
