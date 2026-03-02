@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixes subtitle Header spacing regression
+Fixed Header interface spacing issue
