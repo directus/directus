@@ -221,7 +221,11 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 <template>
 	<div class="page-header">
-		<div class="header-content" :style="{ '--header-color': color }">
+		<div
+			class="header-content"
+			:class="{ 'header-content--centered': title && subtitle }"
+			:style="{ '--header-color': color }"
+		>
 			<div class="text-content">
 				<p v-if="title" class="text-title">
 					<VIcon v-if="icon" :name="icon" />
@@ -353,8 +357,12 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	padding-block-end: 8px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	color: var(--header-color, var(--theme--foreground));
-	align-items: center;
+	align-items: baseline;
 	justify-content: space-between;
+
+	&--centered {
+		align-items: center;
+	}
 	min-inline-size: 0;
 
 	.text-content {
