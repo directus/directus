@@ -272,6 +272,7 @@ export class FieldsService {
 			});
 		}
 
+		// Update specific database type overrides
 		for (const field of result) {
 			field.type = this.helpers.schema.processFieldType(field);
 		}
@@ -403,12 +404,14 @@ export class FieldsService {
 
 			const exists = existsInSchema || existsInDb;
 
+			// Check if field already exists, either as a column, or as a row in directus_fields
 			if (exists) {
 				throw new InvalidPayloadError({
 					reason: `Field "${field.field}" already exists in collection "${collection}"`,
 				});
 			}
 
+			// Add flag for specific database type overrides
 			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
 
 			if (flagToAdd) {
