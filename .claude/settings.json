@@ -4,18 +4,9 @@
 			{
 				"matcher": "Edit|Write",
 				"hooks": [
-					{
-						"type": "command",
-						"command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"
-					},
-					{
-						"type": "command",
-						"command": "jq -r '.tool_input.file_path' | xargs npx eslint --fix"
-					},
-					{
-						"type": "command",
-						"command": "FILE=$(jq -r '.tool_input.file_path'); echo $FILE | grep -qE '\\.(css|scss|vue)$' && npx stylelint --fix $FILE || true"
-					}
+					{ "type": "command", "command": "bash .claude/hooks/prettier.sh" },
+					{ "type": "command", "command": "bash .claude/hooks/eslint.sh" },
+					{ "type": "command", "command": "bash .claude/hooks/stylelint.sh" }
 				]
 			}
 		]
