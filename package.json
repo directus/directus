@@ -34,11 +34,11 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.3.6",
+			"fast-xml-parser": "5.3.8",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"@rollup/plugin-terser>serialize-javascript": "7.0.3",
 			"tar": "7.5.8",
-			"qs": "6.14.1",
+			"qs": "6.14.2",
 			"minimatch@10": "10.2.3",
 			"minimatch@9": "9.0.7",
 			"nodemailer": "7.0.11",
