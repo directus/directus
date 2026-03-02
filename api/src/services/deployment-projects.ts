@@ -56,7 +56,13 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 			.filter((update): update is { id: string; name: string } => update !== null);
 
 		if (namesToUpdate.length > 0) {
-			await this.updateBatch(namesToUpdate);
+			const internalService = new DeploymentProjectsService({
+				accountability: null,
+				schema: this.schema,
+				knex: this.knex,
+			});
+
+			await internalService.updateBatch(namesToUpdate);
 		}
 
 		return providerProjects.map((project) => ({
