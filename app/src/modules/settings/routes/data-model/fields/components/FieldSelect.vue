@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { RouterLink, useRouter } from 'vue-router';
 import Draggable from 'vuedraggable';
 import FieldSelectMenu from './field-select-menu.vue';
+import { deepMapFilter } from '@/../../packages/utils/shared/deep-map-filter';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -15,6 +16,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import { useExtension } from '@/composables/use-extension';
+import { useSchemaOverview } from '@/composables/use-schema';
 import InterfaceSystemCollection from '@/interfaces/_system/system-collection/system-collection.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { getLocalTypeForField } from '@/utils/get-local-type';
@@ -50,6 +52,8 @@ const inter = useExtension(
 	'interface',
 	computed(() => props.field.meta?.interface ?? null),
 );
+
+const schemaOverview = useSchemaOverview();
 
 const interfaceName = computed(() => inter.value?.name ?? null);
 
@@ -134,6 +138,28 @@ function useDuplicate() {
 			delete newField.meta.id;
 			delete newField.meta.sort;
 			delete newField.meta.group;
+		}
+
+		if (newField.meta?.validation) {
+			newField.meta.validation = deepMapFilter(
+				newField.meta.validation,
+				([key, value], context) => {
+					if (
+						context.leaf &&
+						context.field &&
+						context.collection.collection === props.field.collection &&
+						key === props.field.field
+					) {
+						return [duplicateName.value, value];
+					}
+
+					return [key, value];
+				},
+				{
+					schema: schemaOverview.value,
+					collection: props.field.collection,
+				},
+			);
 		}
 
 		if (newField.schema) {
