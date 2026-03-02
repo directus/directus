@@ -121,10 +121,10 @@ const displayLogs = computed<SystemLog[]>(() =>
 );
 
 const duration = computed(() => {
-	if (!run.value) return '—';
+	if (!run.value?.started_at) return '—';
 
-	const start = new Date(run.value.date_created).getTime();
-	const end = run.value.finished_at ? new Date(run.value.finished_at).getTime() : Date.now();
+	const start = new Date(run.value.started_at).getTime();
+	const end = run.value.completed_at ? new Date(run.value.completed_at).getTime() : Date.now();
 
 	return formatDurationMs(end - start);
 });
@@ -144,9 +144,9 @@ async function loadRun() {
 		// Append or replace logs
 		if (data.logs && data.logs.length > 0) {
 			if (lastLogTimestamp.value) {
-				logs.value = [...logs.value, ...data.logs];
+				logs.value = [...logs.value, ...data.logs] as DeploymentLog[];
 			} else {
-				logs.value = data.logs;
+				logs.value = data.logs as DeploymentLog[];
 			}
 
 			const lastLog = data.logs[data.logs.length - 1];
