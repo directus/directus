@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Added variable mode in tags interface
+Fixed tags interface not resolving variable strings in raw editor mode
