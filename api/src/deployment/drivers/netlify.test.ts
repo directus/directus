@@ -644,10 +644,21 @@ describe('NetlifyDriver', () => {
 
 			const result = await driver.registerWebhook('https://example.com/webhooks/netlify', ['site_1', 'site_2']);
 
-			// 3 events × 2 sites = 6 hooks
-			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledTimes(6);
-			expect(result.webhook_ids).toHaveLength(6);
-			expect(result.webhook_ids).toEqual(['hook_1', 'hook_2', 'hook_3', 'hook_4', 'hook_5', 'hook_6']);
+			// 4 events × 2 sites = 8 hooks
+			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledTimes(8);
+			expect(result.webhook_ids).toHaveLength(8);
+
+			expect(result.webhook_ids).toEqual([
+				'hook_1',
+				'hook_2',
+				'hook_3',
+				'hook_4',
+				'hook_5',
+				'hook_6',
+				'hook_7',
+				'hook_8',
+			]);
+
 			expect(result.webhook_secret).toBeTruthy();
 			expect(result.webhook_secret.length).toBe(64); // 32 bytes hex
 
@@ -671,7 +682,7 @@ describe('NetlifyDriver', () => {
 
 			// Stale hook should be deleted before new ones are created
 			expect(mockNetlifyAPI.deleteHook).toHaveBeenCalledWith({ hook_id: 'old_hook_1' });
-			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledTimes(3);
+			expect(mockNetlifyAPI.createHookBySiteId).toHaveBeenCalledTimes(4);
 		});
 	});
 

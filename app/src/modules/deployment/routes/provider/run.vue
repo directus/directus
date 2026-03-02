@@ -142,9 +142,9 @@ async function loadRun() {
 		// Append or replace logs
 		if (data.logs && data.logs.length > 0) {
 			if (lastLogTimestamp.value) {
-				logs.value = [...logs.value, ...data.logs];
+				logs.value = [...logs.value, ...data.logs] as DeploymentLog[];
 			} else {
-				logs.value = data.logs;
+				logs.value = data.logs as DeploymentLog[];
 			}
 
 			const lastLog = data.logs[data.logs.length - 1];
