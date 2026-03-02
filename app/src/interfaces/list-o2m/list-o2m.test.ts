@@ -38,6 +38,12 @@ vi.mock('@/composables/use-relation-permissions', () => ({
 }));
 
 const mockGetField = vi.hoisted(() => vi.fn(() => null as any));
+const mockGetWidth = vi.hoisted(() => vi.fn((_key: string, defaultWidth: number) => defaultWidth));
+const mockUpdateWidths = vi.hoisted(() => vi.fn());
+
+vi.mock('@/composables/use-column-widths', () => ({
+	useColumnWidths: () => ({ getWidth: mockGetWidth, updateWidths: mockUpdateWidths }),
+}));
 
 vi.mock('@/stores/fields', () => ({
 	useFieldsStore: () => ({
@@ -309,11 +315,16 @@ describe('list-o2m', () => {
 
 		describe('column width persistence', () => {
 			beforeEach(() => {
-				localStorage.clear();
 				mockGetField.mockReset();
+				mockGetWidth.mockImplementation((_key: string, defaultWidth: number) => defaultWidth);
+				mockUpdateWidths.mockReset();
 			});
 
-			it('persists resized column widths to localStorage', async () => {
+			it('only calls updateWidths for columns whose width changed', async () => {
+				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
+				// getWidth returns 160 (default), so any other value counts as a resize
+				mockGetWidth.mockReturnValue(160);
+
 				const wrapper = mount(ListO2M, {
 					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
 					global: tableGlobalWithHeaderEmit,
@@ -321,20 +332,30 @@ describe('list-o2m', () => {
 
 				const vTable = wrapper.findComponent({ name: 'VTable' });
 
-				// Simulate column resize: v-table emits update:headers with a new width
+				// Emit a resize: 'name' changes to 250, different from stored 160
 				await vTable.vm.$emit('update:headers', [{ text: 'Name', value: 'name', width: 250 }]);
-
-				const stored = JSON.parse(
-					localStorage.getItem(`directus-o2m-column-widths-test-collection-test-field`) ?? '{}',
-				);
-
-				expect(stored).toEqual({ name: 250 });
+				expect(mockUpdateWidths).toHaveBeenCalledWith([{ text: 'Name', value: 'name', width: 250 }]);
 			});
 
-			it('restores persisted column widths on mount', async () => {
-				localStorage.setItem('directus-o2m-column-widths-test-collection-test-field', JSON.stringify({ name: 300 }));
-
+			it('does not call updateWidths when no width changed', async () => {
 				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
+				mockGetWidth.mockReturnValue(160);
+
+				const wrapper = mount(ListO2M, {
+					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
+					global: tableGlobalWithHeaderEmit,
+				});
+
+				const vTable = wrapper.findComponent({ name: 'VTable' });
+
+				// Emit same width as currently rendered — no actual resize
+				await vTable.vm.$emit('update:headers', [{ text: 'Name', value: 'name', width: 160 }]);
+				expect(mockUpdateWidths).not.toHaveBeenCalled();
+			});
+
+			it('uses getWidth to restore stored column widths on mount', async () => {
+				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
+				mockGetWidth.mockReturnValue(300); // simulate a stored width of 300
 
 				const wrapper = mount(ListO2M, {
 					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
@@ -343,8 +364,7 @@ describe('list-o2m', () => {
 
 				const vTable = wrapper.findComponent({ name: 'VTable' });
 				const headers = vTable.props('headers') as Array<{ value: string; width: number }>;
-				const nameHeader = headers?.find((h) => h.value === 'name');
-				expect(nameHeader?.width).toBe(300);
+				expect(headers?.find((h) => h.value === 'name')?.width).toBe(300);
 			});
 		});
 	});

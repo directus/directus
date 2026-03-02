@@ -251,7 +251,16 @@ const headers = computed({
 			})
 			.filter((h) => h !== null);
 	},
-	set: updateWidths,
+	set: (val: Array<any>) => {
+		const currentHeaders = headers.value;
+
+		const changed = val.filter((h) => {
+			const current = currentHeaders.find((ch: any) => ch.value === h.value);
+			return current && current.width !== h.width;
+		});
+
+		if (changed.length > 0) updateWidths(changed);
+	},
 });
 
 const spacings = {
