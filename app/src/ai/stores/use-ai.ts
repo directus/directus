@@ -3,6 +3,7 @@ import { type ContextAttachment, type PrimaryKey, type StandardProviderType, typ
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import {
 	DefaultChatTransport,
+	type FileUIPart,
 	lastAssistantMessageIsCompleteWithApprovalResponses,
 	lastAssistantMessageIsCompleteWithToolCalls,
 	type UIMessage,
@@ -13,7 +14,7 @@ import { useRoute } from 'vue-router';
 import { z } from 'zod';
 import type { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
-import { isVisualElement } from '../types/context';
+import { isVisualElement, type UploadedFileResult } from '../types/context';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
@@ -143,9 +144,26 @@ export const useAiStore = defineStore('ai-store', () => {
 		);
 	});
 
+	const supportsFileUpload = computed(() => selectedModel.value?.provider !== 'openai-compatible');
+
 	const selectModel = (modelDefinition: AppModelDefinition) => {
+		if (isProviderLocked.value && modelDefinition.provider !== selectedModel.value?.provider) {
+			return;
+		}
+
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
+
+	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] =>
+		messageList.map((message) => ({
+			...message,
+			parts: message.parts?.map((part) => {
+				if (part.type !== 'file' || typeof part.url !== 'string') return part;
+				if (!part.url.startsWith('data:') && !part.url.startsWith('blob:')) return part;
+				// Local data/blob URLs are client-only and cannot be resolved by the API.
+				return { ...part, url: '' };
+			}),
+		}));
 
 	// Helper to convert local tool to API format
 	const toApiTool = (tool: StaticToolDefinition) => ({
@@ -174,6 +192,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	// Store snapshotted context attachments for sending with request
 	const pendingContextSnapshot = ref<ContextAttachment[]>([]);
+	const isPreparingSubmission = ref(false);
 
 	// Chat instance
 	const chat = new Chat<UIMessage>({
@@ -217,11 +236,13 @@ export const useAiStore = defineStore('ai-store', () => {
 				const limitedMessages =
 					estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
 
+				const messages = sanitizeMessages(limitedMessages);
+
 				return {
 					...req,
 					body: {
 						...req.body,
-						messages: limitedMessages,
+						messages,
 					},
 				};
 			},
@@ -280,11 +301,12 @@ export const useAiStore = defineStore('ai-store', () => {
 				});
 			}
 
-			storedMessages.value = chat.messages;
+			storedMessages.value = sanitizeMessages(chat.messages);
 		},
 	});
 
 	const error = computed(() => chat.error);
+	const status = computed(() => chat.status);
 
 	const messages = computed(() =>
 		chat.messages.map((msg) => ({
@@ -295,12 +317,35 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const latestMessage = computed(() => messages.value.at(-1));
 
+	const hasFilesInMessages = computed(() =>
+		messages.value.some((msg) => msg.parts?.some((part) => part.type === 'file')),
+	);
+
+	const isProviderLocked = computed(() => contextStore.hasFileContext || hasFilesInMessages.value);
+
 	const hasPendingToolCall = computed(() => {
 		const lastMessage = latestMessage.value;
 		if (!lastMessage || lastMessage.role !== 'assistant') return false;
 
 		return lastMessage.parts.some((part) => 'state' in part && part.state === 'approval-requested');
 	});
+
+	const isAwaitingToolExecution = computed(() => {
+		const lastMessage = latestMessage.value;
+		if (!lastMessage || lastMessage.role !== 'assistant') return false;
+
+		const hasExecutingTool = lastMessage.parts.some(
+			(part) => 'state' in part && (part.state === 'input-streaming' || part.state === 'input-available'),
+		);
+
+		return hasExecutingTool && !hasPendingToolCall.value;
+	});
+
+	const isUiLoading = computed(
+		() => isPreparingSubmission.value || status.value === 'submitted' || isAwaitingToolExecution.value,
+	);
+
+	const showAssistantLoadingIndicator = computed(() => status.value === 'submitted' || isAwaitingToolExecution.value);
 
 	// Watch for tool results to trigger hooks
 	const processedToolCallIds = new Set<string>();
@@ -325,41 +370,71 @@ export const useAiStore = defineStore('ai-store', () => {
 		}
 	});
 
-	const status = computed(() => chat.status);
-
 	const submitHook = createEventHook();
 
+	function buildFileParts(uploadedFiles: UploadedFileResult[]): FileUIPart[] {
+		return uploadedFiles.map((uploaded) => ({
+			type: 'file' as const,
+			mediaType: uploaded.mimeType,
+			filename: uploaded.display,
+			url: uploaded.displayUrl,
+			providerMetadata: {
+				directus: {
+					fileId: uploaded.ref.fileId,
+					provider: uploaded.ref.provider,
+				},
+			},
+		}));
+	}
+
 	const submit = async () => {
-		if (chat.status === 'streaming' || chat.status === 'submitted') return;
+		if (isPreparingSubmission.value || chat.status === 'streaming' || chat.status === 'submitted') return;
+
+		isPreparingSubmission.value = true;
+
+		const provider = selectedModel.value?.provider;
+
+		let uploadedFiles: Awaited<ReturnType<typeof contextStore.uploadPendingFiles>>;
 
 		try {
-			pendingContextSnapshot.value = await contextStore.fetchContextData();
+			[pendingContextSnapshot.value, uploadedFiles] = await Promise.all([
+				contextStore.fetchContextData(),
+				contextStore.uploadPendingFiles(provider),
+			]);
 		} catch (error) {
+			isPreparingSubmission.value = false;
 			unexpectedError(error);
 			return;
 		}
 
+		const files = buildFileParts(uploadedFiles);
+
 		const previousInput = input.value;
 		const previousContext = [...contextStore.pendingContext.filter((item) => !isVisualElement(item))];
 
-		chat
-			.sendMessage({
-				text: input.value,
-				metadata: {
-					attachments: pendingContextSnapshot.value.length > 0 ? pendingContextSnapshot.value : undefined,
-				},
-			})
-			.catch((error) => {
-				input.value = previousInput;
+		const message: { text: string; files?: FileUIPart[]; metadata: Record<string, unknown> } = {
+			text: input.value,
+			metadata: {
+				attachments: pendingContextSnapshot.value.length > 0 ? pendingContextSnapshot.value : undefined,
+			},
+		};
 
-				for (const item of previousContext) {
-					contextStore.addPendingContext(item);
-				}
+		if (files.length > 0) {
+			message.files = files;
+		}
 
-				unexpectedError(error);
-			});
+		chat.sendMessage(message).catch((error) => {
+			input.value = previousInput;
 
-		submitHook.trigger(input.value);
+			for (const item of previousContext) {
+				contextStore.addPendingContext(item);
+			}
+
+			unexpectedError(error);
+		});
+
+		isPreparingSubmission.value = false;
+		submitHook.trigger(previousInput);
 		input.value = '';
 		contextStore.clearNonVisualContext();
 	};
@@ -378,6 +453,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
 		processedToolCallIds.clear();
+		isPreparingSubmission.value = false;
 
 		tokenUsage.inputTokens = 0;
 		tokenUsage.outputTokens = 0;
@@ -435,6 +511,10 @@ export const useAiStore = defineStore('ai-store', () => {
 		dehydrate,
 		onSubmit: submitHook.on,
 		hasPendingToolCall,
+		isPreparingSubmission,
+		isAwaitingToolExecution,
+		isUiLoading,
+		showAssistantLoadingIndicator,
 		approveToolCall,
 		denyToolCall,
 
@@ -442,6 +522,8 @@ export const useAiStore = defineStore('ai-store', () => {
 		selectedModel,
 		models,
 		selectModel,
+		isProviderLocked,
+		supportsFileUpload,
 
 		// Token usage
 		tokenUsage,
