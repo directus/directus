@@ -25,7 +25,7 @@ import RenderTemplate from '@/views/private/components/render-template.vue';
 type Link = {
 	icon: string;
 	label: string;
-	type: string;
+	type: 'normal' | 'primary' | 'info' | 'success' | 'warning' | 'danger';
 	actionType: string;
 	url?: string;
 	flow?: string;
@@ -227,6 +227,10 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 					<VIcon v-if="icon" :name="icon" />
 					<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
 				</p>
+				<p v-if="subtitle" class="text-subtitle" :class="{ standalone: !title }">
+					<VIcon v-if="icon && !title" :name="icon" />
+					<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
+				</p>
 			</div>
 			<div class="actions-wrapper">
 				<div class="actions-container">
@@ -241,11 +245,11 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 							v-if="primaryLink!.href || primaryLink!.flow"
 							v-bind="primaryLinkProps"
 							small
-							:kind="primaryLink!.type"
+							:kind="primaryLink!.type === 'primary' ? 'normal' : primaryLink!.type"
 						>
 							<VIcon v-if="!primaryLink.icon && !primaryLink.label" name="smart_button" />
 
-							<VIcon v-if="primaryLink!.icon" :left="primaryLink.label" :name="primaryLink!.icon" />
+							<VIcon v-if="primaryLink!.icon" :left="!!primaryLink!.label" :name="primaryLink!.icon" />
 
 							<span v-if="primaryLink!.label">{{ primaryLink!.label }}</span>
 						</VButton>
@@ -303,9 +307,6 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 				</div>
 			</div>
 		</div>
-		<p v-if="subtitle" class="text-subtitle">
-			<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
-		</p>
 		<TransitionExpand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="helper-text-outer">
 				<HelperText :content="helpText" />
@@ -352,7 +353,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	padding-block-end: 8px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	color: var(--header-color, var(--theme--foreground));
-	align-items: baseline;
+	align-items: center;
 	justify-content: space-between;
 	min-inline-size: 0;
 
@@ -375,6 +376,28 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 				--v-icon-color: var(--header-color);
 				margin-block-start: 2px;
 				flex-shrink: 0;
+			}
+		}
+
+		.text-subtitle {
+			margin-block-start: 4px;
+			font-size: 14px;
+			color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			display: flex;
+			gap: 8px;
+			align-items: center;
+
+			.v-icon {
+				--v-icon-color: var(--header-color);
+				margin-block-start: 2px;
+				flex-shrink: 0;
+			}
+
+			&.standalone {
+				margin-block-start: 0;
 			}
 		}
 	}
@@ -420,15 +443,6 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			}
 		}
 	}
-}
-
-.text-subtitle {
-	margin-block-start: 4px;
-	font-size: 14px;
-	color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 
 .helper-text-outer {

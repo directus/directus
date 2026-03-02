@@ -71,8 +71,14 @@ const mountOptions = {
 	},
 };
 
-const urlLink = { icon: 'launch', label: 'url', type: 'primary', actionType: 'url', url: 'https://example.com' };
-const flowLink = { icon: 'automation', label: 'flow', type: 'secondary', actionType: 'flow', flow: 'test-flow' };
+const urlLink = {
+	icon: 'launch',
+	label: 'url',
+	type: 'primary' as const,
+	actionType: 'url',
+	url: 'https://example.com',
+};
+const flowLink = { icon: 'automation', label: 'flow', type: 'normal' as const, actionType: 'flow', flow: 'test-flow' };
 
 describe('Interface', () => {
 	it('should mount', () => {
@@ -155,5 +161,23 @@ describe('Interface', () => {
 		});
 
 		expect(wrapper.find('.actions-container v-button-stub.action').attributes('disabled')).toBe('false');
+	});
+
+	it('renders without error when subtitle only (no title)', () => {
+		const wrapper = mount(Header, {
+			...mountOptions,
+			props: {
+				...mountOptions.props,
+				title: undefined,
+				subtitle: 'Subtitle only',
+			},
+		});
+
+		expect(wrapper.exists()).toBe(true);
+		const textContent = wrapper.find('.text-content');
+		expect(textContent.exists()).toBe(true);
+		const subtitleEl = textContent.find('.text-subtitle.standalone');
+		expect(subtitleEl.exists()).toBe(true);
+		expect(wrapper.findAll('.text-subtitle').length).toBe(1);
 	});
 });
