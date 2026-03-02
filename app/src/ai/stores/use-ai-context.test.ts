@@ -354,11 +354,25 @@ describe('useAiContextStore', () => {
 
 			vi.mocked(api.post)
 				.mockResolvedValueOnce({
-					data: { provider: 'openai', fileId: 'file-1', filename: 'file-1.txt', mimeType: 'text/plain', sizeBytes: 9, expiresAt: null },
+					data: {
+						provider: 'openai',
+						fileId: 'file-1',
+						filename: 'file-1.txt',
+						mimeType: 'text/plain',
+						sizeBytes: 9,
+						expiresAt: null,
+					},
 				})
 				.mockRejectedValueOnce(new Error('500'))
 				.mockResolvedValueOnce({
-					data: { provider: 'openai', fileId: 'file-3', filename: 'file-3.txt', mimeType: 'text/plain', sizeBytes: 9, expiresAt: null },
+					data: {
+						provider: 'openai',
+						fileId: 'file-3',
+						filename: 'file-3.txt',
+						mimeType: 'text/plain',
+						sizeBytes: 9,
+						expiresAt: null,
+					},
 				});
 
 			const results = await store.uploadPendingFiles('openai');
