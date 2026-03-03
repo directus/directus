@@ -25,12 +25,12 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 const defaultSystemFields = {
-	status: {
+	archived: {
 		enabled: false,
 		inputDisabled: false,
-		name: 'status',
-		label: 'status',
-		icon: 'flag',
+		name: 'archived',
+		label: 'archived',
+		icon: 'archive',
 	},
 	sort: {
 		enabled: false,
@@ -199,70 +199,29 @@ function getPrimaryKeyField() {
 function getSystemFields() {
 	const fields: DeepPartial<Field>[] = [];
 
-	// Status
-	if (systemFields.status.enabled === true) {
+	// Archived
+	if (systemFields.archived.enabled === true) {
 		fields.push({
-			field: systemFields.status.name,
-			type: 'string',
+			field: systemFields.archived.name,
+			type: 'boolean',
 			meta: {
-				width: 'full',
-				options: {
-					choices: [
-						{
-							text: '$t:published',
-							value: 'published',
-							color: 'var(--theme--primary)',
-						},
-						{
-							text: '$t:draft',
-							value: 'draft',
-							color: 'var(--theme--foreground)',
-						},
-						{
-							text: '$t:archived',
-							value: 'archived',
-							color: 'var(--theme--warning)',
-						},
-					],
-				},
-				interface: 'select-dropdown',
-				display: 'labels',
+				special: ['cast-boolean'],
+				interface: 'boolean',
+				display: 'boolean',
 				display_options: {
-					showAsDot: true,
-					choices: [
-						{
-							text: '$t:published',
-							value: 'published',
-							color: 'var(--theme--primary)',
-							foreground: 'var(--theme--primary)',
-							background: 'var(--theme--primary-background)',
-						},
-						{
-							text: '$t:draft',
-							value: 'draft',
-							color: 'var(--theme--foreground)',
-							foreground: 'var(--theme--foreground)',
-							background: 'var(--theme--background-normal)',
-						},
-						{
-							text: '$t:archived',
-							value: 'archived',
-							color: 'var(--theme--warning)',
-							foreground: 'var(--theme--warning)',
-							background: 'var(--theme--warning-background)',
-						},
-					],
+					trueLabel: '$t:archived',
+					falseLabel: '$t:not_archived',
 				},
 			},
 			schema: {
-				default_value: 'draft',
+				default_value: false,
 				is_nullable: false,
 			},
 		});
 
-		archiveField.value = systemFields.status.name;
-		archiveValue.value = 'archived';
-		unarchiveValue.value = 'draft';
+		archiveField.value = systemFields.archived.name;
+		archiveValue.value = 'true';
+		unarchiveValue.value = 'false';
 	}
 
 	// Sort
