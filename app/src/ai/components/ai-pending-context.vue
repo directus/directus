@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import type { File } from '@directus/types';
+import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
 import { useAiContextStore } from '../stores/use-ai-context';
-import type { PendingContextItem } from '../types';
+import { isFileContext, isLocalFileContext, type PendingContextItem } from '../types';
 import AiContextCard from './ai-context-card.vue';
+import { getImageUrl, isImageFile } from './parts/file-ui-part-utils';
+import FileLightbox from '@/views/private/components/file-lightbox.vue';
 
 const contextStore = useAiContextStore();
 const { highlight, clearHighlight } = useVisualElementHighlight();
+
+const lightboxActive = ref(false);
+const activeItem = ref<PendingContextItem | null>(null);
 
 const scrollContainerRef = useTemplateRef<HTMLElement>('scroll-container');
 const showLeftFade = ref(false);
@@ -48,6 +54,48 @@ function handleRemove(item: PendingContextItem) {
 	clearHighlight();
 	contextStore.removePendingContext(item.id);
 }
+
+function handleCardClick(item: PendingContextItem) {
+	if (isImageFile(item)) {
+		activeItem.value = item;
+		lightboxActive.value = true;
+	}
+}
+
+const activeFile = computed<Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'> | null>(() => {
+	if (!activeItem.value) return null;
+
+	const item = activeItem.value;
+
+	if (isLocalFileContext(item)) {
+		return {
+			id: '',
+			title: item.display,
+			type: item.data.file.type,
+			modified_on: new Date().toISOString(),
+			width: 0,
+			height: 0,
+		};
+	}
+
+	if (isFileContext(item)) {
+		return {
+			id: item.data.id,
+			title: item.data.title || item.display,
+			type: item.data.type,
+			modified_on: new Date().toISOString(),
+			width: 0,
+			height: 0,
+		};
+	}
+
+	return null;
+});
+
+const activeSrc = computed(() => {
+	if (!activeItem.value) return undefined;
+	return getImageUrl(activeItem.value);
+});
 </script>
 
 <template>
@@ -64,12 +112,16 @@ function handleRemove(item: PendingContextItem) {
 				v-for="item in contextStore.pendingContext"
 				:key="item.id"
 				:item="item"
+				:image-url="getImageUrl(item)"
 				removable
+				@click="handleCardClick(item)"
 				@remove="handleRemove(item)"
 				@mouseenter="highlight(item)"
 				@mouseleave="clearHighlight()"
 			/>
 		</div>
+
+		<FileLightbox v-if="activeFile" v-model="lightboxActive" :file="activeFile" :src="activeSrc" />
 	</div>
 </template>
 
