@@ -175,5 +175,8 @@ describe('Interface', () => {
 		});
 
 		expect(wrapper.exists()).toBe(true);
+		const textContent = wrapper.find('.text-content');
+		const subtitleEl = textContent.find('.text-subtitle.standalone');
+		expect(subtitleEl.exists()).toBe(true);
 	});
 });
