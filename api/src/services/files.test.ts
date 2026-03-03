@@ -2,21 +2,7 @@ import { PassThrough, Readable } from 'node:stream';
 import { ForbiddenError, InvalidPayloadError, InternalServerError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
 import { useEnv } from '@directus/env';
-import type { Knex } from 'knex';
-import knex from 'knex';
-import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import {
-	afterEach,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	test,
-	type MockedFunction,
-	type MockInstance,
-	vi,
-} from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { resetEnvMock } from '../test-utils/env.js';
@@ -28,11 +14,6 @@ vi.mock('./items.js', async () => {
 	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
-
-// vi.mock('@directus/env', async () => {
-// 	const { mockEnv } = await import('../test-utils/env.js');
-// 	return mockEnv();
-// });
 
 const mockEnvOverrides = vi.hoisted(
 	() =>
@@ -592,7 +573,7 @@ describe('Service / Files', () => {
 			describe('uploadOne - permanent filesystem errors', () => {
 				const errorCodes = ['EROFS', 'EACCES', 'EPERM'] as const;
 
-				test.each(errorCodes)('returns 500 for %s filesystem error', async (code: any) => {
+				it.each(errorCodes)('returns 500 for %s filesystem error', async (code: any) => {
 					const stream = Readable.from(Buffer.from('test content'));
 
 					const storage = await getStorage();
