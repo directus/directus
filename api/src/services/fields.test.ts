@@ -4,6 +4,7 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Field, RawField } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
+import { getDatabaseClient } from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import {
 	createMockKnex,
@@ -77,11 +78,13 @@ vi.mock('../utils/should-clear-cache.js', () => ({
 }));
 
 const mockCreateIndexSpy = vi.fn().mockResolvedValue(undefined);
+const mockChangeNullableSpy = vi.fn().mockResolvedValue(undefined);
 
 vi.mock('../database/helpers/index.js', () => ({
 	getHelpers: vi.fn(() => ({
 		schema: {
 			createIndex: mockCreateIndexSpy,
+			changeNullable: mockChangeNullableSpy,
 			processFieldType: vi.fn((field) => field.type),
 			preColumnChange: vi.fn().mockResolvedValue(true),
 			postColumnChange: vi.fn().mockResolvedValue(undefined),
@@ -664,6 +667,193 @@ describe('Integration Tests', () => {
 
 				expect(createOneSpy).toHaveBeenCalled();
 			});
+
+			describe('CockroachDB non-type column changes', () => {
+				const existingColumn = {
+					table: 'test_collection',
+					name: 'name',
+					data_type: 'character varying',
+					default_value: null,
+					max_length: 255,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_generated: false,
+					generation_expression: null,
+					is_nullable: true,
+					is_unique: true,
+					is_indexed: false,
+					is_primary_key: false,
+					has_auto_increment: false,
+					foreign_key_column: null,
+					foreign_key_table: null,
+				};
+
+				test('should use raw SQL for default_value change on CockroachDB (bypassing ALTER COLUMN TYPE)', async () => {
+					vi.mocked(getDatabaseClient).mockReturnValue('cockroachdb');
+
+					const service = new FieldsService({
+						knex: db,
+						schema,
+						accountability: null,
+					});
+
+					service.schemaInspector.columnInfo = vi.fn().mockResolvedValue([existingColumn]);
+
+					tracker.on.select('directus_fields').response([]);
+					tracker.on.any(/ALTER TABLE/i).response([]);
+
+					const rawSpy = vi.spyOn(db, 'raw').mockResolvedValue({} as any);
+
+					const field: RawField = {
+						field: 'name',
+						type: 'string',
+						schema: {
+							...existingColumn,
+							default_value: 'new_default',
+						},
+					};
+
+					await service.updateField('test_collection', field);
+
+					expect(rawSpy).toHaveBeenCalledWith("ALTER TABLE ?? ALTER COLUMN ?? SET DEFAULT 'new_default'", [
+						'test_collection',
+						'name',
+					]);
+
+					// Should NOT have called alterTable (which would trigger ALTER COLUMN TYPE)
+					expect(mockSchemaBuilder.alterTable).not.toHaveBeenCalled();
+
+					rawSpy.mockRestore();
+				});
+
+				test('should drop default value on CockroachDB when set to null', async () => {
+					vi.mocked(getDatabaseClient).mockReturnValue('cockroachdb');
+
+					const service = new FieldsService({
+						knex: db,
+						schema,
+						accountability: null,
+					});
+
+					const existingWithDefault = {
+						...existingColumn,
+						default_value: 'old_default',
+					};
+
+					service.schemaInspector.columnInfo = vi.fn().mockResolvedValue([existingWithDefault]);
+
+					tracker.on.select('directus_fields').response([]);
+					tracker.on.any(/ALTER TABLE/i).response([]);
+
+					const rawSpy = vi.spyOn(db, 'raw').mockResolvedValue({} as any);
+
+					const field: RawField = {
+						field: 'name',
+						type: 'string',
+						schema: {
+							...existingWithDefault,
+							default_value: null,
+						},
+					};
+
+					await service.updateField('test_collection', field);
+
+					expect(rawSpy).toHaveBeenCalledWith('ALTER TABLE ?? ALTER COLUMN ?? DROP DEFAULT', [
+						'test_collection',
+						'name',
+					]);
+
+					expect(mockSchemaBuilder.alterTable).not.toHaveBeenCalled();
+
+					rawSpy.mockRestore();
+				});
+
+				test('should use normal ALTER path on CockroachDB when column type changes', async () => {
+					vi.mocked(getDatabaseClient).mockReturnValue('cockroachdb');
+
+					const service = new FieldsService({
+						knex: db,
+						schema,
+						accountability: null,
+					});
+
+					service.schemaInspector.columnInfo = vi.fn().mockResolvedValue([existingColumn]);
+
+					tracker.on.select('directus_fields').response([]);
+
+					db.schema.alterTable = mockAlterTable() as any;
+
+					const field: RawField = {
+						field: 'name',
+						type: 'string',
+						schema: {
+							...existingColumn,
+							max_length: 512, // type-defining property changed
+						},
+					};
+
+					await service.updateField('test_collection', field);
+
+					expect(db.schema.alterTable).toHaveBeenCalled();
+				});
+
+				test('should use normal ALTER path on non-CockroachDB even for non-type changes', async () => {
+					vi.mocked(getDatabaseClient).mockReturnValue('postgres');
+
+					const service = new FieldsService({
+						knex: db,
+						schema,
+						accountability: null,
+					});
+
+					service.schemaInspector.columnInfo = vi.fn().mockResolvedValue([existingColumn]);
+
+					tracker.on.select('directus_fields').response([]);
+
+					db.schema.alterTable = mockAlterTable() as any;
+
+					const field: RawField = {
+						field: 'name',
+						type: 'string',
+						schema: {
+							...existingColumn,
+							default_value: 'new_default',
+						},
+					};
+
+					await service.updateField('test_collection', field);
+
+					expect(db.schema.alterTable).toHaveBeenCalled();
+				});
+
+				test('should change nullability on CockroachDB without ALTER COLUMN TYPE', async () => {
+					vi.mocked(getDatabaseClient).mockReturnValue('cockroachdb');
+
+					const service = new FieldsService({
+						knex: db,
+						schema,
+						accountability: null,
+					});
+
+					service.schemaInspector.columnInfo = vi.fn().mockResolvedValue([existingColumn]);
+
+					tracker.on.select('directus_fields').response([]);
+
+					const field: RawField = {
+						field: 'name',
+						type: 'string',
+						schema: {
+							...existingColumn,
+							is_nullable: false,
+						},
+					};
+
+					await service.updateField('test_collection', field);
+
+					expect(mockChangeNullableSpy).toHaveBeenCalledWith('test_collection', 'name', false);
+					expect(mockSchemaBuilder.alterTable).not.toHaveBeenCalled();
+				});
+			});
 		});
 
 		describe('updateFields', () => {
@@ -780,6 +970,29 @@ describe('Integration Tests', () => {
 				await service.deleteField('test_collection', 'name');
 
 				expect(clearSpy).toHaveBeenCalled();
+			});
+
+			test('should bypass outer transaction for CockroachDB', async () => {
+				vi.mocked(getDatabaseClient).mockReturnValueOnce('cockroachdb');
+
+				const service = new FieldsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				// Override default empty response with specific field data
+				tracker.on.select('directus_fields').response([{ collection: 'test_collection', field: 'name' }]);
+				// Mock any DDL queries
+				tracker.on.any(/alter table/i).response([]);
+
+				const deleteByQuerySpy = vi.spyOn(ItemsService.prototype, 'deleteByQuery').mockResolvedValue([]);
+
+				db.schema.table = mockSchemaTable() as any;
+
+				await service.deleteField('test_collection', 'name');
+
+				expect(deleteByQuerySpy).toHaveBeenCalled();
 			});
 		});
 

@@ -31,7 +31,7 @@ import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
+import getDatabase, { getDatabaseClient, getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
@@ -561,17 +561,27 @@ export class FieldsService {
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
 						const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+						const isCockroachDb = getDatabaseClient(this.knex) === 'cockroachdb';
 
-						await transaction(this.knex, async (trx) => {
-							await trx.schema.alterTable(collection, (table) => {
-								if (!hookAdjustedField.schema) return;
+						// On CockroachDB, ALTER COLUMN TYPE fails for columns that are part of an index.
+						// When only non-type properties changed (default_value, is_nullable, etc.),
+						// apply them individually to avoid the unnecessary ALTER COLUMN TYPE.
+						if (isCockroachDb && !this.hasColumnTypeChanged(existingColumn, hookAdjustedField)) {
+							await this.applyNonTypeColumnChanges(collection, hookAdjustedField, existingColumn, {
+								attemptConcurrentIndex,
+							});
+						} else {
+							await transaction(this.knex, async (trx) => {
+								await trx.schema.alterTable(collection, (table) => {
+									if (!hookAdjustedField.schema) return;
 
-								this.addColumnToTable(table, collection, field, {
-									existing: existingColumn,
-									attemptConcurrentIndex,
+									this.addColumnToTable(table, collection, field, {
+										existing: existingColumn,
+										attemptConcurrentIndex,
+									});
 								});
 							});
-						});
+						}
 
 						// concurrent index creation cannot be done inside the transaction
 						if (attemptConcurrentIndex) {
@@ -900,6 +910,138 @@ export class FieldsService {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Checks if the column type-defining properties have changed between the existing column
+	 * and the incoming field schema update. Used on CockroachDB to determine whether we can
+	 * avoid ALTER COLUMN TYPE (which fails for indexed columns).
+	 */
+	private hasColumnTypeChanged(existingColumn: Column, field: RawField): boolean {
+		const schema = field.schema;
+		if (!schema) return false;
+
+		if (schema.data_type !== undefined && schema.data_type !== existingColumn.data_type) return true;
+		if (schema.max_length !== undefined && schema.max_length !== existingColumn.max_length) return true;
+
+		if (schema.numeric_precision !== undefined && schema.numeric_precision !== existingColumn.numeric_precision) {
+			return true;
+		}
+
+		if (schema.numeric_scale !== undefined && schema.numeric_scale !== existingColumn.numeric_scale) return true;
+
+		if (schema.has_auto_increment !== undefined && schema.has_auto_increment !== existingColumn.has_auto_increment) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Applies non-type column changes (default value, nullability, unique, index) individually
+	 * using targeted SQL, avoiding ALTER COLUMN TYPE which CockroachDB doesn't support for
+	 * columns that are part of an index.
+	 */
+	private async applyNonTypeColumnChanges(
+		collection: string,
+		field: RawField,
+		existingColumn: Column,
+		opts?: { attemptConcurrentIndex?: boolean },
+	): Promise<void> {
+		const schema = field.schema;
+		if (!schema) return;
+
+		// Apply default value change
+		if (schema.default_value !== undefined && schema.default_value !== existingColumn.default_value) {
+			if (schema.default_value === null) {
+				await this.knex.raw('ALTER TABLE ?? ALTER COLUMN ?? DROP DEFAULT', [collection, field.field]);
+			} else {
+				const defaultValue = schema.default_value;
+				const isString = typeof defaultValue === 'string';
+				const isNowFunction = isString && defaultValue.toLowerCase() === 'now()';
+				const isCurrentTimestamp = isString && defaultValue === 'CURRENT_TIMESTAMP';
+
+				const isTimestampWithPrecision =
+					isString && defaultValue.includes('CURRENT_TIMESTAMP(') && defaultValue.includes(')');
+
+				const isAllowedFunction = isString && ALLOWED_DB_DEFAULT_FUNCTIONS.includes(defaultValue);
+
+				if (isNowFunction || isCurrentTimestamp) {
+					await this.knex.raw('ALTER TABLE ?? ALTER COLUMN ?? SET DEFAULT now()', [collection, field.field]);
+				} else if (isTimestampWithPrecision) {
+					const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
+
+					await this.knex.raw(`ALTER TABLE ?? ALTER COLUMN ?? SET DEFAULT CURRENT_TIMESTAMP(${Number(precision)})`, [
+						collection,
+						field.field,
+					]);
+				} else if (isAllowedFunction) {
+					// ALLOWED_DB_DEFAULT_FUNCTIONS contains known safe function names (e.g., 'gen_random_uuid()')
+					await this.knex.raw(`ALTER TABLE ?? ALTER COLUMN ?? SET DEFAULT ${defaultValue}`, [collection, field.field]);
+				} else {
+					// CockroachDB cannot handle parameterized bindings ($1) in DDL SET DEFAULT,
+					// so the value must be embedded as a SQL literal.
+					await this.knex.raw(`ALTER TABLE ?? ALTER COLUMN ?? SET DEFAULT ${this.toSqlLiteral(defaultValue)}`, [
+						collection,
+						field.field,
+					]);
+				}
+			}
+		}
+
+		// Apply nullability change
+		if (schema.is_nullable !== undefined && schema.is_nullable !== existingColumn.is_nullable) {
+			await this.helpers.schema.changeNullable(collection, field.field, schema.is_nullable);
+		}
+
+		const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+
+		// Apply unique constraint change (concurrent creation is handled by addColumnIndex in the caller)
+		if (schema.is_unique !== undefined && !existingColumn.is_primary_key) {
+			if (schema.is_unique === true && existingColumn.is_unique === false && !attemptConcurrentIndex) {
+				await this.helpers.schema.createIndex(collection, field.field, { unique: true });
+			} else if (schema.is_unique === false && existingColumn.is_unique === true) {
+				const indexName = this.helpers.schema.generateIndexName('unique', collection, field.field);
+
+				await this.knex.schema.alterTable(collection, (table) => {
+					table.dropUnique([field.field], indexName);
+				});
+			}
+		}
+
+		// Apply index change (concurrent creation is handled by addColumnIndex in the caller)
+		if (schema.is_indexed !== undefined && !existingColumn.is_primary_key) {
+			if (schema.is_indexed === true && existingColumn.is_indexed === false && !attemptConcurrentIndex) {
+				await this.helpers.schema.createIndex(collection, field.field);
+			} else if (schema.is_indexed === false && existingColumn.is_indexed === true) {
+				const indexName = this.helpers.schema.generateIndexName('index', collection, field.field);
+
+				await this.knex.schema.alterTable(collection, (table) => {
+					table.dropIndex([field.field], indexName);
+				});
+			}
+		}
+	}
+
+	/**
+	 * Formats a JavaScript value as a safe SQL literal for use in DDL statements
+	 * where parameterized bindings are not supported (e.g., CockroachDB SET DEFAULT).
+	 */
+	private toSqlLiteral(value: unknown): string {
+		if (typeof value === 'number') {
+			if (!Number.isFinite(value)) {
+				throw new InvalidPayloadError({ reason: 'Default value must be a finite number' });
+			}
+
+			return String(value);
+		}
+
+		if (typeof value === 'boolean') {
+			return value ? 'true' : 'false';
+		}
+
+		// For strings and anything else, escape single quotes by doubling them (SQL standard)
+		return `'${String(value).replace(/'/g, "''")}'`;
 	}
 
 	public addColumnToTable(
