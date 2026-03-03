@@ -55,8 +55,8 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 					id: dbProject.id,
 					name: providerProject.name,
 					deployable: providerProject.deployable,
-					...(providerProject.url !== undefined && { url: providerProject.url }),
-					...(providerProject.framework !== undefined && { framework: providerProject.framework }),
+					url: providerProject.url ?? null,
+					framework: providerProject.framework ?? null,
 				};
 			})
 			.filter((update) => update !== null);

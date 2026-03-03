@@ -26,6 +26,7 @@ import { ItemsService } from './items.js';
 
 const env = useEnv();
 const DEPLOYMENT_CACHE_TTL = getMilliseconds(env['CACHE_DEPLOYMENT_TTL']) || 5000; // Default 5s
+const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
 
 export class DeploymentService extends ItemsService<DeploymentConfig> {
 	constructor(options: AbstractServiceOptions) {
@@ -452,7 +453,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 						latest_deployment: {
 							status: latestRun.status,
 							created_at: latestRun.started_at ?? latestRun.date_created,
-							finished_at: latestRun.completed_at ?? undefined,
+							finished_at: latestRun.completed_at ?? null,
 						},
 					}),
 				};
@@ -472,8 +473,6 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		provider: ProviderType,
 		deployment: { id: string; last_synced_at: string | null },
 	): Promise<void> {
-		const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
-
 		if (deployment.last_synced_at) {
 			const lastSync = new Date(deployment.last_synced_at).getTime();
 
