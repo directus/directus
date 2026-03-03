@@ -1,7 +1,7 @@
 import { DeepPartial, Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { validateItem } from '@/utils/validate-item';
 
 const fields: DeepPartial<Field>[] = [
@@ -84,4 +84,46 @@ test('Required fields', () => {
 	);
 
 	expect(result.length).toEqual(1);
+});
+
+test('Custom validation with $NOW dynamic variable does not throw', () => {
+	vi.mock('@/utils/parse-filter', () => ({
+		parseFilter: (filter: any) => {
+			// Simulate resolving $NOW to actual date, matching real parseFilter behavior
+			const resolved = JSON.parse(JSON.stringify(filter), (_key, value) => {
+				if (typeof value === 'string' && value.startsWith('$NOW')) return new Date().toISOString();
+				return value;
+			});
+
+			return resolved;
+		},
+	}));
+
+	const fieldsWithValidation: DeepPartial<Field>[] = [
+		{
+			field: 'publish_date',
+			collection: 'articles',
+			type: 'timestamp',
+			name: 'Publish Date',
+			meta: {
+				required: false,
+				validation: {
+					_and: [
+						{
+							publish_date: {
+								_gte: '$NOW',
+							},
+						},
+					],
+				},
+			},
+			schema: null,
+		},
+	];
+
+	const futureDate = new Date(Date.now() + 86400000).toISOString();
+
+	const result = validateItem({ publish_date: futureDate }, fieldsWithValidation as Field[], true, true);
+
+	expect(result.length).toEqual(0);
 });
