@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import type { DynamicToolUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
-import AiMessageFile from './parts/ai-message-file.vue';
+import type { ContextAttachment } from '@directus/ai';
+import type { DynamicToolUIPart, FileUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
+import { computed } from 'vue';
+import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
+import AiContextCard from './ai-context-card.vue';
+import AiMessageFileGroup from './parts/ai-message-file-group.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
 import AiMessageSourceDocument from './parts/ai-message-source-document.vue';
 import AiMessageSourceUrl from './parts/ai-message-source-url.vue';
@@ -9,7 +13,6 @@ import AiMessageTool from './parts/ai-message-tool.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
-// Alias for SDK message parts - component handles text/reasoning/file parts
 export type AiMessagePart = SDKUIMessagePart<UIDataTypes, UITools>;
 
 export interface AiMessageAction {
@@ -20,19 +23,54 @@ export interface AiMessageAction {
 	loading?: boolean;
 }
 
-interface Props {
-	/** Message ID for tracking */
-	id?: string;
-	/** Message role */
-	role: 'user' | 'assistant' | 'system';
-	/** Message parts for structured content */
-	parts?: AiMessagePart[];
-	/** Action buttons displayed below message */
-	actions?: AiMessageAction[];
+export interface AiMessageMetadata {
+	attachments?: ContextAttachment[];
 }
 
-withDefaults(defineProps<Props>(), {
+interface Props {
+	id?: string;
+	role: 'user' | 'assistant' | 'system';
+	parts?: AiMessagePart[];
+	actions?: AiMessageAction[];
+	metadata?: AiMessageMetadata;
+}
+
+const props = withDefaults(defineProps<Props>(), {
 	parts: () => [],
+});
+
+const { highlight, clearHighlight } = useVisualElementHighlight();
+
+function isToolPart(part: AiMessagePart): part is DynamicToolUIPart {
+	return part.type.startsWith('tool-');
+}
+
+function isFilePart(part: AiMessagePart): part is FileUIPart {
+	return part.type === 'file';
+}
+
+type RenderBlock =
+	| { kind: 'part'; key: string; part: AiMessagePart }
+	| { kind: 'file-group'; key: string; parts: FileUIPart[] };
+
+const renderBlocks = computed<RenderBlock[]>(() => {
+	const prefix = props.id ?? 'msg';
+
+	return props.parts.reduce<RenderBlock[]>((blocks, part, i) => {
+		if (isFilePart(part)) {
+			const last = blocks.at(-1);
+
+			if (last?.kind === 'file-group') {
+				last.parts.push(part);
+			} else {
+				blocks.push({ kind: 'file-group', key: `${prefix}-files-${i}`, parts: [part] });
+			}
+		} else {
+			blocks.push({ kind: 'part', key: `${prefix}-${part.type}-${i}`, part });
+		}
+
+		return blocks;
+	}, []);
 });
 </script>
 
@@ -40,22 +78,37 @@ withDefaults(defineProps<Props>(), {
 	<article :data-role="role" class="ai-message">
 		<div class="message-content">
 			<slot>
-				<template
-					v-for="(part, index) in parts"
-					:key="`${id}-${part.type}-${index}-${'state' in part ? `-${part.state}` : ''}`"
-				>
-					<AiMessageText v-if="part.type === 'text'" :text="part.text" :state="part.state || 'done'" :role="role" />
-					<AiMessageReasoning
-						v-else-if="part.type === 'reasoning' && (part.text || part.state === 'streaming')"
-						:text="part.text"
-						:state="part.state ?? 'done'"
-					/>
-					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
-					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
-					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
-					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part as DynamicToolUIPart" />
+				<template v-for="block in renderBlocks" :key="block.key">
+					<template v-if="block.kind === 'part'">
+						<AiMessageText
+							v-if="block.part.type === 'text'"
+							:text="block.part.text"
+							:state="block.part.state || 'done'"
+							:role="role"
+						/>
+						<AiMessageReasoning
+							v-else-if="block.part.type === 'reasoning' && (block.part.text || block.part.state === 'streaming')"
+							:text="block.part.text"
+							:state="block.part.state ?? 'done'"
+						/>
+						<AiMessageSourceUrl v-else-if="block.part.type === 'source-url'" :part="block.part" />
+						<AiMessageSourceDocument v-else-if="block.part.type === 'source-document'" :part="block.part" />
+						<AiMessageTool v-else-if="isToolPart(block.part)" :part="block.part" />
+					</template>
+					<AiMessageFileGroup v-else :parts="block.parts" />
 				</template>
 			</slot>
+
+			<!-- Context attachments from metadata (user messages only) -->
+			<div v-if="role === 'user' && metadata?.attachments?.length" class="context-attachments">
+				<AiContextCard
+					v-for="(attachment, index) in metadata.attachments"
+					:key="`${attachment.type}-${index}`"
+					:item="attachment"
+					@mouseenter="highlight(attachment)"
+					@mouseleave="clearHighlight()"
+				/>
+			</div>
 
 			<div v-if="actions && actions.length > 0" class="message-actions">
 				<VButton
@@ -128,5 +181,11 @@ withDefaults(defineProps<Props>(), {
 	gap: 0.25rem;
 	align-items: center;
 	margin-block-start: 0.25rem;
+}
+
+.context-attachments {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
 }
 </style>

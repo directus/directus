@@ -99,4 +99,55 @@ describe('FormField', () => {
 
 		expect(wrapper.findComponent({ name: 'FormFieldLabel' }).exists()).toBe(false);
 	});
+
+	describe('isNonEditable', () => {
+		it('should pass non-editable=false when neither prop nor meta is set', () => {
+			const wrapper = mount(FormField, {
+				props: {
+					field: baseField,
+				},
+				global,
+			});
+
+			const fieldInterface = wrapper.findComponent({ name: 'FormFieldInterface' });
+			expect(fieldInterface.props('nonEditable')).toBe(false);
+		});
+
+		it('should pass non-editable=true when nonEditable prop is true', () => {
+			const wrapper = mount(FormField, {
+				props: {
+					field: baseField,
+					nonEditable: true,
+				},
+				global,
+			});
+
+			const fieldInterface = wrapper.findComponent({ name: 'FormFieldInterface' });
+			expect(fieldInterface.props('nonEditable')).toBe(true);
+		});
+
+		it('should pass non-editable=true when field.meta.non_editable is true', () => {
+			const wrapper = mount(FormField, {
+				props: {
+					field: { ...baseField, meta: { ...baseField.meta, non_editable: true } },
+				},
+				global,
+			});
+
+			const fieldInterface = wrapper.findComponent({ name: 'FormFieldInterface' });
+			expect(fieldInterface.props('nonEditable')).toBe(true);
+		});
+
+		it('should pass non-editable=false when field.meta.readonly is true but non_editable is not set', () => {
+			const wrapper = mount(FormField, {
+				props: {
+					field: { ...baseField, meta: { ...baseField.meta, readonly: true } },
+				},
+				global,
+			});
+
+			const fieldInterface = wrapper.findComponent({ name: 'FormFieldInterface' });
+			expect(fieldInterface.props('nonEditable')).toBe(false);
+		});
+	});
 });

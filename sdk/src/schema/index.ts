@@ -4,6 +4,7 @@ export * from './collection.js';
 export * from './comment.js';
 export * from './core.js';
 export * from './dashboard.js';
+export * from './deployment.js';
 export * from './extension.js';
 export * from './field.js';
 export * from './file.js';

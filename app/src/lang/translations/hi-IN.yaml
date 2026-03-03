@@ -1,4 +1,6 @@
 ---
+setup_welcome: डीरेकटस पर स्वागत है
+setup_info: आपका प्रशासक खाता बनाते हैं और आपका प्रोजेक्ट शुरू करते हैं
 identifier: पहचानकर्ता
 avatar: अवतार
 application: एप्लीकेशन
@@ -26,6 +28,7 @@ duplicate_field: डुप्लिकेट फ़ील्ड
 half_width: आधी चौड़ाई
 full_width: पुरी चौड़ाई
 group: समूह
+previous: पहले का 
 export_items: निर्यात आइटम
 and: और
 or: या

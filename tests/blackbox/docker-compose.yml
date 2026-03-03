@@ -99,7 +99,7 @@ services:
       - 6107:26257
 
   redis:
-    image: redis:6-alpine
+    image: ${REDIS_IMAGE:-redis:6-alpine}
     ports:
       - 6108:6379
 
@@ -138,13 +138,13 @@ services:
       - 'host.docker.internal:host-gateway'
 
   # OpenLDAP server for LDAP authentication tests
-  # Uses cleanstart/openldap:2.6 with default configuration
+  # Uses cleanstart/openldap with default configuration
   # Credentials:
   #   Admin DN:      cn=Manager,dc=my-domain,dc=com
   #   Admin Password: secret
   #   Base DN:       dc=my-domain,dc=com
   openldap:
-    image: cleanstart/openldap:2.6
+    image: cleanstart/openldap:2.6.10
     ports:
       - 6109:389
     healthcheck:

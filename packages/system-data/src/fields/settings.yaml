@@ -87,11 +87,17 @@ fields:
           schema:
             is_nullable: false
           meta:
-            interface: text-input
+            interface: system-display-template
             required: true
             options:
-              iconRight: link
-              placeholder: https://example.com
+              placeholder: https://example.com/?version={{$version}}
+              fields:
+                - field: $version
+                  name: $t:version
+                  collection: ''
+                  key: $version
+                  path: $version
+                  type: string
 
   - field: security_divider
     interface: presentation-divider
@@ -454,6 +460,25 @@ fields:
               key: role.name
               path: role.name
     width: full
+
+  - field: collaborative_editing_divider
+    interface: presentation-divider
+    options:
+      icon: podcasts
+      title: $t:fields.directus_settings.collaborative_editing
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: collaborative_editing_enabled
+    interface: boolean
+    width: half
+    note: $t:fields.directus_settings.collaborative_editing_note
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
 
   - field: map_divider
     interface: presentation-divider

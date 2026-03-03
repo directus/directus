@@ -173,6 +173,8 @@ function getLinkForItem() {
 	if (!collection.value || !currentPrimaryKey.value || !relationInfo.value) return '';
 	return getItemRoute(relationInfo.value.relatedCollection.collection, currentPrimaryKey.value);
 }
+
+const menuActive = computed(() => editModalActive.value || selectModalActive.value);
 </script>
 
 <template>
@@ -189,7 +191,7 @@ function getLinkForItem() {
 		{{ $t('no_items') }}
 	</VNotice>
 
-	<div v-else class="many-to-one">
+	<div v-else v-prevent-focusout="menuActive" class="many-to-one">
 		<VSkeletonLoader v-if="loading" type="input" />
 
 		<VListItem
@@ -211,10 +213,10 @@ function getLinkForItem() {
 
 			<div class="spacer" />
 
-			<div v-if="!nonEditable" class="item-actions">
+			<div v-if="!nonEditable || (enableLink && displayItem)" class="item-actions" @click.stop>
 				<template v-if="displayItem">
 					<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem()" custom>
-						<VIcon v-if="disabled" name="launch" />
+						<VIcon v-if="disabled && !nonEditable" name="launch" />
 
 						<a
 							v-else
@@ -228,9 +230,23 @@ function getLinkForItem() {
 						</a>
 					</RouterLink>
 
-					<VIcon v-tooltip="$t('edit_item')" name="edit" clickable :disabled @click="editModalActive = true" />
+					<VIcon
+						v-if="!nonEditable"
+						v-tooltip="$t('edit_item')"
+						name="edit"
+						clickable
+						:disabled
+						@click="editModalActive = true"
+					/>
 
-					<VRemove deselect :disabled :item-info="relationInfo" :item-edits="edits" @action="$emit('input', null)" />
+					<VRemove
+						v-if="!nonEditable"
+						deselect
+						:disabled
+						:item-info="relationInfo"
+						:item-edits="edits"
+						@action="$emit('input', null)"
+					/>
 				</template>
 
 				<template v-else>

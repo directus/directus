@@ -1,30 +1,50 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import { PrimaryKey } from '@directus/types';
+import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { useEventListener } from '@vueuse/core';
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { EditConfig, NavigationData, ReceiveData, SavedData, SendAction } from '../types';
+import type {
+	AddToContextData,
+	CheckFieldAccessData,
+	EditConfig,
+	HighlightElementData,
+	NavigationData,
+	ReceiveData,
+	SavedData,
+	SendAction,
+} from '../types';
 import { sameOrigin } from '../utils/same-origin';
+import { useContextStaging } from '@/ai/composables/use-context-staging';
+import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiContextStore } from '@/ai/stores/use-ai-context';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useCollectionPermissions } from '@/composables/use-permissions';
+import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
 
-const { frameSrc, frameEl, showEditableElements } = defineProps<{
+const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
 	frameSrc: string;
 	frameEl?: HTMLIFrameElement;
 	showEditableElements?: boolean;
+	version: Pick<ContentVersion, 'key' | 'name'> | null;
 }>();
 
 const emit = defineEmits<{
 	navigation: [data: NavigationData];
-	saved: [];
+	saved: [data: { collection: string; primaryKey: PrimaryKey }];
 }>();
 
 const { t } = useI18n();
@@ -34,24 +54,54 @@ const { collection, primaryKey, fields, mode, position, isNew, edits, editOverla
 
 const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : null));
 
-const { sendSaved } = useWebsiteFrame({ onClickEdit });
+const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
+
+useVisualEditingAi({ sendSaved, sendHighlightElement });
 
 const { popoverWidth } = usePopoverWidth();
 
+// Clear highlight when edit overlay closes
+watch(editOverlayActive, (isActive) => {
+	if (!isActive) {
+		sendHighlightElement({ key: null });
+	}
+});
+
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
+	const serverStore = useServerStore();
+	const settingsStore = useSettingsStore();
+	const userStore = useUserStore();
+	const permissionsStore = usePermissionsStore();
+	const collectionsStore = useCollectionsStore();
+	const contextStore = useAiContextStore();
+	const { stageVisualElement } = useContextStaging();
+
+	const {
+		readAllowed: readVersionsAllowed,
+		createAllowed: createVersionsAllowed,
+		updateAllowed: updateVersionsAllowed,
+	} = useCollectionPermissions('directus_versions');
+
 	useEventListener('message', (event) => {
-		if (!sameOrigin(event.origin, frameSrc)) return;
+		if (!sameOrigin(event.origin, frameSrc)) {
+			return;
+		}
 
 		const { action = null, data = null }: ReceiveData = event.data;
 
 		if (action === 'connect') {
 			sendConfirm();
 			if (showEditableElements) sendShowEditableElements(true);
+			contextStore.syncVisualElementContextUrl(frameSrc);
 		}
+
+		if (action === 'checkFieldAccess') receiveCheckFieldAccess(data);
 
 		if (action === 'navigation') receiveNavigation(data);
 
 		if (action === 'edit') onClickEdit(data);
+
+		if (action === 'addToContext') receiveAddToContext(data);
 	});
 
 	watch(
@@ -61,7 +111,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		},
 	);
 
-	return { sendSaved };
+	return { sendSaved, sendHighlightElement };
 
 	function receiveNavigation(data: unknown) {
 		const { url, title } = data as NavigationData;
@@ -70,12 +120,46 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		emit('navigation', { url, title });
 	}
 
+	function receiveCheckFieldAccess(data: unknown) {
+		const elements = data as CheckFieldAccessData[];
+		const canEditVersions = readVersionsAllowed.value && (createVersionsAllowed.value || updateVersionsAllowed.value);
+
+		if (version && !userStore.isAdmin && !canEditVersions) {
+			send('activateElements', []);
+			return;
+		}
+
+		const permittedKeys = elements.filter((element) => hasAnyUpdatableField(element)).map(({ key }) => key);
+		send('activateElements', permittedKeys);
+	}
+
+	function hasAnyUpdatableField({ collection, item, fields }: CheckFieldAccessData) {
+		if (item == null || item === '') return false;
+
+		const collectionInfo = collectionsStore.getCollection(collection);
+		if (!collectionInfo) return false;
+
+		if (version && !collectionInfo.meta?.versioning) return false;
+
+		if (userStore.isAdmin) return true;
+
+		const permission = permissionsStore.getPermission(collection, 'update');
+		if (!permission || permission.access === 'none') return false;
+
+		if (fields.length && permission.fields && !permission.fields.includes('*')) {
+			if (!fields.some((field) => permission.fields!.includes(field))) return false;
+		}
+
+		return true;
+	}
+
 	function send(action: SendAction, data: unknown) {
 		frameEl?.contentWindow?.postMessage({ action, data }, frameSrc);
 	}
 
 	function sendConfirm() {
-		send('confirm', null);
+		const aiEnabled = serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0;
+		send('confirm', { aiEnabled });
 	}
 
 	function sendShowEditableElements(show: boolean) {
@@ -85,10 +169,76 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	function sendSaved(data: SavedData) {
 		send('saved', data);
 	}
+
+	function sendHighlightElement(data: HighlightElementData) {
+		send('highlightElement', data);
+	}
+
+	function receiveAddToContext(data: unknown) {
+		const { key, editConfig, rect } = data as AddToContextData;
+
+		if (!key || !editConfig?.collection || editConfig.item == null) return;
+
+		stageVisualElement({
+			key,
+			collection: editConfig.collection,
+			item: editConfig.item,
+			fields: editConfig.fields,
+			rect,
+		});
+	}
+}
+
+function useVisualEditingAi({
+	sendSaved,
+	sendHighlightElement,
+}: {
+	sendSaved: (data: SavedData) => void;
+	sendHighlightElement: (data: HighlightElementData) => void;
+}) {
+	const aiStore = useAiStore();
+	const contextStore = useAiContextStore();
+	const toolsStore = useAiToolsStore();
+
+	// Any non-read mutation should trigger a preview refresh
+	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input) => {
+		if (tool !== 'items') return;
+		if (input.action === 'read') return;
+
+		sendSaved({ key: '', collection: input.collection as string, item: null, payload: {} });
+	});
+
+	const unsubscribeHighlight = aiStore.onVisualElementHighlight((data) => {
+		if (data === null) {
+			sendHighlightElement({ key: null });
+		} else {
+			const payload: HighlightElementData = {
+				collection: data.collection,
+				item: data.item,
+			};
+
+			if (data.fields) {
+				const rawFields = Array.from(toRaw(data.fields)).filter((field) => typeof field === 'string');
+
+				if (rawFields.length > 0) {
+					payload.fields = rawFields;
+				}
+			}
+
+			sendHighlightElement(payload);
+		}
+	});
+
+	onUnmounted(() => {
+		unsubscribeItemsResult.off();
+		unsubscribeHighlight.off();
+		contextStore.clearVisualElementContext();
+	});
 }
 
 function useItemWithEdits() {
 	const edits = ref<Record<string, any>>({});
+	const saving = ref(false);
 	const editOverlayActive = ref(false);
 	const msgKey = ref('');
 	const collection = ref<EditConfig['collection']>('');
@@ -105,9 +255,10 @@ function useItemWithEdits() {
 
 	const editingLayerEl = useTemplateRef<HTMLElement>('editing-layer');
 
-	watch(edits, (newEdits) => {
+	watch([edits, saving], ([newEdits, isSaving]) => {
 		const hasEdits = Object.keys(newEdits)?.length;
-		if (!hasEdits) return;
+		if (!hasEdits || isSaving) return;
+
 		save();
 	});
 
@@ -137,18 +288,51 @@ function useItemWithEdits() {
 			return getCollectionRoute(collection.value);
 		}
 
-		return getItemRoute(collection.value, primaryKey.value);
+		return getItemRoute(collection.value, primaryKey.value, version?.key);
 	}
 
 	function resetEdits() {
 		edits.value = {};
 	}
 
+	async function fetchOrCreateVersionId(versionKey: ContentVersion['key']) {
+		const {
+			data: { data: existing },
+		} = await api.get('/versions', {
+			params: {
+				filter: {
+					collection: { _eq: collection.value },
+					item: { _eq: String(primaryKey.value) },
+					key: { _eq: versionKey },
+				},
+				limit: 1,
+				fields: ['id'],
+			},
+		});
+
+		if (existing.length) return existing[0].id;
+
+		const {
+			data: { data: created },
+		} = await api.post('/versions', {
+			key: versionKey,
+			collection: collection.value,
+			item: String(primaryKey.value),
+		});
+
+		return created.id;
+	}
+
 	async function save() {
+		saving.value = true;
+
 		try {
 			let response;
 
-			if (isNew.value) {
+			if (version) {
+				const versionId: PrimaryKey = await fetchOrCreateVersionId(version.key);
+				response = await api.post(`/versions/${versionId}/save`, edits.value);
+			} else if (isNew.value) {
 				response = await api.post(itemEndpoint.value, edits.value);
 				notify({ title: t('item_create_success', 1), icon: 'check' });
 			} else {
@@ -166,11 +350,13 @@ function useItemWithEdits() {
 				payload: JSON.parse(JSON.stringify(edits.value)),
 			});
 
-			emit('saved');
+			emit('saved', { collection: collection.value, primaryKey: primaryKey.value });
 
 			resetEdits();
 		} catch (error) {
 			unexpectedError(error);
+		} finally {
+			saving.value = false;
 		}
 	}
 
@@ -262,6 +448,7 @@ function usePopoverWidth() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
+			:version="version?.key"
 			:popover-props="position.width > popoverWidth ? { arrowPlacement: 'start' } : {}"
 			apply-shortcut="meta+s"
 			prevent-cancel-with-edits

@@ -67,6 +67,11 @@ export default defineConfig({
 					target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
 					changeOrigin: true,
 				},
+				'/websocket': {
+					target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
+					changeOrigin: true,
+					ws: true,
+				},
 			},
 			fs: {
 				allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
@@ -74,6 +79,8 @@ export default defineConfig({
 		},
 	}),
 	test: {
+		dir: path.resolve(__dirname, '..'),
+		include: ['app/**/*.test.ts'],
 		environment: 'happy-dom',
 		deps: {
 			optimizer: {

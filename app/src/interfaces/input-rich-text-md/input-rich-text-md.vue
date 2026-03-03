@@ -215,11 +215,14 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		applyEdit(codemirror, type, options);
 	}
 }
+
+const menuActive = computed(() => imageDialogOpen.value);
 </script>
 
 <template>
 	<div
 		ref="markdownInterface"
+		v-prevent-focusout="menuActive"
 		class="interface-input-rich-text-md"
 		:class="[view, { disabled, 'non-editable': nonEditable }]"
 	>

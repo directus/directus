@@ -310,6 +310,12 @@ delete: Διαγραφή
 flows: Ροές
 flow_name: Όνομα
 insights: Στατιστικά
+deployment:
+  provider:
+    settings:
+      delete_confirm: Αυτή η ενέργεια είναι μόνιμη και δεν μπορεί να αναιρεθεί. Είστε σίγουροι ότι θα θέλατε να προχωρήσετε;
+    run:
+      cancel_confirm: Αυτή η ενέργεια είναι μόνιμη και δεν μπορεί να αναιρεθεί. Είστε σίγουροι ότι θα θέλατε να προχωρήσετε;
 width: Πλάτος
 height: Ύψος
 wysiwyg_options:
@@ -414,6 +420,7 @@ field_options:
 comment: Σχόλιο
 ai:
   unknown: Άγνωστο
+  content: Περιεχόμενο
   settings: Ρυθμίσεις
 ai_tools:
   files: Αρχεία

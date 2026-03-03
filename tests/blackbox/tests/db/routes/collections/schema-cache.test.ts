@@ -33,6 +33,8 @@ describe('Schema Caching Tests', () => {
 					env1[vendor]['CACHE_STORE'] = 'memory';
 					env1[vendor]['CACHE_NAMESPACE'] = 'directus-schema-cache';
 					env1[vendor]['REDIS'] = `redis://localhost:6108/4`;
+					env1[vendor]['REDIS_ENABLED'] = 'true';
+					env1[vendor]['SYNCHRONIZATION_STORE'] = 'redis';
 
 					const env2 = cloneDeep(env1);
 					env2[vendor]['CACHE_NAMESPACE'] = env1[vendor]['CACHE_NAMESPACE'] + '2';
@@ -133,6 +135,8 @@ describe('Schema Caching Tests', () => {
 					env3[vendor]['CACHE_SCHEMA'] = 'true';
 					env3[vendor]['CACHE_STORE'] = 'memory';
 					env3[vendor]['CACHE_NAMESPACE'] = cacheNamespacePrefix + '3';
+					env3[vendor]['REDIS_ENABLED'] = 'false';
+					env3[vendor]['SYNCHRONIZATION_STORE'] = 'memory';
 
 					const env4 = cloneDeep(env3);
 					env4[vendor]['CACHE_NAMESPACE'] = cacheNamespacePrefix + '4';
