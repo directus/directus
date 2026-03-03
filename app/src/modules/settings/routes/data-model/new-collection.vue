@@ -209,8 +209,9 @@ function getSystemFields() {
 				interface: 'boolean',
 				display: 'boolean',
 				display_options: {
-					trueLabel: '$t:archived',
-					falseLabel: '$t:not_archived',
+					iconOn: 'archive',
+					iconOff: 'unarchive',
+					colorOff: 'transparent',
 				},
 			},
 			schema: {
