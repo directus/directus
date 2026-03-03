@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
 import { format } from 'date-fns';
 import { Router } from 'express';
@@ -9,6 +10,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { createAdmin } from '../utils/create-admin.js';
 
 const router = Router();
+const env = useEnv();
 
 router.get(
 	'/specs/oas',
@@ -24,31 +26,33 @@ router.get(
 	respond,
 );
 
-router.get(
-	'/specs/graphql/:scope?',
-	asyncHandler(async (req, res) => {
-		const service = new SpecificationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+if (env['REST_GRAPHQL_INTROSPECTION'] !== false) {
+	router.get(
+		'/specs/graphql/:scope?',
+		asyncHandler(async (req, res) => {
+			const service = new SpecificationService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		const serverService = new ServerService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+			const serverService = new ServerService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		const scope = req.params['scope'] || 'items';
+			const scope = req.params['scope'] || 'items';
 
-		if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundError({ path: req.path });
+			if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundError({ path: req.path });
 
-		const info = await serverService.serverInfo();
-		const result = await service.graphql.generate(scope as 'items' | 'system');
-		const filename = info['project'].project_name + '_' + format(new Date(), 'yyyy-MM-dd') + '.graphql';
+			const info = await serverService.serverInfo();
+			const result = await service.graphql.generate(scope as 'items' | 'system');
+			const filename = info['project'].project_name + '_' + format(new Date(), 'yyyy-MM-dd') + '.graphql';
 
-		res.attachment(filename);
-		res.send(result);
-	}),
-);
+			res.attachment(filename);
+			res.send(result);
+		}),
+	);
+}
 
 router.get(
 	'/info',

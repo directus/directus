@@ -26,6 +26,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	FILE_METADATA_ALLOW_LIST: 'array',
 
+	REST_GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 

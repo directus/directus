@@ -155,33 +155,38 @@ export function injectSystemResolvers(
 	}
 
 	/** Globally available query */
+	if (env['GRAPHQL_INTROSPECTION'] !== false) {
+		schemaComposer.Query.addFields({
+			server_specs_graphql: {
+				type: GraphQLString,
+				args: {
+					scope: new GraphQLEnumType({
+						name: 'graphql_sdl_scope',
+						values: {
+							items: { value: 'items' },
+							system: { value: 'system' },
+						},
+					}),
+				},
+				resolve: async (_, args) => {
+					const service = new GraphQLService({
+						schema: gql.schema,
+						accountability: gql.accountability,
+						scope: args['scope'] ?? 'items',
+					});
+
+					return await generateSchema(service, 'sdl');
+				},
+			},
+		});
+	}
+
 	schemaComposer.Query.addFields({
 		server_specs_oas: {
 			type: GraphQLJSON,
 			resolve: async () => {
 				const service = new SpecificationService({ schema: gql.schema, accountability: gql.accountability });
 				return await service.oas.generate();
-			},
-		},
-		server_specs_graphql: {
-			type: GraphQLString,
-			args: {
-				scope: new GraphQLEnumType({
-					name: 'graphql_sdl_scope',
-					values: {
-						items: { value: 'items' },
-						system: { value: 'system' },
-					},
-				}),
-			},
-			resolve: async (_, args) => {
-				const service = new GraphQLService({
-					schema: gql.schema,
-					accountability: gql.accountability,
-					scope: args['scope'] ?? 'items',
-				});
-
-				return await generateSchema(service, 'sdl');
 			},
 		},
 		server_ping: {
