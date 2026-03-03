@@ -1,3 +1,4 @@
+import { createError } from '@directus/errors';
 import type { PermissionsAction } from '@directus/types';
 import { ERRORS, Metadata } from '@tus/utils';
 import { Router } from 'express';
@@ -35,7 +36,11 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 			try {
 				metadata = Metadata.parse(req.header('upload-metadata'));
 			} catch {
-				throw ERRORS.INVALID_METADATA;
+				throw new (createError(
+					'INVALID_METADATA',
+					ERRORS.INVALID_METADATA.body,
+					ERRORS.INVALID_METADATA.status_code,
+				))();
 			}
 
 			// On replacement ensure update for that record
@@ -50,7 +55,7 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 			for (const field of Object.keys(req.schema.collections['directus_files']!.fields)) {
 				// PK is not mutable, access to record is already checked via `primaryKeys` for updates
 				if (field === 'id') {
-					return;
+					continue;
 				}
 
 				if (field in metadata) {
