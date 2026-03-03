@@ -361,7 +361,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	}
 
 	/**
-	 * Dashboard: selected projects with enriched details and run stats
+	 * Dashboard: projects + latest run status + stats
 	 */
 	async getDashboard(
 		provider: ProviderType,
@@ -395,18 +395,18 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		}
 
 		const projectIds = selectedProjects.map((p) => p.id);
-		const driver = await this.getDriver(provider);
 
-		const [projectDetails, activeResult, statusCounts] = await Promise.all([
+		// Latest run per project + aggregated stats
+		const [latestRuns, activeResult, statusCounts] = await Promise.all([
 			Promise.all(
-				selectedProjects.map(async (p) => {
-					const details = await driver.getProject(p.external_id);
+				projectIds.map(async (projectId) => {
+					const runs = await runsService.readByQuery({
+						filter: { project: { _eq: projectId } },
+						sort: ['-date_created'],
+						limit: 1,
+					});
 
-					return {
-						...details,
-						id: p.id,
-						external_id: p.external_id,
-					};
+					return { projectId, run: runs?.[0] ?? null };
 				}),
 			),
 			runsService.readByQuery({
@@ -426,17 +426,101 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			}) as Promise<any[]>,
 		]);
 
+		const latestRunMap = new Map(latestRuns.map((r) => [r.projectId, r.run]));
+
 		const countByStatus = (status: string) =>
 			Number(statusCounts.find((r: any) => r['status'] === status)?.['count'] ?? 0);
 
+		// Background sync of project metadata if stale
+		this.syncProjectMetadataIfStale(provider, deployment).catch((err) => {
+			const logger = useLogger();
+			logger.error(`Failed to sync project metadata for ${provider}: ${err}`);
+		});
+
 		return {
-			projects: projectDetails,
+			projects: selectedProjects.map((p) => {
+				const latestRun = latestRunMap.get(p.id);
+
+				return {
+					id: p.id,
+					external_id: p.external_id,
+					name: p.name,
+					url: p.url,
+					framework: p.framework,
+					deployable: p.deployable,
+					...(latestRun && {
+						latest_deployment: {
+							status: latestRun.status,
+							created_at: latestRun.started_at ?? latestRun.date_created,
+							finished_at: latestRun.completed_at ?? undefined,
+						},
+					}),
+				};
+			}),
 			stats: {
 				active_deployments: Number(activeResult[0]?.['count'] ?? 0),
 				successful_builds: countByStatus('ready'),
 				failed_builds: countByStatus('error'),
 			},
 		};
+	}
+
+	/**
+	 * Refresh project metadata (name, url, framework, deployable) if stale.
+	 */
+	private async syncProjectMetadataIfStale(
+		provider: ProviderType,
+		deployment: { id: string; last_synced_at: string | null },
+	): Promise<void> {
+		const SYNC_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
+
+		if (deployment.last_synced_at) {
+			const lastSync = new Date(deployment.last_synced_at).getTime();
+
+			if (Date.now() - lastSync < SYNC_THRESHOLD_MS) return;
+		}
+
+		const logger = useLogger();
+		logger.debug(`[metadata:${provider}] Syncing project metadata`);
+
+		const projectsService = new DeploymentProjectsService({
+			accountability: null,
+			schema: this.schema,
+		});
+
+		const driver = await this.getDriver(provider);
+
+		const selectedProjects = await projectsService.readByQuery({
+			filter: { deployment: { _eq: deployment.id } },
+			limit: -1,
+		});
+
+		// Fetch details per project
+		const updates = await Promise.all(
+			selectedProjects.map(async (p) => {
+				const details = await driver.getProject(p.external_id);
+
+				return {
+					id: p.id,
+					name: details.name,
+					url: details.url ?? null,
+					framework: details.framework ?? null,
+					deployable: details.deployable,
+				};
+			}),
+		);
+
+		if (updates.length > 0) {
+			await projectsService.updateBatch(updates);
+		}
+
+		// Mark sync timestamp
+		const internalService = new DeploymentService({
+			accountability: null,
+			schema: this.schema,
+		});
+
+		await internalService.updateOne(deployment.id, { last_synced_at: new Date().toISOString() });
 	}
 
 	/**

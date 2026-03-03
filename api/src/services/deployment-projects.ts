@@ -10,6 +10,9 @@ export interface DeploymentProject {
 	deployment: string;
 	external_id: string;
 	name: string;
+	url: string | null;
+	framework: string | null;
+	deployable: boolean;
 	date_created: string;
 	user_created: string;
 }
@@ -32,7 +35,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	}
 
 	/**
-	 * List provider projects merged with DB selection, syncing names if changed.
+	 * List provider projects merged with DB selection, syncing metadata.
 	 */
 	async listWithSync(deploymentId: string, providerProjects: ProviderProject[]) {
 		const selectedProjects = await this.readByQuery({
@@ -42,27 +45,24 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 
 		const selectedMap = new Map(selectedProjects.map((p) => [p.external_id, p]));
 
-		// Sync names from provider
-		const namesToUpdate = selectedProjects
+		// Sync metadata for selected projects
+		const toUpdate = selectedProjects
 			.map((dbProject) => {
 				const providerProject = providerProjects.find((p) => p.id === dbProject.external_id);
+				if (!providerProject) return null;
 
-				if (providerProject && providerProject.name !== dbProject.name) {
-					return { id: dbProject.id, name: providerProject.name };
-				}
-
-				return null;
+				return {
+					id: dbProject.id,
+					name: providerProject.name,
+					deployable: providerProject.deployable,
+					...(providerProject.url !== undefined && { url: providerProject.url }),
+					...(providerProject.framework !== undefined && { framework: providerProject.framework }),
+				};
 			})
-			.filter((update): update is { id: string; name: string } => update !== null);
+			.filter((update) => update !== null);
 
-		if (namesToUpdate.length > 0) {
-			const internalService = new DeploymentProjectsService({
-				accountability: null,
-				schema: this.schema,
-				knex: this.knex,
-			});
-
-			await internalService.updateBatch(namesToUpdate);
+		if (toUpdate.length > 0) {
+			await this.updateBatch(toUpdate as Partial<DeploymentProject>[]);
 		}
 
 		return providerProjects.map((project) => ({
@@ -75,16 +75,17 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	}
 
 	/**
-	 * Validate that all projects to create are deployable. Throws if any are not.
+	 * Validate that all projects to create are deployable.
+	 * Returns the provider projects map for metadata enrichment.
 	 */
 	async validateDeployable(
 		driver: DeploymentDriver<any, any>,
 		projectsToCreate: { external_id: string; name: string }[],
-	): Promise<void> {
-		if (projectsToCreate.length === 0) return;
-
+	): Promise<Map<string, ProviderProject>> {
 		const providerProjects = await driver.listProjects();
 		const projectsMap = new Map(providerProjects.map((p) => [p.id, p]));
+
+		if (projectsToCreate.length === 0) return projectsMap;
 
 		const nonDeployable = projectsToCreate.filter((p) => !projectsMap.get(p.external_id)?.deployable);
 
@@ -95,6 +96,8 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 				reason: `Cannot add non-deployable projects: ${names}`,
 			});
 		}
+
+		return projectsMap;
 	}
 
 	/**
@@ -102,10 +105,26 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 	 */
 	async updateSelection(
 		deploymentId: string,
+		driver: DeploymentDriver<any, any>,
 		create: { external_id: string; name: string }[],
 		deleteIds: PrimaryKey[],
 	): Promise<DeploymentProject[]> {
 		const db = getDatabase();
+
+		// Fetch metadata for new projects
+		const enrichedCreate = await Promise.all(
+			create.map(async (p) => {
+				const details = await driver.getProject(p.external_id);
+
+				return {
+					external_id: p.external_id,
+					name: p.name,
+					url: details.url ?? null,
+					framework: details.framework ?? null,
+					deployable: details.deployable,
+				};
+			}),
+		);
 
 		return transaction(db, async (trx) => {
 			const trxService = new DeploymentProjectsService({
@@ -118,12 +137,15 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 				await trxService.deleteMany(deleteIds);
 			}
 
-			if (create.length > 0) {
+			if (enrichedCreate.length > 0) {
 				await trxService.createMany(
-					create.map((p) => ({
+					enrichedCreate.map((p) => ({
 						deployment: deploymentId,
 						external_id: p.external_id,
 						name: p.name,
+						url: p.url,
+						framework: p.framework,
+						deployable: p.deployable,
 					})),
 				);
 			}

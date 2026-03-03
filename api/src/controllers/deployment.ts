@@ -235,14 +235,14 @@ router.patch(
 
 		// Get provider config
 		const deployment = await service.readByProvider(provider);
+		const driver = await service.getDriver(provider);
 
 		// Validate deployable projects before any mutation
 		if (value.create.length > 0) {
-			const driver = await service.getDriver(provider);
 			await projectsService.validateDeployable(driver, value.create);
 		}
 
-		const updatedProjects = await projectsService.updateSelection(deployment.id, value.create, value.delete);
+		const updatedProjects = await projectsService.updateSelection(deployment.id, driver, value.create, value.delete);
 
 		// Sync webhook with updated project list
 		service.syncWebhook(provider).catch((err) => {
