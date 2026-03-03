@@ -1,7 +1,8 @@
 import type { PermissionsAction } from '@directus/types';
+import { ERRORS, Metadata } from '@tus/utils';
 import { Router } from 'express';
 import getDatabase from '../database/index.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { validateAccess, type ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
 import { createTusServer } from '../services/tus/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
@@ -22,17 +23,52 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 	if (req.accountability) {
 		const action = mapAction(req.method);
 
-		await validateAccess(
-			{
-				action,
-				collection: 'directus_files',
-				accountability: req.accountability,
-			},
-			{
-				schema: req.schema,
-				knex: getDatabase(),
-			},
-		);
+		const validateAccessOptions: ValidateAccessOptions = {
+			action,
+			collection: 'directus_files',
+			accountability: req.accountability,
+		};
+
+		if (req.method === 'POST' && req.header('upload-metadata')) {
+			let metadata: Record<string, string | null>;
+
+			try {
+				metadata = Metadata.parse(req.header('upload-metadata'));
+			} catch {
+				throw ERRORS.INVALID_METADATA;
+			}
+
+			// On replacement ensure update for that record
+			if (metadata['id']) {
+				validateAccessOptions.action = 'update';
+				validateAccessOptions.primaryKeys = [metadata['id']];
+			}
+
+			// Validate permissions for any payload fields
+			const fields = [];
+
+			for (const field of Object.keys(req.schema.collections['directus_files']!.fields)) {
+				// PK is not mutable, access to record is already checked via `primaryKeys` for updates
+				if (field === 'id') {
+					return;
+				}
+
+				if (field in metadata) {
+					fields.push(field);
+				}
+			}
+
+			if (fields.length > 0) {
+				validateAccessOptions.fields = fields;
+			}
+		} else if (req.params['id']) {
+			validateAccessOptions.primaryKeys = [req.params['id']];
+		}
+
+		await validateAccess(validateAccessOptions, {
+			schema: req.schema,
+			knex: getDatabase(),
+		});
 	}
 
 	return next();
