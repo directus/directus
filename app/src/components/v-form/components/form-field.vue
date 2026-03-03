@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ContentVersion, ValidationError } from '@directus/types';
+import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -13,6 +13,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { CollabFieldContext } from '@/composables/use-collab';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import CollabIndicatorField from '@/views/private/components/collab/CollabIndicatorField.vue';
 
@@ -37,7 +38,7 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		disabledMenu?: boolean;
 		direction?: string;
-		version?: ContentVersion | null;
+		version?: ContentVersionMaybeNew | null;
 		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
