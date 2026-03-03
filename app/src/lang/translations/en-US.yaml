@@ -226,6 +226,7 @@ switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
 rename_version: Rename Version
+reserved_version_key: 'The version key "{key}" is reserved and cannot be used.'
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
@@ -238,6 +239,7 @@ delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 delete_on_apply_copy: >-
   You are about to promote “{version}” to Main. What should happen to “{version}” after promotion?
+content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -1844,6 +1846,14 @@ ai:
   prompt_staged: Prompt staged
   items_staged: Items staged
   some_items_staged: '{count} item(s) staged (limit reached)'
+  files_staged: Files staged
+  some_files_staged: '{count} file(s) staged (limit reached)'
+  attach_file_subtitle: Attach existing files
+  upload_file_subtitle: Upload local files
+  file_upload_failed: 'Failed to upload {name}'
+  file_upload_not_supported: File uploads are not supported for this provider
+  unsupported_file_type: Unsupported file type
+  provider_locked_tooltip: Cannot change providers after uploading files. Clear the existing conversation to switch.
   image_preview: Image preview
   item_staged: Item staged
   invalid_collection: Invalid collection
@@ -1963,6 +1973,7 @@ no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
 delete_label: Delete
+discard_label: Discard
 delete_are_you_sure: >-
   This action is permanent and can not be undone. Are you sure you would like to proceed?
 delete_field_are_you_sure: >-
