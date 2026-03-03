@@ -41,7 +41,6 @@
 			"qs": "6.14.2",
 			"minimatch@10": "10.2.3",
 			"minimatch@9": "9.0.7",
-			"nodemailer": "7.0.11",
 			"basic-ftp": "5.2.0"
 		}
 	},
