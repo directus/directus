@@ -194,6 +194,7 @@ function useURLImport() {
 				data: {
 					folder: props.folder,
 				},
+				options: { filterMimeType: props.allowedMimeTypes },
 			});
 
 			file.value = response.data.data;
