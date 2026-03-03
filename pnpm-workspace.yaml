@@ -141,7 +141,7 @@ catalog:
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
   ai: 6.0.25
-  ajv: 8.18.0
+  ajv: 8.17.1
   apexcharts: 4.7.0
   archiver: 7.0.1
   argon2: 0.44.0
@@ -178,7 +178,7 @@ catalog:
   dotenv: 17.2.3
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.27.3
+  esbuild: 0.26.0
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
   eslint: 9.39.1
