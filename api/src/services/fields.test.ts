@@ -1118,10 +1118,10 @@ describe('Integration Tests', () => {
 
 					await service.updateField('test_collection', field);
 
-					expect(rawSpy).toHaveBeenCalledWith(
-						'ALTER TABLE ?? ALTER COLUMN ?? SET DEFAULT gen_random_uuid()',
-						['test_collection', 'name'],
-					);
+					expect(rawSpy).toHaveBeenCalledWith('ALTER TABLE ?? ALTER COLUMN ?? SET DEFAULT gen_random_uuid()', [
+						'test_collection',
+						'name',
+					]);
 
 					expect(mockSchemaBuilder.alterTable).not.toHaveBeenCalled();
 
