@@ -563,6 +563,12 @@ flow_name: Ime
 flow_tracking_activity: Samo Prati Aktivnost
 flow_tracking_null: Bez praćenja
 code: Kod
+deployment:
+  provider:
+    settings:
+      delete_confirm: Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
+    run:
+      cancel_confirm: Ova akcija je trajna i ne može biti poništena. Da li ste sigurni da želite da nastavite?
 full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
@@ -805,6 +811,7 @@ live_preview:
   new_window: Otvori u Novom Prozoru
 ai:
   input: Unos
+  items: Stavke
   settings: Podešavanja
   tool_approval:
     disabled: Isključeno
@@ -1246,3 +1253,4 @@ fonts:
   bold: Podebljano
   italic: Kurziv
   auto: Automatski
+set_to_now: Postavi na Sadašnji

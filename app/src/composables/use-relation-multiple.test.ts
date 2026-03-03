@@ -6,38 +6,19 @@ import { RelationM2A } from './use-relation-m2a';
 import { RelationO2M } from './use-relation-o2m';
 import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 
-vi.mock('@/api', () => {
-	return {
-		default: {
-			get: (path: string, { params }: { params: Record<string, any> }) => {
-				if (path === '/items/worker' && params?.aggregate?.count === 'id') {
-					return Promise.resolve({
-						data: {
-							data: [{ count: { id: workerData.length } }],
-						},
-					});
-				} else if (path === '/items/worker') {
-					return Promise.resolve({
-						data: {
-							data: workerData,
-						},
-					});
-				} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
-					return Promise.resolve({
-						data: {
-							data: [{ count: { id: m2aData.length } }],
-						},
-					});
-				} else {
-					return Promise.resolve({
-						data: {
-							data: m2aData,
-						},
-					});
-				}
-			},
-		},
-	};
+vi.mock('@/sdk', async () => {
+	const { mockSdk } = await import('@/test-utils/sdk');
+	return mockSdk(({ path, params }) => {
+		if (path === '/items/worker' && params?.aggregate?.count === 'id') {
+			return Promise.resolve([{ count: { id: workerData.length } }]);
+		} else if (path === '/items/worker') {
+			return Promise.resolve(workerData);
+		} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
+			return Promise.resolve([{ count: { id: m2aData.length } }]);
+		} else {
+			return Promise.resolve(m2aData);
+		}
+	});
 });
 
 vi.mock('@/utils/unexpected-error', () => {

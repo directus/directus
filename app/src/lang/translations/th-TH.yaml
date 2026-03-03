@@ -641,6 +641,14 @@ flow_name: ชื่อ
 flow_tracking_activity: ติดตามกิจกรรมเท่านั้น
 flow_tracking_null: อย่าติดตามอะไรเลย
 code: โค้ด
+deployment:
+  provider:
+    settings:
+      delete_confirm: การกระทำนี้ถาวร และไม่สามรถย้อนกลับได้ คุณยังต้องการจะทำต่อหรือไม่?
+    run:
+      cancel_confirm: การกระทำนี้ถาวร และไม่สามรถย้อนกลับได้ คุณยังต้องการจะทำต่อหรือไม่?
+  target_value:
+    preview: ดูตัวอย่าง
 dashboard: แดชบอร์ด
 panel: แพแนล
 panel_options: ตัวเลือกแพแนล
@@ -864,6 +872,7 @@ fields:
     storage_default_folder: โฟลเดอร์เริ่มต้น
     custom_css: CSS ที่กำหนดเอง
     module_bar: โมดูลบาร์
+    ai_header_name: เฮดเดอร์
   directus_shares:
     name: ชื่อ
     role: บทบาท
@@ -934,6 +943,8 @@ live_preview:
   new_window: เปิดในหน้าต่างใหม่
 ai:
   input: Input
+  items: รายการ
+  content: เนื้อหา
   settings: การตั้งค่า
   tool_approval:
     disabled: ปิดใช้งาน
@@ -1442,3 +1453,4 @@ fonts:
   bold: ตัวหนา
   italic: ตัวเอียง
   auto: อัตโนมัติ
+set_to_now: ตั้งค่าเป็นตอนนี้

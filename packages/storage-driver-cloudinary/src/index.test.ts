@@ -417,6 +417,10 @@ describe('#getTimestamp', () => {
 		vi.setSystemTime(mockDate);
 	});
 
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
 	test('Returns unix timestamp for current time', () => {
 		expect(driver['getTimestamp']()).toBe(String(mockDate.getTime()));
 	});

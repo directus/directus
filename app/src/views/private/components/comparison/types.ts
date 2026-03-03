@@ -55,4 +55,5 @@ export type ComparisonData = {
 	mainHash?: string;
 	currentVersion?: ContentVersion | null;
 	initialSelectedDeltaId?: number | string;
+	previousRevision?: Revision | null;
 };

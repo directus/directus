@@ -1,10 +1,30 @@
 import { Width } from '@directus/system-data';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ClickOutside } from '@/__utils__/click-outside';
+import { Md } from '@/__utils__/md';
+import { Tooltip } from '@/__utils__/tooltip';
 import FormField from '@/components/v-form/components/form-field.vue';
 import VMenu from '@/components/v-menu.vue';
 import { i18n } from '@/lang';
+
+beforeEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		if (!document.getElementById(id)) {
+			const el = document.createElement('div');
+			el.id = id;
+			document.body.appendChild(el);
+		}
+	}
+});
+
+afterEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		const el = document.getElementById(id);
+		if (el) el.remove();
+	}
+});
 
 const baseField = {
 	field: 'test',
@@ -32,6 +52,11 @@ const global = {
 			createSpy: vi.fn,
 		}),
 	],
+	directives: {
+		'click-outside': ClickOutside,
+		md: Md,
+		tooltip: Tooltip,
+	},
 };
 
 describe('FormField', () => {
@@ -73,5 +98,56 @@ describe('FormField', () => {
 		});
 
 		expect(wrapper.findComponent({ name: 'FormFieldLabel' }).exists()).toBe(false);
+	});
+
+	describe('isNonEditable', () => {
+		it('should pass non-editable=false when neither prop nor meta is set', () => {
+			const wrapper = mount(FormField, {
+				props: {
+					field: baseField,
+				},
+				global,
+			});
+
+			const fieldInterface = wrapper.findComponent({ name: 'FormFieldInterface' });
+			expect(fieldInterface.props('nonEditable')).toBe(false);
+		});
+
+		it('should pass non-editable=true when nonEditable prop is true', () => {
+			const wrapper = mount(FormField, {
+				props: {
+					field: baseField,
+					nonEditable: true,
+				},
+				global,
+			});
+
+			const fieldInterface = wrapper.findComponent({ name: 'FormFieldInterface' });
+			expect(fieldInterface.props('nonEditable')).toBe(true);
+		});
+
+		it('should pass non-editable=true when field.meta.non_editable is true', () => {
+			const wrapper = mount(FormField, {
+				props: {
+					field: { ...baseField, meta: { ...baseField.meta, non_editable: true } },
+				},
+				global,
+			});
+
+			const fieldInterface = wrapper.findComponent({ name: 'FormFieldInterface' });
+			expect(fieldInterface.props('nonEditable')).toBe(true);
+		});
+
+		it('should pass non-editable=false when field.meta.readonly is true but non_editable is not set', () => {
+			const wrapper = mount(FormField, {
+				props: {
+					field: { ...baseField, meta: { ...baseField.meta, readonly: true } },
+				},
+				global,
+			});
+
+			const fieldInterface = wrapper.findComponent({ name: 'FormFieldInterface' });
+			expect(fieldInterface.props('nonEditable')).toBe(false);
+		});
 	});
 });

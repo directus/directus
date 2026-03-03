@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { Router } from 'vue-router';
 import FlowsOverview from './overview.vue';
 import { generateRouter } from '@/__utils__/router';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
@@ -106,6 +107,9 @@ beforeEach(async () => {
 			'router-view',
 		],
 		plugins: [router, i18n, createTestingPinia({ createSpy: vi.fn, stubActions: false })],
+		directives: {
+			tooltip: Tooltip,
+		},
 	};
 
 	// Mock i18n.t to return the key to avoid translation warnings

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useGroupable } from '@directus/composables';
-import { ContentVersion, PrimaryKey } from '@directus/types';
+import { PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+import { useSidebarStore } from '../private-view/stores/sidebar';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -11,12 +13,13 @@ import VPagination from '@/components/v-pagination.vue';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
 import type { Revision } from '@/types/revisions';
+import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 
 const props = defineProps<{
 	collection: string;
 	primaryKey: PrimaryKey;
-	version?: ContentVersion | null;
+	version?: ContentVersionMaybeNew | null;
 }>();
 
 defineEmits(['revert']);
@@ -32,9 +35,18 @@ const { active: open } = useGroupable({
 
 const { collection, primaryKey, version } = toRefs(props);
 
+const sidebarStore = useSidebarStore();
+const route = useRoute();
+
 const comparisonModalActive = ref(false);
 const currentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
+
+const comparableVersion = computed(() => {
+	if (version.value === undefined || version.value === null) return version.value;
+	if (version.value.id === '+') return undefined;
+	return version.value as ContentVersionWithType;
+});
 
 const {
 	revisions,
@@ -47,11 +59,14 @@ const {
 	getRevisions,
 	loadingCount,
 	getRevisionsCount,
-} = useRevisions(collection, primaryKey, version, { full: true });
+} = useRevisions(collection, primaryKey, comparableVersion, { full: true });
 
 onMounted(() => {
 	getRevisionsCount();
-	if (open.value) getRevisions();
+
+	if (open.value || sidebarStore.activeAccordionItem === 'revisions') {
+		getRevisions();
+	}
 });
 
 watch(
@@ -60,6 +75,8 @@ watch(
 		refresh(newPage);
 	},
 );
+
+watch(() => route.fullPath, closeModal);
 
 function openModal(id: number) {
 	currentRevision.value = (revisions.value as Revision[])?.find((revision) => revision.id === id) ?? null;
@@ -85,7 +102,7 @@ defineExpose({
 		id="revisions"
 		:title
 		icon="change_history"
-		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
+		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : undefined"
 		@toggle="onToggle"
 	>
 		<VProgressLinear v-if="!revisions && loading" indeterminate />
@@ -116,7 +133,7 @@ defineExpose({
 			:collection
 			:primary-key
 			mode="revision"
-			:current-version="version"
+			:current-version="comparableVersion"
 			:revisions="revisions as Revision[]"
 			@confirm="$emit('revert', $event)"
 			@cancel="closeModal"

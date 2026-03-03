@@ -1,17 +1,39 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Datetime from './datetime.vue';
+import { ClickOutside } from '@/__utils__/click-outside';
+import { Focus } from '@/__utils__/focus';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
+
+beforeEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		if (!document.getElementById(id)) {
+			const el = document.createElement('div');
+			el.id = id;
+			document.body.appendChild(el);
+		}
+	}
+});
+
+afterEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		const el = document.getElementById(id);
+		if (el) el.remove();
+	}
+});
 
 const global: GlobalMountOptions = {
 	stubs: {
 		VIcon: true,
 		VRemove: true,
-		VListItem: { template: '<v-list-item-stub><slot /></v-list-item-stub>' },
+		VListItem: { template: '<div class="v-list-item-stub"><slot /></div>' },
 	},
 	directives: {
-		tooltip: () => {},
+		'click-outside': ClickOutside,
+		focus: Focus,
+		tooltip: Tooltip,
 	},
 	plugins: [
 		createTestingPinia({
@@ -82,7 +104,7 @@ describe('Interface', () => {
 			global,
 		});
 
-		expect(wrapper.find('v-list-item-stub').attributes('disabled')).toBe('true');
+		expect(wrapper.find('.v-list-item-stub').attributes('disabled')).toBe('true');
 		expect(wrapper.find('.item-actions v-remove-stub').attributes('disabled')).toBe('true');
 	});
 });

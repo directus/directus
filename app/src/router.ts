@@ -120,6 +120,14 @@ export const router = createRouter({
 
 let firstLoad = true;
 
+/**
+ * Reset internal state for testing purposes only.
+ * @internal
+ */
+export function _resetState() {
+	firstLoad = true;
+}
+
 export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();

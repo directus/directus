@@ -15,7 +15,7 @@ import VCheckboxTree from './v-checkbox-tree/v-checkbox-tree.vue';
 import VCheckbox from './v-checkbox.vue';
 import VChip from './v-chip.vue';
 import VCollectionFieldTemplate from './v-collection-field-template.vue';
-import VDatePicker from './v-date-picker.vue';
+import VDatePicker from './v-date-picker/v-date-picker.vue';
 import VDetail from './v-detail.vue';
 import VDialog from './v-dialog.vue';
 import VDivider from './v-divider.vue';

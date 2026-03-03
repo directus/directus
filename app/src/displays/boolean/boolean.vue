@@ -5,7 +5,7 @@ import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
 	defineProps<{
-		value?: boolean;
+		value?: boolean | null;
 		labelOn?: string | null;
 		labelOff?: string | null;
 		iconOn?: string | null;
@@ -14,7 +14,7 @@ const props = withDefaults(
 		colorOff?: string;
 	}>(),
 	{
-		value: false,
+		value: null,
 		labelOn: null,
 		labelOff: null,
 		iconOn: 'check',

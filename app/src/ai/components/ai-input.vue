@@ -1,20 +1,39 @@
 <script setup lang="ts">
-import { computed, useTemplateRef } from 'vue';
+import { computed, onUnmounted, useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
+import { useAiContextStore } from '../stores/use-ai-context';
+import AiContextMenu from './ai-context-menu.vue';
 import AiInputSubmit from './ai-input-submit.vue';
+import AiPendingContext from './ai-pending-context.vue';
 import AiTextarea from './ai-textarea.vue';
 
 const aiStore = useAiStore();
+const contextStore = useAiContextStore();
+
+const textareaComponent = useTemplateRef<InstanceType<typeof AiTextarea>>('textarea-component');
+
+// Listen for focus requests from other components
+const unsubscribeFocus = aiStore.onFocusInput(() => {
+	textareaComponent.value?.focus();
+});
+
+onUnmounted(() => {
+	unsubscribeFocus.off();
+});
+
+const isProcessing = computed(
+	() => aiStore.isPreparingSubmission || aiStore.isAwaitingToolExecution || aiStore.hasPendingToolCall,
+);
+
+const canStop = computed(() => aiStore.status === 'streaming' || aiStore.status === 'submitted');
 
 const canSubmit = computed(
 	() =>
 		aiStore.input.trim().length > 0 &&
 		aiStore.status !== 'streaming' &&
-		aiStore.status !== 'submitted' &&
+		!aiStore.isUiLoading &&
 		!aiStore.hasPendingToolCall,
 );
-
-const textareaComponent = useTemplateRef<InstanceType<typeof AiTextarea>>('textarea-component');
 
 function handleKeydown(event: KeyboardEvent) {
 	if (!event.shiftKey) {
@@ -36,6 +55,9 @@ function handleSubmit() {
 <template>
 	<div class="ai-input-container">
 		<div class="input-wrapper" @click="textareaComponent?.focus()">
+			<div v-if="contextStore.pendingContext.length > 0" class="context-container">
+				<AiPendingContext />
+			</div>
 			<AiTextarea
 				ref="textarea-component"
 				v-model="aiStore.input"
@@ -44,9 +66,13 @@ function handleSubmit() {
 				@keydown.enter="handleKeydown"
 			/>
 			<div class="input-controls">
+				<AiContextMenu />
+				<div class="spacer" />
 				<AiInputSubmit
 					:status="aiStore.status"
 					:can-submit="canSubmit"
+					:is-processing="isProcessing"
+					:can-stop="canStop"
 					@stop="aiStore.stop"
 					@reload="aiStore.retry"
 					@submit="handleSubmit"
@@ -67,7 +93,7 @@ function handleSubmit() {
 	flex-direction: column;
 	align-items: flex-end;
 	cursor: text;
-	gap: 8px;
+	gap: 12px;
 	padding: 12px;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -89,11 +115,28 @@ function handleSubmit() {
 	}
 }
 
+.context-container {
+	inline-size: 100%;
+	min-inline-size: 0;
+	align-self: flex-start;
+	overflow: hidden;
+
+	.v-chip {
+		--v-chip-close-color: var(--theme--background-normal);
+		--v-chip-close-color-hover: var(--theme--foreground-subdued);
+	}
+}
+
 .input-controls {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	flex-shrink: 0;
+	inline-size: 100%;
+
+	.spacer {
+		flex: 1;
+	}
 
 	.submit-button {
 		--v-button-background-color-disabled: var(--theme--background-accent);

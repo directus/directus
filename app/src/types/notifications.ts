@@ -7,6 +7,7 @@ export interface SnackbarRaw {
 	code?: string;
 	icon?: string | null;
 	closeable?: boolean;
+	showReload?: boolean;
 	progress?: number;
 	loading?: boolean;
 	dialog?: boolean;

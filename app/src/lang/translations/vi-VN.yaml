@@ -740,6 +740,12 @@ flow_delete_confirm: Bạn có chắc chắn muốn xóa quy trình "{flow}" kh�
 flow_name: Tên
 flow_tracking_null: Không theo dõi bất cứ điều gì
 code: Mã nguồn
+deployment:
+  provider:
+    settings:
+      delete_confirm: Hành động này là vĩnh viễn và không thể hoàn tác.
+    run:
+      cancel_confirm: Hành động này là vĩnh viễn và không thể hoàn tác.
 dashboard: Bảng điều khiển
 panel: Bảng
 panel_options: Tùy chọn Bảng
@@ -977,6 +983,7 @@ live_preview:
   new_window: Mở trong Cửa Sổ Mới
 ai:
   unknown: Không xác định
+  content: Nội dung
   settings: Cài đặt
   tool_approval:
     disabled: Đã tắt

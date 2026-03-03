@@ -4,21 +4,13 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
 import { createMemoryHistory, createRouter, Router } from 'vue-router';
+import { _resetState, defaultRoutes, onAfterEach, onBeforeEach } from './router';
 
-const testComponent = defineComponent({
-	render: () => h('div'),
-});
-
-const nonPublicRoutes = ['first', 'second', 'third'].map((route) => ({
-	name: route,
-	path: `/${route}`,
-	component: testComponent,
-	meta: {}, // make sure 'meta.public' is not set so that they are tracked
+// Create mock functions before vi.mock hoisting
+const { authRefresh, userStoreTrackPage } = vi.hoisted(() => ({
+	authRefresh: vi.fn(),
+	userStoreTrackPage: vi.fn(),
 }));
-
-let router: Router;
-const authRefresh = vi.fn();
-const userStoreTrackPage = vi.fn();
 
 vi.mock('@/auth', () => ({
 	refresh: authRefresh,
@@ -46,33 +38,48 @@ vi.mock('@/stores/user', () => ({
 	}),
 }));
 
-beforeEach(async () => {
+const testComponent = defineComponent({
+	render: () => h('div'),
+});
+
+const nonPublicRoutes = ['first', 'second', 'third'].map((route) => ({
+	name: route,
+	path: `/${route}`,
+	component: testComponent,
+	meta: {}, // make sure 'meta.public' is not set so that they are tracked
+}));
+
+let router: Router;
+
+function setupRouter() {
+	// Ensure real timers are active - fake timers from other tests can leak
+	vi.useRealTimers();
+
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
 		}),
 	);
 
-	const importedRouter = await import('./router');
-
 	router = createRouter({
-		history: createMemoryHistory(), // intentionally use memory for tests
-		routes: [...importedRouter.defaultRoutes, ...nonPublicRoutes],
+		history: createMemoryHistory(),
+		routes: [...defaultRoutes, ...nonPublicRoutes],
 	});
 
-	router.beforeEach(importedRouter.onBeforeEach);
-	router.afterEach(importedRouter.onAfterEach);
-});
+	router.beforeEach(onBeforeEach);
+	router.afterEach(onAfterEach);
+}
 
 afterEach(() => {
-	// Ensure the internal firstLoad variable in the imported router
-	// is reset before every test
-	vi.resetModules();
-
 	vi.clearAllMocks();
 });
 
 describe('onBeforeEach', () => {
+	beforeEach(() => {
+		_resetState();
+		setupRouter();
+	});
+
 	test('should try retrieving a fresh access token on first load', async () => {
 		router.push('/');
 		await router.isReady();
@@ -107,11 +114,7 @@ describe('onBeforeEach', () => {
 
 describe('onAfterEach', () => {
 	beforeEach(() => {
-		vi.useFakeTimers();
-	});
-
-	afterEach(() => {
-		vi.useRealTimers();
+		setupRouter();
 	});
 
 	test('should not trackPage for public routes', async () => {
@@ -130,6 +133,9 @@ describe('onAfterEach', () => {
 		appStore.hydrated = true;
 		appStore.authenticated = true;
 
+		// Enable fake timers after initial navigation is complete
+		vi.useFakeTimers();
+
 		for (const route of nonPublicRoutes.map((route) => route.path)) {
 			await router.push(route);
 		}
@@ -137,5 +143,7 @@ describe('onAfterEach', () => {
 		// advance past the trackTimeout duration
 		vi.advanceTimersByTime(1000);
 		expect(userStoreTrackPage).toHaveBeenCalledOnce();
+
+		vi.useRealTimers();
 	});
 });

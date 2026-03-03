@@ -366,7 +366,7 @@ function pressedEnter() {
 }
 
 .collapsed .v-template-input {
-	block-size: 48px;
+	block-size: var(--input-height-md);
 	padding-block-end: 0;
 }
 

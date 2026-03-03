@@ -1,11 +1,32 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import FilePreviewReplace from './file-preview-replace.vue';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
+beforeEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		if (!document.getElementById(id)) {
+			const el = document.createElement('div');
+			el.id = id;
+			document.body.appendChild(el);
+		}
+	}
+});
+
+afterEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		const el = document.getElementById(id);
+		if (el) el.remove();
+	}
+});
+
 const global: GlobalMountOptions = {
 	plugins: [i18n],
+	directives: {
+		tooltip: Tooltip,
+	},
 };
 
 describe('Component', () => {

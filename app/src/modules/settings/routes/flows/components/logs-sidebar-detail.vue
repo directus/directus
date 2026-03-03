@@ -12,6 +12,7 @@ import VPagination from '@/components/v-pagination.vue';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -27,6 +28,8 @@ const { active: open } = useGroupable({
 	value: title.value,
 	group: 'sidebar-detail',
 });
+
+const sidebarStore = useSidebarStore();
 
 const page = ref<number>(1);
 const selectedRevision = ref();
@@ -61,7 +64,10 @@ function filterRevisions() {
 
 onMounted(() => {
 	getRevisionsCount();
-	if (open.value) getRevisions();
+
+	if (open.value || sidebarStore.activeAccordionItem === 'logs') {
+		getRevisions();
+	}
 });
 
 function onToggle(open: boolean) {

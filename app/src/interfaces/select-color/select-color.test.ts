@@ -1,9 +1,30 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import SelectColor from './select-color.vue';
+import { ClickOutside } from '@/__utils__/click-outside';
+import { Focus } from '@/__utils__/focus';
+import { Md } from '@/__utils__/md';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
+
+beforeEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		if (!document.getElementById(id)) {
+			const el = document.createElement('div');
+			el.id = id;
+			document.body.appendChild(el);
+		}
+	}
+});
+
+afterEach(() => {
+	for (const id of ['menu-outlet', 'dialog-outlet']) {
+		const el = document.getElementById(id);
+		if (el) el.remove();
+	}
+});
 
 const global: GlobalMountOptions = {
 	stubs: {
@@ -17,6 +38,15 @@ const global: GlobalMountOptions = {
 			createSpy: vi.fn,
 		}),
 	],
+	directives: {
+		'click-outside': ClickOutside,
+		focus: Focus,
+		tooltip: Tooltip,
+		md: Md,
+	},
+	provide: {
+		'main-element': document.body,
+	},
 };
 
 describe('Interface', () => {

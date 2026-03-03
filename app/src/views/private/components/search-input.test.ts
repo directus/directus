@@ -2,6 +2,8 @@ import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import SearchInput from './search-input.vue';
+import { ClickOutside } from '@/__utils__/click-outside';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
@@ -15,6 +17,13 @@ const global: GlobalMountOptions = {
 			createSpy: vi.fn,
 		}),
 	],
+	directives: {
+		'click-outside': ClickOutside,
+		tooltip: Tooltip,
+	},
+	provide: {
+		'main-element': document.body,
+	},
 };
 
 describe('Component', () => {
