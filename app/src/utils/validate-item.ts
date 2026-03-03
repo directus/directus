@@ -1,4 +1,4 @@
-import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
+import { Field, LogicalFilterAND } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import {
 	FailedValidationError,
@@ -8,13 +8,14 @@ import {
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
 import { useRelationsStore } from '@/stores/relations';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 
 export function validateItem(
 	item: Record<string, any>,
 	fields: Field[],
 	isNew: boolean,
 	includeCustomValidations = false,
-	currentVersion: ContentVersion | null = null,
+	currentVersion: ContentVersionMaybeNew | null = null,
 ): FailedValidationErrorExtensions[] {
 	const relationsStore = useRelationsStore();
 	const validationRules: LogicalFilterAND = { _and: [] };
