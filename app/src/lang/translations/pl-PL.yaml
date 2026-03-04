@@ -755,7 +755,6 @@ unexpected_error_copy: Wystąpił nieoczekiwany błąd. Proszę spróbować pono
 copy_details: Kopiuj szczegóły
 no_app_access: Brak dostępu do aplikacji
 no_app_access_copy: Ten użytkownik nie może używać aplikacji administracyjnej.
-password_reset_sent: Jeśli masz konto to wysłaliśmy Ci bezpieczny link do zresetowania hasła
 password_reset_successful: Hasło zostało pomyślnie zresetowane
 back: Wstecz
 filter: Filtr
@@ -1477,6 +1476,8 @@ ai:
   settings: Ustawienia
   tool_approval:
     disabled: Wyłączony
+  ask_user_submit: Zatwierdź
+  ask_user_next: Następny
 ai_tools:
   items: Elementy
   files: Pliki
