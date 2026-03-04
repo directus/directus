@@ -110,9 +110,10 @@ async function setupChart() {
 
 	const baseColors: string[] = monoThemeGenerator(props.color || cssVar('--theme--primary'), labels.length);
 
-	const colors = baseColors.map((baseColor, index) =>
-		formatColor(baseColor, isNumberColumn.value ? series[index] : labels[index]),
-	);
+	const colors = baseColors.map((baseColor, index) => {
+		const rawValue = props.data[index]?.['group']?.[props.column];
+		return formatColor(baseColor, isNumberColumn.value ? series[index] : rawValue);
+	});
 
 	const size = props.height < props.width ? props.height * 20 : props.width * 20;
 
