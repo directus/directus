@@ -761,6 +761,7 @@ describe('useCollab', () => {
 		});
 
 		expect(mockNotificationsStore.add).toHaveBeenCalledWith(expect.objectContaining({ title: 'item_deleted' }));
+
 		expect(mockRouter.push).toHaveBeenCalledWith({
 			name: 'content-collection',
 			params: { collection: 'test_collection' },
