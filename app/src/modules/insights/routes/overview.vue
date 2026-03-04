@@ -97,7 +97,7 @@ const dashboards = computed(() => {
 });
 
 function navigateToDashboard({ item: dashboard }: { item: Dashboard }) {
-	router.push(`/insights/${dashboard.id}`);
+	router.push({ name: 'insights-dashboard', params: { primaryKey: dashboard.id } });
 }
 
 function getNewDashboardData(id: string) {
