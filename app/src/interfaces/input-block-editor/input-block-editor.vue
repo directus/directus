@@ -126,6 +126,9 @@ watch(
 		// First value will be set in 'onMounted'
 		if (!editorjsRef.value || !editorjsIsReady.value) return;
 
+		// During refresh, item is temporarily null and the field is disabled — skip to avoid clearing the editor
+		if (newVal === null && props.disabled) return;
+
 		if (haveValuesChanged.value) {
 			haveValuesChanged.value = false;
 			return;
