@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
-import { Field, PrimaryKey, Relation } from '@directus/types';
+import { ContentVersion, Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, set, uniqBy } from 'lodash';
 import { computed, type Ref, ref, toRefs, unref, watch } from 'vue';
@@ -62,6 +62,8 @@ export interface OverlayItemProps {
 	popoverProps?: Record<string, any>;
 	applyShortcut?: ApplyShortcut;
 	preventCancelWithEdits?: boolean;
+	// Only use when editing a version directly (e.g. visual editor). Not for regular item editing.
+	version?: ContentVersion['key'] | null | undefined;
 }
 
 export interface OverlayItemEmits {
@@ -375,7 +377,14 @@ function useItem() {
 		}
 
 		try {
-			const response = await api.get(endpoint, { params: { fields } });
+			const params: Record<string, any> = { fields };
+
+			if (props.version && !!collectionInfo.value?.meta?.versioning) {
+				params.version = props.version;
+				params.versionRaw = true;
+			}
+
+			const response = await api.get(endpoint, { params });
 
 			initialValues.value = response.data.data;
 		} catch (error) {
@@ -753,7 +762,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	/>
 
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-		<VCard v-if="!collab?.connected">
+		<VCard v-if="!collab?.connected.value">
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 			<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -768,7 +777,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndLeave">
-					{{ $t('close_drawer') }}
+					{{ $t('cancel_anyway') }}
 				</VButton>
 				<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>
@@ -776,7 +785,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	</VDialog>
 
 	<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
-		<VCard v-if="!collab?.connected">
+		<VCard v-if="!collab?.connected.value">
 			<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
 			<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -791,7 +800,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndCancel">
-					{{ $t('close_drawer') }}
+					{{ $t('cancel_anyway') }}
 				</VButton>
 				<VButton @click="confirmCancel = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>

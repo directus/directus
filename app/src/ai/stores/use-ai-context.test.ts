@@ -1,16 +1,23 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { PendingContextItem } from '../types';
 import { MAX_PENDING_CONTEXT, useAiContextStore } from './use-ai-context';
 import api from '@/api';
+import sdk from '@/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
+		post: vi.fn(),
 	},
 }));
+
+vi.mock('@/sdk', async () => {
+	const { mockSdk } = await import('@/test-utils/sdk');
+	return mockSdk();
+});
 
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
@@ -61,6 +68,10 @@ const createPromptContext = (id: string): PendingContextItem => ({
 });
 
 describe('useAiContextStore', () => {
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
+
 	describe('addPendingContext', () => {
 		test('adds item to pendingContext', () => {
 			const store = useAiContextStore();
@@ -187,13 +198,18 @@ describe('useAiContextStore', () => {
 	describe('fetchContextData', () => {
 		test('fetches current values for visual elements', async () => {
 			const store = useAiContextStore();
-			vi.mocked(api.get).mockResolvedValue({ data: { data: { title: 'Fetched Title' } } });
+			vi.mocked(sdk.request).mockResolvedValue({ title: 'Fetched Title' });
+			const sdkSpy = vi.spyOn(sdk, 'request');
 
 			store.addPendingContext(createVisualElement('1'));
 
 			const attachments = await store.fetchContextData();
 
-			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['title'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({
+				path: '/items/posts/1',
+				params: { fields: ['title'] },
+			});
+
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.type).toBe('visual-element');
 			expect(attachments[0]!.snapshot).toEqual({ title: 'Fetched Title' });
@@ -201,7 +217,8 @@ describe('useAiContextStore', () => {
 
 		test('uses wildcard fields when none specified', async () => {
 			const store = useAiContextStore();
-			vi.mocked(api.get).mockResolvedValue({ data: { data: { id: 1 } } });
+			vi.mocked(sdk.request).mockResolvedValue({ id: 1 });
+			const sdkSpy = vi.spyOn(sdk, 'request');
 
 			const element: PendingContextItem = {
 				id: '1',
@@ -213,13 +230,13 @@ describe('useAiContextStore', () => {
 			store.addPendingContext(element);
 			await store.fetchContextData();
 
-			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['*'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', params: { fields: ['*'] } });
 		});
 
 		test('handles API errors gracefully', async () => {
 			const store = useAiContextStore();
 			const error = new Error('API Error');
-			vi.mocked(api.get).mockRejectedValue(error);
+			vi.mocked(sdk.request).mockRejectedValue(error);
 
 			store.addPendingContext(createVisualElement('1'));
 
@@ -231,13 +248,14 @@ describe('useAiContextStore', () => {
 
 		test('fetches item context from API', async () => {
 			const store = useAiContextStore();
-			vi.mocked(api.get).mockResolvedValue({ data: { data: { id: '1', title: 'Fetched' } } });
+			vi.mocked(sdk.request).mockResolvedValue({ id: '1', title: 'Fetched' });
+			const sdkSpy = vi.spyOn(sdk, 'request');
 
 			store.addPendingContext(createItemContext('1'));
 
 			const attachments = await store.fetchContextData();
 
-			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['*'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', params: { fields: ['*'] } });
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.type).toBe('item');
 			expect(attachments[0]!.snapshot).toEqual({ id: '1', title: 'Fetched' });
@@ -258,7 +276,7 @@ describe('useAiContextStore', () => {
 		test('handles item context fetch failure gracefully', async () => {
 			const store = useAiContextStore();
 			const error = new Error('Item not found');
-			vi.mocked(api.get).mockRejectedValue(error);
+			vi.mocked(sdk.request).mockRejectedValue(error);
 
 			store.addPendingContext(createItemContext('1'));
 
@@ -271,8 +289,8 @@ describe('useAiContextStore', () => {
 		test('returns partial results when one item fails', async () => {
 			const store = useAiContextStore();
 
-			vi.mocked(api.get)
-				.mockResolvedValueOnce({ data: { data: { id: '1', title: 'Success' } } })
+			vi.mocked(sdk.request)
+				.mockResolvedValueOnce({ id: '1', title: 'Success' })
 				.mockRejectedValueOnce(new Error('Failed'));
 
 			store.addPendingContext(createItemContext('ctx-1', '1'));
@@ -283,6 +301,120 @@ describe('useAiContextStore', () => {
 			expect(unexpectedError).toHaveBeenCalled();
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.snapshot).toEqual({ id: '1', title: 'Success' });
+		});
+	});
+
+	describe('uploadPendingFiles', () => {
+		test('returns empty array when provider is missing', async () => {
+			const store = useAiContextStore();
+			const results = await store.uploadPendingFiles();
+
+			expect(results).toEqual([]);
+		});
+
+		test('uploads local non-image files without creating preview URLs', async () => {
+			const store = useAiContextStore();
+
+			store.addPendingContext({
+				id: 'local-file',
+				type: 'local-file',
+				data: { file: new File(['test'], 'test.txt', { type: 'text/plain' }) },
+				display: 'test.txt',
+			});
+
+			vi.mocked(api.post).mockResolvedValue({
+				data: {
+					provider: 'openai',
+					fileId: 'file-1',
+					filename: 'test.txt',
+					mimeType: 'text/plain',
+					sizeBytes: 4,
+					expiresAt: null,
+				},
+			});
+
+			const results = await store.uploadPendingFiles('openai');
+
+			expect(results).toHaveLength(1);
+			expect(results[0]!.displayUrl).toBe('');
+			expect(api.post).toHaveBeenCalledWith('/ai/files', expect.any(FormData));
+		});
+
+		test('drops failed uploads and reports errors for partial failures', async () => {
+			const store = useAiContextStore();
+
+			for (let i = 1; i <= 3; i++) {
+				store.addPendingContext({
+					id: `local-file-${i}`,
+					type: 'local-file',
+					data: { file: new File([`content-${i}`], `file-${i}.txt`, { type: 'text/plain' }) },
+					display: `file-${i}.txt`,
+				});
+			}
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({
+					data: {
+						provider: 'openai',
+						fileId: 'file-1',
+						filename: 'file-1.txt',
+						mimeType: 'text/plain',
+						sizeBytes: 9,
+						expiresAt: null,
+					},
+				})
+				.mockRejectedValueOnce(new Error('500'))
+				.mockResolvedValueOnce({
+					data: {
+						provider: 'openai',
+						fileId: 'file-3',
+						filename: 'file-3.txt',
+						mimeType: 'text/plain',
+						sizeBytes: 9,
+						expiresAt: null,
+					},
+				});
+
+			const results = await store.uploadPendingFiles('openai');
+
+			expect(results).toHaveLength(2);
+			expect(unexpectedError).toHaveBeenCalledOnce();
+		});
+
+		test('uses asset URLs for staged library files', async () => {
+			const store = useAiContextStore();
+
+			store.addPendingContext({
+				id: 'file',
+				type: 'file',
+				data: {
+					id: 'abc123',
+					filename_download: 'doc.pdf',
+					type: 'application/pdf',
+					title: 'Document',
+				},
+				display: 'Document',
+			});
+
+			vi.mocked(api.get).mockResolvedValue({
+				data: new Blob(['pdf']),
+			});
+
+			vi.mocked(api.post).mockResolvedValue({
+				data: {
+					provider: 'openai',
+					fileId: 'file-2',
+					filename: 'doc.pdf',
+					mimeType: 'application/pdf',
+					sizeBytes: 3,
+					expiresAt: null,
+				},
+			});
+
+			const results = await store.uploadPendingFiles('openai');
+
+			expect(results).toHaveLength(1);
+			expect(results[0]!.displayUrl).toBe('/assets/abc123');
 		});
 	});
 

@@ -371,10 +371,9 @@ const livePreviewSize = computed({
 
 provide('live-preview-active', livePreviewActive);
 
-const { visualEditingEnabled, visualEditorUrls, visualModuleEnabled } = useVisualEditing({
+const { visualEditingEnabled, visualModuleEnabled } = useVisualEditing({
 	previewUrl,
 	isNew,
-	currentVersion,
 });
 
 watch(previewUrl, (url) => {
@@ -901,8 +900,8 @@ function useItemNavigation() {
 				<LivePreview
 					v-if="livePreviewActive && previewUrl"
 					:url="previewUrl"
+					:version="currentVersion"
 					:can-enable-visual-editing="visualEditingEnabled"
-					:visual-editor-urls="visualEditorUrls"
 					:show-open-in-visual-editor="visualModuleEnabled"
 					:is-full-width="livePreviewFullWidth"
 					@new-window="livePreviewMode = 'popup'"
@@ -1017,12 +1016,6 @@ function useItemNavigation() {
 
 :deep(.type-title) {
 	min-inline-size: 0;
-
-	.render-template {
-		img {
-			block-size: 20px;
-		}
-	}
 }
 
 .headline-wrapper {

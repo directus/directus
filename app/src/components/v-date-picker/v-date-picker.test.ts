@@ -752,6 +752,76 @@ describe('v-date-picker', () => {
 
 			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
 		});
+
+		it('emits close when set to now button is clicked', async () => {
+			vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-01-15');
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: null,
+			});
+
+			await nextTick();
+
+			const nowButton = wrapper.find('.calendar-today-button');
+			await nowButton.trigger('click');
+			await nextTick();
+
+			expect(wrapper.emitted('close')).toBeTruthy();
+		});
+	});
+
+	describe('close event emission', () => {
+		it('emits close after date selection for type: date', async () => {
+			vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-01-20');
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-01-15',
+			});
+
+			await nextTick();
+
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			await calendarRoot.vm.$emit('update:modelValue', new CalendarDate(2024, 1, 20));
+			await nextTick();
+
+			expect(wrapper.emitted('close')).toBeTruthy();
+		});
+
+		it('does not emit close after date selection for type: dateTime', async () => {
+			vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-01-20T14:30:00');
+
+			const wrapper = createWrapper({
+				type: 'dateTime',
+				modelValue: '2024-01-15T14:30:00',
+			});
+
+			await nextTick();
+
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			await calendarRoot.vm.$emit('update:modelValue', new CalendarDate(2024, 1, 20));
+			await nextTick();
+
+			expect(wrapper.emitted('close')).toBeFalsy();
+		});
+
+		it('does not emit close after date selection for type: timestamp', async () => {
+			vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-01-20T14:30:00Z');
+
+			const wrapper = createWrapper({
+				type: 'timestamp',
+				modelValue: new Date('2024-01-15T14:30:00Z').toISOString(),
+			});
+
+			await nextTick();
+
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			await calendarRoot.vm.$emit('update:modelValue', new CalendarDate(2024, 1, 20));
+			await nextTick();
+
+			expect(wrapper.emitted('close')).toBeFalsy();
+		});
 	});
 
 	describe('computed properties', () => {

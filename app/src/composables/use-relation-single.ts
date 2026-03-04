@@ -1,8 +1,8 @@
 import { getEndpoint } from '@directus/utils';
 import { merge } from 'lodash';
 import { computed, MaybeRefOrGetter, ref, Ref, toValue, watch } from 'vue';
-import api from '@/api';
 import { RelationM2O } from '@/composables/use-relation-m2o';
+import sdk, { requestEndpoint } from '@/sdk';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export type RelationQuerySingle = {
@@ -83,16 +83,16 @@ export function useRelationSingle<T extends Record<string, any>>(
 		loading.value = true;
 
 		try {
-			const response = await api.get(getEndpoint(relatedCollection) + `/${encodeURIComponent(id)}`, {
-				params: {
-					fields: Array.from(fields),
-				},
-			});
+			const item = await sdk.request<T>(
+				requestEndpoint(`${getEndpoint(relatedCollection)}/${encodeURIComponent(id)}`, {
+					params: { fields: Array.from(fields) },
+				}),
+			);
 
 			if (typeof val === 'object') {
-				displayItem.value = merge({}, response.data.data, val);
+				displayItem.value = merge({}, item, val);
 			} else {
-				displayItem.value = response.data.data;
+				displayItem.value = item;
 			}
 		} catch (error: any) {
 			// if the item has a manually entered primary key, we can ignore the error

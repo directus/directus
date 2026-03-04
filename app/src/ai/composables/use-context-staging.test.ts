@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useAiStore } from '../stores/use-ai';
 import { useAiContextStore } from '../stores/use-ai-context';
 import { useContextStaging } from './use-context-staging';
-import api from '@/api';
+import sdk from '@/sdk';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -15,11 +15,10 @@ vi.mock('vue-i18n', () => ({
 	createI18n: () => undefined,
 }));
 
-vi.mock('@/api', () => ({
-	default: {
-		get: vi.fn(),
-	},
-}));
+vi.mock('@/sdk', async () => {
+	const { mockSdk } = await import('@/test-utils/sdk');
+	return mockSdk();
+});
 
 vi.mock('@/utils/notify', () => ({
 	notify: vi.fn(),
@@ -135,7 +134,7 @@ describe('useContextStaging', () => {
 			await stageItems('posts', []);
 			await stageItems('posts', null);
 
-			expect(api.get).not.toHaveBeenCalled();
+			expect(sdk.request).not.toHaveBeenCalled();
 		});
 
 		test('returns early for empty collection', async () => {
@@ -143,7 +142,7 @@ describe('useContextStaging', () => {
 
 			await stageItems('', ['1']);
 
-			expect(api.get).not.toHaveBeenCalled();
+			expect(sdk.request).not.toHaveBeenCalled();
 		});
 
 		test('notifies error for invalid collection', async () => {
@@ -158,20 +157,16 @@ describe('useContextStaging', () => {
 			const contextStore = useAiContextStore();
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext');
 
-			vi.mocked(api.get).mockResolvedValue({
-				data: {
-					data: [
-						{ id: 1, title: 'Post 1' },
-						{ id: 2, title: 'Post 2' },
-					],
-				},
-			});
+			vi.mocked(sdk.request).mockResolvedValue([
+				{ id: 1, title: 'Post 1' },
+				{ id: 2, title: 'Post 2' },
+			]);
 
 			const { stageItems } = useContextStaging();
 
 			await stageItems('posts', [1, 2]);
 
-			expect(api.get).toHaveBeenCalled();
+			expect(sdk.request).toHaveBeenCalled();
 			expect(addSpy).toHaveBeenCalledTimes(2);
 
 			const firstCall = addSpy.mock.calls[0]![0];
@@ -183,9 +178,7 @@ describe('useContextStaging', () => {
 		});
 
 		test('notifies success after staging', async () => {
-			vi.mocked(api.get).mockResolvedValue({
-				data: { data: [{ id: 1, title: 'Test' }] },
-			});
+			vi.mocked(sdk.request).mockResolvedValue([{ id: 1, title: 'Test' }]);
 
 			const { stageItems } = useContextStaging();
 
@@ -196,13 +189,131 @@ describe('useContextStaging', () => {
 
 		test('handles API errors', async () => {
 			const error = new Error('API Error');
-			vi.mocked(api.get).mockRejectedValue(error);
+			vi.mocked(sdk.request).mockRejectedValue(error);
 
 			const { stageItems } = useContextStaging();
 
 			await stageItems('posts', [1]);
 
 			expect(unexpectedError).toHaveBeenCalledWith(error);
+		});
+	});
+
+	describe('stageFiles', () => {
+		test('notifies max reached when no files can be staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(false);
+
+			vi.mocked(sdk.request).mockResolvedValue([
+				{ id: '1', filename_download: 'doc.pdf', type: 'application/pdf', title: 'Document' },
+			]);
+
+			const { stageFiles } = useContextStaging();
+
+			await stageFiles(['1']);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.max_elements_reached' });
+		});
+
+		test('notifies partial success when only some files are staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValueOnce(true).mockReturnValueOnce(false);
+
+			vi.mocked(sdk.request).mockResolvedValue([
+				{ id: '1', filename_download: 'doc1.pdf', type: 'application/pdf', title: 'Document 1' },
+				{ id: '2', filename_download: 'doc2.pdf', type: 'application/pdf', title: 'Document 2' },
+			]);
+
+			const { stageFiles } = useContextStaging();
+
+			await stageFiles(['1', '2']);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.some_files_staged' });
+		});
+
+		test('notifies success when all files are staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
+
+			vi.mocked(sdk.request).mockResolvedValue([
+				{ id: '1', filename_download: 'doc.pdf', type: 'application/pdf', title: 'Document' },
+			]);
+
+			const { stageFiles } = useContextStaging();
+
+			await stageFiles(['1']);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.files_staged', type: 'success' });
+		});
+
+		test('handles invalid response shape', async () => {
+			vi.mocked(sdk.request).mockResolvedValue(null as any);
+
+			const { stageFiles } = useContextStaging();
+
+			await stageFiles(['1']);
+
+			expect(unexpectedError).toHaveBeenCalledWith(expect.any(Error));
+		});
+	});
+
+	describe('stageLocalFiles', () => {
+		test('returns early for empty list', async () => {
+			const { stageLocalFiles } = useContextStaging();
+
+			await stageLocalFiles([]);
+
+			expect(notify).not.toHaveBeenCalled();
+		});
+
+		test('notifies max reached when no local files can be staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(false);
+
+			const { stageLocalFiles } = useContextStaging();
+
+			await stageLocalFiles([new File(['data'], 'test.txt', { type: 'text/plain' })]);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.max_elements_reached' });
+		});
+
+		test('notifies partial success when only some local files are staged', async () => {
+			const contextStore = useAiContextStore();
+			vi.spyOn(contextStore, 'addPendingContext').mockReturnValueOnce(true).mockReturnValueOnce(false);
+
+			const { stageLocalFiles } = useContextStaging();
+
+			await stageLocalFiles([
+				new File(['data-1'], 'one.txt', { type: 'text/plain' }),
+				new File(['data-2'], 'two.txt', { type: 'text/plain' }),
+			]);
+
+			expect(notify).toHaveBeenCalledWith({ title: 'ai.some_files_staged' });
+		});
+
+		test('stages image files when thumbnail generation fails', async () => {
+			const contextStore = useAiContextStore();
+			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
+
+			const readSpy = vi.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(function () {
+				this.onerror?.(new ProgressEvent('error'));
+			});
+
+			try {
+				const { stageLocalFiles } = useContextStaging();
+
+				await stageLocalFiles([new File(['image-data'], 'image.png', { type: 'image/png' })]);
+
+				expect(addSpy).toHaveBeenCalledTimes(1);
+				const call = addSpy.mock.calls[0]?.[0];
+				expect(call?.type).toBe('local-file');
+
+				if (call?.type === 'local-file') {
+					expect(call.data.thumbnailUrl).toBeUndefined();
+				}
+			} finally {
+				readSpy.mockRestore();
+			}
 		});
 	});
 
@@ -246,9 +357,7 @@ describe('useContextStaging', () => {
 		test('updates existing element when duplicate is staged', async () => {
 			const contextStore = useAiContextStore();
 
-			vi.mocked(api.get).mockResolvedValue({
-				data: { data: { id: '1', title: 'Post 1' } },
-			});
+			vi.mocked(sdk.request).mockResolvedValue({ id: '1', title: 'Post 1' });
 
 			// Add existing element
 			contextStore.pendingContext.push({
@@ -269,16 +378,14 @@ describe('useContextStaging', () => {
 
 			expect(notify).toHaveBeenCalledWith({ title: 'ai.element_already_staged' });
 			expect(result).toBe(false);
-			expect(contextStore.pendingContext[0]?.data.key).toBe('key-2');
+			expect((contextStore.pendingContext[0]?.data as { key: string }).key).toBe('key-2');
 		});
 
 		test('returns false when max limit reached', async () => {
 			const contextStore = useAiContextStore();
 			vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(false);
 
-			vi.mocked(api.get).mockResolvedValue({
-				data: { data: { id: '1', title: 'Post 1' } },
-			});
+			vi.mocked(sdk.request).mockResolvedValue({ id: '1', title: 'Post 1' });
 
 			const { stageVisualElement } = useContextStaging();
 
@@ -294,9 +401,7 @@ describe('useContextStaging', () => {
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
 			const focusSpy = vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
 
-			vi.mocked(api.get).mockResolvedValue({
-				data: { data: { id: '1', title: 'My Post' } },
-			});
+			vi.mocked(sdk.request).mockResolvedValue({ id: '1', title: 'My Post' });
 
 			const { stageVisualElement } = useContextStaging();
 
@@ -314,10 +419,9 @@ describe('useContextStaging', () => {
 			const contextStore = useAiContextStore();
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
 			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
+			vi.mocked(sdk.request).mockResolvedValue({ headline: 'Breaking News' });
 
-			vi.mocked(api.get).mockResolvedValue({
-				data: { data: { headline: 'Breaking News' } },
-			});
+			const sdkSpy = vi.spyOn(sdk, 'request');
 
 			const { stageVisualElement } = useContextStaging();
 
@@ -325,7 +429,7 @@ describe('useContextStaging', () => {
 
 			const call = addSpy.mock.calls[0]![0];
 			expect(call.display).toBe('Breaking News');
-			expect(api.get).toHaveBeenCalledWith('/items/posts/1', { params: { fields: ['headline'] } });
+			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', params: { fields: ['headline'] } });
 		});
 
 		test('uses formatted collection name when no display_template', async () => {
@@ -349,7 +453,7 @@ describe('useContextStaging', () => {
 
 			const call = addSpy.mock.calls[0]![0];
 			expect(call.display).toBe('Blog Posts');
-			expect(api.get).not.toHaveBeenCalled();
+			expect(sdk.request).not.toHaveBeenCalled();
 		});
 
 		test('uses fallback display value when fetch fails', async () => {
@@ -358,7 +462,7 @@ describe('useContextStaging', () => {
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
 			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
 
-			vi.mocked(api.get).mockRejectedValue(new Error('API Error'));
+			vi.mocked(sdk.request).mockRejectedValue(new Error('API Error'));
 
 			const { stageVisualElement } = useContextStaging();
 
