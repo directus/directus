@@ -138,12 +138,6 @@ watch(
 
 			if (editorjsRef.value.readOnly.isEnabled) return;
 
-			const currentData = await editorjsRef.value.save();
-			const currentBlocks = currentData.blocks?.length ? currentData.blocks : null;
-			const incomingBlocks = sanitizedValue?.blocks?.length ? sanitizedValue.blocks : null;
-
-			if (isEqual(incomingBlocks, currentBlocks)) return;
-
 			if (sanitizedValue) {
 				await editorjsRef.value.render(sanitizedValue);
 			} else {
