@@ -11,13 +11,14 @@ import type {
 	ProviderType,
 	Query,
 } from '@directus/types';
-import { mergeFilters, parseJSON } from '@directus/utils';
+import { mergeFilters } from '@directus/utils';
 import { has, isEmpty } from 'lodash-es';
 import { getCache, getCacheValueWithTTL, setCacheValueWithExpiry } from '../cache.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
 import { getDeploymentDriver } from '../deployment.js';
 import { useLogger } from '../logger/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { parseValue } from '../utils/parse-value.js';
 import type { DeploymentProject } from './deployment-projects.js';
 import { DeploymentProjectsService } from './deployment-projects.js';
 import type { DeploymentRun } from './deployment-runs.js';
@@ -47,7 +48,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		let credentials: Credentials;
 
 		try {
-			credentials = this.parseValue<Credentials>(data.credentials, {});
+			credentials = parseValue<Credentials>(data.credentials, {});
 		} catch {
 			throw new InvalidPayloadError({ reason: 'Credentials must be valid JSON' });
 		}
@@ -55,7 +56,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		let options: Options | undefined;
 
 		try {
-			options = this.parseValue<Options | undefined>(data.options, undefined);
+			options = parseValue<Options | undefined>(data.options, undefined);
 		} catch {
 			throw new InvalidPayloadError({ reason: 'Options must be valid JSON' });
 		}
@@ -94,11 +95,11 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const provider = existing.provider as ProviderType;
 
 		const internal = await this.readConfig(provider);
-		let credentials: Credentials = this.parseValue<Credentials>(internal.credentials, {});
+		let credentials: Credentials = parseValue<Credentials>(internal.credentials, {});
 
 		if (hasCredentials) {
 			try {
-				const parsed = this.parseValue<Credentials>(data.credentials, {});
+				const parsed = parseValue<Credentials>(data.credentials, {});
 				credentials = { ...credentials, ...parsed };
 			} catch {
 				throw new InvalidPayloadError({ reason: 'Credentials must be valid JSON or object' });
@@ -109,7 +110,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		if (hasOptions) {
 			try {
-				options = this.parseValue<Options | undefined>(data.options, undefined);
+				options = parseValue<Options | undefined>(data.options, undefined);
 			} catch {
 				throw new InvalidPayloadError({ reason: 'Options must be valid JSON' });
 			}
@@ -206,15 +207,6 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	}
 
 	/**
-	 * Parse JSON string or return value as-is
-	 */
-	private parseValue<T>(value: unknown, fallback: T): T {
-		if (!value) return fallback;
-		if (typeof value === 'string') return parseJSON(value);
-		return value as T;
-	}
-
-	/**
 	 * Get webhook config for a provider
 	 */
 	async getWebhookConfig(
@@ -224,8 +216,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		return {
 			webhook_secret: config.webhook_secret ?? null,
-			credentials: this.parseValue<Credentials>(config.credentials, {}),
-			options: this.parseValue<Options>(config.options, {}),
+			credentials: parseValue<Credentials>(config.credentials, {}),
+			options: parseValue<Options>(config.options, {}),
 		};
 	}
 
@@ -234,8 +226,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 	 */
 	async getDriver(provider: ProviderType): Promise<DeploymentDriver> {
 		const deployment = await this.readConfig(provider);
-		const credentials = this.parseValue<Credentials>(deployment.credentials, {});
-		const options = this.parseValue<Options>(deployment.options, {});
+		const credentials = parseValue<Credentials>(deployment.credentials, {});
+		const options = parseValue<Options>(deployment.options, {});
 
 		return getDeploymentDriver(deployment.provider, credentials, options);
 	}

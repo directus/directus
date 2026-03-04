@@ -1,7 +1,17 @@
 import { InvalidPayloadError } from '@directus/errors';
-import type { AbstractServiceOptions, PrimaryKey, Project as ProviderProject } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Credentials,
+	DeploymentConfig,
+	Options,
+	PrimaryKey,
+	Project as ProviderProject,
+	ProviderType,
+} from '@directus/types';
 import getDatabase from '../database/index.js';
 import type { DeploymentDriver } from '../deployment/deployment.js';
+import { getDeploymentDriver } from '../deployment.js';
+import { parseValue } from '../utils/parse-value.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 
@@ -76,16 +86,17 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 
 	/**
 	 * Validate that all projects to create are deployable.
-	 * Returns the provider projects map for metadata enrichment.
 	 */
 	async validateDeployable(
-		driver: DeploymentDriver<any, any>,
+		provider: ProviderType,
 		projectsToCreate: { external_id: string; name: string }[],
-	): Promise<Map<string, ProviderProject>> {
+	): Promise<void> {
+		if (projectsToCreate.length === 0) return;
+
+		const config = await this.readConfig(provider);
+		const driver = this.createDriver(config);
 		const providerProjects = await driver.listProjects();
 		const projectsMap = new Map(providerProjects.map((p) => [p.id, p]));
-
-		if (projectsToCreate.length === 0) return projectsMap;
 
 		const nonDeployable = projectsToCreate.filter((p) => !projectsMap.get(p.external_id)?.deployable);
 
@@ -96,20 +107,19 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 				reason: `Cannot add non-deployable projects: ${names}`,
 			});
 		}
-
-		return projectsMap;
 	}
 
 	/**
 	 * Update project selection (create/delete)
 	 */
 	async updateSelection(
-		deploymentId: string,
-		driver: DeploymentDriver<any, any>,
+		provider: ProviderType,
 		create: { external_id: string; name: string }[],
 		deleteIds: PrimaryKey[],
 	): Promise<DeploymentProject[]> {
+		const config = await this.readConfig(provider);
 		const db = getDatabase();
+		const driver = this.createDriver(config);
 
 		// Fetch metadata for new projects
 		const enrichedCreate = await Promise.all(
@@ -140,7 +150,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 			if (enrichedCreate.length > 0) {
 				await trxService.createMany(
 					enrichedCreate.map((p) => ({
-						deployment: deploymentId,
+						deployment: config.id,
 						external_id: p.external_id,
 						name: p.name,
 						url: p.url,
@@ -151,9 +161,38 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 			}
 
 			return trxService.readByQuery({
-				filter: { deployment: { _eq: deploymentId } },
+				filter: { deployment: { _eq: config.id } },
 				limit: -1,
 			});
 		});
+	}
+
+	/**
+	 * Read deployment config by provider (null accountability for internal use).
+	 */
+	private async readConfig(provider: ProviderType): Promise<DeploymentConfig> {
+		const internalService = new ItemsService<DeploymentConfig>('directus_deployments', {
+			knex: this.knex,
+			schema: this.schema,
+			accountability: null,
+		});
+
+		const results = await internalService.readByQuery({
+			filter: { provider: { _eq: provider } },
+			limit: 1,
+		});
+
+		if (!results || results.length === 0) {
+			throw new Error(`Deployment config for "${provider}" not found`);
+		}
+
+		return results[0]!;
+	}
+
+	private createDriver(config: DeploymentConfig): DeploymentDriver {
+		const credentials = parseValue<Credentials>(config.credentials, {});
+		const options = parseValue<Options>(config.options, {});
+
+		return getDeploymentDriver(config.provider, credentials, options);
 	}
 }
