@@ -42,7 +42,7 @@ const rangeOptions = [
 const projectItems = computed(() =>
 	projects.value.map((project) => ({
 		...project,
-		to: `/deployments/${props.provider}/${project.id}/runs`,
+		to: { name: 'deployments-provider-runs', params: { provider: props.provider, projectId: project.id } },
 		formattedDeployTime: project.latest_deployment?.created_at
 			? formatDistanceToNow(new Date(project.latest_deployment.created_at), { addSuffix: true })
 			: '',

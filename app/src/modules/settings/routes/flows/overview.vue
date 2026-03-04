@@ -104,7 +104,7 @@ function updateSort(sort: Sort | null) {
 }
 
 function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
-	const route = `/settings/flows/${flow.id}`;
+	const route = { name: 'settings-flows-item', params: { primaryKey: flow.id } };
 
 	if (event.ctrlKey || event.metaKey || event.button === 1) {
 		window.open(router.resolve(route).href, '_blank');
