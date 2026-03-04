@@ -4,16 +4,19 @@
 		transition-property: transform, border-radius;
 	}
 
-	.container.right:not(:nth-last-child(-n + 5)) {
+	.container.right:has(.v-drawer):not(:nth-last-child(-n + 5 of .container.right:has(.v-drawer))) {
 		display: none;
 	}
 
-	.container.right:not(:last-of-type) .v-drawer {
+	.container.right:not(:nth-last-child(1 of .container.right:has(.v-drawer))) .v-drawer {
 		overflow: hidden;
 	}
 
 	@for $i from 1 to 6 {
-		> .container.right:not(.dialog-leave-active):nth-last-of-type(#{$i}):not(:last-of-type) .v-drawer {
+		> .container.right:not(.dialog-leave-active):nth-last-child(#{$i} of .container.right:has(.v-drawer)):not(
+				:nth-last-child(1 of .container.right:has(.v-drawer))
+			)
+			.v-drawer {
 			transform: translateX(-#{($i - 1) * 30}px) scale(#{1 - (0.05 * ($i - 1))});
 			transform-origin: left;
 			border-radius: 20px;
@@ -25,7 +28,7 @@
 		}
 	}
 
-	.container.right:not(:first-of-type) {
+	.container.right:has(.v-drawer):not(:nth-child(1 of .container.right:has(.v-drawer))) {
 		&.dialog-leave-active {
 			transition: none !important;
 		}
