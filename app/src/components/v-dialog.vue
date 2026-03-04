@@ -16,6 +16,8 @@ interface Props {
 	/** Lets other overlays (drawer) open on top */
 	keepBehind?: boolean;
 	applyShortcut?: ApplyShortcut;
+	/** Keeps child components mounted when closed on small screens */
+	keepMounted?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -112,7 +114,8 @@ function useOverlayFocusTrap() {
 			<TransitionDialog @after-leave="leave">
 				<component
 					:is="placement === 'center' ? 'span' : 'div'"
-					v-if="internalActive"
+					v-if="internalActive || keepMounted"
+					v-show="!keepMounted || internalActive"
 					ref="overlayEl"
 					class="container"
 					:class="[className, placement, keepBehind ? 'keep-behind' : null]"
