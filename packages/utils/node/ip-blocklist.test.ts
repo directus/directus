@@ -135,7 +135,7 @@ describe('IpBlocklist', () => {
 				],
 			});
 
-			blocklist.addNetworkInterfaces();
+			blocklist.addLocalNetworkInterfaces();
 
 			expect(blocklist.checkAddress('127.0.0.1')).toBe(true);
 			expect(blocklist.checkAddress('127.255.255.255')).toBe(true);
@@ -155,7 +155,7 @@ describe('IpBlocklist', () => {
 				],
 			});
 
-			blocklist.addNetworkInterfaces();
+			blocklist.addLocalNetworkInterfaces();
 
 			expect(blocklist.checkAddress('192.168.1.100')).toBe(true);
 			expect(blocklist.checkAddress('192.168.1.101')).toBe(false);
@@ -166,7 +166,7 @@ describe('IpBlocklist', () => {
 				fa0: undefined,
 			});
 
-			expect(() => blocklist.addNetworkInterfaces()).not.toThrow();
+			expect(() => blocklist.addLocalNetworkInterfaces()).not.toThrow();
 		});
 
 		test('adds IPv6 loopback interface', () => {
@@ -184,7 +184,7 @@ describe('IpBlocklist', () => {
 				],
 			});
 
-			blocklist.addNetworkInterfaces();
+			blocklist.addLocalNetworkInterfaces();
 
 			expect(blocklist.checkAddress('::1')).toBe(true);
 		});
@@ -222,7 +222,7 @@ describe('IpBlocklist', () => {
 				],
 			});
 
-			blocklist.addNetworkInterfaces();
+			blocklist.addLocalNetworkInterfaces();
 
 			expect(blocklist.checkAddress('127.0.0.1')).toBe(true);
 			expect(blocklist.checkAddress('127.1.2.3')).toBe(true);
