@@ -55,7 +55,7 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 
 		const selectedMap = new Map(selectedProjects.map((p) => [p.external_id, p]));
 
-		// Sync metadata for selected projects
+		// Sync name and deployable
 		const toUpdate = selectedProjects
 			.map((dbProject) => {
 				const providerProject = providerProjects.find((p) => p.id === dbProject.external_id);
@@ -65,8 +65,6 @@ export class DeploymentProjectsService extends ItemsService<DeploymentProject> {
 					id: dbProject.id,
 					name: providerProject.name,
 					deployable: providerProject.deployable,
-					url: providerProject.url ?? null,
-					framework: providerProject.framework ?? null,
 				};
 			})
 			.filter((update) => update !== null);
