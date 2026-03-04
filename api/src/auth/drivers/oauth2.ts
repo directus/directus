@@ -486,7 +486,11 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 				if (claims?.enforce_tfa === true) {
 					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
-					if (redirect) url.setQuery('redirect', redirect);
+
+					if (redirect) {
+						url.setQuery('redirect', redirect);
+						url.setQuery('provider', providerName);
+					}
 
 					redirect = url.toString();
 				}

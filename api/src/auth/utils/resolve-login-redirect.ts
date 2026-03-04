@@ -10,7 +10,7 @@ import isUrlAllowed from '../../utils/is-url-allowed.js';
  * @returns Resolved redirect path or URL string
  * @throws If the redirect is not a string, PUBLIC_URL is not defined, or the redirect is not allowed
  */
-export function resolveLoginRedirect(redirect: unknown, opts: { provider?: string } = {}) {
+export function resolveLoginRedirect(redirect: unknown, opts: { provider?: string | undefined } = {}) {
 	const env = useEnv();
 	const publicURL = env['PUBLIC_URL'] as string;
 
