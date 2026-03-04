@@ -120,8 +120,8 @@ test(`Returns true if IP matches resolved to local loopback devices`, async () =
 
 test(`Returns true if IPv6-mapped IPv4 loopback address is checked against 0.0.0.0 deny list`, async () => {
 	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] });
-	
-		const mockLogger = {
+
+	const mockLogger = {
 		warn: vi.fn(),
 	} as unknown as Logger;
 

@@ -33,7 +33,7 @@ export function isDeniedIp(ip: string): boolean {
 
 			blockList.parseAddress(blockNetwork);
 		}
-		
+
 		if (blockNetworkInterfaces) {
 			blockList.addLocalNetworkInterfaces();
 		}

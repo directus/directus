@@ -11,7 +11,7 @@ export function ipInNetworks(ip: string, networks: string[]) {
 
 	for (const blockNetworkRaw of networks) {
 		const blockNetwork = blockNetworkRaw.trim();
-		
+
 		if (blockNetwork.includes('-')) {
 			blockList.parseRange(blockNetwork);
 			continue;
