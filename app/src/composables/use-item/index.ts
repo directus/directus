@@ -67,11 +67,16 @@ export function useItem<T extends Item>(
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
 
-		if (collectionInfo.value.meta.archive_value === 'true') {
-			return item.value?.[collectionInfo.value.meta.archive_field] === true;
+		const { archive_field, archive_value } = collectionInfo.value.meta;
+		const fieldValue = item.value?.[archive_field];
+
+		// archive_value is always a string in the DB, but cast-boolean fields return real booleans
+		// at runtime — coerce to match before comparing.
+		if (archive_value === 'true' || archive_value === 'false') {
+			return fieldValue === (archive_value === 'true');
 		}
 
-		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
+		return fieldValue === archive_value;
 	});
 
 	const permissions = usePermissions(collection, primaryKey, isNew);
