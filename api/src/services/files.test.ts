@@ -1,6 +1,6 @@
 import { PassThrough, Readable } from 'node:stream';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InternalServerError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InternalServerError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
 import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { getAxios } from '../request/index.js';
@@ -19,7 +19,6 @@ const mockEnvOverrides = vi.hoisted(
 	() =>
 		({
 			FILES_MIME_TYPE_ALLOW_LIST: '*/*',
-			STORAGE_LOCATIONS: 'local',
 		}) as Record<string, unknown>,
 );
 
@@ -132,6 +131,8 @@ describe('Service / Files', () => {
 	describe('uploadOne', () => {
 		let service: FilesService;
 		let superUpdateOne: MockInstance;
+		let mockDriver: Driver;
+		let mockStorage: StorageManager;
 
 		let sample: {
 			id: string;
@@ -149,14 +150,42 @@ describe('Service / Files', () => {
 				filesize: 500,
 			};
 
-			const mockDriver = createMockDriver();
-			const mockStorage = createMockStorage(mockDriver);
+			mockDriver = createMockDriver();
+			mockStorage = createMockStorage(mockDriver);
 			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 
 			tracker.on.select('select "storage_default_folder" from "directus_settings"').response([]);
 
 			vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(sample.id);
 			superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(sample.id);
+		});
+
+		test.each(['EROFS', 'EACCES', 'EPERM'])('returns 500 for %s filesystem error', async (code: any) => {
+			const stream = Readable.from(Buffer.from('test content'));
+
+			vi.mocked(mockDriver.write).mockRejectedValue(Object.assign(new Error('fs error'), { code }));
+
+			await expect(
+				service.uploadOne(stream, {
+					storage: 'local',
+					filename_download: 'test.txt',
+					type: 'text/plain',
+				} as any),
+			).rejects.toBeInstanceOf(InternalServerError);
+		});
+
+		test('returns service unavailable for unknown error', async () => {
+			const stream = Readable.from(Buffer.from('test content'));
+
+			vi.mocked(mockDriver.write).mockRejectedValue(Object.assign(new Error('Error')));
+
+			await expect(
+				service.uploadOne(stream, {
+					storage: 'local',
+					filename_download: 'test.txt',
+					type: 'text/plain',
+				} as any),
+			).rejects.toBeInstanceOf(ServiceUnavailableError);
 		});
 
 		test('should set the `uploaded_on` field to the current date', async () => {
@@ -699,39 +728,6 @@ describe('Service / Files', () => {
 				expect.objectContaining({ type: 'image/jpeg' }),
 				undefined,
 			);
-		});
-	});
-
-	describe('uploadOne', () => {
-		let service: FilesService;
-		let mockDriver: Driver;
-
-		beforeEach(() => {
-			service = new FilesService({
-				knex: db,
-				schema: { collections: {}, relations: [] },
-			});
-
-			mockDriver = createMockDriver();
-			const mockStorage = createMockStorage(mockDriver);
-			vi.mocked(getStorage).mockResolvedValue(mockStorage);
-		});
-
-		test.each(['EROFS', 'EACCES', 'EPERM'])('returns 500 for %s filesystem error', async (code: any) => {
-			const stream = Readable.from(Buffer.from('test content'));
-
-			const storage = await getStorage();
-			const disk = storage.location('local');
-
-			vi.spyOn(disk, 'write').mockRejectedValue(Object.assign(new Error('fs error'), { code }));
-
-			await expect(
-				service.uploadOne(stream, {
-					storage: 'local',
-					filename_download: 'test.txt',
-					type: 'text/plain',
-				} as any),
-			).rejects.toBeInstanceOf(InternalServerError);
 		});
 	});
 });
