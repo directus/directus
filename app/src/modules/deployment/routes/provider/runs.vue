@@ -189,7 +189,7 @@ async function deploy(preview = false) {
 			triggerDeployment(props.provider, props.projectId, preview ? { preview: true } : undefined),
 		);
 
-		router.push(`/deployments/${props.provider}/${props.projectId}/runs/${result.id}`);
+		router.push({ name: 'deployments-provider-run', params: { provider: props.provider, projectId: props.projectId, runId: result.id } });
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -322,7 +322,7 @@ watch(statsRange, loadStats);
 					show-resize
 					fixed-header
 					item-key="id"
-					@click:row="({ item }) => $router.push(`/deployments/${provider}/${projectId}/runs/${item.id}`)"
+					@click:row="({ item }) => $router.push({ name: 'deployments-provider-run', params: { provider, projectId, runId: item.id } })"
 				>
 					<template #[`item.name`]="{ item }">
 						<span class="run-name">{{ item.name || item.external_id }}</span>
