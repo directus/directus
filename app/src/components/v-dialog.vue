@@ -115,10 +115,9 @@ function useOverlayFocusTrap() {
 				<component
 					:is="placement === 'center' ? 'span' : 'div'"
 					v-if="internalActive || keepMounted"
-					v-show="!keepMounted || internalActive"
 					ref="overlayEl"
 					class="container"
-					:class="[className, placement, keepBehind ? 'keep-behind' : null]"
+					:class="[className, placement, keepBehind ? 'keep-behind' : null, { show: !keepMounted || internalActive }]"
 				>
 					<VOverlay active absolute @click="emitToggle" />
 					<slot />
@@ -140,9 +139,13 @@ function useOverlayFocusTrap() {
 	inset-block-start: 0;
 	inset-inline-start: 0;
 	z-index: 500;
-	display: flex;
 	inline-size: 100%;
 	block-size: 100%;
+	display: none;
+
+	&.show {
+		display: flex;
+	}
 
 	&.keep-behind {
 		z-index: 490;
