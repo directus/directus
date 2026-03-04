@@ -197,7 +197,7 @@ async function openFieldDetail() {
 		}
 	}
 
-	router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
+	router.push({ name: 'settings-fields-field', params: { collection: props.field.collection, field: props.field.field } });
 }
 
 async function onGroupSortChange(fields: Field[]) {
@@ -313,7 +313,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 						<RouterLink
 							v-if="showRelatedCollectionLink"
-							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`"
+							:to="{ name: 'settings-fields', params: { collection: relatedCollectionInfo!.relatedCollection } }"
 						>
 							<VIcon name="open_in_new" class="link-icon" small />
 						</RouterLink>

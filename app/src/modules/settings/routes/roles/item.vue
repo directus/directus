@@ -80,7 +80,7 @@ async function saveAndAddNew() {
 	try {
 		await save();
 		await userStore.hydrate();
-		router.push(`/settings/roles/+`);
+		router.push({ name: 'settings-add-new-role' });
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -90,7 +90,7 @@ async function saveAndQuit() {
 	try {
 		await save();
 		await userStore.hydrate();
-		router.push(`/settings/roles`);
+		router.push({ name: 'settings-roles-collection' });
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -102,7 +102,7 @@ async function deleteAndQuit() {
 	try {
 		await remove();
 		edits.value = {};
-		router.replace(`/settings/roles`);
+		router.replace({ name: 'settings-roles-collection' });
 	} catch {
 		// `remove` shows unexpected error dialog
 	}

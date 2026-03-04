@@ -178,7 +178,7 @@ async function downloadSnapshot() {
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('create_collection')"
-				to="/settings/data-model/+"
+				:to="{ name: 'settings-add-new' }"
 				icon="add"
 			/>
 		</template>
@@ -192,7 +192,7 @@ async function downloadSnapshot() {
 				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
-					<VButton to="/settings/data-model/+">{{ $t('create_collection') }}</VButton>
+					<VButton :to="{ name: 'settings-add-new' }">{{ $t('create_collection') }}</VButton>
 				</template>
 			</VInfo>
 
@@ -245,7 +245,7 @@ async function downloadSnapshot() {
 						<VIcon name="add" />
 					</VListItemIcon>
 
-					<RouterLink class="collection-name" :to="`/settings/data-model/${collection.collection}`">
+					<RouterLink class="collection-name" :to="{ name: 'settings-fields', params: { collection: collection.collection } }">
 						<VIcon class="collection-icon" name="dns" />
 						<span class="collection-name">{{ collection.name }}</span>
 					</RouterLink>

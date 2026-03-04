@@ -190,7 +190,7 @@ function clearFilters() {
 						{{ $t('no_custom_translations_copy') }}
 
 						<template #append>
-							<VButton :to="`/settings/translations/+`">{{ $t('create_custom_translation') }}</VButton>
+							<VButton :to="{ name: 'settings-translations-item', params: { primaryKey: '+' } }">{{ $t('create_custom_translation') }}</VButton>
 						</template>
 					</VInfo>
 				</template>

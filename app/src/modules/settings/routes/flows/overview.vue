@@ -143,7 +143,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 
 function onFlowDrawerCompletion(id: string) {
 	if (editFlow.value === '+') {
-		router.push(`/settings/flows/${id}`);
+		router.push({ name: 'settings-flows-item', params: { primaryKey: id } });
 	}
 
 	editFlow.value = undefined;

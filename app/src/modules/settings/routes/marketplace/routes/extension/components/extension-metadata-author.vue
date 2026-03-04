@@ -12,7 +12,7 @@ defineProps<{
 </script>
 
 <template>
-	<VButton class="author" secondary full-width align="left" :to="`/settings/marketplace/account/${id}`">
+	<VButton class="author" secondary full-width align="left" :to="{ name: 'marketplace-account', params: { accountId: id } }">
 		<img v-if="githubAvatarUrl" :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
 		<VIcon v-else name="face" left />
 		{{ githubName ?? username }}

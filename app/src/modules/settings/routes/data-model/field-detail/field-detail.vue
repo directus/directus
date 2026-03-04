@@ -76,7 +76,7 @@ const showAdvanced = computed(() => {
 });
 
 async function cancel() {
-	await router.push(`/settings/data-model/${props.collection}`);
+	await router.push({ name: 'settings-fields', params: { collection: props.collection } });
 	fieldDetail.$reset();
 }
 
@@ -88,7 +88,7 @@ async function save() {
 		return;
 	}
 
-	router.push(`/settings/data-model/${props.collection}`);
+	router.push({ name: 'settings-fields', params: { collection: props.collection } });
 	fieldDetail.$reset();
 }
 </script>
