@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Reset confirm state after flow error
+Fixed reset confirm state after flow error
