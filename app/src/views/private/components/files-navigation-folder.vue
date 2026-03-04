@@ -158,9 +158,9 @@ function useDeleteFolder() {
 			await api.delete(`/folders/${props.folder.id}`);
 
 			if (newParent) {
-				router.replace(`/files/folders/${newParent}`);
+				router.replace({ name: 'folders-collection', params: { folder: newParent } });
 			} else {
-				router.replace('/files');
+				router.replace({ name: 'files-collection' });
 			}
 
 			deleteActive.value = false;
