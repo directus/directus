@@ -487,7 +487,7 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 			refresh();
 			revisionsSidebarDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
-			if (!props.singleton) router.push(`/content/${props.collection}`);
+			if (!props.singleton) router.push({ name: 'content-collection', params: { collection: props.collection } });
 		}
 	} catch {
 		// Save shows unexpected error dialog
