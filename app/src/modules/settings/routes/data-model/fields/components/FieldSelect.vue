@@ -197,7 +197,10 @@ async function openFieldDetail() {
 		}
 	}
 
-	router.push({ name: 'settings-fields-field', params: { collection: props.field.collection, field: props.field.field } });
+	router.push({
+		name: 'settings-fields-field',
+		params: { collection: props.field.collection, field: props.field.field },
+	});
 }
 
 async function onGroupSortChange(fields: Field[]) {

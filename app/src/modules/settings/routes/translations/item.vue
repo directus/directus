@@ -166,7 +166,8 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.replace({ name: 'settings-translations-item', params: { primaryKey: encodeURIComponent(newPrimaryKey) } });
+		if (newPrimaryKey)
+			router.replace({ name: 'settings-translations-item', params: { primaryKey: encodeURIComponent(newPrimaryKey) } });
 	} catch {
 		// Save shows unexpected error dialog
 	}

@@ -136,7 +136,11 @@ function getChildBookmarks(collection: Collection) {
 
 	<VMenu v-if="hasContextMenu" ref="contextMenu" show-arrow placement="bottom-start">
 		<VList>
-			<VListItem v-if="isAdmin" clickable :to="{ name: 'settings-fields', params: { collection: collection.collection } }">
+			<VListItem
+				v-if="isAdmin"
+				clickable
+				:to="{ name: 'settings-fields', params: { collection: collection.collection } }"
+			>
 				<VListItemIcon>
 					<VIcon name="database" />
 				</VListItemIcon>

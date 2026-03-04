@@ -245,7 +245,10 @@ async function downloadSnapshot() {
 						<VIcon name="add" />
 					</VListItemIcon>
 
-					<RouterLink class="collection-name" :to="{ name: 'settings-fields', params: { collection: collection.collection } }">
+					<RouterLink
+						class="collection-name"
+						:to="{ name: 'settings-fields', params: { collection: collection.collection } }"
+					>
 						<VIcon class="collection-icon" name="dns" />
 						<span class="collection-name">{{ collection.name }}</span>
 					</RouterLink>

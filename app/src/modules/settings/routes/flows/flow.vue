@@ -463,7 +463,8 @@ function duplicatePanel(panel: OperationRaw) {
 
 function editPanel(panel: AppTile) {
 	if (panel.id === '$trigger') triggerDetailOpen.value = true;
-	else router.push({ name: 'settings-flows-operation', params: { primaryKey: props.primaryKey, operationId: panel.id } });
+	else
+		router.push({ name: 'settings-flows-operation', params: { primaryKey: props.primaryKey, operationId: panel.id } });
 }
 
 // ------------- Copy Panel To ------------- //

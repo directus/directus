@@ -161,7 +161,10 @@ async function setNestedSort(updates?: Field[]) {
 			<VList>
 				<template v-for="(option, index) in addOptions" :key="index">
 					<VDivider v-if="option.divider === true" />
-					<VListItem v-else :to="{ name: 'settings-fields-field', params: { collection, field: '+' }, query: { type: option.type } }">
+					<VListItem
+						v-else
+						:to="{ name: 'settings-fields-field', params: { collection, field: '+' }, query: { type: option.type } }"
+					>
 						<VListItemIcon>
 							<VIcon :name="option.icon" />
 						</VListItemIcon>
