@@ -9,7 +9,12 @@ export type UsablePermissions = {
 	itemPermissions: UsableItemPermissions & { saveAllowed: ComputedRef<boolean> };
 };
 
-export function usePermissions(collection: Collection, primaryKey: PrimaryKey, isNew: IsNew, isVersion: IsNew = false): UsablePermissions {
+export function usePermissions(
+	collection: Collection,
+	primaryKey: PrimaryKey,
+	isNew: IsNew,
+	isVersion: IsNew = false,
+): UsablePermissions {
 	const collectionPermissions = useCollectionPermissions(collection);
 
 	const itemPermissions = useItemPermissions(collection, primaryKey, isNew, isVersion);

@@ -7,7 +7,12 @@ import type { FormField } from '@/components/v-form/types';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 
-export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermissions: Ref<ItemPermissions>, isVersion: IsNew = false) {
+export function getFields(
+	collection: Collection,
+	isNew: IsNew,
+	fetchedItemPermissions: Ref<ItemPermissions>,
+	isVersion: IsNew = false,
+) {
 	const userStore = useUserStore();
 	const { getPermission } = usePermissionsStore();
 	const { fields: rawFields, info: collectionInfo } = useCollection(ref(collection));
