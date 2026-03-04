@@ -9,12 +9,12 @@ export function applyAggregate(
 	hasJoins: boolean,
 ): void {
 	for (const [operation, fields] of Object.entries(aggregate)) {
+		if (!fields && operation !== 'countAll') continue;
+
 		if (operation === 'countAll') {
 			dbQuery.count('*', { as: 'countAll' });
 			continue;
 		}
-
-		if (!fields) continue;
 
 		for (const field of fields) {
 			if (operation === 'count' && field === '*') {
