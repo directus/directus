@@ -35,7 +35,7 @@ import { getSecret } from '../../utils/get-secret.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { generateCallbackUrl } from '../utils/generate-callback-url.js';
-import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
+import { resolveLoginRedirect } from '../utils/resolve-login-redirect.js';
 import { LocalAuthDriver } from './local.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
@@ -441,10 +441,12 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
-			const redirect = req.query['redirect'];
+			let redirect = req.query['redirect'];
 			const otp = req.query['otp'];
 
-			if (!isLoginRedirectAllowed(providerName, redirect)) {
+			try {
+				redirect = resolveLoginRedirect(redirect, { provider: providerName });
+			} catch {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
