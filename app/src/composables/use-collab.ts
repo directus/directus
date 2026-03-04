@@ -415,7 +415,7 @@ export function useCollab(
 		users.value = [];
 		focused.value = {};
 
-		router.push(`/content/${item.value ? collection.value : ''}`);
+		router.push(item.value ? { name: 'content-collection', params: { collection: collection.value } } : { name: 'no-collections' });
 	}
 
 	async function receiveJoin(message: JoinMessage) {
