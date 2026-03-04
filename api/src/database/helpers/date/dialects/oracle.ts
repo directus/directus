@@ -21,6 +21,8 @@ export class DateHelperOracle extends DateHelper {
 
 	override fieldFlagForField(fieldType: string): string {
 		switch (fieldType) {
+			case 'json':
+				return 'cast-json';
 			case 'dateTime':
 				return 'cast-datetime';
 			default:
