@@ -20,7 +20,7 @@ export function useSafeRedirect() {
 		if (!resolved) return null;
 
 		// Only attempt conversion for absolute URLs
-		if (!/^https?:\/\//.test(resolved)) return resolved;
+		if (/^https?:\/\//.test(resolved) === false) return resolved;
 
 		try {
 			const resolvedUrl = new URL(resolved);
