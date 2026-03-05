@@ -142,8 +142,8 @@ const workspaceBoxSize = computed(() => {
 	position: absolute;
 	inset-inline-start: var(--content-padding);
 	display: grid;
-	grid-template-rows: repeat(auto-fill, 20px);
-	grid-template-columns: repeat(auto-fill, 20px);
+	grid-template-rows: repeat(auto-fill, 1.125rem);
+	grid-template-columns: repeat(auto-fill, 1.125rem);
 	min-inline-size: calc(100%);
 	min-block-size: calc(100% - 6.75rem);
 	transform: scale(1);
@@ -167,7 +167,7 @@ const workspaceBoxSize = computed(() => {
 	block-size: calc(100% + 0.4375rem);
 	background-image: radial-gradient(var(--theme--form--field--input--border-color) 10%, transparent 10%);
 	background-position: -0.3125rem -0.3125rem;
-	background-size: 20px 20px;
+	background-size: 1.125rem 1.125rem;
 	opacity: 0;
 	transition: opacity var(--slow) var(--transition);
 	content: '';
