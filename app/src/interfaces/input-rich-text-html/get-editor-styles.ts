@@ -162,7 +162,7 @@ table {
 table th,
 table td {
 	border: 1px solid ${cssVar('--theme--form--field--input--border-color')};
-	padding: 0.4rem;
+	padding: 0.3125rem;
 }
 figure {
 	display: table;

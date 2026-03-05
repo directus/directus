@@ -53,7 +53,7 @@ useResizeObserver(contentRef, (entries) => {
 
 	&[data-role='assistant'] {
 		.message-content {
-			padding: 0.4rem 0;
+			padding: 0.3125rem 0;
 		}
 
 		--ai-message-code-background: var(--theme--background-subdued);
