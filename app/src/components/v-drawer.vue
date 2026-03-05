@@ -143,7 +143,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 	display: flex;
 	flex-direction: column;
 	inline-size: 100%;
-	max-inline-size: 856px;
+	max-inline-size: 48.125rem;
 	block-size: 100%;
 	background-color: var(--theme--background);
 

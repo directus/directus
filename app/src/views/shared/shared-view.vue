@@ -79,7 +79,7 @@ header {
 }
 
 .container {
-	max-inline-size: 856px;
+	max-inline-size: 48.125rem;
 	margin: 0 auto;
 }
 
@@ -140,7 +140,7 @@ header {
 	.inline-container {
 		display: block;
 		inline-size: 100%;
-		max-inline-size: 856px;
+		max-inline-size: 48.125rem;
 		padding: 1.8125rem;
 		background-color: var(--theme--background);
 		border-radius: var(--theme--border-radius);
