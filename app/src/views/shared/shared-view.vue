@@ -88,7 +88,7 @@ header {
 	align-items: center;
 	inline-size: max-content;
 	max-inline-size: 100%;
-	block-size: 60px;
+	block-size: 3.375rem;
 	margin-block-start: 2px;
 
 	.title {
@@ -112,8 +112,8 @@ header {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 60px;
-	block-size: 60px;
+	inline-size: 3.375rem;
+	block-size: 3.375rem;
 	background-color: var(--project-color);
 	border-radius: var(--theme--border-radius);
 

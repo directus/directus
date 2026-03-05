@@ -312,7 +312,7 @@ watch(range, loadDashboard);
 		@media (max-width: 768px) {
 			inline-size: 100%;
 			margin-inline-start: 0;
-			padding-inline-start: 60px; // icon width + gap
+			padding-inline-start: 3.375rem; // icon width + gap
 			margin-block-start: 0.25rem;
 		}
 	}

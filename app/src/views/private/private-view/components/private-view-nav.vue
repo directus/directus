@@ -37,7 +37,7 @@ defineProps<{ id?: string }>();
 	--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
 	--v-divider-color: var(--theme--navigation--list--divider--border-color);
 	--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
-	--project-header-height: 60px;
+	--project-header-height: 3.375rem;
 
 	block-size: calc(100% - var(--project-header-height));
 	overflow: hidden auto;

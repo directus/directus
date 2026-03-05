@@ -44,7 +44,7 @@ defineEmits<{
 	position: relative;
 	flex-shrink: 0;
 	inline-size: 100%;
-	block-size: 60px;
+	block-size: 3.375rem;
 	color: var(--theme--foreground-accent);
 	background-color: var(--theme--background-accent);
 
@@ -52,7 +52,7 @@ defineEmits<{
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 60px;
+		inline-size: 3.375rem;
 		block-size: 100%;
 	}
 

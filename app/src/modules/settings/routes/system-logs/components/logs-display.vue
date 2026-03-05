@@ -313,7 +313,7 @@ function selectLog(index: number) {
 .unread-logs {
 	position: relative;
 	inline-size: 100%;
-	inset-block-end: 60px;
+	inset-block-end: 3.375rem;
 	text-align: center;
 }
 

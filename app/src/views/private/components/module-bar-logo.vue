@@ -69,8 +69,8 @@ function stopSpinnerIfQueueIsEmpty() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 60px;
-	block-size: 60px;
+	inline-size: 3.375rem;
+	block-size: 3.375rem;
 	padding: 0.6875rem;
 	background-color: var(--project-color);
 

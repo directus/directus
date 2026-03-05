@@ -84,7 +84,7 @@ const sizeClass = useSizeClass(props);
 }
 
 .large {
-	--v-avatar-size: 60px;
+	--v-avatar-size: 3.375rem;
 }
 
 .x-large {

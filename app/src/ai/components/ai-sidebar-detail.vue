@@ -46,7 +46,7 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 .collapsible-trigger {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
-	block-size: 60px;
+	block-size: 3.375rem;
 	inline-size: 100%;
 }
 
@@ -96,12 +96,12 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 
 .collapsible-content[data-state='open'] {
 	animation: slide-down var(--fast) var(--transition);
-	block-size: calc(100vh - 60px);
+	block-size: calc(100vh - 3.375rem);
 }
 
 .collapsible-content[data-state='closed'] {
 	animation: slide-up var(--fast) var(--transition);
-	block-size: calc(100vh - 60px);
+	block-size: calc(100vh - 3.375rem);
 }
 
 .ai-sidebar-content {
@@ -116,13 +116,13 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 		block-size: 0;
 	}
 	to {
-		block-size: calc(100vh - 60px);
+		block-size: calc(100vh - 3.375rem);
 	}
 }
 
 @keyframes slide-up {
 	from {
-		block-size: calc(100vh - 60px);
+		block-size: calc(100vh - 3.375rem);
 	}
 	to {
 		block-size: 0;

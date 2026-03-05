@@ -300,7 +300,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	padding: var(--content-padding);
 
 	&:has(> .limit) {
-		--limit-notice-height: calc(60px + var(--limit-notice-margin-bottom));
+		--limit-notice-height: calc(3.375rem + var(--limit-notice-margin-bottom));
 	}
 
 	.limit {
@@ -340,7 +340,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				font-weight: 700;
 
 				.title {
-					max-inline-size: calc(100% - 60px);
+					max-inline-size: calc(100% - 3.375rem);
 					display: flex;
 
 					.title-content {

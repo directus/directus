@@ -630,7 +630,7 @@ function setAspectRatio() {
 	.editor {
 		flex-grow: 1;
 		inline-size: 100%;
-		block-size: calc(100% - 60px);
+		block-size: calc(100% - 3.375rem);
 	}
 
 	img {
@@ -651,7 +651,7 @@ function setAspectRatio() {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	block-size: 60px;
+	block-size: 3.375rem;
 	padding: 0 1.375rem;
 	color: var(--white);
 	background-color: #263238;

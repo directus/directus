@@ -578,7 +578,7 @@ function useUrls() {
 	block-size: 100%;
 
 	&.header-expanded {
-		--preview--header--height: 60px;
+		--preview--header--height: 3.375rem;
 
 		.header {
 			padding: 0.4375rem 0.875rem;

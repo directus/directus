@@ -39,8 +39,8 @@ const sidebarStore = useSidebarStore();
 }
 
 .accordion-root {
-	/* 60px leaves space for the the AI toggle at the bottom */
-	block-size: calc(100% - 60px);
+	/* 3.375rem leaves space for the the AI toggle at the bottom */
+	block-size: calc(100% - 3.375rem);
 	display: flex;
 	flex-direction: column;
 }

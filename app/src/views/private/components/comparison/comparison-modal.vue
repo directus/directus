@@ -419,7 +419,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 <style lang="scss" scoped>
 .comparison-modal {
-	--header-bar-height: 60px;
+	--header-bar-height: 3.375rem;
 	--comparison-modal--width: max(100% - 8vw, 100% - var(--header-bar-height) * 2);
 	--comparison-modal--height: var(--comparison-modal--width);
 	--comparison-modal--padding-x: 1.5625rem;

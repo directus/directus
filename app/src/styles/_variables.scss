@@ -9,7 +9,7 @@
 	--slow: 300ms;
 	--header-bar-height: 120px;
 	--content-padding: 0.6875rem;
-	--content-padding-bottom: 60px;
+	--content-padding-bottom: 3.375rem;
 	--input-height-md: 168px;
 	--input-height-lg: 300px;
 	--input-height-xl: 500px;
@@ -24,7 +24,7 @@
 	--focus-ring-color: var(--theme--primary);
 
 	@media (width > 400px) {
-		--header-bar-height: 60px;
+		--header-bar-height: 3.375rem;
 	}
 
 	@media (width > 640px) {

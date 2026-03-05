@@ -415,7 +415,7 @@ function pointerLeave() {
 		justify-content: center;
 		align-items: center;
 		padding: 1.125rem;
-		padding-inline-start: 60px;
+		padding-inline-start: 3.375rem;
 		transform: translate(-1px, calc(-50% - 2.5px));
 
 		html[dir='rtl'] & {

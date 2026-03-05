@@ -237,6 +237,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 
 .main-content-container {
 	inline-size: 100%;
-	block-size: calc(100% - 60px);
+	block-size: calc(100% - 3.375rem);
 }
 </style>

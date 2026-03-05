@@ -161,7 +161,7 @@ export default defineTheme({
 					boxShadowHover: 'none',
 					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 
-					height: '60px',
+					height: '3.375rem',
 					padding: '0.875rem',
 				},
 			},
