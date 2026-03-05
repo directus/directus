@@ -326,7 +326,7 @@ function cancelAndClose() {
 	margin: 0 auto 0.875rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-family: var(--theme--fonts--monospace--font-family);
-	letter-spacing: 2.6px;
+	letter-spacing: 0.125rem;
 	text-align: center;
 }
 
