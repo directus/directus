@@ -189,7 +189,7 @@ function toggleInterface(id: string) {
 }
 
 .group + .group {
-	margin-block-start: 80px;
+	margin-block-start: 4.5rem;
 }
 
 .grid {

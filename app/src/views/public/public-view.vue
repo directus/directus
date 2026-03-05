@@ -169,7 +169,7 @@ const logoURL = computed<string | null>(() => {
 		}
 
 		@media (min-width: 500px) {
-			padding: 2.25rem 80px;
+			padding: 2.25rem 4.5rem;
 		}
 	}
 

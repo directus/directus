@@ -91,7 +91,7 @@ useResizeObserver(contentRef, (entries) => {
 		position: absolute;
 		inset-block-end: 0;
 		inset-inline: 0;
-		block-size: 80px;
+		block-size: 4.5rem;
 		background: linear-gradient(to bottom, transparent, var(--ai-message-background));
 		pointer-events: none;
 	}

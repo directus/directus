@@ -178,7 +178,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	gap: 0.6875rem var(--theme--form--column-gap);
 
 	@media (min-width: 960px) {
-		block-size: 80px;
+		block-size: 4.5rem;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;

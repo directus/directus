@@ -88,7 +88,7 @@ const sizeClass = useSizeClass(props);
 }
 
 .x-large {
-	--v-avatar-size: 80px;
+	--v-avatar-size: 4.5rem;
 }
 
 .round {

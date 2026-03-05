@@ -169,12 +169,12 @@ function navigateToUser() {
 
 	display: flex;
 	align-items: center;
-	block-size: 80px;
+	block-size: 4.5rem;
 	margin: 0.4375rem 0.25rem;
 
 	.avatar {
-		inline-size: 80px;
-		block-size: 80px;
+		inline-size: 4.5rem;
+		block-size: 4.5rem;
 		margin-inline-end: 0.875rem;
 	}
 
