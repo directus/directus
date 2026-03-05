@@ -171,7 +171,7 @@ watch(
 
 		:deep(.CodeMirror),
 		:deep(.CodeMirror-scroll) {
-			max-block-size: 480px;
+			max-block-size: 27rem;
 		}
 
 		:deep(.CodeMirror-scroll) {
