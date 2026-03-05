@@ -96,7 +96,7 @@ h1 {
 }
 
 .registration-wrapper {
-	margin-block-start: 3rem;
+	margin-block-start: 2.375rem;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
