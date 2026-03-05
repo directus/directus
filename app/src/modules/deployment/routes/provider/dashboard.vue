@@ -184,7 +184,7 @@ watch(range, loadDashboard);
 .stats-bar {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 16px;
+	gap: 0.875rem;
 	margin-block-end: 40px;
 
 	@media (max-width: 1512px) {
@@ -244,7 +244,7 @@ watch(range, loadDashboard);
 
 .range-select {
 	display: block;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .projects-divider {
@@ -258,7 +258,7 @@ watch(range, loadDashboard);
 .project-list-item {
 	display: flex;
 	align-items: center;
-	gap: 16px;
+	gap: 0.875rem;
 	block-size: 98px !important;
 	padding: 0 20px !important;
 	background-color: var(--theme--background-subdued);
@@ -268,7 +268,7 @@ watch(range, loadDashboard);
 	@media (max-width: 768px) {
 		flex-wrap: wrap;
 		block-size: auto !important;
-		padding: 16px 20px !important;
+		padding: 0.875rem 20px !important;
 	}
 
 	.icon {

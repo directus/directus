@@ -259,8 +259,8 @@ watch(selectedProviderName, (val) => {
 	.sso-title {
 		display: flex;
 		align-items: center;
-		padding: 0 16px 0 20px;
-		font-size: 16px;
+		padding: 0 0.875rem 0 20px;
+		font-size: 0.875rem;
 		overflow: hidden;
 	}
 

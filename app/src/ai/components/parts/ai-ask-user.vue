@@ -599,21 +599,21 @@ onUnmounted(() => {
 
 .slide-forward-enter-from {
 	opacity: 0;
-	translate: 16px 0;
+	translate: 0.875rem 0;
 }
 
 .slide-forward-leave-to {
 	opacity: 0;
-	translate: -16px 0;
+	translate: -0.875rem 0;
 }
 
 .slide-backward-enter-from {
 	opacity: 0;
-	translate: -16px 0;
+	translate: -0.875rem 0;
 }
 
 .slide-backward-leave-to {
 	opacity: 0;
-	translate: 16px 0;
+	translate: 0.875rem 0;
 }
 </style>

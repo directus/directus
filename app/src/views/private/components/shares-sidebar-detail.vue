@@ -381,7 +381,7 @@ async function copy(id: string) {
 }
 
 .empty {
-	margin-block: 16px;
+	margin-block: 0.875rem;
 	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;

@@ -85,7 +85,7 @@ defineProps<FlowDialogsContext>();
 	--theme--form--column-gap: 24px;
 	--theme--form--row-gap: 24px;
 
-	margin-block-start: var(--v-card-padding, 16px);
+	margin-block-start: var(--v-card-padding, 0.875rem);
 
 	:deep(.type-label) {
 		font-size: 0.8125rem;

@@ -312,7 +312,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	display: flex;
 	block-size: 100%;
 
-	--user-spacing: 16px;
+	--user-spacing: 0.875rem;
 
 	.draggable {
 		display: flex;
@@ -336,7 +336,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 			.header {
 				display: flex;
 				justify-content: space-between;
-				margin: 0 16px 0.4375rem;
+				margin: 0 0.875rem 0.4375rem;
 				font-weight: 700;
 
 				.title {
@@ -387,8 +387,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 				.item {
 					display: block;
-					margin: 2px 16px 0.3125rem;
-					padding: 0.6875rem 16px;
+					margin: 2px 0.875rem 0.3125rem;
+					padding: 0.6875rem 0.875rem;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
 					cursor: pointer;

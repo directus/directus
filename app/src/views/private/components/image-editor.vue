@@ -658,7 +658,7 @@ function setAspectRatio() {
 
 	.v-icon {
 		display: inline-block;
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 	}
 }
 
@@ -689,7 +689,7 @@ function setAspectRatio() {
 }
 
 .drag-mode {
-	margin-inline: -0.4375rem 16px;
+	margin-inline: -0.4375rem 0.875rem;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
@@ -707,6 +707,6 @@ function setAspectRatio() {
 }
 
 .cancel {
-	padding-inline: 16px;
+	padding-inline: 0.875rem;
 }
 </style>

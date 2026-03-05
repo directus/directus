@@ -567,7 +567,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				display: flex;
 				justify-content: center;
 				flex-direction: column;
-				gap: 16px;
+				gap: 0.875rem;
 
 				@media (min-width: 960px) {
 					flex-direction: row;

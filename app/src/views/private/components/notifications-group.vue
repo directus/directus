@@ -35,8 +35,8 @@ const overlayIsActive = computed(() => notificationsStore.overlayIsActive);
 <style lang="scss" scoped>
 .notifications-group {
 	position: absolute;
-	inset-block-end: 16px;
-	inset-inline-end: 16px;
+	inset-block-end: 0.875rem;
+	inset-inline-end: 0.875rem;
 	z-index: 50;
 	display: flex;
 	flex-direction: column;

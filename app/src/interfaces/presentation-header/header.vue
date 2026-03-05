@@ -461,7 +461,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	overflow-y: scroll;
 
 	:deep(.helper-text) {
-		padding: var(--v-card-padding, 16px);
+		padding: var(--v-card-padding, 0.875rem);
 		padding-block-start: 0;
 		max-inline-size: 100%;
 		overflow-x: auto;
@@ -470,18 +470,18 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	.collapse-button-container {
 		display: flex;
 		justify-content: flex-end;
-		margin-block-start: 16px;
+		margin-block-start: 0.875rem;
 	}
 }
 
 .help-modal {
 	position: relative;
-	padding-block-start: var(--v-card-padding, 16px);
+	padding-block-start: var(--v-card-padding, 0.875rem);
 
 	.close-button {
 		position: absolute;
-		inset-block-start: 16px;
-		inset-inline-end: 16px;
+		inset-block-start: 0.875rem;
+		inset-inline-end: 0.875rem;
 
 		:deep(.button) {
 			border-radius: 100%;

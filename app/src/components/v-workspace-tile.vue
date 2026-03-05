@@ -462,7 +462,7 @@ function useDragDrop() {
 .name {
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 0.875rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
 }

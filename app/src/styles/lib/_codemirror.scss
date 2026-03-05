@@ -292,7 +292,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-lint-markers {
-	inline-size: 16px;
+	inline-size: 0.875rem;
 }
 
 .CodeMirror-lint-tooltip {
@@ -324,8 +324,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	vertical-align: middle;
 	cursor: pointer;
 	inset-inline-start: 0.25rem;
-	block-size: 16px;
-	inline-size: 16px;
+	block-size: 0.875rem;
+	inline-size: 0.875rem;
 }
 
 .CodeMirror-lint-marker-warning {

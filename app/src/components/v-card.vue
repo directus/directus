@@ -24,7 +24,7 @@ withDefaults(defineProps<Props>(), {
 	Available Variables:
 
 		--v-card-min-width         [none]
-		--v-card-padding           [16px]
+		--v-card-padding           [0.875rem]
 		--v-card-background-color  [var(--theme--form--field--input--background-subdued)]
 
 */

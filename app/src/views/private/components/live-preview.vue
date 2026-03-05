@@ -581,7 +581,7 @@ function useUrls() {
 		--preview--header--height: 60px;
 
 		.header {
-			padding: 0.4375rem 16px;
+			padding: 0.4375rem 0.875rem;
 		}
 	}
 

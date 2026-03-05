@@ -87,7 +87,7 @@ const hasValue = computed(() => {
 .group-toggle {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground);
-	inline-size: calc(100% + 16px);
+	inline-size: calc(100% + 0.875rem);
 	text-align: start;
 	padding-inline: 0.4375rem;
 	margin-inline-start: -0.4375rem;

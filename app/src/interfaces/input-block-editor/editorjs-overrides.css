@@ -235,7 +235,7 @@
 .codex-editor .cdx-button {
 	color: var(--foreground-inverted);
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 0.875rem;
 	text-decoration: none;
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
@@ -522,8 +522,8 @@
 }
 
 .codex-editor .ce-block h6 {
-	font-size: 16px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 }
 
 .codex-editor .ce-block a {
@@ -588,7 +588,7 @@
 .codex-editor .ce-block hr::after {
 	font-size: 28px;
 	line-height: 0;
-	letter-spacing: 16px;
+	letter-spacing: 0.5143em;
 	content: '...';
 }
 

@@ -574,7 +574,7 @@ const menuActive = computed(
 	.pagination {
 		margin-inline-start: auto;
 		display: flex;
-		gap: 0.4375rem 16px;
+		gap: 0.4375rem 0.875rem;
 
 		.per-page {
 			display: flex;

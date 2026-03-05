@@ -337,7 +337,7 @@ async function downloadSnapshot() {
 }
 
 .db-only {
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .expand-collapse-button {

@@ -89,8 +89,8 @@ const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableM
 }
 
 .model-icon {
-	inline-size: 16px;
-	block-size: 16px;
+	inline-size: 0.875rem;
+	block-size: 0.875rem;
 
 	&.small {
 		inline-size: 0.6875rem;

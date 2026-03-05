@@ -333,7 +333,7 @@ img {
 
 	.message {
 		max-inline-size: 300px;
-		padding: 0 16px;
+		padding: 0 0.875rem;
 		text-align: center;
 	}
 }

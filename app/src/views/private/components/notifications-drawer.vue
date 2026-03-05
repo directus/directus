@@ -419,7 +419,7 @@ function clearFilters() {
 }
 
 .notifications {
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 
 	.v-skeleton-loader {
 		margin-block-end: 0.4375rem;
@@ -434,7 +434,7 @@ function clearFilters() {
 			block-size: unset;
 			min-block-size: var(--theme--form--field--input--height);
 			flex-flow: wrap;
-			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
+			padding: 0.875rem var(--theme--form--field--input--padding) 0.875rem var(--theme--form--field--input--padding);
 
 			&.dense {
 				min-block-size: 44px;

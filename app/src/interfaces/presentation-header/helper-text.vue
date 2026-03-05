@@ -62,7 +62,7 @@ const sanitizedContent = computed(() => dompurify.sanitize(props.content));
 }
 
 :deep(h5) {
-	font-size: 16px;
+	font-size: 0.875rem;
 }
 
 :deep(h6) {

@@ -63,7 +63,7 @@ const npmLink = computed(() => {
 	padding: 0 0.4375rem;
 
 	.divider {
-		margin: 16px 0;
+		margin: 0.875rem 0;
 	}
 }
 </style>

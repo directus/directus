@@ -37,7 +37,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 @use '@/styles/colors';
 
 .fields {
-	--theme--form--row-gap: 16px;
+	--theme--form--row-gap: 0.875rem;
 
 	@include mixins.form-grid;
 

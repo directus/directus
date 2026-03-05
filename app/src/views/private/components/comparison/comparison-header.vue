@@ -227,7 +227,7 @@ function getDeltaOptionUser(deltaOption: any) {
 
 	.subtitle {
 		max-inline-size: 80%;
-		font-size: 16px;
+		font-size: 0.875rem;
 		font-weight: 500;
 		color: var(--theme--foreground-subdued);
 		margin: 0;
@@ -268,7 +268,7 @@ function getDeltaOptionUser(deltaOption: any) {
 				cursor: pointer;
 				border: 2px solid var(--theme--border-color);
 				border-radius: var(--theme--border-radius);
-				padding-inline: 16px;
+				padding-inline: 0.875rem;
 				padding-block: 0.4375rem;
 				inline-size: 100%;
 

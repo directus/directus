@@ -333,7 +333,7 @@ const stageChanges = () => {
 	--v-icon-color: var(--theme--primary-75);
 
 	display: block;
-	padding: 0.4375rem 16px;
+	padding: 0.4375rem 0.875rem;
 	background-color: var(--background-page);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);

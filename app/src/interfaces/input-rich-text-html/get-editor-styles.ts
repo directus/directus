@@ -65,8 +65,8 @@ h3 {
 	margin-block-start: 1.25em;
 }
 h4 {
-	font-size: 16px;
-	line-height: 26px;
+	font-size: 0.875rem;
+	line-height: 1.6429;
 	margin-block-start: 1.5em;
 }
 h5 {

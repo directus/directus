@@ -256,7 +256,7 @@ function toggleInterface(id: string) {
 	--v-icon-color: var(--theme--primary-subdued);
 
 	display: block;
-	padding: 0.4375rem 16px;
+	padding: 0.4375rem 0.875rem;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);

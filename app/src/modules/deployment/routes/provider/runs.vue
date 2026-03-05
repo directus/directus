@@ -365,14 +365,14 @@ watch(statsRange, loadStats);
 
 .range-select {
 	display: block;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .stats-bar {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 16px;
-	margin-block-end: 16px;
+	gap: 0.875rem;
+	margin-block-end: 0.875rem;
 
 	@media (max-width: 1512px) {
 		grid-template-columns: repeat(3, 1fr);

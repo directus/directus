@@ -177,7 +177,7 @@ function useEdits() {
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
 	margin-block-start: 0.6875rem;
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 0.875rem;
 	color: var(--theme--foreground-accent);
 }
 

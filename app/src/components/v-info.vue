@@ -44,7 +44,7 @@ withDefaults(defineProps<Props>(), {
 	justify-content: center;
 	inline-size: 100px;
 	block-size: 100px;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 	border-radius: 50%;
 }
 

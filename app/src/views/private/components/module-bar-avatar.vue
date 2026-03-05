@@ -164,8 +164,8 @@ const userFullName = userStore.fullName ?? undefined;
 	}
 
 	.notifications-badge {
-		--v-badge-offset-x: 16px;
-		--v-badge-offset-y: 16px;
+		--v-badge-offset-x: 0.875rem;
+		--v-badge-offset-y: 0.875rem;
 	}
 
 	.notifications {

@@ -776,7 +776,7 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	padding: var(--v-card-padding, 16px);
+	padding: var(--v-card-padding, 0.875rem);
 }
 
 .v-table .deleted {

@@ -556,7 +556,7 @@ function revert(values: Record<string, any>) {
 		justify-content: center;
 		inline-size: 84px;
 		block-size: 84px;
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
@@ -589,7 +589,7 @@ function revert(values: Record<string, any>) {
 		}
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-block-end: 16px;
+			margin-block-end: 0.875rem;
 		}
 
 		.v-chip {

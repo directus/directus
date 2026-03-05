@@ -26,7 +26,7 @@ defineProps<{
 	}
 
 	.app-minimal-preview {
-		padding: 16px;
+		padding: 0.875rem;
 		font-family: var(--theme--fonts--monospace--font-family);
 		background-color: var(--theme--background-subdued);
 		border-radius: var(--theme--border-radius);

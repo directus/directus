@@ -92,7 +92,7 @@ header {
 	margin-block-start: 2px;
 
 	.title {
-		margin-inline-start: 16px;
+		margin-inline-start: 0.875rem;
 
 		h1 {
 			color: var(--theme--foreground);

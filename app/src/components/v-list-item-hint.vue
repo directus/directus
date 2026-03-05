@@ -41,11 +41,11 @@ withDefaults(defineProps<Props>(), {
 
 				&:not(:only-child) {
 					&:first-child {
-						margin-inline-end: 16px;
+						margin-inline-end: 0.875rem;
 					}
 
 					&:last-child {
-						margin-inline-start: 16px;
+						margin-inline-start: 0.875rem;
 					}
 				}
 			}

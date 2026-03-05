@@ -86,7 +86,7 @@ const user = computed(() => {
 	display: block;
 	inline-size: 100%;
 	margin-block-end: 0.6875rem;
-	padding-inline-start: 16px;
+	padding-inline-start: 0.875rem;
 	text-align: start;
 
 	.header {
@@ -173,7 +173,7 @@ const user = computed(() => {
 	position: relative;
 	z-index: 2;
 	color: var(--theme--foreground-subdued);
-	line-height: 16px;
+	line-height: 0.875rem;
 
 	.time {
 		text-transform: lowercase;

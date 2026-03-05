@@ -469,7 +469,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading-text td,
 .no-items-text td {
-	padding: 16px;
+	padding: 0.875rem;
 	color: var(--theme--foreground-subdued);
 }
 

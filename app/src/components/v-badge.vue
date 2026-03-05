@@ -46,7 +46,7 @@ withDefaults(
 			--v-badge-border-color      [var(--theme--background)]
 			--v-badge-offset-x          [0px]
 			--v-badge-offset-y          [0px]
-			--v-badge-size              [16px]
+			--v-badge-size              [0.875rem]
 
 */
 
@@ -64,30 +64,30 @@ withDefaults(
 
 	.badge {
 		position: absolute;
-		inset-block-start: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
-		inset-inline-end: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
+		inset-block-start: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-y, 0px));
+		inset-inline-end: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-x, 0px));
 		z-index: 1;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		inline-size: max-content;
-		min-inline-size: var(--v-badge-size, 16px);
-		block-size: var(--v-badge-size, 16px);
+		min-inline-size: var(--v-badge-size, 0.875rem);
+		block-size: var(--v-badge-size, 0.875rem);
 		padding: 0 0.3125rem;
 		color: var(--v-badge-color, var(--white));
 		font-weight: 800;
 		font-size: 0.5rem;
 		background-color: var(--v-badge-background-color, var(--red));
-		border-radius: calc(var(--v-badge-size, 16px) / 2);
+		border-radius: calc(var(--v-badge-size, 0.875rem) / 2);
 
 		&.left {
 			inset-inline-end: unset;
-			inset-inline-start: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
+			inset-inline-start: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-x, 0px));
 		}
 
 		&.bottom {
 			inset-block-start: unset;
-			inset-block-end: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
+			inset-block-end: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-y, 0px));
 		}
 
 		&.bordered {
@@ -98,9 +98,9 @@ withDefaults(
 		}
 
 		&.dot {
-			inline-size: var(--v-badge-size, 16px);
+			inline-size: var(--v-badge-size, 0.875rem);
 			min-inline-size: 0;
-			block-size: var(--v-badge-size, 16px);
+			block-size: var(--v-badge-size, 0.875rem);
 			border: 0;
 
 			* {

@@ -45,7 +45,7 @@ const displayValue = computed(() => {
 		<template #activator="{ toggle, active }">
 			<VChip small clickable class="toggle" :class="[toggleClass, { active }]" @click="toggle">
 				{{ displayValue }}
-				<VIcon name="sync_alt" right :style="{ '--v-icon-size': '16px' }" />
+				<VIcon name="sync_alt" right :style="{ '--v-icon-size': '0.875rem' }" />
 			</VChip>
 		</template>
 

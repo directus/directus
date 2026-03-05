@@ -394,7 +394,7 @@ onUnmounted(() => {
 .stats-bar {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 16px;
+	gap: 0.875rem;
 	margin-block-end: 24px;
 
 	// 2 columns
@@ -412,7 +412,7 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	gap: 0.4375rem;
-	padding: 0.6875rem 16px;
+	padding: 0.6875rem 0.875rem;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	min-inline-size: 0;
@@ -448,7 +448,7 @@ onUnmounted(() => {
 	display: flex;
 	gap: 32px;
 	flex-wrap: wrap;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .filter-field {
@@ -485,7 +485,7 @@ onUnmounted(() => {
 	flex-direction: column;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
-	padding: 16px;
+	padding: 0.875rem;
 	min-block-size: 400px;
 	max-block-size: calc(100vh - 400px);
 	overflow: hidden;

@@ -97,11 +97,11 @@ const maintainers = computed(() => {
 
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 0.25rem 16px;
+		gap: 0.25rem 0.875rem;
 
 		.sparkline {
 			grid-column: 1 / span 2;
-			margin-block-start: 16px;
+			margin-block-start: 0.875rem;
 		}
 	}
 
@@ -112,13 +112,13 @@ const maintainers = computed(() => {
 
 		@container metadata (width > 580px) {
 			display: grid;
-			gap: 0.4375rem 16px;
+			gap: 0.4375rem 0.875rem;
 		}
 	}
 }
 
 .divider {
-	margin: 16px 0;
+	margin: 0.875rem 0;
 }
 
 .sparkline {

@@ -146,6 +146,6 @@ watch(
 }
 
 .accordion-content-container {
-	padding: 16px;
+	padding: 0.875rem;
 }
 </style>

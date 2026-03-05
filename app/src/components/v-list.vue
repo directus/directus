@@ -94,7 +94,7 @@ useGroupableParent(
 }
 
 :slotted(.v-divider) {
-	max-inline-size: calc(100% - 16px);
+	max-inline-size: calc(100% - 0.875rem);
 	margin: 0.4375rem;
 }
 </style>

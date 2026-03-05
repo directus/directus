@@ -194,7 +194,7 @@ async function onClick(event: MouseEvent) {
 		--v-button-background-color-hover     [var(--theme--primary-accent)]
 		--v-button-background-color-active    [var(--theme--primary)]
 		--v-button-background-color-disabled  [var(--theme--background-normal)]
-		--v-button-font-size                  [16px]
+		--v-button-font-size                  [0.875rem]
 		--v-button-font-weight                [600]
 		--v-button-line-height                [22px]
 		--v-button-min-width                  [140px]
@@ -283,7 +283,7 @@ async function onClick(event: MouseEvent) {
 	padding: var(--v-button-padding, 0 19px);
 	color: var(--v-button-color, var(--foreground-inverted));
 	font-weight: var(--v-button-font-weight, 600);
-	font-size: var(--v-button-font-size, 16px);
+	font-size: var(--v-button-font-size, 0.875rem);
 	line-height: var(--v-button-line-height, 22px);
 	text-decoration: none;
 	background-color: var(--v-button-background-color, var(--theme--primary));

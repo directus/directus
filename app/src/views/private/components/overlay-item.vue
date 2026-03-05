@@ -812,7 +812,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 .modal-card,
 .modal-item-content,
 .popover-item-content {
-	--theme--form--column-gap: 16px;
+	--theme--form--column-gap: 0.875rem;
 	--theme--form--row-gap: 24px;
 }
 
@@ -905,7 +905,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	justify-content: end;
 	gap: 0.4375rem;
 	inset-block-start: 0.6875rem;
-	inset-inline-end: 16px;
+	inset-inline-end: 0.875rem;
 }
 
 // Puts the action buttons closer to the field

@@ -119,7 +119,7 @@ function onCloseClick(event: MouseEvent) {
 	background-color: var(--v-chip-background-color, var(--theme--background-normal));
 	border: var(--theme--border-width) solid
 		var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));
-	border-radius: 16px;
+	border-radius: 0.875rem;
 
 	&.clickable:hover {
 		color: var(--v-chip-color-hover, var(--white));
@@ -162,7 +162,7 @@ function onCloseClick(event: MouseEvent) {
 	&.large {
 		block-size: 44px;
 		padding: var(--v-chip-padding, 0 20px);
-		font-size: 16px;
+		font-size: 0.875rem;
 		border-radius: 22px;
 	}
 

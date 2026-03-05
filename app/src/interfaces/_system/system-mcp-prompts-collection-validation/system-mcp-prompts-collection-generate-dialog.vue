@@ -223,7 +223,7 @@ async function generateCollection() {
 }
 
 .title {
-	font-size: 16px;
+	font-size: 0.875rem;
 }
 
 .field-label {

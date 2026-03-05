@@ -215,7 +215,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-dialog__header {
 	padding: 20px;
 	color: var(--theme--form--field--input--foreground);
-	font-size: 16px;
+	font-size: 0.875rem;
 	background-color: var(--theme--background);
 }
 
@@ -309,9 +309,9 @@ body.dark .tox .tox-toolbar__overflow {
 	padding: 0 20px 1px;
 	color: var(--white);
 	font-weight: 500;
-	font-size: 16px;
+	font-size: 0.875rem;
 	font-family: var(--theme--fonts--sans--font-family);
-	line-height: 19px;
+	line-height: 1.2143;
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border: none;
@@ -362,14 +362,14 @@ body.dark .tox .tox-toolbar__overflow {
 	margin-block-end: 0.25rem;
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
-	font-size: 16px;
+	font-size: 0.875rem;
 }
 
 .tox .tox-dialog__body-nav-item {
 	box-sizing: border-box;
 	inline-size: 100%;
 	margin-block-end: 0.25rem;
-	padding: 0.6875rem 16px;
+	padding: 0.6875rem 0.875rem;
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 0.8125rem;

@@ -426,7 +426,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	position: relative;
 	min-block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-block: 40px 16px;
+	padding-block: 40px 0.875rem;
 	border-radius: var(--theme--border-radius);
 
 	> * {

@@ -142,7 +142,7 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .collection-note {
-	margin-inline-start: 16px;
+	margin-inline-start: 0.875rem;
 	overflow: hidden;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;

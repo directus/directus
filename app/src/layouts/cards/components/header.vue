@@ -164,7 +164,7 @@ function onClickSelect() {
 	color: var(--theme--foreground-subdued);
 
 	.size-selector {
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
