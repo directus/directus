@@ -19,7 +19,8 @@ export abstract class DateHelper extends DatabaseHelper {
 		return parseISO(date);
 	}
 
-	fieldFlagForField(_fieldType: string): string {
+	fieldFlagForField(fieldType: string): string {
+		if (fieldType === 'json') return 'cast-json';
 		return '';
 	}
 }
