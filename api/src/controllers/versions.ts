@@ -263,7 +263,7 @@ router.post(
 		});
 
 		const updatedItemKey = await service.promote(req.params['pk']!, {
-			mainHash: req.body.mainHash,
+			mainHash: req.body?.mainHash,
 			fields: req.body?.['fields'],
 		});
 
