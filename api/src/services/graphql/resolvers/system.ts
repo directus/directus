@@ -201,13 +201,18 @@ export function injectSystemResolvers(
 		},
 		server_health: {
 			type: GraphQLJSON,
-			resolve: async () => {
-				const service = new ServerService({
-					accountability: gql.accountability,
-					schema: gql.schema,
-				});
+			resolve: async (_, _args, context: Record<string, unknown>) => {
+				// Cache health check result per request to prevent redundant calls
+				if (!context['_server_health_result']) {
+					const service = new ServerService({
+						accountability: gql.accountability,
+						schema: gql.schema,
+					});
 
-				return await service.health();
+					context['_server_health_result'] = service.health();
+				}
+
+				return await context['_server_health_result'];
 			},
 		},
 	});
