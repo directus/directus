@@ -148,7 +148,7 @@ function onSetupComplete() {
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 :deep(.presentation-divider) {

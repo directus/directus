@@ -406,7 +406,7 @@ watch(
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .credentials-saved :deep([data-field='access_token']) {

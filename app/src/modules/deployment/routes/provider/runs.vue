@@ -421,7 +421,7 @@ watch(statsRange, loadStats);
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .run-name {

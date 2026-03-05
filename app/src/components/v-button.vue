@@ -359,7 +359,7 @@ async function onClick(event: MouseEvent) {
 .button.small {
 	--v-button-height: 2rem;
 	--v-button-font-size: 0.8125rem;
-	--v-button-min-width: 120px;
+	--v-button-min-width: 6.75rem;
 
 	padding: 0 0.6875rem;
 }

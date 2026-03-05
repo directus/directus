@@ -178,7 +178,7 @@ watch(range, loadDashboard);
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .stats-bar {

@@ -145,7 +145,7 @@ const workspaceBoxSize = computed(() => {
 	grid-template-rows: repeat(auto-fill, 20px);
 	grid-template-columns: repeat(auto-fill, 20px);
 	min-inline-size: calc(100%);
-	min-block-size: calc(100% - 120px);
+	min-block-size: calc(100% - 6.75rem);
 	transform: scale(1);
 	transform-origin: top left;
 

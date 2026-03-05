@@ -174,8 +174,8 @@ defineProps<{
 
 	.avatar {
 		flex-shrink: 0;
-		inline-size: 120px;
-		block-size: 120px;
+		inline-size: 6.75rem;
+		block-size: 6.75rem;
 		position: relative;
 		overflow: hidden;
 		align-items: center;

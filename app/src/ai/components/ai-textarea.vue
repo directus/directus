@@ -76,7 +76,7 @@ defineExpose({
 	font-size: 0.8125rem;
 	line-height: 1.5;
 	resize: none;
-	max-block-size: 120px;
+	max-block-size: 6.75rem;
 	overflow-y: auto;
 
 	&:focus {

@@ -183,10 +183,10 @@ watchEffect(async () => {
 }
 
 .no-results {
-	margin-block-start: 120px;
+	margin-block-start: 6.75rem;
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 </style>
