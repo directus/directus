@@ -50,7 +50,7 @@ const npmLink = computed(() => {
 }
 
 .grid {
-	@container metadata (width > 580px) {
+	@container metadata (width > 32.625rem) {
 		--v-list-item-margin: 0;
 
 		display: grid;

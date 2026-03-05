@@ -508,7 +508,7 @@ function useColor() {
 	--v-button-background-color-hover: var(--v-button-background-color);
 	--v-button-height: calc(var(--theme--form--field--input--height) - 1.125rem);
 	--v-button-width: calc(var(--theme--form--field--input--height) - 1.125rem);
-	--swatch-radius: calc(var(--theme--border-radius) + 2px);
+	--swatch-radius: calc(var(--theme--border-radius) + 0.125rem);
 	--focus-ring-offset: var(--focus-ring-offset-inset);
 	--focus-ring-radius: var(--swatch-radius);
 

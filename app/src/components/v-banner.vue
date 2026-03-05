@@ -189,7 +189,7 @@ defineProps<{
 			background: transparent;
 		}
 
-		@container (width > 700px) {
+		@container (width > 39.375rem) {
 			display: flex;
 		}
 	}

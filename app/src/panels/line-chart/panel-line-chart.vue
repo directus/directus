@@ -262,7 +262,7 @@ function setUpChart() {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 			},
 			crosshairs: {
@@ -297,7 +297,7 @@ function setUpChart() {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 			},
 		},
@@ -312,7 +312,7 @@ function setUpChart() {
 			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
-			fontSize: '10px',
+			fontSize: '0.5625rem',
 		},
 	});
 

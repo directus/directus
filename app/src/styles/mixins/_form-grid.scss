@@ -22,7 +22,7 @@
 	.field {
 		grid-column: start / fill;
 
-		@container (inline-size >= 556px) {
+		@container (inline-size >= 31.25rem) {
 			grid-column: start / full;
 		}
 	}
@@ -32,7 +32,7 @@
 	.half-space {
 		grid-column: start / fill;
 
-		@container (inline-size >= 556px) {
+		@container (inline-size >= 31.25rem) {
 			grid-column: start / half;
 		}
 	}
@@ -41,7 +41,7 @@
 	.half-right {
 		grid-column: start / fill;
 
-		@container (inline-size >= 556px) {
+		@container (inline-size >= 31.25rem) {
 			grid-column: half / full;
 		}
 	}
@@ -49,7 +49,7 @@
 	.full {
 		grid-column: start / fill;
 
-		@container (inline-size >= 556px) {
+		@container (inline-size >= 31.25rem) {
 			grid-column: start / full;
 		}
 	}

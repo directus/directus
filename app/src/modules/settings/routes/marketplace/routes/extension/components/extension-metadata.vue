@@ -92,7 +92,7 @@ const maintainers = computed(() => {
 }
 
 .grid {
-	@container metadata (width > 580px) {
+	@container metadata (width > 32.625rem) {
 		--v-list-item-margin: 0;
 
 		display: grid;
@@ -110,7 +110,7 @@ const maintainers = computed(() => {
 		flex-direction: column;
 		gap: 0.4375rem;
 
-		@container metadata (width > 580px) {
+		@container metadata (width > 32.625rem) {
 			display: grid;
 			gap: 0.4375rem 0.875rem;
 		}

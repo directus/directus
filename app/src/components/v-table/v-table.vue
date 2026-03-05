@@ -161,12 +161,12 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	function generate(useVal?: 'auto') {
 		let gridTemplateColumns = internalHeaders.value
 			.map((header) => {
-				return header.width ? (useVal ?? `${header.width}px`) : '144px';
+				return header.width ? (useVal ?? `${header.width}px`) : '8.125rem';
 			})
 			.reduce((acc, val) => (acc += ' ' + val), '');
 
-		if (props.showSelect !== 'none') gridTemplateColumns = '36px ' + gridTemplateColumns;
-		if (props.showManualSort) gridTemplateColumns = '36px ' + gridTemplateColumns;
+		if (props.showSelect !== 'none') gridTemplateColumns = '2rem ' + gridTemplateColumns;
+		if (props.showManualSort) gridTemplateColumns = '2rem ' + gridTemplateColumns;
 
 		gridTemplateColumns = gridTemplateColumns + ' 1fr';
 

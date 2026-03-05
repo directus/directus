@@ -679,7 +679,7 @@ function useUrls() {
 			}
 		}
 
-		@container (max-width: 480px) {
+		@container (max-width: 27rem) {
 			.dimensions.disabled {
 				display: none;
 			}

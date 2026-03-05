@@ -435,7 +435,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 				position: relative;
 			}
 
-			@container (max-width: 600px) {
+			@container (max-width: 33.75rem) {
 				align-items: stretch;
 				inline-size: 100%;
 

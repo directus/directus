@@ -190,7 +190,7 @@ async function setupChart() {
 		dataLabels: {
 			enabled: props.showLabels,
 			style: {
-				fontSize: '10px',
+				fontSize: '0.5625rem',
 			},
 			formatter: function (val: number) {
 				return `${getPercentage(val)}%`;

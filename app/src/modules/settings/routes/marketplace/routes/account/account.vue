@@ -124,7 +124,7 @@ watchEffect(async () => {
 		grid-area: metadata;
 	}
 
-	@container item (width > 800px) {
+	@container item (width > 45rem) {
 		grid-template-columns: 1fr 18rem;
 		grid-template-areas:
 			'banner banner'
