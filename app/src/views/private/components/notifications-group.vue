@@ -41,7 +41,7 @@ const overlayIsActive = computed(() => notificationsStore.overlayIsActive);
 	display: flex;
 	flex-direction: column;
 	align-items: end;
-	inline-size: 256px;
+	inline-size: 14.375rem;
 
 	&.overlay {
 		z-index: 700;
