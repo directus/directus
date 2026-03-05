@@ -219,7 +219,7 @@ export default defineTheme({
 							boxShadowHover: 'var(--theme--form--field--input--box-shadow-hover)',
 							boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 
-							height: '52px',
+							height: '2.9375rem',
 							padding: '0.6875rem',
 						},
 					},

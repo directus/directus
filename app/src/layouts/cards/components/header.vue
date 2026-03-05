@@ -132,7 +132,7 @@ function onClickSelect() {
 	align-items: center;
 	justify-content: space-between;
 	inline-size: 100%;
-	block-size: 52px;
+	block-size: 2.9375rem;
 	margin-block-end: 2rem;
 	padding: 0 0.4375rem;
 	background-color: var(--theme--background);

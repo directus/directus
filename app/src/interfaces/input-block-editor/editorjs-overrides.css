@@ -498,7 +498,7 @@
 
 .codex-editor .ce-block h1 {
 	font-size: 2.5rem;
-	line-height: 52px;
+	line-height: 2.9375rem;
 }
 
 .codex-editor .ce-block h2 {
@@ -580,7 +580,7 @@
 }
 
 .codex-editor .ce-block hr {
-	margin-block: 52px 56px;
+	margin-block: 2.9375rem 56px;
 	text-align: center;
 	border: 0;
 }

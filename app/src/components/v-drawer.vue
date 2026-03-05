@@ -172,7 +172,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 	}
 
 	.content {
-		--theme--form--row-gap: 52px;
+		--theme--form--row-gap: 2.9375rem;
 
 		container-type: size;
 		position: relative;

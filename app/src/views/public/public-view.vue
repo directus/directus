@@ -151,7 +151,7 @@ const logoURL = computed<string | null>(() => {
 
 		:slotted(.type-title) {
 			font-size: 2.375rem;
-			line-height: 52px;
+			line-height: 2.9375rem;
 			color: var(--theme--public--foreground-accent);
 		}
 

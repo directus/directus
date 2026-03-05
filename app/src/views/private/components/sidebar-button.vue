@@ -59,7 +59,7 @@ defineEmits<{
 	.title {
 		position: absolute;
 		inset-block-start: 50%;
-		inset-inline-start: 52px;
+		inset-inline-start: 2.9375rem;
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);

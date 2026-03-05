@@ -62,7 +62,7 @@ export default defineTheme({
 					background: '#FFFFFF',
 					backgroundSubdued: '#F8FAFC',
 					boxShadowFocus: 'none',
-					height: '52px',
+					height: '2.9375rem',
 				},
 			},
 		},
