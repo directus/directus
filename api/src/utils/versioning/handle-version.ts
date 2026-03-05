@@ -1,16 +1,9 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
-import {
-	type Accountability,
-	type Filter,
-	type Item,
-	type PrimaryKey,
-	type Query,
-	type QueryOptions,
-} from '@directus/types';
+import type { Filter, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import { deepMapWithSchema, getRelationInfo } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
-import { cloneDeep, intersection, pick, set, uniq } from 'lodash-es';
+import { cloneDeep, intersection, pick, uniq } from 'lodash-es';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
 import { splitRecursive } from './split-recursive.js';

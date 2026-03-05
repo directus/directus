@@ -507,7 +507,7 @@ interface VersionsService {
 		mapDelta: boolean,
 	): Promise<ContentVersion[]>;
 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
-	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
+	promote(version: PrimaryKey, opts?: { mainHash: string; fields?: string[] }): Promise<PrimaryKey>;
 }
 
 /**

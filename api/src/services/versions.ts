@@ -345,7 +345,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return finalVersionDelta;
 	}
 
-	async promote(version: PrimaryKey, opts?: { mainHash?: any; fields?: string[] }) {
+	async promote(version: PrimaryKey, opts?: { mainHash: string; fields?: string[] }) {
 		const { collection, item, delta } = (await super.readOne(version)) as ContentVersion;
 
 		if (item && typeof opts?.mainHash !== 'string') {
@@ -381,7 +381,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		}
 
 		if (item) {
-			const { outdated } = await this.verifyHash(collection, item, opts?.mainHash);
+			const { outdated } = await this.verifyHash(collection, item, opts?.mainHash as string);
 
 			if (outdated) {
 				throw new UnprocessableContentError({
