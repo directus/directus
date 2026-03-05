@@ -125,7 +125,7 @@ watchEffect(async () => {
 	}
 
 	@container item (width > 800px) {
-		grid-template-columns: 1fr 320px;
+		grid-template-columns: 1fr 18rem;
 		grid-template-areas:
 			'banner banner'
 			'readme metadata';

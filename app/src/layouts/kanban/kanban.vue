@@ -320,7 +320,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 		.group {
 			display: flex;
 			flex-direction: column;
-			inline-size: 320px;
+			inline-size: 18rem;
 			padding: 0.4375rem 0;
 			background-color: var(--theme--background-normal);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

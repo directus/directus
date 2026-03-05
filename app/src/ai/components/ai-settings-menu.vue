@@ -187,7 +187,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 }
 
 .settings-container {
-	min-inline-size: 320px;
+	min-inline-size: 18rem;
 	max-inline-size: 400px;
 	max-block-size: 400px;
 	overflow-y: auto;
