@@ -259,7 +259,7 @@ watch(range, loadDashboard);
 	display: flex;
 	align-items: center;
 	gap: 0.875rem;
-	block-size: 98px !important;
+	block-size: 5.5rem !important;
 	padding: 0 1.125rem !important;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
