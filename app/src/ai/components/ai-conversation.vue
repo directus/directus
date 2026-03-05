@@ -198,7 +198,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .error-message {
 	margin-block-end: 1rem;
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	inline-size: 100%;
 	max-inline-size: 100%;
 	overflow-wrap: break-word;

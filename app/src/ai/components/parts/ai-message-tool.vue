@@ -98,7 +98,7 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 	padding: 0.375rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	line-height: 1.25;
 
 	code {
@@ -117,6 +117,6 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--danger-background);
 	color: var(--theme--foreground);
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 }
 </style>

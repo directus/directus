@@ -125,7 +125,7 @@ const handleAlwaysAllow = () => {
 	padding: 0.375rem;
 	justify-content: space-between;
 	gap: 0.375rem;
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-weight: 600;
 	inline-size: 100%;
 
@@ -281,7 +281,7 @@ const handleAlwaysAllow = () => {
 	inset-block-end: 0;
 
 	.approval-message {
-		font-size: 0.875rem;
+		font-size: 0.6875rem;
 		font-weight: 500;
 		color: var(--theme--foreground);
 	}

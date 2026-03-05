@@ -58,13 +58,13 @@ function getAnswer(questionId: string): string | undefined {
 }
 
 .completed-value {
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 }
 
 .completed-skipped {
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-style: italic;
 	color: var(--theme--foreground-subdued);
 }

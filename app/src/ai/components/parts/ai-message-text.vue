@@ -113,7 +113,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 1.25rem;
 	font-weight: 700;
 	line-height: 1.3;
-	margin: 0.875rem 0 0.375rem;
+	margin: 0.6875rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -154,7 +154,7 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(h6) {
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-weight: 600;
 	line-height: 1.5;
 	margin: 0.375rem 0 0.3125rem;
@@ -374,7 +374,7 @@ useResizeObserver(contentRef, (entries) => {
 	padding: 0.375rem 1rem 0.625rem;
 	text-align: start;
 	z-index: 1;
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	color: var(--ai-message-color, var(--theme--foreground));
 	font-weight: 600;
 	cursor: pointer;

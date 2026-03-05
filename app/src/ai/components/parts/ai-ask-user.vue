@@ -544,7 +544,7 @@ onUnmounted(() => {
 
 .option-label {
 	display: block;
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 	line-height: 1.3;

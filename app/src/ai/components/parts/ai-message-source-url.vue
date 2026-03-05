@@ -29,7 +29,7 @@ defineProps<{
 		background-color: var(--theme--background-subdued);
 		color: var(--theme--primary);
 		text-decoration: none;
-		font-size: 0.875rem;
+		font-size: 0.6875rem;
 		transition: background-color var(--fast) var(--transition);
 
 		&:hover {

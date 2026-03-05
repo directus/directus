@@ -29,7 +29,7 @@ defineProps<{
 	padding: 0.375rem 0.5625rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-subdued);
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 }
 
 small {
