@@ -43,9 +43,9 @@ const scrollContainer = useTemplateRef('scroll-container');
 
 provide('main-element', scrollContainer);
 
-const sidebarWidth = 220;
-// Half of the space of the drawer (856 / 2 = 428)
-const sidebarMaxWidth = 428;
+const sidebarWidth = 198;
+// Half of the space of the drawer (770 / 2 = 385)
+const sidebarMaxWidth = 385;
 
 const internalActive = computed({
 	get() {
