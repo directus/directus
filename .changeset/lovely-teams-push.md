@@ -1,6 +1,6 @@
 ---
-'@directus/types': major
-'@directus/api': major
+'@directus/types': minor
+'@directus/api': minor
 ---
 
-Added versioning to collections and item-less versions
+Added support for the `version` query parameter in collections

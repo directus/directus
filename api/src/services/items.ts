@@ -15,7 +15,7 @@ import type {
 	QueryOptions,
 	SchemaOverview,
 } from '@directus/types';
-import { NEW_VERSION, UserIntegrityCheckFlag } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
@@ -588,18 +588,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
-		let results: Item[] = [];
+		validateKeys(this.schema, this.collection, primaryKeyField, key);
 
-		if (query.version && key === '+') {
-			results = await this.readByQuery(query, { ...opts, key: NEW_VERSION });
-		} else {
-			validateKeys(this.schema, this.collection, primaryKeyField, key);
+		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
+		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-			const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
-			const queryWithKey = assign({}, query, { filter: filterWithKey });
-
-			results = await this.readByQuery(queryWithKey, { ...opts, key });
-		}
+		const results: Item[] = await this.readByQuery(queryWithKey, { ...opts, key });
 
 		if (results.length === 0) {
 			throw new ForbiddenError();
@@ -625,11 +619,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			queryWithKey.limit = keys.length;
 		}
 
-		let results: Item[] = [];
-
-		results = await this.readByQuery(queryWithKey, opts);
-
-		return results;
+		return await this.readByQuery(queryWithKey, opts);
 	}
 
 	/**
