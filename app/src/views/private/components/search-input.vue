@@ -392,7 +392,7 @@ function emitValue() {
 		}
 
 		@media (min-width: 1260px) {
-			inline-size: 420px; /* blaze it */
+			inline-size: 23.625rem; /* blaze it */
 		}
 	}
 
