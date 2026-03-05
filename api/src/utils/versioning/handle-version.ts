@@ -1,36 +1,24 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
-import {
-	type Accountability,
-	type Filter,
-	type Item,
-	NEW_VERSION,
-	type PrimaryKey,
-	type Query,
-	type QueryOptions,
-} from '@directus/types';
+import type { Filter, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import { deepMapWithSchema, getRelationInfo } from '@directus/utils';
-import { cloneDeep, pick, uniq } from 'lodash-es';
+import { getNodeEnv } from '@directus/utils/node';
+import { cloneDeep, intersection, pick, uniq } from 'lodash-es';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
 import { splitRecursive } from './split-recursive.js';
 
 export type VersionMeta = {
 	version_id: string;
-	delta: Item;
+	delta?: Item;
 	error?: Error;
 };
 
-export async function handleVersion(
-	self: ItemsServiceType,
-	key: PrimaryKey | typeof NEW_VERSION | null,
-	query: Query,
-	opts?: QueryOptions,
-) {
+export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | null, query: Query, opts?: QueryOptions) {
 	const { VersionsService } = await import('../../services/versions.js');
 	const { ItemsService } = await import('../../services/items.js');
 
-	if (key && key !== NEW_VERSION && query.versionRaw) {
+	if (key && query.versionRaw) {
 		delete query.version;
 		delete query.versionRaw;
 
@@ -51,23 +39,28 @@ export async function handleVersion(
 		return [Object.assign(originalData[0]!, versions?.[0]?.delta)];
 	}
 
-	let results: Item[] = [];
-
 	const versionsService = new VersionsService({
 		schema: self.schema,
 		accountability: self.accountability,
 		knex: self.knex,
 	});
 
-	const createdIDs: Record<string, PrimaryKey[]> = {};
 	const versions = await versionsService.getVersionSaves(query.version!, self.collection, key, false);
-
-	const itemlessErrors: VersionMeta[] = [];
-	const itemMeta: Record<string, VersionMeta> = {};
 
 	if (key && versions.length === 0) {
 		throw new ForbiddenError();
 	}
+
+	if (versions.length === 0) {
+		return [];
+	}
+
+	let results: Item[] = [];
+	const createdIDs: Record<string, PrimaryKey[]> = {};
+	const itemlessErrors: VersionMeta[] = [];
+	const itemMeta: Record<string, VersionMeta> = {};
+	const primaryKeyField = self.schema.collections[self.collection]!.primary;
+	const hasPrimaryKeyInQuery = query.fields?.includes(primaryKeyField);
 
 	await transaction(self.knex, async (trx) => {
 		for (const version of versions) {
@@ -88,18 +81,15 @@ export async function handleVersion(
 			const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
 			try {
-				await trx.transaction(async (trx_inner) => {
-					const itemsServiceAdmin = new ItemsService<Item>(self.collection, {
+				await trx.transaction(async (trxInner) => {
+					const sudoItemsService = new ItemsService<Item>(self.collection, {
 						schema: self.schema,
-						accountability: {
-							admin: true,
-						} as Accountability,
-						knex: trx_inner,
+						knex: trxInner,
 					});
 
 					if (!item) {
 						try {
-							const item = await itemsServiceAdmin.createOne(rawDelta, {
+							const item = await sudoItemsService.createOne(rawDelta, {
 								emitEvents: false,
 								autoPurgeCache: false,
 								skipTracking: true,
@@ -113,10 +103,11 @@ export async function handleVersion(
 
 							itemMeta[item] = {
 								version_id: id,
-								delta,
 							};
 						} catch (error: any) {
-							trx_inner.rollback(error);
+							trxInner.rollback(error);
+
+							handleError(error);
 
 							itemlessErrors.push({
 								error: error,
@@ -126,7 +117,7 @@ export async function handleVersion(
 						}
 					} else {
 						try {
-							await itemsServiceAdmin.updateOne(item, rawDelta, {
+							await sudoItemsService.updateOne(item, rawDelta, {
 								emitEvents: false,
 								autoPurgeCache: false,
 								skipTracking: true,
@@ -140,10 +131,11 @@ export async function handleVersion(
 
 							itemMeta[item] = {
 								version_id: id,
-								delta,
 							};
 						} catch (error: any) {
-							trx_inner.rollback(error);
+							trxInner.rollback(error);
+
+							handleError(error);
 
 							itemMeta[item] = {
 								error: error,
@@ -181,23 +173,35 @@ export async function handleVersion(
 			],
 		};
 
-		results = await itemsServiceUser.readByQuery(query, { ...opts, stripNonRequested: false });
+		if (!hasPrimaryKeyInQuery) query.fields = [primaryKeyField, ...(query.fields ?? [])];
+
+		results = await itemsServiceUser.readByQuery(query, { ...opts });
 
 		await trx.rollback();
 	});
 
-	const primaryKeyField = self.schema.collections[self.collection]!.primary;
-
-	const nonRelationFields = Object.values(self.schema.collections[self.collection]!.fields)
+	let requestedFields = Object.values(self.schema.collections[self.collection]!.fields)
 		.filter((field) => {
 			const relationInfo = getRelationInfo(self.schema.relations, self.collection, field.field);
 			return relationInfo.relationType === null;
 		})
 		.map((field) => field.field);
 
+	const queryFields = query.fields?.map((field) => field.split('.')[0]!) ?? [];
+
+	if (!queryFields?.includes('*')) {
+		requestedFields = intersection(requestedFields, queryFields);
+	}
+
+	const defaultItem = Object.fromEntries(requestedFields.map((field) => [field, null]));
+
 	results = results.map((result) => {
 		const id = result[primaryKeyField];
 		const meta = itemMeta[id];
+
+		if (!hasPrimaryKeyInQuery) {
+			delete result[primaryKeyField];
+		}
 
 		result = deepMapWithSchema(
 			result,
@@ -243,7 +247,7 @@ export async function handleVersion(
 			result['$meta'] = meta;
 
 			if (meta.error) {
-				Object.assign(result, pick(meta.delta, nonRelationFields));
+				Object.assign(result, defaultItem, pick(meta.delta, requestedFields));
 			}
 		}
 
@@ -258,7 +262,7 @@ export async function handleVersion(
 				const item = { $meta: errorMeta };
 
 				if (errorMeta.error) {
-					Object.assign(item, pick(errorMeta.delta, nonRelationFields));
+					Object.assign(item, defaultItem, pick(errorMeta.delta, requestedFields));
 				}
 
 				return item;
@@ -267,4 +271,10 @@ export async function handleVersion(
 	}
 
 	return results;
+}
+
+function handleError(error: Error) {
+	if (getNodeEnv() !== 'development') {
+		delete error.stack;
+	}
 }

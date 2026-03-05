@@ -2,7 +2,6 @@ import type { DirectusError } from './error.js';
 import type { EventContext } from './events.js';
 import type { PermissionsAction } from './permissions.js';
 import type { UserIntegrityCheckFlag } from './users.js';
-import type { NEW_VERSION } from './versions.js';
 
 export type Item = Record<string, any>;
 
@@ -29,7 +28,7 @@ export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
 	emitEvents?: boolean;
-	key?: PrimaryKey | typeof NEW_VERSION | null;
+	key?: PrimaryKey | null;
 };
 
 export type DefaultOverwrite = {
