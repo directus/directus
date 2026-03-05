@@ -578,7 +578,7 @@ defineExpose({ abort });
 		position: absolute;
 		inset-block-end: 30px;
 		inset-inline-start: 1.8125rem;
-		inline-size: calc(100% - 64px);
+		inline-size: calc(100% - 3.625rem);
 	}
 }
 </style>

@@ -137,7 +137,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 	&.svg,
 	&.small {
 		.image {
-			padding: 64px;
+			padding: 3.625rem;
 		}
 	}
 

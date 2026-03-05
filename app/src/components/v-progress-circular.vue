@@ -95,7 +95,7 @@ const circleStyle = computed(() => ({
 	}
 
 	&.x-large {
-		--v-progress-circular-size: 64px;
+		--v-progress-circular-size: 3.625rem;
 		--v-progress-circular-line-size: 2px;
 	}
 

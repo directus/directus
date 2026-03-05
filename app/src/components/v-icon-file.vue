@@ -27,7 +27,7 @@ defineProps<Props>();
 */
 
 .icon {
-	--v-icon-size: 64px;
+	--v-icon-size: 3.625rem;
 	--v-icon-color: var(--v-icon-file-color, var(--theme--primary));
 	color: var(--v-icon-file-color, var(--theme--primary));
 	position: relative;

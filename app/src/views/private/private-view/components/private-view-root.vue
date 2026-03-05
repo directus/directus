@@ -132,7 +132,7 @@ const splitterCollapsed = computed({
 
 .v-list.skip-menu.mobile-skip-menu {
 	/* 60 (module-bar) + 4 (spacing) */
-	inset-inline-start: 64px;
+	inset-inline-start: 3.625rem;
 }
 
 .mobile-nav {

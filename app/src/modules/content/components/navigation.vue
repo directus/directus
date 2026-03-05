@@ -116,7 +116,7 @@ const hasHiddenCollections = computed(
 }
 
 .content-navigation {
-	--v-list-min-height: calc(100% - 64px);
+	--v-list-min-height: calc(100% - 3.625rem);
 
 	flex-grow: 1;
 

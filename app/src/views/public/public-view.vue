@@ -391,7 +391,7 @@ const logoURL = computed<string | null>(() => {
 		align-items: center;
 		inline-size: max-content;
 		max-inline-size: 100%;
-		block-size: 64px;
+		block-size: 3.625rem;
 
 		.title {
 			margin-block-start: 2px;

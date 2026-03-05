@@ -241,7 +241,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 	}
 
 	@media (min-width: 960px) {
-		inline-size: calc(100% - 64px);
+		inline-size: calc(100% - 3.625rem);
 	}
 }
 
