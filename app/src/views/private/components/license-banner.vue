@@ -84,7 +84,7 @@ const fields = useFormFields(false, form);
 <style scoped>
 .v-card {
 	max-inline-size: unset;
-	inline-size: 540px;
+	inline-size: 30.375rem;
 }
 
 .v-card-title {

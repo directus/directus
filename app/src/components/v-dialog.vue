@@ -236,7 +236,7 @@ function useOverlayFocusTrap() {
 
 @media (width > 640px) {
 	.container :slotted(.v-card) {
-		--v-card-min-width: 540px;
+		--v-card-min-width: 30.375rem;
 	}
 
 	.container :slotted(.v-card) .v-card-actions {
