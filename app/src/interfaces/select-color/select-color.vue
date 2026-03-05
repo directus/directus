@@ -529,7 +529,7 @@ function useColor() {
 .presets {
 	display: flex;
 	inline-size: 100%;
-	margin-block-end: 14px;
+	margin-block-end: 0.8125rem;
 	padding: 0.4375rem;
 	overflow-x: auto;
 }
@@ -626,7 +626,7 @@ function useColor() {
 	align-items: baseline;
 	inline-size: 100%;
 	block-size: 45px;
-	padding: 0.6875rem 14px;
+	padding: 0.6875rem 0.8125rem;
 }
 
 .color-data-alphas .color-data-alpha {

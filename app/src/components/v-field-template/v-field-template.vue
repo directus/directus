@@ -315,7 +315,7 @@ function setContent() {
 	block-size: 100%;
 	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 
@@ -348,7 +348,7 @@ function setContent() {
 .placeholder {
 	position: absolute;
 	inset-block-start: 50%;
-	inset-inline-start: 14px;
+	inset-inline-start: 0.8125rem;
 	color: var(--theme--foreground-subdued);
 	transform: translateY(-50%);
 	-webkit-user-select: none;

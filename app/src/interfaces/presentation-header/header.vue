@@ -389,7 +389,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 		.text-subtitle {
 			margin-block-start: 0.25rem;
-			font-size: 14px;
+			font-size: 0.8125rem;
 			color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
 			overflow: hidden;
 			text-overflow: ellipsis;

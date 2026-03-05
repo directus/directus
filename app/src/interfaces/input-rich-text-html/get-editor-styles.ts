@@ -70,8 +70,8 @@ h4 {
 	margin-block-start: 1.5em;
 }
 h5 {
-	font-size: 14px;
-	line-height: 24px;
+	font-size: 0.8125rem;
+	line-height: 1.6923;
 	margin-block-start: 2em;
 }
 h6 {

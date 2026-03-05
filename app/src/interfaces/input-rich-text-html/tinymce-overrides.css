@@ -242,7 +242,7 @@ body.dark .tox .tox-toolbar__overflow {
 	padding: 0.6875rem;
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -372,7 +372,7 @@ body.dark .tox .tox-toolbar__overflow {
 	padding: 0.6875rem 16px;
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	border-block-end: none;
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);

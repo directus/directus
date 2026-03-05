@@ -318,7 +318,7 @@ function isInterpolation(value: any) {
 .input-code {
 	position: relative;
 	inline-size: 100%;
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 .small {

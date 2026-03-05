@@ -155,7 +155,7 @@ function onCloseClick(event: MouseEvent) {
 	&.small {
 		block-size: 24px;
 		padding: var(--v-chip-padding, 0 0.4375rem);
-		font-size: 14px;
+		font-size: 0.8125rem;
 		border-radius: 0.6875rem;
 	}
 
@@ -188,8 +188,8 @@ function onCloseClick(event: MouseEvent) {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			inline-size: 14px;
-			block-size: 14px;
+			inline-size: 0.8125rem;
+			block-size: 0.8125rem;
 			margin-inline-start: 0.25rem;
 			background-color: var(--v-chip-close-color, var(--theme--danger));
 			border-radius: 0.5625rem;

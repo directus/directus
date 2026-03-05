@@ -537,8 +537,8 @@ function useDragDrop() {
 .resize-handlers .top-left {
 	inset-block-start: -0.1875rem;
 	inset-inline-start: -0.1875rem;
-	inline-size: 14px;
-	block-size: 14px;
+	inline-size: 0.8125rem;
+	block-size: 0.8125rem;
 	cursor: nwse-resize;
 
 	html[dir='rtl'] & {
@@ -549,8 +549,8 @@ function useDragDrop() {
 .resize-handlers .top-right {
 	inset-block-start: -0.1875rem;
 	inset-inline-end: -0.1875rem;
-	inline-size: 14px;
-	block-size: 14px;
+	inline-size: 0.8125rem;
+	block-size: 0.8125rem;
 	cursor: nesw-resize;
 
 	html[dir='rtl'] & {
@@ -561,8 +561,8 @@ function useDragDrop() {
 .resize-handlers .bottom-right {
 	inset-inline-end: -0.1875rem;
 	inset-block-end: -0.1875rem;
-	inline-size: 14px;
-	block-size: 14px;
+	inline-size: 0.8125rem;
+	block-size: 0.8125rem;
 	cursor: nwse-resize;
 
 	html[dir='rtl'] & {
@@ -573,8 +573,8 @@ function useDragDrop() {
 .resize-handlers .bottom-left {
 	inset-block-end: -0.1875rem;
 	inset-inline-start: -0.1875rem;
-	inline-size: 14px;
-	block-size: 14px;
+	inline-size: 0.8125rem;
+	block-size: 0.8125rem;
 	cursor: nesw-resize;
 
 	html[dir='rtl'] & {

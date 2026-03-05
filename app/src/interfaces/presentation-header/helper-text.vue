@@ -66,7 +66,7 @@ const sanitizedContent = computed(() => dompurify.sanitize(props.content));
 }
 
 :deep(h6) {
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 :deep(p) {
@@ -114,7 +114,7 @@ const sanitizedContent = computed(() => dompurify.sanitize(props.content));
 	background-color: var(--theme--background-subdued);
 	padding: calc(var(--theme--form--field--input--padding) / 2);
 	border-radius: var(--theme--border-radius);
-	font-size: 14px;
+	font-size: 0.8125rem;
 	color: var(--theme--foreground);
 	overflow-x: auto;
 }

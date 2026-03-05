@@ -227,7 +227,7 @@ async function generateCollection() {
 }
 
 .field-label {
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 .loader {

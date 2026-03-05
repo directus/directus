@@ -19,10 +19,10 @@
 @mixin type-text {
 	color: var(--theme--foreground);
 	font-weight: var(--theme--fonts--sans--font-weight);
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
-	line-height: 22px;
+	line-height: 1.5385;
 }
 
 @mixin type-note {

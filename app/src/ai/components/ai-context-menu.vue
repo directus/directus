@@ -399,7 +399,7 @@ function closeList() {
 
 .list-title {
 	font-weight: 600;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	color: var(--theme--foreground);
 }
 

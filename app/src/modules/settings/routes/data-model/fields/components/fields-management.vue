@@ -208,7 +208,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .add-field {
-	--v-button-font-size: 14px;
+	--v-button-font-size: 0.8125rem;
 	--v-button-background-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-accent);
 

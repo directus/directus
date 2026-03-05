@@ -220,7 +220,7 @@ function onInput(event: Event) {
 
 		.ticks {
 			position: absolute;
-			inset-block-start: 14px;
+			inset-block-start: 0.8125rem;
 			inset-inline-start: 0;
 			z-index: 2;
 			display: flex;
@@ -246,7 +246,7 @@ function onInput(event: Event) {
 			position: absolute;
 			inset-block-start: 100%;
 			inset-inline-start: 0.375rem;
-			inline-size: calc(100% - 14px);
+			inline-size: calc(100% - 0.8125rem);
 			overflow: visible;
 			pointer-events: none;
 		}

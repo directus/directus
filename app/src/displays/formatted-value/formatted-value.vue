@@ -210,8 +210,8 @@ function matchNumber(left: number | bigint, right: number | bigint, operator: st
 	&.has-border {
 		block-size: 28px;
 		padding: 0 0.5625rem;
-		font-size: 14px;
-		line-height: 28px;
+		font-size: 0.8125rem;
+		line-height: 1.9231;
 		border-radius: 24px;
 	}
 

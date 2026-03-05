@@ -298,7 +298,7 @@ watch(range, loadDashboard);
 		flex: 0 0 auto;
 		color: var(--theme--primary);
 		text-decoration: none;
-		font-size: 14px;
+		font-size: 0.8125rem;
 
 		&:hover {
 			text-decoration: underline;
@@ -322,7 +322,7 @@ watch(range, loadDashboard);
 		align-items: center;
 		gap: 0.4375rem;
 		color: var(--theme--foreground-subdued);
-		font-size: 14px;
+		font-size: 0.8125rem;
 	}
 }
 </style>

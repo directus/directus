@@ -170,7 +170,7 @@ limitWritable.value = selectedSize;
 	padding: 0.3125rem 0.5625rem;
 	color: var(--theme--foreground-accent);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	background: var(--theme--popover--menu--background);
 	border-radius: var(--theme--popover--menu--border-radius);

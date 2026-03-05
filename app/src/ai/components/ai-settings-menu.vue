@@ -203,7 +203,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 
 .section-title {
 	font-weight: 600;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	color: var(--theme--foreground);
 }
 
@@ -216,7 +216,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 }
 
 .tool-name {
-	font-size: 14px;
+	font-size: 0.8125rem;
 	color: var(--theme--foreground);
 }
 

@@ -236,13 +236,13 @@ function getColor(input?: number) {
 	white-space: pre;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 .metric-bar-number {
 	font-weight: 600;
 	white-space: pre;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	flex-shrink: 0;
 }
 </style>

@@ -82,7 +82,7 @@ withDefaults(defineProps<Props>(), {
 			order: 0;
 			margin-inline-end: 0.4375rem;
 			font-weight: 600;
-			font-size: 14px;
+			font-size: 0.8125rem;
 		}
 
 		hr {
