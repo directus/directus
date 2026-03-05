@@ -535,7 +535,7 @@ onUnmounted(() => {
 .logs-container {
 	inline-size: 100%;
 	block-size: calc(100% - 6.1875rem);
-	min-block-size: 600px;
+	min-block-size: 33.75rem;
 	padding: var(--content-padding);
 	padding-block-start: 0;
 }

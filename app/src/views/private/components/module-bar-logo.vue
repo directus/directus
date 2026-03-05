@@ -97,7 +97,7 @@ function stopSpinnerIfQueueIsEmpty() {
 		margin: 0 auto;
 		background-image: url('../../../assets/sprite.svg');
 		background-position: 0% 0%;
-		background-size: 600px 1.8125rem;
+		background-size: 33.75rem 1.8125rem;
 	}
 
 	.running {
