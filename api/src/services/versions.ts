@@ -1,4 +1,4 @@
-import { Action } from '@directus/constants';
+import { Action, VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import {
 	type AbstractServiceOptions,
@@ -19,6 +19,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import emitter from '../emitter.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { isPublishedVersionKey } from '../utils/versioning/is-published-version-key.js';
 import { splitRecursive } from '../utils/versioning/split-recursive.js';
 import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
@@ -44,9 +45,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		// Reserves the "main" version key for the version query parameter
-		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+		if (isPublishedVersionKey(data['key'])) throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
 
-		if (itemLess && data['key'] !== 'draft') {
+		if (itemLess && data['key'] !== VERSION_KEY_DRAFT) {
 			throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
 		}
 
@@ -211,7 +212,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		// Reserves the "main" version key for the version query parameter
-		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+		if (isPublishedVersionKey(data['key'])) throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
 
 		const keyCombos = new Set();
 
@@ -222,7 +223,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			const item = 'item' in data ? data['item'] : existingVersion.item;
 			const key = 'key' in data ? data['key'] : existingVersion.key;
 
-			if (key !== 'draft' && item === null)
+			if (key !== VERSION_KEY_DRAFT && item === null)
 				throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
 
 			const keyCombo = `${key}-${collection}-${item}`;
@@ -236,7 +237,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			keyCombos.add(keyCombo);
 
 			// Skip checking for existing versions if the version is itemless.
-			if (key === 'draft' && item === null) continue;
+			if (key === VERSION_KEY_DRAFT && item === null) continue;
 
 			const existingVersions = await super.readByQuery({
 				aggregate: { count: ['*'] },
