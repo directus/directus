@@ -72,44 +72,53 @@ describe('version response', () => {
 			.get(`/items/${c.articles}/${result.id}?version=test`)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		expect(JSON.parse(response.text)).toEqual({
-			data: { id: 1, title: 'Changed', author: 1, tags: [1, 2], sections: [1, 2], links: [1, 2] },
+		expect(JSON.parse(response.text)).toMatchObject({
+			data: {
+				id: 1,
+				title: 'Changed',
+				author: 1,
+				tags: [{ id: 1 }, { id: 2 }],
+				sections: [{ id: 1 }, { id: 2 }],
+				links: [{ id: 1 }, { id: 2 }],
+			},
 		});
+
+		let delta: Record<string, any> = {
+			title: 'Changed',
+			author: {
+				id: 1,
+				name: 'Changed',
+			},
+			links: [
+				{
+					id: 1,
+					link: 'Link A Changed',
+				},
+			],
+			tags: [
+				{
+					id: 1,
+					[`${c.tags}_id`]: {
+						id: 1,
+						tag: 'Tag A Changed',
+					},
+				},
+			],
+			sections: [
+				{
+					id: 1,
+					collection: c.sec_text,
+					item: {
+						id: 1,
+						text: 'Text A Changed',
+					},
+				},
+			],
+		};
 
 		await SaveVersion(vendor, {
 			id: versionResult.id,
-			delta: {
-				title: 'Changed',
-				author: {
-					id: 1,
-					name: 'Changed',
-				},
-				links: [
-					{
-						id: 1,
-						link: 'Link A Changed',
-					},
-				],
-				tags: [
-					{
-						id: 1,
-						[`${c.tags}_id`]: {
-							id: 1,
-							tag: 'Tag A Changed',
-						},
-					},
-				],
-				sections: [
-					{
-						id: 1,
-						collection: c.sec_text,
-						item: {
-							id: 1,
-							text: 'Text A Changed',
-						},
-					},
-				],
-			},
+			delta,
 		});
 
 		response = await request(getUrl(vendor))
@@ -118,7 +127,7 @@ describe('version response', () => {
 			)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		expect(JSON.parse(response.text)).toEqual({
+		expect(JSON.parse(response.text)).toMatchObject({
 			data: {
 				id: 1,
 				title: 'Changed',
@@ -148,67 +157,73 @@ describe('version response', () => {
 						link: 'Link A Changed',
 					},
 				],
+				$meta: {
+					delta: delta,
+					version_id: versionResult.id,
+				},
 			},
 		});
 
+		delta = {
+			links: {
+				create: [
+					{
+						link: 'Link C',
+					},
+				],
+				update: [
+					{
+						id: 2,
+						link: 'Link B Changed',
+					},
+				],
+				delete: [1],
+			},
+			tags: {
+				create: [
+					{
+						[`${c.tags}_id`]: {
+							tag: 'Tag C',
+						},
+					},
+				],
+				update: [
+					{
+						id: 2,
+						[`${c.tags}_id`]: {
+							id: 2,
+							tag: 'Tag B Changed',
+						},
+					},
+				],
+				delete: [1],
+			},
+			sections: {
+				create: [
+					{
+						collection: c.sec_num,
+						item: {
+							num: 3,
+						},
+					},
+				],
+				update: [
+					{
+						id: 1,
+						collection: c.sec_text,
+						item: {
+							id: 1,
+							text: 'Text B Changed',
+						},
+					},
+				],
+				delete: [2],
+			},
+		};
+
 		await SaveVersion(vendor, {
 			id: versionResult.id,
-			delta: {
-				links: {
-					create: [
-						{
-							link: 'Link C',
-						},
-					],
-					update: [
-						{
-							id: 2,
-							link: 'Link B Changed',
-						},
-					],
-					delete: [1],
-				},
-				tags: {
-					create: [
-						{
-							[`${c.tags}_id`]: {
-								tag: 'Tag C',
-							},
-						},
-					],
-					update: [
-						{
-							id: 2,
-							[`${c.tags}_id`]: {
-								id: 2,
-								tag: 'Tag B Changed',
-							},
-						},
-					],
-					delete: [1],
-				},
-				sections: {
-					create: [
-						{
-							collection: c.sec_num,
-							item: {
-								num: 3,
-							},
-						},
-					],
-					update: [
-						{
-							id: 1,
-							collection: c.sec_text,
-							item: {
-								id: 1,
-								text: 'Text B Changed',
-							},
-						},
-					],
-					delete: [2],
-				},
-			},
+			delta,
 		});
 
 		response = await request(getUrl(vendor))
@@ -217,7 +232,7 @@ describe('version response', () => {
 			)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		expect(JSON.parse(response.text)).toEqual({
+		expect(JSON.parse(response.text)).toMatchObject({
 			data: {
 				links: [
 					{
@@ -257,6 +272,10 @@ describe('version response', () => {
 						collection: c.sec_num,
 					},
 				],
+				$meta: {
+					delta: delta,
+					version_id: versionResult.id,
+				},
 			},
 		});
 	});
@@ -303,44 +322,48 @@ describe('version deadlocking', () => {
 			name: 'test',
 		});
 
+		const deltaA = {
+			links: {
+				create: [],
+				update: [
+					{
+						id: linkIds[0],
+						link: 'Link A Changed',
+					},
+					{
+						id: linkIds[1],
+						link: 'Link B Changed',
+					},
+				],
+				delete: [],
+			},
+		};
+
+		const deltaB = {
+			links: {
+				create: [],
+				update: [
+					{
+						id: linkIds[1],
+						link: 'Link B Changed 2',
+					},
+					{
+						id: linkIds[0],
+						link: 'Link A Changed 2',
+					},
+				],
+				delete: [],
+			},
+		};
+
 		await SaveVersion(vendor, {
 			id: versionResultA.id,
-			delta: {
-				links: {
-					create: [],
-					update: [
-						{
-							id: linkIds[0],
-							link: 'Link A Changed',
-						},
-						{
-							id: linkIds[1],
-							link: 'Link B Changed',
-						},
-					],
-					delete: [],
-				},
-			},
+			delta: deltaA,
 		});
 
 		await SaveVersion(vendor, {
 			id: versionResultB.id,
-			delta: {
-				links: {
-					create: [],
-					update: [
-						{
-							id: linkIds[1],
-							link: 'Link B Changed 2',
-						},
-						{
-							id: linkIds[0],
-							link: 'Link A Changed 2',
-						},
-					],
-					delete: [],
-				},
-			},
+			delta: deltaB,
 		});
 
 		const responseA = request(getUrl(vendor))
@@ -353,7 +376,7 @@ describe('version deadlocking', () => {
 
 		const [A, B] = await Promise.all([responseA, responseB]);
 
-		expect(JSON.parse(A.text).data).toEqual({
+		expect(JSON.parse(A.text).data).toMatchObject({
 			id: resultA.id,
 			links: [
 				{
@@ -365,9 +388,14 @@ describe('version deadlocking', () => {
 					link: 'Link B Changed',
 				},
 			],
+
+			$meta: {
+				delta: deltaA,
+				version_id: versionResultA.id,
+			},
 		});
 
-		expect(JSON.parse(B.text).data).toEqual({
+		expect(JSON.parse(B.text).data).toMatchObject({
 			id: resultB.id,
 			links: [
 				{
@@ -379,6 +407,10 @@ describe('version deadlocking', () => {
 					link: 'Link B Changed 2',
 				},
 			],
+			$meta: {
+				delta: deltaB,
+				version_id: versionResultB.id,
+			},
 		});
 	});
 });

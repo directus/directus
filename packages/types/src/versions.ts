@@ -3,7 +3,7 @@ export type ContentVersion = {
 	key: string;
 	name: string | null;
 	collection: string;
-	item: string;
+	item: string | null;
 	hash: string;
 	date_created: string;
 	date_updated: string | null;
@@ -11,3 +11,5 @@ export type ContentVersion = {
 	user_updated: string | null;
 	delta: Record<string, any> | null;
 };
+
+export const NEW_VERSION = Symbol('+');

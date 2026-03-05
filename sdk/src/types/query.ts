@@ -19,13 +19,13 @@ export interface Query<Schema, Item> {
 	deep?: IfAny<Schema, Record<string, any>, QueryDeep<Schema, Item>> | undefined;
 	backlink?: boolean | undefined;
 	readonly alias?: IfAny<Schema, Record<string, string>, QueryAlias<Schema, Item>> | undefined;
+	readonly version?: string | undefined;
 }
 
 /**
- * All query options with an additional version query option for readItem and readSingleton
+ * All query options with an additional versionRaw query option for readItem and readSingleton
  */
 export interface QueryItem<Schema, Item> extends Query<Schema, Item> {
-	readonly version?: string | undefined;
 	readonly versionRaw?: boolean | undefined;
 }
 
