@@ -133,7 +133,7 @@ withDefaults(defineProps<Props>(), {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	block-size: 46px;
+	block-size: 2.5625rem;
 
 	.icon {
 		flex-shrink: 0;
