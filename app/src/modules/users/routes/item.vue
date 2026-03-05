@@ -624,7 +624,7 @@ function revert(values: Record<string, any>) {
 	}
 
 	@media (width > 640px) {
-		block-size: 188px;
+		block-size: 10.5625rem;
 
 		.user-box-content .location {
 			display: block;
