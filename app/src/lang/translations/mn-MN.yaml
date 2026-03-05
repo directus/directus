@@ -756,7 +756,6 @@ unexpected_error_copy: Гэнэтийн алдаа гарсан байна. Да
 copy_details: Дэлгэрэнгүй мэдээллийг хуулах
 no_app_access: Апп хандалт байхгүй
 no_app_access_copy: Энэ хэрэглэгч админ апп хэрэглэх зөвшөөрөлгүй байна.
-password_reset_sent: Та бүртгэлтэй бол бид тань руу нууц үг сэргээх аюулгүй холбоос илгээлээ
 password_reset_successful: Нууц үгийг амжилттай сэргээгдлээ
 back: Буцах
 filter: Шүүлтүүр
@@ -1503,6 +1502,8 @@ ai:
   settings: Тохиргоо
   tool_approval:
     disabled: Идэвхгүй
+  ask_user_submit: Батлах
+  ask_user_next: Дараагийн
 ai_tools:
   items: Оруулгууд
   files: Файлууд

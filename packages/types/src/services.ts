@@ -468,7 +468,7 @@ interface DeploymentService {
  */
 interface DeploymentProjectsService {
 	updateSelection(
-		deploymentId: string,
+		provider: ProviderType,
 		create: { external_id: string; name: string }[],
 		deleteIds: PrimaryKey[],
 	): Promise<StoredProject[]>;
