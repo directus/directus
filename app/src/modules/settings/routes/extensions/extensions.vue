@@ -77,7 +77,7 @@ const extensionsByType = computed(() => {
 
 .page-container {
 	padding: var(--content-padding);
-	max-inline-size: 1200px;
+	max-inline-size: 67.5rem;
 }
 
 .group-divider {

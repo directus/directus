@@ -66,7 +66,7 @@ watchEffect(async () => {
 .extension-content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
-	max-inline-size: 1200px;
+	max-inline-size: 67.5rem;
 	inline-size: 100%;
 }
 
