@@ -45,7 +45,8 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		// Reserves the "main" version key for the version query parameter
-		if (isPublishedVersionKey(data['key'])) throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
+		if (isPublishedVersionKey(data['key']))
+			throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
 
 		if (itemLess && data['key'] !== VERSION_KEY_DRAFT) {
 			throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
@@ -212,7 +213,8 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		// Reserves the "main" version key for the version query parameter
-		if (isPublishedVersionKey(data['key'])) throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
+		if (isPublishedVersionKey(data['key']))
+			throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
 
 		const keyCombos = new Set();
 
