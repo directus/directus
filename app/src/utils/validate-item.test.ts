@@ -4,6 +4,18 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { validateItem } from '@/utils/validate-item';
 
+vi.mock('@/utils/parse-filter', () => ({
+	parseFilter: (filter: any) => {
+		// Simulate resolving $NOW to actual date, matching real parseFilter behavior
+		const resolved = JSON.parse(JSON.stringify(filter), (_key, value) => {
+			if (typeof value === 'string' && value.startsWith('$NOW')) return new Date().toISOString();
+			return value;
+		});
+
+		return resolved;
+	},
+}));
+
 const fields: DeepPartial<Field>[] = [
 	{
 		field: 'id',
@@ -87,18 +99,6 @@ test('Required fields', () => {
 });
 
 test('Custom validation with $NOW dynamic variable does not throw', () => {
-	vi.mock('@/utils/parse-filter', () => ({
-		parseFilter: (filter: any) => {
-			// Simulate resolving $NOW to actual date, matching real parseFilter behavior
-			const resolved = JSON.parse(JSON.stringify(filter), (_key, value) => {
-				if (typeof value === 'string' && value.startsWith('$NOW')) return new Date().toISOString();
-				return value;
-			});
-
-			return resolved;
-		},
-	}));
-
 	const fieldsWithValidation: DeepPartial<Field>[] = [
 		{
 			field: 'publish_date',
