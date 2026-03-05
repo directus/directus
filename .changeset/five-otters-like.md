@@ -3,4 +3,4 @@
 '@directus/api': minor
 ---
 
-Added versioning to collections
+Added item-less versions

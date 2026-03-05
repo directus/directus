@@ -262,7 +262,10 @@ router.post(
 			schema: req.schema,
 		});
 
-		const updatedItemKey = await service.promote(req.params['pk']!, req.body.mainHash, req.body?.['fields']);
+		const updatedItemKey = await service.promote(req.params['pk']!, {
+			mainHash: req.body.mainHash,
+			fields: req.body?.['fields'],
+		});
 
 		res.locals['payload'] = { data: updatedItemKey || null };
 

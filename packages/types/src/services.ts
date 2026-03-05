@@ -30,7 +30,7 @@ import type { FieldOverview, SchemaOverview } from './schema.js';
 import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from './snapshot.js';
 import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
-import type { ContentVersion, NEW_VERSION } from './versions.js';
+import type { ContentVersion } from './versions.js';
 import type { WebSocketClient, WebSocketMessage } from './websockets/index.js';
 
 export type AbstractServiceOptions = {
@@ -503,7 +503,7 @@ interface VersionsService {
 	getVersionSaves(
 		key: string,
 		collection: string,
-		item: PrimaryKey | typeof NEW_VERSION | null,
+		item: PrimaryKey | null,
 		mapDelta: boolean,
 	): Promise<ContentVersion[]>;
 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
