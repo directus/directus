@@ -124,7 +124,7 @@ const userFullName = userStore.fullName ?? undefined;
 		&.no-avatar {
 			&::after {
 				position: absolute;
-				inset-block-start: -1px;
+				inset-block-start: -0.0625rem;
 				inset-inline: 0.4375rem;
 				block-size: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);

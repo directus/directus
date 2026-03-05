@@ -87,10 +87,10 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 	--v-list-min-width: 11.8125rem;
 
 	position: absolute;
-	inline-size: 1px;
-	block-size: 1px;
+	inline-size: 0.0625rem;
+	block-size: 0.0625rem;
 	padding: 0;
-	margin: -1px;
+	margin: -0.0625rem;
 	overflow: hidden;
 	clip-path: rect(0, 0, 0, 0);
 	white-space: nowrap;

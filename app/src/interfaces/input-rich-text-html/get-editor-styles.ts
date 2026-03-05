@@ -148,7 +148,7 @@ iframe {
 }
 hr {
 	background-color: ${cssVar('--theme--form--field--input--border-color')};
-	block-size: 1px;
+	block-size: 0.0625rem;
 	border: none;
 	margin-block-start: 2em;
 	margin-block-end: 2em;

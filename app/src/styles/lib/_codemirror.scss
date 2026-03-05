@@ -449,7 +449,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-lines {
-	min-block-size: 1px; /* prevents collapsing before first draw */
+	min-block-size: 0.0625rem; /* prevents collapsing before first draw */
 	cursor: text;
 }
 

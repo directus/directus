@@ -240,7 +240,7 @@ function onPointerUp() {
 				content: '';
 				position: absolute;
 				inset-block: 0;
-				inset-inline: 1px;
+				inset-inline: 0.0625rem;
 				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);
 			}

@@ -61,7 +61,7 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 		d: path(
 			'M12 15.175L13 13L15.175 12L13 11L12 8.825L11 11L8.825 12L11 13L12 15.175ZM12 20L9.5 14.5L4 12L9.5 9.5L12 4L14.5 9.5L20 12L14.5 14.5L12 20Z'
 		);
-		translate: -0.125rem -1px;
+		translate: -0.125rem -0.0625rem;
 		animation-name: sparkle-left;
 	}
 
@@ -77,7 +77,7 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 @keyframes sparkle-left {
 	0% {
 		opacity: 1;
-		translate: -0.125rem -1px;
+		translate: -0.125rem -0.0625rem;
 		d: path(
 			'M12 15.175L13 13L15.175 12L13 11L12 8.825L11 11L8.825 12L11 13L12 15.175ZM12 20L9.5 14.5L4 12L9.5 9.5L12 4L14.5 9.5L20 12L14.5 14.5L12 20Z'
 		);
@@ -107,7 +107,7 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 
 	100% {
 		opacity: 1;
-		translate: -0.125rem -1px;
+		translate: -0.125rem -0.0625rem;
 		d: path(
 			'M12 15.175L13 13L15.175 12L13 11L12 8.825L11 11L8.825 12L11 13L12 15.175ZM12 20L9.5 14.5L4 12L9.5 9.5L12 4L14.5 9.5L20 12L14.5 14.5L12 20Z'
 		);
@@ -124,7 +124,7 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 	}
 
 	50% {
-		translate: 0.3125rem -1px;
+		translate: 0.3125rem -0.0625rem;
 		d: path(
 			'M12 15.175L13 13L15.175 12L13 11L12 8.825L11 11L8.825 12L11 13L12 15.175ZM12 20L9.5 14.5L4 12L9.5 9.5L12 4L14.5 9.5L20 12L14.5 14.5L12 20Z'
 		);

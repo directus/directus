@@ -651,7 +651,7 @@ function useUrls() {
 				min-inline-size: 0;
 
 				.v-icon {
-					inset-block-start: 1px;
+					inset-block-start: 0.0625rem;
 				}
 			}
 		}

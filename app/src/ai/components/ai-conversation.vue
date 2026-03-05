@@ -187,7 +187,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 #scroll-anchor {
 	overflow-anchor: auto;
-	block-size: 1px;
+	block-size: 0.0625rem;
 }
 
 .input-container {

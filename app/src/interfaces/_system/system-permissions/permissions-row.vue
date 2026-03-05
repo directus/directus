@@ -69,7 +69,7 @@ const emit = defineEmits<{
 
 	.name {
 		flex: 1;
-		inline-size: 1px;
+		inline-size: 0.0625rem;
 		padding: 0 0.6875rem;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow: hidden;

@@ -306,7 +306,7 @@ body.dark .tox .tox-toolbar__overflow {
 	justify-content: center;
 	min-inline-size: 7.625rem;
 	block-size: 2.5rem;
-	padding: 0 1.125rem 1px;
+	padding: 0 1.125rem 0.0625rem;
 	color: var(--white);
 	font-weight: 500;
 	font-size: 0.875rem;

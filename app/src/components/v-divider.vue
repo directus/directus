@@ -58,7 +58,7 @@ withDefaults(defineProps<Props>(), {
 
 		:slotted(.v-icon) {
 			margin-inline-end: 0.25rem;
-			transform: translateY(-1px);
+			transform: translateY(-0.0625rem);
 		}
 	}
 

@@ -320,7 +320,7 @@ function setContent() {
 	white-space: nowrap;
 
 	:deep(span) {
-		min-inline-size: 1px;
+		min-inline-size: 0.0625rem;
 		min-block-size: 1em;
 		white-space: pre;
 	}
@@ -330,7 +330,7 @@ function setContent() {
 	}
 
 	:deep(.selected-field) {
-		margin: -1px 0.25rem 0;
+		margin: -0.0625rem 0.25rem 0;
 		padding: 0.125rem 0.25rem 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);

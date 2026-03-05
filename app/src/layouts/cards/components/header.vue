@@ -145,7 +145,7 @@ function onClickSelect() {
 	.label {
 		display: inline-block;
 		margin-inline-start: 0.25rem;
-		transform: translateY(1px);
+		transform: translateY(0.0625rem);
 	}
 
 	.no-selection {

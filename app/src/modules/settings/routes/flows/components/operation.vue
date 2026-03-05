@@ -416,10 +416,10 @@ function pointerLeave() {
 		align-items: center;
 		padding: 1.125rem;
 		padding-inline-start: 3.375rem;
-		transform: translate(-1px, calc(-50% - 2.5px));
+		transform: translate(-0.0625rem, calc(-50% - 0.125rem));
 
 		html[dir='rtl'] & {
-			transform: translate(1px, calc(-50% - 2.5px));
+			transform: translate(0.0625rem, calc(-50% - 0.125rem));
 		}
 	}
 
@@ -430,10 +430,10 @@ function pointerLeave() {
 		justify-content: center;
 		align-items: center;
 		background-color: var(--theme--background);
-		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
+		transform: translate(calc(-50% - 0.0625rem), calc(-50% - 0.0625rem));
 
 		html[dir='rtl'] & {
-			transform: translate(calc(50% + 1px), calc(-50% - 1px));
+			transform: translate(calc(50% + 0.0625rem), calc(-50% - 0.0625rem));
 		}
 
 		--v-icon-color: var(--theme--primary);

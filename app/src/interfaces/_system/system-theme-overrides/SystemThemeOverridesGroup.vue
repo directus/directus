@@ -103,7 +103,7 @@ const hasValue = computed(() => {
 			border-radius: 0.25rem;
 			position: absolute;
 			inset-block-start: 0.625rem;
-			inset-inline-start: -1px;
+			inset-inline-start: -0.0625rem;
 			display: block;
 		}
 	}
