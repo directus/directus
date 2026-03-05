@@ -533,7 +533,7 @@ function handleKeyDown(event: any) {
 	.map {
 		position: relative;
 		inline-size: 100%;
-		block-size: 500px;
+		block-size: 28.125rem;
 
 		&.error,
 		&.loading {

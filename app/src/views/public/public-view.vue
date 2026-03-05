@@ -136,7 +136,7 @@ const logoURL = computed<string | null>(() => {
 		flex-direction: column;
 		justify-content: space-between;
 		inline-size: 100%;
-		max-inline-size: 500px;
+		max-inline-size: 28.125rem;
 		block-size: 100%;
 		padding: 1.125rem;
 		overflow: hidden auto;

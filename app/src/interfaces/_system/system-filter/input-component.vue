@@ -236,7 +236,7 @@ defineExpose({
 
 	&.geometry,
 	&.json {
-		inline-size: 500px;
+		inline-size: 28.125rem;
 	}
 }
 
