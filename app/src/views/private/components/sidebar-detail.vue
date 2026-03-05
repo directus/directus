@@ -65,7 +65,7 @@ watch(
 
 .accordion-trigger {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
-	--v-badge-offset-x: 15px;
+	--v-badge-offset-x: 0.875rem;
 	--v-badge-offset-y: 0.25rem;
 	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
 	--v-badge-background-color: var(--theme--primary);

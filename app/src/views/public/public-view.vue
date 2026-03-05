@@ -144,8 +144,8 @@ const logoURL = computed<string | null>(() => {
 		color: var(--theme--public--foreground);
 
 		/* Page Content Spacing */
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-inline-size var(--medium) var(--transition);
 
@@ -367,8 +367,8 @@ const logoURL = computed<string | null>(() => {
 				margin: 0 auto;
 				padding: 0.4375rem 0.6875rem;
 				color: var(--white);
-				font-size: 15px;
-				line-height: 24px;
+				font-size: 0.875rem;
+				line-height: 1.5714;
 				background-color: rgb(38 50 56 / 0.2);
 				border-radius: 0.3125rem;
 				backdrop-filter: blur(2px);

@@ -39,8 +39,8 @@ withDefaults(defineProps<Props>(), {
 	overflow: auto;
 
 	/* Page Content Spacing */
-	font-size: 15px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 	background-color: var(--v-card-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 

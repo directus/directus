@@ -81,8 +81,8 @@ h6 {
 }
 p {
 	font-family: ${userFontFamily}, serif;
-	font-size: 15px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 	font-weight: 500;
 	margin: 1.5em 0;
 }
@@ -93,8 +93,8 @@ a {
 }
 ul, ol {
 	font-family: ${userFontFamily}, serif;
-	font-size: 15px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 	font-weight: 500;
 	margin: 1.5em 0;
 }
@@ -108,8 +108,8 @@ b, strong {
 	font-weight: 700;
 }
 code {
-	font-size: 15px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 	font-weight: 500;
 	padding: 2px 0.25rem;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
@@ -118,8 +118,8 @@ code {
 	overflow-wrap: break-word;
 }
 pre {
-	font-size: 15px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 	font-weight: 500;
 	padding: 1em;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
@@ -129,8 +129,8 @@ pre {
 }
 blockquote {
 	font-family: ${userFontFamily}, serif;
-	font-size: 15px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 	font-weight: 500;
 	border-inline-start: 2px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding-inline-start: 1em;
@@ -155,8 +155,8 @@ hr {
 }
 table {
 	border-collapse: collapse;
-	font-size: 15px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 	font-weight: 500;
 }
 table th,

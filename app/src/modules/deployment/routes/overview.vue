@@ -175,12 +175,12 @@ function onSetupComplete() {
 .name {
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
-	font-size: 15px;
+	font-size: 0.875rem;
 }
 
 .description {
 	color: var(--theme--foreground-subdued);
-	font-size: 15px;
+	font-size: 0.875rem;
 }
 
 .meta {

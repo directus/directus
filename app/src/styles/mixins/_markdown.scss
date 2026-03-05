@@ -65,8 +65,8 @@
 	ol {
 		margin: 1.6em 0; // 24px (line-height) / 15px (font-size) = 1.6
 		font-weight: 500;
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 	}
 
 	ul ul,
@@ -84,9 +84,9 @@
 	code {
 		padding: 2px 0.25rem;
 		font-weight: 500;
-		font-size: 15px;
+		font-size: 0.875rem;
 		font-family: var(--theme--fonts--monospace--font-family), monospace;
-		line-height: 24px;
+		line-height: 1.5714;
 		overflow-wrap: break-word;
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
@@ -96,9 +96,9 @@
 		padding: 1em;
 		overflow: auto;
 		font-weight: 500;
-		font-size: 15px;
+		font-size: 0.875rem;
 		font-family: var(--theme--fonts--monospace--font-family), monospace;
-		line-height: 24px;
+		line-height: 1.5714;
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 	}
@@ -107,8 +107,8 @@
 		margin-inline-start: 0;
 		padding-inline-start: 1em;
 		font-weight: 500;
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 		border-inline-start: 2px solid var(--theme--form--field--input--border-color);
 	}
 
@@ -133,8 +133,8 @@
 
 	table {
 		font-weight: 500;
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 		border-collapse: collapse;
 	}
 
