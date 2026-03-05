@@ -102,7 +102,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 1.5rem;
 	font-weight: 700;
 	line-height: 1.3;
-	margin: 1rem 0 0.5rem;
+	margin: 1rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -113,7 +113,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 1.25rem;
 	font-weight: 700;
 	line-height: 1.3;
-	margin: 0.875rem 0 0.5rem;
+	margin: 0.875rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -124,7 +124,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 1.125rem;
 	font-weight: 600;
 	line-height: 1.4;
-	margin: 0.75rem 0 0.5rem;
+	margin: 0.75rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -157,7 +157,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 0.875rem;
 	font-weight: 600;
 	line-height: 1.5;
-	margin: 0.5rem 0 0.3125rem;
+	margin: 0.375rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -166,7 +166,7 @@ useResizeObserver(contentRef, (entries) => {
 
 /* Paragraphs */
 :deep(p) {
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 	line-height: 1.6;
 
 	&:first-child {
@@ -221,7 +221,7 @@ useResizeObserver(contentRef, (entries) => {
 /* Lists */
 :deep(ul),
 :deep(ol) {
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 	padding-inline-start: 1.5rem;
 }
 
@@ -251,7 +251,7 @@ useResizeObserver(contentRef, (entries) => {
 	position: relative;
 	inline-size: 20px;
 	block-size: 20px;
-	margin-inline-end: 0.5rem;
+	margin-inline-end: 0.375rem;
 	margin-block-start: 0.1em;
 	vertical-align: top;
 	appearance: none;
@@ -345,7 +345,7 @@ useResizeObserver(contentRef, (entries) => {
 
 :deep(th),
 :deep(td) {
-	padding: 0.5rem 0.75rem;
+	padding: 0.375rem 0.75rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-accent);
 	text-align: start;
 }
@@ -363,7 +363,7 @@ useResizeObserver(contentRef, (entries) => {
 	max-inline-size: 100%;
 	block-size: auto;
 	border-radius: var(--theme--border-radius);
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 }
 
 /* Collapsible */
@@ -371,7 +371,7 @@ useResizeObserver(contentRef, (entries) => {
 	position: relative;
 	display: block;
 	inline-size: 100%;
-	padding: 0.5rem 1rem 0.8rem;
+	padding: 0.375rem 1rem 0.8rem;
 	text-align: start;
 	z-index: 1;
 	font-size: 0.875rem;

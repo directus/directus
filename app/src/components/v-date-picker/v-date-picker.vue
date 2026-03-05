@@ -362,7 +362,7 @@ function setToNow() {
 		align-items: center;
 		color: var(--theme--foreground-accent);
 		background: var(--theme--background-normal);
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-nav-button {
@@ -483,10 +483,10 @@ function setToNow() {
 
 	.calendar-header-inputgroup {
 		display: inline-flex;
-		gap: 0.5rem;
+		gap: 0.375rem;
 		align-items: center;
 		justify-content: center;
-		padding: 0.5rem 0;
+		padding: 0.375rem 0;
 		inline-size: auto;
 		font-size: 16px;
 		font-weight: 600;
@@ -540,7 +540,7 @@ function setToNow() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-today-button {
@@ -551,7 +551,7 @@ function setToNow() {
 		color: var(--theme--primary);
 		font-size: 1rem;
 		font-weight: 600;
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-today-button:focus,

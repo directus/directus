@@ -39,7 +39,7 @@ const file = computed(() => toLightboxFile(props.part));
 
 <style scoped>
 .message-file {
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 	display: grid;
 	justify-items: end;
 
@@ -66,7 +66,7 @@ const file = computed(() => toLightboxFile(props.part));
 	.file-attachment {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.375rem;
 		padding: 0.75rem;
 		border-radius: var(--theme--border-radius);
 		background-color: var(--theme--background-subdued);

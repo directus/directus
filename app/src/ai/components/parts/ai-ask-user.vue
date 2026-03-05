@@ -432,7 +432,7 @@ onUnmounted(() => {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.1875rem;
-	padding: 0.125rem 0.5rem;
+	padding: 0.125rem 0.375rem;
 	border-radius: var(--theme--border-radius);
 	font-size: 0.75rem;
 	font-weight: 500;
@@ -477,7 +477,7 @@ onUnmounted(() => {
 .options {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
+	gap: 0.375rem;
 	max-block-size: 340px;
 	overflow-y: auto;
 	padding: calc(var(--focus-ring-width) + var(--focus-ring-offset));

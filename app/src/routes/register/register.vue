@@ -108,7 +108,7 @@ h1 {
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
-	gap: 0.5rem;
+	gap: 0.375rem;
 	text-align: center;
 	color: var(--theme--foreground-subdued);
 }

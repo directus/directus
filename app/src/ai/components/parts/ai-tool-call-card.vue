@@ -122,9 +122,9 @@ const handleAlwaysAllow = () => {
 .card-header {
 	display: flex;
 	align-items: center;
-	padding: 0.5rem;
+	padding: 0.375rem;
 	justify-content: space-between;
-	gap: 0.5rem;
+	gap: 0.375rem;
 	font-size: 0.875rem;
 	font-weight: 600;
 	inline-size: 100%;
@@ -151,7 +151,7 @@ const handleAlwaysAllow = () => {
 .card-title {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.5rem;
+	gap: 0.375rem;
 	overflow: hidden;
 
 	&.streaming :deep(span),
@@ -255,7 +255,7 @@ const handleAlwaysAllow = () => {
 .card-content {
 	max-block-size: 280px;
 	overflow-y: auto;
-	padding-inline: 0.5rem;
+	padding-inline: 0.375rem;
 
 	&[data-state='open'] {
 		animation: slide-down var(--fast) var(--transition-out) forwards;
@@ -266,7 +266,7 @@ const handleAlwaysAllow = () => {
 	}
 
 	& > * {
-		margin-block-end: 0.5rem;
+		margin-block-end: 0.375rem;
 	}
 }
 
@@ -289,14 +289,14 @@ const handleAlwaysAllow = () => {
 	.approval-buttons {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem;
+		gap: 0.375rem;
 		justify-content: flex-end;
 
 		.v-button {
 			position: relative;
 
 			.keyboard-hint {
-				margin-inline-start: 0.5rem;
+				margin-inline-start: 0.375rem;
 				font-size: 0.75rem;
 				opacity: 0.6;
 				font-weight: 500;

@@ -167,13 +167,13 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 .message-content {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
+	gap: 0.375rem;
 	flex: 1;
 	min-inline-size: 0;
 }
 
 .message-content :deep(.message-reasoning + .message-reasoning) {
-	margin-block-start: -0.5rem;
+	margin-block-start: -0.375rem;
 }
 
 .message-actions {
@@ -186,6 +186,6 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 .context-attachments {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: 0.375rem;
 }
 </style>

@@ -19,14 +19,14 @@ defineProps<{
 
 <style scoped>
 .message-source {
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 }
 
 .source-document {
 	display: flex;
 	flex-direction: column;
 	gap: 0.1875rem;
-	padding: 0.5rem 0.75rem;
+	padding: 0.375rem 0.75rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-subdued);
 	font-size: 0.875rem;
