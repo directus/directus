@@ -46,7 +46,7 @@ const file = computed(() => toLightboxFile(props.part));
 	.image-preview {
 		cursor: zoom-in;
 		inline-size: 100%;
-		max-inline-size: 128px;
+		max-inline-size: 7.1875rem;
 		border-radius: var(--theme--border-radius);
 		overflow: hidden;
 		padding: 0;
