@@ -500,9 +500,14 @@ interface UtilsService {
 interface VersionsService {
 	getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item>;
 	verifyHash(collection: string, item: PrimaryKey, hash: string): Promise<{ outdated: boolean; mainHash: string }>;
-	getVersionSave(key: string, collection: string, item: string | undefined): Promise<ContentVersion | undefined>;
+	getVersionSaves(
+		key: string,
+		collection: string,
+		item: PrimaryKey | null,
+		mapDelta: boolean,
+	): Promise<ContentVersion[]>;
 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
-	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
+	promote(version: PrimaryKey, opts?: { mainHash: string; fields?: string[] }): Promise<PrimaryKey>;
 }
 
 /**

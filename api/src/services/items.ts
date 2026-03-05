@@ -494,6 +494,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
+		if (query.version && query.version !== 'main') {
+			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
+		}
+
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
@@ -583,18 +587,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 */
 	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+
 		validateKeys(this.schema, this.collection, primaryKeyField, key);
 
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		let results: Item[] = [];
-
-		if (query.version && query.version !== 'main') {
-			results = [await handleVersion(this, key, queryWithKey, opts)];
-		} else {
-			results = await this.readByQuery(queryWithKey, opts);
-		}
+		const results: Item[] = await this.readByQuery(queryWithKey, { ...opts, key });
 
 		if (results.length === 0) {
 			throw new ForbiddenError();
@@ -620,9 +619,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			queryWithKey.limit = keys.length;
 		}
 
-		const results = await this.readByQuery(queryWithKey, opts);
-
-		return results;
+		return await this.readByQuery(queryWithKey, opts);
 	}
 
 	/**
@@ -1182,18 +1179,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		query.limit = 1;
 
-		let record;
-
 		if (query.version && query.version !== 'main') {
 			const primaryKeyField = this.schema.collections[this.collection]!.primary;
 			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
-
-			if (key) {
-				record = await handleVersion(this, key, query, opts);
-			}
-		} else {
-			record = (await this.readByQuery(query, opts))[0];
+			opts = { ...opts, key };
 		}
+
+		const record = (await this.readByQuery(query, opts))[0];
 
 		if (!record) {
 			let fields = Object.entries(this.schema.collections[this.collection]!.fields);

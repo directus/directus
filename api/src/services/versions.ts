@@ -1,17 +1,17 @@
 import { Action } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type {
-	AbstractServiceOptions,
-	ContentVersion,
-	Item,
-	MutationOptions,
-	PrimaryKey,
-	Query,
-	QueryOptions,
+import {
+	type AbstractServiceOptions,
+	type ContentVersion,
+	type Item,
+	type MutationOptions,
+	type PrimaryKey,
+	type Query,
+	type QueryOptions,
 } from '@directus/types';
 import { deepMapWithSchema } from '@directus/utils';
 import Joi from 'joi';
-import { assign, get, isEqual, isPlainObject, pick } from 'lodash-es';
+import { assign, get, isEqual, isNil, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
@@ -34,8 +34,10 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			key: Joi.string().required(),
 			name: Joi.string().allow(null),
 			collection: Joi.string().required(),
-			item: Joi.string().required(),
+			item: Joi.string().allow(null),
 		});
+
+		const itemLess = isNil(data['item']);
 
 		const { error } = versionCreateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
@@ -43,15 +45,25 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		// Reserves the "main" version key for the version query parameter
 		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
 
+		if (itemLess && data['key'] !== 'draft') {
+			throw new InvalidPayloadError({ reason: `"key" must be 'draft' for versions not linked to an item` });
+		}
+
 		if (this.accountability) {
 			try {
 				await validateAccess(
-					{
-						accountability: this.accountability,
-						action: 'read',
-						collection: data['collection'],
-						primaryKeys: [data['item']],
-					},
+					itemLess
+						? {
+								accountability: this.accountability,
+								action: 'read',
+								collection: data['collection'],
+							}
+						: {
+								accountability: this.accountability,
+								action: 'read',
+								collection: data['collection'],
+								primaryKeys: [data['item']],
+							},
 					{
 						schema: this.schema,
 						knex: this.knex,
@@ -76,6 +88,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				reason: `Content Versioning is not enabled for collection "${data['collection']}"`,
 			});
 		}
+
+		// Skip checking for existing versions if the version is itemless.
+		if (itemLess) return;
 
 		const sudoService = new VersionsService({
 			knex: this.knex,
@@ -116,28 +131,45 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getVersionSave(key: string, collection: string, item: string, mapDelta = true) {
-		const version = (
-			await this.readByQuery({
-				filter: {
-					key: { _eq: key },
-					collection: { _eq: collection },
-					item: { _eq: item },
-				},
-			})
-		)[0];
+	async getVersionSaves(key: string, collection: string, item: PrimaryKey | null, mapDelta = true) {
+		let itemFilter = {};
 
-		if (mapDelta && version?.delta) version.delta = this.mapDelta(version);
+		if (item) {
+			itemFilter = { item: { _eq: item } };
+		}
 
-		return version;
+		let versions = await this.readByQuery({
+			filter: {
+				key: { _eq: key },
+				collection: { _eq: collection },
+				...itemFilter,
+			},
+			limit: -1,
+		});
+
+		if (mapDelta) {
+			versions = versions.map((version) => {
+				if (version.delta) {
+					version.delta = this.mapDelta(version);
+				}
+
+				return version;
+			});
+		}
+
+		return versions;
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.validateCreateData(data);
 
-		const mainItem = await this.getMainItem(data['collection'], data['item']);
+		if (data['item']) {
+			const mainItem = await this.getMainItem(data['collection'], data['item']);
 
-		data['hash'] = objectHash(mainItem);
+			data['hash'] = objectHash(mainItem);
+		} else {
+			data['hash'] = null;
+		}
 
 		return super.createOne(data, opts);
 	}
@@ -173,44 +205,59 @@ export class VersionsService extends ItemsService<ContentVersion> {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		// Only allow updates on "key" and "name" fields
+		// Only allow updates on "key", "item" and "name" fields
 		const versionUpdateSchema = Joi.object({
 			key: Joi.string(),
 			name: Joi.string().allow(null),
+			item: Joi.string().allow(null),
 		});
 
 		const { error } = versionUpdateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		if ('key' in data) {
-			// Reserves the "main" version key for the version query parameter
-			if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+		// Reserves the "main" version key for the version query parameter
+		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
 
-			const keyCombos = new Set();
+		const keyCombos = new Set();
 
-			for (const pk of keys) {
-				const { collection, item } = await this.readOne(pk, { fields: ['collection', 'item'] });
+		for (const pk of keys) {
+			const existingVersion = await this.readOne(pk, { fields: ['collection', 'item', 'key'] });
 
-				const keyCombo = `${data['key']}-${collection}-${item}`;
+			const collection = existingVersion.collection;
+			const item = 'item' in data ? data['item'] : existingVersion.item;
+			const key = 'key' in data ? data['key'] : existingVersion.key;
 
-				if (keyCombos.has(keyCombo)) {
-					throw new UnprocessableContentError({
-						reason: `Cannot update multiple versions on "${item}" in collection "${collection}" to the same key "${data['key']}"`,
-					});
-				}
+			if (key !== 'draft' && item === null) {
+				throw new InvalidPayloadError({ reason: `"key" must be 'draft' for versions not linked to an item` });
+			}
 
-				keyCombos.add(keyCombo);
+			// Skip checking for existing versions or duplicates if the version is itemless.
+			if (item === null) continue;
 
-				const existingVersions = await super.readByQuery({
-					aggregate: { count: ['*'] },
-					filter: { id: { _neq: pk }, key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
+			const keyCombo = `${key}-${collection}-${item}`;
+
+			if (keyCombos.has(keyCombo)) {
+				throw new UnprocessableContentError({
+					reason: `Cannot update multiple versions on "${item}" in collection "${collection}" to the same key "${key}"`,
 				});
+			}
 
-				if ((existingVersions as any)[0]['count'] > 0) {
-					throw new UnprocessableContentError({
-						reason: `Version "${data['key']}" already exists for item "${item}" in collection "${collection}"`,
-					});
-				}
+			keyCombos.add(keyCombo);
+
+			const existingVersions = await super.readByQuery({
+				aggregate: { count: ['*'] },
+				filter: {
+					id: { _neq: pk },
+					key: { _eq: key },
+					collection: { _eq: collection },
+					item: { _eq: item },
+				},
+			});
+
+			if ((existingVersions as any)[0]['count'] > 0) {
+				throw new UnprocessableContentError({
+					reason: `Version "${key}" already exists for item "${item}" in collection "${collection}"`,
+				});
 			}
 		}
 
@@ -238,31 +285,33 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		const { item, collection, delta: existingDelta } = version;
 
-		const activity = await activityService.createOne({
-			action: Action.VERSION_SAVE,
-			user: this.accountability?.user ?? null,
-			collection,
-			ip: this.accountability?.ip ?? null,
-			user_agent: this.accountability?.userAgent ?? null,
-			origin: this.accountability?.origin ?? null,
-			item,
-		});
-
-		const helpers = getHelpers(this.knex);
-
 		let revisionDelta = await payloadService.prepareDelta(delta);
 
-		await revisionsService.createOne({
-			activity,
-			version: key,
-			collection,
-			item,
-			data: revisionDelta,
-			delta: revisionDelta,
-		});
+		// Only store activity and revisions for versions associated with an item.
+		if (item) {
+			const activity = await activityService.createOne({
+				action: Action.VERSION_SAVE,
+				user: this.accountability?.user ?? null,
+				collection,
+				ip: this.accountability?.ip ?? null,
+				user_agent: this.accountability?.userAgent ?? null,
+				origin: this.accountability?.origin ?? null,
+				item,
+			});
+
+			await revisionsService.createOne({
+				activity,
+				version: key,
+				collection,
+				item,
+				data: revisionDelta,
+				delta: revisionDelta,
+			});
+		}
 
 		revisionDelta = revisionDelta ? JSON.parse(revisionDelta) : null;
 
+		const helpers = getHelpers(this.knex);
 		const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 
 		deepMapObjects(revisionDelta, (object, path) => {
@@ -296,18 +345,28 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return finalVersionDelta;
 	}
 
-	async promote(version: PrimaryKey, mainHash: string, fields?: string[]) {
+	async promote(version: PrimaryKey, opts?: { mainHash: string; fields?: string[] }) {
 		const { collection, item, delta } = (await super.readOne(version)) as ContentVersion;
 
-		// will throw an error if the accountability does not have permission to update the item
+		if (item && typeof opts?.mainHash !== 'string') {
+			throw new InvalidPayloadError({ reason: `"mainHash" field is required` });
+		}
+
+		// will throw an error if the accountability does not have permission to create/update the item
 		if (this.accountability) {
 			await validateAccess(
-				{
-					accountability: this.accountability,
-					action: 'update',
-					collection,
-					primaryKeys: [item],
-				},
+				item
+					? {
+							accountability: this.accountability,
+							action: 'update',
+							collection,
+							primaryKeys: [item],
+						}
+					: {
+							accountability: this.accountability,
+							action: 'create',
+							collection,
+						},
 				{
 					schema: this.schema,
 					knex: this.knex,
@@ -321,17 +380,19 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			});
 		}
 
-		const { outdated } = await this.verifyHash(collection, item, mainHash);
+		if (item) {
+			const { outdated } = await this.verifyHash(collection, item, opts?.mainHash as string);
 
-		if (outdated) {
-			throw new UnprocessableContentError({
-				reason: `Main item has changed since this version was last updated`,
-			});
+			if (outdated) {
+				throw new UnprocessableContentError({
+					reason: `Main item has changed since this version was last updated`,
+				});
+			}
 		}
 
 		const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
-		const payloadToUpdate = fields ? pick(rawDelta, fields) : rawDelta;
+		const payloadToUpdate = opts?.fields ? pick(rawDelta, opts.fields) : rawDelta;
 
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
@@ -354,9 +415,19 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			},
 		);
 
-		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks, {
-			overwriteDefaults: defaultOverwrites as any,
-		});
+		let updatedItemKey;
+
+		if (item) {
+			updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks, {
+				overwriteDefaults: defaultOverwrites as any,
+			});
+		} else {
+			updatedItemKey = await itemsService.createOne(payloadAfterHooks, {
+				overwriteDefaults: defaultOverwrites as any,
+			});
+
+			await this.updateOne(version, { item: String(updatedItemKey) });
+		}
 
 		emitter.emitAction(
 			['items.promote', `${collection}.items.promote`],
