@@ -241,7 +241,7 @@ const logoURL = computed<string | null>(() => {
 				inset-inline-start: 15%;
 				block-size: 40%;
 				inline-size: 60%;
-				filter: blur(150px);
+				filter: blur(8.4375rem);
 				z-index: 2;
 
 				> div {

@@ -232,7 +232,7 @@ async function generateCollection() {
 
 .loader {
 	margin-block-start: 1.375rem;
-	min-block-size: 150px;
+	min-block-size: 8.4375rem;
 }
 
 .required {

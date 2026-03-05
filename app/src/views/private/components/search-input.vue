@@ -360,7 +360,7 @@ function emitValue() {
 		border-color: var(--theme--form--field--input--border-color-focus);
 
 		@media (width > 400px) {
-			inline-size: 150px;
+			inline-size: 8.4375rem;
 		}
 
 		@media (width > 640px) {
@@ -380,7 +380,7 @@ function emitValue() {
 		}
 
 		@media (width > 400px) {
-			inline-size: 150px;
+			inline-size: 8.4375rem;
 		}
 
 		@media (width > 640px) {

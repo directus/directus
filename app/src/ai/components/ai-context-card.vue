@@ -77,7 +77,7 @@ const icon = computed(() => {
 	gap: 0.3125rem;
 	padding: 0.25rem 0.3125rem;
 	flex: 0 0 auto;
-	max-inline-size: 150px;
+	max-inline-size: 8.4375rem;
 	background-color: var(--theme--background);
 	border: 1px solid var(--theme--border-color);
 	border-radius: var(--theme--border-radius);
