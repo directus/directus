@@ -161,11 +161,11 @@ watchEffect(async () => {
 }
 
 .extension-group + .extension-group {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 
 .filter {
-	margin-block: 24px 1.125rem;
+	margin-block: 1.375rem 1.125rem;
 }
 
 .results {

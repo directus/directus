@@ -123,7 +123,7 @@ function onToggle(open: boolean) {
 
 <style lang="scss" scoped>
 .v-progress-linear {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-detail + .v-detail {
@@ -137,7 +137,7 @@ function onToggle(open: boolean) {
 .toggle-failed {
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 
 	&.active,
 	&:hover {

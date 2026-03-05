@@ -181,14 +181,14 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .fields-management {
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 
 .field-grid {
 	position: relative;
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-	padding-block-end: 24px;
+	padding-block-end: 1.375rem;
 }
 
 .field-select {
@@ -229,7 +229,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .visible {
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 
 .list-move {

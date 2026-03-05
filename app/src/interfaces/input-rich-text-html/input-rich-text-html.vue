@@ -701,7 +701,7 @@ const menuActive = computed(
 .media-preview {
 	inline-size: 100%;
 	block-size: var(--input-height-md);
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 }

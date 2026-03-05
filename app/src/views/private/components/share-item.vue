@@ -161,7 +161,7 @@ const formattedTime = computed(() => {
 
 .header-right {
 	position: relative;
-	flex-basis: 24px;
+	flex-basis: 1.375rem;
 	color: var(--theme--foreground-subdued);
 
 	.more {

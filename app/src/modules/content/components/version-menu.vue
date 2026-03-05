@@ -631,7 +631,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	}
 
 	.version-item-icon {
-		inline-size: var(--v-icon-size, 24px);
+		inline-size: var(--v-icon-size, 1.375rem);
 		display: flex;
 		justify-content: center;
 	}

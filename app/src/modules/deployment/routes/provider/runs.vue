@@ -436,7 +436,7 @@ watch(statsRange, loadStats);
 .pagination {
 	display: flex;
 	justify-content: center;
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 
 .more-options.v-icon {

@@ -654,7 +654,7 @@ async function exportDataFiles() {
 }
 
 .fields {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	.type-label {
 		font-size: 0.8125rem;
@@ -665,7 +665,7 @@ async function exportDataFiles() {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
 
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 	padding: var(--content-padding);
 }
 

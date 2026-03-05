@@ -618,13 +618,13 @@ function discardAndLeave() {
 }
 
 .layout-sidebar {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	display: contents;
 }
 
 :deep(.layout-options) {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 }

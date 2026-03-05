@@ -488,7 +488,7 @@ textarea {
 
 .preview-box {
 	display: none;
-	padding: 1.125rem 24px;
+	padding: 1.125rem 1.375rem;
 	font-family: v-bind(previewFamily), serif;
 
 	:deep() {

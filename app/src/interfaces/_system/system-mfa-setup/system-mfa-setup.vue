@@ -331,6 +331,6 @@ function cancelAndClose() {
 }
 
 .v-error {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 </style>

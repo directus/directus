@@ -813,7 +813,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 .modal-item-content,
 .popover-item-content {
 	--theme--form--column-gap: 0.875rem;
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 }
 
 .modal-card {

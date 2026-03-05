@@ -215,7 +215,7 @@ watch(selectedProviderName, (val) => {
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-notice {

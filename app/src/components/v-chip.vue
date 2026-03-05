@@ -153,7 +153,7 @@ function onCloseClick(event: MouseEvent) {
 	}
 
 	&.small {
-		block-size: 24px;
+		block-size: 1.375rem;
 		padding: var(--v-chip-padding, 0 0.4375rem);
 		font-size: 0.8125rem;
 		border-radius: 0.6875rem;
@@ -170,7 +170,7 @@ function onCloseClick(event: MouseEvent) {
 		block-size: 48px;
 		padding: var(--v-chip-padding, 0 1.125rem);
 		font-size: 1rem;
-		border-radius: 24px;
+		border-radius: 1.375rem;
 	}
 
 	&.label {

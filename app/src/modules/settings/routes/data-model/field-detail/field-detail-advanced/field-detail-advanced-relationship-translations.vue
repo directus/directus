@@ -238,7 +238,7 @@ const relatedPrimaryKey = computed(
 
 .relational-triggers {
 	--theme--form--column-gap: 0.6875rem;
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 

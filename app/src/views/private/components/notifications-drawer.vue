@@ -472,7 +472,7 @@ function clearFilters() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	block-size: 24px;
+	block-size: 1.375rem;
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {

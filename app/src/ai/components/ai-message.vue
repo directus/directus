@@ -155,7 +155,7 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 		--ai-message-color: var(--theme--foreground);
 
 		justify-content: flex-end;
-		margin-inline-start: 24px;
+		margin-inline-start: 1.375rem;
 		flex-direction: row-reverse;
 
 		.message-content {

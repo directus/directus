@@ -97,8 +97,8 @@ header {
 		h1 {
 			color: var(--theme--foreground);
 			font-weight: 700;
-			font-size: 24px;
-			line-height: 24px;
+			font-size: 1.375rem;
+			line-height: 1;
 		}
 
 		.subtitle {

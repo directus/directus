@@ -55,7 +55,7 @@ h1 {
 	margin-block-start: 1em;
 }
 h2 {
-	font-size: 24px;
+	font-size: 1.375rem;
 	line-height: 34px;
 	margin-block-start: 1.25em;
 }

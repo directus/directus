@@ -83,7 +83,7 @@ withDefaults(defineProps<Props>(), {
 	line-height: 1.25rem;
 
 	&:not(:last-child) {
-		margin-block-end: 24px;
+		margin-block-end: 1.375rem;
 	}
 }
 

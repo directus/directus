@@ -85,6 +85,6 @@ const extensionsByType = computed(() => {
 }
 
 .extension-group + .extension-group {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 </style>

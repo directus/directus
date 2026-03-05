@@ -367,7 +367,7 @@ function addKeyAsNode() {
 	}
 
 	button + button {
-		margin-inline-start: 24px;
+		margin-inline-start: 1.375rem;
 	}
 }
 

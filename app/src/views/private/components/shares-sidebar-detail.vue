@@ -367,7 +367,7 @@ async function copy(id: string) {
 @use '@/styles/mixins';
 
 .v-progress-linear {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-divider {

@@ -307,7 +307,7 @@ function useIconsPerRow(
 .icon-row {
 	display: grid;
 	gap: var(--gap, 0.4375rem);
-	grid-template-columns: repeat(var(--icons-per-row, 1), var(--icon-size, 24px));
+	grid-template-columns: repeat(var(--icons-per-row, 1), var(--icon-size, 1.375rem));
 	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);
 	padding: 0.25rem;

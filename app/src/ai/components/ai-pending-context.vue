@@ -127,7 +127,7 @@ const activeSrc = computed(() => {
 
 <style scoped>
 .ai-pending-context-wrapper {
-	--fade-size: 24px;
+	--fade-size: 1.375rem;
 	--fade-color: var(--theme--form--field--input--background);
 
 	position: relative;

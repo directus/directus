@@ -448,7 +448,7 @@ const refreshInterval = computed({
 	block-size: 100%;
 
 	&.header-offset {
-		block-size: calc(100% - 24px);
+		block-size: calc(100% - 1.375rem);
 	}
 }
 </style>

@@ -231,7 +231,7 @@ async function generateCollection() {
 }
 
 .loader {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 	min-block-size: 150px;
 }
 
@@ -252,11 +252,11 @@ async function generateCollection() {
 }
 
 .generated-data {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 
 	ul {
 		padding-block-start: 0.25rem;
-		padding-inline-start: 24px;
+		padding-inline-start: 1.375rem;
 	}
 
 	.field-name {

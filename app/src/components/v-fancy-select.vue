@@ -181,6 +181,6 @@ function toggle(item: Record<string, any>) {
 }
 
 .v-divider {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 </style>

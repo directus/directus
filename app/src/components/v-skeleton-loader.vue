@@ -137,8 +137,8 @@ withDefaults(defineProps<Props>(), {
 
 	.icon {
 		flex-shrink: 0;
-		inline-size: 24px;
-		block-size: 24px;
+		inline-size: 1.375rem;
+		block-size: 1.375rem;
 		margin-inline-end: 0.6875rem;
 		border-radius: 50%;
 

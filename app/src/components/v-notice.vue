@@ -66,7 +66,7 @@ const iconName = computed(() => {
 
 .v-notice {
 	--icon-padding-inline-end: 0.875rem;
-	--icon-size-default: 24px;
+	--icon-size-default: 1.375rem;
 
 	position: relative;
 	display: flex;

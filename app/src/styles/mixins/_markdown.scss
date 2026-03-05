@@ -19,7 +19,7 @@
 		margin-block: 1.25em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
-		font-size: 24px;
+		font-size: 1.375rem;
 		line-height: 34px;
 	}
 
@@ -63,7 +63,7 @@
 	p,
 	ul,
 	ol {
-		margin: 1.6em 0; // 24px (line-height) / 15px (font-size) = 1.6
+		margin: 1.6em 0; // 1.375rem (line-height) / 15px (font-size) = 1.6
 		font-weight: 500;
 		font-size: 0.875rem;
 		line-height: 1.5714;

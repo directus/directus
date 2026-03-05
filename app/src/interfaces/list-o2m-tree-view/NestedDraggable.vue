@@ -294,7 +294,7 @@ function stageEdits(item: Record<string, any>) {
 
 		.v-skeleton-loader {
 			margin: 0.6875rem 0 0.6875rem auto;
-			inline-size: calc(100% - 24px);
+			inline-size: calc(100% - 1.375rem);
 		}
 
 		&:empty {

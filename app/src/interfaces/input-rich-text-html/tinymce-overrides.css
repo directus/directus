@@ -34,7 +34,7 @@
 	display: inline-block;
 	margin-block-start: 0.25rem;
 	color: var(--theme--form--field--input--foreground);
-	font-size: 24px;
+	font-size: 1.375rem;
 	font-family: 'Material Symbols';
 	content: 'format_bold';
 	font-feature-settings: 'liga';
@@ -48,7 +48,7 @@
 	display: inline-block;
 	margin-block-start: 0.25rem;
 	color: var(--theme--form--field--input--foreground);
-	font-size: 24px;
+	font-size: 1.375rem;
 	font-family: 'Material Symbols';
 	content: 'format_italic';
 	font-feature-settings: 'liga';
@@ -62,7 +62,7 @@
 	display: inline-block;
 	margin-block-start: 0.25rem;
 	color: var(--theme--form--field--input--foreground);
-	font-size: 24px;
+	font-size: 1.375rem;
 	font-family: 'Material Symbols';
 	content: 'format_underlined';
 	font-feature-settings: 'liga';
@@ -76,7 +76,7 @@
 	display: inline-block;
 	margin-block-start: 0.25rem;
 	color: var(--theme--form--field--input--foreground);
-	font-size: 24px;
+	font-size: 1.375rem;
 	font-family: 'Material Symbols';
 	content: 'insert_link';
 	font-feature-settings: 'liga';
@@ -224,11 +224,11 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog__body-content {
-	padding: 24px;
+	padding: 1.375rem;
 }
 
 .tox .tox-dialog__footer {
-	padding: 0 24px 24px;
+	padding: 0 1.375rem 1.375rem;
 	color: var(--theme--form--field--input--foreground);
 	background-color: var(--theme--background);
 	border-block-start: none;
@@ -354,7 +354,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-form__group {
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 
 .tox .tox-label,

@@ -159,7 +159,7 @@ h1 {
 	font-weight: 600;
 	line-height: 48px;
 
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 
 p {

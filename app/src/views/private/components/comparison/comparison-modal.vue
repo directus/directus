@@ -552,7 +552,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				@media (min-width: 960px) {
 					display: flex;
 					align-items: center;
-					gap: 24px;
+					gap: 1.375rem;
 
 					.fields-changed {
 						font-size: 0.8125rem;
@@ -606,7 +606,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					@media (min-width: 706px) {
 						display: flex;
 						align-items: center;
-						gap: 24px;
+						gap: 1.375rem;
 					}
 				}
 

@@ -98,7 +98,7 @@ watch(form, () => {
 }
 
 .v-notice {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 
 .error-code {

@@ -226,7 +226,7 @@ function useOverlayFocusTrap() {
 }
 
 .container :slotted(.v-sheet) {
-	--v-sheet-padding: 24px;
+	--v-sheet-padding: 1.375rem;
 	--v-sheet-max-width: 560px;
 }
 

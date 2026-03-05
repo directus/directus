@@ -68,7 +68,7 @@ watch(selectedItem, () => {
 @use '@/styles/mixins';
 
 .fields {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 

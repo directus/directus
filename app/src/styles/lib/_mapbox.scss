@@ -42,7 +42,7 @@
 	button::after {
 		display: flex;
 		justify-content: center;
-		font-size: 24px;
+		font-size: 1.375rem;
 		font-family: 'Material Symbols', sans-serif;
 		font-style: normal;
 		font-variant: normal;
@@ -77,8 +77,8 @@
 }
 
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
-	min-inline-size: 24px;
-	min-block-size: 24px;
+	min-inline-size: 1.375rem;
+	min-block-size: 1.375rem;
 	color: var(--theme--foreground);
 	background: var(--theme--popover--menu--background);
 	border-radius: var(--theme--popover--menu--border-radius);

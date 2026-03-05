@@ -376,7 +376,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			gap: 0.4375rem;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			font-size: 24px;
+			font-size: 1.375rem;
 			font-weight: 600;
 			align-items: center;
 

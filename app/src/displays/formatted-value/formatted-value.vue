@@ -212,7 +212,7 @@ function matchNumber(left: number | bigint, right: number | bigint, operator: st
 		padding: 0 0.5625rem;
 		font-size: 0.8125rem;
 		line-height: 1.9231;
-		border-radius: 24px;
+		border-radius: 1.375rem;
 	}
 
 	&.has-border {

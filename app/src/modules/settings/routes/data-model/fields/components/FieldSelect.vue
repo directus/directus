@@ -560,7 +560,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 }
 
 .form-grid {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 }
 
 .required {

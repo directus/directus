@@ -18,11 +18,11 @@ defineProps<{
 <style lang="scss" scoped>
 .app-minimal {
 	.v-divider {
-		margin: 24px 0;
+		margin: 1.375rem 0;
 	}
 
 	.v-notice {
-		margin-block-end: 24px;
+		margin-block-end: 1.375rem;
 	}
 
 	.app-minimal-preview {

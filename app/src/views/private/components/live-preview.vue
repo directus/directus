@@ -466,7 +466,7 @@ function useUrls() {
 			:snap-points="[370]"
 			:snap-threshold="6"
 			:transition-duration="125"
-			divider-hit-area="24px"
+			divider-hit-area="1.375rem"
 			class="content-split"
 			@update:size="(size: number) => emit('update:sidebarSize', size)"
 			@update:collapsed="

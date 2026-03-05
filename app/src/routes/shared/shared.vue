@@ -227,8 +227,8 @@ h2 {
 	position: absolute;
 	inset-block-start: -0.6875rem;
 	inset-inline-start: -0.6875rem;
-	inline-size: calc(100% + 24px);
-	block-size: calc(100% + 24px);
+	inline-size: calc(100% + 1.375rem);
+	block-size: calc(100% + 1.375rem);
 	background-color: var(--danger-alt);
 	border-radius: var(--theme--border-radius);
 	transition: var(--medium) var(--transition);

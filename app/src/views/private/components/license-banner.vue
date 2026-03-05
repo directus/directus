@@ -92,7 +92,7 @@ const fields = useFormFields(false, form);
 }
 
 .sub {
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 
 .v-card a {

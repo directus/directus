@@ -159,7 +159,7 @@ watch(innerWidth, (value) => {
 .grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
-	gap: 32px 24px;
+	gap: 32px 1.375rem;
 
 	&.single-row {
 		grid-template-columns: repeat(auto-fit, var(--size));

@@ -225,7 +225,7 @@ const unsortableJunctionFields = computed(() => {
 
 	ul {
 		padding-block-start: 0.25rem;
-		padding-inline-start: 24px;
+		padding-inline-start: 1.375rem;
 	}
 
 	.field-name {
@@ -237,13 +237,13 @@ const unsortableJunctionFields = computed(() => {
 	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	.v-divider {
-		margin-block: 48px 24px;
+		margin-block: 48px 1.375rem;
 	}
 }
 
 .relational-triggers {
 	--theme--form--column-gap: 0.6875rem;
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 

@@ -267,7 +267,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 <style lang="scss" scoped>
 .v-progress-linear {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-divider {

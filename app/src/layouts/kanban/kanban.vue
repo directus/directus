@@ -293,8 +293,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 <style lang="scss" scoped>
 .kanban-layout {
 	--limit-notice-height: 0px;
-	--limit-notice-margin-bottom: 24px;
-	--header-bar-margin: 24px;
+	--limit-notice-margin-bottom: 1.375rem;
+	--header-bar-margin: 1.375rem;
 
 	block-size: 100%;
 	padding: var(--content-padding);
@@ -415,8 +415,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 				.title,
 				.text {
-					line-height: 24px;
-					block-size: 24px;
+					line-height: 1.375rem;
+					block-size: 1.375rem;
 
 					& * {
 						line-height: inherit;
@@ -481,7 +481,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						flex-direction: row-reverse;
 						.avatar {
 							margin-inline-start: calc(var(--user-spacing) * -1);
-							border-radius: 24px;
+							border-radius: 1.375rem;
 							border: 4px solid var(--theme--background);
 							block-size: 32px;
 							inline-size: 32px;

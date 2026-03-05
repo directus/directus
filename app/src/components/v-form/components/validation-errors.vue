@@ -289,7 +289,7 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 
 .validation-errors-list {
 	margin-block: 0.25rem 0;
-	padding-inline-start: 24px;
+	padding-inline-start: 1.375rem;
 	list-style: disc;
 	color: var(--theme--danger);
 	line-height: 1.2;

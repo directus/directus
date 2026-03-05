@@ -277,7 +277,7 @@ watch(range, loadDashboard);
 		justify-content: center;
 		inline-size: 44px;
 		block-size: 44px;
-		border-radius: 24px;
+		border-radius: 1.375rem;
 		background-color: var(--theme--primary);
 		flex-shrink: 0;
 

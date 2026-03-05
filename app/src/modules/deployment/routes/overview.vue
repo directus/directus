@@ -162,7 +162,7 @@ function onSetupComplete() {
 .icon {
 	inline-size: 44px;
 	block-size: 44px;
-	border-radius: 24px;
+	border-radius: 1.375rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;

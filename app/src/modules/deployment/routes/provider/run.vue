@@ -395,7 +395,7 @@ onUnmounted(() => {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: 0.875rem;
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 
 	// 2 columns
 	@media (max-width: 1512px) {

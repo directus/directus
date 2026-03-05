@@ -207,7 +207,7 @@ defineProps<{
 			color: var(--theme--banner--title--foreground);
 			font-family: var(--theme--banner--title--font-family);
 			font-weight: var(--theme--banner--title--font-weight);
-			font-size: 24px;
+			font-size: 1.375rem;
 			line-height: 34px;
 		}
 

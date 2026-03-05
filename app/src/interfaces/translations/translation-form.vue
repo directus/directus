@@ -213,7 +213,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 <style lang="scss" scoped>
 .activator-loading-placeholder {
-	--size: 24px;
+	--size: 1.375rem;
 
 	display: inline-block;
 	inline-size: var(--size);

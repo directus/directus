@@ -74,7 +74,7 @@ const valueWithDefault = computed(() => {
 <style scoped lang="scss">
 .interface-system-theme {
 	display: grid;
-	gap: 24px;
+	gap: 1.375rem;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 

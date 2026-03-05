@@ -201,7 +201,7 @@ function useEdits() {
 	inset-inline: 0;
 	inset-block-end: 0.4375rem;
 	z-index: 2;
-	block-size: 24px;
+	block-size: 1.375rem;
 	text-align: center;
 	cursor: pointer;
 }

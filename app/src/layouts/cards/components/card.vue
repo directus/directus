@@ -230,7 +230,7 @@ function handleClick() {
 		inline-size: 1rem;
 		block-size: 1rem;
 		background-color: var(--theme--background);
-		border-radius: 24px;
+		border-radius: 1.375rem;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		content: '';

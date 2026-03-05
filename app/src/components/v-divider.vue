@@ -70,7 +70,7 @@ withDefaults(defineProps<Props>(), {
 	}
 
 	&.large .type-text {
-		font-size: 24px;
+		font-size: 1.375rem;
 		font-weight: var(--theme--fonts--display--font-weight);
 		font-family: var(--theme--fonts--display--font-family);
 	}
