@@ -585,7 +585,7 @@ function revert(values: Record<string, any>) {
 		overflow: hidden;
 
 		.v-skeleton-loader {
-			inline-size: 175px;
+			inline-size: 9.875rem;
 		}
 
 		.v-skeleton-loader:not(:last-child) {
