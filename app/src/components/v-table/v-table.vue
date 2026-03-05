@@ -161,7 +161,7 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	function generate(useVal?: 'auto') {
 		let gridTemplateColumns = internalHeaders.value
 			.map((header) => {
-				return header.width ? (useVal ?? `${header.width}px`) : '160px';
+				return header.width ? (useVal ?? `${header.width}px`) : '144px';
 			})
 			.reduce((acc, val) => (acc += ' ' + val), '');
 

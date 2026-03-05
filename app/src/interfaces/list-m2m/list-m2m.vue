@@ -240,7 +240,7 @@ const headers = computed({
 				if (!field) return null;
 
 				const defaultWidth =
-					contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160;
+					contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 144;
 
 				return {
 					text: field.name,
@@ -264,9 +264,9 @@ const headers = computed({
 });
 
 const spacings = {
-	compact: 32,
-	cozy: 48,
-	comfortable: 64,
+	compact: 29,
+	cozy: 43,
+	comfortable: 58,
 };
 
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
