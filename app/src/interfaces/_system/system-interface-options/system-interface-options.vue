@@ -124,7 +124,7 @@ const optionsFields = computed(() => {
 	border-radius: var(--theme--border-radius);
 
 	:deep(.type-label) {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 </style>

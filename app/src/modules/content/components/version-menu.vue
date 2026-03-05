@@ -664,7 +664,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 }
 
 .version-button {
-	--v-icon-size: 1rem;
+	--v-icon-size: 0.8125rem;
 
 	color: var(--theme--foreground-subdued);
 	display: flex;

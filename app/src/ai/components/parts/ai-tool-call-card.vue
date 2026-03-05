@@ -274,7 +274,7 @@ const handleAlwaysAllow = () => {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5625rem;
-	padding: 0.5625rem 1rem;
+	padding: 0.5625rem 0.8125rem;
 	border-block-start: 1px solid var(--theme--border-color-subdued);
 	background-color: var(--theme--background-normal);
 	position: sticky;

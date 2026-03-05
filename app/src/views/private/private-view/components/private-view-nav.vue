@@ -21,7 +21,7 @@ defineProps<{ id?: string }>();
 	inline-size: 100%;
 	position: relative;
 	display: block;
-	font-size: 1rem;
+	font-size: 0.8125rem;
 	background: var(--theme--navigation--background);
 }
 

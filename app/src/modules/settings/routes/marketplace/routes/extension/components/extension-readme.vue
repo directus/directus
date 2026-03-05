@@ -20,7 +20,7 @@ defineProps<{
 	}
 
 	:deep(* + *) {
-		margin-block-start: 1rem;
+		margin-block-start: 0.8125rem;
 	}
 
 	:deep(img) {

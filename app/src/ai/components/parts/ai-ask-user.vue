@@ -383,7 +383,7 @@ onUnmounted(() => {
 	--fade-color: var(--theme--form--field--input--background);
 
 	position: relative;
-	margin-block-end: 1rem;
+	margin-block-end: 0.8125rem;
 
 	&::before,
 	&::after {

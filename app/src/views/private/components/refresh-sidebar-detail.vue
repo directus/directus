@@ -88,7 +88,7 @@ const items = computed(() => {
 	@include mixins.form-grid;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 

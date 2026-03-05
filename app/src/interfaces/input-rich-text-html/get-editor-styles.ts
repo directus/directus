@@ -166,7 +166,7 @@ table td {
 }
 figure {
 	display: table;
-	margin: 1rem auto;
+	margin: 0.8125rem auto;
 }
 figure figcaption {
 	color: #999;

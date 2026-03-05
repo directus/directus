@@ -349,7 +349,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 
 		&::before {
 			display: block;
-			font-size: 1rem;
+			font-size: 0.8125rem;
 			content: attr(data-preview);
 		}
 	}

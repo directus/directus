@@ -63,7 +63,7 @@ useResizeObserver(contentRef, (entries) => {
 		--ai-message-text-border-color: var(--theme--border-color);
 
 		.message-content {
-			padding: 0.625rem 1rem;
+			padding: 0.625rem 0.8125rem;
 		}
 
 		--ai-message-code-background: var(--theme--background-normal);
@@ -102,7 +102,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 1.5rem;
 	font-weight: 700;
 	line-height: 1.3;
-	margin: 1rem 0 0.375rem;
+	margin: 0.8125rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -132,7 +132,7 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(h4) {
-	font-size: 1rem;
+	font-size: 0.8125rem;
 	font-weight: 600;
 	line-height: 1.4;
 	margin: 0.5625rem 0 0.3125rem;
@@ -207,7 +207,7 @@ useResizeObserver(contentRef, (entries) => {
 :deep(pre) {
 	font-family: var(--theme--fonts--monospace--font-family);
 	margin: 0.5625rem 0;
-	padding: 1rem;
+	padding: 0.8125rem;
 	background-color: var(--ai-message-code-background);
 	border-radius: var(--theme--border-radius);
 	overflow-x: auto;
@@ -310,8 +310,8 @@ useResizeObserver(contentRef, (entries) => {
 
 /* Blockquotes */
 :deep(blockquote) {
-	margin: 1rem 0;
-	padding: 0.5625rem 1rem;
+	margin: 0.8125rem 0;
+	padding: 0.5625rem 0.8125rem;
 	border-inline-start: 0.1875rem solid var(--ai-message-text-blockquote-border-color);
 
 	p:first-child {
@@ -334,7 +334,7 @@ useResizeObserver(contentRef, (entries) => {
 :deep(table) {
 	inline-size: 100%;
 	border-collapse: collapse;
-	margin: 1rem 0;
+	margin: 0.8125rem 0;
 	overflow: auto;
 	display: block;
 }
@@ -371,7 +371,7 @@ useResizeObserver(contentRef, (entries) => {
 	position: relative;
 	display: block;
 	inline-size: 100%;
-	padding: 0.375rem 1rem 0.625rem;
+	padding: 0.375rem 0.8125rem 0.625rem;
 	text-align: start;
 	z-index: 1;
 	font-size: 0.6875rem;

@@ -47,7 +47,7 @@ const { saving, save } = useSave({ name });
 	--theme--form--row-gap: 24px;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 </style>

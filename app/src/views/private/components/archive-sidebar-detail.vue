@@ -73,7 +73,7 @@ watch(selectedItem, () => {
 	@include mixins.form-grid;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 
 	.v-radio + .v-radio {

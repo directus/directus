@@ -350,7 +350,7 @@ function setToNow() {
 
 	.calendar {
 		font-family: var(--v-input-font-family);
-		font-size: 1rem;
+		font-size: 0.8125rem;
 		background: var(--theme--form--field--input--background);
 		border-radius: var(--theme--border-radius);
 		box-shadow: none;
@@ -415,7 +415,7 @@ function setToNow() {
 	.calendar-head-cell {
 		border-radius: 0.3125rem;
 		font-size: 0.6875rem;
-		line-height: 1rem;
+		line-height: 0.8125rem;
 		color: var(--theme--foreground-accent);
 		font-weight: 600;
 	}
@@ -435,7 +435,7 @@ function setToNow() {
 		border-width: 2px;
 		border-style: solid;
 		border-color: transparent;
-		font-size: 1rem;
+		font-size: 0.8125rem;
 		line-height: 2.65rem;
 		font-weight: 500;
 		border-radius: var(--theme--border-radius);
@@ -525,7 +525,7 @@ function setToNow() {
 	}
 
 	.time-field-segment {
-		padding: 1rem 1.5rem;
+		padding: 0.8125rem 1.5rem;
 		background: var(--theme--form--field--input--background-subdued);
 	}
 
@@ -549,7 +549,7 @@ function setToNow() {
 		inline-size: 100%;
 		cursor: pointer;
 		color: var(--theme--primary);
-		font-size: 1rem;
+		font-size: 0.8125rem;
 		font-weight: 600;
 		padding: 0.375rem;
 	}

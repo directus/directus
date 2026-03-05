@@ -159,7 +159,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 <style scoped>
 .error-notice {
-	margin-block-end: 1rem;
+	margin-block-end: 0.8125rem;
 	max-inline-size: 100%;
 	overflow: hidden;
 }
@@ -197,7 +197,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 }
 
 .error-message {
-	margin-block-end: 1rem;
+	margin-block-end: 0.8125rem;
 	font-size: 0.6875rem;
 	inline-size: 100%;
 	max-inline-size: 100%;
@@ -207,9 +207,9 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .error-buttons-container {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1rem;
+	gap: 0.8125rem;
 
-	margin-block-start: 1rem;
+	margin-block-start: 0.8125rem;
 	align-items: center;
 
 	.v-icon {

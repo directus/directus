@@ -608,7 +608,7 @@
 
 .codex-editor .ce-block figure {
 	display: table;
-	margin: 1rem auto;
+	margin: 0.8125rem auto;
 }
 
 .codex-editor .ce-block figure figcaption {

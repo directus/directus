@@ -88,7 +88,7 @@ defineProps<FlowDialogsContext>();
 	margin-block-start: var(--v-card-padding, 16px);
 
 	:deep(.type-label) {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 </style>

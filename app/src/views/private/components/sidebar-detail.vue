@@ -59,7 +59,7 @@ watch(
 
 	:deep(.type-label) {
 		margin-block-end: 4px;
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 

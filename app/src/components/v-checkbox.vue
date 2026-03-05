@@ -272,7 +272,7 @@ function onClickIcon(e: MouseEvent): void {
 	.prepend,
 	.append {
 		display: contents;
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 
 	.append {
