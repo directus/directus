@@ -171,7 +171,7 @@ figure {
 figure figcaption {
 	color: #999;
 	display: block;
-	margin-block-start: 0.25rem;
+	margin-block-start: 0.1875rem;
 	text-align: center;
 }${
 		includeDiffStyles

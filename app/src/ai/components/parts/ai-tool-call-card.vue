@@ -191,7 +191,7 @@ const handleAlwaysAllow = () => {
 .card-meta {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.25rem;
+	gap: 0.1875rem;
 	flex-shrink: 0;
 }
 
@@ -202,7 +202,7 @@ const handleAlwaysAllow = () => {
 
 .status-chip {
 	.v-icon {
-		margin-inline-end: 0.25rem;
+		margin-inline-end: 0.1875rem;
 		border: none;
 	}
 

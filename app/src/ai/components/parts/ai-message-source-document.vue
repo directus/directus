@@ -25,7 +25,7 @@ defineProps<{
 .source-document {
 	display: flex;
 	flex-direction: column;
-	gap: 0.25rem;
+	gap: 0.1875rem;
 	padding: 0.5rem 0.75rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-subdued);

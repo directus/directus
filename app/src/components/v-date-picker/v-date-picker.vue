@@ -402,12 +402,12 @@ function setToNow() {
 	}
 
 	.calendar-grid-body {
-		margin-block-start: 0.25rem;
+		margin-block-start: 0.1875rem;
 	}
 
 	.calendar-grid-row {
 		display: grid;
-		margin-block-end: 0.25rem;
+		margin-block-end: 0.1875rem;
 		grid-template-columns: repeat(7, minmax(0, 1fr));
 		inline-size: 100%;
 	}
@@ -517,8 +517,8 @@ function setToNow() {
 	.time-field {
 		display: flex;
 		align-items: center;
-		border-radius: 0.25rem;
-		gap: 0.25rem;
+		border-radius: 0.1875rem;
+		gap: 0.1875rem;
 		border-width: 1px;
 		text-align: center;
 		user-select: none;

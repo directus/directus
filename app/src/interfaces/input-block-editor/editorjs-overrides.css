@@ -613,7 +613,7 @@
 
 .codex-editor .ce-block figure figcaption {
 	display: block;
-	margin-block-start: 0.25rem;
+	margin-block-start: 0.1875rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	text-align: center;
 }

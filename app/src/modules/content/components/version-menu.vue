@@ -605,7 +605,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	@media (min-width: 600px) {
 		&::before {
 			content: '•';
-			padding-inline-end: 0.25rem;
+			padding-inline-end: 0.1875rem;
 			color: var(--theme--foreground-subdued);
 		}
 	}

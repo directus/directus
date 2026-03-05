@@ -90,7 +90,7 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 	font-size: 0.75rem;
 	font-weight: 600;
 	text-transform: uppercase;
-	margin-block: 0.5rem 0.25rem;
+	margin-block: 0.5rem 0.1875rem;
 }
 
 .tool-input,

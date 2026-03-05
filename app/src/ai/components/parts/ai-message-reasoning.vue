@@ -43,7 +43,7 @@ const expandedText = computed(() => {
 
 <style scoped>
 .message-reasoning {
-	margin: 0.25rem 0;
+	margin: 0.1875rem 0;
 }
 
 .reasoning-header {

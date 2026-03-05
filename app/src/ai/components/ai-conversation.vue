@@ -213,7 +213,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	align-items: center;
 
 	.v-icon {
-		margin-inline-end: 0.25rem;
+		margin-inline-end: 0.1875rem;
 	}
 }
 

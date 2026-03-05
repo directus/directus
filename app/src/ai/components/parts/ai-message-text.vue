@@ -199,7 +199,7 @@ useResizeObserver(contentRef, (entries) => {
 :deep(code) {
 	background-color: var(--ai-message-code-background);
 	padding: 0.125rem 0.375rem;
-	border-radius: 0.25rem;
+	border-radius: 0.1875rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	font-size: 0.875em;
 }
@@ -226,7 +226,7 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(li) {
-	margin: 0.25rem 0;
+	margin: 0.1875rem 0;
 	line-height: 1.6;
 }
 
@@ -234,17 +234,17 @@ useResizeObserver(contentRef, (entries) => {
 :deep(ol ol),
 :deep(ul ol),
 :deep(ol ul) {
-	margin: 0.25rem 0;
+	margin: 0.1875rem 0;
 }
 
 /* Task lists */
 :deep(ul:has(input[type='checkbox'])) {
 	list-style: none;
-	padding-inline-start: 0.25rem;
+	padding-inline-start: 0.1875rem;
 }
 
 :deep(li:has(input[type='checkbox'])) {
-	padding-inline-start: 0.25rem;
+	padding-inline-start: 0.1875rem;
 }
 
 :deep(input[type='checkbox']) {
@@ -312,7 +312,7 @@ useResizeObserver(contentRef, (entries) => {
 :deep(blockquote) {
 	margin: 1rem 0;
 	padding: 0.75rem 1rem;
-	border-inline-start: 0.25rem solid var(--ai-message-text-blockquote-border-color);
+	border-inline-start: 0.1875rem solid var(--ai-message-text-blockquote-border-color);
 
 	p:first-child {
 		margin-block-start: 0;

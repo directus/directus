@@ -178,9 +178,9 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 
 .message-actions {
 	display: flex;
-	gap: 0.25rem;
+	gap: 0.1875rem;
 	align-items: center;
-	margin-block-start: 0.25rem;
+	margin-block-start: 0.1875rem;
 }
 
 .context-attachments {

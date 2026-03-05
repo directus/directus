@@ -40,7 +40,7 @@ function getAnswer(questionId: string): string | undefined {
 <style scoped>
 .ask-user-summary {
 	inline-size: 100%;
-	padding: 0.25rem;
+	padding: 0.1875rem;
 }
 
 .completed-answer {
