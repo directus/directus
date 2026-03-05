@@ -135,12 +135,12 @@ const renderBlocks = computed<RenderBlock[]>(() => {
   --ai-message-background       [role-based]
   --ai-message-color            [role-based]
   --ai-message-border-radius    [var(--theme--border-radius)]
-  --ai-message-parts-gap        [0.75rem]
+  --ai-message-parts-gap        [0.5625rem]
 */
 
 .ai-message {
 	display: flex;
-	gap: var(--ai-message-parts-gap, 0.75rem);
+	gap: var(--ai-message-parts-gap, 0.5625rem);
 	align-items: flex-start;
 	max-inline-size: 100%;
 

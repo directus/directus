@@ -273,8 +273,8 @@ const handleAlwaysAllow = () => {
 .card-approval-actions {
 	display: flex;
 	flex-direction: column;
-	gap: 0.75rem;
-	padding: 0.75rem 1rem;
+	gap: 0.5625rem;
+	padding: 0.5625rem 1rem;
 	border-block-start: 1px solid var(--theme--border-color-subdued);
 	background-color: var(--theme--background-normal);
 	position: sticky;
@@ -297,7 +297,7 @@ const handleAlwaysAllow = () => {
 
 			.keyboard-hint {
 				margin-inline-start: 0.375rem;
-				font-size: 0.75rem;
+				font-size: 0.5625rem;
 				opacity: 0.6;
 				font-weight: 500;
 			}

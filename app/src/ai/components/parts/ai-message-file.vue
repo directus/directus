@@ -67,7 +67,7 @@ const file = computed(() => toLightboxFile(props.part));
 		display: flex;
 		align-items: center;
 		gap: 0.375rem;
-		padding: 0.75rem;
+		padding: 0.5625rem;
 		border-radius: var(--theme--border-radius);
 		background-color: var(--theme--background-subdued);
 		border: 1px solid var(--theme--border-color-subdued);

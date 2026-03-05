@@ -434,7 +434,7 @@ onUnmounted(() => {
 	gap: 0.1875rem;
 	padding: 0.125rem 0.375rem;
 	border-radius: var(--theme--border-radius);
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	font-weight: 500;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--background-normal);
@@ -470,7 +470,7 @@ onUnmounted(() => {
 	font-size: 0.9375rem;
 	font-weight: 600;
 	color: var(--theme--foreground);
-	margin-block-end: 0.75rem;
+	margin-block-end: 0.5625rem;
 	line-height: 1.4;
 }
 
@@ -488,7 +488,7 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	padding: 0.5rem 0.75rem;
+	padding: 0.5rem 0.5625rem;
 	border-radius: var(--theme--border-radius);
 	border: var(--theme--border-width) solid var(--theme--border-color-accent);
 	background-color: var(--theme--background);
@@ -525,7 +525,7 @@ onUnmounted(() => {
 	block-size: 1.5rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-normal);
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	font-weight: 600;
 	color: var(--theme--foreground-subdued);
 }
@@ -556,7 +556,7 @@ onUnmounted(() => {
 
 .option-description {
 	display: block;
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	color: var(--theme--foreground-subdued);
 	margin-block-start: 0.125rem;
 	line-height: 1.3;
@@ -566,7 +566,7 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-block-start: 0.75rem;
+	margin-block-start: 0.5625rem;
 }
 
 .action-buttons {

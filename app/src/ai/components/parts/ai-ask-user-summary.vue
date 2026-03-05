@@ -52,7 +52,7 @@ function getAnswer(questionId: string): string | undefined {
 }
 
 .completed-question {
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	color: var(--theme--foreground-subdued);
 	margin-block-end: 0.125rem;
 }

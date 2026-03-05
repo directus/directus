@@ -87,7 +87,7 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 
 <style scoped>
 .label {
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	font-weight: 600;
 	text-transform: uppercase;
 	margin-block: 0.375rem 0.1875rem;
@@ -102,7 +102,7 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 	line-height: 1.25;
 
 	code {
-		font-size: 0.75rem;
+		font-size: 0.5625rem;
 		white-space: pre-wrap;
 		overflow-wrap: break-word;
 	}

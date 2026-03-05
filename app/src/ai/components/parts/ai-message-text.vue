@@ -124,7 +124,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 1.125rem;
 	font-weight: 600;
 	line-height: 1.4;
-	margin: 0.75rem 0 0.375rem;
+	margin: 0.5625rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -135,7 +135,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 1rem;
 	font-weight: 600;
 	line-height: 1.4;
-	margin: 0.75rem 0 0.3125rem;
+	margin: 0.5625rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -206,7 +206,7 @@ useResizeObserver(contentRef, (entries) => {
 
 :deep(pre) {
 	font-family: var(--theme--fonts--monospace--font-family);
-	margin: 0.75rem 0;
+	margin: 0.5625rem 0;
 	padding: 1rem;
 	background-color: var(--ai-message-code-background);
 	border-radius: var(--theme--border-radius);
@@ -311,7 +311,7 @@ useResizeObserver(contentRef, (entries) => {
 /* Blockquotes */
 :deep(blockquote) {
 	margin: 1rem 0;
-	padding: 0.75rem 1rem;
+	padding: 0.5625rem 1rem;
 	border-inline-start: 0.1875rem solid var(--ai-message-text-blockquote-border-color);
 
 	p:first-child {
@@ -345,7 +345,7 @@ useResizeObserver(contentRef, (entries) => {
 
 :deep(th),
 :deep(td) {
-	padding: 0.375rem 0.75rem;
+	padding: 0.375rem 0.5625rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-accent);
 	text-align: start;
 }
