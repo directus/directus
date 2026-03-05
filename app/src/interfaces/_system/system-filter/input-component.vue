@@ -231,7 +231,7 @@ defineExpose({
 	&.timestamp,
 	&.time,
 	&.dateTime {
-		min-inline-size: 250px;
+		min-inline-size: 14.0625rem;
 	}
 
 	&.geometry,
