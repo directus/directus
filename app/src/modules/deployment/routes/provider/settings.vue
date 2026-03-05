@@ -27,8 +27,10 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
 import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
 import { sdk } from '@/sdk';
+import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -39,6 +41,14 @@ const props = defineProps<{
 
 const router = useRouter();
 const { refresh: refreshNavigation } = useDeploymentNavigation();
+const permissionsStore = usePermissionsStore();
+
+const canManageProjects =
+	permissionsStore.hasPermission('directus_deployment_projects', 'create') ||
+	permissionsStore.hasPermission('directus_deployment_projects', 'delete');
+
+const canDelete = permissionsStore.hasPermission('directus_deployments', 'delete');
+const canUpdate = permissionsStore.hasPermission('directus_deployments', 'update');
 const loading = ref(true);
 const saving = ref(false);
 const deleting = ref(false);
@@ -86,6 +96,10 @@ const hasEdits = computed(() => {
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
+useShortcut('meta+s', () => {
+	if (hasEdits.value) checkSave();
+});
+
 function discardAndLeave() {
 	if (!leaveTo.value) return;
 	configurationEdits.value = {};
@@ -107,14 +121,16 @@ async function loadConfig() {
 
 		config.value = configData as DeploymentConfig;
 
-		// Load all projects from provider
-		const projectsData = await sdk.request(readDeploymentProjects(props.provider));
-		availableProjects.value = projectsData as DeploymentProjectListOutput[];
+		if (canManageProjects) {
+			// Load all projects from provider
+			const projectsData = await sdk.request(readDeploymentProjects(props.provider));
+			availableProjects.value = projectsData as DeploymentProjectListOutput[];
 
-		// Set selected projects from the response (id !== null means selected)
-		const storedIds = projectsData.filter((p: any) => p.id !== null).map((p: any) => p.external_id);
-		selectedProjectIds.value = [...storedIds];
-		initialProjectIds.value = [...storedIds];
+			// Set selected projects from the response (id !== null means selected)
+			const storedIds = projectsData.filter((p: any) => p.id !== null).map((p: any) => p.external_id);
+			selectedProjectIds.value = [...storedIds];
+			initialProjectIds.value = [...storedIds];
+		}
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -264,6 +280,7 @@ watch(
 
 		<template #actions>
 			<PrivateViewHeaderBarActionButton
+				v-if="canDelete"
 				v-tooltip.bottom="$t('deployment.provider.settings.delete')"
 				icon="delete"
 				secondary
@@ -272,6 +289,7 @@ watch(
 			/>
 
 			<PrivateViewHeaderBarActionButton
+				v-if="canUpdate || canManageProjects"
 				v-tooltip.bottom="$t('save')"
 				:disabled="!hasEdits"
 				:loading="saving"
@@ -301,28 +319,34 @@ watch(
 				class="credentials-saved field full"
 			/>
 
-			<InterfacePresentationDivider :title="$t('deployment.provider.projects')" icon="assignment" class="field full" />
+			<template v-if="canManageProjects">
+				<InterfacePresentationDivider
+					:title="$t('deployment.provider.projects')"
+					icon="assignment"
+					class="field full"
+				/>
 
-			<div class="field full">
-				<div class="type-label">{{ $t('deployment.provider.select_projects') }}</div>
-				<div class="checkboxes">
-					<VCheckbox
-						v-for="project in availableProjects"
-						:key="project.external_id"
-						block
-						:value="project.external_id"
-						:label="project.name"
-						:disabled="!project.deployable"
-						:model-value="selectedProjectIds"
-						@update:model-value="(value) => (selectedProjectIds = value)"
-					>
-						<template v-if="!project.deployable" #append>
-							<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" />
-						</template>
-					</VCheckbox>
+				<div class="field full">
+					<div class="type-label">{{ $t('deployment.provider.select_projects') }}</div>
+					<div class="checkboxes">
+						<VCheckbox
+							v-for="project in availableProjects"
+							:key="project.external_id"
+							block
+							:value="project.external_id"
+							:label="project.name"
+							:disabled="!project.deployable"
+							:model-value="selectedProjectIds"
+							@update:model-value="(value) => (selectedProjectIds = value)"
+						>
+							<template v-if="!project.deployable" #append>
+								<VIcon v-tooltip.left="$t('deployment.provider.project.not_deployable')" name="info" />
+							</template>
+						</VCheckbox>
+					</div>
+					<small class="type-note">{{ $t('deployment.provider.select_projects_hint') }}</small>
 				</div>
-				<small class="type-note">{{ $t('deployment.provider.select_projects_hint') }}</small>
-			</div>
+			</template>
 		</div>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
