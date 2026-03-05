@@ -90,7 +90,7 @@ function stopSpinnerIfQueueIsEmpty() {
 
 	.logo {
 		position: absolute;
-		inset-block-start: 18px;
+		inset-block-start: 1rem;
 		inset-inline-start: 0.5625rem;
 		inline-size: 40px;
 		block-size: 32px;

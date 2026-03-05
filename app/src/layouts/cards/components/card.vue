@@ -227,8 +227,8 @@ function handleClick() {
 		inset-block-start: 0.375rem;
 		inset-inline-start: 0.375rem;
 		z-index: 2;
-		inline-size: 18px;
-		block-size: 18px;
+		inline-size: 1rem;
+		block-size: 1rem;
 		background-color: var(--theme--background);
 		border-radius: 24px;
 		opacity: 0;

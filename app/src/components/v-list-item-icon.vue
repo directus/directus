@@ -61,7 +61,7 @@ withDefaults(defineProps<Props>(), {
 
 			&.nav #{$this} :slotted(.v-icon) {
 				&.dense {
-					--v-icon-size: 18px;
+					--v-icon-size: 1rem;
 				}
 			}
 

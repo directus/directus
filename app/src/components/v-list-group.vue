@@ -141,7 +141,7 @@ function onClick(event: MouseEvent) {
 	}
 
 	.items {
-		padding-inline-start: 18px;
+		padding-inline-start: 1rem;
 		list-style: none;
 	}
 }

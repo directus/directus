@@ -264,7 +264,7 @@ function addKeyAsNode() {
 	}
 
 	:deep(.group) {
-		margin-inline-start: 18px;
+		margin-inline-start: 1rem;
 		padding-inline-start: 0.5625rem;
 		border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}

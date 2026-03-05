@@ -542,8 +542,8 @@ function useColor() {
 	margin: 0 0.25rem;
 
 	&.low-contrast {
-		--v-button-height: 18px;
-		--v-button-width: 18px;
+		--v-button-height: 1rem;
+		--v-button-width: 1rem;
 		border: 1px solid var(--theme--form--field--input--border-color-hover);
 	}
 }

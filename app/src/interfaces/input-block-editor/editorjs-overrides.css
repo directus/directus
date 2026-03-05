@@ -517,8 +517,8 @@
 }
 
 .codex-editor .ce-block h5 {
-	font-size: 18px;
-	line-height: 26px;
+	font-size: 1rem;
+	line-height: 1.4375;
 }
 
 .codex-editor .ce-block h6 {
@@ -565,8 +565,8 @@
 .codex-editor .ce-block pre {
 	padding: 20px;
 	overflow: auto;
-	font-size: 18px;
-	line-height: 24px;
+	font-size: 1rem;
+	line-height: 1.375;
 	background-color: var(--theme--background-accent);
 	border-radius: 0.25rem;
 }

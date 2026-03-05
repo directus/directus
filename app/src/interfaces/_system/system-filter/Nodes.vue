@@ -405,7 +405,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	display: flex;
 	align-items: center;
 	inline-size: fit-content;
-	margin-inline-end: 18px;
+	margin-inline-end: 1rem;
 	margin-block-end: 0.4375rem;
 	padding: 2px 0.3125rem;
 	padding-inline-end: 0.4375rem;

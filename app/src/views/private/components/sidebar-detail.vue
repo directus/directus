@@ -79,7 +79,7 @@ watch(
 	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
 		var(--theme--sidebar--section--toggle--border-color);
 	color: var(--theme--sidebar--section--toggle--foreground);
-	padding-inline: 18px 0.5rem;
+	padding-inline: 1rem 0.5rem;
 }
 
 .accordion-trigger-icon {

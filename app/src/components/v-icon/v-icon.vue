@@ -182,7 +182,7 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.small {
-		--v-icon-size: 18px;
+		--v-icon-size: 1rem;
 	}
 
 	&.large {

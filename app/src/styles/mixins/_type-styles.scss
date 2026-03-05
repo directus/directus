@@ -1,10 +1,10 @@
 @mixin type-title {
 	color: var(--theme--foreground-accent);
-	font-size: 18px;
+	font-size: 1rem;
 	font-weight: var(--theme--fonts--display--font-weight);
 	font-family: var(--theme--fonts--display--font-family);
 	font-style: normal;
-	line-height: 24px;
+	line-height: 1.375;
 }
 
 @mixin type-label {

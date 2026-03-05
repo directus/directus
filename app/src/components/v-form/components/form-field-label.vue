@@ -139,7 +139,7 @@ const isPromotableField = computed(() => {
 	}
 
 	.v-checkbox {
-		block-size: 18px; // Don't push down label with normal icon height (24px)
+		block-size: 1rem; // Don't push down label with normal icon height (24px)
 		margin-inline-end: 0.25rem;
 		display: inline-flex;
 		align-self: baseline;

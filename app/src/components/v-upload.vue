@@ -526,7 +526,7 @@ defineExpose({ abort });
 .actions {
 	display: flex;
 	justify-content: center;
-	margin-block-end: 18px;
+	margin-block-end: 1rem;
 
 	.v-button {
 		margin-inline-end: 0.6875rem;

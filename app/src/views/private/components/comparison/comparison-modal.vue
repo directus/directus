@@ -520,7 +520,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		flex: 0 0 auto;
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal--padding-x);
-		padding-block: 18px;
+		padding-block: 1rem;
 		border-block-start: 2px solid var(--theme--border-color-subdued);
 
 		.columns {

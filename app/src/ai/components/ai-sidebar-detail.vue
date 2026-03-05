@@ -57,7 +57,7 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 	color: var(--theme--sidebar--section--toggle--foreground);
 	display: flex;
 	align-items: center;
-	padding-inline: 18px 0.5rem;
+	padding-inline: 1rem 0.5rem;
 	transition: color var(--fast) var(--transition);
 }
 

@@ -97,7 +97,7 @@ const user = computed(() => {
 		.dot {
 			position: absolute;
 			inset-block-start: 0.3125rem;
-			inset-inline-start: -18px;
+			inset-inline-start: -1rem;
 			z-index: 2;
 			inline-size: 0.625rem;
 			block-size: 0.625rem;
