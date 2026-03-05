@@ -572,7 +572,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input {
-	--v-input-border-radius: 0px;
+	--v-input-border-radius: 0;
 }
 
 .color-data-inputs .color-data-input :deep(.input:focus-within),
@@ -592,11 +592,11 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:first-child {
-	--v-input-border-radius: var(--theme--border-radius) 0px 0px var(--theme--border-radius);
+	--v-input-border-radius: var(--theme--border-radius) 0 0 var(--theme--border-radius);
 }
 
 .color-data-inputs .color-data-input:last-child {
-	--v-input-border-radius: 0px var(--theme--border-radius) var(--theme--border-radius) 0px;
+	--v-input-border-radius: 0 var(--theme--border-radius) var(--theme--border-radius) 0;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
@@ -609,15 +609,15 @@ function useColor() {
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
-	--v-input-border-radius: var(--theme--border-radius) var(--theme--border-radius) 0px 0px;
+	--v-input-border-radius: var(--theme--border-radius) var(--theme--border-radius) 0 0;
 }
 
 .color-data-inputs.stacked .color-data-input:nth-child(2) {
-	--v-input-border-radius: 0px 0px 0px var(--theme--border-radius);
+	--v-input-border-radius: 0 0 0 var(--theme--border-radius);
 }
 
 .color-data-inputs.stacked .color-data-input:last-child {
-	--v-input-border-radius: 0px 0px var(--theme--border-radius) 0px;
+	--v-input-border-radius: 0 0 var(--theme--border-radius) 0;
 }
 
 .color-data-alphas {

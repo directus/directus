@@ -617,8 +617,8 @@ function setAspectRatio() {
 }
 
 .modal {
-	--v-drawer-content-padding-small: 0px;
-	--v-drawer-content-padding: 0px;
+	--v-drawer-content-padding-small: 0;
+	--v-drawer-content-padding: 0;
 }
 
 .editor-container {

@@ -292,7 +292,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 <style lang="scss" scoped>
 .kanban-layout {
-	--limit-notice-height: 0px;
+	--limit-notice-height: 0;
 	--limit-notice-margin-bottom: 1.375rem;
 	--header-bar-margin: 1.375rem;
 
