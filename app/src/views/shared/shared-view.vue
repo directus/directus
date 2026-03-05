@@ -147,7 +147,7 @@ header {
 		box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
 
 		@media (min-width: 618px) {
-			inline-size: 618px;
+			inline-size: 34.75rem;
 		}
 	}
 
