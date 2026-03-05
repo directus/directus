@@ -253,7 +253,7 @@ const handleAlwaysAllow = () => {
 }
 
 .card-content {
-	max-block-size: 280px;
+	max-block-size: 15.75rem;
 	overflow-y: auto;
 	padding-inline: 0.375rem;
 

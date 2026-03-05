@@ -574,7 +574,7 @@ textarea {
 .table-options {
 	--theme--form--row-gap: 0.6875rem;
 	--theme--form--column-gap: 0.6875rem;
-	min-inline-size: 280px;
+	min-inline-size: 15.75rem;
 	padding: 0.6875rem;
 	@include mixins.form-grid;
 

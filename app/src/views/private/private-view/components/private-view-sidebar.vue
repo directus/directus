@@ -32,7 +32,7 @@ const sidebarStore = useSidebarStore();
 	background-color: var(--theme--sidebar--background);
 	font-family: var(--theme--sidebar--font-family);
 	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
-	min-inline-size: 280px;
+	min-inline-size: 15.75rem;
 
 	/* Explicitly render the border outside of the width of the bar itself */
 	box-sizing: content-box;
