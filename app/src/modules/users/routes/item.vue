@@ -554,8 +554,8 @@ function revert(values: Record<string, any>) {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		inline-size: 84px;
-		block-size: 84px;
+		inline-size: 4.75rem;
+		block-size: 4.75rem;
 		margin-inline-end: 0.875rem;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
