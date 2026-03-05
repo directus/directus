@@ -258,7 +258,7 @@ input {
 
 .dialog {
 	position: relative;
-	min-inline-size: 800px;
+	min-inline-size: 45rem;
 }
 
 .date-input {

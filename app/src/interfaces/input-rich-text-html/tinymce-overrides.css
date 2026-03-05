@@ -209,7 +209,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog--width-lg {
-	max-inline-size: 800px;
+	max-inline-size: 45rem;
 }
 
 .tox .tox-dialog__header {

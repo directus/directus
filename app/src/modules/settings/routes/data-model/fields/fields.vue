@@ -176,7 +176,7 @@ function discardAndLeave() {
 }
 
 .fields {
-	max-inline-size: 800px;
+	max-inline-size: 45rem;
 	margin-block-end: 2.6875rem;
 }
 
